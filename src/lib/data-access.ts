@@ -38,6 +38,14 @@ const emptyCapabilities: CapabilitySummary = {
   notes: "",
 };
 
+function toIsoTimestamp(value: Date | string | null) {
+  if (!value) {
+    return null;
+  }
+
+  return value instanceof Date ? value.toISOString() : value;
+}
+
 export function currentDataSource() {
   return hasDatabase() ? "database" : "seed-fallback";
 }
@@ -394,8 +402,8 @@ export async function listImportRuns(): Promise<ImportRunSummary[]> {
     electionYear: number;
     parser: string;
     status: ImportRunSummary["status"];
-    startedAt: Date;
-    finishedAt: Date | null;
+    startedAt: Date | string;
+    finishedAt: Date | string | null;
     summary: unknown;
   }>;
 
@@ -425,8 +433,8 @@ export async function listImportRuns(): Promise<ImportRunSummary[]> {
     electionYear: row.electionYear,
     parser: row.parser,
     status: row.status,
-    startedAt: row.startedAt.toISOString(),
-    finishedAt: row.finishedAt?.toISOString() ?? null,
+    startedAt: toIsoTimestamp(row.startedAt) ?? "",
+    finishedAt: toIsoTimestamp(row.finishedAt),
     summary: row.summary as Record<string, unknown>,
   }));
 }
