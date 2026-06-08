@@ -35,3 +35,10 @@ test("seed data carries required provenance fields", () => {
     assert.match(seedData, new RegExp(field));
   }
 });
+
+test("production domains force HTTPS through proxy", () => {
+  const proxy = readFileSync("src/proxy.ts", "utf8");
+  assert.match(proxy, /civicresultmaps\.org/);
+  assert.match(proxy, /x-forwarded-proto/);
+  assert.match(proxy, /NextResponse\.redirect/);
+});
