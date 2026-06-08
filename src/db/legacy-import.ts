@@ -17,9 +17,12 @@ type LegacyAppData = {
     notes?: string;
   };
   presidentCountyResults?: LegacyCountyResult[];
+  reviewCharts?: unknown[];
+  turnoutData?: unknown[];
+  historicalBaseline?: unknown[];
 };
 
-type LegacyImportInput = {
+export type LegacyImportInput = {
   stateCode: string;
   stateName: string;
   authority: string;
@@ -79,6 +82,10 @@ export async function importLegacyState(input: LegacyImportInput) {
   }
 
   const sql = neon(databaseUrl);
+  const hasReviewCharts = Array.isArray(appData.reviewCharts) && appData.reviewCharts.length > 0;
+  const hasTurnout = Array.isArray(appData.turnoutData) && appData.turnoutData.length > 0;
+  const hasHistoricalBaseline =
+    Array.isArray(appData.historicalBaseline) && appData.historicalBaseline.length > 0;
 
   const [election] = await sql`
     insert into elections (year, office, election_date, label)
@@ -108,10 +115,23 @@ export async function importLegacyState(input: LegacyImportInput) {
       source_planner,
       notes
     )
-    values (${input.stateCode}, 2024, true, true, false, false, false, true, ${appData.metadata?.notes ?? ""})
+    values (
+      ${input.stateCode},
+      2024,
+      true,
+      true,
+      ${hasReviewCharts},
+      ${hasTurnout},
+      ${hasHistoricalBaseline},
+      true,
+      ${appData.metadata?.notes ?? ""}
+    )
     on conflict (state_code, election_year) do update set
       certified_results = true,
       map = true,
+      review_graphs = excluded.review_graphs,
+      turnout = excluded.turnout,
+      historical_baseline = excluded.historical_baseline,
       source_planner = true,
       notes = excluded.notes
   `;
@@ -270,8 +290,13 @@ export async function importLegacyState(input: LegacyImportInput) {
   const storedCounties = Number(stored.counties);
   const storedRows = Number(stored.result_rows);
   const storedVotes = Number(stored.total_votes);
+  const expectedStateTotal = appData.metadata?.stateTotal;
 
-  if (storedCounties < rows.length || storedRows < resultRows) {
+  if (
+    storedCounties < rows.length ||
+    storedRows < resultRows ||
+    (expectedStateTotal !== undefined && totalVotes !== expectedStateTotal)
+  ) {
     await sql`
       update import_runs
       set
@@ -281,6 +306,8 @@ export async function importLegacyState(input: LegacyImportInput) {
           error: "Stored import counts did not match the legacy bundle.",
           expectedCounties: rows.length,
           expectedRows: resultRows,
+          expectedStateTotal,
+          totalVotes,
           storedCounties,
           storedRows,
           storedVotes,
@@ -289,7 +316,7 @@ export async function importLegacyState(input: LegacyImportInput) {
     `;
 
     throw new Error(
-      `Import verification failed: stored ${storedCounties} counties and ${storedRows} rows, expected at least ${rows.length} counties and ${resultRows} rows.`,
+      `Import verification failed for ${input.stateCode}: stored ${storedCounties} counties and ${storedRows} rows, expected at least ${rows.length} counties and ${resultRows} rows.`,
     );
   }
 

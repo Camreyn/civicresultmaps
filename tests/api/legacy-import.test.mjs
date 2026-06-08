@@ -18,7 +18,10 @@ test("legacy importer parses static app-data bundles", () => {
 
 test("legacy import route is token protected and allowlisted", () => {
   const route = readFileSync("src/app/api/admin/import-legacy-state/route.ts", "utf8");
+  const catalog = readFileSync("src/db/legacy-catalog.ts", "utf8");
   assert.match(route, /IMPORT_TOKEN/);
-  assert.match(route, /allowedImports/);
-  assert.match(route, /WA/);
+  assert.match(route, /legacyImportCatalog/);
+  assert.match(catalog, /legacyImportStates/);
+  assert.match(catalog, /WA/);
+  assert.match(catalog, /WI/);
 });
