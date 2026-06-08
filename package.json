@@ -1,0 +1,39 @@
+{
+  "name": "civicresultmaps",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Civic Result Maps: database-backed national election result explorer, public API, and ETL platform.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run test:api && npm run test:etl",
+    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs",
+    "test:etl": "python -m unittest discover -s tests/python",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:seed": "node scripts/seed-starter-data.mjs",
+    "etl:validate": "python -m civic_etl.cli validate --config etl/state-configs/wi.json",
+    "etl:import": "python -m civic_etl.cli import --config etl/state-configs/wi.json --out .etl/staging"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "drizzle-orm": "^0.38.4",
+    "lucide-react": "^0.468.0",
+    "next": "^16.1.5",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "drizzle-kit": "^0.30.1",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^16.1.5",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "code": "WI",
+  "name": "Wisconsin",
+  "authority": "Wisconsin Elections Commission",
+  "electionYear": 2024,
+  "office": "President",
+  "sources": [
+    {
+      "id": "wi-2024-county-president",
+      "category": "Certified presidential county results",
+      "url": "https://elections.wi.gov/sites/default/files/documents/County%20by%20County%20Report_POTUS.pdf",
+      "localFile": "legacy/data/County by County Report_POTUS.pdf",
+      "parser": "legacyStaticRegistry",
+      "authority": "Wisconsin Elections Commission",
+      "timestampBasis": "HTTP Last-Modified metadata captured in the legacy static project.",
+      "confidence": "Official WEC certified county result report.",
+      "status": "loaded"
+    }
+  ],
+  "expected": {
+    "jurisdictions": 72,
+    "resultRows": 72,
+    "sources": 1
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
+    "turnout": true,
+    "historicalBaseline": true
+  }
+}
