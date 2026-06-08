@@ -8,8 +8,8 @@ function test(name, fn) {
   console.log(`ok - ${name}`);
 }
 
-test("starter seed script requires DATABASE_URL", () => {
-  assert.match(script, /DATABASE_URL is required/);
+test("starter seed script requires a database URL", () => {
+  assert.match(script, /DATABASE_URL or POSTGRES_URL is required/);
 });
 
 test("starter seed script is idempotent", () => {

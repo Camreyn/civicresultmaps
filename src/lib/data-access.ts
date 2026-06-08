@@ -46,24 +46,42 @@ export async function listStates(): Promise<StateSummary[]> {
     return seedStates;
   }
 
-  const db = getDb();
-  const rows = await db
-    .select({
-      code: states.code,
-      name: states.name,
-      authority: states.authority,
-      countyLabel: states.countyLabel,
-      sourcePlanner: capabilityFlags.sourcePlanner,
-      certifiedResults: capabilityFlags.certifiedResults,
-      map: capabilityFlags.map,
-      reviewGraphs: capabilityFlags.reviewGraphs,
-      turnout: capabilityFlags.turnout,
-      historicalBaseline: capabilityFlags.historicalBaseline,
-      notes: capabilityFlags.notes,
-    })
-    .from(states)
-    .leftJoin(capabilityFlags, eq(states.code, capabilityFlags.stateCode))
-    .orderBy(states.name);
+  let rows: Array<{
+    code: string;
+    name: string;
+    authority: string;
+    countyLabel: string;
+    sourcePlanner: boolean | null;
+    certifiedResults: boolean | null;
+    map: boolean | null;
+    reviewGraphs: boolean | null;
+    turnout: boolean | null;
+    historicalBaseline: boolean | null;
+    notes: string | null;
+  }>;
+
+  try {
+    const db = getDb();
+    rows = await db
+      .select({
+        code: states.code,
+        name: states.name,
+        authority: states.authority,
+        countyLabel: states.countyLabel,
+        sourcePlanner: capabilityFlags.sourcePlanner,
+        certifiedResults: capabilityFlags.certifiedResults,
+        map: capabilityFlags.map,
+        reviewGraphs: capabilityFlags.reviewGraphs,
+        turnout: capabilityFlags.turnout,
+        historicalBaseline: capabilityFlags.historicalBaseline,
+        notes: capabilityFlags.notes,
+      })
+      .from(states)
+      .leftJoin(capabilityFlags, eq(states.code, capabilityFlags.stateCode))
+      .orderBy(states.name);
+  } catch {
+    return seedStates;
+  }
 
   if (rows.length === 0) {
     return seedStates;
@@ -114,17 +132,29 @@ export async function listElections(input: {
     });
   }
 
-  const db = getDb();
-  const rows = await db
-    .select({
-      year: elections.year,
-      office: elections.office,
-      electionDate: elections.electionDate,
-      label: elections.label,
-      stateCode: contests.stateCode,
-    })
-    .from(elections)
-    .leftJoin(contests, eq(elections.id, contests.electionId));
+  let rows: Array<{
+    year: number;
+    office: string;
+    electionDate: string;
+    label: string;
+    stateCode: string | null;
+  }>;
+
+  try {
+    const db = getDb();
+    rows = await db
+      .select({
+        year: elections.year,
+        office: elections.office,
+        electionDate: elections.electionDate,
+        label: elections.label,
+        stateCode: contests.stateCode,
+      })
+      .from(elections)
+      .leftJoin(contests, eq(elections.id, contests.electionId));
+  } catch {
+    return seedElections;
+  }
 
   const grouped = new Map<string, ElectionSummary>();
 
@@ -167,31 +197,50 @@ export async function listResults(input: {
     );
   }
 
-  const db = getDb();
-  const rows = await db
-    .select({
-      stateCode: resultRows.stateCode,
-      office: elections.office,
-      level: resultRows.level,
-      jurisdictionCode: resultRows.jurisdictionCode,
-      jurisdictionName: resultRows.jurisdictionName,
-      candidateName: resultRows.candidateName,
-      party: resultRows.party,
-      votes: resultRows.votes,
-      sourceDocumentId: resultRows.sourceDocumentId,
-      sourceSlug: sourceDocuments.slug,
-    })
-    .from(resultRows)
-    .innerJoin(contests, eq(resultRows.contestId, contests.id))
-    .innerJoin(elections, eq(contests.electionId, elections.id))
-    .leftJoin(sourceDocuments, eq(resultRows.sourceDocumentId, sourceDocuments.id))
-    .where(
-      and(
-        eq(resultRows.stateCode, input.state),
-        eq(resultRows.level, input.level),
-        eq(elections.year, input.year),
-      ),
+  let rows: Array<{
+    stateCode: string;
+    office: string;
+    level: string;
+    jurisdictionCode: string;
+    jurisdictionName: string;
+    candidateName: string;
+    party: string;
+    votes: number;
+    sourceDocumentId: string | null;
+    sourceSlug: string | null;
+  }>;
+
+  try {
+    const db = getDb();
+    rows = await db
+      .select({
+        stateCode: resultRows.stateCode,
+        office: elections.office,
+        level: resultRows.level,
+        jurisdictionCode: resultRows.jurisdictionCode,
+        jurisdictionName: resultRows.jurisdictionName,
+        candidateName: resultRows.candidateName,
+        party: resultRows.party,
+        votes: resultRows.votes,
+        sourceDocumentId: resultRows.sourceDocumentId,
+        sourceSlug: sourceDocuments.slug,
+      })
+      .from(resultRows)
+      .innerJoin(contests, eq(resultRows.contestId, contests.id))
+      .innerJoin(elections, eq(contests.electionId, elections.id))
+      .leftJoin(sourceDocuments, eq(resultRows.sourceDocumentId, sourceDocuments.id))
+      .where(
+        and(
+          eq(resultRows.stateCode, input.state),
+          eq(resultRows.level, input.level),
+          eq(elections.year, input.year),
+        ),
+      );
+  } catch {
+    return seedResults.filter(
+      (row) => row.state === input.state && row.year === input.year && row.level === input.level,
     );
+  }
 
   const grouped = new Map<string, ResultRow>();
 
@@ -236,30 +285,52 @@ export async function listSources(input: { state: string; year: number }): Promi
     );
   }
 
-  const db = getDb();
-  const rows = await db
-    .select({
-      id: sourceDocuments.id,
-      slug: sourceDocuments.slug,
-      state: sourceDocuments.stateCode,
-      electionYear: sourceDocuments.electionYear,
-      category: sourceDocuments.category,
-      title: sourceDocuments.title,
-      sourceUrl: sourceDocuments.sourceUrl,
-      authority: sourceDocuments.authority,
-      localArtifact: sourceDocuments.localArtifact,
-      parser: sourceDocuments.parser,
-      timestampBasis: sourceDocuments.timestampBasis,
-      confidence: sourceDocuments.confidence,
-      status: sourceDocuments.status,
-    })
-    .from(sourceDocuments)
-    .where(
-      and(
-        eq(sourceDocuments.stateCode, input.state),
-        eq(sourceDocuments.electionYear, input.year),
-      ),
+  let rows: Array<{
+    id: string;
+    slug: string;
+    state: string;
+    electionYear: number;
+    category: string;
+    title: string;
+    sourceUrl: string;
+    authority: string;
+    localArtifact: string | null;
+    parser: string | null;
+    timestampBasis: string;
+    confidence: string;
+    status: SourceSummary["status"];
+  }>;
+
+  try {
+    const db = getDb();
+    rows = await db
+      .select({
+        id: sourceDocuments.id,
+        slug: sourceDocuments.slug,
+        state: sourceDocuments.stateCode,
+        electionYear: sourceDocuments.electionYear,
+        category: sourceDocuments.category,
+        title: sourceDocuments.title,
+        sourceUrl: sourceDocuments.sourceUrl,
+        authority: sourceDocuments.authority,
+        localArtifact: sourceDocuments.localArtifact,
+        parser: sourceDocuments.parser,
+        timestampBasis: sourceDocuments.timestampBasis,
+        confidence: sourceDocuments.confidence,
+        status: sourceDocuments.status,
+      })
+      .from(sourceDocuments)
+      .where(
+        and(
+          eq(sourceDocuments.stateCode, input.state),
+          eq(sourceDocuments.electionYear, input.year),
+        ),
+      );
+  } catch {
+    return seedSources.filter(
+      (source) => source.state === input.state && source.electionYear === input.year,
     );
+  }
 
   return rows.map((row) => ({
     id: row.slug,
@@ -319,20 +390,35 @@ export async function listImportRuns(): Promise<ImportRunSummary[]> {
     return seedImportRuns;
   }
 
-  const db = getDb();
-  const rows = await db
-    .select({
-      id: importRuns.id,
-      state: importRuns.stateCode,
-      electionYear: importRuns.electionYear,
-      parser: importRuns.parser,
-      status: importRuns.status,
-      startedAt: importRuns.startedAt,
-      finishedAt: importRuns.finishedAt,
-      summary: importRuns.summary,
-    })
-    .from(importRuns)
-    .orderBy(importRuns.startedAt);
+  let rows: Array<{
+    id: string;
+    state: string;
+    electionYear: number;
+    parser: string;
+    status: ImportRunSummary["status"];
+    startedAt: Date;
+    finishedAt: Date | null;
+    summary: unknown;
+  }>;
+
+  try {
+    const db = getDb();
+    rows = await db
+      .select({
+        id: importRuns.id,
+        state: importRuns.stateCode,
+        electionYear: importRuns.electionYear,
+        parser: importRuns.parser,
+        status: importRuns.status,
+        startedAt: importRuns.startedAt,
+        finishedAt: importRuns.finishedAt,
+        summary: importRuns.summary,
+      })
+      .from(importRuns)
+      .orderBy(importRuns.startedAt);
+  } catch {
+    return seedImportRuns;
+  }
 
   return rows.map((row) => ({
     id: row.id,

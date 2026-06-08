@@ -1,12 +1,18 @@
 import { neon } from "@neondatabase/serverless";
 
 const databaseUrl = process.env.DATABASE_URL;
+const postgresUrl =
+  process.env.POSTGRES_DATABASE_URL ??
+  process.env.POSTGRES_URL ??
+  process.env.POSTGRES_PRISMA_URL ??
+  process.env.POSTGRES_URL_NON_POOLING ??
+  process.env.POSTGRES_DATABASE_URL_UNPOOLED;
 
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is required to seed starter data.");
+if (!databaseUrl && !postgresUrl) {
+  throw new Error("DATABASE_URL or POSTGRES_URL is required to seed starter data.");
 }
 
-const sql = neon(databaseUrl);
+const sql = neon(databaseUrl ?? postgresUrl);
 
 const states = [
   {

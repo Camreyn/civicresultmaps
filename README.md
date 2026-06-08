@@ -46,6 +46,8 @@ npm test
 
 `npm run db:seed` loads starter WI/MN/WA records into Postgres so the public API
 switches from seed fallback mode to database-backed reads immediately.
+The database scripts read `.env.local` and accept either `DATABASE_URL` or the
+Vercel Neon-provided `POSTGRES_URL`.
 
 ## GitHub And Vercel Setup
 
