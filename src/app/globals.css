@@ -342,6 +342,12 @@ input {
   grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
 }
 
+.results-explorer {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -389,6 +395,122 @@ input {
 
 .table-wrap {
   overflow-x: auto;
+}
+
+.map-panel {
+  min-height: 360px;
+}
+
+.map-wrap {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    #121413;
+  min-height: 320px;
+  padding: 16px;
+}
+
+.county-map {
+  display: block;
+  height: auto;
+  max-height: 520px;
+  width: 100%;
+}
+
+.county-map path {
+  transition:
+    fill 160ms ease,
+    opacity 160ms ease;
+}
+
+.county-map path:hover {
+  opacity: 0.76;
+}
+
+.map-empty {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  min-height: 320px;
+  justify-content: center;
+}
+
+.map-legend {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.legend-item {
+  align-items: center;
+  display: inline-flex;
+  font-size: 12px;
+  gap: 6px;
+}
+
+.legend-item::before {
+  border-radius: 999px;
+  content: "";
+  height: 10px;
+  width: 10px;
+}
+
+.legend-harris::before {
+  background: var(--blue);
+}
+
+.legend-trump::before {
+  background: var(--red);
+}
+
+.legend-note {
+  color: var(--quiet);
+  font-size: 12px;
+}
+
+.table-tools {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(180px, 1fr) minmax(160px, 220px);
+  padding: 12px 16px;
+}
+
+.table-search,
+.sort-select-label {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+.table-search:focus-within,
+.sort-select-label:focus-within {
+  border-color: var(--accent-line);
+  outline: 2px solid var(--accent-soft);
+}
+
+.table-search input,
+.sort-select {
+  background: transparent;
+  border: 0;
+  color: var(--foreground);
+  min-width: 0;
+  outline: 0;
+  width: 100%;
+}
+
+.table-search input::placeholder {
+  color: var(--quiet);
 }
 
 table {
@@ -492,6 +614,10 @@ td {
   .workspace,
   .content-grid,
   .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table-tools {
     grid-template-columns: 1fr;
   }
 

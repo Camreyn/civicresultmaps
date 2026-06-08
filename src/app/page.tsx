@@ -5,9 +5,9 @@ import {
   Database,
   FileCheck2,
   GitBranch,
-  Map,
   ShieldCheck,
 } from "lucide-react";
+import { ResultsExplorer } from "./results-explorer";
 import { StateSwitcher } from "./state-switcher";
 import { getCoverageSummary, listImportRuns, listResults, listSources, listStates } from "@/lib/api";
 
@@ -100,51 +100,11 @@ export default async function Home({ searchParams }: HomeProps) {
           </section>
 
           <div className="content-grid">
-            <section className="panel" aria-label="County results">
-              <div className="panel-header">
-                <div>
-                  <h2>{selected?.countyLabel ?? "County"} Results</h2>
-                  <span>{results.length} reporting jurisdictions</span>
-                </div>
-                <span className="status-pill">
-                  <Map aria-hidden size={14} />
-                  {selectedStateCode}
-                </span>
-              </div>
-              <div className="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Jurisdiction</th>
-                      <th>Winner</th>
-                      <th>Harris</th>
-                      <th>Trump</th>
-                      <th>Total</th>
-                      <th>Margin</th>
-                      <th>Source</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {results.map((row) => (
-                      <tr key={row.jurisdictionCode}>
-                        <td>{row.jurisdictionName}</td>
-                        <td className={row.winner === "Harris" ? "winner-harris" : "winner-trump"}>
-                          {row.winner}
-                        </td>
-                        <td className="mono">{(row.votes.Harris ?? 0).toLocaleString()}</td>
-                        <td className="mono">{(row.votes.Trump ?? 0).toLocaleString()}</td>
-                        <td className="mono">{row.totalVotes.toLocaleString()}</td>
-                        <td className="mono">
-                          {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)
-                        </td>
-                        <td className="mono">{row.sourceId}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
+            <ResultsExplorer
+              countyLabel={selected?.countyLabel ?? "County"}
+              results={results}
+              selectedState={selectedStateCode}
+            />
             <div className="detail-stack">
               <section className="panel" aria-label="Provenance">
                 <div className="panel-header">

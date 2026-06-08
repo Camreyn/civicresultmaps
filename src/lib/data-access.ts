@@ -1,8 +1,8 @@
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { neon } from "@neondatabase/serverless";
 import { getDb, hasDatabase } from "@/db";
 import { getDatabaseUrl } from "@/db/url";
-import { contests, elections, sourceDocuments } from "@/db/schema";
+import { contests, elections } from "@/db/schema";
 import {
   getCoverage,
   seedElections,
@@ -301,30 +301,27 @@ export async function listSources(input: { state: string; year: number }): Promi
   }>;
 
   try {
-    const db = getDb();
-    rows = await db
-      .select({
-        id: sourceDocuments.id,
-        slug: sourceDocuments.slug,
-        state: sourceDocuments.stateCode,
-        electionYear: sourceDocuments.electionYear,
-        category: sourceDocuments.category,
-        title: sourceDocuments.title,
-        sourceUrl: sourceDocuments.sourceUrl,
-        authority: sourceDocuments.authority,
-        localArtifact: sourceDocuments.localArtifact,
-        parser: sourceDocuments.parser,
-        timestampBasis: sourceDocuments.timestampBasis,
-        confidence: sourceDocuments.confidence,
-        status: sourceDocuments.status,
-      })
-      .from(sourceDocuments)
-      .where(
-        and(
-          eq(sourceDocuments.stateCode, input.state),
-          eq(sourceDocuments.electionYear, input.year),
-        ),
-      );
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        id,
+        slug,
+        state_code as "state",
+        election_year as "electionYear",
+        category,
+        title,
+        source_url as "sourceUrl",
+        authority,
+        local_artifact as "localArtifact",
+        parser,
+        timestamp_basis as "timestampBasis",
+        confidence,
+        status
+      from source_documents
+      where state_code = ${input.state}
+        and election_year = ${input.year}
+      order by category, title
+    `) as typeof rows;
   } catch {
     return seedSources.filter(
       (source) => source.state === input.state && source.electionYear === input.year,
