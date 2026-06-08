@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { legacyImportCatalog, legacyImportStates } from "@/db/legacy-catalog";
-import { importLegacyState } from "@/db/legacy-import";
+import { cleanupLegacyState, importLegacyState } from "@/db/legacy-import";
 
 export const runtime = "nodejs";
 
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  const body = (await request.json().catch(() => ({}))) as { state?: string };
+  const body = (await request.json().catch(() => ({}))) as { action?: string; state?: string };
   const state = body.state?.toUpperCase() ?? "";
   const config = legacyImportCatalog[state as keyof typeof legacyImportCatalog];
 
@@ -28,6 +28,11 @@ export async function POST(request: NextRequest) {
       },
       { status: 400 },
     );
+  }
+
+  if (body.action === "cleanup") {
+    const result = await cleanupLegacyState(config);
+    return NextResponse.json({ ok: true, result, generatedAt: new Date().toISOString() });
   }
 
   const result = await importLegacyState(config);

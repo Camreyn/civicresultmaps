@@ -62,6 +62,128 @@ function jurisdictionCode(stateCode: string, county: string) {
   return `${stateCode}-${normalizeCountyName(county).toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
 }
 
+function validateLegacyRows(input: LegacyImportInput, appData: LegacyAppData, rows: LegacyCountyResult[]) {
+  const expectedCountyRows = appData.metadata?.countyRows;
+  const expectedStateTotal = appData.metadata?.stateTotal;
+  const names = rows.map((row) => normalizeCountyName(row.county));
+  const duplicateNames = names.filter((name, index) => names.indexOf(name) !== index);
+  const numericNames = names.filter((name) => /^\d[\d,.\s-]*$/.test(name));
+  const missingNames = rows.filter((row) => !row.county?.trim()).length;
+  const totalVotes = rows.reduce(
+    (sum, row) => sum + (row.harris ?? 0) + (row.trump ?? 0) + (row.other ?? 0),
+    0,
+  );
+  const rowTotalMismatches = rows
+    .filter((row) => row.total !== undefined)
+    .filter((row) => (row.harris ?? 0) + (row.trump ?? 0) + (row.other ?? 0) !== row.total)
+    .map((row) => row.county)
+    .slice(0, 8);
+
+  if (rows.length === 0) {
+    throw new Error("Legacy bundle did not include presidentCountyResults rows.");
+  }
+
+  if (expectedCountyRows !== undefined && rows.length !== expectedCountyRows) {
+    throw new Error(
+      `Import validation failed for ${input.stateCode}: expected ${expectedCountyRows} county rows, found ${rows.length}.`,
+    );
+  }
+
+  if (missingNames > 0 || duplicateNames.length > 0 || numericNames.length > 0) {
+    throw new Error(
+      `Import validation failed for ${input.stateCode}: invalid county labels. Missing: ${missingNames}; duplicates: ${[
+        ...new Set(duplicateNames),
+      ].join(", ") || "none"}; numeric labels: ${numericNames.slice(0, 8).join(", ") || "none"}.`,
+    );
+  }
+
+  if (rowTotalMismatches.length > 0) {
+    throw new Error(
+      `Import validation failed for ${input.stateCode}: row totals do not match candidate sums for ${rowTotalMismatches.join(
+        ", ",
+      )}.`,
+    );
+  }
+
+  if (expectedStateTotal !== undefined && totalVotes !== expectedStateTotal) {
+    throw new Error(
+      `Import validation failed for ${input.stateCode}: candidate sum ${totalVotes} does not match state total ${expectedStateTotal}.`,
+    );
+  }
+
+  return {
+    expectedCountyRows: expectedCountyRows ?? null,
+    expectedStateTotal: expectedStateTotal ?? null,
+    totalVotes,
+  };
+}
+
+export async function cleanupLegacyState(input: Pick<LegacyImportInput, "stateCode" | "sourceSlug">) {
+  const databaseUrl = getDatabaseUrl();
+
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL or POSTGRES_URL is required to clean up legacy state data.");
+  }
+
+  const sql = neon(databaseUrl);
+
+  const deletedResults = await sql`
+    delete from result_rows
+    where state_code = ${input.stateCode}
+    returning id
+  `;
+  const deletedJurisdictions = await sql`
+    delete from jurisdictions
+    where state_code = ${input.stateCode}
+    returning id
+  `;
+  const deletedImportRuns = await sql`
+    delete from import_runs
+    where state_code = ${input.stateCode}
+    returning id
+  `;
+  const deletedSources = await sql`
+    delete from source_documents
+    where state_code = ${input.stateCode}
+       or slug = ${input.sourceSlug}
+    returning id
+  `;
+  const deletedCapabilities = await sql`
+    delete from capability_flags
+    where state_code = ${input.stateCode}
+    returning state_code
+  `;
+  const deletedCandidates = await sql`
+    delete from candidates
+    where contest_id in (
+      select id from contests where state_code = ${input.stateCode}
+    )
+    returning id
+  `;
+  const deletedContests = await sql`
+    delete from contests
+    where state_code = ${input.stateCode}
+    returning id
+  `;
+  const deletedStateRows = await sql`
+    delete from states
+    where code = ${input.stateCode}
+    returning code
+  `;
+
+  return {
+    state: input.stateCode,
+    deletedCapabilities: deletedCapabilities.length,
+    deletedCandidates: deletedCandidates.length,
+    deletedContests: deletedContests.length,
+    deletedImportRuns: deletedImportRuns.length,
+    deletedJurisdictions: deletedJurisdictions.length,
+    deletedResults: deletedResults.length,
+    deletedSources: deletedSources.length,
+    deletedStates: deletedStateRows.length,
+  };
+}
+
 export async function importLegacyState(input: LegacyImportInput) {
   const databaseUrl = getDatabaseUrl();
 
@@ -77,9 +199,7 @@ export async function importLegacyState(input: LegacyImportInput) {
   const appData = parseLegacyBundle(await response.text());
   const rows = appData.presidentCountyResults ?? [];
 
-  if (rows.length === 0) {
-    throw new Error("Legacy bundle did not include presidentCountyResults rows.");
-  }
+  const validation = validateLegacyRows(input, appData, rows);
 
   const sql = neon(databaseUrl);
   const hasReviewCharts = Array.isArray(appData.reviewCharts) && appData.reviewCharts.length > 0;
@@ -343,7 +463,7 @@ export async function importLegacyState(input: LegacyImportInput) {
     importRunId: importRun.id,
     counties: rows.length,
     resultRows,
-    totalVotes,
+    totalVotes: validation.totalVotes,
     storedCounties,
     storedRows,
     storedVotes,
