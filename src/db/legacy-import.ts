@@ -175,6 +175,31 @@ export async function importLegacyState(input: LegacyImportInput) {
     returning id
   `;
 
+  const [importRun] = await sql`
+    insert into import_runs (
+      state_code,
+      election_year,
+      parser,
+      source_document_id,
+      status,
+      summary
+    )
+    values (
+      ${input.stateCode},
+      2024,
+      ${input.parser},
+      ${source.id},
+      'staged',
+      ${JSON.stringify({
+        bundleUrl: input.bundleUrl,
+        sourceUrl: input.sourceUrl,
+        expectedCountyRows: appData.metadata?.countyRows ?? null,
+        expectedStateTotal: appData.metadata?.stateTotal ?? null,
+      })}::jsonb
+    )
+    returning id
+  `;
+
   let resultRows = 0;
   let totalVotes = 0;
 
@@ -247,13 +272,48 @@ export async function importLegacyState(input: LegacyImportInput) {
   const storedVotes = Number(stored.total_votes);
 
   if (storedCounties < rows.length || storedRows < resultRows) {
+    await sql`
+      update import_runs
+      set
+        status = 'failed',
+        finished_at = now(),
+        summary = ${JSON.stringify({
+          error: "Stored import counts did not match the legacy bundle.",
+          expectedCounties: rows.length,
+          expectedRows: resultRows,
+          storedCounties,
+          storedRows,
+          storedVotes,
+        })}::jsonb
+      where id = ${importRun.id}
+    `;
+
     throw new Error(
       `Import verification failed: stored ${storedCounties} counties and ${storedRows} rows, expected at least ${rows.length} counties and ${resultRows} rows.`,
     );
   }
 
+  await sql`
+    update import_runs
+    set
+      status = 'promoted',
+      finished_at = now(),
+      summary = ${JSON.stringify({
+        counties: rows.length,
+        resultRows,
+        totalVotes,
+        storedCounties,
+        storedRows,
+        storedVotes,
+        expectedCountyRows: appData.metadata?.countyRows ?? null,
+        expectedStateTotal: appData.metadata?.stateTotal ?? null,
+      })}::jsonb
+    where id = ${importRun.id}
+  `;
+
   return {
     state: input.stateCode,
+    importRunId: importRun.id,
     counties: rows.length,
     resultRows,
     totalVotes,

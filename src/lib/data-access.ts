@@ -6,7 +6,6 @@ import {
   capabilityFlags,
   contests,
   elections,
-  importRuns,
   resultRows,
   sourceDocuments,
   states,
@@ -401,20 +400,21 @@ export async function listImportRuns(): Promise<ImportRunSummary[]> {
   }>;
 
   try {
-    const db = getDb();
-    rows = await db
-      .select({
-        id: importRuns.id,
-        state: importRuns.stateCode,
-        electionYear: importRuns.electionYear,
-        parser: importRuns.parser,
-        status: importRuns.status,
-        startedAt: importRuns.startedAt,
-        finishedAt: importRuns.finishedAt,
-        summary: importRuns.summary,
-      })
-      .from(importRuns)
-      .orderBy(importRuns.startedAt);
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        id,
+        state_code as "state",
+        election_year as "electionYear",
+        parser,
+        status,
+        started_at as "startedAt",
+        finished_at as "finishedAt",
+        summary
+      from import_runs
+      order by started_at desc
+      limit 20
+    `) as typeof rows;
   } catch {
     return seedImportRuns;
   }

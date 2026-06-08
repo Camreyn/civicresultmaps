@@ -1,10 +1,30 @@
-import { Database, FileCheck2, GitBranch, ShieldCheck } from "lucide-react";
+import {
+  Activity,
+  CheckCircle2,
+  CircleDashed,
+  Database,
+  FileCheck2,
+  GitBranch,
+  Map,
+  ShieldCheck,
+} from "lucide-react";
 import { getCoverageSummary, listImportRuns, listResults, listSources, listStates } from "@/lib/api";
 
-const selectedState = "WI";
 const selectedYear = 2024;
 
-export default async function Home() {
+type HomeProps = {
+  searchParams?: Promise<{
+    state?: string;
+  }>;
+};
+
+function formatCapability(key: string) {
+  return key.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams;
+  const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
   const [states, results, sources, coverage, importRuns] = await Promise.all([
     listStates(),
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
@@ -13,55 +33,74 @@ export default async function Home() {
     listImportRuns(),
   ]);
   const selected = states.find((state) => state.code === selectedState);
+  const selectedStateCode = selected?.code ?? selectedState;
+  const totalVotes = results.reduce((sum, row) => sum + row.totalVotes, 0);
 
   return (
     <main className="app-shell">
       <header className="topbar">
         <div className="brand">
-          <strong>Civic Result Maps</strong>
-          <span>Election data platform and public API</span>
+          <span className="brand-mark" aria-hidden>
+            CRM
+          </span>
+          <div>
+            <strong>Civic Result Maps</strong>
+            <span>National election result data platform</span>
+          </div>
         </div>
-        <span className="domain">civicresultmaps.org</span>
+        <div className="topbar-actions">
+          <span className="live-dot">Database live</span>
+          <span className="domain">civicresultmaps.org</span>
+        </div>
       </header>
 
       <div className="workspace">
         <aside className="sidebar" aria-label="State coverage">
-          <p className="section-label">Loaded states</p>
+          <div className="sidebar-header">
+            <p className="section-label">States</p>
+            <span>{states.length} loaded</span>
+          </div>
           <div className="state-list">
             {states.map((state) => (
-              <button
+              <a
                 aria-pressed={state.code === selectedState}
+                href={`/?state=${state.code}`}
                 className="state-button"
                 key={state.code}
-                type="button"
               >
                 <strong>
                   {state.name} <span className="mono">{state.code}</span>
                 </strong>
                 <span>{state.authority}</span>
-              </button>
+              </a>
             ))}
           </div>
         </aside>
 
         <section className="main-panel">
-          <div className="hero">
-            <h1>Public election results, normalized with provenance.</h1>
-            <p>
-              Civic Result Maps is moving the legacy static result explorer into a database-backed
-              national platform with reviewed ETL, public read APIs, and source-aware coverage
-              reporting.
-            </p>
+          <div className="dashboard-head">
+            <div>
+              <p className="section-label">2024 President</p>
+              <h1>{selected?.name ?? selectedStateCode}</h1>
+            </div>
+            <div className="head-status">
+              {coverage?.validation.passed ? (
+                <CheckCircle2 aria-hidden size={18} />
+              ) : (
+                <CircleDashed aria-hidden size={18} />
+              )}
+              <span>{coverage?.validation.passed ? "Validated coverage" : "Coverage gap"}</span>
+            </div>
           </div>
 
           <section className="metrics-grid" aria-label="Platform metrics">
             <div className="metric">
-              <span>Selected state</span>
-              <strong>{selected?.code ?? selectedState}</strong>
+              <span>Jurisdictions</span>
+              <strong>{coverage?.loadedJurisdictions ?? results.length}</strong>
             </div>
             <div className="metric">
-              <span>Result rows</span>
-              <strong>{coverage?.resultRows ?? 0}</strong>
+              <span>Total votes</span>
+              <strong>{totalVotes.toLocaleString()}</strong>
             </div>
             <div className="metric">
               <span>Sources</span>
@@ -69,15 +108,21 @@ export default async function Home() {
             </div>
             <div className="metric">
               <span>Validation</span>
-              <strong>{coverage?.validation.passed ? "PASS" : "GAP"}</strong>
+              <strong>{coverage?.validation.passed ? "Pass" : "Gap"}</strong>
             </div>
           </section>
 
           <div className="content-grid">
             <section className="panel" aria-label="County results">
               <div className="panel-header">
-                <h2>{selected?.name} county results</h2>
-                <span className="status-pill">Seed API contract</span>
+                <div>
+                  <h2>{selected?.countyLabel ?? "County"} Results</h2>
+                  <span>{results.length} reporting jurisdictions</span>
+                </div>
+                <span className="status-pill">
+                  <Map aria-hidden size={14} />
+                  {selectedStateCode}
+                </span>
               </div>
               <div className="table-wrap">
                 <table>
@@ -85,6 +130,8 @@ export default async function Home() {
                     <tr>
                       <th>Jurisdiction</th>
                       <th>Winner</th>
+                      <th>Harris</th>
+                      <th>Trump</th>
                       <th>Total</th>
                       <th>Margin</th>
                       <th>Source</th>
@@ -97,6 +144,8 @@ export default async function Home() {
                         <td className={row.winner === "Harris" ? "winner-harris" : "winner-trump"}>
                           {row.winner}
                         </td>
+                        <td className="mono">{(row.votes.Harris ?? 0).toLocaleString()}</td>
+                        <td className="mono">{(row.votes.Trump ?? 0).toLocaleString()}</td>
                         <td className="mono">{row.totalVotes.toLocaleString()}</td>
                         <td className="mono">
                           {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)
@@ -112,7 +161,10 @@ export default async function Home() {
             <div className="detail-stack">
               <section className="panel" aria-label="Provenance">
                 <div className="panel-header">
-                  <h2>Source provenance</h2>
+                  <div>
+                    <h2>Source Provenance</h2>
+                    <span>Authority, parser, and confidence</span>
+                  </div>
                   <FileCheck2 aria-hidden size={18} />
                 </div>
                 <ul className="source-list">
@@ -128,7 +180,10 @@ export default async function Home() {
 
               <section className="panel" aria-label="Coverage flags">
                 <div className="panel-header">
-                  <h2>Coverage</h2>
+                  <div>
+                    <h2>Coverage</h2>
+                    <span>Loaded platform capabilities</span>
+                  </div>
                   <ShieldCheck aria-hidden size={18} />
                 </div>
                 <ul className="flag-list">
@@ -137,8 +192,10 @@ export default async function Home() {
                       .filter(([key]) => key !== "notes")
                       .map(([key, value]) => (
                         <li key={key}>
-                          <strong>{key}</strong>
-                          <span>{value ? "Available" : "Not loaded yet"}</span>
+                          <strong>{formatCapability(key)}</strong>
+                          <span className={value ? "available" : "pending"}>
+                            {value ? "Available" : "Pending"}
+                          </span>
                         </li>
                       ))}
                 </ul>
@@ -149,7 +206,10 @@ export default async function Home() {
           <div className="content-grid" style={{ marginTop: 18 }}>
             <section className="panel" aria-label="Public API">
               <div className="panel-header">
-                <h2>Public API</h2>
+                <div>
+                  <h2>Public API</h2>
+                  <span>Read endpoints for the selected view</span>
+                </div>
                 <Database aria-hidden size={18} />
               </div>
               <ul className="api-list">
@@ -159,34 +219,44 @@ export default async function Home() {
                 </li>
                 <li>
                   <strong>Results</strong>
-                  <code>/api/results?state=WI&amp;year=2024&amp;level=county</code>
+                  <code>/api/results?state={selectedStateCode}&amp;year=2024&amp;level=county</code>
                 </li>
                 <li>
                   <strong>Sources</strong>
-                  <code>/api/sources?state=WI&amp;year=2024</code>
+                  <code>/api/sources?state={selectedStateCode}&amp;year=2024</code>
                 </li>
                 <li>
                   <strong>Coverage</strong>
-                  <code>/api/coverage?state=WI&amp;year=2024</code>
+                  <code>/api/coverage?state={selectedStateCode}&amp;year=2024</code>
                 </li>
               </ul>
             </section>
 
             <section className="panel" aria-label="Import runs">
               <div className="panel-header">
-                <h2>Import runs</h2>
-                <GitBranch aria-hidden size={18} />
+                <div>
+                  <h2>Import Runs</h2>
+                  <span>ETL status and parser history</span>
+                </div>
+                {importRuns.length ? <GitBranch aria-hidden size={18} /> : <Activity aria-hidden size={18} />}
               </div>
               <ul className="source-list">
-                {importRuns.map((run) => (
-                  <li key={run.id}>
-                    <strong>{run.id}</strong>
-                    <span>
-                      {run.state} {run.electionYear} through {run.parser}
-                    </span>
-                    <span className="mono">{run.status}</span>
+                {importRuns.length ? (
+                  importRuns.map((run) => (
+                    <li key={run.id}>
+                      <strong>{run.id}</strong>
+                      <span>
+                        {run.state} {run.electionYear} through {run.parser}
+                      </span>
+                      <span className="mono">{run.status}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li>
+                    <strong>No import run records yet</strong>
+                    <span>Promotion records will appear here as the ETL pipeline expands.</span>
                   </li>
-                ))}
+                )}
               </ul>
             </section>
           </div>

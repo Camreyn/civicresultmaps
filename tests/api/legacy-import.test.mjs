@@ -11,6 +11,8 @@ test("legacy importer parses static app-data bundles", () => {
   assert.match(importer, /presidentCountyResults/);
   assert.match(importer, /parseLegacyBundle/);
   assert.match(importer, /source\.slice\(firstBrace, lastBrace \+ 1\)/);
+  assert.match(importer, /insert into import_runs/);
+  assert.match(importer, /status = 'promoted'/);
   assert.match(importer, /on conflict \(contest_id, level, jurisdiction_code, candidate_name, party\)/);
 });
 
