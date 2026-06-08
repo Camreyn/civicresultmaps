@@ -8,6 +8,7 @@ import {
   Map,
   ShieldCheck,
 } from "lucide-react";
+import { StateSwitcher } from "./state-switcher";
 import { getCoverageSummary, listImportRuns, listResults, listSources, listStates } from "@/lib/api";
 
 const selectedYear = 2024;
@@ -60,21 +61,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className="section-label">States</p>
             <span>{states.length} loaded</span>
           </div>
-          <div className="state-list">
-            {states.map((state) => (
-              <a
-                aria-pressed={state.code === selectedState}
-                href={`/?state=${state.code}`}
-                className="state-button"
-                key={state.code}
-              >
-                <strong>
-                  {state.name} <span className="mono">{state.code}</span>
-                </strong>
-                <span>{state.authority}</span>
-              </a>
-            ))}
-          </div>
+          <StateSwitcher selectedState={selectedStateCode} states={states} />
         </aside>
 
         <section className="main-panel">

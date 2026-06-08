@@ -49,6 +49,10 @@ select {
   font: inherit;
 }
 
+input {
+  font: inherit;
+}
+
 .app-shell {
   min-height: 100vh;
 }
@@ -176,9 +180,69 @@ select {
   font-size: 12px;
 }
 
+.state-switcher {
+  display: grid;
+  gap: 10px;
+}
+
+.state-select-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.state-select {
+  appearance: none;
+  background:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%) calc(100% - 18px) 50% / 6px 6px no-repeat,
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%) calc(100% - 13px) 50% / 6px 6px no-repeat,
+    var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  cursor: pointer;
+  min-height: 42px;
+  padding: 0 38px 0 12px;
+  width: 100%;
+}
+
+.state-select:focus,
+.state-search:focus-within {
+  border-color: var(--accent-line);
+  outline: 2px solid var(--accent-soft);
+}
+
+.state-search {
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 12px;
+}
+
+.state-search input {
+  background: transparent;
+  border: 0;
+  color: var(--foreground);
+  min-width: 0;
+  outline: 0;
+  width: 100%;
+}
+
+.state-search input::placeholder {
+  color: var(--quiet);
+}
+
 .state-list {
   display: grid;
   gap: 10px;
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-color: var(--line) transparent;
 }
 
 .state-button {
@@ -444,5 +508,9 @@ td {
 
   .sidebar {
     position: static;
+  }
+
+  .state-list {
+    max-height: 360px;
   }
 }
