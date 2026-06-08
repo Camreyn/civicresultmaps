@@ -14,7 +14,7 @@
     "test:etl": "python -m unittest discover -s tests/python",
     "db:generate": "drizzle-kit generate",
     "db:push": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",
-    "db:seed": "node --env-file=.env.local scripts/seed-starter-data.mjs",
+    "db:seed": "node --experimental-strip-types --env-file=.env.local scripts/seed-starter-data.mjs",
     "etl:validate": "python -m civic_etl.cli validate --config etl/state-configs/wi.json",
     "etl:import": "python -m civic_etl.cli import --config etl/state-configs/wi.json --out .etl/staging"
   },

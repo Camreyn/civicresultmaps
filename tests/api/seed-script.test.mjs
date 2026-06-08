@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const script = readFileSync("scripts/seed-starter-data.mjs", "utf8");
+const starterSeed = readFileSync("src/db/starter-seed.ts", "utf8");
 
 function test(name, fn) {
   fn();
@@ -9,11 +10,12 @@ function test(name, fn) {
 }
 
 test("starter seed script requires a database URL", () => {
-  assert.match(script, /DATABASE_URL or POSTGRES_URL is required/);
+  assert.match(script, /seedStarterData/);
+  assert.match(starterSeed, /DATABASE_URL or POSTGRES_URL is required/);
 });
 
 test("starter seed script is idempotent", () => {
-  assert.match(script, /on conflict \(code\)/);
-  assert.match(script, /on conflict \(slug\)/);
-  assert.match(script, /on conflict \(contest_id, level, jurisdiction_code, candidate_name, party\)/);
+  assert.match(starterSeed, /on conflict \(code\)/);
+  assert.match(starterSeed, /on conflict \(slug\)/);
+  assert.match(starterSeed, /on conflict \(contest_id, level, jurisdiction_code, candidate_name, party\)/);
 });
