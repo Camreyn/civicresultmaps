@@ -2,14 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { neon } from "@neondatabase/serverless";
 import { getDb, hasDatabase } from "@/db";
 import { getDatabaseUrl } from "@/db/url";
-import {
-  capabilityFlags,
-  contests,
-  elections,
-  resultRows,
-  sourceDocuments,
-  states,
-} from "@/db/schema";
+import { contests, elections, sourceDocuments } from "@/db/schema";
 import {
   getCoverage,
   seedElections,
@@ -70,24 +63,24 @@ export async function listStates(): Promise<StateSummary[]> {
   }>;
 
   try {
-    const db = getDb();
-    rows = await db
-      .select({
-        code: states.code,
-        name: states.name,
-        authority: states.authority,
-        countyLabel: states.countyLabel,
-        sourcePlanner: capabilityFlags.sourcePlanner,
-        certifiedResults: capabilityFlags.certifiedResults,
-        map: capabilityFlags.map,
-        reviewGraphs: capabilityFlags.reviewGraphs,
-        turnout: capabilityFlags.turnout,
-        historicalBaseline: capabilityFlags.historicalBaseline,
-        notes: capabilityFlags.notes,
-      })
-      .from(states)
-      .leftJoin(capabilityFlags, eq(states.code, capabilityFlags.stateCode))
-      .orderBy(states.name);
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        states.code,
+        states.name,
+        states.authority,
+        states.county_label as "countyLabel",
+        capability_flags.source_planner as "sourcePlanner",
+        capability_flags.certified_results as "certifiedResults",
+        capability_flags.map,
+        capability_flags.review_graphs as "reviewGraphs",
+        capability_flags.turnout,
+        capability_flags.historical_baseline as "historicalBaseline",
+        capability_flags.notes
+      from states
+      left join capability_flags on states.code = capability_flags.state_code
+      order by states.name
+    `) as typeof rows;
   } catch {
     return seedStates;
   }
