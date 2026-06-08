@@ -1,5 +1,7 @@
 import { and, eq } from "drizzle-orm";
+import { neon } from "@neondatabase/serverless";
 import { getDb, hasDatabase } from "@/db";
+import { getDatabaseUrl } from "@/db/url";
 import {
   capabilityFlags,
   contests,
@@ -211,31 +213,28 @@ export async function listResults(input: {
   }>;
 
   try {
-    const db = getDb();
-    rows = await db
-      .select({
-        stateCode: resultRows.stateCode,
-        office: elections.office,
-        level: resultRows.level,
-        jurisdictionCode: resultRows.jurisdictionCode,
-        jurisdictionName: resultRows.jurisdictionName,
-        candidateName: resultRows.candidateName,
-        party: resultRows.party,
-        votes: resultRows.votes,
-        sourceDocumentId: resultRows.sourceDocumentId,
-        sourceSlug: sourceDocuments.slug,
-      })
-      .from(resultRows)
-      .innerJoin(contests, eq(resultRows.contestId, contests.id))
-      .innerJoin(elections, eq(contests.electionId, elections.id))
-      .leftJoin(sourceDocuments, eq(resultRows.sourceDocumentId, sourceDocuments.id))
-      .where(
-        and(
-          eq(resultRows.stateCode, input.state),
-          eq(resultRows.level, input.level),
-          eq(elections.year, input.year),
-        ),
-      );
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        result_rows.state_code as "stateCode",
+        elections.office,
+        result_rows.level,
+        result_rows.jurisdiction_code as "jurisdictionCode",
+        result_rows.jurisdiction_name as "jurisdictionName",
+        result_rows.candidate_name as "candidateName",
+        result_rows.party,
+        result_rows.votes,
+        result_rows.source_document_id as "sourceDocumentId",
+        source_documents.slug as "sourceSlug"
+      from result_rows
+      inner join contests on result_rows.contest_id = contests.id
+      inner join elections on contests.election_id = elections.id
+      left join source_documents on result_rows.source_document_id = source_documents.id
+      where result_rows.state_code = ${input.state}
+        and result_rows.level = ${input.level}
+        and elections.year = ${input.year}
+      order by result_rows.jurisdiction_name, result_rows.candidate_name
+    `) as typeof rows;
   } catch {
     return seedResults.filter(
       (row) => row.state === input.state && row.year === input.year && row.level === input.level,
