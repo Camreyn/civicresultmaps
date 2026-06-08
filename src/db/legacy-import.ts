@@ -80,169 +80,187 @@ export async function importLegacyState(input: LegacyImportInput) {
 
   const sql = neon(databaseUrl);
 
-  await sql`begin`;
+  const [election] = await sql`
+    insert into elections (year, office, election_date, label)
+    values (2024, 'president', '2024-11-05', '2024 President')
+    on conflict (year, office) do update set label = excluded.label
+    returning id
+  `;
 
-  try {
-    const [election] = await sql`
-      insert into elections (year, office, election_date, label)
-      values (2024, 'president', '2024-11-05', '2024 President')
-      on conflict (year, office) do update set label = excluded.label
-      returning id
-    `;
+  await sql`
+    insert into states (code, name, authority, county_label)
+    values (${input.stateCode}, ${input.stateName}, ${input.authority}, 'County')
+    on conflict (code) do update set
+      name = excluded.name,
+      authority = excluded.authority,
+      county_label = excluded.county_label
+  `;
 
+  await sql`
+    insert into capability_flags (
+      state_code,
+      election_year,
+      certified_results,
+      map,
+      review_graphs,
+      turnout,
+      historical_baseline,
+      source_planner,
+      notes
+    )
+    values (${input.stateCode}, 2024, true, true, false, false, false, true, ${appData.metadata?.notes ?? ""})
+    on conflict (state_code, election_year) do update set
+      certified_results = true,
+      map = true,
+      source_planner = true,
+      notes = excluded.notes
+  `;
+
+  const [contest] = await sql`
+    insert into contests (election_id, state_code, office, title)
+    values (${election.id}, ${input.stateCode}, 'president', ${`${input.stateName} President`})
+    on conflict (election_id, state_code, office) do update set title = excluded.title
+    returning id
+  `;
+
+  for (const [index, [candidateName, party]] of Object.entries(candidateParties).entries()) {
     await sql`
-      insert into states (code, name, authority, county_label)
-      values (${input.stateCode}, ${input.stateName}, ${input.authority}, 'County')
-      on conflict (code) do update set
-        name = excluded.name,
-        authority = excluded.authority,
-        county_label = excluded.county_label
+      insert into candidates (contest_id, name, party, ballot_order)
+      values (${contest.id}, ${candidateName}, ${party}, ${index})
+      on conflict (contest_id, name, party) do update set ballot_order = excluded.ballot_order
     `;
-
-    await sql`
-      insert into capability_flags (
-        state_code,
-        election_year,
-        certified_results,
-        map,
-        review_graphs,
-        turnout,
-        historical_baseline,
-        source_planner,
-        notes
-      )
-      values (${input.stateCode}, 2024, true, true, false, false, false, true, ${appData.metadata?.notes ?? ""})
-      on conflict (state_code, election_year) do update set
-        certified_results = true,
-        map = true,
-        source_planner = true,
-        notes = excluded.notes
-    `;
-
-    const [contest] = await sql`
-      insert into contests (election_id, state_code, office, title)
-      values (${election.id}, ${input.stateCode}, 'president', ${`${input.stateName} President`})
-      on conflict (election_id, state_code, office) do update set title = excluded.title
-      returning id
-    `;
-
-    for (const [index, [candidateName, party]] of Object.entries(candidateParties).entries()) {
-      await sql`
-        insert into candidates (contest_id, name, party, ballot_order)
-        values (${contest.id}, ${candidateName}, ${party}, ${index})
-        on conflict (contest_id, name, party) do update set ballot_order = excluded.ballot_order
-      `;
-    }
-
-    const [source] = await sql`
-      insert into source_documents (
-        slug,
-        state_code,
-        election_year,
-        category,
-        title,
-        source_url,
-        authority,
-        local_artifact,
-        parser,
-        timestamp_basis,
-        confidence,
-        status,
-        metadata
-      )
-      values (
-        ${input.sourceSlug},
-        ${input.stateCode},
-        2024,
-        'Certified presidential county results',
-        ${input.sourceTitle},
-        ${input.sourceUrl},
-        ${input.authority},
-        ${input.localArtifact},
-        ${input.parser},
-        ${input.timestampBasis},
-        ${input.confidence},
-        'loaded',
-        ${JSON.stringify(appData.metadata ?? {})}::jsonb
-      )
-      on conflict (slug) do update set
-        title = excluded.title,
-        source_url = excluded.source_url,
-        authority = excluded.authority,
-        local_artifact = excluded.local_artifact,
-        parser = excluded.parser,
-        timestamp_basis = excluded.timestamp_basis,
-        confidence = excluded.confidence,
-        status = excluded.status,
-        metadata = excluded.metadata
-      returning id
-    `;
-
-    let resultRows = 0;
-    let totalVotes = 0;
-
-    for (const row of rows) {
-      const county = normalizeCountyName(row.county);
-      const code = jurisdictionCode(input.stateCode, row.county);
-      const votesByCandidate = {
-        Harris: row.harris ?? 0,
-        Trump: row.trump ?? 0,
-        Other: row.other ?? 0,
-      };
-
-      await sql`
-        insert into jurisdictions (state_code, code, name, level)
-        values (${input.stateCode}, ${code}, ${county}, 'county')
-        on conflict (state_code, level, code) do update set name = excluded.name
-      `;
-
-      for (const [candidateName, votes] of Object.entries(votesByCandidate)) {
-        totalVotes += votes;
-        resultRows += 1;
-        await sql`
-          insert into result_rows (
-            contest_id,
-            state_code,
-            jurisdiction_code,
-            jurisdiction_name,
-            level,
-            candidate_name,
-            party,
-            votes,
-            source_document_id
-          )
-          values (
-            ${contest.id},
-            ${input.stateCode},
-            ${code},
-            ${county},
-            'county',
-            ${candidateName},
-            ${candidateParties[candidateName as keyof typeof candidateParties]},
-            ${votes},
-            ${source.id}
-          )
-          on conflict (contest_id, level, jurisdiction_code, candidate_name, party)
-          do update set
-            jurisdiction_name = excluded.jurisdiction_name,
-            votes = excluded.votes,
-            source_document_id = excluded.source_document_id
-        `;
-      }
-    }
-
-    await sql`commit`;
-
-    return {
-      state: input.stateCode,
-      counties: rows.length,
-      resultRows,
-      totalVotes,
-      expectedCountyRows: appData.metadata?.countyRows ?? null,
-      expectedStateTotal: appData.metadata?.stateTotal ?? null,
-    };
-  } catch (error) {
-    await sql`rollback`;
-    throw error;
   }
+
+  const [source] = await sql`
+    insert into source_documents (
+      slug,
+      state_code,
+      election_year,
+      category,
+      title,
+      source_url,
+      authority,
+      local_artifact,
+      parser,
+      timestamp_basis,
+      confidence,
+      status,
+      metadata
+    )
+    values (
+      ${input.sourceSlug},
+      ${input.stateCode},
+      2024,
+      'Certified presidential county results',
+      ${input.sourceTitle},
+      ${input.sourceUrl},
+      ${input.authority},
+      ${input.localArtifact},
+      ${input.parser},
+      ${input.timestampBasis},
+      ${input.confidence},
+      'loaded',
+      ${JSON.stringify(appData.metadata ?? {})}::jsonb
+    )
+    on conflict (slug) do update set
+      title = excluded.title,
+      source_url = excluded.source_url,
+      authority = excluded.authority,
+      local_artifact = excluded.local_artifact,
+      parser = excluded.parser,
+      timestamp_basis = excluded.timestamp_basis,
+      confidence = excluded.confidence,
+      status = excluded.status,
+      metadata = excluded.metadata
+    returning id
+  `;
+
+  let resultRows = 0;
+  let totalVotes = 0;
+
+  for (const row of rows) {
+    const county = normalizeCountyName(row.county);
+    const code = jurisdictionCode(input.stateCode, row.county);
+    const votesByCandidate = {
+      Harris: row.harris ?? 0,
+      Trump: row.trump ?? 0,
+      Other: row.other ?? 0,
+    };
+
+    await sql`
+      insert into jurisdictions (state_code, code, name, level)
+      values (${input.stateCode}, ${code}, ${county}, 'county')
+      on conflict (state_code, level, code) do update set name = excluded.name
+    `;
+
+    for (const [candidateName, votes] of Object.entries(votesByCandidate)) {
+      totalVotes += votes;
+      resultRows += 1;
+      await sql`
+        insert into result_rows (
+          contest_id,
+          state_code,
+          jurisdiction_code,
+          jurisdiction_name,
+          level,
+          candidate_name,
+          party,
+          votes,
+          source_document_id
+        )
+        values (
+          ${contest.id},
+          ${input.stateCode},
+          ${code},
+          ${county},
+          'county',
+          ${candidateName},
+          ${candidateParties[candidateName as keyof typeof candidateParties]},
+          ${votes},
+          ${source.id}
+        )
+        on conflict (contest_id, level, jurisdiction_code, candidate_name, party)
+        do update set
+          jurisdiction_name = excluded.jurisdiction_name,
+          votes = excluded.votes,
+          source_document_id = excluded.source_document_id
+      `;
+    }
+  }
+
+  const [stored] = await sql`
+    select
+      count(distinct result_rows.jurisdiction_code)::int as counties,
+      count(*)::int as result_rows,
+      sum(result_rows.votes)::int as total_votes
+    from result_rows
+    inner join contests on result_rows.contest_id = contests.id
+    inner join elections on contests.election_id = elections.id
+    where result_rows.state_code = ${input.stateCode}
+      and result_rows.level = 'county'
+      and elections.year = 2024
+      and elections.office = 'president'
+  `;
+
+  const storedCounties = Number(stored.counties);
+  const storedRows = Number(stored.result_rows);
+  const storedVotes = Number(stored.total_votes);
+
+  if (storedCounties < rows.length || storedRows < resultRows) {
+    throw new Error(
+      `Import verification failed: stored ${storedCounties} counties and ${storedRows} rows, expected at least ${rows.length} counties and ${resultRows} rows.`,
+    );
+  }
+
+  return {
+    state: input.stateCode,
+    counties: rows.length,
+    resultRows,
+    totalVotes,
+    storedCounties,
+    storedRows,
+    storedVotes,
+    expectedCountyRows: appData.metadata?.countyRows ?? null,
+    expectedStateTotal: appData.metadata?.stateTotal ?? null,
+  };
 }
