@@ -37,6 +37,8 @@ test("map joins support repository GeoJSON county name variants", () => {
   assert.match(explorer, /ak-house-districts\.geojson/);
   assert.match(explorer, /lon - 360/);
   assert.match(explorer, /KALAWAO/);
+  assert.match(explorer, /function coordinateBounds/);
+  assert.doesNotMatch(explorer, /Math\.(min|max)\(\.\.\./);
 });
 
 test("seed data carries required provenance fields", () => {

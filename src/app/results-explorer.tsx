@@ -170,6 +170,23 @@ function average(values: number[]) {
   return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
 }
 
+function coordinateBounds(points: number[][]) {
+  return points.reduce(
+    (bounds, [lon, lat]) => ({
+      maxX: Math.max(bounds.maxX, lon),
+      maxY: Math.max(bounds.maxY, lat),
+      minX: Math.min(bounds.minX, lon),
+      minY: Math.min(bounds.minY, lat),
+    }),
+    {
+      maxX: Number.NEGATIVE_INFINITY,
+      maxY: Number.NEGATIVE_INFINITY,
+      minX: Number.POSITIVE_INFINITY,
+      minY: Number.POSITIVE_INFINITY,
+    },
+  );
+}
+
 function countyFill(row: ResultRow | undefined) {
   if (!row) {
     return "#2c302e";
@@ -258,15 +275,7 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
         mapCoordinate(selectedState, coordinate),
       ),
     );
-    const lons = points.map(([lon]) => lon);
-    const lats = points.map(([, lat]) => lat);
-
-    return {
-      maxX: Math.max(...lons),
-      maxY: Math.max(...lats),
-      minX: Math.min(...lons),
-      minY: Math.min(...lats),
-    };
+    return coordinateBounds(points);
   }, [features, selectedState]);
 
   const visibleResults = useMemo(() => {
