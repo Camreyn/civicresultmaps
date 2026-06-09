@@ -30,6 +30,12 @@ test("public API route contracts exist", () => {
   }
 });
 
+test("map joins support repository GeoJSON county name variants", () => {
+  const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+  assert.match(explorer, /county_name/);
+  assert.match(explorer, /function featureName/);
+});
+
 test("seed data carries required provenance fields", () => {
   const seedData = readFileSync("src/lib/seed-data.ts", "utf8");
   for (const field of ["sourceUrl", "authority", "timestampBasis", "confidence", "parser"]) {

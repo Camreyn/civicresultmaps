@@ -21,6 +21,7 @@ type GeoFeature = {
   properties: {
     BASENAME?: string;
     NAME?: string;
+    county_name?: string;
   };
 };
 
@@ -34,6 +35,10 @@ const geoBaseUrl =
 
 function normalizeName(name: string) {
   return name.trim().replace(/\s+County$/i, "").toUpperCase();
+}
+
+function featureName(feature: GeoFeature) {
+  return feature.properties.BASENAME ?? feature.properties.NAME ?? feature.properties.county_name ?? "";
 }
 
 function compareRows(a: ResultRow, b: ResultRow, sortKey: SortKey) {
@@ -255,7 +260,7 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
             <svg className="county-map" role="img" viewBox="0 0 960 560">
               <title>{selectedState} county presidential result map</title>
               {features.map((feature) => {
-                const name = feature.properties.BASENAME ?? feature.properties.NAME ?? "";
+                const name = featureName(feature);
                 const row = resultsByName.get(normalizeName(name));
                 const countyIndicators = indicatorsByName.get(normalizeName(name)) ?? [];
                 const rings = polygonRings(feature);
