@@ -21,6 +21,7 @@ test("public API route contracts exist", () => {
     "src/app/api/sources/route.ts",
     "src/app/api/coverage/route.ts",
     "src/app/api/indicators/route.ts",
+    "src/app/api/completeness/route.ts",
   ];
 
   for (const route of expectedRoutes) {
@@ -39,6 +40,39 @@ test("map joins support repository GeoJSON county name variants", () => {
   assert.match(explorer, /KALAWAO/);
   assert.match(explorer, /function coordinateBounds/);
   assert.doesNotMatch(explorer, /Math\.(min|max)\(\.\.\./);
+  assert.match(explorer, /mapJoinStats/);
+  assert.match(explorer, /Map join needs review/);
+  assert.match(explorer, /No joined result/);
+});
+
+test("public completeness report exists for national readiness", () => {
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+  const types = readFileSync("src/lib/types.ts", "utf8");
+  const overview = readFileSync("src/app/national-overview.tsx", "utf8");
+
+  assert.match(types, /CompletenessSummary/);
+  assert.match(dataAccess, /listCompletenessReport/);
+  assert.match(dataAccess, /sourcesMissingUrls/);
+  assert.match(overview, /Completeness API/);
+  assert.match(overview, /Need source attention/);
+});
+
+test("source URLs remain first-class in explorer UX", () => {
+  const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+
+  assert.match(explorer, /table-source-link/);
+  assert.match(explorer, /Open source/);
+  assert.match(tabs, /Official Source Links/);
+  assert.match(tabs, /Source URL missing/);
+});
+
+test("review indicators explain advisory meaning", () => {
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+
+  assert.match(tabs, /indicatorExplanation/);
+  assert.match(tabs, /advisory indicator/);
+  assert.match(tabs, /severityBucket/);
 });
 
 test("seed data carries required provenance fields", () => {

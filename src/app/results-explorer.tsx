@@ -359,6 +359,8 @@ export function ResultsExplorer({
   const hasMapJoinWarnings =
     geoStatus === "ready" && (mapJoinStats.missingResults.length > 0 || mapJoinStats.unmappedRows.length > 0);
 
+  const selectedSourceUrl = (sourceId: string) => sourceById.get(sourceId)?.sourceUrl;
+
   return (
     <section className="results-explorer" aria-label={`${selectedState} result explorer`}>
       <div className="panel map-panel" aria-label={`${selectedState} county map`}>
@@ -469,12 +471,15 @@ export function ResultsExplorer({
           )}
         </div>
         <div className="map-legend" aria-label="Map legend">
-          <span className="legend-item legend-harris">Harris</span>
-          <span className="legend-item legend-trump">Trump</span>
-          <span className="legend-item legend-flag">Review count</span>
+          <span className="legend-item legend-harris">Harris win</span>
+          <span className="legend-item legend-trump">Trump win</span>
+          <span className="legend-item legend-volume">Vote volume</span>
+          <span className="legend-item legend-missing">No joined result</span>
+          <span className="legend-item legend-flag">Advisory count</span>
           <span className="legend-note">
             {mapMode === "volume" ? "Gold intensity shows total vote volume." : "Darker fill means wider margin."}
           </span>
+          <span className="legend-note">Badge numbers count advisory indicators, not confirmed findings.</span>
           {selectedMapIndicators.length > 0 && (
             <span className="legend-note">
               {selectedMapIndicators.length} advisory flag{selectedMapIndicators.length === 1 ? "" : "s"} selected
@@ -597,6 +602,7 @@ export function ResultsExplorer({
                 <th>Trump</th>
                 <th>Total</th>
                 <th>Margin</th>
+                <th>Source</th>
                 <th>Inspect</th>
               </tr>
             </thead>
@@ -625,6 +631,15 @@ export function ResultsExplorer({
                   <td className="mono">{row.totalVotes.toLocaleString()}</td>
                   <td className="mono">
                     {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)
+                  </td>
+                  <td className="mono">
+                    {selectedSourceUrl(row.sourceId) ? (
+                      <a className="table-source-link" href={selectedSourceUrl(row.sourceId)} rel="noreferrer" target="_blank">
+                        {row.sourceId}
+                      </a>
+                    ) : (
+                      row.sourceId
+                    )}
                   </td>
                   <td className="mono">
                     <button

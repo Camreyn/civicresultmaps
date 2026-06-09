@@ -63,6 +63,38 @@ function indicatorLabel(type: string) {
   return type.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function indicatorExplanation(type: string) {
+  if (type.includes("margin")) {
+    return "Margin-related indicators compare the size of the local winner margin against the imported review metrics.";
+  }
+
+  if (type.includes("turnout")) {
+    return "Turnout indicators should be read against the state source denominator and any local reporting notes.";
+  }
+
+  if (type.includes("vote") || type.includes("share")) {
+    return "Vote-share indicators highlight unusual candidate-share or total-vote patterns for human review.";
+  }
+
+  if (type.includes("missing")) {
+    return "Missing-data indicators mean a required input was absent or could not be reconciled in the imported bundle.";
+  }
+
+  return "This advisory indicator marks a pattern from the imported review data that deserves human review.";
+}
+
+function severityBucket(severity: number) {
+  if (severity >= 0.85) {
+    return "High review priority";
+  }
+
+  if (severity >= 0.55) {
+    return "Medium review priority";
+  }
+
+  return "Low review priority";
+}
+
 function pct(value: number, total: number) {
   return total > 0 ? `${((value / total) * 100).toFixed(2)}%` : "0.00%";
 }
@@ -449,6 +481,7 @@ export function WorkspaceTabs({
                         <strong>{indicator.jurisdictionName}</strong>
                       </div>
                       <p>{indicator.summary}</p>
+                      <span className="review-explainer">{indicatorExplanation(indicator.type)}</span>
                       <small>{indicator.detail}</small>
                     </article>
                   ))}
@@ -460,6 +493,7 @@ export function WorkspaceTabs({
                         <th>Jurisdiction</th>
                         <th>Flag</th>
                         <th>Severity</th>
+                        <th>Priority</th>
                         <th>Summary</th>
                       </tr>
                     </thead>
@@ -471,6 +505,7 @@ export function WorkspaceTabs({
                             <span className="indicator-pill">! {indicator.label}</span>
                           </td>
                           <td className="mono">{indicator.severity.toFixed(3)}</td>
+                          <td>{severityBucket(indicator.severity)}</td>
                           <td>{indicator.summary}</td>
                         </tr>
                       ))}
@@ -627,9 +662,13 @@ export function WorkspaceTabs({
                     <dt>Status</dt>
                     <dd>{source.status}</dd>
                   </dl>
-                  <a href={source.sourceUrl} rel="noreferrer" target="_blank">
-                    Open source
-                  </a>
+                  {source.sourceUrl ? (
+                    <a href={source.sourceUrl} rel="noreferrer" target="_blank">
+                      Open source
+                    </a>
+                  ) : (
+                    <span className="pending">Source URL missing</span>
+                  )}
                 </article>
               ))}
             </div>
@@ -750,6 +789,10 @@ export function WorkspaceTabs({
               <li>
                 <strong>Coverage</strong>
                 <code>/api/coverage?state={selectedStateCode}&amp;year=2024</code>
+              </li>
+              <li>
+                <strong>Completeness</strong>
+                <code>/api/completeness?year=2024</code>
               </li>
             </ul>
           </section>

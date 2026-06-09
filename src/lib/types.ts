@@ -69,6 +69,23 @@ export type CoverageSummary = {
   capabilities: CapabilitySummary;
 };
 
+export type CompletenessSummary = {
+  state: string;
+  name: string;
+  authority: string;
+  resultRows: number;
+  resultJurisdictions: number;
+  sourceCount: number;
+  sourcesMissingUrls: number;
+  indicatorCount: number;
+  flaggedJurisdictions: number;
+  importRunCount: number;
+  latestImportAt: string | null;
+  capabilities: CapabilitySummary;
+  status: "complete" | "review_ready" | "results_only" | "needs_sources" | "pending";
+  gaps: string[];
+};
+
 export type ImportRunSummary = {
   id: string;
   state: string;

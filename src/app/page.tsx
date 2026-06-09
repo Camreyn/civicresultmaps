@@ -2,10 +2,12 @@ import {
   CheckCircle2,
   CircleDashed,
 } from "lucide-react";
+import { NationalOverview } from "./national-overview";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
 import {
   getCoverageSummary,
+  listCompletenessReport,
   listImportRuns,
   listIndicators,
   listResults,
@@ -24,8 +26,9 @@ type HomeProps = {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
-  const [states, results, sources, coverage, importRuns, indicators] = await Promise.all([
+  const [states, completenessReport, results, sources, coverage, importRuns, indicators] = await Promise.all([
     listStates(),
+    listCompletenessReport({ year: selectedYear }),
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
     listSources({ state: selectedState, year: selectedYear }),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
@@ -64,6 +67,8 @@ export default async function Home({ searchParams }: HomeProps) {
         </aside>
 
         <section className="main-panel">
+          <NationalOverview report={completenessReport} year={selectedYear} />
+
           <div className="dashboard-head">
             <div>
               <p className="section-label">2024 President</p>

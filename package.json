@@ -17,7 +17,8 @@
     "db:seed": "node --experimental-strip-types --env-file=.env.local scripts/seed-starter-data.mjs",
     "etl:validate": "python -m civic_etl.cli validate --config etl/state-configs/wi.json",
     "etl:import": "python -m civic_etl.cli import --config etl/state-configs/wi.json --out .etl/staging",
-    "validate:maps": "node scripts/validate-production-map-joins.mjs"
+    "validate:maps": "node scripts/validate-production-map-joins.mjs",
+    "validate:provenance": "node scripts/validate-production-provenance.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

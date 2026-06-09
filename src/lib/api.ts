@@ -32,6 +32,7 @@ export function apiEnvelope<T>(data: T, meta: Record<string, unknown> = {}) {
 
 export {
   getCoverageSummary,
+  listCompletenessReport,
   listIndicators,
   listElections,
   listImportRuns,

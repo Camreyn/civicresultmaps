@@ -15,6 +15,7 @@ import type {
   CapabilitySummary,
   CoverageSummary,
   AnalysisIndicator,
+  CompletenessSummary,
   ElectionSummary,
   ImportRunSummary,
   ResultRow,
@@ -38,6 +39,112 @@ function toIsoTimestamp(value: Date | string | null) {
   }
 
   return value instanceof Date ? value.toISOString() : value;
+}
+
+function completenessStatus(input: {
+  capabilities: CapabilitySummary;
+  indicatorCount: number;
+  resultRows: number;
+  sourceCount: number;
+  sourcesMissingUrls: number;
+}): CompletenessSummary["status"] {
+  if (input.resultRows === 0) {
+    return "pending";
+  }
+
+  if (input.sourceCount === 0 || input.sourcesMissingUrls > 0) {
+    return "needs_sources";
+  }
+
+  if (!input.capabilities.map || !input.capabilities.certifiedResults) {
+    return "results_only";
+  }
+
+  if (input.indicatorCount === 0 || !input.capabilities.reviewGraphs) {
+    return "review_ready";
+  }
+
+  return "complete";
+}
+
+function completenessGaps(input: {
+  capabilities: CapabilitySummary;
+  indicatorCount: number;
+  resultRows: number;
+  sourceCount: number;
+  sourcesMissingUrls: number;
+}) {
+  const gaps: string[] = [];
+
+  if (input.resultRows === 0) {
+    gaps.push("No result rows loaded");
+  }
+
+  if (input.sourceCount === 0) {
+    gaps.push("No source records");
+  }
+
+  if (input.sourcesMissingUrls > 0) {
+    gaps.push(`${input.sourcesMissingUrls} source URL${input.sourcesMissingUrls === 1 ? "" : "s"} missing`);
+  }
+
+  if (!input.capabilities.map) {
+    gaps.push("Map capability pending");
+  }
+
+  if (input.indicatorCount === 0 || !input.capabilities.reviewGraphs) {
+    gaps.push("Review indicators pending");
+  }
+
+  if (!input.capabilities.turnout) {
+    gaps.push("Turnout pending");
+  }
+
+  if (!input.capabilities.historicalBaseline) {
+    gaps.push("Historical baseline pending");
+  }
+
+  return gaps;
+}
+
+function seedCompletenessReport(year: number): CompletenessSummary[] {
+  return seedStates.map((state) => {
+    const results = seedResults.filter((row) => row.state === state.code && row.year === year);
+    const sources = seedSources.filter((source) => source.state === state.code && source.electionYear === year);
+    const importRuns = seedImportRuns.filter((run) => run.state === state.code && run.electionYear === year);
+    const sourcesMissingUrls = sources.filter((source) => !source.sourceUrl.trim()).length;
+    const indicatorCount = state.capabilities.reviewGraphs ? 1 : 0;
+    const status = completenessStatus({
+      capabilities: state.capabilities,
+      indicatorCount,
+      resultRows: results.length,
+      sourceCount: sources.length,
+      sourcesMissingUrls,
+    });
+
+    return {
+      state: state.code,
+      name: state.name,
+      authority: state.authority,
+      resultRows: results.length,
+      resultJurisdictions: new Set(results.map((row) => row.jurisdictionCode)).size,
+      sourceCount: sources.length,
+      sourcesMissingUrls,
+      indicatorCount,
+      flaggedJurisdictions: indicatorCount,
+      importRunCount: importRuns.length,
+      latestImportAt: importRuns[0]?.startedAt ?? null,
+      capabilities: state.capabilities,
+      status,
+      gaps: completenessGaps({
+        capabilities: state.capabilities,
+        indicatorCount,
+        resultRows: results.length,
+        sourceCount: sources.length,
+        sourcesMissingUrls,
+      }),
+    };
+  });
 }
 
 export function currentDataSource() {
@@ -407,6 +514,155 @@ export async function listIndicators(input: {
     summary: row.summary,
     type: row.type,
   }));
+}
+
+export async function listCompletenessReport(input: { year: number }): Promise<CompletenessSummary[]> {
+  if (!hasDatabase()) {
+    return seedCompletenessReport(input.year);
+  }
+
+  type StateAggregate = {
+    code: string;
+    name: string;
+    authority: string;
+    sourcePlanner: boolean | null;
+    certifiedResults: boolean | null;
+    map: boolean | null;
+    reviewGraphs: boolean | null;
+    turnout: boolean | null;
+    historicalBaseline: boolean | null;
+    notes: string | null;
+    resultRows: string | number | null;
+    resultJurisdictions: string | number | null;
+    sourceCount: string | number | null;
+    sourcesMissingUrls: string | number | null;
+    indicatorCount: string | number | null;
+    flaggedJurisdictions: string | number | null;
+    importRunCount: string | number | null;
+    latestImportAt: Date | string | null;
+  };
+
+  let rows: StateAggregate[];
+
+  try {
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      with result_counts as (
+        select
+          result_rows.state_code,
+          count(*) as result_rows,
+          count(distinct result_rows.jurisdiction_code) as result_jurisdictions
+        from result_rows
+        inner join contests on result_rows.contest_id = contests.id
+        inner join elections on contests.election_id = elections.id
+        where elections.year = ${input.year}
+        group by result_rows.state_code
+      ),
+      source_counts as (
+        select
+          state_code,
+          count(*) as source_count,
+          count(*) filter (where trim(source_url) = '') as sources_missing_urls
+        from source_documents
+        where election_year = ${input.year}
+        group by state_code
+      ),
+      indicator_counts as (
+        select
+          state_code,
+          count(*) as indicator_count,
+          count(distinct jurisdiction_code) as flagged_jurisdictions
+        from analysis_indicators
+        where election_year = ${input.year}
+        group by state_code
+      ),
+      import_counts as (
+        select
+          state_code,
+          count(*) as import_run_count,
+          max(started_at) as latest_import_at
+        from import_runs
+        where election_year = ${input.year}
+        group by state_code
+      )
+      select
+        states.code,
+        states.name,
+        states.authority,
+        capability_flags.source_planner as "sourcePlanner",
+        capability_flags.certified_results as "certifiedResults",
+        capability_flags.map,
+        capability_flags.review_graphs as "reviewGraphs",
+        capability_flags.turnout,
+        capability_flags.historical_baseline as "historicalBaseline",
+        capability_flags.notes,
+        coalesce(result_counts.result_rows, 0) as "resultRows",
+        coalesce(result_counts.result_jurisdictions, 0) as "resultJurisdictions",
+        coalesce(source_counts.source_count, 0) as "sourceCount",
+        coalesce(source_counts.sources_missing_urls, 0) as "sourcesMissingUrls",
+        coalesce(indicator_counts.indicator_count, 0) as "indicatorCount",
+        coalesce(indicator_counts.flagged_jurisdictions, 0) as "flaggedJurisdictions",
+        coalesce(import_counts.import_run_count, 0) as "importRunCount",
+        import_counts.latest_import_at as "latestImportAt"
+      from states
+      left join capability_flags
+        on states.code = capability_flags.state_code
+        and capability_flags.election_year = ${input.year}
+      left join result_counts on states.code = result_counts.state_code
+      left join source_counts on states.code = source_counts.state_code
+      left join indicator_counts on states.code = indicator_counts.state_code
+      left join import_counts on states.code = import_counts.state_code
+      order by states.name
+    `) as StateAggregate[];
+  } catch {
+    return seedCompletenessReport(input.year);
+  }
+
+  return rows.map((row) => {
+    const capabilities: CapabilitySummary = {
+      sourcePlanner: row.sourcePlanner ?? emptyCapabilities.sourcePlanner,
+      certifiedResults: row.certifiedResults ?? emptyCapabilities.certifiedResults,
+      map: row.map ?? emptyCapabilities.map,
+      reviewGraphs: row.reviewGraphs ?? emptyCapabilities.reviewGraphs,
+      turnout: row.turnout ?? emptyCapabilities.turnout,
+      historicalBaseline: row.historicalBaseline ?? emptyCapabilities.historicalBaseline,
+      notes: row.notes ?? emptyCapabilities.notes,
+    };
+    const resultRows = Number(row.resultRows ?? 0);
+    const sourceCount = Number(row.sourceCount ?? 0);
+    const sourcesMissingUrls = Number(row.sourcesMissingUrls ?? 0);
+    const indicatorCount = Number(row.indicatorCount ?? 0);
+    const status = completenessStatus({
+      capabilities,
+      indicatorCount,
+      resultRows,
+      sourceCount,
+      sourcesMissingUrls,
+    });
+
+    return {
+      state: row.code,
+      name: row.name,
+      authority: row.authority,
+      resultRows,
+      resultJurisdictions: Number(row.resultJurisdictions ?? 0),
+      sourceCount,
+      sourcesMissingUrls,
+      indicatorCount,
+      flaggedJurisdictions: Number(row.flaggedJurisdictions ?? 0),
+      importRunCount: Number(row.importRunCount ?? 0),
+      latestImportAt: toIsoTimestamp(row.latestImportAt),
+      capabilities,
+      status,
+      gaps: completenessGaps({
+        capabilities,
+        indicatorCount,
+        resultRows,
+        sourceCount,
+        sourcesMissingUrls,
+      }),
+    };
+  });
 }
 
 export async function getCoverageSummary(input: {

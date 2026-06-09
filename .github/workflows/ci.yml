@@ -36,6 +36,12 @@ jobs:
       - name: ETL validation
         run: npm run etl:validate
 
+      - name: Production map join validation
+        run: npm run validate:maps
+
+      - name: Production provenance validation
+        run: npm run validate:provenance
+
       - name: Build
         run: npm run build
 
