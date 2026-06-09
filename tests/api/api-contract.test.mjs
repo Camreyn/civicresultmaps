@@ -34,6 +34,8 @@ test("map joins support repository GeoJSON county name variants", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   assert.match(explorer, /county_name/);
   assert.match(explorer, /function featureName/);
+  assert.match(explorer, /ak-house-districts\.geojson/);
+  assert.match(explorer, /KALAWAO/);
 });
 
 test("seed data carries required provenance fields", () => {

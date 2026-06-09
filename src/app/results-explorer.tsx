@@ -33,12 +33,36 @@ type FeatureCollection = {
 const geoBaseUrl =
   "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data";
 
+function geoJsonPath(state: string) {
+  if (state === "AK") {
+    return "ak-house-districts.geojson";
+  }
+
+  return `${state.toLowerCase()}-counties.geojson`;
+}
+
 function normalizeName(name: string) {
-  return name.trim().replace(/\s+County$/i, "").toUpperCase();
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\bSaint\b/gi, "St")
+    .replace(/\bMore\b.*$/i, "")
+    .replace(/Â»/g, "")
+    .replace(/\s+(County|Parish|Planning Region)$/i, "")
+    .replace(/[^a-z0-9]+/gi, "")
+    .toUpperCase();
 }
 
 function featureName(feature: GeoFeature) {
-  return feature.properties.BASENAME ?? feature.properties.NAME ?? feature.properties.county_name ?? "";
+  return feature.properties.NAME ?? feature.properties.county_name ?? feature.properties.BASENAME ?? "";
+}
+
+function resultNameForFeature(state: string, name: string) {
+  if (state === "HI" && normalizeName(name) === "KALAWAO") {
+    return "Maui";
+  }
+
+  return name;
 }
 
 function compareRows(a: ResultRow, b: ResultRow, sortKey: SortKey) {
@@ -155,7 +179,7 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
     const controller = new AbortController();
     setGeoStatus("loading");
 
-    fetch(`${geoBaseUrl}/${selectedState.toLowerCase()}-counties.geojson`, {
+    fetch(`${geoBaseUrl}/${geoJsonPath(selectedState)}`, {
       signal: controller.signal,
     })
       .then((response) => {
@@ -261,8 +285,9 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
               <title>{selectedState} county presidential result map</title>
               {features.map((feature) => {
                 const name = featureName(feature);
-                const row = resultsByName.get(normalizeName(name));
-                const countyIndicators = indicatorsByName.get(normalizeName(name)) ?? [];
+                const resultName = resultNameForFeature(selectedState, name);
+                const row = resultsByName.get(normalizeName(resultName));
+                const countyIndicators = indicatorsByName.get(normalizeName(resultName)) ?? [];
                 const rings = polygonRings(feature);
                 const point = centroid(feature, bounds);
                 return (
