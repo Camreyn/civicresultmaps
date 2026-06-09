@@ -426,6 +426,19 @@ input {
   opacity: 0.76;
 }
 
+.map-flag-marker {
+  dominant-baseline: central;
+  fill: #101112;
+  font-family: var(--font-code);
+  font-size: 16px;
+  font-weight: 900;
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: var(--gold);
+  stroke-width: 5px;
+  text-anchor: middle;
+}
+
 .map-empty {
   align-items: center;
   color: var(--muted);
@@ -464,6 +477,10 @@ input {
 
 .legend-trump::before {
   background: var(--red);
+}
+
+.legend-flag::before {
+  background: var(--gold);
 }
 
 .legend-note {
@@ -548,6 +565,31 @@ td {
 .winner-trump {
   color: var(--red);
   font-weight: 700;
+}
+
+.indicator-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 280px;
+}
+
+.indicator-pill {
+  align-items: center;
+  background: rgba(240, 195, 106, 0.12);
+  border: 1px solid rgba(240, 195, 106, 0.42);
+  border-radius: 999px;
+  color: var(--gold);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 700;
+  gap: 4px;
+  line-height: 1.2;
+  padding: 4px 7px;
+}
+
+.no-indicator {
+  color: var(--quiet);
 }
 
 .detail-stack {

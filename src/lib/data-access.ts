@@ -14,6 +14,7 @@ import {
 import type {
   CapabilitySummary,
   CoverageSummary,
+  AnalysisIndicator,
   ElectionSummary,
   ImportRunSummary,
   ResultRow,
@@ -341,6 +342,70 @@ export async function listSources(input: { state: string; year: number }): Promi
     timestampBasis: row.timestampBasis,
     confidence: row.confidence,
     status: row.status,
+  }));
+}
+
+export async function listIndicators(input: {
+  state: string;
+  year: number;
+}): Promise<AnalysisIndicator[]> {
+  if (!hasDatabase()) {
+    return [];
+  }
+
+  let rows: Array<{
+    detail: string;
+    electionYear: number;
+    id: string;
+    jurisdictionCode: string;
+    jurisdictionName: string;
+    label: string;
+    level: AnalysisIndicator["level"];
+    metrics: unknown;
+    severity: string | number;
+    state: string;
+    summary: string;
+    type: string;
+  }>;
+
+  try {
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        id,
+        state_code as "state",
+        election_year as "electionYear",
+        jurisdiction_code as "jurisdictionCode",
+        jurisdiction_name as "jurisdictionName",
+        level,
+        indicator_type as "type",
+        severity,
+        label,
+        summary,
+        detail,
+        metrics
+      from analysis_indicators
+      where state_code = ${input.state}
+        and election_year = ${input.year}
+      order by severity desc, jurisdiction_name, label
+    `) as typeof rows;
+  } catch {
+    return [];
+  }
+
+  return rows.map((row) => ({
+    detail: row.detail,
+    electionYear: row.electionYear,
+    id: row.id,
+    jurisdictionCode: row.jurisdictionCode,
+    jurisdictionName: row.jurisdictionName,
+    label: row.label,
+    level: row.level,
+    metrics: row.metrics as Record<string, unknown>,
+    severity: Number(row.severity),
+    state: row.state,
+    summary: row.summary,
+    type: row.type,
   }));
 }
 

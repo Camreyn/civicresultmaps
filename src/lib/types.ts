@@ -79,3 +79,18 @@ export type ImportRunSummary = {
   finishedAt: string | null;
   summary: Record<string, unknown>;
 };
+
+export type AnalysisIndicator = {
+  id: string;
+  state: string;
+  electionYear: number;
+  jurisdictionCode: string;
+  jurisdictionName: string;
+  level: "county" | "state" | "district" | "precinct";
+  type: string;
+  severity: number;
+  label: string;
+  summary: string;
+  detail: string;
+  metrics: Record<string, unknown>;
+};

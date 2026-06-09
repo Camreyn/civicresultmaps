@@ -219,3 +219,33 @@ export const validationReports = pgTable("validation_reports", {
   warnings: jsonb("warnings").notNull().default([]),
   metrics: jsonb("metrics").notNull().default({}),
 });
+
+export const analysisIndicators = pgTable(
+  "analysis_indicators",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    stateCode: text("state_code").notNull().references(() => states.code),
+    electionYear: integer("election_year").notNull(),
+    jurisdictionCode: text("jurisdiction_code").notNull(),
+    jurisdictionName: text("jurisdiction_name").notNull(),
+    level: text("level").notNull(),
+    indicatorType: text("indicator_type").notNull(),
+    severity: numeric("severity", { precision: 10, scale: 4 }).notNull(),
+    label: text("label").notNull(),
+    summary: text("summary").notNull(),
+    detail: text("detail").notNull(),
+    metrics: jsonb("metrics").notNull().default({}),
+    sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    uniqueIndicator: uniqueIndex("analysis_indicators_unique_idx").on(
+      table.stateCode,
+      table.electionYear,
+      table.level,
+      table.jurisdictionCode,
+      table.indicatorType,
+      table.label,
+    ),
+  }),
+);

@@ -9,7 +9,14 @@ import {
 } from "lucide-react";
 import { ResultsExplorer } from "./results-explorer";
 import { StateSwitcher } from "./state-switcher";
-import { getCoverageSummary, listImportRuns, listResults, listSources, listStates } from "@/lib/api";
+import {
+  getCoverageSummary,
+  listImportRuns,
+  listIndicators,
+  listResults,
+  listSources,
+  listStates,
+} from "@/lib/api";
 
 const selectedYear = 2024;
 
@@ -26,12 +33,13 @@ function formatCapability(key: string) {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
-  const [states, results, sources, coverage, importRuns] = await Promise.all([
+  const [states, results, sources, coverage, importRuns, indicators] = await Promise.all([
     listStates(),
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
     listSources({ state: selectedState, year: selectedYear }),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     listImportRuns(),
+    listIndicators({ state: selectedState, year: selectedYear }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
@@ -102,6 +110,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <div className="content-grid">
             <ResultsExplorer
               countyLabel={selected?.countyLabel ?? "County"}
+              indicators={indicators}
               results={results}
               selectedState={selectedStateCode}
             />

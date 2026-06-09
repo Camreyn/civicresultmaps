@@ -9,6 +9,17 @@ type LegacyCountyResult = {
   total?: number;
 };
 
+type LegacyReviewRow = {
+  county?: string;
+  demDropoff?: number;
+  harris?: number;
+  harrisShare?: number;
+  repDropoff?: number;
+  total?: number;
+  trump?: number;
+  trumpShare?: number;
+};
+
 type LegacyAppData = {
   metadata?: {
     stateTotal?: number;
@@ -17,7 +28,14 @@ type LegacyAppData = {
     notes?: string;
   };
   presidentCountyResults?: LegacyCountyResult[];
-  reviewCharts?: unknown[];
+  etaAnalysis?: {
+    coverageMode?: string;
+  };
+  reviewCharts?: {
+    metadata?: {
+      rows?: LegacyReviewRow[];
+    };
+  };
   turnoutData?: unknown[];
   historicalBaseline?: unknown[];
 };
@@ -42,6 +60,14 @@ const candidateParties = {
   Other: "OTHER",
 } as const;
 
+const reviewPolicy = {
+  downBallotAverageThresholdPct: 6,
+  minCandidateVotes: 100,
+  minWardRows: 8,
+  outlierThresholdPct: 15,
+  voteShareCorrelationThreshold: 0.35,
+};
+
 function parseLegacyBundle(source: string): LegacyAppData {
   const firstBrace = source.indexOf("{");
   const lastSemicolon = source.lastIndexOf(";");
@@ -60,6 +86,196 @@ function normalizeCountyName(county: string) {
 
 function jurisdictionCode(stateCode: string, county: string) {
   return `${stateCode}-${normalizeCountyName(county).toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
+}
+
+function average(values: number[]) {
+  const finite = values.filter(Number.isFinite);
+  return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
+}
+
+function pearsonSafe(xs: number[], ys: number[]) {
+  const pairs = xs
+    .map((x, index) => [x, ys[index]])
+    .filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
+
+  if (pairs.length < 2) {
+    return 0;
+  }
+
+  const xAverage = average(pairs.map(([x]) => x));
+  const yAverage = average(pairs.map(([, y]) => y));
+  const numerator = pairs.reduce((sum, [x, y]) => sum + (x - xAverage) * (y - yAverage), 0);
+  const xDenominator = Math.sqrt(pairs.reduce((sum, [x]) => sum + (x - xAverage) ** 2, 0));
+  const yDenominator = Math.sqrt(pairs.reduce((sum, [, y]) => sum + (y - yAverage) ** 2, 0));
+
+  if (!xDenominator || !yDenominator) {
+    return 0;
+  }
+
+  return numerator / (xDenominator * yDenominator);
+}
+
+function indicatorSeverity(metrics: {
+  demAverageDropoff: number;
+  demOutliers: number;
+  harrisCorrelation: number;
+  outlierTrigger: number;
+  repAverageDropoff: number;
+  repOutliers: number;
+  trumpCorrelation: number;
+}) {
+  const correlationScore =
+    Math.max(Math.abs(metrics.trumpCorrelation), Math.abs(metrics.harrisCorrelation)) /
+    Math.max(0.01, reviewPolicy.voteShareCorrelationThreshold);
+  const averageDropoffScore =
+    Math.max(Math.abs(metrics.demAverageDropoff), Math.abs(metrics.repAverageDropoff)) /
+    Math.max(0.1, reviewPolicy.downBallotAverageThresholdPct);
+  const outlierScore =
+    (metrics.demOutliers + metrics.repOutliers) / Math.max(1, metrics.outlierTrigger);
+
+  return Number((correlationScore + averageDropoffScore + outlierScore).toFixed(4));
+}
+
+function analysisIndicatorsForState(input: LegacyImportInput, appData: LegacyAppData) {
+  const reviewRows = appData.reviewCharts?.metadata?.rows ?? [];
+  const rowsByCounty = new Map<string, LegacyReviewRow[]>();
+  const voteShareOnly = appData.etaAnalysis?.coverageMode === "voteShareOnly";
+
+  for (const row of reviewRows) {
+    if (!row.county) {
+      continue;
+    }
+
+    const county = normalizeCountyName(row.county);
+    rowsByCounty.set(county, [...(rowsByCounty.get(county) ?? []), row]);
+  }
+
+  const indicators = [];
+
+  for (const [county, rows] of rowsByCounty) {
+    if (rows.length < reviewPolicy.minWardRows) {
+      continue;
+    }
+
+    const trumpCorrelation = pearsonSafe(
+      rows.map((row) => row.trump ?? 0),
+      rows.map((row) => row.trumpShare ?? 0),
+    );
+    const harrisCorrelation = pearsonSafe(
+      rows.map((row) => row.harris ?? 0),
+      rows.map((row) => row.harrisShare ?? 0),
+    );
+    const demAverageDropoff = average(rows.map((row) => row.demDropoff ?? 0));
+    const repAverageDropoff = average(rows.map((row) => row.repDropoff ?? 0));
+    const demOutliers = rows.filter(
+      (row) =>
+        (row.harris ?? 0) >= reviewPolicy.minCandidateVotes &&
+        Math.abs(row.demDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
+    ).length;
+    const repOutliers = rows.filter(
+      (row) =>
+        (row.trump ?? 0) >= reviewPolicy.minCandidateVotes &&
+        Math.abs(row.repDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
+    ).length;
+    const outlierTrigger = Math.max(3, Math.ceil(rows.length * 0.05));
+    const metrics = {
+      demAverageDropoff,
+      demOutliers,
+      harrisCorrelation,
+      outlierTrigger,
+      repAverageDropoff,
+      repOutliers,
+      rowCount: rows.length,
+      trumpCorrelation,
+    };
+    const reasons: Array<{ detail: string; label: string; summary: string; type: string }> = [];
+
+    if (
+      Math.abs(trumpCorrelation) >= reviewPolicy.voteShareCorrelationThreshold ||
+      Math.abs(harrisCorrelation) >= reviewPolicy.voteShareCorrelationThreshold
+    ) {
+      reasons.push({
+        detail:
+          "Bigger local reporting-unit vote totals move with candidate vote share strongly enough to pass the legacy review threshold. This is an advisory review flag, not proof of tampering.",
+        label: "Vote-share pattern",
+        summary: `Vote-share correlation crossed threshold: Trump r=${trumpCorrelation.toFixed(3)}, Harris r=${harrisCorrelation.toFixed(3)}.`,
+        type: "vote_share_pattern",
+      });
+    }
+
+    if (
+      !voteShareOnly &&
+      (Math.abs(demAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct ||
+        Math.abs(repAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct)
+    ) {
+      reasons.push({
+        detail:
+          "The average gap between presidential votes and same-party down-ballot votes is large enough to review. Split-ticket voting can explain some gap; this flag identifies areas needing supporting records.",
+        label: "Average down-ballot difference",
+        summary: `Average President-vs-down-ballot difference crossed threshold: DEM ${demAverageDropoff.toFixed(2)}%, REP ${repAverageDropoff.toFixed(2)}%.`,
+        type: "average_down_ballot_difference",
+      });
+    }
+
+    if (!voteShareOnly && demOutliers + repOutliers >= outlierTrigger) {
+      reasons.push({
+        detail:
+          "Enough local result rows have unusually large President-versus-down-ballot differences to pass the outlier-count threshold. This is an advisory review flag, not proof of tampering.",
+        label: "Down-ballot outliers",
+        summary: `Drop-off outlier count crossed threshold: DEM ${demOutliers}, REP ${repOutliers}, trigger ${outlierTrigger}.`,
+        type: "down_ballot_outliers",
+      });
+    }
+
+    const severity = indicatorSeverity(metrics);
+
+    for (const reason of reasons) {
+      indicators.push({
+        county,
+        detail: reason.detail,
+        jurisdictionCode: jurisdictionCode(input.stateCode, county),
+        label: reason.label,
+        metrics,
+        severity,
+        summary: reason.summary,
+        type: reason.type,
+      });
+    }
+  }
+
+  return indicators;
+}
+
+async function ensureAnalysisIndicatorsTable(sql: { query: (statement: string) => Promise<unknown> }) {
+  await sql.query(`
+    create table if not exists analysis_indicators (
+      id uuid primary key default gen_random_uuid() not null,
+      state_code text not null references states(code),
+      election_year integer not null,
+      jurisdiction_code text not null,
+      jurisdiction_name text not null,
+      level text not null,
+      indicator_type text not null,
+      severity numeric(10, 4) not null,
+      label text not null,
+      summary text not null,
+      detail text not null,
+      metrics jsonb default '{}'::jsonb not null,
+      source_document_id uuid references source_documents(id),
+      created_at timestamp with time zone default now() not null
+    )
+  `);
+  await sql.query(`
+    create unique index if not exists analysis_indicators_unique_idx
+    on analysis_indicators (
+      state_code,
+      election_year,
+      level,
+      jurisdiction_code,
+      indicator_type,
+      label
+    )
+  `);
 }
 
 function validateLegacyRows(input: LegacyImportInput, appData: LegacyAppData, rows: LegacyCountyResult[]) {
@@ -132,6 +348,11 @@ export async function cleanupLegacyState(input: Pick<LegacyImportInput, "stateCo
     where state_code = ${input.stateCode}
     returning id
   `;
+  const deletedIndicators = await sql`
+    delete from analysis_indicators
+    where state_code = ${input.stateCode}
+    returning id
+  `.catch(() => []);
   const deletedJurisdictions = await sql`
     delete from jurisdictions
     where state_code = ${input.stateCode}
@@ -176,6 +397,7 @@ export async function cleanupLegacyState(input: Pick<LegacyImportInput, "stateCo
     deletedCapabilities: deletedCapabilities.length,
     deletedCandidates: deletedCandidates.length,
     deletedContests: deletedContests.length,
+    deletedIndicators: deletedIndicators.length,
     deletedImportRuns: deletedImportRuns.length,
     deletedJurisdictions: deletedJurisdictions.length,
     deletedResults: deletedResults.length,
@@ -202,10 +424,13 @@ export async function importLegacyState(input: LegacyImportInput) {
   const validation = validateLegacyRows(input, appData, rows);
 
   const sql = neon(databaseUrl);
-  const hasReviewCharts = Array.isArray(appData.reviewCharts) && appData.reviewCharts.length > 0;
+  const hasReviewCharts = (appData.reviewCharts?.metadata?.rows?.length ?? 0) > 0;
+  const indicators = analysisIndicatorsForState(input, appData);
   const hasTurnout = Array.isArray(appData.turnoutData) && appData.turnoutData.length > 0;
   const hasHistoricalBaseline =
     Array.isArray(appData.historicalBaseline) && appData.historicalBaseline.length > 0;
+
+  await ensureAnalysisIndicatorsTable(sql);
 
   const [election] = await sql`
     insert into elections (year, office, election_date, label)
@@ -393,6 +618,53 @@ export async function importLegacyState(input: LegacyImportInput) {
     }
   }
 
+  await sql`
+    delete from analysis_indicators
+    where state_code = ${input.stateCode}
+      and election_year = 2024
+  `;
+
+  for (const indicator of indicators) {
+    await sql`
+      insert into analysis_indicators (
+        state_code,
+        election_year,
+        jurisdiction_code,
+        jurisdiction_name,
+        level,
+        indicator_type,
+        severity,
+        label,
+        summary,
+        detail,
+        metrics,
+        source_document_id
+      )
+      values (
+        ${input.stateCode},
+        2024,
+        ${indicator.jurisdictionCode},
+        ${indicator.county},
+        'county',
+        ${indicator.type},
+        ${indicator.severity},
+        ${indicator.label},
+        ${indicator.summary},
+        ${indicator.detail},
+        ${JSON.stringify(indicator.metrics)}::jsonb,
+        ${source.id}
+      )
+      on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
+      do update set
+        jurisdiction_name = excluded.jurisdiction_name,
+        severity = excluded.severity,
+        summary = excluded.summary,
+        detail = excluded.detail,
+        metrics = excluded.metrics,
+        source_document_id = excluded.source_document_id
+    `;
+  }
+
   const [stored] = await sql`
     select
       count(distinct result_rows.jurisdiction_code)::int as counties,
@@ -448,6 +720,7 @@ export async function importLegacyState(input: LegacyImportInput) {
       summary = ${JSON.stringify({
         counties: rows.length,
         resultRows,
+        indicatorRows: indicators.length,
         totalVotes,
         storedCounties,
         storedRows,
@@ -463,6 +736,7 @@ export async function importLegacyState(input: LegacyImportInput) {
     importRunId: importRun.id,
     counties: rows.length,
     resultRows,
+    indicatorRows: indicators.length,
     totalVotes: validation.totalVotes,
     storedCounties,
     storedRows,

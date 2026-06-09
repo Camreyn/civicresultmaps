@@ -128,6 +128,23 @@ CREATE TABLE "validation_reports" (
 	"metrics" jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "analysis_indicators" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"state_code" text NOT NULL,
+	"election_year" integer NOT NULL,
+	"jurisdiction_code" text NOT NULL,
+	"jurisdiction_name" text NOT NULL,
+	"level" text NOT NULL,
+	"indicator_type" text NOT NULL,
+	"severity" numeric(10, 4) NOT NULL,
+	"label" text NOT NULL,
+	"summary" text NOT NULL,
+	"detail" text NOT NULL,
+	"metrics" jsonb DEFAULT '{}'::jsonb NOT NULL,
+	"source_document_id" uuid,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 ALTER TABLE "candidates" ADD CONSTRAINT "candidates_contest_id_contests_id_fk" FOREIGN KEY ("contest_id") REFERENCES "public"."contests"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "capability_flags" ADD CONSTRAINT "capability_flags_state_code_states_code_fk" FOREIGN KEY ("state_code") REFERENCES "public"."states"("code") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "contests" ADD CONSTRAINT "contests_election_id_elections_id_fk" FOREIGN KEY ("election_id") REFERENCES "public"."elections"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -145,6 +162,8 @@ ALTER TABLE "turnout_rows" ADD CONSTRAINT "turnout_rows_state_code_states_code_f
 ALTER TABLE "turnout_rows" ADD CONSTRAINT "turnout_rows_source_document_id_source_documents_id_fk" FOREIGN KEY ("source_document_id") REFERENCES "public"."source_documents"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "validation_reports" ADD CONSTRAINT "validation_reports_import_run_id_import_runs_id_fk" FOREIGN KEY ("import_run_id") REFERENCES "public"."import_runs"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "validation_reports" ADD CONSTRAINT "validation_reports_state_code_states_code_fk" FOREIGN KEY ("state_code") REFERENCES "public"."states"("code") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "analysis_indicators" ADD CONSTRAINT "analysis_indicators_state_code_states_code_fk" FOREIGN KEY ("state_code") REFERENCES "public"."states"("code") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "analysis_indicators" ADD CONSTRAINT "analysis_indicators_source_document_id_source_documents_id_fk" FOREIGN KEY ("source_document_id") REFERENCES "public"."source_documents"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE UNIQUE INDEX "candidates_contest_name_party_idx" ON "candidates" USING btree ("contest_id","name","party");--> statement-breakpoint
 CREATE UNIQUE INDEX "capability_flags_state_year_idx" ON "capability_flags" USING btree ("state_code","election_year");--> statement-breakpoint
 CREATE UNIQUE INDEX "contests_election_state_office_idx" ON "contests" USING btree ("election_id","state_code","office");--> statement-breakpoint
@@ -152,3 +171,5 @@ CREATE UNIQUE INDEX "elections_year_office_idx" ON "elections" USING btree ("yea
 CREATE UNIQUE INDEX "jurisdictions_state_code_level_code_idx" ON "jurisdictions" USING btree ("state_code","level","code");--> statement-breakpoint
 CREATE UNIQUE INDEX "result_rows_contest_jurisdiction_candidate_idx" ON "result_rows" USING btree ("contest_id","level","jurisdiction_code","candidate_name","party");--> statement-breakpoint
 CREATE UNIQUE INDEX "turnout_rows_state_year_level_jurisdiction_idx" ON "turnout_rows" USING btree ("state_code","election_year","level","jurisdiction_code");
+--> statement-breakpoint
+CREATE UNIQUE INDEX "analysis_indicators_unique_idx" ON "analysis_indicators" USING btree ("state_code","election_year","level","jurisdiction_code","indicator_type","label");

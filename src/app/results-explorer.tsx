@@ -2,10 +2,11 @@
 
 import { ArrowDownAZ, ArrowUpDown, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import type { ResultRow } from "@/lib/types";
+import type { AnalysisIndicator, ResultRow } from "@/lib/types";
 
 type ResultsExplorerProps = {
   countyLabel: string;
+  indicators: AnalysisIndicator[];
   results: ResultRow[];
   selectedState: string;
 };
@@ -96,6 +97,31 @@ function makePath(rings: number[][][], bounds: { maxX: number; maxY: number; min
     .join(" ");
 }
 
+function projectPoint([lon, lat]: number[], bounds: { maxX: number; maxY: number; minX: number; minY: number }) {
+  const width = bounds.maxX - bounds.minX || 1;
+  const height = bounds.maxY - bounds.minY || 1;
+  const scale = Math.min(920 / width, 520 / height);
+  const offsetX = (960 - width * scale) / 2;
+  const offsetY = (560 - height * scale) / 2;
+
+  return {
+    x: offsetX + (lon - bounds.minX) * scale,
+    y: offsetY + (bounds.maxY - lat) * scale,
+  };
+}
+
+function centroid(feature: GeoFeature, bounds: { maxX: number; maxY: number; minX: number; minY: number }) {
+  const positions = flattenPositions(feature.geometry.coordinates);
+  const lon = average(positions.map(([x]) => x));
+  const lat = average(positions.map(([, y]) => y));
+  return projectPoint([lon, lat], bounds);
+}
+
+function average(values: number[]) {
+  const finite = values.filter(Number.isFinite);
+  return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
+}
+
 function countyFill(row: ResultRow | undefined) {
   if (!row) {
     return "#2c302e";
@@ -114,7 +140,7 @@ function countyFill(row: ResultRow | undefined) {
   return `rgba(240, 195, 106, ${intensity})`;
 }
 
-export function ResultsExplorer({ countyLabel, results, selectedState }: ResultsExplorerProps) {
+export function ResultsExplorer({ countyLabel, indicators, results, selectedState }: ResultsExplorerProps) {
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [query, setQuery] = useState("");
@@ -156,6 +182,28 @@ export function ResultsExplorer({ countyLabel, results, selectedState }: Results
     return map;
   }, [results]);
 
+  const indicatorsByJurisdiction = useMemo(() => {
+    const map = new Map<string, AnalysisIndicator[]>();
+    for (const indicator of indicators) {
+      map.set(indicator.jurisdictionCode, [
+        ...(map.get(indicator.jurisdictionCode) ?? []),
+        indicator,
+      ]);
+    }
+    return map;
+  }, [indicators]);
+
+  const indicatorsByName = useMemo(() => {
+    const map = new Map<string, AnalysisIndicator[]>();
+    for (const indicator of indicators) {
+      map.set(normalizeName(indicator.jurisdictionName), [
+        ...(map.get(normalizeName(indicator.jurisdictionName)) ?? []),
+        indicator,
+      ]);
+    }
+    return map;
+  }, [indicators]);
+
   const bounds = useMemo(() => {
     const points = features.flatMap((feature) => flattenPositions(feature.geometry.coordinates));
     const lons = points.map(([lon]) => lon);
@@ -194,7 +242,7 @@ export function ResultsExplorer({ countyLabel, results, selectedState }: Results
             <h2>{countyLabel} Map</h2>
             <span>
               {geoStatus === "ready"
-                ? `${features.length} boundaries from repository GeoJSON`
+                ? `${features.length} boundaries, ${indicators.length} advisory review flags`
                 : geoStatus === "loading"
                   ? "Loading repository GeoJSON"
                   : "Map geometry unavailable"}
@@ -209,19 +257,35 @@ export function ResultsExplorer({ countyLabel, results, selectedState }: Results
               {features.map((feature) => {
                 const name = feature.properties.BASENAME ?? feature.properties.NAME ?? "";
                 const row = resultsByName.get(normalizeName(name));
+                const countyIndicators = indicatorsByName.get(normalizeName(name)) ?? [];
                 const rings = polygonRings(feature);
+                const point = centroid(feature, bounds);
                 return (
-                  <path
-                    d={makePath(rings, bounds)}
-                    fill={countyFill(row)}
-                    key={`${selectedState}-${name}`}
-                    stroke="#101112"
-                    strokeWidth="1"
-                  >
-                    <title>
-                      {name}: {row ? `${row.winner} by ${row.marginPct.toFixed(2)}%` : "No result row"}
-                    </title>
-                  </path>
+                  <g key={`${selectedState}-${name}`}>
+                    <path
+                      d={makePath(rings, bounds)}
+                      fill={countyFill(row)}
+                      stroke="#101112"
+                      strokeWidth="1"
+                    >
+                      <title>
+                        {name}: {row ? `${row.winner} by ${row.marginPct.toFixed(2)}%` : "No result row"}
+                        {countyIndicators.length
+                          ? `; ${countyIndicators.length} advisory review flag(s)`
+                          : ""}
+                      </title>
+                    </path>
+                    {countyIndicators.length > 0 && (
+                      <text
+                        aria-hidden
+                        className="map-flag-marker"
+                        x={point.x.toFixed(2)}
+                        y={point.y.toFixed(2)}
+                      >
+                        !
+                      </text>
+                    )}
+                  </g>
                 );
               })}
             </svg>
@@ -234,6 +298,7 @@ export function ResultsExplorer({ countyLabel, results, selectedState }: Results
         <div className="map-legend" aria-label="Map legend">
           <span className="legend-item legend-harris">Harris</span>
           <span className="legend-item legend-trump">Trump</span>
+          <span className="legend-item legend-flag">Review flag</span>
           <span className="legend-note">Darker fill means wider margin.</span>
         </div>
       </div>
@@ -280,8 +345,9 @@ export function ResultsExplorer({ countyLabel, results, selectedState }: Results
           <table>
             <thead>
               <tr>
-                <th>Jurisdiction</th>
-                <th>Winner</th>
+                  <th>Jurisdiction</th>
+                  <th>Flags</th>
+                  <th>Winner</th>
                 <th>Harris</th>
                 <th>Trump</th>
                 <th>Total</th>
@@ -293,6 +359,19 @@ export function ResultsExplorer({ countyLabel, results, selectedState }: Results
               {visibleResults.map((row) => (
                 <tr key={row.jurisdictionCode}>
                   <td>{row.jurisdictionName}</td>
+                  <td>
+                    {(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).length > 0 ? (
+                      <div className="indicator-stack">
+                        {(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).map((indicator) => (
+                          <span className="indicator-pill" key={indicator.id} title={indicator.detail}>
+                            ! {indicator.label}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="no-indicator">-</span>
+                    )}
+                  </td>
                   <td className={row.winner === "Harris" ? "winner-harris" : "winner-trump"}>
                     {row.winner}
                   </td>

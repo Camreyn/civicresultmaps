@@ -18,7 +18,19 @@ test("legacy importer parses static app-data bundles", () => {
   assert.match(importer, /status = 'promoted'/);
   assert.match(importer, /cleanupLegacyState/);
   assert.match(importer, /delete from result_rows/);
+  assert.match(importer, /analysisIndicatorsForState/);
+  assert.match(importer, /analysis_indicators/);
+  assert.match(importer, /Vote-share pattern/);
   assert.match(importer, /on conflict \(contest_id, level, jurisdiction_code, candidate_name, party\)/);
+});
+
+test("analysis indicators are exposed through schema and API", () => {
+  const schema = readFileSync("src/db/schema.ts", "utf8");
+  const route = readFileSync("src/app/api/indicators/route.ts", "utf8");
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+  assert.match(schema, /analysisIndicators/);
+  assert.match(route, /listIndicators/);
+  assert.match(dataAccess, /from analysis_indicators/);
 });
 
 test("legacy import route is token protected and allowlisted", () => {

@@ -20,6 +20,7 @@ test("public API route contracts exist", () => {
     "src/app/api/results/route.ts",
     "src/app/api/sources/route.ts",
     "src/app/api/coverage/route.ts",
+    "src/app/api/indicators/route.ts",
   ];
 
   for (const route of expectedRoutes) {
