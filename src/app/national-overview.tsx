@@ -23,10 +23,8 @@ function statusClass(status: CompletenessSummary["status"]) {
 export function NationalOverview({ report, year }: NationalOverviewProps) {
   const statesWithResults = report.filter((state) => state.resultRows > 0).length;
   const completeStates = report.filter((state) => state.status === "complete").length;
-  const statesNeedingSources = report.filter(
-    (state) => state.sourceCount === 0 || state.sourcesMissingUrls > 0,
-  ).length;
   const statesWithMap = report.filter((state) => state.capabilities.map).length;
+  const rawReviewRows = report.reduce((sum, state) => sum + state.reviewRowCount, 0);
 
   return (
     <section className="national-overview" aria-label={`${year} national data completeness`}>
@@ -58,8 +56,8 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
         </article>
         <article>
           <FileWarning aria-hidden size={18} />
-          <span>Need source attention</span>
-          <strong>{statesNeedingSources}</strong>
+          <span>Raw review rows</span>
+          <strong>{rawReviewRows.toLocaleString()}</strong>
         </article>
       </div>
 
@@ -72,6 +70,7 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
               <th>Rows</th>
               <th>Sources</th>
               <th>Flags</th>
+              <th>Raw Rows</th>
               <th>Gaps</th>
             </tr>
           </thead>
@@ -100,6 +99,10 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
                   {state.sourcesMissingUrls > 0 ? ` (${state.sourcesMissingUrls} missing URL)` : ""}
                 </td>
                 <td className="mono">{state.indicatorCount.toLocaleString()}</td>
+                <td className="mono">
+                  {state.reviewRowCount.toLocaleString()}
+                  {state.turnoutRowCount > 0 ? ` / ${state.turnoutRowCount.toLocaleString()} turnout` : ""}
+                </td>
                 <td>
                   {state.gaps.length ? (
                     <span>{state.gaps.slice(0, 3).join("; ")}</span>

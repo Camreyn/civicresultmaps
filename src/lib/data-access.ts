@@ -17,10 +17,13 @@ import type {
   AnalysisIndicator,
   CompletenessSummary,
   ElectionSummary,
+  HistoricalResultRowSummary,
   ImportRunSummary,
   ResultRow,
+  ReviewRowSummary,
   SourceSummary,
   StateSummary,
+  TurnoutRowSummary,
 } from "./types";
 
 const emptyCapabilities: CapabilitySummary = {
@@ -131,6 +134,9 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       sourceCount: sources.length,
       sourcesMissingUrls,
       indicatorCount,
+      reviewRowCount: 0,
+      turnoutRowCount: 0,
+      historicalRowCount: 0,
       flaggedJurisdictions: indicatorCount,
       importRunCount: importRuns.length,
       latestImportAt: importRuns[0]?.startedAt ?? null,
@@ -516,6 +522,252 @@ export async function listIndicators(input: {
   }));
 }
 
+export async function listReviewRows(input: {
+  limit?: number;
+  state: string;
+  year: number;
+}): Promise<ReviewRowSummary[]> {
+  if (!hasDatabase()) {
+    return [];
+  }
+
+  let rows: Array<{
+    demDropoff: string | number | null;
+    electionYear: number;
+    harrisShare: string | number | null;
+    harrisVotes: number | null;
+    id: string;
+    jurisdictionCode: string;
+    jurisdictionName: string;
+    level: string;
+    localUnit: string;
+    metrics: unknown;
+    repDropoff: string | number | null;
+    sourceSlug: string | null;
+    state: string;
+    totalVotes: number | null;
+    trumpShare: string | number | null;
+    trumpVotes: number | null;
+  }>;
+
+  try {
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        review_rows.id,
+        review_rows.state_code as "state",
+        review_rows.election_year as "electionYear",
+        review_rows.jurisdiction_code as "jurisdictionCode",
+        review_rows.jurisdiction_name as "jurisdictionName",
+        review_rows.local_unit as "localUnit",
+        review_rows.level,
+        review_rows.harris_votes as "harrisVotes",
+        review_rows.trump_votes as "trumpVotes",
+        review_rows.total_votes as "totalVotes",
+        review_rows.harris_share as "harrisShare",
+        review_rows.trump_share as "trumpShare",
+        review_rows.dem_dropoff as "demDropoff",
+        review_rows.rep_dropoff as "repDropoff",
+        review_rows.metrics,
+        source_documents.slug as "sourceSlug"
+      from review_rows
+      left join source_documents on review_rows.source_document_id = source_documents.id
+      where review_rows.state_code = ${input.state}
+        and review_rows.election_year = ${input.year}
+      order by review_rows.jurisdiction_name, review_rows.local_unit
+      limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+    `) as typeof rows;
+  } catch {
+    return [];
+  }
+
+  return rows.map((row) => ({
+    demDropoff: row.demDropoff === null ? null : Number(row.demDropoff),
+    electionYear: row.electionYear,
+    harrisShare: row.harrisShare === null ? null : Number(row.harrisShare),
+    harrisVotes: row.harrisVotes,
+    id: row.id,
+    jurisdictionCode: row.jurisdictionCode,
+    jurisdictionName: row.jurisdictionName,
+    level: row.level,
+    localUnit: row.localUnit,
+    metrics: row.metrics as Record<string, unknown>,
+    repDropoff: row.repDropoff === null ? null : Number(row.repDropoff),
+    sourceId: row.sourceSlug ?? "database",
+    state: row.state,
+    totalVotes: row.totalVotes,
+    trumpShare: row.trumpShare === null ? null : Number(row.trumpShare),
+    trumpVotes: row.trumpVotes,
+  }));
+}
+
+export async function listTurnoutRows(input: {
+  limit?: number;
+  state: string;
+  year: number;
+}): Promise<TurnoutRowSummary[]> {
+  if (!hasDatabase()) {
+    return [];
+  }
+
+  let rows: Array<{
+    ballotsCast: number;
+    denominatorNote: string;
+    electionYear: number;
+    id: string;
+    jurisdictionCode: string;
+    jurisdictionName: string;
+    level: string;
+    registeredVoters: number | null;
+    sourceSlug: string | null;
+    state: string;
+    turnoutPct: string | number | null;
+    warningRequired: boolean;
+  }>;
+
+  try {
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        turnout_rows.id,
+        turnout_rows.state_code as "state",
+        turnout_rows.election_year as "electionYear",
+        turnout_rows.jurisdiction_code as "jurisdictionCode",
+        turnout_rows.jurisdiction_name as "jurisdictionName",
+        turnout_rows.level,
+        turnout_rows.ballots_cast as "ballotsCast",
+        turnout_rows.registered_voters as "registeredVoters",
+        turnout_rows.turnout_pct as "turnoutPct",
+        turnout_rows.denominator_note as "denominatorNote",
+        turnout_rows.warning_required as "warningRequired",
+        source_documents.slug as "sourceSlug"
+      from turnout_rows
+      left join source_documents on turnout_rows.source_document_id = source_documents.id
+      where turnout_rows.state_code = ${input.state}
+        and turnout_rows.election_year = ${input.year}
+      order by turnout_rows.jurisdiction_name
+      limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+    `) as typeof rows;
+  } catch {
+    return [];
+  }
+
+  return rows.map((row) => ({
+    ballotsCast: row.ballotsCast,
+    denominatorNote: row.denominatorNote,
+    electionYear: row.electionYear,
+    id: row.id,
+    jurisdictionCode: row.jurisdictionCode,
+    jurisdictionName: row.jurisdictionName,
+    level: row.level,
+    registeredVoters: row.registeredVoters,
+    sourceId: row.sourceSlug ?? "database",
+    state: row.state,
+    turnoutPct: row.turnoutPct === null ? null : Number(row.turnoutPct),
+    warningRequired: row.warningRequired,
+  }));
+}
+
+export async function listHistoricalResultRows(input: {
+  limit?: number;
+  state: string;
+  year?: number;
+}): Promise<HistoricalResultRowSummary[]> {
+  if (!hasDatabase()) {
+    return [];
+  }
+
+  let rows: Array<{
+    demVotes: number | null;
+    electionYear: number;
+    id: string;
+    jurisdictionCode: string;
+    jurisdictionName: string;
+    localUnit: string;
+    metrics: unknown;
+    otherVotes: number | null;
+    repVotes: number | null;
+    rowMethod: string;
+    sourceDocumentSlug: string | null;
+    sourceId: string;
+    sourceLevel: string;
+    state: string;
+    totalVotes: number | null;
+  }>;
+
+  try {
+    const sql = neon(getDatabaseUrl());
+    rows = input.year
+      ? ((await sql`
+          select
+            historical_result_rows.id,
+            historical_result_rows.state_code as "state",
+            historical_result_rows.election_year as "electionYear",
+            historical_result_rows.source_id as "sourceId",
+            historical_result_rows.source_level as "sourceLevel",
+            historical_result_rows.row_method as "rowMethod",
+            historical_result_rows.jurisdiction_code as "jurisdictionCode",
+            historical_result_rows.jurisdiction_name as "jurisdictionName",
+            historical_result_rows.local_unit as "localUnit",
+            historical_result_rows.dem_votes as "demVotes",
+            historical_result_rows.rep_votes as "repVotes",
+            historical_result_rows.other_votes as "otherVotes",
+            historical_result_rows.total_votes as "totalVotes",
+            historical_result_rows.metrics,
+            source_documents.slug as "sourceDocumentSlug"
+          from historical_result_rows
+          left join source_documents on historical_result_rows.source_document_id = source_documents.id
+          where historical_result_rows.state_code = ${input.state}
+            and historical_result_rows.election_year = ${input.year}
+          order by historical_result_rows.election_year desc, historical_result_rows.jurisdiction_name
+          limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+        `) as typeof rows)
+      : ((await sql`
+          select
+            historical_result_rows.id,
+            historical_result_rows.state_code as "state",
+            historical_result_rows.election_year as "electionYear",
+            historical_result_rows.source_id as "sourceId",
+            historical_result_rows.source_level as "sourceLevel",
+            historical_result_rows.row_method as "rowMethod",
+            historical_result_rows.jurisdiction_code as "jurisdictionCode",
+            historical_result_rows.jurisdiction_name as "jurisdictionName",
+            historical_result_rows.local_unit as "localUnit",
+            historical_result_rows.dem_votes as "demVotes",
+            historical_result_rows.rep_votes as "repVotes",
+            historical_result_rows.other_votes as "otherVotes",
+            historical_result_rows.total_votes as "totalVotes",
+            historical_result_rows.metrics,
+            source_documents.slug as "sourceDocumentSlug"
+          from historical_result_rows
+          left join source_documents on historical_result_rows.source_document_id = source_documents.id
+          where historical_result_rows.state_code = ${input.state}
+          order by historical_result_rows.election_year desc, historical_result_rows.jurisdiction_name
+          limit ${Math.min(Math.max(input.limit ?? 500, 1), 5000)}
+        `) as typeof rows);
+  } catch {
+    return [];
+  }
+
+  return rows.map((row) => ({
+    demVotes: row.demVotes,
+    electionYear: row.electionYear,
+    id: row.id,
+    jurisdictionCode: row.jurisdictionCode,
+    jurisdictionName: row.jurisdictionName,
+    localUnit: row.localUnit,
+    metrics: row.metrics as Record<string, unknown>,
+    otherVotes: row.otherVotes,
+    repVotes: row.repVotes,
+    rowMethod: row.rowMethod,
+    sourceDocumentId: row.sourceDocumentSlug ?? "database",
+    sourceId: row.sourceId,
+    sourceLevel: row.sourceLevel,
+    state: row.state,
+    totalVotes: row.totalVotes,
+  }));
+}
+
 export async function listCompletenessReport(input: { year: number }): Promise<CompletenessSummary[]> {
   if (!hasDatabase()) {
     return seedCompletenessReport(input.year);
@@ -537,6 +789,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     sourceCount: string | number | null;
     sourcesMissingUrls: string | number | null;
     indicatorCount: string | number | null;
+    reviewRowCount: string | number | null;
+    turnoutRowCount: string | number | null;
+    historicalRowCount: string | number | null;
     flaggedJurisdictions: string | number | null;
     importRunCount: string | number | null;
     latestImportAt: Date | string | null;
@@ -576,6 +831,29 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         where election_year = ${input.year}
         group by state_code
       ),
+      review_row_counts as (
+        select
+          state_code,
+          count(*) as review_row_count
+        from review_rows
+        where election_year = ${input.year}
+        group by state_code
+      ),
+      turnout_row_counts as (
+        select
+          state_code,
+          count(*) as turnout_row_count
+        from turnout_rows
+        where election_year = ${input.year}
+        group by state_code
+      ),
+      historical_row_counts as (
+        select
+          state_code,
+          count(*) as historical_row_count
+        from historical_result_rows
+        group by state_code
+      ),
       import_counts as (
         select
           state_code,
@@ -601,6 +879,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         coalesce(source_counts.source_count, 0) as "sourceCount",
         coalesce(source_counts.sources_missing_urls, 0) as "sourcesMissingUrls",
         coalesce(indicator_counts.indicator_count, 0) as "indicatorCount",
+        coalesce(review_row_counts.review_row_count, 0) as "reviewRowCount",
+        coalesce(turnout_row_counts.turnout_row_count, 0) as "turnoutRowCount",
+        coalesce(historical_row_counts.historical_row_count, 0) as "historicalRowCount",
         coalesce(indicator_counts.flagged_jurisdictions, 0) as "flaggedJurisdictions",
         coalesce(import_counts.import_run_count, 0) as "importRunCount",
         import_counts.latest_import_at as "latestImportAt"
@@ -611,6 +892,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       left join result_counts on states.code = result_counts.state_code
       left join source_counts on states.code = source_counts.state_code
       left join indicator_counts on states.code = indicator_counts.state_code
+      left join review_row_counts on states.code = review_row_counts.state_code
+      left join turnout_row_counts on states.code = turnout_row_counts.state_code
+      left join historical_row_counts on states.code = historical_row_counts.state_code
       left join import_counts on states.code = import_counts.state_code
       order by states.name
     `) as StateAggregate[];
@@ -649,6 +933,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       sourceCount,
       sourcesMissingUrls,
       indicatorCount,
+      reviewRowCount: Number(row.reviewRowCount ?? 0),
+      turnoutRowCount: Number(row.turnoutRowCount ?? 0),
+      historicalRowCount: Number(row.historicalRowCount ?? 0),
       flaggedJurisdictions: Number(row.flaggedJurisdictions ?? 0),
       importRunCount: Number(row.importRunCount ?? 0),
       latestImportAt: toIsoTimestamp(row.latestImportAt),

@@ -20,6 +20,10 @@ test("legacy importer parses static app-data bundles", () => {
   assert.match(importer, /delete from result_rows/);
   assert.match(importer, /analysisIndicatorsForState/);
   assert.match(importer, /analysis_indicators/);
+  assert.match(importer, /review_rows/);
+  assert.match(importer, /historical_result_rows/);
+  assert.match(importer, /turnout_rows/);
+  assert.match(importer, /storedReviewRows/);
   assert.match(importer, /Vote-share pattern/);
   assert.match(importer, /on conflict \(contest_id, level, jurisdiction_code, candidate_name, party\)/);
 });

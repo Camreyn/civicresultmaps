@@ -783,6 +783,18 @@ export function WorkspaceTabs({
                 <code>/api/indicators?state={selectedStateCode}&amp;year=2024</code>
               </li>
               <li>
+                <strong>Raw review rows</strong>
+                <code>/api/review-rows?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+              </li>
+              <li>
+                <strong>Turnout</strong>
+                <code>/api/turnout?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+              </li>
+              <li>
+                <strong>Historical baselines</strong>
+                <code>/api/historical-baselines?state={selectedStateCode}&amp;limit=500</code>
+              </li>
+              <li>
                 <strong>Sources</strong>
                 <code>/api/sources?state={selectedStateCode}&amp;year=2024</code>
               </li>

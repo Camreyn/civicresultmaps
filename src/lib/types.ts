@@ -78,6 +78,9 @@ export type CompletenessSummary = {
   sourceCount: number;
   sourcesMissingUrls: number;
   indicatorCount: number;
+  reviewRowCount: number;
+  turnoutRowCount: number;
+  historicalRowCount: number;
   flaggedJurisdictions: number;
   importRunCount: number;
   latestImportAt: string | null;
@@ -110,4 +113,56 @@ export type AnalysisIndicator = {
   summary: string;
   detail: string;
   metrics: Record<string, unknown>;
+};
+
+export type ReviewRowSummary = {
+  id: string;
+  state: string;
+  electionYear: number;
+  jurisdictionCode: string;
+  jurisdictionName: string;
+  localUnit: string;
+  level: string;
+  harrisVotes: number | null;
+  trumpVotes: number | null;
+  totalVotes: number | null;
+  harrisShare: number | null;
+  trumpShare: number | null;
+  demDropoff: number | null;
+  repDropoff: number | null;
+  metrics: Record<string, unknown>;
+  sourceId: string;
+};
+
+export type TurnoutRowSummary = {
+  id: string;
+  state: string;
+  electionYear: number;
+  jurisdictionCode: string;
+  jurisdictionName: string;
+  level: string;
+  ballotsCast: number;
+  registeredVoters: number | null;
+  turnoutPct: number | null;
+  denominatorNote: string;
+  warningRequired: boolean;
+  sourceId: string;
+};
+
+export type HistoricalResultRowSummary = {
+  id: string;
+  state: string;
+  electionYear: number;
+  sourceId: string;
+  sourceLevel: string;
+  rowMethod: string;
+  jurisdictionCode: string;
+  jurisdictionName: string;
+  localUnit: string;
+  demVotes: number | null;
+  repVotes: number | null;
+  otherVotes: number | null;
+  totalVotes: number | null;
+  metrics: Record<string, unknown>;
+  sourceDocumentId: string;
 };

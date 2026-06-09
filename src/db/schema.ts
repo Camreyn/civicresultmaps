@@ -186,6 +186,68 @@ export const turnoutRows = pgTable(
   }),
 );
 
+export const reviewRows = pgTable(
+  "review_rows",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    importRunId: uuid("import_run_id").references(() => importRuns.id),
+    stateCode: text("state_code").notNull().references(() => states.code),
+    electionYear: integer("election_year").notNull(),
+    jurisdictionCode: text("jurisdiction_code").notNull(),
+    jurisdictionName: text("jurisdiction_name").notNull(),
+    localUnit: text("local_unit").notNull().default(""),
+    level: text("level").notNull().default("local"),
+    harrisVotes: integer("harris_votes"),
+    trumpVotes: integer("trump_votes"),
+    totalVotes: integer("total_votes"),
+    harrisShare: numeric("harris_share", { precision: 8, scale: 4 }),
+    trumpShare: numeric("trump_share", { precision: 8, scale: 4 }),
+    demDropoff: numeric("dem_dropoff", { precision: 8, scale: 4 }),
+    repDropoff: numeric("rep_dropoff", { precision: 8, scale: 4 }),
+    metrics: jsonb("metrics").notNull().default({}),
+    sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+  },
+  (table) => ({
+    uniqueReviewRow: uniqueIndex("review_rows_state_year_jurisdiction_local_idx").on(
+      table.stateCode,
+      table.electionYear,
+      table.jurisdictionCode,
+      table.localUnit,
+    ),
+  }),
+);
+
+export const historicalResultRows = pgTable(
+  "historical_result_rows",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    importRunId: uuid("import_run_id").references(() => importRuns.id),
+    stateCode: text("state_code").notNull().references(() => states.code),
+    electionYear: integer("election_year").notNull(),
+    sourceId: text("source_id").notNull(),
+    sourceLevel: text("source_level").notNull(),
+    rowMethod: text("row_method").notNull().default(""),
+    jurisdictionCode: text("jurisdiction_code").notNull(),
+    jurisdictionName: text("jurisdiction_name").notNull(),
+    localUnit: text("local_unit").notNull().default(""),
+    demVotes: integer("dem_votes"),
+    repVotes: integer("rep_votes"),
+    otherVotes: integer("other_votes"),
+    totalVotes: integer("total_votes"),
+    metrics: jsonb("metrics").notNull().default({}),
+    sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+  },
+  (table) => ({
+    uniqueHistoricalRow: uniqueIndex("historical_rows_state_year_source_local_idx").on(
+      table.stateCode,
+      table.electionYear,
+      table.sourceId,
+      table.jurisdictionCode,
+      table.localUnit,
+    ),
+  }),
+);
+
 export const capabilityFlags = pgTable(
   "capability_flags",
   {

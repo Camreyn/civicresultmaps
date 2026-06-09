@@ -14,10 +14,47 @@ type LegacyReviewRow = {
   demDropoff?: number;
   harris?: number;
   harrisShare?: number;
+  municipality?: string;
   repDropoff?: number;
+  reportingUnit?: string;
   total?: number;
   trump?: number;
   trumpShare?: number;
+  ward?: string;
+};
+
+type LegacyTurnoutRow = {
+  ballotsCast?: number;
+  county?: string;
+  municipality?: string;
+  notes?: string;
+  registeredVoters?: number;
+  registrationDenominatorTiming?: string;
+  sourceLevel?: string;
+  sourceUrl?: string;
+  turnoutPct?: number;
+  ward?: string;
+  warningRequired?: boolean;
+};
+
+type LegacyHistoricalRow = {
+  county?: string;
+  dem?: number;
+  municipality?: string;
+  other?: number;
+  rep?: number;
+  reportingUnit?: string;
+  total?: number;
+  ward?: string;
+};
+
+type LegacyHistoricalSeries = {
+  electionYear?: number;
+  id?: string;
+  rowMethod?: string;
+  rows?: LegacyHistoricalRow[];
+  sourceId?: string;
+  sourceLevel?: string;
 };
 
 type LegacyAppData = {
@@ -36,8 +73,8 @@ type LegacyAppData = {
       rows?: LegacyReviewRow[];
     };
   };
-  turnoutData?: unknown[];
-  historicalBaseline?: unknown[];
+  turnoutData?: LegacyTurnoutRow[];
+  historicalBaseline?: LegacyHistoricalSeries[];
 };
 
 export type LegacyImportInput = {
@@ -86,6 +123,18 @@ function normalizeCountyName(county: string) {
 
 function jurisdictionCode(stateCode: string, county: string) {
   return `${stateCode}-${normalizeCountyName(county).toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
+}
+
+function localUnitForRow(row: {
+  municipality?: string;
+  reportingUnit?: string;
+  ward?: string;
+}) {
+  return [row.municipality, row.reportingUnit, row.ward].filter(Boolean).join(" / ");
+}
+
+function numberOrNull(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
 function average(values: number[]) {
@@ -278,6 +327,58 @@ async function ensureAnalysisIndicatorsTable(sql: { query: (statement: string) =
   `);
 }
 
+async function ensureLegacyDetailTables(sql: { query: (statement: string) => Promise<unknown> }) {
+  await sql.query(`
+    create table if not exists review_rows (
+      id uuid primary key default gen_random_uuid() not null,
+      import_run_id uuid references import_runs(id),
+      state_code text not null references states(code),
+      election_year integer not null,
+      jurisdiction_code text not null,
+      jurisdiction_name text not null,
+      local_unit text default '' not null,
+      level text default 'local' not null,
+      harris_votes integer,
+      trump_votes integer,
+      total_votes integer,
+      harris_share numeric(8, 4),
+      trump_share numeric(8, 4),
+      dem_dropoff numeric(8, 4),
+      rep_dropoff numeric(8, 4),
+      metrics jsonb default '{}'::jsonb not null,
+      source_document_id uuid references source_documents(id)
+    )
+  `);
+  await sql.query(`
+    create unique index if not exists review_rows_state_year_jurisdiction_local_idx
+    on review_rows (state_code, election_year, jurisdiction_code, local_unit)
+  `);
+  await sql.query(`
+    create table if not exists historical_result_rows (
+      id uuid primary key default gen_random_uuid() not null,
+      import_run_id uuid references import_runs(id),
+      state_code text not null references states(code),
+      election_year integer not null,
+      source_id text not null,
+      source_level text not null,
+      row_method text default '' not null,
+      jurisdiction_code text not null,
+      jurisdiction_name text not null,
+      local_unit text default '' not null,
+      dem_votes integer,
+      rep_votes integer,
+      other_votes integer,
+      total_votes integer,
+      metrics jsonb default '{}'::jsonb not null,
+      source_document_id uuid references source_documents(id)
+    )
+  `);
+  await sql.query(`
+    create unique index if not exists historical_rows_state_year_source_local_idx
+    on historical_result_rows (state_code, election_year, source_id, jurisdiction_code, local_unit)
+  `);
+}
+
 function validateLegacyRows(input: LegacyImportInput, appData: LegacyAppData, rows: LegacyCountyResult[]) {
   const expectedCountyRows = appData.metadata?.countyRows;
   const expectedStateTotal = appData.metadata?.stateTotal;
@@ -353,6 +454,21 @@ export async function cleanupLegacyState(input: Pick<LegacyImportInput, "stateCo
     where state_code = ${input.stateCode}
     returning id
   `.catch(() => []);
+  const deletedReviewRows = await sql`
+    delete from review_rows
+    where state_code = ${input.stateCode}
+    returning id
+  `.catch(() => []);
+  const deletedHistoricalRows = await sql`
+    delete from historical_result_rows
+    where state_code = ${input.stateCode}
+    returning id
+  `.catch(() => []);
+  const deletedTurnoutRows = await sql`
+    delete from turnout_rows
+    where state_code = ${input.stateCode}
+    returning id
+  `.catch(() => []);
   const deletedJurisdictions = await sql`
     delete from jurisdictions
     where state_code = ${input.stateCode}
@@ -398,11 +514,14 @@ export async function cleanupLegacyState(input: Pick<LegacyImportInput, "stateCo
     deletedCandidates: deletedCandidates.length,
     deletedContests: deletedContests.length,
     deletedIndicators: deletedIndicators.length,
+    deletedHistoricalRows: deletedHistoricalRows.length,
     deletedImportRuns: deletedImportRuns.length,
     deletedJurisdictions: deletedJurisdictions.length,
+    deletedReviewRows: deletedReviewRows.length,
     deletedResults: deletedResults.length,
     deletedSources: deletedSources.length,
     deletedStates: deletedStateRows.length,
+    deletedTurnoutRows: deletedTurnoutRows.length,
   };
 }
 
@@ -431,6 +550,7 @@ export async function importLegacyState(input: LegacyImportInput) {
     Array.isArray(appData.historicalBaseline) && appData.historicalBaseline.length > 0;
 
   await ensureAnalysisIndicatorsTable(sql);
+  await ensureLegacyDetailTables(sql);
 
   const [election] = await sql`
     insert into elections (year, office, election_date, label)
@@ -623,6 +743,204 @@ export async function importLegacyState(input: LegacyImportInput) {
     where state_code = ${input.stateCode}
       and election_year = 2024
   `;
+  await sql`
+    delete from review_rows
+    where state_code = ${input.stateCode}
+      and election_year = 2024
+  `;
+  await sql`
+    delete from turnout_rows
+    where state_code = ${input.stateCode}
+      and election_year = 2024
+  `.catch(() => []);
+  await sql`
+    delete from historical_result_rows
+    where state_code = ${input.stateCode}
+  `;
+
+  const reviewRows = appData.reviewCharts?.metadata?.rows ?? [];
+  let storedReviewRows = 0;
+
+  for (const [index, row] of reviewRows.entries()) {
+    if (!row.county) {
+      continue;
+    }
+
+    const county = normalizeCountyName(row.county);
+    const localUnit = localUnitForRow(row) || `review-row-${index + 1}`;
+
+    await sql`
+      insert into review_rows (
+        import_run_id,
+        state_code,
+        election_year,
+        jurisdiction_code,
+        jurisdiction_name,
+        local_unit,
+        level,
+        harris_votes,
+        trump_votes,
+        total_votes,
+        harris_share,
+        trump_share,
+        dem_dropoff,
+        rep_dropoff,
+        metrics,
+        source_document_id
+      )
+      values (
+        ${importRun.id},
+        ${input.stateCode},
+        2024,
+        ${jurisdictionCode(input.stateCode, county)},
+        ${county},
+        ${localUnit},
+        'local',
+        ${numberOrNull(row.harris)},
+        ${numberOrNull(row.trump)},
+        ${numberOrNull(row.total)},
+        ${numberOrNull(row.harrisShare)},
+        ${numberOrNull(row.trumpShare)},
+        ${numberOrNull(row.demDropoff)},
+        ${numberOrNull(row.repDropoff)},
+        ${JSON.stringify(row)}::jsonb,
+        ${source.id}
+      )
+      on conflict (state_code, election_year, jurisdiction_code, local_unit)
+      do update set
+        import_run_id = excluded.import_run_id,
+        jurisdiction_name = excluded.jurisdiction_name,
+        level = excluded.level,
+        harris_votes = excluded.harris_votes,
+        trump_votes = excluded.trump_votes,
+        total_votes = excluded.total_votes,
+        harris_share = excluded.harris_share,
+        trump_share = excluded.trump_share,
+        dem_dropoff = excluded.dem_dropoff,
+        rep_dropoff = excluded.rep_dropoff,
+        metrics = excluded.metrics,
+        source_document_id = excluded.source_document_id
+    `;
+    storedReviewRows += 1;
+  }
+
+  let storedTurnoutRows = 0;
+  for (const [index, row] of (appData.turnoutData ?? []).entries()) {
+    if (!row.county || !Number.isFinite(row.ballotsCast)) {
+      continue;
+    }
+
+    const county = normalizeCountyName(row.county);
+    const localUnit = localUnitForRow(row) || `turnout-row-${index + 1}`;
+
+    await sql`
+      insert into turnout_rows (
+        import_run_id,
+        state_code,
+        election_year,
+        jurisdiction_code,
+        jurisdiction_name,
+        level,
+        ballots_cast,
+        registered_voters,
+        turnout_pct,
+        denominator_note,
+        warning_required,
+        source_document_id
+      )
+      values (
+        ${importRun.id},
+        ${input.stateCode},
+        2024,
+        ${jurisdictionCode(input.stateCode, `${county}-${localUnit}`)},
+        ${[county, localUnit].filter(Boolean).join(" / ")},
+        ${row.sourceLevel ?? "local"},
+        ${row.ballotsCast ?? 0},
+        ${numberOrNull(row.registeredVoters)},
+        ${numberOrNull(row.turnoutPct)},
+        ${row.registrationDenominatorTiming ?? row.notes ?? "Not recorded"},
+        ${Boolean(row.warningRequired)},
+        ${source.id}
+      )
+      on conflict (state_code, election_year, level, jurisdiction_code)
+      do update set
+        import_run_id = excluded.import_run_id,
+        jurisdiction_name = excluded.jurisdiction_name,
+        ballots_cast = excluded.ballots_cast,
+        registered_voters = excluded.registered_voters,
+        turnout_pct = excluded.turnout_pct,
+        denominator_note = excluded.denominator_note,
+        warning_required = excluded.warning_required,
+        source_document_id = excluded.source_document_id
+    `;
+    storedTurnoutRows += 1;
+  }
+
+  let storedHistoricalRows = 0;
+  for (const series of appData.historicalBaseline ?? []) {
+    if (!series.electionYear || !series.id || !Array.isArray(series.rows)) {
+      continue;
+    }
+
+    for (const [index, row] of series.rows.entries()) {
+      if (!row.county) {
+        continue;
+      }
+
+      const county = normalizeCountyName(row.county);
+      const localUnit = localUnitForRow(row) || `historical-row-${index + 1}`;
+
+      await sql`
+        insert into historical_result_rows (
+          import_run_id,
+          state_code,
+          election_year,
+          source_id,
+          source_level,
+          row_method,
+          jurisdiction_code,
+          jurisdiction_name,
+          local_unit,
+          dem_votes,
+          rep_votes,
+          other_votes,
+          total_votes,
+          metrics,
+          source_document_id
+        )
+        values (
+          ${importRun.id},
+          ${input.stateCode},
+          ${series.electionYear},
+          ${series.sourceId ?? series.id},
+          ${series.sourceLevel ?? "local"},
+          ${series.rowMethod ?? ""},
+          ${jurisdictionCode(input.stateCode, county)},
+          ${county},
+          ${localUnit},
+          ${numberOrNull(row.dem)},
+          ${numberOrNull(row.rep)},
+          ${numberOrNull(row.other)},
+          ${numberOrNull(row.total)},
+          ${JSON.stringify(row)}::jsonb,
+          ${source.id}
+        )
+        on conflict (state_code, election_year, source_id, jurisdiction_code, local_unit)
+        do update set
+          import_run_id = excluded.import_run_id,
+          source_level = excluded.source_level,
+          row_method = excluded.row_method,
+          jurisdiction_name = excluded.jurisdiction_name,
+          dem_votes = excluded.dem_votes,
+          rep_votes = excluded.rep_votes,
+          other_votes = excluded.other_votes,
+          total_votes = excluded.total_votes,
+          metrics = excluded.metrics,
+          source_document_id = excluded.source_document_id
+      `;
+      storedHistoricalRows += 1;
+    }
+  }
 
   for (const indicator of indicators) {
     await sql`
@@ -721,6 +1039,9 @@ export async function importLegacyState(input: LegacyImportInput) {
         counties: rows.length,
         resultRows,
         indicatorRows: indicators.length,
+        reviewRows: storedReviewRows,
+        turnoutRows: storedTurnoutRows,
+        historicalRows: storedHistoricalRows,
         totalVotes,
         storedCounties,
         storedRows,
@@ -737,6 +1058,9 @@ export async function importLegacyState(input: LegacyImportInput) {
     counties: rows.length,
     resultRows,
     indicatorRows: indicators.length,
+    reviewRows: storedReviewRows,
+    turnoutRows: storedTurnoutRows,
+    historicalRows: storedHistoricalRows,
     totalVotes: validation.totalVotes,
     storedCounties,
     storedRows,

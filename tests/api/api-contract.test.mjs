@@ -22,6 +22,9 @@ test("public API route contracts exist", () => {
     "src/app/api/coverage/route.ts",
     "src/app/api/indicators/route.ts",
     "src/app/api/completeness/route.ts",
+    "src/app/api/review-rows/route.ts",
+    "src/app/api/turnout/route.ts",
+    "src/app/api/historical-baselines/route.ts",
   ];
 
   for (const route of expectedRoutes) {
@@ -54,7 +57,7 @@ test("public completeness report exists for national readiness", () => {
   assert.match(dataAccess, /listCompletenessReport/);
   assert.match(dataAccess, /sourcesMissingUrls/);
   assert.match(overview, /Completeness API/);
-  assert.match(overview, /Need source attention/);
+  assert.match(overview, /Raw review rows/);
 });
 
 test("source URLs remain first-class in explorer UX", () => {
@@ -73,6 +76,21 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /indicatorExplanation/);
   assert.match(tabs, /advisory indicator/);
   assert.match(tabs, /severityBucket/);
+});
+
+test("raw review turnout and historical APIs are exposed", () => {
+  const schema = readFileSync("src/db/schema.ts", "utf8");
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+
+  assert.match(schema, /reviewRows/);
+  assert.match(schema, /historicalResultRows/);
+  assert.match(dataAccess, /listReviewRows/);
+  assert.match(dataAccess, /listTurnoutRows/);
+  assert.match(dataAccess, /listHistoricalResultRows/);
+  assert.match(tabs, /\/api\/review-rows/);
+  assert.match(tabs, /\/api\/turnout/);
+  assert.match(tabs, /\/api\/historical-baselines/);
 });
 
 test("seed data carries required provenance fields", () => {

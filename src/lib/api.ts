@@ -33,10 +33,13 @@ export function apiEnvelope<T>(data: T, meta: Record<string, unknown> = {}) {
 export {
   getCoverageSummary,
   listCompletenessReport,
+  listHistoricalResultRows,
   listIndicators,
   listElections,
   listImportRuns,
+  listReviewRows,
   listResults,
   listSources,
   listStates,
+  listTurnoutRows,
 } from "./data-access";
