@@ -168,6 +168,7 @@ export function WorkspaceTabs({
   const readyCapabilities = capabilityEntries.filter(([, value]) => value);
   const selectedImportRuns = importRuns.filter((run) => run.state === selectedStateCode);
   const latestRun = selectedImportRuns[0];
+  const sourcesWithoutUrls = sources.filter((source) => !source.sourceUrl.trim());
   const validationChecks = [
     {
       detail: `${coverage?.loadedJurisdictions ?? results.length} loaded jurisdictions`,
@@ -561,6 +562,37 @@ export function WorkspaceTabs({
                 <span>{sources.length} source document records</span>
               </div>
               <FileCheck2 aria-hidden size={18} />
+            </div>
+            <div className="source-links-panel">
+              <div>
+                <strong>Official Source Links</strong>
+                <span>
+                  Every imported source record for {stateName} should include an auditable URL or documented
+                  artifact reference.
+                </span>
+              </div>
+              {sourcesWithoutUrls.length > 0 && (
+                <p className="source-warning">
+                  {sourcesWithoutUrls.length} source record{sourcesWithoutUrls.length === 1 ? "" : "s"} missing a URL.
+                </p>
+              )}
+              <ul>
+                {sources.map((source) => (
+                  <li key={`${source.id}-link`}>
+                    <div>
+                      <strong>{source.category}</strong>
+                      <span>{source.title}</span>
+                    </div>
+                    {source.sourceUrl ? (
+                      <a href={source.sourceUrl} rel="noreferrer" target="_blank">
+                        Open official source
+                      </a>
+                    ) : (
+                      <span className="pending">URL missing</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
             <div className="source-card-grid">
               {sources.map((source) => (

@@ -963,6 +963,68 @@ td {
   grid-template-columns: repeat(2, minmax(240px, 1fr));
 }
 
+.source-links-panel {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.source-links-panel > div {
+  display: grid;
+  gap: 5px;
+}
+
+.source-links-panel > div span,
+.source-links-panel li span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.source-links-panel ul {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.source-links-panel li {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 12px;
+}
+
+.source-links-panel li div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.source-links-panel a {
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 12px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.source-warning {
+  background: rgba(240, 195, 106, 0.11);
+  border: 1px solid rgba(240, 195, 106, 0.38);
+  border-radius: 8px;
+  color: var(--gold);
+  margin: 0;
+  padding: 10px 12px;
+}
+
 .source-card p,
 .method-list p {
   color: var(--muted);
@@ -1144,6 +1206,7 @@ td {
   .review-summary-grid,
   .capability-grid,
   .source-card-grid,
+  .source-links-panel li,
   .method-list,
   .export-grid,
   .export-summary-grid,
