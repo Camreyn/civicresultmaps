@@ -452,6 +452,62 @@ input {
   min-height: 360px;
 }
 
+.map-control-row {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 12px 16px;
+}
+
+.mode-control {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: inline-flex;
+  padding: 3px;
+}
+
+.mode-control button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  min-height: 30px;
+  padding: 0 10px;
+}
+
+.mode-control button:hover {
+  color: var(--foreground);
+}
+
+.mode-control button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.map-readout {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.map-readout strong {
+  font-size: 14px;
+}
+
+.map-readout span {
+  color: var(--muted);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .map-wrap {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
@@ -473,20 +529,37 @@ input {
     opacity 160ms ease;
 }
 
-.county-map path:hover {
+.county-map path:hover,
+.map-shape.selected {
   opacity: 0.76;
 }
 
+.map-shape {
+  cursor: pointer;
+}
+
+.map-shape:focus-visible {
+  outline: 0;
+  stroke: var(--accent);
+  stroke-width: 3px;
+}
+
 .map-flag-marker {
+  pointer-events: none;
+}
+
+.map-flag-marker circle {
+  fill: rgba(240, 195, 106, 0.92);
+  stroke: #101112;
+  stroke-width: 2px;
+}
+
+.map-flag-marker text {
   dominant-baseline: central;
   fill: #101112;
   font-family: var(--font-code);
-  font-size: 16px;
+  font-size: 10px;
   font-weight: 900;
-  paint-order: stroke;
-  pointer-events: none;
-  stroke: var(--gold);
-  stroke-width: 5px;
   text-anchor: middle;
 }
 
@@ -1060,6 +1133,10 @@ td {
   }
 
   .table-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .map-control-row {
     grid-template-columns: 1fr;
   }
 

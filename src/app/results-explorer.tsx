@@ -12,6 +12,7 @@ type ResultsExplorerProps = {
 };
 
 type SortKey = "jurisdiction" | "winner" | "total" | "margin";
+type MapMode = "winner" | "margin" | "volume";
 
 type GeoFeature = {
   geometry: {
@@ -187,12 +188,20 @@ function coordinateBounds(points: number[][]) {
   );
 }
 
-function countyFill(row: ResultRow | undefined) {
+function countyFill(row: ResultRow | undefined, mode: MapMode, maxTotalVotes: number) {
   if (!row) {
     return "#2c302e";
   }
 
-  const intensity = Math.min(0.86, Math.max(0.24, row.marginPct / 60));
+  if (mode === "volume") {
+    const intensity = Math.min(0.88, Math.max(0.18, row.totalVotes / Math.max(1, maxTotalVotes)));
+    return `rgba(240, 195, 106, ${intensity})`;
+  }
+
+  const intensity =
+    mode === "margin"
+      ? Math.min(0.92, Math.max(0.14, row.marginPct / 42))
+      : Math.min(0.82, Math.max(0.32, row.marginPct / 60));
 
   if (row.winner === "Harris") {
     return `rgba(130, 184, 255, ${intensity})`;
@@ -208,12 +217,15 @@ function countyFill(row: ResultRow | undefined) {
 export function ResultsExplorer({ countyLabel, indicators, results, selectedState }: ResultsExplorerProps) {
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
+  const [mapMode, setMapMode] = useState<MapMode>("winner");
+  const [selectedMapName, setSelectedMapName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("margin");
 
   useEffect(() => {
     const controller = new AbortController();
     setGeoStatus("loading");
+    setSelectedMapName(null);
 
     fetch(`${geoBaseUrl}/${geoJsonPath(selectedState)}`, {
       signal: controller.signal,
@@ -278,6 +290,18 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
     return coordinateBounds(points);
   }, [features, selectedState]);
 
+  const maxTotalVotes = useMemo(
+    () => results.reduce((max, row) => Math.max(max, row.totalVotes), 0),
+    [results],
+  );
+
+  const selectedMapResult = selectedMapName
+    ? resultsByName.get(normalizeName(selectedMapName))
+    : undefined;
+  const selectedMapIndicators = selectedMapName
+    ? indicatorsByName.get(normalizeName(selectedMapName)) ?? []
+    : [];
+
   const visibleResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return results
@@ -311,6 +335,32 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
           </div>
           <span className="status-pill">{selectedState}</span>
         </div>
+        <div className="map-control-row" aria-label="Map display controls">
+          <div className="mode-control" aria-label="Map display mode">
+            {[
+              ["winner", "Winner"],
+              ["margin", "Margin"],
+              ["volume", "Votes"],
+            ].map(([mode, label]) => (
+              <button
+                aria-pressed={mapMode === mode}
+                key={mode}
+                onClick={() => setMapMode(mode as MapMode)}
+                type="button"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="map-readout">
+            <strong>{selectedMapName ?? "Hover a boundary"}</strong>
+            <span>
+              {selectedMapResult
+                ? `${selectedMapResult.winner} by ${selectedMapResult.marginPct.toFixed(2)}% · ${selectedMapResult.totalVotes.toLocaleString()} votes`
+                : "Winner, margin, and review flags appear here."}
+            </span>
+          </div>
+        </div>
         <div className="map-wrap">
           {geoStatus === "ready" && features.length > 0 ? (
             <svg className="county-map" role="img" viewBox="0 0 960 560">
@@ -322,13 +372,21 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
                 const countyIndicators = indicatorsByName.get(normalizeName(resultName)) ?? [];
                 const rings = polygonRings(feature);
                 const point = centroid(selectedState, feature, bounds);
+                const isSelected = selectedMapName && normalizeName(selectedMapName) === normalizeName(resultName);
                 return (
                   <g key={`${selectedState}-${name}`}>
                     <path
+                      aria-label={`${name}${row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
+                      className={isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
-                      fill={countyFill(row)}
+                      fill={countyFill(row, mapMode, maxTotalVotes)}
+                      onClick={() => setSelectedMapName(resultName)}
+                      onFocus={() => setSelectedMapName(resultName)}
+                      onMouseEnter={() => setSelectedMapName(resultName)}
+                      role="button"
                       stroke="#101112"
                       strokeWidth="1"
+                      tabIndex={0}
                     >
                       <title>
                         {name}: {row ? `${row.winner} by ${row.marginPct.toFixed(2)}%` : "No result row"}
@@ -338,14 +396,12 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
                       </title>
                     </path>
                     {countyIndicators.length > 0 && (
-                      <text
-                        aria-hidden
-                        className="map-flag-marker"
-                        x={point.x.toFixed(2)}
-                        y={point.y.toFixed(2)}
-                      >
-                        !
-                      </text>
+                      <g aria-hidden className="map-flag-marker">
+                        <circle cx={point.x.toFixed(2)} cy={point.y.toFixed(2)} r="9" />
+                        <text x={point.x.toFixed(2)} y={point.y.toFixed(2)}>
+                          {countyIndicators.length}
+                        </text>
+                      </g>
                     )}
                   </g>
                 );
@@ -360,8 +416,15 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
         <div className="map-legend" aria-label="Map legend">
           <span className="legend-item legend-harris">Harris</span>
           <span className="legend-item legend-trump">Trump</span>
-          <span className="legend-item legend-flag">Review flag</span>
-          <span className="legend-note">Darker fill means wider margin.</span>
+          <span className="legend-item legend-flag">Review count</span>
+          <span className="legend-note">
+            {mapMode === "volume" ? "Gold intensity shows total vote volume." : "Darker fill means wider margin."}
+          </span>
+          {selectedMapIndicators.length > 0 && (
+            <span className="legend-note">
+              {selectedMapIndicators.length} advisory flag{selectedMapIndicators.length === 1 ? "" : "s"} selected
+            </span>
+          )}
         </div>
       </div>
 
