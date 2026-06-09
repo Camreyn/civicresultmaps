@@ -1,14 +1,9 @@
 import {
-  Activity,
   CheckCircle2,
   CircleDashed,
-  Database,
-  FileCheck2,
-  GitBranch,
-  ShieldCheck,
 } from "lucide-react";
-import { ResultsExplorer } from "./results-explorer";
 import { StateSwitcher } from "./state-switcher";
+import { WorkspaceTabs } from "./workspace-tabs";
 import {
   getCoverageSummary,
   listImportRuns,
@@ -25,10 +20,6 @@ type HomeProps = {
     state?: string;
   }>;
 };
-
-function formatCapability(key: string) {
-  return key.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
-}
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
@@ -107,115 +98,17 @@ export default async function Home({ searchParams }: HomeProps) {
             </div>
           </section>
 
-          <div className="content-grid">
-            <ResultsExplorer
-              countyLabel={selected?.countyLabel ?? "County"}
-              indicators={indicators}
-              results={results}
-              selectedState={selectedStateCode}
-            />
-            <div className="detail-stack">
-              <section className="panel" aria-label="Provenance">
-                <div className="panel-header">
-                  <div>
-                    <h2>Source Provenance</h2>
-                    <span>Authority, parser, and confidence</span>
-                  </div>
-                  <FileCheck2 aria-hidden size={18} />
-                </div>
-                <ul className="source-list">
-                  {sources.map((source) => (
-                    <li key={source.id}>
-                      <strong>{source.title}</strong>
-                      <span>{source.confidence}</span>
-                      <span className="mono">{source.parser}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section className="panel" aria-label="Coverage flags">
-                <div className="panel-header">
-                  <div>
-                    <h2>Coverage</h2>
-                    <span>Loaded platform capabilities</span>
-                  </div>
-                  <ShieldCheck aria-hidden size={18} />
-                </div>
-                <ul className="flag-list">
-                  {coverage &&
-                    Object.entries(coverage.capabilities)
-                      .filter(([key]) => key !== "notes")
-                      .map(([key, value]) => (
-                        <li key={key}>
-                          <strong>{formatCapability(key)}</strong>
-                          <span className={value ? "available" : "pending"}>
-                            {value ? "Available" : "Pending"}
-                          </span>
-                        </li>
-                      ))}
-                </ul>
-              </section>
-            </div>
-          </div>
-
-          <div className="content-grid" style={{ marginTop: 18 }}>
-            <section className="panel" aria-label="Public API">
-              <div className="panel-header">
-                <div>
-                  <h2>Public API</h2>
-                  <span>Read endpoints for the selected view</span>
-                </div>
-                <Database aria-hidden size={18} />
-              </div>
-              <ul className="api-list">
-                <li>
-                  <strong>States</strong>
-                  <code>/api/states</code>
-                </li>
-                <li>
-                  <strong>Results</strong>
-                  <code>/api/results?state={selectedStateCode}&amp;year=2024&amp;level=county</code>
-                </li>
-                <li>
-                  <strong>Sources</strong>
-                  <code>/api/sources?state={selectedStateCode}&amp;year=2024</code>
-                </li>
-                <li>
-                  <strong>Coverage</strong>
-                  <code>/api/coverage?state={selectedStateCode}&amp;year=2024</code>
-                </li>
-              </ul>
-            </section>
-
-            <section className="panel" aria-label="Import runs">
-              <div className="panel-header">
-                <div>
-                  <h2>Import Runs</h2>
-                  <span>ETL status and parser history</span>
-                </div>
-                {importRuns.length ? <GitBranch aria-hidden size={18} /> : <Activity aria-hidden size={18} />}
-              </div>
-              <ul className="source-list">
-                {importRuns.length ? (
-                  importRuns.map((run) => (
-                    <li key={run.id}>
-                      <strong>{run.id}</strong>
-                      <span>
-                        {run.state} {run.electionYear} through {run.parser}
-                      </span>
-                      <span className="mono">{run.status}</span>
-                    </li>
-                  ))
-                ) : (
-                  <li>
-                    <strong>No import run records yet</strong>
-                    <span>Promotion records will appear here as the ETL pipeline expands.</span>
-                  </li>
-                )}
-              </ul>
-            </section>
-          </div>
+          <WorkspaceTabs
+            coverage={coverage}
+            countyLabel={selected?.countyLabel ?? "County"}
+            importRuns={importRuns}
+            indicators={indicators}
+            results={results}
+            selectedState={selected}
+            selectedStateCode={selectedStateCode}
+            sources={sources}
+            totalVotes={totalVotes}
+          />
         </section>
       </div>
     </main>
