@@ -97,6 +97,14 @@ function flattenPositions(coordinates: unknown): number[][] {
   return coordinates.flatMap((item) => flattenPositions(item));
 }
 
+function mapCoordinate(state: string, [lon, lat]: number[]) {
+  if (state === "AK" && lon > 0) {
+    return [lon - 360, lat];
+  }
+
+  return [lon, lat];
+}
+
 function polygonRings(feature: GeoFeature): number[][][] {
   if (feature.geometry.type === "Polygon") {
     return feature.geometry.coordinates as number[][][];
@@ -105,7 +113,11 @@ function polygonRings(feature: GeoFeature): number[][][] {
   return (feature.geometry.coordinates as number[][][][]).flat();
 }
 
-function makePath(rings: number[][][], bounds: { maxX: number; maxY: number; minX: number; minY: number }) {
+function makePath(
+  state: string,
+  rings: number[][][],
+  bounds: { maxX: number; maxY: number; minX: number; minY: number },
+) {
   const width = bounds.maxX - bounds.minX || 1;
   const height = bounds.maxY - bounds.minY || 1;
   const scale = Math.min(920 / width, 520 / height);
@@ -115,7 +127,8 @@ function makePath(rings: number[][][], bounds: { maxX: number; maxY: number; min
   return rings
     .map((ring) =>
       ring
-        .map(([lon, lat], index) => {
+        .map((coordinate, index) => {
+          const [lon, lat] = mapCoordinate(state, coordinate);
           const x = offsetX + (lon - bounds.minX) * scale;
           const y = offsetY + (bounds.maxY - lat) * scale;
           return `${index === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)}`;
@@ -139,8 +152,14 @@ function projectPoint([lon, lat]: number[], bounds: { maxX: number; maxY: number
   };
 }
 
-function centroid(feature: GeoFeature, bounds: { maxX: number; maxY: number; minX: number; minY: number }) {
-  const positions = flattenPositions(feature.geometry.coordinates);
+function centroid(
+  state: string,
+  feature: GeoFeature,
+  bounds: { maxX: number; maxY: number; minX: number; minY: number },
+) {
+  const positions = flattenPositions(feature.geometry.coordinates).map((coordinate) =>
+    mapCoordinate(state, coordinate),
+  );
   const lon = average(positions.map(([x]) => x));
   const lat = average(positions.map(([, y]) => y));
   return projectPoint([lon, lat], bounds);
@@ -234,7 +253,11 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
   }, [indicators]);
 
   const bounds = useMemo(() => {
-    const points = features.flatMap((feature) => flattenPositions(feature.geometry.coordinates));
+    const points = features.flatMap((feature) =>
+      flattenPositions(feature.geometry.coordinates).map((coordinate) =>
+        mapCoordinate(selectedState, coordinate),
+      ),
+    );
     const lons = points.map(([lon]) => lon);
     const lats = points.map(([, lat]) => lat);
 
@@ -244,7 +267,7 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
       minX: Math.min(...lons),
       minY: Math.min(...lats),
     };
-  }, [features]);
+  }, [features, selectedState]);
 
   const visibleResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -289,11 +312,11 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
                 const row = resultsByName.get(normalizeName(resultName));
                 const countyIndicators = indicatorsByName.get(normalizeName(resultName)) ?? [];
                 const rings = polygonRings(feature);
-                const point = centroid(feature, bounds);
+                const point = centroid(selectedState, feature, bounds);
                 return (
                   <g key={`${selectedState}-${name}`}>
                     <path
-                      d={makePath(rings, bounds)}
+                      d={makePath(selectedState, rings, bounds)}
                       fill={countyFill(row)}
                       stroke="#101112"
                       strokeWidth="1"
