@@ -24,6 +24,13 @@ test("legacy importer parses static app-data bundles", () => {
   assert.match(importer, /on conflict \(contest_id, level, jurisdiction_code, candidate_name, party\)/);
 });
 
+test("legacy catalog uses state-specific Wisconsin bundle", () => {
+  const catalog = readFileSync("src/db/legacy-catalog.ts", "utf8");
+
+  assert.match(catalog, /\$\{stateCode\.toLowerCase\(\)\}-app-data\.js/);
+  assert.doesNotMatch(catalog, /stateCode === "WI" \? "app-data\.js"/);
+});
+
 test("analysis indicators are exposed through schema and API", () => {
   const schema = readFileSync("src/db/schema.ts", "utf8");
   const route = readFileSync("src/app/api/indicators/route.ts", "utf8");

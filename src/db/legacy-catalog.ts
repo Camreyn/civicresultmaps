@@ -65,7 +65,7 @@ const authorityOverrides: Partial<Record<StateCode, string>> = {
 type StateCode = keyof typeof stateNames;
 
 function bundleFile(stateCode: StateCode) {
-  return stateCode === "WI" ? "app-data.js" : `${stateCode.toLowerCase()}-app-data.js`;
+  return `${stateCode.toLowerCase()}-app-data.js`;
 }
 
 function legacyInputForState(stateCode: StateCode): LegacyImportInput {
