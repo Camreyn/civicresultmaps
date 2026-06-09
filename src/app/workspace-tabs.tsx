@@ -16,7 +16,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ResultsExplorer } from "./results-explorer";
 import type {
   AnalysisIndicator,
@@ -123,6 +123,22 @@ export function WorkspaceTabs({
   const [activeTab, setActiveTab] = useState<TabKey>("map");
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab") as TabKey | null;
+    if (tab && tabs.some((item) => item.key === tab)) {
+      setActiveTab(tab);
+    }
+  }, []);
+
+  const selectTab = (tab: TabKey) => {
+    setActiveTab(tab);
+    const url = new URL(window.location.href);
+    url.searchParams.set("state", selectedStateCode);
+    url.searchParams.set("tab", tab);
+    window.history.replaceState(null, "", url);
+  };
 
   const indicatorTypes = useMemo(
     () => Array.from(new Set(indicators.map((indicator) => indicator.type))).sort(),
@@ -275,7 +291,7 @@ export function WorkspaceTabs({
               aria-selected={activeTab === tab.key}
               className="tab-button"
               key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => selectTab(tab.key)}
               type="button"
             >
               <Icon aria-hidden size={16} />
@@ -293,6 +309,7 @@ export function WorkspaceTabs({
               indicators={indicators}
               results={results}
               selectedState={selectedStateCode}
+              sources={sources}
             />
             <div className="detail-stack">
               <section className="panel" aria-label="Provenance">

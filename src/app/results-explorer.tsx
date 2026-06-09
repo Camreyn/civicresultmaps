@@ -1,14 +1,15 @@
 "use client";
 
-import { ArrowDownAZ, ArrowUpDown, Search } from "lucide-react";
+import { ArrowDownAZ, ArrowUpDown, ExternalLink, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import type { AnalysisIndicator, ResultRow } from "@/lib/types";
+import type { AnalysisIndicator, ResultRow, SourceSummary } from "@/lib/types";
 
 type ResultsExplorerProps = {
   countyLabel: string;
   indicators: AnalysisIndicator[];
   results: ResultRow[];
   selectedState: string;
+  sources: SourceSummary[];
 };
 
 type SortKey = "jurisdiction" | "winner" | "total" | "margin";
@@ -214,12 +215,19 @@ function countyFill(row: ResultRow | undefined, mode: MapMode, maxTotalVotes: nu
   return `rgba(240, 195, 106, ${intensity})`;
 }
 
-export function ResultsExplorer({ countyLabel, indicators, results, selectedState }: ResultsExplorerProps) {
+export function ResultsExplorer({
+  countyLabel,
+  indicators,
+  results,
+  selectedState,
+  sources,
+}: ResultsExplorerProps) {
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [mapMode, setMapMode] = useState<MapMode>("winner");
   const [selectedMapName, setSelectedMapName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("margin");
 
   useEffect(() => {
@@ -281,6 +289,14 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
     return map;
   }, [indicators]);
 
+  const sourceById = useMemo(() => {
+    const map = new Map<string, SourceSummary>();
+    for (const source of sources) {
+      map.set(source.id, source);
+    }
+    return map;
+  }, [sources]);
+
   const bounds = useMemo(() => {
     const points = features.flatMap((feature) =>
       flattenPositions(feature.geometry.coordinates).map((coordinate) =>
@@ -301,11 +317,32 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
   const selectedMapIndicators = selectedMapName
     ? indicatorsByName.get(normalizeName(selectedMapName)) ?? []
     : [];
+  const selectedSource = selectedMapResult ? sourceById.get(selectedMapResult.sourceId) : undefined;
+
+  const mapJoinStats = useMemo(() => {
+    const featureNames = new Set(
+      features.map((feature) => normalizeName(resultNameForFeature(selectedState, featureName(feature)))),
+    );
+    const missingResults = features
+      .map((feature) => resultNameForFeature(selectedState, featureName(feature)))
+      .filter((name) => !resultsByName.has(normalizeName(name)))
+      .sort((a, b) => a.localeCompare(b));
+    const unmappedRows = results
+      .filter((row) => !featureNames.has(normalizeName(row.jurisdictionName)))
+      .map((row) => row.jurisdictionName)
+      .sort((a, b) => a.localeCompare(b));
+
+    return { missingResults, unmappedRows };
+  }, [features, results, resultsByName, selectedState]);
 
   const visibleResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return results
       .filter((row) => {
+        if (showFlaggedOnly && !(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).length) {
+          return false;
+        }
+
         if (!normalizedQuery) {
           return true;
         }
@@ -317,7 +354,10 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
         );
       })
       .sort((a, b) => compareRows(a, b, sortKey));
-  }, [query, results, sortKey]);
+  }, [indicatorsByJurisdiction, query, results, showFlaggedOnly, sortKey]);
+
+  const hasMapJoinWarnings =
+    geoStatus === "ready" && (mapJoinStats.missingResults.length > 0 || mapJoinStats.unmappedRows.length > 0);
 
   return (
     <section className="results-explorer" aria-label={`${selectedState} result explorer`}>
@@ -361,6 +401,15 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
             </span>
           </div>
         </div>
+        {hasMapJoinWarnings && (
+          <div className="map-warning" role="status">
+            <strong>Map join needs review</strong>
+            <span>
+              {mapJoinStats.missingResults.length} boundaries lack result rows;{" "}
+              {mapJoinStats.unmappedRows.length} result rows are not on the map.
+            </span>
+          </div>
+        )}
         <div className="map-wrap">
           {geoStatus === "ready" && features.length > 0 ? (
             <svg className="county-map" role="img" viewBox="0 0 960 560">
@@ -382,6 +431,12 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
                       fill={countyFill(row, mapMode, maxTotalVotes)}
                       onClick={() => setSelectedMapName(resultName)}
                       onFocus={() => setSelectedMapName(resultName)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setSelectedMapName(resultName);
+                        }
+                      }}
                       onMouseEnter={() => setSelectedMapName(resultName)}
                       role="button"
                       stroke="#101112"
@@ -426,6 +481,62 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
             </span>
           )}
         </div>
+        <aside className="jurisdiction-drawer" aria-label="Selected jurisdiction details">
+          <div>
+            <span className="section-label">Selected Jurisdiction</span>
+            <h3>{selectedMapName ?? "Select a boundary"}</h3>
+            <p>
+              {selectedMapResult
+                ? `${selectedMapResult.winner} won by ${selectedMapResult.marginVotes.toLocaleString()} votes (${selectedMapResult.marginPct.toFixed(2)}%).`
+                : "Click a county, district, or reporting boundary to inspect vote totals, review indicators, and source provenance."}
+            </p>
+          </div>
+          {selectedMapResult && (
+            <>
+              <dl className="jurisdiction-stats">
+                <div>
+                  <dt>Harris</dt>
+                  <dd>{(selectedMapResult.votes.Harris ?? 0).toLocaleString()}</dd>
+                </div>
+                <div>
+                  <dt>Trump</dt>
+                  <dd>{(selectedMapResult.votes.Trump ?? 0).toLocaleString()}</dd>
+                </div>
+                <div>
+                  <dt>Total</dt>
+                  <dd>{selectedMapResult.totalVotes.toLocaleString()}</dd>
+                </div>
+                <div>
+                  <dt>Flags</dt>
+                  <dd>{selectedMapIndicators.length}</dd>
+                </div>
+              </dl>
+              <div className="drawer-source">
+                <strong>{selectedSource?.title ?? selectedMapResult.sourceId}</strong>
+                <span>{selectedSource?.authority ?? "Source record not matched in this API response."}</span>
+                {selectedSource?.sourceUrl && (
+                  <a href={selectedSource.sourceUrl} rel="noreferrer" target="_blank">
+                    <ExternalLink aria-hidden size={14} />
+                    Open source
+                  </a>
+                )}
+              </div>
+              <div className="drawer-indicators">
+                {selectedMapIndicators.length ? (
+                  selectedMapIndicators.map((indicator) => (
+                    <article key={indicator.id}>
+                      <span className="indicator-pill">! {indicator.label}</span>
+                      <strong>{indicator.summary}</strong>
+                      <small>{indicator.detail}</small>
+                    </article>
+                  ))
+                ) : (
+                  <span className="no-indicator">No advisory indicators loaded for this jurisdiction.</span>
+                )}
+              </div>
+            </>
+          )}
+        </aside>
       </div>
 
       <section className="panel" aria-label={`${selectedState} county results table`}>
@@ -465,6 +576,15 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
               <option value="winner">Winner</option>
             </select>
           </label>
+          <label className="toggle-label" htmlFor="flagged-only">
+            <input
+              checked={showFlaggedOnly}
+              id="flagged-only"
+              onChange={(event) => setShowFlaggedOnly(event.target.checked)}
+              type="checkbox"
+            />
+            Flagged only
+          </label>
         </div>
         <div className="table-wrap">
           <table>
@@ -477,7 +597,7 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
                 <th>Trump</th>
                 <th>Total</th>
                 <th>Margin</th>
-                <th>Source</th>
+                <th>Inspect</th>
               </tr>
             </thead>
             <tbody>
@@ -506,7 +626,15 @@ export function ResultsExplorer({ countyLabel, indicators, results, selectedStat
                   <td className="mono">
                     {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)
                   </td>
-                  <td className="mono">{row.sourceId}</td>
+                  <td className="mono">
+                    <button
+                      className="table-link-button"
+                      onClick={() => setSelectedMapName(row.jurisdictionName)}
+                      type="button"
+                    >
+                      Inspect
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
