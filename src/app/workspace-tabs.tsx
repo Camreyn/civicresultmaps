@@ -4,6 +4,7 @@ import {
   Activity,
   BarChart3,
   BookOpen,
+  CheckCircle2,
   Database,
   Download,
   FileCheck2,
@@ -12,6 +13,7 @@ import {
   MapIcon,
   Search,
   ShieldCheck,
+  TriangleAlert,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useMemo, useState } from "react";
@@ -59,6 +61,26 @@ function statusLabel(value: boolean | undefined) {
 
 function indicatorLabel(type: string) {
   return type.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function pct(value: number, total: number) {
+  return total > 0 ? `${((value / total) * 100).toFixed(2)}%` : "0.00%";
+}
+
+function summaryValue(value: unknown) {
+  if (typeof value === "number") {
+    return value.toLocaleString();
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "yes" : "no";
+  }
+
+  return "";
 }
 
 function csvEscape(value: unknown) {
@@ -127,6 +149,52 @@ export function WorkspaceTabs({
     }
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
   }, [indicators]);
+
+  const candidateTotals = useMemo(() => {
+    const totals = new Map<string, number>();
+    for (const row of results) {
+      for (const [candidate, votes] of Object.entries(row.votes)) {
+        totals.set(candidate, (totals.get(candidate) ?? 0) + votes);
+      }
+    }
+    return Array.from(totals.entries()).sort((a, b) => b[1] - a[1]);
+  }, [results]);
+
+  const topIndicators = filteredIndicators.slice(0, 6);
+  const capabilityEntries = coverage
+    ? Object.entries(coverage.capabilities).filter(([key]) => key !== "notes")
+    : [];
+  const pendingCapabilities = capabilityEntries.filter(([, value]) => !value);
+  const readyCapabilities = capabilityEntries.filter(([, value]) => value);
+  const selectedImportRuns = importRuns.filter((run) => run.state === selectedStateCode);
+  const latestRun = selectedImportRuns[0];
+  const validationChecks = [
+    {
+      detail: `${coverage?.loadedJurisdictions ?? results.length} loaded jurisdictions`,
+      label: "Result rows loaded",
+      passed: results.length > 0,
+    },
+    {
+      detail: `${sources.length} source document record${sources.length === 1 ? "" : "s"}`,
+      label: "Source provenance",
+      passed: sources.length > 0,
+    },
+    {
+      detail: coverage?.validation.passed ? "Coverage summary passes" : "Coverage summary has gaps",
+      label: "Coverage validation",
+      passed: Boolean(coverage?.validation.passed),
+    },
+    {
+      detail: "Covered by npm run validate:maps before release",
+      label: "Map join validation",
+      passed: Boolean(selectedState?.capabilities.map),
+    },
+    {
+      detail: indicators.length ? `${indicators.length} indicators loaded` : "Waiting on review rows",
+      label: "Review data",
+      passed: indicators.length > 0,
+    },
+  ];
 
   const stateName = selectedState?.name ?? selectedStateCode;
   const exportSlug = `${selectedStateCode.toLowerCase()}-2024-president`;
@@ -255,15 +323,45 @@ export function WorkspaceTabs({
                 </div>
                 <ul className="flag-list">
                   {coverage &&
-                    Object.entries(coverage.capabilities)
-                      .filter(([key]) => key !== "notes")
-                      .map(([key, value]) => (
-                        <li key={key}>
-                          <strong>{formatCapability(key)}</strong>
-                          <span className={value ? "available" : "pending"}>{statusLabel(Boolean(value))}</span>
-                        </li>
-                      ))}
+                    capabilityEntries.map(([key, value]) => (
+                      <li key={key}>
+                        <strong>{formatCapability(key)}</strong>
+                        <span className={value ? "available" : "pending"}>{statusLabel(Boolean(value))}</span>
+                      </li>
+                    ))}
                 </ul>
+              </section>
+
+              <section className="panel" aria-label="Statewide vote breakdown">
+                <div className="panel-header">
+                  <div>
+                    <h2>State Snapshot</h2>
+                    <span>Candidate totals and vote share</span>
+                  </div>
+                  <Database aria-hidden size={18} />
+                </div>
+                <div className="candidate-bars">
+                  {candidateTotals.map(([candidate, votes]) => (
+                    <div className="candidate-bar-row" key={candidate}>
+                      <div>
+                        <strong>{candidate}</strong>
+                        <span>
+                          {votes.toLocaleString()} · {pct(votes, totalVotes)}
+                        </span>
+                      </div>
+                      <i
+                        className={
+                          candidate === "Harris"
+                            ? "candidate-bar-harris"
+                            : candidate === "Trump"
+                              ? "candidate-bar-trump"
+                              : "candidate-bar-other"
+                        }
+                        style={{ width: `${Math.max(4, totalVotes ? (votes / totalVotes) * 100 : 0)}%` }}
+                      />
+                    </div>
+                  ))}
+                </div>
               </section>
             </div>
           </div>
@@ -324,29 +422,43 @@ export function WorkspaceTabs({
               </label>
             </div>
             {indicators.length ? (
-              <div className="table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Jurisdiction</th>
-                      <th>Flag</th>
-                      <th>Severity</th>
-                      <th>Summary</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredIndicators.map((indicator) => (
-                      <tr key={indicator.id}>
-                        <td>{indicator.jurisdictionName}</td>
-                        <td>
-                          <span className="indicator-pill">! {indicator.label}</span>
-                        </td>
-                        <td className="mono">{indicator.severity.toFixed(3)}</td>
-                        <td>{indicator.summary}</td>
+              <div className="review-layout">
+                <div className="priority-list">
+                  {topIndicators.map((indicator) => (
+                    <article className="priority-card" key={indicator.id}>
+                      <div>
+                        <span className="indicator-pill">! {indicator.label}</span>
+                        <strong>{indicator.jurisdictionName}</strong>
+                      </div>
+                      <p>{indicator.summary}</p>
+                      <small>{indicator.detail}</small>
+                    </article>
+                  ))}
+                </div>
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Jurisdiction</th>
+                        <th>Flag</th>
+                        <th>Severity</th>
+                        <th>Summary</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {filteredIndicators.map((indicator) => (
+                        <tr key={indicator.id}>
+                          <td>{indicator.jurisdictionName}</td>
+                          <td>
+                            <span className="indicator-pill">! {indicator.label}</span>
+                          </td>
+                          <td className="mono">{indicator.severity.toFixed(3)}</td>
+                          <td>{indicator.summary}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               <div className="empty-state">
@@ -394,15 +506,40 @@ export function WorkspaceTabs({
               <ListChecks aria-hidden size={18} />
             </div>
             <div className="capability-grid">
-              {coverage &&
-                Object.entries(coverage.capabilities)
-                  .filter(([key]) => key !== "notes")
-                  .map(([key, value]) => (
-                    <article className={value ? "capability-card ready" : "capability-card pending-card"} key={key}>
-                      <span>{formatCapability(key)}</span>
-                      <strong>{statusLabel(Boolean(value))}</strong>
-                    </article>
+              {capabilityEntries.map(([key, value]) => (
+                <article className={value ? "capability-card ready" : "capability-card pending-card"} key={key}>
+                  <span>{formatCapability(key)}</span>
+                  <strong>{statusLabel(Boolean(value))}</strong>
+                </article>
+              ))}
+            </div>
+            <div className="planner-grid">
+              <article>
+                <strong>Ready now</strong>
+                <ul>
+                  {readyCapabilities.map(([key]) => (
+                    <li key={key}>{formatCapability(key)}</li>
                   ))}
+                </ul>
+              </article>
+              <article>
+                <strong>Waiting on data</strong>
+                <ul>
+                  {pendingCapabilities.length ? (
+                    pendingCapabilities.map(([key]) => <li key={key}>{formatCapability(key)}</li>)
+                  ) : (
+                    <li>All tracked capabilities are marked available.</li>
+                  )}
+                </ul>
+              </article>
+              <article>
+                <strong>Latest selected-state import</strong>
+                <span>
+                  {latestRun
+                    ? `${latestRun.status} · ${dateLabel(latestRun.finishedAt ?? latestRun.startedAt)}`
+                    : "No import run found for this state."}
+                </span>
+              </article>
             </div>
             <div className="planner-note">
               <strong>Follow-up for data production</strong>
@@ -436,6 +573,8 @@ export function WorkspaceTabs({
                     <dd>{source.authority}</dd>
                     <dt>Parser</dt>
                     <dd>{source.parser}</dd>
+                    <dt>Artifact</dt>
+                    <dd>{source.localArtifact || "Not recorded"}</dd>
                     <dt>Status</dt>
                     <dd>{source.status}</dd>
                   </dl>
@@ -476,6 +615,25 @@ export function WorkspaceTabs({
                 <strong>Private writes</strong>
                 <p>Importer writes are token-gated and disabled in production unless a controlled backfill is running.</p>
               </article>
+              <article>
+                <strong>Current data gaps</strong>
+                <p>Review graphs, turnout, and historical baselines only become active when the corresponding rows exist in the imported state bundle.</p>
+              </article>
+              <article>
+                <strong>Exports</strong>
+                <p>CSV exports are generated in the browser from the same selected-state data shown in the interface.</p>
+              </article>
+            </div>
+            <div className="validation-list">
+              {validationChecks.map((check) => (
+                <article className={check.passed ? "validation-pass" : "validation-warn"} key={check.label}>
+                  {check.passed ? <CheckCircle2 aria-hidden size={17} /> : <TriangleAlert aria-hidden size={17} />}
+                  <div>
+                    <strong>{check.label}</strong>
+                    <span>{check.detail}</span>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
         </div>
@@ -508,6 +666,24 @@ export function WorkspaceTabs({
                 <Download aria-hidden size={16} />
                 Coverage CSV
               </button>
+            </div>
+            <div className="export-summary-grid">
+              <article>
+                <span>Rows</span>
+                <strong>{results.length}</strong>
+              </article>
+              <article>
+                <span>Indicators</span>
+                <strong>{indicators.length}</strong>
+              </article>
+              <article>
+                <span>Sources</span>
+                <strong>{sources.length}</strong>
+              </article>
+              <article>
+                <span>Total votes</span>
+                <strong>{totalVotes.toLocaleString()}</strong>
+              </article>
             </div>
             <ul className="api-list">
               <li>
@@ -551,6 +727,15 @@ export function WorkspaceTabs({
                     {run.parser} · {dateLabel(run.startedAt)}
                   </span>
                   <span className="mono">{run.status}</span>
+                  {Object.keys(run.summary).length > 0 && (
+                    <span>
+                      {Object.entries(run.summary)
+                        .slice(0, 5)
+                        .map(([key, value]) => `${key}: ${summaryValue(value)}`)
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>

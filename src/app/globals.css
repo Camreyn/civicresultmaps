@@ -660,6 +660,7 @@ td {
 .review-summary-grid,
 .capability-grid,
 .export-grid,
+.export-summary-grid,
 .source-card-grid,
 .method-list {
   display: grid;
@@ -673,6 +674,7 @@ td {
 
 .review-summary-grid article,
 .capability-card,
+.export-summary-grid article,
 .source-card,
 .method-list article {
   background: var(--panel-strong);
@@ -685,15 +687,59 @@ td {
 
 .review-summary-grid span,
 .capability-card span,
+.export-summary-grid span,
 .source-card span {
   color: var(--muted);
   font-size: 12px;
 }
 
 .review-summary-grid strong,
-.capability-card strong {
+.capability-card strong,
+.export-summary-grid strong {
   font-family: var(--font-code);
   font-size: 20px;
+}
+
+.candidate-bars {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.candidate-bar-row {
+  display: grid;
+  gap: 7px;
+}
+
+.candidate-bar-row div {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.candidate-bar-row span {
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 12px;
+}
+
+.candidate-bar-row i {
+  border-radius: 999px;
+  display: block;
+  height: 7px;
+}
+
+.candidate-bar-harris {
+  background: var(--blue);
+}
+
+.candidate-bar-trump {
+  background: var(--red);
+}
+
+.candidate-bar-other {
+  background: var(--gold);
 }
 
 .capability-grid {
@@ -722,6 +768,37 @@ td {
   display: grid;
   gap: 6px;
   padding: 16px;
+}
+
+.planner-grid {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  padding: 16px;
+}
+
+.planner-grid article {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+}
+
+.planner-grid ul {
+  color: var(--muted);
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.planner-grid span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .empty-state {
@@ -754,6 +831,41 @@ td {
   display: grid;
   gap: 12px;
   padding: 16px;
+}
+
+.review-layout {
+  display: grid;
+  gap: 0;
+}
+
+.priority-list {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  padding: 16px;
+}
+
+.priority-card {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.priority-card div {
+  display: grid;
+  gap: 8px;
+}
+
+.priority-card p,
+.priority-card small {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
 }
 
 .mini-bar-row {
@@ -826,6 +938,11 @@ td {
   grid-template-columns: repeat(4, minmax(130px, 1fr));
 }
 
+.export-summary-grid {
+  border-top: 1px solid var(--line);
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+}
+
 .export-grid button {
   align-items: center;
   background: var(--panel-strong);
@@ -843,6 +960,41 @@ td {
 .export-grid button:hover {
   border-color: var(--accent-line);
   color: var(--accent);
+}
+
+.validation-list {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.validation-list article {
+  align-items: start;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+}
+
+.validation-pass svg {
+  color: var(--accent);
+}
+
+.validation-warn svg {
+  color: var(--gold);
+}
+
+.validation-list div {
+  display: grid;
+  gap: 4px;
+}
+
+.validation-list span {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .source-list,
@@ -916,7 +1068,10 @@ td {
   .capability-grid,
   .source-card-grid,
   .method-list,
-  .export-grid {
+  .export-grid,
+  .export-summary-grid,
+  .planner-grid,
+  .priority-list {
     grid-template-columns: 1fr;
   }
 
