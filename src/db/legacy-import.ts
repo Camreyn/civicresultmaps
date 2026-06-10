@@ -525,6 +525,94 @@ export async function cleanupLegacyState(input: Pick<LegacyImportInput, "stateCo
   };
 }
 
+export async function refreshLegacyStateIndicators(input: LegacyImportInput) {
+  const databaseUrl = getDatabaseUrl();
+
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL or POSTGRES_URL is required to refresh legacy indicators.");
+  }
+
+  const response = await fetch(input.bundleUrl);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch legacy bundle: ${response.status} ${response.statusText}`);
+  }
+
+  const appData = parseLegacyBundle(await response.text());
+  const indicators = analysisIndicatorsForState(input, appData);
+  const hasReviewCharts = (appData.reviewCharts?.metadata?.rows?.length ?? 0) > 0;
+  const sql = neon(databaseUrl);
+
+  await ensureAnalysisIndicatorsTable(sql);
+
+  const [source] = await sql`
+    select id
+    from source_documents
+    where slug = ${input.sourceSlug}
+    limit 1
+  `;
+
+  await sql`
+    update capability_flags
+    set review_graphs = ${hasReviewCharts}
+    where state_code = ${input.stateCode}
+      and election_year = 2024
+  `;
+
+  await sql`
+    delete from analysis_indicators
+    where state_code = ${input.stateCode}
+      and election_year = 2024
+  `;
+
+  for (const indicator of indicators) {
+    await sql`
+      insert into analysis_indicators (
+        state_code,
+        election_year,
+        jurisdiction_code,
+        jurisdiction_name,
+        level,
+        indicator_type,
+        severity,
+        label,
+        summary,
+        detail,
+        metrics,
+        source_document_id
+      )
+      values (
+        ${input.stateCode},
+        2024,
+        ${indicator.jurisdictionCode},
+        ${indicator.county},
+        'county',
+        ${indicator.type},
+        ${indicator.severity},
+        ${indicator.label},
+        ${indicator.summary},
+        ${indicator.detail},
+        ${JSON.stringify(indicator.metrics)}::jsonb,
+        ${source?.id ?? null}
+      )
+      on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
+      do update set
+        jurisdiction_name = excluded.jurisdiction_name,
+        severity = excluded.severity,
+        summary = excluded.summary,
+        detail = excluded.detail,
+        metrics = excluded.metrics,
+        source_document_id = excluded.source_document_id
+    `;
+  }
+
+  return {
+    state: input.stateCode,
+    hasReviewCharts,
+    indicatorRows: indicators.length,
+    reviewRows: appData.reviewCharts?.metadata?.rows?.length ?? 0,
+  };
+}
+
 export async function importLegacyState(input: LegacyImportInput) {
   const databaseUrl = getDatabaseUrl();
 

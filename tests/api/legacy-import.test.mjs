@@ -17,6 +17,7 @@ test("legacy importer parses static app-data bundles", () => {
   assert.match(importer, /insert into import_runs/);
   assert.match(importer, /status = 'promoted'/);
   assert.match(importer, /cleanupLegacyState/);
+  assert.match(importer, /refreshLegacyStateIndicators/);
   assert.match(importer, /delete from result_rows/);
   assert.match(importer, /analysisIndicatorsForState/);
   assert.match(importer, /analysis_indicators/);
@@ -50,7 +51,9 @@ test("legacy import route is token protected and allowlisted", () => {
   assert.match(route, /IMPORT_TOKEN/);
   assert.match(route, /legacyImportCatalog/);
   assert.match(route, /action === "cleanup"/);
+  assert.match(route, /action === "refresh-indicators"/);
   assert.match(route, /cleanupLegacyState/);
+  assert.match(route, /refreshLegacyStateIndicators/);
   assert.match(catalog, /legacyImportStates/);
   assert.match(catalog, /WA/);
   assert.match(catalog, /WI/);
