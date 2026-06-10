@@ -1246,6 +1246,15 @@ td {
   padding: 14px 16px;
 }
 
+.history-controls + .history-controls {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.graph-controls {
+  background: rgba(255, 255, 255, 0.015);
+}
+
 .history-controls > span {
   color: var(--muted);
   font-size: 12px;
@@ -1419,6 +1428,65 @@ td {
 
 .history-other {
   background: var(--gold);
+}
+
+.fingerprint-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+}
+
+.fingerprint-panel {
+  background: #111312;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.fingerprint-panel > strong {
+  color: var(--foreground);
+  font-family: var(--font-code);
+  font-size: 13px;
+}
+
+.fingerprint-panel svg {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.fingerprint-axis {
+  stroke: #59605b;
+  stroke-width: 1;
+}
+
+.fingerprint-midline {
+  stroke: rgba(244, 241, 234, 0.22);
+  stroke-dasharray: 4 4;
+  stroke-width: 1;
+}
+
+.fingerprint-label {
+  fill: var(--muted);
+  font-family: var(--font-code);
+  font-size: 9px;
+}
+
+.fingerprint-dem-dot,
+.fingerprint-rep-dot {
+  fill-opacity: 0.72;
+  stroke: #101112;
+  stroke-width: 1;
+}
+
+.fingerprint-dem-dot {
+  fill: #4f8df7;
+}
+
+.fingerprint-rep-dot {
+  fill: #ef5b4f;
 }
 
 .empty-panel,
@@ -1930,6 +1998,7 @@ td {
   .review-summary-grid,
   .history-summary-grid,
   .history-chart-grid,
+  .fingerprint-grid,
   .capability-grid,
   .source-card-grid,
   .source-links-panel li,

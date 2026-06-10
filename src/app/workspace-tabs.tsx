@@ -44,6 +44,7 @@ type WorkspaceTabsProps = {
 };
 
 type TabKey = "map" | "review" | "history" | "planner" | "data" | "methodology" | "exports" | "imports" | "contact";
+type HistoricalGraphType = "share" | "margin" | "movement" | "klimek";
 
 const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>; key: TabKey; label: string }> = [
   { icon: MapIcon, key: "map", label: "Map" },
@@ -161,6 +162,12 @@ export function WorkspaceTabs({
 }: WorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("map");
   const [enabledHistoricalYears, setEnabledHistoricalYears] = useState<number[]>([]);
+  const [enabledHistoricalGraphs, setEnabledHistoricalGraphs] = useState<HistoricalGraphType[]>([
+    "share",
+    "margin",
+    "movement",
+    "klimek",
+  ]);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
 
@@ -280,6 +287,12 @@ export function WorkspaceTabs({
   const filteredHistoricalRows = historicalRows.filter((row) => visibleHistoricalYearSet.has(row.electionYear));
   const visibleHistoricalRows = filteredHistoricalRows.slice(0, 150);
   const maxHistoricalMargin = Math.max(1, ...filteredHistoricalSummaries.map((summary) => summary.marginPct));
+  const historicalGraphOptions: Array<{ key: HistoricalGraphType; label: string }> = [
+    { key: "share", label: "Vote Share" },
+    { key: "margin", label: "Margin Trend" },
+    { key: "movement", label: "County Movement" },
+    { key: "klimek", label: "K&S Fingerprints" },
+  ];
   const historicalCountyTrends = useMemo(() => {
     const rowsByCounty = new Map<string, HistoricalResultRowSummary[]>();
 
@@ -304,6 +317,23 @@ export function WorkspaceTabs({
       .filter((trend) => trend.rows.length >= 2)
       .sort((a, b) => Math.abs(b.demShareChange) - Math.abs(a.demShareChange))
       .slice(0, 12);
+  }, [filteredHistoricalRows]);
+  const historicalRowsByYear = useMemo(() => {
+    const rowsByYear = new Map<number, HistoricalResultRowSummary[]>();
+
+    for (const row of filteredHistoricalRows) {
+      rowsByYear.set(row.electionYear, [...(rowsByYear.get(row.electionYear) ?? []), row]);
+    }
+
+    return Array.from(rowsByYear.entries())
+      .map(([year, rows]) => ({
+        maxTotalVotes: Math.max(1, ...rows.map((row) => row.totalVotes ?? 0)),
+        rows: rows
+          .filter((row) => (row.totalVotes ?? 0) > 0)
+          .sort((a, b) => (b.totalVotes ?? 0) - (a.totalVotes ?? 0)),
+        year,
+      }))
+      .sort((a, b) => a.year - b.year);
   }, [filteredHistoricalRows]);
   const topIndicators = filteredIndicators.slice(0, 6);
   const capabilityEntries = coverage
@@ -678,6 +708,25 @@ export function WorkspaceTabs({
                     </label>
                   ))}
                 </div>
+                <div className="history-controls graph-controls" aria-label="Historical graph toggles">
+                  <span>Show graphs</span>
+                  {historicalGraphOptions.map((option) => (
+                    <label key={option.key}>
+                      <input
+                        checked={enabledHistoricalGraphs.includes(option.key)}
+                        onChange={(event) => {
+                          setEnabledHistoricalGraphs((graphs) =>
+                            event.target.checked
+                              ? [...graphs, option.key]
+                              : graphs.filter((entry) => entry !== option.key),
+                          );
+                        }}
+                        type="checkbox"
+                      />
+                      {option.label}
+                    </label>
+                  ))}
+                </div>
                 <div className="history-summary-grid">
                   {filteredHistoricalSummaries.map((summary) => (
                     <article key={summary.year}>
@@ -711,83 +760,136 @@ export function WorkspaceTabs({
                   ))}
                 </div>
                 <div className="history-chart-grid">
-                  <article className="history-chart-card">
-                    <div>
-                      <strong>Statewide Vote Share</strong>
-                      <span>Democratic, Republican, and other share by enabled year</span>
-                    </div>
-                    <div className="history-share-chart" role="img" aria-label="Statewide historical vote share chart">
-                      {filteredHistoricalSummaries.map((summary) => {
-                        const demShare = summary.totalVotes > 0 ? (summary.demVotes / summary.totalVotes) * 100 : 0;
-                        const repShare = summary.totalVotes > 0 ? (summary.repVotes / summary.totalVotes) * 100 : 0;
-                        const otherShare = Math.max(0, 100 - demShare - repShare);
-                        return (
-                          <div className="history-share-row" key={summary.year}>
-                            <span>{summary.year}</span>
-                            <div>
-                              <i className="history-dem" style={{ width: `${demShare}%` }} title={`Dem ${demShare.toFixed(2)}%`} />
-                              <i className="history-rep" style={{ width: `${repShare}%` }} title={`Rep ${repShare.toFixed(2)}%`} />
-                              <i className="history-other" style={{ width: `${otherShare}%` }} title={`Other ${otherShare.toFixed(2)}%`} />
+                  {enabledHistoricalGraphs.includes("share") && (
+                    <article className="history-chart-card">
+                      <div>
+                        <strong>Statewide Vote Share</strong>
+                        <span>Democratic, Republican, and other share by enabled year</span>
+                      </div>
+                      <div className="history-share-chart" role="img" aria-label="Statewide historical vote share chart">
+                        {filteredHistoricalSummaries.map((summary) => {
+                          const demShare = summary.totalVotes > 0 ? (summary.demVotes / summary.totalVotes) * 100 : 0;
+                          const repShare = summary.totalVotes > 0 ? (summary.repVotes / summary.totalVotes) * 100 : 0;
+                          const otherShare = Math.max(0, 100 - demShare - repShare);
+                          return (
+                            <div className="history-share-row" key={summary.year}>
+                              <span>{summary.year}</span>
+                              <div>
+                                <i className="history-dem" style={{ width: `${demShare}%` }} title={`Dem ${demShare.toFixed(2)}%`} />
+                                <i className="history-rep" style={{ width: `${repShare}%` }} title={`Rep ${repShare.toFixed(2)}%`} />
+                                <i className="history-other" style={{ width: `${otherShare}%` }} title={`Other ${otherShare.toFixed(2)}%`} />
+                              </div>
+                              <strong>
+                                D {demShare.toFixed(1)}% / R {repShare.toFixed(1)}%
+                              </strong>
                             </div>
-                            <strong>
-                              D {demShare.toFixed(1)}% / R {repShare.toFixed(1)}%
-                            </strong>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </article>
+                          );
+                        })}
+                      </div>
+                    </article>
+                  )}
 
-                  <article className="history-chart-card">
-                    <div>
-                      <strong>Margin Trend</strong>
-                      <span>Winner margin as a share of total votes</span>
-                    </div>
-                    <div className="history-margin-chart" role="img" aria-label="Historical winner margin chart">
-                      {filteredHistoricalSummaries.map((summary) => {
-                        const width = Math.max(4, (summary.marginPct / maxHistoricalMargin) * 100);
-                        return (
-                          <div className="history-margin-row" key={summary.year}>
-                            <span>{summary.year}</span>
-                            <div>
-                              <i
-                                className={summary.winner === "Democratic" ? "history-dem" : "history-rep"}
-                                style={{ width: `${width}%` }}
-                              />
+                  {enabledHistoricalGraphs.includes("margin") && (
+                    <article className="history-chart-card">
+                      <div>
+                        <strong>Margin Trend</strong>
+                        <span>Winner margin as a share of total votes</span>
+                      </div>
+                      <div className="history-margin-chart" role="img" aria-label="Historical winner margin chart">
+                        {filteredHistoricalSummaries.map((summary) => {
+                          const width = Math.max(4, (summary.marginPct / maxHistoricalMargin) * 100);
+                          return (
+                            <div className="history-margin-row" key={summary.year}>
+                              <span>{summary.year}</span>
+                              <div>
+                                <i
+                                  className={summary.winner === "Democratic" ? "history-dem" : "history-rep"}
+                                  style={{ width: `${width}%` }}
+                                />
+                              </div>
+                              <strong>{summary.marginPct.toFixed(2)}%</strong>
                             </div>
-                            <strong>{summary.marginPct.toFixed(2)}%</strong>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </article>
+                          );
+                        })}
+                      </div>
+                    </article>
+                  )}
 
-                  <article className="history-chart-card wide">
-                    <div>
-                      <strong>Largest County Dem-Share Movement</strong>
-                      <span>Change between earliest and latest enabled historical year</span>
-                    </div>
-                    <div className="history-swing-list">
-                      {historicalCountyTrends.map((trend) => {
-                        const width = Math.min(100, Math.max(5, Math.abs(trend.demShareChange) * 4));
-                        return (
-                          <div className="history-swing-row" key={trend.county}>
-                            <span>{trend.county}</span>
-                            <div>
-                              <i
-                                className={trend.demShareChange >= 0 ? "history-dem" : "history-rep"}
-                                style={{ width: `${width}%` }}
-                              />
+                  {enabledHistoricalGraphs.includes("movement") && (
+                    <article className="history-chart-card wide">
+                      <div>
+                        <strong>Largest County Dem-Share Movement</strong>
+                        <span>Change between earliest and latest enabled historical year</span>
+                      </div>
+                      <div className="history-swing-list">
+                        {historicalCountyTrends.map((trend) => {
+                          const width = Math.min(100, Math.max(5, Math.abs(trend.demShareChange) * 4));
+                          return (
+                            <div className="history-swing-row" key={trend.county}>
+                              <span>{trend.county}</span>
+                              <div>
+                                <i
+                                  className={trend.demShareChange >= 0 ? "history-dem" : "history-rep"}
+                                  style={{ width: `${width}%` }}
+                                />
+                              </div>
+                              <strong>
+                                {trend.demShareChange >= 0 ? "+" : ""}
+                                {trend.demShareChange.toFixed(2)} pts
+                              </strong>
                             </div>
-                            <strong>
-                              {trend.demShareChange >= 0 ? "+" : ""}
-                              {trend.demShareChange.toFixed(2)} pts
-                            </strong>
+                          );
+                        })}
+                      </div>
+                    </article>
+                  )}
+
+                  {enabledHistoricalGraphs.includes("klimek") && (
+                    <article className="history-chart-card wide">
+                      <div>
+                        <strong>Klimek & Shpilkin-Style Fingerprints</strong>
+                        <span>
+                          Separate year charts plotting Democratic share against county vote volume. True turnout-based
+                          fingerprints will use turnout denominators once those are imported.
+                        </span>
+                      </div>
+                      <div className="fingerprint-grid">
+                        {historicalRowsByYear.map((yearGroup) => (
+                          <div className="fingerprint-panel" key={yearGroup.year}>
+                            <strong>{yearGroup.year}</strong>
+                            <svg role="img" viewBox="0 0 260 170" aria-label={`${yearGroup.year} Klimek and Shpilkin-style fingerprint`}>
+                              <line className="fingerprint-axis" x1="34" x2="244" y1="136" y2="136" />
+                              <line className="fingerprint-axis" x1="34" x2="34" y1="16" y2="136" />
+                              <line className="fingerprint-midline" x1="139" x2="139" y1="16" y2="136" />
+                              <text className="fingerprint-label" x="34" y="154">0% D</text>
+                              <text className="fingerprint-label" x="128" y="154">50%</text>
+                              <text className="fingerprint-label" x="220" y="154">100%</text>
+                              <text className="fingerprint-label" x="38" y="24">High volume</text>
+                              {yearGroup.rows.map((row) => {
+                                const demShare = row.totalVotes ? ((row.demVotes ?? 0) / row.totalVotes) * 100 : 0;
+                                const x = 34 + (demShare / 100) * 210;
+                                const y = 136 - Math.sqrt((row.totalVotes ?? 0) / yearGroup.maxTotalVotes) * 112;
+                                const radius = Math.max(2.4, Math.min(7.5, Math.sqrt((row.totalVotes ?? 0) / yearGroup.maxTotalVotes) * 7));
+                                return (
+                                  <circle
+                                    className={demShare >= 50 ? "fingerprint-dem-dot" : "fingerprint-rep-dot"}
+                                    cx={x.toFixed(2)}
+                                    cy={y.toFixed(2)}
+                                    key={row.id}
+                                    r={radius.toFixed(2)}
+                                  >
+                                    <title>
+                                      {row.jurisdictionName}: D {demShare.toFixed(2)}%, total {(row.totalVotes ?? 0).toLocaleString()}
+                                    </title>
+                                  </circle>
+                                );
+                              })}
+                            </svg>
                           </div>
-                        );
-                      })}
-                    </div>
-                  </article>
+                        ))}
+                      </div>
+                    </article>
+                  )}
                 </div>
                 <div className="table-wrap">
                   <table>
