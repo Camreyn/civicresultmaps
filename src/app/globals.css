@@ -179,13 +179,41 @@ input {
   margin-bottom: 6px;
 }
 
-.overview-head a {
+.overview-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.overview-actions a,
+.overview-actions button {
   border: 1px solid var(--accent-line);
   border-radius: 999px;
+  background: transparent;
   color: var(--accent);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
+  min-height: 32px;
   padding: 7px 10px;
   white-space: nowrap;
+}
+
+.overview-actions button:hover,
+.overview-actions a:hover {
+  background: var(--accent-soft);
+}
+
+.overview-actions svg {
+  transition: transform 160ms ease;
+}
+
+.overview-actions svg.is-open {
+  transform: rotate(180deg);
 }
 
 .overview-metrics {
@@ -683,6 +711,53 @@ input {
     #121413;
   min-height: 320px;
   padding: 16px;
+  position: relative;
+}
+
+.map-zoom-controls {
+  align-items: center;
+  background: rgba(23, 25, 24, 0.88);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: inline-flex;
+  gap: 4px;
+  padding: 5px;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 2;
+}
+
+.map-zoom-controls button {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: inline-flex;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+.map-zoom-controls button:hover:not(:disabled) {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.map-zoom-controls button:disabled {
+  color: var(--quiet);
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.map-zoom-controls span {
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 11px;
+  min-width: 42px;
+  text-align: center;
 }
 
 .map-warning {
@@ -717,6 +792,13 @@ input {
 .county-map path:hover,
 .map-shape.selected {
   opacity: 0.76;
+}
+
+.map-shape.pinned {
+  filter: drop-shadow(0 0 8px rgba(53, 199, 163, 0.72));
+  opacity: 0.9;
+  stroke: var(--accent);
+  stroke-width: 3px;
 }
 
 .map-shape {
@@ -853,12 +935,22 @@ input {
   width: 10px;
 }
 
-.legend-harris::before {
-  background: var(--blue);
+.legend-harris-strong::before {
+  background: rgba(130, 184, 255, 0.92);
 }
 
-.legend-trump::before {
-  background: var(--red);
+.legend-harris-weak::before {
+  background: rgba(130, 184, 255, 0.32);
+  border: 1px solid rgba(130, 184, 255, 0.72);
+}
+
+.legend-trump-weak::before {
+  background: rgba(255, 143, 126, 0.32);
+  border: 1px solid rgba(255, 143, 126, 0.72);
+}
+
+.legend-trump-strong::before {
+  background: rgba(255, 143, 126, 0.92);
 }
 
 .legend-volume::before {
@@ -946,6 +1038,68 @@ input {
 
 .toggle-label input {
   accent-color: var(--accent);
+}
+
+.selected-result-callout {
+  align-items: center;
+  background: linear-gradient(90deg, rgba(53, 199, 163, 0.16), rgba(130, 184, 255, 0.08));
+  border-bottom: 1px solid var(--accent-line);
+  border-top: 1px solid var(--accent-line);
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  padding: 14px 16px;
+}
+
+.selected-result-callout > div:first-child {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.selected-result-callout strong {
+  font-size: 18px;
+}
+
+.selected-result-callout span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.selected-result-actions {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.selected-result-actions a,
+.selected-result-actions button {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+}
+
+.selected-result-actions a:hover,
+.selected-result-actions button:hover {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+tr.preview-row td {
+  background: rgba(53, 199, 163, 0.05);
+}
+
+tr.selected-row td {
+  background: rgba(53, 199, 163, 0.14);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .table-link-button {
@@ -1591,9 +1745,16 @@ td {
   }
 
   .topbar-actions,
-  .dashboard-head {
+  .dashboard-head,
+  .overview-head,
+  .selected-result-callout {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .overview-actions,
+  .selected-result-actions {
+    justify-content: flex-start;
   }
 
   .sidebar {

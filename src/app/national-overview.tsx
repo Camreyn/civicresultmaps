@@ -1,4 +1,7 @@
-import { CheckCircle2, CircleDashed, Database, FileWarning, MapIcon } from "lucide-react";
+"use client";
+
+import { CheckCircle2, ChevronDown, CircleDashed, Database, FileWarning, MapIcon } from "lucide-react";
+import { useState } from "react";
 import type { CompletenessSummary } from "@/lib/types";
 
 type NationalOverviewProps = {
@@ -21,6 +24,7 @@ function statusClass(status: CompletenessSummary["status"]) {
 }
 
 export function NationalOverview({ report, year }: NationalOverviewProps) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const statesWithResults = report.filter((state) => state.resultRows > 0).length;
   const completeStates = report.filter((state) => state.status === "complete").length;
   const statesWithMap = report.filter((state) => state.capabilities.map).length;
@@ -33,36 +37,51 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
           <p className="section-label">National Overview</p>
           <h2>{year} data readiness</h2>
         </div>
-        <a href={`/api/completeness?year=${year}`} target="_blank" rel="noreferrer">
-          Completeness API
-        </a>
+        <div className="overview-actions">
+          <button
+            aria-controls="national-overview-body"
+            aria-expanded={!isCollapsed}
+            onClick={() => setIsCollapsed((value) => !value)}
+            type="button"
+          >
+            <ChevronDown aria-hidden className={isCollapsed ? "" : "is-open"} size={16} />
+            {isCollapsed ? "Expand" : "Collapse"}
+          </button>
+          <a href={`/api/completeness?year=${year}`} target="_blank" rel="noreferrer">
+            Completeness API
+          </a>
+        </div>
       </div>
 
-      <div className="overview-metrics">
-        <article>
-          <Database aria-hidden size={18} />
-          <span>States with results</span>
-          <strong>{statesWithResults} / {report.length}</strong>
-        </article>
-        <article>
-          <CheckCircle2 aria-hidden size={18} />
-          <span>Complete review states</span>
-          <strong>{completeStates}</strong>
-        </article>
-        <article>
-          <MapIcon aria-hidden size={18} />
-          <span>Map-ready states</span>
-          <strong>{statesWithMap}</strong>
-        </article>
-        <article>
-          <FileWarning aria-hidden size={18} />
-          <span>Raw review rows</span>
-          <strong>{rawReviewRows.toLocaleString()}</strong>
-        </article>
-      </div>
+      {!isCollapsed && (
+        <div id="national-overview-body">
+          <div className="overview-metrics">
+            <article>
+              <Database aria-hidden size={18} />
+              <span>States with results</span>
+              <strong>
+                {statesWithResults} / {report.length}
+              </strong>
+            </article>
+            <article>
+              <CheckCircle2 aria-hidden size={18} />
+              <span>Complete review states</span>
+              <strong>{completeStates}</strong>
+            </article>
+            <article>
+              <MapIcon aria-hidden size={18} />
+              <span>Map-ready states</span>
+              <strong>{statesWithMap}</strong>
+            </article>
+            <article>
+              <FileWarning aria-hidden size={18} />
+              <span>Raw review rows</span>
+              <strong>{rawReviewRows.toLocaleString()}</strong>
+            </article>
+          </div>
 
-      <div className="overview-table-wrap">
-        <table className="overview-table">
+          <div className="overview-table-wrap">
+            <table className="overview-table">
           <thead>
             <tr>
               <th>State</th>
@@ -113,8 +132,10 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+            </table>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

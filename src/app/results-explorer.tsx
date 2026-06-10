@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownAZ, ArrowUpDown, ExternalLink, Search } from "lucide-react";
+import { ArrowDownAZ, ArrowUpDown, ExternalLink, RotateCcw, Search, X, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { AnalysisIndicator, ResultRow, SourceSummary } from "@/lib/types";
 
@@ -225,7 +225,9 @@ export function ResultsExplorer({
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [mapMode, setMapMode] = useState<MapMode>("winner");
+  const [mapZoom, setMapZoom] = useState(1);
   const [selectedMapName, setSelectedMapName] = useState<string | null>(null);
+  const [pinnedMapName, setPinnedMapName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("margin");
@@ -234,6 +236,8 @@ export function ResultsExplorer({
     const controller = new AbortController();
     setGeoStatus("loading");
     setSelectedMapName(null);
+    setPinnedMapName(null);
+    setMapZoom(1);
 
     fetch(`${geoBaseUrl}/${geoJsonPath(selectedState)}`, {
       signal: controller.signal,
@@ -311,13 +315,17 @@ export function ResultsExplorer({
     [results],
   );
 
-  const selectedMapResult = selectedMapName
-    ? resultsByName.get(normalizeName(selectedMapName))
+  const activeMapName = pinnedMapName ?? selectedMapName;
+  const selectedMapResult = activeMapName
+    ? resultsByName.get(normalizeName(activeMapName))
     : undefined;
-  const selectedMapIndicators = selectedMapName
-    ? indicatorsByName.get(normalizeName(selectedMapName)) ?? []
+  const selectedMapIndicators = activeMapName
+    ? indicatorsByName.get(normalizeName(activeMapName)) ?? []
     : [];
   const selectedSource = selectedMapResult ? sourceById.get(selectedMapResult.sourceId) : undefined;
+  const pinnedMapResult = pinnedMapName ? resultsByName.get(normalizeName(pinnedMapName)) : undefined;
+  const pinnedMapIndicators = pinnedMapName ? indicatorsByName.get(normalizeName(pinnedMapName)) ?? [] : [];
+  const pinnedSource = pinnedMapResult ? sourceById.get(pinnedMapResult.sourceId) : undefined;
 
   const mapJoinStats = useMemo(() => {
     const featureNames = new Set(
@@ -360,6 +368,16 @@ export function ResultsExplorer({
     geoStatus === "ready" && (mapJoinStats.missingResults.length > 0 || mapJoinStats.unmappedRows.length > 0);
 
   const selectedSourceUrl = (sourceId: string) => sourceById.get(sourceId)?.sourceUrl;
+  const mapTransform = `translate(480 280) scale(${mapZoom}) translate(-480 -280)`;
+
+  const inspectJurisdiction = (name: string) => {
+    setSelectedMapName(name);
+    setPinnedMapName(name);
+  };
+
+  const clearPinnedJurisdiction = () => {
+    setPinnedMapName(null);
+  };
 
   return (
     <section className="results-explorer" aria-label={`${selectedState} result explorer`}>
@@ -395,7 +413,7 @@ export function ResultsExplorer({
             ))}
           </div>
           <div className="map-readout">
-            <strong>{selectedMapName ?? "Hover a boundary"}</strong>
+            <strong>{activeMapName ?? "Hover a boundary"}</strong>
             <span>
               {selectedMapResult
                 ? `${selectedMapResult.winner} by ${selectedMapResult.marginPct.toFixed(2)}% · ${selectedMapResult.totalVotes.toLocaleString()} votes`
@@ -413,9 +431,37 @@ export function ResultsExplorer({
           </div>
         )}
         <div className="map-wrap">
+          <div className="map-zoom-controls" aria-label="Map zoom controls">
+            <button
+              aria-label="Zoom in"
+              disabled={mapZoom >= 3}
+              onClick={() => setMapZoom((zoom) => Math.min(3, Number((zoom + 0.35).toFixed(2))))}
+              type="button"
+            >
+              <ZoomIn aria-hidden size={16} />
+            </button>
+            <button
+              aria-label="Zoom out"
+              disabled={mapZoom <= 1}
+              onClick={() => setMapZoom((zoom) => Math.max(1, Number((zoom - 0.35).toFixed(2))))}
+              type="button"
+            >
+              <ZoomOut aria-hidden size={16} />
+            </button>
+            <button
+              aria-label="Reset zoom"
+              disabled={mapZoom === 1}
+              onClick={() => setMapZoom(1)}
+              type="button"
+            >
+              <RotateCcw aria-hidden size={16} />
+            </button>
+            <span>{Math.round(mapZoom * 100)}%</span>
+          </div>
           {geoStatus === "ready" && features.length > 0 ? (
             <svg className="county-map" role="img" viewBox="0 0 960 560">
               <title>{selectedState} county presidential result map</title>
+              <g transform={mapTransform}>
               {features.map((feature) => {
                 const name = featureName(feature);
                 const resultName = resultNameForFeature(selectedState, name);
@@ -424,19 +470,20 @@ export function ResultsExplorer({
                 const rings = polygonRings(feature);
                 const point = centroid(selectedState, feature, bounds);
                 const isSelected = selectedMapName && normalizeName(selectedMapName) === normalizeName(resultName);
+                const isPinned = pinnedMapName && normalizeName(pinnedMapName) === normalizeName(resultName);
                 return (
                   <g key={`${selectedState}-${name}`}>
                     <path
                       aria-label={`${name}${row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
-                      className={isSelected ? "map-shape selected" : "map-shape"}
+                      className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
                       fill={countyFill(row, mapMode, maxTotalVotes)}
-                      onClick={() => setSelectedMapName(resultName)}
+                      onClick={() => inspectJurisdiction(resultName)}
                       onFocus={() => setSelectedMapName(resultName)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
-                          setSelectedMapName(resultName);
+                          inspectJurisdiction(resultName);
                         }
                       }}
                       onMouseEnter={() => setSelectedMapName(resultName)}
@@ -463,6 +510,7 @@ export function ResultsExplorer({
                   </g>
                 );
               })}
+              </g>
             </svg>
           ) : (
             <div className="map-empty">
@@ -471,14 +519,18 @@ export function ResultsExplorer({
           )}
         </div>
         <div className="map-legend" aria-label="Map legend">
-          <span className="legend-item legend-harris">Harris win</span>
-          <span className="legend-item legend-trump">Trump win</span>
+          {mapMode !== "volume" && (
+            <>
+              <span className="legend-item legend-harris-strong">Strong Harris Win</span>
+              <span className="legend-item legend-harris-weak">Weak Harris Win</span>
+              <span className="legend-item legend-trump-weak">Weak Trump Win</span>
+              <span className="legend-item legend-trump-strong">Strong Trump Win</span>
+            </>
+          )}
           <span className="legend-item legend-volume">Vote volume</span>
           <span className="legend-item legend-missing">No joined result</span>
           <span className="legend-item legend-flag">Advisory count</span>
-          <span className="legend-note">
-            {mapMode === "volume" ? "Gold intensity shows total vote volume." : "Darker fill means wider margin."}
-          </span>
+          {mapMode === "volume" && <span className="legend-note">Gold intensity shows total vote volume.</span>}
           <span className="legend-note">Badge numbers count advisory indicators, not confirmed findings.</span>
           {selectedMapIndicators.length > 0 && (
             <span className="legend-note">
@@ -489,7 +541,7 @@ export function ResultsExplorer({
         <aside className="jurisdiction-drawer" aria-label="Selected jurisdiction details">
           <div>
             <span className="section-label">Selected Jurisdiction</span>
-            <h3>{selectedMapName ?? "Select a boundary"}</h3>
+            <h3>{activeMapName ?? "Select a boundary"}</h3>
             <p>
               {selectedMapResult
                 ? `${selectedMapResult.winner} won by ${selectedMapResult.marginVotes.toLocaleString()} votes (${selectedMapResult.marginPct.toFixed(2)}%).`
@@ -591,6 +643,30 @@ export function ResultsExplorer({
             Flagged only
           </label>
         </div>
+        {pinnedMapName && pinnedMapResult && (
+          <div className="selected-result-callout" role="status">
+            <div>
+              <span className="section-label">Selected From Map</span>
+              <strong>{pinnedMapName}</strong>
+              <span>
+                {pinnedMapResult.winner} by {pinnedMapResult.marginVotes.toLocaleString()} votes (
+                {pinnedMapResult.marginPct.toFixed(2)}%) · {pinnedMapResult.totalVotes.toLocaleString()} total votes
+              </span>
+            </div>
+            <div className="selected-result-actions">
+              <span>{pinnedMapIndicators.length} advisory flags</span>
+              {pinnedSource?.sourceUrl && (
+                <a href={pinnedSource.sourceUrl} rel="noreferrer" target="_blank">
+                  <ExternalLink aria-hidden size={14} />
+                  Source
+                </a>
+              )}
+              <button aria-label="Clear selected county" onClick={clearPinnedJurisdiction} type="button">
+                <X aria-hidden size={15} />
+              </button>
+            </div>
+          </div>
+        )}
         <div className="table-wrap">
           <table>
             <thead>
@@ -607,8 +683,13 @@ export function ResultsExplorer({
               </tr>
             </thead>
             <tbody>
-              {visibleResults.map((row) => (
-                <tr key={row.jurisdictionCode}>
+              {visibleResults.map((row) => {
+                const isPinnedRow = pinnedMapName && normalizeName(row.jurisdictionName) === normalizeName(pinnedMapName);
+                const isPreviewRow =
+                  !isPinnedRow && selectedMapName && normalizeName(row.jurisdictionName) === normalizeName(selectedMapName);
+
+                return (
+                <tr className={isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : undefined} key={row.jurisdictionCode}>
                   <td>{row.jurisdictionName}</td>
                   <td>
                     {(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).length > 0 ? (
@@ -644,14 +725,15 @@ export function ResultsExplorer({
                   <td className="mono">
                     <button
                       className="table-link-button"
-                      onClick={() => setSelectedMapName(row.jurisdictionName)}
+                      onClick={() => inspectJurisdiction(row.jurisdictionName)}
                       type="button"
                     >
                       Inspect
                     </button>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
