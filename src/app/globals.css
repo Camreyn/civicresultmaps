@@ -1218,6 +1218,7 @@ td {
 }
 
 .review-summary-grid,
+.history-summary-grid,
 .capability-grid,
 .export-grid,
 .export-summary-grid,
@@ -1232,7 +1233,12 @@ td {
   grid-template-columns: repeat(3, minmax(140px, 1fr));
 }
 
+.history-summary-grid {
+  grid-template-columns: repeat(4, minmax(170px, 1fr));
+}
+
 .review-summary-grid article,
+.history-summary-grid article,
 .capability-card,
 .export-summary-grid article,
 .source-card,
@@ -1246,6 +1252,7 @@ td {
 }
 
 .review-summary-grid span,
+.history-summary-grid span,
 .capability-card span,
 .export-summary-grid span,
 .source-card span {
@@ -1254,10 +1261,48 @@ td {
 }
 
 .review-summary-grid strong,
+.history-summary-grid strong,
 .capability-card strong,
 .export-summary-grid strong {
   font-family: var(--font-code);
   font-size: 20px;
+}
+
+.history-summary-grid dl {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+
+.history-summary-grid div {
+  display: grid;
+  gap: 2px;
+}
+
+.history-summary-grid dt,
+.history-summary-grid small {
+  color: var(--quiet);
+  font-size: 11px;
+}
+
+.history-summary-grid dd {
+  font-family: var(--font-code);
+  font-size: 12px;
+  margin: 0;
+}
+
+.empty-panel,
+.table-note {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+}
+
+.empty-panel strong {
+  color: var(--foreground);
 }
 
 .candidate-bars {
@@ -1754,6 +1799,7 @@ td {
 
   .review-tools,
   .review-summary-grid,
+  .history-summary-grid,
   .capability-grid,
   .source-card-grid,
   .source-links-panel li,

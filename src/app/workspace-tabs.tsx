@@ -9,6 +9,7 @@ import {
   Download,
   FileCheck2,
   GitBranch,
+  History,
   ListChecks,
   Mail,
   MapIcon,
@@ -22,6 +23,7 @@ import { ResultsExplorer } from "./results-explorer";
 import type {
   AnalysisIndicator,
   CoverageSummary,
+  HistoricalResultRowSummary,
   ImportRunSummary,
   ResultRow,
   SourceSummary,
@@ -31,6 +33,7 @@ import type {
 type WorkspaceTabsProps = {
   coverage: CoverageSummary | null;
   countyLabel: string;
+  historicalRows: HistoricalResultRowSummary[];
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
   results: ResultRow[];
@@ -40,11 +43,12 @@ type WorkspaceTabsProps = {
   totalVotes: number;
 };
 
-type TabKey = "map" | "review" | "planner" | "data" | "methodology" | "exports" | "imports" | "contact";
+type TabKey = "map" | "review" | "history" | "planner" | "data" | "methodology" | "exports" | "imports" | "contact";
 
 const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>; key: TabKey; label: string }> = [
   { icon: MapIcon, key: "map", label: "Map" },
   { icon: BarChart3, key: "review", label: "Review Center" },
+  { icon: History, key: "history", label: "History" },
   { icon: ListChecks, key: "planner", label: "Source Planner" },
   { icon: FileCheck2, key: "data", label: "Data & Sources" },
   { icon: BookOpen, key: "methodology", label: "Methodology" },
@@ -146,6 +150,7 @@ function dateLabel(value: string | null) {
 export function WorkspaceTabs({
   coverage,
   countyLabel,
+  historicalRows,
   importRuns,
   indicators,
   results,
@@ -210,6 +215,54 @@ export function WorkspaceTabs({
     return Array.from(totals.entries()).sort((a, b) => b[1] - a[1]);
   }, [results]);
 
+  const historicalYearSummaries = useMemo(() => {
+    const summaries = new Map<
+      number,
+      {
+        demVotes: number;
+        otherVotes: number;
+        repVotes: number;
+        rows: number;
+        sourceIds: Set<string>;
+        totalVotes: number;
+      }
+    >();
+
+    for (const row of historicalRows) {
+      const summary = summaries.get(row.electionYear) ?? {
+        demVotes: 0,
+        otherVotes: 0,
+        repVotes: 0,
+        rows: 0,
+        sourceIds: new Set<string>(),
+        totalVotes: 0,
+      };
+      summary.demVotes += row.demVotes ?? 0;
+      summary.repVotes += row.repVotes ?? 0;
+      summary.otherVotes += row.otherVotes ?? 0;
+      summary.totalVotes += row.totalVotes ?? 0;
+      summary.rows += 1;
+      summary.sourceIds.add(row.sourceId);
+      summaries.set(row.electionYear, summary);
+    }
+
+    return Array.from(summaries.entries())
+      .map(([year, summary]) => {
+        const marginVotes = Math.abs(summary.demVotes - summary.repVotes);
+        const winner = summary.demVotes >= summary.repVotes ? "Democratic" : "Republican";
+        return {
+          ...summary,
+          marginPct: summary.totalVotes > 0 ? (marginVotes / summary.totalVotes) * 100 : 0,
+          marginVotes,
+          sourceCount: summary.sourceIds.size,
+          winner,
+          year,
+        };
+      })
+      .sort((a, b) => b.year - a.year);
+  }, [historicalRows]);
+
+  const visibleHistoricalRows = historicalRows.slice(0, 150);
   const topIndicators = filteredIndicators.slice(0, 6);
   const capabilityEntries = coverage
     ? Object.entries(coverage.capabilities).filter(([key]) => key !== "notes")
@@ -546,6 +599,101 @@ export function WorkspaceTabs({
                 </div>
               )}
             </div>
+          </section>
+        </div>
+      )}
+
+      {activeTab === "history" && (
+        <div className="tab-panel-content">
+          <section className="panel">
+            <div className="panel-header">
+              <div>
+                <h2>Historical Baselines</h2>
+                <span>
+                  {historicalRows.length
+                    ? `${historicalRows.length.toLocaleString()} rows across ${historicalYearSummaries.length} election years`
+                    : "Waiting on historical rows from the legacy bundle"}
+                </span>
+              </div>
+              <History aria-hidden size={18} />
+            </div>
+            {historicalRows.length ? (
+              <>
+                <div className="history-summary-grid">
+                  {historicalYearSummaries.map((summary) => (
+                    <article key={summary.year}>
+                      <span>{summary.year} President</span>
+                      <strong>{summary.winner}</strong>
+                      <dl>
+                        <div>
+                          <dt>Dem</dt>
+                          <dd>{summary.demVotes.toLocaleString()}</dd>
+                        </div>
+                        <div>
+                          <dt>Rep</dt>
+                          <dd>{summary.repVotes.toLocaleString()}</dd>
+                        </div>
+                        <div>
+                          <dt>Total</dt>
+                          <dd>{summary.totalVotes.toLocaleString()}</dd>
+                        </div>
+                        <div>
+                          <dt>Margin</dt>
+                          <dd>
+                            {summary.marginVotes.toLocaleString()} ({summary.marginPct.toFixed(2)}%)
+                          </dd>
+                        </div>
+                      </dl>
+                      <small>
+                        {summary.rows.toLocaleString()} rows · {summary.sourceCount} source
+                        {summary.sourceCount === 1 ? "" : "s"}
+                      </small>
+                    </article>
+                  ))}
+                </div>
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Year</th>
+                        <th>{countyLabel}</th>
+                        <th>Dem</th>
+                        <th>Rep</th>
+                        <th>Other</th>
+                        <th>Total</th>
+                        <th>Source</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visibleHistoricalRows.map((row) => (
+                        <tr key={row.id}>
+                          <td className="mono">{row.electionYear}</td>
+                          <td>{row.jurisdictionName}</td>
+                          <td className="mono">{(row.demVotes ?? 0).toLocaleString()}</td>
+                          <td className="mono">{(row.repVotes ?? 0).toLocaleString()}</td>
+                          <td className="mono">{(row.otherVotes ?? 0).toLocaleString()}</td>
+                          <td className="mono">{(row.totalVotes ?? 0).toLocaleString()}</td>
+                          <td className="mono">{row.sourceId}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {historicalRows.length > visibleHistoricalRows.length && (
+                  <div className="table-note">
+                    Showing first {visibleHistoricalRows.length.toLocaleString()} rows. Use the historical API for the full selected-state extract.
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="empty-panel">
+                <strong>No historical baseline rows loaded for {stateName}</strong>
+                <span>
+                  The importer looks for historicalBaseline.series rows in the legacy state bundle. Current repo data
+                  only exposes populated historical series for a subset of states.
+                </span>
+              </div>
+            )}
           </section>
         </div>
       )}

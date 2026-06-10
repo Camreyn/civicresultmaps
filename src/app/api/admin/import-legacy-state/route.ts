@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { legacyImportCatalog, legacyImportStates } from "@/db/legacy-catalog";
-import { cleanupLegacyState, importLegacyState, refreshLegacyStateIndicators } from "@/db/legacy-import";
+import {
+  cleanupLegacyState,
+  importLegacyState,
+  refreshLegacyStateHistorical,
+  refreshLegacyStateIndicators,
+} from "@/db/legacy-import";
 
 export const runtime = "nodejs";
 
@@ -37,6 +42,11 @@ export async function POST(request: NextRequest) {
 
   if (body.action === "refresh-indicators") {
     const result = await refreshLegacyStateIndicators(config);
+    return NextResponse.json({ ok: true, result, generatedAt: new Date().toISOString() });
+  }
+
+  if (body.action === "refresh-historical") {
+    const result = await refreshLegacyStateHistorical(config);
     return NextResponse.json({ ok: true, result, generatedAt: new Date().toISOString() });
   }
 

@@ -88,6 +88,8 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(dataAccess, /listReviewRows/);
   assert.match(dataAccess, /listTurnoutRows/);
   assert.match(dataAccess, /listHistoricalResultRows/);
+  assert.match(tabs, /Historical Baselines/);
+  assert.match(tabs, /historicalYearSummaries/);
   assert.match(tabs, /\/api\/review-rows/);
   assert.match(tabs, /\/api\/turnout/);
   assert.match(tabs, /\/api\/historical-baselines/);

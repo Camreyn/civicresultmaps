@@ -8,6 +8,7 @@ import { WorkspaceTabs } from "./workspace-tabs";
 import {
   getCoverageSummary,
   listCompletenessReport,
+  listHistoricalResultRows,
   listImportRuns,
   listIndicators,
   listResults,
@@ -26,7 +27,7 @@ type HomeProps = {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
-  const [states, completenessReport, results, sources, coverage, importRuns, indicators] = await Promise.all([
+  const [states, completenessReport, results, sources, coverage, importRuns, indicators, historicalRows] = await Promise.all([
     listStates(),
     listCompletenessReport({ year: selectedYear }),
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
@@ -34,6 +35,7 @@ export default async function Home({ searchParams }: HomeProps) {
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     listImportRuns(),
     listIndicators({ state: selectedState, year: selectedYear }),
+    listHistoricalResultRows({ state: selectedState, limit: 5000 }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
@@ -106,6 +108,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <WorkspaceTabs
             coverage={coverage}
             countyLabel={selected?.countyLabel ?? "County"}
+            historicalRows={historicalRows}
             importRuns={importRuns}
             indicators={indicators}
             results={results}
