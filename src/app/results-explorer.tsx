@@ -189,6 +189,19 @@ function coordinateBounds(points: number[][]) {
   );
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function mixColor(start: [number, number, number], end: [number, number, number], amount: number) {
+  const t = clamp(amount, 0, 1);
+  const [r1, g1, b1] = start;
+  const [r2, g2, b2] = end;
+  return `rgb(${Math.round(r1 + (r2 - r1) * t)}, ${Math.round(g1 + (g2 - g1) * t)}, ${Math.round(
+    b1 + (b2 - b1) * t,
+  )})`;
+}
+
 function countyFill(row: ResultRow | undefined, mode: MapMode, maxTotalVotes: number) {
   if (!row) {
     return "#2c302e";
@@ -199,20 +212,17 @@ function countyFill(row: ResultRow | undefined, mode: MapMode, maxTotalVotes: nu
     return `rgba(240, 195, 106, ${intensity})`;
   }
 
-  const intensity =
-    mode === "margin"
-      ? Math.min(0.92, Math.max(0.14, row.marginPct / 42))
-      : Math.min(0.82, Math.max(0.32, row.marginPct / 60));
+  const strength = mode === "margin" ? clamp(row.marginPct / 42, 0, 1) : clamp(row.marginPct / 60, 0, 1);
 
   if (row.winner === "Harris") {
-    return `rgba(130, 184, 255, ${intensity})`;
+    return mixColor([191, 219, 254], [29, 78, 216], strength);
   }
 
   if (row.winner === "Trump") {
-    return `rgba(255, 143, 126, ${intensity})`;
+    return mixColor([254, 202, 202], [220, 38, 38], strength);
   }
 
-  return `rgba(240, 195, 106, ${intensity})`;
+  return "#f0c36a";
 }
 
 export function ResultsExplorer({
@@ -520,12 +530,15 @@ export function ResultsExplorer({
         </div>
         <div className="map-legend" aria-label="Map legend">
           {mapMode !== "volume" && (
-            <>
-              <span className="legend-item legend-harris-strong">Strong Harris Win</span>
-              <span className="legend-item legend-harris-weak">Weak Harris Win</span>
-              <span className="legend-item legend-trump-weak">Weak Trump Win</span>
-              <span className="legend-item legend-trump-strong">Strong Trump Win</span>
-            </>
+            <div className="margin-scale-legend" aria-label="Winner margin color scale">
+              <div className="margin-scale-bar" aria-hidden />
+              <div className="margin-scale-labels">
+                <span>Strong Harris Win</span>
+                <span>Weak Harris Win</span>
+                <span>Weak Trump Win</span>
+                <span>Strong Trump Win</span>
+              </div>
+            </div>
           )}
           <span className="legend-item legend-volume">Vote volume</span>
           <span className="legend-item legend-missing">No joined result</span>

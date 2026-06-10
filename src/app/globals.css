@@ -935,24 +935,6 @@ input {
   width: 10px;
 }
 
-.legend-harris-strong::before {
-  background: rgba(130, 184, 255, 0.92);
-}
-
-.legend-harris-weak::before {
-  background: rgba(130, 184, 255, 0.32);
-  border: 1px solid rgba(130, 184, 255, 0.72);
-}
-
-.legend-trump-weak::before {
-  background: rgba(255, 143, 126, 0.32);
-  border: 1px solid rgba(255, 143, 126, 0.72);
-}
-
-.legend-trump-strong::before {
-  background: rgba(255, 143, 126, 0.92);
-}
-
 .legend-volume::before {
   background: var(--gold);
 }
@@ -969,6 +951,50 @@ input {
 .legend-note {
   color: var(--quiet);
   font-size: 12px;
+}
+
+.margin-scale-legend {
+  display: grid;
+  flex: 1 1 420px;
+  gap: 7px;
+  max-width: 620px;
+  min-width: min(100%, 320px);
+}
+
+.margin-scale-bar {
+  background: linear-gradient(90deg, #1d4ed8 0%, #bfdbfe 43%, #d8c7f2 50%, #fecaca 57%, #dc2626 100%);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  height: 13px;
+  overflow: hidden;
+}
+
+.margin-scale-labels {
+  color: var(--muted);
+  display: grid;
+  font-size: 11px;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  line-height: 1.25;
+}
+
+.margin-scale-labels span:nth-child(1),
+.margin-scale-labels span:nth-child(2) {
+  color: #bfdbfe;
+}
+
+.margin-scale-labels span:nth-child(3),
+.margin-scale-labels span:nth-child(4) {
+  color: #fecaca;
+}
+
+.margin-scale-labels span:nth-child(4) {
+  text-align: right;
+}
+
+.margin-scale-labels span:nth-child(2),
+.margin-scale-labels span:nth-child(3) {
+  text-align: center;
 }
 
 .table-tools {
