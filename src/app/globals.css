@@ -1489,6 +1489,81 @@ td {
   fill: #ef5b4f;
 }
 
+.shpilkin-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+}
+
+.shpilkin-panel {
+  background: #111312;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.shpilkin-panel > strong {
+  color: var(--foreground);
+  font-family: var(--font-code);
+  font-size: 13px;
+}
+
+.shpilkin-bars {
+  align-items: end;
+  border-bottom: 1px solid #59605b;
+  border-left: 1px solid #59605b;
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(10, minmax(10px, 1fr));
+  height: 150px;
+  padding: 14px 8px 0;
+}
+
+.shpilkin-bucket {
+  align-items: end;
+  display: flex;
+  height: 100%;
+  min-width: 0;
+}
+
+.shpilkin-bucket i {
+  border-radius: 4px 4px 0 0;
+  display: block;
+  min-height: 4px;
+  position: relative;
+  width: 100%;
+}
+
+.shpilkin-bucket i span {
+  clip: rect(0 0 0 0);
+  border: 0;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.shpilkin-dem-bar {
+  background: linear-gradient(180deg, #87b5ff, #326dde);
+}
+
+.shpilkin-rep-bar {
+  background: linear-gradient(180deg, #ff9c93, #d64338);
+}
+
+.shpilkin-labels {
+  color: var(--muted);
+  display: flex;
+  font-family: var(--font-code);
+  font-size: 10px;
+  justify-content: space-between;
+}
+
 .empty-panel,
 .table-note {
   border-top: 1px solid var(--line);
@@ -1999,6 +2074,7 @@ td {
   .history-summary-grid,
   .history-chart-grid,
   .fingerprint-grid,
+  .shpilkin-grid,
   .capability-grid,
   .source-card-grid,
   .source-links-panel li,

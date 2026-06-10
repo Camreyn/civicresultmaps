@@ -44,7 +44,7 @@ type WorkspaceTabsProps = {
 };
 
 type TabKey = "map" | "review" | "history" | "planner" | "data" | "methodology" | "exports" | "imports" | "contact";
-type HistoricalGraphType = "share" | "margin" | "movement" | "klimek";
+type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
 
 const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>; key: TabKey; label: string }> = [
   { icon: MapIcon, key: "map", label: "Map" },
@@ -167,6 +167,7 @@ export function WorkspaceTabs({
     "margin",
     "movement",
     "klimek",
+    "shpilkin",
   ]);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
@@ -291,7 +292,8 @@ export function WorkspaceTabs({
     { key: "share", label: "Vote Share" },
     { key: "margin", label: "Margin Trend" },
     { key: "movement", label: "County Movement" },
-    { key: "klimek", label: "K&S Fingerprints" },
+    { key: "klimek", label: "Klimek Fingerprints" },
+    { key: "shpilkin", label: "Shpilkin Diagnostics" },
   ];
   const historicalCountyTrends = useMemo(() => {
     const rowsByCounty = new Map<string, HistoricalResultRowSummary[]>();
@@ -335,6 +337,38 @@ export function WorkspaceTabs({
       }))
       .sort((a, b) => a.year - b.year);
   }, [filteredHistoricalRows]);
+  const shpilkinRowsByYear = useMemo(
+    () =>
+      historicalRowsByYear.map((yearGroup) => {
+        const buckets = Array.from({ length: 10 }, (_, index) => {
+          const low = index * 10;
+          const high = low + 10;
+          const rows = yearGroup.rows.filter((row) => {
+            const demShare = row.totalVotes ? ((row.demVotes ?? 0) / row.totalVotes) * 100 : 0;
+            return index === 9 ? demShare >= low && demShare <= high : demShare >= low && demShare < high;
+          });
+          const totalVotes = rows.reduce((sum, row) => sum + (row.totalVotes ?? 0), 0);
+          const demVotes = rows.reduce((sum, row) => sum + (row.demVotes ?? 0), 0);
+          const repVotes = rows.reduce((sum, row) => sum + (row.repVotes ?? 0), 0);
+          return {
+            demVotes,
+            high,
+            label: `${low}-${high}%`,
+            low,
+            repVotes,
+            rows: rows.length,
+            totalVotes,
+          };
+        });
+
+        return {
+          buckets,
+          maxBucketVotes: Math.max(1, ...buckets.map((bucket) => bucket.totalVotes)),
+          year: yearGroup.year,
+        };
+      }),
+    [historicalRowsByYear],
+  );
   const topIndicators = filteredIndicators.slice(0, 6);
   const capabilityEntries = coverage
     ? Object.entries(coverage.capabilities).filter(([key]) => key !== "notes")
@@ -847,17 +881,17 @@ export function WorkspaceTabs({
                   {enabledHistoricalGraphs.includes("klimek") && (
                     <article className="history-chart-card wide">
                       <div>
-                        <strong>Klimek & Shpilkin-Style Fingerprints</strong>
+                        <strong>Klimek-Style Vote Fingerprints</strong>
                         <span>
-                          Separate year charts plotting Democratic share against county vote volume. True turnout-based
-                          fingerprints will use turnout denominators once those are imported.
+                          Separate year charts plotting Democratic share against county vote volume as a temporary turnout
+                          proxy. True Klimek fingerprints will use turnout percentages once denominators are imported.
                         </span>
                       </div>
                       <div className="fingerprint-grid">
                         {historicalRowsByYear.map((yearGroup) => (
                           <div className="fingerprint-panel" key={yearGroup.year}>
                             <strong>{yearGroup.year}</strong>
-                            <svg role="img" viewBox="0 0 260 170" aria-label={`${yearGroup.year} Klimek and Shpilkin-style fingerprint`}>
+                            <svg role="img" viewBox="0 0 260 170" aria-label={`${yearGroup.year} Klimek-style vote fingerprint`}>
                               <line className="fingerprint-axis" x1="34" x2="244" y1="136" y2="136" />
                               <line className="fingerprint-axis" x1="34" x2="34" y1="16" y2="136" />
                               <line className="fingerprint-midline" x1="139" x2="139" y1="16" y2="136" />
@@ -885,6 +919,48 @@ export function WorkspaceTabs({
                                 );
                               })}
                             </svg>
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  )}
+
+                  {enabledHistoricalGraphs.includes("shpilkin") && (
+                    <article className="history-chart-card wide">
+                      <div>
+                        <strong>Shpilkin-Style Vote-Share Diagnostics</strong>
+                        <span>
+                          Vote volume grouped by Democratic share bucket for each enabled year. This separates the
+                          distribution diagnostic from the Klimek fingerprint view.
+                        </span>
+                      </div>
+                      <div className="shpilkin-grid">
+                        {shpilkinRowsByYear.map((yearGroup) => (
+                          <div className="shpilkin-panel" key={yearGroup.year}>
+                            <strong>{yearGroup.year}</strong>
+                            <div className="shpilkin-bars" role="img" aria-label={`${yearGroup.year} Shpilkin-style vote-share bucket chart`}>
+                              {yearGroup.buckets.map((bucket) => {
+                                const height = Math.max(4, (bucket.totalVotes / yearGroup.maxBucketVotes) * 100);
+                                const demShare = bucket.totalVotes ? (bucket.demVotes / bucket.totalVotes) * 100 : 0;
+                                return (
+                                  <div className="shpilkin-bucket" key={bucket.label}>
+                                    <i
+                                      className={demShare >= 50 ? "shpilkin-dem-bar" : "shpilkin-rep-bar"}
+                                      style={{ height: `${height}%` }}
+                                    >
+                                      <span>
+                                        {bucket.label}: {bucket.totalVotes.toLocaleString()} votes, {bucket.rows} rows
+                                      </span>
+                                    </i>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <div className="shpilkin-labels" aria-hidden="true">
+                              <span>0% D</span>
+                              <span>50%</span>
+                              <span>100%</span>
+                            </div>
                           </div>
                         ))}
                       </div>

@@ -94,8 +94,11 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(tabs, /enabledHistoricalGraphs/);
   assert.match(tabs, /Statewide Vote Share/);
   assert.match(tabs, /Largest County Dem-Share Movement/);
-  assert.match(tabs, /Klimek & Shpilkin-Style Fingerprints/);
+  assert.match(tabs, /Klimek-Style Vote Fingerprints/);
+  assert.match(tabs, /Shpilkin-Style Vote-Share Diagnostics/);
+  assert.doesNotMatch(tabs, /Klimek & Shpilkin-Style Fingerprints/);
   assert.match(tabs, /fingerprint-grid/);
+  assert.match(tabs, /shpilkin-grid/);
   assert.match(tabs, /\/api\/review-rows/);
   assert.match(tabs, /\/api\/turnout/);
   assert.match(tabs, /\/api\/historical-baselines/);
