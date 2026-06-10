@@ -26,6 +26,7 @@ import type {
   HistoricalResultRowSummary,
   ImportRunSummary,
   ResultRow,
+  ReviewRowSummary,
   SourceSummary,
   StateSummary,
 } from "@/lib/types";
@@ -36,6 +37,7 @@ type WorkspaceTabsProps = {
   historicalRows: HistoricalResultRowSummary[];
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
+  reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   selectedState: StateSummary | undefined;
   selectedStateCode: string;
@@ -44,6 +46,7 @@ type WorkspaceTabsProps = {
 };
 
 type TabKey = "map" | "review" | "history" | "planner" | "data" | "methodology" | "exports" | "imports" | "contact";
+type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
 
 const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>; key: TabKey; label: string }> = [
@@ -137,6 +140,49 @@ function downloadCsv(filename: string, headers: string[], rows: unknown[][]) {
   URL.revokeObjectURL(url);
 }
 
+function downloadTextFile(filename: string, content: string, type: string) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function linearRegression(points: Array<{ x: number; y: number }>) {
+  if (points.length < 2) {
+    return null;
+  }
+
+  const count = points.length;
+  const sumX = points.reduce((sum, point) => sum + point.x, 0);
+  const sumY = points.reduce((sum, point) => sum + point.y, 0);
+  const sumXY = points.reduce((sum, point) => sum + point.x * point.y, 0);
+  const sumXX = points.reduce((sum, point) => sum + point.x * point.x, 0);
+  const denominator = count * sumXX - sumX * sumX;
+
+  if (denominator === 0) {
+    return null;
+  }
+
+  const slope = (count * sumXY - sumX * sumY) / denominator;
+  const intercept = (sumY - slope * sumX) / count;
+  return { intercept, slope };
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function normalizePct(value: number | null) {
+  if (value === null || !Number.isFinite(value)) {
+    return null;
+  }
+
+  return Math.abs(value) <= 1 ? value * 100 : value;
+}
+
 function dateLabel(value: string | null) {
   if (!value) {
     return "Not finished";
@@ -154,6 +200,7 @@ export function WorkspaceTabs({
   historicalRows,
   importRuns,
   indicators,
+  reviewRows,
   results,
   selectedState,
   selectedStateCode,
@@ -161,6 +208,11 @@ export function WorkspaceTabs({
   totalVotes,
 }: WorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("map");
+  const [enabledScreeningGraphs, setEnabledScreeningGraphs] = useState<ScreeningGraphType[]>([
+    "voteShareScatter",
+    "dropoffHistogram",
+  ]);
+  const [screeningJurisdiction, setScreeningJurisdiction] = useState("");
   const [enabledHistoricalYears, setEnabledHistoricalYears] = useState<number[]>([]);
   const [enabledHistoricalGraphs, setEnabledHistoricalGraphs] = useState<HistoricalGraphType[]>([
     "share",
@@ -213,6 +265,103 @@ export function WorkspaceTabs({
     }
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
   }, [indicators]);
+
+  const reviewJurisdictionOptions = useMemo(() => {
+    const counts = new Map<string, { jurisdictionName: string; rows: number }>();
+
+    for (const row of reviewRows) {
+      const current = counts.get(row.jurisdictionCode) ?? {
+        jurisdictionName: row.jurisdictionName,
+        rows: 0,
+      };
+      current.rows += 1;
+      counts.set(row.jurisdictionCode, current);
+    }
+
+    return Array.from(counts.entries())
+      .map(([jurisdictionCode, entry]) => ({
+        jurisdictionCode,
+        jurisdictionName: entry.jurisdictionName,
+        rows: entry.rows,
+      }))
+      .sort((a, b) => b.rows - a.rows || a.jurisdictionName.localeCompare(b.jurisdictionName));
+  }, [reviewRows]);
+
+  useEffect(() => {
+    const fallback = reviewJurisdictionOptions[0]?.jurisdictionCode ?? "";
+    setScreeningJurisdiction((current) =>
+      current && reviewJurisdictionOptions.some((option) => option.jurisdictionCode === current) ? current : fallback,
+    );
+  }, [reviewJurisdictionOptions]);
+
+  const selectedReviewRows = useMemo(
+    () => reviewRows.filter((row) => row.jurisdictionCode === screeningJurisdiction),
+    [reviewRows, screeningJurisdiction],
+  );
+  const selectedReviewJurisdiction = reviewJurisdictionOptions.find(
+    (option) => option.jurisdictionCode === screeningJurisdiction,
+  );
+  const screeningGraphOptions: Array<{ key: ScreeningGraphType; label: string }> = [
+    { key: "voteShareScatter", label: "Vote-Share Scatterplot" },
+    { key: "dropoffHistogram", label: "Drop-Off Histogram" },
+  ];
+  const scatterRows = selectedReviewRows.filter(
+    (row) =>
+      (row.harrisVotes ?? 0) > 0 &&
+      (row.trumpVotes ?? 0) > 0 &&
+      normalizePct(row.harrisShare) !== null &&
+      normalizePct(row.trumpShare) !== null,
+  );
+  const scatterMaxVotes = Math.max(
+    1,
+    ...scatterRows.flatMap((row) => [row.harrisVotes ?? 0, row.trumpVotes ?? 0]),
+  );
+  const harrisScatterPoints = scatterRows.map((row) => ({
+    id: row.id,
+    label: row.localUnit,
+    votes: row.harrisVotes ?? 0,
+    x: row.harrisVotes ?? 0,
+    y: normalizePct(row.harrisShare) ?? 0,
+  }));
+  const trumpScatterPoints = scatterRows.map((row) => ({
+    id: row.id,
+    label: row.localUnit,
+    votes: row.trumpVotes ?? 0,
+    x: row.trumpVotes ?? 0,
+    y: normalizePct(row.trumpShare) ?? 0,
+  }));
+  const harrisTrend = linearRegression(harrisScatterPoints);
+  const trumpTrend = linearRegression(trumpScatterPoints);
+  const dropoffBucketSize = 5;
+  const dropoffBuckets = Array.from({ length: 13 }, (_, index) => {
+    const low = -30 + index * dropoffBucketSize;
+    return {
+      dem: 0,
+      high: low + dropoffBucketSize,
+      label: `${low}% to ${low + dropoffBucketSize}%`,
+      low,
+      rep: 0,
+    };
+  });
+
+  for (const row of selectedReviewRows) {
+    const demDropoff = normalizePct(row.demDropoff);
+    const repDropoff = normalizePct(row.repDropoff);
+
+    for (const [key, value] of [
+      ["dem", demDropoff],
+      ["rep", repDropoff],
+    ] as const) {
+      if (value === null) {
+        continue;
+      }
+
+      const bucketIndex = clamp(Math.floor((clamp(value, -30, 30) + 30) / dropoffBucketSize), 0, dropoffBuckets.length - 1);
+      dropoffBuckets[bucketIndex][key] += 1;
+    }
+  }
+
+  const maxDropoffBucket = Math.max(1, ...dropoffBuckets.flatMap((bucket) => [bucket.dem, bucket.rep]));
 
   const candidateTotals = useMemo(() => {
     const totals = new Map<string, number>();
@@ -474,6 +623,24 @@ export function WorkspaceTabs({
       ],
     );
 
+  const downloadSvgElement = (elementId: string, filename: string) => {
+    const svg = document.getElementById(elementId);
+    if (!svg) {
+      return;
+    }
+
+    const content = new XMLSerializer().serializeToString(svg);
+    downloadTextFile(filename, content, "image/svg+xml;charset=utf-8");
+  };
+
+  const screeningSlug = `${selectedStateCode.toLowerCase()}-${screeningJurisdiction.toLowerCase() || "review"}`;
+  const scatterSvgId = `${screeningSlug}-vote-share-scatter`;
+  const dropoffSvgId = `${screeningSlug}-dropoff-histogram`;
+  const scatterX = (votes: number) => 52 + (votes / scatterMaxVotes) * 438;
+  const scatterY = (share: number) => 246 - (share / 100) * 210;
+  const trendY = (trend: { intercept: number; slope: number } | null, x: number) =>
+    trend ? scatterY(clamp(trend.intercept + trend.slope * x, 0, 100)) : null;
+
   return (
     <section className="workspace-tabs" aria-label={`${stateName} workspace`}>
       <nav className="tab-bar" aria-label="Workspace sections">
@@ -632,6 +799,284 @@ export function WorkspaceTabs({
                 </select>
               </label>
             </div>
+            {reviewRows.length ? (
+              <section className="screening-section" aria-label="Statistical screening graphs">
+                <div className="screening-toolbar">
+                  <label className="sort-select-label" htmlFor="screening-jurisdiction">
+                    <MapIcon aria-hidden size={16} />
+                    <select
+                      className="sort-select"
+                      id="screening-jurisdiction"
+                      onChange={(event) => setScreeningJurisdiction(event.target.value)}
+                      value={screeningJurisdiction}
+                    >
+                      {reviewJurisdictionOptions.map((option) => (
+                        <option key={option.jurisdictionCode} value={option.jurisdictionCode}>
+                          {option.jurisdictionName} ({option.rows} rows)
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="history-controls graph-controls compact-controls" aria-label="Screening graph toggles">
+                    <span>Show screening graphs</span>
+                    {screeningGraphOptions.map((option) => (
+                      <label key={option.key}>
+                        <input
+                          checked={enabledScreeningGraphs.includes(option.key)}
+                          onChange={(event) => {
+                            setEnabledScreeningGraphs((graphs) =>
+                              event.target.checked
+                                ? [...graphs, option.key]
+                                : graphs.filter((entry) => entry !== option.key),
+                            );
+                          }}
+                          type="checkbox"
+                        />
+                        {option.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="screening-grid">
+                  {enabledScreeningGraphs.includes("voteShareScatter") && (
+                    <article className="screening-card">
+                      <div className="screening-card-head">
+                        <div>
+                          <span>Statistical Screening Graph</span>
+                          <strong>Vote-Share by Vote-Count Scatterplot</strong>
+                          <small>
+                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: {scatterRows.length} local rows
+                          </small>
+                        </div>
+                        <button
+                          className="secondary-button"
+                          onClick={() => downloadSvgElement(scatterSvgId, `${screeningSlug}-vote-share-scatter.svg`)}
+                          type="button"
+                        >
+                          <Download aria-hidden size={15} />
+                          Download SVG
+                        </button>
+                      </div>
+                      <div className="screening-chart-frame">
+                        <svg
+                          aria-label={`${selectedReviewJurisdiction?.jurisdictionName ?? stateName} vote-share by vote-count scatterplot`}
+                          id={scatterSvgId}
+                          role="img"
+                          viewBox="0 0 560 300"
+                        >
+                          <rect className="screening-svg-bg" height="300" width="560" />
+                          {[0, 25, 50, 75, 100].map((share) => (
+                            <g key={share}>
+                              <line className="screening-gridline" x1="52" x2="490" y1={scatterY(share)} y2={scatterY(share)} />
+                              <text className="screening-axis-label" x="22" y={scatterY(share) + 4}>
+                                {share}%
+                              </text>
+                            </g>
+                          ))}
+                          {[0, 0.5, 1].map((ratio) => (
+                            <g key={ratio}>
+                              <line
+                                className="screening-gridline"
+                                x1={52 + ratio * 438}
+                                x2={52 + ratio * 438}
+                                y1="36"
+                                y2="246"
+                              />
+                              <text className="screening-axis-label" x={42 + ratio * 438} y="274">
+                                {Math.round(scatterMaxVotes * ratio).toLocaleString()}
+                              </text>
+                            </g>
+                          ))}
+                          <text className="screening-title" x="52" y="24">
+                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: local vote-share chart
+                          </text>
+                          <text className="screening-axis-title" x="224" y="292">
+                            Candidate votes in local row
+                          </text>
+                          <text className="screening-axis-title vertical" transform="translate(14 186) rotate(-90)">
+                            Candidate vote share
+                          </text>
+                          {harrisScatterPoints.map((point) => (
+                            <circle
+                              className="screening-dot dem"
+                              cx={scatterX(point.x)}
+                              cy={scatterY(point.y)}
+                              key={`harris-${point.id}`}
+                              r="3"
+                            >
+                              <title>
+                                {point.label}: Harris {point.votes.toLocaleString()} votes, {point.y.toFixed(2)}%
+                              </title>
+                            </circle>
+                          ))}
+                          {trumpScatterPoints.map((point) => (
+                            <circle
+                              className="screening-dot rep"
+                              cx={scatterX(point.x)}
+                              cy={scatterY(point.y)}
+                              key={`trump-${point.id}`}
+                              r="3"
+                            >
+                              <title>
+                                {point.label}: Trump {point.votes.toLocaleString()} votes, {point.y.toFixed(2)}%
+                              </title>
+                            </circle>
+                          ))}
+                          {harrisTrend && trendY(harrisTrend, 0) !== null && trendY(harrisTrend, scatterMaxVotes) !== null && (
+                            <line
+                              className="screening-trend dem"
+                              x1={scatterX(0)}
+                              x2={scatterX(scatterMaxVotes)}
+                              y1={trendY(harrisTrend, 0) ?? 0}
+                              y2={trendY(harrisTrend, scatterMaxVotes) ?? 0}
+                            />
+                          )}
+                          {trumpTrend && trendY(trumpTrend, 0) !== null && trendY(trumpTrend, scatterMaxVotes) !== null && (
+                            <line
+                              className="screening-trend rep"
+                              x1={scatterX(0)}
+                              x2={scatterX(scatterMaxVotes)}
+                              y1={trendY(trumpTrend, 0) ?? 0}
+                              y2={trendY(trumpTrend, scatterMaxVotes) ?? 0}
+                            />
+                          )}
+                          <g className="screening-legend">
+                            <circle className="screening-dot rep" cx="430" cy="24" r="4" />
+                            <text x="440" y="28">Trump</text>
+                            <circle className="screening-dot dem" cx="486" cy="24" r="4" />
+                            <text x="496" y="28">Harris</text>
+                          </g>
+                        </svg>
+                      </div>
+                      <div className="how-to-read">
+                        <strong>How to read this</strong>
+                        <p>
+                          Each dot is one local result row. Left-to-right shows how many votes a candidate received in
+                          that row; up-and-down shows that candidate&apos;s share of the same row.
+                        </p>
+                        <p>
+                          The trend lines help show whether larger local rows lean differently than smaller ones. A flag
+                          means &quot;look closer,&quot; not proof that something happened.
+                        </p>
+                      </div>
+                    </article>
+                  )}
+
+                  {enabledScreeningGraphs.includes("dropoffHistogram") && (
+                    <article className="screening-card">
+                      <div className="screening-card-head">
+                        <div>
+                          <span>Statistical Screening Graph</span>
+                          <strong>Presidential-Versus-Comparison Drop-Off Histogram</strong>
+                          <small>
+                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: DEM and REP local drop-off rates
+                          </small>
+                        </div>
+                        <button
+                          className="secondary-button"
+                          onClick={() => downloadSvgElement(dropoffSvgId, `${screeningSlug}-dropoff-histogram.svg`)}
+                          type="button"
+                        >
+                          <Download aria-hidden size={15} />
+                          Download SVG
+                        </button>
+                      </div>
+                      <div className="screening-chart-frame">
+                        <svg
+                          aria-label={`${selectedReviewJurisdiction?.jurisdictionName ?? stateName} presidential versus comparison drop-off histogram`}
+                          id={dropoffSvgId}
+                          role="img"
+                          viewBox="0 0 560 300"
+                        >
+                          <rect className="screening-svg-bg" height="300" width="560" />
+                          {[0, 0.5, 1].map((ratio) => (
+                            <g key={ratio}>
+                              <line
+                                className="screening-gridline"
+                                x1="52"
+                                x2="506"
+                                y1={246 - ratio * 210}
+                                y2={246 - ratio * 210}
+                              />
+                              <text className="screening-axis-label" x="26" y={250 - ratio * 210}>
+                                {Math.round(maxDropoffBucket * ratio)}
+                              </text>
+                            </g>
+                          ))}
+                          <line className="screening-midline" x1="279" x2="279" y1="36" y2="246" />
+                          <text className="screening-title" x="52" y="24">
+                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: President vs comparison drop-off rates
+                          </text>
+                          <text className="screening-axis-title" x="162" y="292">
+                            Presidential votes minus comparison votes, as % of presidential votes
+                          </text>
+                          <text className="screening-axis-title vertical" transform="translate(14 172) rotate(-90)">
+                            Local row count
+                          </text>
+                          {dropoffBuckets.map((bucket, index) => {
+                            const x = 58 + index * 34;
+                            const demHeight = (bucket.dem / maxDropoffBucket) * 196;
+                            const repHeight = (bucket.rep / maxDropoffBucket) * 196;
+                            return (
+                              <g key={bucket.label}>
+                                <rect
+                                  className="screening-bar dem"
+                                  height={Math.max(1, demHeight)}
+                                  width="12"
+                                  x={x}
+                                  y={246 - demHeight}
+                                >
+                                  <title>
+                                    DEM {bucket.label}: {bucket.dem} local rows
+                                  </title>
+                                </rect>
+                                <rect
+                                  className="screening-bar rep"
+                                  height={Math.max(1, repHeight)}
+                                  width="12"
+                                  x={x + 14}
+                                  y={246 - repHeight}
+                                >
+                                  <title>
+                                    REP {bucket.label}: {bucket.rep} local rows
+                                  </title>
+                                </rect>
+                              </g>
+                            );
+                          })}
+                          <text className="screening-axis-label" x="48" y="274">-30%</text>
+                          <text className="screening-axis-label" x="270" y="274">0%</text>
+                          <text className="screening-axis-label" x="482" y="274">+30%</text>
+                          <g className="screening-legend">
+                            <rect className="screening-bar dem" height="10" width="10" x="430" y="16" />
+                            <text x="444" y="25">DEM</text>
+                            <rect className="screening-bar rep" height="10" width="10" x="486" y="16" />
+                            <text x="500" y="25">REP</text>
+                          </g>
+                        </svg>
+                      </div>
+                      <div className="how-to-read">
+                        <strong>How to read this</strong>
+                        <p>
+                          This compares presidential votes with a same-party comparison contest in the same local row.
+                          Bars near zero mean the two contests moved similarly in that place.
+                        </p>
+                        <p>
+                          Bars far left or right show larger drop-off differences. Normal split-ticket voting can cause
+                          differences; the chart helps show whether those differences cluster oddly.
+                        </p>
+                      </div>
+                    </article>
+                  )}
+                </div>
+              </section>
+            ) : (
+              <div className="empty-state compact">
+                <strong>No statistical screening rows loaded for {stateName}</strong>
+                <span>These graphs need reviewCharts.metadata.rows from the legacy bundle.</span>
+              </div>
+            )}
             {indicators.length ? (
               <div className="review-layout">
                 <div className="priority-list">

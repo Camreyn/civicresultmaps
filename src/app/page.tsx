@@ -11,6 +11,7 @@ import {
   listHistoricalResultRows,
   listImportRuns,
   listIndicators,
+  listReviewRows,
   listResults,
   listSources,
   listStates,
@@ -27,7 +28,7 @@ type HomeProps = {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
-  const [states, completenessReport, results, sources, coverage, importRuns, indicators, historicalRows] = await Promise.all([
+  const [states, completenessReport, results, sources, coverage, importRuns, indicators, reviewRows, historicalRows] = await Promise.all([
     listStates(),
     listCompletenessReport({ year: selectedYear }),
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
@@ -35,6 +36,7 @@ export default async function Home({ searchParams }: HomeProps) {
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     listImportRuns(),
     listIndicators({ state: selectedState, year: selectedYear }),
+    listReviewRows({ state: selectedState, year: selectedYear, limit: 5000 }),
     listHistoricalResultRows({ state: selectedState, limit: 5000 }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
@@ -111,6 +113,7 @@ export default async function Home({ searchParams }: HomeProps) {
             historicalRows={historicalRows}
             importRuns={importRuns}
             indicators={indicators}
+            reviewRows={reviewRows}
             results={results}
             selectedState={selected}
             selectedStateCode={selectedStateCode}

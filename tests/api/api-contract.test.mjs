@@ -76,6 +76,10 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /indicatorExplanation/);
   assert.match(tabs, /advisory indicator/);
   assert.match(tabs, /severityBucket/);
+  assert.match(tabs, /Vote-Share by Vote-Count Scatterplot/);
+  assert.match(tabs, /Presidential-Versus-Comparison Drop-Off Histogram/);
+  assert.match(tabs, /How to read this/);
+  assert.match(tabs, /downloadSvgElement/);
 });
 
 test("raw review turnout and historical APIs are exposed", () => {
