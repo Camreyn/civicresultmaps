@@ -1373,6 +1373,10 @@ td {
   grid-template-columns: minmax(0, 1fr);
 }
 
+.contact-grid {
+  grid-template-columns: minmax(0, 720px);
+}
+
 .text-panel {
   max-width: 960px;
 }
@@ -1407,6 +1411,50 @@ td {
 .export-grid button:hover {
   border-color: var(--accent-line);
   color: var(--accent);
+}
+
+.contact-card {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+}
+
+.contact-card > div {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+
+.contact-card strong {
+  font-size: 22px;
+}
+
+.contact-card a:not(.contact-button) {
+  color: var(--accent);
+  font-family: var(--font-code);
+  overflow-wrap: anywhere;
+}
+
+.contact-button {
+  align-items: center;
+  background: var(--accent);
+  border: 1px solid var(--accent-line);
+  border-radius: 8px;
+  color: #07100d;
+  display: inline-flex;
+  font-weight: 800;
+  gap: 8px;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 14px;
+  width: fit-content;
+}
+
+.contact-button:hover {
+  filter: brightness(1.07);
 }
 
 .validation-list {

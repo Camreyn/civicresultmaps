@@ -10,6 +10,7 @@ import {
   FileCheck2,
   GitBranch,
   ListChecks,
+  Mail,
   MapIcon,
   Search,
   ShieldCheck,
@@ -39,7 +40,7 @@ type WorkspaceTabsProps = {
   totalVotes: number;
 };
 
-type TabKey = "map" | "review" | "planner" | "data" | "methodology" | "exports" | "imports";
+type TabKey = "map" | "review" | "planner" | "data" | "methodology" | "exports" | "imports" | "contact";
 
 const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>; key: TabKey; label: string }> = [
   { icon: MapIcon, key: "map", label: "Map" },
@@ -49,6 +50,7 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: BookOpen, key: "methodology", label: "Methodology" },
   { icon: Download, key: "exports", label: "Exports & API" },
   { icon: GitBranch, key: "imports", label: "Import Runs" },
+  { icon: Mail, key: "contact", label: "Contact" },
 ];
 
 function formatCapability(key: string) {
@@ -843,6 +845,34 @@ export function WorkspaceTabs({
                 </li>
               ))}
             </ul>
+          </section>
+        </div>
+      )}
+
+      {activeTab === "contact" && (
+        <div className="tab-panel-content contact-grid">
+          <section className="panel contact-panel">
+            <div className="panel-header">
+              <div>
+                <h2>Contact</h2>
+                <span>Civic Result Maps project contact</span>
+              </div>
+              <Mail aria-hidden size={18} />
+            </div>
+            <div className="contact-card">
+              <div>
+                <span className="section-label">Project lead</span>
+                <strong>Camreyn</strong>
+              </div>
+              <div>
+                <span className="section-label">Email</span>
+                <a href="mailto:camreyn@protonmail.com">camreyn@protonmail.com</a>
+              </div>
+              <a className="contact-button" href="mailto:camreyn@protonmail.com">
+                <Mail aria-hidden size={16} />
+                Email Camreyn
+              </a>
+            </div>
           </section>
         </div>
       )}
