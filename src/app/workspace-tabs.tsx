@@ -160,6 +160,7 @@ export function WorkspaceTabs({
   totalVotes,
 }: WorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("map");
+  const [enabledHistoricalYears, setEnabledHistoricalYears] = useState<number[]>([]);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
 
@@ -215,6 +216,15 @@ export function WorkspaceTabs({
     return Array.from(totals.entries()).sort((a, b) => b[1] - a[1]);
   }, [results]);
 
+  const historicalYears = useMemo(
+    () => Array.from(new Set(historicalRows.map((row) => row.electionYear))).sort((a, b) => a - b),
+    [historicalRows],
+  );
+
+  useEffect(() => {
+    setEnabledHistoricalYears(historicalYears);
+  }, [historicalYears.join(",")]);
+
   const historicalYearSummaries = useMemo(() => {
     const summaries = new Map<
       number,
@@ -262,7 +272,39 @@ export function WorkspaceTabs({
       .sort((a, b) => b.year - a.year);
   }, [historicalRows]);
 
-  const visibleHistoricalRows = historicalRows.slice(0, 150);
+  const visibleHistoricalYearSet = useMemo(
+    () => new Set(enabledHistoricalYears),
+    [enabledHistoricalYears],
+  );
+  const filteredHistoricalSummaries = historicalYearSummaries.filter((summary) => visibleHistoricalYearSet.has(summary.year));
+  const filteredHistoricalRows = historicalRows.filter((row) => visibleHistoricalYearSet.has(row.electionYear));
+  const visibleHistoricalRows = filteredHistoricalRows.slice(0, 150);
+  const maxHistoricalMargin = Math.max(1, ...filteredHistoricalSummaries.map((summary) => summary.marginPct));
+  const historicalCountyTrends = useMemo(() => {
+    const rowsByCounty = new Map<string, HistoricalResultRowSummary[]>();
+
+    for (const row of filteredHistoricalRows) {
+      rowsByCounty.set(row.jurisdictionName, [...(rowsByCounty.get(row.jurisdictionName) ?? []), row]);
+    }
+
+    return Array.from(rowsByCounty.entries())
+      .map(([county, rows]) => {
+        const sorted = rows.sort((a, b) => a.electionYear - b.electionYear);
+        const first = sorted[0];
+        const last = sorted[sorted.length - 1];
+        const firstDemShare = first?.totalVotes ? ((first.demVotes ?? 0) / first.totalVotes) * 100 : 0;
+        const lastDemShare = last?.totalVotes ? ((last.demVotes ?? 0) / last.totalVotes) * 100 : 0;
+        return {
+          county,
+          demShareChange: lastDemShare - firstDemShare,
+          rows: sorted,
+          totalVotes: sorted.reduce((sum, row) => sum + (row.totalVotes ?? 0), 0),
+        };
+      })
+      .filter((trend) => trend.rows.length >= 2)
+      .sort((a, b) => Math.abs(b.demShareChange) - Math.abs(a.demShareChange))
+      .slice(0, 12);
+  }, [filteredHistoricalRows]);
   const topIndicators = filteredIndicators.slice(0, 6);
   const capabilityEntries = coverage
     ? Object.entries(coverage.capabilities).filter(([key]) => key !== "notes")
@@ -619,8 +661,25 @@ export function WorkspaceTabs({
             </div>
             {historicalRows.length ? (
               <>
+                <div className="history-controls" aria-label="Historical year toggles">
+                  <span>Show years</span>
+                  {historicalYears.map((year) => (
+                    <label key={year}>
+                      <input
+                        checked={visibleHistoricalYearSet.has(year)}
+                        onChange={(event) => {
+                          setEnabledHistoricalYears((years) =>
+                            event.target.checked ? [...years, year].sort() : years.filter((entry) => entry !== year),
+                          );
+                        }}
+                        type="checkbox"
+                      />
+                      {year}
+                    </label>
+                  ))}
+                </div>
                 <div className="history-summary-grid">
-                  {historicalYearSummaries.map((summary) => (
+                  {filteredHistoricalSummaries.map((summary) => (
                     <article key={summary.year}>
                       <span>{summary.year} President</span>
                       <strong>{summary.winner}</strong>
@@ -651,6 +710,85 @@ export function WorkspaceTabs({
                     </article>
                   ))}
                 </div>
+                <div className="history-chart-grid">
+                  <article className="history-chart-card">
+                    <div>
+                      <strong>Statewide Vote Share</strong>
+                      <span>Democratic, Republican, and other share by enabled year</span>
+                    </div>
+                    <div className="history-share-chart" role="img" aria-label="Statewide historical vote share chart">
+                      {filteredHistoricalSummaries.map((summary) => {
+                        const demShare = summary.totalVotes > 0 ? (summary.demVotes / summary.totalVotes) * 100 : 0;
+                        const repShare = summary.totalVotes > 0 ? (summary.repVotes / summary.totalVotes) * 100 : 0;
+                        const otherShare = Math.max(0, 100 - demShare - repShare);
+                        return (
+                          <div className="history-share-row" key={summary.year}>
+                            <span>{summary.year}</span>
+                            <div>
+                              <i className="history-dem" style={{ width: `${demShare}%` }} title={`Dem ${demShare.toFixed(2)}%`} />
+                              <i className="history-rep" style={{ width: `${repShare}%` }} title={`Rep ${repShare.toFixed(2)}%`} />
+                              <i className="history-other" style={{ width: `${otherShare}%` }} title={`Other ${otherShare.toFixed(2)}%`} />
+                            </div>
+                            <strong>
+                              D {demShare.toFixed(1)}% / R {repShare.toFixed(1)}%
+                            </strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </article>
+
+                  <article className="history-chart-card">
+                    <div>
+                      <strong>Margin Trend</strong>
+                      <span>Winner margin as a share of total votes</span>
+                    </div>
+                    <div className="history-margin-chart" role="img" aria-label="Historical winner margin chart">
+                      {filteredHistoricalSummaries.map((summary) => {
+                        const width = Math.max(4, (summary.marginPct / maxHistoricalMargin) * 100);
+                        return (
+                          <div className="history-margin-row" key={summary.year}>
+                            <span>{summary.year}</span>
+                            <div>
+                              <i
+                                className={summary.winner === "Democratic" ? "history-dem" : "history-rep"}
+                                style={{ width: `${width}%` }}
+                              />
+                            </div>
+                            <strong>{summary.marginPct.toFixed(2)}%</strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </article>
+
+                  <article className="history-chart-card wide">
+                    <div>
+                      <strong>Largest County Dem-Share Movement</strong>
+                      <span>Change between earliest and latest enabled historical year</span>
+                    </div>
+                    <div className="history-swing-list">
+                      {historicalCountyTrends.map((trend) => {
+                        const width = Math.min(100, Math.max(5, Math.abs(trend.demShareChange) * 4));
+                        return (
+                          <div className="history-swing-row" key={trend.county}>
+                            <span>{trend.county}</span>
+                            <div>
+                              <i
+                                className={trend.demShareChange >= 0 ? "history-dem" : "history-rep"}
+                                style={{ width: `${width}%` }}
+                              />
+                            </div>
+                            <strong>
+                              {trend.demShareChange >= 0 ? "+" : ""}
+                              {trend.demShareChange.toFixed(2)} pts
+                            </strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </article>
+                </div>
                 <div className="table-wrap">
                   <table>
                     <thead>
@@ -679,9 +817,10 @@ export function WorkspaceTabs({
                     </tbody>
                   </table>
                 </div>
-                {historicalRows.length > visibleHistoricalRows.length && (
+                {filteredHistoricalRows.length > visibleHistoricalRows.length && (
                   <div className="table-note">
-                    Showing first {visibleHistoricalRows.length.toLocaleString()} rows. Use the historical API for the full selected-state extract.
+                    Showing first {visibleHistoricalRows.length.toLocaleString()} rows from the enabled years. Use the
+                    historical API for the full selected-state extract.
                   </div>
                 )}
               </>
