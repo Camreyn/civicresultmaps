@@ -891,7 +891,7 @@ export function WorkspaceTabs({
                           <text className="screening-title" x="52" y="24">
                             {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: local vote-share chart
                           </text>
-                          <text className="screening-axis-title" x="224" y="292">
+                          <text className="screening-axis-title centered" x="271" y="286">
                             Candidate votes in local row
                           </text>
                           <text className="screening-axis-title vertical" transform="translate(14 186) rotate(-90)">
@@ -1008,8 +1008,9 @@ export function WorkspaceTabs({
                           <text className="screening-title" x="52" y="24">
                             {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: President vs comparison drop-off rates
                           </text>
-                          <text className="screening-axis-title" x="162" y="292">
-                            Presidential votes minus comparison votes, as % of presidential votes
+                          <text className="screening-axis-title centered" x="279" y="284">
+                            <tspan x="279" dy="0">Presidential votes minus comparison votes</tspan>
+                            <tspan x="279" dy="12">as % of presidential votes</tspan>
                           </text>
                           <text className="screening-axis-title vertical" transform="translate(14 172) rotate(-90)">
                             Local row count

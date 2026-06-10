@@ -1149,8 +1149,12 @@ input {
 }
 
 .screening-axis-title {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.screening-axis-title.centered {
+  text-anchor: middle;
 }
 
 .screening-axis-label,
