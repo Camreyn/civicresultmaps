@@ -2,6 +2,7 @@
 
 import { CheckCircle2, ChevronDown, CircleDashed, Database, FileWarning, MapIcon } from "lucide-react";
 import { useState } from "react";
+import { Eli5 } from "./eli5";
 import type { CompletenessSummary } from "@/lib/types";
 
 type NationalOverviewProps = {
@@ -50,6 +51,10 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
           <a href={`/api/completeness?year=${year}`} target="_blank" rel="noreferrer">
             Completeness API
           </a>
+          <Eli5>
+            This is the scoreboard for the whole project. If a state is like a homework folder, this shows which folders
+            have results, sources, review rows, and missing pieces before someone opens one state in detail.
+          </Eli5>
         </div>
       </div>
 
@@ -81,6 +86,12 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
           </div>
 
           <div className="overview-table-wrap">
+            <div className="table-helper-row">
+              <Eli5>
+                This table is like a checklist for each state. A row with gaps means the state has some papers in the
+                folder, but not every paper needed for the full set of maps, graphs, and review tools.
+              </Eli5>
+            </div>
             <table className="overview-table">
           <thead>
             <tr>

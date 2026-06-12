@@ -2,6 +2,7 @@
 
 import { ArrowDownAZ, ArrowUpDown, ExternalLink, RotateCcw, Search, X, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { Eli5 } from "./eli5";
 import type { AnalysisIndicator, ResultRow, SourceSummary } from "@/lib/types";
 
 type ResultsExplorerProps = {
@@ -403,7 +404,13 @@ export function ResultsExplorer({
                   : "Map geometry unavailable"}
             </span>
           </div>
-          <span className="status-pill">{selectedState}</span>
+          <div className="header-actions">
+            <Eli5>
+              This map is like coloring a school map by who got more votes in each place. Click one area to see the
+              vote totals and whether the imported review data says someone should look closer.
+            </Eli5>
+            <span className="status-pill">{selectedState}</span>
+          </div>
         </div>
         <div className="map-control-row" aria-label="Map display controls">
           <div className="mode-control" aria-label="Map display mode">
@@ -552,6 +559,12 @@ export function ResultsExplorer({
           )}
         </div>
         <aside className="jurisdiction-drawer" aria-label="Selected jurisdiction details">
+          <div className="drawer-helper">
+            <Eli5>
+              This box is the receipt for the place you clicked. It shows who got votes, who won, where the numbers came
+              from, and whether any advisory flags are attached.
+            </Eli5>
+          </div>
           <div>
             <span className="section-label">Selected Jurisdiction</span>
             <h3>{activeMapName ?? "Select a boundary"}</h3>
@@ -615,10 +628,16 @@ export function ResultsExplorer({
             <h2>{countyLabel} Results</h2>
             <span>{visibleResults.length} visible reporting jurisdictions</span>
           </div>
-          <span className="status-pill">
-            <ArrowUpDown aria-hidden size={14} />
-            Sort
-          </span>
+          <div className="header-actions">
+            <Eli5>
+              This table is the spreadsheet version of the map. Each row is one jurisdiction, and sorting or filtering
+              helps find the biggest margins, highest vote totals, or places with advisory flags.
+            </Eli5>
+            <span className="status-pill">
+              <ArrowUpDown aria-hidden size={14} />
+              Sort
+            </span>
+          </div>
         </div>
         <div className="table-tools">
           <label className="table-search" htmlFor="result-search">

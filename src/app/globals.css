@@ -629,6 +629,105 @@ input {
   font-size: 12px;
 }
 
+.header-actions {
+  align-items: center;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 8px !important;
+  justify-content: flex-end;
+}
+
+.eli5 {
+  position: relative;
+}
+
+.eli5-button {
+  align-items: center;
+  background: #191c1a;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 6px;
+  min-height: 30px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.eli5-button:hover,
+.eli5-button[aria-expanded="true"] {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.eli5-panel {
+  background: #111312;
+  border: 1px solid var(--accent-line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  max-width: min(320px, calc(100vw - 48px));
+  padding: 12px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: max-content;
+  z-index: 20;
+}
+
+.table-helper-row {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 12px;
+}
+
+.data-warning {
+  align-items: flex-start;
+  background: rgba(240, 195, 106, 0.08);
+  border: 1px solid rgba(240, 195, 106, 0.32);
+  border-radius: 8px;
+  color: var(--foreground);
+  display: flex;
+  gap: 10px;
+  line-height: 1.45;
+  padding: 12px;
+}
+
+.data-warning svg {
+  color: var(--gold);
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.data-warning div {
+  display: grid;
+  gap: 3px;
+}
+
+.data-warning span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.strong-warning {
+  background: linear-gradient(90deg, rgba(240, 195, 106, 0.14), rgba(255, 143, 126, 0.08));
+  border-color: rgba(240, 195, 106, 0.52);
+}
+
+.drawer-helper {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .status-pill {
   align-items: center;
   border: 1px solid var(--accent-line);
@@ -2238,6 +2337,12 @@ td {
   overflow-wrap: anywhere;
 }
 
+.api-list .api-helper {
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: flex-end;
+}
+
 .available {
   color: var(--accent) !important;
 }
@@ -2298,9 +2403,25 @@ td {
   .dashboard-head,
   .overview-head,
   .screening-card-head,
+  .header-actions,
   .selected-result-callout {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .eli5,
+  .eli5-button {
+    width: 100%;
+  }
+
+  .eli5-button {
+    justify-content: center;
+  }
+
+  .eli5-panel {
+    left: 0;
+    right: auto;
+    width: 100%;
   }
 
   .screening-toolbar {

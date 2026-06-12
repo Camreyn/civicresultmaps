@@ -71,8 +71,12 @@ test("source URLs remain first-class in explorer UX", () => {
 });
 
 test("review indicators explain advisory meaning", () => {
+  const eli5 = readFileSync("src/app/eli5.tsx", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+  const overview = readFileSync("src/app/national-overview.tsx", "utf8");
 
+  assert.match(eli5, /ELI5/);
   assert.match(tabs, /indicatorExplanation/);
   assert.match(tabs, /advisory indicator/);
   assert.match(tabs, /severityBucket/);
@@ -80,6 +84,10 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /Presidential-Versus-Comparison Drop-Off Histogram/);
   assert.match(tabs, /How to read this/);
   assert.match(tabs, /downloadSvgElement/);
+  assert.match(tabs, /Partial screening data/);
+  assert.match(tabs, /Proxy graph, not a complete Klimek fingerprint/);
+  assert.match(explorer, /Eli5/);
+  assert.match(overview, /Eli5/);
 });
 
 test("raw review turnout and historical APIs are exposed", () => {

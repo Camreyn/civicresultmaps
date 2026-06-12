@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { Eli5 } from "./eli5";
 import { ResultsExplorer } from "./results-explorer";
 import type {
   AnalysisIndicator,
@@ -301,6 +302,8 @@ export function WorkspaceTabs({
   const selectedReviewJurisdiction = reviewJurisdictionOptions.find(
     (option) => option.jurisdictionCode === screeningJurisdiction,
   );
+  const reviewGraphCoverageIsPartial =
+    reviewRows.length > 0 && reviewJurisdictionOptions.length < Math.max(1, results.length);
   const screeningGraphOptions: Array<{ key: ScreeningGraphType; label: string }> = [
     { key: "voteShareScatter", label: "Vote-Share Scatterplot" },
     { key: "dropoffHistogram", label: "Drop-Off Histogram" },
@@ -678,7 +681,13 @@ export function WorkspaceTabs({
                     <h2>Source Provenance</h2>
                     <span>Authority, parser, and confidence</span>
                   </div>
-                  <FileCheck2 aria-hidden size={18} />
+                  <div className="header-actions">
+                    <Eli5>
+                      This is the ingredient label for the data. It says where the numbers came from, what parser read
+                      them, and how confident the import record is.
+                    </Eli5>
+                    <FileCheck2 aria-hidden size={18} />
+                  </div>
                 </div>
                 <ul className="source-list">
                   {sources.map((source) => (
@@ -697,7 +706,13 @@ export function WorkspaceTabs({
                     <h2>Coverage</h2>
                     <span>Loaded platform capabilities</span>
                   </div>
-                  <ShieldCheck aria-hidden size={18} />
+                  <div className="header-actions">
+                    <Eli5>
+                      This is like a checklist for the selected state. Available means the app has that kind of data;
+                      pending means the importer has not received enough rows for that feature.
+                    </Eli5>
+                    <ShieldCheck aria-hidden size={18} />
+                  </div>
                 </div>
                 <ul className="flag-list">
                   {coverage &&
@@ -716,7 +731,13 @@ export function WorkspaceTabs({
                     <h2>State Snapshot</h2>
                     <span>Candidate totals and vote share</span>
                   </div>
-                  <Database aria-hidden size={18} />
+                  <div className="header-actions">
+                    <Eli5>
+                      This is the quick scoreboard. The bars show how the selected state's imported votes split across
+                      candidates, like counting colored blocks in one big box.
+                    </Eli5>
+                    <Database aria-hidden size={18} />
+                  </div>
                 </div>
                 <div className="candidate-bars">
                   {candidateTotals.map(([candidate, votes]) => (
@@ -754,7 +775,13 @@ export function WorkspaceTabs({
                 <h2>Review Center</h2>
                 <span>{indicators.length} advisory indicators for {stateName}</span>
               </div>
-              <BarChart3 aria-hidden size={18} />
+              <div className="header-actions">
+                <Eli5>
+                  This section is like a smoke alarm, not a verdict. It shows patterns that deserve a closer look, such
+                  as unusual vote-share or drop-off patterns, and then lists the places connected to those patterns.
+                </Eli5>
+                <BarChart3 aria-hidden size={18} />
+              </div>
             </div>
             <div className="review-summary-grid">
               <article>
@@ -837,6 +864,19 @@ export function WorkspaceTabs({
                     ))}
                   </div>
                 </div>
+                {reviewGraphCoverageIsPartial && (
+                  <div className="data-warning strong-warning" role="status">
+                    <TriangleAlert aria-hidden size={18} />
+                    <div>
+                      <strong>Partial screening data</strong>
+                      <span>
+                        These graphs cover {reviewJurisdictionOptions.length.toLocaleString()} of{" "}
+                        {results.length.toLocaleString()} result jurisdictions with local review rows. Use them as
+                        advisory screening views, not statewide precinct coverage.
+                      </span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="screening-grid">
                   {enabledScreeningGraphs.includes("voteShareScatter") && (
@@ -857,6 +897,10 @@ export function WorkspaceTabs({
                           <Download aria-hidden size={15} />
                           Download SVG
                         </button>
+                        <Eli5>
+                          Imagine lining up jars by how many marbles are inside, then marking what share of each jar is
+                          blue or red. This chart asks whether bigger local rows lean differently than smaller rows.
+                        </Eli5>
                       </div>
                       <div className="screening-chart-frame">
                         <svg
@@ -981,6 +1025,10 @@ export function WorkspaceTabs({
                           <Download aria-hidden size={15} />
                           Download SVG
                         </button>
+                        <Eli5>
+                          Imagine comparing two receipts from the same store trip. If one item is much larger or smaller
+                          than expected across many receipts, the bars show where those differences pile up.
+                        </Eli5>
                       </div>
                       <div className="screening-chart-frame">
                         <svg
@@ -1094,6 +1142,12 @@ export function WorkspaceTabs({
                   ))}
                 </div>
                 <div className="table-wrap">
+                  <div className="table-helper-row">
+                    <Eli5>
+                      This table is the list behind the warning lights. Each row names a place, the type of pattern, and
+                      how strongly the imported screening data says someone should review it.
+                    </Eli5>
+                  </div>
                   <table>
                     <thead>
                       <tr>
@@ -1134,6 +1188,10 @@ export function WorkspaceTabs({
                 <h2>Flag Mix</h2>
                 <span>Counts by advisory indicator type</span>
               </div>
+              <Eli5>
+                This chart is like sorting warning sticky notes into piles. Bigger piles mean more places had the same
+                kind of advisory pattern.
+              </Eli5>
             </div>
             <div className="mini-bars">
               {groupedIndicatorCounts.length ? (
@@ -1164,10 +1222,16 @@ export function WorkspaceTabs({
                 <span>
                   {historicalRows.length
                     ? `${historicalRows.length.toLocaleString()} rows across ${historicalYearSummaries.length} election years`
-                    : "Waiting on historical rows from the legacy bundle"}
+                  : "Waiting on historical rows from the legacy bundle"}
                 </span>
               </div>
-              <History aria-hidden size={18} />
+              <div className="header-actions">
+                <Eli5>
+                  This section is like looking at old report cards before reading the new one. It shows whether the same
+                  places changed over past presidential elections, when those old rows are available.
+                </Eli5>
+                <History aria-hidden size={18} />
+              </div>
             </div>
             {historicalRows.length ? (
               <>
@@ -1245,6 +1309,10 @@ export function WorkspaceTabs({
                       <div>
                         <strong>Statewide Vote Share</strong>
                         <span>Democratic, Republican, and other share by enabled year</span>
+                        <Eli5>
+                          This is like dividing a pizza each year. The colored pieces show how much of the vote went to
+                          each group, so you can compare the slices from year to year.
+                        </Eli5>
                       </div>
                       <div className="history-share-chart" role="img" aria-label="Statewide historical vote share chart">
                         {filteredHistoricalSummaries.map((summary) => {
@@ -1274,6 +1342,10 @@ export function WorkspaceTabs({
                       <div>
                         <strong>Margin Trend</strong>
                         <span>Winner margin as a share of total votes</span>
+                        <Eli5>
+                          This shows how big the winner's lead was each year. A longer bar means the winner had more room
+                          between them and second place.
+                        </Eli5>
                       </div>
                       <div className="history-margin-chart" role="img" aria-label="Historical winner margin chart">
                         {filteredHistoricalSummaries.map((summary) => {
@@ -1300,6 +1372,10 @@ export function WorkspaceTabs({
                       <div>
                         <strong>Largest County Dem-Share Movement</strong>
                         <span>Change between earliest and latest enabled historical year</span>
+                        <Eli5>
+                          This is like asking which counties moved their chair the farthest between the first selected
+                          year and the last selected year. Blue means movement toward Democrats; red means movement away.
+                        </Eli5>
                       </div>
                       <div className="history-swing-list">
                         {historicalCountyTrends.map((trend) => {
@@ -1332,6 +1408,20 @@ export function WorkspaceTabs({
                           Separate year charts plotting Democratic share against county vote volume as a temporary turnout
                           proxy. True Klimek fingerprints will use turnout percentages once denominators are imported.
                         </span>
+                        <Eli5>
+                          Imagine each county as a dot. The dot's left-right position is vote share, and its height is
+                          vote size for now. This is only a practice version until real turnout denominators are loaded.
+                        </Eli5>
+                      </div>
+                      <div className="data-warning strong-warning" role="status">
+                        <TriangleAlert aria-hidden size={18} />
+                        <div>
+                          <strong>Proxy graph, not a complete Klimek fingerprint</strong>
+                          <span>
+                            This uses county vote volume because true turnout percentages are not imported for these
+                            historical rows. Do not interpret it as a complete turnout-fingerprint test.
+                          </span>
+                        </div>
                       </div>
                       <div className="fingerprint-grid">
                         {historicalRowsByYear.map((yearGroup) => (
@@ -1379,6 +1469,20 @@ export function WorkspaceTabs({
                           Vote volume grouped by Democratic share bucket for each enabled year. This separates the
                           distribution diagnostic from the Klimek fingerprint view.
                         </span>
+                        <Eli5>
+                          Imagine sorting counties into buckets by how Democratic they were, then stacking their votes in
+                          each bucket. Tall buckets show where a lot of votes are concentrated.
+                        </Eli5>
+                      </div>
+                      <div className="data-warning strong-warning" role="status">
+                        <TriangleAlert aria-hidden size={18} />
+                        <div>
+                          <strong>Diagnostic view with limited inputs</strong>
+                          <span>
+                            This groups county vote volume by vote-share buckets. It does not replace precinct-level
+                            distributions or turnout-based review when those data are missing.
+                          </span>
+                        </div>
                       </div>
                       <div className="shpilkin-grid">
                         {shpilkinRowsByYear.map((yearGroup) => (
@@ -1414,6 +1518,12 @@ export function WorkspaceTabs({
                   )}
                 </div>
                 <div className="table-wrap">
+                  <div className="table-helper-row">
+                    <Eli5>
+                      This table is the raw list feeding the history charts. Each row is one place in one election year,
+                      with Democratic, Republican, other, and total votes.
+                    </Eli5>
+                  </div>
                   <table>
                     <thead>
                       <tr>
@@ -1469,7 +1579,13 @@ export function WorkspaceTabs({
                 <h2>Source Planner</h2>
                 <span>Readiness by platform capability</span>
               </div>
-              <ListChecks aria-hidden size={18} />
+              <div className="header-actions">
+                <Eli5>
+                  This is the project checklist for one state. It says which drawers have useful data inside and which
+                  drawers are still waiting for files from the data pipeline.
+                </Eli5>
+                <ListChecks aria-hidden size={18} />
+              </div>
             </div>
             <div className="capability-grid">
               {capabilityEntries.map(([key, value]) => (
@@ -1526,7 +1642,13 @@ export function WorkspaceTabs({
                 <h2>Data & Sources</h2>
                 <span>{sources.length} source document records</span>
               </div>
-              <FileCheck2 aria-hidden size={18} />
+              <div className="header-actions">
+                <Eli5>
+                  This is the bibliography. If someone asks where a number came from, this section should point to the
+                  official source, local artifact, parser, and confidence note.
+                </Eli5>
+                <FileCheck2 aria-hidden size={18} />
+              </div>
             </div>
             <div className="source-links-panel">
               <div>
@@ -1535,6 +1657,10 @@ export function WorkspaceTabs({
                   Every imported source record for {stateName} should include an auditable URL or documented
                   artifact reference.
                 </span>
+                <Eli5>
+                  These are links back to the original paperwork. A missing URL is like a recipe without the cookbook
+                  page number: the data may exist, but it is harder to audit.
+                </Eli5>
               </div>
               {sourcesWithoutUrls.length > 0 && (
                 <p className="source-warning">
@@ -1597,7 +1723,13 @@ export function WorkspaceTabs({
                 <h2>Methodology</h2>
                 <span>How this release should be read</span>
               </div>
-              <BookOpen aria-hidden size={18} />
+              <div className="header-actions">
+                <Eli5>
+                  This is the rulebook. It explains what the app is allowed to claim, what the warnings mean, and what
+                  should not be overinterpreted.
+                </Eli5>
+                <BookOpen aria-hidden size={18} />
+              </div>
             </div>
             <div className="method-list">
               <article>
@@ -1648,7 +1780,13 @@ export function WorkspaceTabs({
                 <h2>Exports & API</h2>
                 <span>Download selected state data or use public read endpoints</span>
               </div>
-              <Database aria-hidden size={18} />
+              <div className="header-actions">
+                <Eli5>
+                  This is the takeout counter. You can download the same data shown on screen or use API links so another
+                  tool can ask for the data directly.
+                </Eli5>
+                <Database aria-hidden size={18} />
+              </div>
             </div>
             <div className="export-grid">
               <button onClick={exportResults} type="button">
@@ -1687,6 +1825,12 @@ export function WorkspaceTabs({
               </article>
             </div>
             <ul className="api-list">
+              <li className="api-helper">
+                <Eli5>
+                  Each API row is like a vending-machine button. Change the state code or limit in the URL, and the app
+                  returns that slice of data as JSON.
+                </Eli5>
+              </li>
               <li>
                 <strong>Results</strong>
                 <code>/api/results?state={selectedStateCode}&amp;year=2024&amp;level=county</code>
@@ -1732,7 +1876,13 @@ export function WorkspaceTabs({
                 <h2>Import Runs</h2>
                 <span>Latest ETL promotion records</span>
               </div>
-              {importRuns.length ? <GitBranch aria-hidden size={18} /> : <Activity aria-hidden size={18} />}
+              <div className="header-actions">
+                <Eli5>
+                  This is the delivery log. Each entry says when the importer carried data from the source bundle into
+                  the database and whether that trip finished cleanly.
+                </Eli5>
+                {importRuns.length ? <GitBranch aria-hidden size={18} /> : <Activity aria-hidden size={18} />}
+              </div>
             </div>
             <ul className="source-list">
               {importRuns.map((run) => (
