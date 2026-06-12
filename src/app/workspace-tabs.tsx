@@ -993,8 +993,8 @@ export function WorkspaceTabs({
                           </g>
                         </svg>
                       </div>
-                      <div className="how-to-read">
-                        <strong>How to read this</strong>
+                      <details className="how-to-read">
+                        <summary>How to read this</summary>
                         <p>
                           Each dot is one local result row. Left-to-right shows how many votes a candidate received in
                           that row; up-and-down shows that candidate&apos;s share of the same row.
@@ -1003,7 +1003,7 @@ export function WorkspaceTabs({
                           The trend lines help show whether larger local rows lean differently than smaller ones. A flag
                           means &quot;look closer,&quot; not proof that something happened.
                         </p>
-                      </div>
+                      </details>
                     </article>
                   )}
 
@@ -1105,8 +1105,8 @@ export function WorkspaceTabs({
                           </g>
                         </svg>
                       </div>
-                      <div className="how-to-read">
-                        <strong>How to read this</strong>
+                      <details className="how-to-read">
+                        <summary>How to read this</summary>
                         <p>
                           This compares presidential votes with a same-party comparison contest in the same local row.
                           Bars near zero mean the two contests moved similarly in that place.
@@ -1115,7 +1115,7 @@ export function WorkspaceTabs({
                           Bars far left or right show larger drop-off differences. Normal split-ticket voting can cause
                           differences; the chart helps show whether those differences cluster oddly.
                         </p>
-                      </div>
+                      </details>
                     </article>
                   )}
                 </div>

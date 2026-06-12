@@ -6,14 +6,15 @@ import { useState } from "react";
 
 type Eli5Props = {
   children: ReactNode;
+  className?: string;
   title?: string;
 };
 
-export function Eli5({ children, title = "ELI5" }: Eli5Props) {
+export function Eli5({ children, className = "", title = "ELI5" }: Eli5Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="eli5">
+    <div className={["eli5", className].filter(Boolean).join(" ")}>
       <button
         aria-expanded={isOpen}
         className="eli5-button"
