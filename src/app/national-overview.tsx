@@ -25,7 +25,7 @@ function statusClass(status: CompletenessSummary["status"]) {
 }
 
 export function NationalOverview({ report, year }: NationalOverviewProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const statesWithResults = report.filter((state) => state.resultRows > 0).length;
   const completeStates = report.filter((state) => state.status === "complete").length;
   const statesWithMap = report.filter((state) => state.capabilities.map).length;

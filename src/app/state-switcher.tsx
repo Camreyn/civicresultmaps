@@ -46,31 +46,13 @@ export function StateSwitcher({ selectedState, states }: StateSwitcherProps) {
 
   return (
     <div className="state-switcher">
-      <label className="state-select-label" htmlFor="state-select">
-        Jump to state
-      </label>
-      <select
-        className="state-select"
-        id="state-select"
-        onChange={(event) => {
-          window.location.href = `/?state=${event.target.value}`;
-        }}
-        value={selectedState}
-      >
-        {states.map((state) => (
-          <option key={state.code} value={state.code}>
-            {state.name} ({state.code}) - {stateStatus(state).label}
-          </option>
-        ))}
-      </select>
-
       <label className="state-search" htmlFor="state-search">
         <Search aria-hidden size={16} />
         <input
           autoComplete="off"
           id="state-search"
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search states"
+          placeholder="Search or pick a state"
           type="search"
           value={query}
         />
