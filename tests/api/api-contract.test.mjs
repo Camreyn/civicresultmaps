@@ -52,12 +52,18 @@ test("public completeness report exists for national readiness", () => {
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
   const types = readFileSync("src/lib/types.ts", "utf8");
   const overview = readFileSync("src/app/national-overview.tsx", "utf8");
+  const readiness = readFileSync("src/app/readiness/page.tsx", "utf8");
+  const home = readFileSync("src/app/page.tsx", "utf8");
 
   assert.match(types, /CompletenessSummary/);
   assert.match(dataAccess, /listCompletenessReport/);
   assert.match(dataAccess, /sourcesMissingUrls/);
   assert.match(overview, /Completeness API/);
   assert.match(overview, /Raw review rows/);
+  assert.match(home, /\/readiness/);
+  assert.match(readiness, /missing data dashboard/);
+  assert.match(readiness, /State Work Queue/);
+  assert.match(readiness, /Historical baseline rows/);
 });
 
 test("source URLs remain first-class in explorer UX", () => {

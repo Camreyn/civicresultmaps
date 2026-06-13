@@ -113,6 +113,24 @@ input {
   gap: 14px;
 }
 
+.topbar-link {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--foreground);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 11px;
+}
+
+.topbar-link:hover {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
 .live-dot {
   align-items: center;
   border: 1px solid var(--accent-line);
@@ -259,6 +277,175 @@ input {
 .overview-table td a {
   display: grid;
   gap: 3px;
+}
+
+.readiness-shell {
+  min-height: 100vh;
+}
+
+.readiness-hero,
+.readiness-metrics,
+.readiness-panel {
+  margin-inline: auto;
+  max-width: 1480px;
+  width: calc(100% - clamp(40px, 8vw, 96px));
+}
+
+.readiness-hero {
+  align-items: end;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  padding: clamp(26px, 5vw, 58px) 0 22px;
+}
+
+.readiness-hero h1 {
+  font-size: clamp(34px, 6vw, 76px);
+  line-height: 0.95;
+  margin: 0;
+}
+
+.readiness-hero p:not(.section-label) {
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 14px 0 0;
+  max-width: 760px;
+}
+
+.readiness-api-link,
+.readiness-open-link {
+  align-items: center;
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 800;
+  min-height: 34px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.readiness-api-link:hover,
+.readiness-open-link:hover {
+  background: var(--accent-soft);
+}
+
+.readiness-metrics {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  margin-bottom: 18px;
+}
+
+.readiness-metrics article {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+}
+
+.readiness-metrics svg {
+  color: var(--accent);
+}
+
+.readiness-metrics span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.readiness-metrics strong {
+  font-family: var(--font-code);
+  font-size: 24px;
+}
+
+.readiness-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  margin-bottom: clamp(28px, 5vw, 56px);
+  overflow: hidden;
+}
+
+.readiness-panel-head {
+  align-items: center;
+  background: var(--panel-strong);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.readiness-panel-head h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.readiness-panel-head span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.readiness-legend,
+.task-list {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.readiness-table-wrap {
+  overflow-x: auto;
+}
+
+.readiness-table {
+  min-width: 1040px;
+}
+
+.readiness-table td:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.readiness-counts {
+  color: var(--muted);
+  display: grid;
+  font-size: 12px;
+  gap: 4px;
+}
+
+.task-pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 6px 8px;
+  white-space: nowrap;
+}
+
+.task-high {
+  background: rgba(255, 143, 126, 0.1);
+  border-color: rgba(255, 143, 126, 0.42);
+  color: var(--red);
+}
+
+.task-medium {
+  background: rgba(240, 195, 106, 0.1);
+  border-color: rgba(240, 195, 106, 0.42);
+  color: var(--gold);
+}
+
+.task-low {
+  background: rgba(130, 184, 255, 0.09);
+  border-color: rgba(130, 184, 255, 0.34);
+  color: var(--blue);
 }
 
 .overview-table td a span {
@@ -2351,7 +2538,8 @@ td {
   .workspace,
   .content-grid,
   .metrics-grid,
-  .overview-metrics {
+  .overview-metrics,
+  .readiness-metrics {
     grid-template-columns: 1fr;
   }
 
@@ -2398,6 +2586,8 @@ td {
   .topbar-actions,
   .dashboard-head,
   .overview-head,
+  .readiness-hero,
+  .readiness-panel-head,
   .screening-card-head,
   .header-actions,
   .selected-result-callout {
@@ -2440,5 +2630,11 @@ td {
 
   .state-list {
     max-height: 360px;
+  }
+
+  .readiness-hero,
+  .readiness-metrics,
+  .readiness-panel {
+    width: calc(100% - 32px);
   }
 }

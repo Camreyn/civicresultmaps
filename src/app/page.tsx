@@ -56,6 +56,9 @@ export default async function Home({ searchParams }: HomeProps) {
           </div>
         </div>
         <div className="topbar-actions">
+          <a className="topbar-link" href="/readiness">
+            Readiness
+          </a>
           <span className="live-dot">Database live</span>
           <span className="domain">civicresultmaps.org</span>
         </div>
