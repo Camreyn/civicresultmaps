@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from .models import EtlConfig, ExpectedConfig, SourceConfig, ValidationReport
+from .native import build_native_payload
 
 REQUIRED_CAPABILITIES = {
     "sourcePlanner",
@@ -31,6 +32,7 @@ def load_config(path: str | Path) -> EtlConfig:
             timestamp_basis=item["timestampBasis"],
             confidence=item["confidence"],
             status=item["status"],
+            raw=item,
         )
         for item in data.get("sources", [])
     ]
@@ -45,10 +47,17 @@ def load_config(path: str | Path) -> EtlConfig:
         sources=sources,
         expected=ExpectedConfig(
             jurisdictions=int(expected_data.get("jurisdictions", 0)),
-            result_rows=int(expected_data.get("resultRows", 0)),
+            result_rows=int(expected_data.get("resultRows", expected_data.get("countyRows", 0))),
             sources=int(expected_data.get("sources", 0)),
+            review_rows=int(expected_data.get("reviewRows", 0)),
+            turnout_rows=int(expected_data.get("turnoutRows", 0)),
+            state_total=int(expected_data.get("stateTotal", 0)),
+            trump=int(expected_data.get("trump", 0)),
+            harris=int(expected_data.get("harris", 0)),
+            other=int(expected_data.get("other", 0)),
         ),
         capabilities={key: bool(value) for key, value in data.get("capabilities", {}).items()},
+        raw=data,
     )
 
 
@@ -99,6 +108,8 @@ def validate_config(config: EtlConfig) -> ValidationReport:
             "loadedSourceCount": len(loaded_sources),
             "expectedJurisdictions": config.expected.jurisdictions,
             "expectedResultRows": config.expected.result_rows,
+            "expectedReviewRows": config.expected.review_rows,
+            "expectedTurnoutRows": config.expected.turnout_rows,
         },
     )
 
@@ -107,7 +118,7 @@ def build_staging_artifact(config: EtlConfig, report: ValidationReport) -> dict[
     if not report.passed:
         raise ValueError("cannot build staging artifact from a failing validation report")
 
-    return {
+    artifact = {
         "state": {
             "code": config.code,
             "name": config.name,
@@ -139,6 +150,13 @@ def build_staging_artifact(config: EtlConfig, report: ValidationReport) -> dict[
             "productionWriteAllowed": False,
         },
     }
+
+    native_payload = build_native_payload(config)
+    if native_payload:
+        artifact["native"] = native_payload
+        artifact["validation"]["metrics"].update(native_payload.get("metrics", {}))
+
+    return artifact
 
 
 def write_staging_artifact(artifact: dict[str, Any], out_dir: str | Path) -> Path:

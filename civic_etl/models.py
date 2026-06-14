@@ -15,6 +15,7 @@ class SourceConfig:
     timestamp_basis: str
     confidence: str
     status: str
+    raw: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -22,6 +23,12 @@ class ExpectedConfig:
     jurisdictions: int
     result_rows: int
     sources: int
+    review_rows: int = 0
+    turnout_rows: int = 0
+    state_total: int = 0
+    trump: int = 0
+    harris: int = 0
+    other: int = 0
 
 
 @dataclass(frozen=True)
@@ -34,6 +41,7 @@ class EtlConfig:
     sources: list[SourceConfig]
     expected: ExpectedConfig
     capabilities: dict[str, bool]
+    raw: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass

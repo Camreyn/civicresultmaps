@@ -1,0 +1,182 @@
+{
+  "code": "OH",
+  "name": "Ohio",
+  "authority": "Ohio Secretary of State",
+  "electionYear": 2024,
+  "office": "President",
+  "sources": [
+    {
+      "id": "oh-2024-statewide-race-summary-xlsx",
+      "category": "Official presidential county results",
+      "url": "https://web.archive.org/web/20241207004035if_/https://www.ohiosos.gov/globalassets/elections/2024/gen/official/statewide-race-summary.xlsx",
+      "localFile": "data/oh-2024-statewide-race-summary.xlsx",
+      "parser": "ohioStatewideRaceSummaryXlsx",
+      "authority": "Ohio Secretary of State",
+      "timestampBasis": "Workbook title row and archived official XLSX capture timestamp 2024-12-07.",
+      "confidence": "Official Ohio Secretary of State November 5, 2024 General Election Official Canvass workbook.",
+      "status": "loaded"
+    },
+    {
+      "id": "oh-2024-statewide-races-precinct-level-xlsx",
+      "category": "Official precinct presidential review and turnout rows",
+      "url": "https://www.ohiosos.gov/globalassets/elections/2024/gen/official/statewide-races-precinct-level.xlsx",
+      "localFile": "data/oh-2024-statewide-races-precinct-level.xlsx",
+      "parser": "ohioPrecinctOfficialXlsx",
+      "authority": "Ohio Secretary of State",
+      "timestampBasis": "Workbook title row: November 5, 2024 General Election Official Canvass.",
+      "confidence": "Official Ohio Secretary of State precinct-level canvass workbook.",
+      "status": "loaded"
+    },
+    {
+      "id": "oh-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2739%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/oh-counties.geojson",
+      "parser": "censusTigerGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service.",
+      "confidence": "Authoritative county boundary geometry for map joins.",
+      "status": "loaded"
+    }
+  ],
+  "certifiedResults": {
+    "format": "ohioStatewideRaceSummaryXlsx",
+    "sourceId": "oh-2024-statewide-race-summary-xlsx",
+    "sheetName": "President and Vice President",
+    "headerRow": 2,
+    "totalRow": 3,
+    "dataStartRow": 5,
+    "majorCandidates": {
+      "trump": {
+        "candidateContains": "Donald J. Trump"
+      },
+      "harris": {
+        "candidateContains": "Kamala D. Harris"
+      }
+    },
+    "otherCandidates": [
+      {
+        "key": "ayyadurai",
+        "label": "Shiva Ayyadurai / Crystal Ellis (WI)",
+        "candidateContains": "Shiva  Ayyadurai"
+      },
+      {
+        "key": "bowman",
+        "label": "Jay Bowman / De D Bowman (WI)",
+        "candidateContains": "Jay Bowman"
+      },
+      {
+        "key": "cheng",
+        "label": "John Cheng / Wayne Waligorski (WI)",
+        "candidateContains": "John Cheng"
+      },
+      {
+        "key": "deLaCruz",
+        "label": "Claudia De la Cruz / Karina Garcia (WI)",
+        "candidateContains": "Claudia De la Cruz"
+      },
+      {
+        "key": "duncan",
+        "label": "Richard Duncan / Mitchell Preston Bupp",
+        "candidateContains": "Richard Duncan"
+      },
+      {
+        "key": "fox",
+        "label": "Cherunda Fox / Harlan McVay (WI)",
+        "candidateContains": "Cherunda Fox"
+      },
+      {
+        "key": "garrity",
+        "label": "Chris Garrity / Cody Ballard (WI)",
+        "candidateContains": "Chris Garrity"
+      },
+      {
+        "key": "kienitz",
+        "label": "Brian Kienitz / Christina Johnston (WI)",
+        "candidateContains": "Brian Kienitz"
+      },
+      {
+        "key": "nalbach",
+        "label": "William Nalbach / Willis Butts (WI)",
+        "candidateContains": "William Nalbach"
+      },
+      {
+        "key": "oliver",
+        "label": "Chase Oliver / Mike ter Maat",
+        "candidateContains": "Chase Oliver"
+      },
+      {
+        "key": "sonski",
+        "label": "Peter Sonski / Lauren Onak",
+        "candidateContains": "Peter  Sonski"
+      },
+      {
+        "key": "west",
+        "label": "Cornel West / Melina Abdullah (WI)",
+        "candidateContains": "Cornel West"
+      }
+    ]
+  },
+  "reviewCharts": {
+    "format": "ohioPrecinctVoteShare",
+    "sourceId": "oh-2024-statewide-races-precinct-level-xlsx",
+    "sheetName": "President and Vice President",
+    "headerRow": 2,
+    "dataStartRow": 5,
+    "totalColumn": "Ballots Counted",
+    "majorCandidates": {
+      "trump": {
+        "candidateContains": "Donald J. Trump"
+      },
+      "harris": {
+        "candidateContains": "Kamala D. Harris"
+      }
+    },
+    "warning": "Ohio vote-share review uses official precinct presidential rows only. Down-ballot comparison flags remain disabled until a same-row comparison contest is mapped.",
+    "policy": {
+      "outlierThresholdPct": 15,
+      "minCandidateVotes": 100,
+      "voteShareCorrelationThreshold": 0.35
+    }
+  },
+  "turnout": {
+    "format": "ohioPrecinctTurnoutXlsx",
+    "sourceId": "oh-2024-statewide-races-precinct-level-xlsx",
+    "sheetName": "President and Vice President",
+    "headerRow": 2,
+    "totalRow": 3,
+    "dataStartRow": 5,
+    "registrationDenominatorTiming": "final",
+    "denominatorType": "registeredVoters",
+    "sourceLevel": "precinct",
+    "sourceTitle": "November 5, 2024 General Election Official Canvass - Statewide Races Precinct-Level Workbook",
+    "sourceAuthority": "Ohio Secretary of State",
+    "coverageStatus": "loaded",
+    "voteMethodFields": [],
+    "statewideTotals": {
+      "registeredVoters": 8159946,
+      "ballotsCast": 5851387
+    },
+    "notes": "Ohio Secretary of State official canvass precinct-level workbook supplies Registered Voters, Ballots Counted, and Official Voter Turnout for each precinct row on the President and Vice President sheet.",
+    "warningRequired": false
+  },
+  "expected": {
+    "jurisdictions": 88,
+    "resultRows": 88,
+    "sources": 3,
+    "stateTotal": 5767788,
+    "trump": 3180116,
+    "harris": 2533699,
+    "other": 53973,
+    "reviewRows": 8878,
+    "turnoutRows": 8878
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
+    "turnout": true,
+    "historicalBaseline": false
+  }
+}
