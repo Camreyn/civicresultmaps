@@ -1,6 +1,5 @@
 import { readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
-import { getDatabaseUrl } from "./url";
 
 type NativeSource = {
   id: string;
@@ -81,6 +80,10 @@ const candidateParties = {
   Trump: "REP",
   Other: "OTHER",
 } as const;
+
+function getDatabaseUrl() {
+  return process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? process.env.CRM_URL ?? "";
+}
 
 function normalizeJurisdictionName(name: string) {
   return name.trim().replace(/\s+County$/i, "");
