@@ -59,6 +59,16 @@ function statusLabel(status: CompletenessSummary["status"]) {
   }[status];
 }
 
+function sourceTierLabel(tier: CompletenessSummary["sourceTier"]) {
+  return {
+    legacy_bundle: "Legacy bundle",
+    mixed: "Mixed",
+    native_official: "Native official",
+    pending: "Pending",
+    seed_fallback: "Seed fallback",
+  }[tier];
+}
+
 function taskSummary(tasks: ReadinessTask[]) {
   const high = tasks.filter((task) => task.severity === "high").length;
   const medium = tasks.filter((task) => task.severity === "medium").length;
@@ -80,7 +90,8 @@ export default async function ReadinessPage() {
   const statesMissingHistorical = rows.filter((state) => state.tasks.some((task) => task.key === "historical")).length;
   const statesMissingReview = rows.filter((state) => state.tasks.some((task) => task.key === "review")).length;
   const statesMissingTurnout = rows.filter((state) => state.tasks.some((task) => task.key === "turnout")).length;
-  const highPriorityStates = rows.filter((state) => state.taskSummary.high > 0).length;
+  const nativeStates = rows.filter((state) => state.sourceTier === "native_official" || state.sourceTier === "mixed").length;
+  const legacyOnlyStates = rows.filter((state) => state.sourceTier === "legacy_bundle").length;
 
   return (
     <main className="readiness-shell">
@@ -127,8 +138,8 @@ export default async function ReadinessPage() {
         </article>
         <article>
           <FileWarning aria-hidden size={18} />
-          <span>High-priority states</span>
-          <strong>{highPriorityStates}</strong>
+          <span>Native official states</span>
+          <strong>{nativeStates}</strong>
         </article>
         <article>
           <ListChecks aria-hidden size={18} />
@@ -141,6 +152,11 @@ export default async function ReadinessPage() {
           <strong>
             {statesMissingTurnout} / {statesMissingHistorical}
           </strong>
+        </article>
+        <article>
+          <Database aria-hidden size={18} />
+          <span>Legacy-only states</span>
+          <strong>{legacyOnlyStates}</strong>
         </article>
       </section>
 
@@ -163,6 +179,7 @@ export default async function ReadinessPage() {
               <tr>
                 <th>State</th>
                 <th>Status</th>
+                <th>Lineage</th>
                 <th>Loaded Rows</th>
                 <th>Missing Work</th>
                 <th>Latest Import</th>
@@ -181,6 +198,12 @@ export default async function ReadinessPage() {
                       {state.tasks.length === 0 ? <CheckCircle2 aria-hidden size={13} /> : <CircleDashed aria-hidden size={13} />}
                       {statusLabel(state.status)}
                     </span>
+                  </td>
+                  <td className="readiness-lineage">
+                    <span className={`lineage-pill lineage-${state.sourceTier.replace("_", "-")}`}>
+                      {sourceTierLabel(state.sourceTier)}
+                    </span>
+                    <span>{state.latestParser ?? "No parser yet"}</span>
                   </td>
                   <td className="readiness-counts">
                     <span>{state.resultJurisdictions.toLocaleString()} jurisdictions</span>

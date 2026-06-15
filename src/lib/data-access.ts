@@ -110,6 +110,26 @@ function completenessGaps(input: {
   return gaps;
 }
 
+function sourceTierLabel(input: {
+  legacyImportCount: number;
+  nativeImportCount: number;
+  resultRows: number;
+}): CompletenessSummary["sourceTier"] {
+  if (input.nativeImportCount > 0 && input.legacyImportCount > 0) {
+    return "mixed";
+  }
+
+  if (input.nativeImportCount > 0) {
+    return "native_official";
+  }
+
+  if (input.legacyImportCount > 0) {
+    return "legacy_bundle";
+  }
+
+  return input.resultRows > 0 ? "seed_fallback" : "pending";
+}
+
 function seedCompletenessReport(year: number): CompletenessSummary[] {
   return seedStates.map((state) => {
     const results = seedResults.filter((row) => row.state === state.code && row.year === year);
@@ -139,7 +159,15 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       historicalRowCount: 0,
       flaggedJurisdictions: indicatorCount,
       importRunCount: importRuns.length,
+      legacyImportCount: importRuns.filter((run) => run.parser.toLowerCase().includes("legacy")).length,
       latestImportAt: importRuns[0]?.startedAt ?? null,
+      latestParser: importRuns[0]?.parser ?? null,
+      nativeImportCount: importRuns.filter((run) => run.parser.toLowerCase().includes("native")).length,
+      sourceTier: sourceTierLabel({
+        legacyImportCount: importRuns.filter((run) => run.parser.toLowerCase().includes("legacy")).length,
+        nativeImportCount: importRuns.filter((run) => run.parser.toLowerCase().includes("native")).length,
+        resultRows: results.length,
+      }),
       capabilities: state.capabilities,
       status,
       gaps: completenessGaps({
@@ -794,7 +822,10 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     historicalRowCount: string | number | null;
     flaggedJurisdictions: string | number | null;
     importRunCount: string | number | null;
+    legacyImportCount: string | number | null;
     latestImportAt: Date | string | null;
+    latestParser: string | null;
+    nativeImportCount: string | number | null;
   };
 
   let rows: StateAggregate[];
@@ -855,13 +886,16 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         group by state_code
       ),
       import_counts as (
-        select
+        select distinct on (state_code)
           state_code,
-          count(*) as import_run_count,
-          max(started_at) as latest_import_at
+          count(*) over (partition by state_code) as import_run_count,
+          count(*) filter (where parser ilike 'native%') over (partition by state_code) as native_import_count,
+          count(*) filter (where parser ilike 'legacy%') over (partition by state_code) as legacy_import_count,
+          first_value(parser) over (partition by state_code order by started_at desc) as latest_parser,
+          max(started_at) over (partition by state_code) as latest_import_at
         from import_runs
         where election_year = ${input.year}
-        group by state_code
+        order by state_code, started_at desc
       )
       select
         states.code,
@@ -884,6 +918,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         coalesce(historical_row_counts.historical_row_count, 0) as "historicalRowCount",
         coalesce(indicator_counts.flagged_jurisdictions, 0) as "flaggedJurisdictions",
         coalesce(import_counts.import_run_count, 0) as "importRunCount",
+        coalesce(import_counts.native_import_count, 0) as "nativeImportCount",
+        coalesce(import_counts.legacy_import_count, 0) as "legacyImportCount",
+        import_counts.latest_parser as "latestParser",
         import_counts.latest_import_at as "latestImportAt"
       from states
       left join capability_flags
@@ -916,6 +953,8 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     const sourceCount = Number(row.sourceCount ?? 0);
     const sourcesMissingUrls = Number(row.sourcesMissingUrls ?? 0);
     const indicatorCount = Number(row.indicatorCount ?? 0);
+    const nativeImportCount = Number(row.nativeImportCount ?? 0);
+    const legacyImportCount = Number(row.legacyImportCount ?? 0);
     const status = completenessStatus({
       capabilities,
       indicatorCount,
@@ -938,7 +977,15 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       historicalRowCount: Number(row.historicalRowCount ?? 0),
       flaggedJurisdictions: Number(row.flaggedJurisdictions ?? 0),
       importRunCount: Number(row.importRunCount ?? 0),
+      legacyImportCount,
       latestImportAt: toIsoTimestamp(row.latestImportAt),
+      latestParser: row.latestParser,
+      nativeImportCount,
+      sourceTier: sourceTierLabel({
+        legacyImportCount,
+        nativeImportCount,
+        resultRows,
+      }),
       capabilities,
       status,
       gaps: completenessGaps({

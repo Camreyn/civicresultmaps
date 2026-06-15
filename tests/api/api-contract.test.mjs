@@ -56,13 +56,18 @@ test("public completeness report exists for national readiness", () => {
   const home = readFileSync("src/app/page.tsx", "utf8");
 
   assert.match(types, /CompletenessSummary/);
+  assert.match(types, /sourceTier/);
   assert.match(dataAccess, /listCompletenessReport/);
+  assert.match(dataAccess, /nativeImportCount/);
+  assert.match(dataAccess, /legacyImportCount/);
   assert.match(dataAccess, /sourcesMissingUrls/);
   assert.match(overview, /Completeness API/);
-  assert.match(overview, /Raw review rows/);
+  assert.match(overview, /Native official states/);
+  assert.match(overview, /lineage-pill/);
   assert.match(home, /\/readiness/);
   assert.match(readiness, /missing data dashboard/);
   assert.match(readiness, /State Work Queue/);
+  assert.match(readiness, /Legacy-only states/);
   assert.match(readiness, /Historical baseline rows/);
 });
 

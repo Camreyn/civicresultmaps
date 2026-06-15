@@ -83,6 +83,10 @@ export type CompletenessSummary = {
   historicalRowCount: number;
   flaggedJurisdictions: number;
   importRunCount: number;
+  nativeImportCount: number;
+  legacyImportCount: number;
+  latestParser: string | null;
+  sourceTier: "native_official" | "legacy_bundle" | "mixed" | "seed_fallback" | "pending";
   latestImportAt: string | null;
   capabilities: CapabilitySummary;
   status: "complete" | "review_ready" | "results_only" | "needs_sources" | "pending";

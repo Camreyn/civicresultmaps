@@ -24,12 +24,22 @@ function statusClass(status: CompletenessSummary["status"]) {
   return `overview-status status-${status.replace("_", "-")}`;
 }
 
+function sourceTierLabel(tier: CompletenessSummary["sourceTier"]) {
+  return {
+    legacy_bundle: "Legacy bundle",
+    mixed: "Mixed",
+    native_official: "Native official",
+    pending: "Pending",
+    seed_fallback: "Seed fallback",
+  }[tier];
+}
+
 export function NationalOverview({ report, year }: NationalOverviewProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const statesWithResults = report.filter((state) => state.resultRows > 0).length;
   const completeStates = report.filter((state) => state.status === "complete").length;
   const statesWithMap = report.filter((state) => state.capabilities.map).length;
-  const rawReviewRows = report.reduce((sum, state) => sum + state.reviewRowCount, 0);
+  const nativeStates = report.filter((state) => state.sourceTier === "native_official" || state.sourceTier === "mixed").length;
 
   return (
     <section className="national-overview" aria-label={`${year} national data completeness`}>
@@ -80,8 +90,10 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
             </article>
             <article>
               <FileWarning aria-hidden size={18} />
-              <span>Raw review rows</span>
-              <strong>{rawReviewRows.toLocaleString()}</strong>
+              <span>Native official states</span>
+              <strong>
+                {nativeStates} / {report.length}
+              </strong>
             </article>
           </div>
 
@@ -99,6 +111,7 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
               <th>Status</th>
               <th>Rows</th>
               <th>Sources</th>
+              <th>Lineage</th>
               <th>Flags</th>
               <th>Raw Rows</th>
               <th>Gaps</th>
@@ -127,6 +140,11 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
                 <td className="mono">
                   {state.sourceCount.toLocaleString()}
                   {state.sourcesMissingUrls > 0 ? ` (${state.sourcesMissingUrls} missing URL)` : ""}
+                </td>
+                <td>
+                  <span className={`lineage-pill lineage-${state.sourceTier.replace("_", "-")}`}>
+                    {sourceTierLabel(state.sourceTier)}
+                  </span>
                 </td>
                 <td className="mono">{state.indicatorCount.toLocaleString()}</td>
                 <td className="mono">

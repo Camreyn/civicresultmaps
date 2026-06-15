@@ -6,28 +6,71 @@
   "office": "President",
   "sources": [
     {
-      "id": "wi-2024-county-president",
-      "category": "Certified presidential county results",
-      "url": "https://elections.wi.gov/sites/default/files/documents/County%20by%20County%20Report_POTUS.pdf",
-      "localFile": "legacy/data/County by County Report_POTUS.pdf",
-      "parser": "legacyStaticRegistry",
+      "id": "wi-2024-ward-by-ward-federal-state-xlsx",
+      "category": "Official presidential ward results",
+      "url": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+      "localFile": "data/wi-2024-ward-by-ward-federal-state.xlsx",
+      "parser": "wisconsinWardByWardXlsx",
       "authority": "Wisconsin Elections Commission",
-      "timestampBasis": "HTTP Last-Modified metadata captured in the legacy static project.",
-      "confidence": "Official WEC certified county result report.",
+      "timestampBasis": "Workbook sheet title: PRESIDENT OF THE UNITED STATES, November 5, 2024 General Election ward-by-ward federal and state contests.",
+      "confidence": "Wisconsin Elections Commission ward-by-ward federal and state contest workbook artifact.",
+      "status": "loaded"
+    },
+    {
+      "id": "wi-county-geometry",
+      "category": "County boundaries",
+      "url": "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/wi-counties.geojson",
+      "localFile": "data/wi-counties.geojson",
+      "parser": "geojsonCountyBoundaries",
+      "authority": "Civic Result Maps legacy boundary artifact",
+      "timestampBasis": "Local county GeoJSON artifact used by the legacy map.",
+      "confidence": "County geometry is used for map joins only; vote totals are sourced from the WEC workbook.",
       "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "wisconsinWardByWardXlsx",
+    "sourceId": "wi-2024-ward-by-ward-federal-state-xlsx",
+    "sheetName": "Sheet2",
+    "candidateHeaderRow": 10,
+    "dataStartRow": 11,
+    "countyColumnIndex": 1,
+    "wardColumnIndex": 2,
+    "totalColumnIndex": 3,
+    "majorCandidates": {
+      "trump": {
+        "candidateContains": "Donald J. Trump"
+      },
+      "harris": {
+        "candidateContains": "Kamala D. Harris"
+      }
+    }
+  },
+  "reviewCharts": {
+    "format": "wisconsinWardByWardVoteShare",
+    "sourceId": "wi-2024-ward-by-ward-federal-state-xlsx",
+    "sheetName": "Sheet2",
+    "candidateHeaderRow": 10,
+    "dataStartRow": 11,
+    "warning": "Wisconsin native review rows currently support ward-level presidential vote-share screening only. Down-ballot comparison and turnout screening remain disabled until those source mappings are added."
+  },
   "expected": {
     "jurisdictions": 72,
     "resultRows": 72,
-    "sources": 1
+    "sources": 2,
+    "stateTotal": 3422918,
+    "trump": 1697626,
+    "harris": 1668229,
+    "other": 57063,
+    "reviewRows": 3503,
+    "turnoutRows": 0
   },
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
     "map": true,
     "reviewGraphs": true,
-    "turnout": true,
+    "turnout": false,
     "historicalBaseline": true
   }
 }

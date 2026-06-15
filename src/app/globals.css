@@ -419,6 +419,18 @@ input {
   gap: 4px;
 }
 
+.readiness-lineage {
+  display: grid;
+  gap: 6px;
+}
+
+.readiness-lineage > span:last-child {
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
 .task-pill {
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -462,6 +474,44 @@ input {
   gap: 5px;
   padding: 4px 8px;
   white-space: nowrap;
+}
+
+.lineage-pill {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 6px 8px;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.lineage-native-official {
+  background: rgba(53, 199, 163, 0.1);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.lineage-mixed {
+  background: rgba(130, 184, 255, 0.09);
+  border-color: rgba(130, 184, 255, 0.42);
+  color: var(--blue);
+}
+
+.lineage-legacy-bundle {
+  background: rgba(240, 195, 106, 0.1);
+  border-color: rgba(240, 195, 106, 0.42);
+  color: var(--gold);
+}
+
+.lineage-seed-fallback,
+.lineage-pending {
+  background: rgba(255, 143, 126, 0.08);
+  border-color: rgba(255, 143, 126, 0.32);
+  color: var(--red);
 }
 
 .status-complete {

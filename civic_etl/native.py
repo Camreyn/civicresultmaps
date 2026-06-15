@@ -242,7 +242,128 @@ def _assert_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
         raise ValueError(f"native Ohio validation failed: {mismatches}")
 
 
+def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    rows = read_xlsx_sheet(_artifact_path(source), section.get("sheetName", "Sheet2"))
+    if len(rows) < section.get("dataStartRow", 11):
+        raise ValueError("Wisconsin ward workbook has too few rows")
+
+    header = rows[section.get("candidateHeaderRow", 10) - 1]
+    harris_index = _candidate_column(header, section["majorCandidates"]["harris"])
+    trump_index = _candidate_column(header, section["majorCandidates"]["trump"])
+    total_index = int(section.get("totalColumnIndex", 3))
+    ward_index = int(section.get("wardColumnIndex", 2))
+    county_index = int(section.get("countyColumnIndex", 1))
+    other_indexes = [
+        index
+        for index in range(trump_index + 1, len(header))
+        if index != harris_index and index != trump_index and str(header[index] or "").strip()
+    ]
+
+    county = ""
+    counties: dict[str, dict[str, int]] = {}
+    review_rows: list[dict[str, Any]] = []
+    for row in rows[section.get("dataStartRow", 11) - 1 :]:
+        if len(row) <= max(total_index, harris_index, trump_index, ward_index):
+            continue
+        if len(row) > county_index and row[county_index]:
+            county = _county_name(row[county_index])
+        ward = str(row[ward_index] if len(row) > ward_index else "").strip()
+        if not county or not ward or "subtotals" in ward.lower() or ward.lower().startswith("total"):
+            continue
+
+        total = int_text(row[total_index])
+        harris = int_text(row[harris_index])
+        trump = int_text(row[trump_index])
+        other = sum(int_text(row[index] if len(row) > index else 0) for index in other_indexes)
+        if total == 0:
+            continue
+
+        bucket = counties.setdefault(county, {"harris": 0, "other": 0, "total": 0, "trump": 0})
+        bucket["harris"] += harris
+        bucket["trump"] += trump
+        bucket["other"] += other
+        bucket["total"] += total
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": ward,
+                "totalVotes": total,
+                "harris": harris,
+                "trump": trump,
+                "harrisShare": pct(harris, total),
+                "trumpShare": pct(trump, total),
+                "demDropoff": 0,
+                "repDropoff": 0,
+                "coverageMode": "voteShareOnly",
+                "sourceId": source.id,
+            }
+        )
+
+    result_rows = [
+        {
+            "jurisdictionName": county_name,
+            "jurisdictionCode": county_name.upper().replace(" COUNTY", ""),
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": source.id,
+        }
+        for county_name, values in sorted(counties.items())
+    ]
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeTurnoutRows": 0,
+    }
+    return result_rows, review_rows, metrics
+
+
+def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
+    checks = {
+        "nativeResultRows": config.expected.result_rows,
+        "nativeResultTotalVotes": config.expected.state_total,
+        "nativeTrumpVotes": config.expected.trump,
+        "nativeHarrisVotes": config.expected.harris,
+        "nativeOtherVotes": config.expected.other,
+        "nativeReviewRows": config.expected.review_rows,
+        "nativeTurnoutRows": config.expected.turnout_rows,
+    }
+    mismatches = {
+        key: {"actual": metrics.get(key), "expected": expected}
+        for key, expected in checks.items()
+        if expected and metrics.get(key) != expected
+    }
+    if mismatches:
+        raise ValueError(f"native {config.code} validation failed: {mismatches}")
+
+
 def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
+    if config.code == "WI" and config.raw.get("certifiedResults", {}).get("format") == "wisconsinWardByWardXlsx":
+        sources = _source_map(config)
+        result_rows, review_rows, metrics = _wisconsin_ward_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeWisconsinWardByWardXlsx",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": [],
+            "metrics": metrics,
+        }
+
     if config.code != "OH" or config.raw.get("certifiedResults", {}).get("format") != "ohioStatewideRaceSummaryXlsx":
         return None
 
