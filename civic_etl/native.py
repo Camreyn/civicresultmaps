@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import csv
+import json
 import re
+import zipfile
 from pathlib import Path
 from typing import Any
 
@@ -746,6 +748,203 @@ def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> t
     return result_rows, review_rows, turnout_rows, metrics
 
 
+def _michigan_key(raw: Any) -> str:
+    return re.sub(r"[^A-Z0-9]+", " ", str(raw or "").upper().replace(" COUNTY", "")).strip()
+
+
+def _michigan_county_results(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    totals: dict[str, dict[str, int]] = {}
+    with _artifact_path(source).open(newline="", encoding="utf-8-sig") as handle:
+        handle.readline()
+        for row in csv.DictReader(handle, delimiter="\t"):
+            if row.get("OfficeCode(text)") != section.get("officeCode", "1"):
+                continue
+            county = _county_name(row.get("CountyName"))
+            party = row.get("PartyDescription", "")
+            votes = int_text(row.get("CandidateVotes"))
+            bucket = totals.setdefault(county, {"harris": 0, "other": 0, "total": 0, "trump": 0})
+            if party == "REPUBLICAN":
+                bucket["trump"] += votes
+            elif party == "DEMOCRATIC":
+                bucket["harris"] += votes
+            else:
+                bucket["other"] += votes
+            bucket["total"] += votes
+
+    result_rows = [
+        {
+            "jurisdictionName": county,
+            "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": source.id,
+        }
+        for county, values in sorted(totals.items())
+    ]
+    return result_rows, {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+    }
+
+
+def _michigan_review_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["reviewCharts"]
+    source = sources[section["sourceId"]]
+    with zipfile.ZipFile(_artifact_path(source)) as archive:
+        def read_table(path: str) -> list[list[str]]:
+            return [
+                line.split("\t")
+                for line in archive.read(path).decode("utf-8-sig", errors="replace").splitlines()
+                if line.strip()
+            ]
+
+        county_lookup = {row[0]: _county_name(row[1]) for row in read_table("2024GEN/county.txt") if len(row) >= 2}
+        municipality_lookup = {
+            (row[2], row[3]): row[4].title()
+            for row in read_table("2024GEN/2024city.txt")
+            if len(row) >= 5
+        }
+        party_lookup = {
+            (row[2], row[3], row[4], row[5]): row[9]
+            for row in read_table("2024GEN/2024name.txt")
+            if len(row) >= 10
+        }
+        vote_rows = read_table("2024GEN/2024vote.txt")
+
+    precincts: dict[tuple[str, str, str, str, str], dict[str, int]] = {}
+    for row in vote_rows:
+        if len(row) < 12:
+            continue
+        office, district, status, candidate = row[2], row[3], row[4], row[5]
+        if office not in {section["presidentContest"]["officeCode"], section["downBallotContest"]["officeCode"]}:
+            continue
+        county_code, municipality_code, ward_code, precinct_code, precinct_label = row[6], row[7], row[8], row[9], row[10]
+        county = county_lookup.get(county_code, "")
+        municipality = municipality_lookup.get((county_code, municipality_code), "")
+        key = (county, municipality, ward_code, precinct_code, precinct_label)
+        bucket = precincts.setdefault(
+            key,
+            {"pres_dem": 0, "pres_rep": 0, "pres_other": 0, "pres_total": 0, "sen_dem": 0, "sen_rep": 0, "sen_total": 0},
+        )
+        party = party_lookup.get((office, district, status, candidate), "")
+        votes = int_text(row[11])
+        if office == section["presidentContest"]["officeCode"]:
+            if party == "DEM":
+                bucket["pres_dem"] += votes
+            elif party == "REP":
+                bucket["pres_rep"] += votes
+            else:
+                bucket["pres_other"] += votes
+            bucket["pres_total"] += votes
+        else:
+            if party == "DEM":
+                bucket["sen_dem"] += votes
+            elif party == "REP":
+                bucket["sen_rep"] += votes
+            bucket["sen_total"] += votes
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    for key, values in sorted(precincts.items()):
+        total = values["pres_total"]
+        if not total:
+            continue
+        county, municipality, ward_code, precinct_code, precinct_label = key
+        label_parts = [municipality or "Unnamed municipality"]
+        if ward_code and ward_code != "0":
+            label_parts.append(f"Ward {int_text(ward_code)}")
+        label_parts.append(f"Precinct {int_text(precinct_code)}")
+        if precinct_label:
+            label_parts.append(precinct_label)
+        has_senate = bool(values["sen_total"])
+        if has_senate:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": " - ".join(label_parts),
+                "totalVotes": total,
+                "harris": values["pres_dem"],
+                "trump": values["pres_rep"],
+                "harrisShare": pct(values["pres_dem"], total),
+                "trumpShare": pct(values["pres_rep"], total),
+                "demDropoff": pct(values["pres_dem"] - values["sen_dem"], total) if has_senate else 0,
+                "repDropoff": pct(values["pres_rep"] - values["sen_rep"], total) if has_senate else 0,
+                "coverageMode": "presidentVsSenate" if has_senate else "voteShareOnly",
+                "sourceId": source.id,
+            }
+        )
+
+    return review_rows, {
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": config.raw.get("comparisonContest", {}).get("label"),
+    }
+
+
+def _michigan_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["turnout"]
+    source = sources[section["sourceId"]]
+    registration_source = sources[section["registrationSourceId"]]
+    registration_payload = json.loads(_artifact_path(registration_source).read_text(encoding="utf-8"))
+    registration_rows = {
+        _michigan_key(county): values
+        for county, values in registration_payload.get("counties", {}).items()
+    }
+    output: list[dict[str, Any]] = []
+    with _artifact_path(source).open(newline="", encoding="utf-8-sig") as handle:
+        handle.readline()
+        for row in csv.DictReader(handle, delimiter="\t"):
+            raw_county = row.get("County Name", "")
+            if not str(row.get("County Code", "")).strip().isdigit():
+                continue
+            county = _county_name(str(raw_county).replace(" COUNTY", ""))
+            registration = registration_rows.get(_michigan_key(raw_county))
+            if not registration:
+                raise ValueError(f"Michigan registration denominator missing for {raw_county}")
+            ballots = int_text(row.get("County Voters"))
+            registered = int_text(registration["novemberActiveRegisteredVoters"])
+            output.append(
+                {
+                    "county": county,
+                    "localUnit": county,
+                    "ballotsCast": ballots,
+                    "registeredVoters": registered,
+                    "turnoutPct": pct(ballots, registered) if registered else None,
+                    "denominatorType": "novemberActiveRegisteredVoters",
+                    "registrationDenominatorTiming": section.get("registrationDenominatorTiming", "novemberActiveRegisteredVoters"),
+                    "warningRequired": bool(section.get("warningRequired", False)),
+                    "sourceId": source.id,
+                }
+            )
+
+    return output, {
+        "nativeTurnoutRows": len(output),
+        "nativeRegisteredVoters": sum(row["registeredVoters"] for row in output),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in output),
+    }
+
+
+def _michigan_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    result_rows, result_metrics = _michigan_county_results(config, sources)
+    review_rows, review_metrics = _michigan_review_rows(config, sources)
+    turnout_rows, turnout_metrics = _michigan_turnout_rows(config, sources)
+    return result_rows, review_rows, turnout_rows, {**result_metrics, **review_metrics, **turnout_metrics}
+
+
 def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     checks = {
         "nativeResultRows": config.expected.result_rows,
@@ -766,6 +965,18 @@ def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
 
 
 def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
+    if config.code == "MI" and config.raw.get("certifiedResults", {}).get("format") == "michiganCountyTab":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _michigan_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeMichiganMvic",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
     if config.code == "PA" and config.raw.get("certifiedResults", {}).get("format") == "pennsylvaniaBulkCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _pennsylvania_rows(config, sources)

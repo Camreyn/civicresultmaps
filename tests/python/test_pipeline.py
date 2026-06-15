@@ -124,6 +124,21 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 67)
         self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
 
+    def test_michigan_native_staging_parses_mvic_package(self):
+        registration = json.loads(Path("data/mi-2024-registered-voter-count.json").read_text(encoding="utf-8"))
+        config = load_config("etl/state-configs/mi.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertEqual(registration["extractedCountyRows"], 83)
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 83)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 5664186)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 4428)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 4416)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 83)
+        self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
+
     def test_xlsx_reader_reads_inline_strings_and_numbers(self):
         tmp = self.fixture_dir("xlsx-reader")
         path = tmp / "sample.xlsx"

@@ -1,0 +1,671 @@
+{
+  "sourcePdf": "data/mi-2024-registered-voter-count.pdf",
+  "parser": "pdf-parse",
+  "extractedCountyRows": 83,
+  "counties": {
+    "ALCONA": {
+      "augustActiveRegisteredVoters": 9074,
+      "augustAllRegisteredVoters": 10572,
+      "mayActiveRegisteredVoters": 9015,
+      "mayAllRegisteredVoters": 10532,
+      "novemberActiveRegisteredVoters": 9241,
+      "novemberAllRegisteredVoters": 10666
+    },
+    "ALGER": {
+      "augustActiveRegisteredVoters": 6470,
+      "augustAllRegisteredVoters": 7668,
+      "mayActiveRegisteredVoters": 6448,
+      "mayAllRegisteredVoters": 7656,
+      "novemberActiveRegisteredVoters": 6603,
+      "novemberAllRegisteredVoters": 7746
+    },
+    "ALLEGAN": {
+      "augustActiveRegisteredVoters": 88164,
+      "augustAllRegisteredVoters": 99983,
+      "mayActiveRegisteredVoters": 87345,
+      "mayAllRegisteredVoters": 99365,
+      "novemberActiveRegisteredVoters": 90475,
+      "novemberAllRegisteredVoters": 101421
+    },
+    "ALPENA": {
+      "augustActiveRegisteredVoters": 21568,
+      "augustAllRegisteredVoters": 25220,
+      "mayActiveRegisteredVoters": 21436,
+      "mayAllRegisteredVoters": 25140,
+      "novemberActiveRegisteredVoters": 21916,
+      "novemberAllRegisteredVoters": 25386
+    },
+    "ANTRIM": {
+      "augustActiveRegisteredVoters": 20332,
+      "augustAllRegisteredVoters": 23210,
+      "mayActiveRegisteredVoters": 20133,
+      "mayAllRegisteredVoters": 23045,
+      "novemberActiveRegisteredVoters": 20690,
+      "novemberAllRegisteredVoters": 23396
+    },
+    "ARENAC": {
+      "augustActiveRegisteredVoters": 11516,
+      "augustAllRegisteredVoters": 13259,
+      "mayActiveRegisteredVoters": 11437,
+      "mayAllRegisteredVoters": 13239,
+      "novemberActiveRegisteredVoters": 11752,
+      "novemberAllRegisteredVoters": 13340
+    },
+    "BARAGA": {
+      "augustActiveRegisteredVoters": 5571,
+      "augustAllRegisteredVoters": 6881,
+      "mayActiveRegisteredVoters": 5536,
+      "mayAllRegisteredVoters": 6858,
+      "novemberActiveRegisteredVoters": 5708,
+      "novemberAllRegisteredVoters": 6954
+    },
+    "BARRY": {
+      "augustActiveRegisteredVoters": 46922,
+      "augustAllRegisteredVoters": 52618,
+      "mayActiveRegisteredVoters": 46439,
+      "mayAllRegisteredVoters": 52219,
+      "novemberActiveRegisteredVoters": 47881,
+      "novemberAllRegisteredVoters": 53181
+    },
+    "BAY": {
+      "augustActiveRegisteredVoters": 76913,
+      "augustAllRegisteredVoters": 87338,
+      "mayActiveRegisteredVoters": 76385,
+      "mayAllRegisteredVoters": 87024,
+      "novemberActiveRegisteredVoters": 78458,
+      "novemberAllRegisteredVoters": 88130
+    },
+    "BENZIE": {
+      "augustActiveRegisteredVoters": 15245,
+      "augustAllRegisteredVoters": 17099,
+      "mayActiveRegisteredVoters": 15065,
+      "mayAllRegisteredVoters": 16961,
+      "novemberActiveRegisteredVoters": 15509,
+      "novemberAllRegisteredVoters": 17215
+    },
+    "BERRIEN": {
+      "augustActiveRegisteredVoters": 109691,
+      "augustAllRegisteredVoters": 135393,
+      "mayActiveRegisteredVoters": 108710,
+      "mayAllRegisteredVoters": 134469,
+      "novemberActiveRegisteredVoters": 112823,
+      "novemberAllRegisteredVoters": 137305
+    },
+    "BRANCH": {
+      "augustActiveRegisteredVoters": 28646,
+      "augustAllRegisteredVoters": 35178,
+      "mayActiveRegisteredVoters": 28459,
+      "mayAllRegisteredVoters": 34995,
+      "novemberActiveRegisteredVoters": 29256,
+      "novemberAllRegisteredVoters": 35480
+    },
+    "CALHOUN": {
+      "augustActiveRegisteredVoters": 94001,
+      "augustAllRegisteredVoters": 111491,
+      "mayActiveRegisteredVoters": 93246,
+      "mayAllRegisteredVoters": 110809,
+      "novemberActiveRegisteredVoters": 96599,
+      "novemberAllRegisteredVoters": 112946
+    },
+    "CASS": {
+      "augustActiveRegisteredVoters": 36637,
+      "augustAllRegisteredVoters": 45665,
+      "mayActiveRegisteredVoters": 36305,
+      "mayAllRegisteredVoters": 45347,
+      "novemberActiveRegisteredVoters": 37792,
+      "novemberAllRegisteredVoters": 46237
+    },
+    "CHARLEVOIX": {
+      "augustActiveRegisteredVoters": 21141,
+      "augustAllRegisteredVoters": 24106,
+      "mayActiveRegisteredVoters": 20935,
+      "mayAllRegisteredVoters": 23941,
+      "novemberActiveRegisteredVoters": 21609,
+      "novemberAllRegisteredVoters": 24359
+    },
+    "CHEBOYGAN": {
+      "augustActiveRegisteredVoters": 20698,
+      "augustAllRegisteredVoters": 23701,
+      "mayActiveRegisteredVoters": 20480,
+      "mayAllRegisteredVoters": 23570,
+      "novemberActiveRegisteredVoters": 21058,
+      "novemberAllRegisteredVoters": 23865
+    },
+    "CHIPPEWA": {
+      "augustActiveRegisteredVoters": 24211,
+      "augustAllRegisteredVoters": 28123,
+      "mayActiveRegisteredVoters": 23952,
+      "mayAllRegisteredVoters": 27931,
+      "novemberActiveRegisteredVoters": 24761,
+      "novemberAllRegisteredVoters": 28470
+    },
+    "CLARE": {
+      "augustActiveRegisteredVoters": 23273,
+      "augustAllRegisteredVoters": 26909,
+      "mayActiveRegisteredVoters": 23012,
+      "mayAllRegisteredVoters": 26715,
+      "novemberActiveRegisteredVoters": 23690,
+      "novemberAllRegisteredVoters": 27194
+    },
+    "CLINTON": {
+      "augustActiveRegisteredVoters": 57653,
+      "augustAllRegisteredVoters": 64597,
+      "mayActiveRegisteredVoters": 57292,
+      "mayAllRegisteredVoters": 64228,
+      "novemberActiveRegisteredVoters": 59318,
+      "novemberAllRegisteredVoters": 65746
+    },
+    "CRAWFORD": {
+      "augustActiveRegisteredVoters": 10926,
+      "augustAllRegisteredVoters": 12663,
+      "mayActiveRegisteredVoters": 10836,
+      "mayAllRegisteredVoters": 12574,
+      "novemberActiveRegisteredVoters": 11167,
+      "novemberAllRegisteredVoters": 12782
+    },
+    "DELTA": {
+      "augustActiveRegisteredVoters": 28040,
+      "augustAllRegisteredVoters": 32889,
+      "mayActiveRegisteredVoters": 27789,
+      "mayAllRegisteredVoters": 32695,
+      "novemberActiveRegisteredVoters": 28641,
+      "novemberAllRegisteredVoters": 33185
+    },
+    "DICKINSON": {
+      "augustActiveRegisteredVoters": 19080,
+      "augustAllRegisteredVoters": 23616,
+      "mayActiveRegisteredVoters": 18960,
+      "mayAllRegisteredVoters": 23477,
+      "novemberActiveRegisteredVoters": 19655,
+      "novemberAllRegisteredVoters": 23873
+    },
+    "EATON": {
+      "augustActiveRegisteredVoters": 79260,
+      "augustAllRegisteredVoters": 89931,
+      "mayActiveRegisteredVoters": 78802,
+      "mayAllRegisteredVoters": 89484,
+      "novemberActiveRegisteredVoters": 81211,
+      "novemberAllRegisteredVoters": 91143
+    },
+    "EMMET": {
+      "augustActiveRegisteredVoters": 27326,
+      "augustAllRegisteredVoters": 31025,
+      "mayActiveRegisteredVoters": 27082,
+      "mayAllRegisteredVoters": 30791,
+      "novemberActiveRegisteredVoters": 27860,
+      "novemberAllRegisteredVoters": 31337
+    },
+    "GENESEE": {
+      "augustActiveRegisteredVoters": 294934,
+      "augustAllRegisteredVoters": 353897,
+      "mayActiveRegisteredVoters": 292054,
+      "mayAllRegisteredVoters": 351827,
+      "novemberActiveRegisteredVoters": 302098,
+      "novemberAllRegisteredVoters": 357655
+    },
+    "GLADWIN": {
+      "augustActiveRegisteredVoters": 19495,
+      "augustAllRegisteredVoters": 22676,
+      "mayActiveRegisteredVoters": 19347,
+      "mayAllRegisteredVoters": 22581,
+      "novemberActiveRegisteredVoters": 19958,
+      "novemberAllRegisteredVoters": 23002
+    },
+    "GOGEBIC": {
+      "augustActiveRegisteredVoters": 10552,
+      "augustAllRegisteredVoters": 13931,
+      "mayActiveRegisteredVoters": 10444,
+      "mayAllRegisteredVoters": 13832,
+      "novemberActiveRegisteredVoters": 10819,
+      "novemberAllRegisteredVoters": 14040
+    },
+    "GRAND TRAVERSE": {
+      "augustActiveRegisteredVoters": 73791,
+      "augustAllRegisteredVoters": 83172,
+      "mayActiveRegisteredVoters": 73453,
+      "mayAllRegisteredVoters": 82779,
+      "novemberActiveRegisteredVoters": 75466,
+      "novemberAllRegisteredVoters": 84267
+    },
+    "GRATIOT": {
+      "augustActiveRegisteredVoters": 25738,
+      "augustAllRegisteredVoters": 29568,
+      "mayActiveRegisteredVoters": 25565,
+      "mayAllRegisteredVoters": 29396,
+      "novemberActiveRegisteredVoters": 26366,
+      "novemberAllRegisteredVoters": 29870
+    },
+    "HILLSDALE": {
+      "augustActiveRegisteredVoters": 31535,
+      "augustAllRegisteredVoters": 38042,
+      "mayActiveRegisteredVoters": 31274,
+      "mayAllRegisteredVoters": 37840,
+      "novemberActiveRegisteredVoters": 32781,
+      "novemberAllRegisteredVoters": 38983
+    },
+    "HOUGHTON": {
+      "augustActiveRegisteredVoters": 23104,
+      "augustAllRegisteredVoters": 26912,
+      "mayActiveRegisteredVoters": 22971,
+      "mayAllRegisteredVoters": 26755,
+      "novemberActiveRegisteredVoters": 24227,
+      "novemberAllRegisteredVoters": 28024
+    },
+    "HURON": {
+      "augustActiveRegisteredVoters": 23061,
+      "augustAllRegisteredVoters": 26610,
+      "mayActiveRegisteredVoters": 22935,
+      "mayAllRegisteredVoters": 26547,
+      "novemberActiveRegisteredVoters": 23446,
+      "novemberAllRegisteredVoters": 26746
+    },
+    "INGHAM": {
+      "augustActiveRegisteredVoters": 178610,
+      "augustAllRegisteredVoters": 214104,
+      "mayActiveRegisteredVoters": 176386,
+      "mayAllRegisteredVoters": 212570,
+      "novemberActiveRegisteredVoters": 190336,
+      "novemberAllRegisteredVoters": 222915
+    },
+    "IONIA": {
+      "augustActiveRegisteredVoters": 43393,
+      "augustAllRegisteredVoters": 49264,
+      "mayActiveRegisteredVoters": 43068,
+      "mayAllRegisteredVoters": 49003,
+      "novemberActiveRegisteredVoters": 44257,
+      "novemberAllRegisteredVoters": 49750
+    },
+    "IOSCO": {
+      "augustActiveRegisteredVoters": 20107,
+      "augustAllRegisteredVoters": 23603,
+      "mayActiveRegisteredVoters": 19968,
+      "mayAllRegisteredVoters": 23466,
+      "novemberActiveRegisteredVoters": 20399,
+      "novemberAllRegisteredVoters": 23768
+    },
+    "IRON": {
+      "augustActiveRegisteredVoters": 9147,
+      "augustAllRegisteredVoters": 10949,
+      "mayActiveRegisteredVoters": 9046,
+      "mayAllRegisteredVoters": 10867,
+      "novemberActiveRegisteredVoters": 9322,
+      "novemberAllRegisteredVoters": 11026
+    },
+    "ISABELLA": {
+      "augustActiveRegisteredVoters": 39971,
+      "augustAllRegisteredVoters": 49126,
+      "mayActiveRegisteredVoters": 39546,
+      "mayAllRegisteredVoters": 48885,
+      "novemberActiveRegisteredVoters": 41601,
+      "novemberAllRegisteredVoters": 50157
+    },
+    "JACKSON": {
+      "augustActiveRegisteredVoters": 110059,
+      "augustAllRegisteredVoters": 127294,
+      "mayActiveRegisteredVoters": 109262,
+      "mayAllRegisteredVoters": 126624,
+      "novemberActiveRegisteredVoters": 112608,
+      "novemberAllRegisteredVoters": 128738
+    },
+    "KALAMAZOO": {
+      "augustActiveRegisteredVoters": 180290,
+      "augustAllRegisteredVoters": 213097,
+      "mayActiveRegisteredVoters": 179070,
+      "mayAllRegisteredVoters": 211915,
+      "novemberActiveRegisteredVoters": 186062,
+      "novemberAllRegisteredVoters": 217429
+    },
+    "KALKASKA": {
+      "augustActiveRegisteredVoters": 14740,
+      "augustAllRegisteredVoters": 17258,
+      "mayActiveRegisteredVoters": 14600,
+      "mayAllRegisteredVoters": 17145,
+      "novemberActiveRegisteredVoters": 15081,
+      "novemberAllRegisteredVoters": 17470
+    },
+    "KENT": {
+      "augustActiveRegisteredVoters": 456419,
+      "augustAllRegisteredVoters": 519149,
+      "mayActiveRegisteredVoters": 452921,
+      "mayAllRegisteredVoters": 515856,
+      "novemberActiveRegisteredVoters": 468236,
+      "novemberAllRegisteredVoters": 526679
+    },
+    "KEWEENAW": {
+      "augustActiveRegisteredVoters": 1890,
+      "augustAllRegisteredVoters": 2119,
+      "mayActiveRegisteredVoters": 1879,
+      "mayAllRegisteredVoters": 2108,
+      "novemberActiveRegisteredVoters": 1905,
+      "novemberAllRegisteredVoters": 2127
+    },
+    "LAKE": {
+      "augustActiveRegisteredVoters": 9206,
+      "augustAllRegisteredVoters": 11066,
+      "mayActiveRegisteredVoters": 9110,
+      "mayAllRegisteredVoters": 10995,
+      "novemberActiveRegisteredVoters": 9442,
+      "novemberAllRegisteredVoters": 11226
+    },
+    "LAPEER": {
+      "augustActiveRegisteredVoters": 66592,
+      "augustAllRegisteredVoters": 74773,
+      "mayActiveRegisteredVoters": 66178,
+      "mayAllRegisteredVoters": 74417,
+      "novemberActiveRegisteredVoters": 68000,
+      "novemberAllRegisteredVoters": 75551
+    },
+    "LEELANAU": {
+      "augustActiveRegisteredVoters": 19616,
+      "augustAllRegisteredVoters": 21902,
+      "mayActiveRegisteredVoters": 19418,
+      "mayAllRegisteredVoters": 21750,
+      "novemberActiveRegisteredVoters": 20023,
+      "novemberAllRegisteredVoters": 22184
+    },
+    "LENAWEE": {
+      "augustActiveRegisteredVoters": 68464,
+      "augustAllRegisteredVoters": 81019,
+      "mayActiveRegisteredVoters": 67938,
+      "mayAllRegisteredVoters": 80478,
+      "novemberActiveRegisteredVoters": 70147,
+      "novemberAllRegisteredVoters": 81899
+    },
+    "LIVINGSTON": {
+      "augustActiveRegisteredVoters": 151113,
+      "augustAllRegisteredVoters": 166993,
+      "mayActiveRegisteredVoters": 150128,
+      "mayAllRegisteredVoters": 166071,
+      "novemberActiveRegisteredVoters": 154152,
+      "novemberAllRegisteredVoters": 168673
+    },
+    "LUCE": {
+      "augustActiveRegisteredVoters": 3996,
+      "augustAllRegisteredVoters": 4694,
+      "mayActiveRegisteredVoters": 3971,
+      "mayAllRegisteredVoters": 4684,
+      "novemberActiveRegisteredVoters": 4078,
+      "novemberAllRegisteredVoters": 4728
+    },
+    "MACKINAC": {
+      "augustActiveRegisteredVoters": 9075,
+      "augustAllRegisteredVoters": 10483,
+      "mayActiveRegisteredVoters": 8984,
+      "mayAllRegisteredVoters": 10505,
+      "novemberActiveRegisteredVoters": 9237,
+      "novemberAllRegisteredVoters": 10574
+    },
+    "MACOMB": {
+      "augustActiveRegisteredVoters": 637497,
+      "augustAllRegisteredVoters": 724358,
+      "mayActiveRegisteredVoters": 633203,
+      "mayAllRegisteredVoters": 719525,
+      "novemberActiveRegisteredVoters": 652451,
+      "novemberAllRegisteredVoters": 731796
+    },
+    "MANISTEE": {
+      "augustActiveRegisteredVoters": 19179,
+      "augustAllRegisteredVoters": 22100,
+      "mayActiveRegisteredVoters": 18995,
+      "mayAllRegisteredVoters": 21990,
+      "novemberActiveRegisteredVoters": 19555,
+      "novemberAllRegisteredVoters": 22262
+    },
+    "MARQUETTE": {
+      "augustActiveRegisteredVoters": 46648,
+      "augustAllRegisteredVoters": 55709,
+      "mayActiveRegisteredVoters": 46188,
+      "mayAllRegisteredVoters": 55384,
+      "novemberActiveRegisteredVoters": 48485,
+      "novemberAllRegisteredVoters": 57013
+    },
+    "MASON": {
+      "augustActiveRegisteredVoters": 22296,
+      "augustAllRegisteredVoters": 25513,
+      "mayActiveRegisteredVoters": 22139,
+      "mayAllRegisteredVoters": 25409,
+      "novemberActiveRegisteredVoters": 22775,
+      "novemberAllRegisteredVoters": 25775
+    },
+    "MECOSTA": {
+      "augustActiveRegisteredVoters": 27984,
+      "augustAllRegisteredVoters": 32601,
+      "mayActiveRegisteredVoters": 27740,
+      "mayAllRegisteredVoters": 32311,
+      "novemberActiveRegisteredVoters": 29168,
+      "novemberAllRegisteredVoters": 33471
+    },
+    "MENOMINEE": {
+      "augustActiveRegisteredVoters": 16918,
+      "augustAllRegisteredVoters": 21136,
+      "mayActiveRegisteredVoters": 16776,
+      "mayAllRegisteredVoters": 21005,
+      "novemberActiveRegisteredVoters": 17306,
+      "novemberAllRegisteredVoters": 21403
+    },
+    "MIDLAND": {
+      "augustActiveRegisteredVoters": 60660,
+      "augustAllRegisteredVoters": 71391,
+      "mayActiveRegisteredVoters": 60411,
+      "mayAllRegisteredVoters": 70995,
+      "novemberActiveRegisteredVoters": 61941,
+      "novemberAllRegisteredVoters": 72103
+    },
+    "MISSAUKEE": {
+      "augustActiveRegisteredVoters": 11463,
+      "augustAllRegisteredVoters": 12836,
+      "mayActiveRegisteredVoters": 11370,
+      "mayAllRegisteredVoters": 12760,
+      "novemberActiveRegisteredVoters": 11738,
+      "novemberAllRegisteredVoters": 12986
+    },
+    "MONROE": {
+      "augustActiveRegisteredVoters": 113330,
+      "augustAllRegisteredVoters": 135986,
+      "mayActiveRegisteredVoters": 112619,
+      "mayAllRegisteredVoters": 135224,
+      "novemberActiveRegisteredVoters": 116141,
+      "novemberAllRegisteredVoters": 137655
+    },
+    "MONTCALM": {
+      "augustActiveRegisteredVoters": 44983,
+      "augustAllRegisteredVoters": 51734,
+      "mayActiveRegisteredVoters": 45108,
+      "mayAllRegisteredVoters": 51610,
+      "novemberActiveRegisteredVoters": 45953,
+      "novemberAllRegisteredVoters": 52244
+    },
+    "MONTMORENCY": {
+      "augustActiveRegisteredVoters": 7980,
+      "augustAllRegisteredVoters": 9237,
+      "mayActiveRegisteredVoters": 7893,
+      "mayAllRegisteredVoters": 9167,
+      "novemberActiveRegisteredVoters": 8149,
+      "novemberAllRegisteredVoters": 9327
+    },
+    "MUSKEGON": {
+      "augustActiveRegisteredVoters": 125456,
+      "augustAllRegisteredVoters": 147031,
+      "mayActiveRegisteredVoters": 124016,
+      "mayAllRegisteredVoters": 146104,
+      "novemberActiveRegisteredVoters": 128728,
+      "novemberAllRegisteredVoters": 148582
+    },
+    "NEWAYGO": {
+      "augustActiveRegisteredVoters": 37053,
+      "augustAllRegisteredVoters": 42607,
+      "mayActiveRegisteredVoters": 36759,
+      "mayAllRegisteredVoters": 42331,
+      "novemberActiveRegisteredVoters": 37895,
+      "novemberAllRegisteredVoters": 43095
+    },
+    "OAKLAND": {
+      "augustActiveRegisteredVoters": 912143,
+      "augustAllRegisteredVoters": 1055526,
+      "mayActiveRegisteredVoters": 905908,
+      "mayAllRegisteredVoters": 1049399,
+      "novemberActiveRegisteredVoters": 932204,
+      "novemberAllRegisteredVoters": 1064826
+    },
+    "OCEANA": {
+      "augustActiveRegisteredVoters": 19311,
+      "augustAllRegisteredVoters": 22509,
+      "mayActiveRegisteredVoters": 19150,
+      "mayAllRegisteredVoters": 22392,
+      "novemberActiveRegisteredVoters": 19696,
+      "novemberAllRegisteredVoters": 22730
+    },
+    "OGEMAW": {
+      "augustActiveRegisteredVoters": 16523,
+      "augustAllRegisteredVoters": 18866,
+      "mayActiveRegisteredVoters": 16358,
+      "mayAllRegisteredVoters": 18730,
+      "novemberActiveRegisteredVoters": 16782,
+      "novemberAllRegisteredVoters": 18957
+    },
+    "ONTONAGON": {
+      "augustActiveRegisteredVoters": 4670,
+      "augustAllRegisteredVoters": 5759,
+      "mayActiveRegisteredVoters": 4649,
+      "mayAllRegisteredVoters": 5743,
+      "novemberActiveRegisteredVoters": 4759,
+      "novemberAllRegisteredVoters": 5803
+    },
+    "OSCEOLA": {
+      "augustActiveRegisteredVoters": 16814,
+      "augustAllRegisteredVoters": 19542,
+      "mayActiveRegisteredVoters": 16694,
+      "mayAllRegisteredVoters": 19478,
+      "novemberActiveRegisteredVoters": 17185,
+      "novemberAllRegisteredVoters": 19779
+    },
+    "OSCODA": {
+      "augustActiveRegisteredVoters": 6699,
+      "augustAllRegisteredVoters": 7797,
+      "mayActiveRegisteredVoters": 6665,
+      "mayAllRegisteredVoters": 7779,
+      "novemberActiveRegisteredVoters": 6863,
+      "novemberAllRegisteredVoters": 7871
+    },
+    "OTSEGO": {
+      "augustActiveRegisteredVoters": 20265,
+      "augustAllRegisteredVoters": 23925,
+      "mayActiveRegisteredVoters": 20115,
+      "mayAllRegisteredVoters": 23811,
+      "novemberActiveRegisteredVoters": 20675,
+      "novemberAllRegisteredVoters": 24184
+    },
+    "OTTAWA": {
+      "augustActiveRegisteredVoters": 209932,
+      "augustAllRegisteredVoters": 233626,
+      "mayActiveRegisteredVoters": 207608,
+      "mayAllRegisteredVoters": 231428,
+      "novemberActiveRegisteredVoters": 215876,
+      "novemberAllRegisteredVoters": 238053
+    },
+    "PRESQUE ISLE": {
+      "augustActiveRegisteredVoters": 10728,
+      "augustAllRegisteredVoters": 12201,
+      "mayActiveRegisteredVoters": 10661,
+      "mayAllRegisteredVoters": 12164,
+      "novemberActiveRegisteredVoters": 10928,
+      "novemberAllRegisteredVoters": 12286
+    },
+    "ROSCOMMON": {
+      "augustActiveRegisteredVoters": 20248,
+      "augustAllRegisteredVoters": 23864,
+      "mayActiveRegisteredVoters": 20105,
+      "mayAllRegisteredVoters": 23760,
+      "novemberActiveRegisteredVoters": 20585,
+      "novemberAllRegisteredVoters": 23975
+    },
+    "SAGINAW": {
+      "augustActiveRegisteredVoters": 133517,
+      "augustAllRegisteredVoters": 159264,
+      "mayActiveRegisteredVoters": 133411,
+      "mayAllRegisteredVoters": 158847,
+      "novemberActiveRegisteredVoters": 136524,
+      "novemberAllRegisteredVoters": 160731
+    },
+    "ST CLAIR": {
+      "augustActiveRegisteredVoters": 120455,
+      "augustAllRegisteredVoters": 139039,
+      "mayActiveRegisteredVoters": 119416,
+      "mayAllRegisteredVoters": 138224,
+      "novemberActiveRegisteredVoters": 123203,
+      "novemberAllRegisteredVoters": 140490
+    },
+    "ST JOSEPH": {
+      "augustActiveRegisteredVoters": 39339,
+      "augustAllRegisteredVoters": 49743,
+      "mayActiveRegisteredVoters": 39009,
+      "mayAllRegisteredVoters": 49483,
+      "novemberActiveRegisteredVoters": 40556,
+      "novemberAllRegisteredVoters": 50396
+    },
+    "SANILAC": {
+      "augustActiveRegisteredVoters": 28857,
+      "augustAllRegisteredVoters": 32804,
+      "mayActiveRegisteredVoters": 28674,
+      "mayAllRegisteredVoters": 32686,
+      "novemberActiveRegisteredVoters": 29440,
+      "novemberAllRegisteredVoters": 33128
+    },
+    "SCHOOLCRAFT": {
+      "augustActiveRegisteredVoters": 6360,
+      "augustAllRegisteredVoters": 7468,
+      "mayActiveRegisteredVoters": 6288,
+      "mayAllRegisteredVoters": 7443,
+      "novemberActiveRegisteredVoters": 6499,
+      "novemberAllRegisteredVoters": 7546
+    },
+    "SHIAWASSEE": {
+      "augustActiveRegisteredVoters": 50705,
+      "augustAllRegisteredVoters": 58023,
+      "mayActiveRegisteredVoters": 50418,
+      "mayAllRegisteredVoters": 57840,
+      "novemberActiveRegisteredVoters": 51785,
+      "novemberAllRegisteredVoters": 58409
+    },
+    "TUSCOLA": {
+      "augustActiveRegisteredVoters": 37923,
+      "augustAllRegisteredVoters": 43691,
+      "mayActiveRegisteredVoters": 37623,
+      "mayAllRegisteredVoters": 43539,
+      "novemberActiveRegisteredVoters": 38600,
+      "novemberAllRegisteredVoters": 43958
+    },
+    "VAN BUREN": {
+      "augustActiveRegisteredVoters": 53477,
+      "augustAllRegisteredVoters": 63941,
+      "mayActiveRegisteredVoters": 52944,
+      "mayAllRegisteredVoters": 63539,
+      "novemberActiveRegisteredVoters": 54759,
+      "novemberAllRegisteredVoters": 64645
+    },
+    "WASHTENAW": {
+      "augustActiveRegisteredVoters": 248911,
+      "augustAllRegisteredVoters": 324499,
+      "mayActiveRegisteredVoters": 247613,
+      "mayAllRegisteredVoters": 322597,
+      "novemberActiveRegisteredVoters": 268804,
+      "novemberAllRegisteredVoters": 339972
+    },
+    "WAYNE": {
+      "augustActiveRegisteredVoters": 1193730,
+      "augustAllRegisteredVoters": 1448240,
+      "mayActiveRegisteredVoters": 1182056,
+      "mayAllRegisteredVoters": 1438661,
+      "novemberActiveRegisteredVoters": 1225275,
+      "novemberAllRegisteredVoters": 1465625
+    },
+    "WEXFORD": {
+      "augustActiveRegisteredVoters": 25302,
+      "augustAllRegisteredVoters": 29135,
+      "mayActiveRegisteredVoters": 25068,
+      "mayAllRegisteredVoters": 28967,
+      "novemberActiveRegisteredVoters": 25801,
+      "novemberAllRegisteredVoters": 29428
+    }
+  }
+}

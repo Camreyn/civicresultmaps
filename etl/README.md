@@ -2,6 +2,46 @@
 
 The Python ETL package stages official-source data before any production promotion.
 
+## Native Michigan Import
+
+Michigan reads the committed MVIC exports, the official registration PDF extraction, and county geometry:
+
+- `data/mi-2024-general-election-results.txt`
+- `data/mi-2024-precinct-results.zip`
+- `data/mi-2024-voter-turnout.txt`
+- `data/mi-2024-registered-voter-count.pdf`
+- `data/mi-2024-registered-voter-count.json`
+- `data/mi-counties.geojson`
+
+The JSON denominator file is derived from the official PDF with:
+
+```powershell
+npm run etl:prepare:mi
+```
+
+The parser validates:
+
+- 83 county result rows
+- 5,664,186 total presidential votes
+- 2,816,636 Trump votes
+- 2,736,533 Harris votes
+- 111,017 other votes
+- 4,428 precinct-level review rows
+- 4,416 joined President-versus-U.S. Senate comparison rows
+- 83 county turnout rows using November active registered voters
+
+Run native staging:
+
+```powershell
+npm run etl:import:mi
+```
+
+Promote a validated Michigan staging artifact:
+
+```powershell
+npm run native:promote -- .etl/staging/mi-2024-staging.json
+```
+
 ## Native Pennsylvania Import
 
 Pennsylvania reads the committed Department of State precinct returns, returns readme, turnout workbook, and county geometry:
