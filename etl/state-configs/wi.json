@@ -38,11 +38,30 @@
     "wardColumnIndex": 2,
     "totalColumnIndex": 3,
     "majorCandidates": {
-      "trump": {
-        "candidateContains": "Donald J. Trump"
-      },
-      "harris": {
+      "dem": {
         "candidateContains": "Kamala D. Harris"
+      },
+      "rep": {
+        "candidateContains": "Donald J. Trump"
+      }
+    }
+  },
+  "comparisonContest": {
+    "label": "United States Senator",
+    "format": "wisconsinWardByWardXlsx",
+    "sourceId": "wi-2024-ward-by-ward-federal-state-xlsx",
+    "sheetName": "Sheet4",
+    "candidateHeaderRow": 10,
+    "dataStartRow": 11,
+    "countyColumnIndex": 1,
+    "wardColumnIndex": 2,
+    "totalColumnIndex": 3,
+    "majorCandidates": {
+      "dem": {
+        "candidateContains": "Tammy Baldwin"
+      },
+      "rep": {
+        "candidateContains": "Eric Hovde"
       }
     }
   },
@@ -52,7 +71,7 @@
     "sheetName": "Sheet2",
     "candidateHeaderRow": 10,
     "dataStartRow": 11,
-    "warning": "Wisconsin native review rows currently support ward-level presidential vote-share screening only. Down-ballot comparison and turnout screening remain disabled until those source mappings are added."
+    "warning": "Wisconsin native review rows use ward-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Turnout screening remains disabled until a registered-voter denominator source is mapped."
   },
   "expected": {
     "jurisdictions": 72,

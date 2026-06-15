@@ -253,6 +253,10 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["promotion"]["status"], "staged")
         self.assertTrue(artifact["promotion"]["requiresHumanReview"])
         self.assertFalse(artifact["promotion"]["productionWriteAllowed"])
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 3503)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
+        self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
+        self.assertTrue(any(row["demDropoff"] != 0 or row["repDropoff"] != 0 for row in artifact["native"]["reviewRows"]))
 
     def test_write_staging_artifact(self):
         config = load_config("etl/state-configs/wi.json")

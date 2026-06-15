@@ -242,30 +242,28 @@ def _assert_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
         raise ValueError(f"native Ohio validation failed: {mismatches}")
 
 
-def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
-    section = config.raw["certifiedResults"]
+def _wisconsin_contest_rows(section: dict[str, Any], sources: dict[str, SourceConfig]) -> list[dict[str, Any]]:
     source = sources[section["sourceId"]]
     rows = read_xlsx_sheet(_artifact_path(source), section.get("sheetName", "Sheet2"))
     if len(rows) < section.get("dataStartRow", 11):
         raise ValueError("Wisconsin ward workbook has too few rows")
 
     header = rows[section.get("candidateHeaderRow", 10) - 1]
-    harris_index = _candidate_column(header, section["majorCandidates"]["harris"])
-    trump_index = _candidate_column(header, section["majorCandidates"]["trump"])
+    dem_index = _candidate_column(header, section["majorCandidates"]["dem"])
+    rep_index = _candidate_column(header, section["majorCandidates"]["rep"])
     total_index = int(section.get("totalColumnIndex", 3))
     ward_index = int(section.get("wardColumnIndex", 2))
     county_index = int(section.get("countyColumnIndex", 1))
     other_indexes = [
         index
-        for index in range(trump_index + 1, len(header))
-        if index != harris_index and index != trump_index and str(header[index] or "").strip()
+        for index in range(rep_index + 1, len(header))
+        if index != dem_index and index != rep_index and str(header[index] or "").strip()
     ]
 
     county = ""
-    counties: dict[str, dict[str, int]] = {}
-    review_rows: list[dict[str, Any]] = []
+    output: list[dict[str, Any]] = []
     for row in rows[section.get("dataStartRow", 11) - 1 :]:
-        if len(row) <= max(total_index, harris_index, trump_index, ward_index):
+        if len(row) <= max(total_index, dem_index, rep_index, ward_index):
             continue
         if len(row) > county_index and row[county_index]:
             county = _county_name(row[county_index])
@@ -274,30 +272,75 @@ def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
             continue
 
         total = int_text(row[total_index])
-        harris = int_text(row[harris_index])
-        trump = int_text(row[trump_index])
+        dem = int_text(row[dem_index])
+        rep = int_text(row[rep_index])
         other = sum(int_text(row[index] if len(row) > index else 0) for index in other_indexes)
         if total == 0:
             continue
 
+        output.append(
+            {
+                "county": county,
+                "localUnit": ward,
+                "totalVotes": total,
+                "dem": dem,
+                "rep": rep,
+                "other": other,
+                "sourceId": source.id,
+            }
+        )
+
+    return output
+
+
+def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    presidential_source_id = sources[section["sourceId"]].id
+    presidential_rows = _wisconsin_contest_rows(section, sources)
+    comparison_section = config.raw.get("comparisonContest")
+    comparison_by_key: dict[tuple[str, str], dict[str, Any]] = {}
+    if comparison_section:
+        comparison_rows = _wisconsin_contest_rows(comparison_section, sources)
+        comparison_by_key = {(row["county"], row["localUnit"]): row for row in comparison_rows}
+        presidential_keys = {(row["county"], row["localUnit"]) for row in presidential_rows}
+        comparison_keys = set(comparison_by_key)
+        if presidential_keys != comparison_keys:
+            raise ValueError(
+                "Wisconsin comparison contest rows do not match presidential rows: "
+                f"{len(presidential_keys - comparison_keys)} missing comparison rows, "
+                f"{len(comparison_keys - presidential_keys)} extra comparison rows"
+            )
+
+    counties: dict[str, dict[str, int]] = {}
+    review_rows: list[dict[str, Any]] = []
+    for row in presidential_rows:
+        county = row["county"]
+        total = row["totalVotes"]
+        harris = row["dem"]
+        trump = row["rep"]
+        other = row["other"]
         bucket = counties.setdefault(county, {"harris": 0, "other": 0, "total": 0, "trump": 0})
         bucket["harris"] += harris
         bucket["trump"] += trump
         bucket["other"] += other
         bucket["total"] += total
+
+        comparison = comparison_by_key.get((county, row["localUnit"]))
+        dem_dropoff = pct(harris - comparison["dem"], total) if comparison else 0
+        rep_dropoff = pct(trump - comparison["rep"], total) if comparison else 0
         review_rows.append(
             {
                 "county": county,
-                "localUnit": ward,
+                "localUnit": row["localUnit"],
                 "totalVotes": total,
                 "harris": harris,
                 "trump": trump,
                 "harrisShare": pct(harris, total),
                 "trumpShare": pct(trump, total),
-                "demDropoff": 0,
-                "repDropoff": 0,
-                "coverageMode": "voteShareOnly",
-                "sourceId": source.id,
+                "demDropoff": dem_dropoff,
+                "repDropoff": rep_dropoff,
+                "coverageMode": "presidentVsSenate" if comparison else "voteShareOnly",
+                "sourceId": row["sourceId"],
             }
         )
 
@@ -314,7 +357,7 @@ def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
             "totalVotes": values["total"],
             "margin": values["trump"] - values["harris"],
             "marginPct": pct(values["trump"] - values["harris"], values["total"]),
-            "sourceId": source.id,
+            "sourceId": presidential_source_id,
         }
         for county_name, values in sorted(counties.items())
     ]
@@ -327,6 +370,8 @@ def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
         "nativeReviewRows": len(review_rows),
         "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": len(comparison_by_key),
+        "nativeComparisonContest": comparison_section.get("label") if comparison_section else None,
         "nativeTurnoutRows": 0,
     }
     return result_rows, review_rows, metrics
