@@ -1,0 +1,86 @@
+{
+  "code": "MN",
+  "name": "Minnesota",
+  "authority": "Minnesota Secretary of State",
+  "electionYear": 2024,
+  "office": "President",
+  "sources": [
+    {
+      "id": "mn-2024-precinct-results",
+      "category": "Official precinct presidential, Senate, and turnout rows",
+      "url": "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx",
+      "localFile": "data/mn-2024-general-federal-state-results-by-precinct-official.xlsx",
+      "parser": "minnesotaPrecinctResultsXlsx",
+      "authority": "Minnesota Secretary of State",
+      "timestampBasis": "Official 2024 general federal/state results by precinct workbook.",
+      "confidence": "Official Minnesota Secretary of State precinct workbook with presidential, U.S. Senate, REG7AM, EDR, and TOTVOTING fields.",
+      "status": "loaded"
+    },
+    {
+      "id": "mn-county-geometry",
+      "category": "County boundaries",
+      "url": "https://feat.gisdata.mn.gov/arcgis/rest/services/MnGeo/mn_counties/FeatureServer/0",
+      "localFile": "data/mn-counties.geojson",
+      "parser": "mnGeoCountyGeojson",
+      "authority": "MnGeo",
+      "timestampBasis": "MnGeo county boundary feature service artifact.",
+      "confidence": "County geometry is used for county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    }
+  ],
+  "certifiedResults": {
+    "format": "minnesotaPrecinctResultsXlsx",
+    "sourceId": "mn-2024-precinct-results",
+    "sheetName": "Precinct-Results",
+    "otherColumns": [
+      "USPRSLIB",
+      "USPRSWTP",
+      "USPRSG",
+      "USPRSSLP",
+      "USPRSSWP",
+      "USPRSJFA",
+      "USPRSIND",
+      "USPRSWI"
+    ]
+  },
+  "comparisonContest": {
+    "label": "United States Senator",
+    "sourceId": "mn-2024-precinct-results",
+    "sheetName": "Precinct-Results"
+  },
+  "reviewCharts": {
+    "format": "minnesotaPrecinctPresidentVsSenate",
+    "sourceId": "mn-2024-precinct-results",
+    "sheetName": "Precinct-Results",
+    "warning": "Minnesota native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Precinct map overlays remain disabled until precinct boundary geometry is sourced."
+  },
+  "turnout": {
+    "format": "minnesotaPrecinctTurnout",
+    "sourceId": "mn-2024-precinct-results",
+    "sheetName": "Precinct-Results",
+    "denominatorType": "registeredVotersPlusElectionDayRegistrations",
+    "registrationDenominatorTiming": "electionDayPlusEDR",
+    "sourceLevel": "precinct",
+    "notes": "Minnesota turnout rows use TOTVOTING divided by REG7AM plus EDR from the official SOS precinct workbook.",
+    "warningRequired": false
+  },
+  "expected": {
+    "jurisdictions": 87,
+    "resultRows": 87,
+    "sources": 2,
+    "stateTotal": 3253920,
+    "trump": 1519032,
+    "harris": 1656979,
+    "other": 77909,
+    "reviewRows": 4075,
+    "turnoutRows": 4103
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
+    "turnout": true,
+    "historicalBaseline": true
+  }
+}

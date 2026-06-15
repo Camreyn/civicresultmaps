@@ -52,6 +52,11 @@ def _column_index(header: list[Any]) -> dict[str, int]:
     return {str(name).strip(): index for index, name in enumerate(header) if str(name).strip()}
 
 
+def _row_value(row: list[Any], columns: dict[str, int], name: str) -> Any:
+    index = columns[name]
+    return row[index] if len(row) > index else ""
+
+
 def _county_name(raw: Any) -> str:
     value = str(raw or "").strip()
     if not value or value.lower() in {"total", "percentage"}:
@@ -377,6 +382,142 @@ def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
     return result_rows, review_rows, metrics
 
 
+def _minnesota_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    rows = read_xlsx_sheet(_artifact_path(source), section.get("sheetName", "Precinct-Results"))
+    if len(rows) < 2:
+        raise ValueError("Minnesota precinct workbook has too few rows")
+
+    columns = _column_index(rows[0])
+    required = [
+        "COUNTYNAME",
+        "MCDNAME",
+        "PCTNAME",
+        "PCTCODE",
+        "REG7AM",
+        "EDR",
+        "TOTVOTING",
+        "USPRSR",
+        "USPRSDFL",
+        "USPRSTOTAL",
+        "USSENR",
+        "USSENDFL",
+        "USSENTOTAL",
+    ]
+    missing = [name for name in required if name not in columns]
+    if missing:
+        raise ValueError(f"Minnesota precinct source missing columns: {', '.join(missing)}")
+
+    other_columns = section.get(
+        "otherColumns",
+        ["USPRSLIB", "USPRSWTP", "USPRSG", "USPRSSLP", "USPRSSWP", "USPRSJFA", "USPRSIND", "USPRSWI"],
+    )
+    missing_other = [name for name in other_columns if name not in columns]
+    if missing_other:
+        raise ValueError(f"Minnesota precinct source missing other-candidate columns: {', '.join(missing_other)}")
+
+    counties: dict[str, dict[str, int]] = {}
+    review_rows: list[dict[str, Any]] = []
+    turnout_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+
+    for row in rows[1:]:
+        raw_county = str(_row_value(row, columns, "COUNTYNAME")).strip()
+        if not raw_county:
+            continue
+
+        county = _county_name(raw_county)
+        municipality = str(_row_value(row, columns, "MCDNAME")).strip()
+        precinct = str(_row_value(row, columns, "PCTNAME")).strip()
+        precinct_code = str(_row_value(row, columns, "PCTCODE")).strip()
+        local_unit = f"{municipality} - {precinct} ({precinct_code})"
+        trump = int_text(_row_value(row, columns, "USPRSR"))
+        harris = int_text(_row_value(row, columns, "USPRSDFL"))
+        other = sum(int_text(_row_value(row, columns, name)) for name in other_columns)
+        total = int_text(_row_value(row, columns, "USPRSTOTAL"))
+        senate_rep = int_text(_row_value(row, columns, "USSENR"))
+        senate_dem = int_text(_row_value(row, columns, "USSENDFL"))
+        senate_total = int_text(_row_value(row, columns, "USSENTOTAL"))
+        registered = int_text(_row_value(row, columns, "REG7AM")) + int_text(_row_value(row, columns, "EDR"))
+        ballots = int_text(_row_value(row, columns, "TOTVOTING"))
+
+        turnout_rows.append(
+            {
+                "county": county,
+                "localUnit": local_unit,
+                "ballotsCast": ballots,
+                "registeredVoters": registered,
+                "turnoutPct": pct(ballots, registered) if registered else None,
+                "denominatorType": "registeredVotersPlusElectionDayRegistrations",
+                "registrationDenominatorTiming": "electionDayPlusEDR",
+                "warningRequired": False,
+                "sourceId": source.id,
+            }
+        )
+
+        if not total:
+            continue
+
+        bucket = counties.setdefault(county, {"harris": 0, "other": 0, "total": 0, "trump": 0})
+        bucket["harris"] += harris
+        bucket["trump"] += trump
+        bucket["other"] += other
+        bucket["total"] += total
+
+        if senate_total:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": local_unit,
+                "totalVotes": total,
+                "harris": harris,
+                "trump": trump,
+                "harrisShare": pct(harris, total),
+                "trumpShare": pct(trump, total),
+                "demDropoff": pct(harris - senate_dem, total) if senate_total else 0,
+                "repDropoff": pct(trump - senate_rep, total) if senate_total else 0,
+                "coverageMode": "presidentVsSenate" if senate_total else "voteShareOnly",
+                "sourceId": source.id,
+            }
+        )
+
+    result_rows = [
+        {
+            "jurisdictionName": county_name,
+            "jurisdictionCode": county_name.upper().replace(" COUNTY", ""),
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": source.id,
+        }
+        for county_name, values in sorted(counties.items())
+    ]
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": config.raw.get("comparisonContest", {}).get("label"),
+        "nativeTurnoutRows": len(turnout_rows),
+        "nativeRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+
 def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     checks = {
         "nativeResultRows": config.expected.result_rows,
@@ -397,6 +538,18 @@ def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
 
 
 def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
+    if config.code == "MN" and config.raw.get("certifiedResults", {}).get("format") == "minnesotaPrecinctResultsXlsx":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _minnesota_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeMinnesotaPrecinctResultsXlsx",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
     if config.code == "WI" and config.raw.get("certifiedResults", {}).get("format") == "wisconsinWardByWardXlsx":
         sources = _source_map(config)
         result_rows, review_rows, metrics = _wisconsin_ward_rows(config, sources)

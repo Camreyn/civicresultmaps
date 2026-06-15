@@ -98,6 +98,19 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(report.metrics["expectedJurisdictions"], 88)
         self.assertEqual(report.metrics["expectedReviewRows"], 8878)
 
+    def test_minnesota_native_staging_parses_precinct_workbook(self):
+        config = load_config("etl/state-configs/mn.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 87)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 3253920)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 4075)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 4075)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 4103)
+        self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
+
     def test_xlsx_reader_reads_inline_strings_and_numbers(self):
         tmp = self.fixture_dir("xlsx-reader")
         path = tmp / "sample.xlsx"
