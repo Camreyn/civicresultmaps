@@ -1,0 +1,100 @@
+{
+  "code": "PA",
+  "name": "Pennsylvania",
+  "authority": "Pennsylvania Department of State",
+  "electionYear": 2024,
+  "office": "President",
+  "sources": [
+    {
+      "id": "pa-2024-precinct-results",
+      "category": "Official precinct presidential and Senate returns",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/er/erstat_2024_g_268768_20250129.txt",
+      "localFile": "data/pa-2024-general-election-returns-precinct.txt",
+      "parser": "pennsylvaniaBulkCsv",
+      "authority": "Pennsylvania Department of State",
+      "timestampBasis": "Official readme says data extracted January 10, 2025; direct bulk filename includes 20250129.",
+      "confidence": "Official Pennsylvania Department of State 2024 General Election Precinct Election Returns bulk file.",
+      "status": "loaded"
+    },
+    {
+      "id": "pa-2024-precinct-results-readme",
+      "category": "Official precinct returns data dictionary",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/er/erstat_2024_g_readme.txt",
+      "localFile": "data/pa-2024-general-election-returns-readme.txt",
+      "parser": "pennsylvaniaBulkReadmeCountyCodes",
+      "authority": "Pennsylvania Department of State",
+      "timestampBasis": "Official precinct election returns transmittal/readme.",
+      "confidence": "Official county code table used to normalize county names from the bulk returns file.",
+      "status": "loaded"
+    },
+    {
+      "id": "pa-2024-vote-history-registration-summary",
+      "category": "Official county turnout and registration summary",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/voter%20registration%20-%20vote%20history%20summary%20-%202024%20general.xlsx",
+      "localFile": "data/pa-2024-voter-registration-vote-history-summary.xlsx",
+      "parser": "pennsylvaniaVoteHistoryXlsx",
+      "authority": "Pennsylvania Department of State",
+      "timestampBasis": "Official 2024 General Election Vote History and Voter Registration Summary workbook.",
+      "confidence": "Official county vote-history and registered-voter denominator workbook.",
+      "status": "loaded"
+    },
+    {
+      "id": "pa-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer",
+      "localFile": "data/pa-counties.geojson",
+      "parser": "censusTigerGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    }
+  ],
+  "countyCodeSourceId": "pa-2024-precinct-results-readme",
+  "certifiedResults": {
+    "format": "pennsylvaniaBulkCsv",
+    "sourceId": "pa-2024-precinct-results",
+    "officeCode": "USP"
+  },
+  "comparisonContest": {
+    "label": "United States Senator",
+    "sourceId": "pa-2024-precinct-results",
+    "officeCode": "USS"
+  },
+  "reviewCharts": {
+    "format": "pennsylvaniaBulkCsvPrecinctComparison",
+    "sourceId": "pa-2024-precinct-results",
+    "presidentOfficeCode": "USP",
+    "downBallotOfficeCode": "USS",
+    "warning": "Pennsylvania native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Two presidential precinct groups do not have Senate rows and are kept as vote-share-only rows."
+  },
+  "turnout": {
+    "format": "pennsylvaniaVoteHistoryXlsx",
+    "sourceId": "pa-2024-vote-history-registration-summary",
+    "sheetName": "By county",
+    "denominatorType": "registeredVoters",
+    "registrationDenominatorTiming": "certifiedVoterRegistrationSummary",
+    "sourceLevel": "county",
+    "notes": "Pennsylvania turnout rows use Vote History divided by Registered voters from the official DOS summary workbook.",
+    "warningRequired": false
+  },
+  "expected": {
+    "jurisdictions": 67,
+    "resultRows": 67,
+    "sources": 4,
+    "stateTotal": 7031737,
+    "trump": 3543041,
+    "harris": 3420865,
+    "other": 67831,
+    "reviewRows": 9154,
+    "turnoutRows": 67
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
+    "turnout": true,
+    "historicalBaseline": true
+  }
+}

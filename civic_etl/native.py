@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import re
 from pathlib import Path
 from typing import Any
@@ -518,6 +519,233 @@ def _minnesota_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tupl
     return result_rows, review_rows, turnout_rows, metrics
 
 
+def _pennsylvania_county_codes(source: SourceConfig) -> dict[int, str]:
+    codes: dict[int, str] = {}
+    in_table = False
+    for line in _artifact_path(source).read_text(encoding="utf-8", errors="replace").splitlines():
+        stripped = line.strip()
+        if stripped == "County Code Table":
+            in_table = True
+            continue
+        if not in_table:
+            continue
+        if stripped and set(stripped) == {"-"}:
+            continue
+        if not stripped:
+            if codes:
+                break
+            continue
+        match = re.match(r"^(\d{2})\s+(.+?)\s*$", stripped)
+        if not match:
+            continue
+        code = int(match.group(1))
+        if 1 <= code <= 67:
+            codes[code] = match.group(2)
+    if len(codes) != 67:
+        raise ValueError(f"Pennsylvania readme county table produced {len(codes)} county codes, expected 67")
+    return codes
+
+
+def _pa_precinct_key(row: dict[str, str], county: str) -> tuple[str, ...]:
+    return (
+        county,
+        row["precinctCode"],
+        row["municipality"].strip(),
+        row["breakdownCode1"].strip(),
+        row["breakdownName1"].strip(),
+        row["breakdownCode2"].strip(),
+        row["breakdownName2"].strip(),
+        row["mcd"].strip(),
+        row["vtd"].strip(),
+    )
+
+
+def _pa_local_unit(key: tuple[str, ...]) -> str:
+    _, precinct_code, municipality, code1, name1, code2, name2, mcd, vtd = key
+    parts = [municipality or "Unnamed municipality"]
+    if code1 or name1:
+        parts.append(" ".join(item for item in [code1, name1] if item).strip())
+    if code2 or name2:
+        parts.append(" ".join(item for item in [code2, name2] if item).strip())
+    parts.append(f"Precinct {precinct_code}")
+    if mcd:
+        parts.append(f"MCD {mcd}")
+    if vtd:
+        parts.append(f"VTD {vtd}")
+    return " - ".join(parts)
+
+
+def _pennsylvania_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    result_section = config.raw["certifiedResults"]
+    result_source = sources[result_section["sourceId"]]
+    readme_source = sources[config.raw["countyCodeSourceId"]]
+    turnout_section = config.raw["turnout"]
+    turnout_source = sources[turnout_section["sourceId"]]
+    county_codes = _pennsylvania_county_codes(readme_source)
+    fieldnames = [
+        "year",
+        "electionType",
+        "countyCode",
+        "precinctCode",
+        "officeRank",
+        "district",
+        "partyRank",
+        "ballotPosition",
+        "officeCode",
+        "partyCode",
+        "candidateNumber",
+        "last",
+        "first",
+        "middle",
+        "suffix",
+        "votes",
+        "yes",
+        "no",
+        "usCongress",
+        "stateSenate",
+        "stateHouse",
+        "muniType",
+        "municipality",
+        "breakdownCode1",
+        "breakdownName1",
+        "breakdownCode2",
+        "breakdownName2",
+        "biCounty",
+        "mcd",
+        "fips",
+        "vtd",
+        "ballotQuestion",
+        "recordType",
+        "prevPrecinct",
+        "prevCongress",
+        "prevSenate",
+        "prevHouse",
+    ]
+    county_totals: dict[str, dict[str, int]] = {}
+    precinct_totals: dict[tuple[str, ...], dict[str, int]] = {}
+
+    with _artifact_path(result_source).open(newline="", encoding="utf-8-sig") as handle:
+        for row in csv.DictReader(handle, fieldnames=fieldnames):
+            office = row["officeCode"]
+            if office not in {result_section["officeCode"], config.raw["reviewCharts"]["downBallotOfficeCode"]}:
+                continue
+            county = _county_name(county_codes[int(row["countyCode"])])
+            party = row["partyCode"]
+            votes = int_text(row["votes"])
+            key = _pa_precinct_key(row, county)
+            precinct = precinct_totals.setdefault(
+                key,
+                {"pres_dem": 0, "pres_rep": 0, "pres_other": 0, "pres_total": 0, "sen_dem": 0, "sen_rep": 0, "sen_total": 0},
+            )
+
+            if office == result_section["officeCode"]:
+                county_bucket = county_totals.setdefault(county, {"harris": 0, "other": 0, "total": 0, "trump": 0})
+                if party == "REP":
+                    county_bucket["trump"] += votes
+                    precinct["pres_rep"] += votes
+                elif party == "DEM":
+                    county_bucket["harris"] += votes
+                    precinct["pres_dem"] += votes
+                else:
+                    county_bucket["other"] += votes
+                    precinct["pres_other"] += votes
+                county_bucket["total"] += votes
+                precinct["pres_total"] += votes
+            else:
+                if party == "REP":
+                    precinct["sen_rep"] += votes
+                elif party == "DEM":
+                    precinct["sen_dem"] += votes
+                precinct["sen_total"] += votes
+
+    result_rows = [
+        {
+            "jurisdictionName": county,
+            "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": result_source.id,
+        }
+        for county, values in sorted(county_totals.items())
+    ]
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    for key, values in sorted(precinct_totals.items()):
+        total = values["pres_total"]
+        if not total:
+            continue
+        has_senate = bool(values["sen_total"])
+        if has_senate:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": key[0],
+                "localUnit": _pa_local_unit(key),
+                "totalVotes": total,
+                "harris": values["pres_dem"],
+                "trump": values["pres_rep"],
+                "harrisShare": pct(values["pres_dem"], total),
+                "trumpShare": pct(values["pres_rep"], total),
+                "demDropoff": pct(values["pres_dem"] - values["sen_dem"], total) if has_senate else 0,
+                "repDropoff": pct(values["pres_rep"] - values["sen_rep"], total) if has_senate else 0,
+                "coverageMode": "presidentVsSenate" if has_senate else "voteShareOnly",
+                "sourceId": result_source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_rows_raw = read_xlsx_sheet(_artifact_path(turnout_source), turnout_section.get("sheetName", "By county"))
+    if not turnout_rows_raw:
+        raise ValueError("Pennsylvania turnout workbook is empty")
+    turnout_columns = _column_index(turnout_rows_raw[0])
+    for name in ["County", "Vote History", "Registered voters"]:
+        if name not in turnout_columns:
+            raise ValueError(f"Pennsylvania turnout source missing column: {name}")
+    for row in turnout_rows_raw[1:]:
+        county = _county_name(_row_value(row, turnout_columns, "County"))
+        if not county:
+            continue
+        ballots = int_text(_row_value(row, turnout_columns, "Vote History"))
+        registered = int_text(_row_value(row, turnout_columns, "Registered voters"))
+        turnout_rows.append(
+            {
+                "county": county,
+                "localUnit": county,
+                "ballotsCast": ballots,
+                "registeredVoters": registered,
+                "turnoutPct": pct(ballots, registered) if registered else None,
+                "denominatorType": "registeredVoters",
+                "registrationDenominatorTiming": turnout_section.get("registrationDenominatorTiming", "certifiedVoterRegistrationSummary"),
+                "warningRequired": bool(turnout_section.get("warningRequired", False)),
+                "sourceId": turnout_source.id,
+            }
+        )
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": config.raw.get("comparisonContest", {}).get("label"),
+        "nativeTurnoutRows": len(turnout_rows),
+        "nativeRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+
 def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     checks = {
         "nativeResultRows": config.expected.result_rows,
@@ -538,6 +766,18 @@ def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
 
 
 def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
+    if config.code == "PA" and config.raw.get("certifiedResults", {}).get("format") == "pennsylvaniaBulkCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _pennsylvania_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativePennsylvaniaBulkCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
     if config.code == "MN" and config.raw.get("certifiedResults", {}).get("format") == "minnesotaPrecinctResultsXlsx":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _minnesota_rows(config, sources)
