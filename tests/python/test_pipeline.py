@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from xml.sax.saxutils import escape
 
+from civic_etl.cli import main
 from civic_etl.pipeline import (
     build_staging_artifact,
     load_config,
@@ -311,6 +312,14 @@ class PipelineTests(unittest.TestCase):
             self.assertIn('"productionWriteAllowed": false', Path(path).read_text())
         finally:
             path.unlink(missing_ok=True)
+
+    def test_validate_all_configs_command(self):
+        tmp = self.fixture_dir("validate-all")
+        status = main(["validate-all", "--config-dir", "etl/state-configs", "--out", str(tmp)])
+
+        self.assertEqual(status, 0)
+        for state in ["mi", "mn", "oh", "pa", "wi"]:
+            self.assertTrue((tmp / f"{state}-2024-staging.json").exists())
 
 
 if __name__ == "__main__":

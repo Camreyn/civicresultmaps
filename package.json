@@ -20,6 +20,7 @@
     "etl:validate:mn": "python -m civic_etl.cli validate --config etl/state-configs/mn.json",
     "etl:validate:oh": "python -m civic_etl.cli validate --config etl/state-configs/oh.json",
     "etl:validate:pa": "python -m civic_etl.cli validate --config etl/state-configs/pa.json",
+    "etl:validate:all": "npm run etl:prepare:mi && python -m civic_etl.cli validate-all --config-dir etl/state-configs --out .etl/staging",
     "etl:import": "python -m civic_etl.cli import --config etl/state-configs/wi.json --out .etl/staging",
     "etl:prepare:mi": "node scripts/extract-mi-registration-pdf.mjs",
     "etl:import:mi": "python -m civic_etl.cli import --config etl/state-configs/mi.json --out .etl/staging",

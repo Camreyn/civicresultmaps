@@ -33,8 +33,8 @@ jobs:
       - name: ETL tests
         run: npm run test:etl
 
-      - name: ETL validation
-        run: npm run etl:validate
+      - name: Native ETL validation
+        run: npm run etl:validate:all
 
       - name: Production map join validation
         run: npm run validate:maps
