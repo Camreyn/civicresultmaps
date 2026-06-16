@@ -1,6 +1,7 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
 import { listCompletenessReport } from "@/lib/api";
 import type { CompletenessSummary } from "@/lib/types";
+import nativeImportPackages from "../../../data/native-import-source-packages.json";
 
 const selectedYear = 2024;
 export const dynamic = "force-dynamic";
@@ -9,6 +10,16 @@ type ReadinessTask = {
   key: string;
   label: string;
   severity: "high" | "medium" | "low";
+};
+
+type NativeImportPackage = (typeof nativeImportPackages.states)[number];
+
+type ChecklistStatus = "good" | "warn" | "missing";
+
+type DetailChecklistItem = {
+  label: string;
+  value: string;
+  status: ChecklistStatus;
 };
 
 function missingTasks(state: CompletenessSummary): ReadinessTask[] {
@@ -100,6 +111,117 @@ function importStatusLabel(status: CompletenessSummary["latestImportStatus"]) {
     staged: "Staged",
     validated: "Validated",
   }[status];
+}
+
+function formatNumber(value: number | null | undefined) {
+  return typeof value === "number" ? value.toLocaleString() : "-";
+}
+
+function sourcePackageFor(stateCode: string): NativeImportPackage | undefined {
+  return nativeImportPackages.states.find((sourcePackage) => sourcePackage.state === stateCode);
+}
+
+function expectedValue(sourcePackage: NativeImportPackage | undefined, key: keyof NativeImportPackage["expected"]) {
+  return sourcePackage?.expected[key] ?? null;
+}
+
+function compareCount(loaded: number, expected: number | null) {
+  if (expected === null) {
+    return loaded > 0 ? `${formatNumber(loaded)} loaded` : "No expected total";
+  }
+
+  const delta = loaded - expected;
+  if (delta === 0) {
+    return `${formatNumber(loaded)} / ${formatNumber(expected)}`;
+  }
+
+  const sign = delta > 0 ? "+" : "";
+  return `${formatNumber(loaded)} / ${formatNumber(expected)} (${sign}${formatNumber(delta)})`;
+}
+
+function compareStatus(loaded: number, expected: number | null): ChecklistStatus {
+  if (expected === null) {
+    return loaded > 0 ? "good" : "warn";
+  }
+
+  if (loaded === expected) {
+    return "good";
+  }
+
+  return loaded > 0 ? "warn" : "missing";
+}
+
+function stateChecklist(state: CompletenessSummary, sourcePackage: NativeImportPackage | undefined): DetailChecklistItem[] {
+  const nativeResults = numericMetric(state, "nativeResultRows");
+  const nativeReview = numericMetric(state, "nativeReviewRows");
+  const nativeComparison = numericMetric(state, "nativeComparisonRows");
+  const nativeTurnout = numericMetric(state, "nativeTurnoutRows");
+  const expectedReview = expectedValue(sourcePackage, "localReviewRows");
+  const expectedTurnout = expectedValue(sourcePackage, "turnoutRows");
+
+  return [
+    {
+      label: "Official source package",
+      value: sourcePackage ? `${sourcePackage.configFile}` : "Needed from data team",
+      status: sourcePackage ? "good" : "missing",
+    },
+    {
+      label: "Native parser/import",
+      value: state.nativeImportCount ? `${state.nativeImportCount} native run${state.nativeImportCount === 1 ? "" : "s"}` : "No native import yet",
+      status: state.nativeImportCount ? "good" : "missing",
+    },
+    {
+      label: "County results",
+      value: compareCount(nativeResults || state.resultJurisdictions, expectedValue(sourcePackage, "countyRows")),
+      status: compareStatus(nativeResults || state.resultJurisdictions, expectedValue(sourcePackage, "countyRows")),
+    },
+    {
+      label: "Review rows",
+      value: compareCount(nativeReview || state.reviewRowCount, expectedReview),
+      status: compareStatus(nativeReview || state.reviewRowCount, expectedReview),
+    },
+    {
+      label: "Comparison contest",
+      value: nativeComparison ? `${formatNumber(nativeComparison)} comparison rows` : "No comparison rows",
+      status: nativeComparison ? "good" : sourcePackage ? "warn" : "missing",
+    },
+    {
+      label: "Turnout",
+      value: compareCount(nativeTurnout || state.turnoutRowCount, expectedTurnout),
+      status: compareStatus(nativeTurnout || state.turnoutRowCount, expectedTurnout),
+    },
+    {
+      label: "Source provenance",
+      value: state.sourcesMissingUrls ? `${state.sourcesMissingUrls} missing URL${state.sourcesMissingUrls === 1 ? "" : "s"}` : `${state.sourceCount} source${state.sourceCount === 1 ? "" : "s"}`,
+      status: state.sourceCount === 0 ? "missing" : state.sourcesMissingUrls ? "warn" : "good",
+    },
+    {
+      label: "Historical baselines",
+      value: state.historicalRowCount ? `${formatNumber(state.historicalRowCount)} rows` : "No historical rows",
+      status: state.historicalRowCount ? "good" : "warn",
+    },
+  ];
+}
+
+function artifactEntries(sourcePackage: NativeImportPackage) {
+  return [
+    ["Results", sourcePackage.artifacts.presidentialCountyResults],
+    ["Review", sourcePackage.artifacts.localReviewRows],
+    ["Turnout", sourcePackage.artifacts.turnout],
+    ["County geometry", sourcePackage.artifacts.countyBoundary],
+  ] as const;
+}
+
+function artifactHint(artifact: ReturnType<typeof artifactEntries>[number][1]) {
+  if ("parserHint" in artifact) {
+    return artifact.parserHint;
+  }
+
+  if ("denominator" in artifact) {
+    return `Turnout denominator: ${artifact.denominator}; ballots cast: ${artifact.ballotsCast}.`;
+  }
+
+  return `Join fields: ${artifact.nameProperty} / ${artifact.codeProperty}.`;
 }
 
 export default async function ReadinessPage() {
@@ -344,6 +466,157 @@ export default async function ReadinessPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section className="readiness-panel">
+        <div className="readiness-panel-head">
+          <div>
+            <h2>State Import Details</h2>
+            <span>Per-state source package status, validation counts, parser readiness, and remaining blockers</span>
+          </div>
+        </div>
+
+        <div className="readiness-detail-list">
+          {rows.map((state) => {
+            const sourcePackage = sourcePackageFor(state.state);
+            const checklist = stateChecklist(state, sourcePackage);
+            return (
+              <details className="readiness-detail" key={state.state}>
+                <summary>
+                  <span>
+                    <strong>{state.name}</strong>
+                    <span className="mono">{state.state}</span>
+                  </span>
+                  <span className={`lineage-pill lineage-${state.sourceTier.replace("_", "-")}`}>
+                    {sourceTierLabel(state.sourceTier)}
+                  </span>
+                  <span className={`import-status import-${state.latestImportStatus ?? "none"}`}>
+                    {importStatusLabel(state.latestImportStatus)}
+                  </span>
+                  <span className="detail-gap-count">
+                    {state.tasks.length ? `${state.tasks.length} tracked gap${state.tasks.length === 1 ? "" : "s"}` : "No tracked gaps"}
+                  </span>
+                </summary>
+
+                <div className="readiness-detail-body">
+                  <div className="detail-checklist" aria-label={`${state.name} import checklist`}>
+                    {checklist.map((item) => (
+                      <article className={`detail-check detail-${item.status}`} key={item.label}>
+                        <span>{item.label}</span>
+                        <strong>{item.value}</strong>
+                      </article>
+                    ))}
+                  </div>
+
+                  <div className="detail-columns">
+                    <article>
+                      <h3>Missing Work</h3>
+                      {state.tasks.length ? (
+                        <div className="task-list">
+                          {state.tasks.map((task) => (
+                            <span className={`task-pill task-${task.severity}`} key={task.key}>
+                              {task.label}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="available">No tracked gaps</p>
+                      )}
+                    </article>
+
+                    <article>
+                      <h3>Latest Import Summary</h3>
+                      <dl className="detail-summary-grid">
+                        <div>
+                          <dt>Parser</dt>
+                          <dd>{state.latestParser ?? "No parser yet"}</dd>
+                        </div>
+                        <div>
+                          <dt>Imported</dt>
+                          <dd>{state.latestImportAt ? new Date(state.latestImportAt).toLocaleString("en-US") : "No import"}</dd>
+                        </div>
+                        <div>
+                          <dt>Native runs</dt>
+                          <dd>{state.nativeImportCount.toLocaleString()}</dd>
+                        </div>
+                        <div>
+                          <dt>Legacy runs</dt>
+                          <dd>{state.legacyImportCount.toLocaleString()}</dd>
+                        </div>
+                      </dl>
+                    </article>
+                  </div>
+
+                  {sourcePackage ? (
+                    <div className="detail-source-package">
+                      <div className="detail-package-head">
+                        <div>
+                          <h3>Native Source Package</h3>
+                          <p>{sourcePackage.authority}</p>
+                        </div>
+                        <span className="task-pill task-low">Priority {sourcePackage.priority}</span>
+                      </div>
+
+                      <div className="detail-artifact-grid">
+                        {artifactEntries(sourcePackage).map(([label, artifact]) => (
+                          <article className="detail-artifact" key={label}>
+                            <span>{label}</span>
+                            <strong>{artifact.sourceTitle}</strong>
+                            <code>{artifact.localFile}</code>
+                            <p>{artifactHint(artifact)}</p>
+                            <a href={artifact.sourceUrl} target="_blank" rel="noreferrer">
+                              Official source
+                            </a>
+                          </article>
+                        ))}
+                      </div>
+
+                      <div className="detail-columns">
+                        <article>
+                          <h3>Expected Totals</h3>
+                          <dl className="detail-summary-grid">
+                            <div>
+                              <dt>Counties</dt>
+                              <dd>{formatNumber(sourcePackage.expected.countyRows)}</dd>
+                            </div>
+                            <div>
+                              <dt>Geometry</dt>
+                              <dd>{formatNumber(sourcePackage.expected.geometryFeatures)}</dd>
+                            </div>
+                            <div>
+                              <dt>State total</dt>
+                              <dd>{formatNumber(sourcePackage.expected.stateTotal)}</dd>
+                            </div>
+                            <div>
+                              <dt>Review rows</dt>
+                              <dd>{formatNumber(sourcePackage.expected.localReviewRows)}</dd>
+                            </div>
+                          </dl>
+                        </article>
+                        <article>
+                          <h3>Caveats</h3>
+                          <ul className="detail-caveats">
+                            {sourcePackage.caveats.map((caveat) => (
+                              <li key={caveat}>{caveat}</li>
+                            ))}
+                          </ul>
+                        </article>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="detail-source-package detail-source-package-empty">
+                      <h3>Native Source Package Needed</h3>
+                      <p>
+                        Ask the data team for official result artifacts, local review/comparison data, turnout denominators,
+                        county geometry, expected totals, parser hints, caveats, and source URLs for this state.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </details>
+            );
+          })}
         </div>
       </section>
     </main>

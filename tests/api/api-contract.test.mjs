@@ -74,6 +74,10 @@ test("public completeness report exists for national readiness", () => {
   assert.match(readiness, /Comparison \/ turnout ready/);
   assert.match(readiness, /coverage-chip/);
   assert.match(readiness, /State Work Queue/);
+  assert.match(readiness, /State Import Details/);
+  assert.match(readiness, /Native Source Package/);
+  assert.match(readiness, /Expected Totals/);
+  assert.match(readiness, /sourcePackageFor/);
   assert.match(readiness, /Legacy-only states/);
   assert.match(readiness, /Historical baseline rows/);
 });
