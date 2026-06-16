@@ -26,7 +26,27 @@ type DetailChecklistItem = {
   status: ChecklistStatus;
 };
 
-function missingTasks(state: CompletenessSummary): ReadinessTask[] {
+function turnoutSourceTask(turnoutSource: TurnoutSourceStatus | undefined): ReadinessTask | null {
+  if (!turnoutSource || turnoutSource.status === "loaded" || turnoutSource.status === "documented_exclusion") {
+    return null;
+  }
+
+  if (turnoutSource.status === "partial") {
+    return { key: "turnout-source-partial", label: "Partial turnout source", severity: "medium" };
+  }
+
+  if (turnoutSource.status === "candidate") {
+    return { key: "turnout-source-candidate", label: "Collect candidate turnout source", severity: "medium" };
+  }
+
+  if (turnoutSource.status === "blocked") {
+    return { key: "turnout-source-blocked", label: "Blocked turnout source", severity: "high" };
+  }
+
+  return { key: "turnout-source-needed", label: "Turnout source needed", severity: "medium" };
+}
+
+function missingTasks(state: CompletenessSummary, turnoutSource?: TurnoutSourceStatus): ReadinessTask[] {
   const tasks: ReadinessTask[] = [];
 
   if (!state.capabilities.certifiedResults || state.resultRows === 0) {
@@ -53,6 +73,11 @@ function missingTasks(state: CompletenessSummary): ReadinessTask[] {
     tasks.push({ key: "turnout", label: "Turnout rows", severity: "medium" });
   }
 
+  const sourceTask = turnoutSourceTask(turnoutSource);
+  if (sourceTask) {
+    tasks.push(sourceTask);
+  }
+
   if (!state.capabilities.historicalBaseline || state.historicalRowCount === 0) {
     tasks.push({ key: "historical", label: "Historical baseline rows", severity: "low" });
   }
@@ -74,7 +99,7 @@ function missingTasks(state: CompletenessSummary): ReadinessTask[] {
 
 function statusLabel(status: CompletenessSummary["status"]) {
   return {
-    complete: "Complete",
+    complete: "Map package complete",
     needs_sources: "Needs sources",
     pending: "Pending",
     results_only: "Results only",
@@ -235,9 +260,10 @@ export default async function ReadinessPage() {
   const turnoutSourceByState = new Map(turnoutSources.states.map((entry) => [entry.state, entry]));
   const rows = report
     .map((state) => {
-      const tasks = missingTasks(state);
+      const turnoutSource = turnoutSourceByState.get(state.state);
+      const tasks = missingTasks(state, turnoutSource);
       const summary = taskSummary(tasks);
-      return { ...state, taskSummary: summary, tasks, turnoutSource: turnoutSourceByState.get(state.state) };
+      return { ...state, taskSummary: summary, tasks, turnoutSource };
     })
     .sort((a, b) => b.taskSummary.high - a.taskSummary.high || b.taskSummary.medium - a.taskSummary.medium || a.name.localeCompare(b.name));
 
@@ -409,10 +435,10 @@ export default async function ReadinessPage() {
             <thead>
               <tr>
                 <th>State</th>
-                <th>Status</th>
+                <th>Map Package</th>
                 <th>Lineage</th>
-                <th>Native Coverage</th>
-                <th>Loaded Rows</th>
+                <th>Parser Counts</th>
+                <th>Loaded Data</th>
                 <th>Missing Work</th>
                 <th>Latest Import</th>
                 <th>Open</th>
@@ -440,27 +466,27 @@ export default async function ReadinessPage() {
                   <td>
                     <div className="coverage-chips compact">
                       <span className={`coverage-chip ${numericMetric(state, "nativeResultRows") ? "coverage-good" : "coverage-missing"}`}>
-                        R {numericMetric(state, "nativeResultRows") || "-"}
+                        Results {numericMetric(state, "nativeResultRows") || "-"}
                       </span>
                       <span className={`coverage-chip ${numericMetric(state, "nativeReviewRows") ? "coverage-good" : "coverage-missing"}`}>
-                        V {numericMetric(state, "nativeReviewRows") || "-"}
+                        Review {numericMetric(state, "nativeReviewRows") || "-"}
                       </span>
                       <span className={`coverage-chip ${numericMetric(state, "nativeComparisonRows") ? "coverage-good" : "coverage-warn"}`}>
-                        C {numericMetric(state, "nativeComparisonRows") || "-"}
+                        Compare {numericMetric(state, "nativeComparisonRows") || "-"}
                       </span>
                       <span className={`coverage-chip ${numericMetric(state, "nativeTurnoutRows") ? "coverage-good" : "coverage-warn"}`}>
-                        T {numericMetric(state, "nativeTurnoutRows") || "-"}
+                        Turnout rows {numericMetric(state, "nativeTurnoutRows") || "-"}
                       </span>
                       <span className={`coverage-chip ${state.turnoutSource?.status === "loaded" ? "coverage-good" : state.turnoutSource?.status === "partial" || state.turnoutSource?.status === "candidate" ? "coverage-warn" : "coverage-missing"}`}>
-                        TS {turnoutSourceStatusLabel(state.turnoutSource?.status)}
+                        Turnout source {turnoutSourceStatusLabel(state.turnoutSource?.status)}
                       </span>
                     </div>
                   </td>
                   <td className="readiness-counts">
-                    <span>{state.resultJurisdictions.toLocaleString()} jurisdictions</span>
-                    <span>{state.reviewRowCount.toLocaleString()} review</span>
-                    <span>{state.turnoutRowCount.toLocaleString()} turnout</span>
-                    <span>{state.historicalRowCount.toLocaleString()} historical</span>
+                    <span>Jurisdictions: {state.resultJurisdictions.toLocaleString()}</span>
+                    <span>Review rows: {state.reviewRowCount.toLocaleString()}</span>
+                    <span>Turnout rows: {state.turnoutRowCount.toLocaleString()}</span>
+                    <span>Historical rows: {state.historicalRowCount.toLocaleString()}</span>
                   </td>
                   <td>
                     {state.tasks.length ? (
