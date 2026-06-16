@@ -174,11 +174,19 @@ test("native source package handoff is validated in CI", () => {
 test("turnout collection inventory is available outside the app", () => {
   const packageScripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
   const inventoryScript = readFileSync("scripts/report-turnout-inventory.mjs", "utf8");
+  const validator = readFileSync("scripts/validate-turnout-source-packages.mjs", "utf8");
   const inventoryDoc = readFileSync("docs/turnout-collection-inventory.md", "utf8");
+  const turnoutPackages = readFileSync("data/turnout-source-packages.json", "utf8");
+  const workflow = readFileSync(".github/workflows/ci.yml", "utf8");
 
   assert.match(packageScripts["turnout:inventory"], /report-turnout-inventory/);
+  assert.match(packageScripts["validate:turnout-packages"], /validate-turnout-source-packages/);
+  assert.match(workflow, /validate:turnout-packages/);
   assert.match(inventoryScript, /needs_native_turnout_package/);
   assert.match(inventoryScript, /native_config_missing_turnout/);
+  assert.match(validator, /turnout-source-packages\.json/);
+  assert.match(turnoutPackages, /loadedPackages/);
+  assert.match(turnoutPackages, /remainingStatesNeedingPackages/);
   assert.match(inventoryDoc, /Loaded Turnout/);
   assert.match(inventoryDoc, /Wisconsin-Specific Request/);
 });

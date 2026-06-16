@@ -1,0 +1,190 @@
+{
+  "checkedAt": "2026-06-16",
+  "purpose": "Internal turnout source package inventory for Civic Result Maps. This file is not rendered in the app.",
+  "notes": [
+    "Loaded packages are already represented in native ETL configs and promoted database turnout rows.",
+    "Missing requests identify the turnout denominator data needed before turnout-based screening can be enabled.",
+    "Do not use unofficial turnout data. Each new package must point to an official source artifact stored in this repository."
+  ],
+  "loadedPackages": [
+    {
+      "state": "MI",
+      "name": "Michigan",
+      "authority": "Michigan Secretary of State",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "Michigan MVIC official county turnout export",
+        "sourceUrl": "https://mvic.sos.state.mi.us/VoteHistory/GetVoterTurnoutFile?electionId=699",
+        "localFile": "data/mi-2024-voter-turnout.txt",
+        "parser": "michiganMvicCountyTurnout"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Michigan 2024 registered voter count extraction",
+        "sourceUrl": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Election-Results-and-Statistics/Registered-Voter-Count/2024-Registered-Voter-Count.pdf",
+        "localFile": "data/mi-2024-registered-voter-count.json",
+        "parser": "pdfParseMichiganRegistrationJson",
+        "denominatorType": "novemberActiveRegisteredVoters",
+        "denominatorTiming": "novemberActiveRegisteredVoters"
+      },
+      "expected": {
+        "turnoutRows": 83
+      },
+      "caveats": [
+        "Turnout is county-level, not precinct-level.",
+        "Registered-voter denominator JSON is machine-extracted from the official PDF."
+      ]
+    },
+    {
+      "state": "MN",
+      "name": "Minnesota",
+      "authority": "Minnesota Secretary of State",
+      "sourceLevel": "precinct",
+      "turnoutSource": {
+        "sourceTitle": "Minnesota SOS official federal/state precinct spreadsheet",
+        "sourceUrl": "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx",
+        "localFile": "data/mn-2024-general-federal-state-results-by-precinct-official.xlsx",
+        "parser": "minnesotaPrecinctTurnout"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Minnesota SOS precinct REG7AM and EDR fields",
+        "sourceUrl": "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx",
+        "localFile": "data/mn-2024-general-federal-state-results-by-precinct-official.xlsx",
+        "parser": "minnesotaPrecinctTurnout",
+        "denominatorType": "registeredVotersPlusElectionDayRegistrations",
+        "denominatorTiming": "electionDayPlusEDR"
+      },
+      "expected": {
+        "turnoutRows": 4103
+      },
+      "caveats": [
+        "Turnout denominator is REG7AM plus EDR.",
+        "Precinct boundary geometry is not part of this package."
+      ]
+    },
+    {
+      "state": "OH",
+      "name": "Ohio",
+      "authority": "Ohio Secretary of State",
+      "sourceLevel": "precinct",
+      "turnoutSource": {
+        "sourceTitle": "Ohio official statewide races precinct-level workbook",
+        "sourceUrl": "https://www.ohiosos.gov/globalassets/elections/2024/gen/official/statewide-races-precinct-level.xlsx",
+        "localFile": "data/oh-2024-statewide-races-precinct-level.xlsx",
+        "parser": "ohioPrecinctTurnoutXlsx"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Ohio official precinct registered-voter field",
+        "sourceUrl": "https://www.ohiosos.gov/globalassets/elections/2024/gen/official/statewide-races-precinct-level.xlsx",
+        "localFile": "data/oh-2024-statewide-races-precinct-level.xlsx",
+        "parser": "ohioPrecinctTurnoutXlsx",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "final"
+      },
+      "expected": {
+        "turnoutRows": 8878,
+        "registeredVoters": 8159946,
+        "ballotsCast": 5851387
+      },
+      "caveats": [
+        "Uses the President and Vice President sheet's Registered Voters and Ballots Counted fields."
+      ]
+    },
+    {
+      "state": "PA",
+      "name": "Pennsylvania",
+      "authority": "Pennsylvania Department of State",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "Pennsylvania DOS vote history and voter registration summary",
+        "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/voter%20registration%20-%20vote%20history%20summary%20-%202024%20general.xlsx",
+        "localFile": "data/pa-2024-voter-registration-vote-history-summary.xlsx",
+        "parser": "pennsylvaniaVoteHistoryXlsx"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Pennsylvania DOS registered voter column",
+        "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/voter%20registration%20-%20vote%20history%20summary%20-%202024%20general.xlsx",
+        "localFile": "data/pa-2024-voter-registration-vote-history-summary.xlsx",
+        "parser": "pennsylvaniaVoteHistoryXlsx",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "certifiedVoterRegistrationSummary"
+      },
+      "expected": {
+        "turnoutRows": 67
+      },
+      "caveats": [
+        "Turnout is county-level, not precinct-level."
+      ]
+    }
+  ],
+  "missingRequests": [
+    {
+      "state": "WI",
+      "name": "Wisconsin",
+      "priority": 1,
+      "needed": "Official registered-voter denominator data for the existing WEC ward-by-ward workbook.",
+      "preferredLevel": "ward",
+      "acceptableLevel": "county with caveats",
+      "requiredFields": [
+        "sourceTitle",
+        "sourceUrl",
+        "localFile",
+        "reportingLevel",
+        "ballotsCastField",
+        "denominatorField",
+        "denominatorTiming",
+        "joinKeys",
+        "expectedRowCount",
+        "statewideDenominatorTotal",
+        "caveats"
+      ],
+      "notes": "Wisconsin native presidential results and review rows are already loaded from data/wi-2024-ward-by-ward-federal-state.xlsx. Turnout remains disabled until a denominator source is mapped."
+    }
+  ],
+  "remainingStatesNeedingPackages": [
+    "AK",
+    "AL",
+    "AR",
+    "AZ",
+    "CA",
+    "CO",
+    "CT",
+    "DE",
+    "FL",
+    "GA",
+    "HI",
+    "IA",
+    "ID",
+    "IL",
+    "IN",
+    "KS",
+    "KY",
+    "LA",
+    "MA",
+    "MD",
+    "ME",
+    "MO",
+    "MS",
+    "MT",
+    "NC",
+    "ND",
+    "NE",
+    "NH",
+    "NJ",
+    "NM",
+    "NV",
+    "NY",
+    "OK",
+    "OR",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VA",
+    "VT",
+    "WA",
+    "WV",
+    "WY"
+  ]
+}

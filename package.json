@@ -31,6 +31,7 @@
     "native:counts": "node --env-file=.env.local scripts/check-native-import-counts.mjs",
     "turnout:inventory": "node --env-file=.env.local scripts/report-turnout-inventory.mjs",
     "validate:source-packages": "node scripts/validate-native-source-packages.mjs",
+    "validate:turnout-packages": "node scripts/validate-turnout-source-packages.mjs",
     "validate:maps": "node scripts/validate-production-map-joins.mjs",
     "validate:provenance": "node scripts/validate-production-provenance.mjs"
   },

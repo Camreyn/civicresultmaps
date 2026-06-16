@@ -39,6 +39,9 @@ jobs:
       - name: Native source package validation
         run: npm run validate:source-packages
 
+      - name: Turnout source package validation
+        run: npm run validate:turnout-packages
+
       - name: Production map join validation
         run: npm run validate:maps
 
