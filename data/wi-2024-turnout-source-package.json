@@ -6,11 +6,21 @@
   "coverageStatus": "loaded",
   "nativeImportIntent": "Load statewide Wisconsin turnout rows from official EAC 2024 EAVS V2 jurisdiction-level fallback data. Keep local partial source records as supplemental provenance, not the primary statewide turnout source.",
   "officialStatewideDenominatorSource": {
-    "status": "not_found_in_public_wec_artifacts",
-    "authority": "Wisconsin Elections Commission",
+    "status": "loaded_eac_fallback",
+    "authority": "U.S. Election Assistance Commission",
+    "sourceTitle": "U.S. EAC 2024 EAVS V2 Wisconsin registered-voter denominator",
+    "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+    "codebookUrl": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
+    "localFile": "data/wi-2024-registered-voter-denominator-eac.json",
+    "rowFile": "data/wi-2024-registered-voter-denominator-eac.csv",
+    "sourceField": "A1a Total Reg",
+    "rowCount": 1851,
+    "registeredVoters": 3933068,
+    "warningRows": 2,
+    "wecNativeDenominatorStatus": "not_found_in_public_wec_artifacts",
     "resultReviewSource": "data/Ward by Ward Report Federal and State Contests.xlsx",
     "resultReviewSourceUrl": "https://web.archive.org/web/20241130045633id_/https://elections.wi.gov/sites/default/files/documents/Ward%20by%20Ward%20Report%20by%20Congressional%20District_November%205%202024%20General%20Election_Federal%20and%20State%20Contests.xlsx",
-    "note": "The statewide WEC ward-by-ward federal/state results workbook provides result/review rows but does not include registered-voter or eligible-voter denominator fields."
+    "note": "The statewide WEC ward-by-ward federal/state results workbook provides result/review rows but does not include registered-voter or eligible-voter denominator fields, so Wisconsin registered-voter denominators are loaded from official EAC A1a Total Reg."
   },
   "primaryLocalArtifact": {
     "localFile": "data/wi-2024-eac-turnout.csv",
@@ -24,6 +34,7 @@
     "missingCountyCount": 0,
     "ballotsCastTotal": 3434185,
     "registeredVotersTotal": 3933068,
+    "registeredVoterDenominatorFile": "data/wi-2024-registered-voter-denominator-eac.json",
     "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
     "codebookUrl": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
     "fieldMapping": {

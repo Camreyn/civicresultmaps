@@ -120,6 +120,8 @@
       "coverage": {
         "jurisdictionRows": 1851,
         "missingJurisdictionCount": 0,
+        "registeredVoterDenominatorFile": "data/wi-2024-registered-voter-denominator-eac.json",
+        "registeredVoters": 3933068,
         "supplementalLocalPartialFile": "data/wi-2024-turnout-partial.csv"
       },
       "statusNote": "Statewide Wisconsin turnout fallback is loaded from official EAC 2024 EAVS V2 jurisdiction rows; WEC presidential results remain the vote-result source.",
@@ -390,10 +392,10 @@
         "parser": "normalizedTurnoutCsv"
       },
       "denominatorSource": {
-        "sourceTitle": "EAC 2024 EAVS A1a Total Reg field",
+        "sourceTitle": "U.S. EAC 2024 EAVS V2 Wisconsin registered-voter denominator",
         "sourceUrl": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
-        "localFile": "data/eac-2024-codebook.xlsx",
-        "parser": "eacCodebook",
+        "localFile": "data/wi-2024-registered-voter-denominator-eac.json",
+        "parser": "eacA1aRegisteredVoterDenominator",
         "denominatorType": "registeredVoters",
         "denominatorTiming": "eacReported"
       },

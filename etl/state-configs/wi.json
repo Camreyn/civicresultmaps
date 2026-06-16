@@ -48,6 +48,17 @@
       "timestampBasis": "2024 EAVS Datasets Version 2.0 released February 12, 2026.",
       "confidence": "Official EAC jurisdiction-level turnout fallback using A1a total registration and F1a total voters. Wisconsin WEC ward results remain the source for presidential vote totals.",
       "status": "loaded"
+    },
+    {
+      "id": "wi-2024-eac-registered-voter-denominator",
+      "category": "Official EAC registered-voter denominator",
+      "url": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
+      "localFile": "data/wi-2024-registered-voter-denominator-eac.json",
+      "parser": "eacA1aRegisteredVoterDenominator",
+      "authority": "U.S. Election Assistance Commission",
+      "timestampBasis": "2024 EAVS codebook defines A1a as Total Reg; Wisconsin denominator rows are extracted from 2024 EAVS V2.",
+      "confidence": "Official EAC registered-voter denominator artifact for Wisconsin: 1,851 jurisdiction rows totaling 3,933,068 registered voters.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -98,6 +109,7 @@
   "turnout": {
     "format": "normalizedTurnoutCsv",
     "sourceId": "wi-2024-eac-turnout-csv",
+    "registrationSourceId": "wi-2024-eac-registered-voter-denominator",
     "coverageStatus": "loaded",
     "coveredCounties": [],
     "missingCountyCount": 0,
@@ -113,7 +125,7 @@
   "expected": {
     "jurisdictions": 72,
     "resultRows": 72,
-    "sources": 4,
+    "sources": 5,
     "stateTotal": 3422918,
     "trump": 1697626,
     "harris": 1668229,

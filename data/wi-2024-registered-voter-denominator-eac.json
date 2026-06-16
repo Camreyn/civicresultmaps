@@ -1,0 +1,19 @@
+{
+    "state":  "WI",
+    "electionYear":  2024,
+    "sourceTitle":  "U.S. EAC 2024 EAVS V2 Wisconsin registered-voter denominator",
+    "sourceUrl":  "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+    "codebookUrl":  "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
+    "localFile":  "data/wi-2024-registered-voter-denominator-eac.csv",
+    "sourceField":  "A1a Total Reg",
+    "rowCount":  1851,
+    "registeredVoters":  3933068,
+    "warningRows":  2,
+    "denominatorTiming":  "eacReported",
+    "denominatorType":  "registeredVoters",
+    "caveats":  [
+                    "EAC A1a Total Reg is the registered-voter denominator used for Wisconsin turnout fallback.",
+                    "WEC ward-by-ward result workbook does not include registered-voter denominator fields.",
+                    "Two EAC jurisdiction rows report zero registered voters and are warning-gated."
+                ]
+}
