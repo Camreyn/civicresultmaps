@@ -265,9 +265,11 @@ input {
 }
 
 .overview-table-wrap {
+  --table-sticky-top: 0px;
   border-top: 1px solid var(--line);
   max-height: 430px;
   overflow: auto;
+  position: relative;
 }
 
 .overview-table {
@@ -409,6 +411,7 @@ input {
 
 .readiness-table-wrap {
   overflow-x: auto;
+  position: relative;
 }
 
 .readiness-table {
@@ -1244,6 +1247,7 @@ input {
 
 .table-wrap {
   overflow-x: auto;
+  position: relative;
 }
 
 .map-panel {
@@ -1977,9 +1981,13 @@ td {
 }
 
 th {
+  background: var(--panel-strong);
   color: var(--muted);
   font-size: 12px;
+  position: sticky;
+  top: var(--table-sticky-top, 72px);
   text-transform: uppercase;
+  z-index: 4;
 }
 
 td {
