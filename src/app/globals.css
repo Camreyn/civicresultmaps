@@ -312,6 +312,14 @@ input {
   max-width: 760px;
 }
 
+.readiness-hero-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .readiness-api-link,
 .readiness-open-link {
   align-items: center;
@@ -2912,6 +2920,7 @@ td {
   .overview-head,
   .readiness-hero,
   .readiness-panel-head,
+  .readiness-hero-actions,
   .screening-card-head,
   .header-actions,
   .selected-result-callout {

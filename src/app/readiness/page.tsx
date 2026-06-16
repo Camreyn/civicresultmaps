@@ -1,7 +1,12 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
 import { listCompletenessReport } from "@/lib/api";
+import {
+  getNativeSourcePackage,
+  nativeSourcePackageArtifactHint,
+  nativeSourcePackageArtifacts,
+  type NativeSourcePackage,
+} from "@/lib/native-source-packages";
 import type { CompletenessSummary } from "@/lib/types";
-import nativeImportPackages from "../../../data/native-import-source-packages.json";
 
 const selectedYear = 2024;
 export const dynamic = "force-dynamic";
@@ -11,8 +16,6 @@ type ReadinessTask = {
   label: string;
   severity: "high" | "medium" | "low";
 };
-
-type NativeImportPackage = (typeof nativeImportPackages.states)[number];
 
 type ChecklistStatus = "good" | "warn" | "missing";
 
@@ -117,11 +120,7 @@ function formatNumber(value: number | null | undefined) {
   return typeof value === "number" ? value.toLocaleString() : "-";
 }
 
-function sourcePackageFor(stateCode: string): NativeImportPackage | undefined {
-  return nativeImportPackages.states.find((sourcePackage) => sourcePackage.state === stateCode);
-}
-
-function expectedValue(sourcePackage: NativeImportPackage | undefined, key: keyof NativeImportPackage["expected"]) {
+function expectedValue(sourcePackage: NativeSourcePackage | undefined, key: keyof NativeSourcePackage["expected"]) {
   return sourcePackage?.expected[key] ?? null;
 }
 
@@ -151,7 +150,7 @@ function compareStatus(loaded: number, expected: number | null): ChecklistStatus
   return loaded > 0 ? "warn" : "missing";
 }
 
-function stateChecklist(state: CompletenessSummary, sourcePackage: NativeImportPackage | undefined): DetailChecklistItem[] {
+function stateChecklist(state: CompletenessSummary, sourcePackage: NativeSourcePackage | undefined): DetailChecklistItem[] {
   const nativeResults = numericMetric(state, "nativeResultRows");
   const nativeReview = numericMetric(state, "nativeReviewRows");
   const nativeComparison = numericMetric(state, "nativeComparisonRows");
@@ -203,27 +202,6 @@ function stateChecklist(state: CompletenessSummary, sourcePackage: NativeImportP
   ];
 }
 
-function artifactEntries(sourcePackage: NativeImportPackage) {
-  return [
-    ["Results", sourcePackage.artifacts.presidentialCountyResults],
-    ["Review", sourcePackage.artifacts.localReviewRows],
-    ["Turnout", sourcePackage.artifacts.turnout],
-    ["County geometry", sourcePackage.artifacts.countyBoundary],
-  ] as const;
-}
-
-function artifactHint(artifact: ReturnType<typeof artifactEntries>[number][1]) {
-  if ("parserHint" in artifact) {
-    return artifact.parserHint;
-  }
-
-  if ("denominator" in artifact) {
-    return `Turnout denominator: ${artifact.denominator}; ballots cast: ${artifact.ballotsCast}.`;
-  }
-
-  return `Join fields: ${artifact.nameProperty} / ${artifact.codeProperty}.`;
-}
-
 export default async function ReadinessPage() {
   const report = await listCompletenessReport({ year: selectedYear });
   const rows = report
@@ -273,9 +251,14 @@ export default async function ReadinessPage() {
             baselines, sources, and exports can be treated as complete.
           </p>
         </div>
-        <a className="readiness-api-link" href={`/api/completeness?year=${selectedYear}`} target="_blank" rel="noreferrer">
-          Completeness API
-        </a>
+        <div className="readiness-hero-actions">
+          <a className="readiness-api-link" href={`/api/completeness?year=${selectedYear}`} target="_blank" rel="noreferrer">
+            Completeness API
+          </a>
+          <a className="readiness-api-link" href="/api/native-source-packages" target="_blank" rel="noreferrer">
+            Source Packages API
+          </a>
+        </div>
       </section>
 
       <section className="readiness-metrics" aria-label="Readiness summary">
@@ -479,7 +462,7 @@ export default async function ReadinessPage() {
 
         <div className="readiness-detail-list">
           {rows.map((state) => {
-            const sourcePackage = sourcePackageFor(state.state);
+            const sourcePackage = getNativeSourcePackage(state.state);
             const checklist = stateChecklist(state, sourcePackage);
             return (
               <details className="readiness-detail" key={state.state}>
@@ -559,12 +542,12 @@ export default async function ReadinessPage() {
                       </div>
 
                       <div className="detail-artifact-grid">
-                        {artifactEntries(sourcePackage).map(([label, artifact]) => (
+                        {nativeSourcePackageArtifacts(sourcePackage).map(([label, artifact]) => (
                           <article className="detail-artifact" key={label}>
                             <span>{label}</span>
                             <strong>{artifact.sourceTitle}</strong>
                             <code>{artifact.localFile}</code>
-                            <p>{artifactHint(artifact)}</p>
+                            <p>{nativeSourcePackageArtifactHint(artifact)}</p>
                             <a href={artifact.sourceUrl} target="_blank" rel="noreferrer">
                               Official source
                             </a>
