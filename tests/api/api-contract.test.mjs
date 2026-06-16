@@ -26,7 +26,6 @@ test("public API route contracts exist", () => {
     "src/app/api/turnout/route.ts",
     "src/app/api/historical-baselines/route.ts",
     "src/app/api/native-source-packages/route.ts",
-    "src/app/api/native-source-package-requests/route.ts",
   ];
 
   for (const route of expectedRoutes) {
@@ -81,12 +80,12 @@ test("public completeness report exists for national readiness", () => {
   assert.match(readiness, /Native Source Package/);
   assert.match(readiness, /Expected Totals/);
   assert.match(readiness, /Source Packages API/);
-  assert.match(readiness, /Package Requests API/);
-  assert.match(readiness, /Native Package Requests/);
-  assert.match(readiness, /requestArtifactSummary/);
+  assert.doesNotMatch(readiness, /Package Requests API/);
+  assert.doesNotMatch(readiness, /Native Package Requests/);
   assert.match(packages, /listNativeSourcePackages/);
   assert.match(packages, /listNativeSourcePackageRequests/);
   assert.match(packages, /getNativeSourcePackage/);
+  assert.doesNotMatch(readFileSync("src/lib/api.ts", "utf8"), /listNativeSourcePackageRequests/);
   assert.match(readiness, /Legacy-only states/);
   assert.match(readiness, /Historical baseline rows/);
 });

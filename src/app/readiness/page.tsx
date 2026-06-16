@@ -2,11 +2,9 @@ import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch
 import { listCompletenessReport } from "@/lib/api";
 import {
   getNativeSourcePackage,
-  listNativeSourcePackageRequests,
   nativeSourcePackageArtifactHint,
   nativeSourcePackageArtifacts,
   type NativeSourcePackage,
-  type NativeSourcePackageRequest,
 } from "@/lib/native-source-packages";
 import type { CompletenessSummary } from "@/lib/types";
 
@@ -26,10 +24,6 @@ type DetailChecklistItem = {
   value: string;
   status: ChecklistStatus;
 };
-
-function requestArtifactSummary(request: NativeSourcePackageRequest) {
-  return request.neededArtifacts.map((artifact) => artifact.label).join(", ");
-}
 
 function missingTasks(state: CompletenessSummary): ReadinessTask[] {
   const tasks: ReadinessTask[] = [];
@@ -210,7 +204,6 @@ function stateChecklist(state: CompletenessSummary, sourcePackage: NativeSourceP
 
 export default async function ReadinessPage() {
   const report = await listCompletenessReport({ year: selectedYear });
-  const packageRequests = listNativeSourcePackageRequests();
   const rows = report
     .map((state) => {
       const tasks = missingTasks(state);
@@ -227,7 +220,6 @@ export default async function ReadinessPage() {
   const legacyOnlyStates = rows.filter((state) => state.sourceTier === "legacy_bundle").length;
   const comparisonReadyStates = rows.filter((state) => numericMetric(state, "nativeComparisonRows") > 0).length;
   const turnoutReadyStates = rows.filter((state) => state.turnoutRowCount > 0).length;
-  const packageRequestCount = packageRequests.requestCount;
 
   return (
     <main className="readiness-shell">
@@ -265,9 +257,6 @@ export default async function ReadinessPage() {
           </a>
           <a className="readiness-api-link" href="/api/native-source-packages" target="_blank" rel="noreferrer">
             Source Packages API
-          </a>
-          <a className="readiness-api-link" href="/api/native-source-package-requests" target="_blank" rel="noreferrer">
-            Package Requests API
           </a>
         </div>
       </section>
@@ -308,11 +297,6 @@ export default async function ReadinessPage() {
           <strong>
             {comparisonReadyStates} / {turnoutReadyStates}
           </strong>
-        </article>
-        <article>
-          <FileWarning aria-hidden size={18} />
-          <span>Package requests</span>
-          <strong>{packageRequestCount}</strong>
         </article>
       </section>
 
@@ -365,79 +349,6 @@ export default async function ReadinessPage() {
                 </article>
               );
             })}
-        </div>
-      </section>
-
-      <section className="readiness-panel">
-        <div className="readiness-panel-head">
-          <div>
-            <h2>Native Package Requests</h2>
-            <span>Shareable state-by-state handoff checklist for data contributors</span>
-          </div>
-          <a className="readiness-open-link" href="/api/native-source-package-requests" target="_blank" rel="noreferrer">
-            Request JSON
-          </a>
-        </div>
-
-        <div className="package-request-summary">
-          <article>
-            <span>Requests remaining</span>
-            <strong>{packageRequests.requestCount.toLocaleString()}</strong>
-          </article>
-          <article>
-            <span>Already excluded</span>
-            <strong>{packageRequests.excludedStates.join(", ")}</strong>
-          </article>
-          <article>
-            <span>Needed for each state</span>
-            <strong>Official results, review rows, comparison contest, turnout, county geometry</strong>
-          </article>
-        </div>
-
-        <div className="package-request-grid">
-          {packageRequests.states.map((request) => (
-            <details className="package-request-card" key={request.state}>
-              <summary>
-                <span>
-                  <strong>{request.name}</strong>
-                  <span className="mono">{request.state}</span>
-                </span>
-                <span className="task-pill task-medium">Priority {request.priority}</span>
-                <span className="detail-gap-count">{request.neededArtifacts.length} needed artifacts</span>
-              </summary>
-
-              <div className="package-request-body">
-                <div className="package-request-meta">
-                  <span>{request.authority}</span>
-                  <code>{request.legacyReferenceBundle}</code>
-                  <p>{requestArtifactSummary(request)}</p>
-                </div>
-
-                <div className="package-artifact-list">
-                  {request.neededArtifacts.map((artifact) => (
-                    <article key={artifact.key}>
-                      <span>{artifact.label}</span>
-                      <strong>{artifact.requiredFields.join(", ")}</strong>
-                      <p>{artifact.notes}</p>
-                    </article>
-                  ))}
-                </div>
-
-                <div className="package-validation">
-                  <h3>Validation Required</h3>
-                  <ul>
-                    {request.expectedValidation.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <a className="readiness-open-link" href={`/api/native-source-package-requests?state=${request.state}`} target="_blank" rel="noreferrer">
-                  {request.state} request JSON
-                </a>
-              </div>
-            </details>
-          ))}
         </div>
       </section>
 
