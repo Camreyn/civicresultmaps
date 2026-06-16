@@ -86,6 +86,9 @@ export type CompletenessSummary = {
   nativeImportCount: number;
   legacyImportCount: number;
   latestParser: string | null;
+  latestImportStatus: ImportRunSummary["status"] | null;
+  latestImportSummary: Record<string, unknown> | null;
+  latestNativeImportSummary: Record<string, unknown> | null;
   sourceTier: "native_official" | "legacy_bundle" | "mixed" | "seed_fallback" | "pending";
   latestImportAt: string | null;
   capabilities: CapabilitySummary;

@@ -57,15 +57,22 @@ test("public completeness report exists for national readiness", () => {
 
   assert.match(types, /CompletenessSummary/);
   assert.match(types, /sourceTier/);
+  assert.match(types, /latestImportSummary/);
+  assert.match(types, /latestNativeImportSummary/);
   assert.match(dataAccess, /listCompletenessReport/);
   assert.match(dataAccess, /nativeImportCount/);
   assert.match(dataAccess, /legacyImportCount/);
+  assert.match(dataAccess, /latest_import_summary/);
+  assert.match(dataAccess, /latest_native_import_summary/);
   assert.match(dataAccess, /sourcesMissingUrls/);
   assert.match(overview, /Completeness API/);
   assert.match(overview, /Native official states/);
   assert.match(overview, /lineage-pill/);
   assert.match(home, /\/readiness/);
   assert.match(readiness, /missing data dashboard/);
+  assert.match(readiness, /Native Import Coverage/);
+  assert.match(readiness, /Comparison \/ turnout ready/);
+  assert.match(readiness, /coverage-chip/);
   assert.match(readiness, /State Work Queue/);
   assert.match(readiness, /Legacy-only states/);
   assert.match(readiness, /Historical baseline rows/);

@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, ListChecks } from "lucide-react";
+import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
 import { listCompletenessReport } from "@/lib/api";
 import type { CompletenessSummary } from "@/lib/types";
 
@@ -46,6 +46,14 @@ function missingTasks(state: CompletenessSummary): ReadinessTask[] {
     tasks.push({ key: "imports", label: "Import run record", severity: "low" });
   }
 
+  if (state.sourceTier === "legacy_bundle" || state.sourceTier === "seed_fallback") {
+    tasks.push({ key: "native-parser", label: "Native official parser", severity: "medium" });
+  }
+
+  if (state.nativeImportCount > 0 && state.reviewRowCount > 0 && numericMetric(state, "nativeComparisonRows") === 0) {
+    tasks.push({ key: "comparison", label: "Comparison contest rows", severity: "low" });
+  }
+
   return tasks;
 }
 
@@ -76,6 +84,24 @@ function taskSummary(tasks: ReadinessTask[]) {
   return { high, low, medium };
 }
 
+function numericMetric(state: CompletenessSummary, key: string) {
+  const value = state.latestNativeImportSummary?.[key] ?? state.latestImportSummary?.[key];
+  return typeof value === "number" ? value : 0;
+}
+
+function importStatusLabel(status: CompletenessSummary["latestImportStatus"]) {
+  if (!status) {
+    return "No import";
+  }
+
+  return {
+    failed: "Failed",
+    promoted: "Promoted",
+    staged: "Staged",
+    validated: "Validated",
+  }[status];
+}
+
 export default async function ReadinessPage() {
   const report = await listCompletenessReport({ year: selectedYear });
   const rows = report
@@ -92,6 +118,8 @@ export default async function ReadinessPage() {
   const statesMissingTurnout = rows.filter((state) => state.tasks.some((task) => task.key === "turnout")).length;
   const nativeStates = rows.filter((state) => state.sourceTier === "native_official" || state.sourceTier === "mixed").length;
   const legacyOnlyStates = rows.filter((state) => state.sourceTier === "legacy_bundle").length;
+  const comparisonReadyStates = rows.filter((state) => numericMetric(state, "nativeComparisonRows") > 0).length;
+  const turnoutReadyStates = rows.filter((state) => state.turnoutRowCount > 0).length;
 
   return (
     <main className="readiness-shell">
@@ -158,6 +186,65 @@ export default async function ReadinessPage() {
           <span>Legacy-only states</span>
           <strong>{legacyOnlyStates}</strong>
         </article>
+        <article>
+          <GitBranch aria-hidden size={18} />
+          <span>Comparison / turnout ready</span>
+          <strong>
+            {comparisonReadyStates} / {turnoutReadyStates}
+          </strong>
+        </article>
+      </section>
+
+      <section className="readiness-panel">
+        <div className="readiness-panel-head">
+          <div>
+            <h2>Native Import Coverage</h2>
+            <span>Operational view of parser coverage, validation counts, and provenance readiness</span>
+          </div>
+        </div>
+
+        <div className="native-coverage-grid">
+          {rows
+            .filter((state) => state.sourceTier === "native_official" || state.sourceTier === "mixed")
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((state) => {
+              const nativeResults = numericMetric(state, "nativeResultRows");
+              const nativeReview = numericMetric(state, "nativeReviewRows");
+              const nativeComparison = numericMetric(state, "nativeComparisonRows");
+              const nativeTurnout = numericMetric(state, "nativeTurnoutRows");
+              return (
+                <article className="native-coverage-card" key={state.state}>
+                  <header>
+                    <div>
+                      <strong>{state.name}</strong>
+                      <span className="mono">{state.state}</span>
+                    </div>
+                    <span className={`import-status import-${state.latestImportStatus ?? "none"}`}>
+                      {importStatusLabel(state.latestImportStatus)}
+                    </span>
+                  </header>
+                  <div className="coverage-chips" aria-label={`${state.name} native import coverage`}>
+                    <span className={`coverage-chip ${nativeResults ? "coverage-good" : "coverage-missing"}`}>
+                      Results {nativeResults ? nativeResults.toLocaleString() : "missing"}
+                    </span>
+                    <span className={`coverage-chip ${nativeReview ? "coverage-good" : "coverage-missing"}`}>
+                      Review {nativeReview ? nativeReview.toLocaleString() : "missing"}
+                    </span>
+                    <span className={`coverage-chip ${nativeComparison ? "coverage-good" : "coverage-warn"}`}>
+                      Comparison {nativeComparison ? nativeComparison.toLocaleString() : "none"}
+                    </span>
+                    <span className={`coverage-chip ${nativeTurnout ? "coverage-good" : "coverage-warn"}`}>
+                      Turnout {nativeTurnout ? nativeTurnout.toLocaleString() : "none"}
+                    </span>
+                    <span className={`coverage-chip ${state.sourcesMissingUrls ? "coverage-warn" : "coverage-good"}`}>
+                      Sources {state.sourceCount.toLocaleString()}
+                    </span>
+                  </div>
+                  <p>{state.latestParser ?? "No parser recorded"}</p>
+                </article>
+              );
+            })}
+        </div>
       </section>
 
       <section className="readiness-panel">
@@ -180,6 +267,7 @@ export default async function ReadinessPage() {
                 <th>State</th>
                 <th>Status</th>
                 <th>Lineage</th>
+                <th>Native Coverage</th>
                 <th>Loaded Rows</th>
                 <th>Missing Work</th>
                 <th>Latest Import</th>
@@ -204,6 +292,22 @@ export default async function ReadinessPage() {
                       {sourceTierLabel(state.sourceTier)}
                     </span>
                     <span>{state.latestParser ?? "No parser yet"}</span>
+                  </td>
+                  <td>
+                    <div className="coverage-chips compact">
+                      <span className={`coverage-chip ${numericMetric(state, "nativeResultRows") ? "coverage-good" : "coverage-missing"}`}>
+                        R {numericMetric(state, "nativeResultRows") || "-"}
+                      </span>
+                      <span className={`coverage-chip ${numericMetric(state, "nativeReviewRows") ? "coverage-good" : "coverage-missing"}`}>
+                        V {numericMetric(state, "nativeReviewRows") || "-"}
+                      </span>
+                      <span className={`coverage-chip ${numericMetric(state, "nativeComparisonRows") ? "coverage-good" : "coverage-warn"}`}>
+                        C {numericMetric(state, "nativeComparisonRows") || "-"}
+                      </span>
+                      <span className={`coverage-chip ${numericMetric(state, "nativeTurnoutRows") ? "coverage-good" : "coverage-warn"}`}>
+                        T {numericMetric(state, "nativeTurnoutRows") || "-"}
+                      </span>
+                    </div>
                   </td>
                   <td className="readiness-counts">
                     <span>{state.resultJurisdictions.toLocaleString()} jurisdictions</span>

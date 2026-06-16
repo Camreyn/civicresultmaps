@@ -334,7 +334,7 @@ input {
 .readiness-metrics {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   margin-bottom: 18px;
 }
 
@@ -404,7 +404,7 @@ input {
 }
 
 .readiness-table {
-  min-width: 1040px;
+  min-width: 1220px;
 }
 
 .readiness-table td:first-child {
@@ -429,6 +429,90 @@ input {
   font-family: var(--font-code);
   font-size: 11px;
   overflow-wrap: anywhere;
+}
+
+.native-coverage-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  padding: 16px;
+}
+
+.native-coverage-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.native-coverage-card header {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.native-coverage-card header > div {
+  display: grid;
+  gap: 3px;
+}
+
+.native-coverage-card p {
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 11px;
+  line-height: 1.45;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.coverage-chips {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.coverage-chips.compact {
+  max-width: 190px;
+}
+
+.coverage-chip,
+.import-status {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 6px 8px;
+  white-space: nowrap;
+}
+
+.coverage-good,
+.import-promoted {
+  background: rgba(53, 199, 163, 0.1);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.coverage-warn,
+.import-staged,
+.import-validated {
+  background: rgba(240, 195, 106, 0.1);
+  border-color: rgba(240, 195, 106, 0.42);
+  color: var(--gold);
+}
+
+.coverage-missing,
+.import-failed,
+.import-none {
+  background: rgba(255, 143, 126, 0.08);
+  border-color: rgba(255, 143, 126, 0.32);
+  color: var(--red);
 }
 
 .task-pill {
