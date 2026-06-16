@@ -37,6 +37,17 @@
       "timestampBasis": "Normalized package assembled from official local turnout sources for Milwaukee, Dane, Jefferson, and Oneida.",
       "confidence": "Partial official local turnout package. Not statewide complete; warning-gate rows with pre-Election-Day or unknown denominators.",
       "status": "loaded"
+    },
+    {
+      "id": "wi-2024-eac-turnout-csv",
+      "category": "Official EAC statewide turnout fallback",
+      "url": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+      "localFile": "data/wi-2024-eac-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "U.S. Election Assistance Commission",
+      "timestampBasis": "2024 EAVS Datasets Version 2.0 released February 12, 2026.",
+      "confidence": "Official EAC jurisdiction-level turnout fallback using A1a total registration and F1a total voters. Wisconsin WEC ward results remain the source for presidential vote totals.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -82,36 +93,33 @@
     "sheetName": "Sheet2",
     "candidateHeaderRow": 10,
     "dataStartRow": 11,
-    "warning": "Wisconsin native review rows use ward-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Turnout rows are currently partial local coverage and must not be interpreted as statewide complete."
+    "warning": "Wisconsin native review rows use ward-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Turnout rows use EAC 2024 V2 local-jurisdiction fallback data because the WEC ward results workbook does not include registered-voter denominator fields."
   },
   "turnout": {
-    "format": "normalizedWisconsinTurnoutCsv",
-    "sourceId": "wi-2024-turnout-partial-csv",
-    "coverageStatus": "partial",
-    "coveredCounties": ["Dane", "Jefferson", "Milwaukee", "Oneida"],
-    "missingCountyCount": 68,
-    "denominatorType": "registered_voters",
-    "warningRequiredWhen": ["preElectionDay", "unknown"],
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "wi-2024-eac-turnout-csv",
+    "coverageStatus": "loaded",
+    "coveredCounties": [],
+    "missingCountyCount": 0,
+    "denominatorType": "registeredVoters",
+    "registrationDenominatorTiming": "eacReported",
     "expected": {
-      "rowCount": 412,
-      "wardLevelRows": 411,
-      "countyLevelRows": 1,
-      "warningRows": 411,
-      "partialBallotsCastTotal": 691073,
-      "partialRegisteredVotersTotal": 769431
+      "rowCount": 1851,
+      "ballotsCast": 3434185,
+      "registeredVoters": 3933068
     },
-    "notes": "Partial Wisconsin turnout coverage from official local sources. WEC statewide ward-by-ward results do not include registered-voter denominator fields."
+    "notes": "Statewide Wisconsin turnout coverage uses official EAC 2024 EAVS V2 jurisdiction-level fallback rows. A1a is total registration and F1a is total voters; this is not the same denominator/source family as the WEC presidential contest vote total."
   },
   "expected": {
     "jurisdictions": 72,
     "resultRows": 72,
-    "sources": 3,
+    "sources": 4,
     "stateTotal": 3422918,
     "trump": 1697626,
     "harris": 1668229,
     "other": 57063,
     "reviewRows": 3503,
-    "turnoutRows": 412
+    "turnoutRows": 1851
   },
   "capabilities": {
     "sourcePlanner": true,

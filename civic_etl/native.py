@@ -62,7 +62,7 @@ def _row_value(row: list[Any], columns: dict[str, int], name: str) -> Any:
 
 def _county_name(raw: Any) -> str:
     value = str(raw or "").strip()
-    if not value or value.lower() in {"total", "percentage"}:
+    if not value or value.lower() in {"multiple counties", "total", "percentage"}:
         return ""
     titled = value.title() if value.isupper() else value
     return titled if re.search(r"\bcounty\b$", titled, re.IGNORECASE) else f"{titled} County"
@@ -473,6 +473,9 @@ def _wisconsin_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig])
     section = config.raw.get("turnout")
     if not section:
         return [], {"nativeTurnoutRows": 0}
+
+    if section.get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        return _normalized_turnout_rows(config, sources)
 
     source = sources[section["sourceId"]]
     required = {

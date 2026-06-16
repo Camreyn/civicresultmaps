@@ -104,8 +104,20 @@ const aliases = {
     "a1a",
     "a1",
   ],
-  state: ["state", "stateabbreviation", "statecode"],
+  state: ["state", "stateabbreviation", "stateabbr", "statecode", "statefull"],
 };
+
+function extractCounty(jurisdictionName) {
+  if (/\s-\sMULTIPLE COUNTIES$/i.test(String(jurisdictionName || ""))) {
+    return "MULTIPLE COUNTIES";
+  }
+
+  const match = String(jurisdictionName || "").match(/\s-\s(.+?\s+COUNTY)$/i);
+  if (!match) {
+    return "";
+  }
+  return match[1].replace(/\s+/g, " ").trim();
+}
 
 function normalizeEacTurnoutRows(inputRows, options = {}) {
   if (inputRows.length < 2) {
@@ -115,10 +127,18 @@ function normalizeEacTurnoutRows(inputRows, options = {}) {
   const header = inputRows[0].map(cleanKey);
   return inputRows.slice(1).flatMap((values) => {
     const row = Object.fromEntries(header.map((name, index) => [name, values[index] ?? ""]));
-    const state = String(options.state || firstValue(row, aliases.state)).trim().toUpperCase();
+    const rowState = String(firstValue(row, aliases.state)).trim().toUpperCase();
+    if (options.state && rowState && rowState !== options.state) {
+      return [];
+    }
+
+    const state = String(options.state || rowState).trim().toUpperCase();
     const jurisdictionName = String(firstValue(row, aliases.jurisdiction) || state).trim();
     const ballotsCast = toInt(firstValue(row, aliases.ballotsCast));
     const registeredVoters = toInt(firstValue(row, aliases.registeredVoters));
+    const ballotsNumber = Number(ballotsCast);
+    const registeredNumber = Number(registeredVoters);
+    const hasPositiveDenominator = Number.isFinite(registeredNumber) && registeredNumber > 0;
     if (!state || !jurisdictionName || !ballotsCast) {
       return [];
     }
@@ -126,29 +146,32 @@ function normalizeEacTurnoutRows(inputRows, options = {}) {
     return [
       {
         ballots_cast: ballotsCast,
+        county: extractCounty(jurisdictionName),
         denominator_note: options.denominatorNote || "EAC-reported registered-voter denominator",
         denominator_timing: "eacReported",
         denominator_type: "registeredVoters",
         election_year: String(options.year || 2024),
+        jurisdiction_code: row.fipscode || "",
         jurisdiction_name: jurisdictionName,
         level: options.level || (jurisdictionName === state ? "state" : "jurisdiction"),
+        local_unit: jurisdictionName,
         registered_voters: registeredVoters,
-        source_status: "candidate",
+        source_status: options.sourceStatus || "candidate",
         source_title: options.sourceTitle || "U.S. EAC Election Administration and Voting Survey",
         source_url: options.sourceUrl || EAC_SOURCE_URL,
         state,
         turnout_pct:
-          ballotsCast && registeredVoters
-            ? ((Number(ballotsCast) / Number(registeredVoters)) * 100).toFixed(4)
+          Number.isFinite(ballotsNumber) && hasPositiveDenominator
+            ? ((ballotsNumber / registeredNumber) * 100).toFixed(4)
             : "",
-        warning_required: registeredVoters ? "false" : "true",
+        warning_required: hasPositiveDenominator ? "false" : "true",
       },
     ];
   });
 }
 
 function parseArgs(argv) {
-  const args = { inFile: "", outFile: "", state: "", year: 2024 };
+  const args = { inFile: "", outFile: "", sourceStatus: "", state: "", year: 2024 };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === "--in") {
@@ -157,6 +180,8 @@ function parseArgs(argv) {
       args.outFile = argv[++index];
     } else if (arg === "--state") {
       args.state = argv[++index]?.toUpperCase() ?? "";
+    } else if (arg === "--source-status") {
+      args.sourceStatus = argv[++index] ?? "";
     } else if (arg === "--year") {
       args.year = Number(argv[++index]);
     } else {
@@ -175,7 +200,10 @@ function normalizeEacTurnoutFile(options) {
   const columns = [
     "state",
     "election_year",
+    "jurisdiction_code",
     "jurisdiction_name",
+    "county",
+    "local_unit",
     "level",
     "ballots_cast",
     "registered_voters",

@@ -108,21 +108,22 @@
       "name": "Wisconsin",
       "year": 2024,
       "priority": 3,
-      "status": "partial",
-      "sourceLevel": "mixed",
-      "denominatorType": "registered_voters",
-      "denominatorTiming": "mixedFinalPreElectionDayUnknown",
-      "sourceTitle": "Wisconsin partial official local turnout package",
-      "sourceUrl": "https://github.com/Camreyn/wisconsin-2024-election-mapper/blob/main/data/wi-2024-turnout-source-package.json",
-      "localFile": "data/wi-2024-turnout-partial.csv",
-      "parser": "normalizedWisconsinTurnoutCsv",
-      "expectedTurnoutRows": 412,
+      "status": "loaded",
+      "sourceLevel": "local_jurisdiction",
+      "denominatorType": "registeredVoters",
+      "denominatorTiming": "eacReported",
+      "sourceTitle": "U.S. EAC 2024 EAVS V2 Wisconsin jurisdiction turnout fallback",
+      "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+      "localFile": "data/wi-2024-eac-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "expectedTurnoutRows": 1851,
       "coverage": {
-        "coveredCounties": ["Dane", "Jefferson", "Milwaukee", "Oneida"],
-        "missingCountyCount": 68
+        "jurisdictionRows": 1851,
+        "missingJurisdictionCount": 0,
+        "supplementalLocalPartialFile": "data/wi-2024-turnout-partial.csv"
       },
-      "statusNote": "Partial official local turnout package is loaded; statewide denominator coverage is still missing.",
-      "nextAction": "Collect remaining official WEC/county registered-voter denominator sources."
+      "statusNote": "Statewide Wisconsin turnout fallback is loaded from official EAC 2024 EAVS V2 jurisdiction rows; WEC presidential results remain the vote-result source.",
+      "nextAction": "Prefer WEC/county ward-level denominator artifacts if a statewide official Wisconsin denominator file becomes available."
     },
     {
       "state": "MN",
@@ -376,70 +377,39 @@
       "caveats": [
         "Turnout is county-level, not precinct-level."
       ]
-    }
-  ],
-  "partialPackages": [
+    },
     {
       "state": "WI",
       "name": "Wisconsin",
-      "authority": "Wisconsin county and municipal election offices; Wisconsin Elections Commission ward results provide result/review rows but not turnout denominators",
-      "sourceLevel": "mixed",
-      "coverageStatus": "partial",
-      "coveredCounties": ["Dane", "Jefferson", "Milwaukee", "Oneida"],
-      "missingCountyCount": 68,
+      "authority": "U.S. Election Assistance Commission; Wisconsin Elections Commission ward results provide result/review rows",
+      "sourceLevel": "local_jurisdiction",
       "turnoutSource": {
-        "sourceTitle": "Wisconsin partial official local turnout package",
-        "sourceUrl": "https://github.com/Camreyn/wisconsin-2024-election-mapper/blob/main/data/wi-2024-turnout-source-package.json",
-        "localFile": "data/wi-2024-turnout-partial.csv",
-        "parser": "normalizedWisconsinTurnoutCsv"
+        "sourceTitle": "U.S. EAC 2024 EAVS V2 Wisconsin jurisdiction turnout fallback",
+        "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+        "localFile": "data/wi-2024-eac-turnout.csv",
+        "parser": "normalizedTurnoutCsv"
       },
       "denominatorSource": {
-        "sourceTitle": "Wisconsin partial local registered-voter denominator fields",
-        "sourceUrl": "https://github.com/Camreyn/wisconsin-2024-election-mapper/blob/main/data/wi-2024-turnout-source-package.json",
-        "localFile": "data/wi-2024-turnout-source-package.json",
-        "parser": "normalizedWisconsinTurnoutCsv",
-        "denominatorType": "registered_voters",
-        "denominatorTiming": "mixedFinalPreElectionDayUnknown"
+        "sourceTitle": "EAC 2024 EAVS A1a Total Reg field",
+        "sourceUrl": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
+        "localFile": "data/eac-2024-codebook.xlsx",
+        "parser": "eacCodebook",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "eacReported"
       },
       "expected": {
-        "turnoutRows": 412,
-        "warningRows": 411,
-        "partialBallotsCastTotal": 691073,
-        "partialRegisteredVotersTotal": 769431
+        "turnoutRows": 1851,
+        "registeredVoters": 3933068,
+        "ballotsCast": 3434185
       },
       "caveats": [
-        "This is not statewide Wisconsin turnout coverage.",
-        "Dane currently contributes one county-level row, not ward-level denominator rows.",
-        "Milwaukee and Oneida denominators are pre-Election-Day or explicitly dated before Election Day.",
-        "Jefferson denominator timing is unknown.",
-        "Wisconsin allows Election Day registration, so pre-Election-Day denominators can understate final registration and inflate apparent turnout rates."
+        "EAC F1a Total Voters is not identical to WEC presidential contest total votes.",
+        "WEC remains the official source for Wisconsin presidential result rows; EAC is the statewide turnout fallback."
       ]
     }
   ],
-  "missingRequests": [
-    {
-      "state": "WI",
-      "name": "Wisconsin",
-      "priority": 1,
-      "needed": "Remaining official registered-voter denominator data for statewide Wisconsin coverage.",
-      "preferredLevel": "ward",
-      "acceptableLevel": "county with caveats",
-      "requiredFields": [
-        "sourceTitle",
-        "sourceUrl",
-        "localFile",
-        "reportingLevel",
-        "ballotsCastField",
-        "denominatorField",
-        "denominatorTiming",
-        "joinKeys",
-        "expectedRowCount",
-        "statewideDenominatorTotal",
-        "caveats"
-      ],
-      "notes": "Wisconsin native presidential results and review rows are already loaded from data/wi-2024-ward-by-ward-federal-state.xlsx. A partial local turnout package now covers Milwaukee, Dane, Jefferson, and Oneida; the remaining counties still need official turnout denominator sources."
-    }
-  ],
+  "partialPackages": [],
+  "missingRequests": [],
   "remainingStatesNeedingPackages": [
     "AK",
     "AL",

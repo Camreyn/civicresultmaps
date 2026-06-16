@@ -133,7 +133,7 @@ function missingNote(row) {
   }
 
   if (row.state === "WI") {
-    return "Need official Wisconsin registered-voter denominator data. Current WEC workbook supports ward result/review rows, but turnout screening is disabled because no denominator source is mapped.";
+    return "Wisconsin uses official EAC 2024 EAVS V2 jurisdiction turnout fallback rows because the WEC ward results workbook does not include registered-voter denominator fields.";
   }
 
   if (row.status === "configured_not_loaded") {
