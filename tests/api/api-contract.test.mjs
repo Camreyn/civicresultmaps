@@ -170,3 +170,15 @@ test("native source package handoff is validated in CI", () => {
   assert.match(validator, /native-import-source-packages\.json/);
   assert.match(validator, /expected trump \+ harris \+ other does not equal stateTotal/);
 });
+
+test("turnout collection inventory is available outside the app", () => {
+  const packageScripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
+  const inventoryScript = readFileSync("scripts/report-turnout-inventory.mjs", "utf8");
+  const inventoryDoc = readFileSync("docs/turnout-collection-inventory.md", "utf8");
+
+  assert.match(packageScripts["turnout:inventory"], /report-turnout-inventory/);
+  assert.match(inventoryScript, /needs_native_turnout_package/);
+  assert.match(inventoryScript, /native_config_missing_turnout/);
+  assert.match(inventoryDoc, /Loaded Turnout/);
+  assert.match(inventoryDoc, /Wisconsin-Specific Request/);
+});
