@@ -116,12 +116,50 @@
       ]
     }
   ],
+  "partialPackages": [
+    {
+      "state": "WI",
+      "name": "Wisconsin",
+      "authority": "Wisconsin county and municipal election offices; Wisconsin Elections Commission ward results provide result/review rows but not turnout denominators",
+      "sourceLevel": "mixed",
+      "coverageStatus": "partial",
+      "coveredCounties": ["Dane", "Jefferson", "Milwaukee", "Oneida"],
+      "missingCountyCount": 68,
+      "turnoutSource": {
+        "sourceTitle": "Wisconsin partial official local turnout package",
+        "sourceUrl": "https://github.com/Camreyn/wisconsin-2024-election-mapper/blob/main/data/wi-2024-turnout-source-package.json",
+        "localFile": "data/wi-2024-turnout-partial.csv",
+        "parser": "normalizedWisconsinTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Wisconsin partial local registered-voter denominator fields",
+        "sourceUrl": "https://github.com/Camreyn/wisconsin-2024-election-mapper/blob/main/data/wi-2024-turnout-source-package.json",
+        "localFile": "data/wi-2024-turnout-source-package.json",
+        "parser": "normalizedWisconsinTurnoutCsv",
+        "denominatorType": "registered_voters",
+        "denominatorTiming": "mixedFinalPreElectionDayUnknown"
+      },
+      "expected": {
+        "turnoutRows": 412,
+        "warningRows": 411,
+        "partialBallotsCastTotal": 691073,
+        "partialRegisteredVotersTotal": 769431
+      },
+      "caveats": [
+        "This is not statewide Wisconsin turnout coverage.",
+        "Dane currently contributes one county-level row, not ward-level denominator rows.",
+        "Milwaukee and Oneida denominators are pre-Election-Day or explicitly dated before Election Day.",
+        "Jefferson denominator timing is unknown.",
+        "Wisconsin allows Election Day registration, so pre-Election-Day denominators can understate final registration and inflate apparent turnout rates."
+      ]
+    }
+  ],
   "missingRequests": [
     {
       "state": "WI",
       "name": "Wisconsin",
       "priority": 1,
-      "needed": "Official registered-voter denominator data for the existing WEC ward-by-ward workbook.",
+      "needed": "Remaining official registered-voter denominator data for statewide Wisconsin coverage.",
       "preferredLevel": "ward",
       "acceptableLevel": "county with caveats",
       "requiredFields": [
@@ -137,7 +175,7 @@
         "statewideDenominatorTotal",
         "caveats"
       ],
-      "notes": "Wisconsin native presidential results and review rows are already loaded from data/wi-2024-ward-by-ward-federal-state.xlsx. Turnout remains disabled until a denominator source is mapped."
+      "notes": "Wisconsin native presidential results and review rows are already loaded from data/wi-2024-ward-by-ward-federal-state.xlsx. A partial local turnout package now covers Milwaukee, Dane, Jefferson, and Oneida; the remaining counties still need official turnout denominator sources."
     }
   ],
   "remainingStatesNeedingPackages": [

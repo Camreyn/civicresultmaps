@@ -385,6 +385,94 @@ def _wisconsin_ward_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
     return result_rows, review_rows, metrics
 
 
+def _truthy(value: Any) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes", "y"}
+
+
+def _wisconsin_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("turnout")
+    if not section:
+        return [], {"nativeTurnoutRows": 0}
+
+    source = sources[section["sourceId"]]
+    required = {
+        "state",
+        "county",
+        "municipality",
+        "ward",
+        "source_level",
+        "ballots_cast",
+        "registered_voters",
+        "registration_denominator_timing",
+        "denominator_type",
+        "coverage_status",
+        "warning_required",
+        "source_url",
+    }
+
+    output: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        missing = sorted(required.difference(reader.fieldnames or []))
+        if missing:
+            raise ValueError(f"Wisconsin turnout CSV missing columns: {', '.join(missing)}")
+
+        for index, row in enumerate(reader, start=2):
+            if str(row.get("state", "")).strip().upper() != config.code:
+                raise ValueError(f"Wisconsin turnout row {index} has wrong state: {row.get('state')!r}")
+
+            county = _county_name(row.get("county"))
+            source_level = str(row.get("source_level") or "local").strip().lower()
+            municipality = str(row.get("municipality") or "").strip()
+            ward = str(row.get("ward") or "").strip()
+            local_unit = " - ".join(part for part in [municipality, ward] if part) or "County total"
+            ballots = int_text(row.get("ballots_cast"))
+            registered = int_text(row.get("registered_voters"))
+            timing = str(row.get("registration_denominator_timing") or "unknown").strip()
+            warning_required = _truthy(row.get("warning_required"))
+
+            output.append(
+                {
+                    "county": county,
+                    "localUnit": local_unit,
+                    "level": source_level,
+                    "ballotsCast": ballots,
+                    "registeredVoters": registered,
+                    "turnoutPct": pct(ballots, registered) if registered else None,
+                    "denominatorType": row.get("denominator_type") or section.get("denominatorType", "registered_voters"),
+                    "registrationDenominatorTiming": timing,
+                    "warningRequired": warning_required,
+                    "sourceId": source.id,
+                }
+            )
+
+    expected = section.get("expected", {})
+    metrics = {
+        "nativeTurnoutRows": len(output),
+        "nativeTurnoutCoverageStatus": section.get("coverageStatus", "partial"),
+        "nativeTurnoutCoveredCounties": len({row["county"] for row in output}),
+        "nativeTurnoutMissingCountyCount": section.get("missingCountyCount"),
+        "nativeTurnoutWarningRows": sum(1 for row in output if row["warningRequired"]),
+        "nativeRegisteredVoters": sum(row["registeredVoters"] for row in output),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in output),
+    }
+    expected_checks = {
+        "rowCount": metrics["nativeTurnoutRows"],
+        "warningRows": metrics["nativeTurnoutWarningRows"],
+        "partialBallotsCastTotal": metrics["nativeBallotsCast"],
+        "partialRegisteredVotersTotal": metrics["nativeRegisteredVoters"],
+    }
+    mismatches = {
+        key: {"actual": actual, "expected": expected[key]}
+        for key, actual in expected_checks.items()
+        if expected.get(key) is not None and actual != expected[key]
+    }
+    if mismatches:
+        raise ValueError(f"Wisconsin partial turnout validation failed: {mismatches}")
+
+    return output, metrics
+
+
 def _minnesota_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -1004,12 +1092,14 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "WI" and config.raw.get("certifiedResults", {}).get("format") == "wisconsinWardByWardXlsx":
         sources = _source_map(config)
         result_rows, review_rows, metrics = _wisconsin_ward_rows(config, sources)
+        turnout_rows, turnout_metrics = _wisconsin_turnout_rows(config, sources)
+        metrics = {**metrics, **turnout_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeWisconsinWardByWardXlsx",
             "resultRows": result_rows,
             "reviewRows": review_rows,
-            "turnoutRows": [],
+            "turnoutRows": turnout_rows,
             "metrics": metrics,
         }
 

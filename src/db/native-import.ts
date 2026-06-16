@@ -36,6 +36,7 @@ type NativeReviewRow = {
 type NativeTurnoutRow = {
   county: string;
   localUnit: string;
+  level?: string;
   ballotsCast: number;
   registeredVoters?: number;
   turnoutPct?: number | null;
@@ -378,7 +379,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${electionYear},
         ${jurisdictionCode(stateCode, `${row.county}-${localUnit}`)},
         ${[row.county, localUnit].filter(Boolean).join(" / ")},
-        'local',
+        ${row.level ?? "local"},
         ${row.ballotsCast},
         ${numberOrNull(row.registeredVoters)},
         ${numberOrNull(row.turnoutPct)},

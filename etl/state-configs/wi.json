@@ -26,6 +26,17 @@
       "timestampBasis": "Local county GeoJSON artifact used by the legacy map.",
       "confidence": "County geometry is used for map joins only; vote totals are sourced from the WEC workbook.",
       "status": "loaded"
+    },
+    {
+      "id": "wi-2024-turnout-partial-csv",
+      "category": "Partial official local turnout package",
+      "url": "https://github.com/Camreyn/wisconsin-2024-election-mapper/blob/main/data/wi-2024-turnout-source-package.json",
+      "localFile": "data/wi-2024-turnout-partial.csv",
+      "parser": "normalizedWisconsinTurnoutCsv",
+      "authority": "Wisconsin county and municipal election offices",
+      "timestampBasis": "Normalized package assembled from official local turnout sources for Milwaukee, Dane, Jefferson, and Oneida.",
+      "confidence": "Partial official local turnout package. Not statewide complete; warning-gate rows with pre-Election-Day or unknown denominators.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -71,25 +82,43 @@
     "sheetName": "Sheet2",
     "candidateHeaderRow": 10,
     "dataStartRow": 11,
-    "warning": "Wisconsin native review rows use ward-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Turnout screening remains disabled until a registered-voter denominator source is mapped."
+    "warning": "Wisconsin native review rows use ward-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Turnout rows are currently partial local coverage and must not be interpreted as statewide complete."
+  },
+  "turnout": {
+    "format": "normalizedWisconsinTurnoutCsv",
+    "sourceId": "wi-2024-turnout-partial-csv",
+    "coverageStatus": "partial",
+    "coveredCounties": ["Dane", "Jefferson", "Milwaukee", "Oneida"],
+    "missingCountyCount": 68,
+    "denominatorType": "registered_voters",
+    "warningRequiredWhen": ["preElectionDay", "unknown"],
+    "expected": {
+      "rowCount": 412,
+      "wardLevelRows": 411,
+      "countyLevelRows": 1,
+      "warningRows": 411,
+      "partialBallotsCastTotal": 691073,
+      "partialRegisteredVotersTotal": 769431
+    },
+    "notes": "Partial Wisconsin turnout coverage from official local sources. WEC statewide ward-by-ward results do not include registered-voter denominator fields."
   },
   "expected": {
     "jurisdictions": 72,
     "resultRows": 72,
-    "sources": 2,
+    "sources": 3,
     "stateTotal": 3422918,
     "trump": 1697626,
     "harris": 1668229,
     "other": 57063,
     "reviewRows": 3503,
-    "turnoutRows": 0
+    "turnoutRows": 412
   },
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
     "map": true,
     "reviewGraphs": true,
-    "turnout": false,
+    "turnout": true,
     "historicalBaseline": true
   }
 }

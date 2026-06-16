@@ -47,6 +47,10 @@ if (!Array.isArray(packages.loadedPackages)) {
   fail("GLOBAL", "loadedPackages must be an array");
 }
 
+if (packages.partialPackages !== undefined && !Array.isArray(packages.partialPackages)) {
+  fail("GLOBAL", "partialPackages must be an array when present");
+}
+
 if (!Array.isArray(packages.missingRequests)) {
   fail("GLOBAL", "missingRequests must be an array");
 }
@@ -57,17 +61,19 @@ if (!Array.isArray(packages.remainingStatesNeedingPackages)) {
 
 const seenStates = new Set();
 
-for (const sourcePackage of packages.loadedPackages ?? []) {
+function validateTurnoutPackage(sourcePackage, collectionName) {
   const state = sourcePackage.state;
   if (!/^[A-Z]{2}$/.test(state ?? "")) {
-    fail(state ?? "UNKNOWN", "loaded package state must be a two-letter code");
-    continue;
+    fail(state ?? "UNKNOWN", `${collectionName} state must be a two-letter code`);
+    return;
   }
 
-  if (seenStates.has(state)) {
+  if (collectionName === "loaded package" && seenStates.has(state)) {
     fail(state, "duplicate loaded turnout package");
   }
-  seenStates.add(state);
+  if (collectionName === "loaded package") {
+    seenStates.add(state);
+  }
 
   for (const field of ["name", "authority", "sourceLevel"]) {
     if (!sourcePackage[field]) {
@@ -104,6 +110,33 @@ for (const sourcePackage of packages.loadedPackages ?? []) {
 
   if (!Array.isArray(sourcePackage.caveats)) {
     warn(state, "caveats should be an array");
+  }
+}
+
+for (const sourcePackage of packages.loadedPackages ?? []) {
+  validateTurnoutPackage(sourcePackage, "loaded package");
+}
+
+const partialSeenStates = new Set();
+
+for (const sourcePackage of packages.partialPackages ?? []) {
+  const state = sourcePackage.state;
+  if (partialSeenStates.has(state)) {
+    fail(state, "duplicate partial turnout package");
+  }
+  partialSeenStates.add(state);
+  validateTurnoutPackage(sourcePackage, "partial package");
+
+  if (sourcePackage.coverageStatus !== "partial") {
+    fail(state, "partial package coverageStatus must be partial");
+  }
+
+  if (!Array.isArray(sourcePackage.coveredCounties) || sourcePackage.coveredCounties.length === 0) {
+    fail(state, "partial package coveredCounties must list covered counties");
+  }
+
+  if (!Number.isInteger(sourcePackage.missingCountyCount) || sourcePackage.missingCountyCount <= 0) {
+    fail(state, "partial package missingCountyCount must be a positive integer");
   }
 }
 
@@ -145,6 +178,7 @@ console.log(
   JSON.stringify(
     {
       checkedLoadedPackages: packages.loadedPackages?.length ?? 0,
+      checkedPartialPackages: packages.partialPackages?.length ?? 0,
       checkedMissingRequests: packages.missingRequests?.length ?? 0,
       checkedRemainingStates: packages.remainingStatesNeedingPackages?.length ?? 0,
       failures,
