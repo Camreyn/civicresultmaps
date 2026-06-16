@@ -14,7 +14,7 @@ These states have county geometry, official presidential result artifacts, local
 
 ## Minnesota
 
-- Config: `data/state-configs/mn.json`
+- Config: `etl/state-configs/mn.json`
 - Reference bundle: `data/mn-app-data.js`
 - Authority: Minnesota Secretary of State
 - County results source: `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx`
@@ -41,7 +41,7 @@ Caveat: precinct boundary GeoJSON is not included. County map joins are ready.
 
 ## Michigan
 
-- Config: `data/state-configs/mi.json`
+- Config: `etl/state-configs/mi.json`
 - Reference bundle: `data/mi-app-data.js`
 - Authority: Michigan Secretary of State
 - County results source: `data/mi-2024-general-election-results.txt`
@@ -68,7 +68,7 @@ Caveats: MVIC live download endpoints are browser-protected, but the official do
 
 ## Pennsylvania
 
-- Config: `data/state-configs/pa.json`
+- Config: `etl/state-configs/pa.json`
 - Reference bundle: `data/pa-app-data.js`
 - Authority: Pennsylvania Department of State
 - County results source: `data/pa-2024-general-election-returns-precinct.txt`

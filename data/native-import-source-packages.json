@@ -13,7 +13,7 @@
       "priority": 1,
       "nativeReadiness": "complete_county_map_precinct_review_turnout",
       "authority": "Minnesota Secretary of State",
-      "configFile": "data/state-configs/mn.json",
+      "configFile": "etl/state-configs/mn.json",
       "legacyReferenceBundle": "data/mn-app-data.js",
       "artifacts": {
         "presidentialCountyResults": {
@@ -74,7 +74,7 @@
       "priority": 2,
       "nativeReadiness": "complete_county_map_precinct_review_county_turnout",
       "authority": "Michigan Secretary of State",
-      "configFile": "data/state-configs/mi.json",
+      "configFile": "etl/state-configs/mi.json",
       "legacyReferenceBundle": "data/mi-app-data.js",
       "artifacts": {
         "presidentialCountyResults": {
@@ -136,7 +136,7 @@
       "priority": 3,
       "nativeReadiness": "complete_county_map_precinct_review_county_turnout",
       "authority": "Pennsylvania Department of State",
-      "configFile": "data/state-configs/pa.json",
+      "configFile": "etl/state-configs/pa.json",
       "legacyReferenceBundle": "data/pa-app-data.js",
       "artifacts": {
         "presidentialCountyResults": {

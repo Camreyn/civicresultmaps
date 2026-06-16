@@ -155,3 +155,14 @@ test("production domains force HTTPS through proxy", () => {
   assert.match(proxy, /x-forwarded-proto/);
   assert.match(proxy, /NextResponse\.redirect/);
 });
+
+test("native source package handoff is validated in CI", () => {
+  const packageScripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
+  const workflow = readFileSync(".github/workflows/ci.yml", "utf8");
+  const validator = readFileSync("scripts/validate-native-source-packages.mjs", "utf8");
+
+  assert.match(packageScripts["validate:source-packages"], /validate-native-source-packages/);
+  assert.match(workflow, /validate:source-packages/);
+  assert.match(validator, /native-import-source-packages\.json/);
+  assert.match(validator, /expected trump \+ harris \+ other does not equal stateTotal/);
+});
