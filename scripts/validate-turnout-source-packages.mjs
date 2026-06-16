@@ -59,6 +59,18 @@ if (!Array.isArray(packages.remainingStatesNeedingPackages)) {
   fail("GLOBAL", "remainingStatesNeedingPackages must be an array");
 }
 
+if (!Array.isArray(packages.stateYearStatuses)) {
+  fail("GLOBAL", "stateYearStatuses must be an array");
+}
+
+if (!Array.isArray(packages.fallbackSources)) {
+  fail("GLOBAL", "fallbackSources must be an array");
+}
+
+if (!Array.isArray(packages.normalizedTurnoutContract?.requiredColumns)) {
+  fail("GLOBAL", "normalizedTurnoutContract.requiredColumns must be an array");
+}
+
 const seenStates = new Set();
 
 function validateTurnoutPackage(sourcePackage, collectionName) {
@@ -171,6 +183,70 @@ for (const state of packages.remainingStatesNeedingPackages ?? []) {
 
   if (seenStates.has(state)) {
     fail(state, "state cannot be loaded and remaining");
+  }
+}
+
+const allowedStatuses = new Set(["loaded", "partial", "candidate", "needs_data", "blocked", "documented_exclusion"]);
+const statusKeys = new Set();
+
+for (const source of packages.fallbackSources ?? []) {
+  const id = source.id ?? "UNKNOWN";
+  for (const field of ["sourceTitle", "sourceUrl", "parser", "authority", "status"]) {
+    if (!source[field]) {
+      fail(id, `fallback source ${field} is required`);
+    }
+  }
+  assertHttpsUrl(id, "fallbackSource.sourceUrl", source.sourceUrl);
+  if (!Array.isArray(source.years) || source.years.length === 0) {
+    fail(id, "fallback source years must be a non-empty array");
+  }
+  if (!allowedStatuses.has(source.status)) {
+    fail(id, `fallback source status is invalid: ${source.status}`);
+  }
+}
+
+for (const row of packages.stateYearStatuses ?? []) {
+  const state = row.state;
+  const key = `${state}-${row.year}`;
+  if (!/^[A-Z]{2}$/.test(state ?? "")) {
+    fail(state ?? "UNKNOWN", "stateYearStatuses entries must use two-letter state codes");
+    continue;
+  }
+  if (statusKeys.has(key)) {
+    fail(state, `duplicate state/year turnout status: ${key}`);
+  }
+  statusKeys.add(key);
+  if (!Number.isInteger(row.year) || row.year < 1788) {
+    fail(state, "stateYearStatuses year must be an integer election year");
+  }
+  if (!Number.isInteger(row.priority) || row.priority <= 0) {
+    fail(state, "stateYearStatuses priority must be a positive integer");
+  }
+  if (!allowedStatuses.has(row.status)) {
+    fail(state, `stateYearStatuses status is invalid: ${row.status}`);
+  }
+  for (const field of ["name", "sourceLevel", "denominatorType", "denominatorTiming", "sourceTitle", "sourceUrl", "parser", "statusNote", "nextAction"]) {
+    if (!row[field]) {
+      fail(state, `stateYearStatuses ${field} is required`);
+    }
+  }
+  assertHttpsUrl(state, "stateYearStatuses.sourceUrl", row.sourceUrl);
+  if (["loaded", "partial"].includes(row.status)) {
+    assertLocalFile(state, "stateYearStatuses", row.localFile);
+    if (!Number.isInteger(row.expectedTurnoutRows) || row.expectedTurnoutRows <= 0) {
+      fail(state, "loaded/partial stateYearStatuses expectedTurnoutRows must be a positive integer");
+    }
+  }
+}
+
+const states2024 = new Set((packages.stateYearStatuses ?? []).filter((row) => row.year === 2024).map((row) => row.state));
+if (states2024.size !== 50) {
+  fail("GLOBAL", `stateYearStatuses must include all 50 states for 2024; found ${states2024.size}`);
+}
+
+for (const requiredColumn of ["state", "election_year", "jurisdiction_name", "level", "ballots_cast", "registered_voters", "denominator_note", "warning_required", "source_url"]) {
+  if (!packages.normalizedTurnoutContract?.requiredColumns?.includes(requiredColumn)) {
+    fail("GLOBAL", `normalized turnout contract must include ${requiredColumn}`);
   }
 }
 

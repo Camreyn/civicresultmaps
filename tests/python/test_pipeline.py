@@ -287,6 +287,83 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 2)
         self.assertEqual(artifact["native"]["resultRows"][0]["jurisdictionName"], "Alpha County")
 
+    def test_normalized_turnout_only_staging_parses_csv_contract(self):
+        tmp = self.fixture_dir("normalized-turnout")
+        csv_path = tmp / "az-turnout.csv"
+        config_path = tmp / "az.json"
+        csv_path.write_text(
+            "\n".join(
+                [
+                    "state,election_year,jurisdiction_name,level,ballots_cast,registered_voters,denominator_note,warning_required,source_url",
+                    "AZ,2024,Maricopa County,county,200,250,EAC-reported registered-voter denominator,false,https://www.eac.gov/research-and-data/studies-and-reports",
+                    "AZ,2024,Pima County,county,100,,Missing registered-voter denominator,true,https://www.eac.gov/research-and-data/studies-and-reports",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        config_path.write_text(
+            json.dumps(
+                {
+                    "code": "AZ",
+                    "name": "Arizona",
+                    "authority": "Arizona Secretary of State",
+                    "electionYear": 2024,
+                    "office": "President",
+                    "turnoutOnly": True,
+                    "sources": [
+                        {
+                            "id": "az-normalized-turnout",
+                            "category": "Normalized turnout rows",
+                            "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+                            "localFile": csv_path.as_posix(),
+                            "parser": "normalizedTurnoutCsv",
+                            "authority": "U.S. Election Assistance Commission",
+                            "timestampBasis": "Fixture",
+                            "confidence": "Fixture",
+                            "status": "loaded",
+                        }
+                    ],
+                    "turnout": {
+                        "format": "normalizedTurnoutCsv",
+                        "sourceId": "az-normalized-turnout",
+                        "sourceLevel": "county",
+                        "expected": {
+                            "rowCount": 2,
+                            "ballotsCast": 300,
+                            "registeredVoters": 250,
+                        },
+                    },
+                    "expected": {
+                        "jurisdictions": 0,
+                        "resultRows": 0,
+                        "sources": 1,
+                        "reviewRows": 0,
+                        "turnoutRows": 2,
+                    },
+                    "capabilities": {
+                        "sourcePlanner": True,
+                        "certifiedResults": False,
+                        "map": False,
+                        "reviewGraphs": False,
+                        "turnout": True,
+                        "historicalBaseline": False,
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        config = load_config(config_path)
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 2)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 300)
+        self.assertEqual(artifact["native"]["turnoutRows"][0]["turnoutPct"], 80)
+        self.assertTrue(artifact["native"]["turnoutRows"][1]["warningRequired"])
+
     def test_staging_artifact_blocks_production_write(self):
         config = load_config("etl/state-configs/wi.json")
         report = validate_config(config)

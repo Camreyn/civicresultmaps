@@ -24,6 +24,7 @@ test("public API route contracts exist", () => {
     "src/app/api/completeness/route.ts",
     "src/app/api/review-rows/route.ts",
     "src/app/api/turnout/route.ts",
+    "src/app/api/turnout-sources/route.ts",
     "src/app/api/historical-baselines/route.ts",
     "src/app/api/native-source-packages/route.ts",
   ];
@@ -180,12 +181,18 @@ test("turnout collection inventory is available outside the app", () => {
   const workflow = readFileSync(".github/workflows/ci.yml", "utf8");
 
   assert.match(packageScripts["turnout:inventory"], /report-turnout-inventory/);
+  assert.match(packageScripts["turnout:collect"], /collect-turnout-sources/);
+  assert.match(packageScripts["turnout:normalize:eac"], /normalize-eac-turnout/);
   assert.match(packageScripts["validate:turnout-packages"], /validate-turnout-source-packages/);
   assert.match(workflow, /validate:turnout-packages/);
   assert.match(inventoryScript, /needs_native_turnout_package/);
   assert.match(inventoryScript, /native_config_missing_turnout/);
+  assert.match(inventoryScript, /registryStatus/);
   assert.match(validator, /turnout-source-packages\.json/);
   assert.match(turnoutPackages, /loadedPackages/);
+  assert.match(turnoutPackages, /stateYearStatuses/);
+  assert.match(turnoutPackages, /normalizedTurnoutContract/);
+  assert.match(turnoutPackages, /verified-voting-verifier-context/);
   assert.match(turnoutPackages, /remainingStatesNeedingPackages/);
   assert.match(inventoryDoc, /Loaded Turnout/);
   assert.match(inventoryDoc, /Wisconsin-Specific Request/);

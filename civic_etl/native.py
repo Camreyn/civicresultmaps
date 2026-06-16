@@ -389,6 +389,86 @@ def _truthy(value: Any) -> bool:
     return str(value or "").strip().lower() in {"1", "true", "yes", "y"}
 
 
+def _normalized_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["turnout"]
+    source = sources[section["sourceId"]]
+    required = {
+        "state",
+        "election_year",
+        "jurisdiction_name",
+        "level",
+        "ballots_cast",
+        "registered_voters",
+        "denominator_note",
+        "warning_required",
+        "source_url",
+    }
+
+    output: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = set(reader.fieldnames or [])
+        missing = sorted(required.difference(fieldnames))
+        if missing:
+            raise ValueError(f"normalized turnout CSV missing columns: {', '.join(missing)}")
+
+        for index, row in enumerate(reader, start=2):
+            state = str(row.get("state") or "").strip().upper()
+            if state != config.code:
+                raise ValueError(f"normalized turnout row {index} has wrong state: {row.get('state')!r}")
+            year = int_text(row.get("election_year"))
+            if year != config.election_year:
+                raise ValueError(f"normalized turnout row {index} has wrong election year: {row.get('election_year')!r}")
+
+            jurisdiction = str(row.get("jurisdiction_name") or "").strip()
+            if not jurisdiction:
+                raise ValueError(f"normalized turnout row {index} is missing jurisdiction_name")
+            county = _county_name(row.get("county") or jurisdiction)
+            local_unit = str(row.get("local_unit") or jurisdiction).strip()
+            registered = int_text(row.get("registered_voters"))
+            ballots = int_text(row.get("ballots_cast"))
+            turnout_raw = str(row.get("turnout_pct") or "").strip()
+
+            output.append(
+                {
+                    "county": county,
+                    "localUnit": local_unit,
+                    "level": str(row.get("level") or section.get("sourceLevel", "jurisdiction")).strip(),
+                    "ballotsCast": ballots,
+                    "registeredVoters": registered if registered else None,
+                    "turnoutPct": float(turnout_raw) if turnout_raw else pct(ballots, registered) if registered else None,
+                    "denominatorType": row.get("denominator_type") or section.get("denominatorType", "registeredVoters"),
+                    "registrationDenominatorTiming": row.get("denominator_note")
+                    or row.get("denominator_timing")
+                    or section.get("registrationDenominatorTiming", "notRecorded"),
+                    "warningRequired": _truthy(row.get("warning_required")),
+                    "sourceId": source.id,
+                }
+            )
+
+    expected = section.get("expected", {})
+    metrics = {
+        "nativeTurnoutRows": len(output),
+        "nativeRegisteredVoters": sum(int(row["registeredVoters"] or 0) for row in output),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in output),
+        "nativeTurnoutParser": section.get("format", "normalizedTurnoutCsv"),
+    }
+    checks = {
+        "nativeTurnoutRows": expected.get("rowCount"),
+        "nativeRegisteredVoters": expected.get("registeredVoters"),
+        "nativeBallotsCast": expected.get("ballotsCast"),
+    }
+    mismatches = {
+        key: {"actual": metrics[key], "expected": expected_value}
+        for key, expected_value in checks.items()
+        if expected_value is not None and metrics[key] != expected_value
+    }
+    if mismatches:
+        raise ValueError(f"normalized turnout validation failed: {mismatches}")
+
+    return output, metrics
+
+
 def _wisconsin_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     section = config.raw.get("turnout")
     if not section:
@@ -1053,6 +1133,19 @@ def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
 
 
 def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
+    turnout_format = config.raw.get("turnout", {}).get("format")
+    if config.raw.get("turnoutOnly") and turnout_format in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        sources = _source_map(config)
+        turnout_rows, metrics = _normalized_turnout_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": f"native{turnout_format[0].upper()}{turnout_format[1:]}",
+            "resultRows": [],
+            "reviewRows": [],
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
     if config.code == "MI" and config.raw.get("certifiedResults", {}).get("format") == "michiganCountyTab":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _michigan_rows(config, sources)

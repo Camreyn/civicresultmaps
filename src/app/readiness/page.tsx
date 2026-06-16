@@ -1,11 +1,12 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
-import { listCompletenessReport } from "@/lib/api";
+import { listCompletenessReport, listTurnoutSourceStatuses } from "@/lib/api";
 import {
   getNativeSourcePackage,
   nativeSourcePackageArtifactHint,
   nativeSourcePackageArtifacts,
   type NativeSourcePackage,
 } from "@/lib/native-source-packages";
+import type { TurnoutSourceStatus } from "@/lib/turnout-source-packages";
 import type { CompletenessSummary } from "@/lib/types";
 
 const selectedYear = 2024;
@@ -91,6 +92,21 @@ function sourceTierLabel(tier: CompletenessSummary["sourceTier"]) {
   }[tier];
 }
 
+function turnoutSourceStatusLabel(status: TurnoutSourceStatus["status"] | undefined) {
+  if (!status) {
+    return "Untracked";
+  }
+
+  return {
+    blocked: "Blocked",
+    candidate: "Candidate",
+    documented_exclusion: "Excluded",
+    loaded: "Loaded",
+    needs_data: "Needs data",
+    partial: "Partial",
+  }[status];
+}
+
 function taskSummary(tasks: ReadinessTask[]) {
   const high = tasks.filter((task) => task.severity === "high").length;
   const medium = tasks.filter((task) => task.severity === "medium").length;
@@ -150,7 +166,11 @@ function compareStatus(loaded: number, expected: number | null): ChecklistStatus
   return loaded > 0 ? "warn" : "missing";
 }
 
-function stateChecklist(state: CompletenessSummary, sourcePackage: NativeSourcePackage | undefined): DetailChecklistItem[] {
+function stateChecklist(
+  state: CompletenessSummary,
+  sourcePackage: NativeSourcePackage | undefined,
+  turnoutSource: TurnoutSourceStatus | undefined,
+): DetailChecklistItem[] {
   const nativeResults = numericMetric(state, "nativeResultRows");
   const nativeReview = numericMetric(state, "nativeReviewRows");
   const nativeComparison = numericMetric(state, "nativeComparisonRows");
@@ -190,6 +210,13 @@ function stateChecklist(state: CompletenessSummary, sourcePackage: NativeSourceP
       status: compareStatus(nativeTurnout || state.turnoutRowCount, expectedTurnout),
     },
     {
+      label: "Turnout source status",
+      value: turnoutSource
+        ? `${turnoutSourceStatusLabel(turnoutSource.status)} · ${turnoutSource.sourceLevel}`
+        : "Not in registry",
+      status: turnoutSource?.status === "loaded" ? "good" : turnoutSource?.status === "partial" || turnoutSource?.status === "candidate" ? "warn" : "missing",
+    },
+    {
       label: "Source provenance",
       value: state.sourcesMissingUrls ? `${state.sourcesMissingUrls} missing URL${state.sourcesMissingUrls === 1 ? "" : "s"}` : `${state.sourceCount} source${state.sourceCount === 1 ? "" : "s"}`,
       status: state.sourceCount === 0 ? "missing" : state.sourcesMissingUrls ? "warn" : "good",
@@ -204,11 +231,13 @@ function stateChecklist(state: CompletenessSummary, sourcePackage: NativeSourceP
 
 export default async function ReadinessPage() {
   const report = await listCompletenessReport({ year: selectedYear });
+  const turnoutSources = listTurnoutSourceStatuses({ year: selectedYear });
+  const turnoutSourceByState = new Map(turnoutSources.states.map((entry) => [entry.state, entry]));
   const rows = report
     .map((state) => {
       const tasks = missingTasks(state);
       const summary = taskSummary(tasks);
-      return { ...state, taskSummary: summary, tasks };
+      return { ...state, taskSummary: summary, tasks, turnoutSource: turnoutSourceByState.get(state.state) };
     })
     .sort((a, b) => b.taskSummary.high - a.taskSummary.high || b.taskSummary.medium - a.taskSummary.medium || a.name.localeCompare(b.name));
 
@@ -258,6 +287,9 @@ export default async function ReadinessPage() {
           <a className="readiness-api-link" href="/api/native-source-packages" target="_blank" rel="noreferrer">
             Source Packages API
           </a>
+          <a className="readiness-api-link" href={`/api/turnout-sources?year=${selectedYear}`} target="_blank" rel="noreferrer">
+            Turnout Sources API
+          </a>
         </div>
       </section>
 
@@ -296,6 +328,13 @@ export default async function ReadinessPage() {
           <span>Comparison / turnout ready</span>
           <strong>
             {comparisonReadyStates} / {turnoutReadyStates}
+          </strong>
+        </article>
+        <article>
+          <ListChecks aria-hidden size={18} />
+          <span>Turnout source queue</span>
+          <strong>
+            {turnoutSources.summary.loaded + turnoutSources.summary.partial} / {turnoutSources.summary.total}
           </strong>
         </article>
       </section>
@@ -412,6 +451,9 @@ export default async function ReadinessPage() {
                       <span className={`coverage-chip ${numericMetric(state, "nativeTurnoutRows") ? "coverage-good" : "coverage-warn"}`}>
                         T {numericMetric(state, "nativeTurnoutRows") || "-"}
                       </span>
+                      <span className={`coverage-chip ${state.turnoutSource?.status === "loaded" ? "coverage-good" : state.turnoutSource?.status === "partial" || state.turnoutSource?.status === "candidate" ? "coverage-warn" : "coverage-missing"}`}>
+                        TS {turnoutSourceStatusLabel(state.turnoutSource?.status)}
+                      </span>
                     </div>
                   </td>
                   <td className="readiness-counts">
@@ -463,7 +505,7 @@ export default async function ReadinessPage() {
         <div className="readiness-detail-list">
           {rows.map((state) => {
             const sourcePackage = getNativeSourcePackage(state.state);
-            const checklist = stateChecklist(state, sourcePackage);
+            const checklist = stateChecklist(state, sourcePackage, state.turnoutSource);
             return (
               <details className="readiness-detail" key={state.state}>
                 <summary>
@@ -529,6 +571,29 @@ export default async function ReadinessPage() {
                         </div>
                       </dl>
                     </article>
+                  </div>
+
+                  <div className="detail-source-package">
+                    <div className="detail-package-head">
+                      <div>
+                        <h3>Turnout Source Status</h3>
+                        <p>{state.turnoutSource?.statusNote ?? "No turnout source status is registered for this state."}</p>
+                      </div>
+                      <span className="task-pill task-medium">{turnoutSourceStatusLabel(state.turnoutSource?.status)}</span>
+                    </div>
+                    {state.turnoutSource ? (
+                      <div className="detail-artifact-grid">
+                        <article className="detail-artifact">
+                          <span>{state.turnoutSource.sourceLevel}</span>
+                          <strong>{state.turnoutSource.sourceTitle}</strong>
+                          <code>{state.turnoutSource.localFile || "local artifact needed"}</code>
+                          <p>{state.turnoutSource.nextAction}</p>
+                          <a href={state.turnoutSource.sourceUrl} target="_blank" rel="noreferrer">
+                            Official or fallback source
+                          </a>
+                        </article>
+                      </div>
+                    ) : null}
                   </div>
 
                   {sourcePackage ? (

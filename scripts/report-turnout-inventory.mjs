@@ -5,6 +5,7 @@ import { neon } from "@neondatabase/serverless";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const configDir = path.join(repoRoot, "etl", "state-configs");
+const turnoutPackagePath = path.join(repoRoot, "data", "turnout-source-packages.json");
 
 const states = [
   ["AK", "Alaska"],
@@ -70,6 +71,15 @@ function readConfigs() {
     configs.set(config.code, config);
   }
   return configs;
+}
+
+function readTurnoutRegistry() {
+  const registry = JSON.parse(readFileSync(turnoutPackagePath, "utf8"));
+  return new Map(
+    (registry.stateYearStatuses ?? [])
+      .filter((row) => row.year === 2024)
+      .map((row) => [row.state, row]),
+  );
 }
 
 async function readDatabaseTurnoutCounts() {
@@ -161,7 +171,7 @@ function toMarkdown(report) {
 
   for (const row of report.states) {
     lines.push(
-      `| ${row.state} ${row.name} | ${row.status} | ${row.databaseTurnoutRows} | ${row.expectedTurnoutRows ?? ""} | ${row.sourceLevel ?? ""} | ${row.denominatorType ?? ""} | ${row.localFile ?? ""} | ${row.note} |`,
+      `| ${row.state} ${row.name} | ${row.registryStatus ?? row.status} | ${row.databaseTurnoutRows} | ${row.expectedTurnoutRows ?? ""} | ${row.sourceLevel ?? ""} | ${row.denominatorType ?? ""} | ${row.localFile ?? ""} | ${row.note} |`,
     );
   }
 
@@ -186,27 +196,41 @@ function toMarkdown(report) {
 }
 
 const configs = readConfigs();
+const registry = readTurnoutRegistry();
 const database = await readDatabaseTurnoutCounts();
 const generatedAt = new Date().toISOString();
 
 const rows = states.map(([state, fallbackName]) => {
   const config = configs.get(state);
+  const registryRow = registry.get(state);
   const turnoutSource = sourceFor(config, config?.turnout?.sourceId);
   const databaseTurnoutRows = database.counts.get(state) ?? 0;
   const row = {
     state,
-    name: config?.name ?? fallbackName,
+    name: config?.name ?? registryRow?.name ?? fallbackName,
     hasNativeConfig: Boolean(config),
     configTurnoutEnabled: Boolean(config?.capabilities?.turnout),
     databaseTurnoutRows,
-    expectedTurnoutRows: config?.expected?.turnoutRows ?? null,
+    expectedTurnoutRows: config?.expected?.turnoutRows ?? registryRow?.expectedTurnoutRows ?? null,
     sourceId: config?.turnout?.sourceId ?? null,
-    sourceLevel: config?.turnout?.sourceLevel ?? null,
-    denominatorType: config?.turnout?.denominatorType ?? null,
-    localFile: turnoutSource?.localFile ?? null,
-    localFilePresent: turnoutSource?.localFile ? existsSync(path.join(repoRoot, turnoutSource.localFile)) : false,
+    sourceLevel: config?.turnout?.sourceLevel ?? registryRow?.sourceLevel ?? null,
+    denominatorType: config?.turnout?.denominatorType ?? registryRow?.denominatorType ?? null,
+    localFile: turnoutSource?.localFile ?? registryRow?.localFile ?? null,
+    localFilePresent: turnoutSource?.localFile
+      ? existsSync(path.join(repoRoot, turnoutSource.localFile))
+      : registryRow?.localFile
+        ? existsSync(path.join(repoRoot, registryRow.localFile))
+        : false,
+    registryStatus: registryRow?.status ?? null,
+    registrySourceUrl: registryRow?.sourceUrl ?? null,
+    registryStatusNote: registryRow?.statusNote ?? null,
   };
-  return { ...row, status: classify(row), note: missingNote({ ...row, status: classify(row) }) };
+  const status = classify(row);
+  return {
+    ...row,
+    status,
+    note: registryRow?.statusNote ?? missingNote({ ...row, status }),
+  };
 });
 
 const summary = {
@@ -221,6 +245,7 @@ const report = {
   generatedAt,
   databaseAvailable: database.available,
   summary,
+  registryStates: registry.size,
   states: rows,
 };
 
