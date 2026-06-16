@@ -69,6 +69,13 @@ if (!Array.isArray(sourcePackages.states) || sourcePackages.states.length === 0)
 }
 
 const seenStates = new Set();
+const completedNativeStates = sourcePackages.completedNativeStates ?? [];
+
+for (const state of completedNativeStates) {
+  if (!/^[A-Z]{2}$/.test(state ?? "")) {
+    fail(state ?? "UNKNOWN", "completedNativeStates entries must be two-letter state codes");
+  }
+}
 
 for (const sourcePackage of sourcePackages.states ?? []) {
   const state = sourcePackage.state;

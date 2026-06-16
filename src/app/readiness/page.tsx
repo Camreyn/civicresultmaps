@@ -258,6 +258,9 @@ export default async function ReadinessPage() {
           <a className="readiness-api-link" href="/api/native-source-packages" target="_blank" rel="noreferrer">
             Source Packages API
           </a>
+          <a className="readiness-api-link" href="/api/native-source-package-requests" target="_blank" rel="noreferrer">
+            Package Requests API
+          </a>
         </div>
       </section>
 

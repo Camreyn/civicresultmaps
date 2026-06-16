@@ -4,6 +4,8 @@ Checked at: 2026-06-15
 
 This is a handoff package for the next native ETL states after Ohio and Wisconsin. It intentionally points to official source artifacts already stored in this repository. Generated `*-app-data.js` files are listed only as reference outputs; the native importer should parse the official artifacts directly.
 
+Already-completed native states not repeated in this package: Ohio and Wisconsin.
+
 ## Recommended Order
 
 1. Minnesota

@@ -44,4 +44,4 @@ export {
   listTurnoutRows,
 } from "./data-access";
 
-export { listNativeSourcePackages } from "./native-source-packages";
+export { listNativeSourcePackageRequests, listNativeSourcePackages } from "./native-source-packages";
