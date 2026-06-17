@@ -1,0 +1,457 @@
+{
+  "generatedAt": "2026-06-17T00:53:46.964Z",
+  "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+  "codebookUrl": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
+  "states": [
+    {
+      "state": "AK",
+      "turnoutFile": "data/eac-2024-state-turnout/ak-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ak-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ak-2024-eac-registered-voter-denominator.json",
+      "rowCount": 1,
+      "ballotsCast": 340981,
+      "registeredVoters": 611078,
+      "warningRows": 0
+    },
+    {
+      "state": "AL",
+      "turnoutFile": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/al-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/al-2024-eac-registered-voter-denominator.json",
+      "rowCount": 67,
+      "ballotsCast": 2272911,
+      "registeredVoters": 3868040,
+      "warningRows": 0
+    },
+    {
+      "state": "AR",
+      "turnoutFile": "data/eac-2024-state-turnout/ar-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ar-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ar-2024-eac-registered-voter-denominator.json",
+      "rowCount": 73,
+      "ballotsCast": 1122179,
+      "registeredVoters": 1750202,
+      "warningRows": 0
+    },
+    {
+      "state": "AZ",
+      "turnoutFile": "data/eac-2024-state-turnout/az-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/az-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/az-2024-eac-registered-voter-denominator.json",
+      "rowCount": 15,
+      "ballotsCast": 3477975,
+      "registeredVoters": 5075337,
+      "warningRows": 0
+    },
+    {
+      "state": "CA",
+      "turnoutFile": "data/eac-2024-state-turnout/ca-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ca-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ca-2024-eac-registered-voter-denominator.json",
+      "rowCount": 58,
+      "ballotsCast": 16164330,
+      "registeredVoters": 25720597,
+      "warningRows": 0
+    },
+    {
+      "state": "CO",
+      "turnoutFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/co-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/co-2024-eac-registered-voter-denominator.json",
+      "rowCount": 64,
+      "ballotsCast": 3240754,
+      "registeredVoters": 4583280,
+      "warningRows": 0
+    },
+    {
+      "state": "CT",
+      "turnoutFile": "data/eac-2024-state-turnout/ct-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ct-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ct-2024-eac-registered-voter-denominator.json",
+      "rowCount": 169,
+      "ballotsCast": 1820891,
+      "registeredVoters": 2520650,
+      "warningRows": 0
+    },
+    {
+      "state": "DE",
+      "turnoutFile": "data/eac-2024-state-turnout/de-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/de-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/de-2024-eac-registered-voter-denominator.json",
+      "rowCount": 3,
+      "ballotsCast": 514367,
+      "registeredVoters": 788441,
+      "warningRows": 0
+    },
+    {
+      "state": "FL",
+      "turnoutFile": "data/eac-2024-state-turnout/fl-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/fl-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/fl-2024-eac-registered-voter-denominator.json",
+      "rowCount": 67,
+      "ballotsCast": 10999125,
+      "registeredVoters": 15740083,
+      "warningRows": 0
+    },
+    {
+      "state": "GA",
+      "turnoutFile": "data/eac-2024-state-turnout/ga-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ga-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ga-2024-eac-registered-voter-denominator.json",
+      "rowCount": 159,
+      "ballotsCast": 5297500,
+      "registeredVoters": 8234335,
+      "warningRows": 0
+    },
+    {
+      "state": "HI",
+      "turnoutFile": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/hi-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/hi-2024-eac-registered-voter-denominator.json",
+      "rowCount": 5,
+      "ballotsCast": 522137,
+      "registeredVoters": 861234,
+      "warningRows": 1
+    },
+    {
+      "state": "IA",
+      "turnoutFile": "data/eac-2024-state-turnout/ia-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ia-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ia-2024-eac-registered-voter-denominator.json",
+      "rowCount": 99,
+      "ballotsCast": 1674011,
+      "registeredVoters": 2256774,
+      "warningRows": 0
+    },
+    {
+      "state": "ID",
+      "turnoutFile": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/id-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/id-2024-eac-registered-voter-denominator.json",
+      "rowCount": 44,
+      "ballotsCast": 917469,
+      "registeredVoters": 1178750,
+      "warningRows": 0
+    },
+    {
+      "state": "IL",
+      "turnoutFile": "data/eac-2024-state-turnout/il-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/il-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/il-2024-eac-registered-voter-denominator.json",
+      "rowCount": 108,
+      "ballotsCast": 5717147,
+      "registeredVoters": 8970541,
+      "warningRows": 0
+    },
+    {
+      "state": "IN",
+      "turnoutFile": "data/eac-2024-state-turnout/in-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/in-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/in-2024-eac-registered-voter-denominator.json",
+      "rowCount": 92,
+      "ballotsCast": 2986839,
+      "registeredVoters": 4840856,
+      "warningRows": 0
+    },
+    {
+      "state": "KS",
+      "turnoutFile": "data/eac-2024-state-turnout/ks-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ks-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ks-2024-eac-registered-voter-denominator.json",
+      "rowCount": 105,
+      "ballotsCast": 1342102,
+      "registeredVoters": 2031119,
+      "warningRows": 0
+    },
+    {
+      "state": "KY",
+      "turnoutFile": "data/eac-2024-state-turnout/ky-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ky-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ky-2024-eac-registered-voter-denominator.json",
+      "rowCount": 120,
+      "ballotsCast": 2086090,
+      "registeredVoters": 3548136,
+      "warningRows": 0
+    },
+    {
+      "state": "LA",
+      "turnoutFile": "data/eac-2024-state-turnout/la-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/la-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/la-2024-eac-registered-voter-denominator.json",
+      "rowCount": 64,
+      "ballotsCast": 2021588,
+      "registeredVoters": 3046376,
+      "warningRows": 0
+    },
+    {
+      "state": "MA",
+      "turnoutFile": "data/eac-2024-state-turnout/ma-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ma-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ma-2024-eac-registered-voter-denominator.json",
+      "rowCount": 351,
+      "ballotsCast": 3512930,
+      "registeredVoters": 5142343,
+      "warningRows": 0
+    },
+    {
+      "state": "MD",
+      "turnoutFile": "data/eac-2024-state-turnout/md-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/md-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/md-2024-eac-registered-voter-denominator.json",
+      "rowCount": 24,
+      "ballotsCast": 3028813,
+      "registeredVoters": 4555217,
+      "warningRows": 0
+    },
+    {
+      "state": "ME",
+      "turnoutFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/me-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/me-2024-eac-registered-voter-denominator.json",
+      "rowCount": 497,
+      "ballotsCast": 841831,
+      "registeredVoters": 1222753,
+      "warningRows": 8
+    },
+    {
+      "state": "MO",
+      "turnoutFile": "data/eac-2024-state-turnout/mo-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/mo-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/mo-2024-eac-registered-voter-denominator.json",
+      "rowCount": 116,
+      "ballotsCast": 3126837,
+      "registeredVoters": 4388787,
+      "warningRows": 0
+    },
+    {
+      "state": "MS",
+      "turnoutFile": "data/eac-2024-state-turnout/ms-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ms-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ms-2024-eac-registered-voter-denominator.json",
+      "rowCount": 82,
+      "ballotsCast": 1225176,
+      "registeredVoters": 2131726,
+      "warningRows": 0
+    },
+    {
+      "state": "MT",
+      "turnoutFile": "data/eac-2024-state-turnout/mt-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/mt-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/mt-2024-eac-registered-voter-denominator.json",
+      "rowCount": 56,
+      "ballotsCast": 612423,
+      "registeredVoters": 800573,
+      "warningRows": 0
+    },
+    {
+      "state": "NC",
+      "turnoutFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/nc-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/nc-2024-eac-registered-voter-denominator.json",
+      "rowCount": 100,
+      "ballotsCast": 5756106,
+      "registeredVoters": 7854464,
+      "warningRows": 0
+    },
+    {
+      "state": "ND",
+      "turnoutFile": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/nd-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/nd-2024-eac-registered-voter-denominator.json",
+      "rowCount": 53,
+      "ballotsCast": 371974,
+      "registeredVoters": -4664,
+      "warningRows": 53
+    },
+    {
+      "state": "NE",
+      "turnoutFile": "data/eac-2024-state-turnout/ne-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ne-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ne-2024-eac-registered-voter-denominator.json",
+      "rowCount": 93,
+      "ballotsCast": 965145,
+      "registeredVoters": 1263487,
+      "warningRows": 0
+    },
+    {
+      "state": "NH",
+      "turnoutFile": "data/eac-2024-state-turnout/nh-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/nh-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/nh-2024-eac-registered-voter-denominator.json",
+      "rowCount": 320,
+      "ballotsCast": 829090,
+      "registeredVoters": 1008952,
+      "warningRows": 16
+    },
+    {
+      "state": "NJ",
+      "turnoutFile": "data/eac-2024-state-turnout/nj-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/nj-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/nj-2024-eac-registered-voter-denominator.json",
+      "rowCount": 21,
+      "ballotsCast": 4321921,
+      "registeredVoters": 6630364,
+      "warningRows": 0
+    },
+    {
+      "state": "NM",
+      "turnoutFile": "data/eac-2024-state-turnout/nm-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/nm-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/nm-2024-eac-registered-voter-denominator.json",
+      "rowCount": 33,
+      "ballotsCast": 927923,
+      "registeredVoters": 1415984,
+      "warningRows": 0
+    },
+    {
+      "state": "NV",
+      "turnoutFile": "data/eac-2024-state-turnout/nv-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/nv-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/nv-2024-eac-registered-voter-denominator.json",
+      "rowCount": 17,
+      "ballotsCast": 1486297,
+      "registeredVoters": 2256275,
+      "warningRows": 0
+    },
+    {
+      "state": "NY",
+      "turnoutFile": "data/eac-2024-state-turnout/ny-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ny-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ny-2024-eac-registered-voter-denominator.json",
+      "rowCount": 62,
+      "ballotsCast": 8389626,
+      "registeredVoters": 13579416,
+      "warningRows": 0
+    },
+    {
+      "state": "OK",
+      "turnoutFile": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ok-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ok-2024-eac-registered-voter-denominator.json",
+      "rowCount": 77,
+      "ballotsCast": 1573274,
+      "registeredVoters": 2442211,
+      "warningRows": 0
+    },
+    {
+      "state": "OR",
+      "turnoutFile": "data/eac-2024-state-turnout/or-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/or-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/or-2024-eac-registered-voter-denominator.json",
+      "rowCount": 36,
+      "ballotsCast": 2269608,
+      "registeredVoters": 3060374,
+      "warningRows": 0
+    },
+    {
+      "state": "RI",
+      "turnoutFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ri-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ri-2024-eac-registered-voter-denominator.json",
+      "rowCount": 39,
+      "ballotsCast": 522164,
+      "registeredVoters": 792075,
+      "warningRows": 0
+    },
+    {
+      "state": "SC",
+      "turnoutFile": "data/eac-2024-state-turnout/sc-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/sc-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/sc-2024-eac-registered-voter-denominator.json",
+      "rowCount": 46,
+      "ballotsCast": 2566404,
+      "registeredVoters": 3851187,
+      "warningRows": 0
+    },
+    {
+      "state": "SD",
+      "turnoutFile": "data/eac-2024-state-turnout/sd-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/sd-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/sd-2024-eac-registered-voter-denominator.json",
+      "rowCount": 66,
+      "ballotsCast": 435739,
+      "registeredVoters": 690306,
+      "warningRows": 0
+    },
+    {
+      "state": "TN",
+      "turnoutFile": "data/eac-2024-state-turnout/tn-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/tn-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/tn-2024-eac-registered-voter-denominator.json",
+      "rowCount": 95,
+      "ballotsCast": 3090161,
+      "registeredVoters": 4825601,
+      "warningRows": 0
+    },
+    {
+      "state": "TX",
+      "turnoutFile": "data/eac-2024-state-turnout/tx-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/tx-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/tx-2024-eac-registered-voter-denominator.json",
+      "rowCount": 254,
+      "ballotsCast": 11488820,
+      "registeredVoters": 18623931,
+      "warningRows": 0
+    },
+    {
+      "state": "UT",
+      "turnoutFile": "data/eac-2024-state-turnout/ut-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/ut-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/ut-2024-eac-registered-voter-denominator.json",
+      "rowCount": 29,
+      "ballotsCast": 1466797,
+      "registeredVoters": 2039862,
+      "warningRows": 0
+    },
+    {
+      "state": "VA",
+      "turnoutFile": "data/eac-2024-state-turnout/va-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/va-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/va-2024-eac-registered-voter-denominator.json",
+      "rowCount": 133,
+      "ballotsCast": 4511853,
+      "registeredVoters": 6380686,
+      "warningRows": 0
+    },
+    {
+      "state": "VT",
+      "turnoutFile": "data/eac-2024-state-turnout/vt-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/vt-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/vt-2024-eac-registered-voter-denominator.json",
+      "rowCount": 247,
+      "ballotsCast": 361604,
+      "registeredVoters": 500986,
+      "warningRows": 0
+    },
+    {
+      "state": "WA",
+      "turnoutFile": "data/eac-2024-state-turnout/wa-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/wa-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/wa-2024-eac-registered-voter-denominator.json",
+      "rowCount": 39,
+      "ballotsCast": 3949810,
+      "registeredVoters": 5597156,
+      "warningRows": 0
+    },
+    {
+      "state": "WV",
+      "turnoutFile": "data/eac-2024-state-turnout/wv-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/wv-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/wv-2024-eac-registered-voter-denominator.json",
+      "rowCount": 55,
+      "ballotsCast": 769206,
+      "registeredVoters": 1210415,
+      "warningRows": 0
+    },
+    {
+      "state": "WY",
+      "turnoutFile": "data/eac-2024-state-turnout/wy-2024-eac-turnout.csv",
+      "denominatorCsvFile": "data/eac-2024-state-turnout/wy-2024-eac-registered-voter-denominator.csv",
+      "denominatorJsonFile": "data/eac-2024-state-turnout/wy-2024-eac-registered-voter-denominator.json",
+      "rowCount": 23,
+      "ballotsCast": 271123,
+      "registeredVoters": 296960,
+      "warningRows": 0
+    }
+  ]
+}

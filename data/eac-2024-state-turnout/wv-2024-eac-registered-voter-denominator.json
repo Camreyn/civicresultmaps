@@ -1,0 +1,19 @@
+{
+  "state": "WV",
+  "electionYear": 2024,
+  "sourceTitle": "U.S. EAC 2024 EAVS V2 WV registered-voter denominator",
+  "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+  "codebookUrl": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
+  "localFile": "data/eac-2024-state-turnout/wv-2024-eac-registered-voter-denominator.csv",
+  "sourceField": "A1a Total Reg",
+  "rowCount": 55,
+  "registeredVoters": 1210415,
+  "warningRows": 0,
+  "denominatorTiming": "eacReported",
+  "denominatorType": "registeredVoters",
+  "caveats": [
+    "EAC A1a Total Reg is the registered-voter denominator used for this fallback collection.",
+    "Prefer state election office denominator artifacts when they provide equal or finer official detail.",
+    "Rows with zero registered voters are warning-gated and have blank turnout percentages."
+  ]
+}
