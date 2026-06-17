@@ -9,12 +9,14 @@ import {
   Download,
   FileCheck2,
   GitBranch,
+  HeartHandshake,
   History,
   ListChecks,
   Mail,
   MapIcon,
   Search,
   ShieldCheck,
+  Server,
   TriangleAlert,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
@@ -46,7 +48,17 @@ type WorkspaceTabsProps = {
   totalVotes: number;
 };
 
-type TabKey = "map" | "review" | "history" | "planner" | "data" | "methodology" | "exports" | "imports" | "contact";
+type TabKey =
+  | "map"
+  | "review"
+  | "history"
+  | "planner"
+  | "data"
+  | "methodology"
+  | "exports"
+  | "imports"
+  | "support"
+  | "contact";
 type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
 
@@ -59,6 +71,7 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: BookOpen, key: "methodology", label: "Methodology" },
   { icon: Download, key: "exports", label: "Exports & API" },
   { icon: GitBranch, key: "imports", label: "Import Runs" },
+  { icon: HeartHandshake, key: "support", label: "Support" },
   { icon: Mail, key: "contact", label: "Contact" },
 ];
 
@@ -1906,6 +1919,46 @@ export function WorkspaceTabs({
                 </li>
               ))}
             </ul>
+          </section>
+        </div>
+      )}
+
+      {activeTab === "support" && (
+        <div className="tab-panel-content support-grid">
+          <section className="panel support-panel">
+            <div className="panel-header">
+              <div>
+                <h2>Support Civic Result Maps</h2>
+                <span>Help cover server costs and continued development</span>
+              </div>
+              <HeartHandshake aria-hidden size={18} />
+            </div>
+            <div className="support-card">
+              <div className="support-copy">
+                <span className="section-label">Project funding</span>
+                <strong>Keep the maps, APIs, and data pipeline online.</strong>
+                <p>
+                  Civic Result Maps is maintained as an independent public data project. Contributions help pay for
+                  hosting, database capacity, source collection, validation work, and ongoing development.
+                </p>
+              </div>
+              <div className="support-summary-grid">
+                <article>
+                  <Server aria-hidden size={18} />
+                  <strong>Server costs</strong>
+                  <span>Hosting, database usage, API traffic, and build infrastructure.</span>
+                </article>
+                <article>
+                  <GitBranch aria-hidden size={18} />
+                  <strong>Development</strong>
+                  <span>ETL tooling, source audits, coverage checks, and interface improvements.</span>
+                </article>
+              </div>
+              <a className="support-button" href="https://ko-fi.com/camreyn" rel="noreferrer" target="_blank">
+                <HeartHandshake aria-hidden size={16} />
+                Support on Ko-fi
+              </a>
+            </div>
           </section>
         </div>
       )}
