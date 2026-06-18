@@ -64,6 +64,16 @@ type TabKey =
   | "contact";
 type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
+type ChartQualityStatus = "ready" | "acknowledgement_required" | "blocked";
+type ChartQualityDiagnostic = {
+  acknowledgementKey: string;
+  checked: string[];
+  issues: string[];
+  rowCount: number;
+  status: ChartQualityStatus;
+  summary: string;
+  title: string;
+};
 type WorkspaceTourContext = {
   hasCoverage: boolean;
   hasHistoricalRows: boolean;
@@ -84,11 +94,10 @@ type MethodologySourceLink = {
   label: string;
 };
 type MethodologyGuide = {
-  apiLinks?: Array<{ href: string; label: string }>;
   caveat: string;
   guide: string[];
   id: string;
-  sourceKeywords: string[];
+  links: MethodologySourceLink[];
   summary: string;
   title: string;
 };
@@ -371,126 +380,174 @@ function buildWorkspaceTourSteps(context: WorkspaceTourContext) {
 
 const methodologyGuides: MethodologyGuide[] = [
   {
-    apiLinks: [{ href: "/api/results?state={state}&year=2024&level=county", label: "Results API" }],
-    caveat: "Use this for certified contest totals. It does not describe turnout, ballot method, or registration denominators unless those rows are explicitly present in separate tables.",
+    caveat: "A scatterplot can show places that deserve audit follow-up, but it cannot prove tampering. Confirm any pattern against official canvass rows, reporting-unit definitions, recount/audit records, and local election administration notes.",
     guide: [
-      "Start with the official state source record and confirm the authority, parser, and timestamp basis.",
-      "Check that candidate totals reconcile to the imported state total before using map colors or county rankings.",
-      "Treat the source document record as the audit trail for each displayed jurisdiction result.",
+      "Use the vote-share scatterplot to find local reporting units where candidate share is unusual for the number of votes reported.",
+      "Check whether outliers are explained by normal geography, precinct size, campus or military populations, late-counted ballot groups, or reporting-unit aggregation.",
+      "Escalate only when a pattern survives source reconciliation and appears inconsistent with official canvass, audit, or recount records.",
     ],
-    id: "certified-results",
-    sourceKeywords: ["result", "canvass", "precinct", "ward", "president", "certified"],
-    summary: "Map shading and totals come from imported state bundles that reconcile to the generated source data.",
-    title: "Certified result rows",
+    id: "vote-share-scatterplot",
+    links: [
+      {
+        detail: "Federal voting-system standards and NIST voting-program context",
+        href: "https://www.nist.gov/itl/voting",
+        label: "NIST Voting Program",
+      },
+      {
+        detail: "Federal voting-system certification standards",
+        href: "https://www.eac.gov/voting-equipment/voluntary-voting-system-guidelines",
+        label: "EAC Voluntary Voting System Guidelines",
+      },
+      {
+        detail: "Official collection of state and local voting-system reports",
+        href: "https://www.eac.gov/voting-equipment/voting-system-reports-collection",
+        label: "EAC Voting System Reports Collection",
+      },
+    ],
+    summary: "Use vote share versus vote count to find local rows that need source-level review.",
+    title: "Vote-share scatterplot",
   },
   {
-    apiLinks: [
-      { href: "/api/indicators?state={state}&year=2024", label: "Indicators API" },
-      { href: "/api/review-rows?state={state}&year=2024&limit=500", label: "Review rows API" },
-    ],
-    caveat: "A flag is a triage prompt. It should be checked against source records, local reporting-unit definitions, and any known reporting caveats before drawing conclusions.",
+    caveat: "Drop-off can reflect ballot roll-off, undervotes, candidate-specific behavior, or reporting differences. Treat it as a comparison screen, not an accusation.",
     guide: [
-      "Open the Review Center to see which local rows generated advisory patterns.",
-      "Compare the flagged row with the same source family used for the certified result import.",
-      "Use scatterplots and drop-off histograms as screening views, not as proof by themselves.",
+      "Compare presidential votes with a same-row comparison contest where the source supports it.",
+      "Look for broad distribution shifts, isolated reporting units with extreme same-party drop-off, and mismatch between presidential and comparison-contest totals.",
+      "Verify that the comparison contest is valid for the same geography and ballot population before treating a drop-off pattern as meaningful.",
     ],
-    id: "advisory-indicators",
-    sourceKeywords: ["review", "precinct", "senate", "statewide", "indicator", "comparison", "ward"],
-    summary: "Flags identify patterns that deserve review. They are not proof of tampering or a substitute for records.",
-    title: "Advisory indicators",
+    id: "dropoff-histogram",
+    links: [
+      {
+        detail: "Official voting-system testing and certification program",
+        href: "https://www.eac.gov/election-technology/testing-certification-program-tc",
+        label: "EAC Testing and Certification",
+      },
+      {
+        detail: "Federal voting standards and cybersecurity research context",
+        href: "https://www.nist.gov/itl/voting",
+        label: "NIST Voting Program",
+      },
+      {
+        detail: "Voting-system anomaly reporting and formal investigation records",
+        href: "https://www.eac.gov/voting-equipment/quality-monitoring-program",
+        label: "EAC Quality Monitoring Program",
+      },
+    ],
+    summary: "Use presidential-versus-comparison drop-off to find unusual contest-to-contest movement.",
+    title: "Drop-off histogram",
   },
   {
-    apiLinks: [{ href: "/api/coverage?state={state}&year=2024", label: "Coverage API" }],
-    caveat: "Geometry validates display joins, not vote arithmetic. A county boundary can be correct while a source-result parser still needs separate validation.",
+    caveat: "Turnout screens are only as good as their denominator. Do not compare jurisdictions until registration timing, same-day registration, inactive voters, and ballot-count definitions are understood.",
     guide: [
-      "County map shapes are joined by normalized county names or state-specific geometry keys.",
-      "Production joins should be checked after source promotion so unmatched boundaries are visible before release.",
-      "Precinct or ward boundaries remain disabled unless matching geometry is explicitly sourced.",
+      "Check whether turnout uses registered voters, voting-eligible population, or another denominator.",
+      "Flag impossible or near-impossible turnout values first, then inspect high-turnout clusters against source notes and local registration rules.",
+      "Use turnout anomalies to request audit records, ballot accounting, or denominator clarification rather than to infer candidate effects directly.",
     ],
-    id: "geometry-joins",
-    sourceKeywords: ["geometry", "boundary", "geojson", "county", "census", "tiger", "mngeo"],
-    summary: "Every deployed state map is checked against production result rows with npm run validate:maps.",
-    title: "Geometry joins",
+    id: "turnout-registration",
+    links: [
+      {
+        detail: "Official EAVS data and codebook source for turnout and participation fields",
+        href: "https://www.eac.gov/research-and-data/datasets-codebooks-and-surveys",
+        label: "EAC Datasets, Codebooks, and Surveys",
+      },
+      {
+        detail: "Federal voting-system guidance and research context",
+        href: "https://www.nist.gov/itl/voting",
+        label: "NIST Voting Program",
+      },
+      {
+        detail: "Voting-system quality monitoring and anomaly reporting",
+        href: "https://www.eac.gov/voting-equipment/quality-monitoring-program",
+        label: "EAC Quality Monitoring Program",
+      },
+    ],
+    summary: "Use turnout and registration denominators to find accounting questions before candidate-level claims.",
+    title: "Turnout and registration checks",
   },
   {
-    apiLinks: [{ href: "/api/import-runs?state={state}&year=2024", label: "Import runs API" }],
-    caveat: "Public users can read imported rows and source metadata. Write paths are operational controls and should stay disabled unless a planned backfill is running.",
+    caveat: "Historical movement is context, not evidence by itself. Large shifts can be real and should be checked against demographic, turnout, candidate, redistricting, and reporting-unit changes.",
     guide: [
-      "Importer routes require a server-side token before they can write or promote rows.",
-      "Import run records show which parser ran, when it ran, and whether it reached a promoted state.",
-      "Use this tile to distinguish public read APIs from private ETL operations.",
+      "Compare the current result with prior years at the same geography whenever possible.",
+      "Prioritize counties or local units with large movement plus other independent flags, such as source reconciliation gaps or unusual drop-off.",
+      "Check whether boundaries, reporting units, party coalitions, ballot access, and turnout composition changed before escalating.",
     ],
-    id: "private-writes",
-    sourceKeywords: ["import", "etl", "parser", "source package", "promotion"],
-    summary: "Importer writes are token-gated and disabled in production unless a controlled backfill is running.",
-    title: "Private writes",
+    id: "historical-baselines",
+    links: [
+      {
+        detail: "Official federal voting and election-administration datasets",
+        href: "https://www.eac.gov/research-and-data/datasets-codebooks-and-surveys",
+        label: "EAC Datasets, Codebooks, and Surveys",
+      },
+      {
+        detail: "Official state/local voting-system reports posted by EAC",
+        href: "https://www.eac.gov/voting-equipment/voting-system-reports-collection",
+        label: "EAC Voting System Reports Collection",
+      },
+      {
+        detail: "Federal voting-system standards and research context",
+        href: "https://www.nist.gov/itl/voting",
+        label: "NIST Voting Program",
+      },
+    ],
+    summary: "Use prior elections to separate normal political movement from rows needing review.",
+    title: "Historical baseline movement",
   },
   {
-    apiLinks: [
-      { href: "/api/turnout?state={state}&year=2024&limit=500", label: "Turnout API" },
-      { href: "/api/historical-baselines?state={state}&limit=500", label: "Historical baselines API" },
-      { href: "/api/vote-methods?state={state}&year=2024&limit=500", label: "Vote methods API" },
-    ],
-    caveat: "A visible gap is preferable to an inferred value. Candidate-by-method, for example, is not derived unless an official source reports candidate totals split by ballot method.",
+    caveat: "This app currently labels these as Klimek-style when true turnout denominators are unavailable. A proxy fingerprint should never be treated as a complete forensic test.",
     guide: [
-      "Confirm whether review, turnout, historical, and vote-method row counts are nonzero for the selected state.",
-      "Read denominator notes before comparing turnout or registration figures across source families.",
-      "Keep missing candidate-by-method data separate from EAC participation-method rows.",
+      "Use a true vote fingerprint only when candidate share and turnout percentage are available for the same reporting units.",
+      "Look for dense bands, tails, or clusters that combine very high turnout with one-sided vote share, then verify against source denominators.",
+      "Treat proxy fingerprints as visualization aids that tell you where to collect better turnout or ballot-accounting data.",
     ],
-    id: "data-gaps",
-    sourceKeywords: ["turnout", "registration", "historical", "baseline", "eac", "vote method", "method"],
-    summary: "Review graphs, turnout, and historical baselines only become active when the corresponding rows exist in the imported state bundle.",
-    title: "Current data gaps",
+    id: "klimek-fingerprint",
+    links: [
+      {
+        detail: "Official EAC source family for turnout and participation denominators",
+        href: "https://www.eac.gov/research-and-data/datasets-codebooks-and-surveys",
+        label: "EAC Datasets, Codebooks, and Surveys",
+      },
+      {
+        detail: "Voting-system standards and election-technology research context",
+        href: "https://www.nist.gov/itl/voting",
+        label: "NIST Voting Program",
+      },
+      {
+        detail: "Official voting-system quality monitoring and anomaly records",
+        href: "https://www.eac.gov/voting-equipment/quality-monitoring-program",
+        label: "EAC Quality Monitoring Program",
+      },
+    ],
+    summary: "Use vote fingerprints cautiously to compare vote share with turnout or turnout proxies.",
+    title: "Klimek-style fingerprints",
   },
   {
-    apiLinks: [
-      { href: "/api/sources?state={state}&year=2024", label: "Sources API" },
-      { href: "/api/completeness?year=2024", label: "Completeness API" },
-    ],
-    caveat: "CSV downloads are generated from what is currently loaded in the browser for the selected state. Use API endpoints for repeatable external checks.",
+    caveat: "Shpilkin-style views are sensitive to binning, geography size, and turnout definition. They can highlight suspicious distribution shapes, but official audits and source reconciliation are still required.",
     guide: [
-      "Use browser CSV exports for quick spreadsheet review of the selected state.",
-      "Use public JSON APIs when another tool needs reproducible parameters such as state, year, level, or limit.",
-      "Include source exports when sharing result rows so readers can trace figures back to official records.",
+      "Bucket reporting units by candidate vote share and inspect whether vote totals pile up in unnatural bands.",
+      "Compare the shape across years, parties, and turnout sources before treating a spike as suspicious.",
+      "Use any strong pattern to guide document requests: ballot accounting, audit reports, recount records, and official canvass detail.",
     ],
-    id: "exports",
-    sourceKeywords: ["source", "coverage", "api", "completeness", "provenance"],
-    summary: "CSV exports are generated in the browser from the same selected-state data shown in the interface.",
-    title: "Exports",
+    id: "shpilkin-diagnostics",
+    links: [
+      {
+        detail: "Official voting-system reports and studies submitted to EAC",
+        href: "https://www.eac.gov/voting-equipment/voting-system-reports-collection",
+        label: "EAC Voting System Reports Collection",
+      },
+      {
+        detail: "Official EAC data and survey source family for turnout context",
+        href: "https://www.eac.gov/research-and-data/datasets-codebooks-and-surveys",
+        label: "EAC Datasets, Codebooks, and Surveys",
+      },
+      {
+        detail: "Federal voting-system standards and research context",
+        href: "https://www.nist.gov/itl/voting",
+        label: "NIST Voting Program",
+      },
+    ],
+    summary: "Use vote-share distribution shapes to find clusters that need source-level verification.",
+    title: "Shpilkin-style diagnostics",
   },
 ];
-
-function sourceMatchesGuide(source: SourceSummary, guide: MethodologyGuide) {
-  const searchable = [
-    source.category,
-    source.title,
-    source.localArtifact,
-    source.parser,
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  return guide.sourceKeywords.some((keyword) => searchable.includes(keyword.toLowerCase()));
-}
-
-function sourceLinksForGuide(sources: SourceSummary[], guide: MethodologyGuide, stateCode: string): MethodologySourceLink[] {
-  const officialLinks = sources
-    .filter((source) => source.sourceUrl && sourceMatchesGuide(source, guide))
-    .slice(0, 4)
-    .map((source) => ({
-      detail: `${source.authority} · ${source.status}`,
-      href: source.sourceUrl,
-      label: source.category || source.title,
-    }));
-
-  const apiLinks = (guide.apiLinks ?? []).map((link) => ({
-    detail: "Public app endpoint",
-    href: link.href.replaceAll("{state}", stateCode),
-    label: link.label,
-  }));
-
-  return [...officialLinks, ...apiLinks];
-}
 
 function formatCapability(key: string) {
   return key.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
@@ -611,7 +668,272 @@ function normalizePct(value: number | null) {
     return null;
   }
 
-  return Math.abs(value) <= 1 ? value * 100 : value;
+  return value;
+}
+
+function percentDelta(storedShare: number | null, votes: number | null, totalVotes: number | null) {
+  if (
+    storedShare === null ||
+    votes === null ||
+    totalVotes === null ||
+    !Number.isFinite(storedShare) ||
+    !Number.isFinite(votes) ||
+    !Number.isFinite(totalVotes) ||
+    totalVotes <= 0
+  ) {
+    return null;
+  }
+
+  return Math.abs(storedShare - (votes / totalVotes) * 100);
+}
+
+function chartStatusLabel(status: ChartQualityStatus) {
+  if (status === "ready") {
+    return "Automated check passed";
+  }
+
+  if (status === "blocked") {
+    return "Chart unavailable";
+  }
+
+  return "Acknowledgement required";
+}
+
+function hasNativeImport(importRuns: ImportRunSummary[]) {
+  return importRuns.some((run) => run.parser.toLowerCase().includes("native"));
+}
+
+function hasLegacyImport(importRuns: ImportRunSummary[]) {
+  return importRuns.some((run) => run.parser.toLowerCase().includes("legacy"));
+}
+
+function buildVoteShareScatterDiagnostic(input: {
+  importRuns: ImportRunSummary[];
+  jurisdictionName: string;
+  resultJurisdictions: number;
+  reviewJurisdictions: number;
+  rows: ReviewRowSummary[];
+  scatterRows: ReviewRowSummary[];
+  stateCode: string;
+}): ChartQualityDiagnostic {
+  const checked: string[] = [];
+  const issues: string[] = [];
+  const sourceIds = new Set(input.rows.map((row) => row.sourceId).filter(Boolean));
+  const shareMismatchRows = input.rows.filter((row) => {
+    const harrisDelta = percentDelta(row.harrisShare, row.harrisVotes, row.totalVotes);
+    const trumpDelta = percentDelta(row.trumpShare, row.trumpVotes, row.totalVotes);
+    return (harrisDelta !== null && harrisDelta > 0.15) || (trumpDelta !== null && trumpDelta > 0.15);
+  });
+  const missingInputRows = input.rows.filter(
+    (row) =>
+      row.harrisVotes === null ||
+      row.trumpVotes === null ||
+      row.totalVotes === null ||
+      row.harrisShare === null ||
+      row.trumpShare === null,
+  );
+  const nonPositiveRows = input.rows.filter(
+    (row) => (row.harrisVotes ?? 0) <= 0 || (row.trumpVotes ?? 0) <= 0 || (row.totalVotes ?? 0) <= 0,
+  );
+
+  if (input.scatterRows.length > 0) {
+    checked.push(`${input.scatterRows.length.toLocaleString()} rows have both candidate vote counts and vote shares.`);
+  }
+
+  if (shareMismatchRows.length === 0) {
+    checked.push("Stored Harris and Trump shares match candidate votes divided by total row votes within 0.15 percentage points.");
+  } else {
+    issues.push(
+      `${shareMismatchRows.length.toLocaleString()} rows have stored vote shares that do not match the loaded vote totals.`,
+    );
+  }
+
+  if (missingInputRows.length > 0) {
+    issues.push(`${missingInputRows.length.toLocaleString()} rows are missing candidate votes, total votes, or stored shares.`);
+  }
+
+  if (nonPositiveRows.length > 0) {
+    issues.push(`${nonPositiveRows.length.toLocaleString()} rows have zero or non-positive candidate/total vote values and are omitted.`);
+  }
+
+  if (input.resultJurisdictions > 0 && input.reviewJurisdictions < input.resultJurisdictions) {
+    issues.push(
+      `Review rows exist for ${input.reviewJurisdictions.toLocaleString()} of ${input.resultJurisdictions.toLocaleString()} loaded result jurisdictions, so this is not statewide coverage.`,
+    );
+  } else if (input.resultJurisdictions > 0) {
+    checked.push("Every loaded result jurisdiction has at least one review row.");
+  }
+
+  if (sourceIds.size === 0 || sourceIds.has("database")) {
+    issues.push("One or more rows do not expose a linked source document id.");
+  } else {
+    checked.push(`Rows reference ${sourceIds.size.toLocaleString()} source document id${sourceIds.size === 1 ? "" : "s"}.`);
+  }
+
+  if (hasLegacyImport(input.importRuns) && !hasNativeImport(input.importRuns)) {
+    issues.push("This state is still using the legacy static review bundle, not a newer source-first native parser.");
+  } else if (hasNativeImport(input.importRuns)) {
+    checked.push("A native/source-first import run is present for this state.");
+  }
+
+  let status: ChartQualityStatus = "ready";
+  if (input.scatterRows.length === 0) {
+    status = "blocked";
+    issues.unshift("No rows are currently drawable for this scatterplot.");
+  } else if (issues.length > 0 || input.scatterRows.length < 10) {
+    status = "acknowledgement_required";
+    if (input.scatterRows.length > 0 && input.scatterRows.length < 10) {
+      issues.push("Fewer than 10 drawable rows are available, so the trend line is fragile.");
+    }
+  }
+
+  return {
+    acknowledgementKey: `scatter:${input.stateCode}:${input.jurisdictionName}:${input.rows.length}:${input.scatterRows.length}`,
+    checked,
+    issues,
+    rowCount: input.scatterRows.length,
+    status,
+    summary:
+      status === "ready"
+        ? "This plot passed the app's row-level arithmetic and coverage checks. It is still a screening view, not evidence by itself."
+        : "This plot has data-quality limits for the selected state or jurisdiction. Read the specific missing items before using it.",
+    title: `${input.jurisdictionName} vote-share scatter`,
+  };
+}
+
+function buildDropoffDiagnostic(input: {
+  importRuns: ImportRunSummary[];
+  jurisdictionName: string;
+  resultJurisdictions: number;
+  reviewJurisdictions: number;
+  rows: ReviewRowSummary[];
+  stateCode: string;
+}): ChartQualityDiagnostic {
+  const checked: string[] = [];
+  const issues: string[] = [];
+  const drawableRows = input.rows.filter(
+    (row) =>
+      row.demDropoff !== null &&
+      row.repDropoff !== null &&
+      Number.isFinite(row.demDropoff) &&
+      Number.isFinite(row.repDropoff),
+  );
+  const missingRows = input.rows.length - drawableRows.length;
+  const sourceIds = new Set(input.rows.map((row) => row.sourceId).filter(Boolean));
+
+  if (drawableRows.length > 0) {
+    checked.push(`${drawableRows.length.toLocaleString()} rows have both DEM and REP comparison drop-off values.`);
+  }
+
+  if (missingRows > 0) {
+    issues.push(`${missingRows.toLocaleString()} rows are missing one or both comparison-contest drop-off values.`);
+  }
+
+  if (input.resultJurisdictions > 0 && input.reviewJurisdictions < input.resultJurisdictions) {
+    issues.push(
+      `Review rows exist for ${input.reviewJurisdictions.toLocaleString()} of ${input.resultJurisdictions.toLocaleString()} loaded result jurisdictions, so this is not statewide coverage.`,
+    );
+  } else if (input.resultJurisdictions > 0) {
+    checked.push("Every loaded result jurisdiction has at least one review row.");
+  }
+
+  if (sourceIds.size === 0 || sourceIds.has("database")) {
+    issues.push("One or more rows do not expose a linked source document id.");
+  } else {
+    checked.push(`Rows reference ${sourceIds.size.toLocaleString()} source document id${sourceIds.size === 1 ? "" : "s"}.`);
+  }
+
+  if (hasLegacyImport(input.importRuns) && !hasNativeImport(input.importRuns)) {
+    issues.push("This state is still using the legacy static review bundle, not a newer source-first native parser.");
+  } else if (hasNativeImport(input.importRuns)) {
+    checked.push("A native/source-first import run is present for this state.");
+  }
+
+  let status: ChartQualityStatus = "ready";
+  if (drawableRows.length === 0) {
+    status = "blocked";
+    issues.unshift("No rows are currently drawable for this histogram.");
+  } else if (issues.length > 0 || drawableRows.length < 10) {
+    status = "acknowledgement_required";
+    if (drawableRows.length > 0 && drawableRows.length < 10) {
+      issues.push("Fewer than 10 drawable rows are available, so the distribution is fragile.");
+    }
+  }
+
+  return {
+    acknowledgementKey: `dropoff:${input.stateCode}:${input.jurisdictionName}:${drawableRows.length}`,
+    checked,
+    issues,
+    rowCount: drawableRows.length,
+    status,
+    summary:
+      status === "ready"
+        ? "This histogram passed the app's row availability and coverage checks. It is still a screening view, not evidence by itself."
+        : "This histogram has data-quality limits for the selected state or jurisdiction. Read the specific missing items before using it.",
+    title: `${input.jurisdictionName} drop-off histogram`,
+  };
+}
+
+function ChartQualityNotice({ diagnostic }: { diagnostic: ChartQualityDiagnostic }) {
+  return (
+    <div className={`chart-quality-notice ${diagnostic.status}`} role="status">
+      <div>
+        <span>{chartStatusLabel(diagnostic.status)}</span>
+        <strong>{diagnostic.summary}</strong>
+      </div>
+      {diagnostic.issues.length > 0 && (
+        <ul>
+          {diagnostic.issues.map((issue) => (
+            <li key={issue}>{issue}</li>
+          ))}
+        </ul>
+      )}
+      {diagnostic.checked.length > 0 && (
+        <details>
+          <summary>Automated checks that passed</summary>
+          <ul>
+            {diagnostic.checked.map((check) => (
+              <li key={check}>{check}</li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
+  );
+}
+
+function ChartGate({
+  acknowledged,
+  diagnostic,
+  onAcknowledge,
+}: {
+  acknowledged: boolean;
+  diagnostic: ChartQualityDiagnostic;
+  onAcknowledge: () => void;
+}) {
+  if (diagnostic.status === "ready" || acknowledged) {
+    return null;
+  }
+
+  return (
+    <div className="screening-chart-gate">
+      <TriangleAlert aria-hidden size={22} />
+      <strong>{diagnostic.status === "blocked" ? "This chart cannot be evaluated yet" : "Read this before viewing"}</strong>
+      <p>{diagnostic.summary}</p>
+      {diagnostic.issues.length > 0 && (
+        <ul>
+          {diagnostic.issues.slice(0, 4).map((issue) => (
+            <li key={issue}>{issue}</li>
+          ))}
+        </ul>
+      )}
+      {diagnostic.status !== "blocked" && (
+        <button className="secondary-button" onClick={onAcknowledge} type="button">
+          I acknowledge these limits
+        </button>
+      )}
+    </div>
+  );
 }
 
 function dateLabel(value: string | null) {
@@ -653,6 +975,7 @@ export function WorkspaceTabs({
     "klimek",
     "shpilkin",
   ]);
+  const [acknowledgedChartKeys, setAcknowledgedChartKeys] = useState<string[]>([]);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
 
@@ -672,6 +995,7 @@ export function WorkspaceTabs({
     window.history.replaceState(null, "", url);
   };
 
+  const stateName = selectedState?.name ?? selectedStateCode;
   const indicatorTypes = useMemo(
     () => Array.from(new Set(indicators.map((indicator) => indicator.type))).sort(),
     [indicators],
@@ -735,6 +1059,7 @@ export function WorkspaceTabs({
   );
   const reviewGraphCoverageIsPartial =
     reviewRows.length > 0 && reviewJurisdictionOptions.length < Math.max(1, results.length);
+  const selectedReviewJurisdictionName = selectedReviewJurisdiction?.jurisdictionName ?? stateName;
   const screeningGraphOptions: Array<{ key: ScreeningGraphType; label: string }> = [
     { key: "voteShareScatter", label: "Vote-Share Scatterplot" },
     { key: "dropoffHistogram", label: "Drop-Off Histogram" },
@@ -766,6 +1091,28 @@ export function WorkspaceTabs({
   }));
   const harrisTrend = linearRegression(harrisScatterPoints);
   const trumpTrend = linearRegression(trumpScatterPoints);
+  const scatterDiagnostic = buildVoteShareScatterDiagnostic({
+    importRuns,
+    jurisdictionName: selectedReviewJurisdictionName,
+    resultJurisdictions: results.length,
+    reviewJurisdictions: reviewJurisdictionOptions.length,
+    rows: selectedReviewRows,
+    scatterRows,
+    stateCode: selectedStateCode,
+  });
+  const dropoffDiagnostic = buildDropoffDiagnostic({
+    importRuns,
+    jurisdictionName: selectedReviewJurisdictionName,
+    resultJurisdictions: results.length,
+    reviewJurisdictions: reviewJurisdictionOptions.length,
+    rows: selectedReviewRows,
+    stateCode: selectedStateCode,
+  });
+  const scatterAcknowledged = acknowledgedChartKeys.includes(scatterDiagnostic.acknowledgementKey);
+  const dropoffAcknowledged = acknowledgedChartKeys.includes(dropoffDiagnostic.acknowledgementKey);
+  const acknowledgeChart = (key: string) => {
+    setAcknowledgedChartKeys((current) => (current.includes(key) ? current : [...current, key]));
+  };
   const dropoffBucketSize = 5;
   const dropoffBuckets = Array.from({ length: 13 }, (_, index) => {
     const low = -30 + index * dropoffBucketSize;
@@ -1029,7 +1376,6 @@ export function WorkspaceTabs({
     },
   ];
 
-  const stateName = selectedState?.name ?? selectedStateCode;
   const workspaceTourSteps = useMemo(
     () =>
       buildWorkspaceTourSteps({
@@ -1410,11 +1756,12 @@ export function WorkspaceTabs({
                           <span>Statistical Screening Graph</span>
                           <strong>Vote-Share by Vote-Count Scatterplot</strong>
                           <small>
-                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: {scatterRows.length} local rows
+                            {selectedReviewJurisdictionName}: {scatterRows.length} local rows
                           </small>
                         </div>
                         <button
                           className="secondary-button"
+                          disabled={scatterDiagnostic.status !== "ready" && !scatterAcknowledged}
                           onClick={() => downloadSvgElement(scatterSvgId, `${screeningSlug}-vote-share-scatter.svg`)}
                           type="button"
                         >
@@ -1426,96 +1773,109 @@ export function WorkspaceTabs({
                           blue or red. This chart asks whether bigger local rows lean differently than smaller rows.
                         </Eli5>
                       </div>
-                      <div className="screening-chart-frame">
-                        <svg
-                          aria-label={`${selectedReviewJurisdiction?.jurisdictionName ?? stateName} vote-share by vote-count scatterplot`}
-                          id={scatterSvgId}
-                          role="img"
-                          viewBox="0 0 560 300"
-                        >
-                          <rect className="screening-svg-bg" height="300" width="560" />
-                          {[0, 25, 50, 75, 100].map((share) => (
-                            <g key={share}>
-                              <line className="screening-gridline" x1="52" x2="490" y1={scatterY(share)} y2={scatterY(share)} />
-                              <text className="screening-axis-label" x="22" y={scatterY(share) + 4}>
-                                {share}%
-                              </text>
-                            </g>
-                          ))}
-                          {[0, 0.5, 1].map((ratio) => (
-                            <g key={ratio}>
+                      <ChartQualityNotice diagnostic={scatterDiagnostic} />
+                      <div
+                        className={`screening-chart-shell ${
+                          scatterDiagnostic.status !== "ready" && !scatterAcknowledged ? "is-gated" : ""
+                        }`}
+                      >
+                        <div className="screening-chart-frame">
+                          <svg
+                            aria-hidden={scatterDiagnostic.status !== "ready" && !scatterAcknowledged}
+                            aria-label={`${selectedReviewJurisdictionName} vote-share by vote-count scatterplot`}
+                            id={scatterSvgId}
+                            role="img"
+                            viewBox="0 0 560 300"
+                          >
+                            <rect className="screening-svg-bg" height="300" width="560" />
+                            {[0, 25, 50, 75, 100].map((share) => (
+                              <g key={share}>
+                                <line className="screening-gridline" x1="52" x2="490" y1={scatterY(share)} y2={scatterY(share)} />
+                                <text className="screening-axis-label" x="22" y={scatterY(share) + 4}>
+                                  {share}%
+                                </text>
+                              </g>
+                            ))}
+                            {[0, 0.5, 1].map((ratio) => (
+                              <g key={ratio}>
+                                <line
+                                  className="screening-gridline"
+                                  x1={52 + ratio * 438}
+                                  x2={52 + ratio * 438}
+                                  y1="36"
+                                  y2="246"
+                                />
+                                <text className="screening-axis-label" x={42 + ratio * 438} y="274">
+                                  {Math.round(scatterMaxVotes * ratio).toLocaleString()}
+                                </text>
+                              </g>
+                            ))}
+                            <text className="screening-title" x="52" y="24">
+                              {selectedReviewJurisdictionName}: local vote-share chart
+                            </text>
+                            <text className="screening-axis-title centered" x="271" y="286">
+                              Candidate votes in local row
+                            </text>
+                            <text className="screening-axis-title vertical" transform="translate(14 186) rotate(-90)">
+                              Candidate vote share
+                            </text>
+                            {harrisScatterPoints.map((point) => (
+                              <circle
+                                className="screening-dot dem"
+                                cx={scatterX(point.x)}
+                                cy={scatterY(point.y)}
+                                key={`harris-${point.id}`}
+                                r="3"
+                              >
+                                <title>
+                                  {point.label}: Harris {point.votes.toLocaleString()} votes, {point.y.toFixed(2)}%
+                                </title>
+                              </circle>
+                            ))}
+                            {trumpScatterPoints.map((point) => (
+                              <circle
+                                className="screening-dot rep"
+                                cx={scatterX(point.x)}
+                                cy={scatterY(point.y)}
+                                key={`trump-${point.id}`}
+                                r="3"
+                              >
+                                <title>
+                                  {point.label}: Trump {point.votes.toLocaleString()} votes, {point.y.toFixed(2)}%
+                                </title>
+                              </circle>
+                            ))}
+                            {harrisTrend && trendY(harrisTrend, 0) !== null && trendY(harrisTrend, scatterMaxVotes) !== null && (
                               <line
-                                className="screening-gridline"
-                                x1={52 + ratio * 438}
-                                x2={52 + ratio * 438}
-                                y1="36"
-                                y2="246"
+                                className="screening-trend dem"
+                                x1={scatterX(0)}
+                                x2={scatterX(scatterMaxVotes)}
+                                y1={trendY(harrisTrend, 0) ?? 0}
+                                y2={trendY(harrisTrend, scatterMaxVotes) ?? 0}
                               />
-                              <text className="screening-axis-label" x={42 + ratio * 438} y="274">
-                                {Math.round(scatterMaxVotes * ratio).toLocaleString()}
-                              </text>
+                            )}
+                            {trumpTrend && trendY(trumpTrend, 0) !== null && trendY(trumpTrend, scatterMaxVotes) !== null && (
+                              <line
+                                className="screening-trend rep"
+                                x1={scatterX(0)}
+                                x2={scatterX(scatterMaxVotes)}
+                                y1={trendY(trumpTrend, 0) ?? 0}
+                                y2={trendY(trumpTrend, scatterMaxVotes) ?? 0}
+                              />
+                            )}
+                            <g className="screening-legend">
+                              <circle className="screening-dot rep" cx="430" cy="24" r="4" />
+                              <text x="440" y="28">Trump</text>
+                              <circle className="screening-dot dem" cx="486" cy="24" r="4" />
+                              <text x="496" y="28">Harris</text>
                             </g>
-                          ))}
-                          <text className="screening-title" x="52" y="24">
-                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: local vote-share chart
-                          </text>
-                          <text className="screening-axis-title centered" x="271" y="286">
-                            Candidate votes in local row
-                          </text>
-                          <text className="screening-axis-title vertical" transform="translate(14 186) rotate(-90)">
-                            Candidate vote share
-                          </text>
-                          {harrisScatterPoints.map((point) => (
-                            <circle
-                              className="screening-dot dem"
-                              cx={scatterX(point.x)}
-                              cy={scatterY(point.y)}
-                              key={`harris-${point.id}`}
-                              r="3"
-                            >
-                              <title>
-                                {point.label}: Harris {point.votes.toLocaleString()} votes, {point.y.toFixed(2)}%
-                              </title>
-                            </circle>
-                          ))}
-                          {trumpScatterPoints.map((point) => (
-                            <circle
-                              className="screening-dot rep"
-                              cx={scatterX(point.x)}
-                              cy={scatterY(point.y)}
-                              key={`trump-${point.id}`}
-                              r="3"
-                            >
-                              <title>
-                                {point.label}: Trump {point.votes.toLocaleString()} votes, {point.y.toFixed(2)}%
-                              </title>
-                            </circle>
-                          ))}
-                          {harrisTrend && trendY(harrisTrend, 0) !== null && trendY(harrisTrend, scatterMaxVotes) !== null && (
-                            <line
-                              className="screening-trend dem"
-                              x1={scatterX(0)}
-                              x2={scatterX(scatterMaxVotes)}
-                              y1={trendY(harrisTrend, 0) ?? 0}
-                              y2={trendY(harrisTrend, scatterMaxVotes) ?? 0}
-                            />
-                          )}
-                          {trumpTrend && trendY(trumpTrend, 0) !== null && trendY(trumpTrend, scatterMaxVotes) !== null && (
-                            <line
-                              className="screening-trend rep"
-                              x1={scatterX(0)}
-                              x2={scatterX(scatterMaxVotes)}
-                              y1={trendY(trumpTrend, 0) ?? 0}
-                              y2={trendY(trumpTrend, scatterMaxVotes) ?? 0}
-                            />
-                          )}
-                          <g className="screening-legend">
-                            <circle className="screening-dot rep" cx="430" cy="24" r="4" />
-                            <text x="440" y="28">Trump</text>
-                            <circle className="screening-dot dem" cx="486" cy="24" r="4" />
-                            <text x="496" y="28">Harris</text>
-                          </g>
-                        </svg>
+                          </svg>
+                        </div>
+                        <ChartGate
+                          acknowledged={scatterAcknowledged}
+                          diagnostic={scatterDiagnostic}
+                          onAcknowledge={() => acknowledgeChart(scatterDiagnostic.acknowledgementKey)}
+                        />
                       </div>
                       <details className="how-to-read">
                         <summary>How to read this</summary>
@@ -1538,11 +1898,12 @@ export function WorkspaceTabs({
                           <span>Statistical Screening Graph</span>
                           <strong>Presidential-Versus-Comparison Drop-Off Histogram</strong>
                           <small>
-                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: DEM and REP local drop-off rates
+                            {selectedReviewJurisdictionName}: DEM and REP local drop-off rates
                           </small>
                         </div>
                         <button
                           className="secondary-button"
+                          disabled={dropoffDiagnostic.status !== "ready" && !dropoffAcknowledged}
                           onClick={() => downloadSvgElement(dropoffSvgId, `${screeningSlug}-dropoff-histogram.svg`)}
                           type="button"
                         >
@@ -1554,80 +1915,93 @@ export function WorkspaceTabs({
                           than expected across many receipts, the bars show where those differences pile up.
                         </Eli5>
                       </div>
-                      <div className="screening-chart-frame">
-                        <svg
-                          aria-label={`${selectedReviewJurisdiction?.jurisdictionName ?? stateName} presidential versus comparison drop-off histogram`}
-                          id={dropoffSvgId}
-                          role="img"
-                          viewBox="0 0 560 300"
-                        >
-                          <rect className="screening-svg-bg" height="300" width="560" />
-                          {[0, 0.5, 1].map((ratio) => (
-                            <g key={ratio}>
-                              <line
-                                className="screening-gridline"
-                                x1="52"
-                                x2="506"
-                                y1={246 - ratio * 210}
-                                y2={246 - ratio * 210}
-                              />
-                              <text className="screening-axis-label" x="26" y={250 - ratio * 210}>
-                                {Math.round(maxDropoffBucket * ratio)}
-                              </text>
-                            </g>
-                          ))}
-                          <line className="screening-midline" x1="279" x2="279" y1="36" y2="246" />
-                          <text className="screening-title" x="52" y="24">
-                            {selectedReviewJurisdiction?.jurisdictionName ?? stateName}: President vs comparison drop-off rates
-                          </text>
-                          <text className="screening-axis-title centered" x="279" y="284">
-                            <tspan x="279" dy="0">Presidential votes minus comparison votes</tspan>
-                            <tspan x="279" dy="12">as % of presidential votes</tspan>
-                          </text>
-                          <text className="screening-axis-title vertical" transform="translate(14 172) rotate(-90)">
-                            Local row count
-                          </text>
-                          {dropoffBuckets.map((bucket, index) => {
-                            const x = 58 + index * 34;
-                            const demHeight = (bucket.dem / maxDropoffBucket) * 196;
-                            const repHeight = (bucket.rep / maxDropoffBucket) * 196;
-                            return (
-                              <g key={bucket.label}>
-                                <rect
-                                  className="screening-bar dem"
-                                  height={Math.max(1, demHeight)}
-                                  width="12"
-                                  x={x}
-                                  y={246 - demHeight}
-                                >
-                                  <title>
-                                    DEM {bucket.label}: {bucket.dem} local rows
-                                  </title>
-                                </rect>
-                                <rect
-                                  className="screening-bar rep"
-                                  height={Math.max(1, repHeight)}
-                                  width="12"
-                                  x={x + 14}
-                                  y={246 - repHeight}
-                                >
-                                  <title>
-                                    REP {bucket.label}: {bucket.rep} local rows
-                                  </title>
-                                </rect>
+                      <ChartQualityNotice diagnostic={dropoffDiagnostic} />
+                      <div
+                        className={`screening-chart-shell ${
+                          dropoffDiagnostic.status !== "ready" && !dropoffAcknowledged ? "is-gated" : ""
+                        }`}
+                      >
+                        <div className="screening-chart-frame">
+                          <svg
+                            aria-hidden={dropoffDiagnostic.status !== "ready" && !dropoffAcknowledged}
+                            aria-label={`${selectedReviewJurisdictionName} presidential versus comparison drop-off histogram`}
+                            id={dropoffSvgId}
+                            role="img"
+                            viewBox="0 0 560 300"
+                          >
+                            <rect className="screening-svg-bg" height="300" width="560" />
+                            {[0, 0.5, 1].map((ratio) => (
+                              <g key={ratio}>
+                                <line
+                                  className="screening-gridline"
+                                  x1="52"
+                                  x2="506"
+                                  y1={246 - ratio * 210}
+                                  y2={246 - ratio * 210}
+                                />
+                                <text className="screening-axis-label" x="26" y={250 - ratio * 210}>
+                                  {Math.round(maxDropoffBucket * ratio)}
+                                </text>
                               </g>
-                            );
-                          })}
-                          <text className="screening-axis-label" x="48" y="274">-30%</text>
-                          <text className="screening-axis-label" x="270" y="274">0%</text>
-                          <text className="screening-axis-label" x="482" y="274">+30%</text>
-                          <g className="screening-legend">
-                            <rect className="screening-bar dem" height="10" width="10" x="430" y="16" />
-                            <text x="444" y="25">DEM</text>
-                            <rect className="screening-bar rep" height="10" width="10" x="486" y="16" />
-                            <text x="500" y="25">REP</text>
-                          </g>
-                        </svg>
+                            ))}
+                            <line className="screening-midline" x1="279" x2="279" y1="36" y2="246" />
+                            <text className="screening-title" x="52" y="24">
+                              {selectedReviewJurisdictionName}: President vs comparison drop-off rates
+                            </text>
+                            <text className="screening-axis-title centered" x="279" y="284">
+                              <tspan x="279" dy="0">Presidential votes minus comparison votes</tspan>
+                              <tspan x="279" dy="12">as % of presidential votes</tspan>
+                            </text>
+                            <text className="screening-axis-title vertical" transform="translate(14 172) rotate(-90)">
+                              Local row count
+                            </text>
+                            {dropoffBuckets.map((bucket, index) => {
+                              const x = 58 + index * 34;
+                              const demHeight = (bucket.dem / maxDropoffBucket) * 196;
+                              const repHeight = (bucket.rep / maxDropoffBucket) * 196;
+                              return (
+                                <g key={bucket.label}>
+                                  <rect
+                                    className="screening-bar dem"
+                                    height={Math.max(1, demHeight)}
+                                    width="12"
+                                    x={x}
+                                    y={246 - demHeight}
+                                  >
+                                    <title>
+                                      DEM {bucket.label}: {bucket.dem} local rows
+                                    </title>
+                                  </rect>
+                                  <rect
+                                    className="screening-bar rep"
+                                    height={Math.max(1, repHeight)}
+                                    width="12"
+                                    x={x + 14}
+                                    y={246 - repHeight}
+                                  >
+                                    <title>
+                                      REP {bucket.label}: {bucket.rep} local rows
+                                    </title>
+                                  </rect>
+                                </g>
+                              );
+                            })}
+                            <text className="screening-axis-label" x="48" y="274">-30%</text>
+                            <text className="screening-axis-label" x="270" y="274">0%</text>
+                            <text className="screening-axis-label" x="482" y="274">+30%</text>
+                            <g className="screening-legend">
+                              <rect className="screening-bar dem" height="10" width="10" x="430" y="16" />
+                              <text x="444" y="25">DEM</text>
+                              <rect className="screening-bar rep" height="10" width="10" x="486" y="16" />
+                              <text x="500" y="25">REP</text>
+                            </g>
+                          </svg>
+                        </div>
+                        <ChartGate
+                          acknowledged={dropoffAcknowledged}
+                          diagnostic={dropoffDiagnostic}
+                          onAcknowledge={() => acknowledgeChart(dropoffDiagnostic.acknowledgementKey)}
+                        />
                       </div>
                       <details className="how-to-read">
                         <summary>How to read this</summary>
@@ -2340,8 +2714,6 @@ export function WorkspaceTabs({
             </div>
             <div className="method-list">
               {methodologyGuides.map((guide) => {
-                const guideLinks = sourceLinksForGuide(sources, guide, selectedStateCode);
-
                 return (
                   <details className="methodology-card" key={guide.id}>
                     <summary>
@@ -2364,21 +2736,21 @@ export function WorkspaceTabs({
                         <p>{guide.caveat}</p>
                       </div>
                       <div className="methodology-sources">
-                        <span className="section-label">Sources</span>
-                        {guideLinks.length ? (
-                          <ul>
-                            {guideLinks.map((link) => (
-                              <li key={`${guide.id}-${link.href}-${link.label}`}>
-                                <a href={link.href} rel="noreferrer" target="_blank">
-                                  {link.label}
-                                </a>
-                                <span>{link.detail}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p>No matching source links are loaded for {stateName} yet.</p>
-                        )}
+                        <span className="section-label">Official References</span>
+                        <ul>
+                          {guide.links.map((link) => (
+                            <li key={`${guide.id}-${link.href}-${link.label}`}>
+                              <a href={link.href} rel="noreferrer" target="_blank">
+                                {link.label}
+                              </a>
+                              <span>{link.detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <p>
+                          Use Data & Sources for {stateName} official canvass files, local artifacts, parser notes, and
+                          selected-state provenance.
+                        </p>
                       </div>
                     </div>
                   </details>

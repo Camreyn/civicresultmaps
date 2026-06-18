@@ -2012,6 +2012,130 @@ input {
   color: var(--accent);
 }
 
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.chart-quality-notice {
+  background: rgba(244, 241, 234, 0.035);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  line-height: 1.45;
+  padding: 12px;
+}
+
+.chart-quality-notice.ready {
+  background: rgba(53, 199, 163, 0.07);
+  border-color: rgba(53, 199, 163, 0.28);
+}
+
+.chart-quality-notice.acknowledgement_required,
+.chart-quality-notice.blocked {
+  background: rgba(240, 195, 106, 0.08);
+  border-color: rgba(240, 195, 106, 0.34);
+}
+
+.chart-quality-notice span {
+  color: var(--gold);
+  font-family: var(--font-code);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.chart-quality-notice.ready span {
+  color: var(--accent);
+}
+
+.chart-quality-notice strong {
+  color: var(--foreground);
+  display: block;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.chart-quality-notice ul {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.chart-quality-notice li {
+  font-size: 12px;
+}
+
+.chart-quality-notice details {
+  border-top: 1px solid rgba(244, 241, 234, 0.08);
+  padding-top: 8px;
+}
+
+.chart-quality-notice summary {
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.screening-chart-shell {
+  position: relative;
+}
+
+.screening-chart-shell.is-gated .screening-chart-frame {
+  filter: grayscale(0.45);
+  opacity: 0.28;
+}
+
+.screening-chart-gate {
+  align-items: center;
+  background: rgba(13, 15, 14, 0.88);
+  border: 1px solid rgba(240, 195, 106, 0.42);
+  border-radius: 8px;
+  color: var(--foreground);
+  display: grid;
+  gap: 10px;
+  inset: 14px;
+  justify-items: center;
+  line-height: 1.45;
+  padding: 18px;
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+}
+
+.screening-chart-gate svg {
+  color: var(--gold);
+}
+
+.screening-chart-gate strong {
+  font-size: 16px;
+}
+
+.screening-chart-gate p {
+  color: var(--muted);
+  margin: 0;
+  max-width: 560px;
+}
+
+.screening-chart-gate ul {
+  color: var(--muted);
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  max-width: 560px;
+  padding-left: 18px;
+  text-align: left;
+}
+
+.screening-chart-gate li {
+  font-size: 12px;
+}
+
 .screening-chart-frame {
   background: #0d0f0e;
   border: 1px solid var(--line);
