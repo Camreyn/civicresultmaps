@@ -24,6 +24,7 @@ test("public API route contracts exist", () => {
     "src/app/api/completeness/route.ts",
     "src/app/api/review-rows/route.ts",
     "src/app/api/turnout/route.ts",
+    "src/app/api/vote-methods/route.ts",
     "src/app/api/turnout-sources/route.ts",
     "src/app/api/historical-baselines/route.ts",
     "src/app/api/native-source-packages/route.ts",
@@ -117,6 +118,12 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /downloadSvgElement/);
   assert.match(tabs, /Partial screening data/);
   assert.match(tabs, /Proxy graph, not a complete Klimek fingerprint/);
+  assert.match(tabs, /methodologyGuides/);
+  assert.match(tabs, /sourceLinksForGuide/);
+  assert.match(tabs, /methodology-card/);
+  assert.match(tabs, /Read this carefully/);
+  assert.match(tabs, /Sources API/);
+  assert.match(tabs, /Candidate-by-method/);
   assert.match(explorer, /Eli5/);
   assert.match(overview, /Eli5/);
 });
@@ -131,6 +138,7 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(dataAccess, /listReviewRows/);
   assert.match(dataAccess, /listTurnoutRows/);
   assert.match(dataAccess, /listHistoricalResultRows/);
+  assert.match(readFileSync("src/lib/api.ts", "utf8"), /listVoteMethodRows/);
   assert.match(tabs, /Historical Baselines/);
   assert.match(tabs, /historicalYearSummaries/);
   assert.match(tabs, /enabledHistoricalYears/);
@@ -144,7 +152,18 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(tabs, /shpilkin-grid/);
   assert.match(tabs, /\/api\/review-rows/);
   assert.match(tabs, /\/api\/turnout/);
+  assert.match(tabs, /\/api\/vote-methods/);
+  assert.match(tabs, /buildWorkspaceTourSteps/);
+  assert.match(tabs, /candidate-method-note/);
+  assert.match(tabs, /Candidate by Method/);
+  assert.match(tabs, /Candidate-by-method needs an official source/);
+  assert.match(tabs, /vote-method-summary/);
+  assert.match(tabs, /vote-method-layer/);
+  assert.match(tabs, /Vote Methods CSV/);
   assert.match(tabs, /\/api\/historical-baselines/);
+  assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /Method layer/);
+  assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /Jump to tour step/);
+  assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /skipIfMissing/);
 });
 
 test("seed data carries required provenance fields", () => {

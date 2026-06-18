@@ -156,6 +156,27 @@ export type TurnoutRowSummary = {
   sourceId: string;
 };
 
+export type VoteMethodRowSummary = {
+  id: string;
+  state: string;
+  electionYear: number;
+  jurisdictionCode: string;
+  jurisdictionName: string;
+  county: string;
+  localUnit: string;
+  level: string;
+  method: string;
+  methodLabel: string;
+  sourceField: string;
+  voters: number | null;
+  methodSharePct: number | null;
+  totalVoters: number | null;
+  valueStatus: string;
+  sourceId: string;
+  sourceStatus: string;
+  sourceUrl: string;
+};
+
 export type HistoricalResultRowSummary = {
   id: string;
   state: string;

@@ -19,6 +19,7 @@ export type TourStep = {
   body: string;
   fallbackTarget?: string;
   id: string;
+  skipIfMissing?: boolean;
   tab?: TourTabKey;
   target: string;
   title: string;
@@ -37,9 +38,36 @@ type GuidedTourProps = {
   steps: TourStep[];
 };
 
-function readRect(selector: string, fallbackSelector?: string): Rect | null {
-  const target = document.querySelector(selector) ?? (fallbackSelector ? document.querySelector(fallbackSelector) : null);
+function isTargetUsable(target: Element) {
+  const rect = target.getBoundingClientRect();
+  const style = window.getComputedStyle(target);
+  const isDisabled =
+    target.getAttribute("aria-disabled") === "true" ||
+    ((target instanceof HTMLButtonElement ||
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLSelectElement ||
+      target instanceof HTMLTextAreaElement) &&
+      target.disabled);
 
+  return (
+    !isDisabled &&
+    rect.width > 0 &&
+    rect.height > 0 &&
+    style.display !== "none" &&
+    style.visibility !== "hidden" &&
+    Number(style.opacity) !== 0
+  );
+}
+
+function findUsableTarget(selector: string) {
+  return Array.from(document.querySelectorAll(selector)).find(isTargetUsable) ?? null;
+}
+
+function resolveTarget(step: TourStep) {
+  return findUsableTarget(step.target) ?? (step.fallbackTarget ? findUsableTarget(step.fallbackTarget) : null);
+}
+
+function readRect(target: Element | null): Rect | null {
   if (!target) {
     return null;
   }
@@ -108,6 +136,14 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
   const position = useMemo(() => cardPosition(targetRect), [targetRect]);
 
   useEffect(() => {
+    if (stepIndex <= steps.length - 1) {
+      return;
+    }
+
+    setStepIndex(Math.max(0, steps.length - 1));
+  }, [stepIndex, steps.length]);
+
+  useEffect(() => {
     if (!isOpen || !activeStep?.tab || activeStep.tab === activeTab) {
       return;
     }
@@ -120,10 +156,12 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
       return;
     }
 
+    let cancelled = false;
     let frame = 0;
+    let retry = 0;
 
-    const update = () => {
-      setTargetRect(readRect(activeStep.target, activeStep.fallbackTarget) ?? readRect("[data-tour='workspace']"));
+    const update = (target = resolveTarget(activeStep)) => {
+      setTargetRect(readRect(target));
 
       if (cardRef.current) {
         const rect = cardRef.current.getBoundingClientRect();
@@ -134,29 +172,63 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
           width: rect.width,
         });
       }
+
+      return Boolean(target);
     };
 
-    const scrollToTarget = () => {
-      const target =
-        document.querySelector(activeStep.target) ??
-        (activeStep.fallbackTarget ? document.querySelector(activeStep.fallbackTarget) : null);
-      target?.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+    const skipStep = () => {
+      setStepIndex((current) => {
+        if (current >= steps.length - 1) {
+          setIsOpen(false);
+          return current;
+        }
 
-      frame = window.setTimeout(() => {
-        update();
-      }, 260);
+        return current + 1;
+      });
     };
 
-    scrollToTarget();
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
+    const settleTarget = () => {
+      if (cancelled) {
+        return;
+      }
+
+      const target = resolveTarget(activeStep);
+
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+
+        frame = window.setTimeout(() => {
+          update(target);
+        }, 260);
+        return;
+      }
+
+      if (retry < 12) {
+        retry += 1;
+        frame = window.setTimeout(settleTarget, 90);
+        return;
+      }
+
+      if (activeStep.skipIfMissing ?? true) {
+        skipStep();
+      }
+    };
+
+    const updateFromCurrentTarget = () => {
+      update();
+    };
+
+    settleTarget();
+    window.addEventListener("resize", updateFromCurrentTarget);
+    window.addEventListener("scroll", updateFromCurrentTarget, true);
 
     return () => {
+      cancelled = true;
       window.clearTimeout(frame);
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", updateFromCurrentTarget);
+      window.removeEventListener("scroll", updateFromCurrentTarget, true);
     };
-  }, [activeStep, activeTab, isOpen]);
+  }, [activeStep, activeTab, isOpen, steps.length]);
 
   useEffect(() => {
     if (!isOpen || !cardRef.current) {
@@ -181,6 +253,10 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
   };
 
   const startTour = () => {
+    if (!steps.length) {
+      return;
+    }
+
     setStepIndex(0);
     setIsOpen(true);
   };
@@ -257,6 +333,25 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
             </div>
             <strong>{activeStep.title}</strong>
             <p>{activeStep.body}</p>
+            <label className="tour-step-jump">
+              <span>Jump to</span>
+              <select
+                aria-label="Jump to tour step"
+                onChange={(event) => {
+                  const nextIndex = steps.findIndex((step) => step.id === event.target.value);
+                  if (nextIndex >= 0) {
+                    setStepIndex(nextIndex);
+                  }
+                }}
+                value={activeStep.id}
+              >
+                {steps.map((step, index) => (
+                  <option key={step.id} value={step.id}>
+                    {index + 1}. {step.title}
+                  </option>
+                ))}
+              </select>
+            </label>
             <div className="tour-progress" aria-hidden>
               {steps.map((step, index) => (
                 <i className={index === stepIndex ? "is-active" : undefined} key={step.id} />

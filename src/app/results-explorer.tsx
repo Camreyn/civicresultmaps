@@ -3,7 +3,7 @@
 import { ArrowDownAZ, ArrowUpDown, ExternalLink, RotateCcw, Search, X, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
-import type { AnalysisIndicator, ResultRow, SourceSummary } from "@/lib/types";
+import type { AnalysisIndicator, ResultRow, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 
 type ResultsExplorerProps = {
   countyLabel: string;
@@ -11,10 +11,11 @@ type ResultsExplorerProps = {
   results: ResultRow[];
   selectedState: string;
   sources: SourceSummary[];
+  voteMethodRows: VoteMethodRowSummary[];
 };
 
 type SortKey = "jurisdiction" | "winner" | "total" | "margin";
-type MapMode = "winner" | "margin" | "volume";
+type MapMode = "winner" | "margin" | "volume" | "method";
 
 type GeoFeature = {
   geometry: {
@@ -203,7 +204,34 @@ function mixColor(start: [number, number, number], end: [number, number, number]
   )})`;
 }
 
-function countyFill(row: ResultRow | undefined, mode: MapMode, maxTotalVotes: number) {
+type VoteMethodAggregate = {
+  method: string;
+  methodLabel: string;
+  reportedRows: number;
+  totalVoters: number;
+  unavailableRows: number;
+  voters: number;
+};
+
+function methodShare(row: VoteMethodAggregate | undefined) {
+  return row && row.totalVoters > 0 ? (row.voters / row.totalVoters) * 100 : null;
+}
+
+function countyFill(
+  row: ResultRow | undefined,
+  mode: MapMode,
+  maxTotalVotes: number,
+  methodRow?: VoteMethodAggregate,
+  maxMethodShare = 100,
+) {
+  if (mode === "method") {
+    const share = methodShare(methodRow);
+    if (share === null) {
+      return "#2c302e";
+    }
+    return mixColor([220, 252, 231], [13, 148, 136], share / Math.max(1, maxMethodShare));
+  }
+
   if (!row) {
     return "#2c302e";
   }
@@ -232,11 +260,13 @@ export function ResultsExplorer({
   results,
   selectedState,
   sources,
+  voteMethodRows,
 }: ResultsExplorerProps) {
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [mapMode, setMapMode] = useState<MapMode>("winner");
   const [mapZoom, setMapZoom] = useState(1);
+  const [selectedVoteMethod, setSelectedVoteMethod] = useState("in_person_early");
   const [selectedMapName, setSelectedMapName] = useState<string | null>(null);
   const [pinnedMapName, setPinnedMapName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -325,6 +355,56 @@ export function ResultsExplorer({
     () => results.reduce((max, row) => Math.max(max, row.totalVotes), 0),
     [results],
   );
+  const voteMethodOptions = useMemo(() => {
+    const options = new Map<string, string>();
+    for (const row of voteMethodRows) {
+      options.set(row.method, row.methodLabel);
+    }
+    return Array.from(options.entries()).map(([method, label]) => ({ label, method }));
+  }, [voteMethodRows]);
+
+  useEffect(() => {
+    if (!voteMethodOptions.length) {
+      return;
+    }
+    setSelectedVoteMethod((current) =>
+      voteMethodOptions.some((option) => option.method === current) ? current : voteMethodOptions[0].method,
+    );
+  }, [voteMethodOptions]);
+
+  const voteMethodByCounty = useMemo(() => {
+    const aggregates = new Map<string, VoteMethodAggregate>();
+    for (const row of voteMethodRows) {
+      if (row.method !== selectedVoteMethod) {
+        continue;
+      }
+      const countyName = row.county || row.jurisdictionName;
+      const key = normalizeName(countyName);
+      const current = aggregates.get(key) ?? {
+        method: row.method,
+        methodLabel: row.methodLabel,
+        reportedRows: 0,
+        totalVoters: 0,
+        unavailableRows: 0,
+        voters: 0,
+      };
+      if (row.valueStatus === "reported" && row.voters !== null) {
+        current.reportedRows += 1;
+        current.voters += row.voters;
+        current.totalVoters += row.totalVoters ?? 0;
+      } else {
+        current.unavailableRows += 1;
+      }
+      aggregates.set(key, current);
+    }
+    return aggregates;
+  }, [selectedVoteMethod, voteMethodRows]);
+  const selectedVoteMethodLabel =
+    voteMethodOptions.find((option) => option.method === selectedVoteMethod)?.label ?? "Vote method";
+  const maxVoteMethodShare = Math.max(
+    1,
+    ...Array.from(voteMethodByCounty.values()).map((row) => methodShare(row) ?? 0),
+  );
 
   const activeMapName = pinnedMapName ?? selectedMapName;
   const selectedMapResult = activeMapName
@@ -333,6 +413,9 @@ export function ResultsExplorer({
   const selectedMapIndicators = activeMapName
     ? indicatorsByName.get(normalizeName(activeMapName)) ?? []
     : [];
+  const selectedMapVoteMethod = activeMapName
+    ? voteMethodByCounty.get(normalizeName(resultNameForFeature(selectedState, activeMapName)))
+    : undefined;
   const selectedSource = selectedMapResult ? sourceById.get(selectedMapResult.sourceId) : undefined;
   const pinnedMapResult = pinnedMapName ? resultsByName.get(normalizeName(pinnedMapName)) : undefined;
   const pinnedMapIndicators = pinnedMapName ? indicatorsByName.get(normalizeName(pinnedMapName)) ?? [] : [];
@@ -418,9 +501,12 @@ export function ResultsExplorer({
               ["winner", "Winner"],
               ["margin", "Margin"],
               ["volume", "Votes"],
+              ["method", "Method"],
             ].map(([mode, label]) => (
               <button
                 aria-pressed={mapMode === mode}
+                data-tour={mode === "method" ? "method-mode-button" : undefined}
+                disabled={mode === "method" && voteMethodRows.length === 0}
                 key={mode}
                 onClick={() => setMapMode(mode as MapMode)}
                 type="button"
@@ -438,6 +524,27 @@ export function ResultsExplorer({
             </span>
           </div>
         </div>
+        {mapMode === "method" && (
+          <div className="map-method-control" data-tour="vote-method-layer">
+            <label htmlFor="map-vote-method">Method layer</label>
+            <select
+              id="map-vote-method"
+              onChange={(event) => setSelectedVoteMethod(event.target.value)}
+              value={selectedVoteMethod}
+            >
+              {voteMethodOptions.map((option) => (
+                <option key={option.method} value={option.method}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <span>
+              {activeMapName
+                ? `${selectedVoteMethodLabel}: ${methodShare(selectedMapVoteMethod)?.toFixed(2) ?? "N/A"}%`
+                : "County shading aggregates EAC participation-method rows where needed."}
+            </span>
+          </div>
+        )}
         {hasMapJoinWarnings && (
           <div className="map-warning" role="status">
             <strong>Map join needs review</strong>
@@ -483,6 +590,7 @@ export function ResultsExplorer({
                 const name = featureName(feature);
                 const resultName = resultNameForFeature(selectedState, name);
                 const row = resultsByName.get(normalizeName(resultName));
+                const methodRow = voteMethodByCounty.get(normalizeName(resultName));
                 const countyIndicators = indicatorsByName.get(normalizeName(resultName)) ?? [];
                 const rings = polygonRings(feature);
                 const point = centroid(selectedState, feature, bounds);
@@ -494,7 +602,7 @@ export function ResultsExplorer({
                       aria-label={`${name}${row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
-                      fill={countyFill(row, mapMode, maxTotalVotes)}
+                      fill={countyFill(row, mapMode, maxTotalVotes, methodRow, maxVoteMethodShare)}
                       onClick={() => inspectJurisdiction(resultName)}
                       onFocus={() => setSelectedMapName(resultName)}
                       onKeyDown={(event) => {
@@ -510,7 +618,12 @@ export function ResultsExplorer({
                       tabIndex={0}
                     >
                       <title>
-                        {name}: {row ? `${row.winner} by ${row.marginPct.toFixed(2)}%` : "No result row"}
+                        {name}:{" "}
+                        {mapMode === "method"
+                          ? `${selectedVoteMethodLabel} ${methodShare(methodRow)?.toFixed(2) ?? "N/A"}%`
+                          : row
+                            ? `${row.winner} by ${row.marginPct.toFixed(2)}%`
+                            : "No result row"}
                         {countyIndicators.length
                           ? `; ${countyIndicators.length} advisory review flag(s)`
                           : ""}
@@ -536,7 +649,15 @@ export function ResultsExplorer({
           )}
         </div>
         <div className="map-legend" aria-label="Map legend">
-          {mapMode !== "volume" && (
+          {mapMode === "method" ? (
+            <div className="margin-scale-legend method-scale-legend" aria-label="Vote method share color scale">
+              <div className="method-scale-bar" aria-hidden />
+              <div className="margin-scale-labels">
+                <span>Lower {selectedVoteMethodLabel}</span>
+                <span>Higher {selectedVoteMethodLabel}</span>
+              </div>
+            </div>
+          ) : mapMode !== "volume" && (
             <div className="margin-scale-legend" aria-label="Winner margin color scale">
               <div className="margin-scale-bar" aria-hidden />
               <div className="margin-scale-labels">
@@ -551,6 +672,9 @@ export function ResultsExplorer({
           <span className="legend-item legend-missing">No joined result</span>
           <span className="legend-item legend-flag">Advisory count</span>
           {mapMode === "volume" && <span className="legend-note">Gold intensity shows total vote volume.</span>}
+          {mapMode === "method" && (
+            <span className="legend-note">Method layer is participation method, not candidate vote by method.</span>
+          )}
           <span className="legend-note">Badge numbers count advisory indicators, not confirmed findings.</span>
           {selectedMapIndicators.length > 0 && (
             <span className="legend-note">
@@ -592,6 +716,10 @@ export function ResultsExplorer({
                 <div>
                   <dt>Flags</dt>
                   <dd>{selectedMapIndicators.length}</dd>
+                </div>
+                <div>
+                  <dt>{selectedVoteMethodLabel}</dt>
+                  <dd>{methodShare(selectedMapVoteMethod)?.toFixed(2) ?? "N/A"}%</dd>
                 </div>
               </dl>
               <div className="drawer-source">

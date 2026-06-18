@@ -33,6 +33,7 @@ import type {
   ReviewRowSummary,
   SourceSummary,
   StateSummary,
+  VoteMethodRowSummary,
 } from "@/lib/types";
 
 type WorkspaceTabsProps = {
@@ -47,6 +48,7 @@ type WorkspaceTabsProps = {
   selectedStateCode: string;
   sources: SourceSummary[];
   totalVotes: number;
+  voteMethodRows: VoteMethodRowSummary[];
 };
 
 type TabKey =
@@ -62,6 +64,34 @@ type TabKey =
   | "contact";
 type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
+type WorkspaceTourContext = {
+  hasCoverage: boolean;
+  hasHistoricalRows: boolean;
+  hasImportRuns: boolean;
+  hasResults: boolean;
+  hasReviewRows: boolean;
+  hasSources: boolean;
+  hasVoteMethodRows: boolean;
+  stateName: string;
+};
+type TourFeature = {
+  build: (context: WorkspaceTourContext) => TourStep[];
+  key: string;
+};
+type MethodologySourceLink = {
+  detail: string;
+  href: string;
+  label: string;
+};
+type MethodologyGuide = {
+  apiLinks?: Array<{ href: string; label: string }>;
+  caveat: string;
+  guide: string[];
+  id: string;
+  sourceKeywords: string[];
+  summary: string;
+  title: string;
+};
 
 const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>; key: TabKey; label: string }> = [
   { icon: MapIcon, key: "map", label: "Map" },
@@ -76,148 +106,391 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: Mail, key: "contact", label: "Contact" },
 ];
 
-const tourSteps: TourStep[] = [
+const tourFeatureRegistry: TourFeature[] = [
   {
-    body: "Use these tabs as the main workspace. The tour will switch tabs for you and point at the important controls.",
-    id: "tabs",
-    target: "[data-tour='tab-bar']",
-    title: "Start with the workspace tabs",
+    key: "workspace",
+    build: (context) => [
+      {
+        body: "Use these tabs as the main workspace. The tour will switch tabs for you and point at the important controls.",
+        id: "tabs",
+        target: "[data-tour='tab-bar']",
+        title: "Start with the workspace tabs",
+      },
+      {
+        body: `Pick a state here. The rest of the page reloads around ${context.stateName}'s results, source records, and data status.`,
+        fallbackTarget: "[data-tour='workspace']",
+        id: "states",
+        target: "[data-tour='state-sidebar']",
+        title: "Choose a state",
+      },
+      {
+        body: context.hasCoverage
+          ? "This summary shows national loading progress and the broad readiness posture before you drill into one state."
+          : "National loading progress appears here when the coverage summary is available.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "overview",
+        target: ".national-overview",
+        title: "Check national coverage",
+      },
+    ],
   },
   {
-    body: "Pick a state here. The rest of the page reloads around that state's results, source records, and data status.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "states",
-    target: "[data-tour='state-sidebar']",
-    title: "Choose a state",
+    key: "map",
+    build: (context) => [
+      {
+        body: context.hasResults
+          ? "Winner, Margin, Votes, and Method change how the map is shaded. The readout next to the buttons updates when you hover or select a boundary."
+          : "Map controls appear here once certified result rows are loaded for the selected state.",
+        fallbackTarget: "[data-tour='map-panel']",
+        id: "map-controls",
+        tab: "map",
+        target: "[data-tour='map-controls']",
+        title: "Change the map mode",
+      },
+      ...(context.hasVoteMethodRows
+        ? [
+            {
+              body: "Select Method to shade counties by EAC-reported participation method, such as mail votes or in-person early voting. It is participation data, not a candidate-by-method breakdown.",
+              fallbackTarget: "[data-tour='map-controls']",
+              id: "vote-method-layer",
+              tab: "map" as const,
+              target: "[data-tour='method-mode-button']",
+              title: "Use the vote-method layer",
+            },
+          ]
+        : []),
+      ...(context.hasResults
+        ? [
+            {
+              body: "Click or keyboard-select a county to pin it. Blue and red come from the loaded winner; intensity comes from margin or vote volume depending on the mode.",
+              fallbackTarget: "[data-tour='map-panel']",
+              id: "map",
+              tab: "map" as const,
+              target: "[data-tour='county-map']",
+              title: "Read the county map",
+            },
+            {
+              body: "This drawer is the receipt for the selected place: candidate votes, winner margin, source link, and advisory indicators when they exist.",
+              fallbackTarget: "[data-tour='map-panel']",
+              id: "drawer",
+              tab: "map" as const,
+              target: "[data-tour='jurisdiction-drawer']",
+              title: "Inspect one jurisdiction",
+            },
+            {
+              body: "The table is the same data as the map in spreadsheet form. Sort by margin or vote total, filter by name, and jump back to a source record.",
+              fallbackTarget: "[data-tour='map-panel']",
+              id: "results-table",
+              tab: "map" as const,
+              target: "[data-tour='results-table']",
+              title: "Use the results table",
+            },
+          ]
+        : []),
+    ],
   },
   {
-    body: "This summary shows national loading progress and the broad readiness posture before you drill into one state.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "overview",
-    target: ".national-overview",
-    title: "Check national coverage",
+    key: "review",
+    build: (context) =>
+      context.hasReviewRows
+        ? [
+            {
+              body: "The Review Center collects advisory indicators. These are triage prompts for human review, not claims by themselves.",
+              fallbackTarget: "[data-tour='review-panel']",
+              id: "review",
+              tab: "review",
+              target: "[data-tour='review-layout']",
+              title: "Review flagged patterns",
+            },
+            {
+              body: "The scatterplot compares local vote totals against vote share. Outliers are places worth inspecting against sources and local context.",
+              fallbackTarget: "[data-tour='review-panel']",
+              id: "scatter",
+              tab: "review",
+              target: "[data-tour='review-scatter']",
+              title: "Read the vote-share scatterplot",
+            },
+            {
+              body: "The drop-off histogram buckets local drop-off values. It is useful for seeing whether a pattern is isolated or appears across many rows.",
+              fallbackTarget: "[data-tour='review-panel']",
+              id: "dropoff",
+              tab: "review",
+              target: "[data-tour='review-dropoff']",
+              title: "Read the drop-off histogram",
+            },
+          ]
+        : [
+            {
+              body: `${context.stateName} does not currently have statistical screening rows loaded, so the tour stops at the empty-state panel instead of highlighting missing charts.`,
+              fallbackTarget: "[data-tour='workspace']",
+              id: "review-empty",
+              tab: "review",
+              target: "[data-tour='review-panel']",
+              title: "Review coverage depends on rows",
+            },
+          ],
   },
   {
-    body: "Winner, Margin, and Votes change how the map is shaded. The readout next to the buttons updates when you hover or select a boundary.",
-    fallbackTarget: "[data-tour='map-panel']",
-    id: "map-controls",
-    tab: "map",
-    target: "[data-tour='map-controls']",
-    title: "Change the map mode",
+    key: "history",
+    build: (context) =>
+      context.hasHistoricalRows
+        ? [
+            {
+              body: "Historical charts compare older county results with the current import. Use the toggles to include or remove specific years and graph families.",
+              fallbackTarget: "[data-tour='history-panel']",
+              id: "history",
+              tab: "history",
+              target: "[data-tour='history-charts']",
+              title: "Compare historical baselines",
+            },
+            {
+              body: "Fingerprint and Shpilkin-style views are diagnostic visualizations. Treat them as prompts for review, not as conclusions.",
+              fallbackTarget: "[data-tour='history-panel']",
+              id: "fingerprints",
+              tab: "history",
+              target: "[data-tour='history-fingerprints']",
+              title: "Use diagnostic graph views carefully",
+            },
+          ]
+        : [
+            {
+              body: `${context.stateName} does not currently have historical baseline rows loaded, so this tour step points to the empty-state panel.`,
+              fallbackTarget: "[data-tour='workspace']",
+              id: "history-empty",
+              tab: "history",
+              target: "[data-tour='history-panel']",
+              title: "Historical coverage depends on rows",
+            },
+          ],
   },
   {
-    body: "Click or keyboard-select a county to pin it. Blue and red come from the loaded winner; intensity comes from margin or vote volume depending on the mode.",
-    fallbackTarget: "[data-tour='map-panel']",
-    id: "map",
-    tab: "map",
-    target: "[data-tour='county-map']",
-    title: "Read the county map",
+    key: "planner",
+    build: () => [
+      {
+        body: "The Source Planner shows which data families are ready, pending, or waiting on better source files for the selected state.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "planner",
+        tab: "planner",
+        target: "[data-tour='source-planner']",
+        title: "Check source readiness",
+      },
+    ],
   },
   {
-    body: "This drawer is the receipt for the selected place: candidate votes, winner margin, source link, and advisory indicators when they exist.",
-    fallbackTarget: "[data-tour='map-panel']",
-    id: "drawer",
-    tab: "map",
-    target: "[data-tour='jurisdiction-drawer']",
-    title: "Inspect one jurisdiction",
+    key: "data",
+    build: (context) => [
+      {
+        body: context.hasSources
+          ? "Data and Sources is the bibliography. Open official links, review parser names, and confirm whether a source is loaded or still a candidate."
+          : "Source records appear here when an imported source package is available for the selected state.",
+        fallbackTarget: "[data-tour='data-sources']",
+        id: "sources",
+        tab: "data",
+        target: "[data-tour='source-links']",
+        title: "Trace numbers back to sources",
+      },
+      {
+        body: context.hasVoteMethodRows
+          ? "Vote Methods summarizes EAC participation-method rows. These values can also be viewed as a county map layer from the Map tab."
+          : `${context.stateName} does not currently have normalized EAC vote-method rows loaded, so the Method map step is skipped for this state.`,
+        fallbackTarget: "[data-tour='data-sources']",
+        id: "vote-method-summary",
+        tab: "data",
+        target: "[data-tour='vote-method-summary']",
+        title: "Review vote methods",
+      },
+      {
+        body: "Candidate-by-method needs an official source that reports candidate totals split by ballot method. The current EAC method rows describe how people voted, not who each method selected.",
+        fallbackTarget: "[data-tour='vote-method-summary']",
+        id: "candidate-method-note",
+        tab: "data",
+        target: "[data-tour='candidate-method-note']",
+        title: "Separate candidate by method",
+      },
+    ],
   },
   {
-    body: "The table is the same data as the map in spreadsheet form. Sort by margin or vote total, filter by name, and jump back to a source record.",
-    fallbackTarget: "[data-tour='map-panel']",
-    id: "results-table",
-    tab: "map",
-    target: "[data-tour='results-table']",
-    title: "Use the results table",
+    key: "methodology",
+    build: () => [
+      {
+        body: "Methodology explains what the app is allowed to claim, what the indicators mean, and what should not be overinterpreted.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "methodology",
+        tab: "methodology",
+        target: "[data-tour='methodology']",
+        title: "Read the methodology",
+      },
+    ],
   },
   {
-    body: "The Review Center collects advisory indicators. These are triage prompts for human review, not claims by themselves.",
-    fallbackTarget: "[data-tour='review-panel']",
-    id: "review",
-    tab: "review",
-    target: "[data-tour='review-layout']",
-    title: "Review flagged patterns",
+    key: "exports",
+    build: () => [
+      {
+        body: "Export buttons create browser-side CSVs from the selected state, and the API list gives direct JSON endpoints for external checks.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "exports",
+        tab: "exports",
+        target: "[data-tour='exports']",
+        title: "Export data or use the API",
+      },
+    ],
   },
   {
-    body: "The scatterplot compares local vote totals against vote share. Outliers are places worth inspecting against sources and local context.",
-    fallbackTarget: "[data-tour='review-panel']",
-    id: "scatter",
-    tab: "review",
-    target: "[data-tour='review-scatter']",
-    title: "Read the vote-share scatterplot",
+    key: "imports",
+    build: (context) => [
+      {
+        body: context.hasImportRuns
+          ? "Import Runs show when ETL promotion happened and whether it finished cleanly. This is useful for auditing freshness."
+          : "Import Runs will list ETL promotion history when a selected-state import run has been recorded.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "imports",
+        tab: "imports",
+        target: "[data-tour='import-runs']",
+        title: "Check import history",
+      },
+    ],
   },
   {
-    body: "The drop-off histogram buckets local drop-off values. It is useful for seeing whether a pattern is isolated or appears across many rows.",
-    fallbackTarget: "[data-tour='review-panel']",
-    id: "dropoff",
-    tab: "review",
-    target: "[data-tour='review-dropoff']",
-    title: "Read the drop-off histogram",
-  },
-  {
-    body: "Historical charts compare older county results with the current import. Use the toggles to include or remove specific years and graph families.",
-    fallbackTarget: "[data-tour='history-panel']",
-    id: "history",
-    tab: "history",
-    target: "[data-tour='history-charts']",
-    title: "Compare historical baselines",
-  },
-  {
-    body: "Fingerprint and Shpilkin-style views are diagnostic visualizations. Treat them as prompts for review, not as conclusions.",
-    fallbackTarget: "[data-tour='history-panel']",
-    id: "fingerprints",
-    tab: "history",
-    target: "[data-tour='history-fingerprints']",
-    title: "Use diagnostic graph views carefully",
-  },
-  {
-    body: "The Source Planner shows which data families are ready, pending, or waiting on better source files for the selected state.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "planner",
-    tab: "planner",
-    target: "[data-tour='source-planner']",
-    title: "Check source readiness",
-  },
-  {
-    body: "Data and Sources is the bibliography. Open official links, review parser names, and confirm whether a source is loaded or still a candidate.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "sources",
-    tab: "data",
-    target: "[data-tour='source-links']",
-    title: "Trace numbers back to sources",
-  },
-  {
-    body: "Methodology explains what the app is allowed to claim, what the indicators mean, and what should not be overinterpreted.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "methodology",
-    tab: "methodology",
-    target: "[data-tour='methodology']",
-    title: "Read the methodology",
-  },
-  {
-    body: "Export buttons create browser-side CSVs from the selected state, and the API list gives direct JSON endpoints for external checks.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "exports",
-    tab: "exports",
-    target: "[data-tour='exports']",
-    title: "Export data or use the API",
-  },
-  {
-    body: "Import Runs show when ETL promotion happened and whether it finished cleanly. This is useful for auditing freshness.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "imports",
-    tab: "imports",
-    target: "[data-tour='import-runs']",
-    title: "Check import history",
-  },
-  {
-    body: "The Support tab explains how contributions help with hosting, database costs, source collection, validation, and continued development.",
-    fallbackTarget: "[data-tour='workspace']",
-    id: "support",
-    tab: "support",
-    target: "[data-tour='support-card']",
-    title: "Support the project",
+    key: "support",
+    build: () => [
+      {
+        body: "The Support tab explains how contributions help with hosting, database costs, source collection, validation, and continued development.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "support",
+        tab: "support",
+        target: "[data-tour='support-card']",
+        title: "Support the project",
+      },
+    ],
   },
 ];
+
+function buildWorkspaceTourSteps(context: WorkspaceTourContext) {
+  return tourFeatureRegistry.flatMap((feature) => feature.build(context));
+}
+
+const methodologyGuides: MethodologyGuide[] = [
+  {
+    apiLinks: [{ href: "/api/results?state={state}&year=2024&level=county", label: "Results API" }],
+    caveat: "Use this for certified contest totals. It does not describe turnout, ballot method, or registration denominators unless those rows are explicitly present in separate tables.",
+    guide: [
+      "Start with the official state source record and confirm the authority, parser, and timestamp basis.",
+      "Check that candidate totals reconcile to the imported state total before using map colors or county rankings.",
+      "Treat the source document record as the audit trail for each displayed jurisdiction result.",
+    ],
+    id: "certified-results",
+    sourceKeywords: ["result", "canvass", "precinct", "ward", "president", "certified"],
+    summary: "Map shading and totals come from imported state bundles that reconcile to the generated source data.",
+    title: "Certified result rows",
+  },
+  {
+    apiLinks: [
+      { href: "/api/indicators?state={state}&year=2024", label: "Indicators API" },
+      { href: "/api/review-rows?state={state}&year=2024&limit=500", label: "Review rows API" },
+    ],
+    caveat: "A flag is a triage prompt. It should be checked against source records, local reporting-unit definitions, and any known reporting caveats before drawing conclusions.",
+    guide: [
+      "Open the Review Center to see which local rows generated advisory patterns.",
+      "Compare the flagged row with the same source family used for the certified result import.",
+      "Use scatterplots and drop-off histograms as screening views, not as proof by themselves.",
+    ],
+    id: "advisory-indicators",
+    sourceKeywords: ["review", "precinct", "senate", "statewide", "indicator", "comparison", "ward"],
+    summary: "Flags identify patterns that deserve review. They are not proof of tampering or a substitute for records.",
+    title: "Advisory indicators",
+  },
+  {
+    apiLinks: [{ href: "/api/coverage?state={state}&year=2024", label: "Coverage API" }],
+    caveat: "Geometry validates display joins, not vote arithmetic. A county boundary can be correct while a source-result parser still needs separate validation.",
+    guide: [
+      "County map shapes are joined by normalized county names or state-specific geometry keys.",
+      "Production joins should be checked after source promotion so unmatched boundaries are visible before release.",
+      "Precinct or ward boundaries remain disabled unless matching geometry is explicitly sourced.",
+    ],
+    id: "geometry-joins",
+    sourceKeywords: ["geometry", "boundary", "geojson", "county", "census", "tiger", "mngeo"],
+    summary: "Every deployed state map is checked against production result rows with npm run validate:maps.",
+    title: "Geometry joins",
+  },
+  {
+    apiLinks: [{ href: "/api/import-runs?state={state}&year=2024", label: "Import runs API" }],
+    caveat: "Public users can read imported rows and source metadata. Write paths are operational controls and should stay disabled unless a planned backfill is running.",
+    guide: [
+      "Importer routes require a server-side token before they can write or promote rows.",
+      "Import run records show which parser ran, when it ran, and whether it reached a promoted state.",
+      "Use this tile to distinguish public read APIs from private ETL operations.",
+    ],
+    id: "private-writes",
+    sourceKeywords: ["import", "etl", "parser", "source package", "promotion"],
+    summary: "Importer writes are token-gated and disabled in production unless a controlled backfill is running.",
+    title: "Private writes",
+  },
+  {
+    apiLinks: [
+      { href: "/api/turnout?state={state}&year=2024&limit=500", label: "Turnout API" },
+      { href: "/api/historical-baselines?state={state}&limit=500", label: "Historical baselines API" },
+      { href: "/api/vote-methods?state={state}&year=2024&limit=500", label: "Vote methods API" },
+    ],
+    caveat: "A visible gap is preferable to an inferred value. Candidate-by-method, for example, is not derived unless an official source reports candidate totals split by ballot method.",
+    guide: [
+      "Confirm whether review, turnout, historical, and vote-method row counts are nonzero for the selected state.",
+      "Read denominator notes before comparing turnout or registration figures across source families.",
+      "Keep missing candidate-by-method data separate from EAC participation-method rows.",
+    ],
+    id: "data-gaps",
+    sourceKeywords: ["turnout", "registration", "historical", "baseline", "eac", "vote method", "method"],
+    summary: "Review graphs, turnout, and historical baselines only become active when the corresponding rows exist in the imported state bundle.",
+    title: "Current data gaps",
+  },
+  {
+    apiLinks: [
+      { href: "/api/sources?state={state}&year=2024", label: "Sources API" },
+      { href: "/api/completeness?year=2024", label: "Completeness API" },
+    ],
+    caveat: "CSV downloads are generated from what is currently loaded in the browser for the selected state. Use API endpoints for repeatable external checks.",
+    guide: [
+      "Use browser CSV exports for quick spreadsheet review of the selected state.",
+      "Use public JSON APIs when another tool needs reproducible parameters such as state, year, level, or limit.",
+      "Include source exports when sharing result rows so readers can trace figures back to official records.",
+    ],
+    id: "exports",
+    sourceKeywords: ["source", "coverage", "api", "completeness", "provenance"],
+    summary: "CSV exports are generated in the browser from the same selected-state data shown in the interface.",
+    title: "Exports",
+  },
+];
+
+function sourceMatchesGuide(source: SourceSummary, guide: MethodologyGuide) {
+  const searchable = [
+    source.category,
+    source.title,
+    source.localArtifact,
+    source.parser,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return guide.sourceKeywords.some((keyword) => searchable.includes(keyword.toLowerCase()));
+}
+
+function sourceLinksForGuide(sources: SourceSummary[], guide: MethodologyGuide, stateCode: string): MethodologySourceLink[] {
+  const officialLinks = sources
+    .filter((source) => source.sourceUrl && sourceMatchesGuide(source, guide))
+    .slice(0, 4)
+    .map((source) => ({
+      detail: `${source.authority} · ${source.status}`,
+      href: source.sourceUrl,
+      label: source.category || source.title,
+    }));
+
+  const apiLinks = (guide.apiLinks ?? []).map((link) => ({
+    detail: "Public app endpoint",
+    href: link.href.replaceAll("{state}", stateCode),
+    label: link.label,
+  }));
+
+  return [...officialLinks, ...apiLinks];
+}
 
 function formatCapability(key: string) {
   return key.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
@@ -364,6 +637,7 @@ export function WorkspaceTabs({
   selectedStateCode,
   sources,
   totalVotes,
+  voteMethodRows,
 }: WorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("map");
   const [enabledScreeningGraphs, setEnabledScreeningGraphs] = useState<ScreeningGraphType[]>([
@@ -679,6 +953,46 @@ export function WorkspaceTabs({
     [historicalRowsByYear],
   );
   const topIndicators = filteredIndicators.slice(0, 6);
+  const voteMethodSummaries = useMemo(() => {
+    const summaries = new Map<
+      string,
+      {
+        label: string;
+        reportedRows: number;
+        totalVoters: number;
+        unavailableRows: number;
+        voters: number;
+      }
+    >();
+
+    for (const row of voteMethodRows) {
+      const current = summaries.get(row.method) ?? {
+        label: row.methodLabel,
+        reportedRows: 0,
+        totalVoters: 0,
+        unavailableRows: 0,
+        voters: 0,
+      };
+      if (row.valueStatus === "reported" && row.voters !== null) {
+        current.reportedRows += 1;
+        current.voters += row.voters;
+        current.totalVoters += row.totalVoters ?? 0;
+      } else {
+        current.unavailableRows += 1;
+      }
+      summaries.set(row.method, current);
+    }
+
+    return Array.from(summaries.entries())
+      .map(([method, summary]) => ({
+        ...summary,
+        method,
+        share: summary.totalVoters > 0 ? (summary.voters / summary.totalVoters) * 100 : null,
+      }))
+      .sort((a, b) => b.voters - a.voters);
+  }, [voteMethodRows]);
+  const voteMethodJurisdictions = new Set(voteMethodRows.map((row) => row.jurisdictionCode || row.jurisdictionName)).size;
+  const voteMethodUnavailableRows = voteMethodRows.filter((row) => row.valueStatus !== "reported").length;
   const capabilityEntries = coverage
     ? Object.entries(coverage.capabilities).filter(([key]) => key !== "notes")
     : [];
@@ -716,6 +1030,29 @@ export function WorkspaceTabs({
   ];
 
   const stateName = selectedState?.name ?? selectedStateCode;
+  const workspaceTourSteps = useMemo(
+    () =>
+      buildWorkspaceTourSteps({
+        hasCoverage: Boolean(coverage),
+        hasHistoricalRows: historicalRows.length > 0,
+        hasImportRuns: selectedImportRuns.length > 0,
+        hasResults: results.length > 0,
+        hasReviewRows: reviewRows.length > 0,
+        hasSources: sources.length > 0,
+        hasVoteMethodRows: voteMethodRows.length > 0,
+        stateName,
+      }),
+    [
+      coverage,
+      historicalRows.length,
+      results.length,
+      reviewRows.length,
+      selectedImportRuns.length,
+      sources.length,
+      stateName,
+      voteMethodRows.length,
+    ],
+  );
   const exportSlug = `${selectedStateCode.toLowerCase()}-2024-president`;
 
   const exportResults = () =>
@@ -783,6 +1120,33 @@ export function WorkspaceTabs({
       ],
     );
 
+  const exportVoteMethods = () =>
+    downloadCsv(
+      `${exportSlug}-vote-methods.csv`,
+      [
+        "jurisdiction",
+        "county",
+        "method",
+        "method_label",
+        "voters",
+        "method_share_pct",
+        "total_voters",
+        "value_status",
+        "source_field",
+      ],
+      voteMethodRows.map((row) => [
+        row.jurisdictionName,
+        row.county,
+        row.method,
+        row.methodLabel,
+        row.voters ?? "",
+        row.methodSharePct ?? "",
+        row.totalVoters ?? "",
+        row.valueStatus,
+        row.sourceField,
+      ]),
+    );
+
   const downloadSvgElement = (elementId: string, filename: string) => {
     const svg = document.getElementById(elementId);
     if (!svg) {
@@ -804,7 +1168,7 @@ export function WorkspaceTabs({
   return (
     <section className="workspace-tabs" data-tour="workspace" aria-label={`${stateName} workspace`}>
       <nav className="tab-bar" data-tour="tab-bar" aria-label="Workspace sections">
-        <GuidedTour activeTab={activeTab} onSelectTab={selectTab} steps={tourSteps} />
+        <GuidedTour activeTab={activeTab} onSelectTab={selectTab} steps={workspaceTourSteps} />
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -832,6 +1196,7 @@ export function WorkspaceTabs({
               results={results}
               selectedState={selectedStateCode}
               sources={sources}
+              voteMethodRows={voteMethodRows}
             />
             <div className="detail-stack">
               <section className="panel" aria-label="Provenance">
@@ -1844,6 +2209,89 @@ export function WorkspaceTabs({
                 ))}
               </ul>
             </div>
+            <div className="vote-method-panel" data-tour="vote-method-summary">
+              <div className="vote-method-head">
+                <div>
+                  <strong>Vote Methods</strong>
+                  <span>
+                    {voteMethodRows.length
+                      ? `${voteMethodJurisdictions.toLocaleString()} EAC jurisdictions, ${voteMethodRows.length.toLocaleString()} method rows`
+                      : "No EAC vote-method rows loaded for this state."}
+                  </span>
+                </div>
+                <div className="header-actions">
+                  <Eli5>
+                    These rows describe how people participated: polling place, mail, early in-person, provisional, and
+                    related EAC categories. They do not split Harris or Trump votes by method.
+                  </Eli5>
+                  <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button">
+                    <Download aria-hidden size={15} />
+                    Vote Methods CSV
+                  </button>
+                </div>
+              </div>
+              {voteMethodRows.length ? (
+                <>
+                  <div className="export-summary-grid vote-method-summary-grid">
+                    <article>
+                      <span>Jurisdictions</span>
+                      <strong>{voteMethodJurisdictions.toLocaleString()}</strong>
+                    </article>
+                    <article>
+                      <span>Method rows</span>
+                      <strong>{voteMethodRows.length.toLocaleString()}</strong>
+                    </article>
+                    <article>
+                      <span>Unavailable fields</span>
+                      <strong>{voteMethodUnavailableRows.toLocaleString()}</strong>
+                    </article>
+                    <article>
+                      <span>Layer</span>
+                      <strong>Map ready</strong>
+                    </article>
+                  </div>
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Method</th>
+                          <th>Voters</th>
+                          <th>Share</th>
+                          <th>Reported rows</th>
+                          <th>Unavailable</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {voteMethodSummaries.map((summary) => (
+                          <tr key={summary.method}>
+                            <td>{summary.label}</td>
+                            <td className="mono">{summary.voters.toLocaleString()}</td>
+                            <td className="mono">{summary.share === null ? "N/A" : `${summary.share.toFixed(2)}%`}</td>
+                            <td className="mono">{summary.reportedRows.toLocaleString()}</td>
+                            <td className="mono">{summary.unavailableRows.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : (
+                <div className="empty-panel">
+                  <strong>No vote-method rows loaded for {stateName}</strong>
+                  <span>Current normalized EAC method coverage is available for MI, MN, OH, PA, and WI.</span>
+                </div>
+              )}
+            </div>
+            <div className="vote-method-caveat" data-tour="candidate-method-note">
+              <div>
+                <strong>Candidate by Method</strong>
+                <span>
+                  Not derived here. Candidate-by-method requires an official source that reports candidate totals split
+                  by ballot method; EAC participation-method rows cannot be multiplied across candidate totals.
+                </span>
+              </div>
+              <span className="pending">Source required</span>
+            </div>
             <div className="source-card-grid">
               {sources.map((source) => (
                 <article className="source-card" key={source.id}>
@@ -1891,30 +2339,51 @@ export function WorkspaceTabs({
               </div>
             </div>
             <div className="method-list">
-              <article>
-                <strong>Certified result rows</strong>
-                <p>Map shading and totals come from imported state bundles that reconcile to the generated source data.</p>
-              </article>
-              <article>
-                <strong>Advisory indicators</strong>
-                <p>Flags identify patterns that deserve review. They are not proof of tampering or a substitute for records.</p>
-              </article>
-              <article>
-                <strong>Geometry joins</strong>
-                <p>Every deployed state map is checked against production result rows with npm run validate:maps.</p>
-              </article>
-              <article>
-                <strong>Private writes</strong>
-                <p>Importer writes are token-gated and disabled in production unless a controlled backfill is running.</p>
-              </article>
-              <article>
-                <strong>Current data gaps</strong>
-                <p>Review graphs, turnout, and historical baselines only become active when the corresponding rows exist in the imported state bundle.</p>
-              </article>
-              <article>
-                <strong>Exports</strong>
-                <p>CSV exports are generated in the browser from the same selected-state data shown in the interface.</p>
-              </article>
+              {methodologyGuides.map((guide) => {
+                const guideLinks = sourceLinksForGuide(sources, guide, selectedStateCode);
+
+                return (
+                  <details className="methodology-card" key={guide.id}>
+                    <summary>
+                      <span>
+                        <strong>{guide.title}</strong>
+                        <small>{guide.summary}</small>
+                      </span>
+                    </summary>
+                    <div className="methodology-card-body">
+                      <div>
+                        <span className="section-label">Guide</span>
+                        <ol>
+                          {guide.guide.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ol>
+                      </div>
+                      <div className="methodology-caveat">
+                        <strong>Read this carefully</strong>
+                        <p>{guide.caveat}</p>
+                      </div>
+                      <div className="methodology-sources">
+                        <span className="section-label">Sources</span>
+                        {guideLinks.length ? (
+                          <ul>
+                            {guideLinks.map((link) => (
+                              <li key={`${guide.id}-${link.href}-${link.label}`}>
+                                <a href={link.href} rel="noreferrer" target="_blank">
+                                  {link.label}
+                                </a>
+                                <span>{link.detail}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p>No matching source links are loaded for {stateName} yet.</p>
+                        )}
+                      </div>
+                    </div>
+                  </details>
+                );
+              })}
             </div>
             <div className="validation-list">
               {validationChecks.map((check) => (
@@ -1964,6 +2433,10 @@ export function WorkspaceTabs({
                 <Download aria-hidden size={16} />
                 Coverage CSV
               </button>
+              <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button">
+                <Download aria-hidden size={16} />
+                Vote Methods CSV
+              </button>
             </div>
             <div className="export-summary-grid">
               <article>
@@ -2005,6 +2478,10 @@ export function WorkspaceTabs({
               <li>
                 <strong>Turnout</strong>
                 <code>/api/turnout?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+              </li>
+              <li>
+                <strong>Vote methods</strong>
+                <code>/api/vote-methods?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
               </li>
               <li>
                 <strong>Historical baselines</strong>

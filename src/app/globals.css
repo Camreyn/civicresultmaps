@@ -1204,6 +1204,34 @@ input {
   margin: 0;
 }
 
+.tour-step-jump {
+  display: grid;
+  gap: 6px;
+}
+
+.tour-step-jump span {
+  color: var(--quiet);
+  font-family: var(--font-code);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tour-step-jump select {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  min-height: 34px;
+  padding: 0 10px;
+  width: 100%;
+}
+
+.tour-step-jump select:focus {
+  border-color: var(--accent-line);
+  outline: 2px solid rgba(53, 199, 163, 0.18);
+}
+
 .tour-card button {
   align-items: center;
   background: var(--panel-strong);
@@ -1507,6 +1535,12 @@ input {
   color: var(--accent);
 }
 
+.mode-control button:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .map-readout {
   display: grid;
   gap: 3px;
@@ -1523,6 +1557,36 @@ input {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.map-method-control {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto minmax(180px, 260px) minmax(0, 1fr);
+  padding: 10px 16px;
+}
+
+.map-method-control label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.map-method-control select {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  min-height: 34px;
+  padding: 0 10px;
+}
+
+.map-method-control span {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .map-wrap {
@@ -1690,7 +1754,7 @@ input {
 .jurisdiction-stats {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   margin: 0;
 }
 
@@ -1789,6 +1853,14 @@ input {
   overflow: hidden;
 }
 
+.method-scale-bar {
+  background: linear-gradient(90deg, #dcfce7, #0d9488);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  height: 13px;
+  overflow: hidden;
+}
+
 .margin-scale-labels {
   color: var(--muted);
   display: grid;
@@ -1796,6 +1868,10 @@ input {
   gap: 8px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   line-height: 1.25;
+}
+
+.method-scale-legend .margin-scale-labels {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .margin-scale-labels span:nth-child(1),
@@ -1815,6 +1891,16 @@ input {
 .margin-scale-labels span:nth-child(2),
 .margin-scale-labels span:nth-child(3) {
   text-align: center;
+}
+
+.method-scale-legend .margin-scale-labels span {
+  color: #bbf7d0;
+  text-align: left;
+}
+
+.method-scale-legend .margin-scale-labels span:last-child {
+  color: #5eead4;
+  text-align: right;
 }
 
 .table-tools {
@@ -2327,6 +2413,7 @@ td {
 .capability-card,
 .export-summary-grid article,
 .source-card,
+.methodology-card,
 .method-list article {
   background: var(--panel-strong);
   border: 1px solid var(--line);
@@ -2870,8 +2957,76 @@ td {
   padding: 10px 12px;
 }
 
+.vote-method-panel {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.vote-method-head {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.vote-method-head > div:first-child {
+  display: grid;
+  gap: 5px;
+}
+
+.vote-method-head span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.vote-method-head button {
+  align-items: center;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  color: var(--accent);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 12px;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 10px;
+}
+
+.vote-method-head button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.vote-method-summary-grid {
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+}
+
+.vote-method-caveat {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 14px 16px;
+}
+
+.vote-method-caveat > div {
+  display: grid;
+  gap: 5px;
+}
+
+.vote-method-caveat span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .source-card p,
-.method-list p {
+.method-list p,
+.methodology-card li {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
@@ -2917,6 +3072,116 @@ td {
 
 .method-list {
   grid-template-columns: repeat(2, minmax(220px, 1fr));
+}
+
+.methodology-card {
+  padding: 0;
+}
+
+.methodology-card summary {
+  align-items: start;
+  cursor: pointer;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  list-style: none;
+  padding: 14px;
+}
+
+.methodology-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.methodology-card summary::after {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--accent);
+  content: "+";
+  display: grid;
+  font-family: var(--font-code);
+  font-size: 15px;
+  font-weight: 900;
+  height: 26px;
+  place-items: center;
+  width: 26px;
+}
+
+.methodology-card[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.methodology-card[open] summary::after {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  content: "-";
+}
+
+.methodology-card summary > span {
+  display: grid;
+  gap: 8px;
+}
+
+.methodology-card summary strong {
+  font-size: 15px;
+}
+
+.methodology-card summary small {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.methodology-card-body {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+}
+
+.methodology-card ol,
+.methodology-sources ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.methodology-caveat {
+  background: rgba(240, 195, 106, 0.08);
+  border: 1px solid rgba(240, 195, 106, 0.28);
+  border-radius: 8px;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+}
+
+.methodology-caveat strong {
+  color: var(--gold);
+  font-size: 13px;
+}
+
+.methodology-sources {
+  display: grid;
+  gap: 8px;
+}
+
+.methodology-sources li {
+  display: grid;
+  gap: 3px;
+}
+
+.methodology-sources a {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.methodology-sources span,
+.methodology-sources p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
 }
 
 .export-grid {
@@ -3125,6 +3390,13 @@ td {
   }
 
   .map-control-row {
+    grid-template-columns: 1fr;
+  }
+
+  .map-method-control,
+  .vote-method-caveat,
+  .vote-method-head {
+    align-items: stretch;
     grid-template-columns: 1fr;
   }
 

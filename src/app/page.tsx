@@ -15,6 +15,7 @@ import {
   listResults,
   listSources,
   listStates,
+  listVoteMethodRows,
 } from "@/lib/api";
 
 const selectedYear = 2024;
@@ -28,7 +29,18 @@ type HomeProps = {
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
-  const [states, completenessReport, results, sources, coverage, importRuns, indicators, reviewRows, historicalRows] = await Promise.all([
+  const [
+    states,
+    completenessReport,
+    results,
+    sources,
+    coverage,
+    importRuns,
+    indicators,
+    reviewRows,
+    historicalRows,
+    voteMethodRows,
+  ] = await Promise.all([
     listStates(),
     listCompletenessReport({ year: selectedYear }),
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
@@ -38,6 +50,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listIndicators({ state: selectedState, year: selectedYear }),
     listReviewRows({ state: selectedState, year: selectedYear, limit: 5000 }),
     listHistoricalResultRows({ state: selectedState, limit: 5000 }),
+    listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
@@ -125,6 +138,7 @@ export default async function Home({ searchParams }: HomeProps) {
             selectedStateCode={selectedStateCode}
             sources={sources}
             totalVotes={totalVotes}
+            voteMethodRows={voteMethodRows}
           />
         </section>
       </div>

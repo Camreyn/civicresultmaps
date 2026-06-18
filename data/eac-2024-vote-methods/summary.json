@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-06-18T20:43:03.674Z",
+  "methods": [
+    {
+      "field": "F1b",
+      "key": "physical_polling_place",
+      "label": "Physical polling place"
+    },
+    {
+      "field": "F1c",
+      "key": "absentee_uocava",
+      "label": "Absentee UOCAVA"
+    },
+    {
+      "field": "F1d",
+      "key": "mail_votes",
+      "label": "Mail votes"
+    },
+    {
+      "field": "F1e",
+      "key": "provisional_ballot",
+      "label": "Provisional ballot"
+    },
+    {
+      "field": "F1f",
+      "key": "in_person_early",
+      "label": "In-person early voting"
+    },
+    {
+      "field": "F1g",
+      "key": "mail_votes_vote_by_mail_jurisdiction",
+      "label": "Mail votes in vote-by-mail jurisdiction"
+    },
+    {
+      "field": "F1h",
+      "key": "other_participation",
+      "label": "Other participation"
+    }
+  ],
+  "sourceTitle": "U.S. EAC Election Administration and Voting Survey",
+  "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+  "states": [
+    {
+      "state": "MI",
+      "file": "data/eac-2024-vote-methods/mi-2024-eac-vote-methods.csv",
+      "rows": 581,
+      "jurisdictionRows": 83,
+      "reportedRows": 415,
+      "unavailableRows": 166,
+      "totalVoters": 5706503,
+      "methodVoters": 5706503,
+      "methodTotalDelta": 0
+    },
+    {
+      "state": "MN",
+      "file": "data/eac-2024-vote-methods/mn-2024-eac-vote-methods.csv",
+      "rows": 609,
+      "jurisdictionRows": 87,
+      "reportedRows": 435,
+      "unavailableRows": 174,
+      "totalVoters": 3271069,
+      "methodVoters": 3271069,
+      "methodTotalDelta": 0
+    },
+    {
+      "state": "OH",
+      "file": "data/eac-2024-vote-methods/oh-2024-eac-vote-methods.csv",
+      "rows": 616,
+      "jurisdictionRows": 88,
+      "reportedRows": 535,
+      "unavailableRows": 81,
+      "totalVoters": 5851625,
+      "methodVoters": 5851274,
+      "methodTotalDelta": -351
+    },
+    {
+      "state": "PA",
+      "file": "data/eac-2024-vote-methods/pa-2024-eac-vote-methods.csv",
+      "rows": 469,
+      "jurisdictionRows": 67,
+      "reportedRows": 268,
+      "unavailableRows": 201,
+      "totalVoters": 7074875,
+      "methodVoters": 7074875,
+      "methodTotalDelta": 0
+    },
+    {
+      "state": "WI",
+      "file": "data/eac-2024-vote-methods/wi-2024-eac-vote-methods.csv",
+      "rows": 12957,
+      "jurisdictionRows": 1851,
+      "reportedRows": 11106,
+      "unavailableRows": 1851,
+      "totalVoters": 3434185,
+      "methodVoters": 3434185,
+      "methodTotalDelta": 0
+    }
+  ]
+}
