@@ -392,7 +392,7 @@ export function ResultsExplorer({
 
   return (
     <section className="results-explorer" aria-label={`${selectedState} result explorer`}>
-      <div className="panel map-panel" aria-label={`${selectedState} county map`}>
+      <div className="panel map-panel" data-tour="map-panel" aria-label={`${selectedState} county map`}>
         <div className="panel-header">
           <div>
             <h2>{countyLabel} Map</h2>
@@ -412,7 +412,7 @@ export function ResultsExplorer({
             <span className="status-pill">{selectedState}</span>
           </div>
         </div>
-        <div className="map-control-row" aria-label="Map display controls">
+        <div className="map-control-row" data-tour="map-controls" aria-label="Map display controls">
           <div className="mode-control" aria-label="Map display mode">
             {[
               ["winner", "Winner"],
@@ -476,7 +476,7 @@ export function ResultsExplorer({
             <span>{Math.round(mapZoom * 100)}%</span>
           </div>
           {geoStatus === "ready" && features.length > 0 ? (
-            <svg className="county-map" role="img" viewBox="0 0 960 560">
+            <svg className="county-map" data-tour="county-map" role="img" viewBox="0 0 960 560">
               <title>{selectedState} county presidential result map</title>
               <g transform={mapTransform}>
               {features.map((feature) => {
@@ -558,7 +558,7 @@ export function ResultsExplorer({
             </span>
           )}
         </div>
-        <aside className="jurisdiction-drawer" aria-label="Selected jurisdiction details">
+        <aside className="jurisdiction-drawer" data-tour="jurisdiction-drawer" aria-label="Selected jurisdiction details">
           <div className="drawer-helper">
             <Eli5>
               This box is the receipt for the place you clicked. It shows who got votes, who won, where the numbers came
@@ -699,7 +699,7 @@ export function ResultsExplorer({
             </div>
           </div>
         )}
-        <div className="table-wrap">
+        <div className="table-wrap" data-tour="results-table">
           <table>
             <thead>
               <tr>

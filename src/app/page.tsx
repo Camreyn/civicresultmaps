@@ -68,7 +68,7 @@ export default async function Home({ searchParams }: HomeProps) {
       </header>
 
       <div className="workspace">
-        <aside className="sidebar" aria-label="State coverage">
+        <aside className="sidebar" data-tour="state-sidebar" aria-label="State coverage">
           <div className="sidebar-header">
             <p className="section-label">States</p>
             <span>{states.length} loaded</span>

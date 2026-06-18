@@ -22,6 +22,7 @@ import {
 import type { ComponentType, SVGProps } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
+import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
 import type {
   AnalysisIndicator,
@@ -73,6 +74,149 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: GitBranch, key: "imports", label: "Import Runs" },
   { icon: HeartHandshake, key: "support", label: "Support" },
   { icon: Mail, key: "contact", label: "Contact" },
+];
+
+const tourSteps: TourStep[] = [
+  {
+    body: "Use these tabs as the main workspace. The tour will switch tabs for you and point at the important controls.",
+    id: "tabs",
+    target: "[data-tour='tab-bar']",
+    title: "Start with the workspace tabs",
+  },
+  {
+    body: "Pick a state here. The rest of the page reloads around that state's results, source records, and data status.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "states",
+    target: "[data-tour='state-sidebar']",
+    title: "Choose a state",
+  },
+  {
+    body: "This summary shows national loading progress and the broad readiness posture before you drill into one state.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "overview",
+    target: ".national-overview",
+    title: "Check national coverage",
+  },
+  {
+    body: "Winner, Margin, and Votes change how the map is shaded. The readout next to the buttons updates when you hover or select a boundary.",
+    fallbackTarget: "[data-tour='map-panel']",
+    id: "map-controls",
+    tab: "map",
+    target: "[data-tour='map-controls']",
+    title: "Change the map mode",
+  },
+  {
+    body: "Click or keyboard-select a county to pin it. Blue and red come from the loaded winner; intensity comes from margin or vote volume depending on the mode.",
+    fallbackTarget: "[data-tour='map-panel']",
+    id: "map",
+    tab: "map",
+    target: "[data-tour='county-map']",
+    title: "Read the county map",
+  },
+  {
+    body: "This drawer is the receipt for the selected place: candidate votes, winner margin, source link, and advisory indicators when they exist.",
+    fallbackTarget: "[data-tour='map-panel']",
+    id: "drawer",
+    tab: "map",
+    target: "[data-tour='jurisdiction-drawer']",
+    title: "Inspect one jurisdiction",
+  },
+  {
+    body: "The table is the same data as the map in spreadsheet form. Sort by margin or vote total, filter by name, and jump back to a source record.",
+    fallbackTarget: "[data-tour='map-panel']",
+    id: "results-table",
+    tab: "map",
+    target: "[data-tour='results-table']",
+    title: "Use the results table",
+  },
+  {
+    body: "The Review Center collects advisory indicators. These are triage prompts for human review, not claims by themselves.",
+    fallbackTarget: "[data-tour='review-panel']",
+    id: "review",
+    tab: "review",
+    target: "[data-tour='review-layout']",
+    title: "Review flagged patterns",
+  },
+  {
+    body: "The scatterplot compares local vote totals against vote share. Outliers are places worth inspecting against sources and local context.",
+    fallbackTarget: "[data-tour='review-panel']",
+    id: "scatter",
+    tab: "review",
+    target: "[data-tour='review-scatter']",
+    title: "Read the vote-share scatterplot",
+  },
+  {
+    body: "The drop-off histogram buckets local drop-off values. It is useful for seeing whether a pattern is isolated or appears across many rows.",
+    fallbackTarget: "[data-tour='review-panel']",
+    id: "dropoff",
+    tab: "review",
+    target: "[data-tour='review-dropoff']",
+    title: "Read the drop-off histogram",
+  },
+  {
+    body: "Historical charts compare older county results with the current import. Use the toggles to include or remove specific years and graph families.",
+    fallbackTarget: "[data-tour='history-panel']",
+    id: "history",
+    tab: "history",
+    target: "[data-tour='history-charts']",
+    title: "Compare historical baselines",
+  },
+  {
+    body: "Fingerprint and Shpilkin-style views are diagnostic visualizations. Treat them as prompts for review, not as conclusions.",
+    fallbackTarget: "[data-tour='history-panel']",
+    id: "fingerprints",
+    tab: "history",
+    target: "[data-tour='history-fingerprints']",
+    title: "Use diagnostic graph views carefully",
+  },
+  {
+    body: "The Source Planner shows which data families are ready, pending, or waiting on better source files for the selected state.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "planner",
+    tab: "planner",
+    target: "[data-tour='source-planner']",
+    title: "Check source readiness",
+  },
+  {
+    body: "Data and Sources is the bibliography. Open official links, review parser names, and confirm whether a source is loaded or still a candidate.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "sources",
+    tab: "data",
+    target: "[data-tour='source-links']",
+    title: "Trace numbers back to sources",
+  },
+  {
+    body: "Methodology explains what the app is allowed to claim, what the indicators mean, and what should not be overinterpreted.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "methodology",
+    tab: "methodology",
+    target: "[data-tour='methodology']",
+    title: "Read the methodology",
+  },
+  {
+    body: "Export buttons create browser-side CSVs from the selected state, and the API list gives direct JSON endpoints for external checks.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "exports",
+    tab: "exports",
+    target: "[data-tour='exports']",
+    title: "Export data or use the API",
+  },
+  {
+    body: "Import Runs show when ETL promotion happened and whether it finished cleanly. This is useful for auditing freshness.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "imports",
+    tab: "imports",
+    target: "[data-tour='import-runs']",
+    title: "Check import history",
+  },
+  {
+    body: "The Support tab explains how contributions help with hosting, database costs, source collection, validation, and continued development.",
+    fallbackTarget: "[data-tour='workspace']",
+    id: "support",
+    tab: "support",
+    target: "[data-tour='support-card']",
+    title: "Support the project",
+  },
 ];
 
 function formatCapability(key: string) {
@@ -658,14 +802,16 @@ export function WorkspaceTabs({
     trend ? scatterY(clamp(trend.intercept + trend.slope * x, 0, 100)) : null;
 
   return (
-    <section className="workspace-tabs" aria-label={`${stateName} workspace`}>
-      <nav className="tab-bar" aria-label="Workspace sections">
+    <section className="workspace-tabs" data-tour="workspace" aria-label={`${stateName} workspace`}>
+      <nav className="tab-bar" data-tour="tab-bar" aria-label="Workspace sections">
+        <GuidedTour activeTab={activeTab} onSelectTab={selectTab} steps={tourSteps} />
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <button
               aria-selected={activeTab === tab.key}
               className="tab-button"
+              data-tour={`tab-${tab.key}`}
               key={tab.key}
               onClick={() => selectTab(tab.key)}
               type="button"
@@ -782,7 +928,7 @@ export function WorkspaceTabs({
 
       {activeTab === "review" && (
         <div className="tab-panel-content">
-          <section className="panel">
+          <section className="panel" data-tour="review-panel">
             <div className="panel-header">
               <div>
                 <h2>Review Center</h2>
@@ -891,9 +1037,9 @@ export function WorkspaceTabs({
                   </div>
                 )}
 
-                <div className="screening-grid">
+                <div className="screening-grid" data-tour="screening-grid">
                   {enabledScreeningGraphs.includes("voteShareScatter") && (
-                    <article className="screening-card">
+                    <article className="screening-card" data-tour="review-scatter">
                       <div className="screening-card-head">
                         <div>
                           <span>Statistical Screening Graph</span>
@@ -1021,7 +1167,7 @@ export function WorkspaceTabs({
                   )}
 
                   {enabledScreeningGraphs.includes("dropoffHistogram") && (
-                    <article className="screening-card">
+                    <article className="screening-card" data-tour="review-dropoff">
                       <div className="screening-card-head">
                         <div>
                           <span>Statistical Screening Graph</span>
@@ -1140,7 +1286,7 @@ export function WorkspaceTabs({
               </div>
             )}
             {indicators.length ? (
-              <div className="review-layout">
+              <div className="review-layout" data-tour="review-layout">
                 <div className="priority-list">
                   {topIndicators.map((indicator) => (
                     <article className="priority-card" key={indicator.id}>
@@ -1195,7 +1341,7 @@ export function WorkspaceTabs({
             )}
           </section>
 
-          <section className="panel">
+          <section className="panel" data-tour="history-panel">
             <div className="panel-header">
               <div>
                 <h2>Flag Mix</h2>
@@ -1316,7 +1462,7 @@ export function WorkspaceTabs({
                     </article>
                   ))}
                 </div>
-                <div className="history-chart-grid">
+                <div className="history-chart-grid" data-tour="history-charts">
                   {enabledHistoricalGraphs.includes("share") && (
                     <article className="history-chart-card">
                       <div>
@@ -1414,7 +1560,7 @@ export function WorkspaceTabs({
                   )}
 
                   {enabledHistoricalGraphs.includes("klimek") && (
-                    <article className="history-chart-card wide">
+                    <article className="history-chart-card wide" data-tour="history-fingerprints">
                       <div>
                         <strong>Klimek-Style Vote Fingerprints</strong>
                         <span>
@@ -1475,7 +1621,7 @@ export function WorkspaceTabs({
                   )}
 
                   {enabledHistoricalGraphs.includes("shpilkin") && (
-                    <article className="history-chart-card wide">
+                    <article className="history-chart-card wide" data-tour="history-shpilkin">
                       <div>
                         <strong>Shpilkin-Style Vote-Share Diagnostics</strong>
                         <span>
@@ -1586,7 +1732,7 @@ export function WorkspaceTabs({
 
       {activeTab === "planner" && (
         <div className="tab-panel-content">
-          <section className="panel">
+          <section className="panel" data-tour="source-planner">
             <div className="panel-header">
               <div>
                 <h2>Source Planner</h2>
@@ -1649,7 +1795,7 @@ export function WorkspaceTabs({
 
       {activeTab === "data" && (
         <div className="tab-panel-content">
-          <section className="panel">
+          <section className="panel" data-tour="data-sources">
             <div className="panel-header">
               <div>
                 <h2>Data & Sources</h2>
@@ -1663,7 +1809,7 @@ export function WorkspaceTabs({
                 <FileCheck2 aria-hidden size={18} />
               </div>
             </div>
-            <div className="source-links-panel">
+            <div className="source-links-panel" data-tour="source-links">
               <div>
                 <strong>Official Source Links</strong>
                 <span>
@@ -1730,7 +1876,7 @@ export function WorkspaceTabs({
 
       {activeTab === "methodology" && (
         <div className="tab-panel-content methodology-grid">
-          <section className="panel text-panel">
+          <section className="panel text-panel" data-tour="methodology">
             <div className="panel-header">
               <div>
                 <h2>Methodology</h2>
@@ -1787,7 +1933,7 @@ export function WorkspaceTabs({
 
       {activeTab === "exports" && (
         <div className="tab-panel-content">
-          <section className="panel">
+          <section className="panel" data-tour="exports">
             <div className="panel-header">
               <div>
                 <h2>Exports & API</h2>
@@ -1883,7 +2029,7 @@ export function WorkspaceTabs({
 
       {activeTab === "imports" && (
         <div className="tab-panel-content">
-          <section className="panel">
+          <section className="panel" data-tour="import-runs">
             <div className="panel-header">
               <div>
                 <h2>Import Runs</h2>
@@ -1933,7 +2079,7 @@ export function WorkspaceTabs({
               </div>
               <HeartHandshake aria-hidden size={18} />
             </div>
-            <div className="support-card">
+            <div className="support-card" data-tour="support-card">
               <div className="support-copy">
                 <span className="section-label">Project funding</span>
                 <strong>Keep the maps, APIs, and data pipeline online.</strong>

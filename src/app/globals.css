@@ -1083,6 +1083,221 @@ input {
   color: var(--accent);
 }
 
+.tour-launch {
+  align-items: center;
+  background: rgba(130, 184, 255, 0.09);
+  border: 1px solid rgba(130, 184, 255, 0.34);
+  border-radius: 8px;
+  color: var(--blue);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-weight: 800;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 11px;
+}
+
+.tour-launch:hover {
+  background: rgba(130, 184, 255, 0.15);
+  border-color: rgba(130, 184, 255, 0.5);
+}
+
+.tour-layer {
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  z-index: 80;
+}
+
+.tour-spotlight {
+  animation: tour-spotlight-pulse 1800ms ease-in-out infinite;
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 9999px rgba(0, 0, 0, 0.66),
+    0 0 34px rgba(53, 199, 163, 0.38);
+  outline: 1px solid rgba(244, 241, 234, 0.35);
+  position: fixed;
+  transition:
+    height 220ms ease,
+    left 220ms ease,
+    top 220ms ease,
+    width 220ms ease;
+  z-index: 81;
+}
+
+.tour-arrow {
+  height: 100vh;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: fixed;
+  width: 100vw;
+  z-index: 82;
+}
+
+.tour-arrow path {
+  animation: tour-arrow-flow 1200ms linear infinite;
+  fill: none;
+  marker-end: url("#tour-arrow-head");
+  stroke: var(--accent);
+  stroke-dasharray: 8 8;
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.tour-arrow marker path {
+  fill: var(--accent);
+}
+
+.tour-arrow circle {
+  animation: tour-circle-pulse 1600ms ease-in-out infinite;
+  fill: rgba(53, 199, 163, 0.14);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.tour-card {
+  animation: tour-card-in 180ms ease-out;
+  background: #111312;
+  border: 1px solid var(--accent-line);
+  border-radius: 8px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.48);
+  display: grid;
+  gap: 12px;
+  max-width: calc(100vw - 32px);
+  padding: 14px;
+  pointer-events: auto;
+  position: fixed;
+  transition:
+    left 220ms ease,
+    top 220ms ease;
+  z-index: 83;
+}
+
+.tour-card-head,
+.tour-actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.tour-card-head span {
+  color: var(--accent);
+  font-family: var(--font-code);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tour-card strong {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.tour-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.tour-card button {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 800;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+}
+
+.tour-card button:hover:not(:disabled) {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.tour-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.tour-actions button:last-child {
+  background: var(--accent);
+  border-color: var(--accent-line);
+  color: #07100d;
+}
+
+.tour-progress {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+}
+
+.tour-progress i {
+  background: var(--line);
+  border-radius: 999px;
+  display: block;
+  height: 4px;
+}
+
+.tour-progress i.is-active {
+  background: var(--accent);
+  box-shadow: 0 0 14px rgba(53, 199, 163, 0.55);
+}
+
+@keyframes tour-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tour-spotlight-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 9999px rgba(0, 0, 0, 0.66),
+      0 0 28px rgba(53, 199, 163, 0.32);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 9999px rgba(0, 0, 0, 0.72),
+      0 0 44px rgba(53, 199, 163, 0.52);
+  }
+}
+
+@keyframes tour-arrow-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+@keyframes tour-circle-pulse {
+  0%,
+  100% {
+    r: 14;
+    opacity: 0.76;
+  }
+
+  50% {
+    r: 22;
+    opacity: 1;
+  }
+}
+
 .tab-panel-content {
   display: grid;
   gap: 18px;
@@ -2960,6 +3175,15 @@ td {
   .selected-result-callout {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .tour-card {
+    left: 16px !important;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    top: auto !important;
+    bottom: 16px;
+    width: calc(100vw - 32px) !important;
   }
 
   .eli5,
