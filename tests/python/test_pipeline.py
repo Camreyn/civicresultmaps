@@ -182,6 +182,26 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
         self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
 
+    def test_turnout_only_swing_state_configs_parse_eac_fallbacks(self):
+        expectations = {
+            "AZ": {"ballots": 3477975, "registered": 5075337, "rows": 15},
+            "GA": {"ballots": 5297500, "registered": 8234335, "rows": 159},
+            "NV": {"ballots": 1486297, "registered": 2256275, "rows": 17},
+        }
+
+        for state, expected in expectations.items():
+            with self.subTest(state=state):
+                config = load_config(f"etl/state-configs/{state.lower()}.json")
+                report = validate_config(config)
+                artifact = build_staging_artifact(config, report)
+
+                self.assertTrue(report.passed)
+                self.assertEqual(artifact["native"]["resultRows"], [])
+                self.assertEqual(artifact["native"]["reviewRows"], [])
+                self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], expected["rows"])
+                self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], expected["registered"])
+                self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], expected["ballots"])
+
     def test_xlsx_reader_reads_inline_strings_and_numbers(self):
         tmp = self.fixture_dir("xlsx-reader")
         path = tmp / "sample.xlsx"
@@ -440,7 +460,7 @@ class PipelineTests(unittest.TestCase):
         status = main(["validate-all", "--config-dir", "etl/state-configs", "--out", str(tmp)])
 
         self.assertEqual(status, 0)
-        for state in ["mi", "mn", "nc", "oh", "pa", "wa", "wi"]:
+        for state in ["az", "ga", "mi", "mn", "nc", "nv", "oh", "pa", "wa", "wi"]:
             self.assertTrue((tmp / f"{state}-2024-staging.json").exists())
 
 

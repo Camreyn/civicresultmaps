@@ -236,21 +236,27 @@ export async function promoteNativeStagingArtifact(path: string) {
     returning id
   `;
 
-  await sql`
-    delete from result_rows
-    where state_code = ${stateCode}
-      and contest_id = ${contest.id}
-  `;
-  await sql`
-    delete from review_rows
-    where state_code = ${stateCode}
-      and election_year = ${electionYear}
-  `;
-  await sql`
-    delete from turnout_rows
-    where state_code = ${stateCode}
-      and election_year = ${electionYear}
-  `;
+  if (native.resultRows.length > 0) {
+    await sql`
+      delete from result_rows
+      where state_code = ${stateCode}
+        and contest_id = ${contest.id}
+    `;
+  }
+  if (native.reviewRows.length > 0) {
+    await sql`
+      delete from review_rows
+      where state_code = ${stateCode}
+        and election_year = ${electionYear}
+    `;
+  }
+  if (native.turnoutRows.length > 0) {
+    await sql`
+      delete from turnout_rows
+      where state_code = ${stateCode}
+        and election_year = ${electionYear}
+    `;
+  }
 
   let storedResultRows = 0;
   for (const row of native.resultRows) {
@@ -433,12 +439,12 @@ export async function promoteNativeStagingArtifact(path: string) {
       'Native official-source ETL promotion.'
     )
     on conflict (state_code, election_year) do update set
-      certified_results = excluded.certified_results,
-      map = excluded.map,
-      review_graphs = excluded.review_graphs,
-      turnout = excluded.turnout,
-      historical_baseline = excluded.historical_baseline,
-      source_planner = excluded.source_planner,
+      certified_results = capability_flags.certified_results or excluded.certified_results,
+      map = capability_flags.map or excluded.map,
+      review_graphs = capability_flags.review_graphs or excluded.review_graphs,
+      turnout = capability_flags.turnout or excluded.turnout,
+      historical_baseline = capability_flags.historical_baseline or excluded.historical_baseline,
+      source_planner = capability_flags.source_planner or excluded.source_planner,
       notes = excluded.notes
   `;
 
