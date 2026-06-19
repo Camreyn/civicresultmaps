@@ -86,7 +86,7 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className="section-label">States</p>
             <span>{states.length} loaded</span>
           </div>
-          <StateSwitcher selectedState={selectedStateCode} states={states} />
+          <StateSwitcher completenessReport={completenessReport} selectedState={selectedStateCode} states={states} />
         </aside>
 
         <section className="main-panel">

@@ -102,6 +102,28 @@ test("source URLs remain first-class in explorer UX", () => {
   assert.match(tabs, /Source URL missing/);
 });
 
+test("state switcher shows compact data availability", () => {
+  const page = readFileSync("src/app/page.tsx", "utf8");
+  const switcher = readFileSync("src/app/state-switcher.tsx", "utf8");
+  const styles = readFileSync("src/app/globals.css", "utf8");
+
+  assert.match(page, /completenessReport={completenessReport}/);
+  assert.match(switcher, /CompletenessSummary/);
+  assert.match(switcher, /stateDataBadges/);
+  assert.match(switcher, /Loaded/);
+  assert.match(switcher, /Partial/);
+  assert.match(switcher, /Missing/);
+  assert.match(switcher, /Results/);
+  assert.match(switcher, /Sources/);
+  assert.match(switcher, /Review/);
+  assert.match(switcher, /Turnout/);
+  assert.match(switcher, /History/);
+  assert.match(styles, /state-data-grid/);
+  assert.match(styles, /state-data-badge\.loaded/);
+  assert.match(styles, /state-data-badge\.partial/);
+  assert.match(styles, /state-data-badge\.missing/);
+});
+
 test("review indicators explain advisory meaning", () => {
   const eli5 = readFileSync("src/app/eli5.tsx", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
