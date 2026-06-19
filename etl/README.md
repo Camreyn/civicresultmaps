@@ -104,6 +104,36 @@ Promote a validated Minnesota staging artifact:
 npm run native:promote -- .etl/staging/mn-2024-staging.json
 ```
 
+## Native North Carolina Import
+
+North Carolina reads the official State Board of Elections precinct result ZIP:
+
+- `data/nc-2024-results-precinct.zip`
+
+Those paths are declared in `etl/state-configs/nc.json`. The parser validates:
+
+- 100 county result rows
+- 5,699,141 total presidential votes
+- 2,898,423 Trump votes
+- 2,715,375 Harris votes
+- 85,343 other votes
+- 2,861 precinct/reporting-unit review rows
+- 2,861 joined President-versus-Governor comparison rows
+
+The North Carolina import uses Governor as the same-party comparison contest because North Carolina did not have a 2024 U.S. Senate race. The official NCSBE file also includes non-real precinct reporting units such as early voting, absentee, provisional, and transfer rows; those are preserved as local review rows.
+
+Run native staging:
+
+```powershell
+npm run etl:import:nc
+```
+
+Promote a validated North Carolina staging artifact:
+
+```powershell
+npm run native:promote -- .etl/staging/nc-2024-staging.json
+```
+
 ## Native Wisconsin Import
 
 Wisconsin reads the committed WEC ward-by-ward federal and state contest workbook plus county geometry:

@@ -1,0 +1,54 @@
+{
+  "code": "NC",
+  "name": "North Carolina",
+  "authority": "North Carolina State Board of Elections",
+  "electionYear": 2024,
+  "office": "President",
+  "sources": [
+    {
+      "id": "nc-2024-results-precinct-zip",
+      "category": "Official precinct presidential and Governor review rows",
+      "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+      "localFile": "data/nc-2024-results-precinct.zip",
+      "parser": "northCarolinaPrecinctResultsZip",
+      "authority": "North Carolina State Board of Elections",
+      "timestampBasis": "Official NCSBE ENRS precinct results ZIP for the November 5, 2024 general election.",
+      "confidence": "Official North Carolina State Board of Elections precinct result export with contest, candidate party, voting method columns, and total votes.",
+      "status": "loaded"
+    }
+  ],
+  "certifiedResults": {
+    "format": "northCarolinaPrecinctResultsZip",
+    "sourceId": "nc-2024-results-precinct-zip",
+    "presidentContest": "US PRESIDENT"
+  },
+  "comparisonContest": {
+    "label": "North Carolina Governor",
+    "contestName": "NC GOVERNOR",
+    "sourceId": "nc-2024-results-precinct-zip"
+  },
+  "reviewCharts": {
+    "format": "northCarolinaPresidentVsGovernor",
+    "sourceId": "nc-2024-results-precinct-zip",
+    "warning": "North Carolina native review rows use official precinct/reporting-unit presidential vote-share screening and presidential-versus-Governor same-party drop-off screening. The comparison contest is Governor, not U.S. Senate, because North Carolina did not have a 2024 U.S. Senate race. The NCSBE file includes non-real precinct reporting units such as early voting, absentee, provisional, and transfer rows."
+  },
+  "expected": {
+    "jurisdictions": 100,
+    "resultRows": 100,
+    "sources": 1,
+    "stateTotal": 5699141,
+    "trump": 2898423,
+    "harris": 2715375,
+    "other": 85343,
+    "reviewRows": 2861,
+    "turnoutRows": 0
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": true,
+    "map": false,
+    "reviewGraphs": true,
+    "turnout": false,
+    "historicalBaseline": false
+  }
+}

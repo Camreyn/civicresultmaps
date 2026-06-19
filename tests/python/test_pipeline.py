@@ -140,6 +140,24 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 83)
         self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
 
+    def test_north_carolina_native_staging_parses_precinct_zip(self):
+        config = load_config("etl/state-configs/nc.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeNorthCarolinaPrecinctResultsZip")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 100)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 5699141)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 2898423)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 2715375)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 85343)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2861)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 2861)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "North Carolina Governor")
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 0)
+        self.assertTrue(any(row["coverageMode"] == "presidentVsGovernor" for row in artifact["native"]["reviewRows"]))
+
     def test_xlsx_reader_reads_inline_strings_and_numbers(self):
         tmp = self.fixture_dir("xlsx-reader")
         path = tmp / "sample.xlsx"
@@ -395,7 +413,7 @@ class PipelineTests(unittest.TestCase):
         status = main(["validate-all", "--config-dir", "etl/state-configs", "--out", str(tmp)])
 
         self.assertEqual(status, 0)
-        for state in ["mi", "mn", "oh", "pa", "wi"]:
+        for state in ["mi", "mn", "nc", "oh", "pa", "wi"]:
             self.assertTrue((tmp / f"{state}-2024-staging.json").exists())
 
 
