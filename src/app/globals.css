@@ -265,10 +265,10 @@ input {
 }
 
 .overview-table-wrap {
-  --table-sticky-top: 0px;
   border-top: 1px solid var(--line);
   max-height: 430px;
   overflow: auto;
+  overscroll-behavior: contain;
   position: relative;
 }
 
@@ -410,7 +410,9 @@ input {
 }
 
 .readiness-table-wrap {
-  overflow-x: auto;
+  max-height: min(72vh, 760px);
+  overflow: auto;
+  overscroll-behavior: contain;
   position: relative;
 }
 
@@ -1489,7 +1491,9 @@ input {
 }
 
 .table-wrap {
-  overflow-x: auto;
+  max-height: min(72vh, 760px);
+  overflow: auto;
+  overscroll-behavior: contain;
   position: relative;
 }
 
@@ -2393,7 +2397,8 @@ tr.selected-row td {
 }
 
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   min-width: 880px;
   width: 100%;
 }
@@ -2409,9 +2414,14 @@ th {
   background: var(--panel-strong);
   color: var(--muted);
   font-size: 12px;
-  position: sticky;
-  top: var(--table-sticky-top, 72px);
   text-transform: uppercase;
+}
+
+.table-wrap th,
+.overview-table-wrap th,
+.readiness-table-wrap th {
+  position: sticky;
+  top: 0;
   z-index: 4;
 }
 
