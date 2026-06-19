@@ -635,6 +635,11 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
             }
         )
 
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
     metrics = {
         "nativeResultRows": len(result_rows),
         "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
@@ -645,9 +650,9 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
         "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
         "nativeComparisonRows": comparison_rows,
         "nativeComparisonContest": comparison_section.get("label"),
-        "nativeTurnoutRows": 0,
+        **turnout_metrics,
     }
-    return result_rows, review_rows, [], metrics
+    return result_rows, review_rows, turnout_rows, metrics
 
 
 def _washington_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
@@ -824,6 +829,11 @@ def _washington_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tup
 
     certified_total = sum(row["totalVotes"] for row in result_rows)
     review_presidential_total = sum(row["totalVotes"] for row in review_rows)
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
     metrics = {
         "nativeResultRows": len(result_rows),
         "nativeResultTotalVotes": certified_total,
@@ -836,9 +846,9 @@ def _washington_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tup
         "nativeComparisonContest": comparison_section.get("label"),
         "nativeReviewPresidentialVotes": review_presidential_total,
         "nativeReviewCertifiedVoteGap": certified_total - review_presidential_total,
-        "nativeTurnoutRows": 0,
+        **turnout_metrics,
     }
-    return result_rows, review_rows, [], metrics
+    return result_rows, review_rows, turnout_rows, metrics
 
 
 def _wisconsin_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:

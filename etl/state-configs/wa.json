@@ -59,6 +59,17 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "wa-2024-eac-turnout",
+      "category": "EAC fallback county turnout rows",
+      "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localFile": "data/eac-2024-state-turnout/wa-2024-eac-turnout.csv",
+      "parser": "eacTurnoutCsv",
+      "authority": "U.S. Election Assistance Commission",
+      "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
+      "confidence": "National EAC fallback turnout rows. Prefer Washington Secretary of State turnout-denominator artifacts if equal or finer official detail is later sourced.",
+      "status": "candidate"
     }
   ],
   "certifiedResults": {
@@ -85,23 +96,37 @@
     "presidentContest": "President/Vice President",
     "warning": "Washington native review rows use the official participating county precinct CSV for presidential vote-share screening and President-versus-U.S. Senate same-party drop-off screening. The precinct export aggregates to 3,918,934 presidential votes, 5,309 fewer than the certified county presidential total of 3,924,243, so review charts must be treated as official participating-precinct screening rather than a fully reconciled statewide precinct dataset."
   },
+  "turnout": {
+    "format": "eacTurnoutCsv",
+    "sourceId": "wa-2024-eac-turnout",
+    "denominatorType": "registeredVoters",
+    "registrationDenominatorTiming": "eacReported",
+    "sourceLevel": "jurisdiction",
+    "notes": "Washington turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout-denominator artifact is collected.",
+    "warningRequired": true,
+    "expected": {
+      "rowCount": 39,
+      "ballotsCast": 3949810,
+      "registeredVoters": 5597156
+    }
+  },
   "expected": {
     "jurisdictions": 39,
     "resultRows": 39,
-    "sources": 5,
+    "sources": 6,
     "stateTotal": 3924243,
     "trump": 1530923,
     "harris": 2245849,
     "other": 147471,
     "reviewRows": 5007,
-    "turnoutRows": 0
+    "turnoutRows": 39
   },
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
     "map": true,
     "reviewGraphs": true,
-    "turnout": false,
+    "turnout": true,
     "historicalBaseline": false
   }
 }

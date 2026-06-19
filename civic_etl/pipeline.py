@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -17,6 +18,31 @@ REQUIRED_CAPABILITIES = {
 }
 
 PRODUCTION_WRITE_STATUSES = {"promoted"}
+
+
+def artifact_metadata(local_file: str) -> dict[str, Any]:
+    paths = [entry.strip() for entry in str(local_file or "").split(";") if entry.strip()]
+    artifacts = []
+    for raw_path in paths:
+        path = Path(raw_path)
+        if not path.exists() or not path.is_file():
+            artifacts.append({"localArtifact": raw_path, "exists": False})
+            continue
+
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+        artifacts.append(
+            {
+                "localArtifact": raw_path,
+                "exists": True,
+                "byteSize": path.stat().st_size,
+                "sha256": digest.hexdigest(),
+            }
+        )
+
+    return {"artifacts": artifacts}
 
 
 def load_config(path: str | Path) -> EtlConfig:
@@ -139,6 +165,7 @@ def build_staging_artifact(config: EtlConfig, report: ValidationReport) -> dict[
                 "timestampBasis": source.timestamp_basis,
                 "confidence": source.confidence,
                 "status": source.status,
+                "metadata": artifact_metadata(source.local_file),
             }
             for source in config.sources
         ],

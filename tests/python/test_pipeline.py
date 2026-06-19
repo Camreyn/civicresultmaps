@@ -155,7 +155,9 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2861)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 2861)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "North Carolina Governor")
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 0)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 100)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 7854464)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 5756106)
         self.assertTrue(any(row["coverageMode"] == "presidentVsGovernor" for row in artifact["native"]["reviewRows"]))
 
     def test_washington_native_staging_parses_official_csv_exports(self):
@@ -174,7 +176,9 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 4994)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewCertifiedVoteGap"], 5309)
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 0)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 39)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 5597156)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 3949810)
         self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
         self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
 
@@ -410,6 +414,9 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["promotion"]["status"], "staged")
         self.assertTrue(artifact["promotion"]["requiresHumanReview"])
         self.assertFalse(artifact["promotion"]["productionWriteAllowed"])
+        self.assertTrue(artifact["sources"][0]["metadata"]["artifacts"][0]["exists"])
+        self.assertRegex(artifact["sources"][0]["metadata"]["artifacts"][0]["sha256"], r"^[0-9a-f]{64}$")
+        self.assertGreater(artifact["sources"][0]["metadata"]["artifacts"][0]["byteSize"], 0)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 3503)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
         self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))

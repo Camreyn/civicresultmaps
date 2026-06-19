@@ -15,6 +15,40 @@
     "WA",
     "WI"
   ],
+  "blockedStates": [
+    {
+      "state": "AZ",
+      "name": "Arizona",
+      "authority": "Arizona Secretary of State",
+      "priority": 1,
+      "status": "blocked",
+      "attemptedSourceUrl": "https://results.arizona.vote/",
+      "attemptedFallbackUrl": "https://azsos.gov/elections/results-data/election-results",
+      "blockedReason": "Official Arizona results and SOS pages returned a Cloudflare JavaScript/cookie challenge to scripted collection.",
+      "nextAction": "Collect through a browser-authorized official download, an official static artifact URL, or direct county/SOS artifact links before building the native parser."
+    },
+    {
+      "state": "NV",
+      "name": "Nevada",
+      "authority": "Nevada Secretary of State",
+      "priority": 2,
+      "status": "blocked",
+      "attemptedSourceUrl": "https://silverstateelection.nv.gov/",
+      "attemptedFallbackUrl": "https://www.nvsos.gov/sos/elections/election-information/2024-election-information/2024-general-election-results",
+      "blockedReason": "Official Nevada results hosts returned Incapsula challenge/incident pages to scripted collection.",
+      "nextAction": "Collect through a browser-authorized official download, an official static artifact URL, or direct SOS/county artifact links before building the native parser."
+    },
+    {
+      "state": "GA",
+      "name": "Georgia",
+      "authority": "Georgia Secretary of State",
+      "priority": 3,
+      "status": "blocked",
+      "attemptedSourceUrl": "https://results.enr.clarityelections.com/GA/122303/web.345435/",
+      "blockedReason": "Official Georgia Clarity ENR page returned HTTP 403 to scripted collection.",
+      "nextAction": "Collect through a browser-authorized official export, Clarity static artifact URL, or direct SOS/county artifact links before building the native parser."
+    }
+  ],
   "states": [
     {
       "state": "MN",
@@ -225,12 +259,12 @@
           "parserHint": "Use Race, CountyCode, PrecinctName, PrecinctCode, Candidate, and Votes for President/Vice President and U.S. Senator."
         },
         "turnout": {
-          "sourceTitle": "EAC 2024 state registered-voter denominator placeholder",
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
           "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/wa-2024-eac-registered-voter-denominator.json",
-          "level": "state",
-          "denominator": "EAC state registered voters",
-          "ballotsCast": "EAC state ballots cast"
+          "localFile": "data/eac-2024-state-turnout/wa-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
@@ -248,19 +282,19 @@
         "harris": 2245849,
         "other": 147471,
         "localReviewRows": 5007,
-        "turnoutRows": 0
+        "turnoutRows": 39
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff_participating_precinct_export",
-        "turnoutMode": "not_loaded_native_vote_share_pass"
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback"
       },
       "caveats": [
         "County presidential totals reconcile to the official Washington all-state CSV.",
         "The official participating precinct export aggregates to 3,918,934 presidential votes, 5,309 fewer than the certified county presidential total of 3,924,243.",
         "Precinct boundary GeoJSON is not present in this package.",
-        "Turnout rows are not loaded in this native vote-share pass."
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until an equal-or-finer Washington state source is collected."
       ]
     }
   ]

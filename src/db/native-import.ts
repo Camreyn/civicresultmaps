@@ -11,6 +11,7 @@ type NativeSource = {
   timestampBasis: string;
   confidence: string;
   status: string;
+  metadata?: Record<string, unknown>;
 };
 
 type NativeResultRow = {
@@ -196,7 +197,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${source.timestampBasis},
         ${source.confidence},
         ${source.status},
-        ${JSON.stringify({ nativeSourceId: source.id })}::jsonb
+        ${JSON.stringify({ nativeSourceId: source.id, ...(source.metadata ?? {}) })}::jsonb
       )
       on conflict (slug) do update set
         category = excluded.category,

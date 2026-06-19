@@ -28,6 +28,7 @@ export function listNativeSourcePackages(input: { state?: string } = {}) {
 
   return {
     checkedAt: nativeImportPackages.checkedAt,
+    blockedStates: nativeImportPackages.blockedStates ?? [],
     completedNativeStates: nativeImportPackages.completedNativeStates,
     notes: nativeImportPackages.notes,
     purpose: nativeImportPackages.purpose,
