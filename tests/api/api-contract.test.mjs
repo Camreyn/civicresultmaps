@@ -110,6 +110,10 @@ test("review indicators explain advisory meaning", () => {
 
   assert.match(eli5, /ELI5/);
   assert.match(tabs, /indicatorExplanation/);
+  assert.match(tabs, /flagMethodologyGuides/);
+  assert.match(tabs, /Flag Calculation Guide/);
+  assert.match(tabs, /Alternative explanations/);
+  assert.match(tabs, /Vote-share correlation/);
   assert.match(tabs, /advisory indicator/);
   assert.match(tabs, /severityBucket/);
   assert.match(tabs, /Vote-Share by Vote-Count Scatterplot/);
@@ -132,6 +136,8 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /NIST Voting Program/);
   assert.doesNotMatch(tabs, /Sources API/);
   assert.match(explorer, /Eli5/);
+  assert.match(explorer, /clickable-row/);
+  assert.match(explorer, /Inspect \$\{row\.jurisdictionName\}/);
   assert.match(overview, /Eli5/);
 });
 

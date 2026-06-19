@@ -847,9 +847,41 @@ export function ResultsExplorer({
                 const isPinnedRow = pinnedMapName && normalizeName(row.jurisdictionName) === normalizeName(pinnedMapName);
                 const isPreviewRow =
                   !isPinnedRow && selectedMapName && normalizeName(row.jurisdictionName) === normalizeName(selectedMapName);
+                const rowClassName = [
+                  "clickable-row",
+                  isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : null,
+                ]
+                  .filter(Boolean)
+                  .join(" ");
+                const handleRowInspect = (target: EventTarget | null) => {
+                  if (target instanceof HTMLElement && target.closest("a, button, input, select, textarea")) {
+                    return;
+                  }
+
+                  inspectJurisdiction(row.jurisdictionName);
+                };
 
                 return (
-                <tr className={isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : undefined} key={row.jurisdictionCode}>
+                <tr
+                  aria-label={`Inspect ${row.jurisdictionName}`}
+                  className={rowClassName}
+                  key={row.jurisdictionCode}
+                  onClick={(event) => handleRowInspect(event.target)}
+                  onKeyDown={(event) => {
+                    if (event.key !== "Enter" && event.key !== " ") {
+                      return;
+                    }
+
+                    if (event.target instanceof HTMLElement && event.target.closest("a, button, input, select, textarea")) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    inspectJurisdiction(row.jurisdictionName);
+                  }}
+                  tabIndex={0}
+                  title={`Inspect ${row.jurisdictionName}`}
+                >
                   <td>{row.jurisdictionName}</td>
                   <td>
                     {(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).length > 0 ? (

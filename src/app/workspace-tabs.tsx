@@ -101,6 +101,14 @@ type MethodologyGuide = {
   summary: string;
   title: string;
 };
+type FlagMethodologyGuide = {
+  alternativeExplanations: string;
+  calculatedFrom: string;
+  id: string;
+  label: string;
+  threshold: string;
+  validation: string;
+};
 
 const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: number }>; key: TabKey; label: string }> = [
   { icon: MapIcon, key: "map", label: "Map" },
@@ -113,6 +121,45 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: GitBranch, key: "imports", label: "Import Runs" },
   { icon: HeartHandshake, key: "support", label: "Support" },
   { icon: Mail, key: "contact", label: "Contact" },
+];
+
+const flagMethodologyGuides: FlagMethodologyGuide[] = [
+  {
+    alternativeExplanations:
+      "Large and small reporting units can differ by population composition, urban or rural geography, campus or military populations, registration mix, vote method mix, or how local units are grouped.",
+    calculatedFrom:
+      "Vote-share correlation: computes Pearson correlation between local candidate vote count and that candidate's vote share across the county's imported local rows.",
+    id: "vote-share-pattern",
+    label: "Vote-share pattern",
+    threshold:
+      "Flags when either major candidate's absolute correlation is at least 0.35, after the county has at least 8 local rows.",
+    validation:
+      "Compare against precinct demographics, urban/rural split, vote method reporting, historical baselines, and the source workbook's reporting-unit definitions.",
+  },
+  {
+    alternativeExplanations:
+      "Split-ticket voting, uncontested or weak comparison races, candidate incumbency, local campaign effects, and undervotes can create real down-ballot gaps.",
+    calculatedFrom:
+      "Averages the percent gap between presidential votes and same-party comparison-contest votes across imported local rows.",
+    id: "average-down-ballot-difference",
+    label: "Average down-ballot difference",
+    threshold:
+      "Flags when the Democratic or Republican average gap reaches 6 percent. Vote-share-only imports do not emit this flag.",
+    validation:
+      "Check the comparison contest, undervote totals, local candidate strength, recount/canvas notes, and whether every local row has the same contest coverage.",
+  },
+  {
+    alternativeExplanations:
+      "Localized split-ticket behavior, incomplete comparison contests, small local rows, reporting-unit boundaries, or data-entry quirks can make individual rows look unusual.",
+    calculatedFrom:
+      "Counts local rows where same-party presidential-versus-comparison difference is at least 15 percent and the candidate has at least 100 votes in that row.",
+    id: "down-ballot-outliers",
+    label: "Down-ballot outliers",
+    threshold:
+      "Flags when outlier rows reach at least 3 rows or 5 percent of the county's imported local rows, whichever is larger. Vote-share-only imports do not emit this flag.",
+    validation:
+      "Open the source rows, check candidate and contest coverage, compare neighboring units, and look for official correction notes before drawing conclusions.",
+  },
 ];
 
 const tourFeatureRegistry: TourFeature[] = [
@@ -1696,6 +1743,48 @@ export function WorkspaceTabs({
                 </select>
               </label>
             </div>
+            <section className="flag-methodology-guide" aria-label="Flag calculation guide">
+              <div className="flag-guide-header">
+                <div>
+                  <strong>Flag Calculation Guide</strong>
+                  <span>Current advisory flag types, calculation triggers, and common checks before interpreting them.</span>
+                </div>
+                <nav aria-label="Flag table of contents" className="flag-guide-toc">
+                  {flagMethodologyGuides.map((guide) => (
+                    <a href={`#flag-guide-${guide.id}`} key={guide.id}>
+                      {guide.label}
+                    </a>
+                  ))}
+                </nav>
+              </div>
+              <div className="flag-guide-list">
+                {flagMethodologyGuides.map((guide) => (
+                  <article id={`flag-guide-${guide.id}`} key={guide.id}>
+                    <div>
+                      <span className="indicator-pill">! {guide.label}</span>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>Calculated from</dt>
+                        <dd>{guide.calculatedFrom}</dd>
+                      </div>
+                      <div>
+                        <dt>Threshold</dt>
+                        <dd>{guide.threshold}</dd>
+                      </div>
+                      <div>
+                        <dt>Alternative explanations</dt>
+                        <dd>{guide.alternativeExplanations}</dd>
+                      </div>
+                      <div>
+                        <dt>Validation checks</dt>
+                        <dd>{guide.validation}</dd>
+                      </div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            </section>
             {reviewRows.length ? (
               <section className="screening-section" aria-label="Statistical screening graphs">
                 <div className="screening-toolbar">
