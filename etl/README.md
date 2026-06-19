@@ -134,6 +134,40 @@ Promote a validated North Carolina staging artifact:
 npm run native:promote -- .etl/staging/nc-2024-staging.json
 ```
 
+## Native Washington Import
+
+Washington reads the official Secretary of State export page and CSV exports plus Census county geometry:
+
+- `data/wa-2024-export-page.html`
+- `data/wa-2024-all-state.csv`
+- `data/wa-2024-all-counties.csv`
+- `data/wa-2024-all-state-precincts.csv`
+- `data/wa-counties.geojson`
+
+Those paths are declared in `etl/state-configs/wa.json`. The parser validates:
+
+- 39 county result rows
+- 3,924,243 total presidential votes
+- 1,530,923 Trump votes
+- 2,245,849 Harris votes
+- 147,471 other votes
+- 5,007 participating-precinct review rows
+- 4,994 joined President-versus-U.S. Senate comparison rows
+
+The Washington county map is based on certified county CSV totals that reconcile to the official all-state CSV. The review rows use the official participating county precinct CSV; those precinct presidential rows aggregate to 3,918,934 votes, 5,309 fewer than the certified county total, so review charts require the participation caveat.
+
+Run native staging:
+
+```powershell
+npm run etl:import:wa
+```
+
+Promote a validated Washington staging artifact:
+
+```powershell
+npm run native:promote -- .etl/staging/wa-2024-staging.json
+```
+
 ## Native Wisconsin Import
 
 Wisconsin reads the committed WEC ward-by-ward federal and state contest workbook plus county geometry:

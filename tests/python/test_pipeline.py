@@ -158,6 +158,26 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 0)
         self.assertTrue(any(row["coverageMode"] == "presidentVsGovernor" for row in artifact["native"]["reviewRows"]))
 
+    def test_washington_native_staging_parses_official_csv_exports(self):
+        config = load_config("etl/state-configs/wa.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeWashingtonCsvExports")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 39)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 3924243)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1530923)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 2245849)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 147471)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 5007)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 4994)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewCertifiedVoteGap"], 5309)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 0)
+        self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
+        self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
+
     def test_xlsx_reader_reads_inline_strings_and_numbers(self):
         tmp = self.fixture_dir("xlsx-reader")
         path = tmp / "sample.xlsx"
@@ -413,7 +433,7 @@ class PipelineTests(unittest.TestCase):
         status = main(["validate-all", "--config-dir", "etl/state-configs", "--out", str(tmp)])
 
         self.assertEqual(status, 0)
-        for state in ["mi", "mn", "nc", "oh", "pa", "wi"]:
+        for state in ["mi", "mn", "nc", "oh", "pa", "wa", "wi"]:
             self.assertTrue((tmp / f"{state}-2024-staging.json").exists())
 
 

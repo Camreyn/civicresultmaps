@@ -12,6 +12,7 @@
     "NC",
     "OH",
     "PA",
+    "WA",
     "WI"
   ],
   "states": [
@@ -198,6 +199,68 @@
         "Official readme says the election returns data was extracted January 10, 2025; the direct bulk file name includes 20250129.",
         "Turnout is county-level, not precinct-level.",
         "Precinct boundary GeoJSON is not present in this package."
+      ]
+    },
+    {
+      "state": "WA",
+      "name": "Washington",
+      "priority": 4,
+      "nativeReadiness": "complete_county_map_precinct_review_partial_reconciliation",
+      "authority": "Washington Secretary of State",
+      "configFile": "etl/state-configs/wa.json",
+      "legacyReferenceBundle": "data/wa-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Washington SOS official all-counties CSV export",
+          "sourceUrl": "https://results.vote.wa.gov/results/20241105/export/20241105_AllCounties.csv",
+          "localFile": "data/wa-2024-all-counties.csv",
+          "parserHint": "CSV export; filter United States President/Vice President and aggregate county rows using Kamala D. Harris, Donald J. Trump, and other candidates."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Washington SOS official participating county precinct CSV export",
+          "sourceUrl": "https://results.vote.wa.gov/results/20241105/export/20241105_AllStatePrecincts.csv",
+          "localFile": "data/wa-2024-all-state-precincts.csv",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Use Race, CountyCode, PrecinctName, PrecinctCode, Candidate, and Votes for President/Vice President and U.S. Senator."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 state registered-voter denominator placeholder",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/wa-2024-eac-registered-voter-denominator.json",
+          "level": "state",
+          "denominator": "EAC state registered voters",
+          "ballotsCast": "EAC state ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2753%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/wa-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 39,
+        "geometryFeatures": 39,
+        "stateTotal": 3924243,
+        "trump": 1530923,
+        "harris": 2245849,
+        "other": 147471,
+        "localReviewRows": 5007,
+        "turnoutRows": 0
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_dropoff_participating_precinct_export",
+        "turnoutMode": "not_loaded_native_vote_share_pass"
+      },
+      "caveats": [
+        "County presidential totals reconcile to the official Washington all-state CSV.",
+        "The official participating precinct export aggregates to 3,918,934 presidential votes, 5,309 fewer than the certified county presidential total of 3,924,243.",
+        "Precinct boundary GeoJSON is not present in this package.",
+        "Turnout rows are not loaded in this native vote-share pass."
       ]
     }
   ]

@@ -1,0 +1,107 @@
+{
+  "code": "WA",
+  "name": "Washington",
+  "authority": "Washington Secretary of State",
+  "electionYear": 2024,
+  "office": "President",
+  "sources": [
+    {
+      "id": "wa-2024-export-page",
+      "category": "Official export index",
+      "url": "https://results.vote.wa.gov/results/20241105/export.html",
+      "localFile": "data/wa-2024-export-page.html",
+      "parser": "washingtonExportIndexHtml",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Official November 5, 2024 General Election export page listing statewide, county, and precinct CSV exports.",
+      "confidence": "Official Washington Secretary of State export index for the certified 2024 general election result files.",
+      "status": "loaded"
+    },
+    {
+      "id": "wa-2024-all-state-csv",
+      "category": "Official statewide presidential and Senate totals",
+      "url": "https://results.vote.wa.gov/results/20241105/export/20241105_AllState.csv",
+      "localFile": "data/wa-2024-all-state.csv",
+      "parser": "washingtonAllStateCsv",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Official statewide CSV export from the November 5, 2024 General Election results site.",
+      "confidence": "Official Washington Secretary of State all-state CSV used to reconcile county presidential totals.",
+      "status": "loaded"
+    },
+    {
+      "id": "wa-2024-all-counties-csv",
+      "category": "Official county presidential results",
+      "url": "https://results.vote.wa.gov/results/20241105/export/20241105_AllCounties.csv",
+      "localFile": "data/wa-2024-all-counties.csv",
+      "parser": "washingtonAllCountiesCsv",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Official all-counties CSV export from the November 5, 2024 General Election results site.",
+      "confidence": "Official Washington Secretary of State county CSV; presidential totals reconcile to the official all-state CSV.",
+      "status": "loaded"
+    },
+    {
+      "id": "wa-2024-all-state-precincts-csv",
+      "category": "Official participating county precinct presidential and Senate rows",
+      "url": "https://results.vote.wa.gov/results/20241105/export/20241105_AllStatePrecincts.csv",
+      "localFile": "data/wa-2024-all-state-precincts.csv",
+      "parser": "washingtonAllStatePrecinctsCsv",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Official participating county precinct CSV export from the November 5, 2024 General Election results site.",
+      "confidence": "Official Washington Secretary of State precinct CSV with President/Vice President and U.S. Senator rows. Precinct presidential rows do not fully reconcile to county certified totals, so review charts require the participation caveat.",
+      "status": "loaded"
+    },
+    {
+      "id": "wa-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2753%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/wa-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    }
+  ],
+  "certifiedResults": {
+    "format": "washingtonCsvExports",
+    "sourceId": "wa-2024-all-counties-csv",
+    "statewideSourceId": "wa-2024-all-state-csv",
+    "presidentContest": "United States President/Vice President",
+    "statewidePresidentContest": "President/Vice President",
+    "candidateRules": {
+      "harris": ["Kamala D. Harris"],
+      "trump": ["Donald J. Trump"]
+    }
+  },
+  "comparisonContest": {
+    "label": "United States Senator",
+    "contestName": "U.S. Senator",
+    "democraticCandidateContains": ["Maria Cantwell"],
+    "republicanCandidateContains": ["Raul Garcia"],
+    "sourceId": "wa-2024-all-state-precincts-csv"
+  },
+  "reviewCharts": {
+    "format": "washingtonPresidentVsSenate",
+    "sourceId": "wa-2024-all-state-precincts-csv",
+    "presidentContest": "President/Vice President",
+    "warning": "Washington native review rows use the official participating county precinct CSV for presidential vote-share screening and President-versus-U.S. Senate same-party drop-off screening. The precinct export aggregates to 3,918,934 presidential votes, 5,309 fewer than the certified county presidential total of 3,924,243, so review charts must be treated as official participating-precinct screening rather than a fully reconciled statewide precinct dataset."
+  },
+  "expected": {
+    "jurisdictions": 39,
+    "resultRows": 39,
+    "sources": 5,
+    "stateTotal": 3924243,
+    "trump": 1530923,
+    "harris": 2245849,
+    "other": 147471,
+    "reviewRows": 5007,
+    "turnoutRows": 0
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
+    "turnout": false,
+    "historicalBaseline": false
+  }
+}
