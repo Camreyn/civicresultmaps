@@ -1829,12 +1829,45 @@ input {
   border: 1px solid var(--line);
   border-radius: 8px;
   display: inline-flex;
-  gap: 4px;
+  gap: 6px;
   padding: 5px;
   position: absolute;
   right: 16px;
   top: 16px;
   z-index: 2;
+}
+
+.map-pan-controls {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(3, 22px);
+  grid-template-rows: repeat(3, 22px);
+  margin-right: 3px;
+}
+
+.map-pan-controls button {
+  height: 22px;
+  width: 22px;
+}
+
+.map-pan-controls button:nth-child(1) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.map-pan-controls button:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.map-pan-controls button:nth-child(3) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.map-pan-controls button:nth-child(4) {
+  grid-column: 2;
+  grid-row: 3;
 }
 
 .map-zoom-controls button {
@@ -1886,10 +1919,18 @@ input {
 }
 
 .county-map {
+  cursor: grab;
   display: block;
   height: auto;
   max-height: 520px;
+  touch-action: none;
+  user-select: none;
   width: 100%;
+}
+
+.county-map.is-panning,
+.county-map.is-panning .map-shape {
+  cursor: grabbing;
 }
 
 .county-map path {

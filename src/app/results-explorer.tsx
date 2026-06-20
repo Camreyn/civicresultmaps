@@ -1,7 +1,21 @@
 "use client";
 
-import { ArrowDownAZ, ArrowUpDown, ExternalLink, RotateCcw, Search, X, ZoomIn, ZoomOut } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowDown,
+  ArrowDownAZ,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUp,
+  ArrowUpDown,
+  ExternalLink,
+  RotateCcw,
+  Search,
+  X,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
+import type { PointerEvent, WheelEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
 import type { AnalysisIndicator, ResultRow, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 
@@ -16,6 +30,7 @@ type ResultsExplorerProps = {
 
 type SortKey = "jurisdiction" | "winner" | "total" | "margin";
 type MapMode = "winner" | "margin" | "volume" | "method";
+type MapPan = { x: number; y: number };
 
 type GeoFeature = {
   geometry: {
@@ -36,6 +51,10 @@ type FeatureCollection = {
 
 const geoBaseUrl =
   "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
+const mapViewBox = { height: 560, width: 960 };
+const mapZoomStep = 0.35;
+const mapMaxZoom = 3;
+const mapPanStep = 72;
 
 function geoJsonPath(state: string) {
   if (state === "AK") {
@@ -195,6 +214,19 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
+function clampPan(pan: MapPan, zoom: number) {
+  if (zoom <= 1) {
+    return { x: 0, y: 0 };
+  }
+
+  const maxX = ((zoom - 1) * mapViewBox.width) / 2;
+  const maxY = ((zoom - 1) * mapViewBox.height) / 2;
+  return {
+    x: clamp(pan.x, -maxX, maxX),
+    y: clamp(pan.y, -maxY, maxY),
+  };
+}
+
 function mixColor(start: [number, number, number], end: [number, number, number], amount: number) {
   const t = clamp(amount, 0, 1);
   const [r1, g1, b1] = start;
@@ -265,6 +297,7 @@ export function ResultsExplorer({
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [mapMode, setMapMode] = useState<MapMode>("winner");
+  const [mapPan, setMapPan] = useState<MapPan>({ x: 0, y: 0 });
   const [mapZoom, setMapZoom] = useState(1);
   const [selectedVoteMethod, setSelectedVoteMethod] = useState("in_person_early");
   const [selectedMapName, setSelectedMapName] = useState<string | null>(null);
@@ -272,12 +305,23 @@ export function ResultsExplorer({
   const [query, setQuery] = useState("");
   const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("margin");
+  const [isPanning, setIsPanning] = useState(false);
+  const mapDragRef = useRef<{
+    lastX: number;
+    lastY: number;
+    moved: boolean;
+    pointerId: number;
+    startX: number;
+    startY: number;
+  } | null>(null);
+  const suppressMapClickRef = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
     setGeoStatus("loading");
     setSelectedMapName(null);
     setPinnedMapName(null);
+    setMapPan({ x: 0, y: 0 });
     setMapZoom(1);
 
     fetch(`${geoBaseUrl}/${geoJsonPath(selectedState)}`, {
@@ -461,8 +505,124 @@ export function ResultsExplorer({
   const hasMapJoinWarnings =
     geoStatus === "ready" && (mapJoinStats.missingResults.length > 0 || mapJoinStats.unmappedRows.length > 0);
 
+  useEffect(() => {
+    setMapPan((current) => clampPan(current, mapZoom));
+  }, [mapZoom]);
+
   const selectedSourceUrl = (sourceId: string) => sourceById.get(sourceId)?.sourceUrl;
-  const mapTransform = `translate(480 280) scale(${mapZoom}) translate(-480 -280)`;
+  const mapTransform = `translate(${mapViewBox.width / 2 + mapPan.x} ${mapViewBox.height / 2 + mapPan.y}) scale(${mapZoom}) translate(${-mapViewBox.width / 2} ${-mapViewBox.height / 2})`;
+
+  const zoomMap = (nextZoom: number, anchor?: MapPan) => {
+    setMapZoom((currentZoom) => {
+      const clampedZoom = Number(clamp(nextZoom, 1, mapMaxZoom).toFixed(2));
+      if (clampedZoom === currentZoom) {
+        return currentZoom;
+      }
+
+      setMapPan((currentPan) => {
+        if (!anchor) {
+          return clampPan(currentPan, clampedZoom);
+        }
+
+        const center = { x: mapViewBox.width / 2, y: mapViewBox.height / 2 };
+        const ratio = clampedZoom / currentZoom;
+        return clampPan(
+          {
+            x: anchor.x - center.x - ratio * (anchor.x - center.x - currentPan.x),
+            y: anchor.y - center.y - ratio * (anchor.y - center.y - currentPan.y),
+          },
+          clampedZoom,
+        );
+      });
+
+      return clampedZoom;
+    });
+  };
+
+  const panMap = (delta: MapPan) => {
+    setMapPan((current) =>
+      clampPan(
+        {
+          x: current.x + delta.x,
+          y: current.y + delta.y,
+        },
+        mapZoom,
+      ),
+    );
+  };
+
+  const resetMapView = () => {
+    setMapPan({ x: 0, y: 0 });
+    setMapZoom(1);
+  };
+
+  const svgPointFromEvent = (event: PointerEvent<SVGSVGElement> | WheelEvent<SVGSVGElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return {
+      x: ((event.clientX - rect.left) / rect.width) * mapViewBox.width,
+      y: ((event.clientY - rect.top) / rect.height) * mapViewBox.height,
+    };
+  };
+
+  const handleMapPointerDown = (event: PointerEvent<SVGSVGElement>) => {
+    if (event.button !== 0) {
+      return;
+    }
+
+    mapDragRef.current = {
+      lastX: event.clientX,
+      lastY: event.clientY,
+      moved: false,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+    };
+    setIsPanning(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleMapPointerMove = (event: PointerEvent<SVGSVGElement>) => {
+    const drag = mapDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) {
+      return;
+    }
+
+    const rect = event.currentTarget.getBoundingClientRect();
+    const deltaX = ((event.clientX - drag.lastX) / rect.width) * mapViewBox.width;
+    const deltaY = ((event.clientY - drag.lastY) / rect.height) * mapViewBox.height;
+    const movedPixels = Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY);
+    if (mapZoom > 1 && movedPixels > 4) {
+      drag.moved = true;
+      panMap({ x: deltaX, y: deltaY });
+    }
+    drag.lastX = event.clientX;
+    drag.lastY = event.clientY;
+  };
+
+  const finishMapPointer = (event: PointerEvent<SVGSVGElement>) => {
+    const drag = mapDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) {
+      return;
+    }
+
+    suppressMapClickRef.current = drag.moved;
+    mapDragRef.current = null;
+    setIsPanning(false);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    if (drag.moved) {
+      window.setTimeout(() => {
+        suppressMapClickRef.current = false;
+      }, 0);
+    }
+  };
+
+  const handleMapWheel = (event: WheelEvent<SVGSVGElement>) => {
+    event.preventDefault();
+    const direction = event.deltaY > 0 ? -1 : 1;
+    zoomMap(mapZoom + direction * mapZoomStep, svgPointFromEvent(event));
+  };
 
   const inspectJurisdiction = (name: string) => {
     setSelectedMapName(name);
@@ -556,10 +716,49 @@ export function ResultsExplorer({
         )}
         <div className="map-wrap">
           <div className="map-zoom-controls" aria-label="Map zoom controls">
+            <div className="map-pan-controls" aria-label="Map pan controls">
+              <button
+                aria-label="Pan map up"
+                disabled={mapZoom <= 1}
+                onClick={() => panMap({ x: 0, y: mapPanStep })}
+                title="Pan up"
+                type="button"
+              >
+                <ArrowUp aria-hidden size={14} />
+              </button>
+              <button
+                aria-label="Pan map left"
+                disabled={mapZoom <= 1}
+                onClick={() => panMap({ x: mapPanStep, y: 0 })}
+                title="Pan left"
+                type="button"
+              >
+                <ArrowLeft aria-hidden size={14} />
+              </button>
+              <button
+                aria-label="Pan map right"
+                disabled={mapZoom <= 1}
+                onClick={() => panMap({ x: -mapPanStep, y: 0 })}
+                title="Pan right"
+                type="button"
+              >
+                <ArrowRight aria-hidden size={14} />
+              </button>
+              <button
+                aria-label="Pan map down"
+                disabled={mapZoom <= 1}
+                onClick={() => panMap({ x: 0, y: -mapPanStep })}
+                title="Pan down"
+                type="button"
+              >
+                <ArrowDown aria-hidden size={14} />
+              </button>
+            </div>
             <button
               aria-label="Zoom in"
-              disabled={mapZoom >= 3}
-              onClick={() => setMapZoom((zoom) => Math.min(3, Number((zoom + 0.35).toFixed(2))))}
+              disabled={mapZoom >= mapMaxZoom}
+              onClick={() => zoomMap(mapZoom + mapZoomStep)}
+              title="Zoom in"
               type="button"
             >
               <ZoomIn aria-hidden size={16} />
@@ -567,15 +766,17 @@ export function ResultsExplorer({
             <button
               aria-label="Zoom out"
               disabled={mapZoom <= 1}
-              onClick={() => setMapZoom((zoom) => Math.max(1, Number((zoom - 0.35).toFixed(2))))}
+              onClick={() => zoomMap(mapZoom - mapZoomStep)}
+              title="Zoom out"
               type="button"
             >
               <ZoomOut aria-hidden size={16} />
             </button>
             <button
-              aria-label="Reset zoom"
-              disabled={mapZoom === 1}
-              onClick={() => setMapZoom(1)}
+              aria-label="Reset map view"
+              disabled={mapZoom === 1 && mapPan.x === 0 && mapPan.y === 0}
+              onClick={resetMapView}
+              title="Reset view"
               type="button"
             >
               <RotateCcw aria-hidden size={16} />
@@ -583,7 +784,17 @@ export function ResultsExplorer({
             <span>{Math.round(mapZoom * 100)}%</span>
           </div>
           {geoStatus === "ready" && features.length > 0 ? (
-            <svg className="county-map" data-tour="county-map" role="img" viewBox="0 0 960 560">
+            <svg
+              className={`county-map ${isPanning ? "is-panning" : ""}`}
+              data-tour="county-map"
+              onPointerCancel={finishMapPointer}
+              onPointerDown={handleMapPointerDown}
+              onPointerMove={handleMapPointerMove}
+              onPointerUp={finishMapPointer}
+              onWheel={handleMapWheel}
+              role="img"
+              viewBox={`0 0 ${mapViewBox.width} ${mapViewBox.height}`}
+            >
               <title>{selectedState} county presidential result map</title>
               <g transform={mapTransform}>
               {features.map((feature) => {
@@ -603,7 +814,13 @@ export function ResultsExplorer({
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
                       fill={countyFill(row, mapMode, maxTotalVotes, methodRow, maxVoteMethodShare)}
-                      onClick={() => inspectJurisdiction(resultName)}
+                      onClick={(event) => {
+                        if (suppressMapClickRef.current) {
+                          event.preventDefault();
+                          return;
+                        }
+                        inspectJurisdiction(resultName);
+                      }}
                       onFocus={() => setSelectedMapName(resultName)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
