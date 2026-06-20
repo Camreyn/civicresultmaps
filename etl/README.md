@@ -168,6 +168,37 @@ Promote a validated Washington staging artifact:
 npm run native:promote -- .etl/staging/wa-2024-staging.json
 ```
 
+## Native Virginia Import
+
+Virginia reads the official Virginia Elections Database contest CSV plus Census county-equivalent geometry:
+
+- `data/va-2024-general-president-results.csv`
+- `data/va-counties.geojson`
+
+Those paths are declared in `etl/state-configs/va.json`. The parser validates:
+
+- 133 county-equivalent result rows covering counties and independent cities
+- 4,505,941 total presidential votes
+- 2,075,085 Trump votes
+- 2,335,395 Harris votes
+- 95,461 other/write-in votes
+- 2,670 precinct vote-share review rows
+- 133 EAC fallback turnout rows
+
+The Virginia map uses Census county-equivalent geometry for counties and independent cities. Precinct boundary geometry is not included, and review rows remain vote-share-only until a same-row down-ballot comparison contest is mapped.
+
+Run native staging:
+
+```powershell
+npm run etl:import:va
+```
+
+Promote a validated Virginia staging artifact:
+
+```powershell
+npm run native:promote -- .etl/staging/va-2024-staging.json
+```
+
 ## Native Wisconsin Import
 
 Wisconsin reads the committed WEC ward-by-ward federal and state contest workbook plus county geometry:

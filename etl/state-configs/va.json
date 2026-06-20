@@ -28,6 +28,17 @@
       "status": "loaded",
       "downloadUrl": "https://va2.elstats.civera.com/api/download_contest/161256_table.csv?split_party=false",
       "contestUrl": "https://historical.elections.virginia.gov/contest/161256"
+    },
+    {
+      "id": "va-county-geometry",
+      "category": "County-equivalent boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2751%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/va-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county-equivalent geography service artifact.",
+      "confidence": "County-equivalent geometry is used for Virginia county and independent-city map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -69,7 +80,7 @@
   "expected": {
     "jurisdictions": 133,
     "resultRows": 133,
-    "sources": 2,
+    "sources": 3,
     "stateTotal": 4505941,
     "trump": 2075085,
     "harris": 2335395,
@@ -80,7 +91,7 @@
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
-    "map": false,
+    "map": true,
     "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false

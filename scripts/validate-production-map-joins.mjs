@@ -54,7 +54,7 @@ const states = [
 const appBaseUrl = process.env.CIVIC_MAPS_BASE_URL ?? "https://civicresultmaps.org";
 const geoBaseUrl =
   process.env.CIVIC_MAPS_GEO_BASE_URL ??
-  "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data";
+  "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
 
 function normalizeName(name) {
   return String(name ?? "")

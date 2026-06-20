@@ -35,7 +35,7 @@ type FeatureCollection = {
 };
 
 const geoBaseUrl =
-  "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data";
+  "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
 
 function geoJsonPath(state: string) {
   if (state === "AK") {

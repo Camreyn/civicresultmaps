@@ -1132,15 +1132,15 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   VA: [
     {
       key: "sources",
-      evidence: "Virginia Department of Elections presidential locality and precinct rows are loaded from the official Elections Database contest CSV; EAC 2024 V2 remains the turnout denominator fallback.",
+      evidence: "Virginia Department of Elections presidential locality and precinct rows are loaded from the official Elections Database contest CSV, and Census county-equivalent geometry is joined for maps.",
       status: "partial",
-      why: "Virginia now has source-first locality results and precinct screening rows, but turnout still uses EAC fallback data and map geometry is not loaded yet.",
+      why: "Virginia now has source-first locality results, precinct screening rows, and map geometry, but turnout still uses EAC fallback data.",
     },
     {
       key: "map",
       evidence: "Virginia result rows are locality-level rows covering counties and independent cities.",
-      status: "missing",
-      why: "The app does not yet have Virginia locality geometry joined to those result rows, so maps stay unavailable even though the result table and sources are loaded.",
+      status: "ready",
+      why: "The map uses Census county-equivalent geometry joined to Virginia counties and independent cities. It does not include precinct boundary overlays.",
     },
     {
       key: "review",
