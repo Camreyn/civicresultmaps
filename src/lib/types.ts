@@ -76,6 +76,7 @@ export type CompletenessSummary = {
   resultRows: number;
   resultJurisdictions: number;
   sourceCount: number;
+  mapGeometrySourceCount: number;
   sourcesMissingUrls: number;
   indicatorCount: number;
   reviewRowCount: number;

@@ -1006,6 +1006,21 @@ function dataNoteStatus(hasRows: boolean, capability?: boolean, partial?: boolea
   return "missing";
 }
 
+function isMapGeometrySource(source: SourceSummary) {
+  if (source.status !== "loaded") {
+    return false;
+  }
+
+  const category = source.category.toLowerCase();
+  const localArtifact = source.localArtifact.toLowerCase();
+  const parser = source.parser.toLowerCase();
+  return (
+    localArtifact.endsWith(".geojson") ||
+    parser.includes("geojson") ||
+    (category.includes("boundar") && category.includes("count"))
+  );
+}
+
 const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   AZ: [
     {
@@ -1239,6 +1254,10 @@ function buildDataNoteSections(input: {
     input.reviewRows.length > 0 && input.results.length > 0 && new Set(input.reviewRows.map((row) => row.jurisdictionCode)).size < input.results.length;
   const eacTurnoutFallback = input.turnoutRows.some((row) => row.sourceId.toLowerCase().includes("eac"));
   const legacyOnly = input.completeness ? input.completeness.legacyImportCount > 0 && input.completeness.nativeImportCount === 0 : false;
+  const mapGeometrySourceCount =
+    input.completeness?.mapGeometrySourceCount ?? input.sources.filter(isMapGeometrySource).length;
+  const mapIsReady = Boolean(capabilities?.map && mapGeometrySourceCount > 0);
+  const mapIsPartial = Boolean(capabilities?.map || mapGeometrySourceCount > 0);
 
   const sections: DataNoteSection[] = [
     {
@@ -1266,16 +1285,24 @@ function buildDataNoteSections(input: {
         : "No source manifest has been loaded for this state yet.",
     },
     {
-      detail: capabilities?.map ? "County map geometry is available." : "Map geometry is not available for this state.",
+      detail: mapIsReady
+        ? `County map geometry is available from ${mapGeometrySourceCount.toLocaleString()} loaded geometry source${mapGeometrySourceCount === 1 ? "" : "s"}.`
+        : capabilities?.map
+          ? "A map capability flag exists, but no loaded geometry source is tracked."
+          : "Map geometry is not available for this state.",
       evidence: input.coverage?.validation.warnings.length
         ? input.coverage.validation.warnings.join(" ")
-        : "No map-join warning is currently reported.",
+        : mapIsReady
+          ? "No map-join warning is currently reported."
+          : "Loaded county geometry source evidence is missing.",
       key: "map",
       label: "Map",
-      status: capabilities?.map ? (input.coverage?.validation.passed === false ? "partial" : "ready") : "missing",
-      why: capabilities?.map
+      status: mapIsReady ? (input.coverage?.validation.passed === false ? "partial" : "ready") : mapIsPartial ? "partial" : "missing",
+      why: mapIsReady
         ? "The map can be used, but any join warning means boundaries and result rows should be checked before relying on shading."
-        : "County boundary geometry or name matching has not been validated for this state yet.",
+        : capabilities?.map
+          ? "The database map flag is not enough by itself; a loaded geometry source must be tracked before this state should appear map-ready."
+          : "County boundary geometry or name matching has not been validated for this state yet.",
     },
     {
       detail: input.reviewRows.length

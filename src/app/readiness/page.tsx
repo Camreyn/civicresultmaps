@@ -71,7 +71,7 @@ function missingTasks(state: CompletenessSummary, turnoutSource?: TurnoutSourceS
     tasks.push({ key: "results", label: "Certified result rows", severity: "high" });
   }
 
-  if (!state.capabilities.map) {
+  if (!state.capabilities.map || state.mapGeometrySourceCount === 0) {
     tasks.push({ key: "map", label: "Map geometry join", severity: "high" });
   }
 

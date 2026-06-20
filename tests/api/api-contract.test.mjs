@@ -61,6 +61,7 @@ test("public completeness report exists for national readiness", () => {
 
   assert.match(types, /CompletenessSummary/);
   assert.match(types, /sourceTier/);
+  assert.match(types, /mapGeometrySourceCount/);
   assert.match(types, /latestImportSummary/);
   assert.match(types, /latestNativeImportSummary/);
   assert.match(dataAccess, /listCompletenessReport/);
@@ -69,6 +70,8 @@ test("public completeness report exists for national readiness", () => {
   assert.match(dataAccess, /latest_import_summary/);
   assert.match(dataAccess, /latest_native_import_summary/);
   assert.match(dataAccess, /sourcesMissingUrls/);
+  assert.match(dataAccess, /map_geometry_source_count/);
+  assert.match(dataAccess, /Map geometry source missing/);
   assert.match(overview, /Completeness API/);
   assert.match(overview, /Native official states/);
   assert.match(overview, /lineage-pill/);
@@ -110,6 +113,8 @@ test("state switcher shows compact data availability", () => {
   assert.match(page, /completenessReport={completenessReport}/);
   assert.match(switcher, /CompletenessSummary/);
   assert.match(switcher, /stateDataBadges/);
+  assert.match(switcher, /mapGeometrySourceCount/);
+  assert.match(switcher, /Map capability is flagged, but no loaded geometry source is tracked/);
   assert.match(switcher, /Loaded/);
   assert.match(switcher, /Partial/);
   assert.match(switcher, /Missing/);

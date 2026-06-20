@@ -97,10 +97,39 @@ function countLabel(count: number | null, unit: string) {
   return `${count.toLocaleString()} ${unit}${count === 1 ? "" : "s"}`;
 }
 
+function mapPresence(capability: boolean, mapGeometrySourceCount: number) {
+  if (capability && mapGeometrySourceCount > 0) {
+    return "loaded" as const;
+  }
+
+  if (capability || mapGeometrySourceCount > 0) {
+    return "partial" as const;
+  }
+
+  return "missing" as const;
+}
+
+function mapTitle(capability: boolean, mapGeometrySourceCount: number) {
+  if (capability && mapGeometrySourceCount > 0) {
+    return `Map geometry available: ${countLabel(mapGeometrySourceCount, "loaded geometry source")}`;
+  }
+
+  if (capability) {
+    return "Map capability is flagged, but no loaded geometry source is tracked";
+  }
+
+  if (mapGeometrySourceCount > 0) {
+    return "Map geometry source is tracked, but the map capability flag is not enabled";
+  }
+
+  return "Map geometry not present";
+}
+
 function stateDataBadges(state: StateSummary, summary: CompletenessSummary | undefined): StateDataBadge[] {
   const capabilities = summary?.capabilities ?? state.capabilities;
   const resultRows = summary?.resultRows ?? 0;
   const sourceCount = summary?.sourceCount ?? 0;
+  const mapGeometrySourceCount = summary?.mapGeometrySourceCount ?? 0;
   const missingSourceUrls = summary?.sourcesMissingUrls ?? 0;
   const reviewRows = summary?.reviewRowCount ?? 0;
   const indicators = summary?.indicatorCount ?? 0;
@@ -135,8 +164,8 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
       icon: MapIcon,
       key: "map",
       label: "Map",
-      presence: capabilities.map ? "loaded" : "missing",
-      title: capabilities.map ? "Map geometry available" : "Map geometry not present",
+      presence: mapPresence(capabilities.map, mapGeometrySourceCount),
+      title: mapTitle(capabilities.map, mapGeometrySourceCount),
     },
     {
       abbr: "Rv",

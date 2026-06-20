@@ -47,6 +47,7 @@ function toIsoTimestamp(value: Date | string | null) {
 function completenessStatus(input: {
   capabilities: CapabilitySummary;
   indicatorCount: number;
+  mapGeometrySourceCount: number;
   resultRows: number;
   sourceCount: number;
   sourcesMissingUrls: number;
@@ -59,7 +60,11 @@ function completenessStatus(input: {
     return "needs_sources";
   }
 
-  if (!input.capabilities.map || !input.capabilities.certifiedResults) {
+  if (
+    !input.capabilities.certifiedResults ||
+    !input.capabilities.map ||
+    input.mapGeometrySourceCount === 0
+  ) {
     return "results_only";
   }
 
@@ -73,6 +78,7 @@ function completenessStatus(input: {
 function completenessGaps(input: {
   capabilities: CapabilitySummary;
   indicatorCount: number;
+  mapGeometrySourceCount: number;
   resultRows: number;
   sourceCount: number;
   sourcesMissingUrls: number;
@@ -93,6 +99,8 @@ function completenessGaps(input: {
 
   if (!input.capabilities.map) {
     gaps.push("Map capability pending");
+  } else if (input.mapGeometrySourceCount === 0) {
+    gaps.push("Map geometry source missing");
   }
 
   if (input.indicatorCount === 0 || !input.capabilities.reviewGraphs) {
@@ -130,6 +138,21 @@ function sourceTierLabel(input: {
   return input.resultRows > 0 ? "seed_fallback" : "pending";
 }
 
+function isMapGeometrySource(source: Pick<SourceSummary, "category" | "localArtifact" | "parser" | "status">) {
+  if (source.status !== "loaded") {
+    return false;
+  }
+
+  const category = source.category.toLowerCase();
+  const localArtifact = source.localArtifact.toLowerCase();
+  const parser = source.parser.toLowerCase();
+  return (
+    localArtifact.endsWith(".geojson") ||
+    parser.includes("geojson") ||
+    (category.includes("boundar") && category.includes("count"))
+  );
+}
+
 function seedCompletenessReport(year: number): CompletenessSummary[] {
   return seedStates.map((state) => {
     const results = seedResults.filter((row) => row.state === state.code && row.year === year);
@@ -141,6 +164,7 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
     const status = completenessStatus({
       capabilities: state.capabilities,
       indicatorCount,
+      mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
       resultRows: results.length,
       sourceCount: sources.length,
       sourcesMissingUrls,
@@ -153,6 +177,7 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       resultRows: results.length,
       resultJurisdictions: new Set(results.map((row) => row.jurisdictionCode)).size,
       sourceCount: sources.length,
+      mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
       sourcesMissingUrls,
       indicatorCount,
       reviewRowCount: 0,
@@ -177,6 +202,7 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       gaps: completenessGaps({
         capabilities: state.capabilities,
         indicatorCount,
+        mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
         resultRows: results.length,
         sourceCount: sources.length,
         sourcesMissingUrls,
@@ -819,6 +845,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     resultRows: string | number | null;
     resultJurisdictions: string | number | null;
     sourceCount: string | number | null;
+    mapGeometrySourceCount: string | number | null;
     sourcesMissingUrls: string | number | null;
     indicatorCount: string | number | null;
     reviewRowCount: string | number | null;
@@ -855,7 +882,18 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         select
           state_code,
           count(*) as source_count,
-          count(*) filter (where trim(source_url) = '') as sources_missing_urls
+          count(*) filter (where trim(source_url) = '') as sources_missing_urls,
+          count(*) filter (
+            where status = 'loaded'
+              and (
+                lower(coalesce(local_artifact, '')) like '%.geojson'
+                or lower(coalesce(parser, '')) like '%geojson%'
+                or (
+                  lower(category) like '%boundar%'
+                  and lower(category) like '%count%'
+                )
+              )
+          ) as map_geometry_source_count
         from source_documents
         where election_year = ${input.year}
         group by state_code
@@ -929,6 +967,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         coalesce(result_counts.result_rows, 0) as "resultRows",
         coalesce(result_counts.result_jurisdictions, 0) as "resultJurisdictions",
         coalesce(source_counts.source_count, 0) as "sourceCount",
+        coalesce(source_counts.map_geometry_source_count, 0) as "mapGeometrySourceCount",
         coalesce(source_counts.sources_missing_urls, 0) as "sourcesMissingUrls",
         coalesce(indicator_counts.indicator_count, 0) as "indicatorCount",
         coalesce(review_row_counts.review_row_count, 0) as "reviewRowCount",
@@ -973,6 +1012,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     };
     const resultRows = Number(row.resultRows ?? 0);
     const sourceCount = Number(row.sourceCount ?? 0);
+    const mapGeometrySourceCount = Number(row.mapGeometrySourceCount ?? 0);
     const sourcesMissingUrls = Number(row.sourcesMissingUrls ?? 0);
     const indicatorCount = Number(row.indicatorCount ?? 0);
     const nativeImportCount = Number(row.nativeImportCount ?? 0);
@@ -980,6 +1020,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     const status = completenessStatus({
       capabilities,
       indicatorCount,
+      mapGeometrySourceCount,
       resultRows,
       sourceCount,
       sourcesMissingUrls,
@@ -992,6 +1033,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       resultRows,
       resultJurisdictions: Number(row.resultJurisdictions ?? 0),
       sourceCount,
+      mapGeometrySourceCount,
       sourcesMissingUrls,
       indicatorCount,
       reviewRowCount: Number(row.reviewRowCount ?? 0),
@@ -1016,6 +1058,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       gaps: completenessGaps({
         capabilities,
         indicatorCount,
+        mapGeometrySourceCount,
         resultRows,
         sourceCount,
         sourcesMissingUrls,
