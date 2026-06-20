@@ -184,7 +184,6 @@ class PipelineTests(unittest.TestCase):
 
     def test_turnout_only_swing_state_configs_parse_eac_fallbacks(self):
         expectations = {
-            "AZ": {"ballots": 3477975, "registered": 5075337, "rows": 15},
             "NV": {"ballots": 1486297, "registered": 2256275, "rows": 17},
         }
 
@@ -202,6 +201,23 @@ class PipelineTests(unittest.TestCase):
                 self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], expected["rows"])
                 self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], expected["registered"])
                 self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], expected["ballots"])
+
+    def test_arizona_canvass_parser_builds_county_rows_and_turnout(self):
+        config = load_config("etl/state-configs/az.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeArizonaCanvassCountyCsv")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 15)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 3390161)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1770242)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 1582860)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 37059)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 15)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 4367593)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 3428011)
+        self.assertEqual(artifact["native"]["reviewRows"], [])
 
     def test_georgia_media_export_parser_builds_native_rows(self):
         config = load_config("etl/state-configs/ga.json")

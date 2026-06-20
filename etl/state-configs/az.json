@@ -4,7 +4,6 @@
   "authority": "Arizona Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "az-2024-eac-turnout",
@@ -14,49 +13,62 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Arizona Secretary of State canvass sources are tracked separately as candidate official result artifacts.",
+      "confidence": "National EAC fallback turnout rows retained as benchmark after Arizona signed canvass turnout rows were loaded.",
       "status": "loaded"
     },
     {
       "id": "az-2024-general-canvass-signed",
-      "category": "Official signed statewide canvass candidate",
+      "category": "Official signed statewide canvass county presidential and turnout rows",
       "url": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
-      "localFile": "",
-      "parser": "arizonaSignedCanvassPdfCandidate",
+      "localFile": "data/az-2024-general-canvass-president.csv",
+      "parser": "arizonaCanvassCountyCsv",
       "authority": "Arizona Secretary of State",
-      "timestampBasis": "Signed November 25, 2024 statewide canvass linked from the official 2024 Election Information page.",
-      "confidence": "Official source URL discovered, but scripted artifact download is still blocked by Cloudflare. Candidate source only until the signed canvass PDF is manually collected and parsed.",
-      "status": "candidate"
+      "timestampBasis": "Signed November 25, 2024 statewide canvass linked from the official 2024 Election Information page; report date/time November 22, 2024 7:04:17 PM.",
+      "confidence": "County rows transcribed from the official signed canvass PDF because the PDF host still presents a Cloudflare challenge to scripted download. Direct PDF source link remains visible for user verification.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "arizonaCanvassCountyCsv",
+    "sourceId": "az-2024-general-canvass-signed",
+    "otherColumns": [
+      "oliver",
+      "stein",
+      "skousen",
+      "ayyadurai",
+      "delacruz",
+      "shelton",
+      "boddie"
+    ]
+  },
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "az-2024-eac-turnout",
-    "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Arizona turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
-    "warningRequired": true,
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "az-2024-general-canvass-signed",
+    "denominatorType": "totalEligibleRegistration",
+    "registrationDenominatorTiming": "signedCanvass",
+    "sourceLevel": "county",
+    "notes": "Arizona turnout rows use the official signed statewide canvass Total Eligible Registration and Total Ballots Cast rows.",
+    "warningRequired": false,
     "expected": {
       "rowCount": 15,
-      "ballotsCast": 3477975,
-      "registeredVoters": 5075337
+      "ballotsCast": 3428011,
+      "registeredVoters": 4367593
     }
   },
   "expected": {
     "jurisdictions": 15,
-    "resultRows": 0,
+    "resultRows": 15,
     "sources": 2,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
+    "stateTotal": 3390161,
+    "trump": 1770242,
+    "harris": 1582860,
+    "other": 37059,
     "reviewRows": 0,
     "turnoutRows": 15
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
     "reviewGraphs": false,
     "turnout": true,

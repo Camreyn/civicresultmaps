@@ -934,15 +934,21 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   AZ: [
     {
       key: "sources",
-      evidence: "Arizona SOS signed statewide canvass URL is tracked as a candidate official result source.",
+      evidence: "Arizona SOS signed statewide canvass county presidential rows are loaded from the official canvass table.",
       status: "partial",
-      why: "The signed canvass PDF host still blocks scripted download, so the source is documented but not parsed into certified result rows yet.",
+      why: "The direct signed-canvass PDF source remains linked for verification, but the local machine-readable artifact is a county CSV transcribed from that official PDF because the PDF host still blocks scripted downloads.",
+    },
+    {
+      key: "review",
+      evidence: "Arizona native data is county-level signed canvass data only.",
+      status: "missing",
+      why: "Precinct/reporting-unit presidential rows and same-row down-ballot comparison fields are not in the signed canvass PDF, so review graphs remain disabled until a lower-level official export is collected.",
     },
     {
       key: "turnout",
-      evidence: "EAC 2024 V2 fallback is acceptable for statewide/local denominator context until Arizona-native turnout files are mapped.",
-      status: "partial",
-      why: "Arizona needs a state-native official turnout package before turnout should be treated as source-complete in the app.",
+      evidence: "Arizona signed canvass Total Eligible Registration and Total Ballots Cast rows are loaded for county turnout.",
+      status: "ready",
+      why: "Turnout now uses the state canvass denominator rather than the EAC fallback, while the EAC rows remain available as a national benchmark source.",
     },
   ],
   GA: [

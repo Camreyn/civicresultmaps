@@ -14,7 +14,8 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /review_rows/);
   assert.match(importer, /turnout_rows/);
   assert.match(importer, /if \(native\.resultRows\.length > 0\)/);
-  assert.match(importer, /if \(native\.reviewRows\.length > 0\)/);
+  assert.match(importer, /shouldReplaceReviewRows/);
+  assert.match(importer, /"nativeReviewRows" in native\.metrics/);
   assert.match(importer, /if \(native\.turnoutRows\.length > 0\)/);
   assert.doesNotMatch(importer, /parseLegacyBundle/);
   assert.match(script, /promoteNativeStagingArtifact/);

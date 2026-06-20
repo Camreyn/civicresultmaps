@@ -7,6 +7,7 @@
     "County geometry is available for these three states. Precinct/ward boundary geometry is not included in this package."
   ],
   "completedNativeStates": [
+    "AZ",
     "MI",
     "MN",
     "NC",
@@ -17,18 +18,6 @@
     "WI"
   ],
   "blockedStates": [
-    {
-      "state": "AZ",
-      "name": "Arizona",
-      "authority": "Arizona Secretary of State",
-      "priority": 1,
-      "status": "blocked",
-      "attemptedSourceUrl": "https://results.arizona.vote/",
-      "attemptedFallbackUrl": "https://azsos.gov/elections/election-information/2024-election-info",
-      "candidateOfficialUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
-      "blockedReason": "Official Arizona signed canvass URL is identified, but the PDF host returns a Cloudflare JavaScript/cookie challenge to scripted artifact download.",
-      "nextAction": "Manually collect the signed statewide canvass PDF from the official AZ SOS link, then build an Arizona signed-canvass parser for county presidential totals."
-    },
     {
       "state": "NV",
       "name": "Nevada",

@@ -243,7 +243,8 @@ export async function promoteNativeStagingArtifact(path: string) {
         and contest_id = ${contest.id}
     `;
   }
-  if (native.reviewRows.length > 0) {
+  const shouldReplaceReviewRows = native.reviewRows.length > 0 || (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics);
+  if (shouldReplaceReviewRows) {
     await sql`
       delete from review_rows
       where state_code = ${stateCode}
