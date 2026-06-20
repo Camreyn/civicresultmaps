@@ -286,6 +286,7 @@ input {
 }
 
 .readiness-hero,
+.readiness-guide,
 .readiness-metrics,
 .readiness-panel {
   margin-inline: auto;
@@ -339,6 +340,64 @@ input {
 .readiness-api-link:hover,
 .readiness-open-link:hover {
   background: var(--accent-soft);
+}
+
+.readiness-guide {
+  align-items: stretch;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(240px, 0.82fr) minmax(360px, 1.4fr) auto;
+  margin-bottom: 18px;
+  padding: 16px;
+}
+
+.readiness-guide-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.readiness-guide-copy h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.readiness-guide-copy p:not(.section-label),
+.readiness-guide-cards p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.readiness-guide-cards {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.readiness-guide-cards article {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.readiness-guide-cards strong {
+  font-size: 13px;
+}
+
+.readiness-status-key {
+  align-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
 }
 
 .readiness-metrics {
@@ -3983,6 +4042,8 @@ td {
   .content-grid,
   .metrics-grid,
   .overview-metrics,
+  .readiness-guide,
+  .readiness-guide-cards,
   .readiness-metrics {
     grid-template-columns: 1fr;
   }
@@ -4047,6 +4108,7 @@ td {
   .dashboard-head,
   .overview-head,
   .readiness-hero,
+  .readiness-status-key,
   .readiness-panel-head,
   .readiness-hero-actions,
   .screening-card-head,

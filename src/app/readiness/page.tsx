@@ -12,6 +12,24 @@ import type { CompletenessSummary } from "@/lib/types";
 const selectedYear = 2024;
 export const dynamic = "force-dynamic";
 
+const readinessGuideCards = [
+  {
+    title: "Start with the chips",
+    body:
+      "Green means rows or source records are loaded. Gold means usable but limited. Red means the app is still waiting on that data family.",
+  },
+  {
+    title: "Prioritize high gaps",
+    body:
+      "Certified results, map joins, and source records come first. Review charts, turnout, and historical context should stay caveated until their row families are present.",
+  },
+  {
+    title: "Treat flags as prompts",
+    body:
+      "A review-ready state is not a conclusion-ready state. Advisory rows point reviewers toward source checks, local context, and documented alternative explanations.",
+  },
+];
+
 type ReadinessTask = {
   key: string;
   label: string;
@@ -316,6 +334,30 @@ export default async function ReadinessPage() {
           <a className="readiness-api-link" href={`/api/turnout-sources?year=${selectedYear}`} target="_blank" rel="noreferrer">
             Turnout Sources API
           </a>
+        </div>
+      </section>
+
+      <section className="readiness-guide" aria-label="How to use the readiness dashboard">
+        <div className="readiness-guide-copy">
+          <p className="section-label">How to Use This Dashboard</p>
+          <h2>Read status first, then inspect sources.</h2>
+          <p>
+            This page is meant to make the work queue visible. It separates loaded data from partial or missing
+            data so reviewers can see why a chart, map layer, or source family is not ready yet.
+          </p>
+        </div>
+        <div className="readiness-guide-cards">
+          {readinessGuideCards.map((card) => (
+            <article key={card.title}>
+              <strong>{card.title}</strong>
+              <p>{card.body}</p>
+            </article>
+          ))}
+        </div>
+        <div className="readiness-status-key" aria-label="Readiness status key">
+          <span className="coverage-chip coverage-good">Loaded</span>
+          <span className="coverage-chip coverage-warn">Partial or fallback</span>
+          <span className="coverage-chip coverage-missing">Missing or blocked</span>
         </div>
       </section>
 
