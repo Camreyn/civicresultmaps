@@ -277,8 +277,10 @@ test("turnout collection inventory is available outside the app", () => {
 
   assert.match(packageScripts["turnout:inventory"], /report-turnout-inventory/);
   assert.match(packageScripts["turnout:collect"], /collect-turnout-sources/);
+  assert.match(packageScripts["turnout:configs:eac"], /create-eac-turnout-state-configs/);
   assert.match(packageScripts["turnout:extract:eac-states"], /extract-eac-state-turnout/);
   assert.match(packageScripts["turnout:normalize:eac"], /normalize-eac-turnout/);
+  assert.match(packageScripts["turnout:sync-registry"], /sync-turnout-registry-from-configs/);
   assert.match(packageScripts["validate:turnout-packages"], /validate-turnout-source-packages/);
   assert.match(workflow, /validate:turnout-packages/);
   assert.match(inventoryScript, /needs_native_turnout_package/);

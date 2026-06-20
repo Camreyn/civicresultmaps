@@ -480,6 +480,7 @@ def _normalized_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]
             registered = int_text(row.get("registered_voters"))
             ballots = int_text(row.get("ballots_cast"))
             turnout_raw = str(row.get("turnout_pct") or "").strip()
+            has_positive_denominator = registered > 0
 
             output.append(
                 {
@@ -487,13 +488,13 @@ def _normalized_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]
                     "localUnit": local_unit,
                     "level": str(row.get("level") or section.get("sourceLevel", "jurisdiction")).strip(),
                     "ballotsCast": ballots,
-                    "registeredVoters": registered if registered else None,
-                    "turnoutPct": float(turnout_raw) if turnout_raw else pct(ballots, registered) if registered else None,
+                    "registeredVoters": registered if has_positive_denominator else None,
+                    "turnoutPct": float(turnout_raw) if turnout_raw and has_positive_denominator else pct(ballots, registered) if has_positive_denominator else None,
                     "denominatorType": row.get("denominator_type") or section.get("denominatorType", "registeredVoters"),
                     "registrationDenominatorTiming": row.get("denominator_note")
                     or row.get("denominator_timing")
                     or section.get("registrationDenominatorTiming", "notRecorded"),
-                    "warningRequired": _truthy(row.get("warning_required")),
+                    "warningRequired": _truthy(row.get("warning_required")) or not has_positive_denominator,
                     "sourceId": source.id,
                 }
             )

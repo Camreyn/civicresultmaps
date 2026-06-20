@@ -492,7 +492,9 @@ class PipelineTests(unittest.TestCase):
         status = main(["validate-all", "--config-dir", "etl/state-configs", "--out", str(tmp)])
 
         self.assertEqual(status, 0)
-        for state in ["az", "ga", "mi", "mn", "nc", "nv", "oh", "pa", "wa", "wi"]:
+        staged_files = list(tmp.glob("*-2024-staging.json"))
+        self.assertEqual(len(staged_files), 50)
+        for state in ["ak", "az", "ga", "mi", "mn", "nc", "nv", "oh", "pa", "wa", "wi", "wy"]:
             self.assertTrue((tmp / f"{state}-2024-staging.json").exists())
 
 

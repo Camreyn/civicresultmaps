@@ -1,0 +1,54 @@
+{
+  "code": "NJ",
+  "name": "New Jersey",
+  "authority": "U.S. Election Assistance Commission",
+  "electionYear": 2024,
+  "office": "President",
+  "turnoutOnly": true,
+  "sources": [
+    {
+      "id": "nj-2024-eac-turnout",
+      "category": "EAC fallback turnout rows",
+      "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localFile": "data/eac-2024-state-turnout/nj-2024-eac-turnout.csv",
+      "parser": "eacTurnoutCsv",
+      "authority": "U.S. Election Assistance Commission",
+      "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
+      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    }
+  ],
+  "turnout": {
+    "format": "eacTurnoutCsv",
+    "sourceId": "nj-2024-eac-turnout",
+    "denominatorType": "registeredVoters",
+    "registrationDenominatorTiming": "eacReported",
+    "sourceLevel": "jurisdiction",
+    "notes": "New Jersey turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "warningRequired": false,
+    "expected": {
+      "rowCount": 21,
+      "ballotsCast": 4321921,
+      "registeredVoters": 6630364
+    }
+  },
+  "expected": {
+    "jurisdictions": 21,
+    "resultRows": 0,
+    "sources": 1,
+    "stateTotal": 0,
+    "trump": 0,
+    "harris": 0,
+    "other": 0,
+    "reviewRows": 0,
+    "turnoutRows": 21
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": false,
+    "map": false,
+    "reviewGraphs": false,
+    "turnout": true,
+    "historicalBaseline": false
+  }
+}

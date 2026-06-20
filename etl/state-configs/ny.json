@@ -1,0 +1,54 @@
+{
+  "code": "NY",
+  "name": "New York",
+  "authority": "U.S. Election Assistance Commission",
+  "electionYear": 2024,
+  "office": "President",
+  "turnoutOnly": true,
+  "sources": [
+    {
+      "id": "ny-2024-eac-turnout",
+      "category": "EAC fallback turnout rows",
+      "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localFile": "data/eac-2024-state-turnout/ny-2024-eac-turnout.csv",
+      "parser": "eacTurnoutCsv",
+      "authority": "U.S. Election Assistance Commission",
+      "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
+      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    }
+  ],
+  "turnout": {
+    "format": "eacTurnoutCsv",
+    "sourceId": "ny-2024-eac-turnout",
+    "denominatorType": "registeredVoters",
+    "registrationDenominatorTiming": "eacReported",
+    "sourceLevel": "jurisdiction",
+    "notes": "New York turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "warningRequired": false,
+    "expected": {
+      "rowCount": 62,
+      "ballotsCast": 8389626,
+      "registeredVoters": 13579416
+    }
+  },
+  "expected": {
+    "jurisdictions": 62,
+    "resultRows": 0,
+    "sources": 1,
+    "stateTotal": 0,
+    "trump": 0,
+    "harris": 0,
+    "other": 0,
+    "reviewRows": 0,
+    "turnoutRows": 62
+  },
+  "capabilities": {
+    "sourcePlanner": true,
+    "certifiedResults": false,
+    "map": false,
+    "reviewGraphs": false,
+    "turnout": true,
+    "historicalBaseline": false
+  }
+}
