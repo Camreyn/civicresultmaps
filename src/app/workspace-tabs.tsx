@@ -971,6 +971,26 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
       why: "Georgia native turnout sources still need to be collected and normalized before the turnout card can be marked ready.",
     },
   ],
+  FL: [
+    {
+      key: "sources",
+      evidence: "Florida Department of State official presidential county table is loaded for county result rows; EAC 2024 V2 remains the turnout denominator fallback.",
+      status: "partial",
+      why: "Florida now has source-first county presidential results, but the package does not yet include a state-native turnout denominator artifact or lower-level review rows.",
+    },
+    {
+      key: "review",
+      evidence: "Florida native data is county-level presidential results only.",
+      status: "missing",
+      why: "Precinct/reporting-unit presidential rows and same-row down-ballot comparison fields are not loaded yet, so review graphs remain disabled until a lower-level official export is collected.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 fallback is the current registered-voter denominator source.",
+      status: "partial",
+      why: "Florida needs a state-native official registered-voter/ballots-cast denominator package mapped before turnout can be treated as complete in this app.",
+    },
+  ],
   MI: [
     {
       key: "review",

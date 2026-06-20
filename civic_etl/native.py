@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+from html.parser import HTMLParser
 import json
 import re
 import zipfile
@@ -898,6 +899,96 @@ def _nevada_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[l
                     "sourceId": source.id,
                 }
             )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": 0,
+        **turnout_metrics,
+    }
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), [], turnout_rows, metrics
+
+
+class _HtmlTableParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.rows: list[list[str]] = []
+        self._in_row = False
+        self._in_cell = False
+        self._current_row: list[str] = []
+        self._current_cell: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() == "tr":
+            self._in_row = True
+            self._current_row = []
+        elif tag.lower() in {"td", "th"} and self._in_row:
+            self._in_cell = True
+            self._current_cell = []
+
+    def handle_data(self, data: str) -> None:
+        if self._in_cell:
+            self._current_cell.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        tag = tag.lower()
+        if tag in {"td", "th"} and self._in_cell:
+            text = " ".join("".join(self._current_cell).split())
+            self._current_row.append(text)
+            self._in_cell = False
+        elif tag == "tr" and self._in_row:
+            if self._current_row:
+                self.rows.append(self._current_row)
+            self._in_row = False
+
+
+def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+
+    parser = _HtmlTableParser()
+    parser.feed(_artifact_path(source).read_text(encoding="utf-8", errors="replace"))
+
+    result_rows: list[dict[str, Any]] = []
+    for row in parser.rows:
+        if len(row) < 10:
+            continue
+        label = " ".join(str(row[0]).strip().split()).lower()
+        if label in {"county", "total", "% votes"}:
+            continue
+        county = _county_name(row[0])
+        if not county:
+            continue
+        trump = int_text(row[1])
+        harris = int_text(row[2])
+        other = sum(int_text(value) for value in row[3:])
+        total = trump + harris + other
+        if not total:
+            continue
+        result_rows.append(
+            {
+                "jurisdictionName": county,
+                "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                "level": "county",
+                "votes": {
+                    "Trump": trump,
+                    "Harris": harris,
+                    "Other": other,
+                },
+                "totalVotes": total,
+                "margin": trump - harris,
+                "marginPct": pct(trump - harris, total),
+                "sourceId": source.id,
+            }
+        )
 
     turnout_rows: list[dict[str, Any]] = []
     turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
@@ -1872,6 +1963,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeNevadaStatewideGeneralCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "FL" and config.raw.get("certifiedResults", {}).get("format") == "floridaDetailHtml":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _florida_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeFloridaDetailHtml",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

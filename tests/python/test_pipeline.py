@@ -216,6 +216,23 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 1486297)
         self.assertEqual(artifact["native"]["reviewRows"], [])
 
+    def test_florida_detail_html_parser_builds_county_rows(self):
+        config = load_config("etl/state-configs/fl.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeFloridaDetailHtml")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 67)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 10893752)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 6110125)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 4683038)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 100589)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 67)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 15740083)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 10999125)
+        self.assertEqual(artifact["native"]["reviewRows"], [])
+
     def test_georgia_media_export_parser_builds_native_rows(self):
         config = load_config("etl/state-configs/ga.json")
         report = validate_config(config)

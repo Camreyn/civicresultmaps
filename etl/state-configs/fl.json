@@ -1,10 +1,9 @@
 {
   "code": "FL",
   "name": "Florida",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Florida Department of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "fl-2024-eac-turnout",
@@ -16,8 +15,23 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "fl-2024-general-president-detail",
+      "category": "Official presidential county results",
+      "url": "https://results.elections.myflorida.com/DetailRpt.Asp?ELECTIONDATE=11/5/2024&RACE=PRE&PARTY=&DIST=&GRP=&DATAMODE=",
+      "localFile": "data/fl-2024-general-president-detail.html",
+      "parser": "floridaDetailHtml",
+      "authority": "Florida Department of State, Division of Elections",
+      "timestampBasis": "Official results page for the November 5, 2024 General Election.",
+      "confidence": "Official Florida Department of State county table for President of the United States. EAC turnout remains the denominator fallback until a state-native turnout artifact is collected.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "floridaDetailHtml",
+    "sourceId": "fl-2024-general-president-detail"
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "fl-2024-eac-turnout",
@@ -34,18 +48,18 @@
   },
   "expected": {
     "jurisdictions": 67,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
+    "resultRows": 67,
+    "sources": 2,
+    "stateTotal": 10893752,
+    "trump": 6110125,
+    "harris": 4683038,
+    "other": 100589,
     "reviewRows": 0,
     "turnoutRows": 67
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
     "reviewGraphs": false,
     "turnout": true,
