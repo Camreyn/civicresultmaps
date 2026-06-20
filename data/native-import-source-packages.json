@@ -11,26 +11,14 @@
     "MI",
     "MN",
     "NC",
+    "NV",
     "OH",
     "PA",
     "GA",
     "WA",
     "WI"
   ],
-  "blockedStates": [
-    {
-      "state": "NV",
-      "name": "Nevada",
-      "authority": "Nevada Secretary of State",
-      "priority": 2,
-      "status": "blocked",
-      "attemptedSourceUrl": "https://silverstateelection.nv.gov/",
-      "attemptedFallbackUrl": "https://www.nvsos.gov/sos/elections/election-information/2024-election-information/2024-general-election-results",
-      "candidateOfficialUrl": "https://silverstateelection.nv.gov/USPresidential/",
-      "blockedReason": "Official Silver State presidential results URL is identified, but Nevada results hosts returned Incapsula challenge/incident pages to scripted collection.",
-      "nextAction": "Collect a browser-authorized Silver State export or static SOS artifact, then build a Nevada county presidential parser."
-    }
-  ],
+  "blockedStates": [],
   "states": [
     {
       "state": "MN",

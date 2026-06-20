@@ -182,26 +182,6 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
         self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
 
-    def test_turnout_only_swing_state_configs_parse_eac_fallbacks(self):
-        expectations = {
-            "NV": {"ballots": 1486297, "registered": 2256275, "rows": 17},
-        }
-
-        for state, expected in expectations.items():
-            with self.subTest(state=state):
-                config = load_config(f"etl/state-configs/{state.lower()}.json")
-                report = validate_config(config)
-                artifact = build_staging_artifact(config, report)
-
-                self.assertTrue(report.passed)
-                self.assertGreaterEqual(len(artifact["sources"]), 2)
-                self.assertTrue(any(source["status"] == "candidate" for source in artifact["sources"]))
-                self.assertEqual(artifact["native"]["resultRows"], [])
-                self.assertEqual(artifact["native"]["reviewRows"], [])
-                self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], expected["rows"])
-                self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], expected["registered"])
-                self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], expected["ballots"])
-
     def test_arizona_canvass_parser_builds_county_rows_and_turnout(self):
         config = load_config("etl/state-configs/az.json")
         report = validate_config(config)
@@ -217,6 +197,23 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 15)
         self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 4367593)
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 3428011)
+        self.assertEqual(artifact["native"]["reviewRows"], [])
+
+    def test_nevada_statewide_results_parser_builds_county_rows(self):
+        config = load_config("etl/state-configs/nv.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeNevadaStatewideGeneralCsv")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 17)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 1484840)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 751205)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 705197)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 28438)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 17)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 2256275)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 1486297)
         self.assertEqual(artifact["native"]["reviewRows"], [])
 
     def test_georgia_media_export_parser_builds_native_rows(self):

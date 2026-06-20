@@ -851,6 +851,70 @@ def _arizona_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), [], turnout_rows, metrics
 
 
+def _nevada_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    other_columns = section.get("otherColumns", [])
+
+    result_rows: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {"state", "election_year", "jurisdiction_name", "trump", "harris", *other_columns}
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Nevada statewide results CSV missing columns: {', '.join(missing)}")
+
+        for index, row in enumerate(reader, start=2):
+            state = str(row.get("state") or "").strip().upper()
+            if state != config.code:
+                raise ValueError(f"Nevada results row {index} has wrong state: {row.get('state')!r}")
+            year = int_text(row.get("election_year"))
+            if year != config.election_year:
+                raise ValueError(f"Nevada results row {index} has wrong election year: {row.get('election_year')!r}")
+            county = _county_name(row.get("jurisdiction_name"))
+            if not county:
+                raise ValueError(f"Nevada results row {index} is missing jurisdiction_name")
+
+            trump = int_text(row.get("trump"))
+            harris = int_text(row.get("harris"))
+            other = sum(int_text(row.get(column)) for column in other_columns)
+            total = trump + harris + other
+            if not total:
+                continue
+            result_rows.append(
+                {
+                    "jurisdictionName": county,
+                    "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                    "level": "county",
+                    "votes": {
+                        "Trump": trump,
+                        "Harris": harris,
+                        "Other": other,
+                    },
+                    "totalVotes": total,
+                    "margin": trump - harris,
+                    "marginPct": pct(trump - harris, total),
+                    "sourceId": source.id,
+                }
+            )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": 0,
+        **turnout_metrics,
+    }
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), [], turnout_rows, metrics
+
+
 def _washington_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     result_section = config.raw["certifiedResults"]
     review_section = config.raw["reviewCharts"]
@@ -1795,6 +1859,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeArizonaCanvassCountyCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "NV" and config.raw.get("certifiedResults", {}).get("format") == "nevadaStatewideGeneralCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _nevada_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeNevadaStatewideGeneralCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

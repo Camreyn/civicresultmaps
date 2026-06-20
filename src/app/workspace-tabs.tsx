@@ -1001,15 +1001,21 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   NV: [
     {
       key: "sources",
-      evidence: "Nevada Silver State presidential results page is tracked as a candidate official result source.",
+      evidence: "Nevada Secretary of State archived statewide general election results are loaded for county presidential rows.",
       status: "partial",
-      why: "The results host still blocks scripted collection, so Nevada needs a browser-authorized export or static SOS artifact before native result rows can be loaded.",
+      why: "The live NVSOS and Silver State hosts still return Incapsula challenge pages to scripted collection, so the machine-readable artifact is transcribed from an archived capture of the official NVSOS results page.",
+    },
+    {
+      key: "review",
+      evidence: "Nevada native data is county-level statewide-results data only.",
+      status: "missing",
+      why: "Precinct/reporting-unit presidential rows and same-row down-ballot comparison fields are not loaded yet, so review graphs remain disabled until a lower-level official export is collected.",
     },
     {
       key: "turnout",
       evidence: "EAC 2024 V2 fallback is the current denominator backbone.",
       status: "partial",
-      why: "Nevada native turnout and source-link cleanup are still pending, so turnout remains a fallback data layer.",
+      why: "Nevada native registered-voter/ballots-cast denominator rows are still pending, so turnout remains a fallback data layer.",
     },
   ],
   OH: [

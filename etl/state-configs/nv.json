@@ -4,7 +4,6 @@
   "authority": "Nevada Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "nv-2024-eac-turnout",
@@ -14,21 +13,30 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Nevada Secretary of State results sources are tracked separately as candidate official result artifacts.",
+      "confidence": "National EAC fallback turnout rows. Nevada Secretary of State archived statewide results page is the official result source.",
       "status": "loaded"
     },
     {
       "id": "nv-2024-silver-state-president",
-      "category": "Official presidential results candidate",
-      "url": "https://silverstateelection.nv.gov/USPresidential/",
-      "localFile": "",
-      "parser": "nevadaSilverStateCandidate",
+      "category": "Official statewide presidential county results",
+      "url": "https://web.archive.org/web/20250911041627/https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+      "localFile": "data/nv-2024-statewide-general-president.csv",
+      "parser": "nevadaStatewideGeneralCsv",
       "authority": "Nevada Secretary of State",
-      "timestampBasis": "Official Silver State 2024 General Election U.S. Presidential results page.",
-      "confidence": "Official source URL discovered, but scripted collection still needs a non-challenge static export or browser-authorized artifact. Candidate source only until parsed.",
-      "status": "candidate"
+      "timestampBasis": "Archived capture of the official Nevada Secretary of State 2024 statewide general election results page for November 5, 2024.",
+      "confidence": "County presidential rows transcribed from the archived official NVSOS statewide results page because the live NVSOS/Silver State hosts return Incapsula challenge pages to scripted collection.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "nevadaStatewideGeneralCsv",
+    "sourceId": "nv-2024-silver-state-president",
+    "otherColumns": [
+      "oliver",
+      "skousen",
+      "none"
+    ]
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "nv-2024-eac-turnout",
@@ -45,18 +53,18 @@
   },
   "expected": {
     "jurisdictions": 17,
-    "resultRows": 0,
+    "resultRows": 17,
     "sources": 2,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
+    "stateTotal": 1484840,
+    "trump": 751205,
+    "harris": 705197,
+    "other": 28438,
     "reviewRows": 0,
     "turnoutRows": 17
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
     "reviewGraphs": false,
     "turnout": true,

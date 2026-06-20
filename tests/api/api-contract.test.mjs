@@ -191,7 +191,8 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /Georgia SOS media export JSON/);
   assert.match(tabs, /county presidential candidate rows sum 19 votes higher/);
   assert.match(tabs, /17 zero-total precinct entries are omitted/);
-  assert.match(tabs, /Nevada Silver State presidential results page/);
+  assert.match(tabs, /Nevada Secretary of State archived statewide general election results/);
+  assert.match(tabs, /live NVSOS and Silver State hosts still return Incapsula/);
   assert.doesNotMatch(tabs, /Sources API/);
   assert.match(explorer, /Eli5/);
   assert.match(explorer, /clickable-row/);
