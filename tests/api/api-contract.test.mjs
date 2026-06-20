@@ -113,6 +113,10 @@ test("state switcher shows compact data availability", () => {
   assert.match(switcher, /Loaded/);
   assert.match(switcher, /Partial/);
   assert.match(switcher, /Missing/);
+  assert.match(switcher, /stateFilterOptions/);
+  assert.match(switcher, /Missing turnout/);
+  assert.match(switcher, /Missing review/);
+  assert.match(switcher, /Has turnout/);
   assert.match(switcher, /Results/);
   assert.match(switcher, /Sources/);
   assert.match(switcher, /Review/);
@@ -129,8 +133,22 @@ test("review indicators explain advisory meaning", () => {
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   const overview = readFileSync("src/app/national-overview.tsx", "utf8");
+  const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 
   assert.match(eli5, /ELI5/);
+  assert.equal(packageJson.dependencies.jszip.length > 0, true);
+  assert.match(tabs, /Data Notes/);
+  assert.match(tabs, /Why this is missing or limited/);
+  assert.match(tabs, /Review Guide/);
+  assert.match(tabs, /How to Review Responsibly/);
+  assert.match(tabs, /Reviewer Checklist/);
+  assert.match(tabs, /Glossary/);
+  assert.match(tabs, /Report Data Issue/);
+  assert.match(tabs, /githubIssueUrl/);
+  assert.match(tabs, /Source Manifest JSON/);
+  assert.match(tabs, /Import Summary JSON/);
+  assert.match(tabs, /All Files ZIP/);
+  assert.match(tabs, /exportReviewPackage/);
   assert.match(tabs, /indicatorExplanation/);
   assert.match(tabs, /flagMethodologyGuides/);
   assert.match(tabs, /Flag Calculation Guide/);

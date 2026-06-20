@@ -1,5 +1,6 @@
 "use client";
 
+import JSZip from "jszip";
 import {
   Activity,
   BarChart3,
@@ -26,6 +27,7 @@ import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
 import type {
   AnalysisIndicator,
+  CompletenessSummary,
   CoverageSummary,
   HistoricalResultRowSummary,
   ImportRunSummary,
@@ -33,6 +35,7 @@ import type {
   ReviewRowSummary,
   SourceSummary,
   StateSummary,
+  TurnoutRowSummary,
   VoteMethodRowSummary,
 } from "@/lib/types";
 
@@ -44,10 +47,12 @@ type WorkspaceTabsProps = {
   indicators: AnalysisIndicator[];
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
+  selectedCompleteness: CompletenessSummary | undefined;
   selectedState: StateSummary | undefined;
   selectedStateCode: string;
   sources: SourceSummary[];
   totalVotes: number;
+  turnoutRows: TurnoutRowSummary[];
   voteMethodRows: VoteMethodRowSummary[];
 };
 
@@ -65,6 +70,7 @@ type TabKey =
 type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
 type ChartQualityStatus = "ready" | "acknowledgement_required" | "blocked";
+type QualityBadgeStatus = "ready" | "partial" | "proxy" | "missing" | "blocked";
 type ChartQualityDiagnostic = {
   acknowledgementKey: string;
   checked: string[];
@@ -73,6 +79,21 @@ type ChartQualityDiagnostic = {
   status: ChartQualityStatus;
   summary: string;
   title: string;
+};
+type DataNoteSection = {
+  detail: string;
+  evidence: string;
+  key: string;
+  label: string;
+  status: QualityBadgeStatus;
+  why: string;
+};
+type GlossaryEntry = {
+  definition: string;
+  term: string;
+};
+type ReviewerChecklistItem = {
+  item: string;
 };
 type WorkspaceTourContext = {
   hasCoverage: boolean;
@@ -116,7 +137,7 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: History, key: "history", label: "History" },
   { icon: ListChecks, key: "planner", label: "Source Planner" },
   { icon: FileCheck2, key: "data", label: "Data & Sources" },
-  { icon: BookOpen, key: "methodology", label: "Methodology" },
+  { icon: BookOpen, key: "methodology", label: "Review Guide" },
   { icon: Download, key: "exports", label: "Exports & API" },
   { icon: GitBranch, key: "imports", label: "Import Runs" },
   { icon: HeartHandshake, key: "support", label: "Support" },
@@ -161,6 +182,70 @@ const flagMethodologyGuides: FlagMethodologyGuide[] = [
       "Open the source rows, check candidate and contest coverage, compare neighboring units, and look for official correction notes before drawing conclusions.",
   },
 ];
+
+const reviewerChecklist: ReviewerChecklistItem[] = [
+  { item: "Open the official source link or local artifact reference before sharing a finding." },
+  { item: "Check whether the relevant chart or table is ready, partial, proxy, missing, or blocked." },
+  { item: "Read the selected state's Data Notes and import caveats." },
+  { item: "Consider normal explanations such as geography, demographics, vote method, contest differences, and reporting-unit grouping." },
+  { item: "Compare against historical baselines, nearby jurisdictions, or official canvass notes when those records are available." },
+  { item: "Save the exact state, jurisdiction, chart/table name, source document, and date reviewed." },
+];
+
+const glossaryEntries: GlossaryEntry[] = [
+  {
+    term: "Review row",
+    definition:
+      "A local reporting-unit row used for screening charts, usually precinct, ward, municipality, or county depending on the source.",
+  },
+  {
+    term: "Turnout denominator",
+    definition:
+      "The registered-voter count used under ballots cast when calculating turnout. Timing and active/inactive voter rules can change comparisons.",
+  },
+  {
+    term: "Comparison contest",
+    definition:
+      "A same-row down-ballot race used to compare presidential votes against another contest such as U.S. Senate or Governor.",
+  },
+  {
+    term: "Source tier",
+    definition:
+      "A compact lineage label describing whether rows came from native official imports, legacy bundles, mixed imports, seed fallback, or pending data.",
+  },
+  {
+    term: "Native import",
+    definition:
+      "A source-first parser built for current official artifacts and promoted through the app's ETL validation path.",
+  },
+  {
+    term: "Legacy import",
+    definition:
+      "Rows imported from older static app-data bundles. Useful context, but less source-first than native official imports.",
+  },
+  {
+    term: "Proxy chart",
+    definition:
+      "A chart that substitutes a weaker available variable because the preferred source field is missing.",
+  },
+  {
+    term: "Advisory flag",
+    definition:
+      "A triage marker that says a pattern deserves human review. It is not proof of fraud, tampering, or misconduct.",
+  },
+  {
+    term: "Vote-share correlation",
+    definition:
+      "A Pearson correlation check between local candidate vote count and that candidate's vote share across imported local rows.",
+  },
+  {
+    term: "Down-ballot difference",
+    definition:
+      "The same-party gap between presidential votes and a comparison contest in the same reporting unit.",
+  },
+];
+
+const githubIssueUrl = "https://github.com/Camreyn/civicresultmaps/issues/new";
 
 const tourFeatureRegistry: TourFeature[] = [
   {
@@ -664,9 +749,12 @@ function csvEscape(value: unknown) {
   return `"${String(value ?? "").replaceAll('"', '""')}"`;
 }
 
-function downloadCsv(filename: string, headers: string[], rows: unknown[][]) {
-  const csv = [headers, ...rows].map((row) => row.map(csvEscape).join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+function csvContent(headers: string[], rows: unknown[][]) {
+  return [headers, ...rows].map((row) => row.map(csvEscape).join(",")).join("\n");
+}
+
+function downloadBlob(filename: string, content: BlobPart[], type: string) {
+  const blob = new Blob(content, { type });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -675,14 +763,16 @@ function downloadCsv(filename: string, headers: string[], rows: unknown[][]) {
   URL.revokeObjectURL(url);
 }
 
+function downloadCsv(filename: string, headers: string[], rows: unknown[][]) {
+  downloadBlob(filename, [csvContent(headers, rows)], "text/csv;charset=utf-8");
+}
+
 function downloadTextFile(filename: string, content: string, type: string) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
+  downloadBlob(filename, [content], type);
+}
+
+function jsonContent(value: unknown) {
+  return JSON.stringify(value, null, 2);
 }
 
 function linearRegression(points: Array<{ x: number; y: number }>) {
@@ -746,12 +836,221 @@ function chartStatusLabel(status: ChartQualityStatus) {
   return "Acknowledgement required";
 }
 
+function qualityBadgeLabel(status: QualityBadgeStatus) {
+  if (status === "ready") {
+    return "Ready";
+  }
+
+  if (status === "partial") {
+    return "Partial";
+  }
+
+  if (status === "proxy") {
+    return "Proxy";
+  }
+
+  if (status === "blocked") {
+    return "Blocked";
+  }
+
+  return "Missing";
+}
+
+function QualityBadge({ detail, status }: { detail: string; status: QualityBadgeStatus }) {
+  return (
+    <span className={`quality-badge ${status}`} title={detail}>
+      {qualityBadgeLabel(status)}
+    </span>
+  );
+}
+
 function hasNativeImport(importRuns: ImportRunSummary[]) {
   return importRuns.some((run) => run.parser.toLowerCase().includes("native"));
 }
 
 function hasLegacyImport(importRuns: ImportRunSummary[]) {
   return importRuns.some((run) => run.parser.toLowerCase().includes("legacy"));
+}
+
+function summaryWarnings(summary: Record<string, unknown> | null | undefined) {
+  if (!summary) {
+    return [];
+  }
+
+  return Object.entries(summary)
+    .filter(([key, value]) => key.toLowerCase().includes("warning") && typeof value === "string" && value.trim())
+    .map(([, value]) => String(value));
+}
+
+function buildReportIssueUrl(input: {
+  chart?: string;
+  context: string;
+  jurisdiction?: string;
+  sourceUrl?: string;
+  stateCode: string;
+  stateName: string;
+}) {
+  const title = `[Data issue] ${input.stateCode}${input.jurisdiction ? ` ${input.jurisdiction}` : ""}`;
+  const body = [
+    "## Context",
+    `State: ${input.stateName} (${input.stateCode})`,
+    `Area: ${input.jurisdiction ?? "Statewide / not selected"}`,
+    `Chart or table: ${input.chart ?? input.context}`,
+    `Source URL: ${input.sourceUrl ?? "Not provided"}`,
+    "",
+    "## What looks wrong?",
+    "",
+    "## Suggested correction or source link",
+    "",
+    "## Reviewer notes",
+    "",
+  ].join("\n");
+  const params = new URLSearchParams({
+    body,
+    labels: "data-review",
+    title,
+  });
+
+  return `${githubIssueUrl}?${params.toString()}`;
+}
+
+function dataNoteStatus(hasRows: boolean, capability?: boolean, partial?: boolean): QualityBadgeStatus {
+  if (hasRows && partial) {
+    return "partial";
+  }
+
+  if (hasRows) {
+    return "ready";
+  }
+
+  if (capability || partial) {
+    return "partial";
+  }
+
+  return "missing";
+}
+
+function buildDataNoteSections(input: {
+  completeness: CompletenessSummary | undefined;
+  coverage: CoverageSummary | null;
+  historicalRows: HistoricalResultRowSummary[];
+  importRuns: ImportRunSummary[];
+  reviewRows: ReviewRowSummary[];
+  results: ResultRow[];
+  sources: SourceSummary[];
+  turnoutRows: TurnoutRowSummary[];
+  voteMethodRows: VoteMethodRowSummary[];
+}): DataNoteSection[] {
+  const capabilities = input.completeness?.capabilities ?? input.coverage?.capabilities;
+  const latestNativeRun = input.importRuns.find((run) => run.parser.toLowerCase().includes("native"));
+  const latestRun = input.importRuns[0];
+  const importWarnings = [
+    ...summaryWarnings(input.completeness?.latestNativeImportSummary),
+    ...summaryWarnings(input.completeness?.latestImportSummary),
+    ...summaryWarnings(latestNativeRun?.summary),
+    ...summaryWarnings(latestRun?.summary),
+  ];
+  const sourceUrlGaps = input.sources.filter((source) => !source.sourceUrl.trim()).length;
+  const turnoutWarningRows = input.turnoutRows.filter((row) => row.warningRequired).length;
+  const reviewIsPartial =
+    input.reviewRows.length > 0 && input.results.length > 0 && new Set(input.reviewRows.map((row) => row.jurisdictionCode)).size < input.results.length;
+  const eacTurnoutFallback = input.turnoutRows.some((row) => row.sourceId.toLowerCase().includes("eac"));
+  const legacyOnly = input.completeness ? input.completeness.legacyImportCount > 0 && input.completeness.nativeImportCount === 0 : false;
+
+  return [
+    {
+      detail: input.results.length
+        ? `${input.results.length.toLocaleString()} result rows across ${(input.coverage?.loadedJurisdictions ?? input.results.length).toLocaleString()} jurisdictions.`
+        : "No certified result rows are loaded for this state.",
+      evidence: input.completeness?.sourceTier ? `Source tier: ${input.completeness.sourceTier.replaceAll("_", " ")}` : "Source tier not recorded.",
+      key: "results",
+      label: "Results",
+      status: dataNoteStatus(input.results.length > 0, capabilities?.certifiedResults),
+      why: input.results.length
+        ? "Official result rows are present. Review still depends on the linked source documents and validation notes."
+        : "The importer has not received a normalized official results package for this state yet.",
+    },
+    {
+      detail: `${input.sources.length.toLocaleString()} source document record${input.sources.length === 1 ? "" : "s"}.`,
+      evidence: sourceUrlGaps ? `${sourceUrlGaps.toLocaleString()} source URL${sourceUrlGaps === 1 ? "" : "s"} missing.` : "All loaded source records expose URLs.",
+      key: "sources",
+      label: "Sources",
+      status: input.sources.length && !sourceUrlGaps ? "ready" : input.sources.length ? "partial" : "missing",
+      why: input.sources.length
+        ? sourceUrlGaps
+          ? "Some source records were imported before direct public URLs were recorded, so they need source-link cleanup."
+          : "Source records are present and link back to auditable public documents."
+        : "No source manifest has been loaded for this state yet.",
+    },
+    {
+      detail: capabilities?.map ? "County map geometry is available." : "Map geometry is not available for this state.",
+      evidence: input.coverage?.validation.warnings.length
+        ? input.coverage.validation.warnings.join(" ")
+        : "No map-join warning is currently reported.",
+      key: "map",
+      label: "Map",
+      status: capabilities?.map ? (input.coverage?.validation.passed === false ? "partial" : "ready") : "missing",
+      why: capabilities?.map
+        ? "The map can be used, but any join warning means boundaries and result rows should be checked before relying on shading."
+        : "County boundary geometry or name matching has not been validated for this state yet.",
+    },
+    {
+      detail: input.reviewRows.length
+        ? `${input.reviewRows.length.toLocaleString()} local review rows and ${input.completeness?.indicatorCount ?? 0} advisory flags.`
+        : "No local review rows are loaded.",
+      evidence: importWarnings.find((warning) => warning.toLowerCase().includes("review")) ?? (legacyOnly ? "Legacy-only review bundle." : "Review import status inferred from row counts."),
+      key: "review",
+      label: "Review",
+      status: dataNoteStatus(input.reviewRows.length > 0, capabilities?.reviewGraphs, reviewIsPartial || legacyOnly),
+      why: input.reviewRows.length
+        ? reviewIsPartial
+          ? "Review rows exist, but they do not cover every loaded result jurisdiction, so charts are screening views rather than complete statewide coverage."
+          : legacyOnly
+            ? "Review data is loaded from a legacy bundle; use it as context until a newer source-first native parser is available."
+            : "Local review rows are loaded and available for advisory screening."
+        : "The app needs precinct, ward, municipality, or comparable local reporting-unit rows before it can build review charts.",
+    },
+    {
+      detail: input.turnoutRows.length
+        ? `${input.turnoutRows.length.toLocaleString()} turnout rows; ${turnoutWarningRows.toLocaleString()} denominator warning rows.`
+        : "No turnout denominator rows are loaded.",
+      evidence: eacTurnoutFallback ? "Rows reference EAC fallback data." : "Turnout source status inferred from row counts.",
+      key: "turnout",
+      label: "Turnout",
+      status: dataNoteStatus(input.turnoutRows.length > 0, capabilities?.turnout, eacTurnoutFallback || turnoutWarningRows > 0),
+      why: input.turnoutRows.length
+        ? eacTurnoutFallback
+          ? "Turnout is using EAC fallback rows because a state-native denominator source has not been fully mapped yet."
+          : turnoutWarningRows
+            ? "Some denominator rows need review because registered-voter counts are missing or zero."
+            : "Turnout rows include ballots cast and registered-voter denominators."
+        : "The importer still needs an official registered-voter denominator source before turnout charts can be considered ready.",
+    },
+    {
+      detail: input.voteMethodRows.length
+        ? `${input.voteMethodRows.length.toLocaleString()} EAC participation-method rows.`
+        : "No vote-method rows are loaded.",
+      evidence: "Candidate-by-method is blocked unless an official source reports candidate totals split by method.",
+      key: "vote-methods",
+      label: "Vote Methods",
+      status: input.voteMethodRows.length ? "partial" : "missing",
+      why: input.voteMethodRows.length
+        ? "EAC participation rows show how voters cast ballots, but they cannot be multiplied into Harris/Trump method totals."
+        : "EAC participation-method extraction has not been loaded for this state yet.",
+    },
+    {
+      detail: input.historicalRows.length
+        ? `${input.historicalRows.length.toLocaleString()} historical baseline rows.`
+        : "No historical baseline rows are loaded.",
+      evidence: input.historicalRows.length ? "Historical rows are available for comparison charts." : "Historical backfill remains pending.",
+      key: "history",
+      label: "History",
+      status: dataNoteStatus(input.historicalRows.length > 0, capabilities?.historicalBaseline),
+      why: input.historicalRows.length
+        ? "Historical context is available, but it remains context and should not be treated as evidence by itself."
+        : "The historical official-result backfill has not been loaded for this state yet.",
+    },
+  ];
 }
 
 function buildVoteShareScatterDiagnostic(input: {
@@ -1002,10 +1301,12 @@ export function WorkspaceTabs({
   indicators,
   reviewRows,
   results,
+  selectedCompleteness,
   selectedState,
   selectedStateCode,
   sources,
   totalVotes,
+  turnoutRows,
   voteMethodRows,
 }: WorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("map");
@@ -1395,6 +1696,31 @@ export function WorkspaceTabs({
   const selectedImportRuns = importRuns.filter((run) => run.state === selectedStateCode);
   const latestRun = selectedImportRuns[0];
   const sourcesWithoutUrls = sources.filter((source) => !source.sourceUrl.trim());
+  const dataNoteSections = buildDataNoteSections({
+    completeness: selectedCompleteness,
+    coverage,
+    historicalRows,
+    importRuns: selectedImportRuns,
+    results,
+    reviewRows,
+    sources,
+    turnoutRows,
+    voteMethodRows,
+  });
+  const dataIssueUrl = buildReportIssueUrl({
+    context: "Selected state workspace",
+    sourceUrl: sources[0]?.sourceUrl || undefined,
+    stateCode: selectedStateCode,
+    stateName,
+  });
+  const reviewIssueUrl = buildReportIssueUrl({
+    chart: "Review Center",
+    context: "Review Center",
+    jurisdiction: selectedReviewJurisdictionName,
+    sourceUrl: sources[0]?.sourceUrl || undefined,
+    stateCode: selectedStateCode,
+    stateName,
+  });
   const validationChecks = [
     {
       detail: `${coverage?.loadedJurisdictions ?? results.length} loaded jurisdictions`,
@@ -1447,98 +1773,248 @@ export function WorkspaceTabs({
     ],
   );
   const exportSlug = `${selectedStateCode.toLowerCase()}-2024-president`;
+  const resultExportHeaders = ["jurisdiction", "winner", "harris", "trump", "other", "total", "margin_votes", "margin_pct", "source"];
+  const resultExportRows = results.map((row) => [
+    row.jurisdictionName,
+    row.winner,
+    row.votes.Harris ?? 0,
+    row.votes.Trump ?? 0,
+    row.votes.Other ?? 0,
+    row.totalVotes,
+    row.marginVotes,
+    row.marginPct,
+    row.sourceId,
+  ]);
+  const indicatorExportHeaders = ["jurisdiction", "label", "type", "severity", "summary", "detail"];
+  const indicatorExportRows = indicators.map((indicator) => [
+    indicator.jurisdictionName,
+    indicator.label,
+    indicator.type,
+    indicator.severity,
+    indicator.summary,
+    indicator.detail,
+  ]);
+  const reviewRowExportHeaders = [
+    "jurisdiction",
+    "local_unit",
+    "level",
+    "harris_votes",
+    "trump_votes",
+    "total_votes",
+    "harris_share",
+    "trump_share",
+    "dem_dropoff",
+    "rep_dropoff",
+    "source",
+  ];
+  const reviewRowExportRows = reviewRows.map((row) => [
+    row.jurisdictionName,
+    row.localUnit,
+    row.level,
+    row.harrisVotes ?? "",
+    row.trumpVotes ?? "",
+    row.totalVotes ?? "",
+    row.harrisShare ?? "",
+    row.trumpShare ?? "",
+    row.demDropoff ?? "",
+    row.repDropoff ?? "",
+    row.sourceId,
+  ]);
+  const turnoutExportHeaders = [
+    "jurisdiction",
+    "level",
+    "ballots_cast",
+    "registered_voters",
+    "turnout_pct",
+    "denominator_note",
+    "warning_required",
+    "source",
+  ];
+  const turnoutExportRows = turnoutRows.map((row) => [
+    row.jurisdictionName,
+    row.level,
+    row.ballotsCast,
+    row.registeredVoters ?? "",
+    row.turnoutPct ?? "",
+    row.denominatorNote,
+    row.warningRequired ? "true" : "false",
+    row.sourceId,
+  ]);
+  const historicalExportHeaders = [
+    "year",
+    "jurisdiction",
+    "local_unit",
+    "source_level",
+    "dem_votes",
+    "rep_votes",
+    "other_votes",
+    "total_votes",
+    "source",
+  ];
+  const historicalExportRows = historicalRows.map((row) => [
+    row.electionYear,
+    row.jurisdictionName,
+    row.localUnit,
+    row.sourceLevel,
+    row.demVotes ?? "",
+    row.repVotes ?? "",
+    row.otherVotes ?? "",
+    row.totalVotes ?? "",
+    row.sourceId,
+  ]);
+  const sourceExportHeaders = ["category", "title", "authority", "source_url", "local_artifact", "parser", "timestamp_basis", "confidence", "status"];
+  const sourceExportRows = sources.map((source) => [
+    source.category,
+    source.title,
+    source.authority,
+    source.sourceUrl,
+    source.localArtifact,
+    source.parser,
+    source.timestampBasis,
+    source.confidence,
+    source.status,
+  ]);
+  const coverageExportHeaders = ["state", "expected_jurisdictions", "loaded_jurisdictions", "result_rows", "sources", "validation", "warnings"];
+  const coverageExportRows = [
+    [
+      selectedStateCode,
+      coverage?.expectedJurisdictions ?? "",
+      coverage?.loadedJurisdictions ?? results.length,
+      coverage?.resultRows ?? results.length,
+      coverage?.sourceCount ?? sources.length,
+      coverage?.validation.passed ? "pass" : "gap",
+      coverage?.validation.warnings.join(" ") ?? "",
+    ],
+  ];
+  const voteMethodExportHeaders = [
+    "jurisdiction",
+    "county",
+    "method",
+    "method_label",
+    "voters",
+    "method_share_pct",
+    "total_voters",
+    "value_status",
+    "source_field",
+  ];
+  const voteMethodExportRows = voteMethodRows.map((row) => [
+    row.jurisdictionName,
+    row.county,
+    row.method,
+    row.methodLabel,
+    row.voters ?? "",
+    row.methodSharePct ?? "",
+    row.totalVoters ?? "",
+    row.valueStatus,
+    row.sourceField,
+  ]);
+  const sourceManifest = {
+    dataNotes: dataNoteSections,
+    generatedAt: new Date().toISOString(),
+    sources,
+    state: selectedStateCode,
+    stateName,
+    year: 2024,
+  };
+  const importSummary = {
+    completeness: selectedCompleteness ?? null,
+    coverage,
+    dataNotes: dataNoteSections,
+    latestRun: latestRun ?? null,
+    selectedImportRuns,
+    state: selectedStateCode,
+    stateName,
+    year: 2024,
+  };
 
   const exportResults = () =>
     downloadCsv(
       `${exportSlug}-results.csv`,
-      ["jurisdiction", "winner", "harris", "trump", "other", "total", "margin_votes", "margin_pct", "source"],
-      results.map((row) => [
-        row.jurisdictionName,
-        row.winner,
-        row.votes.Harris ?? 0,
-        row.votes.Trump ?? 0,
-        row.votes.Other ?? 0,
-        row.totalVotes,
-        row.marginVotes,
-        row.marginPct,
-        row.sourceId,
-      ]),
+      resultExportHeaders,
+      resultExportRows,
     );
 
   const exportIndicators = () =>
     downloadCsv(
       `${exportSlug}-review-indicators.csv`,
-      ["jurisdiction", "label", "type", "severity", "summary", "detail"],
-      indicators.map((indicator) => [
-        indicator.jurisdictionName,
-        indicator.label,
-        indicator.type,
-        indicator.severity,
-        indicator.summary,
-        indicator.detail,
-      ]),
+      indicatorExportHeaders,
+      indicatorExportRows,
     );
+
+  const exportReviewRows = () =>
+    downloadCsv(`${exportSlug}-review-rows.csv`, reviewRowExportHeaders, reviewRowExportRows);
+
+  const exportTurnoutRows = () =>
+    downloadCsv(`${exportSlug}-turnout.csv`, turnoutExportHeaders, turnoutExportRows);
+
+  const exportHistoricalRows = () =>
+    downloadCsv(`${exportSlug}-historical-rows.csv`, historicalExportHeaders, historicalExportRows);
 
   const exportSources = () =>
     downloadCsv(
       `${exportSlug}-sources.csv`,
-      ["category", "title", "authority", "source_url", "local_artifact", "parser", "timestamp_basis", "confidence", "status"],
-      sources.map((source) => [
-        source.category,
-        source.title,
-        source.authority,
-        source.sourceUrl,
-        source.localArtifact,
-        source.parser,
-        source.timestampBasis,
-        source.confidence,
-        source.status,
-      ]),
+      sourceExportHeaders,
+      sourceExportRows,
     );
 
   const exportCoverage = () =>
     downloadCsv(
       `${exportSlug}-coverage.csv`,
-      ["state", "expected_jurisdictions", "loaded_jurisdictions", "result_rows", "sources", "validation", "warnings"],
-      [
-        [
-          selectedStateCode,
-          coverage?.expectedJurisdictions ?? "",
-          coverage?.loadedJurisdictions ?? results.length,
-          coverage?.resultRows ?? results.length,
-          coverage?.sourceCount ?? sources.length,
-          coverage?.validation.passed ? "pass" : "gap",
-          coverage?.validation.warnings.join(" ") ?? "",
-        ],
-      ],
+      coverageExportHeaders,
+      coverageExportRows,
     );
 
   const exportVoteMethods = () =>
     downloadCsv(
       `${exportSlug}-vote-methods.csv`,
-      [
-        "jurisdiction",
-        "county",
-        "method",
-        "method_label",
-        "voters",
-        "method_share_pct",
-        "total_voters",
-        "value_status",
-        "source_field",
-      ],
-      voteMethodRows.map((row) => [
-        row.jurisdictionName,
-        row.county,
-        row.method,
-        row.methodLabel,
-        row.voters ?? "",
-        row.methodSharePct ?? "",
-        row.totalVoters ?? "",
-        row.valueStatus,
-        row.sourceField,
-      ]),
+      voteMethodExportHeaders,
+      voteMethodExportRows,
     );
+
+  const exportSourceManifest = () =>
+    downloadTextFile(`${exportSlug}-source-manifest.json`, jsonContent(sourceManifest), "application/json;charset=utf-8");
+
+  const exportImportSummary = () =>
+    downloadTextFile(`${exportSlug}-import-summary.json`, jsonContent(importSummary), "application/json;charset=utf-8");
+
+  const exportReviewPackage = async () => {
+    const zip = new JSZip();
+    const readme = [
+      `Civic Result Maps review package for ${stateName} (${selectedStateCode}), 2024 President`,
+      "",
+      "Use these normalized files with the source manifest. Advisory flags and screening charts are triage prompts, not proof by themselves.",
+      "",
+      "Included files:",
+      "- results.csv",
+      "- review-indicators.csv",
+      "- review-rows.csv",
+      "- turnout.csv",
+      "- vote-methods.csv",
+      "- historical-rows.csv",
+      "- sources.csv",
+      "- coverage.csv",
+      "- source-manifest.json",
+      "- import-summary.json",
+      "",
+      "Data notes:",
+      ...dataNoteSections.map((note) => `- ${note.label}: ${qualityBadgeLabel(note.status)}. ${note.why}`),
+      "",
+    ].join("\n");
+
+    zip.file("README.txt", readme);
+    zip.file("results.csv", csvContent(resultExportHeaders, resultExportRows));
+    zip.file("review-indicators.csv", csvContent(indicatorExportHeaders, indicatorExportRows));
+    zip.file("review-rows.csv", csvContent(reviewRowExportHeaders, reviewRowExportRows));
+    zip.file("turnout.csv", csvContent(turnoutExportHeaders, turnoutExportRows));
+    zip.file("vote-methods.csv", csvContent(voteMethodExportHeaders, voteMethodExportRows));
+    zip.file("historical-rows.csv", csvContent(historicalExportHeaders, historicalExportRows));
+    zip.file("sources.csv", csvContent(sourceExportHeaders, sourceExportRows));
+    zip.file("coverage.csv", csvContent(coverageExportHeaders, coverageExportRows));
+    zip.file("source-manifest.json", jsonContent(sourceManifest));
+    zip.file("import-summary.json", jsonContent(importSummary));
+    const blob = await zip.generateAsync({ type: "blob" });
+    downloadBlob(`${exportSlug}-review-package.zip`, [blob], "application/zip");
+  };
 
   const downloadSvgElement = (elementId: string, filename: string) => {
     const svg = document.getElementById(elementId);
@@ -1580,6 +2056,40 @@ export function WorkspaceTabs({
         })}
       </nav>
 
+      <section className="panel data-notes-panel" data-tour="data-notes" aria-label={`${stateName} data notes`}>
+        <div className="panel-header">
+          <div>
+            <h2>Data Notes</h2>
+            <span>What is present, what is partial, and why missing pieces are not here yet</span>
+          </div>
+          <div className="header-actions">
+            <Eli5>
+              This is the health label for the selected state. It explains which data families are loaded and why a
+              missing section is missing instead of leaving people to guess.
+            </Eli5>
+            <a className="secondary-link" href={dataIssueUrl} rel="noreferrer" target="_blank">
+              Report Data Issue
+            </a>
+          </div>
+        </div>
+        <div className="data-note-grid">
+          {dataNoteSections.map((note) => (
+            <article className={`data-note-card ${note.status}`} key={note.key}>
+              <div className="data-note-head">
+                <strong>{note.label}</strong>
+                <QualityBadge detail={note.detail} status={note.status} />
+              </div>
+              <p>{note.detail}</p>
+              <span>{note.evidence}</span>
+              <div>
+                <span className="section-label">Why this is missing or limited</span>
+                <p>{note.why}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {activeTab === "map" && (
         <div className="tab-panel-content">
           <div className="content-grid">
@@ -1603,6 +2113,10 @@ export function WorkspaceTabs({
                       This is the ingredient label for the data. It says where the numbers came from, what parser read
                       them, and how confident the import record is.
                     </Eli5>
+                    <QualityBadge
+                      detail={sourcesWithoutUrls.length ? "Some source URLs are missing." : "Source records expose auditable URLs."}
+                      status={sources.length && !sourcesWithoutUrls.length ? "ready" : sources.length ? "partial" : "missing"}
+                    />
                     <FileCheck2 aria-hidden size={18} />
                   </div>
                 </div>
@@ -1628,6 +2142,10 @@ export function WorkspaceTabs({
                       This is like a checklist for the selected state. Available means the app has that kind of data;
                       pending means the importer has not received enough rows for that feature.
                     </Eli5>
+                    <QualityBadge
+                      detail={pendingCapabilities.length ? `${pendingCapabilities.length} capabilities are pending.` : "All tracked capabilities are marked available."}
+                      status={pendingCapabilities.length ? "partial" : "ready"}
+                    />
                     <ShieldCheck aria-hidden size={18} />
                   </div>
                 </div>
@@ -1653,6 +2171,10 @@ export function WorkspaceTabs({
                       This is the quick scoreboard. The bars show how the selected state's imported votes split across
                       candidates, like counting colored blocks in one big box.
                     </Eli5>
+                    <QualityBadge
+                      detail={results.length ? "Certified result rows are loaded." : "No result rows are loaded."}
+                      status={results.length ? "ready" : "missing"}
+                    />
                     <Database aria-hidden size={18} />
                   </div>
                 </div>
@@ -1697,6 +2219,13 @@ export function WorkspaceTabs({
                   This section is like a smoke alarm, not a verdict. It shows patterns that deserve a closer look, such
                   as unusual vote-share or drop-off patterns, and then lists the places connected to those patterns.
                 </Eli5>
+                <QualityBadge
+                  detail={reviewRows.length ? "Local review rows are loaded for screening." : "No local review rows are loaded."}
+                  status={reviewRows.length ? (reviewGraphCoverageIsPartial ? "partial" : "ready") : "missing"}
+                />
+                <a className="secondary-link" href={reviewIssueUrl} rel="noreferrer" target="_blank">
+                  Report Data Issue
+                </a>
                 <BarChart3 aria-hidden size={18} />
               </div>
             </div>
@@ -2217,6 +2746,14 @@ export function WorkspaceTabs({
                   This section is like looking at old report cards before reading the new one. It shows whether the same
                   places changed over past presidential elections, when those old rows are available.
                 </Eli5>
+                <QualityBadge
+                  detail={
+                    historicalRows.length
+                      ? "Historical context rows are loaded. Fingerprint charts remain proxy views until turnout denominators are used."
+                      : "Historical baseline rows are not loaded."
+                  }
+                  status={historicalRows.length ? "proxy" : "missing"}
+                />
                 <History aria-hidden size={18} />
               </div>
             </div>
@@ -2634,6 +3171,13 @@ export function WorkspaceTabs({
                   This is the bibliography. If someone asks where a number came from, this section should point to the
                   official source, local artifact, parser, and confidence note.
                 </Eli5>
+                <QualityBadge
+                  detail={sourcesWithoutUrls.length ? "Some source records need direct URLs." : "Source records are linked."}
+                  status={sources.length && !sourcesWithoutUrls.length ? "ready" : sources.length ? "partial" : "missing"}
+                />
+                <a className="secondary-link" href={dataIssueUrl} rel="noreferrer" target="_blank">
+                  Report Data Issue
+                </a>
                 <FileCheck2 aria-hidden size={18} />
               </div>
             </div>
@@ -2687,6 +3231,14 @@ export function WorkspaceTabs({
                     These rows describe how people participated: polling place, mail, early in-person, provisional, and
                     related EAC categories. They do not split Harris or Trump votes by method.
                   </Eli5>
+                  <QualityBadge
+                    detail={
+                      voteMethodRows.length
+                        ? "Participation-method rows are loaded, but candidate-by-method remains blocked."
+                        : "Vote-method rows are not loaded for this state."
+                    }
+                    status={voteMethodRows.length ? "partial" : "missing"}
+                  />
                   <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button">
                     <Download aria-hidden size={15} />
                     Vote Methods CSV
@@ -2790,8 +3342,8 @@ export function WorkspaceTabs({
           <section className="panel text-panel" data-tour="methodology">
             <div className="panel-header">
               <div>
-                <h2>Methodology</h2>
-                <span>How this release should be read</span>
+                <h2>Review Guide</h2>
+                <span>How to review this release responsibly</span>
               </div>
               <div className="header-actions">
                 <Eli5>
@@ -2800,6 +3352,42 @@ export function WorkspaceTabs({
                 </Eli5>
                 <BookOpen aria-hidden size={18} />
               </div>
+            </div>
+            <div className="responsible-review-panel">
+              <article>
+                <span className="section-label">How to Review Responsibly</span>
+                <strong>Use this site to find records worth checking, not to make claims by itself.</strong>
+                <p>
+                  Advisory flags and screening charts are triage prompts. Before sharing a finding, compare it against
+                  official source documents, state caveats, normal local explanations, and the exact row family used by
+                  the chart.
+                </p>
+              </article>
+              <article>
+                <span className="section-label">Reviewer Checklist</span>
+                <ul className="reviewer-checklist">
+                  {reviewerChecklist.map((entry) => (
+                    <li key={entry.item}>
+                      <span aria-hidden>✓</span>
+                      {entry.item}
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            </div>
+            <div className="glossary-panel">
+              <div>
+                <span className="section-label">Glossary</span>
+                <strong>Terms used across charts, tables, and source notes</strong>
+              </div>
+              <dl>
+                {glossaryEntries.map((entry) => (
+                  <div key={entry.term}>
+                    <dt>{entry.term}</dt>
+                    <dd>{entry.definition}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
             <div className="method-list">
               {methodologyGuides.map((guide) => {
@@ -2886,6 +3474,18 @@ export function WorkspaceTabs({
                 <Download aria-hidden size={16} />
                 Review CSV
               </button>
+              <button disabled={!reviewRows.length} onClick={exportReviewRows} type="button">
+                <Download aria-hidden size={16} />
+                Review Rows CSV
+              </button>
+              <button disabled={!turnoutRows.length} onClick={exportTurnoutRows} type="button">
+                <Download aria-hidden size={16} />
+                Turnout CSV
+              </button>
+              <button disabled={!historicalRows.length} onClick={exportHistoricalRows} type="button">
+                <Download aria-hidden size={16} />
+                Historical Rows CSV
+              </button>
               <button onClick={exportSources} type="button">
                 <Download aria-hidden size={16} />
                 Sources CSV
@@ -2897,6 +3497,18 @@ export function WorkspaceTabs({
               <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button">
                 <Download aria-hidden size={16} />
                 Vote Methods CSV
+              </button>
+              <button onClick={exportSourceManifest} type="button">
+                <Download aria-hidden size={16} />
+                Source Manifest JSON
+              </button>
+              <button onClick={exportImportSummary} type="button">
+                <Download aria-hidden size={16} />
+                Import Summary JSON
+              </button>
+              <button onClick={exportReviewPackage} type="button">
+                <Download aria-hidden size={16} />
+                All Files ZIP
               </button>
             </div>
             <div className="export-summary-grid">
@@ -2911,6 +3523,10 @@ export function WorkspaceTabs({
               <article>
                 <span>Sources</span>
                 <strong>{sources.length}</strong>
+              </article>
+              <article>
+                <span>Turnout rows</span>
+                <strong>{turnoutRows.length.toLocaleString()}</strong>
               </article>
               <article>
                 <span>Total votes</span>

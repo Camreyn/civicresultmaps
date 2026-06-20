@@ -15,6 +15,7 @@ import {
   listResults,
   listSources,
   listStates,
+  listTurnoutRows,
   listVoteMethodRows,
 } from "@/lib/api";
 
@@ -38,6 +39,7 @@ export default async function Home({ searchParams }: HomeProps) {
     importRuns,
     indicators,
     reviewRows,
+    turnoutRows,
     historicalRows,
     voteMethodRows,
   ] = await Promise.all([
@@ -49,11 +51,13 @@ export default async function Home({ searchParams }: HomeProps) {
     listImportRuns(),
     listIndicators({ state: selectedState, year: selectedYear }),
     listReviewRows({ state: selectedState, year: selectedYear, limit: 5000 }),
+    listTurnoutRows({ state: selectedState, year: selectedYear, limit: 20000 }),
     listHistoricalResultRows({ state: selectedState, limit: 5000 }),
     listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
+  const selectedCompleteness = completenessReport.find((summary) => summary.state === selectedStateCode);
   const totalVotes = results.reduce((sum, row) => sum + row.totalVotes, 0);
 
   return (
@@ -134,10 +138,12 @@ export default async function Home({ searchParams }: HomeProps) {
             indicators={indicators}
             reviewRows={reviewRows}
             results={results}
+            selectedCompleteness={selectedCompleteness}
             selectedState={selected}
             selectedStateCode={selectedStateCode}
             sources={sources}
             totalVotes={totalVotes}
+            turnoutRows={turnoutRows}
             voteMethodRows={voteMethodRows}
           />
         </section>

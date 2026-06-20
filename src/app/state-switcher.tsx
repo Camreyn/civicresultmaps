@@ -19,6 +19,16 @@ type StateSwitcherProps = {
   states: StateSummary[];
 };
 type DataPresence = "loaded" | "partial" | "missing";
+type StateFilter =
+  | "all"
+  | "complete"
+  | "review-ready"
+  | "results-only"
+  | "needs-sources"
+  | "missing-turnout"
+  | "missing-review"
+  | "has-turnout"
+  | "has-history";
 type StateDataBadge = {
   abbr: string;
   count: number | null;
@@ -28,6 +38,18 @@ type StateDataBadge = {
   presence: DataPresence;
   title: string;
 };
+
+const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
+  { label: "All states", value: "all" },
+  { label: "Complete", value: "complete" },
+  { label: "Review-ready", value: "review-ready" },
+  { label: "Results only", value: "results-only" },
+  { label: "Needs sources", value: "needs-sources" },
+  { label: "Missing turnout", value: "missing-turnout" },
+  { label: "Missing review", value: "missing-review" },
+  { label: "Has turnout", value: "has-turnout" },
+  { label: "Has history", value: "has-history" },
+];
 
 function stateStatus(summary: CompletenessSummary | undefined, state: StateSummary) {
   if (!summary) {
@@ -150,8 +172,49 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
   ];
 }
 
+function stateMatchesFilter(summary: CompletenessSummary | undefined, filter: StateFilter) {
+  if (filter === "all") {
+    return true;
+  }
+
+  if (!summary) {
+    return false;
+  }
+
+  if (filter === "complete") {
+    return summary.status === "complete";
+  }
+
+  if (filter === "review-ready") {
+    return summary.status === "review_ready" || summary.status === "complete";
+  }
+
+  if (filter === "results-only") {
+    return summary.status === "results_only";
+  }
+
+  if (filter === "needs-sources") {
+    return summary.status === "needs_sources" || summary.sourceCount === 0 || summary.sourcesMissingUrls > 0;
+  }
+
+  if (filter === "missing-turnout") {
+    return summary.turnoutRowCount === 0;
+  }
+
+  if (filter === "missing-review") {
+    return summary.reviewRowCount === 0;
+  }
+
+  if (filter === "has-turnout") {
+    return summary.turnoutRowCount > 0;
+  }
+
+  return summary.historicalRowCount > 0;
+}
+
 export function StateSwitcher({ completenessReport, selectedState, states }: StateSwitcherProps) {
   const [query, setQuery] = useState("");
+  const [stateFilter, setStateFilter] = useState<StateFilter>("all");
   const normalizedQuery = query.trim().toLowerCase();
   const completenessByState = useMemo(
     () => new Map(completenessReport.map((summary) => [summary.state, summary])),
@@ -160,6 +223,12 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
   const filteredStates = useMemo(
     () =>
       states.filter((state) => {
+        const summary = completenessByState.get(state.code);
+
+        if (!stateMatchesFilter(summary, stateFilter)) {
+          return false;
+        }
+
         if (!normalizedQuery) {
           return true;
         }
@@ -170,7 +239,7 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
           state.authority.toLowerCase().includes(normalizedQuery)
         );
       }),
-    [normalizedQuery, states],
+    [completenessByState, normalizedQuery, stateFilter, states],
   );
 
   return (
@@ -180,6 +249,20 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
         <span><i className="data-dot partial" /> Partial</span>
         <span><i className="data-dot missing" /> Missing</span>
       </div>
+      <label className="state-filter" htmlFor="state-filter">
+        <span>Show</span>
+        <select
+          id="state-filter"
+          onChange={(event) => setStateFilter(event.target.value as StateFilter)}
+          value={stateFilter}
+        >
+          {stateFilterOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </label>
       <label className="state-search" htmlFor="state-search">
         <Search aria-hidden size={16} />
         <input
