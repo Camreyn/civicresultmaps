@@ -933,6 +933,12 @@ function dataNoteStatus(hasRows: boolean, capability?: boolean, partial?: boolea
 const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   AZ: [
     {
+      key: "sources",
+      evidence: "Arizona SOS signed statewide canvass URL is tracked as a candidate official result source.",
+      status: "partial",
+      why: "The signed canvass PDF host still blocks scripted download, so the source is documented but not parsed into certified result rows yet.",
+    },
+    {
       key: "turnout",
       evidence: "EAC 2024 V2 fallback is acceptable for statewide/local denominator context until Arizona-native turnout files are mapped.",
       status: "partial",
@@ -940,6 +946,12 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
     },
   ],
   GA: [
+    {
+      key: "sources",
+      evidence: "Georgia SOS 2024 General Election results page is tracked as a candidate official result source.",
+      status: "partial",
+      why: "The Clarity-backed results export still needs a browser-authorized or static artifact before Georgia county presidential rows can be parsed.",
+    },
     {
       key: "turnout",
       evidence: "EAC 2024 V2 fallback is the current denominator backbone.",
@@ -975,6 +987,12 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
     },
   ],
   NV: [
+    {
+      key: "sources",
+      evidence: "Nevada Silver State presidential results page is tracked as a candidate official result source.",
+      status: "partial",
+      why: "The results host still blocks scripted collection, so Nevada needs a browser-authorized export or static SOS artifact before native result rows can be loaded.",
+    },
     {
       key: "turnout",
       evidence: "EAC 2024 V2 fallback is the current denominator backbone.",

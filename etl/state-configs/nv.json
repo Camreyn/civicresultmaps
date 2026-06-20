@@ -14,8 +14,19 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Official Nevada vote-share collection remains blocked by the public results site's Incapsula challenge.",
+      "confidence": "National EAC fallback turnout rows. Nevada Secretary of State results sources are tracked separately as candidate official result artifacts.",
       "status": "loaded"
+    },
+    {
+      "id": "nv-2024-silver-state-president",
+      "category": "Official presidential results candidate",
+      "url": "https://silverstateelection.nv.gov/USPresidential/",
+      "localFile": "",
+      "parser": "nevadaSilverStateCandidate",
+      "authority": "Nevada Secretary of State",
+      "timestampBasis": "Official Silver State 2024 General Election U.S. Presidential results page.",
+      "confidence": "Official source URL discovered, but scripted collection still needs a non-challenge static export or browser-authorized artifact. Candidate source only until parsed.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 17,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,

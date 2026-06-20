@@ -14,8 +14,19 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Official Georgia vote-share collection remains blocked by the public Clarity ENR 403 response.",
+      "confidence": "National EAC fallback turnout rows. Georgia Secretary of State results sources are tracked separately as candidate official result artifacts.",
       "status": "loaded"
+    },
+    {
+      "id": "ga-2024-official-results",
+      "category": "Official statewide election results candidate",
+      "url": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
+      "localFile": "",
+      "parser": "georgiaClarityEnrCandidate",
+      "authority": "Georgia Secretary of State",
+      "timestampBasis": "Official Georgia Secretary of State 2024 General Election results page, certified November 22, 2024.",
+      "confidence": "Official source URL discovered, but scripted collection still needs a Clarity ENR static export or browser-authorized artifact. Candidate source only until parsed.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 159,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,

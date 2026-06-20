@@ -196,6 +196,8 @@ class PipelineTests(unittest.TestCase):
                 artifact = build_staging_artifact(config, report)
 
                 self.assertTrue(report.passed)
+                self.assertGreaterEqual(len(artifact["sources"]), 2)
+                self.assertTrue(any(source["status"] == "candidate" for source in artifact["sources"]))
                 self.assertEqual(artifact["native"]["resultRows"], [])
                 self.assertEqual(artifact["native"]["reviewRows"], [])
                 self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], expected["rows"])

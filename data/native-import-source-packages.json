@@ -23,9 +23,10 @@
       "priority": 1,
       "status": "blocked",
       "attemptedSourceUrl": "https://results.arizona.vote/",
-      "attemptedFallbackUrl": "https://azsos.gov/elections/results-data/election-results",
-      "blockedReason": "Official Arizona results and SOS pages returned a Cloudflare JavaScript/cookie challenge to scripted collection.",
-      "nextAction": "Collect through a browser-authorized official download, an official static artifact URL, or direct county/SOS artifact links before building the native parser."
+      "attemptedFallbackUrl": "https://azsos.gov/elections/election-information/2024-election-info",
+      "candidateOfficialUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+      "blockedReason": "Official Arizona signed canvass URL is identified, but the PDF host returns a Cloudflare JavaScript/cookie challenge to scripted artifact download.",
+      "nextAction": "Manually collect the signed statewide canvass PDF from the official AZ SOS link, then build an Arizona signed-canvass parser for county presidential totals."
     },
     {
       "state": "NV",
@@ -35,8 +36,9 @@
       "status": "blocked",
       "attemptedSourceUrl": "https://silverstateelection.nv.gov/",
       "attemptedFallbackUrl": "https://www.nvsos.gov/sos/elections/election-information/2024-election-information/2024-general-election-results",
-      "blockedReason": "Official Nevada results hosts returned Incapsula challenge/incident pages to scripted collection.",
-      "nextAction": "Collect through a browser-authorized official download, an official static artifact URL, or direct SOS/county artifact links before building the native parser."
+      "candidateOfficialUrl": "https://silverstateelection.nv.gov/USPresidential/",
+      "blockedReason": "Official Silver State presidential results URL is identified, but Nevada results hosts returned Incapsula challenge/incident pages to scripted collection.",
+      "nextAction": "Collect a browser-authorized Silver State export or static SOS artifact, then build a Nevada county presidential parser."
     },
     {
       "state": "GA",
@@ -44,9 +46,10 @@
       "authority": "Georgia Secretary of State",
       "priority": 3,
       "status": "blocked",
-      "attemptedSourceUrl": "https://results.enr.clarityelections.com/GA/122303/web.345435/",
-      "blockedReason": "Official Georgia Clarity ENR page returned HTTP 403 to scripted collection.",
-      "nextAction": "Collect through a browser-authorized official export, Clarity static artifact URL, or direct SOS/county artifact links before building the native parser."
+      "attemptedSourceUrl": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
+      "candidateOfficialUrl": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
+      "blockedReason": "Official Georgia Secretary of State results page is identified, but the Clarity ENR backing service still needs a browser-authorized export or static artifact for scripted parsing.",
+      "nextAction": "Collect an official Georgia Secretary of State/Clarity export with county presidential rows, then build a Georgia county presidential parser."
     }
   ],
   "states": [
