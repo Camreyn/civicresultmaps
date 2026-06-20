@@ -948,9 +948,15 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   GA: [
     {
       key: "sources",
-      evidence: "Georgia SOS 2024 General Election results page is tracked as a candidate official result source.",
+      evidence: "Georgia SOS media export JSON is loaded as the official result/review source; EAC 2024 V2 remains the turnout denominator fallback.",
       status: "partial",
-      why: "The Clarity-backed results export still needs a browser-authorized or static artifact before Georgia county presidential rows can be parsed.",
+      why: "Source coverage is mixed: Georgia county and precinct presidential rows are native official rows, while turnout denominators still come from EAC fallback data.",
+    },
+    {
+      key: "review",
+      evidence: "Georgia native review rows use official media-export precinct presidential vote-share screening.",
+      status: "partial",
+      why: "No same-row down-ballot comparison contest is mapped yet, county presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts.",
     },
     {
       key: "turnout",

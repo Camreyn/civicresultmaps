@@ -187,7 +187,9 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /5,309 vote gap/);
   assert.match(tabs, /North Carolina uses official reporting-unit rows/);
   assert.match(tabs, /Arizona SOS signed statewide canvass URL/);
-  assert.match(tabs, /Georgia SOS 2024 General Election results page/);
+  assert.match(tabs, /Georgia SOS media export JSON/);
+  assert.match(tabs, /county presidential candidate rows sum 19 votes higher/);
+  assert.match(tabs, /17 zero-total precinct entries are omitted/);
   assert.match(tabs, /Nevada Silver State presidential results page/);
   assert.doesNotMatch(tabs, /Sources API/);
   assert.match(explorer, /Eli5/);

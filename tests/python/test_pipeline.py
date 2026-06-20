@@ -185,7 +185,6 @@ class PipelineTests(unittest.TestCase):
     def test_turnout_only_swing_state_configs_parse_eac_fallbacks(self):
         expectations = {
             "AZ": {"ballots": 3477975, "registered": 5075337, "rows": 15},
-            "GA": {"ballots": 5297500, "registered": 8234335, "rows": 159},
             "NV": {"ballots": 1486297, "registered": 2256275, "rows": 17},
         }
 
@@ -203,6 +202,24 @@ class PipelineTests(unittest.TestCase):
                 self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], expected["rows"])
                 self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], expected["registered"])
                 self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], expected["ballots"])
+
+    def test_georgia_media_export_parser_builds_native_rows(self):
+        config = load_config("etl/state-configs/ga.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeGeorgiaMediaExportJson")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 159)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 5250066)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 2663117)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 2548017)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 38932)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2684)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewZeroTotalRowsOmitted"], 17)
+        self.assertEqual(artifact["native"]["metrics"]["nativeStatewideCertifiedVoteGap"], 19)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 159)
+        self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
 
     def test_xlsx_reader_reads_inline_strings_and_numbers(self):
         tmp = self.fixture_dir("xlsx-reader")

@@ -12,6 +12,7 @@
     "NC",
     "OH",
     "PA",
+    "GA",
     "WA",
     "WI"
   ],
@@ -39,17 +40,6 @@
       "candidateOfficialUrl": "https://silverstateelection.nv.gov/USPresidential/",
       "blockedReason": "Official Silver State presidential results URL is identified, but Nevada results hosts returned Incapsula challenge/incident pages to scripted collection.",
       "nextAction": "Collect a browser-authorized Silver State export or static SOS artifact, then build a Nevada county presidential parser."
-    },
-    {
-      "state": "GA",
-      "name": "Georgia",
-      "authority": "Georgia Secretary of State",
-      "priority": 3,
-      "status": "blocked",
-      "attemptedSourceUrl": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
-      "candidateOfficialUrl": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
-      "blockedReason": "Official Georgia Secretary of State results page is identified, but the Clarity ENR backing service still needs a browser-authorized export or static artifact for scripted parsing.",
-      "nextAction": "Collect an official Georgia Secretary of State/Clarity export with county presidential rows, then build a Georgia county presidential parser."
     }
   ],
   "states": [

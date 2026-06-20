@@ -655,6 +655,138 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
     return result_rows, review_rows, turnout_rows, metrics
 
 
+def _georgia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    contest_name = section.get("contestName", "President of the US")
+    candidate_rules = section.get("candidateRules", {})
+    dem_needles = candidate_rules.get("harris", ["Kamala"])
+    rep_needles = candidate_rules.get("trump", ["Donald"])
+
+    payload = json.loads(_artifact_path(source).read_text(encoding="utf-8"))
+    statewide_item = next((item for item in payload.get("results", {}).get("ballotItems", []) if item.get("name") == contest_name), None)
+    statewide_values = {"harris": 0, "other": 0, "total": 0, "trump": 0}
+    if statewide_item:
+        for option in statewide_item.get("ballotOptions", []):
+            votes = int_text(option.get("voteCount"))
+            bucket = _candidate_bucket(str(option.get("name") or ""), dem_needles, rep_needles)
+            if bucket == "dem":
+                statewide_values["harris"] += votes
+            elif bucket == "rep":
+                statewide_values["trump"] += votes
+            else:
+                statewide_values["other"] += votes
+            statewide_values["total"] += votes
+
+    result_rows: list[dict[str, Any]] = []
+    precincts: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for local in payload.get("localResults", []):
+        county = _county_name(local.get("name"))
+        if not county:
+            continue
+        item = next((candidate for candidate in local.get("ballotItems", []) if candidate.get("name") == contest_name), None)
+        if not item:
+            continue
+
+        values = {"harris": 0, "other": 0, "total": 0, "trump": 0}
+        for option in item.get("ballotOptions", []):
+            votes = int_text(option.get("voteCount"))
+            bucket = _candidate_bucket(str(option.get("name") or ""), dem_needles, rep_needles)
+            if bucket == "dem":
+                values["harris"] += votes
+            elif bucket == "rep":
+                values["trump"] += votes
+            else:
+                values["other"] += votes
+            values["total"] += votes
+
+            for precinct in option.get("precinctResults") or []:
+                precinct_id = str(precinct.get("id") or "").strip()
+                precinct_name = str(precinct.get("name") or precinct_id).strip()
+                if not precinct_name:
+                    continue
+                precinct_key = (county, precinct_id, precinct_name)
+                precinct_values = precincts.setdefault(
+                    precinct_key,
+                    {"harris": 0, "other": 0, "total": 0, "trump": 0},
+                )
+                precinct_votes = int_text(precinct.get("voteCount"))
+                if bucket == "dem":
+                    precinct_values["harris"] += precinct_votes
+                elif bucket == "rep":
+                    precinct_values["trump"] += precinct_votes
+                else:
+                    precinct_values["other"] += precinct_votes
+                precinct_values["total"] += precinct_votes
+
+        if values["total"]:
+            result_rows.append(
+                {
+                    "jurisdictionName": county,
+                    "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                    "level": "county",
+                    "votes": {
+                        "Trump": values["trump"],
+                        "Harris": values["harris"],
+                        "Other": values["other"],
+                    },
+                    "totalVotes": values["total"],
+                    "margin": values["trump"] - values["harris"],
+                    "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+                    "sourceId": source.id,
+                }
+            )
+
+    review_rows: list[dict[str, Any]] = []
+    zero_total_review_rows = 0
+    for (county, precinct_id, precinct_name), values in sorted(precincts.items()):
+        total = values["total"]
+        if not total:
+            zero_total_review_rows += 1
+            continue
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": f"{precinct_name} ({precinct_id})" if precinct_id and precinct_id != precinct_name else precinct_name,
+                "totalVotes": total,
+                "harris": values["harris"],
+                "trump": values["trump"],
+                "harrisShare": pct(values["harris"], total),
+                "trumpShare": pct(values["trump"], total),
+                "demDropoff": 0,
+                "repDropoff": 0,
+                "coverageMode": "voteShareOnly",
+                "sourceId": source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    local_values = {
+        "harris": sum(row["votes"]["Harris"] for row in result_rows),
+        "other": sum(row["votes"]["Other"] for row in result_rows),
+        "total": sum(row["totalVotes"] for row in result_rows),
+        "trump": sum(row["votes"]["Trump"] for row in result_rows),
+    }
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": local_values["total"],
+        "nativeTrumpVotes": local_values["trump"],
+        "nativeHarrisVotes": local_values["harris"],
+        "nativeOtherVotes": local_values["other"],
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewZeroTotalRowsOmitted": zero_total_review_rows,
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeStatewideCertifiedVoteGap": local_values["total"] - statewide_values["total"],
+        "nativeStatewideCertifiedVotes": statewide_values["total"],
+        **turnout_metrics,
+    }
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
+
+
 def _washington_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     result_section = config.raw["certifiedResults"]
     review_section = config.raw["reviewCharts"]
@@ -1587,6 +1719,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeNorthCarolinaPrecinctResultsZip",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "GA" and config.raw.get("certifiedResults", {}).get("format") == "georgiaMediaExportJson":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _georgia_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeGeorgiaMediaExportJson",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

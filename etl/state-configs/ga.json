@@ -4,7 +4,6 @@
   "authority": "Georgia Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ga-2024-eac-turnout",
@@ -14,21 +13,39 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Georgia Secretary of State results sources are tracked separately as candidate official result artifacts.",
+      "confidence": "National EAC fallback turnout rows. Georgia Secretary of State media export is the official result/review source.",
       "status": "loaded"
     },
     {
       "id": "ga-2024-official-results",
-      "category": "Official statewide election results candidate",
-      "url": "https://results.sos.ga.gov/results/public/Georgia/elections/2024NovGen",
-      "localFile": "",
-      "parser": "georgiaClarityEnrCandidate",
+      "category": "Official statewide and county election results export",
+      "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2024NovGen.json",
+      "localFile": "data/ga-2024-official-results-export.json",
+      "parser": "georgiaMediaExportJson",
       "authority": "Georgia Secretary of State",
-      "timestampBasis": "Official Georgia Secretary of State 2024 General Election results page, certified November 22, 2024.",
-      "confidence": "Official source URL discovered, but scripted collection still needs a Clarity ENR static export or browser-authorized artifact. Candidate source only until parsed.",
-      "status": "candidate"
+      "timestampBasis": "Official Georgia Secretary of State media export for the 2024 November General Election, created January 30, 2025.",
+      "confidence": "Official media export from the Georgia SOS results application. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total, all in minor-party/other rows, so review caveats must remain visible.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "georgiaMediaExportJson",
+    "sourceId": "ga-2024-official-results",
+    "contestName": "President of the US",
+    "candidateRules": {
+      "harris": [
+        "Kamala"
+      ],
+      "trump": [
+        "Donald"
+      ]
+    }
+  },
+  "reviewCharts": {
+    "format": "georgiaMediaExportJsonVoteShare",
+    "sourceId": "ga-2024-official-results",
+    "warning": "Georgia native review rows use official Georgia Secretary of State media-export precinct presidential vote-share screening only. No same-row down-ballot comparison contest is mapped in this package. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total, all in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "ga-2024-eac-turnout",
@@ -45,20 +62,20 @@
   },
   "expected": {
     "jurisdictions": 159,
-    "resultRows": 0,
+    "resultRows": 159,
     "sources": 2,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "stateTotal": 5250066,
+    "trump": 2663117,
+    "harris": 2548017,
+    "other": 38932,
+    "reviewRows": 2684,
     "turnoutRows": 159
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }
