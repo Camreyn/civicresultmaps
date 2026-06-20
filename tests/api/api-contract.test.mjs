@@ -133,6 +133,7 @@ test("review indicators explain advisory meaning", () => {
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   const overview = readFileSync("src/app/national-overview.tsx", "utf8");
+  const dataReviewTemplate = readFileSync(".github/ISSUE_TEMPLATE/data-review.yml", "utf8");
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 
   assert.match(eli5, /ELI5/);
@@ -174,11 +175,21 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /EAC Quality Monitoring Program/);
   assert.match(tabs, /EAC Voting System Reports Collection/);
   assert.match(tabs, /NIST Voting Program/);
+  assert.match(tabs, /stateDataNoteOverrides/);
+  assert.match(tabs, /Wisconsin native review rows/);
+  assert.match(tabs, /WEC ward results workbook/);
+  assert.match(tabs, /Washington participating-county precinct rows/);
+  assert.match(tabs, /5,309 vote gap/);
+  assert.match(tabs, /North Carolina uses official reporting-unit rows/);
   assert.doesNotMatch(tabs, /Sources API/);
   assert.match(explorer, /Eli5/);
   assert.match(explorer, /clickable-row/);
   assert.match(explorer, /Inspect \$\{row\.jurisdictionName\}/);
   assert.match(overview, /Eli5/);
+  assert.match(dataReviewTemplate, /Data review \/ source correction/);
+  assert.match(dataReviewTemplate, /data-review/);
+  assert.match(dataReviewTemplate, /I checked the Data Notes/);
+  assert.match(dataReviewTemplate, /I understand advisory flags/);
 });
 
 test("raw review turnout and historical APIs are exposed", () => {

@@ -1,0 +1,65 @@
+name: Data review / source correction
+description: Report a source, row, chart, or caveat issue for Civic Result Maps.
+title: "[Data issue] "
+labels:
+  - data-review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping review Civic Result Maps. Please include the most direct source link you have and describe the specific row, chart, or caveat that needs attention.
+  - type: input
+    id: state
+    attributes:
+      label: State
+      description: Two-letter code or full state name.
+      placeholder: WI
+    validations:
+      required: true
+  - type: input
+    id: jurisdiction
+    attributes:
+      label: Jurisdiction
+      description: County, precinct, ward, municipality, or reporting unit if the issue is local.
+      placeholder: Dane County, Ward 1, or statewide
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Issue type
+      options:
+        - Source link missing or stale
+        - Source correction
+        - Row or value mismatch
+        - Chart caveat or warning
+        - Coverage or status issue
+        - Other data review
+    validations:
+      required: true
+  - type: input
+    id: source_url
+    attributes:
+      label: Source URL
+      description: Link to the official source, dataset, PDF, or page used to verify the issue.
+      placeholder: https://...
+  - type: textarea
+    id: what_looks_wrong
+    attributes:
+      label: What looks wrong?
+      description: Describe the exact app value, chart, flag, source, or status text that should be reviewed.
+      placeholder: The turnout denominator for this county appears to use...
+    validations:
+      required: true
+  - type: textarea
+    id: suggested_correction
+    attributes:
+      label: Suggested correction or alternate explanation
+      description: Share the corrected value, better source, or local context that could explain the flag.
+  - type: checkboxes
+    id: responsible_review
+    attributes:
+      label: Responsible review checklist
+      options:
+        - label: I checked the Data Notes or chart caveat for this state before filing.
+          required: true
+        - label: I understand advisory flags are screening prompts, not evidence of misconduct by themselves.
+          required: true

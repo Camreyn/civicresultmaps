@@ -88,6 +88,9 @@ type DataNoteSection = {
   status: QualityBadgeStatus;
   why: string;
 };
+type StateDataNoteOverride = Partial<Pick<DataNoteSection, "detail" | "evidence" | "status" | "why">> & {
+  key: DataNoteSection["key"];
+};
 type GlossaryEntry = {
   definition: string;
   term: string;
@@ -930,6 +933,118 @@ function dataNoteStatus(hasRows: boolean, capability?: boolean, partial?: boolea
   return "missing";
 }
 
+const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
+  AZ: [
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 fallback is acceptable for statewide/local denominator context until Arizona-native turnout files are mapped.",
+      status: "partial",
+      why: "Arizona needs a state-native official turnout package before turnout should be treated as source-complete in the app.",
+    },
+  ],
+  GA: [
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 fallback is the current denominator backbone.",
+      status: "partial",
+      why: "Georgia native turnout sources still need to be collected and normalized before the turnout card can be marked ready.",
+    },
+  ],
+  MI: [
+    {
+      key: "review",
+      evidence: "Michigan native review rows support presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
+      why: "The review graphs are local-reporting-unit screens. They do not include precinct boundary geometry, so map inspection remains county/result based.",
+    },
+  ],
+  MN: [
+    {
+      key: "review",
+      evidence: "Minnesota native review rows support presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
+      why: "Precinct review data is loaded, but precinct boundary overlays are not sourced yet, so graph outliers need source-row inspection.",
+    },
+  ],
+  NC: [
+    {
+      key: "review",
+      evidence: "North Carolina uses official reporting-unit rows with President-versus-Governor same-party drop-off; 2024 had no U.S. Senate race.",
+      why: "NCSBE reporting units can include early voting, absentee, provisional, transfer, and non-real precinct rows, so county totals and source rows should be checked when interpreting flags.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 fallback rows are loaded while a native denominator package is pending.",
+      status: "partial",
+      why: "North Carolina needs a state-native official registered-voter denominator mapped into the turnout contract before turnout can be marked ready.",
+    },
+  ],
+  NV: [
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 fallback is the current denominator backbone.",
+      status: "partial",
+      why: "Nevada native turnout and source-link cleanup are still pending, so turnout remains a fallback data layer.",
+    },
+  ],
+  OH: [
+    {
+      key: "review",
+      evidence: "Ohio native review rows currently support presidential vote-share screening.",
+      status: "partial",
+      why: "Down-ballot comparison flags are disabled until a same-row comparison contest is mapped, so review graphs should be read as vote-share-only screening.",
+    },
+  ],
+  PA: [
+    {
+      key: "review",
+      evidence: "Pennsylvania native review rows support presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
+      why: "Two presidential precinct groups do not have matching Senate rows and stay vote-share-only; source rows should be inspected before treating a flag as meaningful.",
+    },
+  ],
+  WA: [
+    {
+      key: "review",
+      evidence: "Washington participating-county precinct rows aggregate to 3,918,934 presidential votes versus 3,924,243 certified county votes, a 5,309 vote gap.",
+      status: "partial",
+      why: "This is a participating-precinct screening package, not a fully reconciled statewide precinct dataset. Use it to find rows worth checking, not to make statewide claims.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 fallback rows are loaded while a state-native registered-voter denominator package is pending.",
+      status: "partial",
+      why: "Washington needs official state-native turnout denominators mapped before turnout can be treated as complete in this app.",
+    },
+    {
+      key: "history",
+      why: "Washington historical official-result rows have not been backfilled yet, so historical graphs may be unavailable or incomplete.",
+    },
+  ],
+  WI: [
+    {
+      key: "review",
+      evidence: "Wisconsin native review rows use WEC ward-level presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
+      why: "Ward-level review rows are available for advisory screening, but flags still need source-row inspection and local context before drawing conclusions.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 local-jurisdiction fallback is used because the WEC ward results workbook does not include registered-voter denominator fields.",
+      status: "partial",
+      why: "Wisconsin turnout now has registered-voter denominators, but they come from EAC fallback data rather than the WEC ward results workbook itself.",
+    },
+  ],
+};
+
+function applyStateDataNoteOverrides(stateCode: string, sections: DataNoteSection[]): DataNoteSection[] {
+  const overrides = stateDataNoteOverrides[stateCode.toUpperCase()] ?? [];
+  if (!overrides.length) {
+    return sections;
+  }
+
+  return sections.map((section) => {
+    const override = overrides.find((candidate) => candidate.key === section.key);
+    return override ? { ...section, ...override, key: section.key } : section;
+  });
+}
+
 function buildDataNoteSections(input: {
   completeness: CompletenessSummary | undefined;
   coverage: CoverageSummary | null;
@@ -938,6 +1053,7 @@ function buildDataNoteSections(input: {
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   sources: SourceSummary[];
+  stateCode: string;
   turnoutRows: TurnoutRowSummary[];
   voteMethodRows: VoteMethodRowSummary[];
 }): DataNoteSection[] {
@@ -957,7 +1073,7 @@ function buildDataNoteSections(input: {
   const eacTurnoutFallback = input.turnoutRows.some((row) => row.sourceId.toLowerCase().includes("eac"));
   const legacyOnly = input.completeness ? input.completeness.legacyImportCount > 0 && input.completeness.nativeImportCount === 0 : false;
 
-  return [
+  const sections: DataNoteSection[] = [
     {
       detail: input.results.length
         ? `${input.results.length.toLocaleString()} result rows across ${(input.coverage?.loadedJurisdictions ?? input.results.length).toLocaleString()} jurisdictions.`
@@ -1051,6 +1167,8 @@ function buildDataNoteSections(input: {
         : "The historical official-result backfill has not been loaded for this state yet.",
     },
   ];
+
+  return applyStateDataNoteOverrides(input.stateCode, sections);
 }
 
 function buildVoteShareScatterDiagnostic(input: {
@@ -1704,6 +1822,7 @@ export function WorkspaceTabs({
     results,
     reviewRows,
     sources,
+    stateCode: selectedStateCode,
     turnoutRows,
     voteMethodRows,
   });
