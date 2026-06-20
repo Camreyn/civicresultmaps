@@ -1030,9 +1030,15 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   GA: [
     {
       key: "sources",
-      evidence: "Georgia SOS media export JSON is loaded as the official result/review source; EAC 2024 V2 remains the turnout denominator fallback.",
+      evidence: "Georgia SOS media export JSON is loaded as the official result/review source, Census county geometry is joined for maps, and EAC 2024 V2 remains the turnout denominator fallback.",
       status: "partial",
-      why: "Source coverage is mixed: Georgia county and precinct presidential rows are native official rows, while turnout denominators still come from EAC fallback data.",
+      why: "Source coverage is mixed: Georgia county and precinct presidential rows plus county map geometry are loaded from official/public artifacts, while turnout denominators still come from EAC fallback data.",
+    },
+    {
+      key: "map",
+      evidence: "Census county geometry is joined to the 159 Georgia county result rows.",
+      status: "ready",
+      why: "The map is county-level only. Precinct review rows remain source-table and graph evidence because precinct boundary overlays are not included in this package.",
     },
     {
       key: "review",

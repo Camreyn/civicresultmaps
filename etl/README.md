@@ -42,6 +42,38 @@ Promote a validated Michigan staging artifact:
 npm run native:promote -- .etl/staging/mi-2024-staging.json
 ```
 
+## Native Georgia Import
+
+Georgia reads the official Secretary of State media export JSON plus Census county geometry:
+
+- `data/ga-2024-official-results-export.json`
+- `data/ga-counties.geojson`
+
+Those paths are declared in `etl/state-configs/ga.json`. The parser validates:
+
+- 159 county result rows
+- 5,250,066 county presidential votes
+- 2,663,117 Trump votes
+- 2,548,017 Harris votes
+- 38,932 other votes
+- 2,684 precinct-level vote-share review rows
+- 159 EAC fallback turnout rows
+- 159 county geometry features joined to the result rows
+
+Georgia review rows are vote-share-only until a same-row down-ballot comparison contest is mapped. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total, all in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts.
+
+Run native staging:
+
+```powershell
+npm run etl:import:ga
+```
+
+Promote a validated Georgia staging artifact:
+
+```powershell
+npm run native:promote -- .etl/staging/ga-2024-staging.json
+```
+
 ## Native Pennsylvania Import
 
 Pennsylvania reads the committed Department of State precinct returns, returns readme, turnout workbook, and county geometry:

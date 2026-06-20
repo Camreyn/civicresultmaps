@@ -26,6 +26,17 @@
       "timestampBasis": "Official Georgia Secretary of State media export for the 2024 November General Election, created January 30, 2025.",
       "confidence": "Official media export from the Georgia SOS results application. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total, all in minor-party/other rows, so review caveats must remain visible.",
       "status": "loaded"
+    },
+    {
+      "id": "ga-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2713%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ga-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Georgia county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -63,7 +74,7 @@
   "expected": {
     "jurisdictions": 159,
     "resultRows": 159,
-    "sources": 2,
+    "sources": 3,
     "stateTotal": 5250066,
     "trump": 2663117,
     "harris": 2548017,
@@ -74,7 +85,7 @@
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
-    "map": false,
+    "map": true,
     "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
