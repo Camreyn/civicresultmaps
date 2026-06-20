@@ -26,6 +26,17 @@
       "timestampBasis": "Official results page for the November 5, 2024 General Election.",
       "confidence": "Official Florida Department of State county table for President of the United States. EAC turnout remains the denominator fallback until a state-native turnout artifact is collected.",
       "status": "loaded"
+    },
+    {
+      "id": "fl-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2712%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/fl-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Florida county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -49,7 +60,8 @@
   "expected": {
     "jurisdictions": 67,
     "resultRows": 67,
-    "sources": 2,
+    "sources": 3,
+    "geometryFeatures": 67,
     "stateTotal": 10893752,
     "trump": 6110125,
     "harris": 4683038,
@@ -60,7 +72,7 @@
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
-    "map": false,
+    "map": true,
     "reviewGraphs": false,
     "turnout": true,
     "historicalBaseline": false
