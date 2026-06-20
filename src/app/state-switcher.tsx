@@ -244,7 +244,7 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
 
   return (
     <div className="state-switcher">
-      <div className="state-data-legend" aria-label="State data legend">
+      <div className="state-data-legend" aria-label="State data legend" data-tour="state-data-legend">
         <span><i className="data-dot loaded" /> Loaded</span>
         <span><i className="data-dot partial" /> Partial</span>
         <span><i className="data-dot missing" /> Missing</span>
@@ -298,7 +298,11 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
                 <span>{state.authority}</span>
                 {summary?.sourceTier && <span className="state-tier">{summary.sourceTier.replaceAll("_", " ")}</span>}
               </div>
-              <div className="state-data-grid" aria-label={`${state.name} data availability`}>
+              <div
+                className="state-data-grid"
+                aria-label={`${state.name} data availability`}
+                data-tour={state.code === selectedState ? "selected-state-badges" : undefined}
+              >
                 {badges.map((badge) => {
                   const Icon = badge.icon;
 

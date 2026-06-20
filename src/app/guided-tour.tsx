@@ -81,9 +81,12 @@ function readRect(target: Element | null): Rect | null {
   };
 }
 
-function cardPosition(target: Rect | null) {
+function cardPosition(target: Rect | null, cardHeight = 260) {
   const width = 360;
   const margin = 18;
+  const viewportHeight = window.innerHeight;
+  const usableCardHeight = Math.min(cardHeight, viewportHeight - margin * 2);
+  const clampTop = (top: number) => Math.max(margin, Math.min(top, viewportHeight - usableCardHeight - margin));
 
   if (!target) {
     return {
@@ -94,19 +97,18 @@ function cardPosition(target: Rect | null) {
   }
 
   const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
   const rightSide = target.left + target.width + margin;
   const leftSide = target.left - width - margin;
   const below = target.top + target.height + margin;
-  const above = target.top - 220 - margin;
+  const above = target.top - usableCardHeight - margin;
   const canUseRight = rightSide + width < viewportWidth - margin;
   const canUseLeft = leftSide > margin;
-  const canUseBelow = below + 220 < viewportHeight - margin;
+  const canUseBelow = below + usableCardHeight < viewportHeight - margin;
 
   if (canUseRight) {
     return {
       left: rightSide,
-      top: Math.max(margin, Math.min(target.top, viewportHeight - 260)),
+      top: clampTop(target.top),
       width,
     };
   }
@@ -114,14 +116,14 @@ function cardPosition(target: Rect | null) {
   if (canUseLeft) {
     return {
       left: leftSide,
-      top: Math.max(margin, Math.min(target.top, viewportHeight - 260)),
+      top: clampTop(target.top),
       width,
     };
   }
 
   return {
     left: Math.max(margin, Math.min(target.left, viewportWidth - width - margin)),
-    top: canUseBelow ? below : Math.max(margin, above),
+    top: canUseBelow ? clampTop(below) : clampTop(above),
     width,
   };
 }
@@ -133,7 +135,7 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
   const [cardRect, setCardRect] = useState<Rect | null>(null);
   const cardRef = useRef<HTMLElement | null>(null);
   const activeStep = steps[stepIndex];
-  const position = useMemo(() => cardPosition(targetRect), [targetRect]);
+  const position = useMemo(() => cardPosition(targetRect, cardRect?.height), [cardRect?.height, targetRect]);
 
   useEffect(() => {
     if (stepIndex <= steps.length - 1) {

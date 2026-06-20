@@ -269,6 +269,20 @@ const tourFeatureRegistry: TourFeature[] = [
         title: "Choose a state",
       },
       {
+        body: "These compact badges summarize the selected state's data families at a glance: results, sources, map, review rows, turnout, and historical coverage. Loaded, partial, and missing describe what the app can currently show.",
+        fallbackTarget: "[data-tour='state-sidebar']",
+        id: "state-badges",
+        target: "[data-tour='selected-state-badges']",
+        title: "Read state data badges",
+      },
+      {
+        body: "Use this legend when scanning states. A full marker means loaded, a warning marker means partial, and a missing marker means the app is still waiting on that data family.",
+        fallbackTarget: "[data-tour='state-sidebar']",
+        id: "state-badge-legend",
+        target: "[data-tour='state-data-legend']",
+        title: "Decode badge status",
+      },
+      {
         body: context.hasCoverage
           ? "This summary shows national loading progress and the broad readiness posture before you drill into one state."
           : "National loading progress appears here when the coverage summary is available.",
@@ -276,6 +290,27 @@ const tourFeatureRegistry: TourFeature[] = [
         id: "overview",
         target: ".national-overview",
         title: "Check national coverage",
+      },
+      {
+        body: "The Readiness page is the wider audit dashboard. It lists parser coverage, source status, validation counts, and blockers across states.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "readiness-link",
+        target: "[data-tour='readiness-link']",
+        title: "Open the readiness dashboard",
+      },
+      {
+        body: "Data Notes explain what is present, what is partial, and why missing pieces are not loaded yet. This is the first stop before interpreting a map or chart.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "data-notes",
+        target: "[data-tour='data-notes']",
+        title: "Start with Data Notes",
+      },
+      {
+        body: "If a value, caveat, source, or status looks wrong, this link opens a prefilled GitHub issue so reviewers can report the exact thing to check.",
+        fallbackTarget: "[data-tour='data-notes']",
+        id: "report-data-issue",
+        target: "[data-tour='report-data-issue']",
+        title: "Report data issues",
       },
     ],
   },
@@ -348,6 +383,14 @@ const tourFeatureRegistry: TourFeature[] = [
               title: "Review flagged patterns",
             },
             {
+              body: "This guide is the table of contents for advisory flags. It explains how Vote-Share Pattern, Down-ballot Difference, and Down-ballot Outliers are calculated and what normal explanations to check first.",
+              fallbackTarget: "[data-tour='review-panel']",
+              id: "flag-guide",
+              tab: "review",
+              target: "[data-tour='flag-guide']",
+              title: "Use the flag guide",
+            },
+            {
               body: "The scatterplot compares local vote totals against vote share. Outliers are places worth inspecting against sources and local context.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "scatter",
@@ -356,12 +399,29 @@ const tourFeatureRegistry: TourFeature[] = [
               title: "Read the vote-share scatterplot",
             },
             {
+              body: "When the app detects missing rows, partial coverage, fragile counts, or unreconciled source context, charts are faded until the user acknowledges those limits. The listed reasons are specific to the selected chart.",
+              fallbackTarget: "[data-tour='review-scatter']",
+              id: "chart-caveat-gate",
+              skipIfMissing: true,
+              tab: "review",
+              target: "[data-tour='chart-caveat-gate']",
+              title: "Acknowledge chart caveats",
+            },
+            {
               body: "The drop-off histogram buckets local drop-off values. It is useful for seeing whether a pattern is isolated or appears across many rows.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "dropoff",
               tab: "review",
               target: "[data-tour='review-dropoff']",
               title: "Read the drop-off histogram",
+            },
+            {
+              body: "Use this issue link when a review chart, flag, or row looks off. It includes the selected state and review context so a follow-up can start from the right source family.",
+              fallbackTarget: "[data-tour='review-panel']",
+              id: "report-review-issue",
+              tab: "review",
+              target: "[data-tour='report-review-issue']",
+              title: "Report review findings carefully",
             },
           ]
         : [
@@ -372,6 +432,14 @@ const tourFeatureRegistry: TourFeature[] = [
               tab: "review",
               target: "[data-tour='review-panel']",
               title: "Review coverage depends on rows",
+            },
+            {
+              body: "Even when charts are not loaded, the Data Notes and Source Planner explain why. Missing review rows usually means the state still needs lower-level official data before advisory charts can be shown.",
+              fallbackTarget: "[data-tour='workspace']",
+              id: "review-empty-data-notes",
+              tab: "review",
+              target: "[data-tour='data-notes']",
+              title: "Check why review is missing",
             },
           ],
   },
@@ -464,6 +532,14 @@ const tourFeatureRegistry: TourFeature[] = [
         tab: "methodology",
         target: "[data-tour='methodology']",
         title: "Read the methodology",
+      },
+      {
+        body: "The reviewer checklist and glossary are the public-review rules of the road. Use them before sharing or escalating anything from a flag or chart.",
+        fallbackTarget: "[data-tour='methodology']",
+        id: "reviewer-checklist",
+        tab: "methodology",
+        target: "[data-tour='reviewer-checklist']",
+        title: "Use the reviewer checklist",
       },
     ],
   },
@@ -1433,7 +1509,7 @@ function ChartGate({
   }
 
   return (
-    <div className="screening-chart-gate">
+    <div className="screening-chart-gate" data-tour="chart-caveat-gate">
       <TriangleAlert aria-hidden size={22} />
       <strong>{diagnostic.status === "blocked" ? "This chart cannot be evaluated yet" : "Read this before viewing"}</strong>
       <p>{diagnostic.summary}</p>
@@ -2239,7 +2315,7 @@ export function WorkspaceTabs({
               This is the health label for the selected state. It explains which data families are loaded and why a
               missing section is missing instead of leaving people to guess.
             </Eli5>
-            <a className="secondary-link" href={dataIssueUrl} rel="noreferrer" target="_blank">
+            <a className="secondary-link" data-tour="report-data-issue" href={dataIssueUrl} rel="noreferrer" target="_blank">
               Report Data Issue
             </a>
           </div>
@@ -2395,7 +2471,7 @@ export function WorkspaceTabs({
                   detail={reviewRows.length ? "Local review rows are loaded for screening." : "No local review rows are loaded."}
                   status={reviewRows.length ? (reviewGraphCoverageIsPartial ? "partial" : "ready") : "missing"}
                 />
-                <a className="secondary-link" href={reviewIssueUrl} rel="noreferrer" target="_blank">
+                <a className="secondary-link" data-tour="report-review-issue" href={reviewIssueUrl} rel="noreferrer" target="_blank">
                   Report Data Issue
                 </a>
                 <BarChart3 aria-hidden size={18} />
@@ -2444,7 +2520,7 @@ export function WorkspaceTabs({
                 </select>
               </label>
             </div>
-            <section className="flag-methodology-guide" aria-label="Flag calculation guide">
+            <section className="flag-methodology-guide" aria-label="Flag calculation guide" data-tour="flag-guide">
               <div className="flag-guide-header">
                 <div>
                   <strong>Flag Calculation Guide</strong>
@@ -3525,7 +3601,7 @@ export function WorkspaceTabs({
                 <BookOpen aria-hidden size={18} />
               </div>
             </div>
-            <div className="responsible-review-panel">
+            <div className="responsible-review-panel" data-tour="reviewer-checklist">
               <article>
                 <span className="section-label">How to Review Responsibly</span>
                 <strong>Use this site to find records worth checking, not to make claims by itself.</strong>

@@ -76,7 +76,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <a className="topbar-link" href="/?tab=support">
             Support
           </a>
-          <a className="topbar-link" href="/readiness">
+          <a className="topbar-link" data-tour="readiness-link" href="/readiness">
             Readiness
           </a>
           <span className="live-dot">Database live</span>
