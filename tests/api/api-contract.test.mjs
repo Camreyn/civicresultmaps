@@ -146,6 +146,11 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /Glossary/);
   assert.match(tabs, /Report Data Issue/);
   assert.match(tabs, /githubIssueUrl/);
+  assert.match(tabs, /githubDataReviewTemplate/);
+  assert.match(tabs, /template: githubDataReviewTemplate/);
+  assert.match(tabs, /issue_type/);
+  assert.match(tabs, /what_looks_wrong/);
+  assert.doesNotMatch(tabs, /## What looks wrong\?/);
   assert.match(tabs, /Source Manifest JSON/);
   assert.match(tabs, /Import Summary JSON/);
   assert.match(tabs, /All Files ZIP/);

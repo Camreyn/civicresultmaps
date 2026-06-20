@@ -249,6 +249,7 @@ const glossaryEntries: GlossaryEntry[] = [
 ];
 
 const githubIssueUrl = "https://github.com/Camreyn/civicresultmaps/issues/new";
+const githubDataReviewTemplate = "data-review.yml";
 
 const tourFeatureRegistry: TourFeature[] = [
   {
@@ -894,25 +895,21 @@ function buildReportIssueUrl(input: {
   stateName: string;
 }) {
   const title = `[Data issue] ${input.stateCode}${input.jurisdiction ? ` ${input.jurisdiction}` : ""}`;
-  const body = [
-    "## Context",
-    `State: ${input.stateName} (${input.stateCode})`,
-    `Area: ${input.jurisdiction ?? "Statewide / not selected"}`,
-    `Chart or table: ${input.chart ?? input.context}`,
-    `Source URL: ${input.sourceUrl ?? "Not provided"}`,
-    "",
-    "## What looks wrong?",
-    "",
-    "## Suggested correction or source link",
-    "",
-    "## Reviewer notes",
-    "",
-  ].join("\n");
+  const area = input.jurisdiction ?? "Statewide / not selected";
+  const chartOrTable = input.chart ?? input.context;
   const params = new URLSearchParams({
-    body,
+    issue_type: input.chart ? "Chart caveat or warning" : "Other data review",
     labels: "data-review",
+    jurisdiction: area,
+    state: `${input.stateName} (${input.stateCode})`,
+    template: githubDataReviewTemplate,
     title,
+    what_looks_wrong: `Context: ${chartOrTable}. Please describe the exact app value, chart, flag, source, or status text that should be reviewed.`,
   });
+
+  if (input.sourceUrl) {
+    params.set("source_url", input.sourceUrl);
+  }
 
   return `${githubIssueUrl}?${params.toString()}`;
 }
