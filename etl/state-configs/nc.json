@@ -17,6 +17,17 @@
       "status": "loaded"
     },
     {
+      "id": "nc-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2737%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/nc-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for North Carolina county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    },
+    {
       "id": "nc-2024-eac-turnout",
       "category": "EAC fallback county turnout rows",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
@@ -60,7 +71,7 @@
   "expected": {
     "jurisdictions": 100,
     "resultRows": 100,
-    "sources": 2,
+    "sources": 3,
     "stateTotal": 5699141,
     "trump": 2898423,
     "harris": 2715375,
@@ -71,7 +82,7 @@
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
-    "map": false,
+    "map": true,
     "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false

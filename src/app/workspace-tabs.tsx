@@ -1083,6 +1083,12 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   ],
   NC: [
     {
+      key: "map",
+      evidence: "Census county geometry is joined to the 100 North Carolina county result rows.",
+      status: "ready",
+      why: "The map is county-level only. Precinct/reporting-unit review rows remain source-table and graph evidence because precinct boundary overlays are not included in this package.",
+    },
+    {
       key: "review",
       evidence: "North Carolina uses official reporting-unit rows with President-versus-Governor same-party drop-off; 2024 had no U.S. Senate race.",
       why: "NCSBE reporting units can include early voting, absentee, provisional, transfer, and non-real precinct rows, so county totals and source rows should be checked when interpreting flags.",

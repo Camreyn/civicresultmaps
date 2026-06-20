@@ -106,9 +106,10 @@ npm run native:promote -- .etl/staging/mn-2024-staging.json
 
 ## Native North Carolina Import
 
-North Carolina reads the official State Board of Elections precinct result ZIP:
+North Carolina reads the official State Board of Elections precinct result ZIP plus Census county geometry:
 
 - `data/nc-2024-results-precinct.zip`
+- `data/nc-counties.geojson`
 
 Those paths are declared in `etl/state-configs/nc.json`. The parser validates:
 
@@ -119,8 +120,11 @@ Those paths are declared in `etl/state-configs/nc.json`. The parser validates:
 - 85,343 other votes
 - 2,861 precinct/reporting-unit review rows
 - 2,861 joined President-versus-Governor comparison rows
+- 100 county geometry features joined to the result rows
 
 The North Carolina import uses Governor as the same-party comparison contest because North Carolina did not have a 2024 U.S. Senate race. The official NCSBE file also includes non-real precinct reporting units such as early voting, absentee, provisional, and transfer rows; those are preserved as local review rows.
+
+The North Carolina map uses Census county geometry for county-level result inspection. Precinct/reporting-unit boundary geometry is not included in this package.
 
 Run native staging:
 
