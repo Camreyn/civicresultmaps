@@ -69,6 +69,13 @@ def _county_name(raw: Any) -> str:
     return titled if re.search(r"\bcounty\b$", titled, re.IGNORECASE) else f"{titled} County"
 
 
+def _nevada_jurisdiction_name(raw: Any) -> str:
+    value = str(raw or "").strip()
+    if re.fullmatch(r"carson\s+city(?:\s+county)?", value, re.IGNORECASE):
+        return "Carson City"
+    return _county_name(value)
+
+
 WASHINGTON_COUNTY_CODES = {
     "AD": "Adams County",
     "AS": "Asotin County",
@@ -873,7 +880,7 @@ def _nevada_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[l
             year = int_text(row.get("election_year"))
             if year != config.election_year:
                 raise ValueError(f"Nevada results row {index} has wrong election year: {row.get('election_year')!r}")
-            county = _county_name(row.get("jurisdiction_name"))
+            county = _nevada_jurisdiction_name(row.get("jurisdiction_name"))
             if not county:
                 raise ValueError(f"Nevada results row {index} is missing jurisdiction_name")
 

@@ -26,6 +26,17 @@
       "timestampBasis": "Archived capture of the official Nevada Secretary of State 2024 statewide general election results page for November 5, 2024.",
       "confidence": "County presidential rows transcribed from the archived official NVSOS statewide results page because the live NVSOS/Silver State hosts return Incapsula challenge pages to scripted collection.",
       "status": "loaded"
+    },
+    {
+      "id": "nv-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2732%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/nv-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Nevada county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -54,7 +65,8 @@
   "expected": {
     "jurisdictions": 17,
     "resultRows": 17,
-    "sources": 2,
+    "sources": 3,
+    "geometryFeatures": 17,
     "stateTotal": 1484840,
     "trump": 751205,
     "harris": 705197,
@@ -65,7 +77,7 @@
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
-    "map": false,
+    "map": true,
     "reviewGraphs": false,
     "turnout": true,
     "historicalBaseline": false

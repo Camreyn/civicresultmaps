@@ -26,6 +26,17 @@
       "timestampBasis": "Signed November 25, 2024 statewide canvass linked from the official 2024 Election Information page; report date/time November 22, 2024 7:04:17 PM.",
       "confidence": "County rows transcribed from the official signed canvass PDF because the PDF host still presents a Cloudflare challenge to scripted download. Direct PDF source link remains visible for user verification.",
       "status": "loaded"
+    },
+    {
+      "id": "az-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2704%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/az-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Arizona county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -58,7 +69,8 @@
   "expected": {
     "jurisdictions": 15,
     "resultRows": 15,
-    "sources": 2,
+    "sources": 3,
+    "geometryFeatures": 15,
     "stateTotal": 3390161,
     "trump": 1770242,
     "harris": 1582860,
@@ -69,7 +81,7 @@
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
-    "map": false,
+    "map": true,
     "reviewGraphs": false,
     "turnout": true,
     "historicalBaseline": false
