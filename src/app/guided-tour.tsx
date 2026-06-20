@@ -84,6 +84,14 @@ function readRect(target: Element | null): Rect | null {
 function cardPosition(target: Rect | null, cardHeight = 260) {
   const width = 360;
   const margin = 18;
+  if (typeof window === "undefined") {
+    return {
+      left: margin,
+      top: margin,
+      width,
+    };
+  }
+
   const viewportHeight = window.innerHeight;
   const usableCardHeight = Math.min(cardHeight, viewportHeight - margin * 2);
   const clampTop = (top: number) => Math.max(margin, Math.min(top, viewportHeight - usableCardHeight - margin));
