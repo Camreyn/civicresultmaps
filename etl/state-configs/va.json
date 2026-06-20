@@ -1,10 +1,9 @@
 {
   "code": "VA",
   "name": "Virginia",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Virginia Department of Elections",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "va-2024-eac-turnout",
@@ -16,15 +15,50 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "va-2024-general-president-results",
+      "category": "Official presidential locality and precinct results",
+      "url": "https://enr.elections.virginia.gov/results/public/Virginia/elections/2024NovemberGeneral/ballot-items/01000000-c7a0-1ae0-1363-08dcde4d9d9f",
+      "localFile": "data/va-2024-general-president-results.csv",
+      "parser": "virginiaElectionStatsContestCsv",
+      "authority": "Virginia Department of Elections",
+      "timestampBasis": "Official Virginia Elections Database contest page for the November 5, 2024 General Election, with linked Virginia ENR source.",
+      "confidence": "Official Virginia Department of Elections presidential contest export. Locality rows reconcile to the State row; precinct rows are loaded as vote-share-only review rows until a down-ballot comparison contest is mapped.",
+      "status": "loaded",
+      "downloadUrl": "https://va2.elstats.civera.com/api/download_contest/161256_table.csv?split_party=false",
+      "contestUrl": "https://historical.elections.virginia.gov/contest/161256"
     }
   ],
+  "certifiedResults": {
+    "format": "virginiaElectionStatsContestCsv",
+    "sourceId": "va-2024-general-president-results",
+    "totalColumn": "Total Votes Cast",
+    "candidateColumns": {
+      "harris": "Kamala D. Harris",
+      "trump": "Donald J. Trump",
+      "other": [
+        "Jill E. Stein",
+        "Chase R. Oliver",
+        "Cornel R. West",
+        "Claudia De la Cruz",
+        "Write-Ins"
+      ]
+    }
+  },
+  "reviewCharts": {
+    "format": "virginiaElectionStatsContestCsv",
+    "sourceId": "va-2024-general-president-results",
+    "level": "precinct",
+    "warning": "Virginia precinct review rows are vote-share-only screening rows. No same-row down-ballot comparison contest is mapped yet."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "va-2024-eac-turnout",
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Virginia turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Virginia turnout rows use EAC 2024 V2 locality/jurisdiction fallback rows until a state-native turnout artifact is collected.",
     "warningRequired": false,
     "expected": {
       "rowCount": 133,
@@ -34,20 +68,20 @@
   },
   "expected": {
     "jurisdictions": 133,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 133,
+    "sources": 2,
+    "stateTotal": 4505941,
+    "trump": 2075085,
+    "harris": 2335395,
+    "other": 95461,
+    "reviewRows": 2670,
     "turnoutRows": 133
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

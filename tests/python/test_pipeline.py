@@ -233,6 +233,23 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 10999125)
         self.assertEqual(artifact["native"]["reviewRows"], [])
 
+    def test_virginia_election_stats_csv_parser_builds_locality_and_precinct_rows(self):
+        config = load_config("etl/state-configs/va.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeVirginiaElectionStatsContestCsv")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 133)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 4505941)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 2075085)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 2335395)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 95461)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2670)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 0)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 133)
+        self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
+
     def test_georgia_media_export_parser_builds_native_rows(self):
         config = load_config("etl/state-configs/ga.json")
         report = validate_config(config)

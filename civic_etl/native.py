@@ -1007,6 +1007,137 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), [], turnout_rows, metrics
 
 
+def _virginia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    candidate_columns = section.get(
+        "candidateColumns",
+        {
+            "harris": "Kamala D. Harris",
+            "trump": "Donald J. Trump",
+            "other": [
+                "Jill E. Stein",
+                "Chase R. Oliver",
+                "Cornel R. West",
+                "Claudia De la Cruz",
+                "Write-Ins",
+            ],
+        },
+    )
+
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        rows = list(csv.reader(handle))
+
+    if len(rows) < 3:
+        raise ValueError("Virginia contest CSV has too few rows")
+
+    header = [str(value).strip() for value in rows[0]]
+    candidate_index = {name: index for index, name in enumerate(header) if name}
+    required_candidates = [
+        candidate_columns["harris"],
+        candidate_columns["trump"],
+        *candidate_columns.get("other", []),
+        section.get("totalColumn", "Total Votes Cast"),
+    ]
+    missing = [name for name in required_candidates if name not in candidate_index]
+    if missing:
+        raise ValueError(f"Virginia contest CSV missing columns: {', '.join(missing)}")
+
+    harris_index = candidate_index[candidate_columns["harris"]]
+    trump_index = candidate_index[candidate_columns["trump"]]
+    other_indexes = [candidate_index[name] for name in candidate_columns.get("other", [])]
+    total_index = candidate_index[section.get("totalColumn", "Total Votes Cast")]
+
+    result_rows: list[dict[str, Any]] = []
+    review_rows: list[dict[str, Any]] = []
+    current_locality = ""
+    state_values: dict[str, int] | None = None
+
+    for index, row in enumerate(rows[2:], start=3):
+        if len(row) <= total_index:
+            continue
+        row_type = str(row[0] if row else "").strip()
+        name = str(row[1] if len(row) > 1 else "").strip()
+        if not row_type or not name:
+            continue
+
+        harris = int_text(row[harris_index])
+        trump = int_text(row[trump_index])
+        other = sum(int_text(row[column]) for column in other_indexes)
+        total = int_text(row[total_index])
+        if total != harris + trump + other:
+            raise ValueError(f"Virginia contest row {index} total mismatch for {name}: {total} != {harris + trump + other}")
+
+        if row_type == "State":
+            state_values = {"harris": harris, "other": other, "total": total, "trump": trump}
+        elif row_type == "Locality":
+            current_locality = name
+            result_rows.append(
+                {
+                    "jurisdictionName": name,
+                    "jurisdictionCode": name.upper().replace(" COUNTY", "").replace(" CITY", ""),
+                    "level": "county",
+                    "votes": {
+                        "Trump": trump,
+                        "Harris": harris,
+                        "Other": other,
+                    },
+                    "totalVotes": total,
+                    "margin": trump - harris,
+                    "marginPct": pct(trump - harris, total),
+                    "sourceId": source.id,
+                }
+            )
+        elif row_type == "Precinct":
+            if not current_locality:
+                raise ValueError(f"Virginia precinct row {index} appears before a locality row")
+            if not total:
+                continue
+            review_rows.append(
+                {
+                    "county": current_locality,
+                    "localUnit": name,
+                    "totalVotes": total,
+                    "harris": harris,
+                    "trump": trump,
+                    "harrisShare": pct(harris, total),
+                    "trumpShare": pct(trump, total),
+                    "demDropoff": 0,
+                    "repDropoff": 0,
+                    "coverageMode": "voteShareOnly",
+                    "sourceId": source.id,
+                }
+            )
+
+    local_values = {
+        "harris": sum(row["votes"]["Harris"] for row in result_rows),
+        "other": sum(row["votes"]["Other"] for row in result_rows),
+        "total": sum(row["totalVotes"] for row in result_rows),
+        "trump": sum(row["votes"]["Trump"] for row in result_rows),
+    }
+    if state_values and local_values != state_values:
+        raise ValueError(f"Virginia locality totals do not match State row: {local_values} != {state_values}")
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": local_values["total"],
+        "nativeTrumpVotes": local_values["trump"],
+        "nativeHarrisVotes": local_values["harris"],
+        "nativeOtherVotes": local_values["other"],
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": 0,
+        "nativeComparisonContest": None,
+        **turnout_metrics,
+    }
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
+
+
 def _washington_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     result_section = config.raw["certifiedResults"]
     review_section = config.raw["reviewCharts"]
@@ -1975,6 +2106,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeFloridaDetailHtml",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "VA" and config.raw.get("certifiedResults", {}).get("format") == "virginiaElectionStatsContestCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _virginia_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeVirginiaElectionStatsContestCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

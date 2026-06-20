@@ -1129,6 +1129,32 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
       why: "Two presidential precinct groups do not have matching Senate rows and stay vote-share-only; source rows should be inspected before treating a flag as meaningful.",
     },
   ],
+  VA: [
+    {
+      key: "sources",
+      evidence: "Virginia Department of Elections presidential locality and precinct rows are loaded from the official Elections Database contest CSV; EAC 2024 V2 remains the turnout denominator fallback.",
+      status: "partial",
+      why: "Virginia now has source-first locality results and precinct screening rows, but turnout still uses EAC fallback data and map geometry is not loaded yet.",
+    },
+    {
+      key: "map",
+      evidence: "Virginia result rows are locality-level rows covering counties and independent cities.",
+      status: "missing",
+      why: "The app does not yet have Virginia locality geometry joined to those result rows, so maps stay unavailable even though the result table and sources are loaded.",
+    },
+    {
+      key: "review",
+      evidence: "Virginia official precinct presidential rows are loaded for vote-share screening.",
+      status: "partial",
+      why: "No same-row down-ballot comparison contest is mapped yet, so down-ballot flags are disabled and review charts should be read as vote-share-only screens.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 locality/jurisdiction fallback rows are loaded.",
+      status: "partial",
+      why: "Virginia needs a state-native registered-voter/ballots-cast denominator package mapped before turnout can be treated as complete in this app.",
+    },
+  ],
   WA: [
     {
       key: "review",
