@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, listNativeSourcePackages, stateQuery } from "@/lib/api";
+import { apiEnvelope, listNativeSourcePackages, publicDataCacheHeaders, stateQuery } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   const stateParam = request.nextUrl.searchParams.get("state");
@@ -11,5 +11,6 @@ export async function GET(request: NextRequest) {
       packageCount: packages.states.length,
       state: state ?? null,
     }),
+    { headers: publicDataCacheHeaders },
   );
 }

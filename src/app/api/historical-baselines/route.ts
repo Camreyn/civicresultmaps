@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, listHistoricalResultRows, stateQuery, yearQuery } from "@/lib/api";
+import { apiEnvelope, listHistoricalResultRows, publicDataCacheHeaders, stateQuery, yearQuery } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -8,5 +8,7 @@ export async function GET(request: NextRequest) {
   const year = yearParam ? yearQuery.parse(yearParam) : undefined;
   const limit = Number(params.get("limit") ?? 500);
 
-  return NextResponse.json(apiEnvelope(await listHistoricalResultRows({ limit, state, year })));
+  return NextResponse.json(apiEnvelope(await listHistoricalResultRows({ limit, state, year })), {
+    headers: publicDataCacheHeaders,
+  });
 }

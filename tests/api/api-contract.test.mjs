@@ -34,7 +34,13 @@ test("public API route contracts exist", () => {
     const content = readFileSync(route, "utf8");
     assert.match(content, /GET/);
     assert.match(content, /NextResponse/);
+    assert.match(content, /publicDataCacheHeaders/);
   }
+
+  const api = readFileSync("src/lib/api.ts", "utf8");
+  assert.match(api, /unstable_cache/);
+  assert.match(api, /publicDataRevalidateSeconds/);
+  assert.match(api, /Vercel-CDN-Cache-Control/);
 });
 
 test("map joins support repository GeoJSON county name variants", () => {

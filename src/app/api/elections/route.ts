@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, listElections, officeQuery, yearQuery } from "@/lib/api";
+import { apiEnvelope, listElections, officeQuery, publicDataCacheHeaders, yearQuery } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -9,5 +9,7 @@ export async function GET(request: NextRequest) {
   const year = yearParam ? yearQuery.parse(yearParam) : undefined;
   const office = officeParam ? officeQuery.parse(officeParam) : undefined;
 
-  return NextResponse.json(apiEnvelope(await listElections({ year, office })));
+  return NextResponse.json(apiEnvelope(await listElections({ year, office })), {
+    headers: publicDataCacheHeaders,
+  });
 }

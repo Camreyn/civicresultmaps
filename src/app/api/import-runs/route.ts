@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { apiEnvelope, listImportRuns } from "@/lib/api";
+import { apiEnvelope, listImportRuns, publicDataCacheHeaders } from "@/lib/api";
 
 export async function GET() {
-  return NextResponse.json(apiEnvelope(await listImportRuns()));
+  return NextResponse.json(apiEnvelope(await listImportRuns()), {
+    headers: publicDataCacheHeaders,
+  });
 }

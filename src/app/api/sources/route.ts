@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, listSources, stateQuery, yearQuery } from "@/lib/api";
+import { apiEnvelope, listSources, publicDataCacheHeaders, stateQuery, yearQuery } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const state = stateQuery.parse(params.get("state") ?? "");
   const year = yearQuery.parse(params.get("year") ?? "");
 
-  return NextResponse.json(apiEnvelope(await listSources({ state, year })));
+  return NextResponse.json(apiEnvelope(await listSources({ state, year })), {
+    headers: publicDataCacheHeaders,
+  });
 }

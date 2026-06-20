@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, listTurnoutSourceStatuses, stateQuery, yearQuery } from "@/lib/api";
+import { apiEnvelope, listTurnoutSourceStatuses, publicDataCacheHeaders, stateQuery, yearQuery } from "@/lib/api";
 import type { TurnoutSourceStatusValue } from "@/lib/turnout-source-packages";
 
 const statusValues = new Set<TurnoutSourceStatusValue>([
@@ -28,5 +28,6 @@ export async function GET(request: NextRequest) {
       stateCount: packages.states.length,
       year,
     }),
+    { headers: publicDataCacheHeaders },
   );
 }

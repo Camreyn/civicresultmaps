@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiEnvelope, listCompletenessReport, yearQuery } from "@/lib/api";
+import { apiEnvelope, listCompletenessReport, publicDataCacheHeaders, yearQuery } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -12,5 +12,6 @@ export async function GET(request: NextRequest) {
       statesLoaded: report.length,
       year,
     }),
+    { headers: publicDataCacheHeaders },
   );
 }
