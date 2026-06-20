@@ -14,8 +14,8 @@ import {
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
-import type { PointerEvent, WheelEvent } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { PointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
 import type { AnalysisIndicator, ResultRow, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 
@@ -306,6 +306,8 @@ export function ResultsExplorer({
   const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("margin");
   const [isPanning, setIsPanning] = useState(false);
+  const mapWrapRef = useRef<HTMLDivElement | null>(null);
+  const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const mapDragRef = useRef<{
     lastX: number;
     lastY: number;
@@ -512,7 +514,7 @@ export function ResultsExplorer({
   const selectedSourceUrl = (sourceId: string) => sourceById.get(sourceId)?.sourceUrl;
   const mapTransform = `translate(${mapViewBox.width / 2 + mapPan.x} ${mapViewBox.height / 2 + mapPan.y}) scale(${mapZoom}) translate(${-mapViewBox.width / 2} ${-mapViewBox.height / 2})`;
 
-  const zoomMap = (nextZoom: number, anchor?: MapPan) => {
+  const zoomMap = useCallback((nextZoom: number, anchor?: MapPan) => {
     setMapZoom((currentZoom) => {
       const clampedZoom = Number(clamp(nextZoom, 1, mapMaxZoom).toFixed(2));
       if (clampedZoom === currentZoom) {
@@ -537,7 +539,7 @@ export function ResultsExplorer({
 
       return clampedZoom;
     });
-  };
+  }, []);
 
   const panMap = (delta: MapPan) => {
     setMapPan((current) =>
@@ -556,13 +558,37 @@ export function ResultsExplorer({
     setMapZoom(1);
   };
 
-  const svgPointFromEvent = (event: PointerEvent<SVGSVGElement> | WheelEvent<SVGSVGElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
+  const svgPointFromClient = (element: SVGSVGElement, clientX: number, clientY: number) => {
+    const rect = element.getBoundingClientRect();
     return {
-      x: ((event.clientX - rect.left) / rect.width) * mapViewBox.width,
-      y: ((event.clientY - rect.top) / rect.height) * mapViewBox.height,
+      x: ((clientX - rect.left) / rect.width) * mapViewBox.width,
+      y: ((clientY - rect.top) / rect.height) * mapViewBox.height,
     };
   };
+
+  useEffect(() => {
+    if (geoStatus !== "ready" || features.length === 0) {
+      return;
+    }
+
+    const wrap = mapWrapRef.current;
+    const svg = mapSvgRef.current;
+    if (!wrap || !svg) {
+      return;
+    }
+
+    const handleNativeWheel = (event: globalThis.WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const direction = event.deltaY > 0 ? -1 : 1;
+      zoomMap(mapZoom + direction * mapZoomStep, svgPointFromClient(svg, event.clientX, event.clientY));
+    };
+
+    wrap.addEventListener("wheel", handleNativeWheel, { passive: false });
+    return () => {
+      wrap.removeEventListener("wheel", handleNativeWheel);
+    };
+  }, [features.length, geoStatus, mapZoom, zoomMap]);
 
   const handleMapPointerDown = (event: PointerEvent<SVGSVGElement>) => {
     if (event.button !== 0) {
@@ -616,12 +642,6 @@ export function ResultsExplorer({
         suppressMapClickRef.current = false;
       }, 0);
     }
-  };
-
-  const handleMapWheel = (event: WheelEvent<SVGSVGElement>) => {
-    event.preventDefault();
-    const direction = event.deltaY > 0 ? -1 : 1;
-    zoomMap(mapZoom + direction * mapZoomStep, svgPointFromEvent(event));
   };
 
   const inspectJurisdiction = (name: string) => {
@@ -714,8 +734,8 @@ export function ResultsExplorer({
             </span>
           </div>
         )}
-        <div className="map-wrap">
-          <div className="map-zoom-controls" aria-label="Map zoom controls">
+        <div className="map-wrap" ref={mapWrapRef}>
+          <div className="map-zoom-controls" aria-label="Map view controls">
             <div className="map-pan-controls" aria-label="Map pan controls">
               <button
                 aria-label="Pan map up"
@@ -736,6 +756,15 @@ export function ResultsExplorer({
                 <ArrowLeft aria-hidden size={14} />
               </button>
               <button
+                aria-label="Reset map view"
+                disabled={mapZoom === 1 && mapPan.x === 0 && mapPan.y === 0}
+                onClick={resetMapView}
+                title="Reset view"
+                type="button"
+              >
+                <RotateCcw aria-hidden size={14} />
+              </button>
+              <button
                 aria-label="Pan map right"
                 disabled={mapZoom <= 1}
                 onClick={() => panMap({ x: -mapPanStep, y: 0 })}
@@ -754,34 +783,27 @@ export function ResultsExplorer({
                 <ArrowDown aria-hidden size={14} />
               </button>
             </div>
-            <button
-              aria-label="Zoom in"
-              disabled={mapZoom >= mapMaxZoom}
-              onClick={() => zoomMap(mapZoom + mapZoomStep)}
-              title="Zoom in"
-              type="button"
-            >
-              <ZoomIn aria-hidden size={16} />
-            </button>
-            <button
-              aria-label="Zoom out"
-              disabled={mapZoom <= 1}
-              onClick={() => zoomMap(mapZoom - mapZoomStep)}
-              title="Zoom out"
-              type="button"
-            >
-              <ZoomOut aria-hidden size={16} />
-            </button>
-            <button
-              aria-label="Reset map view"
-              disabled={mapZoom === 1 && mapPan.x === 0 && mapPan.y === 0}
-              onClick={resetMapView}
-              title="Reset view"
-              type="button"
-            >
-              <RotateCcw aria-hidden size={16} />
-            </button>
-            <span>{Math.round(mapZoom * 100)}%</span>
+            <div className="map-zoom-buttons" aria-label="Map zoom controls">
+              <button
+                aria-label="Zoom in"
+                disabled={mapZoom >= mapMaxZoom}
+                onClick={() => zoomMap(mapZoom + mapZoomStep)}
+                title="Zoom in"
+                type="button"
+              >
+                <ZoomIn aria-hidden size={16} />
+              </button>
+              <button
+                aria-label="Zoom out"
+                disabled={mapZoom <= 1}
+                onClick={() => zoomMap(mapZoom - mapZoomStep)}
+                title="Zoom out"
+                type="button"
+              >
+                <ZoomOut aria-hidden size={16} />
+              </button>
+              <span>{Math.round(mapZoom * 100)}%</span>
+            </div>
           </div>
           {geoStatus === "ready" && features.length > 0 ? (
             <svg
@@ -791,7 +813,7 @@ export function ResultsExplorer({
               onPointerDown={handleMapPointerDown}
               onPointerMove={handleMapPointerMove}
               onPointerUp={finishMapPointer}
-              onWheel={handleMapWheel}
+              ref={mapSvgRef}
               role="img"
               viewBox={`0 0 ${mapViewBox.width} ${mapViewBox.height}`}
             >

@@ -1829,8 +1829,8 @@ input {
   border: 1px solid var(--line);
   border-radius: 8px;
   display: inline-flex;
-  gap: 6px;
-  padding: 5px;
+  gap: 8px;
+  padding: 6px;
   position: absolute;
   right: 16px;
   top: 16px;
@@ -1840,14 +1840,8 @@ input {
 .map-pan-controls {
   display: grid;
   gap: 2px;
-  grid-template-columns: repeat(3, 22px);
-  grid-template-rows: repeat(3, 22px);
-  margin-right: 3px;
-}
-
-.map-pan-controls button {
-  height: 22px;
-  width: 22px;
+  grid-template-columns: repeat(3, 28px);
+  grid-template-rows: repeat(3, 28px);
 }
 
 .map-pan-controls button:nth-child(1) {
@@ -1861,13 +1855,26 @@ input {
 }
 
 .map-pan-controls button:nth-child(3) {
-  grid-column: 3;
+  grid-column: 2;
   grid-row: 2;
 }
 
 .map-pan-controls button:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.map-pan-controls button:nth-child(5) {
   grid-column: 2;
   grid-row: 3;
+}
+
+.map-zoom-buttons {
+  align-items: center;
+  border-left: 1px solid var(--line);
+  display: inline-flex;
+  gap: 5px;
+  padding-left: 8px;
 }
 
 .map-zoom-controls button {
@@ -1883,6 +1890,11 @@ input {
   width: 30px;
 }
 
+.map-pan-controls button {
+  height: 28px;
+  width: 28px;
+}
+
 .map-zoom-controls button:hover:not(:disabled) {
   border-color: var(--accent-line);
   color: var(--accent);
@@ -1894,11 +1906,11 @@ input {
   opacity: 0.58;
 }
 
-.map-zoom-controls span {
+.map-zoom-buttons span {
   color: var(--muted);
   font-family: var(--font-code);
   font-size: 11px;
-  min-width: 42px;
+  min-width: 40px;
   text-align: center;
 }
 
