@@ -3853,6 +3853,10 @@ export function WorkspaceTabs({
                   returns that slice of data as JSON.
                 </Eli5>
               </li>
+              <li className="api-helper">
+                Review and historical row APIs omit large per-row metrics by default to keep public browsing fast. Add
+                <code>includeMetrics=true</code> when you need the full calculation metadata.
+              </li>
               <li>
                 <strong>Results</strong>
                 <code>/api/results?state={selectedStateCode}&amp;year=2024&amp;level=county</code>
@@ -3863,7 +3867,7 @@ export function WorkspaceTabs({
               </li>
               <li>
                 <strong>Raw review rows</strong>
-                <code>/api/review-rows?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+                <code>/api/review-rows?state={selectedStateCode}&amp;year=2024&amp;limit=500&amp;includeMetrics=true</code>
               </li>
               <li>
                 <strong>Turnout</strong>
@@ -3875,7 +3879,7 @@ export function WorkspaceTabs({
               </li>
               <li>
                 <strong>Historical baselines</strong>
-                <code>/api/historical-baselines?state={selectedStateCode}&amp;limit=500</code>
+                <code>/api/historical-baselines?state={selectedStateCode}&amp;limit=500&amp;includeMetrics=true</code>
               </li>
               <li>
                 <strong>Sources</strong>

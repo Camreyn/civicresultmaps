@@ -7,8 +7,9 @@ export async function GET(request: NextRequest) {
   const yearParam = params.get("year");
   const year = yearParam ? yearQuery.parse(yearParam) : undefined;
   const limit = Number(params.get("limit") ?? 500);
+  const includeMetrics = params.get("includeMetrics") === "true";
 
-  return NextResponse.json(apiEnvelope(await listHistoricalResultRows({ limit, state, year })), {
+  return NextResponse.json(apiEnvelope(await listHistoricalResultRows({ includeMetrics, limit, state, year })), {
     headers: publicDataCacheHeaders,
   });
 }

@@ -225,6 +225,8 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(dataAccess, /listReviewRows/);
   assert.match(dataAccess, /listTurnoutRows/);
   assert.match(dataAccess, /listHistoricalResultRows/);
+  assert.match(dataAccess, /includeMetrics/);
+  assert.match(dataAccess, /else '\{\}'::jsonb end as metrics/);
   assert.match(readFileSync("src/lib/api.ts", "utf8"), /listVoteMethodRows/);
   assert.match(tabs, /Historical Baselines/);
   assert.match(tabs, /historicalYearSummaries/);
@@ -238,6 +240,7 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(tabs, /fingerprint-grid/);
   assert.match(tabs, /shpilkin-grid/);
   assert.match(tabs, /\/api\/review-rows/);
+  assert.match(tabs, /includeMetrics=true/);
   assert.match(tabs, /\/api\/turnout/);
   assert.match(tabs, /\/api\/vote-methods/);
   assert.match(tabs, /buildWorkspaceTourSteps/);

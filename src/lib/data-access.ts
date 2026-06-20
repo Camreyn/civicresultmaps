@@ -581,6 +581,7 @@ export async function listIndicators(input: {
 }
 
 export async function listReviewRows(input: {
+  includeMetrics?: boolean;
   limit?: number;
   state: string;
   year: number;
@@ -626,7 +627,7 @@ export async function listReviewRows(input: {
         review_rows.trump_share as "trumpShare",
         review_rows.dem_dropoff as "demDropoff",
         review_rows.rep_dropoff as "repDropoff",
-        review_rows.metrics,
+        case when ${Boolean(input.includeMetrics)} then review_rows.metrics else '{}'::jsonb end as metrics,
         source_documents.slug as "sourceSlug"
       from review_rows
       left join source_documents on review_rows.source_document_id = source_documents.id
@@ -727,6 +728,7 @@ export async function listTurnoutRows(input: {
 }
 
 export async function listHistoricalResultRows(input: {
+  includeMetrics?: boolean;
   limit?: number;
   state: string;
   year?: number;
@@ -771,7 +773,7 @@ export async function listHistoricalResultRows(input: {
             historical_result_rows.rep_votes as "repVotes",
             historical_result_rows.other_votes as "otherVotes",
             historical_result_rows.total_votes as "totalVotes",
-            historical_result_rows.metrics,
+            case when ${Boolean(input.includeMetrics)} then historical_result_rows.metrics else '{}'::jsonb end as metrics,
             source_documents.slug as "sourceDocumentSlug"
           from historical_result_rows
           left join source_documents on historical_result_rows.source_document_id = source_documents.id
@@ -795,7 +797,7 @@ export async function listHistoricalResultRows(input: {
             historical_result_rows.rep_votes as "repVotes",
             historical_result_rows.other_votes as "otherVotes",
             historical_result_rows.total_votes as "totalVotes",
-            historical_result_rows.metrics,
+            case when ${Boolean(input.includeMetrics)} then historical_result_rows.metrics else '{}'::jsonb end as metrics,
             source_documents.slug as "sourceDocumentSlug"
           from historical_result_rows
           left join source_documents on historical_result_rows.source_document_id = source_documents.id
