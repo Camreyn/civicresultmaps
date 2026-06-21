@@ -33,6 +33,12 @@ function statesToCheck() {
     .filter(Boolean);
 }
 
+function baseUrlToCheck() {
+  const explicit = argValue("--base-url", "");
+  const positionalUrl = process.argv.slice(2).find((value) => /^https?:\/\//i.test(value));
+  return String(explicit || positionalUrl || defaultBaseUrl).replace(/\/$/, "");
+}
+
 async function fetchJson(url) {
   const response = await fetch(url);
   if (!response.ok) {
@@ -43,7 +49,7 @@ async function fetchJson(url) {
 }
 
 async function main() {
-  const baseUrl = String(argValue("--base-url", defaultBaseUrl)).replace(/\/$/, "");
+  const baseUrl = baseUrlToCheck();
   const year = Number(argValue("--year", "2024"));
   const states = statesToCheck();
   const registryByState = new Map(
