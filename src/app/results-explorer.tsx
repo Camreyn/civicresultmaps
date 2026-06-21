@@ -53,7 +53,9 @@ type FeatureCollection = {
   type: "FeatureCollection";
 };
 
-const geoBaseUrl = "/api/map-geometry";
+const geoBaseUrl =
+  "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
+const baseGeometryStates = new Set(["AZ", "FL", "GA", "MI", "MN", "NC", "NV", "OH", "PA", "VA", "WA", "WI"]);
 const mapViewBox = { height: 560, width: 960 };
 const mapZoomStep = 0.35;
 const mapMaxZoom = 3;
@@ -380,26 +382,31 @@ export function ResultsExplorer({
     setMapPan({ x: 0, y: 0 });
     setMapZoom(1);
 
-    fetch(`${geoBaseUrl}/${geoJsonPath(selectedState)}`, {
-      signal: controller.signal,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`GeoJSON request failed with ${response.status}`);
-        }
+    if (baseGeometryStates.has(selectedState)) {
+      fetch(`${geoBaseUrl}/${geoJsonPath(selectedState)}`, {
+        signal: controller.signal,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`GeoJSON request failed with ${response.status}`);
+          }
 
-        return response.json() as Promise<FeatureCollection>;
-      })
-      .then((collection) => {
-        setFeatures(collection.features ?? []);
-        setGeoStatus("ready");
-      })
-      .catch((error) => {
-        if (error.name !== "AbortError") {
-          setFeatures([]);
-          setGeoStatus("error");
-        }
-      });
+          return response.json() as Promise<FeatureCollection>;
+        })
+        .then((collection) => {
+          setFeatures(collection.features ?? []);
+          setGeoStatus("ready");
+        })
+        .catch((error) => {
+          if (error.name !== "AbortError") {
+            setFeatures([]);
+            setGeoStatus("error");
+          }
+        });
+    } else {
+      setFeatures([]);
+      setGeoStatus("ready");
+    }
 
     fetch(`${geoBaseUrl}/${verifiedVotingAreaPath(selectedState)}`, {
       cache: "no-store",
@@ -645,7 +652,9 @@ export function ResultsExplorer({
   }, [indicatorsByJurisdiction, query, results, showFlaggedOnly, sortKey]);
 
   const hasMapJoinWarnings =
-    geoStatus === "ready" && (mapJoinStats.missingResults.length > 0 || mapJoinStats.unmappedRows.length > 0);
+    features.length > 0 &&
+    geoStatus === "ready" &&
+    (mapJoinStats.missingResults.length > 0 || mapJoinStats.unmappedRows.length > 0);
 
   useEffect(() => {
     setMapPan((current) => clampPan(current, mapZoom));
