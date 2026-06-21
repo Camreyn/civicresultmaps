@@ -53,8 +53,7 @@ type FeatureCollection = {
   type: "FeatureCollection";
 };
 
-const geoBaseUrl =
-  "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
+const geoBaseUrl = "/api/map-geometry";
 const mapViewBox = { height: 560, width: 960 };
 const mapZoomStep = 0.35;
 const mapMaxZoom = 3;
@@ -427,6 +426,17 @@ export function ResultsExplorer({
     return () => controller.abort();
   }, [selectedState]);
 
+  useEffect(() => {
+    if (
+      mapMode !== "equipment" &&
+      (geoStatus === "error" || (geoStatus === "ready" && features.length === 0)) &&
+      equipmentGeoStatus === "ready" &&
+      equipmentFeatures.length > 0
+    ) {
+      setMapMode("equipment");
+    }
+  }, [equipmentFeatures.length, equipmentGeoStatus, features.length, geoStatus, mapMode]);
+
   const resultsByName = useMemo(() => {
     const map = new Map<string, ResultRow>();
     for (const row of results) {
@@ -477,6 +487,9 @@ export function ResultsExplorer({
       : geoStatus;
   const activeGeometrySource = usingVerifierGeometry ? "Verified Voting GIS areas" : "county boundaries";
   const showAdvisoryMarkers = mapMode !== "equipment";
+  const baseGeometryUnavailable = geoStatus === "error" || (geoStatus === "ready" && features.length === 0);
+  const equipmentGeometryAvailable = equipmentGeoStatus === "ready" && equipmentFeatures.length > 0;
+  const resultGeometryRequiredModes = new Set<MapMode>(["winner", "margin", "volume", "method"]);
 
   const bounds = useMemo(() => {
     const points = activeFeatures.flatMap((feature) =>
@@ -815,8 +828,9 @@ export function ResultsExplorer({
                 aria-pressed={mapMode === mode}
                 data-tour={mode === "method" ? "method-mode-button" : undefined}
                 disabled={
+                  (resultGeometryRequiredModes.has(mode as MapMode) && baseGeometryUnavailable) ||
                   (mode === "method" && voteMethodRows.length === 0) ||
-                  (mode === "equipment" && equipmentRows.length === 0)
+                  (mode === "equipment" && (equipmentRows.length === 0 || !equipmentGeometryAvailable))
                 }
                 key={mode}
                 onClick={() => setMapMode(mode as MapMode)}
@@ -858,6 +872,15 @@ export function ResultsExplorer({
             <span>
               County shading uses Verified Voting Verifier area geometry and jurisdiction rows when available. Treat it
               as administration context, not proof every precinct or ballot mode used one identical setup.
+            </span>
+          </div>
+        )}
+        {baseGeometryUnavailable && equipmentGeometryAvailable && (
+          <div className="map-warning" role="status">
+            <strong>Result geometry not loaded yet</strong>
+            <span>
+              Winner, Margin, Votes, and Method need base county/result geometry for this state. Showing the Verified
+              Voting equipment GIS layer instead.
             </span>
           </div>
         )}
@@ -955,7 +978,7 @@ export function ResultsExplorer({
             >
               <title>{selectedState} {mapMode === "equipment" ? "Verified Voting equipment area" : "county presidential result"} map</title>
               <g transform={mapTransform}>
-              {activeFeatures.map((feature) => {
+              {activeFeatures.map((feature, featureIndex) => {
                 const name = featureName(feature);
                 const resultName = resultNameForFeature(selectedState, name);
                 const row = resultsByName.get(normalizeName(resultName));
@@ -967,7 +990,7 @@ export function ResultsExplorer({
                 const isSelected = selectedMapName && normalizeName(selectedMapName) === normalizeName(resultName);
                 const isPinned = pinnedMapName && normalizeName(pinnedMapName) === normalizeName(resultName);
                 return (
-                  <g key={`${selectedState}-${name}`}>
+                  <g key={`${selectedState}-${mapMode}-${name}-${featureIndex}`}>
                     <path
                       aria-label={`${name}${row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}

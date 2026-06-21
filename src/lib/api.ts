@@ -97,11 +97,7 @@ export const listImportRuns = unstable_cache(
   { revalidate: publicDataRevalidateSeconds },
 );
 
-export const listReviewRows = unstable_cache(
-  uncachedListReviewRows,
-  ["public-data", "review-rows"],
-  { revalidate: publicDataRevalidateSeconds },
-);
+export const listReviewRows = uncachedListReviewRows;
 
 export const listResults = unstable_cache(
   uncachedListResults,
