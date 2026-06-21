@@ -17,10 +17,11 @@ import {
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
-import type { AnalysisIndicator, ResultRow, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
+import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 
 type ResultsExplorerProps = {
   countyLabel: string;
+  equipmentRows: EquipmentRowSummary[];
   indicators: AnalysisIndicator[];
   results: ResultRow[];
   selectedState: string;
@@ -288,6 +289,7 @@ function countyFill(
 
 export function ResultsExplorer({
   countyLabel,
+  equipmentRows,
   indicators,
   results,
   selectedState,
@@ -445,6 +447,13 @@ export function ResultsExplorer({
     }
     return aggregates;
   }, [selectedVoteMethod, voteMethodRows]);
+  const equipmentByCounty = useMemo(() => {
+    const rows = new Map<string, EquipmentRowSummary>();
+    for (const row of equipmentRows) {
+      rows.set(normalizeName(row.jurisdictionName), row);
+    }
+    return rows;
+  }, [equipmentRows]);
   const selectedVoteMethodLabel =
     voteMethodOptions.find((option) => option.method === selectedVoteMethod)?.label ?? "Vote method";
   const maxVoteMethodShare = Math.max(
@@ -461,6 +470,9 @@ export function ResultsExplorer({
     : [];
   const selectedMapVoteMethod = activeMapName
     ? voteMethodByCounty.get(normalizeName(resultNameForFeature(selectedState, activeMapName)))
+    : undefined;
+  const selectedMapEquipment = activeMapName
+    ? equipmentByCounty.get(normalizeName(resultNameForFeature(selectedState, activeMapName)))
     : undefined;
   const selectedSource = selectedMapResult ? sourceById.get(selectedMapResult.sourceId) : undefined;
   const pinnedMapResult = pinnedMapName ? resultsByName.get(normalizeName(pinnedMapName)) : undefined;
@@ -960,7 +972,30 @@ export function ResultsExplorer({
                   <dt>{selectedVoteMethodLabel}</dt>
                   <dd>{methodShare(selectedMapVoteMethod)?.toFixed(2) ?? "N/A"}%</dd>
                 </div>
+                <div>
+                  <dt>Equipment</dt>
+                  <dd>{selectedMapEquipment?.vendor || "N/A"}</dd>
+                </div>
               </dl>
+              {selectedMapEquipment && (
+                <div className="drawer-source">
+                  <strong>{selectedMapEquipment.systemName || selectedMapEquipment.vendor}</strong>
+                  <span>
+                    {selectedMapEquipment.standardSystem || "Standard system not recorded"} ·{" "}
+                    {selectedMapEquipment.tabulation || "Tabulation not recorded"}
+                  </span>
+                  <span>
+                    Accessible: {selectedMapEquipment.accessibleSystem || "Not recorded"} · Poll book:{" "}
+                    {selectedMapEquipment.pollBookSystem || "Not recorded"}
+                  </span>
+                  {selectedMapEquipment.sourceUrl && (
+                    <a href={selectedMapEquipment.sourceUrl} rel="noreferrer" target="_blank">
+                      <ExternalLink aria-hidden size={14} />
+                      Open equipment source
+                    </a>
+                  )}
+                </div>
+              )}
               <div className="drawer-source">
                 <strong>{selectedSource?.title ?? selectedMapResult.sourceId}</strong>
                 <span>{selectedSource?.authority ?? "Source record not matched in this API response."}</span>

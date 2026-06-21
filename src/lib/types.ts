@@ -82,6 +82,7 @@ export type CompletenessSummary = {
   reviewRowCount: number;
   turnoutRowCount: number;
   historicalRowCount: number;
+  equipmentRowCount: number;
   flaggedJurisdictions: number;
   importRunCount: number;
   nativeImportCount: number;
@@ -194,4 +195,44 @@ export type HistoricalResultRowSummary = {
   totalVotes: number | null;
   metrics: Record<string, unknown>;
   sourceDocumentId: string;
+};
+
+export type EquipmentRowSummary = {
+  id: string;
+  state: string;
+  electionYear: number;
+  jurisdictionCode: string;
+  jurisdictionName: string;
+  level: string;
+  vendor: string;
+  systemName: string;
+  equipmentType: string;
+  usage: string;
+  paperRecord: string;
+  standardSystem: string;
+  accessibleSystem: string;
+  absenteeSystem: string;
+  pollBookSystem: string;
+  tabulation: string;
+  registeredVoters: number | null;
+  precincts: number | null;
+  pollingPlaces: number | null;
+  metrics: Record<string, unknown>;
+  sourceId: string;
+  sourceUrl: string;
+};
+
+export type EquipmentClusterDiagnostic = {
+  caveat: string;
+  flaggedJurisdictions: number;
+  groupKey: string;
+  jurisdictionCount: number;
+  lift: number | null;
+  statewideFlagRate: number;
+  status: "ready" | "limited" | "missing";
+  summary: string;
+  vendor: string;
+  systemName: string;
+  equipmentType: string;
+  usage: string;
 };

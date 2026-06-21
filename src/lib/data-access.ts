@@ -17,6 +17,7 @@ import type {
   AnalysisIndicator,
   CompletenessSummary,
   ElectionSummary,
+  EquipmentRowSummary,
   HistoricalResultRowSummary,
   ImportRunSummary,
   ResultRow,
@@ -183,6 +184,7 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       reviewRowCount: 0,
       turnoutRowCount: 0,
       historicalRowCount: 0,
+      equipmentRowCount: 0,
       flaggedJurisdictions: indicatorCount,
       importRunCount: importRuns.length,
       legacyImportCount: importRuns.filter((run) => run.parser.toLowerCase().includes("legacy")).length,
@@ -828,6 +830,103 @@ export async function listHistoricalResultRows(input: {
   }));
 }
 
+export async function listEquipmentRows(input: {
+  limit?: number;
+  state: string;
+  year: number;
+}): Promise<EquipmentRowSummary[]> {
+  if (!hasDatabase()) {
+    return [];
+  }
+
+  let rows: Array<{
+    absenteeSystem: string;
+    accessibleSystem: string;
+    electionYear: number;
+    equipmentType: string;
+    id: string;
+    jurisdictionCode: string;
+    jurisdictionName: string;
+    level: string;
+    metrics: unknown;
+    paperRecord: string;
+    pollingPlaces: number | null;
+    pollBookSystem: string;
+    precincts: number | null;
+    registeredVoters: number | null;
+    sourceSlug: string | null;
+    sourceUrl: string | null;
+    standardSystem: string;
+    state: string;
+    systemName: string;
+    tabulation: string;
+    usage: string;
+    vendor: string;
+  }>;
+
+  try {
+    const sql = neon(getDatabaseUrl());
+    rows = (await sql`
+      select
+        equipment_rows.id,
+        equipment_rows.state_code as "state",
+        equipment_rows.election_year as "electionYear",
+        equipment_rows.jurisdiction_code as "jurisdictionCode",
+        equipment_rows.jurisdiction_name as "jurisdictionName",
+        equipment_rows.level,
+        equipment_rows.vendor,
+        equipment_rows.system_name as "systemName",
+        equipment_rows.equipment_type as "equipmentType",
+        equipment_rows.usage,
+        equipment_rows.paper_record as "paperRecord",
+        equipment_rows.standard_system as "standardSystem",
+        equipment_rows.accessible_system as "accessibleSystem",
+        equipment_rows.absentee_system as "absenteeSystem",
+        equipment_rows.poll_book_system as "pollBookSystem",
+        equipment_rows.tabulation,
+        equipment_rows.registered_voters as "registeredVoters",
+        equipment_rows.precincts,
+        equipment_rows.polling_places as "pollingPlaces",
+        equipment_rows.metrics,
+        source_documents.slug as "sourceSlug",
+        source_documents.source_url as "sourceUrl"
+      from equipment_rows
+      left join source_documents on equipment_rows.source_document_id = source_documents.id
+      where equipment_rows.state_code = ${input.state}
+        and equipment_rows.election_year = ${input.year}
+      order by equipment_rows.jurisdiction_name, equipment_rows.usage
+      limit ${Math.min(Math.max(input.limit ?? 5000, 1), 20000)}
+    `) as typeof rows;
+  } catch {
+    return [];
+  }
+
+  return rows.map((row) => ({
+    absenteeSystem: row.absenteeSystem,
+    accessibleSystem: row.accessibleSystem,
+    electionYear: row.electionYear,
+    equipmentType: row.equipmentType,
+    id: row.id,
+    jurisdictionCode: row.jurisdictionCode,
+    jurisdictionName: row.jurisdictionName,
+    level: row.level,
+    metrics: row.metrics as Record<string, unknown>,
+    paperRecord: row.paperRecord,
+    pollingPlaces: row.pollingPlaces,
+    pollBookSystem: row.pollBookSystem,
+    precincts: row.precincts,
+    registeredVoters: row.registeredVoters,
+    sourceId: row.sourceSlug ?? "database",
+    sourceUrl: row.sourceUrl ?? "",
+    standardSystem: row.standardSystem,
+    state: row.state,
+    systemName: row.systemName,
+    tabulation: row.tabulation,
+    usage: row.usage,
+    vendor: row.vendor,
+  }));
+}
+
 export async function listCompletenessReport(input: { year: number }): Promise<CompletenessSummary[]> {
   if (!hasDatabase()) {
     return seedCompletenessReport(input.year);
@@ -853,6 +952,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     reviewRowCount: string | number | null;
     turnoutRowCount: string | number | null;
     historicalRowCount: string | number | null;
+    equipmentRowCount: string | number | null;
     flaggedJurisdictions: string | number | null;
     importRunCount: string | number | null;
     legacyImportCount: string | number | null;
@@ -932,6 +1032,14 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         from historical_result_rows
         group by state_code
       ),
+      equipment_row_counts as (
+        select
+          state_code,
+          count(*) as equipment_row_count
+        from equipment_rows
+        where election_year = ${input.year}
+        group by state_code
+      ),
       import_counts as (
         select distinct on (state_code)
           state_code,
@@ -975,6 +1083,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         coalesce(review_row_counts.review_row_count, 0) as "reviewRowCount",
         coalesce(turnout_row_counts.turnout_row_count, 0) as "turnoutRowCount",
         coalesce(historical_row_counts.historical_row_count, 0) as "historicalRowCount",
+        coalesce(equipment_row_counts.equipment_row_count, 0) as "equipmentRowCount",
         coalesce(indicator_counts.flagged_jurisdictions, 0) as "flaggedJurisdictions",
         coalesce(import_counts.import_run_count, 0) as "importRunCount",
         coalesce(import_counts.native_import_count, 0) as "nativeImportCount",
@@ -994,6 +1103,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       left join review_row_counts on states.code = review_row_counts.state_code
       left join turnout_row_counts on states.code = turnout_row_counts.state_code
       left join historical_row_counts on states.code = historical_row_counts.state_code
+      left join equipment_row_counts on states.code = equipment_row_counts.state_code
       left join import_counts on states.code = import_counts.state_code
       left join latest_native_imports on states.code = latest_native_imports.state_code
       order by states.name
@@ -1041,6 +1151,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       reviewRowCount: Number(row.reviewRowCount ?? 0),
       turnoutRowCount: Number(row.turnoutRowCount ?? 0),
       historicalRowCount: Number(row.historicalRowCount ?? 0),
+      equipmentRowCount: Number(row.equipmentRowCount ?? 0),
       flaggedJurisdictions: Number(row.flaggedJurisdictions ?? 0),
       importRunCount: Number(row.importRunCount ?? 0),
       legacyImportCount,

@@ -25,10 +25,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
+import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
 import type {
   AnalysisIndicator,
   CompletenessSummary,
   CoverageSummary,
+  EquipmentClusterDiagnostic,
+  EquipmentRowSummary,
   HistoricalResultRowSummary,
   ImportRunSummary,
   ResultRow,
@@ -42,6 +45,7 @@ import type {
 type WorkspaceTabsProps = {
   coverage: CoverageSummary | null;
   countyLabel: string;
+  equipmentRows: EquipmentRowSummary[];
   historicalRows: HistoricalResultRowSummary[];
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
@@ -100,6 +104,7 @@ type ReviewerChecklistItem = {
 };
 type WorkspaceTourContext = {
   hasCoverage: boolean;
+  hasEquipmentRows: boolean;
   hasHistoricalRows: boolean;
   hasImportRuns: boolean;
   hasResults: boolean;
@@ -511,6 +516,16 @@ const tourFeatureRegistry: TourFeature[] = [
         tab: "data",
         target: "[data-tour='vote-method-summary']",
         title: "Review vote methods",
+      },
+      {
+        body: context.hasEquipmentRows
+          ? "Equipment summarizes county-level administration context such as vendor, voting system, tabulation, paper record, and poll-book fields."
+          : `${context.stateName} does not currently have normalized equipment context rows loaded.`,
+        fallbackTarget: "[data-tour='data-sources']",
+        id: "equipment-context",
+        tab: "data",
+        target: "[data-tour='equipment-context']",
+        title: "Check equipment context",
       },
       {
         body: "Candidate-by-method needs an official source that reports candidate totals split by ballot method. The current EAC method rows describe how people voted, not who each method selected.",
@@ -1268,6 +1283,7 @@ function buildDataNoteSections(input: {
   stateCode: string;
   turnoutRows: TurnoutRowSummary[];
   voteMethodRows: VoteMethodRowSummary[];
+  equipmentRows: EquipmentRowSummary[];
 }): DataNoteSection[] {
   const capabilities = input.completeness?.capabilities ?? input.coverage?.capabilities;
   const latestNativeRun = input.importRuns.find((run) => run.parser.toLowerCase().includes("native"));
@@ -1286,6 +1302,7 @@ function buildDataNoteSections(input: {
   const reviewModeEvidence = reviewModes.length ? `Coverage mode: ${reviewModes.join(", ")}.` : null;
   const reviewCountyLevelIssue = countyLevelReviewIssue(input.reviewRows);
   const eacTurnoutFallback = input.turnoutRows.some((row) => row.sourceId.toLowerCase().includes("eac"));
+  const verifiedVotingEquipment = input.equipmentRows.some((row) => row.sourceId.toLowerCase().includes("verified-voting"));
   const legacyOnly = input.completeness ? input.completeness.legacyImportCount > 0 && input.completeness.nativeImportCount === 0 : false;
   const mapGeometrySourceCount =
     input.completeness?.mapGeometrySourceCount ?? input.sources.filter(isMapGeometrySource).length;
@@ -1386,6 +1403,20 @@ function buildDataNoteSections(input: {
       why: input.voteMethodRows.length
         ? "EAC participation rows show how voters cast ballots, but they cannot be multiplied into Harris/Trump method totals."
         : "EAC participation-method extraction has not been loaded for this state yet.",
+    },
+    {
+      detail: input.equipmentRows.length
+        ? `${input.equipmentRows.length.toLocaleString()} county equipment-context rows.`
+        : "No election equipment context rows are loaded.",
+      evidence: verifiedVotingEquipment
+        ? "Rows reference Verified Voting Verifier county equipment data."
+        : "Equipment context status inferred from row counts.",
+      key: "equipment",
+      label: "Equipment",
+      status: input.equipmentRows.length ? "partial" : "missing",
+      why: input.equipmentRows.length
+        ? "Equipment rows document administration context by jurisdiction. They are useful for clustering checks, but they are not vote or turnout rows and cannot prove causation."
+        : "The app still needs a normalized equipment source, usually Verified Voting Verifier or official state/county equipment records.",
     },
     {
       detail: input.historicalRows.length
@@ -1657,6 +1688,7 @@ function dateLabel(value: string | null) {
 export function WorkspaceTabs({
   coverage,
   countyLabel,
+  equipmentRows,
   historicalRows,
   importRuns,
   indicators,
@@ -2049,6 +2081,51 @@ export function WorkspaceTabs({
   }, [voteMethodRows]);
   const voteMethodJurisdictions = new Set(voteMethodRows.map((row) => row.jurisdictionCode || row.jurisdictionName)).size;
   const voteMethodUnavailableRows = voteMethodRows.filter((row) => row.valueStatus !== "reported").length;
+  const equipmentJurisdictions = new Set(equipmentRows.map((row) => row.jurisdictionCode || row.jurisdictionName)).size;
+  const equipmentDiagnostics = useMemo(
+    () => equipmentClusterDiagnostics({ equipmentRows, indicators }).slice(0, 8),
+    [equipmentRows, indicators],
+  );
+  const equipmentVendorSummaries = useMemo(() => {
+    const summaries = new Map<
+      string,
+      {
+        jurisdictions: Set<string>;
+        pollBooks: Set<string>;
+        systems: Set<string>;
+        vendor: string;
+      }
+    >();
+
+    for (const row of equipmentRows) {
+      const key = row.vendor || "Not recorded";
+      const current =
+        summaries.get(key) ??
+        {
+          jurisdictions: new Set<string>(),
+          pollBooks: new Set<string>(),
+          systems: new Set<string>(),
+          vendor: key,
+        };
+      current.jurisdictions.add(row.jurisdictionCode || row.jurisdictionName);
+      if (row.systemName) {
+        current.systems.add(row.systemName);
+      }
+      if (row.pollBookSystem) {
+        current.pollBooks.add(row.pollBookSystem);
+      }
+      summaries.set(key, current);
+    }
+
+    return Array.from(summaries.values())
+      .map((summary) => ({
+        jurisdictionCount: summary.jurisdictions.size,
+        pollBookCount: summary.pollBooks.size,
+        systemCount: summary.systems.size,
+        vendor: summary.vendor,
+      }))
+      .sort((a, b) => b.jurisdictionCount - a.jurisdictionCount || a.vendor.localeCompare(b.vendor));
+  }, [equipmentRows]);
   const capabilityEntries = coverage
     ? Object.entries(coverage.capabilities).filter(([key]) => key !== "notes")
     : [];
@@ -2062,6 +2139,7 @@ export function WorkspaceTabs({
     coverage,
     historicalRows,
     importRuns: selectedImportRuns,
+    equipmentRows,
     results,
     reviewRows,
     sources,
@@ -2121,6 +2199,7 @@ export function WorkspaceTabs({
         hasReviewRows: reviewRows.length > 0,
         hasSources: sources.length > 0,
         hasVoteMethodRows: voteMethodRows.length > 0,
+        hasEquipmentRows: equipmentRows.length > 0,
         stateName,
       }),
     [
@@ -2132,6 +2211,7 @@ export function WorkspaceTabs({
       sources.length,
       stateName,
       voteMethodRows.length,
+      equipmentRows.length,
     ],
   );
   const exportSlug = `${selectedStateCode.toLowerCase()}-2024-president`;
@@ -2270,8 +2350,47 @@ export function WorkspaceTabs({
     row.valueStatus,
     row.sourceField,
   ]);
+  const equipmentExportHeaders = [
+    "jurisdiction",
+    "level",
+    "vendor",
+    "system_name",
+    "equipment_type",
+    "usage",
+    "paper_record",
+    "standard_system",
+    "accessible_system",
+    "absentee_system",
+    "poll_book_system",
+    "tabulation",
+    "registered_voters",
+    "precincts",
+    "polling_places",
+    "source",
+    "source_url",
+  ];
+  const equipmentExportRows = equipmentRows.map((row) => [
+    row.jurisdictionName,
+    row.level,
+    row.vendor,
+    row.systemName,
+    row.equipmentType,
+    row.usage,
+    row.paperRecord,
+    row.standardSystem,
+    row.accessibleSystem,
+    row.absenteeSystem,
+    row.pollBookSystem,
+    row.tabulation,
+    row.registeredVoters ?? "",
+    row.precincts ?? "",
+    row.pollingPlaces ?? "",
+    row.sourceId,
+    row.sourceUrl,
+  ]);
   const sourceManifest = {
     dataNotes: dataNoteSections,
+    equipmentDiagnostics,
     generatedAt: new Date().toISOString(),
     sources,
     state: selectedStateCode,
@@ -2282,6 +2401,7 @@ export function WorkspaceTabs({
     completeness: selectedCompleteness ?? null,
     coverage,
     dataNotes: dataNoteSections,
+    equipmentDiagnostics,
     latestRun: latestRun ?? null,
     selectedImportRuns,
     state: selectedStateCode,
@@ -2333,6 +2453,13 @@ export function WorkspaceTabs({
       voteMethodExportRows,
     );
 
+  const exportEquipmentRows = () =>
+    downloadCsv(
+      `${exportSlug}-equipment-context.csv`,
+      equipmentExportHeaders,
+      equipmentExportRows,
+    );
+
   const exportSourceManifest = () =>
     downloadTextFile(`${exportSlug}-source-manifest.json`, jsonContent(sourceManifest), "application/json;charset=utf-8");
 
@@ -2352,6 +2479,7 @@ export function WorkspaceTabs({
       "- review-rows.csv",
       "- turnout.csv",
       "- vote-methods.csv",
+      "- equipment-context.csv",
       "- historical-rows.csv",
       "- sources.csv",
       "- coverage.csv",
@@ -2369,6 +2497,7 @@ export function WorkspaceTabs({
     zip.file("review-rows.csv", csvContent(reviewRowExportHeaders, reviewRowExportRows));
     zip.file("turnout.csv", csvContent(turnoutExportHeaders, turnoutExportRows));
     zip.file("vote-methods.csv", csvContent(voteMethodExportHeaders, voteMethodExportRows));
+    zip.file("equipment-context.csv", csvContent(equipmentExportHeaders, equipmentExportRows));
     zip.file("historical-rows.csv", csvContent(historicalExportHeaders, historicalExportRows));
     zip.file("sources.csv", csvContent(sourceExportHeaders, sourceExportRows));
     zip.file("coverage.csv", csvContent(coverageExportHeaders, coverageExportRows));
@@ -2457,6 +2586,7 @@ export function WorkspaceTabs({
           <div className="content-grid">
             <ResultsExplorer
               countyLabel={countyLabel}
+              equipmentRows={equipmentRows}
               indicators={indicators}
               results={results}
               selectedState={selectedStateCode}
@@ -3669,6 +3799,122 @@ export function WorkspaceTabs({
               </div>
               <span className="pending">Source required</span>
             </div>
+            <div className="vote-method-panel" data-tour="equipment-context">
+              <div className="vote-method-head">
+                <div>
+                  <strong>Equipment Context</strong>
+                  <span>
+                    {equipmentRows.length
+                      ? `${equipmentJurisdictions.toLocaleString()} jurisdictions, ${equipmentRows.length.toLocaleString()} county equipment rows`
+                      : "No normalized equipment context rows loaded for this state."}
+                  </span>
+                </div>
+                <div className="header-actions">
+                  <Eli5>
+                    These rows describe election administration context like vendor, system, paper record, tabulation,
+                    and poll-book fields. They do not prove why a vote pattern happened.
+                  </Eli5>
+                  <QualityBadge
+                    detail={
+                      equipmentRows.length
+                        ? "County-level equipment context is loaded; use as clustering context only."
+                        : "Equipment context is not loaded for this state."
+                    }
+                    status={equipmentRows.length ? "partial" : "missing"}
+                  />
+                  <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button">
+                    <Download aria-hidden size={15} />
+                    Equipment CSV
+                  </button>
+                </div>
+              </div>
+              {equipmentRows.length ? (
+                <>
+                  <div className="export-summary-grid vote-method-summary-grid">
+                    <article>
+                      <span>Jurisdictions</span>
+                      <strong>{equipmentJurisdictions.toLocaleString()}</strong>
+                    </article>
+                    <article>
+                      <span>Vendor groups</span>
+                      <strong>{equipmentVendorSummaries.length.toLocaleString()}</strong>
+                    </article>
+                    <article>
+                      <span>Cluster checks</span>
+                      <strong>{equipmentDiagnostics.length.toLocaleString()}</strong>
+                    </article>
+                    <article>
+                      <span>Source</span>
+                      <strong>Verifier</strong>
+                    </article>
+                  </div>
+                  <div className="vote-method-caveat">
+                    <div>
+                      <strong>Equipment Cluster Diagnostic</strong>
+                      <span>
+                        This checks whether currently flagged jurisdictions cluster by vendor/system group. It is
+                        review context only, not evidence of cause.
+                      </span>
+                    </div>
+                    <span className="pending">Context only</span>
+                  </div>
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Vendor</th>
+                          <th>Systems</th>
+                          <th>Jurisdictions</th>
+                          <th>Poll-book types</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {equipmentVendorSummaries.map((summary) => (
+                          <tr key={summary.vendor}>
+                            <td>{summary.vendor}</td>
+                            <td className="mono">{summary.systemCount.toLocaleString()}</td>
+                            <td className="mono">{summary.jurisdictionCount.toLocaleString()}</td>
+                            <td className="mono">{summary.pollBookCount.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Group</th>
+                          <th>Flagged</th>
+                          <th>Jurisdictions</th>
+                          <th>Lift</th>
+                          <th>Caveat</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {equipmentDiagnostics.map((diagnostic: EquipmentClusterDiagnostic) => (
+                          <tr key={diagnostic.groupKey}>
+                            <td>
+                              <strong>{diagnostic.vendor}</strong>
+                              <span>{diagnostic.systemName}</span>
+                            </td>
+                            <td className="mono">{diagnostic.flaggedJurisdictions.toLocaleString()}</td>
+                            <td className="mono">{diagnostic.jurisdictionCount.toLocaleString()}</td>
+                            <td className="mono">{diagnostic.lift === null ? "N/A" : `${diagnostic.lift.toFixed(2)}x`}</td>
+                            <td>{diagnostic.summary}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : (
+                <div className="empty-panel">
+                  <strong>No equipment context loaded for {stateName}</strong>
+                  <span>Wisconsin 2024 is the first target; other states will use the same normalized contract.</span>
+                </div>
+              )}
+            </div>
             <div className="source-card-grid">
               {sources.map((source) => (
                 <article className="source-card" key={source.id}>
@@ -3860,6 +4106,10 @@ export function WorkspaceTabs({
                 <Download aria-hidden size={16} />
                 Vote Methods CSV
               </button>
+              <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button">
+                <Download aria-hidden size={16} />
+                Equipment CSV
+              </button>
               <button onClick={exportSourceManifest} type="button">
                 <Download aria-hidden size={16} />
                 Source Manifest JSON
@@ -3889,6 +4139,10 @@ export function WorkspaceTabs({
               <article>
                 <span>Turnout rows</span>
                 <strong>{turnoutRows.length.toLocaleString()}</strong>
+              </article>
+              <article>
+                <span>Equipment rows</span>
+                <strong>{equipmentRows.length.toLocaleString()}</strong>
               </article>
               <article>
                 <span>Total votes</span>
@@ -3925,6 +4179,10 @@ export function WorkspaceTabs({
               <li>
                 <strong>Vote methods</strong>
                 <code>/api/vote-methods?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+              </li>
+              <li>
+                <strong>Equipment context</strong>
+                <code>/api/equipment?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
               </li>
               <li>
                 <strong>Historical baselines</strong>

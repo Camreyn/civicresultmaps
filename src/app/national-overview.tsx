@@ -114,6 +114,7 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
               <th>Lineage</th>
               <th>Flags</th>
               <th>Raw Rows</th>
+              <th>Admin</th>
               <th>Gaps</th>
             </tr>
           </thead>
@@ -150,6 +151,9 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
                 <td className="mono">
                   {state.reviewRowCount.toLocaleString()}
                   {state.turnoutRowCount > 0 ? ` / ${state.turnoutRowCount.toLocaleString()} turnout` : ""}
+                </td>
+                <td className="mono">
+                  {state.equipmentRowCount > 0 ? `${state.equipmentRowCount.toLocaleString()} equipment` : "No equipment"}
                 </td>
                 <td>
                   {state.gaps.length ? (

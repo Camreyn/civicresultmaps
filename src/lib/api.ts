@@ -4,6 +4,7 @@ import {
   currentDataSource,
   getCoverageSummary as uncachedGetCoverageSummary,
   listCompletenessReport as uncachedListCompletenessReport,
+  listEquipmentRows as uncachedListEquipmentRows,
   listElections as uncachedListElections,
   listHistoricalResultRows as uncachedListHistoricalResultRows,
   listImportRuns as uncachedListImportRuns,
@@ -63,6 +64,12 @@ export const getCoverageSummary = unstable_cache(
 export const listCompletenessReport = unstable_cache(
   uncachedListCompletenessReport,
   ["public-data", "completeness-report"],
+  { revalidate: publicDataRevalidateSeconds },
+);
+
+export const listEquipmentRows = unstable_cache(
+  uncachedListEquipmentRows,
+  ["public-data", "equipment-rows"],
   { revalidate: publicDataRevalidateSeconds },
 );
 

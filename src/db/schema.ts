@@ -248,6 +248,43 @@ export const historicalResultRows = pgTable(
   }),
 );
 
+export const equipmentRows = pgTable(
+  "equipment_rows",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    importRunId: uuid("import_run_id").references(() => importRuns.id),
+    stateCode: text("state_code").notNull().references(() => states.code),
+    electionYear: integer("election_year").notNull(),
+    jurisdictionCode: text("jurisdiction_code").notNull(),
+    jurisdictionName: text("jurisdiction_name").notNull(),
+    level: text("level").notNull().default("county"),
+    vendor: text("vendor").notNull().default(""),
+    systemName: text("system_name").notNull().default(""),
+    equipmentType: text("equipment_type").notNull().default(""),
+    usage: text("usage").notNull().default("context"),
+    paperRecord: text("paper_record").notNull().default("not_recorded"),
+    standardSystem: text("standard_system").notNull().default(""),
+    accessibleSystem: text("accessible_system").notNull().default(""),
+    absenteeSystem: text("absentee_system").notNull().default(""),
+    pollBookSystem: text("poll_book_system").notNull().default(""),
+    tabulation: text("tabulation").notNull().default(""),
+    registeredVoters: integer("registered_voters"),
+    precincts: integer("precincts"),
+    pollingPlaces: integer("polling_places"),
+    metrics: jsonb("metrics").notNull().default({}),
+    sourceDocumentId: uuid("source_document_id").references(() => sourceDocuments.id),
+  },
+  (table) => ({
+    uniqueEquipmentRow: uniqueIndex("equipment_rows_state_year_jurisdiction_usage_idx").on(
+      table.stateCode,
+      table.electionYear,
+      table.level,
+      table.jurisdictionCode,
+      table.usage,
+    ),
+  }),
+);
+
 export const capabilityFlags = pgTable(
   "capability_flags",
   {

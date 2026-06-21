@@ -7,6 +7,7 @@ import {
   History,
   MapIcon,
   Search,
+  Settings2,
   UsersRound,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
@@ -135,6 +136,7 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
   const indicators = summary?.indicatorCount ?? 0;
   const turnoutRows = summary?.turnoutRowCount ?? 0;
   const historicalRows = summary?.historicalRowCount ?? 0;
+  const equipmentRows = summary?.equipmentRowCount ?? 0;
 
   return [
     {
@@ -197,6 +199,15 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
       label: "History",
       presence: dataPresence({ capability: capabilities.historicalBaseline, count: historicalRows }),
       title: `Historical baseline: ${countLabel(historicalRows, "row")}`,
+    },
+    {
+      abbr: "Eq",
+      count: equipmentRows,
+      icon: Settings2,
+      key: "equipment",
+      label: "Equipment",
+      presence: dataPresence({ count: equipmentRows }),
+      title: `Equipment context: ${countLabel(equipmentRows, "row")}`,
     },
   ];
 }

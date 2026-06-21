@@ -28,6 +28,7 @@ test("public API route contracts exist", () => {
     "src/app/api/turnout-sources/route.ts",
     "src/app/api/historical-baselines/route.ts",
     "src/app/api/native-source-packages/route.ts",
+    "src/app/api/equipment/route.ts",
   ];
 
   for (const route of expectedRoutes) {
@@ -243,6 +244,7 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(tabs, /includeMetrics=true/);
   assert.match(tabs, /\/api\/turnout/);
   assert.match(tabs, /\/api\/vote-methods/);
+  assert.match(tabs, /\/api\/equipment/);
   assert.match(tabs, /buildWorkspaceTourSteps/);
   assert.match(tabs, /candidate-method-note/);
   assert.match(tabs, /Candidate by Method/);
@@ -252,8 +254,39 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(tabs, /Vote Methods CSV/);
   assert.match(tabs, /\/api\/historical-baselines/);
   assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /Method layer/);
+  assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /Open equipment source/);
   assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /Jump to tour step/);
   assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /skipIfMissing/);
+});
+
+test("equipment administration context is source-first and exportable", () => {
+  const packageScripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
+  const schema = readFileSync("src/db/schema.ts", "utf8");
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const api = readFileSync("src/app/api/equipment/route.ts", "utf8");
+  const registry = readFileSync("data/admin-source-packages.json", "utf8");
+  const normalizer = readFileSync("scripts/normalize-verifiedvoting-equipment.mjs", "utf8");
+  const normalizedCsv = readFileSync("data/wi-2024-equipment-context.csv", "utf8");
+
+  assert.match(packageScripts["equipment:collect"], /collect-equipment-sources/);
+  assert.match(packageScripts["equipment:normalize:verifiedvoting"], /normalize-verifiedvoting-equipment/);
+  assert.match(packageScripts["equipment:promote"], /promote-equipment-context/);
+  assert.match(packageScripts["equipment:counts"], /check-equipment-context-counts/);
+  assert.match(packageScripts["validate:admin-packages"], /validate-admin-source-packages/);
+  assert.match(schema, /equipmentRows/);
+  assert.match(dataAccess, /listEquipmentRows/);
+  assert.match(dataAccess, /equipmentRowCount/);
+  assert.match(api, /equipmentClusterDiagnostics/);
+  assert.match(tabs, /Equipment Context/);
+  assert.match(tabs, /Equipment CSV/);
+  assert.match(tabs, /equipment-context\.csv/);
+  assert.match(tabs, /context only/);
+  assert.match(registry, /Election administration context registry/);
+  assert.match(registry, /verified-voting-verifier-wi-2024-equipment/);
+  assert.match(normalizer, /expectedJurisdictions/);
+  assert.match(normalizedCsv, /jurisdictionCode,jurisdictionName,level,vendor,systemName/);
+  assert.match(normalizedCsv, /Adams County/);
 });
 
 test("seed data carries required provenance fields", () => {

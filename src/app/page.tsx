@@ -8,6 +8,7 @@ import { WorkspaceTabs } from "./workspace-tabs";
 import {
   getCoverageSummary,
   listCompletenessReport,
+  listEquipmentRows,
   listHistoricalResultRows,
   listImportRuns,
   listIndicators,
@@ -42,6 +43,7 @@ export default async function Home({ searchParams }: HomeProps) {
     turnoutRows,
     historicalRows,
     voteMethodRows,
+    equipmentRows,
   ] = await Promise.all([
     listStates(),
     listCompletenessReport({ year: selectedYear }),
@@ -54,6 +56,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listTurnoutRows({ state: selectedState, year: selectedYear, limit: 20000 }),
     listHistoricalResultRows({ state: selectedState, limit: 5000 }),
     listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }),
+    listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
@@ -145,6 +148,7 @@ export default async function Home({ searchParams }: HomeProps) {
             totalVotes={totalVotes}
             turnoutRows={turnoutRows}
             voteMethodRows={voteMethodRows}
+            equipmentRows={equipmentRows}
           />
         </section>
       </div>
