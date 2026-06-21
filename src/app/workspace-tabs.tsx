@@ -962,6 +962,36 @@ function summaryWarnings(summary: Record<string, unknown> | null | undefined) {
     .map(([, value]) => String(value));
 }
 
+function reviewCoverageModes(rows: ReviewRowSummary[]) {
+  return new Set(
+    rows
+      .map((row) => (typeof row.metrics.coverageMode === "string" ? row.metrics.coverageMode : ""))
+      .filter(Boolean),
+  );
+}
+
+function reviewComparisonContests(rows: ReviewRowSummary[]) {
+  return new Set(
+    rows
+      .map((row) => (typeof row.metrics.comparisonContest === "string" ? row.metrics.comparisonContest : ""))
+      .filter(Boolean),
+  );
+}
+
+function countyLevelReviewIssue(rows: ReviewRowSummary[]) {
+  const modes = reviewCoverageModes(rows);
+  const contests = reviewComparisonContests(rows);
+  const hasCountyComparison = [...modes].some((mode) => mode.toLowerCase().includes("presidentvs"));
+  const allRowsMatchCounty = rows.length > 0 && rows.every((row) => row.localUnit === row.jurisdictionName);
+
+  if (!hasCountyComparison || !allRowsMatchCounty) {
+    return null;
+  }
+
+  const contestLabel = contests.size ? ` against ${[...contests].join(", ")}` : "";
+  return `These rows are county-level presidential comparison rows${contestLabel}, not precinct, ward, or municipal reporting-unit rows. Use the chart as county context only.`;
+}
+
 function buildReportIssueUrl(input: {
   chart?: string;
   context: string;
@@ -1252,6 +1282,9 @@ function buildDataNoteSections(input: {
   const turnoutWarningRows = input.turnoutRows.filter((row) => row.warningRequired).length;
   const reviewIsPartial =
     input.reviewRows.length > 0 && input.results.length > 0 && new Set(input.reviewRows.map((row) => row.jurisdictionCode)).size < input.results.length;
+  const reviewModes = [...reviewCoverageModes(input.reviewRows)];
+  const reviewModeEvidence = reviewModes.length ? `Coverage mode: ${reviewModes.join(", ")}.` : null;
+  const reviewCountyLevelIssue = countyLevelReviewIssue(input.reviewRows);
   const eacTurnoutFallback = input.turnoutRows.some((row) => row.sourceId.toLowerCase().includes("eac"));
   const legacyOnly = input.completeness ? input.completeness.legacyImportCount > 0 && input.completeness.nativeImportCount === 0 : false;
   const mapGeometrySourceCount =
@@ -1308,12 +1341,18 @@ function buildDataNoteSections(input: {
       detail: input.reviewRows.length
         ? `${input.reviewRows.length.toLocaleString()} local review rows and ${input.completeness?.indicatorCount ?? 0} advisory flags.`
         : "No local review rows are loaded.",
-      evidence: importWarnings.find((warning) => warning.toLowerCase().includes("review")) ?? (legacyOnly ? "Legacy-only review bundle." : "Review import status inferred from row counts."),
+      evidence:
+        importWarnings.find((warning) => warning.toLowerCase().includes("review")) ??
+        reviewCountyLevelIssue ??
+        reviewModeEvidence ??
+        (legacyOnly ? "Legacy-only review bundle." : "Review import status inferred from row counts."),
       key: "review",
       label: "Review",
-      status: dataNoteStatus(input.reviewRows.length > 0, capabilities?.reviewGraphs, reviewIsPartial || legacyOnly),
+      status: dataNoteStatus(input.reviewRows.length > 0, capabilities?.reviewGraphs, Boolean(reviewCountyLevelIssue) || reviewIsPartial || legacyOnly),
       why: input.reviewRows.length
-        ? reviewIsPartial
+        ? reviewCountyLevelIssue
+          ? reviewCountyLevelIssue
+          : reviewIsPartial
           ? "Review rows exist, but they do not cover every loaded result jurisdiction, so charts are screening views rather than complete statewide coverage."
           : legacyOnly
             ? "Review data is loaded from a legacy bundle; use it as context until a newer source-first native parser is available."
@@ -1414,6 +1453,11 @@ function buildVoteShareScatterDiagnostic(input: {
     issues.push(`${nonPositiveRows.length.toLocaleString()} rows have zero or non-positive candidate/total vote values and are omitted.`);
   }
 
+  const countyIssue = countyLevelReviewIssue(input.rows);
+  if (countyIssue) {
+    issues.push(countyIssue);
+  }
+
   if (input.resultJurisdictions > 0 && input.reviewJurisdictions < input.resultJurisdictions) {
     issues.push(
       `Review rows exist for ${input.reviewJurisdictions.toLocaleString()} of ${input.resultJurisdictions.toLocaleString()} loaded result jurisdictions, so this is not statewide coverage.`,
@@ -1485,6 +1529,11 @@ function buildDropoffDiagnostic(input: {
 
   if (missingRows > 0) {
     issues.push(`${missingRows.toLocaleString()} rows are missing one or both comparison-contest drop-off values.`);
+  }
+
+  const countyIssue = countyLevelReviewIssue(input.rows);
+  if (countyIssue) {
+    issues.push(countyIssue);
   }
 
   if (input.resultJurisdictions > 0 && input.reviewJurisdictions < input.resultJurisdictions) {

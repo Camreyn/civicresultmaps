@@ -50,7 +50,7 @@ export default async function Home({ searchParams }: HomeProps) {
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     listImportRuns(),
     listIndicators({ state: selectedState, year: selectedYear }),
-    listReviewRows({ state: selectedState, year: selectedYear, limit: 5000 }),
+    listReviewRows({ state: selectedState, year: selectedYear, includeMetrics: true, limit: 5000 }),
     listTurnoutRows({ state: selectedState, year: selectedYear, limit: 20000 }),
     listHistoricalResultRows({ state: selectedState, limit: 5000 }),
     listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }),
