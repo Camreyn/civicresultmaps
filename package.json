@@ -50,6 +50,7 @@
     "turnout:normalize:eac": "node scripts/normalize-eac-turnout.mjs",
     "turnout:sync-registry": "node scripts/sync-turnout-registry-from-configs.mjs",
     "equipment:collect": "node scripts/collect-equipment-sources.mjs",
+    "equipment:extract-areas": "node scripts/extract-verifiedvoting-equipment-areas.mjs",
     "equipment:normalize:verifiedvoting": "node scripts/normalize-verifiedvoting-equipment.mjs",
     "equipment:promote": "node --env-file=.env.local scripts/promote-equipment-context.mjs",
     "equipment:counts": "node --env-file=.env.local scripts/check-equipment-context-counts.mjs",

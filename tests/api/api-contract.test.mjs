@@ -258,6 +258,8 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /Open equipment source/);
   assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /Equipment layer/);
   assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /equipmentGroupLabel/);
+  assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /verifiedVotingAreaPath/);
+  assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /activeFeatures/);
   assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /Jump to tour step/);
   assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /skipIfMissing/);
 });
@@ -273,6 +275,7 @@ test("equipment administration context is source-first and exportable", () => {
   const normalizedCsv = readFileSync("data/wi-2024-equipment-context.csv", "utf8");
 
   assert.match(packageScripts["equipment:collect"], /collect-equipment-sources/);
+  assert.match(packageScripts["equipment:extract-areas"], /extract-verifiedvoting-equipment-areas/);
   assert.match(packageScripts["equipment:normalize:verifiedvoting"], /normalize-verifiedvoting-equipment/);
   assert.match(packageScripts["equipment:promote"], /promote-equipment-context/);
   assert.match(packageScripts["equipment:counts"], /check-equipment-context-counts/);
@@ -303,6 +306,7 @@ test("equipment administration context is source-first and exportable", () => {
   assert.match(normalizer, /uniformityWarningRequired/);
   assert.match(normalizedCsv, /jurisdictionCode,jurisdictionName,level,vendor,systemName/);
   assert.match(normalizedCsv, /Adams County/);
+  assert.match(readFileSync("data/verifiedvoting-wi-2024-equipment-areas.geojson", "utf8"), /FeatureCollection/);
   assert.match(readFileSync("src/app/readiness/page.tsx", "utf8"), /Administration Source Inventory/);
   assert.match(readFileSync("src/app/readiness/page.tsx", "utf8"), /Admin Sources API/);
   assert.match(readFileSync("src/lib/equipment-diagnostics.ts", "utf8"), /minimumUsefulJurisdictions/);

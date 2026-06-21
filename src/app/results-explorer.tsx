@@ -65,6 +65,10 @@ function geoJsonPath(state: string) {
   return `${state.toLowerCase()}-counties.geojson`;
 }
 
+function verifiedVotingAreaPath(state: string) {
+  return `verifiedvoting-${state.toLowerCase()}-2024-equipment-areas.geojson`;
+}
+
 function normalizeName(name: string) {
   return name
     .normalize("NFD")
@@ -333,6 +337,8 @@ export function ResultsExplorer({
   voteMethodRows,
 }: ResultsExplorerProps) {
   const [features, setFeatures] = useState<GeoFeature[]>([]);
+  const [equipmentFeatures, setEquipmentFeatures] = useState<GeoFeature[]>([]);
+  const [equipmentGeoStatus, setEquipmentGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [mapMode, setMapMode] = useState<MapMode>("winner");
   const [mapPan, setMapPan] = useState<MapPan>({ x: 0, y: 0 });
@@ -359,6 +365,7 @@ export function ResultsExplorer({
   useEffect(() => {
     const controller = new AbortController();
     setGeoStatus("loading");
+    setEquipmentGeoStatus("loading");
     setSelectedMapName(null);
     setPinnedMapName(null);
     setMapPan({ x: 0, y: 0 });
@@ -382,6 +389,28 @@ export function ResultsExplorer({
         if (error.name !== "AbortError") {
           setFeatures([]);
           setGeoStatus("error");
+        }
+      });
+
+    fetch(`${geoBaseUrl}/${verifiedVotingAreaPath(selectedState)}`, {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Verifier area GeoJSON request failed with ${response.status}`);
+        }
+
+        return response.json() as Promise<FeatureCollection>;
+      })
+      .then((collection) => {
+        setEquipmentFeatures(collection.features ?? []);
+        setEquipmentGeoStatus("ready");
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          setEquipmentFeatures([]);
+          setEquipmentGeoStatus("error");
         }
       });
 
@@ -426,14 +455,27 @@ export function ResultsExplorer({
     return map;
   }, [sources]);
 
+  const usingVerifierGeometry = mapMode === "equipment" && equipmentFeatures.length > 0;
+  const activeFeatures = usingVerifierGeometry ? equipmentFeatures : features;
+  const activeGeoStatus =
+    mapMode === "equipment"
+      ? equipmentFeatures.length > 0
+        ? "ready"
+        : equipmentGeoStatus === "loading"
+          ? "loading"
+          : geoStatus
+      : geoStatus;
+  const activeGeometrySource = usingVerifierGeometry ? "Verified Voting GIS areas" : "county boundaries";
+  const showAdvisoryMarkers = mapMode !== "equipment";
+
   const bounds = useMemo(() => {
-    const points = features.flatMap((feature) =>
+    const points = activeFeatures.flatMap((feature) =>
       flattenPositions(feature.geometry.coordinates).map((coordinate) =>
         mapCoordinate(selectedState, coordinate),
       ),
     );
     return coordinateBounds(points);
-  }, [features, selectedState]);
+  }, [activeFeatures, selectedState]);
 
   const maxTotalVotes = useMemo(
     () => results.reduce((max, row) => Math.max(max, row.totalVotes), 0),
@@ -642,7 +684,7 @@ export function ResultsExplorer({
   };
 
   useEffect(() => {
-    if (geoStatus !== "ready" || features.length === 0) {
+    if (activeGeoStatus !== "ready" || activeFeatures.length === 0) {
       return;
     }
 
@@ -663,7 +705,7 @@ export function ResultsExplorer({
     return () => {
       wrap.removeEventListener("wheel", handleNativeWheel);
     };
-  }, [features.length, geoStatus, mapZoom, zoomMap]);
+  }, [activeFeatures.length, activeGeoStatus, mapZoom, zoomMap]);
 
   const handleMapPointerDown = (event: PointerEvent<SVGSVGElement>) => {
     if (event.button !== 0) {
@@ -735,9 +777,9 @@ export function ResultsExplorer({
           <div>
             <h2>{countyLabel} Map</h2>
             <span>
-              {geoStatus === "ready"
-                ? `${features.length} boundaries, ${indicators.length} advisory review flags`
-                : geoStatus === "loading"
+              {activeGeoStatus === "ready"
+                ? `${activeFeatures.length} ${activeGeometrySource}, ${indicators.length} advisory review flags`
+                : activeGeoStatus === "loading"
                   ? "Loading repository GeoJSON"
                   : "Map geometry unavailable"}
             </span>
@@ -804,8 +846,8 @@ export function ResultsExplorer({
           <div className="map-method-control equipment-map-note" data-tour="equipment-layer">
             <label>Equipment layer</label>
             <span>
-              County shading uses Verified Voting Verifier jurisdiction rows. Treat it as administration context, not
-              proof every precinct or ballot mode used one identical setup.
+              County shading uses Verified Voting Verifier area geometry and jurisdiction rows when available. Treat it
+              as administration context, not proof every precinct or ballot mode used one identical setup.
             </span>
           </div>
         )}
@@ -889,7 +931,7 @@ export function ResultsExplorer({
               <span>{Math.round(mapZoom * 100)}%</span>
             </div>
           </div>
-          {geoStatus === "ready" && features.length > 0 ? (
+          {activeGeoStatus === "ready" && activeFeatures.length > 0 ? (
             <svg
               className={`county-map ${isPanning ? "is-panning" : ""}`}
               data-tour="county-map"
@@ -901,9 +943,9 @@ export function ResultsExplorer({
               role="img"
               viewBox={`0 0 ${mapViewBox.width} ${mapViewBox.height}`}
             >
-              <title>{selectedState} county presidential result map</title>
+              <title>{selectedState} {mapMode === "equipment" ? "Verified Voting equipment area" : "county presidential result"} map</title>
               <g transform={mapTransform}>
-              {features.map((feature) => {
+              {activeFeatures.map((feature) => {
                 const name = featureName(feature);
                 const resultName = resultNameForFeature(selectedState, name);
                 const row = resultsByName.get(normalizeName(resultName));
@@ -955,7 +997,7 @@ export function ResultsExplorer({
                           : ""}
                       </title>
                     </path>
-                    {countyIndicators.length > 0 && (
+                    {showAdvisoryMarkers && countyIndicators.length > 0 && (
                       <g aria-hidden className="map-flag-marker">
                         <circle cx={point.x.toFixed(2)} cy={point.y.toFixed(2)} r="9" />
                         <text x={point.x.toFixed(2)} y={point.y.toFixed(2)}>
@@ -970,7 +1012,7 @@ export function ResultsExplorer({
             </svg>
           ) : (
             <div className="map-empty">
-              {geoStatus === "loading" ? "Loading map geometry..." : "Map geometry is not available yet."}
+              {activeGeoStatus === "loading" ? "Loading map geometry..." : "Map geometry is not available yet."}
             </div>
           )}
         </div>
@@ -1013,7 +1055,7 @@ export function ResultsExplorer({
           )}
           {mapMode === "equipment" && (
             <span className="legend-note">
-              Equipment layer comes from Verified Voting jurisdiction rows; inspect a county for source and uniformity notes.
+              Equipment layer uses Verified Voting GIS areas when available; inspect a shape for source and uniformity notes.
             </span>
           )}
           <span className="legend-note">Badge numbers count advisory indicators, not confirmed findings.</span>
