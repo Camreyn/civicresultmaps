@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { stateCodes } from "./state-metadata.mjs";
 
 const registry = JSON.parse(await readFile("data/admin-source-packages.json", "utf8"));
 const validStatuses = new Set(["loaded", "partial", "candidate", "needs_data", "blocked", "documented_exclusion"]);
@@ -6,6 +7,23 @@ const errors = [];
 
 if (!Array.isArray(registry.stateYearStatuses)) {
   errors.push("stateYearStatuses must be an array.");
+}
+
+const expected2024States = new Set(stateCodes());
+const actual2024States = new Set(
+  (registry.stateYearStatuses ?? [])
+    .filter((entry) => Number(entry.electionYear) === 2024)
+    .map((entry) => entry.state),
+);
+
+if (actual2024States.size !== expected2024States.size) {
+  errors.push(`2024 admin source package registry must include all 50 states; found ${actual2024States.size}.`);
+}
+
+for (const state of expected2024States) {
+  if (!actual2024States.has(state)) {
+    errors.push(`Missing 2024 admin source package entry for ${state}.`);
+  }
 }
 
 for (const entry of registry.stateYearStatuses ?? []) {
@@ -27,6 +45,13 @@ for (const entry of registry.stateYearStatuses ?? []) {
     for (const field of ["sourceDocumentId", "sourceUrl", "apiUrl", "localArtifact", "normalizedArtifact", "parser"]) {
       if (!entry.equipment[field]) {
         errors.push(`${entry.state} ${entry.electionYear} loaded equipment is missing ${field}.`);
+      }
+    }
+  }
+  if (Number(entry.electionYear) === 2024 && entry.equipment?.parser === "verifiedVotingEquipment") {
+    for (const field of ["sourceDocumentId", "sourceUrl", "apiUrl", "localArtifact", "normalizedArtifact", "caveat"]) {
+      if (!entry.equipment[field]) {
+        errors.push(`${entry.state} ${entry.electionYear} VerifiedVoting equipment is missing ${field}.`);
       }
     }
   }

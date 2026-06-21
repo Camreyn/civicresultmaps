@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
+import { requireState, stateCodes } from "./state-metadata.mjs";
 
 function getDatabaseUrl() {
   return (
@@ -18,9 +19,42 @@ function getDatabaseUrl() {
 function argValue(name, fallback, positionalIndex) {
   const index = process.argv.indexOf(name);
   const envKey = `npm_config_${name.replace(/^--/, "").replaceAll("-", "_")}`;
+  const envValue = process.env[envKey] && process.env[envKey] !== "true" ? process.env[envKey] : undefined;
   return index === -1
-    ? process.env[envKey] ?? process.argv[2 + positionalIndex] ?? fallback
+    ? envValue ?? process.argv[2 + positionalIndex] ?? fallback
     : process.argv[index + 1];
+}
+
+function hasFlag(name) {
+  const envKey = `npm_config_${name.replace(/^--/, "").replaceAll("-", "_")}`;
+  return process.argv.includes(name) || process.env[envKey] === "true";
+}
+
+function statesToProcess() {
+  if (hasFlag("--all")) {
+    return stateCodes();
+  }
+
+  const stateIndex = process.argv.indexOf("--state");
+  const envState = process.env.npm_config_state && process.env.npm_config_state !== "true" ? process.env.npm_config_state : "";
+  const explicit = stateIndex === -1 ? envState : process.argv[stateIndex + 1];
+  const positional = process.argv
+    .slice(2)
+    .flatMap((value) => value.split(/[,\s]+/))
+    .filter((value) => /^[A-Za-z]{2}$/.test(value))
+    .join(",");
+
+  return String(explicit || positional || "WI")
+    .split(",")
+    .map((state) => state.trim().toUpperCase())
+    .filter(Boolean);
+}
+
+function yearToProcess() {
+  const yearIndex = process.argv.indexOf("--year");
+  const envYear = process.env.npm_config_year && process.env.npm_config_year !== "true" ? process.env.npm_config_year : "";
+  const positional = process.argv.slice(2).find((value) => /^\d{4}$/.test(value));
+  return Number(yearIndex === -1 ? envYear || positional || "2024" : process.argv[yearIndex + 1]);
 }
 
 function parseCsv(text) {
@@ -72,28 +106,20 @@ function numberOrNull(value) {
   return Number.isFinite(number) && String(value).trim() !== "" ? number : null;
 }
 
-async function main() {
-  const databaseUrl = getDatabaseUrl();
-  if (!databaseUrl) {
-    throw new Error("DATABASE_URL or POSTGRES_URL is required to promote equipment context.");
-  }
-
-  const state = String(argValue("--state", "WI", 0)).toUpperCase();
-  const year = Number(argValue("--year", "2024", 1));
-  const registry = JSON.parse(await readFile("data/admin-source-packages.json", "utf8"));
+async function promoteState(sql, registry, state, year) {
+  const stateMeta = requireState(state);
   const entry = registry.stateYearStatuses.find(
-    (item) => item.state === state && Number(item.electionYear) === year,
+    (item) => item.state === stateMeta.code && Number(item.electionYear) === year,
   );
   if (!entry?.equipment?.normalizedArtifact) {
     throw new Error(`No normalized equipment artifact registered for ${state} ${year}.`);
   }
 
   const rows = parseCsv(await readFile(entry.equipment.normalizedArtifact, "utf8"));
-  const sql = neon(databaseUrl);
 
   await sql`
     insert into states (code, name, authority)
-    values (${state}, ${state === "WI" ? "Wisconsin" : state}, ${state === "WI" ? "Wisconsin Elections Commission" : "State election authority"})
+    values (${stateMeta.code}, ${stateMeta.name}, ${`${stateMeta.name} election authority`})
     on conflict (code) do nothing
   `;
 
@@ -257,6 +283,21 @@ async function main() {
   `;
 
   console.log(`Promoted ${rows.length} ${state} ${year} equipment context rows.`);
+}
+
+async function main() {
+  const databaseUrl = getDatabaseUrl();
+  if (!databaseUrl) {
+    throw new Error("DATABASE_URL or POSTGRES_URL is required to promote equipment context.");
+  }
+
+  const year = yearToProcess();
+  const registry = JSON.parse(await readFile("data/admin-source-packages.json", "utf8"));
+  const sql = neon(databaseUrl);
+
+  for (const state of statesToProcess()) {
+    await promoteState(sql, registry, state, year);
+  }
 }
 
 main().catch((error) => {

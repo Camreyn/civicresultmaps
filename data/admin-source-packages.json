@@ -28,7 +28,1465 @@
   },
   "stateYearStatuses": [
     {
+      "state": "AK",
+      "stateName": "Alaska",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ak-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/2",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=2&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ak-2024-equipment.json",
+        "normalizedArtifact": "data/ak-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 1
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Alaska 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Alaska 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Alaska 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "AL",
+      "stateName": "Alabama",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-al-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/1",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=1&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-al-2024-equipment.json",
+        "normalizedArtifact": "data/al-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 67
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Alabama 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Alabama 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Alabama 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "AR",
+      "stateName": "Arkansas",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ar-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/5",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=5&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ar-2024-equipment.json",
+        "normalizedArtifact": "data/ar-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 75
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Arkansas 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Arkansas 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Arkansas 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "AZ",
+      "stateName": "Arizona",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "swing",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-az-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/4",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=4&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-az-2024-equipment.json",
+        "normalizedArtifact": "data/az-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 15
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Arizona 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Arizona 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Arizona 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "CA",
+      "stateName": "California",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ca-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/6",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=6&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ca-2024-equipment.json",
+        "normalizedArtifact": "data/ca-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 58
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "California 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "California 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "California 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "CO",
+      "stateName": "Colorado",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-co-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=8&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-co-2024-equipment.json",
+        "normalizedArtifact": "data/co-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 64
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Colorado 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Colorado 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Colorado 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "CT",
+      "stateName": "Connecticut",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ct-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/9",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=9&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ct-2024-equipment.json",
+        "normalizedArtifact": "data/ct-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 8
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Connecticut 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Connecticut 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Connecticut 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "DE",
+      "stateName": "Delaware",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-de-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/10",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=10&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-de-2024-equipment.json",
+        "normalizedArtifact": "data/de-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 3
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Delaware 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Delaware 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Delaware 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "FL",
+      "stateName": "Florida",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-fl-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/12",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=12&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-fl-2024-equipment.json",
+        "normalizedArtifact": "data/fl-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 67
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Florida 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Florida 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Florida 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "GA",
+      "stateName": "Georgia",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "swing",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ga-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/13",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=13&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ga-2024-equipment.json",
+        "normalizedArtifact": "data/ga-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 159
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Georgia 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Georgia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Georgia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "HI",
+      "stateName": "Hawaii",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-hi-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/15",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=15&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-hi-2024-equipment.json",
+        "normalizedArtifact": "data/hi-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 4
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Hawaii 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Hawaii 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Hawaii 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "IA",
+      "stateName": "Iowa",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ia-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/19",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=19&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ia-2024-equipment.json",
+        "normalizedArtifact": "data/ia-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 99
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Iowa 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Iowa 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Iowa 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "ID",
+      "stateName": "Idaho",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-id-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/16",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=16&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-id-2024-equipment.json",
+        "normalizedArtifact": "data/id-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 44
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Idaho 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Idaho 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Idaho 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "IL",
+      "stateName": "Illinois",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-il-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/17",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=17&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-il-2024-equipment.json",
+        "normalizedArtifact": "data/il-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 107
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Illinois 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Illinois 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Illinois 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "IN",
+      "stateName": "Indiana",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-in-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=18&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-in-2024-equipment.json",
+        "normalizedArtifact": "data/in-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 92
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Indiana 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Indiana 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Indiana 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "KS",
+      "stateName": "Kansas",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ks-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/20",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=20&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ks-2024-equipment.json",
+        "normalizedArtifact": "data/ks-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 105
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Kansas 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Kansas 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Kansas 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "KY",
+      "stateName": "Kentucky",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ky-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/21",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=21&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ky-2024-equipment.json",
+        "normalizedArtifact": "data/ky-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 120
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Kentucky 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Kentucky 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Kentucky 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "LA",
+      "stateName": "Louisiana",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-la-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/22",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=22&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-la-2024-equipment.json",
+        "normalizedArtifact": "data/la-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 64
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Louisiana 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Louisiana 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Louisiana 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "MA",
+      "stateName": "Massachusetts",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ma-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/25",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=25&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ma-2024-equipment.json",
+        "normalizedArtifact": "data/ma-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 14
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Massachusetts 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Massachusetts 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Massachusetts 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "MD",
+      "stateName": "Maryland",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-md-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/24",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=24&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-md-2024-equipment.json",
+        "normalizedArtifact": "data/md-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 24
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Maryland 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Maryland 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Maryland 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "ME",
+      "stateName": "Maine",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-me-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=23&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-me-2024-equipment.json",
+        "normalizedArtifact": "data/me-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 16
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Maine 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Maine 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Maine 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "MI",
+      "stateName": "Michigan",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "swing",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-mi-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/26",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=26&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-mi-2024-equipment.json",
+        "normalizedArtifact": "data/mi-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 83
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Michigan 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Michigan 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Michigan 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "MN",
+      "stateName": "Minnesota",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-mn-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/27",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=27&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-mn-2024-equipment.json",
+        "normalizedArtifact": "data/mn-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 87
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Minnesota 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Minnesota 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Minnesota 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "MO",
+      "stateName": "Missouri",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-mo-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/29",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=29&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-mo-2024-equipment.json",
+        "normalizedArtifact": "data/mo-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 116
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Missouri 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Missouri 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Missouri 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "MS",
+      "stateName": "Mississippi",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ms-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/28",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=28&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ms-2024-equipment.json",
+        "normalizedArtifact": "data/ms-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 82
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Mississippi 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Mississippi 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Mississippi 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "MT",
+      "stateName": "Montana",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-mt-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/30",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=30&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-mt-2024-equipment.json",
+        "normalizedArtifact": "data/mt-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 56
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Montana 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Montana 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Montana 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "NC",
+      "stateName": "North Carolina",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "swing",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-nc-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/37",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=37&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-nc-2024-equipment.json",
+        "normalizedArtifact": "data/nc-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 100
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "North Carolina 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "North Carolina 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "North Carolina 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "ND",
+      "stateName": "North Dakota",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-nd-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/38",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=38&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-nd-2024-equipment.json",
+        "normalizedArtifact": "data/nd-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 53
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "North Dakota 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "North Dakota 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "North Dakota 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "NE",
+      "stateName": "Nebraska",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ne-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/31",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=31&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ne-2024-equipment.json",
+        "normalizedArtifact": "data/ne-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 93
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Nebraska 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Nebraska 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Nebraska 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "NH",
+      "stateName": "New Hampshire",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-nh-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/33",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=33&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-nh-2024-equipment.json",
+        "normalizedArtifact": "data/nh-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 10
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "New Hampshire 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "New Hampshire 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "New Hampshire 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "NJ",
+      "stateName": "New Jersey",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-nj-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/34",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=34&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-nj-2024-equipment.json",
+        "normalizedArtifact": "data/nj-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 21
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "New Jersey 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "New Jersey 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "New Jersey 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "NM",
+      "stateName": "New Mexico",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-nm-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/35",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=35&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-nm-2024-equipment.json",
+        "normalizedArtifact": "data/nm-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 33
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "New Mexico 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "New Mexico 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "New Mexico 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "NV",
+      "stateName": "Nevada",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "swing",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-nv-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/32",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=32&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-nv-2024-equipment.json",
+        "normalizedArtifact": "data/nv-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 17
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Nevada 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Nevada 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Nevada 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "NY",
+      "stateName": "New York",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ny-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=36&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ny-2024-equipment.json",
+        "normalizedArtifact": "data/ny-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 62
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "New York 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "New York 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "New York 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "OH",
+      "stateName": "Ohio",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-oh-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/39",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=39&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-oh-2024-equipment.json",
+        "normalizedArtifact": "data/oh-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 88
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Ohio 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Ohio 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Ohio 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "OK",
+      "stateName": "Oklahoma",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ok-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/40",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=40&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ok-2024-equipment.json",
+        "normalizedArtifact": "data/ok-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 77
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Oklahoma 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Oklahoma 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Oklahoma 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "OR",
+      "stateName": "Oregon",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-or-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/41",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=41&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-or-2024-equipment.json",
+        "normalizedArtifact": "data/or-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 36
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Oregon 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Oregon 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Oregon 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "swing",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-pa-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/42",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=42&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-pa-2024-equipment.json",
+        "normalizedArtifact": "data/pa-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 67
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Pennsylvania 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Pennsylvania 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Pennsylvania 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "RI",
+      "stateName": "Rhode Island",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ri-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/44",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=44&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ri-2024-equipment.json",
+        "normalizedArtifact": "data/ri-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 5
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Rhode Island 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Rhode Island 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Rhode Island 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "SC",
+      "stateName": "South Carolina",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-sc-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/45",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=45&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-sc-2024-equipment.json",
+        "normalizedArtifact": "data/sc-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 46
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "South Carolina 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "South Carolina 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "South Carolina 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "SD",
+      "stateName": "South Dakota",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-sd-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/46",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=46&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-sd-2024-equipment.json",
+        "normalizedArtifact": "data/sd-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 66
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "South Dakota 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "South Dakota 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "South Dakota 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "TN",
+      "stateName": "Tennessee",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-tn-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/47",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=47&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-tn-2024-equipment.json",
+        "normalizedArtifact": "data/tn-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 95
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Tennessee 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Tennessee 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Tennessee 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "TX",
+      "stateName": "Texas",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-tx-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/48",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=48&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-tx-2024-equipment.json",
+        "normalizedArtifact": "data/tx-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 254
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Texas 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Texas 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Texas 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "UT",
+      "stateName": "Utah",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-ut-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/49",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=49&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-ut-2024-equipment.json",
+        "normalizedArtifact": "data/ut-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 29
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Utah 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Utah 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Utah 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "VA",
+      "stateName": "Virginia",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-va-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/51",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=51&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-va-2024-equipment.json",
+        "normalizedArtifact": "data/va-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 134
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Virginia 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Virginia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Virginia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "VT",
+      "stateName": "Vermont",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-vt-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/50",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=50&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-vt-2024-equipment.json",
+        "normalizedArtifact": "data/vt-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 14
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Vermont 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Vermont 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Vermont 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "WA",
+      "stateName": "Washington",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-wa-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/53",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=53&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-wa-2024-equipment.json",
+        "normalizedArtifact": "data/wa-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 39
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Washington 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Washington 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Washington 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
       "state": "WI",
+      "stateName": "Wisconsin",
       "electionYear": 2024,
       "status": "loaded",
       "priority": "swing",
@@ -41,8 +1499,8 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=55&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-wi-2024-equipment.json",
         "normalizedArtifact": "data/wi-2024-equipment-context.csv",
-        "expectedJurisdictions": 72,
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source."
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 72
       },
       "audit": {
         "status": "needs_data",
@@ -56,16 +1514,68 @@
         "status": "needs_data",
         "why": "Incident, correction, and litigation notes have not been collected into a normalized source package yet."
       }
+    },
+    {
+      "state": "WV",
+      "stateName": "West Virginia",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-wv-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/54",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=54&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-wv-2024-equipment.json",
+        "normalizedArtifact": "data/wv-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 55
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "West Virginia 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "West Virginia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "West Virginia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
+    },
+    {
+      "state": "WY",
+      "stateName": "Wyoming",
+      "electionYear": 2024,
+      "status": "loaded",
+      "priority": "standard",
+      "equipment": {
+        "status": "loaded",
+        "reportingLevel": "county",
+        "parser": "verifiedVotingEquipment",
+        "sourceDocumentId": "verified-voting-verifier-wy-2024-equipment",
+        "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/56",
+        "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=56&db_year=2024&map=voteEquip&map_type=ppEquip",
+        "localArtifact": "data/verifiedvoting-wy-2024-equipment.json",
+        "normalizedArtifact": "data/wy-2024-equipment-context.csv",
+        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "expectedJurisdictions": 23
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "Wyoming 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "Wyoming 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "Wyoming 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+      }
     }
-  ],
-  "remainingStatesNeedingPackages": [
-    "AZ",
-    "GA",
-    "MI",
-    "NV",
-    "NC",
-    "PA",
-    "FL",
-    "OR"
   ]
 }

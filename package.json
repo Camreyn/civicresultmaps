@@ -53,6 +53,8 @@
     "equipment:normalize:verifiedvoting": "node scripts/normalize-verifiedvoting-equipment.mjs",
     "equipment:promote": "node --env-file=.env.local scripts/promote-equipment-context.mjs",
     "equipment:counts": "node --env-file=.env.local scripts/check-equipment-context-counts.mjs",
+    "equipment:sync-statuses": "node scripts/sync-admin-equipment-statuses.mjs",
+    "equipment:sync-registry": "node scripts/sync-admin-equipment-registry.mjs",
     "vote-methods:normalize:eac": "node scripts/normalize-eac-vote-methods.mjs",
     "validate:admin-packages": "node scripts/validate-admin-source-packages.mjs",
     "validate:source-packages": "node scripts/validate-native-source-packages.mjs",

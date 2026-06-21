@@ -1,0 +1,6341 @@
+{
+  "header": {
+    "code": 0,
+    "time": 0.1085
+  },
+  "level": "state",
+  "year": "2024",
+  "state_fips": 44,
+  "county_fips": 0,
+  "division_fips": 0,
+  "state_name": "Rhode Island",
+  "county_name": null,
+  "division_name": null,
+  "machines": [
+    {
+      "id": 379654,
+      "gp_unit_id": 4454,
+      "cycle": 2024,
+      "component_id": 327,
+      "make": "ES&S",
+      "model": "DS200",
+      "vv_url": "/election-system/ess-ds200/",
+      "hardware_version": "",
+      "firmware_version": "",
+      "software_version": "",
+      "vvpat": null,
+      "pp_acc": null,
+      "pp_std": 1,
+      "ev_std": 1,
+      "ev_acc": null,
+      "abs_ballots": null,
+      "absentee_accessible": null,
+      "barcode": null,
+      "maintenance_vendor": null,
+      "equip_type": "Hand-Fed Optical Scanner",
+      "quantity_fielded": null,
+      "first_fielded": "2016",
+      "source": "",
+      "additional_source": "",
+      "remark": "",
+      "equip_type_extratext_display": null,
+      "equip_type_extratext_link": null,
+      "timestamp": "2024-07-16",
+      "entered_by": "",
+      "coder": "",
+      "equip_type_extratext_full": null
+    },
+    {
+      "id": 379651,
+      "gp_unit_id": 4454,
+      "cycle": 2024,
+      "component_id": 610,
+      "make": "ES&S",
+      "model": "DS850",
+      "vv_url": "/election-system/ess-ds850-ds450/",
+      "hardware_version": "",
+      "firmware_version": "",
+      "software_version": "",
+      "vvpat": null,
+      "pp_acc": null,
+      "pp_std": null,
+      "ev_std": null,
+      "ev_acc": null,
+      "abs_ballots": 1,
+      "absentee_accessible": null,
+      "barcode": null,
+      "maintenance_vendor": null,
+      "equip_type": "Batch-Fed Optical Scanner",
+      "quantity_fielded": null,
+      "first_fielded": "2016",
+      "source": "",
+      "additional_source": "",
+      "remark": "",
+      "equip_type_extratext_display": "Mail ballots tabulated centrally at the RI Board of Elections.",
+      "equip_type_extratext_link": null,
+      "timestamp": "2024-07-16",
+      "entered_by": "",
+      "coder": "",
+      "equip_type_extratext_full": "Mail ballots tabulated centrally at the RI Board of Elections."
+    },
+    {
+      "id": 379653,
+      "gp_unit_id": 4454,
+      "cycle": 2024,
+      "component_id": 766,
+      "make": "ES&S",
+      "model": "ExpressVote",
+      "vv_url": "/election-system/ess-expressvote/",
+      "hardware_version": "",
+      "firmware_version": "",
+      "software_version": "",
+      "vvpat": null,
+      "pp_acc": 1,
+      "pp_std": null,
+      "ev_std": null,
+      "ev_acc": 1,
+      "abs_ballots": null,
+      "absentee_accessible": null,
+      "barcode": 1,
+      "maintenance_vendor": null,
+      "equip_type": "Ballot Marking Device",
+      "quantity_fielded": null,
+      "first_fielded": "2022",
+      "source": "",
+      "additional_source": "",
+      "remark": "",
+      "equip_type_extratext_display": null,
+      "equip_type_extratext_link": null,
+      "timestamp": "2025-03-27",
+      "entered_by": "",
+      "coder": "",
+      "equip_type_extratext_full": null
+    },
+    {
+      "id": 379652,
+      "gp_unit_id": 4454,
+      "cycle": 2024,
+      "component_id": 1655,
+      "make": "KNOWiNK",
+      "model": "Poll Pad",
+      "vv_url": "/election-system/knowink-poll-pad/",
+      "hardware_version": "",
+      "firmware_version": null,
+      "software_version": null,
+      "vvpat": null,
+      "pp_acc": null,
+      "pp_std": 1,
+      "ev_std": 1,
+      "ev_acc": null,
+      "abs_ballots": null,
+      "absentee_accessible": null,
+      "barcode": null,
+      "maintenance_vendor": null,
+      "equip_type": "Commercial Electronic Poll Book",
+      "quantity_fielded": null,
+      "first_fielded": null,
+      "source": "",
+      "additional_source": "",
+      "remark": "",
+      "equip_type_extratext_display": null,
+      "equip_type_extratext_link": null,
+      "timestamp": "2025-08-15",
+      "entered_by": "",
+      "coder": "",
+      "equip_type_extratext_full": null
+    },
+    {
+      "id": 379650,
+      "gp_unit_id": 4454,
+      "cycle": 2024,
+      "component_id": 1909,
+      "make": "Not Applicable",
+      "model": "Not Applicable",
+      "vv_url": null,
+      "hardware_version": null,
+      "firmware_version": null,
+      "software_version": null,
+      "vvpat": null,
+      "pp_acc": null,
+      "pp_std": null,
+      "ev_std": null,
+      "ev_acc": null,
+      "abs_ballots": 1,
+      "absentee_accessible": 1,
+      "barcode": null,
+      "maintenance_vendor": null,
+      "equip_type": "Internet Voting: Email",
+      "quantity_fielded": null,
+      "first_fielded": "2022",
+      "source": "",
+      "additional_source": "",
+      "remark": "",
+      "equip_type_extratext_display": "Military and overseas voters and voters with certain disabilities",
+      "equip_type_extratext_link": "http://webserver.rilin.state.ri.us/Statutes/TITLE17/17-20/17-20-9.HTM",
+      "timestamp": "2024-10-03",
+      "entered_by": "",
+      "coder": "",
+      "equip_type_extratext_full": "<a href=\"http://webserver.rilin.state.ri.us/Statutes/TITLE17/17-20/17-20-9.HTM\" target=\"_blank\">Military and overseas voters and voters with certain disabilities</a>"
+    },
+    {
+      "id": 379649,
+      "gp_unit_id": 4454,
+      "cycle": 2024,
+      "component_id": 1910,
+      "make": "Not Applicable",
+      "model": "Not Applicable",
+      "vv_url": null,
+      "hardware_version": null,
+      "firmware_version": null,
+      "software_version": null,
+      "vvpat": null,
+      "pp_acc": null,
+      "pp_std": null,
+      "ev_std": null,
+      "ev_acc": null,
+      "abs_ballots": 1,
+      "absentee_accessible": 1,
+      "barcode": null,
+      "maintenance_vendor": null,
+      "equip_type": "Internet Voting: Fax",
+      "quantity_fielded": null,
+      "first_fielded": "2000",
+      "source": "",
+      "additional_source": "",
+      "remark": "",
+      "equip_type_extratext_display": "Military and overseas voters and voters with certain disabilities if ballot requested by fax",
+      "equip_type_extratext_link": "http://webserver.rilin.state.ri.us/Statutes/TITLE17/17-20/17-20-6.1.htm",
+      "timestamp": "2025-09-19",
+      "entered_by": "",
+      "coder": "",
+      "equip_type_extratext_full": "<a href=\"http://webserver.rilin.state.ri.us/Statutes/TITLE17/17-20/17-20-6.1.htm\" target=\"_blank\">Military and overseas voters and voters with certain disabilities if ballot requested by fax</a>"
+    },
+    {
+      "id": 442992,
+      "gp_unit_id": 4454,
+      "cycle": 2024,
+      "component_id": 1704,
+      "make": "Democracy Live",
+      "model": "OmniBallot Online",
+      "vv_url": "/election-system/democracy-live-omniballot-online/",
+      "hardware_version": "",
+      "firmware_version": "",
+      "software_version": "",
+      "vvpat": 0,
+      "pp_acc": 0,
+      "pp_std": 0,
+      "ev_std": 0,
+      "ev_acc": 0,
+      "abs_ballots": 1,
+      "absentee_accessible": 1,
+      "barcode": 0,
+      "maintenance_vendor": null,
+      "equip_type": "Internet Voting: Web Portal",
+      "quantity_fielded": 0,
+      "first_fielded": "2024",
+      "source": "",
+      "additional_source": "",
+      "remark": "",
+      "equip_type_extratext_display": "Military and overseas voters and voters with certain disabilities",
+      "equip_type_extratext_link": "http://webserver.rilin.state.ri.us/Statutes/TITLE17/17-20/17-20-9.HTM",
+      "timestamp": "2024-10-03",
+      "entered_by": "",
+      "coder": "",
+      "equip_type_extratext_full": "<a href=\"http://webserver.rilin.state.ri.us/Statutes/TITLE17/17-20/17-20-9.HTM\" target=\"_blank\">Military and overseas voters and voters with certain disabilities</a>"
+    }
+  ],
+  "codes": {
+    "FIPS44001": {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "1",
+      "division_fips": "",
+      "fips_10_digit": "4400100000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 37112,
+      "current_precincts": 21,
+      "current_count_polling_places": 21,
+      "current_count_polling_places_ev": 3,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Bristol County",
+      "make": "ES&S",
+      "bmd_makemodel2": "",
+      "epb_system": "Commercial Electronic Poll Book",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan",
+      "base": 0
+    },
+    "FIPS44003": {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "3",
+      "division_fips": "",
+      "fips_10_digit": "4400300000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 128115,
+      "current_precincts": 75,
+      "current_count_polling_places": 74,
+      "current_count_polling_places_ev": 5,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Kent County",
+      "make": "ES&S",
+      "bmd_makemodel2": "",
+      "epb_system": "Commercial Electronic Poll Book",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan",
+      "base": 0
+    },
+    "FIPS44005": {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "5",
+      "division_fips": "",
+      "fips_10_digit": "4400500000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 59790,
+      "current_precincts": 37,
+      "current_count_polling_places": 37,
+      "current_count_polling_places_ev": 6,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Newport County",
+      "make": "ES&S",
+      "bmd_makemodel2": "",
+      "epb_system": "Commercial Electronic Poll Book",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan",
+      "base": 0
+    },
+    "FIPS44007": {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "7",
+      "division_fips": "",
+      "fips_10_digit": "4400700000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 409359,
+      "current_precincts": 265,
+      "current_count_polling_places": 243,
+      "current_count_polling_places_ev": 16,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Providence County",
+      "make": "ES&S",
+      "bmd_makemodel2": "",
+      "epb_system": "Commercial Electronic Poll Book",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan",
+      "base": 0
+    },
+    "FIPS44009": {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "9",
+      "division_fips": "",
+      "fips_10_digit": "4400900000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 100509,
+      "current_precincts": 55,
+      "current_count_polling_places": 55,
+      "current_count_polling_places_ev": 9,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Washington County",
+      "make": "ES&S",
+      "bmd_makemodel2": "",
+      "epb_system": "Commercial Electronic Poll Book",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan",
+      "base": 0
+    }
+  },
+  "region_list": [
+    {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "1",
+      "division_fips": "",
+      "fips_10_digit": "4400100000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 37112,
+      "current_precincts": 21,
+      "current_count_polling_places": 21,
+      "current_count_polling_places_ev": 3,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Bristol County",
+      "make": "",
+      "bmd_makemodel2": "",
+      "epb_system": "",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan"
+    },
+    {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "3",
+      "division_fips": "",
+      "fips_10_digit": "4400300000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 128115,
+      "current_precincts": 75,
+      "current_count_polling_places": 74,
+      "current_count_polling_places_ev": 5,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Kent County",
+      "make": "",
+      "bmd_makemodel2": "",
+      "epb_system": "",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan"
+    },
+    {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "5",
+      "division_fips": "",
+      "fips_10_digit": "4400500000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 59790,
+      "current_precincts": 37,
+      "current_count_polling_places": 37,
+      "current_count_polling_places_ev": 6,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Newport County",
+      "make": "",
+      "bmd_makemodel2": "",
+      "epb_system": "",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan"
+    },
+    {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "7",
+      "division_fips": "",
+      "fips_10_digit": "4400700000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 409359,
+      "current_precincts": 265,
+      "current_count_polling_places": 243,
+      "current_count_polling_places_ev": 16,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Providence County",
+      "make": "",
+      "bmd_makemodel2": "",
+      "epb_system": "",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan"
+    },
+    {
+      "state": "RI",
+      "state_fips": "44",
+      "county_fips": "9",
+      "division_fips": "",
+      "fips_10_digit": "4400900000",
+      "jurisdiction_type": "County",
+      "pp_system": "HMPB",
+      "pp_acc_system": "BMDS",
+      "ev_system": "HMPB",
+      "abs_system": "BFOS",
+      "barcoded": "BAR2",
+      "current_reg_voters": 100509,
+      "current_precincts": 55,
+      "current_count_polling_places": 55,
+      "current_count_polling_places_ev": 9,
+      "vote_center": "Assigned Polling Place",
+      "all_mail_ballot": null,
+      "name": "Washington County",
+      "make": "",
+      "bmd_makemodel2": "",
+      "epb_system": "",
+      "epb_make": "",
+      "bmd_makemodel": "ES&S ExpressVoteBMDBREAK",
+      "marking_method": "Hand marked paper ballots and BMDs",
+      "tabulation": "Optical Scan"
+    }
+  ],
+  "official": {
+    "official_id": "121629",
+    "cycle": "2024",
+    "gp_unit_id": "40",
+    "last_name": "Amore",
+    "first_name": "Gregg",
+    "title": "Secretary of State",
+    "address_1": "82 Smith Street",
+    "address_2": "Room 217",
+    "city": "Providence",
+    "zipcode": "2903",
+    "phone": "401-222-2357",
+    "fax": "401-222-1444",
+    "email": "secretary@sos.ri.gov",
+    "website": "https://vote.sos.ri.gov/",
+    "official_asofdate": "2024-01-25",
+    "official_source": "",
+    "official_order": "1",
+    "placename": "Rhode Island",
+    "county_name": null,
+    "state": "RI",
+    "place_source": "",
+    "current_reg_voters": "734885",
+    "current_precincts": "453",
+    "current_count_polling_places": "430",
+    "current_count_polling_places_ev": "39",
+    "count_ballots_cast": "0",
+    "count_domestic_bymail_voters": "318313",
+    "count_early_voters": "0",
+    "count_election_day_voters": "198611",
+    "count_internet_returned_ballots": "0",
+    "count_provisional_voters": "2488",
+    "count_uocava_voters": "0",
+    "count_source": "",
+    "count_asofdate": "2024-11-05",
+    "count_additional_source": "",
+    "count_data_notes": "",
+    "pp_system": "HMPB",
+    "pp_acc_system": "BMDS",
+    "ev_system": "HMPB",
+    "abs_system": "PBVS",
+    "barcoded": null,
+    "audit_comprehensiveness": "ACOA",
+    "audit_binding": "ABIN",
+    "audit_main": "ARLA",
+    "first_fielded_ed_std": "HCPB",
+    "first_fielded_ed_acc": "HCPB",
+    "first_fielded_mb_tab": "HCPB",
+    "first_fielded_pb": null,
+    "practice": "Polling Place",
+    "all_mail_ballot": null,
+    "vote_center": "Assigned Polling Place",
+    "timestamp": "2024-05-31",
+    "entered_by": "",
+    "coder": "",
+    "coder_edited_date": "2025-08-08",
+    "official_filler_string": "Amore-Gregg-Secretary of State-82 Smith Street-Room 217-Providence-2903-401-222-2357-401-222-1444-secretary@sos.ri.gov-https://vote.sos.ri.gov/",
+    "official_exists": 1,
+    "official_id_additional": "121630",
+    "first_name_additional": "Kathy",
+    "last_name_additional": "Placencia",
+    "title_additional": "Director of Elections",
+    "address_1_additional": "148 West River Street",
+    "address_2_additional": "",
+    "city_additional": "Providence",
+    "zipcode_additional": "02904",
+    "phone_additional": "401-222-2340",
+    "fax_additional": "401-222-3135",
+    "email_additional": "kplacencia@sos.ri.gov",
+    "website_additional": "https://vote.sos.ri.gov/",
+    "official_order_additional": "2",
+    "marking_method": "Hand marked paper ballots and BMDs",
+    "make": "",
+    "epb_system": "Paper",
+    "current_count_ballots_cast_source": "",
+    "current_count_domestic_bymail_voters_source": "",
+    "current_count_uocava_voters_source": "",
+    "current_count_provisional_voters_source": "",
+    "current_count_early_voters_source": "",
+    "current_count_election_day_voters_source": ""
+  },
+  "user": null,
+  "user_ip": "10.0.20.6",
+  "area": "{\"type\":\"FeatureCollection\",\"bbox\":[-71.862731933594,41.146331787109,-71.120544433594,42.018768310547],\"features\":[{\"type\":\"Feature\",\"bbox\":[-71.799194335938,41.724731445312,-71.317749023438,42.018768310547],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.317749023438,41.776092529297],[-71.355285644531,41.746795654297],[-71.365295410156,41.735595703125],[-71.387878417969,41.763702392578],[-71.399963378906,41.768005371094],[-71.411987304688,41.765075683594],[-71.440979003906,41.758087158203],[-71.440063476562,41.752777099609],[-71.446350097656,41.748474121094],[-71.4443359375,41.740081787109],[-71.450500488281,41.739685058594],[-71.454467773438,41.732482910156],[-71.789672851562,41.724731445312],[-71.799194335938,42.008056640625],[-71.38134765625,42.018768310547],[-71.381652832031,41.893188476562],[-71.338684082031,41.898376464844],[-71.340759277344,41.881591796875],[-71.333984375,41.862274169922],[-71.342163085938,41.844787597656],[-71.335144042969,41.835479736328],[-71.34716796875,41.823089599609],[-71.3388671875,41.808288574219],[-71.340698242188,41.798278808594],[-71.332153320312,41.792297363281],[-71.327880859375,41.780487060547],[-71.317749023438,41.776092529297]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"1.22426151252998E-01\",\"PERIMETER\":\"1.55997652977604E+00\",\"CO44_D00_\":\"2\",\"CO44_D00_I\":\"1\",\"STATE\":\"44\",\"COUNTY\":\"007\",\"NAME\":\"Providence\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.365295410156,41.642578125,-71.224792480469,41.776092529297],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.355285644531,41.746795654297],[-71.317749023438,41.776092529297],[-71.261352539062,41.752288818359],[-71.224792480469,41.710479736328],[-71.240966796875,41.697723388672],[-71.237609863281,41.681610107422],[-71.241516113281,41.667175292969],[-71.259521484375,41.642578125],[-71.267028808594,41.644927978516],[-71.280334472656,41.672576904297],[-71.28759765625,41.672454833984],[-71.29052734375,41.662384033203],[-71.301391601562,41.649963378906],[-71.306091308594,41.672576904297],[-71.302612304688,41.681732177734],[-71.293090820312,41.688323974609],[-71.291198730469,41.70263671875],[-71.305725097656,41.718658447266],[-71.3427734375,41.728485107422],[-71.353210449219,41.72509765625],[-71.365295410156,41.735595703125],[-71.355285644531,41.746795654297]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"8.30403024861770E-03\",\"PERIMETER\":\"4.87134020644684E-01\",\"CO44_D00_\":\"3\",\"CO44_D00_I\":\"2\",\"STATE\":\"44\",\"COUNTY\":\"001\",\"NAME\":\"Bristol\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.789672851562,41.596893310547,-71.353210449219,41.768005371094],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.411987304688,41.765075683594],[-71.399963378906,41.768005371094],[-71.387878417969,41.763702392578],[-71.365295410156,41.735595703125],[-71.353210449219,41.72509765625],[-71.365661621094,41.711608886719],[-71.365661621094,41.694915771484],[-71.377868652344,41.666625976562],[-71.389831542969,41.671875],[-71.390502929688,41.68408203125],[-71.441284179688,41.686431884766],[-71.445922851562,41.691131591797],[-71.449279785156,41.687377929688],[-71.444458007812,41.664398193359],[-71.425415039062,41.670776367188],[-71.409301757812,41.662628173828],[-71.408630371094,41.654174804688],[-71.435852050781,41.648895263672],[-71.45166015625,41.62939453125],[-71.461791992188,41.63818359375],[-71.482177734375,41.623291015625],[-71.487670898438,41.616485595703],[-71.484191894531,41.602600097656],[-71.789306640625,41.596893310547],[-71.789672851562,41.724731445312],[-71.454467773438,41.732482910156],[-71.450500488281,41.739685058594],[-71.4443359375,41.740081787109],[-71.446350097656,41.748474121094],[-71.440063476562,41.752777099609],[-71.440979003906,41.758087158203],[-71.411987304688,41.765075683594]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"4.96814137864359E-02\",\"PERIMETER\":\"1.27704215805364E+00\",\"CO44_D00_\":\"4\",\"CO44_D00_I\":\"3\",\"STATE\":\"44\",\"COUNTY\":\"003\",\"NAME\":\"Kent\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.362731933594,41.448883056641,-71.120544433594,41.675079345703],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.195617675781,41.675079345703],[-71.132873535156,41.660095214844],[-71.140869140625,41.607391357422],[-71.131286621094,41.59228515625],[-71.120544433594,41.497436523438],[-71.136840820312,41.493927001953],[-71.140197753906,41.48583984375],[-71.167297363281,41.471374511719],[-71.170104980469,41.463958740234],[-71.192993164062,41.457916259766],[-71.196838378906,41.461090087891],[-71.190124511719,41.484283447266],[-71.206359863281,41.499206542969],[-71.200744628906,41.514343261719],[-71.213500976562,41.545806884766],[-71.207763671875,41.600646972656],[-71.212646484375,41.610046386719],[-71.211975097656,41.622985839844],[-71.216125488281,41.62548828125],[-71.240661621094,41.619201660156],[-71.243591308594,41.587493896484],[-71.236083984375,41.574737548828],[-71.236633300781,41.535827636719],[-71.227966308594,41.528289794922],[-71.240600585938,41.500549316406],[-71.236694335938,41.483367919922],[-71.240661621094,41.474853515625],[-71.246643066406,41.471954345703],[-71.245971679688,41.481292724609],[-71.252685546875,41.485900878906],[-71.285583496094,41.48779296875],[-71.295104980469,41.484344482422],[-71.304382324219,41.454467773438],[-71.311340332031,41.450775146484],[-71.312683105469,41.45458984375],[-71.321350097656,41.455596923828],[-71.337646484375,41.448883056641],[-71.35107421875,41.450775146484],[-71.362731933594,41.460357666016],[-71.361511230469,41.464813232422],[-71.316467285156,41.4775390625],[-71.323120117188,41.503082275391],[-71.330688476562,41.507690429688],[-71.330810546875,41.518341064453],[-71.313049316406,41.53466796875],[-71.303649902344,41.559906005859],[-71.285095214844,41.577117919922],[-71.2734375,41.606964111328],[-71.275207519531,41.619415283203],[-71.251037597656,41.638763427734],[-71.212097167969,41.641937255859],[-71.195617675781,41.675079345703]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"2.59330693205360E-02\",\"PERIMETER\":\"1.18907364077964E+00\",\"CO44_D00_\":\"5\",\"CO44_D00_I\":\"4\",\"STATE\":\"44\",\"COUNTY\":\"005\",\"NAME\":\"Newport\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.366149902344,41.578582763672,-71.303344726562,41.662872314453],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.353759765625,41.662872314453],[-71.338684082031,41.658782958984],[-71.336181640625,41.64794921875],[-71.343627929688,41.639892578125],[-71.314880371094,41.630401611328],[-71.305541992188,41.622497558594],[-71.303344726562,41.606567382812],[-71.317443847656,41.583160400391],[-71.326049804688,41.578582763672],[-71.3359375,41.585876464844],[-71.337036132812,41.594665527344],[-71.325866699219,41.623962402344],[-71.346557617188,41.632202148438],[-71.362854003906,41.651458740234],[-71.366149902344,41.660980224609],[-71.353759765625,41.662872314453]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"1.80571094839754E-03\",\"PERIMETER\":\"2.60976360763092E-01\",\"CO44_D00_\":\"6\",\"CO44_D00_I\":\"5\",\"STATE\":\"44\",\"COUNTY\":\"005\",\"NAME\":\"Newport\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.862731933594,41.306304931641,-71.403747558594,41.654174804688],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.435852050781,41.648895263672],[-71.408630371094,41.654174804688],[-71.403747558594,41.589294433594],[-71.447692871094,41.580383300781],[-71.442565917969,41.565063476562],[-71.417358398438,41.534515380859],[-71.414916992188,41.516296386719],[-71.42138671875,41.498626708984],[-71.418395996094,41.472625732422],[-71.430725097656,41.470611572266],[-71.427917480469,41.459503173828],[-71.43359375,41.444976806641],[-71.455810546875,41.432952880859],[-71.455322265625,41.407958984375],[-71.483276367188,41.371704101562],[-71.526672363281,41.376617431641],[-71.555358886719,41.373291015625],[-71.624450683594,41.36083984375],[-71.720703125,41.33154296875],[-71.785949707031,41.325714111328],[-71.833740234375,41.315612792969],[-71.857421875,41.306304931641],[-71.862731933594,41.309783935547],[-71.859558105469,41.322387695312],[-71.831176757812,41.344635009766],[-71.833435058594,41.384521484375],[-71.842102050781,41.395355224609],[-71.842529296875,41.409851074219],[-71.818359375,41.419586181641],[-71.797668457031,41.416687011719],[-71.789306640625,41.596893310547],[-71.484191894531,41.602600097656],[-71.487670898438,41.616485595703],[-71.482177734375,41.623291015625],[-71.461791992188,41.63818359375],[-71.45166015625,41.62939453125],[-71.435852050781,41.648895263672]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"9.50078739325724E-02\",\"PERIMETER\":\"1.53408179656976E+00\",\"CO44_D00_\":\"7\",\"CO44_D00_I\":\"6\",\"STATE\":\"44\",\"COUNTY\":\"009\",\"NAME\":\"Washington\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.286743164062,41.637786865234,-71.274291992188,41.648193359375],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.281555175781,41.648193359375],[-71.274291992188,41.638122558594],[-71.283752441406,41.637786865234],[-71.286743164062,41.642700195312],[-71.281555175781,41.648193359375]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"7.78878774503333E-05\",\"PERIMETER\":\"3.68677266264010E-02\",\"CO44_D00_\":\"8\",\"CO44_D00_I\":\"7\",\"STATE\":\"44\",\"COUNTY\":\"005\",\"NAME\":\"Newport\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.399536132812,41.448577880859,-71.35986328125,41.573577880859],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.371887207031,41.573577880859],[-71.363525390625,41.570831298828],[-71.35986328125,41.556274414062],[-71.36328125,41.501953125],[-71.3603515625,41.483093261719],[-71.380920410156,41.474548339844],[-71.390258789062,41.455017089844],[-71.399536132812,41.448577880859],[-71.395874023438,41.4921875],[-71.386474609375,41.493072509766],[-71.37890625,41.504943847656],[-71.390991210938,41.514556884766],[-71.39208984375,41.524444580078],[-71.384460449219,41.556732177734],[-71.371887207031,41.573577880859]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"2.81358168131815E-03\",\"PERIMETER\":\"3.01875626254377E-01\",\"CO44_D00_\":\"9\",\"CO44_D00_I\":\"8\",\"STATE\":\"44\",\"COUNTY\":\"005\",\"NAME\":\"Newport\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.342956542969,41.482971191406,-71.326721191406,41.498596191406],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.326721191406,41.491271972656],[-71.327819824219,41.482971191406],[-71.342956542969,41.49560546875],[-71.341125488281,41.498596191406],[-71.326721191406,41.491271972656]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"1.05787854717154E-04\",\"PERIMETER\":\"4.85682569813496E-02\",\"CO44_D00_\":\"10\",\"CO44_D00_I\":\"9\",\"STATE\":\"44\",\"COUNTY\":\"005\",\"NAME\":\"Newport\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}},{\"type\":\"Feature\",\"bbox\":[-71.613098144531,41.146331787109,-71.54443359375,41.228424072266],\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-71.557312011719,41.173004150391],[-71.54443359375,41.164886474609],[-71.546997070312,41.153686523438],[-71.593688964844,41.146331787109],[-71.611694335938,41.153228759766],[-71.613098144531,41.160247802734],[-71.605529785156,41.18212890625],[-71.580200195312,41.204833984375],[-71.57373046875,41.228424072266],[-71.561096191406,41.224182128906],[-71.554992675781,41.216796875],[-71.565734863281,41.184356689453],[-71.557312011719,41.173004150391]]]},\"properties\":{\"_isDeleted\":false,\"AREA\":\"3.02695600750058E-03\",\"PERIMETER\":\"2.57041396968001E-01\",\"CO44_D00_\":\"11\",\"CO44_D00_I\":\"10\",\"STATE\":\"44\",\"COUNTY\":\"009\",\"NAME\":\"Washington\",\"LSAD\":\"06\",\"LSAD_TRANS\":\"County\",\"CODE\":\"pbvs\",\"CODE_ACC\":\"bmds\",\"CODE_ABS\":\"bmds\",\"CODE_EV\":\"nev\"}}]}",
+  "pp_system_list": [
+    {
+      "id": 17,
+      "code_abbrev": "AVBM",
+      "code_text": "AVBM All Vote by Mail (obsolete)",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 38,
+      "code_abbrev": "BMDN",
+      "code_text": "BMDs and DREs without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 18,
+      "code_abbrev": "BMDS",
+      "code_text": "Ballot Marking Devices for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 19,
+      "code_abbrev": "BMDV",
+      "code_text": "BMDs and DREs with VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 42,
+      "code_abbrev": "BMOS",
+      "code_text": "Ballot Marking Device/Tabulators for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 20,
+      "code_abbrev": "DREN",
+      "code_text": "DREs without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 21,
+      "code_abbrev": "DREV",
+      "code_text": "DREs with VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 22,
+      "code_abbrev": "DREX",
+      "code_text": "DREs with and without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 23,
+      "code_abbrev": "HBDN",
+      "code_text": "Hand marked paper ballots, BMDs and DREs without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 24,
+      "code_abbrev": "HBDV",
+      "code_text": "Hand marked paper ballots, BMDs and DREs with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 25,
+      "code_abbrev": "HBDX",
+      "code_text": "Hand marked paper ballots, BMDs and DREs with and without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 26,
+      "code_abbrev": "HMBX",
+      "code_text": "Hand marked paper ballots and BMDs",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 45,
+      "code_abbrev": "HMDN",
+      "code_text": "Hand marked paper ballots and DREs without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 27,
+      "code_abbrev": "HMPB",
+      "code_text": "Hand marked paper ballots, BMDs for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 44,
+      "code_abbrev": "HMPN",
+      "code_text": "Hand marked paper ballots",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 28,
+      "code_abbrev": "LVPB",
+      "code_text": "Lever Voting Machines and hand marked paper ballots",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 29,
+      "code_abbrev": "LVRM",
+      "code_text": "Mechanical lever voting machines for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 39,
+      "code_abbrev": "MBDV",
+      "code_text": "BMDs and DREs with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 31,
+      "code_abbrev": "MPDN",
+      "code_text": "Hand marked paper ballots, DREs for accessibility without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 32,
+      "code_abbrev": "MPDV",
+      "code_text": "Hand marked paper ballots, DREs for accessibility with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 33,
+      "code_abbrev": "MPDX",
+      "code_text": "Hand marked paper ballots, DREs with and without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 43,
+      "code_abbrev": "NONE",
+      "code_text": "None",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "BFBFBF",
+      "map_order": 99,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 34,
+      "code_abbrev": "PBDN",
+      "code_text": "Hand marked paper ballots; Direct recording assistive interface for accessibility without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 35,
+      "code_abbrev": "PBPC",
+      "code_text": "Hand marked paper punch card and optical scan ballots, BMDs  for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 37,
+      "code_abbrev": "PCVS",
+      "code_text": "Hand marked punch card ballots, BMDs for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "pp_acc_system_list": [
+    {
+      "id": 17,
+      "code_abbrev": "AVBM",
+      "code_text": "AVBM All Vote by Mail (obsolete)",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 38,
+      "code_abbrev": "BMDN",
+      "code_text": "BMDs and DREs without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 18,
+      "code_abbrev": "BMDS",
+      "code_text": "Ballot Marking Devices for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 19,
+      "code_abbrev": "BMDV",
+      "code_text": "BMDs and DREs with VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 42,
+      "code_abbrev": "BMOS",
+      "code_text": "Ballot Marking Device/Tabulators for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 20,
+      "code_abbrev": "DREN",
+      "code_text": "DREs without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 21,
+      "code_abbrev": "DREV",
+      "code_text": "DREs with VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 22,
+      "code_abbrev": "DREX",
+      "code_text": "DREs with and without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 27,
+      "code_abbrev": "HMPB",
+      "code_text": "Hand marked paper ballots, BMDs for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 40,
+      "code_abbrev": "MBDN",
+      "code_text": "BMDs and DREs without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 39,
+      "code_abbrev": "MBDV",
+      "code_text": "BMDs and DREs with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 41,
+      "code_abbrev": "MBDX",
+      "code_text": "BMDs and DREs with and without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 1,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 31,
+      "code_abbrev": "MPDN",
+      "code_text": "Hand marked paper ballots, DREs for accessibility without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 32,
+      "code_abbrev": "MPDV",
+      "code_text": "Hand marked paper ballots, DREs for accessibility with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 43,
+      "code_abbrev": "NONE",
+      "code_text": "None",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "BFBFBF",
+      "map_order": 99,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 34,
+      "code_abbrev": "PBDN",
+      "code_text": "Hand marked paper ballots; Direct recording assistive interface for accessibility without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "ev_system_list": [
+    {
+      "id": 17,
+      "code_abbrev": "AVBM",
+      "code_text": "AVBM All Vote by Mail (obsolete)",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 38,
+      "code_abbrev": "BMDN",
+      "code_text": "BMDs and DREs without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 18,
+      "code_abbrev": "BMDS",
+      "code_text": "Ballot Marking Devices for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 42,
+      "code_abbrev": "BMOS",
+      "code_text": "Ballot Marking Device/Tabulators for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 20,
+      "code_abbrev": "DREN",
+      "code_text": "DREs without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 21,
+      "code_abbrev": "DREV",
+      "code_text": "DREs with VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 22,
+      "code_abbrev": "DREX",
+      "code_text": "DREs with and without VVPAT for all voters",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 23,
+      "code_abbrev": "HBDN",
+      "code_text": "Hand marked paper ballots, BMDs and DREs without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 24,
+      "code_abbrev": "HBDV",
+      "code_text": "Hand marked paper ballots, BMDs and DREs with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 25,
+      "code_abbrev": "HBDX",
+      "code_text": "Hand marked paper ballots, BMDs and DREs with and without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 26,
+      "code_abbrev": "HMBX",
+      "code_text": "Hand marked paper ballots and BMDs",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 27,
+      "code_abbrev": "HMPB",
+      "code_text": "Hand marked paper ballots, BMDs for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 44,
+      "code_abbrev": "HMPN",
+      "code_text": "Hand marked paper ballots",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 40,
+      "code_abbrev": "MBDN",
+      "code_text": "BMDs and DREs without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 39,
+      "code_abbrev": "MBDV",
+      "code_text": "BMDs and DREs with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 31,
+      "code_abbrev": "MPDN",
+      "code_text": "Hand marked paper ballots, DREs for accessibility without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 32,
+      "code_abbrev": "MPDV",
+      "code_text": "Hand marked paper ballots, DREs for accessibility with VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 33,
+      "code_abbrev": "MPDX",
+      "code_text": "Hand marked paper ballots, DREs with and without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 74,
+      "code_abbrev": "NEV",
+      "code_text": "No Early Voting",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2024-05-17 15:10:28"
+    },
+    {
+      "id": 43,
+      "code_abbrev": "NONE",
+      "code_text": "None",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "BFBFBF",
+      "map_order": 99,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 34,
+      "code_abbrev": "PBDN",
+      "code_text": "Hand marked paper ballots; Direct recording assistive interface for accessibility without VVPAT",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 35,
+      "code_abbrev": "PBPC",
+      "code_text": "Hand marked paper punch card and optical scan ballots, BMDs  for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 0,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 36,
+      "code_abbrev": "PBVS",
+      "code_text": "Paper Ballot Voting System (obsolete)",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 37,
+      "code_abbrev": "PCVS",
+      "code_text": "Hand marked punch card ballots, BMDs for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "abs_system_list": [
+    {
+      "id": 17,
+      "code_abbrev": "AVBM",
+      "code_text": "AVBM All Vote by Mail (obsolete)",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 47,
+      "code_abbrev": "BFOS",
+      "code_text": "Batch-Fed Optical Scanners",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 50,
+      "code_abbrev": "HCOS",
+      "code_text": "Hand Counted Optical Scanners",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 48,
+      "code_abbrev": "HCPB",
+      "code_text": "Hand Counted Paper Ballots",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 1,
+      "map_color": "d6d6d6",
+      "map_order": 50,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 49,
+      "code_abbrev": "HFOS",
+      "code_text": "Hand-Fed Optical Scanners",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 27,
+      "code_abbrev": "HMPB",
+      "code_text": "Hand marked paper ballots, BMDs for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 1,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 36,
+      "code_abbrev": "PBVS",
+      "code_text": "Paper Ballot Voting System (obsolete)",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 37,
+      "code_abbrev": "PCVS",
+      "code_text": "Hand marked punch card ballots, BMDs for accessibility",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 1,
+      "pp_acc_type": 0,
+      "ev_type": 1,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 51,
+      "code_abbrev": "UNON",
+      "code_text": "Unknown",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 1,
+      "map_color": "ffffff",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "first_fielded_list": [
+    {
+      "id": 75,
+      "code_abbrev": "1996",
+      "code_text": "1996",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "361404",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 76,
+      "code_abbrev": "1998",
+      "code_text": "1998",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "361404",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 77,
+      "code_abbrev": "2000",
+      "code_text": "2000",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "361404",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 78,
+      "code_abbrev": "2002",
+      "code_text": "2002",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "361404",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 71,
+      "code_abbrev": "2004",
+      "code_text": "2004 or earlier",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "361404",
+      "map_order": 30,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 22:05:09"
+    },
+    {
+      "id": 70,
+      "code_abbrev": "2006",
+      "code_text": "2006",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "512006",
+      "map_order": 23,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 22:05:09"
+    },
+    {
+      "id": 69,
+      "code_abbrev": "2008",
+      "code_text": "2008",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "662508",
+      "map_order": 21,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 22:05:09"
+    },
+    {
+      "id": 68,
+      "code_abbrev": "2010",
+      "code_text": "2010",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "812909",
+      "map_order": 19,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 67,
+      "code_abbrev": "2012",
+      "code_text": "2012",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "983310",
+      "map_order": 17,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 66,
+      "code_abbrev": "2014",
+      "code_text": "2014",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "cc4c16",
+      "map_order": 15,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 65,
+      "code_abbrev": "2016",
+      "code_text": "2016",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "eb701b",
+      "map_order": 13,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 64,
+      "code_abbrev": "2018",
+      "code_text": "2018",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "fa9928",
+      "map_order": 11,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 63,
+      "code_abbrev": "2020",
+      "code_text": "2020",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "fec34f",
+      "map_order": 9,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 62,
+      "code_abbrev": "2022",
+      "code_text": "2022",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "fee391",
+      "map_order": 7,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 73,
+      "code_abbrev": "2024",
+      "code_text": "2024",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "fef7bc",
+      "map_order": 5,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-02-04 14:27:12"
+    },
+    {
+      "id": 79,
+      "code_abbrev": "2026",
+      "code_text": "2026",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "feffe5",
+      "map_order": 3,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2025-01-30 18:28:21"
+    },
+    {
+      "id": 48,
+      "code_abbrev": "HCPB",
+      "code_text": "Hand Counted Paper Ballots",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 1,
+      "map_color": "d6d6d6",
+      "map_order": 50,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 1,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "audit_comprehensiveness_list": [
+    {
+      "id": 72,
+      "code_abbrev": "ABNC",
+      "code_text": "No Guidance",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "DED93A",
+      "map_order": 4,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 1,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 52,
+      "code_abbrev": "ACOA",
+      "code_text": "All Ballots Subject to Audit",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "AF9036",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 1,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 53,
+      "code_abbrev": "ACOS",
+      "code_text": "Some, But Not All",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "E4BC37",
+      "map_order": 2,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 1,
+      "audit_binding_type": 0,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 54,
+      "code_abbrev": "ANON",
+      "code_text": "No Post-Election Audit Law",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "BFBFBF",
+      "map_order": 10,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 1,
+      "audit_binding_type": 1,
+      "audit_main_type": 1,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "audit_binding_list": [
+    {
+      "id": 55,
+      "code_abbrev": "ABIN",
+      "code_text": "Binding",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "752F9D",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 1,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 58,
+      "code_abbrev": "ABNO",
+      "code_text": "No Guidance",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "5E7B93",
+      "map_order": 4,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 1,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 57,
+      "code_abbrev": "ABNT",
+      "code_text": "Not Binding",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "DBC8DC",
+      "map_order": 3,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 1,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 56,
+      "code_abbrev": "ABOT",
+      "code_text": "Binding on Totals, Not Outcomes",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "B473DC",
+      "map_order": 2,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 1,
+      "audit_main_type": 0,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 54,
+      "code_abbrev": "ANON",
+      "code_text": "No Post-Election Audit Law",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "BFBFBF",
+      "map_order": 10,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 1,
+      "audit_binding_type": 1,
+      "audit_main_type": 1,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "audit_main_list": [
+    {
+      "id": 54,
+      "code_abbrev": "ANON",
+      "code_text": "No Post-Election Audit Law",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "BFBFBF",
+      "map_order": 10,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 1,
+      "audit_binding_type": 1,
+      "audit_main_type": 1,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 61,
+      "code_abbrev": "AODP",
+      "code_text": "Optional, Discretionary, or Partial",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "97D5A2",
+      "map_order": 3,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 1,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 60,
+      "code_abbrev": "APEA",
+      "code_text": "Post-Election Audit",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "47A054",
+      "map_order": 2,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 1,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    },
+    {
+      "id": 59,
+      "code_abbrev": "ARLA",
+      "code_text": "Risk-Limiting Audit",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown",
+      "pp_type": 0,
+      "pp_acc_type": 0,
+      "ev_type": 0,
+      "abs_type": 0,
+      "map_color": "255D2D",
+      "map_order": 1,
+      "parent_code": null,
+      "audit_comprehensiveness_type": 0,
+      "audit_binding_type": 0,
+      "audit_main_type": 1,
+      "first_fielded_type": 0,
+      "barcoded_type": 0,
+      "timestamp": "2023-02-15 00:48:36"
+    }
+  ],
+  "all_mail_ballot_list": [
+    {
+      "id": 1,
+      "text": "",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown"
+    },
+    {
+      "id": 2,
+      "text": "All Mail Ballot",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown"
+    }
+  ],
+  "vote_center_list": [
+    {
+      "id": 1,
+      "text": "N/A",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown"
+    },
+    {
+      "id": 2,
+      "text": "Assigned Polling Place",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown"
+    },
+    {
+      "id": 3,
+      "text": "Vote Center",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown"
+    },
+    {
+      "id": 4,
+      "text": "Vote Centers and Assigned Polling Places",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown"
+    },
+    {
+      "id": 5,
+      "text": "Election Office",
+      "entered_by": "unknown",
+      "entered_by_ip": "unknown"
+    }
+  ],
+  "practice_list": [
+    {
+      "practice": ""
+    },
+    {
+      "practice": "All Mail Ballot"
+    },
+    {
+      "practice": "Polling Place"
+    },
+    {
+      "practice": "Vote Center"
+    }
+  ],
+  "tabulation": "Optical Scan",
+  "model_list": {
+    "AES": [
+      "AutoVote"
+    ],
+    "American Election Systems": [
+      "Auto Poll Book"
+    ],
+    "American Elections": [
+      "Auto Poll Book"
+    ],
+    "American Elections Inc.": [
+      "Auto Poll Book"
+    ],
+    "American Elections Systems": [
+      " Auto Poll Book",
+      "Auto Poll Book"
+    ],
+    "Amerrican Election Systems": [
+      "Auto Poll Book"
+    ],
+    "ATS": [
+      "Airmac [2004 - obsolete]",
+      "MR 210 [2004 - obsolete]"
+    ],
+    "Avante": [
+      "Optical Vote-Trakker",
+      "Vote-Trakker",
+      "Vote-Trakker Ballot Marking Device"
+    ],
+    "AVM": [
+      "AVM Manual",
+      "AVM NS [2004 - obsolete]",
+      "AVM Printomatic",
+      "POM-40 [2004 - obsolete]",
+      "POM-50 [2004 - obsolete]"
+    ],
+    "AVS": [
+      "WinScan",
+      "WinVote"
+    ],
+    "AZ SoS": [
+      "Uniformed and Overseas Citizen Portal",
+      "UOCAVA Portal"
+    ],
+    "Boone County": [
+      "Boone County Electronic Pollbook"
+    ],
+    "BPro": [
+      "TotalVote ePollbook"
+    ],
+    "Cerro Gordo County IA": [
+      "Precinct Atlas"
+    ],
+    "Chicago Software": [
+      "Data Unavailable [2004 - obsolete]"
+    ],
+    "Clear Ballot": [
+      "ClearAccess",
+      "ClearCast",
+      "ClearCast Go",
+      "ClearCount",
+      "ClearMark"
+    ],
+    "CO SoS": [
+      "CO Electronic Pollbook",
+      "Electronic PollBook",
+      "SCORE"
+    ],
+    "Computing Devicves of Canada": [
+      "Elex Voting System [2004 - obsolete]"
+    ],
+    "ContentActive": [
+      "Electronic Pollbook",
+      "Harris County Electronic Pollbook"
+    ],
+    "Danaher": [
+      "Shouptronic 1242",
+      "Shouptronic 1242 [2004 - obsolete]"
+    ],
+    "Data Unavailable": [
+      "BCCS 228 [2004 - obsolete]",
+      "Central Count [2004 - obsolete]",
+      "Data Unavailable",
+      "Data Unavailable [2004 - obsolete]"
+    ],
+    "Decision Support": [
+      "EViD"
+    ],
+    "Democracy Live": [
+      "LiveBallot",
+      "OmniBallot Online",
+      "OmniBallot Tablet",
+      "Secure Select"
+    ],
+    "DemTech": [
+      "Advocate Precinct",
+      "ePollTAB"
+    ],
+    "DFM": [
+      "EIMS",
+      "Mark A Vote [2004 - obsolete]",
+      "Mark-a-Vote",
+      "Vote Center App"
+    ],
+    "Diebold": [
+      "AccuVote OS",
+      "AccuVote OS Central",
+      "AccuVote OS [2004 - obsolete]",
+      "AccuVote TS",
+      "Accuvote TS R6 [2004 - obsolete]",
+      "AccuVote TSX",
+      "Accuvote-TS [2004 - obsolete]",
+      "ExpressPoll"
+    ],
+    "Dominion": [
+      "ImageCast",
+      "ImageCast Central",
+      "ImageCast Evolution",
+      "ImageCast Precinct",
+      "ImageCast Precinct ATI",
+      "ImageCast Precinct BMD",
+      "ImageCast Remote",
+      "ImageCast X BMD",
+      "ImageCast X DRE"
+    ],
+    "Election Administrators": [
+      "EA Pollbook",
+      "EA Tablet"
+    ],
+    "Embry Consulting": [
+      "Voter Central",
+      "Voter Roster Module"
+    ],
+    "Enhanced Voting": [
+      "Enhanced Ballot",
+      "MyBallot"
+    ],
+    "ES&S": [
+      "AutoMARK",
+      "BRC P-III [2004 - obsolete]",
+      "BRC Punchcard [2004 - obsolete]",
+      "Central Count [2004 - obsolete]",
+      "CSE Model III-A [2004 - obsolete]",
+      "Data Unavailable [2004 - obsolete]",
+      "Dell Ultra Scan [2004 - obsolete]",
+      "DS200",
+      "DS300",
+      "DS450",
+      "DS850",
+      "DS950",
+      "EV 2000 [2004 - obsolete]",
+      "ExpressPoll",
+      "ExpressTouch",
+      "ExpressVote",
+      "ExpressVote Tabulator",
+      "ExpressVote XL",
+      "InkaVote Plus",
+      "InkaVote Plus PBC",
+      "iPower Profile",
+      "iVotronic",
+      "Model 100",
+      "Model 100 [2004 - obsolete]",
+      "Model 115",
+      "Model 150",
+      "Model 315",
+      "Model 550",
+      "Model 650",
+      "Optech",
+      "OpTech 2",
+      "Optech IIIP-Eagle",
+      "Optech Insight",
+      "Optech IV-C",
+      "PBC 2100 [2004 - obsolete]",
+      "PBC 5 [2004 - obsolete]",
+      "PBC III [2004 - obsolete]",
+      "PBC V & VI [2004 - obsolete]",
+      "PBC-IIID [2004 - obsolete]",
+      "PCBT [2004 - obsolete]",
+      "Pollstar [2004 - obsolete]",
+      "Votomatic",
+      "Votronic II [2004 - obsolete]",
+      "Votronic [2004 - obsolete]"
+    ],
+    "Everyone Counts": [
+      "eLect",
+      "eLect Electronic Poll Book"
+    ],
+    "Fidlar Doubleday": [
+      "DIS [2004 - obsolete]",
+      "EV 2000 [2004 - obsolete]"
+    ],
+    "Five Cedars": [
+      "Alternate Format Ballot"
+    ],
+    "GBS": [
+      "Valid Voter"
+    ],
+    "Hart InterCivic": [
+      "Ballot Now",
+      "ePollBook",
+      "eScan",
+      "eScan A/T",
+      "eSlate",
+      "EViD",
+      "Vanguard Capture",
+      "Vanguard Flex",
+      "Vanguard Vault",
+      "Verity Central",
+      "Verity Duo",
+      "Verity Scan",
+      "Verity Touch",
+      "Verity Touch Writer"
+    ],
+    "HelpSystems": [
+      "GoAnywhere MFT"
+    ],
+    "HI Office of Elections": [
+      "Voter Registration System"
+    ],
+    "IA SoS": [
+      "Express Voter"
+    ],
+    "IES": [
+      "Shoup Manual",
+      "Shoup Manual [2004 - obsolete]"
+    ],
+    "IPAC": [
+      "Precinct Atlas"
+    ],
+    "IVS": [
+      "Inspire Ballot Marking System",
+      "Inspire Vote By Phone"
+    ],
+    "Jefferson County": [
+      "Jefferson County Electronic Pollbook"
+    ],
+    "KNOWiNK": [
+      "ElectMT",
+      "Poll Pad",
+      "TotalVote ePollbook"
+    ],
+    "Konnech": [
+      "ABVote",
+      "EVSW"
+    ],
+    "Larimer County": [
+      "Larimer County Electronic Poll Book"
+    ],
+    "LEDS": [
+      "e-Poll Book",
+      "Vote Center Pollbook"
+    ],
+    "Los Angeles County": [
+      "MTS",
+      "MTS/InkaVote [2004 - obsolete]",
+      "VSAP BMD",
+      "VSAP Interactive Sample Ballot",
+      "VSAP Tally"
+    ],
+    "Louisiana SoS": [
+      "Geaux Vote"
+    ],
+    "Maricopa County": [
+      "SiteBook"
+    ],
+    "MD BoE": [
+      "Online Ballot Marking Tool"
+    ],
+    "MI BoE": [
+      "MI BoE Electronic Pollbook"
+    ],
+    "MicroVote": [
+      "Infinity",
+      "Infinity [2004 - obsolete]",
+      "iVotronic [2004 - obsolete]",
+      "MicroVote/Chatsworth Scanner",
+      "Model 464 [2004 - obsolete]",
+      "MV-464"
+    ],
+    "MO SoS": [
+      "Military and Overseas Voting Access Portal"
+    ],
+    "Montgomery County": [
+      "Montgomery County Elections eVote"
+    ],
+    "Montgomery County TX": [
+      "Montgomery County Elections eVote"
+    ],
+    "NASA": [
+      "TDRS"
+    ],
+    "NCSBE": [
+      "OVRD",
+      "SOSA"
+    ],
+    "ND SoS": [
+      "UOCAVA Portal"
+    ],
+    "No Accessible Equipment": [
+      "No Accessible Equipment"
+    ],
+    "Not Applicable": [
+      "Not Applicable"
+    ],
+    "NV SoS": [
+      "EASE"
+    ],
+    "OR SoS": [
+      "My Vote"
+    ],
+    "Orange County FL": [
+      "OCVotes ePoll Book",
+      "OCVotes Laptop Solution"
+    ],
+    "Platinum": [
+      "Platinum Poll Book"
+    ],
+    "Populex": [
+      "PopulexSlate"
+    ],
+    "Premier (Diebold)": [
+      "AccuVote OS",
+      "AccuVote OS Central",
+      "AccuVote OSX",
+      "AccuVote TS",
+      "AccuVote TSX",
+      "AutoMARK",
+      "ExpressPoll",
+      "Premier Central Scan"
+    ],
+    "Prime III": [
+      "One4All"
+    ],
+    "Provista": [
+      "ViBE"
+    ],
+    "RF Shoup": [
+      "Shoup Manual [2004 - obsolete]"
+    ],
+    "Robis": [
+      "AskED ePollbook"
+    ],
+    "Runbeck": [
+      "EMS-DIMS"
+    ],
+    "Rutherford County TN": [
+      "Rutherford Voter Registration Database",
+      "Voter Registration Database"
+    ],
+    "SC State Election Commission": [
+      "SC Electronic Voter Registration List (EVRL)"
+    ],
+    "Scantron": [
+      "ES 2800"
+    ],
+    "Scytl": [
+      "BallotSafe",
+      "eBallot Delivery",
+      "SecureBallot"
+    ],
+    "Sequoia": [
+      "AVC Advantage",
+      "AVC Advantage [2004 - obsolete]",
+      "AVC Edge",
+      "AVM Printomatic [2004 - obsolete]",
+      "Data Unavailable [2004 - obsolete]",
+      "Datavote",
+      "e-pollbook",
+      "NCS OpScan",
+      "NCS OpScan 5",
+      "NCS OpScan 6",
+      "Optech 2",
+      "Optech 400C",
+      "Optech IIIP-Eagle",
+      "Optech Insight",
+      "Teamwork Model 25"
+    ],
+    "Shoup": [
+      "IES Lever [2004 - obsolete]",
+      "Shoup Lever [2004 - obsolete]",
+      "Shoup [2004 - obsolete]"
+    ],
+    "State of Utah": [
+      "VISTA Local"
+    ],
+    "State of Wisconsin": [
+      "Badger Book"
+    ],
+    "Tenex": [
+      "Precinct Central"
+    ],
+    "Triad": [
+      "Accessible Ballot Marking Tool (ABMT)",
+      "ELECtab [2004 - obsolete]"
+    ],
+    "Unilect": [
+      "Patriot",
+      "Patriot Marksense Scanner"
+    ],
+    "Unisyn": [
+      "OpenElect FVS",
+      "OpenElect FVT",
+      "OpenElect OVCS",
+      "OpenElect OVCS mini",
+      "OpenElect OVI",
+      "OpenElect OVI-VC",
+      "OpenElect OVO"
+    ],
+    "University of Florida": [
+      "Prime III*"
+    ],
+    "Virginia SBoE": [
+      "Elect EPB"
+    ],
+    "Voatz": [
+      "Mobile Voting App"
+    ],
+    "Vote-PAD": [
+      "Vote-PAD Ballot Marking System"
+    ],
+    "Votec": [
+      "VoteSafe"
+    ],
+    "Votem": [
+      "CastIron"
+    ],
+    "VotingWorks": [
+      "VxCentralScan",
+      "VxMark",
+      "VxScan"
+    ],
+    "VR Systems": [
+      "EViD"
+    ],
+    "VTI": [
+      "VoTWARE"
+    ],
+    "WA SoS": [
+      "VoteWA"
+    ],
+    "Webb Systems": [
+      "BCCS 228 [2004 - obsolete]",
+      "BCCS 312 [2004 - obsolete]",
+      "BCCS Punchcard 228 [2004 - obsolete]",
+      "BCCS Punchcard 312 [2004 - obsolete]"
+    ],
+    "Weld County": [
+      "Weld County Electronic Pollbook"
+    ],
+    "WI Election Commission": [
+      "Badger Book"
+    ],
+    "Wilson County TN": [
+      "Wilson County EPB"
+    ]
+  },
+  "equip_type_list": {
+    "AutoVote": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Auto Poll Book": [
+      "Commercial Electronic Poll Book"
+    ],
+    " Auto Poll Book": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Airmac [2004 - obsolete]": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "MR 210 [2004 - obsolete]": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Optical Vote-Trakker": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Vote-Trakker": [
+      "DRE-Touchscreen"
+    ],
+    "Vote-Trakker Ballot Marking Device": [
+      "Ballot Marking Device"
+    ],
+    "AVM Manual": [
+      "Mechanical Lever Machine"
+    ],
+    "AVM NS [2004 - obsolete]": [
+      "Mechanical Lever Machine"
+    ],
+    "AVM Printomatic": [
+      "Mechanical Lever Machine"
+    ],
+    "POM-40 [2004 - obsolete]": [
+      "Mechanical Lever Machine"
+    ],
+    "POM-50 [2004 - obsolete]": [
+      "Mechanical Lever Machine"
+    ],
+    "WinScan": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "WinVote": [
+      "DRE-Touchscreen"
+    ],
+    "Uniformed and Overseas Citizen Portal": [
+      "Internet Voting: Web Portal"
+    ],
+    "UOCAVA Portal": [
+      "Internet Voting: Web Portal"
+    ],
+    "Boone County Electronic Pollbook": [
+      "In-House Electronic Poll Book"
+    ],
+    "TotalVote ePollbook": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Precinct Atlas": [
+      "In-House Electronic Poll Book"
+    ],
+    "Data Unavailable [2004 - obsolete]": [
+      "Punch Card Voting System",
+      "Optical Scan",
+      "Mechanical Lever Machine",
+      "In-House Electronic Poll Book",
+      "Hand-Fed Optical Scanner",
+      "Batch-Fed Optical Scanner"
+    ],
+    "ClearAccess": [
+      "Ballot Marking Device"
+    ],
+    "ClearCast": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "ClearCast Go": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "ClearCount": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "ClearMark": [
+      "Ballot Marking Device"
+    ],
+    "CO Electronic Pollbook": [
+      "In-House Electronic Poll Book"
+    ],
+    "Electronic PollBook": [
+      "In-House Electronic Poll Book"
+    ],
+    "SCORE": [
+      "In-House Electronic Poll Book"
+    ],
+    "Elex Voting System [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "Electronic Pollbook": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Harris County Electronic Pollbook": [
+      "In-House Electronic Poll Book",
+      "Commercial Electronic Poll Book"
+    ],
+    "Shouptronic 1242": [
+      "DRE-Push Button"
+    ],
+    "Shouptronic 1242 [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "BCCS 228 [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "Central Count [2004 - obsolete]": [
+      "Batch-Fed Optical Scanner",
+      "Optical Scan"
+    ],
+    "Data Unavailable": [
+      "Data Unavailable",
+      "Commercial Electronic Poll Book"
+    ],
+    "EViD": [
+      "Commercial Electronic Poll Book"
+    ],
+    "LiveBallot": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "OmniBallot Online": [
+      "Internet Voting: Web Portal",
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "OmniBallot Tablet": [
+      "Ballot Marking Device"
+    ],
+    "Secure Select": [
+      "Remote Ballot Marking System: Client-Side"
+    ],
+    "Advocate Precinct": [
+      "Commercial Electronic Poll Book"
+    ],
+    "ePollTAB": [
+      "Commercial Electronic Poll Book"
+    ],
+    "EIMS": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Mark A Vote [2004 - obsolete]": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Mark-a-Vote": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Vote Center App": [
+      "Commercial Electronic Poll Book"
+    ],
+    "AccuVote OS": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "AccuVote OS Central": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "AccuVote OS [2004 - obsolete]": [
+      "Data Unavailable",
+      "Batch-Fed Optical Scanner"
+    ],
+    "AccuVote TS": [
+      "DRE-Touchscreen"
+    ],
+    "Accuvote TS R6 [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "AccuVote TSX": [
+      "DRE-Touchscreen"
+    ],
+    "Accuvote-TS [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "ExpressPoll": [
+      "Commercial Electronic Poll Book"
+    ],
+    "ImageCast": [
+      "Ballot Marking Device"
+    ],
+    "ImageCast Central": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "ImageCast Evolution": [
+      "Hybrid Optical Scan/BMD"
+    ],
+    "ImageCast Precinct": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "ImageCast Precinct ATI": [
+      "Hybrid Optical Scan/DRE"
+    ],
+    "ImageCast Precinct BMD": [
+      "Ballot Marking Device"
+    ],
+    "ImageCast Remote": [
+      "Remote Ballot Marking System: Client-Side"
+    ],
+    "ImageCast X BMD": [
+      "Ballot Marking Device"
+    ],
+    "ImageCast X DRE": [
+      "DRE-Touchscreen"
+    ],
+    "EA Pollbook": [
+      "Commercial Electronic Poll Book"
+    ],
+    "EA Tablet": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Voter Central": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Voter Roster Module": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Enhanced Ballot": [
+      "Internet Voting: Web Portal",
+      "Remote Ballot Marking System: Client-Side"
+    ],
+    "MyBallot": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "AutoMARK": [
+      "Ballot Marking Device"
+    ],
+    "BRC P-III [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "BRC Punchcard [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "CSE Model III-A [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "Dell Ultra Scan [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "DS200": [
+      "Hand-Fed Optical Scanner",
+      "Batch-Fed Optical Scanner"
+    ],
+    "DS300": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "DS450": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "DS850": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "DS950": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "EV 2000 [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "ExpressTouch": [
+      "DRE-Touchscreen"
+    ],
+    "ExpressVote": [
+      "Ballot Marking Device"
+    ],
+    "ExpressVote Tabulator": [
+      "Hybrid BMD/Tabulator"
+    ],
+    "ExpressVote XL": [
+      "Hybrid BMD/Tabulator"
+    ],
+    "InkaVote Plus": [
+      "Ballot Marking Device"
+    ],
+    "InkaVote Plus PBC": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "iPower Profile": [
+      "Commercial Electronic Poll Book"
+    ],
+    "iVotronic": [
+      "DRE-Touchscreen"
+    ],
+    "Model 100": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Model 100 [2004 - obsolete]": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Model 115": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Model 150": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Model 315": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Model 550": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Model 650": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Optech": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "OpTech 2": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Optech IIIP-Eagle": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Optech Insight": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Optech IV-C": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "PBC 2100 [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "PBC 5 [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "PBC III [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "PBC V & VI [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "PBC-IIID [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "PCBT [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "Pollstar [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "Votomatic": [
+      "Punch Card Voting System"
+    ],
+    "Votronic II [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "Votronic [2004 - obsolete]": [
+      "DRE-Touchscreen",
+      "DRE-Push Button"
+    ],
+    "eLect": [
+      "Internet Voting: Web Portal",
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "eLect Electronic Poll Book": [
+      "Commercial Electronic Poll Book"
+    ],
+    "DIS [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "Alternate Format Ballot": [
+      "Remote Ballot Marking System: Client-Side"
+    ],
+    "Valid Voter": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Ballot Now": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "ePollBook": [
+      "Commercial Electronic Poll Book"
+    ],
+    "eScan": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "eScan A/T": [
+      "Hybrid Optical Scan/DRE"
+    ],
+    "eSlate": [
+      "DRE-Dial"
+    ],
+    "Vanguard Capture": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Vanguard Flex": [
+      "Ballot Marking Device"
+    ],
+    "Vanguard Vault": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Verity Central": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Verity Duo": [
+      "Ballot Marking Device"
+    ],
+    "Verity Scan": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Verity Touch": [
+      "DRE-Touchscreen"
+    ],
+    "Verity Touch Writer": [
+      "Ballot Marking Device"
+    ],
+    "GoAnywhere MFT": [
+      "Internet Voting: Web Portal"
+    ],
+    "Voter Registration System": [
+      "In-House Electronic Poll Book"
+    ],
+    "Express Voter": [
+      "In-House Electronic Poll Book"
+    ],
+    "Shoup Manual": [
+      "Mechanical Lever Machine"
+    ],
+    "Shoup Manual [2004 - obsolete]": [
+      "DRE-Touchscreen",
+      "Mechanical Lever Machine"
+    ],
+    "Inspire Ballot Marking System": [
+      "Ballot Marking Device"
+    ],
+    "Inspire Vote By Phone": [
+      "Ballot Marking Device"
+    ],
+    "Jefferson County Electronic Pollbook": [
+      "In-House Electronic Poll Book"
+    ],
+    "ElectMT": [
+      "Internet Voting: Web Portal"
+    ],
+    "Poll Pad": [
+      "Commercial Electronic Poll Book"
+    ],
+    "ABVote": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "EVSW": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "Larimer County Electronic Poll Book": [
+      "In-House Electronic Poll Book"
+    ],
+    "e-Poll Book": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Vote Center Pollbook": [
+      "Commercial Electronic Poll Book"
+    ],
+    "MTS": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "MTS/InkaVote [2004 - obsolete]": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "VSAP BMD": [
+      "Ballot Marking Device"
+    ],
+    "VSAP Interactive Sample Ballot": [
+      "Remote Ballot Marking System: Client-Side"
+    ],
+    "VSAP Tally": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Geaux Vote": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "SiteBook": [
+      "In-House Electronic Poll Book"
+    ],
+    "Online Ballot Marking Tool": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "MI BoE Electronic Pollbook": [
+      "In-House Electronic Poll Book"
+    ],
+    "Infinity": [
+      "DRE-Push Button"
+    ],
+    "Infinity [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "iVotronic [2004 - obsolete]": [
+      "DRE-Push Button"
+    ],
+    "MicroVote/Chatsworth Scanner": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Model 464 [2004 - obsolete]": [
+      "DRE-Push Button"
+    ],
+    "MV-464": [
+      "DRE-Push Button"
+    ],
+    "Military and Overseas Voting Access Portal": [
+      "Internet Voting: Web Portal"
+    ],
+    "Montgomery County Elections eVote": [
+      "In-House Electronic Poll Book"
+    ],
+    "TDRS": [
+      "Internet Voting: Web Portal"
+    ],
+    "OVRD": [
+      "In-House Electronic Poll Book"
+    ],
+    "SOSA": [
+      "In-House Electronic Poll Book"
+    ],
+    "No Accessible Equipment": [
+      "No Accessible Equipment"
+    ],
+    "Not Applicable": [
+      "Paper Poll Book",
+      "Internet Voting: Email",
+      "Internet Voting: Fax",
+      "Hand Counted Paper Ballots"
+    ],
+    "EASE": [
+      "Internet Voting: Web Portal",
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "My Vote": [
+      "In-House Electronic Poll Book"
+    ],
+    "OCVotes ePoll Book": [
+      "In-House Electronic Poll Book"
+    ],
+    "OCVotes Laptop Solution": [
+      "In-House Electronic Poll Book"
+    ],
+    "Platinum Poll Book": [
+      "Commercial Electronic Poll Book"
+    ],
+    "PopulexSlate": [
+      "Ballot Marking Device",
+      "Hybrid BMD/Tabulator"
+    ],
+    "AccuVote OSX": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Premier Central Scan": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "One4All": [
+      "Ballot Marking Device"
+    ],
+    "ViBE": [
+      "Commercial Electronic Poll Book"
+    ],
+    "AskED ePollbook": [
+      "Commercial Electronic Poll Book"
+    ],
+    "EMS-DIMS": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Rutherford Voter Registration Database": [
+      "In-House Electronic Poll Book"
+    ],
+    "Voter Registration Database": [
+      "In-House Electronic Poll Book"
+    ],
+    "SC Electronic Voter Registration List (EVRL)": [
+      "In-House Electronic Poll Book"
+    ],
+    "ES 2800": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "BallotSafe": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "eBallot Delivery": [
+      "Internet Voting: Web Portal",
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "SecureBallot": [
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "AVC Advantage": [
+      "DRE-Push Button"
+    ],
+    "AVC Advantage [2004 - obsolete]": [
+      "DRE-Touchscreen"
+    ],
+    "AVC Edge": [
+      "DRE-Touchscreen"
+    ],
+    "AVM Printomatic [2004 - obsolete]": [
+      "DRE-Push Button"
+    ],
+    "Datavote": [
+      "Punch Card Voting System"
+    ],
+    "e-pollbook": [
+      "Commercial Electronic Poll Book"
+    ],
+    "NCS OpScan": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "NCS OpScan 5": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "NCS OpScan 6": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Optech 2": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Optech 400C": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "Teamwork Model 25": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "IES Lever [2004 - obsolete]": [
+      "Mechanical Lever Machine"
+    ],
+    "Shoup Lever [2004 - obsolete]": [
+      "Mechanical Lever Machine"
+    ],
+    "Shoup [2004 - obsolete]": [
+      "Mechanical Lever Machine"
+    ],
+    "VISTA Local": [
+      "In-House Electronic Poll Book"
+    ],
+    "Badger Book": [
+      "In-House Electronic Poll Book"
+    ],
+    "Precinct Central": [
+      "Commercial Electronic Poll Book"
+    ],
+    "Accessible Ballot Marking Tool (ABMT)": [
+      "Remote Ballot Marking System: Client-Side"
+    ],
+    "ELECtab [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "Patriot": [
+      "DRE-Touchscreen"
+    ],
+    "Patriot Marksense Scanner": [
+      "Hand-Fed Optical Scanner",
+      "Batch-Fed Optical Scanner"
+    ],
+    "OpenElect FVS": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "OpenElect FVT": [
+      "Ballot Marking Device"
+    ],
+    "OpenElect OVCS": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "OpenElect OVCS mini": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "OpenElect OVI": [
+      "Ballot Marking Device"
+    ],
+    "OpenElect OVI-VC": [
+      "Ballot Marking Device"
+    ],
+    "OpenElect OVO": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "Prime III*": [
+      "Remote Ballot Marking System: Client-Side"
+    ],
+    "Elect EPB": [
+      "In-House Electronic Poll Book"
+    ],
+    "Mobile Voting App": [
+      "Internet Voting: Web Portal"
+    ],
+    "Vote-PAD Ballot Marking System": [
+      "Ballot Marking Device"
+    ],
+    "VoteSafe": [
+      "Commercial Electronic Poll Book"
+    ],
+    "CastIron": [
+      "Internet Voting: Web Portal",
+      "Remote Ballot Marking System: Server-Side"
+    ],
+    "VxCentralScan": [
+      "Batch-Fed Optical Scanner"
+    ],
+    "VxMark": [
+      "Ballot Marking Device"
+    ],
+    "VxScan": [
+      "Hand-Fed Optical Scanner"
+    ],
+    "VoTWARE": [
+      "DRE-Touchscreen"
+    ],
+    "VoteWA": [
+      "In-House Electronic Poll Book"
+    ],
+    "BCCS 312 [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "BCCS Punchcard 228 [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "BCCS Punchcard 312 [2004 - obsolete]": [
+      "Punch Card Voting System"
+    ],
+    "Weld County Electronic Pollbook": [
+      "In-House Electronic Poll Book"
+    ],
+    "Wilson County EPB": [
+      "In-House Electronic Poll Book"
+    ]
+  },
+  "hw_version_list": {
+    "AutoVote": [
+      ""
+    ],
+    "Auto Poll Book": [
+      ""
+    ],
+    " Auto Poll Book": [
+      ""
+    ],
+    "Airmac [2004 - obsolete]": [
+      ""
+    ],
+    "MR 210 [2004 - obsolete]": [
+      ""
+    ],
+    "Optical Vote-Trakker": [
+      ""
+    ],
+    "Vote-Trakker": [
+      ""
+    ],
+    "Vote-Trakker Ballot Marking Device": [
+      ""
+    ],
+    "AVM Manual": [
+      ""
+    ],
+    "AVM NS [2004 - obsolete]": [
+      ""
+    ],
+    "AVM Printomatic": [
+      ""
+    ],
+    "POM-40 [2004 - obsolete]": [
+      ""
+    ],
+    "POM-50 [2004 - obsolete]": [
+      ""
+    ],
+    "WinScan": [
+      ""
+    ],
+    "WinVote": [
+      ""
+    ],
+    "Uniformed and Overseas Citizen Portal": [
+      ""
+    ],
+    "UOCAVA Portal": [
+      ""
+    ],
+    "Boone County Electronic Pollbook": [
+      ""
+    ],
+    "TotalVote ePollbook": [
+      ""
+    ],
+    "Precinct Atlas": [
+      ""
+    ],
+    "Data Unavailable [2004 - obsolete]": [
+      ""
+    ],
+    "ClearAccess": [
+      ""
+    ],
+    "ClearCast": [
+      ""
+    ],
+    "ClearCast Go": [
+      ""
+    ],
+    "ClearCount": [
+      ""
+    ],
+    "ClearMark": [
+      ""
+    ],
+    "CO Electronic Pollbook": [
+      ""
+    ],
+    "Electronic PollBook": [
+      ""
+    ],
+    "SCORE": [
+      ""
+    ],
+    "Elex Voting System [2004 - obsolete]": [
+      ""
+    ],
+    "Electronic Pollbook": [
+      ""
+    ],
+    "Harris County Electronic Pollbook": [
+      ""
+    ],
+    "Shouptronic 1242": [
+      ""
+    ],
+    "Shouptronic 1242 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS 228 [2004 - obsolete]": [
+      ""
+    ],
+    "Central Count [2004 - obsolete]": [
+      ""
+    ],
+    "Data Unavailable": [
+      ""
+    ],
+    "EViD": [
+      ""
+    ],
+    "LiveBallot": [
+      ""
+    ],
+    "OmniBallot Online": [
+      ""
+    ],
+    "OmniBallot Tablet": [
+      ""
+    ],
+    "Secure Select": [
+      ""
+    ],
+    "Advocate Precinct": [
+      ""
+    ],
+    "ePollTAB": [
+      ""
+    ],
+    "EIMS": [
+      ""
+    ],
+    "Mark A Vote [2004 - obsolete]": [
+      ""
+    ],
+    "Mark-a-Vote": [
+      ""
+    ],
+    "Vote Center App": [
+      ""
+    ],
+    "AccuVote OS": [
+      ""
+    ],
+    "AccuVote OS Central": [
+      ""
+    ],
+    "AccuVote OS [2004 - obsolete]": [
+      ""
+    ],
+    "AccuVote TS": [
+      ""
+    ],
+    "Accuvote TS R6 [2004 - obsolete]": [
+      ""
+    ],
+    "AccuVote TSX": [
+      ""
+    ],
+    "Accuvote-TS [2004 - obsolete]": [
+      ""
+    ],
+    "ExpressPoll": [
+      ""
+    ],
+    "ImageCast": [
+      ""
+    ],
+    "ImageCast Central": [
+      ""
+    ],
+    "ImageCast Evolution": [
+      ""
+    ],
+    "ImageCast Precinct": [
+      ""
+    ],
+    "ImageCast Precinct ATI": [
+      ""
+    ],
+    "ImageCast Precinct BMD": [
+      ""
+    ],
+    "ImageCast Remote": [
+      ""
+    ],
+    "ImageCast X BMD": [
+      ""
+    ],
+    "ImageCast X DRE": [
+      ""
+    ],
+    "EA Pollbook": [
+      ""
+    ],
+    "EA Tablet": [
+      ""
+    ],
+    "Voter Central": [
+      ""
+    ],
+    "Voter Roster Module": [
+      ""
+    ],
+    "Enhanced Ballot": [
+      ""
+    ],
+    "MyBallot": [
+      ""
+    ],
+    "AutoMARK": [
+      ""
+    ],
+    "BRC P-III [2004 - obsolete]": [
+      ""
+    ],
+    "BRC Punchcard [2004 - obsolete]": [
+      ""
+    ],
+    "CSE Model III-A [2004 - obsolete]": [
+      ""
+    ],
+    "Dell Ultra Scan [2004 - obsolete]": [
+      ""
+    ],
+    "DS200": [
+      ""
+    ],
+    "DS300": [
+      ""
+    ],
+    "DS450": [
+      ""
+    ],
+    "DS850": [
+      ""
+    ],
+    "DS950": [
+      ""
+    ],
+    "EV 2000 [2004 - obsolete]": [
+      ""
+    ],
+    "ExpressTouch": [
+      ""
+    ],
+    "ExpressVote": [
+      ""
+    ],
+    "ExpressVote Tabulator": [
+      ""
+    ],
+    "ExpressVote XL": [
+      ""
+    ],
+    "InkaVote Plus": [
+      ""
+    ],
+    "InkaVote Plus PBC": [
+      ""
+    ],
+    "iPower Profile": [
+      ""
+    ],
+    "iVotronic": [
+      ""
+    ],
+    "Model 100": [
+      ""
+    ],
+    "Model 100 [2004 - obsolete]": [
+      ""
+    ],
+    "Model 115": [
+      ""
+    ],
+    "Model 150": [
+      ""
+    ],
+    "Model 315": [
+      ""
+    ],
+    "Model 550": [
+      ""
+    ],
+    "Model 650": [
+      ""
+    ],
+    "Optech": [
+      ""
+    ],
+    "OpTech 2": [
+      ""
+    ],
+    "Optech IIIP-Eagle": [
+      ""
+    ],
+    "Optech Insight": [
+      ""
+    ],
+    "Optech IV-C": [
+      ""
+    ],
+    "PBC 2100 [2004 - obsolete]": [
+      ""
+    ],
+    "PBC 5 [2004 - obsolete]": [
+      ""
+    ],
+    "PBC III [2004 - obsolete]": [
+      ""
+    ],
+    "PBC V & VI [2004 - obsolete]": [
+      ""
+    ],
+    "PBC-IIID [2004 - obsolete]": [
+      ""
+    ],
+    "PCBT [2004 - obsolete]": [
+      ""
+    ],
+    "Pollstar [2004 - obsolete]": [
+      ""
+    ],
+    "Votomatic": [
+      ""
+    ],
+    "Votronic II [2004 - obsolete]": [
+      ""
+    ],
+    "Votronic [2004 - obsolete]": [
+      ""
+    ],
+    "eLect": [
+      ""
+    ],
+    "eLect Electronic Poll Book": [
+      ""
+    ],
+    "DIS [2004 - obsolete]": [
+      ""
+    ],
+    "Alternate Format Ballot": [
+      ""
+    ],
+    "Valid Voter": [
+      ""
+    ],
+    "Ballot Now": [
+      ""
+    ],
+    "ePollBook": [
+      ""
+    ],
+    "eScan": [
+      ""
+    ],
+    "eScan A/T": [
+      ""
+    ],
+    "eSlate": [
+      ""
+    ],
+    "Vanguard Capture": [
+      ""
+    ],
+    "Vanguard Flex": [
+      ""
+    ],
+    "Vanguard Vault": [
+      ""
+    ],
+    "Verity Central": [
+      ""
+    ],
+    "Verity Duo": [
+      ""
+    ],
+    "Verity Scan": [
+      ""
+    ],
+    "Verity Touch": [
+      ""
+    ],
+    "Verity Touch Writer": [
+      ""
+    ],
+    "GoAnywhere MFT": [
+      ""
+    ],
+    "Voter Registration System": [
+      ""
+    ],
+    "Express Voter": [
+      ""
+    ],
+    "Shoup Manual": [
+      ""
+    ],
+    "Shoup Manual [2004 - obsolete]": [
+      ""
+    ],
+    "Inspire Ballot Marking System": [
+      ""
+    ],
+    "Inspire Vote By Phone": [
+      ""
+    ],
+    "Jefferson County Electronic Pollbook": [
+      ""
+    ],
+    "ElectMT": [
+      ""
+    ],
+    "Poll Pad": [
+      ""
+    ],
+    "ABVote": [
+      ""
+    ],
+    "EVSW": [
+      ""
+    ],
+    "Larimer County Electronic Poll Book": [
+      ""
+    ],
+    "e-Poll Book": [
+      ""
+    ],
+    "Vote Center Pollbook": [
+      ""
+    ],
+    "MTS": [
+      ""
+    ],
+    "MTS/InkaVote [2004 - obsolete]": [
+      ""
+    ],
+    "VSAP BMD": [
+      ""
+    ],
+    "VSAP Interactive Sample Ballot": [
+      ""
+    ],
+    "VSAP Tally": [
+      ""
+    ],
+    "Geaux Vote": [
+      ""
+    ],
+    "SiteBook": [
+      ""
+    ],
+    "Online Ballot Marking Tool": [
+      ""
+    ],
+    "MI BoE Electronic Pollbook": [
+      ""
+    ],
+    "Infinity": [
+      ""
+    ],
+    "Infinity [2004 - obsolete]": [
+      ""
+    ],
+    "iVotronic [2004 - obsolete]": [
+      ""
+    ],
+    "MicroVote/Chatsworth Scanner": [
+      ""
+    ],
+    "Model 464 [2004 - obsolete]": [
+      ""
+    ],
+    "MV-464": [
+      ""
+    ],
+    "Military and Overseas Voting Access Portal": [
+      ""
+    ],
+    "Montgomery County Elections eVote": [
+      ""
+    ],
+    "TDRS": [
+      ""
+    ],
+    "OVRD": [
+      ""
+    ],
+    "SOSA": [
+      ""
+    ],
+    "No Accessible Equipment": [
+      ""
+    ],
+    "Not Applicable": [
+      ""
+    ],
+    "EASE": [
+      ""
+    ],
+    "My Vote": [
+      ""
+    ],
+    "OCVotes ePoll Book": [
+      ""
+    ],
+    "OCVotes Laptop Solution": [
+      ""
+    ],
+    "Platinum Poll Book": [
+      ""
+    ],
+    "PopulexSlate": [
+      ""
+    ],
+    "AccuVote OSX": [
+      ""
+    ],
+    "Premier Central Scan": [
+      ""
+    ],
+    "One4All": [
+      ""
+    ],
+    "ViBE": [
+      ""
+    ],
+    "AskED ePollbook": [
+      ""
+    ],
+    "EMS-DIMS": [
+      ""
+    ],
+    "Rutherford Voter Registration Database": [
+      ""
+    ],
+    "Voter Registration Database": [
+      ""
+    ],
+    "SC Electronic Voter Registration List (EVRL)": [
+      ""
+    ],
+    "ES 2800": [
+      ""
+    ],
+    "BallotSafe": [
+      ""
+    ],
+    "eBallot Delivery": [
+      ""
+    ],
+    "SecureBallot": [
+      ""
+    ],
+    "AVC Advantage": [
+      ""
+    ],
+    "AVC Advantage [2004 - obsolete]": [
+      ""
+    ],
+    "AVC Edge": [
+      ""
+    ],
+    "AVM Printomatic [2004 - obsolete]": [
+      ""
+    ],
+    "Datavote": [
+      ""
+    ],
+    "e-pollbook": [
+      ""
+    ],
+    "NCS OpScan": [
+      ""
+    ],
+    "NCS OpScan 5": [
+      ""
+    ],
+    "NCS OpScan 6": [
+      ""
+    ],
+    "Optech 2": [
+      ""
+    ],
+    "Optech 400C": [
+      ""
+    ],
+    "Teamwork Model 25": [
+      ""
+    ],
+    "IES Lever [2004 - obsolete]": [
+      ""
+    ],
+    "Shoup Lever [2004 - obsolete]": [
+      ""
+    ],
+    "Shoup [2004 - obsolete]": [
+      ""
+    ],
+    "VISTA Local": [
+      ""
+    ],
+    "Badger Book": [
+      ""
+    ],
+    "Precinct Central": [
+      ""
+    ],
+    "Accessible Ballot Marking Tool (ABMT)": [
+      ""
+    ],
+    "ELECtab [2004 - obsolete]": [
+      ""
+    ],
+    "Patriot": [
+      ""
+    ],
+    "Patriot Marksense Scanner": [
+      ""
+    ],
+    "OpenElect FVS": [
+      ""
+    ],
+    "OpenElect FVT": [
+      ""
+    ],
+    "OpenElect OVCS": [
+      ""
+    ],
+    "OpenElect OVCS mini": [
+      ""
+    ],
+    "OpenElect OVI": [
+      ""
+    ],
+    "OpenElect OVI-VC": [
+      ""
+    ],
+    "OpenElect OVO": [
+      ""
+    ],
+    "Prime III*": [
+      ""
+    ],
+    "Elect EPB": [
+      ""
+    ],
+    "Mobile Voting App": [
+      ""
+    ],
+    "Vote-PAD Ballot Marking System": [
+      ""
+    ],
+    "VoteSafe": [
+      ""
+    ],
+    "CastIron": [
+      ""
+    ],
+    "VxCentralScan": [
+      ""
+    ],
+    "VxMark": [
+      ""
+    ],
+    "VxScan": [
+      ""
+    ],
+    "VoTWARE": [
+      ""
+    ],
+    "VoteWA": [
+      ""
+    ],
+    "BCCS 312 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS Punchcard 228 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS Punchcard 312 [2004 - obsolete]": [
+      ""
+    ],
+    "Weld County Electronic Pollbook": [
+      ""
+    ],
+    "Wilson County EPB": [
+      ""
+    ]
+  },
+  "fw_version_list": {
+    "AutoVote": [
+      ""
+    ],
+    "Auto Poll Book": [
+      ""
+    ],
+    " Auto Poll Book": [
+      ""
+    ],
+    "Airmac [2004 - obsolete]": [
+      ""
+    ],
+    "MR 210 [2004 - obsolete]": [
+      ""
+    ],
+    "Optical Vote-Trakker": [
+      ""
+    ],
+    "Vote-Trakker": [
+      ""
+    ],
+    "Vote-Trakker Ballot Marking Device": [
+      ""
+    ],
+    "AVM Manual": [
+      ""
+    ],
+    "AVM NS [2004 - obsolete]": [
+      ""
+    ],
+    "AVM Printomatic": [
+      ""
+    ],
+    "POM-40 [2004 - obsolete]": [
+      ""
+    ],
+    "POM-50 [2004 - obsolete]": [
+      ""
+    ],
+    "WinScan": [
+      ""
+    ],
+    "WinVote": [
+      ""
+    ],
+    "Uniformed and Overseas Citizen Portal": [
+      ""
+    ],
+    "UOCAVA Portal": [
+      ""
+    ],
+    "Boone County Electronic Pollbook": [
+      ""
+    ],
+    "TotalVote ePollbook": [
+      ""
+    ],
+    "Precinct Atlas": [
+      ""
+    ],
+    "Data Unavailable [2004 - obsolete]": [
+      ""
+    ],
+    "ClearAccess": [
+      ""
+    ],
+    "ClearCast": [
+      ""
+    ],
+    "ClearCast Go": [
+      ""
+    ],
+    "ClearCount": [
+      ""
+    ],
+    "ClearMark": [
+      ""
+    ],
+    "CO Electronic Pollbook": [
+      ""
+    ],
+    "Electronic PollBook": [
+      ""
+    ],
+    "SCORE": [
+      ""
+    ],
+    "Elex Voting System [2004 - obsolete]": [
+      ""
+    ],
+    "Electronic Pollbook": [
+      ""
+    ],
+    "Harris County Electronic Pollbook": [
+      ""
+    ],
+    "Shouptronic 1242": [
+      ""
+    ],
+    "Shouptronic 1242 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS 228 [2004 - obsolete]": [
+      ""
+    ],
+    "Central Count [2004 - obsolete]": [
+      ""
+    ],
+    "Data Unavailable": [
+      ""
+    ],
+    "EViD": [
+      ""
+    ],
+    "LiveBallot": [
+      ""
+    ],
+    "OmniBallot Online": [
+      ""
+    ],
+    "OmniBallot Tablet": [
+      ""
+    ],
+    "Secure Select": [
+      ""
+    ],
+    "Advocate Precinct": [
+      ""
+    ],
+    "ePollTAB": [
+      ""
+    ],
+    "EIMS": [
+      ""
+    ],
+    "Mark A Vote [2004 - obsolete]": [
+      ""
+    ],
+    "Mark-a-Vote": [
+      ""
+    ],
+    "Vote Center App": [
+      ""
+    ],
+    "AccuVote OS": [
+      ""
+    ],
+    "AccuVote OS Central": [
+      "2.0.12",
+      ""
+    ],
+    "AccuVote OS [2004 - obsolete]": [
+      ""
+    ],
+    "AccuVote TS": [
+      ""
+    ],
+    "Accuvote TS R6 [2004 - obsolete]": [
+      ""
+    ],
+    "AccuVote TSX": [
+      ""
+    ],
+    "Accuvote-TS [2004 - obsolete]": [
+      ""
+    ],
+    "ExpressPoll": [
+      ""
+    ],
+    "ImageCast": [
+      ""
+    ],
+    "ImageCast Central": [
+      ""
+    ],
+    "ImageCast Evolution": [
+      ""
+    ],
+    "ImageCast Precinct": [
+      ""
+    ],
+    "ImageCast Precinct ATI": [
+      ""
+    ],
+    "ImageCast Precinct BMD": [
+      ""
+    ],
+    "ImageCast Remote": [
+      ""
+    ],
+    "ImageCast X BMD": [
+      ""
+    ],
+    "ImageCast X DRE": [
+      ""
+    ],
+    "EA Pollbook": [
+      ""
+    ],
+    "EA Tablet": [
+      ""
+    ],
+    "Voter Central": [
+      ""
+    ],
+    "Voter Roster Module": [
+      ""
+    ],
+    "Enhanced Ballot": [
+      ""
+    ],
+    "MyBallot": [
+      ""
+    ],
+    "AutoMARK": [
+      ""
+    ],
+    "BRC P-III [2004 - obsolete]": [
+      ""
+    ],
+    "BRC Punchcard [2004 - obsolete]": [
+      ""
+    ],
+    "CSE Model III-A [2004 - obsolete]": [
+      ""
+    ],
+    "Dell Ultra Scan [2004 - obsolete]": [
+      ""
+    ],
+    "DS200": [
+      ""
+    ],
+    "DS300": [
+      ""
+    ],
+    "DS450": [
+      ""
+    ],
+    "DS850": [
+      ""
+    ],
+    "DS950": [
+      ""
+    ],
+    "EV 2000 [2004 - obsolete]": [
+      ""
+    ],
+    "ExpressTouch": [
+      ""
+    ],
+    "ExpressVote": [
+      ""
+    ],
+    "ExpressVote Tabulator": [
+      ""
+    ],
+    "ExpressVote XL": [
+      ""
+    ],
+    "InkaVote Plus": [
+      ""
+    ],
+    "InkaVote Plus PBC": [
+      ""
+    ],
+    "iPower Profile": [
+      ""
+    ],
+    "iVotronic": [
+      ""
+    ],
+    "Model 100": [
+      ""
+    ],
+    "Model 100 [2004 - obsolete]": [
+      ""
+    ],
+    "Model 115": [
+      ""
+    ],
+    "Model 150": [
+      ""
+    ],
+    "Model 315": [
+      ""
+    ],
+    "Model 550": [
+      ""
+    ],
+    "Model 650": [
+      ""
+    ],
+    "Optech": [
+      ""
+    ],
+    "OpTech 2": [
+      ""
+    ],
+    "Optech IIIP-Eagle": [
+      ""
+    ],
+    "Optech Insight": [
+      ""
+    ],
+    "Optech IV-C": [
+      ""
+    ],
+    "PBC 2100 [2004 - obsolete]": [
+      ""
+    ],
+    "PBC 5 [2004 - obsolete]": [
+      ""
+    ],
+    "PBC III [2004 - obsolete]": [
+      ""
+    ],
+    "PBC V & VI [2004 - obsolete]": [
+      ""
+    ],
+    "PBC-IIID [2004 - obsolete]": [
+      ""
+    ],
+    "PCBT [2004 - obsolete]": [
+      ""
+    ],
+    "Pollstar [2004 - obsolete]": [
+      ""
+    ],
+    "Votomatic": [
+      ""
+    ],
+    "Votronic II [2004 - obsolete]": [
+      ""
+    ],
+    "Votronic [2004 - obsolete]": [
+      ""
+    ],
+    "eLect": [
+      ""
+    ],
+    "eLect Electronic Poll Book": [
+      ""
+    ],
+    "DIS [2004 - obsolete]": [
+      ""
+    ],
+    "Alternate Format Ballot": [
+      ""
+    ],
+    "Valid Voter": [
+      ""
+    ],
+    "Ballot Now": [
+      ""
+    ],
+    "ePollBook": [
+      ""
+    ],
+    "eScan": [
+      ""
+    ],
+    "eScan A/T": [
+      ""
+    ],
+    "eSlate": [
+      ""
+    ],
+    "Vanguard Capture": [
+      ""
+    ],
+    "Vanguard Flex": [
+      ""
+    ],
+    "Vanguard Vault": [
+      ""
+    ],
+    "Verity Central": [
+      ""
+    ],
+    "Verity Duo": [
+      ""
+    ],
+    "Verity Scan": [
+      ""
+    ],
+    "Verity Touch": [
+      ""
+    ],
+    "Verity Touch Writer": [
+      ""
+    ],
+    "GoAnywhere MFT": [
+      ""
+    ],
+    "Voter Registration System": [
+      ""
+    ],
+    "Express Voter": [
+      ""
+    ],
+    "Shoup Manual": [
+      ""
+    ],
+    "Shoup Manual [2004 - obsolete]": [
+      ""
+    ],
+    "Inspire Ballot Marking System": [
+      ""
+    ],
+    "Inspire Vote By Phone": [
+      ""
+    ],
+    "Jefferson County Electronic Pollbook": [
+      ""
+    ],
+    "ElectMT": [
+      ""
+    ],
+    "Poll Pad": [
+      ""
+    ],
+    "ABVote": [
+      ""
+    ],
+    "EVSW": [
+      ""
+    ],
+    "Larimer County Electronic Poll Book": [
+      ""
+    ],
+    "e-Poll Book": [
+      ""
+    ],
+    "Vote Center Pollbook": [
+      ""
+    ],
+    "MTS": [
+      ""
+    ],
+    "MTS/InkaVote [2004 - obsolete]": [
+      ""
+    ],
+    "VSAP BMD": [
+      ""
+    ],
+    "VSAP Interactive Sample Ballot": [
+      ""
+    ],
+    "VSAP Tally": [
+      ""
+    ],
+    "Geaux Vote": [
+      ""
+    ],
+    "SiteBook": [
+      ""
+    ],
+    "Online Ballot Marking Tool": [
+      ""
+    ],
+    "MI BoE Electronic Pollbook": [
+      ""
+    ],
+    "Infinity": [
+      ""
+    ],
+    "Infinity [2004 - obsolete]": [
+      ""
+    ],
+    "iVotronic [2004 - obsolete]": [
+      ""
+    ],
+    "MicroVote/Chatsworth Scanner": [
+      ""
+    ],
+    "Model 464 [2004 - obsolete]": [
+      ""
+    ],
+    "MV-464": [
+      ""
+    ],
+    "Military and Overseas Voting Access Portal": [
+      ""
+    ],
+    "Montgomery County Elections eVote": [
+      ""
+    ],
+    "TDRS": [
+      ""
+    ],
+    "OVRD": [
+      ""
+    ],
+    "SOSA": [
+      ""
+    ],
+    "No Accessible Equipment": [
+      ""
+    ],
+    "Not Applicable": [
+      ""
+    ],
+    "EASE": [
+      ""
+    ],
+    "My Vote": [
+      ""
+    ],
+    "OCVotes ePoll Book": [
+      ""
+    ],
+    "OCVotes Laptop Solution": [
+      ""
+    ],
+    "Platinum Poll Book": [
+      ""
+    ],
+    "PopulexSlate": [
+      ""
+    ],
+    "AccuVote OSX": [
+      ""
+    ],
+    "Premier Central Scan": [
+      ""
+    ],
+    "One4All": [
+      ""
+    ],
+    "ViBE": [
+      ""
+    ],
+    "AskED ePollbook": [
+      ""
+    ],
+    "EMS-DIMS": [
+      ""
+    ],
+    "Rutherford Voter Registration Database": [
+      ""
+    ],
+    "Voter Registration Database": [
+      ""
+    ],
+    "SC Electronic Voter Registration List (EVRL)": [
+      ""
+    ],
+    "ES 2800": [
+      ""
+    ],
+    "BallotSafe": [
+      ""
+    ],
+    "eBallot Delivery": [
+      ""
+    ],
+    "SecureBallot": [
+      ""
+    ],
+    "AVC Advantage": [
+      ""
+    ],
+    "AVC Advantage [2004 - obsolete]": [
+      ""
+    ],
+    "AVC Edge": [
+      ""
+    ],
+    "AVM Printomatic [2004 - obsolete]": [
+      ""
+    ],
+    "Datavote": [
+      ""
+    ],
+    "e-pollbook": [
+      ""
+    ],
+    "NCS OpScan": [
+      ""
+    ],
+    "NCS OpScan 5": [
+      ""
+    ],
+    "NCS OpScan 6": [
+      ""
+    ],
+    "Optech 2": [
+      ""
+    ],
+    "Optech 400C": [
+      ""
+    ],
+    "Teamwork Model 25": [
+      ""
+    ],
+    "IES Lever [2004 - obsolete]": [
+      ""
+    ],
+    "Shoup Lever [2004 - obsolete]": [
+      ""
+    ],
+    "Shoup [2004 - obsolete]": [
+      ""
+    ],
+    "VISTA Local": [
+      ""
+    ],
+    "Badger Book": [
+      ""
+    ],
+    "Precinct Central": [
+      ""
+    ],
+    "Accessible Ballot Marking Tool (ABMT)": [
+      ""
+    ],
+    "ELECtab [2004 - obsolete]": [
+      ""
+    ],
+    "Patriot": [
+      ""
+    ],
+    "Patriot Marksense Scanner": [
+      ""
+    ],
+    "OpenElect FVS": [
+      ""
+    ],
+    "OpenElect FVT": [
+      ""
+    ],
+    "OpenElect OVCS": [
+      ""
+    ],
+    "OpenElect OVCS mini": [
+      ""
+    ],
+    "OpenElect OVI": [
+      ""
+    ],
+    "OpenElect OVI-VC": [
+      ""
+    ],
+    "OpenElect OVO": [
+      ""
+    ],
+    "Prime III*": [
+      ""
+    ],
+    "Elect EPB": [
+      ""
+    ],
+    "Mobile Voting App": [
+      ""
+    ],
+    "Vote-PAD Ballot Marking System": [
+      ""
+    ],
+    "VoteSafe": [
+      ""
+    ],
+    "CastIron": [
+      ""
+    ],
+    "VxCentralScan": [
+      ""
+    ],
+    "VxMark": [
+      ""
+    ],
+    "VxScan": [
+      ""
+    ],
+    "VoTWARE": [
+      ""
+    ],
+    "VoteWA": [
+      ""
+    ],
+    "BCCS 312 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS Punchcard 228 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS Punchcard 312 [2004 - obsolete]": [
+      ""
+    ],
+    "Weld County Electronic Pollbook": [
+      ""
+    ],
+    "Wilson County EPB": [
+      ""
+    ]
+  },
+  "sw_version_list": {
+    "AutoVote": [
+      ""
+    ],
+    "Auto Poll Book": [
+      ""
+    ],
+    " Auto Poll Book": [
+      ""
+    ],
+    "Airmac [2004 - obsolete]": [
+      ""
+    ],
+    "MR 210 [2004 - obsolete]": [
+      ""
+    ],
+    "Optical Vote-Trakker": [
+      ""
+    ],
+    "Vote-Trakker": [
+      ""
+    ],
+    "Vote-Trakker Ballot Marking Device": [
+      ""
+    ],
+    "AVM Manual": [
+      ""
+    ],
+    "AVM NS [2004 - obsolete]": [
+      ""
+    ],
+    "AVM Printomatic": [
+      ""
+    ],
+    "POM-40 [2004 - obsolete]": [
+      ""
+    ],
+    "POM-50 [2004 - obsolete]": [
+      ""
+    ],
+    "WinScan": [
+      ""
+    ],
+    "WinVote": [
+      ""
+    ],
+    "Uniformed and Overseas Citizen Portal": [
+      ""
+    ],
+    "UOCAVA Portal": [
+      ""
+    ],
+    "Boone County Electronic Pollbook": [
+      ""
+    ],
+    "TotalVote ePollbook": [
+      ""
+    ],
+    "Precinct Atlas": [
+      ""
+    ],
+    "Data Unavailable [2004 - obsolete]": [
+      ""
+    ],
+    "ClearAccess": [
+      ""
+    ],
+    "ClearCast": [
+      ""
+    ],
+    "ClearCast Go": [
+      ""
+    ],
+    "ClearCount": [
+      ""
+    ],
+    "ClearMark": [
+      ""
+    ],
+    "CO Electronic Pollbook": [
+      ""
+    ],
+    "Electronic PollBook": [
+      ""
+    ],
+    "SCORE": [
+      ""
+    ],
+    "Elex Voting System [2004 - obsolete]": [
+      ""
+    ],
+    "Electronic Pollbook": [
+      ""
+    ],
+    "Harris County Electronic Pollbook": [
+      ""
+    ],
+    "Shouptronic 1242": [
+      ""
+    ],
+    "Shouptronic 1242 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS 228 [2004 - obsolete]": [
+      ""
+    ],
+    "Central Count [2004 - obsolete]": [
+      ""
+    ],
+    "Data Unavailable": [
+      ""
+    ],
+    "EViD": [
+      ""
+    ],
+    "LiveBallot": [
+      "3.0.38"
+    ],
+    "OmniBallot Online": [
+      ""
+    ],
+    "OmniBallot Tablet": [
+      ""
+    ],
+    "Secure Select": [
+      ""
+    ],
+    "Advocate Precinct": [
+      ""
+    ],
+    "ePollTAB": [
+      ""
+    ],
+    "EIMS": [
+      ""
+    ],
+    "Mark A Vote [2004 - obsolete]": [
+      ""
+    ],
+    "Mark-a-Vote": [
+      ""
+    ],
+    "Vote Center App": [
+      ""
+    ],
+    "AccuVote OS": [
+      ""
+    ],
+    "AccuVote OS Central": [
+      ""
+    ],
+    "AccuVote OS [2004 - obsolete]": [
+      ""
+    ],
+    "AccuVote TS": [
+      ""
+    ],
+    "Accuvote TS R6 [2004 - obsolete]": [
+      ""
+    ],
+    "AccuVote TSX": [
+      ""
+    ],
+    "Accuvote-TS [2004 - obsolete]": [
+      ""
+    ],
+    "ExpressPoll": [
+      ""
+    ],
+    "ImageCast": [
+      ""
+    ],
+    "ImageCast Central": [
+      ""
+    ],
+    "ImageCast Evolution": [
+      ""
+    ],
+    "ImageCast Precinct": [
+      ""
+    ],
+    "ImageCast Precinct ATI": [
+      ""
+    ],
+    "ImageCast Precinct BMD": [
+      ""
+    ],
+    "ImageCast Remote": [
+      ""
+    ],
+    "ImageCast X BMD": [
+      ""
+    ],
+    "ImageCast X DRE": [
+      ""
+    ],
+    "EA Pollbook": [
+      ""
+    ],
+    "EA Tablet": [
+      ""
+    ],
+    "Voter Central": [
+      ""
+    ],
+    "Voter Roster Module": [
+      ""
+    ],
+    "Enhanced Ballot": [
+      ""
+    ],
+    "MyBallot": [
+      ""
+    ],
+    "AutoMARK": [
+      ""
+    ],
+    "BRC P-III [2004 - obsolete]": [
+      ""
+    ],
+    "BRC Punchcard [2004 - obsolete]": [
+      ""
+    ],
+    "CSE Model III-A [2004 - obsolete]": [
+      ""
+    ],
+    "Dell Ultra Scan [2004 - obsolete]": [
+      ""
+    ],
+    "DS200": [
+      ""
+    ],
+    "DS300": [
+      ""
+    ],
+    "DS450": [
+      ""
+    ],
+    "DS850": [
+      ""
+    ],
+    "DS950": [
+      ""
+    ],
+    "EV 2000 [2004 - obsolete]": [
+      ""
+    ],
+    "ExpressTouch": [
+      ""
+    ],
+    "ExpressVote": [
+      ""
+    ],
+    "ExpressVote Tabulator": [
+      ""
+    ],
+    "ExpressVote XL": [
+      ""
+    ],
+    "InkaVote Plus": [
+      ""
+    ],
+    "InkaVote Plus PBC": [
+      ""
+    ],
+    "iPower Profile": [
+      ""
+    ],
+    "iVotronic": [
+      ""
+    ],
+    "Model 100": [
+      ""
+    ],
+    "Model 100 [2004 - obsolete]": [
+      ""
+    ],
+    "Model 115": [
+      ""
+    ],
+    "Model 150": [
+      ""
+    ],
+    "Model 315": [
+      ""
+    ],
+    "Model 550": [
+      ""
+    ],
+    "Model 650": [
+      ""
+    ],
+    "Optech": [
+      ""
+    ],
+    "OpTech 2": [
+      ""
+    ],
+    "Optech IIIP-Eagle": [
+      ""
+    ],
+    "Optech Insight": [
+      ""
+    ],
+    "Optech IV-C": [
+      ""
+    ],
+    "PBC 2100 [2004 - obsolete]": [
+      ""
+    ],
+    "PBC 5 [2004 - obsolete]": [
+      ""
+    ],
+    "PBC III [2004 - obsolete]": [
+      ""
+    ],
+    "PBC V & VI [2004 - obsolete]": [
+      ""
+    ],
+    "PBC-IIID [2004 - obsolete]": [
+      ""
+    ],
+    "PCBT [2004 - obsolete]": [
+      ""
+    ],
+    "Pollstar [2004 - obsolete]": [
+      ""
+    ],
+    "Votomatic": [
+      ""
+    ],
+    "Votronic II [2004 - obsolete]": [
+      ""
+    ],
+    "Votronic [2004 - obsolete]": [
+      ""
+    ],
+    "eLect": [
+      ""
+    ],
+    "eLect Electronic Poll Book": [
+      ""
+    ],
+    "DIS [2004 - obsolete]": [
+      ""
+    ],
+    "Alternate Format Ballot": [
+      ""
+    ],
+    "Valid Voter": [
+      ""
+    ],
+    "Ballot Now": [
+      ""
+    ],
+    "ePollBook": [
+      ""
+    ],
+    "eScan": [
+      ""
+    ],
+    "eScan A/T": [
+      ""
+    ],
+    "eSlate": [
+      ""
+    ],
+    "Vanguard Capture": [
+      ""
+    ],
+    "Vanguard Flex": [
+      ""
+    ],
+    "Vanguard Vault": [
+      ""
+    ],
+    "Verity Central": [
+      ""
+    ],
+    "Verity Duo": [
+      ""
+    ],
+    "Verity Scan": [
+      ""
+    ],
+    "Verity Touch": [
+      ""
+    ],
+    "Verity Touch Writer": [
+      ""
+    ],
+    "GoAnywhere MFT": [
+      ""
+    ],
+    "Voter Registration System": [
+      ""
+    ],
+    "Express Voter": [
+      ""
+    ],
+    "Shoup Manual": [
+      ""
+    ],
+    "Shoup Manual [2004 - obsolete]": [
+      ""
+    ],
+    "Inspire Ballot Marking System": [
+      ""
+    ],
+    "Inspire Vote By Phone": [
+      ""
+    ],
+    "Jefferson County Electronic Pollbook": [
+      ""
+    ],
+    "ElectMT": [
+      ""
+    ],
+    "Poll Pad": [
+      ""
+    ],
+    "ABVote": [
+      ""
+    ],
+    "EVSW": [
+      ""
+    ],
+    "Larimer County Electronic Poll Book": [
+      ""
+    ],
+    "e-Poll Book": [
+      ""
+    ],
+    "Vote Center Pollbook": [
+      ""
+    ],
+    "MTS": [
+      ""
+    ],
+    "MTS/InkaVote [2004 - obsolete]": [
+      ""
+    ],
+    "VSAP BMD": [
+      ""
+    ],
+    "VSAP Interactive Sample Ballot": [
+      ""
+    ],
+    "VSAP Tally": [
+      "VSAP 2.0"
+    ],
+    "Geaux Vote": [
+      ""
+    ],
+    "SiteBook": [
+      ""
+    ],
+    "Online Ballot Marking Tool": [
+      ""
+    ],
+    "MI BoE Electronic Pollbook": [
+      ""
+    ],
+    "Infinity": [
+      ""
+    ],
+    "Infinity [2004 - obsolete]": [
+      ""
+    ],
+    "iVotronic [2004 - obsolete]": [
+      ""
+    ],
+    "MicroVote/Chatsworth Scanner": [
+      ""
+    ],
+    "Model 464 [2004 - obsolete]": [
+      ""
+    ],
+    "MV-464": [
+      ""
+    ],
+    "Military and Overseas Voting Access Portal": [
+      ""
+    ],
+    "Montgomery County Elections eVote": [
+      ""
+    ],
+    "TDRS": [
+      ""
+    ],
+    "OVRD": [
+      ""
+    ],
+    "SOSA": [
+      ""
+    ],
+    "No Accessible Equipment": [
+      ""
+    ],
+    "Not Applicable": [
+      ""
+    ],
+    "EASE": [
+      ""
+    ],
+    "My Vote": [
+      ""
+    ],
+    "OCVotes ePoll Book": [
+      ""
+    ],
+    "OCVotes Laptop Solution": [
+      ""
+    ],
+    "Platinum Poll Book": [
+      ""
+    ],
+    "PopulexSlate": [
+      ""
+    ],
+    "AccuVote OSX": [
+      ""
+    ],
+    "Premier Central Scan": [
+      ""
+    ],
+    "One4All": [
+      ""
+    ],
+    "ViBE": [
+      ""
+    ],
+    "AskED ePollbook": [
+      ""
+    ],
+    "EMS-DIMS": [
+      ""
+    ],
+    "Rutherford Voter Registration Database": [
+      ""
+    ],
+    "Voter Registration Database": [
+      ""
+    ],
+    "SC Electronic Voter Registration List (EVRL)": [
+      ""
+    ],
+    "ES 2800": [
+      ""
+    ],
+    "BallotSafe": [
+      ""
+    ],
+    "eBallot Delivery": [
+      ""
+    ],
+    "SecureBallot": [
+      ""
+    ],
+    "AVC Advantage": [
+      ""
+    ],
+    "AVC Advantage [2004 - obsolete]": [
+      ""
+    ],
+    "AVC Edge": [
+      ""
+    ],
+    "AVM Printomatic [2004 - obsolete]": [
+      ""
+    ],
+    "Datavote": [
+      ""
+    ],
+    "e-pollbook": [
+      ""
+    ],
+    "NCS OpScan": [
+      ""
+    ],
+    "NCS OpScan 5": [
+      ""
+    ],
+    "NCS OpScan 6": [
+      ""
+    ],
+    "Optech 2": [
+      ""
+    ],
+    "Optech 400C": [
+      ""
+    ],
+    "Teamwork Model 25": [
+      ""
+    ],
+    "IES Lever [2004 - obsolete]": [
+      ""
+    ],
+    "Shoup Lever [2004 - obsolete]": [
+      ""
+    ],
+    "Shoup [2004 - obsolete]": [
+      ""
+    ],
+    "VISTA Local": [
+      ""
+    ],
+    "Badger Book": [
+      ""
+    ],
+    "Precinct Central": [
+      ""
+    ],
+    "Accessible Ballot Marking Tool (ABMT)": [
+      ""
+    ],
+    "ELECtab [2004 - obsolete]": [
+      ""
+    ],
+    "Patriot": [
+      ""
+    ],
+    "Patriot Marksense Scanner": [
+      ""
+    ],
+    "OpenElect FVS": [
+      ""
+    ],
+    "OpenElect FVT": [
+      ""
+    ],
+    "OpenElect OVCS": [
+      ""
+    ],
+    "OpenElect OVCS mini": [
+      ""
+    ],
+    "OpenElect OVI": [
+      ""
+    ],
+    "OpenElect OVI-VC": [
+      ""
+    ],
+    "OpenElect OVO": [
+      ""
+    ],
+    "Prime III*": [
+      ""
+    ],
+    "Elect EPB": [
+      ""
+    ],
+    "Mobile Voting App": [
+      ""
+    ],
+    "Vote-PAD Ballot Marking System": [
+      ""
+    ],
+    "VoteSafe": [
+      ""
+    ],
+    "CastIron": [
+      ""
+    ],
+    "VxCentralScan": [
+      ""
+    ],
+    "VxMark": [
+      ""
+    ],
+    "VxScan": [
+      ""
+    ],
+    "VoTWARE": [
+      ""
+    ],
+    "VoteWA": [
+      ""
+    ],
+    "BCCS 312 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS Punchcard 228 [2004 - obsolete]": [
+      ""
+    ],
+    "BCCS Punchcard 312 [2004 - obsolete]": [
+      ""
+    ],
+    "Weld County Electronic Pollbook": [
+      ""
+    ],
+    "Wilson County EPB": [
+      ""
+    ]
+  },
+  "map": {
+    "id": 7,
+    "map_name": "Voting Equipment",
+    "map_code": "voteEquip",
+    "map_type": "ppEquip",
+    "map_type_order": 1,
+    "map_type_label": "Standard Equipment",
+    "map_type_color": "C93234",
+    "map_detail": "county",
+    "active": 1,
+    "legend_label_text": "Election Day Equipment",
+    "legend_icon": null,
+    "label_tooltip_text": null,
+    "glancebox_title": null,
+    "glancebox_icon": null,
+    "glancebox_column_number": null,
+    "glancebox_column_title_1": null,
+    "glancebox_column_icon_1": null,
+    "glancebox_column_calculation_1": null,
+    "glancebox_column_color_1": null,
+    "glancebox_column_text_1": null,
+    "glancebox_column_link_label_1": null,
+    "glancebox_column_link_text_1": null,
+    "glancebox_column_title_2": null,
+    "glancebox_column_icon_2": null,
+    "glancebox_column_calculation_2": null,
+    "glancebox_column_color_2": null,
+    "glancebox_column_text_2": null,
+    "glancebox_column_link_label_2": null,
+    "glancebox_column_link_text_2": null,
+    "glancebox_column_title_3": null,
+    "glancebox_column_icon_3": null,
+    "glancebox_column_calculation_3": null,
+    "glancebox_column_color_3": null,
+    "glancebox_column_text_3": null,
+    "glancebox_column_link_label_3": null,
+    "glancebox_column_link_text_3": null,
+    "data_field_name": "pp_system",
+    "timestamp": "2025-03-26 12:58:44",
+    "map_types": [
+      {
+        "type": "ppEquip",
+        "label": "Standard Equipment",
+        "color": "C93234",
+        "data_field_name": "pp_system"
+      },
+      {
+        "type": "accEquip",
+        "label": "Accessible Equipment",
+        "color": "C93234",
+        "data_field_name": "pp_acc_system"
+      },
+      {
+        "type": "absEquip",
+        "label": "Mail Ballot Tabulation",
+        "color": "C93234",
+        "data_field_name": "abs_system"
+      }
+    ]
+  },
+  "legend_codes": {
+    "HMPB": {
+      "code": "HMPB",
+      "text": "Hand marked paper ballots, BMDs for accessibility",
+      "color": "ffffff",
+      "order": 1
+    },
+    "HBDV": {
+      "code": "HBDV",
+      "text": "Hand marked paper ballots, BMDs and DREs with VVPAT",
+      "color": "ffffff",
+      "order": 1
+    },
+    "BMDS": {
+      "code": "BMDS",
+      "text": "Ballot Marking Devices for all voters",
+      "color": "ffffff",
+      "order": 1
+    },
+    "HMBX": {
+      "code": "HMBX",
+      "text": "Hand marked paper ballots and BMDs",
+      "color": "ffffff",
+      "order": 1
+    },
+    "BMOS": {
+      "code": "BMOS",
+      "text": "Ballot Marking Device/Tabulators for all voters",
+      "color": "ffffff",
+      "order": 1
+    },
+    "MPDV": {
+      "code": "MPDV",
+      "text": "Hand marked paper ballots, DREs for accessibility with VVPAT",
+      "color": "ffffff",
+      "order": 1
+    },
+    "HBDX": {
+      "code": "HBDX",
+      "text": "Hand marked paper ballots, BMDs and DREs with and without VVPAT",
+      "color": "ffffff",
+      "order": 1
+    },
+    "DREV": {
+      "code": "DREV",
+      "text": "DREs with VVPAT for all voters",
+      "color": "ffffff",
+      "order": 1
+    },
+    "DREN": {
+      "code": "DREN",
+      "text": "DREs without VVPAT for all voters",
+      "color": "ffffff",
+      "order": 1
+    },
+    "BMDV": {
+      "code": "BMDV",
+      "text": "BMDs and DREs with VVPAT for all voters",
+      "color": "ffffff",
+      "order": 1
+    },
+    "PBDN": {
+      "code": "PBDN",
+      "text": "Hand marked paper ballots; Direct recording assistive interface for accessibility without VVPAT",
+      "color": "ffffff",
+      "order": 1
+    },
+    "HBDN": {
+      "code": "HBDN",
+      "text": "Hand marked paper ballots, BMDs and DREs without VVPAT",
+      "color": "ffffff",
+      "order": 1
+    },
+    "BMDN": {
+      "code": "BMDN",
+      "text": "BMDs and DREs without VVPAT for all voters",
+      "color": "ffffff",
+      "order": 1
+    },
+    "MPDN": {
+      "code": "MPDN",
+      "text": "Hand marked paper ballots, DREs for accessibility without VVPAT",
+      "color": "ffffff",
+      "order": 1
+    },
+    "HMPN": {
+      "code": "HMPN",
+      "text": "Hand marked paper ballots",
+      "color": "ffffff",
+      "order": 1
+    }
+  },
+  "popover_codes": {
+    "AVBM": {
+      "code": "AVBM",
+      "text": "AVBM All Vote by Mail (obsolete)",
+      "color": "ffffff"
+    },
+    "BMDS": {
+      "code": "BMDS",
+      "text": "Ballot Marking Devices for all voters",
+      "color": "ffffff"
+    },
+    "BMDV": {
+      "code": "BMDV",
+      "text": "BMDs and DREs with VVPAT for all voters",
+      "color": "ffffff"
+    },
+    "DREN": {
+      "code": "DREN",
+      "text": "DREs without VVPAT for all voters",
+      "color": "ffffff"
+    },
+    "DREV": {
+      "code": "DREV",
+      "text": "DREs with VVPAT for all voters",
+      "color": "ffffff"
+    },
+    "DREX": {
+      "code": "DREX",
+      "text": "DREs with and without VVPAT for all voters",
+      "color": "ffffff"
+    },
+    "HBDN": {
+      "code": "HBDN",
+      "text": "Hand marked paper ballots, BMDs and DREs without VVPAT",
+      "color": "ffffff"
+    },
+    "HBDV": {
+      "code": "HBDV",
+      "text": "Hand marked paper ballots, BMDs and DREs with VVPAT",
+      "color": "ffffff"
+    },
+    "HBDX": {
+      "code": "HBDX",
+      "text": "Hand marked paper ballots, BMDs and DREs with and without VVPAT",
+      "color": "ffffff"
+    },
+    "HMBX": {
+      "code": "HMBX",
+      "text": "Hand marked paper ballots and BMDs",
+      "color": "ffffff"
+    },
+    "HMPB": {
+      "code": "HMPB",
+      "text": "Hand marked paper ballots, BMDs for accessibility",
+      "color": "ffffff"
+    },
+    "LVPB": {
+      "code": "LVPB",
+      "text": "Lever Voting Machines and hand marked paper ballots",
+      "color": "ffffff"
+    },
+    "LVRM": {
+      "code": "LVRM",
+      "text": "Mechanical lever voting machines for all voters",
+      "color": "ffffff"
+    },
+    "MPDN": {
+      "code": "MPDN",
+      "text": "Hand marked paper ballots, DREs for accessibility without VVPAT",
+      "color": "ffffff"
+    },
+    "MPDV": {
+      "code": "MPDV",
+      "text": "Hand marked paper ballots, DREs for accessibility with VVPAT",
+      "color": "ffffff"
+    },
+    "MPDX": {
+      "code": "MPDX",
+      "text": "Hand marked paper ballots, DREs with and without VVPAT",
+      "color": "ffffff"
+    },
+    "PBDN": {
+      "code": "PBDN",
+      "text": "Hand marked paper ballots; Direct recording assistive interface for accessibility without VVPAT",
+      "color": "ffffff"
+    },
+    "PBPC": {
+      "code": "PBPC",
+      "text": "Hand marked paper punch card and optical scan ballots, BMDs  for accessibility",
+      "color": "ffffff"
+    },
+    "PCVS": {
+      "code": "PCVS",
+      "text": "Hand marked punch card ballots, BMDs for accessibility",
+      "color": "ffffff"
+    },
+    "BMDN": {
+      "code": "BMDN",
+      "text": "BMDs and DREs without VVPAT for all voters",
+      "color": "ffffff"
+    },
+    "BMOS": {
+      "code": "BMOS",
+      "text": "Ballot Marking Device/Tabulators for all voters",
+      "color": "ffffff"
+    },
+    "HMPN": {
+      "code": "HMPN",
+      "text": "Hand marked paper ballots",
+      "color": "ffffff"
+    },
+    "MBDV": {
+      "code": "MBDV",
+      "text": "BMDs and DREs with VVPAT",
+      "color": "ffffff"
+    },
+    "MBDN": {
+      "code": "MBDN",
+      "text": "BMDs and DREs without VVPAT",
+      "color": "ffffff"
+    },
+    "MBDX": {
+      "code": "MBDX",
+      "text": "BMDs and DREs with and without VVPAT",
+      "color": "ffffff"
+    },
+    "NONE": {
+      "code": "NONE",
+      "text": "None",
+      "color": "BFBFBF"
+    },
+    "PBVS": {
+      "code": "PBVS",
+      "text": "Paper Ballot Voting System (obsolete)",
+      "color": "ffffff"
+    },
+    "BFOS": {
+      "code": "BFOS",
+      "text": "Batch-Fed Optical Scanners",
+      "color": "ffffff"
+    },
+    "HCPB": {
+      "code": "HCPB",
+      "text": "Hand Counted Paper Ballots",
+      "color": "d6d6d6"
+    },
+    "HFOS": {
+      "code": "HFOS",
+      "text": "Hand-Fed Optical Scanners",
+      "color": "ffffff"
+    },
+    "HCOS": {
+      "code": "HCOS",
+      "text": "Hand Counted Optical Scanners",
+      "color": "ffffff"
+    },
+    "UNON": {
+      "code": "UNON",
+      "text": "Unknown",
+      "color": "ffffff"
+    }
+  }
+}
