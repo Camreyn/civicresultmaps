@@ -20,7 +20,8 @@ export function equipmentClusterDiagnostics(input: {
     "same selected state",
     "same imported jurisdiction level",
     "current advisory flag set only",
-    "vendor/system grouping from Verified Voting Verifier fields",
+    "vendor/system grouping from Verified Voting Verifier jurisdiction fields",
+    "no claim that every precinct or ballot mode used one identical setup",
   ];
   const groups = new Map<
     string,
@@ -64,7 +65,7 @@ export function equipmentClusterDiagnostics(input: {
 
       return {
         caveat:
-          "Equipment clustering is context only. County-level equipment rows cannot prove or disprove tampering, and flags can cluster for demographic, geographic, contest, reporting-unit, or source-coverage reasons.",
+          "Equipment clustering is context only. Jurisdiction-level equipment rows cannot prove or disprove tampering, may summarize mixed local configurations, and flags can cluster for demographic, geographic, contest, reporting-unit, or source-coverage reasons.",
         controls,
         flaggedJurisdictions,
         flaggedRate: groupFlagRate,

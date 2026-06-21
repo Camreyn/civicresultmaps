@@ -34,7 +34,7 @@ export async function GET(request: Request) {
       limit,
       rowCount: rows.length,
       caveat:
-        "Equipment rows are election-administration context. They are not turnout or vote-result rows and do not prove or disprove advisory flags.",
+        "Equipment rows are jurisdiction-level election-administration context. They are not turnout or vote-result rows, do not prove or disprove advisory flags, and do not guarantee every precinct or ballot mode in a county used one identical setup.",
     }),
     { headers: publicDataCacheHeaders },
   );

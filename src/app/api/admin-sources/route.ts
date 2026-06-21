@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(
     apiEnvelope(packages, {
       caveat:
-        "Administration source statuses describe source availability. Equipment context is not vote, turnout, or evidence of cause.",
+        "Administration source statuses describe source availability. Equipment context is jurisdiction-level context, not vote, turnout, evidence of cause, or proof that every precinct in a county used one identical setup.",
       state: state ?? null,
       status: status ?? null,
       stateCount: packages.states.length,

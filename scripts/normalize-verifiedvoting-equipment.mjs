@@ -94,30 +94,87 @@ function primarySystemName(code) {
   return value.replace(/BMDBREAK/g, " + ").replace(/\s+/g, " ").trim();
 }
 
+function sourceGranularity(code) {
+  return String(code.jurisdiction_type ?? (code.county_fips ? "County" : "Jurisdiction"))
+    .trim()
+    .toLowerCase();
+}
+
+function mixedTextSignal(label, value) {
+  const text = String(value ?? "").trim();
+  if (!text) {
+    return "";
+  }
+
+  const normalized = text.toLowerCase();
+  if (/\b(and|or)\b|[,;/]/.test(normalized)) {
+    return `${label} reports multiple values: ${text}`;
+  }
+
+  return "";
+}
+
+function configurationSignals(code, popoverCodes) {
+  const signals = [
+    mixedTextSignal("tabulation", code.tabulation),
+    mixedTextSignal("polling-place system", systemText(code.pp_system, popoverCodes)),
+    mixedTextSignal("accessible system", systemText(code.pp_acc_system, popoverCodes)),
+    mixedTextSignal("absentee system", systemText(code.abs_system, popoverCodes)),
+  ].filter(Boolean);
+  const standard = systemText(code.pp_system, popoverCodes);
+  const accessible = systemText(code.pp_acc_system, popoverCodes);
+  const absentee = systemText(code.abs_system, popoverCodes);
+  const granularity = sourceGranularity(code);
+
+  if (granularity && granularity !== "county") {
+    signals.push(`source row is ${granularity} level, not county level`);
+  }
+
+  if (standard && accessible && standard !== accessible) {
+    signals.push("accessible voting system differs from standard polling-place system");
+  }
+
+  if (standard && absentee && absentee !== standard) {
+    signals.push("absentee system differs from standard polling-place system");
+  }
+
+  return Array.from(new Set(signals));
+}
+
 function rowFromCode(state, year, code, sourceDocumentId, sourceUrl, caveat, popoverCodes) {
   const vendor = String(code.make ?? "").trim();
   const systemName = primarySystemName(code.bmd_makemodel || code.bmd_makemodel2 || code.make || code.pp_system);
   const countyName = String(code.name ?? "").trim();
+  const granularity = sourceGranularity(code);
+  const signals = configurationSignals(code, popoverCodes);
+  const uniformityNote = signals.length
+    ? `Verifier row is a ${granularity || "jurisdiction"}-level summary. ${signals.join("; ")}. Do not infer every precinct or ballot mode used one identical setup.`
+    : `Verifier row is a ${granularity || "jurisdiction"}-level summary. It does not by itself prove every precinct or ballot mode used one identical setup.`;
+
   return {
     absenteeSystem: systemText(code.abs_system, popoverCodes),
     accessibleSystem: systemText(code.pp_acc_system, popoverCodes),
     caveat,
+    configurationSignals: signals.join(" | "),
     electionYear: year,
     equipmentType: code.tabulation || "Election administration equipment context",
     jurisdictionCode: normalizedCode(state, code.county_fips, countyName),
     jurisdictionName: countyName,
-    level: String(code.jurisdiction_type ?? "County").toLowerCase(),
+    level: granularity || "county",
     paperRecord: paperRecord(code.pp_system, popoverCodes),
     pollingPlaces: code.current_count_polling_places ?? "",
     pollBookSystem: code.epb_system ?? "",
     precincts: code.current_precincts ?? "",
     registeredVoters: code.current_reg_voters ?? "",
+    sourceGranularity: granularity || "jurisdiction",
     sourceDocumentId,
     sourceUrl,
     standardSystem: systemText(code.pp_system, popoverCodes),
     state,
     systemName,
     tabulation: code.tabulation ?? "",
+    uniformityNote,
+    uniformityWarningRequired: signals.length ? "true" : "false",
     usage: "county_context",
     vendor,
   };

@@ -4,7 +4,7 @@ import { states } from "./state-metadata.mjs";
 const registryPath = "data/admin-source-packages.json";
 const year = 2024;
 const caveat =
-  "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.";
+  "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.";
 
 function equipmentEntry(state) {
   const lower = state.code.toLowerCase();
@@ -40,7 +40,7 @@ function mergeStateEntry(existing, state) {
     apiUrl: baseEquipment.apiUrl,
     localArtifact: baseEquipment.localArtifact,
     normalizedArtifact: baseEquipment.normalizedArtifact,
-    caveat: existingEquipment.caveat ?? baseEquipment.caveat,
+    caveat: baseEquipment.caveat,
   };
 
   return {

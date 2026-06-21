@@ -2122,6 +2122,7 @@ export function WorkspaceTabs({
   const voteMethodJurisdictions = new Set(voteMethodRows.map((row) => row.jurisdictionCode || row.jurisdictionName)).size;
   const voteMethodUnavailableRows = voteMethodRows.filter((row) => row.valueStatus !== "reported").length;
   const equipmentJurisdictions = new Set(equipmentRows.map((row) => row.jurisdictionCode || row.jurisdictionName)).size;
+  const equipmentUniformityWarnings = equipmentRows.filter((row) => row.uniformityWarningRequired).length;
   const equipmentDiagnostics = useMemo(
     () => equipmentClusterDiagnostics({ equipmentRows, indicators }).slice(0, 8),
     [equipmentRows, indicators],
@@ -2407,6 +2408,10 @@ export function WorkspaceTabs({
     "registered_voters",
     "precincts",
     "polling_places",
+    "source_granularity",
+    "uniformity_warning_required",
+    "uniformity_note",
+    "configuration_signals",
     "source",
     "source_url",
   ];
@@ -2426,6 +2431,10 @@ export function WorkspaceTabs({
     row.registeredVoters ?? "",
     row.precincts ?? "",
     row.pollingPlaces ?? "",
+    row.sourceGranularity,
+    row.uniformityWarningRequired ? "true" : "false",
+    row.uniformityNote,
+    row.configurationSignals.join(" | "),
     row.sourceId,
     row.sourceUrl,
   ]);
@@ -3893,12 +3902,13 @@ export function WorkspaceTabs({
                 <div className="header-actions">
                   <Eli5>
                     These rows describe election administration context like vendor, system, paper record, tabulation,
-                    and poll-book fields. They do not prove why a vote pattern happened.
+                    and poll-book fields by source jurisdiction. They do not prove why a vote pattern happened or that
+                    every precinct used the same setup.
                   </Eli5>
                   <QualityBadge
                     detail={
                       equipmentRows.length
-                        ? "County-level equipment context is loaded; use as clustering context only."
+                        ? "Jurisdiction-level equipment context is loaded; use as clustering context only."
                         : "Equipment context is not loaded for this state."
                     }
                     status={equipmentRows.length ? "partial" : "missing"}
@@ -3925,6 +3935,10 @@ export function WorkspaceTabs({
                       <strong>{equipmentDiagnostics.length.toLocaleString()}</strong>
                     </article>
                     <article>
+                      <span>Uniformity notes</span>
+                      <strong>{equipmentUniformityWarnings.toLocaleString()}</strong>
+                    </article>
+                    <article>
                       <span>Source</span>
                       <strong>Verifier</strong>
                     </article>
@@ -3934,8 +3948,8 @@ export function WorkspaceTabs({
                       <strong>Equipment Cluster Diagnostic</strong>
                       <span>
                         This checks whether currently flagged jurisdictions cluster by vendor/system group inside the
-                        selected state. It is review context only, not evidence of cause, and it does not control for
-                        demographics, geography, or contest coverage.
+                        selected state. It is review context only, not evidence of cause, does not prove a county is
+                        internally uniform, and it does not control for demographics, geography, or contest coverage.
                       </span>
                     </div>
                     <span className="pending">Context only</span>

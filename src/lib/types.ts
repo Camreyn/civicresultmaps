@@ -217,6 +217,10 @@ export type EquipmentRowSummary = {
   registeredVoters: number | null;
   precincts: number | null;
   pollingPlaces: number | null;
+  sourceGranularity: string;
+  uniformityWarningRequired: boolean;
+  uniformityNote: string;
+  configurationSignals: string[];
   metrics: Record<string, unknown>;
   sourceId: string;
   sourceUrl: string;

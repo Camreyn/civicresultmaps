@@ -30,7 +30,7 @@ type ResultsExplorerProps = {
 };
 
 type SortKey = "jurisdiction" | "winner" | "total" | "margin";
-type MapMode = "winner" | "margin" | "volume" | "method";
+type MapMode = "winner" | "margin" | "volume" | "method" | "equipment";
 type MapPan = { x: number; y: number };
 
 type GeoFeature = {
@@ -246,8 +246,39 @@ type VoteMethodAggregate = {
   voters: number;
 };
 
+const equipmentPalette = [
+  "#35c7a3",
+  "#6fa6ea",
+  "#f0c36a",
+  "#e7896f",
+  "#c58cff",
+  "#8fd17f",
+  "#d986c8",
+  "#9ca3af",
+];
+
 function methodShare(row: VoteMethodAggregate | undefined) {
   return row && row.totalVoters > 0 ? (row.voters / row.totalVoters) * 100 : null;
+}
+
+function equipmentGroupLabel(row: EquipmentRowSummary | undefined) {
+  if (!row) {
+    return "No equipment row";
+  }
+
+  return [row.vendor || "Vendor not recorded", row.systemName || row.equipmentType || "System not recorded"].join(" - ");
+}
+
+function stableHash(value: string) {
+  return Array.from(value).reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 0);
+}
+
+function equipmentFill(row: EquipmentRowSummary | undefined) {
+  if (!row) {
+    return "#2c302e";
+  }
+
+  return equipmentPalette[stableHash(equipmentGroupLabel(row)) % equipmentPalette.length];
 }
 
 function countyFill(
@@ -255,8 +286,13 @@ function countyFill(
   mode: MapMode,
   maxTotalVotes: number,
   methodRow?: VoteMethodAggregate,
+  equipmentRow?: EquipmentRowSummary,
   maxMethodShare = 100,
 ) {
+  if (mode === "equipment") {
+    return equipmentFill(equipmentRow);
+  }
+
   if (mode === "method") {
     const share = methodShare(methodRow);
     if (share === null) {
@@ -454,6 +490,25 @@ export function ResultsExplorer({
     }
     return rows;
   }, [equipmentRows]);
+  const equipmentLegend = useMemo(() => {
+    const groups = new Map<string, { color: string; count: number; label: string; warnings: number }>();
+    for (const row of equipmentRows) {
+      const label = equipmentGroupLabel(row);
+      const current = groups.get(label) ?? {
+        color: equipmentFill(row),
+        count: 0,
+        label,
+        warnings: 0,
+      };
+      current.count += 1;
+      current.warnings += row.uniformityWarningRequired ? 1 : 0;
+      groups.set(label, current);
+    }
+
+    return Array.from(groups.values())
+      .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+      .slice(0, 8);
+  }, [equipmentRows]);
   const selectedVoteMethodLabel =
     voteMethodOptions.find((option) => option.method === selectedVoteMethod)?.label ?? "Vote method";
   const maxVoteMethodShare = Math.max(
@@ -474,6 +529,14 @@ export function ResultsExplorer({
   const selectedMapEquipment = activeMapName
     ? equipmentByCounty.get(normalizeName(resultNameForFeature(selectedState, activeMapName)))
     : undefined;
+  const selectedMapReadout =
+    mapMode === "equipment"
+      ? selectedMapEquipment
+        ? equipmentGroupLabel(selectedMapEquipment)
+        : "No joined equipment row"
+      : selectedMapResult
+        ? `${selectedMapResult.winner} by ${selectedMapResult.marginPct.toFixed(2)}% - ${selectedMapResult.totalVotes.toLocaleString()} votes`
+        : "Winner, margin, and review flags appear here.";
   const selectedSource = selectedMapResult ? sourceById.get(selectedMapResult.sourceId) : undefined;
   const pinnedMapResult = pinnedMapName ? resultsByName.get(normalizeName(pinnedMapName)) : undefined;
   const pinnedMapIndicators = pinnedMapName ? indicatorsByName.get(normalizeName(pinnedMapName)) ?? [] : [];
@@ -694,11 +757,15 @@ export function ResultsExplorer({
               ["margin", "Margin"],
               ["volume", "Votes"],
               ["method", "Method"],
+              ["equipment", "Equipment"],
             ].map(([mode, label]) => (
               <button
                 aria-pressed={mapMode === mode}
                 data-tour={mode === "method" ? "method-mode-button" : undefined}
-                disabled={mode === "method" && voteMethodRows.length === 0}
+                disabled={
+                  (mode === "method" && voteMethodRows.length === 0) ||
+                  (mode === "equipment" && equipmentRows.length === 0)
+                }
                 key={mode}
                 onClick={() => setMapMode(mode as MapMode)}
                 type="button"
@@ -709,11 +776,7 @@ export function ResultsExplorer({
           </div>
           <div className="map-readout">
             <strong>{activeMapName ?? "Hover a boundary"}</strong>
-            <span>
-              {selectedMapResult
-                ? `${selectedMapResult.winner} by ${selectedMapResult.marginPct.toFixed(2)}% · ${selectedMapResult.totalVotes.toLocaleString()} votes`
-                : "Winner, margin, and review flags appear here."}
-            </span>
+            <span>{selectedMapReadout}</span>
           </div>
         </div>
         {mapMode === "method" && (
@@ -734,6 +797,15 @@ export function ResultsExplorer({
               {activeMapName
                 ? `${selectedVoteMethodLabel}: ${methodShare(selectedMapVoteMethod)?.toFixed(2) ?? "N/A"}%`
                 : "County shading aggregates EAC participation-method rows where needed."}
+            </span>
+          </div>
+        )}
+        {mapMode === "equipment" && (
+          <div className="map-method-control equipment-map-note" data-tour="equipment-layer">
+            <label>Equipment layer</label>
+            <span>
+              County shading uses Verified Voting Verifier jurisdiction rows. Treat it as administration context, not
+              proof every precinct or ballot mode used one identical setup.
             </span>
           </div>
         )}
@@ -836,6 +908,7 @@ export function ResultsExplorer({
                 const resultName = resultNameForFeature(selectedState, name);
                 const row = resultsByName.get(normalizeName(resultName));
                 const methodRow = voteMethodByCounty.get(normalizeName(resultName));
+                const equipmentRow = equipmentByCounty.get(normalizeName(resultName));
                 const countyIndicators = indicatorsByName.get(normalizeName(resultName)) ?? [];
                 const rings = polygonRings(feature);
                 const point = centroid(selectedState, feature, bounds);
@@ -847,7 +920,7 @@ export function ResultsExplorer({
                       aria-label={`${name}${row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
-                      fill={countyFill(row, mapMode, maxTotalVotes, methodRow, maxVoteMethodShare)}
+                      fill={countyFill(row, mapMode, maxTotalVotes, methodRow, equipmentRow, maxVoteMethodShare)}
                       onClick={(event) => {
                         if (suppressMapClickRef.current) {
                           event.preventDefault();
@@ -872,6 +945,8 @@ export function ResultsExplorer({
                         {name}:{" "}
                         {mapMode === "method"
                           ? `${selectedVoteMethodLabel} ${methodShare(methodRow)?.toFixed(2) ?? "N/A"}%`
+                          : mapMode === "equipment"
+                            ? equipmentGroupLabel(equipmentRow)
                           : row
                             ? `${row.winner} by ${row.marginPct.toFixed(2)}%`
                             : "No result row"}
@@ -900,7 +975,17 @@ export function ResultsExplorer({
           )}
         </div>
         <div className="map-legend" aria-label="Map legend">
-          {mapMode === "method" ? (
+          {mapMode === "equipment" ? (
+            <div className="equipment-map-legend" aria-label="Equipment vendor and system legend">
+              {equipmentLegend.map((item) => (
+                <span className="equipment-legend-item" key={item.label}>
+                  <i aria-hidden style={{ background: item.color }} />
+                  {item.label}
+                  <small>{item.count.toLocaleString()}</small>
+                </span>
+              ))}
+            </div>
+          ) : mapMode === "method" ? (
             <div className="margin-scale-legend method-scale-legend" aria-label="Vote method share color scale">
               <div className="method-scale-bar" aria-hidden />
               <div className="margin-scale-labels">
@@ -925,6 +1010,11 @@ export function ResultsExplorer({
           {mapMode === "volume" && <span className="legend-note">Gold intensity shows total vote volume.</span>}
           {mapMode === "method" && (
             <span className="legend-note">Method layer is participation method, not candidate vote by method.</span>
+          )}
+          {mapMode === "equipment" && (
+            <span className="legend-note">
+              Equipment layer comes from Verified Voting jurisdiction rows; inspect a county for source and uniformity notes.
+            </span>
           )}
           <span className="legend-note">Badge numbers count advisory indicators, not confirmed findings.</span>
           {selectedMapIndicators.length > 0 && (
@@ -988,6 +1078,10 @@ export function ResultsExplorer({
                     Accessible: {selectedMapEquipment.accessibleSystem || "Not recorded"} · Poll book:{" "}
                     {selectedMapEquipment.pollBookSystem || "Not recorded"}
                   </span>
+                  <span>{selectedMapEquipment.uniformityNote}</span>
+                  {selectedMapEquipment.configurationSignals.length > 0 && (
+                    <span>{selectedMapEquipment.configurationSignals.join("; ")}</span>
+                  )}
                   {selectedMapEquipment.sourceUrl && (
                     <a href={selectedMapEquipment.sourceUrl} rel="noreferrer" target="_blank">
                       <ExternalLink aria-hidden size={14} />

@@ -106,6 +106,17 @@ function numberOrNull(value) {
   return Number.isFinite(number) && String(value).trim() !== "" ? number : null;
 }
 
+function trueString(value) {
+  return String(value ?? "").trim().toLowerCase() === "true";
+}
+
+function listFromPipe(value) {
+  return String(value ?? "")
+    .split("|")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 async function promoteState(sql, registry, state, year) {
   const stateMeta = requireState(state);
   const entry = registry.stateYearStatuses.find(
@@ -249,7 +260,14 @@ async function promoteState(sql, registry, state, year) {
         ${numberOrNull(row.registeredVoters)},
         ${numberOrNull(row.precincts)},
         ${numberOrNull(row.pollingPlaces)},
-        ${JSON.stringify({ caveat: row.caveat, sourceUrl: row.sourceUrl })}::jsonb,
+        ${JSON.stringify({
+          caveat: row.caveat,
+          configurationSignals: listFromPipe(row.configurationSignals),
+          sourceGranularity: row.sourceGranularity,
+          sourceUrl: row.sourceUrl,
+          uniformityNote: row.uniformityNote,
+          uniformityWarningRequired: trueString(row.uniformityWarningRequired),
+        })}::jsonb,
         ${source.id}
       )
       on conflict (state_code, election_year, level, jurisdiction_code, usage)

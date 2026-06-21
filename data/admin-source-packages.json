@@ -21,6 +21,10 @@
       "registeredVoters",
       "precincts",
       "pollingPlaces",
+      "sourceGranularity",
+      "uniformityWarningRequired",
+      "uniformityNote",
+      "configurationSignals",
       "sourceDocumentId",
       "sourceUrl",
       "caveat"
@@ -42,7 +46,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=2&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ak-2024-equipment.json",
         "normalizedArtifact": "data/ak-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 1
       },
       "audit": {
@@ -73,7 +77,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=1&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-al-2024-equipment.json",
         "normalizedArtifact": "data/al-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 67
       },
       "audit": {
@@ -104,7 +108,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=5&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ar-2024-equipment.json",
         "normalizedArtifact": "data/ar-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 75
       },
       "audit": {
@@ -135,7 +139,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=4&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-az-2024-equipment.json",
         "normalizedArtifact": "data/az-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 15
       },
       "audit": {
@@ -166,7 +170,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=6&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ca-2024-equipment.json",
         "normalizedArtifact": "data/ca-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 58
       },
       "audit": {
@@ -197,7 +201,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=8&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-co-2024-equipment.json",
         "normalizedArtifact": "data/co-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 64
       },
       "audit": {
@@ -228,7 +232,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=9&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ct-2024-equipment.json",
         "normalizedArtifact": "data/ct-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 8
       },
       "audit": {
@@ -259,7 +263,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=10&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-de-2024-equipment.json",
         "normalizedArtifact": "data/de-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 3
       },
       "audit": {
@@ -290,7 +294,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=12&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-fl-2024-equipment.json",
         "normalizedArtifact": "data/fl-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 67
       },
       "audit": {
@@ -321,7 +325,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=13&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ga-2024-equipment.json",
         "normalizedArtifact": "data/ga-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 159
       },
       "audit": {
@@ -352,7 +356,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=15&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-hi-2024-equipment.json",
         "normalizedArtifact": "data/hi-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 4
       },
       "audit": {
@@ -383,7 +387,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=19&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ia-2024-equipment.json",
         "normalizedArtifact": "data/ia-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 99
       },
       "audit": {
@@ -414,7 +418,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=16&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-id-2024-equipment.json",
         "normalizedArtifact": "data/id-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 44
       },
       "audit": {
@@ -445,7 +449,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=17&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-il-2024-equipment.json",
         "normalizedArtifact": "data/il-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 107
       },
       "audit": {
@@ -476,7 +480,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=18&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-in-2024-equipment.json",
         "normalizedArtifact": "data/in-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 92
       },
       "audit": {
@@ -507,7 +511,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=20&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ks-2024-equipment.json",
         "normalizedArtifact": "data/ks-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 105
       },
       "audit": {
@@ -538,7 +542,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=21&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ky-2024-equipment.json",
         "normalizedArtifact": "data/ky-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 120
       },
       "audit": {
@@ -569,7 +573,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=22&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-la-2024-equipment.json",
         "normalizedArtifact": "data/la-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 64
       },
       "audit": {
@@ -600,7 +604,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=25&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ma-2024-equipment.json",
         "normalizedArtifact": "data/ma-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 14
       },
       "audit": {
@@ -631,7 +635,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=24&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-md-2024-equipment.json",
         "normalizedArtifact": "data/md-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 24
       },
       "audit": {
@@ -662,7 +666,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=23&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-me-2024-equipment.json",
         "normalizedArtifact": "data/me-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 16
       },
       "audit": {
@@ -693,7 +697,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=26&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-mi-2024-equipment.json",
         "normalizedArtifact": "data/mi-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 83
       },
       "audit": {
@@ -724,7 +728,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=27&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-mn-2024-equipment.json",
         "normalizedArtifact": "data/mn-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 87
       },
       "audit": {
@@ -755,7 +759,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=29&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-mo-2024-equipment.json",
         "normalizedArtifact": "data/mo-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 116
       },
       "audit": {
@@ -786,7 +790,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=28&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ms-2024-equipment.json",
         "normalizedArtifact": "data/ms-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 82
       },
       "audit": {
@@ -817,7 +821,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=30&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-mt-2024-equipment.json",
         "normalizedArtifact": "data/mt-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 56
       },
       "audit": {
@@ -848,7 +852,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=37&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-nc-2024-equipment.json",
         "normalizedArtifact": "data/nc-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 100
       },
       "audit": {
@@ -879,7 +883,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=38&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-nd-2024-equipment.json",
         "normalizedArtifact": "data/nd-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 53
       },
       "audit": {
@@ -910,7 +914,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=31&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ne-2024-equipment.json",
         "normalizedArtifact": "data/ne-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 93
       },
       "audit": {
@@ -941,7 +945,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=33&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-nh-2024-equipment.json",
         "normalizedArtifact": "data/nh-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 10
       },
       "audit": {
@@ -972,7 +976,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=34&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-nj-2024-equipment.json",
         "normalizedArtifact": "data/nj-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 21
       },
       "audit": {
@@ -1003,7 +1007,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=35&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-nm-2024-equipment.json",
         "normalizedArtifact": "data/nm-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 33
       },
       "audit": {
@@ -1034,7 +1038,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=32&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-nv-2024-equipment.json",
         "normalizedArtifact": "data/nv-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 17
       },
       "audit": {
@@ -1065,7 +1069,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=36&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ny-2024-equipment.json",
         "normalizedArtifact": "data/ny-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 62
       },
       "audit": {
@@ -1096,7 +1100,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=39&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-oh-2024-equipment.json",
         "normalizedArtifact": "data/oh-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 88
       },
       "audit": {
@@ -1127,7 +1131,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=40&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ok-2024-equipment.json",
         "normalizedArtifact": "data/ok-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 77
       },
       "audit": {
@@ -1158,7 +1162,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=41&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-or-2024-equipment.json",
         "normalizedArtifact": "data/or-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 36
       },
       "audit": {
@@ -1189,7 +1193,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=42&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-pa-2024-equipment.json",
         "normalizedArtifact": "data/pa-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 67
       },
       "audit": {
@@ -1220,7 +1224,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=44&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ri-2024-equipment.json",
         "normalizedArtifact": "data/ri-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 5
       },
       "audit": {
@@ -1251,7 +1255,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=45&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-sc-2024-equipment.json",
         "normalizedArtifact": "data/sc-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 46
       },
       "audit": {
@@ -1282,7 +1286,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=46&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-sd-2024-equipment.json",
         "normalizedArtifact": "data/sd-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 66
       },
       "audit": {
@@ -1313,7 +1317,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=47&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-tn-2024-equipment.json",
         "normalizedArtifact": "data/tn-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 95
       },
       "audit": {
@@ -1344,7 +1348,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=48&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-tx-2024-equipment.json",
         "normalizedArtifact": "data/tx-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 254
       },
       "audit": {
@@ -1375,7 +1379,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=49&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ut-2024-equipment.json",
         "normalizedArtifact": "data/ut-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 29
       },
       "audit": {
@@ -1406,7 +1410,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=51&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-va-2024-equipment.json",
         "normalizedArtifact": "data/va-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 134
       },
       "audit": {
@@ -1437,7 +1441,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=50&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-vt-2024-equipment.json",
         "normalizedArtifact": "data/vt-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 14
       },
       "audit": {
@@ -1468,7 +1472,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=53&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-wa-2024-equipment.json",
         "normalizedArtifact": "data/wa-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 39
       },
       "audit": {
@@ -1499,7 +1503,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=55&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-wi-2024-equipment.json",
         "normalizedArtifact": "data/wi-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 72
       },
       "audit": {
@@ -1530,7 +1534,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=54&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-wv-2024-equipment.json",
         "normalizedArtifact": "data/wv-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 55
       },
       "audit": {
@@ -1561,7 +1565,7 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=56&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-wy-2024-equipment.json",
         "normalizedArtifact": "data/wy-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is county-level election-administration context. It documents equipment systems and related fields by jurisdiction; it is not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
         "expectedJurisdictions": 23
       },
       "audit": {

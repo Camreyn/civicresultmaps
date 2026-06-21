@@ -901,30 +901,44 @@ export async function listEquipmentRows(input: {
     return [];
   }
 
-  return rows.map((row) => ({
-    absenteeSystem: row.absenteeSystem,
-    accessibleSystem: row.accessibleSystem,
-    electionYear: row.electionYear,
-    equipmentType: row.equipmentType,
-    id: row.id,
-    jurisdictionCode: row.jurisdictionCode,
-    jurisdictionName: row.jurisdictionName,
-    level: row.level,
-    metrics: row.metrics as Record<string, unknown>,
-    paperRecord: row.paperRecord,
-    pollingPlaces: row.pollingPlaces,
-    pollBookSystem: row.pollBookSystem,
-    precincts: row.precincts,
-    registeredVoters: row.registeredVoters,
-    sourceId: row.sourceSlug ?? "database",
-    sourceUrl: row.sourceUrl ?? "",
-    standardSystem: row.standardSystem,
-    state: row.state,
-    systemName: row.systemName,
-    tabulation: row.tabulation,
-    usage: row.usage,
-    vendor: row.vendor,
-  }));
+  return rows.map((row) => {
+    const metrics = (row.metrics ?? {}) as Record<string, unknown>;
+    const configurationSignals = Array.isArray(metrics.configurationSignals)
+      ? metrics.configurationSignals.map((signal) => String(signal))
+      : [];
+
+    return {
+      absenteeSystem: row.absenteeSystem,
+      accessibleSystem: row.accessibleSystem,
+      configurationSignals,
+      electionYear: row.electionYear,
+      equipmentType: row.equipmentType,
+      id: row.id,
+      jurisdictionCode: row.jurisdictionCode,
+      jurisdictionName: row.jurisdictionName,
+      level: row.level,
+      metrics,
+      paperRecord: row.paperRecord,
+      pollingPlaces: row.pollingPlaces,
+      pollBookSystem: row.pollBookSystem,
+      precincts: row.precincts,
+      registeredVoters: row.registeredVoters,
+      sourceGranularity: typeof metrics.sourceGranularity === "string" ? metrics.sourceGranularity : row.level,
+      sourceId: row.sourceSlug ?? "database",
+      sourceUrl: row.sourceUrl ?? "",
+      standardSystem: row.standardSystem,
+      state: row.state,
+      systemName: row.systemName,
+      tabulation: row.tabulation,
+      uniformityNote:
+        typeof metrics.uniformityNote === "string"
+          ? metrics.uniformityNote
+          : "Equipment row is source-linked jurisdiction context, not proof that every precinct or ballot mode used one identical setup.",
+      uniformityWarningRequired: Boolean(metrics.uniformityWarningRequired),
+      usage: row.usage,
+      vendor: row.vendor,
+    };
+  });
 }
 
 export async function listCompletenessReport(input: { year: number }): Promise<CompletenessSummary[]> {
