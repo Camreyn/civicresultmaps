@@ -29,6 +29,8 @@ type StateFilter =
   | "needs-sources"
   | "missing-turnout"
   | "missing-review"
+  | "has-result-map"
+  | "equipment-map-only"
   | "has-turnout"
   | "has-history";
 type StateDataBadge = {
@@ -47,6 +49,8 @@ const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
   { label: "Review-ready", value: "review-ready" },
   { label: "Results only", value: "results-only" },
   { label: "Needs sources", value: "needs-sources" },
+  { label: "Result maps", value: "has-result-map" },
+  { label: "Equipment maps only", value: "equipment-map-only" },
   { label: "Missing turnout", value: "missing-turnout" },
   { label: "Missing review", value: "missing-review" },
   { label: "Has turnout", value: "has-turnout" },
@@ -217,7 +221,7 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
   ];
 }
 
-function stateMatchesFilter(summary: CompletenessSummary | undefined, filter: StateFilter) {
+function stateMatchesFilter(state: StateSummary, summary: CompletenessSummary | undefined, filter: StateFilter) {
   if (filter === "all") {
     return true;
   }
@@ -240,6 +244,14 @@ function stateMatchesFilter(summary: CompletenessSummary | undefined, filter: St
 
   if (filter === "needs-sources") {
     return summary.status === "needs_sources" || summary.sourceCount === 0 || summary.sourcesMissingUrls > 0;
+  }
+
+  if (filter === "has-result-map") {
+    return hasBaseResultGeometry(state.code) && summary.mapGeometrySourceCount > 0;
+  }
+
+  if (filter === "equipment-map-only") {
+    return !hasBaseResultGeometry(state.code) && summary.equipmentRowCount > 0;
   }
 
   if (filter === "missing-turnout") {
@@ -270,7 +282,7 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
       states.filter((state) => {
         const summary = completenessByState.get(state.code);
 
-        if (!stateMatchesFilter(summary, stateFilter)) {
+        if (!stateMatchesFilter(state, summary, stateFilter)) {
           return false;
         }
 
