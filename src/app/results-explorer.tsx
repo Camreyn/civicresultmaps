@@ -97,6 +97,11 @@ function resultNameForFeature(state: string, name: string) {
   return name;
 }
 
+function isNonGeographicResultRow(state: string, name: string) {
+  const normalized = normalizeName(name);
+  return (state === "ME" && normalized === "STATEUOCAVA") || (state === "RI" && normalized === "FEDERALPRECINCTS");
+}
+
 function compareRows(a: ResultRow, b: ResultRow, sortKey: SortKey) {
   if (sortKey === "winner") {
     return a.winner.localeCompare(b.winner) || a.jurisdictionName.localeCompare(b.jurisdictionName);
@@ -623,7 +628,11 @@ export function ResultsExplorer({
       .filter((name) => !resultsByName.has(normalizeName(name)))
       .sort((a, b) => a.localeCompare(b));
     const unmappedRows = results
-      .filter((row) => !featureNames.has(normalizeName(row.jurisdictionName)))
+      .filter(
+        (row) =>
+          !isNonGeographicResultRow(selectedState, row.jurisdictionName) &&
+          !featureNames.has(normalizeName(row.jurisdictionName)),
+      )
       .map((row) => row.jurisdictionName)
       .sort((a, b) => a.localeCompare(b));
 
@@ -1387,3 +1396,4 @@ export function ResultsExplorer({
     </section>
   );
 }
+

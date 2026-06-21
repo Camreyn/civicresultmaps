@@ -46,6 +46,11 @@ function resultNameForFeature(state, name) {
   return name;
 }
 
+function isNonGeographicResultRow(state, name) {
+  const normalized = normalizeName(name);
+  return (state === "ME" && normalized === "STATEUOCAVA") || (state === "RI" && normalized === "FEDERALPRECINCTS");
+}
+
 async function fetchJson(url) {
   const response = await fetch(url);
   if (!response.ok) {
@@ -100,3 +105,4 @@ console.log(JSON.stringify({ checkedStates: report.length, failures, summary: re
 if (failures.length > 0) {
   process.exitCode = 1;
 }
+
