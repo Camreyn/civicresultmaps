@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useMemo, useState } from "react";
+import { hasBaseResultGeometry } from "@/lib/map-geometry";
 import type { CompletenessSummary, StateSummary } from "@/lib/types";
 
 type StateSwitcherProps = {
@@ -98,21 +99,25 @@ function countLabel(count: number | null, unit: string) {
   return `${count.toLocaleString()} ${unit}${count === 1 ? "" : "s"}`;
 }
 
-function mapPresence(capability: boolean, mapGeometrySourceCount: number) {
-  if (capability && mapGeometrySourceCount > 0) {
+function mapPresence(stateCode: string, capability: boolean, mapGeometrySourceCount: number, equipmentRows: number) {
+  if (hasBaseResultGeometry(stateCode) && capability && mapGeometrySourceCount > 0) {
     return "loaded" as const;
   }
 
-  if (capability || mapGeometrySourceCount > 0) {
+  if (equipmentRows > 0 || capability || mapGeometrySourceCount > 0) {
     return "partial" as const;
   }
 
   return "missing" as const;
 }
 
-function mapTitle(capability: boolean, mapGeometrySourceCount: number) {
-  if (capability && mapGeometrySourceCount > 0) {
-    return `Map geometry available: ${countLabel(mapGeometrySourceCount, "loaded geometry source")}`;
+function mapTitle(stateCode: string, capability: boolean, mapGeometrySourceCount: number, equipmentRows: number) {
+  if (hasBaseResultGeometry(stateCode) && capability && mapGeometrySourceCount > 0) {
+    return `Result map geometry available: ${countLabel(mapGeometrySourceCount, "loaded geometry source")}`;
+  }
+
+  if (equipmentRows > 0) {
+    return "Equipment GIS map available; result-map county geometry is not loaded yet";
   }
 
   if (capability) {
@@ -166,8 +171,8 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
       icon: MapIcon,
       key: "map",
       label: "Map",
-      presence: mapPresence(capabilities.map, mapGeometrySourceCount),
-      title: mapTitle(capabilities.map, mapGeometrySourceCount),
+      presence: mapPresence(state.code, capabilities.map, mapGeometrySourceCount, equipmentRows),
+      title: mapTitle(state.code, capabilities.map, mapGeometrySourceCount, equipmentRows),
     },
     {
       abbr: "Rv",

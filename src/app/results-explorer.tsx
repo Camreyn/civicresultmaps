@@ -17,6 +17,7 @@ import {
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
+import { hasBaseResultGeometry } from "@/lib/map-geometry";
 import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 
 type ResultsExplorerProps = {
@@ -55,7 +56,6 @@ type FeatureCollection = {
 
 const geoBaseUrl =
   "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
-const baseGeometryStates = new Set(["AZ", "FL", "GA", "MI", "MN", "NC", "NV", "OH", "PA", "VA", "WA", "WI"]);
 const mapViewBox = { height: 560, width: 960 };
 const mapZoomStep = 0.35;
 const mapMaxZoom = 3;
@@ -382,7 +382,7 @@ export function ResultsExplorer({
     setMapPan({ x: 0, y: 0 });
     setMapZoom(1);
 
-    if (baseGeometryStates.has(selectedState)) {
+    if (hasBaseResultGeometry(selectedState)) {
       fetch(`${geoBaseUrl}/${geoJsonPath(selectedState)}`, {
         signal: controller.signal,
       })
