@@ -61,7 +61,8 @@
     "validate:source-packages": "node scripts/validate-native-source-packages.mjs",
     "validate:turnout-packages": "node scripts/validate-turnout-source-packages.mjs",
     "validate:equipment-production": "node scripts/validate-production-equipment.mjs",
-    "validate:maps": "node scripts/validate-production-map-joins.mjs",
+    "validate:map-geometry": "node scripts/validate-map-geometry-coverage.mjs",
+    "validate:maps": "npm run validate:map-geometry && node scripts/validate-production-map-joins.mjs",
     "validate:provenance": "node scripts/validate-production-provenance.mjs"
   },
   "dependencies": {

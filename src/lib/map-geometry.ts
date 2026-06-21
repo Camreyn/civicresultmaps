@@ -1,4 +1,6 @@
-const baseResultGeometryStateCodes = new Set(["AZ", "FL", "GA", "MI", "MN", "NC", "NV", "OH", "PA", "VA", "WA", "WI"]);
+import coverage from "./map-geometry-coverage.json";
+
+const baseResultGeometryStateCodes = new Set(coverage.baseResultGeometryStates);
 
 export function hasBaseResultGeometry(state: string) {
   return baseResultGeometryStateCodes.has(state.toUpperCase());
