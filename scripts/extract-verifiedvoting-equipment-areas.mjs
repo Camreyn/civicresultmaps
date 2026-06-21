@@ -36,6 +36,63 @@ function yearToProcess() {
   return Number(yearIndex === -1 ? envYear || positional || "2024" : process.argv[yearIndex + 1]);
 }
 
+function normalizedFips(value) {
+  const text = String(value ?? "").trim();
+  if (!text) {
+    return "";
+  }
+
+  const number = Number(text);
+  return Number.isFinite(number) ? String(number) : text.replace(/^0+/, "") || "0";
+}
+
+function normalizedCode(state, rawCode, name) {
+  if (rawCode) {
+    return `${state}-${String(rawCode).padStart(3, "0")}`;
+  }
+
+  return `${state}-${String(name).toUpperCase().replace(/[^A-Z0-9]+/g, "-")}`;
+}
+
+function systemText(code, popoverCodes) {
+  if (!code) {
+    return "";
+  }
+
+  const key = String(code).toUpperCase();
+  return popoverCodes?.[key]?.text ?? key;
+}
+
+function primarySystemName(code) {
+  const value = String(code ?? "").trim();
+  return value.replace(/BMDBREAK/g, " + ").replace(/\s+/g, " ").trim();
+}
+
+function equipmentSummaryFromCode(state, code, popoverCodes) {
+  if (!code) {
+    return {};
+  }
+
+  const vendor = String(code.make ?? "").trim();
+  const systemName = primarySystemName(code.bmd_makemodel || code.bmd_makemodel2 || code.make || code.pp_system);
+  const jurisdictionName = String(code.name ?? "").trim();
+
+  return {
+    equipmentGroupLabel: [vendor || "Vendor not recorded", systemName || code.tabulation || "System not recorded"].join(" - "),
+    equipmentSystemName: systemName,
+    equipmentType: code.tabulation || "Election administration equipment context",
+    equipmentVendor: vendor,
+    jurisdictionCode: normalizedCode(state, code.county_fips, jurisdictionName),
+    jurisdictionName,
+    sourceGranularity: String(code.jurisdiction_type ?? (code.county_fips ? "County" : "Jurisdiction")).trim().toLowerCase(),
+    standardSystem: systemText(code.pp_system, popoverCodes),
+    accessibleSystem: systemText(code.pp_acc_system, popoverCodes),
+    absenteeSystem: systemText(code.abs_system, popoverCodes),
+    pollBookSystem: code.epb_system ?? "",
+    tabulation: code.tabulation ?? "",
+  };
+}
+
 async function extractState(entry, state, year) {
   if (!entry?.equipment?.localArtifact) {
     throw new Error(`No Verified Voting equipment artifact registered for ${state} ${year}.`);
@@ -53,17 +110,29 @@ async function extractState(entry, state, year) {
     throw new Error(`No Verifier area FeatureCollection found in ${entry.equipment.localArtifact}.`);
   }
 
+  const codeValues = Array.isArray(payload.codes) ? payload.codes : Object.values(payload.codes ?? {});
+  const codesByCountyFips = new Map(
+    codeValues
+      .filter((code) => String(code.state ?? "").toUpperCase() === state)
+      .map((code) => [normalizedFips(code.county_fips), code]),
+  );
   const outputPath = `data/verifiedvoting-${state.toLowerCase()}-${year}-equipment-areas.geojson`;
   const enriched = {
     ...area,
-    features: area.features.map((feature) => ({
-      ...feature,
-      properties: {
-        ...(feature.properties ?? {}),
-        sourceDocumentId: entry.equipment.sourceDocumentId,
-        sourceUrl: entry.equipment.sourceUrl,
-      },
-    })),
+    features: area.features.map((feature) => {
+      const properties = feature.properties ?? {};
+      const matchedCode = codesByCountyFips.get(normalizedFips(properties.COUNTY ?? properties.COUNTYFP10));
+      return {
+        ...feature,
+        properties: {
+          ...properties,
+          ...equipmentSummaryFromCode(state, matchedCode, payload.popover_codes),
+          equipmentCodeMatched: Boolean(matchedCode),
+          sourceDocumentId: entry.equipment.sourceDocumentId,
+          sourceUrl: entry.equipment.sourceUrl,
+        },
+      };
+    }),
     properties: {
       electionYear: year,
       source: "Verified Voting Verifier area geometry",

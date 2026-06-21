@@ -41,7 +41,10 @@ type GeoFeature = {
   properties: {
     BASENAME?: string;
     NAME?: string;
+    equipmentGroupLabel?: string;
+    jurisdictionName?: string;
     county_name?: string;
+    [key: string]: unknown;
   };
 };
 
@@ -82,7 +85,7 @@ function normalizeName(name: string) {
 }
 
 function featureName(feature: GeoFeature) {
-  return feature.properties.NAME ?? feature.properties.county_name ?? feature.properties.BASENAME ?? "";
+  return feature.properties.jurisdictionName ?? feature.properties.NAME ?? feature.properties.county_name ?? feature.properties.BASENAME ?? "";
 }
 
 function resultNameForFeature(state: string, name: string) {
@@ -273,16 +276,22 @@ function equipmentGroupLabel(row: EquipmentRowSummary | undefined) {
   return [row.vendor || "Vendor not recorded", row.systemName || row.equipmentType || "System not recorded"].join(" - ");
 }
 
+function equipmentFeatureGroupLabel(feature: GeoFeature | undefined) {
+  const label = feature?.properties.equipmentGroupLabel;
+  return typeof label === "string" && label.trim() ? label : "";
+}
+
 function stableHash(value: string) {
   return Array.from(value).reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 0);
 }
 
-function equipmentFill(row: EquipmentRowSummary | undefined) {
-  if (!row) {
+function equipmentFill(row: EquipmentRowSummary | undefined, feature: GeoFeature | undefined) {
+  const label = row ? equipmentGroupLabel(row) : equipmentFeatureGroupLabel(feature);
+  if (!label) {
     return "#2c302e";
   }
 
-  return equipmentPalette[stableHash(equipmentGroupLabel(row)) % equipmentPalette.length];
+  return equipmentPalette[stableHash(label) % equipmentPalette.length];
 }
 
 function countyFill(
@@ -291,10 +300,11 @@ function countyFill(
   maxTotalVotes: number,
   methodRow?: VoteMethodAggregate,
   equipmentRow?: EquipmentRowSummary,
+  equipmentFeature?: GeoFeature,
   maxMethodShare = 100,
 ) {
   if (mode === "equipment") {
-    return equipmentFill(equipmentRow);
+    return equipmentFill(equipmentRow, equipmentFeature);
   }
 
   if (mode === "method") {
@@ -537,7 +547,7 @@ export function ResultsExplorer({
     for (const row of equipmentRows) {
       const label = equipmentGroupLabel(row);
       const current = groups.get(label) ?? {
-        color: equipmentFill(row),
+        color: equipmentFill(row, undefined),
         count: 0,
         label,
         warnings: 0,
@@ -962,7 +972,7 @@ export function ResultsExplorer({
                       aria-label={`${name}${row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
-                      fill={countyFill(row, mapMode, maxTotalVotes, methodRow, equipmentRow, maxVoteMethodShare)}
+                      fill={countyFill(row, mapMode, maxTotalVotes, methodRow, equipmentRow, feature, maxVoteMethodShare)}
                       onClick={(event) => {
                         if (suppressMapClickRef.current) {
                           event.preventDefault();
@@ -988,7 +998,9 @@ export function ResultsExplorer({
                         {mapMode === "method"
                           ? `${selectedVoteMethodLabel} ${methodShare(methodRow)?.toFixed(2) ?? "N/A"}%`
                           : mapMode === "equipment"
-                            ? equipmentGroupLabel(equipmentRow)
+                            ? equipmentRow
+                              ? equipmentGroupLabel(equipmentRow)
+                              : equipmentFeatureGroupLabel(feature) || "No equipment row"
                           : row
                             ? `${row.winner} by ${row.marginPct.toFixed(2)}%`
                             : "No result row"}
