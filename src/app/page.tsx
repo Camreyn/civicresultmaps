@@ -7,6 +7,7 @@ import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
 import {
   getCoverageSummary,
+  listAdminSourceStatuses,
   listCompletenessReport,
   listEquipmentRows,
   listHistoricalResultRows,
@@ -44,6 +45,7 @@ export default async function Home({ searchParams }: HomeProps) {
     historicalRows,
     voteMethodRows,
     equipmentRows,
+    adminSourceStatuses,
   ] = await Promise.all([
     listStates(),
     listCompletenessReport({ year: selectedYear }),
@@ -57,6 +59,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listHistoricalResultRows({ state: selectedState, limit: 5000 }),
     listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }),
     listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }),
+    listAdminSourceStatuses({ state: selectedState, year: selectedYear }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
@@ -149,6 +152,7 @@ export default async function Home({ searchParams }: HomeProps) {
             turnoutRows={turnoutRows}
             voteMethodRows={voteMethodRows}
             equipmentRows={equipmentRows}
+            adminSourceStatus={adminSourceStatuses.states[0]}
           />
         </section>
       </div>

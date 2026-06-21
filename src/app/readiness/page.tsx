@@ -1,5 +1,5 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
-import { listCompletenessReport, listTurnoutSourceStatuses } from "@/lib/api";
+import { listAdminSourceStatuses, listCompletenessReport, listTurnoutSourceStatuses } from "@/lib/api";
 import {
   getNativeSourcePackage,
   nativeSourcePackageArtifactHint,
@@ -7,7 +7,7 @@ import {
   type NativeSourcePackage,
 } from "@/lib/native-source-packages";
 import type { TurnoutSourceStatus } from "@/lib/turnout-source-packages";
-import type { CompletenessSummary } from "@/lib/types";
+import type { AdminSourceStatusSummary, CompletenessSummary } from "@/lib/types";
 
 const selectedYear = 2024;
 export const dynamic = "force-dynamic";
@@ -64,7 +64,11 @@ function turnoutSourceTask(turnoutSource: TurnoutSourceStatus | undefined): Read
   return { key: "turnout-source-needed", label: "Turnout source needed", severity: "medium" };
 }
 
-function missingTasks(state: CompletenessSummary, turnoutSource?: TurnoutSourceStatus): ReadinessTask[] {
+function missingTasks(
+  state: CompletenessSummary,
+  turnoutSource?: TurnoutSourceStatus,
+  adminSource?: AdminSourceStatusSummary,
+): ReadinessTask[] {
   const tasks: ReadinessTask[] = [];
 
   if (!state.capabilities.certifiedResults || state.resultRows === 0) {
@@ -112,7 +116,7 @@ function missingTasks(state: CompletenessSummary, turnoutSource?: TurnoutSourceS
     tasks.push({ key: "comparison", label: "Comparison contest rows", severity: "low" });
   }
 
-  return tasks;
+  return [...tasks, ...adminSourceTasks(adminSource)];
 }
 
 function statusLabel(status: CompletenessSummary["status"]) {
@@ -148,6 +152,55 @@ function turnoutSourceStatusLabel(status: TurnoutSourceStatus["status"] | undefi
     needs_data: "Needs data",
     partial: "Partial",
   }[status];
+}
+
+function adminSourceStatusLabel(status: AdminSourceStatusSummary["status"] | undefined) {
+  if (!status) {
+    return "Untracked";
+  }
+
+  return {
+    blocked: "Blocked",
+    candidate: "Candidate",
+    documented_exclusion: "Excluded",
+    loaded: "Loaded",
+    needs_data: "Needs data",
+    partial: "Partial",
+  }[status];
+}
+
+function adminCoverageClass(status: AdminSourceStatusSummary["status"] | undefined) {
+  if (status === "loaded") {
+    return "coverage-good";
+  }
+
+  if (status === "partial" || status === "candidate") {
+    return "coverage-warn";
+  }
+
+  return "coverage-missing";
+}
+
+function adminSourceTasks(adminSource: AdminSourceStatusSummary | undefined): ReadinessTask[] {
+  if (!adminSource) {
+    return [{ key: "admin-source-registry", label: "Admin source registry", severity: "medium" }];
+  }
+
+  const tasks: ReadinessTask[] = [];
+  if (adminSource.equipment.status !== "loaded") {
+    tasks.push({ key: "equipment-context", label: "Equipment context", severity: "medium" });
+  }
+  if (adminSource.audit.status !== "loaded" && adminSource.audit.status !== "documented_exclusion") {
+    tasks.push({ key: "audit-context", label: "Audit source context", severity: "low" });
+  }
+  if (adminSource.cvr.status !== "loaded" && adminSource.cvr.status !== "documented_exclusion") {
+    tasks.push({ key: "cvr-context", label: "CVR availability context", severity: "low" });
+  }
+  if (adminSource.incidents.status !== "loaded" && adminSource.incidents.status !== "documented_exclusion") {
+    tasks.push({ key: "incident-context", label: "Incident/correction context", severity: "low" });
+  }
+
+  return tasks;
 }
 
 function taskSummary(tasks: ReadinessTask[]) {
@@ -275,13 +328,16 @@ function stateChecklist(
 export default async function ReadinessPage() {
   const report = await listCompletenessReport({ year: selectedYear });
   const turnoutSources = listTurnoutSourceStatuses({ year: selectedYear });
+  const adminSources = listAdminSourceStatuses({ year: selectedYear });
   const turnoutSourceByState = new Map(turnoutSources.states.map((entry) => [entry.state, entry]));
+  const adminSourceByState = new Map(adminSources.states.map((entry) => [entry.state, entry]));
   const rows = report
     .map((state) => {
       const turnoutSource = turnoutSourceByState.get(state.state);
-      const tasks = missingTasks(state, turnoutSource);
+      const adminSource = adminSourceByState.get(state.state);
+      const tasks = missingTasks(state, turnoutSource, adminSource);
       const summary = taskSummary(tasks);
-      return { ...state, taskSummary: summary, tasks, turnoutSource };
+      return { ...state, adminSource, taskSummary: summary, tasks, turnoutSource };
     })
     .sort((a, b) => b.taskSummary.high - a.taskSummary.high || b.taskSummary.medium - a.taskSummary.medium || a.name.localeCompare(b.name));
 
@@ -333,6 +389,9 @@ export default async function ReadinessPage() {
           </a>
           <a className="readiness-api-link" href={`/api/turnout-sources?year=${selectedYear}`} target="_blank" rel="noreferrer">
             Turnout Sources API
+          </a>
+          <a className="readiness-api-link" href={`/api/admin-sources?year=${selectedYear}`} target="_blank" rel="noreferrer">
+            Admin Sources API
           </a>
         </div>
       </section>
@@ -405,6 +464,78 @@ export default async function ReadinessPage() {
             {turnoutSources.summary.loaded + turnoutSources.summary.partial} / {turnoutSources.summary.total}
           </strong>
         </article>
+        <article>
+          <Database aria-hidden size={18} />
+          <span>Equipment source registry</span>
+          <strong>
+            {adminSources.familySummary.equipment.loaded} / {adminSources.familySummary.equipment.total}
+          </strong>
+        </article>
+        <article>
+          <FileWarning aria-hidden size={18} />
+          <span>Audit / CVR / incidents</span>
+          <strong>
+            {adminSources.familySummary.audit.loaded} / {adminSources.familySummary.cvr.loaded} / {adminSources.familySummary.incidents.loaded}
+          </strong>
+        </article>
+      </section>
+
+      <section className="readiness-panel">
+        <div className="readiness-panel-head">
+          <div>
+            <h2>Administration Source Inventory</h2>
+            <span>Equipment, audit, CVR, and incident context are tracked separately from vote and turnout rows</span>
+          </div>
+          <a className="readiness-api-link" href={`/api/admin-sources?year=${selectedYear}`} target="_blank" rel="noreferrer">
+            Admin Sources API
+          </a>
+        </div>
+        <div className="native-coverage-grid">
+          {[
+            {
+              body:
+                "Verifier equipment context is loaded nationally and shown as context only. It is not a vote or turnout source.",
+              label: "Equipment",
+              summary: adminSources.familySummary.equipment,
+            },
+            {
+              body:
+                "Post-election audit artifacts are not yet inventoried nationally. These would support audit-method and audit-result review.",
+              label: "Audit",
+              summary: adminSources.familySummary.audit,
+            },
+            {
+              body:
+                "CVR availability varies by state and county. It needs a separate availability/source registry before any CVR-based checks.",
+              label: "CVR",
+              summary: adminSources.familySummary.cvr,
+            },
+            {
+              body:
+                "Incident, correction, litigation, recount, and canvass notes still need normalized source packages.",
+              label: "Incidents",
+              summary: adminSources.familySummary.incidents,
+            },
+          ].map((family) => (
+            <article className="native-coverage-card" key={family.label}>
+              <header>
+                <div>
+                  <strong>{family.label}</strong>
+                  <span className="mono">{family.summary.loaded} loaded / {family.summary.total} states</span>
+                </div>
+                <span className={`coverage-chip ${family.summary.loaded === family.summary.total ? "coverage-good" : family.summary.loaded ? "coverage-warn" : "coverage-missing"}`}>
+                  {family.summary.loaded === family.summary.total ? "Loaded" : family.summary.loaded ? "Partial" : "Needs data"}
+                </span>
+              </header>
+              <div className="coverage-chips">
+                <span className="coverage-chip coverage-good">Loaded {family.summary.loaded}</span>
+                <span className="coverage-chip coverage-warn">Partial/candidate {family.summary.partial + family.summary.candidate}</span>
+                <span className="coverage-chip coverage-missing">Needs data {family.summary.needsData + family.summary.blocked}</span>
+              </div>
+              <p>{family.body}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="readiness-panel">
@@ -522,6 +653,18 @@ export default async function ReadinessPage() {
                       <span className={`coverage-chip ${state.turnoutSource?.status === "loaded" ? "coverage-good" : state.turnoutSource?.status === "partial" || state.turnoutSource?.status === "candidate" ? "coverage-warn" : "coverage-missing"}`}>
                         Turnout source {turnoutSourceStatusLabel(state.turnoutSource?.status)}
                       </span>
+                      <span className={`coverage-chip ${adminCoverageClass(state.adminSource?.equipment.status)}`}>
+                        Equipment {adminSourceStatusLabel(state.adminSource?.equipment.status)}
+                      </span>
+                      <span className={`coverage-chip ${adminCoverageClass(state.adminSource?.audit.status)}`}>
+                        Audit {adminSourceStatusLabel(state.adminSource?.audit.status)}
+                      </span>
+                      <span className={`coverage-chip ${adminCoverageClass(state.adminSource?.cvr.status)}`}>
+                        CVR {adminSourceStatusLabel(state.adminSource?.cvr.status)}
+                      </span>
+                      <span className={`coverage-chip ${adminCoverageClass(state.adminSource?.incidents.status)}`}>
+                        Incidents {adminSourceStatusLabel(state.adminSource?.incidents.status)}
+                      </span>
                     </div>
                   </td>
                   <td className="readiness-counts">
@@ -529,6 +672,7 @@ export default async function ReadinessPage() {
                     <span>Review rows: {state.reviewRowCount.toLocaleString()}</span>
                     <span>Turnout rows: {state.turnoutRowCount.toLocaleString()}</span>
                     <span>Historical rows: {state.historicalRowCount.toLocaleString()}</span>
+                    <span>Equipment rows: {state.equipmentRowCount.toLocaleString()}</span>
                   </td>
                   <td>
                     {state.tasks.length ? (
@@ -662,6 +806,53 @@ export default async function ReadinessPage() {
                         </article>
                       </div>
                     ) : null}
+                  </div>
+
+                  <div className="detail-source-package">
+                    <div className="detail-package-head">
+                      <div>
+                        <h3>Administration Source Status</h3>
+                        <p>
+                          Equipment context is loaded from the Verified Voting Verifier registry where available. Audit,
+                          CVR, incident, correction, and litigation context are tracked separately because they answer
+                          different review questions.
+                        </p>
+                      </div>
+                      <span className="task-pill task-low">
+                        Equipment {adminSourceStatusLabel(state.adminSource?.equipment.status)}
+                      </span>
+                    </div>
+                    <div className="detail-artifact-grid">
+                      <article className="detail-artifact">
+                        <span>Equipment</span>
+                        <strong>{adminSourceStatusLabel(state.adminSource?.equipment.status)}</strong>
+                        <code>{state.adminSource?.equipment.normalizedArtifact ?? "normalized artifact needed"}</code>
+                        <p>{state.adminSource?.equipment.caveat ?? "Equipment context has not been registered for this state."}</p>
+                        {state.adminSource?.equipment.sourceUrl ? (
+                          <a href={state.adminSource.equipment.sourceUrl} target="_blank" rel="noreferrer">
+                            Verified Voting source
+                          </a>
+                        ) : null}
+                      </article>
+                      <article className="detail-artifact">
+                        <span>Audit</span>
+                        <strong>{adminSourceStatusLabel(state.adminSource?.audit.status)}</strong>
+                        <code>audit package pending</code>
+                        <p>{state.adminSource?.audit.why ?? "Audit source status has not been registered for this state."}</p>
+                      </article>
+                      <article className="detail-artifact">
+                        <span>CVR</span>
+                        <strong>{adminSourceStatusLabel(state.adminSource?.cvr.status)}</strong>
+                        <code>CVR package pending</code>
+                        <p>{state.adminSource?.cvr.why ?? "CVR source status has not been registered for this state."}</p>
+                      </article>
+                      <article className="detail-artifact">
+                        <span>Incidents</span>
+                        <strong>{adminSourceStatusLabel(state.adminSource?.incidents.status)}</strong>
+                        <code>incident package pending</code>
+                        <p>{state.adminSource?.incidents.why ?? "Incident/correction source status has not been registered for this state."}</p>
+                      </article>
+                    </div>
                   </div>
 
                   {sourcePackage ? (

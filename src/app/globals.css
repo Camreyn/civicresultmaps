@@ -3419,6 +3419,55 @@ td {
   line-height: 1.5;
 }
 
+.admin-source-grid {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  padding: 16px;
+}
+
+.admin-source-card {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.admin-source-card.ready {
+  border-color: var(--accent-line);
+}
+
+.admin-source-card.partial,
+.admin-source-card.proxy {
+  border-color: rgba(240, 195, 106, 0.32);
+}
+
+.admin-source-card.missing,
+.admin-source-card.blocked {
+  border-color: rgba(255, 143, 126, 0.3);
+}
+
+.admin-source-card div {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-source-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.admin-source-card a {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .empty-state {
   color: var(--muted);
   min-height: 150px;

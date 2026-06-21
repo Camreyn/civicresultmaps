@@ -28,6 +28,7 @@ import { ResultsExplorer } from "./results-explorer";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
 import type {
   AnalysisIndicator,
+  AdminSourceStatusSummary,
   CompletenessSummary,
   CoverageSummary,
   EquipmentClusterDiagnostic,
@@ -43,6 +44,7 @@ import type {
 } from "@/lib/types";
 
 type WorkspaceTabsProps = {
+  adminSourceStatus: AdminSourceStatusSummary | undefined;
   coverage: CoverageSummary | null;
   countyLabel: string;
   equipmentRows: EquipmentRowSummary[];
@@ -1051,6 +1053,41 @@ function dataNoteStatus(hasRows: boolean, capability?: boolean, partial?: boolea
   return "missing";
 }
 
+function adminStatusLabel(status: AdminSourceStatusSummary["status"] | undefined) {
+  if (!status) {
+    return "Untracked";
+  }
+
+  return {
+    blocked: "Blocked",
+    candidate: "Candidate",
+    documented_exclusion: "Excluded",
+    loaded: "Loaded",
+    needs_data: "Needs data",
+    partial: "Partial",
+  }[status];
+}
+
+function adminQualityStatus(status: AdminSourceStatusSummary["status"] | undefined): QualityBadgeStatus {
+  if (status === "loaded") {
+    return "ready";
+  }
+
+  if (status === "partial" || status === "candidate") {
+    return "partial";
+  }
+
+  if (status === "blocked") {
+    return "blocked";
+  }
+
+  return "missing";
+}
+
+function adminFamilyWhy(status: AdminSourceStatusSummary | undefined, family: "audit" | "cvr" | "incidents") {
+  return status?.[family]?.why ?? `${family.toUpperCase()} source status has not been registered for this state.`;
+}
+
 function isMapGeometrySource(source: SourceSummary) {
   if (source.status !== "loaded") {
     return false;
@@ -1273,6 +1310,7 @@ function applyStateDataNoteOverrides(stateCode: string, sections: DataNoteSectio
 }
 
 function buildDataNoteSections(input: {
+  adminSourceStatus: AdminSourceStatusSummary | undefined;
   completeness: CompletenessSummary | undefined;
   coverage: CoverageSummary | null;
   historicalRows: HistoricalResultRowSummary[];
@@ -1303,6 +1341,7 @@ function buildDataNoteSections(input: {
   const reviewCountyLevelIssue = countyLevelReviewIssue(input.reviewRows);
   const eacTurnoutFallback = input.turnoutRows.some((row) => row.sourceId.toLowerCase().includes("eac"));
   const verifiedVotingEquipment = input.equipmentRows.some((row) => row.sourceId.toLowerCase().includes("verified-voting"));
+  const equipmentRegistryStatus = input.adminSourceStatus?.equipment?.status;
   const legacyOnly = input.completeness ? input.completeness.legacyImportCount > 0 && input.completeness.nativeImportCount === 0 : false;
   const mapGeometrySourceCount =
     input.completeness?.mapGeometrySourceCount ?? input.sources.filter(isMapGeometrySource).length;
@@ -1406,16 +1445,16 @@ function buildDataNoteSections(input: {
     },
     {
       detail: input.equipmentRows.length
-        ? `${input.equipmentRows.length.toLocaleString()} county equipment-context rows.`
+        ? `${input.equipmentRows.length.toLocaleString()} equipment-context rows; registry status: ${adminStatusLabel(equipmentRegistryStatus)}.`
         : "No election equipment context rows are loaded.",
       evidence: verifiedVotingEquipment
-        ? "Rows reference Verified Voting Verifier county equipment data."
+        ? "Rows reference Verified Voting Verifier equipment data across the national 2024 registry."
         : "Equipment context status inferred from row counts.",
       key: "equipment",
       label: "Equipment",
-      status: input.equipmentRows.length ? "partial" : "missing",
+      status: input.equipmentRows.length ? "partial" : adminQualityStatus(equipmentRegistryStatus),
       why: input.equipmentRows.length
-        ? "Equipment rows document administration context by jurisdiction. They are useful for clustering checks, but they are not vote or turnout rows and cannot prove causation."
+        ? `Equipment rows document administration context by jurisdiction. They are useful for clustering checks, but they are not vote or turnout rows and cannot prove causation. Still missing: ${adminFamilyWhy(input.adminSourceStatus, "audit")} ${adminFamilyWhy(input.adminSourceStatus, "cvr")} ${adminFamilyWhy(input.adminSourceStatus, "incidents")}`
         : "The app still needs a normalized equipment source, usually Verified Voting Verifier or official state/county equipment records.",
     },
     {
@@ -1686,6 +1725,7 @@ function dateLabel(value: string | null) {
 }
 
 export function WorkspaceTabs({
+  adminSourceStatus,
   coverage,
   countyLabel,
   equipmentRows,
@@ -2135,6 +2175,7 @@ export function WorkspaceTabs({
   const latestRun = selectedImportRuns[0];
   const sourcesWithoutUrls = sources.filter((source) => !source.sourceUrl.trim());
   const dataNoteSections = buildDataNoteSections({
+    adminSourceStatus,
     completeness: selectedCompleteness,
     coverage,
     historicalRows,
@@ -3639,6 +3680,46 @@ export function WorkspaceTabs({
                 </span>
               </article>
             </div>
+            <div className="admin-source-grid" aria-label={`${stateName} administration source status`}>
+              {[
+                {
+                  detail: adminSourceStatus?.equipment.caveat ?? "Equipment context has not been registered for this state.",
+                  href: adminSourceStatus?.equipment.sourceUrl,
+                  label: "Equipment",
+                  status: adminSourceStatus?.equipment.status,
+                },
+                {
+                  detail: adminFamilyWhy(adminSourceStatus, "audit"),
+                  label: "Audit",
+                  status: adminSourceStatus?.audit.status,
+                },
+                {
+                  detail: adminFamilyWhy(adminSourceStatus, "cvr"),
+                  label: "CVR",
+                  status: adminSourceStatus?.cvr.status,
+                },
+                {
+                  detail: adminFamilyWhy(adminSourceStatus, "incidents"),
+                  label: "Incidents",
+                  status: adminSourceStatus?.incidents.status,
+                },
+              ].map((family) => (
+                <article className={`admin-source-card ${adminQualityStatus(family.status)}`} key={family.label}>
+                  <div>
+                    <span className="section-label">{family.label}</span>
+                    <strong>{adminStatusLabel(family.status)}</strong>
+                  </div>
+                  <p>{family.detail}</p>
+                  {family.href ? (
+                    <a href={family.href} rel="noreferrer" target="_blank">
+                      Open source
+                    </a>
+                  ) : (
+                    <span className="pending">Source package needed</span>
+                  )}
+                </article>
+              ))}
+            </div>
             <div className="planner-note">
               <strong>Follow-up for data production</strong>
               <span>
@@ -3805,7 +3886,7 @@ export function WorkspaceTabs({
                   <strong>Equipment Context</strong>
                   <span>
                     {equipmentRows.length
-                      ? `${equipmentJurisdictions.toLocaleString()} jurisdictions, ${equipmentRows.length.toLocaleString()} county equipment rows`
+                      ? `${equipmentJurisdictions.toLocaleString()} jurisdictions, ${equipmentRows.length.toLocaleString()} equipment rows`
                       : "No normalized equipment context rows loaded for this state."}
                   </span>
                 </div>
@@ -3852,8 +3933,9 @@ export function WorkspaceTabs({
                     <div>
                       <strong>Equipment Cluster Diagnostic</strong>
                       <span>
-                        This checks whether currently flagged jurisdictions cluster by vendor/system group. It is
-                        review context only, not evidence of cause.
+                        This checks whether currently flagged jurisdictions cluster by vendor/system group inside the
+                        selected state. It is review context only, not evidence of cause, and it does not control for
+                        demographics, geography, or contest coverage.
                       </span>
                     </div>
                     <span className="pending">Context only</span>
@@ -3886,8 +3968,10 @@ export function WorkspaceTabs({
                         <tr>
                           <th>Group</th>
                           <th>Flagged</th>
+                          <th>Rate</th>
                           <th>Jurisdictions</th>
                           <th>Lift</th>
+                          <th>Status</th>
                           <th>Caveat</th>
                         </tr>
                       </thead>
@@ -3899,9 +3983,18 @@ export function WorkspaceTabs({
                               <span>{diagnostic.systemName}</span>
                             </td>
                             <td className="mono">{diagnostic.flaggedJurisdictions.toLocaleString()}</td>
+                            <td className="mono">{`${(diagnostic.flaggedRate * 100).toFixed(1)}%`}</td>
                             <td className="mono">{diagnostic.jurisdictionCount.toLocaleString()}</td>
                             <td className="mono">{diagnostic.lift === null ? "N/A" : `${diagnostic.lift.toFixed(2)}x`}</td>
-                            <td>{diagnostic.summary}</td>
+                            <td>
+                              <span className={`quality-badge ${diagnostic.status === "ready" ? "partial" : "blocked"}`}>
+                                {diagnostic.status === "ready" ? "Exploratory" : "Limited"}
+                              </span>
+                            </td>
+                            <td>
+                              {diagnostic.summary}
+                              <span>{` Controls: ${diagnostic.controls.join("; ")}.`}</span>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -3911,7 +4004,7 @@ export function WorkspaceTabs({
               ) : (
                 <div className="empty-panel">
                   <strong>No equipment context loaded for {stateName}</strong>
-                  <span>Wisconsin 2024 is the first target; other states will use the same normalized contract.</span>
+                  <span>Use the admin source status endpoint to confirm whether the Verifier source is loaded or blocked for this state.</span>
                 </div>
               )}
             </div>
@@ -4183,6 +4276,10 @@ export function WorkspaceTabs({
               <li>
                 <strong>Equipment context</strong>
                 <code>/api/equipment?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+              </li>
+              <li>
+                <strong>Admin source statuses</strong>
+                <code>/api/admin-sources?state={selectedStateCode}&amp;year=2024</code>
               </li>
               <li>
                 <strong>Historical baselines</strong>

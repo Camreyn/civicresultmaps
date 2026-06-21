@@ -134,4 +134,5 @@ export const listVoteMethodRows = unstable_cache(
 );
 
 export { listNativeSourcePackages } from "./native-source-packages";
+export { listAdminSourceStatuses } from "./admin-source-packages";
 export { listTurnoutSourceStatuses } from "./turnout-source-packages";

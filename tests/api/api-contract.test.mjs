@@ -29,6 +29,7 @@ test("public API route contracts exist", () => {
     "src/app/api/historical-baselines/route.ts",
     "src/app/api/native-source-packages/route.ts",
     "src/app/api/equipment/route.ts",
+    "src/app/api/admin-sources/route.ts",
   ];
 
   for (const route of expectedRoutes) {
@@ -273,20 +274,32 @@ test("equipment administration context is source-first and exportable", () => {
   assert.match(packageScripts["equipment:normalize:verifiedvoting"], /normalize-verifiedvoting-equipment/);
   assert.match(packageScripts["equipment:promote"], /promote-equipment-context/);
   assert.match(packageScripts["equipment:counts"], /check-equipment-context-counts/);
+  assert.match(packageScripts["equipment:sync-registry"], /sync-admin-equipment-registry/);
+  assert.match(packageScripts["equipment:sync-statuses"], /sync-admin-equipment-statuses/);
+  assert.match(packageScripts["validate:equipment-production"], /validate-production-equipment/);
   assert.match(packageScripts["validate:admin-packages"], /validate-admin-source-packages/);
   assert.match(schema, /equipmentRows/);
   assert.match(dataAccess, /listEquipmentRows/);
   assert.match(dataAccess, /equipmentRowCount/);
   assert.match(api, /equipmentClusterDiagnostics/);
+  assert.match(readFileSync("src/app/api/admin-sources/route.ts", "utf8"), /listAdminSourceStatuses/);
   assert.match(tabs, /Equipment Context/);
   assert.match(tabs, /Equipment CSV/);
   assert.match(tabs, /equipment-context\.csv/);
   assert.match(tabs, /context only/);
+  assert.match(tabs, /Still missing/);
+  assert.match(tabs, /Admin source statuses/);
   assert.match(registry, /Election administration context registry/);
   assert.match(registry, /verified-voting-verifier-wi-2024-equipment/);
+  assert.match(registry, /verified-voting-verifier-ga-2024-equipment/);
   assert.match(normalizer, /expectedJurisdictions/);
+  assert.match(normalizer, /jurisdiction_type/);
   assert.match(normalizedCsv, /jurisdictionCode,jurisdictionName,level,vendor,systemName/);
   assert.match(normalizedCsv, /Adams County/);
+  assert.match(readFileSync("src/app/readiness/page.tsx", "utf8"), /Administration Source Inventory/);
+  assert.match(readFileSync("src/app/readiness/page.tsx", "utf8"), /Admin Sources API/);
+  assert.match(readFileSync("src/lib/equipment-diagnostics.ts", "utf8"), /minimumUsefulJurisdictions/);
+  assert.match(readFileSync("src/lib/equipment-diagnostics.ts", "utf8"), /demographic, geographic, contest/);
 });
 
 test("seed data carries required provenance fields", () => {

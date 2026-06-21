@@ -222,12 +222,40 @@ export type EquipmentRowSummary = {
   sourceUrl: string;
 };
 
+export type AdminSourceFamilyStatus = {
+  status: "loaded" | "partial" | "candidate" | "needs_data" | "blocked" | "documented_exclusion";
+  why?: string;
+};
+
+export type AdminSourceStatusSummary = {
+  state: string;
+  stateName: string;
+  electionYear: number;
+  status: AdminSourceFamilyStatus["status"];
+  priority: string;
+  equipment: AdminSourceFamilyStatus & {
+    reportingLevel?: string;
+    sourceDocumentId?: string;
+    sourceUrl?: string;
+    localArtifact?: string;
+    normalizedArtifact?: string;
+    expectedJurisdictions?: number;
+    caveat?: string;
+  };
+  audit: AdminSourceFamilyStatus;
+  cvr: AdminSourceFamilyStatus;
+  incidents: AdminSourceFamilyStatus;
+};
+
 export type EquipmentClusterDiagnostic = {
   caveat: string;
+  controls: string[];
   flaggedJurisdictions: number;
+  flaggedRate: number;
   groupKey: string;
   jurisdictionCount: number;
   lift: number | null;
+  minimumUsefulJurisdictions: number;
   statewideFlagRate: number;
   status: "ready" | "limited" | "missing";
   summary: string;
