@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "az-2024-general-canvass-senate",
+      "category": "Official signed statewide canvass U.S. Senate county rows",
+      "url": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+      "localFile": "data/az-2024-general-canvass-senate.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Arizona Secretary of State",
+      "timestampBasis": "Signed November 25, 2024 statewide canvass linked from the official 2024 Election Information page; report date/time November 22, 2024 7:04:17 PM.",
+      "confidence": "County U.S. Senate rows transcribed from the official signed canvass PDF and cross-checked against the public county table that cites the same official canvass. The PDF host still presents a Cloudflare challenge to scripted download, so the direct PDF source link remains visible for user verification.",
+      "status": "loaded"
+    },
+    {
       "id": "az-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2704%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -36,6 +47,17 @@
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Arizona county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    },
+    {
+      "id": "az-historical-presidential-wikipedia-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Arizona",
+      "localFile": "data/az-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Wikipedia county presidential tables with state election office source footnotes",
+      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 20, 2026.",
+      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Arizona Secretary of State canvass sources where available.",
       "status": "loaded"
     }
   ],
@@ -52,6 +74,13 @@
       "boddie"
     ]
   },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "az-2024-general-canvass-senate",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Arizona review rows are county-level President-versus-U.S. Senate comparisons from signed canvass county totals. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots."
+  },
   "turnout": {
     "format": "normalizedTurnoutCsv",
     "sourceId": "az-2024-general-canvass-signed",
@@ -66,24 +95,37 @@
       "registeredVoters": 4367593
     }
   },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "az-historical-presidential-wikipedia-county",
+    "warning": "Arizona historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with state-source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 45,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
+  },
   "expected": {
     "jurisdictions": 15,
     "resultRows": 15,
-    "sources": 3,
+    "sources": 5,
     "geometryFeatures": 15,
     "stateTotal": 3390161,
     "trump": 1770242,
     "harris": 1582860,
     "other": 37059,
-    "reviewRows": 0,
+    "reviewRows": 15,
     "turnoutRows": 15
   },
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
     "map": true,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   }
 }

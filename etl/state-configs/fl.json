@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "fl-2024-general-senate-detail",
+      "category": "Official U.S. Senate county results",
+      "url": "https://results.elections.myflorida.com/DetailRpt.Asp?ELECTIONDATE=11/5/2024&RACE=USS&PARTY=&DIST=&GRP=&DATAMODE=",
+      "localFile": "data/fl-2024-general-senate-detail.html",
+      "parser": "floridaDetailHtml",
+      "authority": "Florida Department of State, Division of Elections",
+      "timestampBasis": "Official results page for the November 5, 2024 General Election.",
+      "confidence": "Official Florida Department of State county table for United States Senator, paired with the official presidential county table for county-level review rows.",
+      "status": "loaded"
+    },
+    {
       "id": "fl-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2712%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -37,11 +48,31 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Florida county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "fl-historical-presidential-wikipedia-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Florida",
+      "localFile": "data/fl-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Wikipedia county presidential tables with state election office source footnotes",
+      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 20, 2026.",
+      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Florida Division of Elections or other election-result sources where available.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
     "format": "floridaDetailHtml",
     "sourceId": "fl-2024-general-president-detail"
+  },
+  "reviewCharts": {
+    "format": "floridaDetailHtmlCountyComparison",
+    "sourceId": "fl-2024-general-senate-detail",
+    "comparisonContest": "United States Senator",
+    "repCandidateContains": "Rick Scott",
+    "demCandidateContains": "Debbie Mucarsel-Powell",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Florida review rows are county-level President-versus-U.S. Senate comparisons from official county detail tables. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -57,24 +88,37 @@
       "registeredVoters": 15740083
     }
   },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "fl-historical-presidential-wikipedia-county",
+    "warning": "Florida historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 201,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
+  },
   "expected": {
     "jurisdictions": 67,
     "resultRows": 67,
-    "sources": 3,
+    "sources": 5,
     "geometryFeatures": 67,
     "stateTotal": 10893752,
     "trump": 6110125,
     "harris": 4683038,
     "other": 100589,
-    "reviewRows": 0,
+    "reviewRows": 67,
     "turnoutRows": 67
   },
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
     "map": true,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   }
 }

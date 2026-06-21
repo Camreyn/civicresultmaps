@@ -6,7 +6,7 @@ import json
 import re
 import zipfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from .models import EtlConfig, SourceConfig
 from .xlsx import read_xlsx_sheet
@@ -796,6 +796,130 @@ def _georgia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
 
 
+def _county_comparison_review_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+    result_rows: list[dict[str, Any]],
+    *,
+    missing_label: str,
+    county_normalizer: Callable[[Any], str] = _county_name,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("reviewCharts", {})
+    if section.get("format") != "countyComparisonCsv":
+        return [], {"nativeReviewRows": 0}
+
+    source = sources[section["sourceId"]]
+    president_by_county = {row["jurisdictionName"]: row for row in result_rows}
+    review_rows: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {"state", "election_year", "jurisdiction_name", "comparison_dem", "comparison_rep"}
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"{missing_label} comparison CSV missing columns: {', '.join(missing)}")
+
+        for index, row in enumerate(reader, start=2):
+            state = str(row.get("state") or "").strip().upper()
+            if state != config.code:
+                raise ValueError(f"{missing_label} comparison row {index} has wrong state: {row.get('state')!r}")
+            year = int_text(row.get("election_year"))
+            if year != config.election_year:
+                raise ValueError(f"{missing_label} comparison row {index} has wrong election year: {row.get('election_year')!r}")
+            county = county_normalizer(row.get("jurisdiction_name"))
+            president = president_by_county.get(county)
+            if not county or not president:
+                raise ValueError(f"{missing_label} comparison row {index} does not match a presidential county row: {row.get('jurisdiction_name')!r}")
+            total = president["totalVotes"]
+            comparison_dem = int_text(row.get("comparison_dem"))
+            comparison_rep = int_text(row.get("comparison_rep"))
+            review_rows.append(
+                {
+                    "county": county,
+                    "localUnit": row.get("local_unit") or county,
+                    "totalVotes": total,
+                    "harris": president["votes"]["Harris"],
+                    "trump": president["votes"]["Trump"],
+                    "harrisShare": pct(president["votes"]["Harris"], total),
+                    "trumpShare": pct(president["votes"]["Trump"], total),
+                    "demDropoff": pct(president["votes"]["Harris"] - comparison_dem, total),
+                    "repDropoff": pct(president["votes"]["Trump"] - comparison_rep, total),
+                    "coverageMode": section.get("coverageMode", "presidentVsComparisonContest"),
+                    "comparisonContest": section.get("comparisonContest", ""),
+                    "comparisonDemVotes": comparison_dem,
+                    "comparisonRepVotes": comparison_rep,
+                    "comparisonOtherVotes": int_text(row.get("comparison_other")),
+                    "sourceId": source.id,
+                }
+            )
+
+    return sorted(review_rows, key=lambda item: item["county"]), {
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": section.get("warning", ""),
+        "nativeComparisonRows": len(review_rows),
+        "nativeComparisonContest": section.get("comparisonContest", ""),
+    }
+
+
+def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("historicalBaselines", {})
+    if section.get("format") != "historicalPresidentialCsv":
+        return [], {"nativeHistoricalRows": 0}
+
+    source = sources[section["sourceId"]]
+    rows: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {
+            "state",
+            "election_year",
+            "jurisdiction_name",
+            "source_id",
+            "source_level",
+            "row_method",
+            "dem_votes",
+            "rep_votes",
+            "other_votes",
+            "total_votes",
+        }
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Historical baseline CSV missing columns: {', '.join(missing)}")
+
+        for index, row in enumerate(reader, start=2):
+            state = str(row.get("state") or "").strip().upper()
+            if state != config.code:
+                raise ValueError(f"Historical baseline row {index} has wrong state: {row.get('state')!r}")
+            county = _nevada_jurisdiction_name(row.get("jurisdiction_name")) if config.code == "NV" else _county_name(row.get("jurisdiction_name"))
+            if not county:
+                raise ValueError(f"Historical baseline row {index} is missing jurisdiction_name")
+            rows.append(
+                {
+                    "electionYear": int_text(row.get("election_year")),
+                    "sourceId": row.get("source_id") or source.id,
+                    "sourceLevel": row.get("source_level") or "county",
+                    "rowMethod": row.get("row_method") or "historicalPresidentialCsv",
+                    "jurisdictionName": county,
+                    "localUnit": row.get("local_unit") or county,
+                    "demVotes": int_text(row.get("dem_votes")),
+                    "repVotes": int_text(row.get("rep_votes")),
+                    "otherVotes": int_text(row.get("other_votes")),
+                    "totalVotes": int_text(row.get("total_votes")),
+                    "sourceUrl": row.get("source_url") or source.url,
+                    "sourceDocumentId": source.id,
+                }
+            )
+
+    expected_rows = int_text(section.get("expected", {}).get("rowCount"))
+    if expected_rows and len(rows) != expected_rows:
+        raise ValueError(f"Historical baseline expected {expected_rows} rows, got {len(rows)}")
+    years = sorted({row["electionYear"] for row in rows})
+    return rows, {
+        "nativeHistoricalRows": len(rows),
+        "nativeHistoricalYears": years,
+        "nativeHistoricalWarning": section.get("warning", ""),
+    }
+
+
 def _arizona_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -848,16 +972,17 @@ def _arizona_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
     if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
         turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
 
+    review_rows, review_metrics = _county_comparison_review_rows(config, sources, result_rows, missing_label="Arizona canvass")
     metrics = {
         "nativeResultRows": len(result_rows),
         "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
         "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
         "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
-        "nativeReviewRows": 0,
+        **review_metrics,
         **turnout_metrics,
     }
-    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), [], turnout_rows, metrics
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
 
 
 def _nevada_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
@@ -912,16 +1037,23 @@ def _nevada_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[l
     if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
         turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
 
+    review_rows, review_metrics = _county_comparison_review_rows(
+        config,
+        sources,
+        result_rows,
+        missing_label="Nevada statewide results",
+        county_normalizer=_nevada_jurisdiction_name,
+    )
     metrics = {
         "nativeResultRows": len(result_rows),
         "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
         "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
         "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
-        "nativeReviewRows": 0,
+        **review_metrics,
         **turnout_metrics,
     }
-    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), [], turnout_rows, metrics
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
 
 
 class _HtmlTableParser(HTMLParser):
@@ -997,6 +1129,62 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
             }
         )
 
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    review_section = config.raw.get("reviewCharts", {})
+    if review_section.get("format") == "floridaDetailHtmlCountyComparison":
+        review_source = sources[review_section["sourceId"]]
+        review_parser = _HtmlTableParser()
+        review_parser.feed(_artifact_path(review_source).read_text(encoding="utf-8", errors="replace"))
+        header = next((row for row in review_parser.rows if row and row[0].strip().lower() == "county"), [])
+        header_lower = [cell.lower() for cell in header]
+
+        def candidate_index(needle: str) -> int:
+            needle_lower = needle.lower()
+            for index, label in enumerate(header_lower):
+                if needle_lower in label:
+                    return index
+            raise ValueError(f"Florida comparison source missing candidate column containing {needle!r}")
+
+        rep_index = candidate_index(review_section["repCandidateContains"])
+        dem_index = candidate_index(review_section["demCandidateContains"])
+        president_by_county = {row["jurisdictionName"]: row for row in result_rows}
+
+        for row in review_parser.rows:
+            if len(row) <= max(rep_index, dem_index):
+                continue
+            label = " ".join(str(row[0]).strip().split()).lower()
+            if label in {"county", "total", "% votes"}:
+                continue
+            county = _county_name(row[0])
+            president = president_by_county.get(county)
+            if not county or not president:
+                continue
+            comparison_rep = int_text(row[rep_index])
+            comparison_dem = int_text(row[dem_index])
+            if not comparison_rep and not comparison_dem:
+                continue
+            total = president["totalVotes"]
+            comparison_rows += 1
+            review_rows.append(
+                {
+                    "county": county,
+                    "localUnit": county,
+                    "totalVotes": total,
+                    "harris": president["votes"]["Harris"],
+                    "trump": president["votes"]["Trump"],
+                    "harrisShare": pct(president["votes"]["Harris"], total),
+                    "trumpShare": pct(president["votes"]["Trump"], total),
+                    "demDropoff": pct(president["votes"]["Harris"] - comparison_dem, total),
+                    "repDropoff": pct(president["votes"]["Trump"] - comparison_rep, total),
+                    "coverageMode": review_section.get("coverageMode", "presidentVsSenate"),
+                    "comparisonContest": review_section.get("comparisonContest", ""),
+                    "comparisonDemVotes": comparison_dem,
+                    "comparisonRepVotes": comparison_rep,
+                    "sourceId": review_source.id,
+                }
+            )
+
     turnout_rows: list[dict[str, Any]] = []
     turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
     if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
@@ -1008,10 +1196,13 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
         "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
         "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
-        "nativeReviewRows": 0,
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": review_section.get("comparisonContest", ""),
         **turnout_metrics,
     }
-    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), [], turnout_rows, metrics
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: item["county"]), turnout_rows, metrics
 
 
 def _virginia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
@@ -2086,36 +2277,45 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "AZ" and config.raw.get("certifiedResults", {}).get("format") == "arizonaCanvassCountyCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _arizona_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeArizonaCanvassCountyCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
 
     if config.code == "NV" and config.raw.get("certifiedResults", {}).get("format") == "nevadaStatewideGeneralCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _nevada_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeNevadaStatewideGeneralCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
 
     if config.code == "FL" and config.raw.get("certifiedResults", {}).get("format") == "floridaDetailHtml":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _florida_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeFloridaDetailHtml",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
 

@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "nv-2024-silver-state-senate",
+      "category": "Official statewide U.S. Senate county results",
+      "url": "https://web.archive.org/web/20250911041627/https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+      "localFile": "data/nv-2024-statewide-general-senate.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Nevada Secretary of State",
+      "timestampBasis": "Archived capture of the official Nevada Secretary of State 2024 statewide general election results page for November 5, 2024.",
+      "confidence": "County U.S. Senate rows transcribed from the archived official NVSOS statewide results page. The live NVSOS/Silver State hosts return Incapsula challenge pages to scripted collection, so the archived official source link remains visible for user verification.",
+      "status": "loaded"
+    },
+    {
       "id": "nv-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2732%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -36,6 +47,17 @@
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Nevada county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    },
+    {
+      "id": "nv-historical-presidential-wikipedia-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Nevada",
+      "localFile": "data/nv-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Wikipedia county presidential tables with state election office source footnotes",
+      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 20, 2026.",
+      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Nevada Secretary of State result sources where available.",
       "status": "loaded"
     }
   ],
@@ -47,6 +69,13 @@
       "skousen",
       "none"
     ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "nv-2024-silver-state-senate",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Nevada review rows are county-level President-versus-U.S. Senate comparisons from archived official statewide county totals. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -62,24 +91,37 @@
       "registeredVoters": 2256275
     }
   },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "nv-historical-presidential-wikipedia-county",
+    "warning": "Nevada historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with state-source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 51,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
+  },
   "expected": {
     "jurisdictions": 17,
     "resultRows": 17,
-    "sources": 3,
+    "sources": 5,
     "geometryFeatures": 17,
     "stateTotal": 1484840,
     "trump": 751205,
     "harris": 705197,
     "other": 28438,
-    "reviewRows": 0,
+    "reviewRows": 17,
     "turnoutRows": 17
   },
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
     "map": true,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   }
 }

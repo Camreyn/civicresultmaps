@@ -47,6 +47,21 @@ type NativeTurnoutRow = {
   sourceId: string;
 };
 
+type NativeHistoricalRow = {
+  electionYear: number;
+  sourceId: string;
+  sourceLevel: string;
+  rowMethod: string;
+  jurisdictionName: string;
+  localUnit: string;
+  demVotes?: number;
+  repVotes?: number;
+  otherVotes?: number;
+  totalVotes?: number;
+  sourceUrl?: string;
+  sourceDocumentId?: string;
+};
+
 type NativeArtifact = {
   state: {
     code: string;
@@ -73,6 +88,7 @@ type NativeArtifact = {
     resultRows: NativeResultRow[];
     reviewRows: NativeReviewRow[];
     turnoutRows: NativeTurnoutRow[];
+    historicalRows?: NativeHistoricalRow[];
     metrics: Record<string, unknown>;
   };
 };
@@ -258,6 +274,13 @@ export async function promoteNativeStagingArtifact(path: string) {
         and election_year = ${electionYear}
     `;
   }
+  const historicalRows = native.historicalRows ?? [];
+  if (historicalRows.length > 0) {
+    await sql`
+      delete from historical_result_rows
+      where state_code = ${stateCode}
+    `;
+  }
 
   let storedResultRows = 0;
   for (const row of native.resultRows) {
@@ -409,11 +432,66 @@ export async function promoteNativeStagingArtifact(path: string) {
     storedTurnoutRows += 1;
   }
 
+  let storedHistoricalRows = 0;
+  for (const [index, row] of historicalRows.entries()) {
+    const localUnit = row.localUnit || `historical-row-${index + 1}`;
+    await sql`
+      insert into historical_result_rows (
+        import_run_id,
+        state_code,
+        election_year,
+        source_id,
+        source_level,
+        row_method,
+        jurisdiction_code,
+        jurisdiction_name,
+        local_unit,
+        dem_votes,
+        rep_votes,
+        other_votes,
+        total_votes,
+        metrics,
+        source_document_id
+      )
+      values (
+        ${importRun.id},
+        ${stateCode},
+        ${row.electionYear},
+        ${row.sourceId},
+        ${row.sourceLevel},
+        ${row.rowMethod},
+        ${jurisdictionCode(stateCode, row.jurisdictionName)},
+        ${row.jurisdictionName},
+        ${localUnit},
+        ${numberOrNull(row.demVotes)},
+        ${numberOrNull(row.repVotes)},
+        ${numberOrNull(row.otherVotes)},
+        ${numberOrNull(row.totalVotes)},
+        ${JSON.stringify(row)}::jsonb,
+        ${sourceIds.get(row.sourceDocumentId ?? row.sourceId) ?? primarySourceId ?? null}
+      )
+      on conflict (state_code, election_year, source_id, jurisdiction_code, local_unit)
+      do update set
+        import_run_id = excluded.import_run_id,
+        source_level = excluded.source_level,
+        row_method = excluded.row_method,
+        jurisdiction_name = excluded.jurisdiction_name,
+        dem_votes = excluded.dem_votes,
+        rep_votes = excluded.rep_votes,
+        other_votes = excluded.other_votes,
+        total_votes = excluded.total_votes,
+        metrics = excluded.metrics,
+        source_document_id = excluded.source_document_id
+    `;
+    storedHistoricalRows += 1;
+  }
+
   const summary = {
     ...native.metrics,
     storedResultRows,
     storedReviewRows,
     storedTurnoutRows,
+    storedHistoricalRows,
   };
 
   await sql`
