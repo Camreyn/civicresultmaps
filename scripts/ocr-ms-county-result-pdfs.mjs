@@ -2,16 +2,24 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { PDFParse } from "pdf-parse";
+import { createWorker } from "tesseract.js";
 
 const defaults = {
   pdfDir: "data/ms-2024-county-results-pdfs",
   outDir: "data/ms-2024-county-results-ocr-text",
   imageDir: ".etl/ocr/ms-county-results-images",
+  tessdataDir: ".etl/ocr/tesseract-cache",
+  engine: "tesseractjs",
+  renderer: "pdf-parse",
+  scale: 3,
   dpi: 300,
   psm: 6,
   lang: "eng",
   force: false,
   limit: 0,
+  firstPages: 0,
+  keepImages: true,
 };
 
 function usage() {
@@ -21,20 +29,29 @@ function usage() {
     "OCR the official Mississippi 2024 county result PDFs into per-page text files.",
     "This is an ETL preparation step only; it is not part of the Next.js site runtime.",
     "",
-    "Required external tools on PATH:",
-    "  - pdftoppm  (Poppler; renders PDF pages to PNG)",
-    "  - tesseract (OCR engine)",
+    "Default mode is pure Node:",
+    "  pdf-parse renders PDF pages to PNG, then tesseract.js OCRs those PNGs.",
+    "",
+    "Optional external mode requires tools on PATH:",
+    "  --renderer external  requires pdftoppm (Poppler)",
+    "  --engine external    requires tesseract",
     "",
     "Options:",
-    "  --pdf-dir <dir>     Source PDF directory. Default: " + defaults.pdfDir,
-    "  --out-dir <dir>     OCR text output directory. Default: " + defaults.outDir,
-    "  --image-dir <dir>   Temporary/rendered PNG directory. Default: " + defaults.imageDir,
-    "  --dpi <number>      Render DPI for pdftoppm. Default: " + defaults.dpi,
-    "  --psm <number>      Tesseract page segmentation mode. Default: " + defaults.psm,
-    "  --lang <code>       Tesseract language. Default: " + defaults.lang,
-    "  --limit <number>    Process only the first N PDFs, for sampling.",
-    "  --force             Re-render/re-OCR even when output text exists.",
-    "  --help              Show this help.",
+    "  --pdf-dir <dir>       Source PDF directory. Default: " + defaults.pdfDir,
+    "  --out-dir <dir>       OCR text output directory. Default: " + defaults.outDir,
+    "  --image-dir <dir>     Rendered PNG directory. Default: " + defaults.imageDir,
+    "  --tessdata-dir <dir>  tesseract.js traineddata cache. Default: " + defaults.tessdataDir,
+    "  --engine <name>       tesseractjs or external. Default: " + defaults.engine,
+    "  --renderer <name>     pdf-parse or external. Default: " + defaults.renderer,
+    "  --scale <number>      pdf-parse render scale. Default: " + defaults.scale,
+    "  --dpi <number>        External pdftoppm DPI. Default: " + defaults.dpi,
+    "  --psm <number>        Tesseract page segmentation mode. Default: " + defaults.psm,
+    "  --lang <code>         OCR language. Default: " + defaults.lang,
+    "  --limit <number>      Process only the first N PDFs, for sampling.",
+    "  --first-pages <num>   Process only the first N pages of each PDF, for sampling.",
+    "  --force               Re-render/re-OCR even when output text exists.",
+    "  --no-keep-images      Delete rendered page PNGs after OCR.",
+    "  --help                Show this help.",
     "",
     "Output:",
     "  <out-dir>/<County>.txt              Combined OCR text for each PDF",
@@ -51,12 +68,22 @@ function parseArgs(argv) {
       options.help = true;
     } else if (arg === "--force") {
       options.force = true;
+    } else if (arg === "--no-keep-images") {
+      options.keepImages = false;
     } else if (arg === "--pdf-dir") {
       options.pdfDir = argv[++index];
     } else if (arg === "--out-dir") {
       options.outDir = argv[++index];
     } else if (arg === "--image-dir") {
       options.imageDir = argv[++index];
+    } else if (arg === "--tessdata-dir") {
+      options.tessdataDir = argv[++index];
+    } else if (arg === "--engine") {
+      options.engine = argv[++index];
+    } else if (arg === "--renderer") {
+      options.renderer = argv[++index];
+    } else if (arg === "--scale") {
+      options.scale = Number(argv[++index]);
     } else if (arg === "--dpi") {
       options.dpi = Number(argv[++index]);
     } else if (arg === "--psm") {
@@ -65,6 +92,8 @@ function parseArgs(argv) {
       options.lang = argv[++index];
     } else if (arg === "--limit") {
       options.limit = Number(argv[++index]);
+    } else if (arg === "--first-pages") {
+      options.firstPages = Number(argv[++index]);
     } else {
       throw new Error("Unknown option: " + arg);
     }
@@ -119,23 +148,97 @@ function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
-async function renderPdf(pdfPath, imageBase, options) {
-  const parent = path.dirname(imageBase);
-  ensureDir(parent);
-  for (const existing of fs.readdirSync(parent).filter((name) => name.startsWith(path.basename(imageBase) + "-") && name.endsWith(".png"))) {
+function cleanRenderedImages(parent, baseName) {
+  if (!fs.existsSync(parent)) return;
+  for (const existing of fs.readdirSync(parent).filter((name) => name.startsWith(baseName + "-") && name.endsWith(".png"))) {
     fs.rmSync(path.join(parent, existing), { force: true });
   }
-  await run("pdftoppm", ["-r", String(options.dpi), "-png", pdfPath, imageBase]);
+}
+
+async function renderPdfExternal(pdfPath, imageBase, options) {
+  const parent = path.dirname(imageBase);
+  ensureDir(parent);
+  cleanRenderedImages(parent, path.basename(imageBase));
+  const args = ["-r", String(options.dpi), "-png"];
+  if (options.firstPages > 0) {
+    args.push("-f", "1", "-l", String(options.firstPages));
+  }
+  args.push(pdfPath, imageBase);
+  await run("pdftoppm", args);
   return fs
     .readdirSync(parent)
     .filter((name) => name.startsWith(path.basename(imageBase) + "-") && name.endsWith(".png"))
     .sort((a, b) => pageNumber(a) - pageNumber(b))
-    .map((name) => path.join(parent, name));
+    .map((name) => ({ page: pageNumber(name), imagePath: path.join(parent, name) }));
 }
 
-async function ocrImage(imagePath, options) {
+async function renderPdfWithPdfParse(pdfPath, imageBase, options) {
+  const parent = path.dirname(imageBase);
+  ensureDir(parent);
+  cleanRenderedImages(parent, path.basename(imageBase));
+  const data = fs.readFileSync(pdfPath);
+  const parser = new PDFParse({ data });
+  const params = { scale: options.scale, imageDataUrl: false, imageBuffer: true };
+  if (options.firstPages > 0) {
+    params.first = options.firstPages;
+  }
+  const result = await parser.getScreenshot(params);
+  await parser.destroy();
+  const images = [];
+  for (const page of result.pages) {
+    const pageNumberValue = page.pageNumber ?? images.length + 1;
+    const imagePath = imageBase + "-" + String(pageNumberValue).padStart(3, "0") + ".png";
+    fs.writeFileSync(imagePath, page.data);
+    images.push({ page: pageNumberValue, imagePath, width: page.width, height: page.height, scale: page.scale });
+  }
+  return images;
+}
+
+async function ocrImageExternal(imagePath, options) {
   const result = await run("tesseract", [imagePath, "stdout", "-l", options.lang, "--psm", String(options.psm)]);
   return result.stdout.replace(/\r\n/g, "\n").trimEnd() + "\n";
+}
+
+async function createOcr(options) {
+  if (options.engine === "external") {
+    return {
+      tools: { tesseract: assertTool("tesseract", "Install Tesseract OCR, then ensure tesseract is on PATH.") },
+      recognize: (imagePath) => ocrImageExternal(imagePath, options),
+      close: async () => {},
+    };
+  }
+  if (options.engine !== "tesseractjs") {
+    throw new Error("--engine must be tesseractjs or external");
+  }
+  ensureDir(options.tessdataDir);
+  const worker = await createWorker(options.lang, 1, { cachePath: options.tessdataDir });
+  await worker.setParameters({ tessedit_pageseg_mode: String(options.psm) });
+  return {
+    tools: { tesseractjs: "tesseract.js" },
+    recognize: async (imagePath) => {
+      const result = await worker.recognize(imagePath);
+      return result.data.text.replace(/\r\n/g, "\n").trimEnd() + "\n";
+    },
+    close: async () => worker.terminate(),
+  };
+}
+
+async function renderPdf(pdfPath, imageBase, options) {
+  if (options.renderer === "external") {
+    return renderPdfExternal(pdfPath, imageBase, options);
+  }
+  if (options.renderer === "pdf-parse") {
+    return renderPdfWithPdfParse(pdfPath, imageBase, options);
+  }
+  throw new Error("--renderer must be pdf-parse or external");
+}
+
+function validateOptions(options) {
+  if (!Number.isFinite(options.scale) || options.scale <= 0) throw new Error("--scale must be a positive number");
+  if (!Number.isFinite(options.dpi) || options.dpi < 100) throw new Error("--dpi must be a number >= 100");
+  if (!Number.isFinite(options.psm) || options.psm < 0) throw new Error("--psm must be a non-negative number");
+  if (!Number.isFinite(options.limit) || options.limit < 0) throw new Error("--limit must be a non-negative number");
+  if (!Number.isFinite(options.firstPages) || options.firstPages < 0) throw new Error("--first-pages must be a non-negative number");
 }
 
 async function main() {
@@ -144,17 +247,16 @@ async function main() {
     usage();
     return;
   }
-  if (!Number.isFinite(options.dpi) || options.dpi < 100) {
-    throw new Error("--dpi must be a number >= 100");
-  }
-  if (!Number.isFinite(options.psm) || options.psm < 0) {
-    throw new Error("--psm must be a non-negative number");
-  }
-
-  const pdftoppmVersion = assertTool("pdftoppm", "Install Poppler, then ensure pdftoppm is on PATH.");
-  const tesseractVersion = assertTool("tesseract", "Install Tesseract OCR, then ensure tesseract is on PATH.");
+  validateOptions(options);
   if (!fs.existsSync(options.pdfDir)) {
     throw new Error("PDF directory does not exist: " + options.pdfDir);
+  }
+
+  const rendererTools = {};
+  if (options.renderer === "external") {
+    rendererTools.pdftoppm = assertTool("pdftoppm", "Install Poppler, then ensure pdftoppm is on PATH.");
+  } else if (options.renderer === "pdf-parse") {
+    rendererTools.pdfParse = "pdf-parse";
   }
 
   ensureDir(options.outDir);
@@ -169,56 +271,69 @@ async function main() {
     throw new Error("No PDFs found in " + options.pdfDir);
   }
 
+  const ocr = await createOcr(options);
   const manifest = {
     generatedAt: new Date().toISOString(),
     pdfDir: options.pdfDir,
     outDir: options.outDir,
     imageDir: options.imageDir,
+    tessdataDir: options.tessdataDir,
+    engine: options.engine,
+    renderer: options.renderer,
+    scale: options.scale,
     dpi: options.dpi,
     psm: options.psm,
     lang: options.lang,
-    tools: { pdftoppm: pdftoppmVersion, tesseract: tesseractVersion },
+    firstPages: options.firstPages,
+    tools: { ...rendererTools, ...ocr.tools },
     files: [],
     warnings: [],
   };
 
-  for (const pdfName of pdfs) {
-    const stem = safeStem(pdfName);
-    const pdfPath = path.join(options.pdfDir, pdfName);
-    const combinedTextPath = path.join(options.outDir, stem + ".txt");
-    const pageTextDir = path.join(options.outDir, "pages", stem);
-    if (!options.force && fs.existsSync(combinedTextPath)) {
-      console.log("skip " + pdfName + " -> " + combinedTextPath);
-      manifest.files.push({ pdf: pdfName, textFile: path.relative(options.outDir, combinedTextPath), skipped: true });
-      continue;
-    }
+  try {
+    for (const pdfName of pdfs) {
+      const stem = safeStem(pdfName);
+      const pdfPath = path.join(options.pdfDir, pdfName);
+      const combinedTextPath = path.join(options.outDir, stem + ".txt");
+      const pageTextDir = path.join(options.outDir, "pages", stem);
+      if (!options.force && fs.existsSync(combinedTextPath)) {
+        console.log("skip " + pdfName + " -> " + combinedTextPath);
+        manifest.files.push({ pdf: pdfName, textFile: path.relative(options.outDir, combinedTextPath), skipped: true });
+        continue;
+      }
 
-    ensureDir(pageTextDir);
-    const imageBase = path.join(options.imageDir, stem, "page");
-    const images = await renderPdf(pdfPath, imageBase, options);
-    if (!images.length) {
-      manifest.warnings.push(pdfName + ": pdftoppm produced no page images");
-      continue;
-    }
+      ensureDir(pageTextDir);
+      const imageBase = path.join(options.imageDir, stem, "page");
+      const images = await renderPdf(pdfPath, imageBase, options);
+      if (!images.length) {
+        manifest.warnings.push(pdfName + ": renderer produced no page images");
+        continue;
+      }
 
-    const pageTexts = [];
-    for (const image of images) {
-      const page = pageNumber(path.basename(image));
-      const text = await ocrImage(image, options);
-      const pageTextPath = path.join(pageTextDir, "page-" + String(page).padStart(3, "0") + ".txt");
-      fs.writeFileSync(pageTextPath, text);
-      pageTexts.push({ page, image, text, textFile: pageTextPath });
-    }
+      const pageTexts = [];
+      for (const image of images) {
+        const text = await ocr.recognize(image.imagePath);
+        const pageTextPath = path.join(pageTextDir, "page-" + String(image.page).padStart(3, "0") + ".txt");
+        fs.writeFileSync(pageTextPath, text);
+        pageTexts.push({ ...image, text, textFile: pageTextPath });
+        if (!options.keepImages) {
+          fs.rmSync(image.imagePath, { force: true });
+        }
+      }
 
-    const combined = pageTexts.map((item) => "\n-- " + stem + " page " + item.page + " --\n\n" + item.text).join("\n").trimStart();
-    fs.writeFileSync(combinedTextPath, combined.endsWith("\n") ? combined : combined + "\n");
-    manifest.files.push({
-      pdf: pdfName,
-      pages: pageTexts.length,
-      textFile: path.relative(options.outDir, combinedTextPath),
-      pageTextDir: path.relative(options.outDir, pageTextDir),
-    });
-    console.log("ocr " + pdfName + " -> " + combinedTextPath + " (" + pageTexts.length + " pages)");
+      const combined = pageTexts.map((item) => "\n-- " + stem + " page " + item.page + " --\n\n" + item.text).join("\n").trimStart();
+      fs.writeFileSync(combinedTextPath, combined.endsWith("\n") ? combined : combined + "\n");
+      manifest.files.push({
+        pdf: pdfName,
+        pages: pageTexts.length,
+        textFile: path.relative(options.outDir, combinedTextPath),
+        pageTextDir: path.relative(options.outDir, pageTextDir),
+        images: options.keepImages ? pageTexts.map((item) => path.relative(options.imageDir, item.imagePath)) : [],
+      });
+      console.log("ocr " + pdfName + " -> " + combinedTextPath + " (" + pageTexts.length + " pages)");
+    }
+  } finally {
+    await ocr.close();
   }
 
   fs.writeFileSync(path.join(options.outDir, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
