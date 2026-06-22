@@ -21,7 +21,8 @@
     "PA",
     "VA",
     "WA",
-    "WI"
+    "WI",
+    "WV"
   ],
   "blockedStates": [],
   "states": [
@@ -474,18 +475,18 @@
       "state": "WV",
       "name": "West Virginia",
       "priority": 12,
-      "currentStatus": "official_county_review_package_collected",
+      "currentStatus": "official_precinct_review_package_collected",
       "officialSourcePages": [
         "https://results.enr.clarityelections.com/WV/122766/web.345435/",
         "https://results.enr.clarityelections.com/WV/122766/current_ver.txt"
       ],
       "requiredArtifacts": [
-        "official precinct-level or county-subdivision result rows for President",
-        "official precinct-level or county-subdivision result rows for U.S. Senate or Governor"
+        "official county detailxml.zip reports for all 55 counties",
+        "precinct boundary geometry if subcounty map overlays are required"
       ],
-      "preferredComparisonContest": "U.S. Senate; current official statewide package supports county-level President-vs-U.S.-Senate comparison rows.",
-      "parserNeeded": "clarityCountyJson package loaded; precinct/subcounty parser still needed if a lower-level package is found",
-      "blocker": "Official West Virginia 2024 statewide Clarity JSON package is collected and parsed at county level. Remaining blocker for precinct-level flags is a precinct/subcounty export; the statewide package has 55 county detail rows, not precinct rows."
+      "preferredComparisonContest": "U.S. Senate; loaded from official county detail XML reports as precinct-level President-vs-U.S.-Senate review rows.",
+      "parserNeeded": "westVirginiaClarityCountyDetailXmlDirectory loaded for 55 county result rows, 1,648 precinct review rows, and 1,649 precinct turnout rows.",
+      "blocker": "West Virginia now has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-Senate review rows. Remaining optional gap: precinct boundary geometry for subcounty map overlays."
     }
   ]
 }

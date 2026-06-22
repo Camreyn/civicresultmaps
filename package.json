@@ -65,7 +65,9 @@
     "validate:maps": "npm run validate:map-geometry && node scripts/validate-production-map-joins.mjs",
     "validate:provenance": "node scripts/validate-production-provenance.mjs",
     "etl:prepare:ky": "node scripts/extract-ky-recap-pdf-text.mjs",
-    "etl:import:ky": "npm run etl:prepare:ky && python -m civic_etl.cli import --config etl/state-configs/ky.json --out .etl/staging"
+    "etl:import:ky": "npm run etl:prepare:ky && python -m civic_etl.cli import --config etl/state-configs/ky.json --out .etl/staging",
+    "etl:prepare:wv": "node scripts/collect-wv-clarity-county-reports.mjs",
+    "etl:import:wv": "npm run etl:prepare:wv && python -m civic_etl.cli import --config etl/state-configs/wv.json --out .etl/staging"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

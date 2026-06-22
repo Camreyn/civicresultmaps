@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 import json
 import re
@@ -1282,6 +1283,147 @@ def _clarity_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig
         **turnout_metrics,
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
+
+
+def _wv_choice_precinct_votes(contest: ET.Element | None, party: str | None = None) -> dict[str, int]:
+    votes_by_precinct: dict[str, int] = {}
+    if contest is None:
+        return votes_by_precinct
+    for choice in contest.findall("Choice"):
+        choice_party = str(choice.attrib.get("party") or "").strip().upper()
+        if party is not None and choice_party != party:
+            continue
+        for vote_type in choice.findall("VoteType"):
+            for precinct in vote_type.findall("Precinct"):
+                name = str(precinct.attrib.get("name") or "").strip()
+                if not name:
+                    continue
+                votes_by_precinct[name] = votes_by_precinct.get(name, 0) + int_text(precinct.attrib.get("votes"))
+    return votes_by_precinct
+
+
+def _wv_clarity_county_detailxml_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    source_dir = _artifact_path(source)
+    if not source_dir.is_dir():
+        raise ValueError(f"West Virginia county detail XML source must be a directory: {source_dir}")
+
+    president_pattern = re.compile(section.get("presidentContestRegex", r"^U\.S\. PRESIDENT$"), re.IGNORECASE)
+    comparison_pattern = re.compile(section.get("comparisonContestRegex", r"^U\.S\. SENATOR$"), re.IGNORECASE)
+    result_rows: list[dict[str, Any]] = []
+    review_rows: list[dict[str, Any]] = []
+    turnout_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    missing_comparison_counties: list[str] = []
+
+    for zip_path in sorted(source_dir.glob("*/detailxml.zip")):
+        with zipfile.ZipFile(zip_path) as archive:
+            with archive.open("detail.xml") as detail_file:
+                root = ET.parse(detail_file).getroot()
+
+        region = root.findtext("Region") or zip_path.parent.name
+        county = _county_name(region)
+        contests = root.findall("Contest")
+        president = next((contest for contest in contests if president_pattern.search(contest.attrib.get("text", ""))), None)
+        comparison = next((contest for contest in contests if comparison_pattern.search(contest.attrib.get("text", ""))), None)
+        if president is None:
+            raise ValueError(f"West Virginia county report missing U.S. President contest: {zip_path}")
+
+        pres_dem = _wv_choice_precinct_votes(president, "DEM")
+        pres_rep = _wv_choice_precinct_votes(president, "REP")
+        pres_all = _wv_choice_precinct_votes(president)
+        comp_dem = _wv_choice_precinct_votes(comparison, "DEM")
+        comp_rep = _wv_choice_precinct_votes(comparison, "REP")
+        comp_all = _wv_choice_precinct_votes(comparison)
+
+        precinct_names = sorted(pres_all)
+        harris = sum(pres_dem.values())
+        trump = sum(pres_rep.values())
+        total = sum(pres_all.values())
+        other = total - harris - trump
+        if total:
+            result_rows.append(
+                {
+                    "jurisdictionName": county,
+                    "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                    "level": "county",
+                    "votes": {
+                        "Trump": trump,
+                        "Harris": harris,
+                        "Other": other,
+                    },
+                    "totalVotes": total,
+                    "margin": trump - harris,
+                    "marginPct": pct(trump - harris, total),
+                    "sourceId": source.id,
+                }
+            )
+
+        if comparison is None:
+            missing_comparison_counties.append(county)
+
+        voter_turnout = root.find("VoterTurnout")
+        if voter_turnout is not None:
+            for precinct in voter_turnout.findall("./Precincts/Precinct"):
+                local_unit = str(precinct.attrib.get("name") or "").strip()
+                if not local_unit:
+                    continue
+                turnout_rows.append(
+                    {
+                        "county": county,
+                        "localUnit": local_unit,
+                        "level": "precinct",
+                        "ballotsCast": int_text(precinct.attrib.get("ballotsCast")),
+                        "registeredVoters": int_text(precinct.attrib.get("totalVoters")),
+                        "turnoutPct": float(precinct.attrib.get("voterTurnout") or 0),
+                        "denominatorType": "registeredVoters",
+                        "registrationDenominatorTiming": "officialCountyReport",
+                        "warningRequired": False,
+                        "sourceId": source.id,
+                    }
+                )
+
+        for precinct in precinct_names:
+            row_total = pres_all.get(precinct, 0)
+            if not row_total:
+                continue
+            comparison_total = comp_all.get(precinct, 0)
+            has_comparison = comparison_total > 0
+            if has_comparison:
+                comparison_rows += 1
+            review_rows.append(
+                {
+                    "county": county,
+                    "localUnit": precinct,
+                    "totalVotes": row_total,
+                    "harris": pres_dem.get(precinct, 0),
+                    "trump": pres_rep.get(precinct, 0),
+                    "harrisShare": pct(pres_dem.get(precinct, 0), row_total),
+                    "trumpShare": pct(pres_rep.get(precinct, 0), row_total),
+                    "demDropoff": pct(pres_dem.get(precinct, 0) - comp_dem.get(precinct, 0), row_total) if has_comparison else 0,
+                    "repDropoff": pct(pres_rep.get(precinct, 0) - comp_rep.get(precinct, 0), row_total) if has_comparison else 0,
+                    "coverageMode": section.get("comparisonCoverageMode", "presidentVsSenate") if has_comparison else "voteShareOnly",
+                    "sourceId": source.id,
+                }
+            )
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": section.get("comparisonContestLabel", "United States Senator"),
+        "nativeTurnoutRows": len(turnout_rows),
+        "nativeTurnoutBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
+        "nativeTurnoutRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
+        "nativeWestVirginiaMissingComparisonCounties": missing_comparison_counties,
+    }
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])), sorted(turnout_rows, key=lambda item: (item["county"], item["localUnit"])), metrics
 
 def _indiana_enr_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
@@ -3208,6 +3350,17 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeIowaClarityJson",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+    if config.code == "WV" and config.raw.get("certifiedResults", {}).get("format") == "westVirginiaClarityCountyDetailXmlDirectory":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _wv_clarity_county_detailxml_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeWestVirginiaClarityCountyDetailXmlDirectory",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

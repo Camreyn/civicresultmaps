@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "wv-2024-county-detailxml-reports",
+      "category": "Official 2024 county detail XML result reports",
+      "url": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+      "localFile": "data/wv-2024-county-detailxml-reports",
+      "parser": "westVirginiaClarityCountyDetailXmlDirectory",
+      "authority": "West Virginia Secretary of State",
+      "timestampBasis": "Official county detailxml.zip reports from the West Virginia Secretary of State Clarity results app for the November 5, 2024 General Election.",
+      "confidence": "Official county-level Clarity report ZIPs. Each detail.xml contains precinct-level President, U.S. Senate, and turnout rows for that county.",
+      "status": "loaded"
+    },
+    {
       "id": "wv-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2754%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -40,30 +51,28 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "wv-2024-eac-turnout",
+    "format": "westVirginiaClarityCountyDetailXmlDirectory",
+    "sourceId": "wv-2024-county-detailxml-reports",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "West Virginia turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "registrationDenominatorTiming": "officialCountyReport",
+    "sourceLevel": "precinct",
+    "notes": "West Virginia turnout rows come from official county detail XML reports with precinct totalVoters and ballotsCast fields.",
     "warningRequired": false,
     "expected": {
-      "rowCount": 55,
-      "ballotsCast": 769206,
-      "registeredVoters": 1210415
+      "rowCount": 1649
     }
   },
   "expected": {
     "jurisdictions": 55,
     "resultRows": 55,
-    "sources": 3,
+    "sources": 4,
     "geometryFeatures": 55,
     "stateTotal": 762390,
     "trump": 533556,
     "harris": 214309,
     "other": 14525,
-    "reviewRows": 55,
-    "turnoutRows": 55
+    "reviewRows": 1648,
+    "turnoutRows": 1649
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -74,19 +83,18 @@
     "historicalBaseline": false
   },
   "certifiedResults": {
-    "format": "clarityCountyJson",
-    "sourceId": "wv-2024-official-clarity-results",
-    "summaryFile": "sum.json",
-    "presidentContestKey": "100",
+    "format": "westVirginiaClarityCountyDetailXmlDirectory",
+    "sourceId": "wv-2024-county-detailxml-reports",
+    "presidentContestRegex": "^U\\.S\\. PRESIDENT$",
     "comparisonContestRegex": "^U\\.S\\. SENATOR$",
     "comparisonContestLabel": "United States Senator",
     "comparisonCoverageMode": "presidentVsSenate"
   },
   "reviewCharts": {
-    "format": "clarityCountyJsonCountyComparison",
-    "sourceId": "wv-2024-official-clarity-results",
+    "format": "westVirginiaClarityCountyDetailXmlDirectory",
+    "sourceId": "wv-2024-county-detailxml-reports",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "warning": "West Virginia review rows are county-level President-versus-U.S. Senate comparisons from the official statewide result JSON package. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+    "warning": "West Virginia review rows are precinct-level President-versus-U.S. Senate comparisons from official Secretary of State county detail XML report ZIPs. They are advisory review inputs, not confirmed findings."
   }
 }
