@@ -342,11 +342,11 @@
       ],
       "requiredArtifacts": [
         "OCR text generated from official county recapitulation PDFs with npm run etl:ocr:ms if precinct-level review is pursued; the default renderer/OCR path is Node-based and rotates the sideways recapitulation sheets before OCR, with optional external Poppler/Tesseract mode",
-        "structured precinct-level President-versus-U.S. Senate CSV parsed from reviewed OCR text",
+        "reviewed structured precinct-level President-versus-U.S. Senate CSV promoted from scripts/extract-ms-recap-grid-cells.mjs output",
         "state-native turnout denominator artifact if replacing EAC turnout fallback"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "mississippiElectionRecapCsv is loaded for county review. For precinct-level rows, run scripts/ocr-ms-county-result-pdfs.mjs, review the rotated OCR text, then add a table-aware parser from reviewed OCR text/images to structured precinct review rows.",
+      "parserNeeded": "mississippiElectionRecapCsv is loaded for county review. For precinct-level rows, run scripts/ocr-ms-county-result-pdfs.mjs, run scripts/extract-ms-recap-grid-cells.mjs to produce review-gated cell candidates, reconcile/review the candidate CSV, then promote a structured precinct review artifact.",
       "blocker": "Mississippi county-level President-versus-U.S. Senate review rows are live from the Secretary of State statewide recap CSV. Precinct-level advisory flags remain blocked until the image-only county recapitulation PDFs are OCRed, reviewed, and parsed into structured rows."
     },
     {

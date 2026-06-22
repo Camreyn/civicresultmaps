@@ -75,7 +75,9 @@
     "etl:prepare:nh": "node scripts/normalize-nh-general-workbooks.mjs",
     "etl:import:nh": "npm run etl:prepare:nh && python -m civic_etl.cli import --config etl/state-configs/nh.json --out .etl/staging",
     "etl:ocr:ms": "node scripts/ocr-ms-county-result-pdfs.mjs",
-    "etl:ocr:ms:sample": "node scripts/ocr-ms-county-result-pdfs.mjs --limit 2 --first-pages 2 --force --out-dir .etl/ocr/ms-sample-text --image-dir .etl/ocr/ms-sample-images --tessdata-dir .etl/ocr/tesseract-cache"
+    "etl:ocr:ms:sample": "node scripts/ocr-ms-county-result-pdfs.mjs --limit 2 --first-pages 2 --force --out-dir .etl/ocr/ms-sample-text --image-dir .etl/ocr/ms-sample-images --tessdata-dir .etl/ocr/tesseract-cache",
+    "etl:extract:ms:ocr-cells": "node scripts/extract-ms-recap-grid-cells.mjs",
+    "etl:extract:ms:ocr-cells:sample": "node scripts/extract-ms-recap-grid-cells.mjs --image-dir .etl/ocr/ms-sample-images --out .etl/ocr/ms-sample-grid-cell-candidates.csv --limit-counties 2 --limit-pages 2"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
