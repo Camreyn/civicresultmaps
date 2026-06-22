@@ -1,10 +1,9 @@
 {
   "code": "MS",
   "name": "Mississippi",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Mississippi Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ms-2024-eac-turnout",
@@ -15,6 +14,50 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "ms-2024-election-recap-sheets",
+      "category": "Official 2024 general election statewide recap CSV",
+      "url": "https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv",
+      "localFile": "data/ms-2024-election-recap-sheets.csv",
+      "parser": "mississippiElectionRecapCsv",
+      "authority": "Mississippi Secretary of State",
+      "timestampBasis": "Official Mississippi Secretary of State 2024 General Election statewide recapitulation CSV downloaded from the SOS election results page.",
+      "confidence": "Official state-hosted CSV with county totals by office, candidate, party, county total, and statewide total.",
+      "status": "loaded"
+    },
+    {
+      "id": "ms-2024-official-statewide-results-pdf",
+      "category": "Official 2024 general election statewide results PDF",
+      "url": "https://www.sos.ms.gov/elections/electionresults/2024%20Official%20Statewide%20Results.pdf",
+      "localFile": "data/ms-2024-official-statewide-results.pdf",
+      "parser": "referencePdf",
+      "authority": "Mississippi Secretary of State",
+      "timestampBasis": "Official Mississippi Secretary of State 2024 General Election statewide results PDF.",
+      "confidence": "Reference PDF retained alongside the parsed official CSV for provenance.",
+      "status": "loaded"
+    },
+    {
+      "id": "ms-2024-county-results-pdfs",
+      "category": "Official 2024 general election county results PDFs",
+      "url": "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_county.aspx",
+      "localFile": "data/ms-2024-county-results-pdfs",
+      "parser": "imageOnlyCountyRecapPdfDirectory",
+      "authority": "Mississippi Secretary of State",
+      "timestampBasis": "Official Mississippi Secretary of State county result PDF links from the 2024 General Election county results page.",
+      "confidence": "Official county PDF artifacts retained for future OCR/manual extraction. The PDFs are image-only in this environment and are not parsed into precinct review rows yet.",
+      "status": "loaded"
+    },
+    {
+      "id": "ms-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2728%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ms-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Mississippi county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +77,41 @@
   },
   "expected": {
     "jurisdictions": 82,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 82,
+    "sources": 5,
+    "geometryFeatures": 82,
+    "stateTotal": 1225238,
+    "trump": 746305,
+    "harris": 465357,
+    "other": 13576,
+    "reviewRows": 82,
     "turnoutRows": 82
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "mississippiElectionRecapCsv",
+    "sourceId": "ms-2024-election-recap-sheets",
+    "presidentOffice": "United States-President",
+    "statewideTotals": {
+      "total": 1225238,
+      "trump": 746305,
+      "harris": 465357,
+      "other": 13576
+    }
+  },
+  "reviewCharts": {
+    "format": "mississippiElectionRecapCsvCountyComparison",
+    "sourceId": "ms-2024-election-recap-sheets",
+    "comparisonOffice": "United States-Senate",
+    "comparisonContest": "United States Senate",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Mississippi review rows are county-level President-versus-U.S. Senate comparisons from the official statewide recap CSV. They are useful for county review, but they are not precinct-level vote-share scatter plots."
   }
 }

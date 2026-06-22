@@ -16,6 +16,7 @@
     "KY",
     "MI",
     "MN",
+    "MS",
     "NC",
     "NV",
     "OH",
@@ -331,22 +332,20 @@
       "state": "MS",
       "name": "Mississippi",
       "priority": 4,
-      "currentStatus": "official_links_found_download_blocked",
+      "currentStatus": "official_county_review_package_collected",
       "officialSourcePages": [
         "https://www.sos.ms.gov/elections-voting/election-results/2024/2024-general-election-results",
-        "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_general.aspx",
         "https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv",
         "https://www.sos.ms.gov/elections/electionresults/2024%20Official%20Statewide%20Results.pdf",
         "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_county.aspx"
       ],
       "requiredArtifacts": [
-        "official Statewide Recapitulation Report CSV",
-        "official Statewide Recapitulation Report PDF",
-        "county recapitulation PDFs if precinct-level review is pursued"
+        "official county recapitulation PDFs if precinct-level review is pursued",
+        "state-native turnout denominator artifact if replacing EAC turnout fallback"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "mississippiElectionRecapCsv once the official CSV can be downloaded into data/",
-      "blocker": "Official SOS iframe exposes CSV/PDF and county PDF links, but direct downloads from this environment return Access Denied or are blocked by the browser client. Need manual download or approved alternate access to persist the official artifacts."
+      "parserNeeded": "mississippiElectionRecapCsv loaded for 82 county result rows, 82 county President-versus-U.S. Senate review rows, and 82 EAC turnout rows.",
+      "blocker": "Mississippi now has official county-level President-versus-U.S. Senate review rows from the Secretary of State statewide recap CSV. Precinct-level advisory flags remain blocked until county recapitulation PDFs or another official precinct-level export are collected and parsed."
     },
     {
       "state": "MO",

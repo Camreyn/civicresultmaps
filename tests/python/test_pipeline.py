@@ -315,6 +315,28 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(adair["comparisonDemVotes"], 21)
         self.assertEqual(adair["comparisonRepVotes"], 284)
 
+    def test_mississippi_election_recap_csv_parser_builds_county_rows(self):
+        config = load_config("etl/state-configs/ms.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeMississippiElectionRecapCsv")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 82)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 1225238)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 746305)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 465357)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 13576)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 82)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 82)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senate")
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 82)
+        adams = next(row for row in artifact["native"]["reviewRows"] if row["county"] == "Adams County")
+        self.assertEqual(adams["coverageMode"], "presidentVsSenate")
+        self.assertEqual(adams["harris"], 6743)
+        self.assertEqual(adams["trump"], 5081)
+        self.assertEqual(adams["comparisonDemVotes"], 6560)
+        self.assertEqual(adams["comparisonRepVotes"], 5219)
     def test_missouri_county_president_csv_parser_builds_county_rows(self):
         config = load_config("etl/state-configs/mo.json")
         report = validate_config(config)

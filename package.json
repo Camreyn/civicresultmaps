@@ -69,7 +69,9 @@
     "etl:prepare:wv": "node scripts/collect-wv-clarity-county-reports.mjs",
     "etl:import:wv": "npm run etl:prepare:wv && python -m civic_etl.cli import --config etl/state-configs/wv.json --out .etl/staging",
     "etl:prepare:ia": "node scripts/collect-ia-clarity-county-reports.mjs",
-    "etl:import:ia": "npm run etl:prepare:ia && python -m civic_etl.cli import --config etl/state-configs/ia.json --out .etl/staging"
+    "etl:import:ia": "npm run etl:prepare:ia && python -m civic_etl.cli import --config etl/state-configs/ia.json --out .etl/staging",
+    "etl:import:ms": "python -m civic_etl.cli import --config etl/state-configs/ms.json --out .etl/staging",
+    "etl:prepare:ms": "node scripts/collect-ms-county-result-pdfs.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
