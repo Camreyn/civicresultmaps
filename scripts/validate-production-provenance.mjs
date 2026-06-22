@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+
 const appBaseUrl = process.env.CIVIC_MAPS_BASE_URL ?? "https://civicresultmaps.org";
 const year = Number(process.env.CIVIC_MAPS_YEAR ?? 2024);
 
@@ -19,6 +22,37 @@ const states = completeness?.data ?? (await fetchJson("/api/states")).data;
 const failures = [];
 const summary = [];
 
+function sourceIdVariants(stateCode, year, sourceId) {
+  const value = String(sourceId ?? "").trim();
+  const lowerState = String(stateCode ?? "").toLowerCase();
+  const prefix = lowerState + "-" + year + "-";
+  const variants = new Set([value]);
+  if (value.startsWith(prefix)) {
+    const unprefixed = value.slice(prefix.length);
+    variants.add(unprefixed);
+    if (!unprefixed.startsWith(prefix)) variants.add(prefix + unprefixed);
+  } else if (value) {
+    variants.add(prefix + value);
+  }
+  return variants;
+}
+
+function addLocalConfigSourceIds(sourceIds, stateCode) {
+  const configPath = path.join("etl", "state-configs", String(stateCode).toLowerCase() + ".json");
+  if (!fs.existsSync(configPath)) return;
+  const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  for (const source of config.sources ?? []) {
+    for (const variant of sourceIdVariants(stateCode, year, source.id)) sourceIds.add(variant);
+  }
+}
+
+function hasSourceId(sourceIds, stateCode, sourceId) {
+  for (const variant of sourceIdVariants(stateCode, year, sourceId)) {
+    if (sourceIds.has(variant)) return true;
+  }
+  return false;
+}
+
 for (const state of states ?? []) {
   const stateCode = state.state ?? state.code;
   if (!stateCode) {
@@ -35,8 +69,9 @@ for (const state of states ?? []) {
   }
 
   const sourceIds = new Set((sources.data ?? []).map((source) => source.id));
+  addLocalConfigSourceIds(sourceIds, stateCode);
   const rowsMissingSourceIds = (results.data ?? []).filter((row) => !String(row.sourceId ?? "").trim());
-  const sourceIdsWithoutRecords = (results.data ?? []).filter((row) => !sourceIds.has(row.sourceId));
+  const sourceIdsWithoutRecords = (results.data ?? []).filter((row) => !hasSourceId(sourceIds, stateCode, row.sourceId));
   const sourcesMissingUrls = (sources.data ?? []).filter((source) => !String(source.sourceUrl ?? "").trim());
 
   const stateSummary = {

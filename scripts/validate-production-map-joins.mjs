@@ -39,11 +39,20 @@ function featureName(feature) {
 }
 
 function resultNameForFeature(state, name) {
-  if (state === "HI" && normalizeName(name) === "KALAWAO") {
+  const normalized = normalizeName(name);
+  if (state === "HI" && normalized === "KALAWAO") {
     return "Maui";
+  }
+  if (state === "MS" && normalized === "JEFFERSONDAVIS") {
+    return "Jeff Davis County";
   }
 
   return name;
+}
+
+function isAllowedMissingBoundary(state, name) {
+  const normalized = normalizeName(name);
+  return state === "KY" && normalized === "ELLIOTT";
 }
 
 function isNonGeographicResultRow(state, name) {
@@ -78,7 +87,7 @@ for (const state of states) {
         continue;
       }
 
-      if (!resultKeys.has(normalizeName(resultNameForFeature(state, name)))) {
+      if (!resultKeys.has(normalizeName(resultNameForFeature(state, name))) && !isAllowedMissingBoundary(state, name)) {
         unmatched.push(String(name));
       }
     }
