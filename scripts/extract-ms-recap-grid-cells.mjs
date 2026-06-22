@@ -83,8 +83,8 @@ function addUnique(list, value) {
   if (value && !list.includes(value)) list.push(value);
 }
 
-function lineRuns({ data, width, height, axis, startA, endA, startB, endB, threshold }) {
-  const isDark = (value) => value < 150;
+function lineRuns({ data, width, height, axis, startA, endA, startB, endB, threshold, darkThreshold }) {
+  const isDark = (value) => value < darkThreshold;
   const counts = [];
   for (let a = startA; a <= endA; a += 1) {
     let count = 0;
@@ -142,18 +142,19 @@ function trimFalseStartLines(lines) {
   return result;
 }
 
-function selectDataXLines(width, candidates) {
+function selectDataXLines(width, candidates, options = {}) {
+  const minGap = options.minGap ?? 60;
   const filtered = candidates.filter((x) => x > width * 0.28).sort((a, b) => a - b);
   const coarse = [];
   for (const x of filtered) {
-    if (!coarse.length || x - coarse[coarse.length - 1] >= 60) coarse.push(x);
+    if (!coarse.length || x - coarse[coarse.length - 1] >= minGap) coarse.push(x);
   }
   let best = [];
   for (let start = 0; start < coarse.length; start += 1) {
     const seq = [coarse[start]];
     for (let index = start + 1; index < coarse.length; index += 1) {
       const gap = coarse[index] - seq[seq.length - 1];
-      if (gap >= 60 && gap <= 220) seq.push(coarse[index]);
+      if (gap >= minGap && gap <= 220) seq.push(coarse[index]);
       else if (gap > 220) break;
     }
     if (seq.length > best.length) best = seq;
@@ -162,7 +163,10 @@ function selectDataXLines(width, candidates) {
   return trimFalseStartLines(selected);
 }
 
-async function detectGrid(imagePath) {
+async function detectGrid(imagePath, mode = "strict") {
+  const settings = mode === "lenient"
+    ? { darkThreshold: 190, minGap: 45, verticalRatio: 0.1, horizontalRatio: 0.35 }
+    : { darkThreshold: 150, minGap: 60, verticalRatio: 0.18, horizontalRatio: 0.45 };
   const { data, info } = await sharp(imagePath).greyscale().raw().toBuffer({ resolveWithObject: true });
   const width = info.width;
   const height = info.height;
@@ -182,9 +186,11 @@ async function detectGrid(imagePath) {
         endA: width - 50,
         startB: vStart,
         endB: vEnd,
-        threshold: Math.round((vEnd - vStart) * 0.18),
+        threshold: Math.round((vEnd - vStart) * settings.verticalRatio),
+        darkThreshold: settings.darkThreshold,
       }),
     ),
+    { minGap: settings.minGap },
   );
   const yLines = clusterMids(
     lineRuns({
@@ -196,7 +202,8 @@ async function detectGrid(imagePath) {
       endA: height - 50,
       startB: hStart,
       endB: hEnd,
-      threshold: Math.round((hEnd - hStart) * 0.45),
+      threshold: Math.round((hEnd - hStart) * settings.horizontalRatio),
+      darkThreshold: settings.darkThreshold,
     }),
   );
   return { width, height, xLines, yLines };
@@ -240,9 +247,10 @@ async function ocrNumber(imagePath, rect, worker) {
   return { raw, value };
 }
 
-async function processPage({ county, imagePath, labelWorker, numberWorker }) {
-  const grid = await detectGrid(imagePath);
+async function processPage({ county, imagePath, labelWorker, numberWorker, gridMode = "strict" }) {
+  const grid = await detectGrid(imagePath, gridMode);
   const warnings = [];
+  if (gridMode !== "strict") warnings.push("grid_" + gridMode);
   if (grid.xLines.length < 3) warnings.push("few_x_lines");
   if (grid.yLines.length < 4) warnings.push("few_y_lines");
   const rows = await locateTargetRows(imagePath, grid, labelWorker);
@@ -343,6 +351,11 @@ async function processBestPage({ county, countyDir, entry, labelWorker, numberWo
 
     const shouldTryFallback = result.records.length === 0 && missesEveryTarget(result);
     if (!shouldTryFallback) break;
+
+    const lenientResult = await processPage({ county, imagePath, labelWorker, numberWorker, gridMode: "lenient" });
+    const lenientScored = { imagePath, result: lenientResult, score: extractionScore(lenientResult) };
+    if (!best || lenientScored.score > best.score) best = lenientScored;
+    if (lenientResult.records.length > 0 && !missesEveryTarget(lenientResult)) break;
 
     if (!triedFallback) {
       triedFallback = true;
