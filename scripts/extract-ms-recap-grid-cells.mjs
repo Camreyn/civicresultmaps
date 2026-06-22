@@ -71,7 +71,7 @@ function pageNumber(fileName) {
 }
 
 function lineRuns({ data, width, height, axis, startA, endA, startB, endB, threshold }) {
-  const isDark = (value) => value < 190;
+  const isDark = (value) => value < 150;
   const counts = [];
   for (let a = startA; a <= endA; a += 1) {
     let count = 0;
@@ -129,44 +129,12 @@ function trimFalseStartLines(lines) {
   return result;
 }
 
-function bestRegularGrid(lines) {
-  let best = [];
-  let bestScore = -Infinity;
-  for (let start = 0; start < lines.length - 1; start += 1) {
-    for (let next = start + 1; next < lines.length; next += 1) {
-      const gap = lines[next] - lines[start];
-      if (gap < 90 || gap > 180) continue;
-      const tolerance = Math.max(10, gap * 0.1);
-      const seq = [lines[start], lines[next]];
-      let expected = lines[next] + gap;
-      for (let index = next + 1; index < lines.length; index += 1) {
-        if (lines[index] < expected - tolerance) continue;
-        if (lines[index] > expected + tolerance) break;
-        seq.push(lines[index]);
-        expected = lines[index] + gap;
-      }
-      const gaps = seq.slice(1).map((x, index) => x - seq[index]);
-      const typical = gaps.length ? median(gaps) : gap;
-      const variance = gaps.reduce((sum, item) => sum + Math.abs(item - typical), 0);
-      const score = seq.length * 100 - variance;
-      if (seq.length >= 4 && score > bestScore) {
-        best = seq;
-        bestScore = score;
-      }
-    }
-  }
-  return best;
-}
-
 function selectDataXLines(width, candidates) {
   const filtered = candidates.filter((x) => x > width * 0.28).sort((a, b) => a - b);
   const coarse = [];
   for (const x of filtered) {
-    if (!coarse.length || x - coarse[coarse.length - 1] >= 45) coarse.push(x);
+    if (!coarse.length || x - coarse[coarse.length - 1] >= 60) coarse.push(x);
   }
-  const regular = bestRegularGrid(coarse);
-  if (regular.length >= 4) return trimFalseStartLines(regular);
-
   let best = [];
   for (let start = 0; start < coarse.length; start += 1) {
     const seq = [coarse[start]];
@@ -201,7 +169,7 @@ async function detectGrid(imagePath) {
         endA: width - 50,
         startB: vStart,
         endB: vEnd,
-        threshold: Math.round((vEnd - vStart) * 0.1),
+        threshold: Math.round((vEnd - vStart) * 0.18),
       }),
     ),
   );
@@ -215,7 +183,7 @@ async function detectGrid(imagePath) {
       endA: height - 50,
       startB: hStart,
       endB: hEnd,
-      threshold: Math.round((hEnd - hStart) * 0.35),
+      threshold: Math.round((hEnd - hStart) * 0.45),
     }),
   );
   return { width, height, xLines, yLines };
