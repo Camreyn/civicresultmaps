@@ -66,8 +66,21 @@ function csv(value) {
 }
 
 function pageNumber(fileName) {
-  const match = fileName.match(/page-(\d+)-rot\d+\.png$/i);
+  const match = fileName.match(/page-(\d+)(?:-rot\d+)?\.png$/i);
   return match ? Number(match[1]) : 0;
+}
+
+function rotationNumber(fileName) {
+  const match = fileName.match(/-rot(\d+)\.png$/i);
+  return match ? Number(match[1]) : null;
+}
+
+function pageStem(page) {
+  return "page-" + String(page).padStart(3, "0");
+}
+
+function addUnique(list, value) {
+  if (value && !list.includes(value)) list.push(value);
 }
 
 function lineRuns({ data, width, height, axis, startA, endA, startB, endB, threshold }) {
@@ -276,6 +289,70 @@ function listCountyDirs(options) {
   return dirs;
 }
 
+function imagePriority(fileName) {
+  const rotation = rotationNumber(fileName);
+  if (rotation === 270) return 0;
+  if (rotation === 90) return 1;
+  if (rotation === 0) return 2;
+  if (rotation === 180) return 3;
+  return 4;
+}
+
+function listCountyPageEntries(countyDir) {
+  const groups = new Map();
+  for (const name of fs.readdirSync(countyDir).filter((item) => /page-\d+-rot\d+\.png$/i.test(item))) {
+    const page = pageNumber(name);
+    if (!groups.has(page)) groups.set(page, []);
+    groups.get(page).push(name);
+  }
+  return [...groups.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([page, images]) => ({ page, images: images.sort((a, b) => imagePriority(a) - imagePriority(b) || a.localeCompare(b)) }));
+}
+
+async function ensureRotatedVariant(countyDir, page, rotation) {
+  const original = path.join(countyDir, pageStem(page) + ".png");
+  if (!fs.existsSync(original)) return null;
+  const rotated = path.join(countyDir, pageStem(page) + "-rot" + rotation + ".png");
+  if (!fs.existsSync(rotated)) await sharp(original).rotate(rotation).toFile(rotated);
+  return rotated;
+}
+
+function missesEveryTarget(result) {
+  return targetRows.every((target) => result.warnings.includes("missing_" + target.key));
+}
+
+function extractionScore(result) {
+  const missing = result.warnings.filter((warning) => warning.startsWith("missing_")).length;
+  const fewLines = result.warnings.filter((warning) => warning.startsWith("few_")).length;
+  const numericCells = result.records.filter((record) => record.value).length;
+  return result.records.length * 10 + numericCells - missing * 5 - fewLines * 2;
+}
+
+async function processBestPage({ county, countyDir, entry, labelWorker, numberWorker }) {
+  const candidates = [];
+  for (const image of entry.images) addUnique(candidates, path.join(countyDir, image));
+
+  let best = null;
+  let triedFallback = false;
+  for (let index = 0; index < candidates.length; index += 1) {
+    const imagePath = candidates[index];
+    const result = await processPage({ county, imagePath, labelWorker, numberWorker });
+    const scored = { imagePath, result, score: extractionScore(result) };
+    if (!best || scored.score > best.score) best = scored;
+
+    const shouldTryFallback = result.records.length === 0 && missesEveryTarget(result);
+    if (!shouldTryFallback) break;
+
+    if (!triedFallback) {
+      triedFallback = true;
+      for (const rotation of [90, 270]) addUnique(candidates, await ensureRotatedVariant(countyDir, entry.page, rotation));
+    }
+  }
+
+  return { ...best.result, imagePath: best.imagePath };
+}
+
 async function main() {
   const options = parseArgs(process.argv.slice(2));
   if (options.help) {
@@ -295,13 +372,13 @@ async function main() {
   try {
     for (const county of listCountyDirs(options)) {
       const countyDir = path.join(options.imageDir, county);
-      let images = fs.readdirSync(countyDir).filter((name) => /page-\d+-rot\d+\.png$/i.test(name)).sort((a, b) => pageNumber(a) - pageNumber(b));
-      if (options.limitPages > 0) images = images.slice(0, options.limitPages);
-      for (const image of images) {
-        const imagePath = path.join(countyDir, image);
-        const result = await processPage({ county, imagePath, labelWorker, numberWorker });
+      let entries = listCountyPageEntries(countyDir);
+      if (options.limitPages > 0) entries = entries.slice(0, options.limitPages);
+      for (const entry of entries) {
+        const result = await processBestPage({ county, countyDir, entry, labelWorker, numberWorker });
         records.push(...result.records);
-        summaries.push({ county, page: pageNumber(image), rows: result.records.length, warnings: result.warnings, columns: Math.max(0, result.grid.xLines.length - 1) });
+        const image = path.basename(result.imagePath);
+        summaries.push({ county, page: entry.page, image, rows: result.records.length, warnings: result.warnings, columns: Math.max(0, result.grid.xLines.length - 1) });
         console.log("extract " + county + " " + image + " -> " + result.records.length + " cells" + (result.warnings.length ? " [" + result.warnings.join(",") + "]" : ""));
       }
     }
