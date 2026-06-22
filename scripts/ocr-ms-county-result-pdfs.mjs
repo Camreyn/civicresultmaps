@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { PDFParse } from "pdf-parse";
+import sharp from "sharp";
 import { createWorker } from "tesseract.js";
 
 const defaults = {
@@ -13,8 +14,9 @@ const defaults = {
   engine: "tesseractjs",
   renderer: "pdf-parse",
   scale: 3,
+  rotate: 270,
   dpi: 300,
-  psm: 6,
+  psm: 4,
   lang: "eng",
   force: false,
   limit: 0,
@@ -44,6 +46,7 @@ function usage() {
     "  --engine <name>       tesseractjs or external. Default: " + defaults.engine,
     "  --renderer <name>     pdf-parse or external. Default: " + defaults.renderer,
     "  --scale <number>      pdf-parse render scale. Default: " + defaults.scale,
+    "  --rotate <degrees>    Rotate rendered page before OCR; use 0, 90, 180, or 270. Default: " + defaults.rotate,
     "  --dpi <number>        External pdftoppm DPI. Default: " + defaults.dpi,
     "  --psm <number>        Tesseract page segmentation mode. Default: " + defaults.psm,
     "  --lang <code>         OCR language. Default: " + defaults.lang,
@@ -84,6 +87,8 @@ function parseArgs(argv) {
       options.renderer = argv[++index];
     } else if (arg === "--scale") {
       options.scale = Number(argv[++index]);
+    } else if (arg === "--rotate") {
+      options.rotate = Number(argv[++index]);
     } else if (arg === "--dpi") {
       options.dpi = Number(argv[++index]);
     } else if (arg === "--psm") {
@@ -233,8 +238,32 @@ async function renderPdf(pdfPath, imageBase, options) {
   throw new Error("--renderer must be pdf-parse or external");
 }
 
+function normalizeRotation(rotation) {
+  return ((rotation % 360) + 360) % 360;
+}
+
+async function preprocessImageForOcr(image, options) {
+  const rotate = normalizeRotation(options.rotate);
+  if (rotate === 0) {
+    return { ...image, sourceImagePath: image.imagePath, rotation: 0 };
+  }
+  const parsed = path.parse(image.imagePath);
+  const rotatedPath = path.join(parsed.dir, parsed.name + "-rot" + rotate + parsed.ext);
+  await sharp(image.imagePath).rotate(rotate).toFile(rotatedPath);
+  const metadata = await sharp(rotatedPath).metadata();
+  return {
+    ...image,
+    sourceImagePath: image.imagePath,
+    imagePath: rotatedPath,
+    rotation: rotate,
+    width: metadata.width ?? image.width,
+    height: metadata.height ?? image.height,
+  };
+}
+
 function validateOptions(options) {
   if (!Number.isFinite(options.scale) || options.scale <= 0) throw new Error("--scale must be a positive number");
+  if (!Number.isFinite(options.rotate) || ![0, 90, 180, 270].includes(normalizeRotation(options.rotate))) throw new Error("--rotate must be 0, 90, 180, or 270");
   if (!Number.isFinite(options.dpi) || options.dpi < 100) throw new Error("--dpi must be a number >= 100");
   if (!Number.isFinite(options.psm) || options.psm < 0) throw new Error("--psm must be a non-negative number");
   if (!Number.isFinite(options.limit) || options.limit < 0) throw new Error("--limit must be a non-negative number");
@@ -281,6 +310,7 @@ async function main() {
     engine: options.engine,
     renderer: options.renderer,
     scale: options.scale,
+    rotate: normalizeRotation(options.rotate),
     dpi: options.dpi,
     psm: options.psm,
     lang: options.lang,
@@ -310,14 +340,22 @@ async function main() {
         continue;
       }
 
-      const pageTexts = [];
+      const ocrImages = [];
       for (const image of images) {
+        ocrImages.push(await preprocessImageForOcr(image, options));
+      }
+
+      const pageTexts = [];
+      for (const image of ocrImages) {
         const text = await ocr.recognize(image.imagePath);
         const pageTextPath = path.join(pageTextDir, "page-" + String(image.page).padStart(3, "0") + ".txt");
         fs.writeFileSync(pageTextPath, text);
         pageTexts.push({ ...image, text, textFile: pageTextPath });
         if (!options.keepImages) {
           fs.rmSync(image.imagePath, { force: true });
+          if (image.sourceImagePath && image.sourceImagePath !== image.imagePath) {
+            fs.rmSync(image.sourceImagePath, { force: true });
+          }
         }
       }
 
@@ -329,6 +367,11 @@ async function main() {
         textFile: path.relative(options.outDir, combinedTextPath),
         pageTextDir: path.relative(options.outDir, pageTextDir),
         images: options.keepImages ? pageTexts.map((item) => path.relative(options.imageDir, item.imagePath)) : [],
+        sourceImages: options.keepImages
+          ? pageTexts
+              .filter((item) => item.sourceImagePath && item.sourceImagePath !== item.imagePath)
+              .map((item) => path.relative(options.imageDir, item.sourceImagePath))
+          : [],
       });
       console.log("ocr " + pdfName + " -> " + combinedTextPath + " (" + pageTexts.length + " pages)");
     }

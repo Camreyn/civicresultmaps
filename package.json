@@ -75,7 +75,7 @@
     "etl:prepare:nh": "node scripts/normalize-nh-general-workbooks.mjs",
     "etl:import:nh": "npm run etl:prepare:nh && python -m civic_etl.cli import --config etl/state-configs/nh.json --out .etl/staging",
     "etl:ocr:ms": "node scripts/ocr-ms-county-result-pdfs.mjs",
-    "etl:ocr:ms:sample": "node scripts/ocr-ms-county-result-pdfs.mjs --limit 2 --first-pages 1 --force --out-dir .etl/ocr/ms-sample-text --image-dir .etl/ocr/ms-sample-images --tessdata-dir .etl/ocr/tesseract-cache"
+    "etl:ocr:ms:sample": "node scripts/ocr-ms-county-result-pdfs.mjs --limit 2 --first-pages 2 --force --out-dir .etl/ocr/ms-sample-text --image-dir .etl/ocr/ms-sample-images --tessdata-dir .etl/ocr/tesseract-cache"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
@@ -96,6 +96,7 @@
     "drizzle-kit": "^0.30.1",
     "eslint": "^9.17.0",
     "eslint-config-next": "^16.1.5",
+    "sharp": "^0.34.5",
     "tesseract.js": "^7.0.0",
     "typescript": "^5.7.2",
     "xlsx": "^0.18.5"
