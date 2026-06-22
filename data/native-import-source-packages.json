@@ -12,6 +12,7 @@
     "AZ",
     "FL",
     "GA",
+    "IA",
     "KY",
     "MI",
     "MN",
@@ -296,18 +297,18 @@
       "state": "IA",
       "name": "Iowa",
       "priority": 2,
-      "currentStatus": "official_county_review_package_collected",
+      "currentStatus": "official_precinct_review_package_collected",
       "officialSourcePages": [
         "https://electionresults.iowa.gov/IA/122322/web.345435/",
         "https://electionresults.iowa.gov/IA/122322/current_ver.txt"
       ],
       "requiredArtifacts": [
-        "official precinct-level or county-subdivision result rows for President",
-        "official precinct-level or county-subdivision result rows for U.S. House districts if statewide comparison contest is unavailable"
+        "official county detailxml.zip reports for all 99 counties",
+        "precinct boundary geometry if subcounty map overlays are required"
       ],
-      "preferredComparisonContest": "U.S. House by district; current official statewide package supports county-level President-vs-U.S.-House comparison rows.",
-      "parserNeeded": "iowaClarityJsonCountyPackageLoaded; precinct/subcounty parser still needed if a lower-level package is found",
-      "blocker": "Official Iowa 2024 statewide Clarity JSON package is collected and parsed at county level. Remaining blocker for precinct-level flags is a precinct/subcounty export; the statewide package has 99 county detail rows, not precinct rows."
+      "preferredComparisonContest": "U.S. House by district; loaded from official county detail XML reports as precinct-level President-vs-U.S.-House review rows.",
+      "parserNeeded": "iowaClarityCountyDetailXmlDirectory loaded for 99 county result rows, 1,653 precinct review rows, and 1,651 precinct turnout rows.",
+      "blocker": "Iowa now has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-House review rows. Remaining optional gap: precinct boundary geometry for subcounty map overlays."
     },
     {
       "state": "KY",

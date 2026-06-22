@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "ia-2024-county-detailxml-reports",
+      "category": "Official 2024 county detail XML result reports",
+      "url": "https://electionresults.iowa.gov/IA/122322/web.345435/",
+      "localFile": "data/ia-2024-county-detailxml-reports",
+      "parser": "iowaClarityCountyDetailXmlDirectory",
+      "authority": "Iowa Secretary of State",
+      "timestampBasis": "Official county detailxml.zip reports from the Iowa Secretary of State Clarity results app for the November 5, 2024 General Election.",
+      "confidence": "Official county-level Clarity report ZIPs. Each detail.xml contains precinct-level President, U.S. House, and turnout rows for that county.",
+      "status": "loaded"
+    },
+    {
       "id": "ia-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2719%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -40,30 +51,28 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "ia-2024-eac-turnout",
+    "format": "iowaClarityCountyDetailXmlDirectory",
+    "sourceId": "ia-2024-county-detailxml-reports",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Iowa turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "registrationDenominatorTiming": "officialCountyReport",
+    "sourceLevel": "precinct",
+    "notes": "Iowa turnout rows come from official county detail XML reports with precinct totalVoters and ballotsCast fields.",
     "warningRequired": false,
     "expected": {
-      "rowCount": 99,
-      "ballotsCast": 1674011,
-      "registeredVoters": 2256774
+      "rowCount": 1651
     }
   },
   "expected": {
     "jurisdictions": 99,
     "resultRows": 99,
-    "sources": 3,
+    "sources": 4,
     "geometryFeatures": 99,
     "stateTotal": 1663506,
     "trump": 927019,
     "harris": 707278,
     "other": 29209,
-    "reviewRows": 99,
-    "turnoutRows": 99
+    "reviewRows": 1653,
+    "turnoutRows": 1651
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -74,19 +83,18 @@
     "historicalBaseline": false
   },
   "certifiedResults": {
-    "format": "iowaClarityJson",
-    "sourceId": "ia-2024-official-clarity-results",
-    "summaryFile": "sum.json",
-    "presidentContestKey": "1000",
-    "comparisonContestRegex": "United States Representative District",
+    "format": "iowaClarityCountyDetailXmlDirectory",
+    "sourceId": "ia-2024-county-detailxml-reports",
+    "presidentContestRegex": "^President and Vice President$",
+    "comparisonContestRegex": "^United States Representative District",
     "comparisonContestLabel": "United States Representative",
     "comparisonCoverageMode": "presidentVsUSHouse"
   },
   "reviewCharts": {
-    "format": "iowaClarityJsonCountyComparison",
-    "sourceId": "ia-2024-official-clarity-results",
+    "format": "iowaClarityCountyDetailXmlDirectory",
+    "sourceId": "ia-2024-county-detailxml-reports",
     "comparisonContest": "United States Representative",
     "coverageMode": "presidentVsUSHouse",
-    "warning": "Iowa review rows are county-level President-versus-U.S. House comparisons from the official statewide result JSON package. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+    "warning": "Iowa review rows are precinct-level President-versus-U.S. House comparisons from official Secretary of State county detail XML report ZIPs. U.S. House is district-based; treat these as advisory review inputs, not confirmed findings."
   }
 }

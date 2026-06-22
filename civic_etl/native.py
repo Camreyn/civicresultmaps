@@ -1421,7 +1421,7 @@ def _wv_clarity_county_detailxml_rows(config: EtlConfig, sources: dict[str, Sour
         "nativeTurnoutRows": len(turnout_rows),
         "nativeTurnoutBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
         "nativeTurnoutRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
-        "nativeWestVirginiaMissingComparisonCounties": missing_comparison_counties,
+        "nativeMissingComparisonCounties": missing_comparison_counties,
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])), sorted(turnout_rows, key=lambda item: (item["county"], item["localUnit"])), metrics
 
@@ -3339,6 +3339,17 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeIndianaEnrCountyJson",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+    if config.code == "IA" and config.raw.get("certifiedResults", {}).get("format") == "iowaClarityCountyDetailXmlDirectory":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _wv_clarity_county_detailxml_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeIowaClarityCountyDetailXmlDirectory",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
