@@ -1,10 +1,9 @@
 {
   "code": "KY",
   "name": "Kentucky",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Kentucky State Board of Elections",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ky-2024-eac-turnout",
@@ -15,6 +14,50 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "ky-2024-general-recap-sheets-page",
+      "category": "Official 2024 general election county recap sheet index",
+      "url": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+      "localFile": "data/ky-2024-general-recap-sheets.html",
+      "parser": "officialRecapIndexHtml",
+      "authority": "Kentucky State Board of Elections",
+      "timestampBasis": "Kentucky State Board of Elections 2024 General Recap Sheets page listing county official recap PDFs.",
+      "confidence": "Official state-hosted index page for county recap PDFs used to collect the committed source artifact set.",
+      "status": "loaded"
+    },
+    {
+      "id": "ky-2024-general-recap-pdfs",
+      "category": "Official 2024 general election county recap PDFs",
+      "url": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+      "localFile": "data/ky-2024-general-recap-sheets",
+      "parser": "officialCountyRecapPdfDirectory",
+      "authority": "Kentucky State Board of Elections",
+      "timestampBasis": "Official county recap PDFs from the Kentucky State Board of Elections 2024 General Recap Sheets page.",
+      "confidence": "Official county recap PDFs retained as source artifacts. Most are text-extractable precinct result reports; Elliott County requires OCR/manual extraction before it can be parsed from this environment.",
+      "status": "loaded"
+    },
+    {
+      "id": "ky-2024-general-recap-text",
+      "category": "Derived text extraction from official county recap PDFs",
+      "url": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+      "localFile": "data/ky-2024-general-recap-text",
+      "parser": "kentuckyGeneralRecapTextDirectory",
+      "authority": "Kentucky State Board of Elections",
+      "timestampBasis": "Text extracted from the committed official Kentucky county recap PDFs with scripts/extract-ky-recap-pdf-text.mjs.",
+      "confidence": "Deterministic text extraction used because the Python ETL has no PDF parser dependency. Official PDFs remain committed beside the derived text.",
+      "status": "loaded"
+    },
+    {
+      "id": "ky-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2721%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ky-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Kentucky county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +77,34 @@
   },
   "expected": {
     "jurisdictions": 120,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 119,
+    "sources": 5,
+    "stateTotal": 2033200,
+    "trump": 1313188,
+    "harris": 690489,
+    "other": 29523,
+    "reviewRows": 3060,
     "turnoutRows": 120
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "kentuckyGeneralRecapTextDirectory",
+    "sourceId": "ky-2024-general-recap-text",
+    "pdfSourceId": "ky-2024-general-recap-pdfs",
+    "comparisonContest": "United States Representative",
+    "missingCountyCaveat": "Elliott County official PDF is image-only in current extraction and needs OCR/manual extraction before Kentucky reaches all 120 counties."
+  },
+  "reviewCharts": {
+    "format": "kentuckyGeneralRecapTextDirectory",
+    "sourceId": "ky-2024-general-recap-text",
+    "comparisonContest": "United States Representative",
+    "warning": "Kentucky review rows are precinct-level President-versus-U.S. House comparisons extracted from official county recap PDFs. U.S. House is district-based and some counties have uncontested or county-only rows; Elliott County still needs OCR/manual extraction."
   }
 }

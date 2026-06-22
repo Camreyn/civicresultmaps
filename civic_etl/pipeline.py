@@ -25,11 +25,38 @@ def artifact_metadata(local_file: str) -> dict[str, Any]:
     artifacts = []
     for raw_path in paths:
         path = Path(raw_path)
-        if not path.exists() or not path.is_file():
+        if not path.exists():
             artifacts.append({"localArtifact": raw_path, "exists": False})
             continue
 
         digest = hashlib.sha256()
+        if path.is_dir():
+            file_count = 0
+            byte_size = 0
+            for child in sorted(item for item in path.rglob("*") if item.is_file()):
+                relative = child.relative_to(path).as_posix().encode("utf-8")
+                digest.update(relative)
+                with child.open("rb") as handle:
+                    for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                        digest.update(chunk)
+                file_count += 1
+                byte_size += child.stat().st_size
+            artifacts.append(
+                {
+                    "localArtifact": raw_path,
+                    "exists": True,
+                    "directory": True,
+                    "fileCount": file_count,
+                    "byteSize": byte_size,
+                    "sha256": digest.hexdigest(),
+                }
+            )
+            continue
+
+        if not path.is_file():
+            artifacts.append({"localArtifact": raw_path, "exists": False})
+            continue
+
         with path.open("rb") as handle:
             for chunk in iter(lambda: handle.read(1024 * 1024), b""):
                 digest.update(chunk)

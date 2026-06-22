@@ -63,7 +63,9 @@
     "validate:equipment-production": "node scripts/validate-production-equipment.mjs",
     "validate:map-geometry": "node scripts/validate-map-geometry-coverage.mjs",
     "validate:maps": "npm run validate:map-geometry && node scripts/validate-production-map-joins.mjs",
-    "validate:provenance": "node scripts/validate-production-provenance.mjs"
+    "validate:provenance": "node scripts/validate-production-provenance.mjs",
+    "etl:prepare:ky": "node scripts/extract-ky-recap-pdf-text.mjs",
+    "etl:import:ky": "npm run etl:prepare:ky && python -m civic_etl.cli import --config etl/state-configs/ky.json --out .etl/staging"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

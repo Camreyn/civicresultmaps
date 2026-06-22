@@ -2756,6 +2756,308 @@ def _montana_precinct_xlsx_rows(config: EtlConfig, sources: dict[str, SourceConf
         **turnout_metrics,
     }
     return result_rows, review_rows, turnout_rows, metrics
+KY_RECAP_PARTIES = {"REP", "DEM", "LIB", "KY", "KEN", "IND"}
+
+
+def _ky_clean_local(line: str) -> str:
+    value = re.sub(r"\s+\d[\d,]*\s+ballots cast$", "", line.strip(), flags=re.IGNORECASE)
+    value = re.sub(
+        r"\s+\d[\d,]*\s+of\s+[\d,]+\s+registered voters\s*=\s+[\d.]+%$",
+        "",
+        value,
+        flags=re.IGNORECASE,
+    )
+    return value.strip()
+
+
+def _ky_plausible_local(line: str) -> bool:
+    if not line:
+        return False
+    first = line.split()[0]
+    if first in KY_RECAP_PARTIES:
+        return False
+    if re.search(
+        r"Results|Election|Report|Official|Statistics|Registered|Ballots|Turnout|Straight|Vote For|TOTAL|President|Representative|Page|Run ",
+        line,
+        re.IGNORECASE,
+    ):
+        return False
+    return bool(re.match(r"^[A-Z]\d{3}\b", line) or re.match(r"^[A-Z]\d{3}[- ]", line))
+
+
+def _ky_chunk_local(lines: list[str]) -> tuple[str, bool]:
+    if lines:
+        first = _ky_clean_local(lines[0])
+        if _ky_plausible_local(first):
+            return first, True
+
+    for index, line in enumerate(lines):
+        if re.fullmatch(r".+ County(?:,\s*KY)?", line):
+            for candidate in lines[index + 1 : index + 8]:
+                value = _ky_clean_local(candidate)
+                if _ky_plausible_local(value):
+                    return value, True
+
+    return "__cumulative__", False
+
+
+def _ky_int_tokens(value: str) -> list[int]:
+    tokens: list[int] = []
+    for token in value.split():
+        if token.endswith("%"):
+            continue
+        cleaned = re.sub(r"[^\d-]", "", token)
+        if cleaned not in {"", "-"}:
+            tokens.append(int(cleaned))
+    return tokens
+
+
+def _ky_numeric_token(value: str) -> bool:
+    return bool(re.fullmatch(r"-?[\d,]+(?:\.\d+%?)?", value))
+
+
+def _ky_parse_candidate_row(line: str) -> tuple[str, str, int] | None:
+    parts = line.split()
+    if parts and parts[0] in KY_RECAP_PARTIES:
+        party = parts[0]
+        if len(parts) > 1 and _ky_numeric_token(parts[1]):
+            totals = _ky_int_tokens(" ".join(parts[1:]))
+            return party, "", totals[-1] if totals else 0
+        for index, token in enumerate(parts[1:], start=1):
+            if re.fullmatch(r"-?[\d,]+", token):
+                return party, " ".join(parts[1:index]), int_text(token)
+
+    match = re.search(r"\b(REP|DEM|LIB|KY|KEN|IND)\b\s+(.+)$", line)
+    if not match:
+        return None
+    totals = _ky_int_tokens(match.group(2))
+    return match.group(1), line[: match.start()].strip(), totals[-1] if totals else 0
+
+
+def _ky_apply_row(target: dict[str, int], contest: str, party: str, candidate: str, total: int) -> None:
+    normalized = candidate.upper()
+    if contest == "president":
+        if "TRUMP" in normalized or party == "REP":
+            target["pres_trump"] += total
+            target["pres_total"] += total
+        elif "HARRIS" in normalized or party == "DEM":
+            target["pres_harris"] += total
+            target["pres_total"] += total
+        else:
+            target["pres_other"] += total
+            target["pres_total"] += total
+        return
+
+    if contest == "house":
+        if party == "REP":
+            target["house_rep"] += total
+            target["house_total"] += total
+        elif party == "DEM":
+            target["house_dem"] += total
+            target["house_total"] += total
+        elif total:
+            target["house_other"] += total
+            target["house_total"] += total
+
+
+def _kentucky_empty_values() -> dict[str, int]:
+    return {
+        "house_dem": 0,
+        "house_other": 0,
+        "house_rep": 0,
+        "house_total": 0,
+        "pres_harris": 0,
+        "pres_other": 0,
+        "pres_total": 0,
+        "pres_trump": 0,
+    }
+
+
+def _kentucky_general_recap_text_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    source_path = _artifact_path(source)
+    text_files = sorted(source_path.glob("*.txt")) if source_path.is_dir() else [source_path]
+    if not text_files:
+        raise ValueError("Kentucky general recap text source has no text files")
+
+    counties: dict[str, dict[str, int]] = {}
+    precincts: dict[tuple[str, str], dict[str, int]] = {}
+    missing_counties: list[str] = []
+    county_only_counties: list[str] = []
+
+    for path in text_files:
+        county = f"{path.stem} County"
+        county_precincts: dict[str, dict[str, int]] = {}
+        county_cumulative = _kentucky_empty_values()
+        found_precinct = False
+        text = path.read_text(encoding="utf-8", errors="replace")
+        chunks = re.split(r"\n-- \d+ of \d+ --\n", text)
+
+        for chunk in chunks:
+            lines = [line.strip() for line in chunk.splitlines() if line.strip() and not line.startswith("#")]
+            if not lines:
+                continue
+            for line in lines:
+                ballot_match = re.search(r"OFFICIAL BALLOT FOR (.+?) COUNTY", line, re.IGNORECASE)
+                if ballot_match:
+                    county = _county_name(ballot_match.group(1))
+                elif re.fullmatch(r"[A-Za-z .'\-]+ County(?:,\s*KY)?", line):
+                    candidate_county = _county_name(line.replace(", KY", ""))
+                    if candidate_county.upper().replace(" COUNTY", "") == path.stem.upper().replace(" COUNTY", ""):
+                        county = candidate_county
+
+            local_unit, is_precinct = _ky_chunk_local(lines)
+            if is_precinct:
+                found_precinct = True
+            target = county_precincts.setdefault(local_unit, _kentucky_empty_values()) if is_precinct else county_cumulative
+            contest = ""
+            candidate_lines: list[str] = []
+            index = 0
+            while index < len(lines):
+                line = lines[index]
+                lower = line.lower()
+                if "president and vice president" in lower:
+                    contest = "president"
+                    candidate_lines = []
+                    index += 1
+                    continue
+                if "united states representative" in lower or lower.startswith("u.s. representative"):
+                    contest = "house"
+                    candidate_lines = []
+                    index += 1
+                    continue
+                if contest and lower.startswith((
+                    "total votes cast",
+                    "cast votes:",
+                    "contest totals",
+                    "undervotes:",
+                    "overvotes:",
+                    "choice party",
+                    "vote for",
+                    "total election",
+                    "total",
+                )):
+                    if lower.startswith(("total votes cast", "cast votes:", "contest totals")):
+                        contest = ""
+                    candidate_lines = []
+                    index += 1
+                    continue
+
+                if contest:
+                    parsed = _ky_parse_candidate_row(line)
+                    if parsed is None and line in KY_RECAP_PARTIES:
+                        lookahead: list[str] = []
+                        cursor = index + 1
+                        while cursor < len(lines) and len(lookahead) < 16:
+                            next_line = lines[cursor]
+                            next_lower = next_line.lower()
+                            if next_line in KY_RECAP_PARTIES or next_lower.startswith(("total votes cast", "cast votes:", "contest totals", "undervotes:", "overvotes:")):
+                                break
+                            lookahead.append(next_line)
+                            cursor += 1
+                        totals = _ky_int_tokens(" ".join(lookahead))
+                        parsed = (line, "", totals[-1] if totals else 0)
+                        index = max(index, cursor - 1)
+
+                    if parsed:
+                        party, row_candidate, total = parsed
+                        candidate = " ".join(candidate_lines + [row_candidate])
+                        _ky_apply_row(target, contest, party, candidate, total)
+                        candidate_lines = []
+                    elif not line.startswith(("Write-In", "Not Assigned", "Report generated", "Precinct Summary")):
+                        candidate_lines.append(line)
+                index += 1
+
+        if found_precinct:
+            for local_unit, values in county_precincts.items():
+                if values["pres_total"]:
+                    bucket = counties.setdefault(county, _kentucky_empty_values())
+                    for key, value in values.items():
+                        bucket[key] += value
+                    precincts[(county, local_unit)] = values
+        else:
+            if county_cumulative["pres_total"]:
+                counties[county] = county_cumulative
+                county_only_counties.append(county)
+
+        county_values = counties.get(county)
+        if not county_values or not county_values["pres_total"]:
+            missing_counties.append(county)
+
+    result_rows = [
+        {
+            "jurisdictionName": county,
+            "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+            "level": "county",
+            "votes": {
+                "Trump": values["pres_trump"],
+                "Harris": values["pres_harris"],
+                "Other": values["pres_other"],
+            },
+            "totalVotes": values["pres_total"],
+            "margin": values["pres_trump"] - values["pres_harris"],
+            "marginPct": pct(values["pres_trump"] - values["pres_harris"], values["pres_total"]),
+            "sourceId": source.id,
+        }
+        for county, values in sorted(counties.items())
+        if values["pres_total"]
+    ]
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    for (county, local_unit), values in sorted(precincts.items()):
+        total = values["pres_total"]
+        if not total:
+            continue
+        has_house = bool(values["house_total"])
+        if has_house:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": local_unit,
+                "totalVotes": total,
+                "harris": values["pres_harris"],
+                "trump": values["pres_trump"],
+                "harrisShare": pct(values["pres_harris"], total),
+                "trumpShare": pct(values["pres_trump"], total),
+                "demDropoff": pct(values["pres_harris"] - values["house_dem"], total) if has_house else 0,
+                "repDropoff": pct(values["pres_trump"] - values["house_rep"], total) if has_house else 0,
+                "coverageMode": "presidentVsHouse" if has_house else "voteShareOnly",
+                "comparisonContest": section.get("comparisonContest", "United States Representative"),
+                "comparisonDemVotes": values["house_dem"],
+                "comparisonRepVotes": values["house_rep"],
+                "comparisonOtherVotes": values["house_other"],
+                "sourceId": source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    result_total = sum(row["totalVotes"] for row in result_rows)
+    trump = sum(row["votes"]["Trump"] for row in result_rows)
+    harris = sum(row["votes"]["Harris"] for row in result_rows)
+    other = sum(row["votes"]["Other"] for row in result_rows)
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": result_total,
+        "nativeTrumpVotes": trump,
+        "nativeHarrisVotes": harris,
+        "nativeOtherVotes": other,
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": section.get("comparisonContest", "United States Representative"),
+        "nativeKentuckyMissingCountyTextRows": sorted(set(missing_counties)),
+        "nativeKentuckyCountyOnlyRows": sorted(set(county_only_counties)),
+        **turnout_metrics,
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
 def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     checks = {
         "nativeResultRows": config.expected.result_rows,
@@ -2874,6 +3176,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
             "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "KY" and config.raw.get("certifiedResults", {}).get("format") == "kentuckyGeneralRecapTextDirectory":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _kentucky_general_recap_text_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeKentuckyGeneralRecapTextDirectory",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
             "metrics": metrics,
         }
 
