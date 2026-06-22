@@ -47,9 +47,9 @@ function toIsoTimestamp(value: Date | string | null) {
 
 function completenessStatus(input: {
   capabilities: CapabilitySummary;
-  indicatorCount: number;
   mapGeometrySourceCount: number;
   resultRows: number;
+  reviewRowCount: number;
   sourceCount: number;
   sourcesMissingUrls: number;
 }): CompletenessSummary["status"] {
@@ -69,7 +69,7 @@ function completenessStatus(input: {
     return "results_only";
   }
 
-  if (input.indicatorCount === 0 || !input.capabilities.reviewGraphs) {
+  if (input.reviewRowCount === 0 || !input.capabilities.reviewGraphs) {
     return "review_ready";
   }
 
@@ -78,9 +78,9 @@ function completenessStatus(input: {
 
 function completenessGaps(input: {
   capabilities: CapabilitySummary;
-  indicatorCount: number;
   mapGeometrySourceCount: number;
   resultRows: number;
+  reviewRowCount: number;
   sourceCount: number;
   sourcesMissingUrls: number;
 }) {
@@ -104,8 +104,8 @@ function completenessGaps(input: {
     gaps.push("Map geometry source missing");
   }
 
-  if (input.indicatorCount === 0 || !input.capabilities.reviewGraphs) {
-    gaps.push("Review indicators pending");
+  if (input.reviewRowCount === 0 || !input.capabilities.reviewGraphs) {
+    gaps.push("Review rows pending");
   }
 
   if (!input.capabilities.turnout) {
@@ -162,11 +162,12 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
     const nativeImportRuns = importRuns.filter((run) => run.parser.toLowerCase().includes("native"));
     const sourcesMissingUrls = sources.filter((source) => !source.sourceUrl.trim()).length;
     const indicatorCount = state.capabilities.reviewGraphs ? 1 : 0;
+    const reviewRowCount = state.capabilities.reviewGraphs ? results.length : 0;
     const status = completenessStatus({
       capabilities: state.capabilities,
-      indicatorCount,
       mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
       resultRows: results.length,
+      reviewRowCount,
       sourceCount: sources.length,
       sourcesMissingUrls,
     });
@@ -181,7 +182,7 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
       sourcesMissingUrls,
       indicatorCount,
-      reviewRowCount: 0,
+      reviewRowCount,
       turnoutRowCount: 0,
       historicalRowCount: 0,
       equipmentRowCount: 0,
@@ -203,9 +204,9 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       status,
       gaps: completenessGaps({
         capabilities: state.capabilities,
-        indicatorCount,
         mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
         resultRows: results.length,
+        reviewRowCount,
         sourceCount: sources.length,
         sourcesMissingUrls,
       }),
@@ -1141,13 +1142,14 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     const mapGeometrySourceCount = Number(row.mapGeometrySourceCount ?? 0);
     const sourcesMissingUrls = Number(row.sourcesMissingUrls ?? 0);
     const indicatorCount = Number(row.indicatorCount ?? 0);
+    const reviewRowCount = Number(row.reviewRowCount ?? 0);
     const nativeImportCount = Number(row.nativeImportCount ?? 0);
     const legacyImportCount = Number(row.legacyImportCount ?? 0);
     const status = completenessStatus({
       capabilities,
-      indicatorCount,
       mapGeometrySourceCount,
       resultRows,
+      reviewRowCount,
       sourceCount,
       sourcesMissingUrls,
     });
@@ -1162,7 +1164,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       mapGeometrySourceCount,
       sourcesMissingUrls,
       indicatorCount,
-      reviewRowCount: Number(row.reviewRowCount ?? 0),
+      reviewRowCount,
       turnoutRowCount: Number(row.turnoutRowCount ?? 0),
       historicalRowCount: Number(row.historicalRowCount ?? 0),
       equipmentRowCount: Number(row.equipmentRowCount ?? 0),
@@ -1184,9 +1186,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       status,
       gaps: completenessGaps({
         capabilities,
-        indicatorCount,
         mapGeometrySourceCount,
         resultRows,
+        reviewRowCount,
         sourceCount,
         sourcesMissingUrls,
       }),

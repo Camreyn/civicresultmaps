@@ -1,10 +1,12 @@
 {
-  "checkedAt": "2026-06-15",
+  "checkedAt": "2026-06-21",
   "purpose": "Native importer handoff package for the next states after Ohio and Wisconsin.",
   "notes": [
     "These packages point to official source artifacts already present in this repository.",
     "Generated *-app-data.js bundles are listed only as reference outputs; native ETL should parse the official artifacts directly.",
-    "County geometry is available for these three states. Precinct/ward boundary geometry is not included in this package."
+    "County geometry is available for these three states. Precinct/ward boundary geometry is not included in this package.",
+    "The sourceDiscoveryQueue tracks states where official local reporting-unit artifacts still need collection before native advisory flags can be calculated under the current methodology.",
+    "County-only presidential/result tables are not sufficient for comparable advisory flag generation; each review-capable state needs President plus a same-row comparison contest at precinct, ward, town, or equivalent local reporting-unit level."
   ],
   "completedNativeStates": [
     "AZ",
@@ -268,6 +270,221 @@
         "Precinct boundary GeoJSON is not present in this package.",
         "Turnout rows use EAC 2024 V2 jurisdiction fallback data until an equal-or-finer Washington state source is collected."
       ]
+    }
+  ],
+  "sourceDiscoveryQueue": [
+    {
+      "state": "IN",
+      "name": "Indiana",
+      "priority": 1,
+      "currentStatus": "official_county_review_package_collected",
+      "officialSourcePages": [
+        "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
+        "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json"
+      ],
+      "requiredArtifacts": [
+        "official precinct-level or county-subdivision result rows for President",
+        "official precinct-level or county-subdivision result rows for U.S. Senate"
+      ],
+      "preferredComparisonContest": "U.S. Senate; current archived official ENR package supports county-level President-vs-U.S.-Senate comparison rows.",
+      "parserNeeded": "indianaEnrCountyJson package loaded; precinct/subcounty parser still needed if a lower-level package is found",
+      "blocker": "Archived official Indiana 2024 ENR JSON package is collected and parsed at county level. Remaining blocker for precinct-level flags is a precinct/subcounty export; these ENR category files have 92 county RegionSummary rows, not precinct rows."
+    },
+    {
+      "state": "IA",
+      "name": "Iowa",
+      "priority": 2,
+      "currentStatus": "official_county_review_package_collected",
+      "officialSourcePages": [
+        "https://electionresults.iowa.gov/IA/122322/web.345435/",
+        "https://electionresults.iowa.gov/IA/122322/current_ver.txt"
+      ],
+      "requiredArtifacts": [
+        "official precinct-level or county-subdivision result rows for President",
+        "official precinct-level or county-subdivision result rows for U.S. House districts if statewide comparison contest is unavailable"
+      ],
+      "preferredComparisonContest": "U.S. House by district; current official statewide package supports county-level President-vs-U.S.-House comparison rows.",
+      "parserNeeded": "iowaClarityJsonCountyPackageLoaded; precinct/subcounty parser still needed if a lower-level package is found",
+      "blocker": "Official Iowa 2024 statewide Clarity JSON package is collected and parsed at county level. Remaining blocker for precinct-level flags is a precinct/subcounty export; the statewide package has 99 county detail rows, not precinct rows."
+    },
+    {
+      "state": "KY",
+      "name": "Kentucky",
+      "priority": 3,
+      "currentStatus": "official_site_bot_gate",
+      "officialSourcePages": [
+        "https://elect.ky.gov/results/Pages/default.aspx",
+        "https://vrsws.sos.ky.gov/liveresults/"
+      ],
+      "requiredArtifacts": [
+        "official precinct results for President",
+        "official precinct results for U.S. House districts if statewide comparison contest is unavailable"
+      ],
+      "preferredComparisonContest": "U.S. House by district; otherwise vote-share-only if no same-row comparison contest is available",
+      "parserNeeded": "kentuckyElectionNightReportingLocalExport after acceptable-use/bot gate access is resolved",
+      "blocker": "Kentucky State Board of Elections live results endpoint returns an Acceptable Use Policy bot/scraping block from this environment."
+    },
+    {
+      "state": "MS",
+      "name": "Mississippi",
+      "priority": 4,
+      "currentStatus": "official_links_found_download_blocked",
+      "officialSourcePages": [
+        "https://www.sos.ms.gov/elections-voting/election-results/2024/2024-general-election-results",
+        "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_general.aspx",
+        "https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv",
+        "https://www.sos.ms.gov/elections/electionresults/2024%20Official%20Statewide%20Results.pdf",
+        "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_county.aspx"
+      ],
+      "requiredArtifacts": [
+        "official Statewide Recapitulation Report CSV",
+        "official Statewide Recapitulation Report PDF",
+        "county recapitulation PDFs if precinct-level review is pursued"
+      ],
+      "preferredComparisonContest": "U.S. Senate",
+      "parserNeeded": "mississippiElectionRecapCsv once the official CSV can be downloaded into data/",
+      "blocker": "Official SOS iframe exposes CSV/PDF and county PDF links, but direct downloads from this environment return Access Denied or are blocked by the browser client. Need manual download or approved alternate access to persist the official artifacts."
+    },
+    {
+      "state": "MO",
+      "name": "Missouri",
+      "priority": 5,
+      "currentStatus": "official_county_review_package_collected",
+      "officialSourcePages": [
+        "https://www.sos.mo.gov/elections/results",
+        "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf",
+        "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf"
+      ],
+      "requiredArtifacts": [
+        "official purchasable precinct-level data file if subcounty advisory flags are required",
+        "state-native turnout denominator artifact if replacing EAC turnout fallback"
+      ],
+      "preferredComparisonContest": "U.S. Senate",
+      "parserNeeded": "countyPresidentCsv loaded for Missouri official county/reporting-jurisdiction package; precinct data must be purchased from Missouri SOS for subcounty rows",
+      "blocker": "Missouri now has official county/reporting-jurisdiction President-versus-U.S. Senate review rows from the Secretary of State results-by-county PDF. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained."
+    },
+    {
+      "state": "MT",
+      "name": "Montana",
+      "priority": 6,
+      "currentStatus": "official_precinct_review_package_collected",
+      "officialSourcePages": [
+        "https://sosmt.gov/elections/results/",
+        "https://electionresults.mt.gov/ResultsList.aspx?eid=450002785",
+        "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
+        "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass"
+      ],
+      "requiredArtifacts": [
+        "official precinct boundary geometry if map overlays below county level are required",
+        "state-native county or precinct turnout denominator artifact if replacing EAC turnout fallback"
+      ],
+      "preferredComparisonContest": "U.S. Senate",
+      "parserNeeded": "montanaPrecinctResultsXlsx loaded for official precinct President-versus-U.S. Senate review rows",
+      "blocker": "Montana now has official precinct-level President-versus-U.S. Senate review rows from the Secretary of State 2024 general precinct workbook. Precinct boundary geometry is not included, and turnout still uses EAC county fallback rows."
+    },
+    {
+      "state": "NE",
+      "name": "Nebraska",
+      "priority": 7,
+      "currentStatus": "official_county_review_package_collected",
+      "officialSourcePages": [
+        "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf"
+      ],
+      "requiredArtifacts": [
+        "official precinct-level or local reporting-unit result rows for President",
+        "official precinct-level or local reporting-unit result rows for U.S. Senate"
+      ],
+      "preferredComparisonContest": "U.S. Senate",
+      "parserNeeded": "countyPresidentCsv loaded for Nebraska official canvass county package; precinct/subcounty parser still needed if a lower-level package is found",
+      "blocker": "Nebraska now has official county-level President-versus-U.S. Senate two-year review rows from the 2024 General Canvass Book. Collect precinct or subcounty rows before comparable advisory flags are calculated below county level."
+    },
+    {
+      "state": "NV",
+      "name": "Nevada",
+      "priority": 8,
+      "currentStatus": "native_county_review_only",
+      "officialSourcePages": [
+        "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx"
+      ],
+      "requiredArtifacts": [
+        "official precinct or local reporting-unit results for President",
+        "same-row U.S. Senate local results"
+      ],
+      "preferredComparisonContest": "U.S. Senate",
+      "parserNeeded": "nevadaLocalResultsExport",
+      "blocker": "Native Nevada currently has county-level President-versus-Senate review rows; collect local rows before comparable advisory flags are calculated."
+    },
+    {
+      "state": "NH",
+      "name": "New Hampshire",
+      "priority": 9,
+      "currentStatus": "official_site_access_denied",
+      "officialSourcePages": [
+        "https://www.sos.nh.gov/elections/elections/election-results"
+      ],
+      "requiredArtifacts": [
+        "official town/ward results for President",
+        "same-row Governor local results"
+      ],
+      "preferredComparisonContest": "Governor",
+      "parserNeeded": "newHampshireTownWardResults after official 2024 general result document can be accessed",
+      "blocker": "Official Secretary of State election results page returns Forbidden/Access denied from this environment, and likely document path probes also return 403."
+    },
+    {
+      "state": "NY",
+      "name": "New York",
+      "priority": 10,
+      "currentStatus": "official_county_review_package_collected",
+      "officialSourcePages": [
+        "https://elections.ny.gov/election-results",
+        "https://results.elections.ny.gov/",
+        "https://results.elections.ny.gov/document/476",
+        "https://results.elections.ny.gov/contest/5591",
+        "https://ny.elstats-staging.com/eng/files/serve/476"
+      ],
+      "requiredArtifacts": [
+        "official archive PDF document 476 for 2024-11-05 Presidential General results",
+        "normalized county President CSV extracted from official PDF",
+        "normalized county U.S. Senate CSV extracted from official PDF",
+        "county geometry for map joins"
+      ],
+      "preferredComparisonContest": "U.S. Senate",
+      "parserNeeded": "countyPresidentCsv loaded for New York official county package; precinct/subcounty parser still needed if a lower-level package is found",
+      "blocker": "County-level President-versus-U.S. Senate review package is loaded from the NYSBOE official archive PDF; not precinct-level."
+    },
+    {
+      "state": "TX",
+      "name": "Texas",
+      "priority": 11,
+      "currentStatus": "official_county_review_package_collected",
+      "officialSourcePages": [
+        "https://results.texas-election.com/",
+        "https://results.texas-election.com/static/data/election/49664/1012/County.json"
+      ],
+      "requiredArtifacts": [
+        "official precinct-level or county-subdivision result rows for President",
+        "official precinct-level or county-subdivision result rows for U.S. Senate"
+      ],
+      "preferredComparisonContest": "U.S. Senate; current official County.json package supports county-level President-vs-U.S.-Senate comparison rows.",
+      "parserNeeded": "texasCountyJson package loaded; precinct/subcounty parser still needed if a lower-level package is found",
+      "blocker": "Official Texas 2024 Secretary of State County.json package is collected and parsed at county level. Remaining blocker for precinct-level flags is a precinct/subcounty export; this package has 254 county race rows, not precinct rows."
+    },
+    {
+      "state": "WV",
+      "name": "West Virginia",
+      "priority": 12,
+      "currentStatus": "official_county_review_package_collected",
+      "officialSourcePages": [
+        "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+        "https://results.enr.clarityelections.com/WV/122766/current_ver.txt"
+      ],
+      "requiredArtifacts": [
+        "official precinct-level or county-subdivision result rows for President",
+        "official precinct-level or county-subdivision result rows for U.S. Senate or Governor"
+      ],
+      "preferredComparisonContest": "U.S. Senate; current official statewide package supports county-level President-vs-U.S.-Senate comparison rows.",
+      "parserNeeded": "clarityCountyJson package loaded; precinct/subcounty parser still needed if a lower-level package is found",
+      "blocker": "Official West Virginia 2024 statewide Clarity JSON package is collected and parsed at county level. Remaining blocker for precinct-level flags is a precinct/subcounty export; the statewide package has 55 county detail rows, not precinct rows."
     }
   ]
 }

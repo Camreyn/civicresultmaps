@@ -118,6 +118,62 @@ function compareRows(a: ResultRow, b: ResultRow, sortKey: SortKey) {
   return a.jurisdictionName.localeCompare(b.jurisdictionName);
 }
 
+function metricNumber(metrics: Record<string, unknown>, key: string) {
+  const value = metrics[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
+  if (!indicators.length) {
+    return { label: "-", title: "No advisory indicators are loaded for this jurisdiction." };
+  }
+
+  let harrisSignals = 0;
+  let trumpSignals = 0;
+  const evidence: string[] = [];
+
+  for (const indicator of indicators) {
+    const demAverageDropoff = metricNumber(indicator.metrics, "demAverageDropoff");
+    const repAverageDropoff = metricNumber(indicator.metrics, "repAverageDropoff");
+    if (indicator.type.includes("down_ballot")) {
+      if (demAverageDropoff !== null && demAverageDropoff !== 0) {
+        const points = Math.abs(demAverageDropoff);
+        if (demAverageDropoff > 0) {
+          harrisSignals += points;
+        } else {
+          trumpSignals += points;
+        }
+        evidence.push(`DEM down-ballot gap ${demAverageDropoff.toFixed(2)} points`);
+      }
+
+      if (repAverageDropoff !== null && repAverageDropoff !== 0) {
+        const points = Math.abs(repAverageDropoff);
+        if (repAverageDropoff > 0) {
+          trumpSignals += points;
+        } else {
+          harrisSignals += points;
+        }
+        evidence.push(`REP down-ballot gap ${repAverageDropoff.toFixed(2)} points`);
+      }
+    }
+  }
+
+  if (harrisSignals === 0 && trumpSignals === 0) {
+    return { label: "Unclear", title: "The loaded advisory metrics do not support a directional benefit inference." };
+  }
+
+  const title = `Directional inference only, not proof. ${evidence.slice(0, 3).join("; ")}.`;
+
+  if (harrisSignals > trumpSignals * 1.2) {
+    return { label: "Harris / DEM", title };
+  }
+
+  if (trumpSignals > harrisSignals * 1.2) {
+    return { label: "Trump / REP", title };
+  }
+
+  return { label: "Mixed", title };
+}
 function flattenPositions(coordinates: unknown): number[][] {
   if (!Array.isArray(coordinates)) {
     return [];
@@ -643,7 +699,8 @@ export function ResultsExplorer({
     const normalizedQuery = query.trim().toLowerCase();
     return results
       .filter((row) => {
-        if (showFlaggedOnly && !(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).length) {
+        const rowIndicators = indicatorsByJurisdiction.get(row.jurisdictionCode) ?? indicatorsByName.get(normalizeName(row.jurisdictionName)) ?? [];
+        if (showFlaggedOnly && !rowIndicators.length) {
           return false;
         }
 
@@ -658,7 +715,7 @@ export function ResultsExplorer({
         );
       })
       .sort((a, b) => compareRows(a, b, sortKey));
-  }, [indicatorsByJurisdiction, query, results, showFlaggedOnly, sortKey]);
+  }, [indicatorsByJurisdiction, indicatorsByName, query, results, showFlaggedOnly, sortKey]);
 
   const hasMapJoinWarnings =
     features.length > 0 &&
@@ -1296,6 +1353,7 @@ export function ResultsExplorer({
               <tr>
                   <th>Jurisdiction</th>
                   <th>Flags</th>
+                  <th>Possible benefit</th>
                   <th>Winner</th>
                 <th>Harris</th>
                 <th>Trump</th>
@@ -1310,6 +1368,8 @@ export function ResultsExplorer({
                 const isPinnedRow = pinnedMapName && normalizeName(row.jurisdictionName) === normalizeName(pinnedMapName);
                 const isPreviewRow =
                   !isPinnedRow && selectedMapName && normalizeName(row.jurisdictionName) === normalizeName(selectedMapName);
+                const rowIndicators = indicatorsByJurisdiction.get(row.jurisdictionCode) ?? indicatorsByName.get(normalizeName(row.jurisdictionName)) ?? [];
+                const benefit = possibleFlagBenefit(rowIndicators);
                 const rowClassName = [
                   "clickable-row",
                   isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : null,
@@ -1347,9 +1407,9 @@ export function ResultsExplorer({
                 >
                   <td>{row.jurisdictionName}</td>
                   <td>
-                    {(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).length > 0 ? (
+                    {rowIndicators.length > 0 ? (
                       <div className="indicator-stack">
-                        {(indicatorsByJurisdiction.get(row.jurisdictionCode) ?? []).map((indicator) => (
+                        {rowIndicators.map((indicator) => (
                           <span className="indicator-pill" key={indicator.id} title={indicator.detail}>
                             ! {indicator.label}
                           </span>
@@ -1359,6 +1419,7 @@ export function ResultsExplorer({
                       <span className="no-indicator">-</span>
                     )}
                   </td>
+                  <td className="benefit-cell" title={benefit.title}>{benefit.label}</td>
                   <td className={row.winner === "Harris" ? "winner-harris" : "winner-trump"}>
                     {row.winner}
                   </td>

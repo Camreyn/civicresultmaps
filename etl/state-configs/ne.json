@@ -1,10 +1,9 @@
 {
   "code": "NE",
   "name": "Nebraska",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Nebraska Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ne-2024-eac-turnout",
@@ -16,8 +15,69 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "ne-2024-general-canvass-book",
+      "category": "Official 2024 General Canvass Book PDF",
+      "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+      "localFile": "data/ne-2024-general-canvass-book.pdf",
+      "parser": "officialCanvassPdf",
+      "authority": "Nebraska Secretary of State",
+      "timestampBasis": "Nebraska Secretary of State official 2024 General Canvass Book PDF for the November 5, 2024 general election.",
+      "confidence": "Official statewide canvass PDF retained as the source artifact for the normalized county CSV extracts.",
+      "status": "loaded"
+    },
+    {
+      "id": "ne-2024-general-canvass-president",
+      "category": "Official 2024 General Canvass Book county presidential results",
+      "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+      "localFile": "data/ne-2024-general-canvass-president.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "Nebraska Secretary of State",
+      "timestampBasis": "County presidential rows extracted from the Nebraska Secretary of State official 2024 General Canvass Book PDF, pages 11-12.",
+      "confidence": "Normalized county CSV extracted from official canvass PDF text and cross-checked against the statewide county totals in the canvass table.",
+      "status": "loaded"
+    },
+    {
+      "id": "ne-2024-general-canvass-senate-two-year",
+      "category": "Official 2024 General Canvass Book county U.S. Senate two-year results",
+      "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+      "localFile": "data/ne-2024-general-canvass-senate-two-year.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Nebraska Secretary of State",
+      "timestampBasis": "County U.S. Senate two-year special election rows extracted from the Nebraska Secretary of State official 2024 General Canvass Book PDF, page 17.",
+      "confidence": "Uses the two-year U.S. Senate race because both major-party nominees are present at county level, making it the appropriate same-party comparison contest for county review rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "ne-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2731%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ne-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Nebraska county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "ne-2024-general-canvass-president",
+    "otherColumns": [
+      "oliver",
+      "west",
+      "stein",
+      "write_in"
+    ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "ne-2024-general-canvass-senate-two-year",
+    "comparisonContest": "United States Senator (Two Year Term)",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Nebraska review rows are county-level President-versus-U.S. Senate two-year special election comparisons from the official 2024 General Canvass Book. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "ne-2024-eac-turnout",
@@ -34,20 +94,21 @@
   },
   "expected": {
     "jurisdictions": 93,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 93,
+    "sources": 5,
+    "geometryFeatures": 93,
+    "stateTotal": 952182,
+    "trump": 564816,
+    "harris": 369995,
+    "other": 17371,
+    "reviewRows": 93,
     "turnoutRows": 93
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

@@ -1,10 +1,9 @@
 {
   "code": "IN",
   "name": "Indiana",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Indiana Election Division",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "in-2024-eac-turnout",
@@ -15,6 +14,39 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "in-2024-official-enr-president",
+      "category": "Official archived 2024 general election county presidential JSON results",
+      "url": "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
+      "localFile": "data/in-2024-official-results/OffCatC_1019_A.json",
+      "parser": "indianaEnrCountyJson",
+      "authority": "Indiana Election Division",
+      "timestampBasis": "Internet Archive capture of official Indiana Election Division ENR JSON for November 5, 2024 General Election, captured December 29, 2024; ENR write time December 19, 2024.",
+      "confidence": "Archived official Indiana ENR county-level JSON package. The category files contain county RegionSummary rows, not precinct-level rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "in-2024-official-enr-senate",
+      "category": "Official archived 2024 general election county U.S. Senate JSON results",
+      "url": "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
+      "localFile": "data/in-2024-official-results/OffCatC_1006_A.json",
+      "parser": "indianaEnrCountyComparisonJson",
+      "authority": "Indiana Election Division",
+      "timestampBasis": "Internet Archive capture of official Indiana Election Division ENR JSON for November 5, 2024 General Election, captured December 29, 2024; ENR write time December 19, 2024.",
+      "confidence": "Archived official Indiana ENR county-level U.S. Senate JSON package for county-level comparison rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "in-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2718%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/in-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Indiana county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +66,37 @@
   },
   "expected": {
     "jurisdictions": 92,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 92,
+    "sources": 4,
+    "geometryFeatures": 92,
+    "stateTotal": 2936677,
+    "trump": 1720347,
+    "harris": 1163603,
+    "other": 52727,
+    "reviewRows": 92,
     "turnoutRows": 92
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "indianaEnrCountyJson",
+    "sourceId": "in-2024-official-enr-president",
+    "comparisonFile": "OffCatC_1006_A.json",
+    "comparisonContestLabel": "United States Senator",
+    "comparisonCoverageMode": "presidentVsSenate"
+  },
+  "reviewCharts": {
+    "format": "indianaEnrCountyJsonCountyComparison",
+    "sourceId": "in-2024-official-enr-president",
+    "comparisonSourceId": "in-2024-official-enr-senate",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Indiana review rows are county-level President-versus-U.S. Senate comparisons from archived official ENR county JSON. They are useful for county review, but they are not precinct-level vote-share scatter plots."
   }
 }

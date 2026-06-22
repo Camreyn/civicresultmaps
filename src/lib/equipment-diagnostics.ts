@@ -7,6 +7,7 @@ function uniqueJurisdictionKey(row: Pick<EquipmentRowSummary, "jurisdictionCode"
 export function equipmentClusterDiagnostics(input: {
   equipmentRows: EquipmentRowSummary[];
   indicators: AnalysisIndicator[];
+  reviewRowCount?: number;
 }): EquipmentClusterDiagnostic[] {
   if (!input.equipmentRows.length) {
     return [];
@@ -15,6 +16,7 @@ export function equipmentClusterDiagnostics(input: {
   const flagged = new Set(input.indicators.map((indicator) => indicator.jurisdictionCode));
   const allJurisdictions = new Set(input.equipmentRows.map(uniqueJurisdictionKey));
   const statewideFlagRate = allJurisdictions.size > 0 ? flagged.size / allJurisdictions.size : 0;
+  const hasReviewRows = (input.reviewRowCount ?? input.indicators.length) > 0;
   const minimumUsefulJurisdictions = 5;
   const controls = [
     "same selected state",
@@ -77,7 +79,9 @@ export function equipmentClusterDiagnostics(input: {
         status,
         summary:
           flagged.size === 0
-            ? "No advisory flags are currently loaded for this state, so this is a coverage summary rather than a cluster check."
+            ? hasReviewRows
+              ? "No advisory flags are currently loaded for reviewed jurisdictions in this state, so this is a coverage summary rather than a cluster check."
+              : "No local review rows are loaded for this state, so advisory flags have not been evaluated and this is a coverage summary rather than a cluster check."
             : jurisdictionCount < minimumUsefulJurisdictions
               ? `${flaggedJurisdictions} of ${jurisdictionCount} jurisdictions in this small equipment group currently have advisory flags (${rateLabel}); treat this as too small for pattern claims.`
               : flaggedJurisdictions === 0

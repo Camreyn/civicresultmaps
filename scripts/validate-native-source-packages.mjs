@@ -70,6 +70,44 @@ if (!Array.isArray(sourcePackages.states) || sourcePackages.states.length === 0)
 
 const seenStates = new Set();
 const completedNativeStates = sourcePackages.completedNativeStates ?? [];
+const sourceDiscoveryQueue = sourcePackages.sourceDiscoveryQueue ?? [];
+
+if (!Array.isArray(sourceDiscoveryQueue)) {
+  fail("GLOBAL", "sourceDiscoveryQueue must be an array when present");
+}
+
+for (const entry of Array.isArray(sourceDiscoveryQueue) ? sourceDiscoveryQueue : []) {
+  const state = entry.state;
+
+  if (!/^[A-Z]{2}$/.test(state ?? "")) {
+    fail(state ?? "UNKNOWN", "sourceDiscoveryQueue entries must include a two-letter state code");
+    continue;
+  }
+
+  if (!entry.name) {
+    fail(state, "sourceDiscoveryQueue.name is required");
+  }
+
+  if (!entry.currentStatus) {
+    fail(state, "sourceDiscoveryQueue.currentStatus is required");
+  }
+
+  if (!entry.parserNeeded) {
+    fail(state, "sourceDiscoveryQueue.parserNeeded is required");
+  }
+
+  if (!Array.isArray(entry.officialSourcePages) || entry.officialSourcePages.length === 0) {
+    fail(state, "sourceDiscoveryQueue.officialSourcePages must be non-empty");
+  } else {
+    for (const [index, sourceUrl] of entry.officialSourcePages.entries()) {
+      assertHttpsUrl(state, `sourceDiscoveryQueue.officialSourcePages[${index}]`, sourceUrl);
+    }
+  }
+
+  if (!Array.isArray(entry.requiredArtifacts) || entry.requiredArtifacts.length === 0) {
+    fail(state, "sourceDiscoveryQueue.requiredArtifacts must be non-empty");
+  }
+}
 
 for (const state of completedNativeStates) {
   if (!/^[A-Z]{2}$/.test(state ?? "")) {

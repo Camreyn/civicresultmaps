@@ -34,6 +34,21 @@ function sourceTierLabel(tier: CompletenessSummary["sourceTier"]) {
   }[tier];
 }
 
+function advisoryFlagLabel(state: CompletenessSummary) {
+  if (state.reviewRowCount === 0) {
+    return "Not reviewed";
+  }
+
+  return state.indicatorCount.toLocaleString();
+}
+
+function advisoryFlagTitle(state: CompletenessSummary) {
+  if (state.reviewRowCount === 0) {
+    return "No local review rows are loaded, so advisory flags have not been evaluated for this state.";
+  }
+
+  return `${state.indicatorCount.toLocaleString()} advisory flag${state.indicatorCount === 1 ? "" : "s"} identified from ${state.reviewRowCount.toLocaleString()} review row${state.reviewRowCount === 1 ? "" : "s"}.`;
+}
 export function NationalOverview({ report, year }: NationalOverviewProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const statesWithResults = report.filter((state) => state.resultRows > 0).length;
@@ -147,7 +162,7 @@ export function NationalOverview({ report, year }: NationalOverviewProps) {
                     {sourceTierLabel(state.sourceTier)}
                   </span>
                 </td>
-                <td className="mono">{state.indicatorCount.toLocaleString()}</td>
+                <td className="mono" title={advisoryFlagTitle(state)}>{advisoryFlagLabel(state)}</td>
                 <td className="mono">
                   {state.reviewRowCount.toLocaleString()}
                   {state.turnoutRowCount > 0 ? ` / ${state.turnoutRowCount.toLocaleString()} turnout` : ""}

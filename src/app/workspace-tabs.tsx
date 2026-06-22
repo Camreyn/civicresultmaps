@@ -995,18 +995,38 @@ function reviewComparisonContests(rows: ReviewRowSummary[]) {
   );
 }
 
+function comparableReviewUnitName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\b(County|Parish|Borough)\b/gi, "")
+    .replace(/[^a-z0-9]+/gi, "")
+    .toUpperCase();
+}
+
+function reviewRowLooksCountyLevel(row: ReviewRowSummary) {
+  return row.localUnit === row.jurisdictionName || comparableReviewUnitName(row.localUnit) === comparableReviewUnitName(row.jurisdictionName);
+}
+
 function countyLevelReviewIssue(rows: ReviewRowSummary[]) {
   const modes = reviewCoverageModes(rows);
   const contests = reviewComparisonContests(rows);
   const hasCountyComparison = [...modes].some((mode) => mode.toLowerCase().includes("presidentvs"));
-  const allRowsMatchCounty = rows.length > 0 && rows.every((row) => row.localUnit === row.jurisdictionName);
+  const allRowsLookCountyLevel = rows.length > 0 && rows.every(reviewRowLooksCountyLevel);
+  const rowsByJurisdiction = new Map<string, number>();
 
-  if (!hasCountyComparison || !allRowsMatchCounty) {
+  for (const row of rows) {
+    rowsByJurisdiction.set(row.jurisdictionCode, (rowsByJurisdiction.get(row.jurisdictionCode) ?? 0) + 1);
+  }
+
+  const maxRowsPerJurisdiction = Math.max(0, ...rowsByJurisdiction.values());
+
+  if (!allRowsLookCountyLevel || (!hasCountyComparison && maxRowsPerJurisdiction > 1)) {
     return null;
   }
 
   const contestLabel = contests.size ? ` against ${[...contests].join(", ")}` : "";
-  return `These rows are county-level presidential comparison rows${contestLabel}, not precinct, ward, or municipal reporting-unit rows. Use the chart as county context only.`;
+  return `These rows are county-level presidential comparison rows${contestLabel}, not precinct, ward, or municipal reporting-unit rows. Advisory flag generation requires multiple local rows inside a county, so this state should be read as county context only.`;
 }
 
 function buildReportIssueUrl(input: {
@@ -1840,6 +1860,7 @@ export function WorkspaceTabs({
   );
   const reviewGraphCoverageIsPartial =
     reviewRows.length > 0 && reviewJurisdictionOptions.length < Math.max(1, results.length);
+  const reviewLimitation = countyLevelReviewIssue(reviewRows);
   const selectedReviewJurisdictionName = selectedReviewJurisdiction?.jurisdictionName ?? stateName;
   const screeningGraphOptions: Array<{ key: ScreeningGraphType; label: string }> = [
     { key: "voteShareScatter", label: "Vote-Share Scatterplot" },
@@ -2124,8 +2145,8 @@ export function WorkspaceTabs({
   const equipmentJurisdictions = new Set(equipmentRows.map((row) => row.jurisdictionCode || row.jurisdictionName)).size;
   const equipmentUniformityWarnings = equipmentRows.filter((row) => row.uniformityWarningRequired).length;
   const equipmentDiagnostics = useMemo(
-    () => equipmentClusterDiagnostics({ equipmentRows, indicators }).slice(0, 8),
-    [equipmentRows, indicators],
+    () => equipmentClusterDiagnostics({ equipmentRows, indicators, reviewRowCount: reviewRows.length }).slice(0, 8),
+    [equipmentRows, indicators, reviewRows.length],
   );
   const equipmentVendorSummaries = useMemo(() => {
     const summaries = new Map<
@@ -3234,8 +3255,12 @@ export function WorkspaceTabs({
               </div>
             ) : (
               <div className="empty-state">
-                <strong>No advisory review rows loaded yet</strong>
-                <span>When the legacy repo exposes review chart rows for this state, the importer will populate this tab.</span>
+                <strong>{reviewRows.length ? "No advisory flags generated" : "No advisory review rows loaded yet"}</strong>
+                <span>
+                  {reviewRows.length
+                    ? reviewLimitation ?? "Review rows are loaded, but none crossed the current advisory thresholds."
+                    : "When the legacy repo exposes review chart rows for this state, the importer will populate this tab."}
+                </span>
               </div>
             )}
           </section>
@@ -3262,8 +3287,12 @@ export function WorkspaceTabs({
                 ))
               ) : (
                 <div className="empty-state compact">
-                  <strong>Waiting on review data</strong>
-                  <span>Expected path: reviewCharts.metadata.rows in the state bundle.</span>
+                  <strong>{reviewRows.length ? "No advisory flags generated" : "Waiting on review data"}</strong>
+                  <span>
+                    {reviewRows.length
+                      ? reviewLimitation ?? "No loaded review rows crossed the current advisory thresholds."
+                      : "Expected path: reviewCharts.metadata.rows in the state bundle."}
+                  </span>
                 </div>
               )}
             </div>

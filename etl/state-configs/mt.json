@@ -1,10 +1,9 @@
 {
   "code": "MT",
   "name": "Montana",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Montana Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "mt-2024-eac-turnout",
@@ -16,15 +15,79 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "mt-2024-official-results-list",
+      "category": "Official 2024 general election results page capture",
+      "url": "https://electionresults.mt.gov/ResultsList.aspx?eid=450002785",
+      "localFile": "data/mt-2024-official-results-list.html",
+      "parser": "officialResultsHtml",
+      "authority": "Montana Secretary of State",
+      "timestampBasis": "Montana official election results page for the November 5, 2024 general election, result timestamp December 19, 2024 1:25:20 PM MT.",
+      "confidence": "Official results page retained for provenance and election ID. The native parser reads the official precinct workbook artifact directly.",
+      "status": "loaded"
+    },
+    {
+      "id": "mt-2024-general-election-report-state-canvass",
+      "category": "Official 2024 General Election Report State Canvass PDF",
+      "url": "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass",
+      "localFile": "data/mt-2024-general-election-report-state-canvass.pdf",
+      "parser": "officialCanvassPdf",
+      "authority": "Montana Secretary of State",
+      "timestampBasis": "Montana Secretary of State official 2024 General Election Report State Canvass for the November 5, 2024 general election.",
+      "confidence": "Official statewide canvass PDF retained as the certified statewide total reference for the precinct workbook.",
+      "status": "loaded"
+    },
+    {
+      "id": "mt-2024-general-precinct-by-precinct",
+      "category": "Official 2024 general election precinct-by-precinct results workbook",
+      "url": "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
+      "localFile": "data/mt-2024-general-precinct-by-precinct.xlsx",
+      "parser": "montanaPrecinctResultsXlsx",
+      "authority": "Montana Secretary of State",
+      "timestampBasis": "Official Montana Secretary of State 2024 general precinct-by-precinct workbook linked from the official election results page.",
+      "confidence": "Candidate-level precinct rows for President and U.S. Senate in one official workbook. Presidential write-ins are not included in this workbook, so the native metrics expose a 27-vote statewide certified gap against the canvass total.",
+      "status": "loaded"
+    },
+    {
+      "id": "mt-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2730%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/mt-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Montana county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "montanaPrecinctResultsXlsx",
+    "sourceId": "mt-2024-general-precinct-by-precinct",
+    "sheetName": "Sheet1",
+    "presidentContest": "PRESIDENT & VICE PRESIDENT",
+    "statewideTotals": {
+      "trump": 352079,
+      "harris": 231906,
+      "other": 19005,
+      "writeIn": 27,
+      "total": 602990
+    }
+  },
+  "reviewCharts": {
+    "format": "montanaPrecinctResultsXlsx",
+    "sourceId": "mt-2024-general-precinct-by-precinct",
+    "comparisonContest": "UNITED STATES SENATOR",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Montana native review rows use official precinct-level presidential vote-share screening and President-versus-U.S. Senate same-party drop-off screening from the Secretary of State precinct workbook. The workbook does not include 27 presidential write-in votes listed in the separate write-in canvass, so native result rows are 27 votes below the statewide certified presidential total."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "mt-2024-eac-turnout",
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Montana turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Montana turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout denominator artifact is collected.",
     "warningRequired": false,
     "expected": {
       "rowCount": 56,
@@ -34,20 +97,21 @@
   },
   "expected": {
     "jurisdictions": 56,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 56,
+    "sources": 5,
+    "geometryFeatures": 56,
+    "stateTotal": 602963,
+    "trump": 352079,
+    "harris": 231906,
+    "other": 18978,
+    "reviewRows": 726,
     "turnoutRows": 56
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

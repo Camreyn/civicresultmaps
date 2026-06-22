@@ -10,8 +10,9 @@ import {
   Settings2,
   UsersRound,
 } from "lucide-react";
+import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
 import type { CompletenessSummary, StateSummary } from "@/lib/types";
 
@@ -42,6 +43,8 @@ type StateDataBadge = {
   presence: DataPresence;
   title: string;
 };
+
+const stateListScrollStorageKey = "crm-state-list-scroll-top";
 
 const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
   { label: "All states", value: "all" },
@@ -135,6 +138,17 @@ function mapTitle(stateCode: string, capability: boolean, mapGeometrySourceCount
   return "Map geometry not present";
 }
 
+function reviewTitle(reviewCapable: boolean, reviewRows: number, indicators: number) {
+  if (reviewRows > 0) {
+    return `Review rows: ${countLabel(reviewRows, "row")}; advisory flags identified: ${indicators.toLocaleString()}`;
+  }
+
+  if (reviewCapable) {
+    return "Review capability is tracked, but no local review rows are loaded yet; advisory flags have not been evaluated";
+  }
+
+  return "Review rows are not loaded for this state; advisory flags have not been evaluated";
+}
 function stateDataBadges(state: StateSummary, summary: CompletenessSummary | undefined): StateDataBadge[] {
   const capabilities = summary?.capabilities ?? state.capabilities;
   const resultRows = summary?.resultRows ?? 0;
@@ -189,7 +203,7 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
         count: reviewRows,
         partialWhen: indicators > 0,
       }),
-      title: `Review rows: ${countLabel(reviewRows, "row")}; advisory flags: ${indicators.toLocaleString()}`,
+      title: reviewTitle(capabilities.reviewGraphs, reviewRows, indicators),
     },
     {
       abbr: "Tu",
@@ -272,6 +286,7 @@ function stateMatchesFilter(state: StateSummary, summary: CompletenessSummary | 
 export function StateSwitcher({ completenessReport, selectedState, states }: StateSwitcherProps) {
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState<StateFilter>("all");
+  const stateListRef = useRef<HTMLDivElement>(null);
   const normalizedQuery = query.trim().toLowerCase();
   const completenessByState = useMemo(
     () => new Map(completenessReport.map((summary) => [summary.state, summary])),
@@ -298,6 +313,38 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
       }),
     [completenessByState, normalizedQuery, stateFilter, states],
   );
+
+  useLayoutEffect(() => {
+    const list = stateListRef.current;
+    const savedScrollTop = Number(window.sessionStorage.getItem(stateListScrollStorageKey) ?? "0");
+
+    if (!list || !Number.isFinite(savedScrollTop)) {
+      return;
+    }
+
+    const restoreScroll = () => {
+      list.scrollTop = savedScrollTop;
+    };
+
+    restoreScroll();
+    const frameId = window.requestAnimationFrame(restoreScroll);
+    const timeoutId = window.setTimeout(restoreScroll, 0);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [filteredStates.length, selectedState]);
+
+  const rememberStateListScroll = () => {
+    const list = stateListRef.current;
+
+    if (!list) {
+      return;
+    }
+
+    window.sessionStorage.setItem(stateListScrollStorageKey, String(list.scrollTop));
+  };
 
   return (
     <div className="state-switcher">
@@ -332,18 +379,26 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
         />
       </label>
 
-      <div className="state-list" data-count={filteredStates.length}>
+      <div className="state-list" data-count={filteredStates.length} onScroll={rememberStateListScroll} ref={stateListRef}>
         {filteredStates.map((state) => {
           const summary = completenessByState.get(state.code);
           const status = stateStatus(summary, state);
           const badges = stateDataBadges(state, summary);
 
           return (
-            <a
+            <Link
               aria-pressed={state.code === selectedState}
               href={`/?state=${state.code}`}
               className="state-button"
               key={state.code}
+              scroll={false}
+              onClick={rememberStateListScroll}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  rememberStateListScroll();
+                }
+              }}
+              onPointerDown={rememberStateListScroll}
             >
               <div className="state-button-head">
                 <strong>
@@ -376,7 +431,7 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
                   );
                 })}
               </div>
-            </a>
+            </Link>
           );
         })}
       </div>

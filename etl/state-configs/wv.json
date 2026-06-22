@@ -1,10 +1,9 @@
 {
   "code": "WV",
   "name": "West Virginia",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "West Virginia Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "wv-2024-eac-turnout",
@@ -15,6 +14,28 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "wv-2024-official-clarity-results",
+      "category": "Official 2024 statewide general election JSON results",
+      "url": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+      "localFile": "data/wv-2024-official-results/details.json",
+      "parser": "clarityCountyJson",
+      "authority": "West Virginia Secretary of State",
+      "timestampBasis": "West Virginia official election results app package for the November 5, 2024 General Election, election id 122766, version 356048.",
+      "confidence": "Official West Virginia Secretary of State hosted Clarity-style JSON package. The statewide package contains county-level contest detail arrays, not precinct-level rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "wv-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2754%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/wv-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for West Virginia county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +55,38 @@
   },
   "expected": {
     "jurisdictions": 55,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 55,
+    "sources": 3,
+    "geometryFeatures": 55,
+    "stateTotal": 762390,
+    "trump": 533556,
+    "harris": 214309,
+    "other": 14525,
+    "reviewRows": 55,
     "turnoutRows": 55
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "clarityCountyJson",
+    "sourceId": "wv-2024-official-clarity-results",
+    "summaryFile": "sum.json",
+    "presidentContestKey": "100",
+    "comparisonContestRegex": "^U\\.S\\. SENATOR$",
+    "comparisonContestLabel": "United States Senator",
+    "comparisonCoverageMode": "presidentVsSenate"
+  },
+  "reviewCharts": {
+    "format": "clarityCountyJsonCountyComparison",
+    "sourceId": "wv-2024-official-clarity-results",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "West Virginia review rows are county-level President-versus-U.S. Senate comparisons from the official statewide result JSON package. They are useful for county review, but they are not precinct-level vote-share scatter plots."
   }
 }

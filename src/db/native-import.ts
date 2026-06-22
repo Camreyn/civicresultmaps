@@ -34,6 +34,26 @@ type NativeReviewRow = {
   sourceId: string;
 };
 
+type NativeAnalysisIndicator = {
+  county: string;
+  detail: string;
+  jurisdictionCode: string;
+  label: string;
+  metrics: {
+    demAverageDropoff: number;
+    demOutliers: number;
+    harrisCorrelation: number;
+    outlierTrigger: number;
+    repAverageDropoff: number;
+    repOutliers: number;
+    rowCount: number;
+    trumpCorrelation: number;
+  };
+  severity: number;
+  sourceId: string;
+  summary: string;
+  type: string;
+};
 type NativeTurnoutRow = {
   county: string;
   localUnit: string;
@@ -99,6 +119,14 @@ const candidateParties = {
   Other: "OTHER",
 } as const;
 
+const reviewPolicy = {
+  downBallotAverageThresholdPct: 6,
+  minCandidateVotes: 100,
+  minWardRows: 8,
+  outlierThresholdPct: 15,
+  voteShareCorrelationThreshold: 0.35,
+};
+
 function getDatabaseUrl() {
   return (
     [
@@ -123,6 +151,162 @@ function jurisdictionCode(stateCode: string, name: string) {
 
 function numberOrNull(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function average(values: number[]) {
+  if (!values.length) {
+    return 0;
+  }
+
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function pearsonSafe(xValues: number[], yValues: number[]) {
+  const length = Math.min(xValues.length, yValues.length);
+
+  if (length < 2) {
+    return 0;
+  }
+
+  const x = xValues.slice(0, length);
+  const y = yValues.slice(0, length);
+  const xAverage = average(x);
+  const yAverage = average(y);
+  let numerator = 0;
+  let xSquareSum = 0;
+  let ySquareSum = 0;
+
+  for (let index = 0; index < length; index += 1) {
+    const xDelta = x[index] - xAverage;
+    const yDelta = y[index] - yAverage;
+    numerator += xDelta * yDelta;
+    xSquareSum += xDelta * xDelta;
+    ySquareSum += yDelta * yDelta;
+  }
+
+  const denominator = Math.sqrt(xSquareSum) * Math.sqrt(ySquareSum);
+  return denominator ? numerator / denominator : 0;
+}
+
+function indicatorSeverity(metrics: NativeAnalysisIndicator["metrics"]) {
+  const correlationScore =
+    Math.max(Math.abs(metrics.trumpCorrelation), Math.abs(metrics.harrisCorrelation)) /
+    Math.max(0.01, reviewPolicy.voteShareCorrelationThreshold);
+  const averageDropoffScore =
+    Math.max(Math.abs(metrics.demAverageDropoff), Math.abs(metrics.repAverageDropoff)) /
+    Math.max(0.1, reviewPolicy.downBallotAverageThresholdPct);
+  const outlierScore =
+    (metrics.demOutliers + metrics.repOutliers) / Math.max(1, metrics.outlierTrigger);
+
+  return Number((correlationScore + averageDropoffScore + outlierScore).toFixed(4));
+}
+
+function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
+  const rowsByCounty = new Map<string, NativeReviewRow[]>();
+
+  for (const row of rows) {
+    if (!row.county) {
+      continue;
+    }
+
+    const county = normalizeJurisdictionName(row.county);
+    rowsByCounty.set(county, [...(rowsByCounty.get(county) ?? []), row]);
+  }
+
+  const indicators: NativeAnalysisIndicator[] = [];
+
+  for (const [county, countyRows] of rowsByCounty) {
+    if (countyRows.length < reviewPolicy.minWardRows) {
+      continue;
+    }
+
+    const trumpCorrelation = pearsonSafe(
+      countyRows.map((row) => row.trump ?? 0),
+      countyRows.map((row) => row.trumpShare ?? 0),
+    );
+    const harrisCorrelation = pearsonSafe(
+      countyRows.map((row) => row.harris ?? 0),
+      countyRows.map((row) => row.harrisShare ?? 0),
+    );
+    const demAverageDropoff = average(countyRows.map((row) => row.demDropoff ?? 0));
+    const repAverageDropoff = average(countyRows.map((row) => row.repDropoff ?? 0));
+    const demOutliers = countyRows.filter(
+      (row) =>
+        (row.harris ?? 0) >= reviewPolicy.minCandidateVotes &&
+        Math.abs(row.demDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
+    ).length;
+    const repOutliers = countyRows.filter(
+      (row) =>
+        (row.trump ?? 0) >= reviewPolicy.minCandidateVotes &&
+        Math.abs(row.repDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
+    ).length;
+    const outlierTrigger = Math.max(3, Math.ceil(countyRows.length * 0.05));
+    const metrics = {
+      demAverageDropoff,
+      demOutliers,
+      harrisCorrelation,
+      outlierTrigger,
+      repAverageDropoff,
+      repOutliers,
+      rowCount: countyRows.length,
+      trumpCorrelation,
+    };
+    const severity = indicatorSeverity(metrics);
+    const sourceId = countyRows.find((row) => row.sourceId)?.sourceId ?? "";
+
+    if (
+      Math.abs(trumpCorrelation) >= reviewPolicy.voteShareCorrelationThreshold ||
+      Math.abs(harrisCorrelation) >= reviewPolicy.voteShareCorrelationThreshold
+    ) {
+      indicators.push({
+        county,
+        detail:
+          "Bigger local reporting-unit vote totals move with candidate vote share strongly enough to pass the native review threshold. This is an advisory review flag, not proof of tampering.",
+        jurisdictionCode: jurisdictionCode(stateCode, county),
+        label: "Vote-share pattern",
+        metrics,
+        severity,
+        sourceId,
+        summary: `Vote-share correlation crossed threshold: Trump r=${trumpCorrelation.toFixed(3)}, Harris r=${harrisCorrelation.toFixed(3)}.`,
+        type: "vote_share_pattern",
+      });
+    }
+
+    if (
+      Math.abs(demAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct ||
+      Math.abs(repAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct
+    ) {
+      indicators.push({
+        county,
+        detail:
+          "The average gap between presidential votes and same-party down-ballot votes is large enough to review. Split-ticket voting can explain some gap; this flag identifies areas needing supporting records.",
+        jurisdictionCode: jurisdictionCode(stateCode, county),
+        label: "Average down-ballot difference",
+        metrics,
+        severity,
+        sourceId,
+        summary: `Average President-vs-down-ballot difference crossed threshold: DEM ${demAverageDropoff.toFixed(2)}%, REP ${repAverageDropoff.toFixed(2)}%.`,
+        type: "average_down_ballot_difference",
+      });
+    }
+
+    if (demOutliers + repOutliers >= outlierTrigger) {
+      indicators.push({
+        county,
+        detail:
+          "Enough local result rows have unusually large President-versus-down-ballot differences to pass the outlier-count threshold. This is an advisory review flag, not proof of tampering.",
+        jurisdictionCode: jurisdictionCode(stateCode, county),
+        label: "Down-ballot outliers",
+        metrics,
+        severity,
+        sourceId,
+        summary: `Drop-off outlier count crossed threshold: DEM ${demOutliers}, REP ${repOutliers}, trigger ${outlierTrigger}.`,
+        type: "down_ballot_outliers",
+      });
+    }
+  }
+
+  return indicators;
 }
 
 function assertPromotable(artifact: NativeArtifact) {
@@ -252,17 +436,26 @@ export async function promoteNativeStagingArtifact(path: string) {
     returning id
   `;
 
-  if (native.resultRows.length > 0) {
+  const shouldReplaceResultRows = native.resultRows.length > 0 || !artifact.capabilities.certifiedResults;
+  if (shouldReplaceResultRows) {
     await sql`
       delete from result_rows
       where state_code = ${stateCode}
         and contest_id = ${contest.id}
     `;
   }
-  const shouldReplaceReviewRows = native.reviewRows.length > 0 || (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics);
+  const shouldReplaceReviewRows =
+    native.reviewRows.length > 0 ||
+    (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics) ||
+    !artifact.capabilities.reviewGraphs;
   if (shouldReplaceReviewRows) {
     await sql`
       delete from review_rows
+      where state_code = ${stateCode}
+        and election_year = ${electionYear}
+    `;
+    await sql`
+      delete from analysis_indicators
       where state_code = ${stateCode}
         and election_year = ${electionYear}
     `;
@@ -275,7 +468,8 @@ export async function promoteNativeStagingArtifact(path: string) {
     `;
   }
   const historicalRows = native.historicalRows ?? [];
-  if (historicalRows.length > 0) {
+  const shouldReplaceHistoricalRows = historicalRows.length > 0 || !artifact.capabilities.historicalBaseline;
+  if (shouldReplaceHistoricalRows) {
     await sql`
       delete from historical_result_rows
       where state_code = ${stateCode}
@@ -386,6 +580,48 @@ export async function promoteNativeStagingArtifact(path: string) {
     storedReviewRows += 1;
   }
 
+  let storedIndicatorRows = 0;
+  for (const indicator of analysisIndicatorsForNativeRows(stateCode, native.reviewRows)) {
+    await sql`
+      insert into analysis_indicators (
+        state_code,
+        election_year,
+        jurisdiction_code,
+        jurisdiction_name,
+        level,
+        indicator_type,
+        severity,
+        label,
+        summary,
+        detail,
+        metrics,
+        source_document_id
+      )
+      values (
+        ${stateCode},
+        ${electionYear},
+        ${indicator.jurisdictionCode},
+        ${indicator.county},
+        'county',
+        ${indicator.type},
+        ${indicator.severity},
+        ${indicator.label},
+        ${indicator.summary},
+        ${indicator.detail},
+        ${JSON.stringify(indicator.metrics)}::jsonb,
+        ${sourceIds.get(indicator.sourceId) ?? primarySourceId ?? null}
+      )
+      on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
+      do update set
+        severity = excluded.severity,
+        summary = excluded.summary,
+        detail = excluded.detail,
+        metrics = excluded.metrics,
+        source_document_id = excluded.source_document_id
+    `;
+    storedIndicatorRows += 1;
+  }
+
   let storedTurnoutRows = 0;
   for (const [index, row] of native.turnoutRows.entries()) {
     const localUnit = row.localUnit || `turnout-row-${index + 1}`;
@@ -490,6 +726,7 @@ export async function promoteNativeStagingArtifact(path: string) {
     ...native.metrics,
     storedResultRows,
     storedReviewRows,
+    storedIndicatorRows,
     storedTurnoutRows,
     storedHistoricalRows,
   };
@@ -518,12 +755,12 @@ export async function promoteNativeStagingArtifact(path: string) {
       'Native official-source ETL promotion.'
     )
     on conflict (state_code, election_year) do update set
-      certified_results = capability_flags.certified_results or excluded.certified_results,
-      map = capability_flags.map or excluded.map,
-      review_graphs = capability_flags.review_graphs or excluded.review_graphs,
-      turnout = capability_flags.turnout or excluded.turnout,
-      historical_baseline = capability_flags.historical_baseline or excluded.historical_baseline,
-      source_planner = capability_flags.source_planner or excluded.source_planner,
+      certified_results = excluded.certified_results,
+      map = excluded.map,
+      review_graphs = excluded.review_graphs,
+      turnout = excluded.turnout,
+      historical_baseline = excluded.historical_baseline,
+      source_planner = excluded.source_planner,
       notes = excluded.notes
   `;
 

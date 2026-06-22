@@ -1,10 +1,9 @@
 {
   "code": "MO",
   "name": "Missouri",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Missouri Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "mo-2024-eac-turnout",
@@ -16,8 +15,82 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "mo-2024-general-grand-totals",
+      "category": "Official 2024 general election grand totals PDF",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf",
+      "localFile": "data/mo-2024-general-grand-totals.pdf",
+      "parser": "officialGrandTotalsPdf",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Official Missouri Secretary of State general election results, announced by the Board of State Canvassers on December 5, 2024.",
+      "confidence": "Official grand totals PDF used to verify normalized President and U.S. Senate county extracts.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-2024-general-results-by-county-pdf",
+      "category": "Official 2024 general election results by county PDF",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
+      "localFile": "data/mo-2024-general-results-by-county.pdf",
+      "parser": "officialResultsByCountyPdf",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Official Missouri Secretary of State 2024 general election results by county PDF for November 5, 2024.",
+      "confidence": "Official county/reporting-jurisdiction PDF retained as the source artifact for the normalized county CSV extracts.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-2024-general-president",
+      "category": "Official 2024 general election presidential county results",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
+      "localFile": "data/mo-2024-general-president.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "County/reporting-jurisdiction presidential rows extracted from the Missouri Secretary of State official results by county PDF.",
+      "confidence": "Normalized CSV extracted from official PDF text and cross-checked against the official grand total PDF: 2,995,327 presidential votes.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-2024-general-senate",
+      "category": "Official 2024 general election U.S. Senate county results",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
+      "localFile": "data/mo-2024-general-senate.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "County/reporting-jurisdiction U.S. Senate rows extracted from the Missouri Secretary of State official results by county PDF.",
+      "confidence": "Normalized CSV extracted from official PDF text and cross-checked against the official grand total PDF: 2,972,559 U.S. Senate votes.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2729%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/mo-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Missouri county map joins. Kansas City is reported separately by the Missouri results PDF and does not have a separate county polygon in this geometry file.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "mo-2024-general-president",
+    "otherColumns": [
+      "oliver",
+      "stein",
+      "sonski",
+      "de_la_cruz",
+      "ayyadurai",
+      "potus"
+    ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "mo-2024-general-senate",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Missouri review rows are county/reporting-jurisdiction President-versus-U.S. Senate comparisons from the official Secretary of State results-by-county PDF. Kansas City is reported separately from counties by the source PDF. These rows are useful for county/reporting-jurisdiction review, but they are not precinct-level vote-share scatter plots."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "mo-2024-eac-turnout",
@@ -34,20 +107,21 @@
   },
   "expected": {
     "jurisdictions": 116,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 116,
+    "sources": 6,
+    "geometryFeatures": 115,
+    "stateTotal": 2995327,
+    "trump": 1751986,
+    "harris": 1200599,
+    "other": 42742,
+    "reviewRows": 116,
     "turnoutRows": 116
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

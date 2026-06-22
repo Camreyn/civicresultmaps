@@ -1,10 +1,9 @@
 {
   "code": "NY",
   "name": "New York",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "New York State Board of Elections",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ny-2024-eac-turnout",
@@ -16,8 +15,77 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "ny-2024-presidential-general-document-page",
+      "category": "Official 2024 general election results archive document page",
+      "url": "https://results.elections.ny.gov/document/476",
+      "localFile": null,
+      "parser": "officialResultsArchiveDocumentPage",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "New York State Board of Elections official archive document page for the November 5, 2024 presidential general election results.",
+      "confidence": "Official NYSBOE archive page identifies document 476 and contest 5591 as the certified 2024 presidential general election results source.",
+      "status": "referenced"
+    },
+    {
+      "id": "ny-2024-presidential-general-pdf",
+      "category": "Official 2024 general election results PDF",
+      "url": "https://ny.elstats-staging.com/eng/files/serve/476",
+      "localFile": "data/ny-2024-presidential-general.pdf",
+      "parser": "officialResultsPdf",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "Official NYSBOE archive document 476, 2024-11-05_Presidential_General.pdf.",
+      "confidence": "Official archive PDF retained as the source artifact for normalized county CSV extracts.",
+      "status": "loaded"
+    },
+    {
+      "id": "ny-2024-general-president",
+      "category": "Official 2024 general election county presidential results",
+      "url": "https://results.elections.ny.gov/document/476",
+      "localFile": "data/ny-2024-general-president.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "County presidential rows extracted from NYSBOE official archive document 476, contest 5591.",
+      "confidence": "Normalized county CSV extracted from official PDF text and cross-checked against the statewide candidate totals shown on the NYSBOE archive contest/document page.",
+      "status": "loaded"
+    },
+    {
+      "id": "ny-2024-general-senate",
+      "category": "Official 2024 general election county U.S. Senate results",
+      "url": "https://results.elections.ny.gov/document/476",
+      "localFile": "data/ny-2024-general-senate.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "County U.S. Senate rows extracted from NYSBOE official archive document 476.",
+      "confidence": "Uses the official U.S. Senate race in the same archive PDF as the President contest for county-level comparison review rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "ny-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2736%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ny-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for New York county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "ny-2024-general-president",
+    "otherColumns": [
+      "other"
+    ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "ny-2024-general-senate",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "New York review rows are county-level President-versus-U.S. Senate comparisons from the official NYSBOE 2024 archive PDF. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "ny-2024-eac-turnout",
@@ -34,20 +102,21 @@
   },
   "expected": {
     "jurisdictions": 62,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 62,
+    "sources": 6,
+    "geometryFeatures": 62,
+    "stateTotal": 8381429,
+    "trump": 3579519,
+    "harris": 4619543,
+    "other": 182367,
+    "reviewRows": 62,
     "turnoutRows": 62
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

@@ -1,9 +1,10 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
-import { listAdminSourceStatuses, listCompletenessReport, listTurnoutSourceStatuses } from "@/lib/api";
+import { listAdminSourceStatuses, listCompletenessReport, listNativeSourcePackages, listTurnoutSourceStatuses } from "@/lib/api";
 import {
   getNativeSourcePackage,
   nativeSourcePackageArtifactHint,
   nativeSourcePackageArtifacts,
+  type NativeSourceDiscoveryQueueEntry,
   type NativeSourcePackage,
 } from "@/lib/native-source-packages";
 import type { TurnoutSourceStatus } from "@/lib/turnout-source-packages";
@@ -236,6 +237,10 @@ function expectedValue(sourcePackage: NativeSourcePackage | undefined, key: keyo
   return sourcePackage?.expected[key] ?? null;
 }
 
+function sourceDiscoveryStatusLabel(status: NativeSourceDiscoveryQueueEntry["currentStatus"]) {
+  return status.replaceAll("_", " ");
+}
+
 function compareCount(loaded: number, expected: number | null) {
   if (expected === null) {
     return loaded > 0 ? `${formatNumber(loaded)} loaded` : "No expected total";
@@ -308,7 +313,7 @@ function stateChecklist(
     {
       label: "Turnout source status",
       value: turnoutSource
-        ? `${turnoutSourceStatusLabel(turnoutSource.status)} · ${turnoutSource.sourceLevel}`
+        ? `${turnoutSourceStatusLabel(turnoutSource.status)} / ${turnoutSource.sourceLevel}`
         : "Not in registry",
       status: turnoutSource?.status === "loaded" ? "good" : turnoutSource?.status === "partial" || turnoutSource?.status === "candidate" ? "warn" : "missing",
     },
@@ -329,15 +334,19 @@ export default async function ReadinessPage() {
   const report = await listCompletenessReport({ year: selectedYear });
   const turnoutSources = listTurnoutSourceStatuses({ year: selectedYear });
   const adminSources = listAdminSourceStatuses({ year: selectedYear });
+  const nativeSourcePackages = listNativeSourcePackages();
+  const sourceDiscoveryQueue = nativeSourcePackages.sourceDiscoveryQueue;
+  const sourceDiscoveryByState = new Map(sourceDiscoveryQueue.map((entry) => [entry.state, entry]));
   const turnoutSourceByState = new Map(turnoutSources.states.map((entry) => [entry.state, entry]));
   const adminSourceByState = new Map(adminSources.states.map((entry) => [entry.state, entry]));
   const rows = report
     .map((state) => {
       const turnoutSource = turnoutSourceByState.get(state.state);
       const adminSource = adminSourceByState.get(state.state);
+      const sourceDiscovery = sourceDiscoveryByState.get(state.state);
       const tasks = missingTasks(state, turnoutSource, adminSource);
       const summary = taskSummary(tasks);
-      return { ...state, adminSource, taskSummary: summary, tasks, turnoutSource };
+      return { ...state, adminSource, sourceDiscovery, taskSummary: summary, tasks, turnoutSource };
     })
     .sort((a, b) => b.taskSummary.high - a.taskSummary.high || b.taskSummary.medium - a.taskSummary.medium || a.name.localeCompare(b.name));
 
@@ -590,6 +599,53 @@ export default async function ReadinessPage() {
         </div>
       </section>
 
+      <section className="readiness-panel">
+        <div className="readiness-panel-head">
+          <div>
+            <h2>Result Source Discovery Queue</h2>
+            <span>States needing official local reporting-unit rows before comparable advisory flags can be calculated</span>
+          </div>
+          <a className="readiness-api-link" href="/api/native-source-packages" target="_blank" rel="noreferrer">
+            Source Packages API
+          </a>
+        </div>
+
+        <div className="source-discovery-grid">
+          {sourceDiscoveryQueue.map((entry) => (
+            <article className="source-discovery-card" key={entry.state}>
+              <header>
+                <div>
+                  <strong>{entry.name}</strong>
+                  <span className="mono">{entry.state}</span>
+                </div>
+                <span className="task-pill task-medium">Priority {entry.priority}</span>
+              </header>
+              <div className="coverage-chips">
+                <span className="coverage-chip coverage-missing">{sourceDiscoveryStatusLabel(entry.currentStatus)}</span>
+                <span className="coverage-chip coverage-warn">{entry.preferredComparisonContest}</span>
+              </div>
+              <p>{entry.blocker}</p>
+              <dl className="source-discovery-meta">
+                <div>
+                  <dt>Parser</dt>
+                  <dd>{entry.parserNeeded}</dd>
+                </div>
+                <div>
+                  <dt>Needed</dt>
+                  <dd>{entry.requiredArtifacts.join("; ")}</dd>
+                </div>
+              </dl>
+              <div className="source-discovery-links">
+                {entry.officialSourcePages.map((sourceUrl, index) => (
+                  <a href={sourceUrl} key={sourceUrl} target="_blank" rel="noreferrer">
+                    Official source {index + 1}
+                  </a>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
       <section className="readiness-panel">
         <div className="readiness-panel-head">
           <div>
@@ -914,10 +970,34 @@ export default async function ReadinessPage() {
                   ) : (
                     <div className="detail-source-package detail-source-package-empty">
                       <h3>Native Source Package Needed</h3>
-                      <p>
-                        Ask the data team for official result artifacts, local review/comparison data, turnout denominators,
-                        county geometry, expected totals, parser hints, caveats, and source URLs for this state.
-                      </p>
+                      {state.sourceDiscovery ? (
+                        <div className="detail-artifact-grid">
+                          <article className="detail-artifact">
+                            <span>{sourceDiscoveryStatusLabel(state.sourceDiscovery.currentStatus)}</span>
+                            <strong>{state.sourceDiscovery.preferredComparisonContest}</strong>
+                            <code>{state.sourceDiscovery.parserNeeded}</code>
+                            <p>{state.sourceDiscovery.blocker}</p>
+                            {state.sourceDiscovery.officialSourcePages.map((sourceUrl, index) => (
+                              <a href={sourceUrl} key={sourceUrl} target="_blank" rel="noreferrer">
+                                Official source {index + 1}
+                              </a>
+                            ))}
+                          </article>
+                          <article className="detail-artifact">
+                            <span>Required artifacts</span>
+                            <strong>Local reporting-unit rows</strong>
+                            <code>{state.sourceDiscovery.requiredArtifacts.join("; ")}</code>
+                            <p>
+                              County-only result tables are tracked as insufficient for comparable advisory flag generation.
+                            </p>
+                          </article>
+                        </div>
+                      ) : (
+                        <p>
+                          Ask the data team for official result artifacts, local review/comparison data, turnout denominators,
+                          county geometry, expected totals, parser hints, caveats, and source URLs for this state.
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

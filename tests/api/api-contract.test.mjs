@@ -97,6 +97,8 @@ test("public completeness report exists for national readiness", () => {
   assert.doesNotMatch(readiness, /Native Package Requests/);
   assert.match(packages, /listNativeSourcePackages/);
   assert.match(packages, /listNativeSourcePackageRequests/);
+  assert.match(packages, /sourceDiscoveryQueue/);
+  assert.match(packages, /NativeSourceDiscoveryQueueEntry/);
   assert.match(packages, /getNativeSourcePackage/);
   assert.doesNotMatch(readFileSync("src/lib/api.ts", "utf8"), /listNativeSourcePackageRequests/);
   assert.match(readiness, /Legacy-only states/);
@@ -335,6 +337,8 @@ test("native source package handoff is validated in CI", () => {
   assert.match(packageScripts["validate:source-packages"], /validate-native-source-packages/);
   assert.match(workflow, /validate:source-packages/);
   assert.match(validator, /native-import-source-packages\.json/);
+  assert.match(validator, /sourceDiscoveryQueue/);
+  assert.match(validator, /officialSourcePages/);
   assert.match(validator, /expected trump \+ harris \+ other does not equal stateTotal/);
 });
 

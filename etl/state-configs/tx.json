@@ -1,10 +1,9 @@
 {
   "code": "TX",
   "name": "Texas",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Texas Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "tx-2024-eac-turnout",
@@ -15,6 +14,28 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "tx-2024-official-county-results",
+      "category": "Official 2024 general election county JSON results",
+      "url": "https://results.texas-election.com/static/data/election/49664/1012/County.json",
+      "localFile": "data/tx-2024-official-results/County.json",
+      "parser": "texasCountyJson",
+      "authority": "Texas Secretary of State",
+      "timestampBasis": "Texas official Election Night Results JSON package for the November 5, 2024 General Election, election id 49664, version 1012.",
+      "confidence": "Official Texas Secretary of State hosted JSON package. County.json contains county-level race totals for President and U.S. Senate; precinct-level rows are not included in this artifact.",
+      "status": "loaded"
+    },
+    {
+      "id": "tx-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2748%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/tx-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Texas county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +55,37 @@
   },
   "expected": {
     "jurisdictions": 254,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 254,
+    "sources": 3,
+    "geometryFeatures": 254,
+    "stateTotal": 11388674,
+    "trump": 6393597,
+    "harris": 4835250,
+    "other": 159827,
+    "reviewRows": 254,
     "turnoutRows": 254
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "texasCountyJson",
+    "sourceId": "tx-2024-official-county-results",
+    "presidentRaceId": "1001",
+    "comparisonRaceId": "7958",
+    "comparisonContestLabel": "United States Senator",
+    "comparisonCoverageMode": "presidentVsSenate"
+  },
+  "reviewCharts": {
+    "format": "texasCountyJsonCountyComparison",
+    "sourceId": "tx-2024-official-county-results",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Texas review rows are county-level President-versus-U.S. Senate comparisons from the official Secretary of State County.json package. They are useful for county review, but they are not precinct-level vote-share scatter plots."
   }
 }

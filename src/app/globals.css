@@ -540,6 +540,73 @@ input {
   overflow-wrap: anywhere;
 }
 
+.source-discovery-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  padding: 16px;
+}
+
+.source-discovery-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.source-discovery-card header {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.source-discovery-card header > div {
+  display: grid;
+  gap: 3px;
+}
+
+.source-discovery-card p,
+.source-discovery-meta dd {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.source-discovery-meta {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.source-discovery-meta div {
+  display: grid;
+  gap: 3px;
+}
+
+.source-discovery-meta dt {
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.source-discovery-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.source-discovery-links a {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .coverage-chips {
   align-items: center;
   display: flex;
@@ -1006,6 +1073,7 @@ input {
   display: grid;
   gap: 10px;
   max-height: calc(100vh - 205px);
+  overflow-anchor: none;
   overflow-y: auto;
   padding-right: 4px;
   scrollbar-color: var(--line) transparent;
@@ -1933,8 +2001,9 @@ input {
 .county-map {
   cursor: grab;
   display: block;
-  height: auto;
-  max-height: 520px;
+  height: min(68vh, 680px);
+  min-height: 520px;
+  max-height: 680px;
   touch-action: none;
   user-select: none;
   width: 100%;
@@ -2934,6 +3003,12 @@ td {
   padding: 4px 7px;
 }
 
+.benefit-cell {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  min-width: 112px;
+}
 .no-indicator {
   color: var(--quiet);
 }

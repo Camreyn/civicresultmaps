@@ -2,6 +2,7 @@ import nativeImportPackages from "../../data/native-import-source-packages.json"
 import { legacyImportCatalog, legacyImportStates } from "@/db/legacy-catalog";
 
 export type NativeSourcePackage = (typeof nativeImportPackages.states)[number];
+export type NativeSourceDiscoveryQueueEntry = (typeof nativeImportPackages.sourceDiscoveryQueue)[number];
 
 export type NativeSourcePackageArtifact = ReturnType<typeof nativeSourcePackageArtifacts>[number][1];
 
@@ -26,12 +27,15 @@ export function listNativeSourcePackages(input: { state?: string } = {}) {
     ? nativeImportPackages.states.filter((sourcePackage) => sourcePackage.state === state)
     : nativeImportPackages.states;
 
+  const discoveryQueue = nativeImportPackages.sourceDiscoveryQueue ?? [];
+
   return {
     checkedAt: nativeImportPackages.checkedAt,
     blockedStates: nativeImportPackages.blockedStates ?? [],
     completedNativeStates: nativeImportPackages.completedNativeStates,
     notes: nativeImportPackages.notes,
     purpose: nativeImportPackages.purpose,
+    sourceDiscoveryQueue: state ? discoveryQueue.filter((entry) => entry.state === state) : discoveryQueue,
     states: packages,
   };
 }
