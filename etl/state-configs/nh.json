@@ -1,10 +1,9 @@
 {
   "code": "NH",
   "name": "New Hampshire",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "New Hampshire Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "nh-2024-eac-turnout",
@@ -15,6 +14,50 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-2024-ge-president-workbook",
+      "category": "Official archived 2024 general election President town/ward workbook",
+      "url": "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls",
+      "localFile": "data/nh-2024-ge-president.xls",
+      "parser": "referenceLegacyXls",
+      "authority": "New Hampshire Secretary of State",
+      "timestampBasis": "Internet Archive capture of official New Hampshire Secretary of State 2024 General Election President workbook.",
+      "confidence": "Official state-hosted workbook archived by the Internet Archive; normalized by scripts/normalize-nh-general-workbooks.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-2024-ge-governor-workbook",
+      "category": "Official archived 2024 general election Governor town/ward workbook",
+      "url": "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-governor_3.xls",
+      "localFile": "data/nh-2024-ge-governor.xls",
+      "parser": "referenceLegacyXls",
+      "authority": "New Hampshire Secretary of State",
+      "timestampBasis": "Internet Archive capture of official New Hampshire Secretary of State 2024 General Election Governor workbook.",
+      "confidence": "Official state-hosted workbook archived by the Internet Archive; normalized by scripts/normalize-nh-general-workbooks.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-2024-town-ward-president-governor",
+      "category": "Normalized 2024 general election President and Governor town/ward CSV",
+      "url": "https://www.sos.nh.gov/2024-general-election-results",
+      "localFile": "data/nh-2024-town-ward-president-governor.csv",
+      "parser": "newHampshireTownWardCsv",
+      "authority": "New Hampshire Secretary of State",
+      "timestampBasis": "Derived from archived official New Hampshire Secretary of State President and Governor workbooks with scripts/normalize-nh-general-workbooks.mjs.",
+      "confidence": "Deterministic normalization of official workbook sheets; President and Governor workbook totals reconcile to the summary sheets.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2733%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/nh-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for New Hampshire county map joins; town/ward boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -33,22 +76,40 @@
     }
   },
   "expected": {
-    "jurisdictions": 320,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "jurisdictions": 10,
+    "resultRows": 10,
+    "sources": 5,
+    "geometryFeatures": 10,
+    "stateTotal": 826189,
+    "trump": 395523,
+    "harris": 418488,
+    "other": 12178,
+    "reviewRows": 304,
     "turnoutRows": 320
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "newHampshireTownWardCsv",
+    "sourceId": "nh-2024-town-ward-president-governor",
+    "statewideTotals": {
+      "total": 826189,
+      "trump": 395523,
+      "harris": 418488,
+      "other": 12178
+    }
+  },
+  "reviewCharts": {
+    "format": "newHampshireTownWardCsv",
+    "sourceId": "nh-2024-town-ward-president-governor",
+    "comparisonContest": "Governor",
+    "coverageMode": "presidentVsGovernor",
+    "warning": "New Hampshire review rows are town/ward-level President-versus-Governor comparisons from archived official Secretary of State workbooks. Governor is used because New Hampshire did not have a 2024 U.S. Senate race. Town/ward boundary geometry is not included."
   }
 }

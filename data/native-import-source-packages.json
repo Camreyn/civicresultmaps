@@ -18,6 +18,7 @@
     "MN",
     "MS",
     "NC",
+    "NH",
     "NV",
     "OH",
     "PA",
@@ -420,17 +421,20 @@
       "state": "NH",
       "name": "New Hampshire",
       "priority": 9,
-      "currentStatus": "official_site_access_denied",
+      "currentStatus": "official_town_ward_review_package_collected",
       "officialSourcePages": [
-        "https://www.sos.nh.gov/elections/elections/election-results"
+        "https://www.sos.nh.gov/2024-general-election-results",
+        "https://web.archive.org/web/20260130123951id_/https://www.sos.nh.gov/2024-general-election-results",
+        "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls",
+        "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-governor_3.xls"
       ],
       "requiredArtifacts": [
-        "official town/ward results for President",
-        "same-row Governor local results"
+        "town/ward boundary geometry if map overlays below county level are required",
+        "state-native turnout denominator artifact if replacing EAC turnout fallback"
       ],
       "preferredComparisonContest": "Governor",
-      "parserNeeded": "newHampshireTownWardResults after official 2024 general result document can be accessed",
-      "blocker": "Official Secretary of State election results page returns Forbidden/Access denied from this environment, and likely document path probes also return 403."
+      "parserNeeded": "newHampshireTownWardCsv loaded for 10 county result rows, 304 town/ward President-versus-Governor review rows, and 320 EAC turnout rows.",
+      "blocker": "New Hampshire now has official town/ward President-versus-Governor review rows from archived Secretary of State legacy Excel workbooks. The live SOS page still returns access denied from this environment, so the retained archive URLs and local artifacts are the reproducible source path. Town/ward boundary geometry is still not collected."
     },
     {
       "state": "NY",

@@ -315,6 +315,28 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(adair["comparisonDemVotes"], 21)
         self.assertEqual(adair["comparisonRepVotes"], 284)
 
+    def test_new_hampshire_town_ward_csv_parser_builds_review_rows(self):
+        config = load_config("etl/state-configs/nh.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeNewHampshireTownWardCsv")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 10)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 826189)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 395523)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 418488)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 12178)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 304)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 304)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "Governor")
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 320)
+        alton = next(row for row in artifact["native"]["reviewRows"] if row["county"] == "Belknap County" and row["localUnit"] == "Alton")
+        self.assertEqual(alton["coverageMode"], "presidentVsGovernor")
+        self.assertEqual(alton["harris"], 1553)
+        self.assertEqual(alton["trump"], 2645)
+        self.assertEqual(alton["comparisonDemVotes"], 1252)
+        self.assertEqual(alton["comparisonRepVotes"], 2867)
     def test_mississippi_election_recap_csv_parser_builds_county_rows(self):
         config = load_config("etl/state-configs/ms.json")
         report = validate_config(config)
