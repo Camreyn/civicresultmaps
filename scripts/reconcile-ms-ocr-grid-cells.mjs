@@ -5,6 +5,7 @@ import process from "node:process";
 const defaults = {
   cells: ".etl/ocr/ms-grid-cell-candidates.csv",
   recap: "data/ms-2024-election-recap-sheets.csv",
+  sourceOverrides: "data/ms-2024-ocr-source-overrides.json",
   out: ".etl/ocr/ms-grid-reconciliation.csv",
   corrections: "",
 };
@@ -26,6 +27,7 @@ function usage() {
     "Options:",
     "  --cells <file>  Candidate cell CSV. Default: " + defaults.cells,
     "  --recap <file>  Official Mississippi statewide recap CSV. Default: " + defaults.recap,
+    "  --source-overrides <file>  Optional source/reconciliation override JSON. Default: " + defaults.sourceOverrides,
     "  --out <file>    Reconciliation CSV output. Default: " + defaults.out,
     "  --corrections <file>  Optional human-reviewed correction CSV.",
     "  --help          Show this help.",
@@ -39,6 +41,7 @@ function parseArgs(argv) {
     if (arg === "--help" || arg === "-h") options.help = true;
     else if (arg === "--cells") options.cells = argv[++index];
     else if (arg === "--recap") options.recap = argv[++index];
+    else if (arg === "--source-overrides") options.sourceOverrides = argv[++index];
     else if (arg === "--out") options.out = argv[++index];
     else if (arg === "--corrections") options.corrections = argv[++index];
     else throw new Error("Unknown option: " + arg);
@@ -99,6 +102,12 @@ function candidateKeyFromName(name) {
     if (alias.patterns.every((pattern) => pattern.test(name))) return alias.key;
   }
   return "other";
+}
+
+function loadSourceOverrides(file) {
+  if (!file || !fs.existsSync(file)) return {};
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+  return parsed.counties || {};
 }
 
 function loadOfficialTotals(recapPath) {
@@ -243,7 +252,7 @@ function applyCorrections(cells, corrections) {
   return { cells: correctedCells, metrics };
 }
 
-function summarize(cells, officialTotals) {
+function summarize(cells, officialTotals, sourceOverrides = {}) {
   const byCountyCandidate = new Map();
   const byCountyPage = new Map();
   const precinctKeys = new Set();
@@ -305,8 +314,11 @@ function summarize(cells, officialTotals) {
     const rawDelta = official == null ? "" : summary.rawTotal - official;
     const precinctDelta = official == null ? "" : summary.precinctTotal - official;
     const warnings = [...summary.warnings];
+    const override = sourceOverrides[summary.county] || {};
+    const reconciledFromDetectedTotal = override.reconciliationMode === "detected_total_cell" && official != null && summary.totalColumnCells > 0;
     if (summary.numericCells !== summary.cells) warnings.push("missing_or_non_numeric_cells");
     if (summary.totalColumnCells > 0) warnings.push("detected_total_column_cells");
+    if (reconciledFromDetectedTotal) warnings.push("reconciled_from_detected_total_cell");
     candidateRows.push({
       kind: "candidate_total",
       county: summary.county,
@@ -321,7 +333,7 @@ function summarize(cells, officialTotals) {
       officialTotal: official ?? "",
       delta: rawDelta,
       precinctDelta,
-      status: official != null && precinctDelta === 0 ? "reconciled" : "review",
+      status: official != null && (precinctDelta === 0 || reconciledFromDetectedTotal) ? "reconciled" : "review",
       warnings: warnings.join(";"),
     });
   }
@@ -376,7 +388,8 @@ async function main() {
   const corrections = loadCorrections(options.corrections);
   const corrected = applyCorrections(inputCells, corrections);
   const officialTotals = loadOfficialTotals(options.recap);
-  const report = summarize(corrected.cells, officialTotals);
+  const sourceOverrides = loadSourceOverrides(options.sourceOverrides);
+  const report = summarize(corrected.cells, officialTotals, sourceOverrides);
   report.metrics = { ...report.metrics, ...corrected.metrics };
   ensureDir(path.dirname(options.out));
   const header = [

@@ -9,6 +9,7 @@ const defaults = {
   gridCells: ".etl/ocr/ms-full-grid-cell-candidates.csv",
   gridReconciliation: ".etl/ocr/ms-full-grid-reconciliation.csv",
   recap: "data/ms-2024-election-recap-sheets.csv",
+  sourceOverrides: "data/ms-2024-ocr-source-overrides.json",
   outCells: ".etl/ocr/ms-combined-review-candidates.csv",
   outReconciliation: ".etl/ocr/ms-combined-review-reconciliation.csv",
   outCorrectionTemplate: ".etl/ocr/ms-combined-review-correction-template.csv",
@@ -32,6 +33,7 @@ function usage() {
     "  --grid-cells <file>              Grid OCR candidate CSV. Default: " + defaults.gridCells,
     "  --grid-reconciliation <file>     Grid OCR reconciliation CSV. Default: " + defaults.gridReconciliation,
     "  --recap <file>                   Official recap CSV. Default: " + defaults.recap,
+    "  --source-overrides <file>        Optional source/reconciliation override JSON. Default: " + defaults.sourceOverrides,
     "  --out-cells <file>               Combined candidate CSV output. Default: " + defaults.outCells,
     "  --out-reconciliation <file>      Combined reconciliation CSV output. Default: " + defaults.outReconciliation,
     "  --out-correction-template <file> Combined correction template output. Default: " + defaults.outCorrectionTemplate,
@@ -51,6 +53,7 @@ function parseArgs(argv) {
     else if (arg === "--grid-cells") options.gridCells = argv[++index];
     else if (arg === "--grid-reconciliation") options.gridReconciliation = argv[++index];
     else if (arg === "--recap") options.recap = argv[++index];
+    else if (arg === "--source-overrides") options.sourceOverrides = argv[++index];
     else if (arg === "--out-cells") options.outCells = argv[++index];
     else if (arg === "--out-reconciliation") options.outReconciliation = argv[++index];
     else if (arg === "--out-correction-template") options.outCorrectionTemplate = argv[++index];
@@ -256,7 +259,7 @@ async function main() {
   const outputCells = writeCombinedCells(options, replacements);
   console.log("Wrote " + outputCells + " combined OCR candidate cells to " + options.outCells);
 
-  const reconcileArgs = ["scripts/reconcile-ms-ocr-grid-cells.mjs", "--cells", options.outCells, "--recap", options.recap, "--out", options.outReconciliation];
+  const reconcileArgs = ["scripts/reconcile-ms-ocr-grid-cells.mjs", "--cells", options.outCells, "--recap", options.recap, "--source-overrides", options.sourceOverrides, "--out", options.outReconciliation];
   if (options.corrections) reconcileArgs.push("--corrections", options.corrections);
   runNode(reconcileArgs);
   runNode(["scripts/create-ms-ocr-correction-template.mjs", "--cells", options.outCells, "--reconciliation", options.outReconciliation, "--out", options.outCorrectionTemplate]);

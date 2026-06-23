@@ -21,6 +21,7 @@ const defaults = {
   force: false,
   limit: 0,
   county: "",
+  exactCounty: false,
   firstPages: 0,
   keepImages: true,
 };
@@ -53,6 +54,7 @@ function usage() {
     "  --lang <code>         OCR language. Default: " + defaults.lang,
     "  --limit <number>      Process only the first N PDFs, for sampling.",
     "  --county <name>       Process one PDF whose sanitized stem matches this county name.",
+    "  --exact-county        Match --county against the sanitized PDF stem only.",
     "  --first-pages <num>   Process only the first N pages of each PDF, for sampling.",
     "  --force               Re-render/re-OCR even when output text exists.",
     "  --no-keep-images      Delete rendered page PNGs after OCR.",
@@ -101,6 +103,8 @@ function parseArgs(argv) {
       options.limit = Number(argv[++index]);
     } else if (arg === "--county") {
       options.county = argv[++index];
+    } else if (arg === "--exact-county") {
+      options.exactCounty = true;
     } else if (arg === "--first-pages") {
       options.firstPages = Number(argv[++index]);
     } else {
@@ -302,7 +306,13 @@ async function main() {
 
   let pdfs = fs.readdirSync(options.pdfDir).filter((name) => name.toLowerCase().endsWith(".pdf")).sort();
   if (options.county) {
-    pdfs = pdfs.filter((name) => safeStem(name).toLowerCase() === options.county.toLowerCase() || canonicalCountyName(safeStem(name)).toLowerCase() === options.county.toLowerCase());
+    pdfs = pdfs.filter((name) => {
+      const stem = safeStem(name).toLowerCase();
+      const county = options.county.toLowerCase();
+      if (stem === county) return true;
+      const canonical = canonicalCountyName(safeStem(name)).toLowerCase();
+      return !options.exactCounty && canonical === county;
+    });
   }
   if (options.limit > 0) {
     pdfs = pdfs.slice(0, options.limit);

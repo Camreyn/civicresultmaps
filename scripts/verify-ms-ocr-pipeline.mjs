@@ -6,6 +6,7 @@ import process from "node:process";
 const defaults = {
   pdfDir: "data/ms-2024-county-results-pdfs",
   recap: "data/ms-2024-election-recap-sheets.csv",
+  sourceOverrides: "data/ms-2024-ocr-source-overrides.json",
   textOutDir: "data/ms-2024-county-results-ocr-text",
   textPagesDir: "data/ms-2024-county-results-ocr-text/pages",
   imageDir: ".etl/ocr/ms-county-results-images",
@@ -39,6 +40,7 @@ function usage() {
     "Options:",
     "  --pdf-dir <dir>              Source county PDF directory. Default: " + defaults.pdfDir,
     "  --recap <file>             Official statewide recap CSV. Default: " + defaults.recap,
+    "  --source-overrides <file>  Optional source/rotation override JSON. Default: " + defaults.sourceOverrides,
     "  --text-out-dir <dir>         OCR text output directory. Default: " + defaults.textOutDir,
     "  --text-pages-dir <dir>       OCR per-page text directory. Default: " + defaults.textPagesDir,
     "  --image-dir <dir>            Rendered OCR image directory. Default: " + defaults.imageDir,
@@ -69,6 +71,7 @@ function parseArgs(argv) {
     if (arg === "--help" || arg === "-h") options.help = true;
     else if (arg === "--pdf-dir") options.pdfDir = argv[++index];
     else if (arg === "--recap") options.recap = argv[++index];
+    else if (arg === "--source-overrides") options.sourceOverrides = argv[++index];
     else if (arg === "--text-out-dir") options.textOutDir = argv[++index];
     else if (arg === "--text-pages-dir") options.textPagesDir = argv[++index];
     else if (arg === "--image-dir") options.imageDir = argv[++index];
@@ -154,6 +157,12 @@ function listOfficialCounties(options) {
   return [...new Set(parseCsv(fs.readFileSync(options.recap, "utf8")).filter((row) => row.Office === "United States-President").map((row) => row.County).filter(Boolean))].sort();
 }
 
+function loadSourceOverrides(file) {
+  if (!file || !fs.existsSync(file)) return {};
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+  return parsed.counties || {};
+}
+
 function listCountyStems(options, officialCounties) {
   if (!fs.existsSync(options.pdfDir)) throw new Error("PDF directory does not exist: " + options.pdfDir);
   const pdfStems = fs
@@ -162,18 +171,26 @@ function listCountyStems(options, officialCounties) {
     .map(safeStem)
     .sort();
   const byCanonical = new Map();
+  const byExact = new Set(pdfStems);
   for (const stem of pdfStems) {
     const canonical = canonicalCountyName(stem);
     const current = byCanonical.get(canonical);
     if (!current || /\s+Updated$/i.test(stem)) byCanonical.set(canonical, stem);
   }
-  let counties = officialCounties.map((county) => byCanonical.get(county)).filter(Boolean);
+  const sourceOverrides = loadSourceOverrides(options.sourceOverrides);
+  let counties = officialCounties.map((county) => {
+    const override = sourceOverrides[county];
+    if (override?.sourceStem) {
+      if (!byExact.has(override.sourceStem)) throw new Error("Configured Mississippi OCR source stem does not exist for " + county + ": " + override.sourceStem);
+      return override.sourceStem;
+    }
+    return byCanonical.get(county);
+  }).filter(Boolean);
   if (options.county) {
     counties = counties.filter((name) => name.toLowerCase() === options.county.toLowerCase() || canonicalCountyName(name).toLowerCase() === options.county.toLowerCase());
   }
   return counties;
 }
-
 function readState(file) {
   if (!fs.existsSync(file)) return { generatedAt: null, completed: {}, failed: {} };
   return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -201,7 +218,10 @@ function runOcrBatch(options, counties) {
     return state;
   }
 
+  const sourceOverrides = loadSourceOverrides(options.sourceOverrides);
+
   for (const county of selected) {
+    const override = sourceOverrides[canonicalCountyName(county)] || {};
     const args = [
       "scripts/ocr-ms-county-result-pdfs.mjs",
       "--pdf-dir",
@@ -215,17 +235,18 @@ function runOcrBatch(options, counties) {
       "--county",
       county,
       "--scale",
-      String(options.scale),
+      String(override.scale ?? options.scale),
       "--rotate",
-      String(options.rotate),
+      String(override.rotate ?? options.rotate),
       "--psm",
-      String(options.psm),
+      String(override.psm ?? options.psm),
+      "--exact-county",
     ];
     if (options.forceOcr) args.push("--force");
     if (options.limitPages > 0) args.push("--first-pages", String(options.limitPages));
     try {
       runNode(args);
-      state.completed[county] = { completedAt: new Date().toISOString() };
+      state.completed[county] = { completedAt: new Date().toISOString(), sourceOverride: override };
       delete state.failed[county];
     } catch (error) {
       state.failed[county] = { failedAt: new Date().toISOString(), error: error.message };
@@ -237,7 +258,6 @@ function runOcrBatch(options, counties) {
 
   return state;
 }
-
 function runExtractor(options) {
   const args = [
     "scripts/extract-ms-recap-ocr-text-rows.mjs",
@@ -253,7 +273,7 @@ function runExtractor(options) {
 }
 
 function runReconciler(options) {
-  const args = ["scripts/reconcile-ms-ocr-grid-cells.mjs", "--cells", options.cells, "--out", options.reconciliation];
+  const args = ["scripts/reconcile-ms-ocr-grid-cells.mjs", "--cells", options.cells, "--source-overrides", options.sourceOverrides, "--out", options.reconciliation];
   if (options.corrections) args.push("--corrections", options.corrections);
   runNode(args);
 }
