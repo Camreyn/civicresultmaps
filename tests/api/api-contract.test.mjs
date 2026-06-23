@@ -97,6 +97,8 @@ test("public completeness report exists for national readiness", () => {
   assert.match(readiness, /Source Acquisition Tiers/);
   assert.match(readiness, /Source Acquisition API/);
   assert.match(readiness, /sourceAcquisitionRows/);
+  assert.match(readiness, /Subcounty review rows/);
+  assert.match(readiness, /sourceAcquisitionReviewTask/);
   assert.doesNotMatch(readiness, /Package Requests API/);
   assert.doesNotMatch(readiness, /Native Package Requests/);
   assert.match(packages, /listNativeSourcePackages/);

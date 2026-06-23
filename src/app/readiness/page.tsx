@@ -223,6 +223,36 @@ function sourceAcquisitionPriorityRows(rows: SourceAcquisitionTierRow[]) {
     });
 }
 
+function sourceAcquisitionReviewTask(
+  state: CompletenessSummary,
+  rows: SourceAcquisitionTierRow[],
+): ReadinessTask | null {
+  if (state.reviewRowCount === 0 || state.indicatorCount > 0) {
+    return null;
+  }
+
+  const loadedCountyContext = rows.some(
+    (row) => row.reportingGrain === "county" && /loaded/i.test(row.parserStatus),
+  );
+  const pendingSubcountyPath = rows.some((row) => {
+    const targetLooksLocal = /precinct|ward|municipal|local/i.test(row.reportingGrain);
+    const statusLooksPending = /review-gated|not parsed|future|find|acquire|needs/i.test(
+      `${row.parserStatus} ${row.nextAction}`,
+    );
+    return targetLooksLocal && statusLooksPending;
+  });
+
+  if (!loadedCountyContext && !pendingSubcountyPath) {
+    return null;
+  }
+
+  return {
+    key: "subcounty-review",
+    label: "Subcounty review rows",
+    severity: "medium",
+  };
+}
+
 function adminSourceTasks(adminSource: AdminSourceStatusSummary | undefined): ReadinessTask[] {
   if (!adminSource) {
     return [{ key: "admin-source-registry", label: "Admin source registry", severity: "medium" }];
@@ -393,7 +423,10 @@ export default async function ReadinessPage() {
       const sourceDiscovery = sourceDiscoveryByState.get(state.state);
       const sourceAcquisitionRowsForState = sourceAcquisitionByState.get(state.state) ?? [];
       const sourceAcquisitionPrimary = sourceAcquisitionRowsForState[0];
-      const tasks = missingTasks(state, turnoutSource, adminSource);
+      const acquisitionTask = sourceAcquisitionReviewTask(state, sourceAcquisitionRowsForState);
+      const tasks = acquisitionTask
+        ? [...missingTasks(state, turnoutSource, adminSource), acquisitionTask]
+        : missingTasks(state, turnoutSource, adminSource);
       const summary = taskSummary(tasks);
       return { ...state, adminSource, sourceAcquisitionPrimary, sourceAcquisitionRows: sourceAcquisitionRowsForState, sourceDiscovery, taskSummary: summary, tasks, turnoutSource };
     })
