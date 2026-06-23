@@ -360,6 +360,14 @@ test("native source package handoff is validated in CI", () => {
   assert.match(acquisitionRegistry, /electionresults\.iowa\.gov/);
   assert.match(acquisitionRegistry, /data\.capitol\.texas\.gov/);
   assert.match(acquisitionRegistry, /does not replace loaded result or review data/);
+  const msTextExtractor = readFileSync("scripts/extract-ms-recap-ocr-text-rows.mjs", "utf8");
+  const msReconciler = readFileSync("scripts/reconcile-ms-ocr-grid-cells.mjs", "utf8");
+  assert.match(packageScripts["etl:extract:ms:ocr-text-rows"], /extract-ms-recap-ocr-text-rows/);
+  assert.match(packageScripts["etl:extract:ms:ocr-text-rows:sample"], /ms-sample-text-row-candidates/);
+  assert.match(msTextExtractor, /text_row_fallback/);
+  assert.match(msTextExtractor, /This is a fallback companion to grid-cell extraction/);
+  assert.match(msReconciler, /precinctExtractedTotal/);
+  assert.match(msReconciler, /detected_total_column_cells/);
 });
 
 test("turnout collection inventory is available outside the app", () => {

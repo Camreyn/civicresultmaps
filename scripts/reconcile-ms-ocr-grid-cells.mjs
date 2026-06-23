@@ -132,14 +132,29 @@ function summarize(cells, officialTotals) {
     }
     const countyKey = cell.county + "|" + key;
     if (!byCountyCandidate.has(countyKey)) {
-      byCountyCandidate.set(countyKey, { county: cell.county, candidateKey: key, cells: 0, numericCells: 0, total: 0, pages: new Set() });
+      byCountyCandidate.set(countyKey, {
+        county: cell.county,
+        candidateKey: key,
+        cells: 0,
+        numericCells: 0,
+        rawTotal: 0,
+        totalColumnCells: 0,
+        precinctTotal: 0,
+        pages: new Set(),
+      });
     }
     const summary = byCountyCandidate.get(countyKey);
     summary.cells += 1;
     summary.pages.add(cell.page);
     if (value != null) {
       summary.numericCells += 1;
-      summary.total += value;
+      summary.rawTotal += value;
+      const official = officialTotals.get(countyKey);
+      if (official != null && value === official) {
+        summary.totalColumnCells += 1;
+      } else {
+        summary.precinctTotal += value;
+      }
     }
 
     const pageKey = cell.county + "|" + cell.page;
@@ -156,7 +171,11 @@ function summarize(cells, officialTotals) {
   const candidateRows = [];
   for (const summary of byCountyCandidate.values()) {
     const official = officialTotals.get(summary.county + "|" + summary.candidateKey) ?? null;
-    const delta = official == null ? "" : summary.total - official;
+    const rawDelta = official == null ? "" : summary.rawTotal - official;
+    const precinctDelta = official == null ? "" : summary.precinctTotal - official;
+    const warnings = [];
+    if (summary.numericCells !== summary.cells) warnings.push("missing_or_non_numeric_cells");
+    if (summary.totalColumnCells > 0) warnings.push("detected_total_column_cells");
     candidateRows.push({
       kind: "candidate_total",
       county: summary.county,
@@ -165,11 +184,14 @@ function summarize(cells, officialTotals) {
       cells: summary.cells,
       numericCells: summary.numericCells,
       columns: "",
-      extractedTotal: summary.total,
+      extractedTotal: summary.rawTotal,
+      precinctExtractedTotal: summary.precinctTotal,
+      totalColumnCells: summary.totalColumnCells,
       officialTotal: official ?? "",
-      delta,
-      status: official != null && delta === 0 ? "reconciled" : "review",
-      warnings: summary.numericCells === summary.cells ? "" : "missing_or_non_numeric_cells",
+      delta: rawDelta,
+      precinctDelta,
+      status: official != null && precinctDelta === 0 ? "reconciled" : "review",
+      warnings: warnings.join(";"),
     });
   }
 
@@ -185,8 +207,11 @@ function summarize(cells, officialTotals) {
       numericCells: "",
       columns: page.columns.size,
       extractedTotal: "",
+      precinctExtractedTotal: "",
+      totalColumnCells: "",
       officialTotal: "",
       delta: "",
+      precinctDelta: "",
       status: missing.length || page.warnings.size ? "review" : "candidate",
       warnings: [...page.warnings, ...missing.map((key) => "missing_" + key)].join(";"),
     });
@@ -202,6 +227,7 @@ function summarize(cells, officialTotals) {
       countyCandidateSummaries: candidateRows.length,
       pageSummaries: pageRows.length,
       reconciledCandidateTotals: candidateRows.filter((row) => row.status === "reconciled").length,
+      candidateTotalsWithDetectedTotalColumns: candidateRows.filter((row) => Number(row.totalColumnCells) > 0).length,
     },
   };
 }
@@ -219,7 +245,23 @@ async function main() {
   const officialTotals = loadOfficialTotals(options.recap);
   const report = summarize(cells, officialTotals);
   ensureDir(path.dirname(options.out));
-  const header = ["kind", "county", "page", "candidate", "cells", "numericCells", "columns", "extractedTotal", "officialTotal", "delta", "status", "warnings"];
+  const header = [
+    "kind",
+    "county",
+    "page",
+    "candidate",
+    "cells",
+    "numericCells",
+    "columns",
+    "extractedTotal",
+    "precinctExtractedTotal",
+    "totalColumnCells",
+    "officialTotal",
+    "delta",
+    "precinctDelta",
+    "status",
+    "warnings",
+  ];
   fs.writeFileSync(options.out, [header.join(","), ...report.rows.map((row) => header.map((key) => csv(row[key])).join(","))].join("\n") + "\n");
   fs.writeFileSync(options.out.replace(/\.csv$/i, ".manifest.json"), JSON.stringify({ generatedAt: new Date().toISOString(), options, metrics: report.metrics }, null, 2) + "\n");
   console.log(JSON.stringify(report.metrics, null, 2));
