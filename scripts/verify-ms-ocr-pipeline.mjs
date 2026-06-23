@@ -19,6 +19,9 @@ const defaults = {
   limitCounties: 0,
   limitPages: 0,
   county: "",
+  scale: 3,
+  rotate: 270,
+  psm: 4,
   skipOcr: false,
   forceOcr: false,
   failOnReview: false,
@@ -49,6 +52,9 @@ function usage() {
     "  --county <name>              Process one county/PDF stem.",
     "  --limit-counties <n>         Process only the first N pending counties.",
     "  --limit-pages <n>            Limit page extraction per county, for samples.",
+    "  --scale <number>             OCR render scale passed to the county OCR script. Default: " + defaults.scale,
+    "  --rotate <degrees>           OCR rotation passed to the county OCR script. Default: " + defaults.rotate,
+    "  --psm <number>               Tesseract page segmentation mode. Default: " + defaults.psm,
     "  --skip-ocr                   Reuse existing OCR text and only extract/reconcile/report.",
     "  --force-ocr                  Re-OCR selected counties even when text exists.",
     "  --fail-on-review             Exit nonzero if any county is not import-ready.",
@@ -76,6 +82,9 @@ function parseArgs(argv) {
     else if (arg === "--county") options.county = argv[++index];
     else if (arg === "--limit-counties") options.limitCounties = Number(argv[++index]);
     else if (arg === "--limit-pages") options.limitPages = Number(argv[++index]);
+    else if (arg === "--scale") options.scale = Number(argv[++index]);
+    else if (arg === "--rotate") options.rotate = Number(argv[++index]);
+    else if (arg === "--psm") options.psm = Number(argv[++index]);
     else if (arg === "--skip-ocr") options.skipOcr = true;
     else if (arg === "--force-ocr") options.forceOcr = true;
     else if (arg === "--fail-on-review") options.failOnReview = true;
@@ -205,6 +214,12 @@ function runOcrBatch(options, counties) {
       options.tessdataDir,
       "--county",
       county,
+      "--scale",
+      String(options.scale),
+      "--rotate",
+      String(options.rotate),
+      "--psm",
+      String(options.psm),
     ];
     if (options.forceOcr) args.push("--force");
     if (options.limitPages > 0) args.push("--first-pages", String(options.limitPages));
@@ -352,6 +367,9 @@ async function main() {
   }
   if (!Number.isFinite(options.limitCounties) || options.limitCounties < 0) throw new Error("--limit-counties must be a non-negative number");
   if (!Number.isFinite(options.limitPages) || options.limitPages < 0) throw new Error("--limit-pages must be a non-negative number");
+  if (!Number.isFinite(options.scale) || options.scale <= 0) throw new Error("--scale must be a positive number");
+  if (!Number.isFinite(options.rotate)) throw new Error("--rotate must be a number");
+  if (!Number.isFinite(options.psm) || options.psm < 0) throw new Error("--psm must be a non-negative number");
 
   const officialCounties = listOfficialCounties(options);
   const counties = listCountyStems(options, officialCounties);

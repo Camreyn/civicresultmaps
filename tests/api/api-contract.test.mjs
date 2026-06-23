@@ -381,6 +381,9 @@ test("native source package handoff is validated in CI", () => {
   assert.match(msVerifier, /listOfficialCounties/);
   assert.match(msVerifier, /canonicalCountyName/);
   assert.match(msVerifier, /Updated\$\/i/);
+  assert.match(msVerifier, /--scale/);
+  assert.match(msVerifier, /--rotate/);
+  assert.match(msVerifier, /--psm/);
   assert.match(msVerifier, /failOnReview/);
   assert.match(msVerifier, /import_ready/);
   assert.match(msVerifier, /missing_ocr/);
