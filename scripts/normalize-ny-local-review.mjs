@@ -1,4 +1,4 @@
-﻿import fs from "node:fs";
+import fs from "node:fs";
 import path from "node:path";
 import https from "node:https";
 import { fileURLToPath } from "node:url";
@@ -59,7 +59,7 @@ function cleanText(value) {
 }
 
 function intValue(value) {
-  const text = cleanText(value).replace(/,/g, "");
+  const text = cleanText(value).replace(/[$,%]/g, "").replace(/,/g, "");
   if (!text || text === "-" || /^total$/i.test(text)) return 0;
   const parsed = Number.parseInt(text, 10);
   return Number.isFinite(parsed) ? parsed : 0;
@@ -77,7 +77,7 @@ function isDataRow(row) {
 
 function classifyColumn(header, office) {
   const text = cleanText(header).toLowerCase();
-  if (!text || /blank|void|over votes|under votes|scattering|total/.test(text)) return "";
+  if (!text || /blank|void|over ?votes|under ?votes|scattering|total/.test(text)) return "";
   if (office === "president") {
     if (text.includes("harris")) return "dem";
     if (text.includes("trump")) return "rep";
@@ -96,6 +96,10 @@ function valuesFromRow(row, header, office) {
     if (bucket) values[bucket] += intValue(row[index]);
   });
   return values;
+}
+
+function completeRowsFromPending(pending) {
+  return [...pending.values()].filter((entry) => entry.pres_total && (entry.comparison_dem || entry.comparison_rep || entry.comparison_other));
 }
 
 function rowsFromSheetRows(rows, county) {
@@ -151,7 +155,7 @@ function rowsFromSheetRows(rows, county) {
     pending.set(key, entry);
   }
 
-  return [...pending.values()].filter((entry) => entry.pres_total && (entry.comparison_dem || entry.comparison_rep || entry.comparison_other));
+  return completeRowsFromPending(pending);
 }
 
 function longFormatRows(rows, county) {
@@ -206,12 +210,112 @@ function longFormatRows(rows, county) {
     pending.set(key, entry);
   }
 
-  return [...pending.values()].filter((entry) => entry.pres_total && (entry.comparison_dem || entry.comparison_rep || entry.comparison_other));
+  return completeRowsFromPending(pending);
 }
 
+function reportWorkbookRows(rows, county) {
+  const pending = new Map();
+  let localUnit = "";
+  let currentOffice = "";
+
+  for (const rawRow of rows) {
+    const cells = rawRow.map((value) => cleanText(value));
+    const first = cells[0] || "";
+    const rowText = cells.join(" ").toLowerCase();
+
+    if (/^\d{4}\s+\S+/.test(first)) {
+      localUnit = first;
+      currentOffice = "";
+      if (!pending.has(localUnit.toUpperCase())) {
+        pending.set(localUnit.toUpperCase(), { county, local_unit: localUnit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 });
+      }
+      continue;
+    }
+    if (/electors for president and vice president/.test(rowText)) {
+      currentOffice = "president";
+      continue;
+    }
+    if (/^united states senator$/.test(rowText) || /united states senator -/.test(rowText)) {
+      currentOffice = "senate";
+      continue;
+    }
+    if (!localUnit || !currentOffice || !first || /over votes|under votes|write-in|total write-in|undervote|overvote/i.test(first)) continue;
+
+    const match = first.match(/^(.*?)\s+(?:\.\s*){2,}([\d,]+)\s+(?:\d+\.\d+|\.\d+)/);
+    if (!match) continue;
+    const candidate = cleanText(match[1]).toLowerCase();
+    const votes = intValue(match[2]);
+    if (!votes) continue;
+
+    const entry = pending.get(localUnit.toUpperCase());
+    let bucket = "other";
+    if (currentOffice === "president") {
+      if (/harris/.test(candidate)) bucket = "dem";
+      else if (/trump/.test(candidate)) bucket = "rep";
+      if (bucket === "dem") entry.pres_harris += votes;
+      else if (bucket === "rep") entry.pres_trump += votes;
+      else entry.pres_other += votes;
+      entry.pres_total += votes;
+    } else {
+      if (/gillibrand/.test(candidate)) bucket = "dem";
+      else if (/sapraicone|sparaicone/.test(candidate)) bucket = "rep";
+      if (bucket === "dem") entry.comparison_dem += votes;
+      else if (bucket === "rep") entry.comparison_rep += votes;
+      else entry.comparison_other += votes;
+    }
+  }
+
+  return completeRowsFromPending(pending);
+}
+
+function otsegoWorkbookRows(workbook, county) {
+  const pending = new Map();
+  for (const sheetName of workbook.SheetNames.filter((name) => name !== "Document map")) {
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1, raw: false, blankrows: false });
+    const precinctRow = rows.find((row) => cleanText(row[0]) && /ballots cast/i.test(cleanText(row[17])));
+    const localUnit = cleanText(precinctRow?.[0]);
+    if (!localUnit) continue;
+    const entry = { county, local_unit: localUnit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    let currentOffice = "";
+    for (const rawRow of rows) {
+      const row = rawRow.map((value) => cleanText(value));
+      const first = row[0] || "";
+      const rowText = row.join(" ").toLowerCase();
+      if (/electors for president and vice president/.test(rowText)) {
+        currentOffice = "president";
+        continue;
+      }
+      if (/united states senator/.test(rowText)) {
+        currentOffice = "senate";
+        continue;
+      }
+      if (!currentOffice || !first) continue;
+      const votes = intValue(row[20]);
+      if (!votes) continue;
+      if (currentOffice === "president") {
+        if (/harris/i.test(first)) entry.pres_harris += votes;
+        else if (/trump/i.test(first)) entry.pres_trump += votes;
+        else entry.pres_other += votes;
+        entry.pres_total += votes;
+      } else {
+        if (/gillibrand/i.test(first)) entry.comparison_dem += votes;
+        else if (/sapraicone|sparaicone/i.test(first)) entry.comparison_rep += votes;
+        else entry.comparison_other += votes;
+      }
+    }
+    pending.set(localUnit.toUpperCase(), entry);
+  }
+  return completeRowsFromPending(pending);
+}
 function workbookRows(filePath, county) {
   const workbook = XLSX.readFile(filePath, { cellDates: false });
   const allRows = workbook.SheetNames.flatMap((name) => XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, raw: false, blankrows: false }));
+  const reportRows = reportWorkbookRows(allRows, county);
+  if (reportRows.length) return reportRows;
+  if (workbook.SheetNames.includes("Document map")) {
+    const otsegoRows = otsegoWorkbookRows(workbook, county);
+    if (otsegoRows.length) return otsegoRows;
+  }
   const longRows = longFormatRows(allRows, county);
   if (longRows.length) return longRows;
   const presidentSheet = workbook.SheetNames.find((name) => /president|u\.s\. president/i.test(name));
@@ -226,13 +330,18 @@ function workbookRows(filePath, county) {
 function htmlRows(filePath, county) {
   const html = fs.readFileSync(filePath, "utf8");
   const tables = [];
-  const re = /<h2[\s\S]*?<\/h2>\s*<table[\s\S]*?<\/table>/gi;
+  const re = /<table[\s\S]*?<\/table>/gi;
   let match;
+  let previousIndex = 0;
   while ((match = re.exec(html))) {
-    const block = match[0];
-    if (!/president|united states senator|gillibrand|sapraicone/i.test(block)) continue;
-    const office = /president/i.test(block) ? "president" : "senate";
-    const cellsByRow = [...block.matchAll(/<tr[\s\S]*?<\/tr>/gi)].map((rowMatch) =>
+    const tableHtml = match[0];
+    const context = cleanText(html.slice(previousIndex, match.index));
+    previousIndex = re.lastIndex;
+    if (/counting group:\s*(election day|early voting|absentee)/i.test(context)) continue;
+    const contextAndTable = `${context} ${cleanText(tableHtml)}`;
+    const office = /president/i.test(contextAndTable) ? "president" : (/united states senator|gillibrand|sapraicone/i.test(contextAndTable) ? "senate" : "");
+    if (!office) continue;
+    const cellsByRow = [...tableHtml.matchAll(/<tr[\s\S]*?<\/tr>/gi)].map((rowMatch) =>
       [...rowMatch[0].matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/gi)].map((cell) => cleanText(cell[1])),
     );
     if (!cellsByRow.length) continue;
@@ -259,7 +368,7 @@ function htmlRows(filePath, county) {
       pending.set(key, entry);
     }
   }
-  return [...pending.values()].filter((entry) => entry.pres_total && (entry.comparison_dem || entry.comparison_rep || entry.comparison_other));
+  return completeRowsFromPending(pending);
 }
 
 function countyName(fileName) {
