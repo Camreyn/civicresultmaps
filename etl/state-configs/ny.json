@@ -61,6 +61,17 @@
       "status": "loaded"
     },
     {
+      "id": "ny-2024-local-review-openelections",
+      "category": "OpenElections 2024 general election district source normalization",
+      "url": "https://github.com/openelections/openelections-sources-ny/tree/master/2024/general",
+      "localFile": "data/ny-2024-local-review.csv",
+      "parser": "localComparisonCsv",
+      "authority": "OpenElections source collection from New York county boards of elections",
+      "timestampBasis": "Machine-readable county election-district source files collected in openelections/openelections-sources-ny 2024/general and normalized by scripts/normalize-ny-local-review.mjs.",
+      "confidence": "Local election-district review rows for NY counties with machine-readable CSV, HTML, or XLSX sources. PDF-only counties remain excluded until a PDF extraction path is reviewed.",
+      "status": "loaded"
+    },
+    {
       "id": "ny-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2736%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -80,11 +91,12 @@
     ]
   },
   "reviewCharts": {
-    "format": "countyComparisonCsv",
-    "sourceId": "ny-2024-general-senate",
+    "format": "localComparisonCsv",
+    "sourceId": "ny-2024-local-review-openelections",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "warning": "New York review rows are county-level President-versus-U.S. Senate comparisons from the official NYSBOE 2024 archive PDF. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+    "sourceCoverage": "Machine-readable OpenElections county source files only; PDF-only counties are not included in this review-row CSV yet.",
+    "warning": "New York local review rows are election-district President-versus-U.S. Senate comparisons normalized from machine-readable OpenElections county source files. Counties available only as PDFs are not included yet, and county-certified result totals remain the map authority."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -103,13 +115,13 @@
   "expected": {
     "jurisdictions": 62,
     "resultRows": 62,
-    "sources": 6,
+    "sources": 7,
     "geometryFeatures": 62,
     "stateTotal": 8381429,
     "trump": 3579519,
     "harris": 4619543,
     "other": 182367,
-    "reviewRows": 62,
+    "reviewRows": 5763,
     "turnoutRows": 62
   },
   "capabilities": {
