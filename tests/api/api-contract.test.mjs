@@ -362,12 +362,22 @@ test("native source package handoff is validated in CI", () => {
   assert.match(acquisitionRegistry, /does not replace loaded result or review data/);
   const msTextExtractor = readFileSync("scripts/extract-ms-recap-ocr-text-rows.mjs", "utf8");
   const msReconciler = readFileSync("scripts/reconcile-ms-ocr-grid-cells.mjs", "utf8");
+  const msCorrectionTemplate = readFileSync("scripts/create-ms-ocr-correction-template.mjs", "utf8");
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows"], /extract-ms-recap-ocr-text-rows/);
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows:sample"], /ms-sample-text-row-candidates/);
+  assert.match(packageScripts["etl:template:ms:ocr-corrections"], /create-ms-ocr-correction-template/);
+  assert.match(packageScripts["etl:template:ms:ocr-corrections:sample"], /ms-sample-ocr-correction-template/);
   assert.match(msTextExtractor, /text_row_fallback/);
   assert.match(msTextExtractor, /This is a fallback companion to grid-cell extraction/);
+  assert.match(msCorrectionTemplate, /correctedValue/);
+  assert.match(msCorrectionTemplate, /exclude/);
+  assert.match(msCorrectionTemplate, /Candidate total still needs review/);
   assert.match(msReconciler, /precinctExtractedTotal/);
   assert.match(msReconciler, /detected_total_column_cells/);
+  assert.match(msReconciler, /--corrections/);
+  assert.match(msReconciler, /manual_correction/);
+  assert.match(msReconciler, /manual_addition/);
+  assert.match(msReconciler, /Correction rows did not match candidate cells/);
 });
 
 test("turnout collection inventory is available outside the app", () => {

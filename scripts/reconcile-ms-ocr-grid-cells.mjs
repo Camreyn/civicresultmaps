@@ -6,6 +6,7 @@ const defaults = {
   cells: ".etl/ocr/ms-grid-cell-candidates.csv",
   recap: "data/ms-2024-election-recap-sheets.csv",
   out: ".etl/ocr/ms-grid-reconciliation.csv",
+  corrections: "",
 };
 
 const candidateAliases = [
@@ -26,6 +27,7 @@ function usage() {
     "  --cells <file>  Candidate cell CSV. Default: " + defaults.cells,
     "  --recap <file>  Official Mississippi statewide recap CSV. Default: " + defaults.recap,
     "  --out <file>    Reconciliation CSV output. Default: " + defaults.out,
+    "  --corrections <file>  Optional human-reviewed correction CSV.",
     "  --help          Show this help.",
   ].join("\n"));
 }
@@ -38,6 +40,7 @@ function parseArgs(argv) {
     else if (arg === "--cells") options.cells = argv[++index];
     else if (arg === "--recap") options.recap = argv[++index];
     else if (arg === "--out") options.out = argv[++index];
+    else if (arg === "--corrections") options.corrections = argv[++index];
     else throw new Error("Unknown option: " + arg);
   }
   return options;
@@ -115,6 +118,131 @@ function numericValue(value) {
   return Number(value);
 }
 
+function correctionCandidateKey(name) {
+  const text = String(name ?? "").toLowerCase();
+  if (text.includes("harris") || text.includes("kamala")) return "harris";
+  if (text.includes("trump") || text.includes("donald")) return "trump";
+  if (text.includes("pinkins")) return "pinkins";
+  if (text.includes("wicker")) return "wicker";
+  return candidateKeyFromName(name);
+}
+
+function correctionKey(row) {
+  return [
+    row.county,
+    row.page,
+    correctionCandidateKey(row.candidate),
+    row.columnIndex,
+  ].join("|");
+}
+
+function trueLike(value) {
+  return /^(1|true|yes|y)$/i.test(String(value ?? "").trim());
+}
+
+function loadCorrections(correctionsPath) {
+  if (!correctionsPath) {
+    return { additions: [], updates: new Map() };
+  }
+  if (!fs.existsSync(correctionsPath)) {
+    throw new Error("Correction CSV does not exist: " + correctionsPath);
+  }
+
+  const rows = parseCsv(fs.readFileSync(correctionsPath, "utf8"));
+  const updates = new Map();
+  const additions = [];
+  for (const row of rows) {
+    const action = String(row.action || "update").trim().toLowerCase();
+    const correctedValue = String(row.correctedValue ?? "").trim();
+    const exclude = trueLike(row.exclude);
+    if (!correctedValue && !exclude) continue;
+    if (correctedValue && numericValue(correctedValue) == null) {
+      throw new Error("Correction correctedValue must be numeric for " + JSON.stringify(row));
+    }
+    if (action !== "update" && action !== "add") {
+      throw new Error("Correction action must be update or add: " + JSON.stringify(row));
+    }
+
+    const normalized = {
+      action,
+      county: row.county,
+      page: row.page,
+      candidate: correctionCandidateKey(row.candidate),
+      columnIndex: row.columnIndex,
+      correctedValue,
+      exclude,
+      reason: row.reason ?? "",
+      reviewer: row.reviewer ?? "",
+    };
+
+    if (action === "add") {
+      if (!correctedValue) throw new Error("Add corrections require correctedValue: " + JSON.stringify(row));
+      additions.push(normalized);
+      continue;
+    }
+
+    const key = correctionKey(normalized);
+    if (updates.has(key)) throw new Error("Duplicate correction key: " + key);
+    updates.set(key, normalized);
+  }
+  return { additions, updates };
+}
+
+function applyCorrections(cells, corrections) {
+  const unusedUpdates = new Set(corrections.updates.keys());
+  const correctedCells = [];
+  const metrics = { correctionAdditions: 0, correctionExclusions: 0, correctionUpdates: 0 };
+
+  for (const cell of cells) {
+    const key = correctionKey(cell);
+    const correction = corrections.updates.get(key);
+    if (!correction) {
+      correctedCells.push(cell);
+      continue;
+    }
+    unusedUpdates.delete(key);
+    if (correction.exclude) {
+      metrics.correctionExclusions += 1;
+      continue;
+    }
+    correctedCells.push({
+      ...cell,
+      value: correction.correctedValue,
+      rawValue: correction.correctedValue,
+      warnings: [cell.warnings, "manual_correction"].filter(Boolean).join(";"),
+    });
+    metrics.correctionUpdates += 1;
+  }
+
+  if (unusedUpdates.size) {
+    throw new Error("Correction rows did not match candidate cells: " + [...unusedUpdates].join(", "));
+  }
+
+  for (const correction of corrections.additions) {
+    correctedCells.push({
+      county: correction.county,
+      page: correction.page,
+      image: "manual-correction",
+      columnIndex: correction.columnIndex,
+      precinctLabel: "manual correction page " + correction.page + " column " + correction.columnIndex,
+      contest: correction.candidate === "harris" || correction.candidate === "trump" ? "President" : "U.S. Senate",
+      candidate: correction.candidate,
+      party: correction.candidate === "harris" || correction.candidate === "pinkins" ? "Democrat" : "Republican",
+      value: correction.correctedValue,
+      rawValue: correction.correctedValue,
+      rowText: correction.reason,
+      x1: "",
+      x2: "",
+      y1: "",
+      y2: "",
+      warnings: "manual_addition",
+    });
+    metrics.correctionAdditions += 1;
+  }
+
+  return { cells: correctedCells, metrics };
+}
+
 function summarize(cells, officialTotals) {
   const byCountyCandidate = new Map();
   const byCountyPage = new Map();
@@ -123,7 +251,7 @@ function summarize(cells, officialTotals) {
   let nonNumericCells = 0;
 
   for (const cell of cells) {
-    const key = candidateKeyFromName(cell.candidate ?? "");
+    const key = correctionCandidateKey(cell.candidate ?? "");
     if (key === "other") continue;
     const value = numericValue(cell.value);
     if (value == null) {
@@ -141,6 +269,7 @@ function summarize(cells, officialTotals) {
         totalColumnCells: 0,
         precinctTotal: 0,
         pages: new Set(),
+        warnings: new Set(),
       });
     }
     const summary = byCountyCandidate.get(countyKey);
@@ -156,6 +285,8 @@ function summarize(cells, officialTotals) {
         summary.precinctTotal += value;
       }
     }
+
+    for (const warning of String(cell.warnings || "").split(";").filter(Boolean)) summary.warnings.add(warning);
 
     const pageKey = cell.county + "|" + cell.page;
     if (!byCountyPage.has(pageKey)) byCountyPage.set(pageKey, { county: cell.county, page: cell.page, cells: 0, candidates: new Set(), columns: new Set(), warnings: new Set() });
@@ -173,7 +304,7 @@ function summarize(cells, officialTotals) {
     const official = officialTotals.get(summary.county + "|" + summary.candidateKey) ?? null;
     const rawDelta = official == null ? "" : summary.rawTotal - official;
     const precinctDelta = official == null ? "" : summary.precinctTotal - official;
-    const warnings = [];
+    const warnings = [...summary.warnings];
     if (summary.numericCells !== summary.cells) warnings.push("missing_or_non_numeric_cells");
     if (summary.totalColumnCells > 0) warnings.push("detected_total_column_cells");
     candidateRows.push({
@@ -241,9 +372,12 @@ async function main() {
   if (!fs.existsSync(options.cells)) throw new Error("Candidate cell CSV does not exist: " + options.cells);
   if (!fs.existsSync(options.recap)) throw new Error("Official recap CSV does not exist: " + options.recap);
 
-  const cells = parseCsv(fs.readFileSync(options.cells, "utf8"));
+  const inputCells = parseCsv(fs.readFileSync(options.cells, "utf8"));
+  const corrections = loadCorrections(options.corrections);
+  const corrected = applyCorrections(inputCells, corrections);
   const officialTotals = loadOfficialTotals(options.recap);
-  const report = summarize(cells, officialTotals);
+  const report = summarize(corrected.cells, officialTotals);
+  report.metrics = { ...report.metrics, ...corrected.metrics };
   ensureDir(path.dirname(options.out));
   const header = [
     "kind",
