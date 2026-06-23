@@ -88,7 +88,8 @@
     "etl:verify:ms:ocr": "node scripts/verify-ms-ocr-pipeline.mjs",
     "etl:verify:ms:ocr:sample": "node scripts/verify-ms-ocr-pipeline.mjs --skip-ocr --pdf-dir data/ms-2024-county-results-pdfs --text-pages-dir .etl/ocr/ms-sample-text/pages --cells .etl/ocr/ms-sample-text-row-candidates.csv --reconciliation .etl/ocr/ms-sample-text-row-reconciliation.csv --correction-template .etl/ocr/ms-sample-ocr-correction-template.csv --report .etl/ocr/ms-sample-ocr-verification-report.csv --state .etl/ocr/ms-sample-ocr-verification-state.json --limit-counties 2 --limit-pages 2",
     "etl:extract:ms:pdf-text-layer": "node scripts/extract-ms-pdf-text-layer.mjs",
-    "etl:promote:ms:ocr-recovery": "node scripts/promote-ms-ocr-recovery-text.mjs"
+    "etl:promote:ms:ocr-recovery": "node scripts/promote-ms-ocr-recovery-text.mjs",
+    "etl:review:ms:ocr-combine": "node scripts/combine-ms-ocr-review-artifacts.mjs --corrections data/ms-2024-ocr-reviewed-corrections.csv"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

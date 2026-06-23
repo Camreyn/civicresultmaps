@@ -366,10 +366,13 @@ test("native source package handoff is validated in CI", () => {
   const msOcrScript = readFileSync("scripts/ocr-ms-county-result-pdfs.mjs", "utf8");
   const msTextLayerScript = readFileSync("scripts/extract-ms-pdf-text-layer.mjs", "utf8");
   const msRecoveryPromotionScript = readFileSync("scripts/promote-ms-ocr-recovery-text.mjs", "utf8");
+  const msCombinedReviewScript = readFileSync("scripts/combine-ms-ocr-review-artifacts.mjs", "utf8");
+  const msReviewedCorrections = readFileSync("data/ms-2024-ocr-reviewed-corrections.csv", "utf8");
   const msVerifier = readFileSync("scripts/verify-ms-ocr-pipeline.mjs", "utf8");
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows"], /extract-ms-recap-ocr-text-rows/);
   assert.match(packageScripts["etl:extract:ms:pdf-text-layer"], /extract-ms-pdf-text-layer/);
   assert.match(packageScripts["etl:promote:ms:ocr-recovery"], /promote-ms-ocr-recovery-text/);
+  assert.match(packageScripts["etl:review:ms:ocr-combine"], /ms-2024-ocr-reviewed-corrections/);
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows:sample"], /ms-sample-text-row-candidates/);
   assert.match(packageScripts["etl:template:ms:ocr-corrections"], /create-ms-ocr-correction-template/);
   assert.match(packageScripts["etl:template:ms:ocr-corrections:sample"], /ms-sample-ocr-correction-template/);
@@ -384,6 +387,13 @@ test("native source package handoff is validated in CI", () => {
   assert.match(msRecoveryPromotionScript, /requiredRows/);
   assert.match(msRecoveryPromotionScript, /Recovery text is missing required candidate row/);
   assert.match(msRecoveryPromotionScript, /ms-ocr-recovery-manifest/);
+  assert.match(msCombinedReviewScript, /Grid rows are used only where grid reconciliation resolves a candidate/);
+  assert.match(msCombinedReviewScript, /replacementKeys/);
+  assert.match(msCombinedReviewScript, /--corrections/);
+  assert.match(msCombinedReviewScript, /small_numeric_delta/);
+  assert.match(msReviewedCorrections, /Visual review of Quitman page 3/);
+  assert.match(msReviewedCorrections, /Visual review of Warren page 2/);
+  assert.match(msReviewedCorrections, /Visual review of Tallahatchie page 2/);
   assert.match(msCorrectionTemplate, /correctedValue/);
   assert.match(msCorrectionTemplate, /exclude/);
   assert.match(msCorrectionTemplate, /Candidate total still needs review/);
