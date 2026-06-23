@@ -79,7 +79,8 @@
     "etl:extract:ms:ocr-cells": "node scripts/extract-ms-recap-grid-cells.mjs",
     "etl:extract:ms:ocr-cells:sample": "node scripts/extract-ms-recap-grid-cells.mjs --image-dir .etl/ocr/ms-sample-images --out .etl/ocr/ms-sample-grid-cell-candidates.csv --limit-counties 2 --limit-pages 2",
     "etl:reconcile:ms:ocr-cells": "node scripts/reconcile-ms-ocr-grid-cells.mjs",
-    "etl:reconcile:ms:ocr-cells:sample": "node scripts/reconcile-ms-ocr-grid-cells.mjs --cells .etl/ocr/ms-sample-grid-cell-candidates.csv --out .etl/ocr/ms-sample-grid-reconciliation.csv"
+    "etl:reconcile:ms:ocr-cells:sample": "node scripts/reconcile-ms-ocr-grid-cells.mjs --cells .etl/ocr/ms-sample-grid-cell-candidates.csv --out .etl/ocr/ms-sample-grid-reconciliation.csv",
+    "validate:source-acquisition-tiers": "node scripts/validate-source-acquisition-tiers.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

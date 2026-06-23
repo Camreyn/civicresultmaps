@@ -42,6 +42,9 @@ jobs:
       - name: Turnout source package validation
         run: npm run validate:turnout-packages
 
+      - name: Source acquisition tier validation
+        run: npm run validate:source-acquisition-tiers
+
       - name: Production map join validation
         run: npm run validate:maps
 

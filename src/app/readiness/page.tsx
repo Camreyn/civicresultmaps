@@ -1,5 +1,5 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
-import { listAdminSourceStatuses, listCompletenessReport, listNativeSourcePackages, listTurnoutSourceStatuses } from "@/lib/api";
+import { listAdminSourceStatuses, listCompletenessReport, listNativeSourcePackages, listSourceAcquisitionTiers, listTurnoutSourceStatuses } from "@/lib/api";
 import {
   getNativeSourcePackage,
   nativeSourcePackageArtifactHint,
@@ -7,6 +7,7 @@ import {
   type NativeSourceDiscoveryQueueEntry,
   type NativeSourcePackage,
 } from "@/lib/native-source-packages";
+import type { SourceAcquisitionTierRow } from "@/lib/source-acquisition-tiers";
 import type { TurnoutSourceStatus } from "@/lib/turnout-source-packages";
 import type { AdminSourceStatusSummary, CompletenessSummary } from "@/lib/types";
 
@@ -182,6 +183,46 @@ function adminCoverageClass(status: AdminSourceStatusSummary["status"] | undefin
   return "coverage-missing";
 }
 
+function sourceAcquisitionTierShortLabel(tier: string | undefined) {
+  if (!tier) {
+    return "Unknown";
+  }
+
+  return {
+    tier_1_official_export_database: "Tier 1",
+    tier_2_official_dashboard_endpoint: "Tier 2",
+    tier_3_sanctioned_bulk_partial: "Tier 3",
+    tier_4_local_scattershot: "Tier 4",
+    tier_5_digital_inconsistent: "Tier 5",
+    tier_6_official_pdf_hostile: "Tier 6",
+    tier_7_scanned_system_printout: "Tier 7",
+    tier_8_scanned_handwritten: "Tier 8",
+    unknown: "Unknown",
+  }[tier] ?? tier;
+}
+
+function sourceAcquisitionCoverageClass(row: SourceAcquisitionTierRow | undefined) {
+  if (!row || row.tier === "unknown") {
+    return "coverage-missing";
+  }
+
+  if (row.tier === "tier_1_official_export_database" || row.tier === "tier_2_official_dashboard_endpoint") {
+    return "coverage-good";
+  }
+
+  return "coverage-warn";
+}
+
+function sourceAcquisitionPriorityRows(rows: SourceAcquisitionTierRow[]) {
+  return rows
+    .filter((row) => row.tier !== "unknown")
+    .sort((a, b) => {
+      const aTier = Number(sourceAcquisitionTierShortLabel(a.tier).replace("Tier ", "")) || 99;
+      const bTier = Number(sourceAcquisitionTierShortLabel(b.tier).replace("Tier ", "")) || 99;
+      return aTier - bTier || a.state.localeCompare(b.state) || a.jurisdictionName.localeCompare(b.jurisdictionName);
+    });
+}
+
 function adminSourceTasks(adminSource: AdminSourceStatusSummary | undefined): ReadinessTask[] {
   if (!adminSource) {
     return [{ key: "admin-source-registry", label: "Admin source registry", severity: "medium" }];
@@ -335,8 +376,14 @@ export default async function ReadinessPage() {
   const turnoutSources = listTurnoutSourceStatuses({ year: selectedYear });
   const adminSources = listAdminSourceStatuses({ year: selectedYear });
   const nativeSourcePackages = listNativeSourcePackages();
+  const sourceAcquisition = listSourceAcquisitionTiers();
+  const sourceAcquisitionRows = sourceAcquisitionPriorityRows(sourceAcquisition.states);
   const sourceDiscoveryQueue = nativeSourcePackages.sourceDiscoveryQueue;
   const sourceDiscoveryByState = new Map(sourceDiscoveryQueue.map((entry) => [entry.state, entry]));
+  const sourceAcquisitionByState = new Map<string, SourceAcquisitionTierRow[]>();
+  for (const entry of sourceAcquisition.states) {
+    sourceAcquisitionByState.set(entry.state, [...(sourceAcquisitionByState.get(entry.state) ?? []), entry]);
+  }
   const turnoutSourceByState = new Map(turnoutSources.states.map((entry) => [entry.state, entry]));
   const adminSourceByState = new Map(adminSources.states.map((entry) => [entry.state, entry]));
   const rows = report
@@ -344,9 +391,11 @@ export default async function ReadinessPage() {
       const turnoutSource = turnoutSourceByState.get(state.state);
       const adminSource = adminSourceByState.get(state.state);
       const sourceDiscovery = sourceDiscoveryByState.get(state.state);
+      const sourceAcquisitionRowsForState = sourceAcquisitionByState.get(state.state) ?? [];
+      const sourceAcquisitionPrimary = sourceAcquisitionRowsForState[0];
       const tasks = missingTasks(state, turnoutSource, adminSource);
       const summary = taskSummary(tasks);
-      return { ...state, adminSource, sourceDiscovery, taskSummary: summary, tasks, turnoutSource };
+      return { ...state, adminSource, sourceAcquisitionPrimary, sourceAcquisitionRows: sourceAcquisitionRowsForState, sourceDiscovery, taskSummary: summary, tasks, turnoutSource };
     })
     .sort((a, b) => b.taskSummary.high - a.taskSummary.high || b.taskSummary.medium - a.taskSummary.medium || a.name.localeCompare(b.name));
 
@@ -401,6 +450,9 @@ export default async function ReadinessPage() {
           </a>
           <a className="readiness-api-link" href={`/api/admin-sources?year=${selectedYear}`} target="_blank" rel="noreferrer">
             Admin Sources API
+          </a>
+          <a className="readiness-api-link" href="/api/source-acquisition-tiers" target="_blank" rel="noreferrer">
+            Source Acquisition API
           </a>
         </div>
       </section>
@@ -485,6 +537,13 @@ export default async function ReadinessPage() {
           <span>Audit / CVR / incidents</span>
           <strong>
             {adminSources.familySummary.audit.loaded} / {adminSources.familySummary.cvr.loaded} / {adminSources.familySummary.incidents.loaded}
+          </strong>
+        </article>
+        <article>
+          <GitBranch aria-hidden size={18} />
+          <span>High ROI / unknown source tiers</span>
+          <strong>
+            {sourceAcquisition.summary.highRoiRows} / {sourceAcquisition.summary.unknownRows}
           </strong>
         </article>
       </section>
@@ -599,6 +658,98 @@ export default async function ReadinessPage() {
         </div>
       </section>
 
+      <section className="readiness-panel">
+        <div className="readiness-panel-head">
+          <div>
+            <h2>Source Acquisition Tiers</h2>
+            <span>Leif-style source difficulty and scripting ROI; this builds on loaded data rather than replacing it</span>
+          </div>
+          <a className="readiness-api-link" href="/api/source-acquisition-tiers" target="_blank" rel="noreferrer">
+            Source Acquisition API
+          </a>
+        </div>
+
+        <div className="native-coverage-grid">
+          {[
+            {
+              label: "Tiers 1-2",
+              value: sourceAcquisition.summary.highRoiRows,
+              body: "Official exports and dashboard endpoints with the best scripting ROI.",
+              status: "coverage-good",
+            },
+            {
+              label: "Tiers 3-4",
+              value:
+                (sourceAcquisition.summary.byTier.tier_3_sanctioned_bulk_partial ?? 0) +
+                (sourceAcquisition.summary.byTier.tier_4_local_scattershot ?? 0),
+              body: "Useful bulk sources and local sources that may need stitching across jurisdictions.",
+              status: "coverage-warn",
+            },
+            {
+              label: "Tiers 5-8",
+              value: sourceAcquisition.summary.humanSetupRows,
+              body: "Inconsistent digital sources, hostile PDFs, scanned printouts, and handwritten material.",
+              status: "coverage-warn",
+            },
+            {
+              label: "Unknown",
+              value: sourceAcquisition.summary.unknownRows,
+              body: "States with statewide acquisition paths still waiting for classification.",
+              status: "coverage-missing",
+            },
+          ].map((bucket) => (
+            <article className="native-coverage-card" key={bucket.label}>
+              <header>
+                <div>
+                  <strong>{bucket.label}</strong>
+                  <span className="mono">{bucket.value} source row{bucket.value === 1 ? "" : "s"}</span>
+                </div>
+                <span className={`coverage-chip ${bucket.status}`}>{bucket.label}</span>
+              </header>
+              <p>{bucket.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="source-discovery-grid">
+          {sourceAcquisitionRows.map((entry) => (
+            <article className="source-discovery-card" key={`${entry.state}-${entry.jurisdictionName}-${entry.dataFamily}`}>
+              <header>
+                <div>
+                  <strong>{entry.stateName}</strong>
+                  <span className="mono">{entry.state} / {entry.jurisdictionName}</span>
+                </div>
+                <span className={`coverage-chip ${sourceAcquisitionCoverageClass(entry)}`}>
+                  {sourceAcquisitionTierShortLabel(entry.tier)}
+                </span>
+              </header>
+              <div className="coverage-chips">
+                <span className="coverage-chip coverage-warn">{entry.reportingGrain}</span>
+                <span className="coverage-chip coverage-warn">{entry.manualReviewBurden} review</span>
+                <span className="coverage-chip coverage-warn">{entry.confidence}</span>
+              </div>
+              <p>{entry.nextAction}</p>
+              <dl className="source-discovery-meta">
+                <div>
+                  <dt>Parser Status</dt>
+                  <dd>{entry.parserStatus}</dd>
+                </div>
+                <div>
+                  <dt>Missing Fields</dt>
+                  <dd>{entry.missingFields.join("; ")}</dd>
+                </div>
+              </dl>
+              <div className="source-discovery-links">
+                {entry.sourceUrls.map((sourceUrl, index) => (
+                  <a href={sourceUrl} key={sourceUrl} target="_blank" rel="noreferrer">
+                    Source {index + 1}
+                  </a>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
       <section className="readiness-panel">
         <div className="readiness-panel-head">
           <div>
@@ -721,6 +872,9 @@ export default async function ReadinessPage() {
                       <span className={`coverage-chip ${adminCoverageClass(state.adminSource?.incidents.status)}`}>
                         Incidents {adminSourceStatusLabel(state.adminSource?.incidents.status)}
                       </span>
+                      <span className={`coverage-chip ${sourceAcquisitionCoverageClass(state.sourceAcquisitionPrimary)}`}>
+                        Acquisition {sourceAcquisitionTierShortLabel(state.sourceAcquisitionPrimary?.tier)}
+                      </span>
                     </div>
                   </td>
                   <td className="readiness-counts">
@@ -841,6 +995,39 @@ export default async function ReadinessPage() {
                     </article>
                   </div>
 
+                  <div className="detail-source-package">
+                    <div className="detail-package-head">
+                      <div>
+                        <h3>Source Acquisition Tier</h3>
+                        <p>
+                          Acquisition tiers classify source difficulty and scripting ROI. They do not replace loaded results,
+                          review rows, turnout rows, or provenance records.
+                        </p>
+                      </div>
+                      <span className={`coverage-chip ${sourceAcquisitionCoverageClass(state.sourceAcquisitionPrimary)}`}>
+                        {sourceAcquisitionTierShortLabel(state.sourceAcquisitionPrimary?.tier)}
+                      </span>
+                    </div>
+                    {state.sourceAcquisitionRows.length ? (
+                      <div className="detail-artifact-grid">
+                        {state.sourceAcquisitionRows.map((entry) => (
+                          <article className="detail-artifact" key={`${entry.state}-${entry.jurisdictionName}-${entry.dataFamily}`}>
+                            <span>{entry.jurisdictionName}</span>
+                            <strong>{sourceAcquisitionTierShortLabel(entry.tier)} / {entry.reportingGrain}</strong>
+                            <code>{entry.exportFormats.join("; ")}</code>
+                            <p>{entry.nextAction}</p>
+                            {entry.sourceUrls.map((sourceUrl, index) => (
+                              <a href={sourceUrl} key={sourceUrl} target="_blank" rel="noreferrer">
+                                Source {index + 1}
+                              </a>
+                            ))}
+                          </article>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>No acquisition tier has been registered for this state.</p>
+                    )}
+                  </div>
                   <div className="detail-source-package">
                     <div className="detail-package-head">
                       <div>

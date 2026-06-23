@@ -30,6 +30,7 @@ test("public API route contracts exist", () => {
     "src/app/api/native-source-packages/route.ts",
     "src/app/api/equipment/route.ts",
     "src/app/api/admin-sources/route.ts",
+    "src/app/api/source-acquisition-tiers/route.ts",
   ];
 
   for (const route of expectedRoutes) {
@@ -93,6 +94,9 @@ test("public completeness report exists for national readiness", () => {
   assert.match(readiness, /Native Source Package/);
   assert.match(readiness, /Expected Totals/);
   assert.match(readiness, /Source Packages API/);
+  assert.match(readiness, /Source Acquisition Tiers/);
+  assert.match(readiness, /Source Acquisition API/);
+  assert.match(readiness, /sourceAcquisitionRows/);
   assert.doesNotMatch(readiness, /Package Requests API/);
   assert.doesNotMatch(readiness, /Native Package Requests/);
   assert.match(packages, /listNativeSourcePackages/);
@@ -335,11 +339,25 @@ test("native source package handoff is validated in CI", () => {
   const validator = readFileSync("scripts/validate-native-source-packages.mjs", "utf8");
 
   assert.match(packageScripts["validate:source-packages"], /validate-native-source-packages/);
+  assert.match(packageScripts["validate:source-acquisition-tiers"], /validate-source-acquisition-tiers/);
   assert.match(workflow, /validate:source-packages/);
+  assert.match(workflow, /validate:source-acquisition-tiers/);
   assert.match(validator, /native-import-source-packages\.json/);
   assert.match(validator, /sourceDiscoveryQueue/);
   assert.match(validator, /officialSourcePages/);
   assert.match(validator, /expected trump \+ harris \+ other does not equal stateTotal/);
+
+  const acquisitionValidator = readFileSync("scripts/validate-source-acquisition-tiers.mjs", "utf8");
+  const acquisitionRegistry = readFileSync("data/source-acquisition-tiers.json", "utf8");
+  assert.match(acquisitionValidator, /source-acquisition-tiers\.json/);
+  assert.match(acquisitionValidator, /tier_8_scanned_handwritten/);
+  assert.match(acquisitionValidator, /South Carolina official export database/);
+  assert.match(acquisitionValidator, /Harris County tier 4/);
+  assert.match(acquisitionValidator, /Mississippi OCR review-gated PDF/);
+  assert.match(acquisitionRegistry, /electionhistory\.scvotes\.gov/);
+  assert.match(acquisitionRegistry, /electionresults\.iowa\.gov/);
+  assert.match(acquisitionRegistry, /data\.capitol\.texas\.gov/);
+  assert.match(acquisitionRegistry, /does not replace loaded result or review data/);
 });
 
 test("turnout collection inventory is available outside the app", () => {
