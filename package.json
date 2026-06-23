@@ -84,7 +84,9 @@
     "etl:extract:ms:ocr-text-rows": "node scripts/extract-ms-recap-ocr-text-rows.mjs",
     "etl:extract:ms:ocr-text-rows:sample": "node scripts/extract-ms-recap-ocr-text-rows.mjs --text-pages-dir .etl/ocr/ms-sample-text/pages --out .etl/ocr/ms-sample-text-row-candidates.csv --limit-counties 2 --limit-pages 2",
     "etl:template:ms:ocr-corrections": "node scripts/create-ms-ocr-correction-template.mjs",
-    "etl:template:ms:ocr-corrections:sample": "node scripts/create-ms-ocr-correction-template.mjs --cells .etl/ocr/ms-sample-text-row-candidates.csv --reconciliation .etl/ocr/ms-sample-text-row-reconciliation.csv --out .etl/ocr/ms-sample-ocr-correction-template.csv"
+    "etl:template:ms:ocr-corrections:sample": "node scripts/create-ms-ocr-correction-template.mjs --cells .etl/ocr/ms-sample-text-row-candidates.csv --reconciliation .etl/ocr/ms-sample-text-row-reconciliation.csv --out .etl/ocr/ms-sample-ocr-correction-template.csv",
+    "etl:verify:ms:ocr": "node scripts/verify-ms-ocr-pipeline.mjs",
+    "etl:verify:ms:ocr:sample": "node scripts/verify-ms-ocr-pipeline.mjs --skip-ocr --pdf-dir data/ms-2024-county-results-pdfs --text-pages-dir .etl/ocr/ms-sample-text/pages --cells .etl/ocr/ms-sample-text-row-candidates.csv --reconciliation .etl/ocr/ms-sample-text-row-reconciliation.csv --correction-template .etl/ocr/ms-sample-ocr-correction-template.csv --report .etl/ocr/ms-sample-ocr-verification-report.csv --state .etl/ocr/ms-sample-ocr-verification-state.json --limit-counties 2 --limit-pages 2"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

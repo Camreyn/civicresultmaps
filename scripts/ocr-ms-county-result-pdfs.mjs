@@ -1,4 +1,4 @@
-﻿import { spawn, spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -20,6 +20,7 @@ const defaults = {
   lang: "eng",
   force: false,
   limit: 0,
+  county: "",
   firstPages: 0,
   keepImages: true,
 };
@@ -51,6 +52,7 @@ function usage() {
     "  --psm <number>        Tesseract page segmentation mode. Default: " + defaults.psm,
     "  --lang <code>         OCR language. Default: " + defaults.lang,
     "  --limit <number>      Process only the first N PDFs, for sampling.",
+    "  --county <name>       Process one PDF whose sanitized stem matches this county name.",
     "  --first-pages <num>   Process only the first N pages of each PDF, for sampling.",
     "  --force               Re-render/re-OCR even when output text exists.",
     "  --no-keep-images      Delete rendered page PNGs after OCR.",
@@ -97,6 +99,8 @@ function parseArgs(argv) {
       options.lang = argv[++index];
     } else if (arg === "--limit") {
       options.limit = Number(argv[++index]);
+    } else if (arg === "--county") {
+      options.county = argv[++index];
     } else if (arg === "--first-pages") {
       options.firstPages = Number(argv[++index]);
     } else {
@@ -142,6 +146,10 @@ function run(command, args, options = {}) {
 
 function safeStem(fileName) {
   return path.basename(fileName, path.extname(fileName)).replace(/[\\/:*?"<>|]/g, "_").trim();
+}
+
+function canonicalCountyName(value) {
+  return String(value ?? "").replace(/\s+Updated$/i, "").trim();
 }
 
 function pageNumber(fileName) {
@@ -293,6 +301,9 @@ async function main() {
   ensureDir(options.imageDir);
 
   let pdfs = fs.readdirSync(options.pdfDir).filter((name) => name.toLowerCase().endsWith(".pdf")).sort();
+  if (options.county) {
+    pdfs = pdfs.filter((name) => safeStem(name).toLowerCase() === options.county.toLowerCase() || canonicalCountyName(safeStem(name)).toLowerCase() === options.county.toLowerCase());
+  }
   if (options.limit > 0) {
     pdfs = pdfs.slice(0, options.limit);
   }

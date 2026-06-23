@@ -86,6 +86,10 @@ function cleanText(value) {
   return String(value ?? "").replace(/\s+/g, " ").trim();
 }
 
+function canonicalCountyName(value) {
+  return String(value ?? "").replace(/\s+Updated$/i, "").trim();
+}
+
 function pageNumber(fileName) {
   const match = fileName.match(/page-(\d+)\.txt$/i);
   return match ? Number(match[1]) : 0;
@@ -153,7 +157,7 @@ function extractPage({ county, pageFile, pagePath }) {
     for (const [valueIndex, rawValue] of values.entries()) {
       const value = rawValue.replace(/\D/g, "");
       records.push({
-        county,
+        county: canonicalCountyName(county),
         page: pageNumber(pageFile),
         image: path.relative(process.cwd(), pagePath),
         columnIndex: valueIndex + 1,
