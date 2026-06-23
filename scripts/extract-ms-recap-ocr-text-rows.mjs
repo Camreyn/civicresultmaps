@@ -16,28 +16,32 @@ const targetRows = [
     contest: "President",
     candidate: "Kamala Harris",
     party: "Democrat",
-    patterns: [/kamala|harris/i, /democrat/i],
+    candidatePattern: /kamala|harris/i,
+    partyPattern: /democrat|\bD\b/i,
   },
   {
     key: "trump",
     contest: "President",
     candidate: "Donald Trump",
     party: "Republican",
-    patterns: [/donald|trump/i, /republican/i],
+    candidatePattern: /donald|trump/i,
+    partyPattern: /republican|\bR\b/i,
   },
   {
     key: "pinkins",
     contest: "U.S. Senate",
     candidate: "Ty Pinkins",
     party: "Democrat",
-    patterns: [/pinkins/i, /democrat/i],
+    candidatePattern: /pinkins/i,
+    partyPattern: /democrat|\bD\b/i,
   },
   {
     key: "wicker",
     contest: "U.S. Senate",
     candidate: "Roger Wicker",
     party: "Republican",
-    patterns: [/wicker/i, /republican/i],
+    candidatePattern: /wicker/i,
+    partyPattern: /republican|\bR\b/i,
   },
 ];
 
@@ -120,7 +124,7 @@ function listPageFiles(countyDir, options) {
 
 function targetForText(text) {
   const normalized = cleanText(text);
-  return targetRows.find((target) => target.patterns.every((pattern) => pattern.test(normalized)));
+  return targetRows.find((target) => target.candidatePattern.test(normalized) && target.partyPattern.test(normalized));
 }
 
 function numericTokens(block) {
@@ -135,17 +139,35 @@ function extractPage({ county, pageFile, pagePath }) {
   const seenTargets = new Set();
 
   for (let index = 0; index < lines.length; index += 1) {
+    let rowStartIndex = index;
     let rowText = lines[index];
     let target = targetForText(rowText);
     if (!target) {
-      const lookahead = [lines[index], lines[index + 1] ?? "", lines[index + 2] ?? ""].join(" ");
-      target = targetForText(lookahead);
+      const lookaheadLines = [lines[index], lines[index + 1] ?? "", lines[index + 2] ?? "", lines[index + 3] ?? "", lines[index + 4] ?? ""];
+      target = targetForText(lookaheadLines.join(" "));
       if (target) {
-        const candidateLine = [lines[index], lines[index + 1] ?? "", lines[index + 2] ?? ""].find((line) => target.patterns.some((pattern) => pattern.test(line)) && numericTokens(line).length);
-        rowText = candidateLine ?? lookahead;
+        const candidateOffset = lookaheadLines.findIndex((line) => target.candidatePattern.test(line));
+        if (candidateOffset >= 0) {
+          rowStartIndex = index + candidateOffset;
+          rowText = lines[rowStartIndex];
+        } else {
+          rowText = lookaheadLines.join(" ");
+        }
       }
     }
     if (!target || seenTargets.has(target.key)) continue;
+
+    if (!numericTokens(rowText).length) {
+      const expanded = [rowText];
+      for (let offset = 1; offset <= 4; offset += 1) {
+        const nextLine = lines[rowStartIndex + offset];
+        if (!nextLine) break;
+        expanded.push(nextLine);
+        if (numericTokens(nextLine).length) break;
+      }
+      const expandedText = expanded.join(" ");
+      if (numericTokens(expandedText).length) rowText = expandedText;
+    }
 
     const values = numericTokens(rowText);
     if (!values.length) {

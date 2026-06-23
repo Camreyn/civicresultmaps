@@ -364,8 +364,10 @@ test("native source package handoff is validated in CI", () => {
   const msReconciler = readFileSync("scripts/reconcile-ms-ocr-grid-cells.mjs", "utf8");
   const msCorrectionTemplate = readFileSync("scripts/create-ms-ocr-correction-template.mjs", "utf8");
   const msOcrScript = readFileSync("scripts/ocr-ms-county-result-pdfs.mjs", "utf8");
+  const msTextLayerScript = readFileSync("scripts/extract-ms-pdf-text-layer.mjs", "utf8");
   const msVerifier = readFileSync("scripts/verify-ms-ocr-pipeline.mjs", "utf8");
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows"], /extract-ms-recap-ocr-text-rows/);
+  assert.match(packageScripts["etl:extract:ms:pdf-text-layer"], /extract-ms-pdf-text-layer/);
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows:sample"], /ms-sample-text-row-candidates/);
   assert.match(packageScripts["etl:template:ms:ocr-corrections"], /create-ms-ocr-correction-template/);
   assert.match(packageScripts["etl:template:ms:ocr-corrections:sample"], /ms-sample-ocr-correction-template/);
@@ -373,6 +375,10 @@ test("native source package handoff is validated in CI", () => {
   assert.match(packageScripts["etl:verify:ms:ocr:sample"], /--skip-ocr/);
   assert.match(msTextExtractor, /text_row_fallback/);
   assert.match(msTextExtractor, /This is a fallback companion to grid-cell extraction/);
+  assert.match(msTextExtractor, /partyPattern/);
+  assert.match(msTextExtractor, /rowStartIndex/);
+  assert.match(msTextLayerScript, /PDFParse/);
+  assert.match(msTextLayerScript, /text-layer-manifest/);
   assert.match(msCorrectionTemplate, /correctedValue/);
   assert.match(msCorrectionTemplate, /exclude/);
   assert.match(msCorrectionTemplate, /Candidate total still needs review/);
