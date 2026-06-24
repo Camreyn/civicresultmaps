@@ -5,6 +5,14 @@
       "rotate": 0,
       "reconciliationMode": "detected_total_cell",
       "reason": "Pike Updated totals do not match the recap CSV currently used by the import; original Pike.pdf contains the matching official county totals but is a multi-page SEMS packet."
+    },
+    "Tunica": {
+      "reconciliationMode": "detected_total_cell",
+      "reason": "Tunica source OCR exposes Electionware summary totals rather than a compact precinct recap grid; the detected candidate totals match the official recap CSV."
+    },
+    "Kemper": {
+      "reconciliationMode": "detected_total_cell",
+      "reason": "Kemper source OCR exposes summary totals rather than a compact precinct recap grid; the detected candidate totals match the official recap CSV."
     }
   }
 }
