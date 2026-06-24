@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Columbia.pdf", "Fulton.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "Tompkins.pdf", "Ulster.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Columbia.pdf", "Fulton.pdf", "Genesee.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
 
 function ensureDir(dir) {
@@ -645,6 +645,85 @@ function onondagaSummaryRows(text, county) {
 
   return completeRowsFromPending(pending);
 }
+function fixedWidthPartsWithoutTrailingNotes(line, width) {
+  return fixedWidthParts(cleanText(line).replace(/\([^)]*\).*$/, ""), width);
+}
+
+function geneseeTableRows(text, county) {
+  const pending = new Map();
+  let currentOffice = "";
+  for (const rawLine of text.replace(/\r/g, "").split("\n")) {
+    const line = cleanText(rawLine);
+    if (!line) continue;
+    if (/Electors for President/i.test(line)) {
+      currentOffice = "president";
+      continue;
+    }
+    if (/United States Senator/i.test(line)) {
+      currentOffice = "senate";
+      continue;
+    }
+    if (currentOffice && /Representative|Justice|Proposal/i.test(line)) {
+      currentOffice = "";
+      continue;
+    }
+    if (!currentOffice || /^(Total|Grand Total|Page|--|Precinct|Official|Registered|Electors|United|Vote)/i.test(line)) continue;
+    const parts = fixedWidthPartsWithoutTrailingNotes(line, currentOffice === "president" ? 9 : 10);
+    if (!parts || !parts.label || /\btotal$/i.test(parts.label)) continue;
+    const key = parts.label.toUpperCase();
+    const entry = pending.get(key) ?? { county, local_unit: parts.label, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    if (currentOffice === "president") {
+      entry.pres_harris = parts.nums[1] + parts.nums[2];
+      entry.pres_trump = parts.nums[3] + parts.nums[4];
+      entry.pres_other = parts.nums[8];
+      entry.pres_total = parts.nums[5];
+    } else {
+      entry.comparison_dem = parts.nums[1] + parts.nums[2];
+      entry.comparison_rep = parts.nums[3] + parts.nums[4];
+      entry.comparison_other = parts.nums[5] + parts.nums[8];
+    }
+    pending.set(key, entry);
+  }
+  return completeRowsFromPending(pending);
+}
+
+function tiogaTableRows(text, county) {
+  const pending = new Map();
+  let currentOffice = "";
+  for (const rawLine of text.replace(/\r/g, "").split("\n")) {
+    const line = cleanText(rawLine);
+    if (!line) continue;
+    if (/Electors for President/i.test(line)) {
+      currentOffice = "president";
+      continue;
+    }
+    if (/United States Senator/i.test(line)) {
+      currentOffice = "senate";
+      continue;
+    }
+    if (currentOffice && /Representative|Justice|Proposal/i.test(line)) {
+      currentOffice = "";
+      continue;
+    }
+    if (!currentOffice || /^(Total|Election District|Official|General|--|Valid|Kirsten|Gillibrand|Kamala|Tim|Walz|JD|Vance|DEM|REP|CON|WF|LAR)/i.test(line)) continue;
+    const parts = fixedWidthParts(line, currentOffice === "president" ? 10 : 11);
+    if (!parts || !parts.label || /\btotal$/i.test(parts.label)) continue;
+    const key = parts.label.toUpperCase();
+    const entry = pending.get(key) ?? { county, local_unit: parts.label, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    if (currentOffice === "president") {
+      entry.pres_harris = parts.nums[0] + parts.nums[3];
+      entry.pres_trump = parts.nums[1] + parts.nums[2];
+      entry.pres_other = parts.nums[4];
+      entry.pres_total = parts.nums[5];
+    } else {
+      entry.comparison_dem = parts.nums[0] + parts.nums[3];
+      entry.comparison_rep = parts.nums[1] + parts.nums[2];
+      entry.comparison_other = parts.nums[4] + parts.nums[5];
+    }
+    pending.set(key, entry);
+  }
+  return completeRowsFromPending(pending);
+}
 function boundedPdfTextRows(text, county) {
   const pending = new Map();
   let currentOffice = "";
@@ -732,8 +811,10 @@ async function pdfRows(filePath, county) {
     const result = await parser.getText();
     if (county === "Albany County") return albanyPrecinctSummaryRows(result.text, county);
     if (county === "Allegany County") return alleganySideBySideRows(result.text, county);
+    if (county === "Genesee County") return geneseeTableRows(result.text, county);
     if (county === "Oneida County") return oneidaDetailedRows(result.text, county);
     if (county === "Onondaga County") return onondagaSummaryRows(result.text, county);
+    if (county === "Tioga County") return tiogaTableRows(result.text, county);
     if (county === "Fulton County" || county === "Seneca County") return candidateOnlyPdfRows(result.text, county);
     if (county === "Ulster County") return boundedPdfTextRows(result.text, county);
     return pdfTextRows(result.text, county);
