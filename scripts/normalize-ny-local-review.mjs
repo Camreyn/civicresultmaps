@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Chemung.pdf", "Columbia.pdf", "Tompkins.pdf"]);
+const supportedPdfFiles = new Set(["Chemung.pdf", "Columbia.pdf", "Fulton.pdf", "Seneca.pdf", "Tompkins.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
 
 function ensureDir(dir) {
@@ -446,10 +446,50 @@ function pdfTextRows(text, county) {
   return completeRowsFromPending(pending);
 }
 
+function candidateOnlyPdfRows(text, county) {
+  const pending = new Map();
+  let currentOffice = "";
+  for (const rawLine of text.replace(/\r/g, "").split("\n")) {
+    const line = cleanText(rawLine);
+    if (!line || /^-- \d+ of \d+ --$/.test(line) || /^total\b/i.test(line)) continue;
+    if (/presidential electors|president and vice president/i.test(line)) {
+      currentOffice = "president";
+      continue;
+    }
+    if (/^united states senator/i.test(line)) {
+      currentOffice = "senate";
+      continue;
+    }
+    if (!currentOffice) continue;
+    const matches = [...line.matchAll(/\d[\d,]*/g)];
+    const width = currentOffice === "president" ? 5 : 6;
+    if (matches.length < width) continue;
+    const selected = matches.slice(-width);
+    const label = cleanText(line.slice(0, selected[0].index));
+    if (!label || /^(precinct|kamala|donald|kirsten|michael|diane|write|and tim|jd vance)/i.test(label)) continue;
+    const nums = selected.map((match) => intValue(match[0]));
+    const key = label.toUpperCase();
+    const entry = pending.get(key) ?? { county, local_unit: label, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    if (currentOffice === "president") {
+      entry.pres_harris = nums[0] + nums[1];
+      entry.pres_trump = nums[2] + nums[3];
+      entry.pres_other = nums[4];
+      entry.pres_total = entry.pres_harris + entry.pres_trump + entry.pres_other;
+    } else {
+      entry.comparison_dem = nums[0] + nums[1];
+      entry.comparison_rep = nums[2] + nums[3];
+      entry.comparison_other = nums[4] + nums[5];
+    }
+    pending.set(key, entry);
+  }
+  return completeRowsFromPending(pending);
+}
+
 async function pdfRows(filePath, county) {
   const parser = new PDFParse({ data: fs.readFileSync(filePath) });
   try {
     const result = await parser.getText();
+    if (county === "Fulton County" || county === "Seneca County") return candidateOnlyPdfRows(result.text, county);
     return pdfTextRows(result.text, county);
   } finally {
     await parser.destroy();
