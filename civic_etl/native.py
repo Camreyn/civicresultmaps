@@ -3611,13 +3611,15 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         sources = _source_map(config)
         result_rows, review_rows, metrics = _wisconsin_ward_rows(config, sources)
         turnout_rows, turnout_metrics = _wisconsin_turnout_rows(config, sources)
-        metrics = {**metrics, **turnout_metrics}
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **turnout_metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeWisconsinWardByWardXlsx",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
 

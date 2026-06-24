@@ -3728,16 +3728,19 @@ export function WorkspaceTabs({
                 },
                 {
                   detail: adminFamilyWhy(adminSourceStatus, "audit"),
+                  href: adminSourceStatus?.audit.sourceUrl,
                   label: "Audit",
                   status: adminSourceStatus?.audit.status,
                 },
                 {
                   detail: adminFamilyWhy(adminSourceStatus, "cvr"),
+                  href: adminSourceStatus?.cvr.sourceUrl,
                   label: "CVR",
                   status: adminSourceStatus?.cvr.status,
                 },
                 {
                   detail: adminFamilyWhy(adminSourceStatus, "incidents"),
+                  href: adminSourceStatus?.incidents.sourceUrl,
                   label: "Incidents",
                   status: adminSourceStatus?.incidents.status,
                 },

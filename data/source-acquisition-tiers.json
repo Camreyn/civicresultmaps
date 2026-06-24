@@ -66,11 +66,22 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_5_digital_inconsistent",
       "reportingGrain": "mixed",
-      "exportFormats": ["official results tables", "mixed aggregation"],
-      "sourceUrls": ["https://www.elections.alaska.gov/election-results/"],
+      "exportFormats": [
+        "official results tables",
+        "mixed aggregation"
+      ],
+      "sourceUrls": [
+        "https://www.elections.alaska.gov/election-results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["certified county/district-style totals", "EAC fallback turnout"],
-      "missingFields": ["same-grain precinct review rows", "state-native denominator by all voting modes"],
+      "availableFields": [
+        "certified county/district-style totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "same-grain precinct review rows",
+        "state-native denominator by all voting modes"
+      ],
       "parserStatus": "county/state result rows use existing native config; mixed-grain local review still needs source classification",
       "manualReviewBurden": "medium",
       "confidence": "candidate",
@@ -85,11 +96,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://www.sos.alabama.gov/alabama-votes/voter/election-data"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://www.sos.alabama.gov/alabama-votes/voter/election-data"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -104,11 +126,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://www.sos.arkansas.gov/elections/results"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://www.sos.arkansas.gov/elections/results"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -123,11 +156,22 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
-      "exportFormats": ["signed canvass PDF", "normalized local artifact"],
-      "sourceUrls": ["https://azsos.gov/elections/results-data"],
+      "exportFormats": [
+        "signed canvass PDF",
+        "normalized local artifact"
+      ],
+      "sourceUrls": [
+        "https://azsos.gov/elections/results-data"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county President versus U.S. Senate rows", "county turnout"],
-      "missingFields": ["precinct review rows", "precinct boundary geometry"],
+      "availableFields": [
+        "county President versus U.S. Senate rows",
+        "county turnout"
+      ],
+      "missingFields": [
+        "precinct review rows",
+        "precinct boundary geometry"
+      ],
       "parserStatus": "native county review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -142,11 +186,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://elections.cdn.sos.ca.gov/sov/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://elections.cdn.sos.ca.gov/sov/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -161,11 +216,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://www.sos.state.co.us/pubs/elections/Results/Abstract/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://www.sos.state.co.us/pubs/elections/Results/Abstract/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -180,11 +246,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "town",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://portal.ct.gov/sots/election-services/election-results"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://portal.ct.gov/sots/election-services/election-results"
+      ],
       "exampleUrls": [],
-      "availableFields": ["town/county-style totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "town/county-style totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -199,11 +276,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://elections.delaware.gov/results/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://elections.delaware.gov/results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -218,11 +306,22 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "county",
-      "exportFormats": ["official county detail tables", "csv"],
-      "sourceUrls": ["https://dos.fl.gov/elections/data-statistics/elections-data/"],
+      "exportFormats": [
+        "official county detail tables",
+        "csv"
+      ],
+      "sourceUrls": [
+        "https://dos.fl.gov/elections/data-statistics/elections-data/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county President versus U.S. Senate rows", "county turnout"],
-      "missingFields": ["precinct review rows", "precinct boundary geometry"],
+      "availableFields": [
+        "county President versus U.S. Senate rows",
+        "county turnout"
+      ],
+      "missingFields": [
+        "precinct review rows",
+        "precinct boundary geometry"
+      ],
       "parserStatus": "native county review package loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -237,11 +336,20 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct",
-      "exportFormats": ["official media export JSON"],
-      "sourceUrls": ["https://results.sos.ga.gov/"],
+      "exportFormats": [
+        "official media export JSON"
+      ],
+      "sourceUrls": [
+        "https://results.sos.ga.gov/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["precinct presidential vote-share review rows", "county turnout"],
-      "missingFields": ["same-row down-ballot comparison contest"],
+      "availableFields": [
+        "precinct presidential vote-share review rows",
+        "county turnout"
+      ],
+      "missingFields": [
+        "same-row down-ballot comparison contest"
+      ],
       "parserStatus": "native precinct vote-share review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -256,11 +364,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://elections.hawaii.gov/election-results/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://elections.hawaii.gov/election-results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -275,11 +394,26 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct",
-      "exportFormats": ["JSON", "detail XML ZIP"],
-      "sourceUrls": ["https://electionresults.iowa.gov/IA/"],
-      "exampleUrls": ["https://electionresults.iowa.gov/IA/122322/web.345435/"],
-      "availableFields": ["county results", "precinct President rows", "precinct U.S. House comparison rows", "precinct turnout/registration fields"],
-      "missingFields": ["ballot method fields", "precinct boundary geometry"],
+      "exportFormats": [
+        "JSON",
+        "detail XML ZIP"
+      ],
+      "sourceUrls": [
+        "https://electionresults.iowa.gov/IA/"
+      ],
+      "exampleUrls": [
+        "https://electionresults.iowa.gov/IA/122322/web.345435/"
+      ],
+      "availableFields": [
+        "county results",
+        "precinct President rows",
+        "precinct U.S. House comparison rows",
+        "precinct turnout/registration fields"
+      ],
+      "missingFields": [
+        "ballot method fields",
+        "precinct boundary geometry"
+      ],
       "parserStatus": "iowaClarityCountyDetailXmlDirectory loaded for results, review, and turnout",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -294,11 +428,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://sos.idaho.gov/elections-division/election-results/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://sos.idaho.gov/elections-division/election-results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -313,11 +458,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -332,11 +488,23 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county",
-      "exportFormats": ["archived ENR JSON"],
-      "sourceUrls": ["https://enr.indianavoters.in.gov/"],
-      "exampleUrls": ["https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json"],
-      "availableFields": ["county President rows", "county U.S. Senate rows", "county turnout fallback"],
-      "missingFields": ["precinct/subcounty result rows"],
+      "exportFormats": [
+        "archived ENR JSON"
+      ],
+      "sourceUrls": [
+        "https://enr.indianavoters.in.gov/"
+      ],
+      "exampleUrls": [
+        "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json"
+      ],
+      "availableFields": [
+        "county President rows",
+        "county U.S. Senate rows",
+        "county turnout fallback"
+      ],
+      "missingFields": [
+        "precinct/subcounty result rows"
+      ],
       "parserStatus": "indianaEnrCountyJson package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -351,11 +519,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://sos.ks.gov/elections/elections-statistics.html"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://sos.ks.gov/elections/elections-statistics.html"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -370,11 +549,24 @@
       "dataFamily": "results_review",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "precinct",
-      "exportFormats": ["official county recap PDFs", "extracted text"],
-      "sourceUrls": ["https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx"],
-      "exampleUrls": ["https://elect.ky.gov/results/Pages/default.aspx"],
-      "availableFields": ["precinct President rows", "precinct U.S. House comparison rows for most counties"],
-      "missingFields": ["Elliott County OCR/manual extraction", "some county precinct detail"],
+      "exportFormats": [
+        "official county recap PDFs",
+        "extracted text"
+      ],
+      "sourceUrls": [
+        "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx"
+      ],
+      "exampleUrls": [
+        "https://elect.ky.gov/results/Pages/default.aspx"
+      ],
+      "availableFields": [
+        "precinct President rows",
+        "precinct U.S. House comparison rows for most counties"
+      ],
+      "missingFields": [
+        "Elliott County OCR/manual extraction",
+        "some county precinct detail"
+      ],
       "parserStatus": "kentuckyGeneralRecapTextDirectory loaded with partial OCR gap",
       "manualReviewBurden": "high",
       "confidence": "partial",
@@ -389,11 +581,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "parish",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://voterportal.sos.la.gov/static/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://voterportal.sos.la.gov/static/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["parish presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "parish presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -408,11 +611,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "municipality",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://electionstats.state.ma.us/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://electionstats.state.ma.us/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["municipal/county-style totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "municipal/county-style totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -427,11 +641,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://elections.maryland.gov/elections/2024/index.html"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://elections.maryland.gov/elections/2024/index.html"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -446,11 +671,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "municipality",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://www.maine.gov/sos/cec/elec/results/index.html"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://www.maine.gov/sos/cec/elec/results/index.html"
+      ],
       "exampleUrls": [],
-      "availableFields": ["municipal/county-style totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "municipal/county-style totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -465,11 +701,24 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["TXT", "ZIP", "PDF registration reference"],
-      "sourceUrls": ["https://mvic.sos.state.mi.us/VoteHistory/"],
+      "exportFormats": [
+        "TXT",
+        "ZIP",
+        "PDF registration reference"
+      ],
+      "sourceUrls": [
+        "https://mvic.sos.state.mi.us/VoteHistory/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county results", "precinct President rows", "precinct U.S. Senate rows", "county registration/turnout"],
-      "missingFields": ["precinct boundary geometry"],
+      "availableFields": [
+        "county results",
+        "precinct President rows",
+        "precinct U.S. Senate rows",
+        "county registration/turnout"
+      ],
+      "missingFields": [
+        "precinct boundary geometry"
+      ],
       "parserStatus": "native precinct review package loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -484,11 +733,24 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["XLSX"],
-      "sourceUrls": ["https://www.sos.mn.gov/elections-voting/election-results"],
-      "exampleUrls": ["https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx"],
-      "availableFields": ["county results", "precinct President rows", "precinct U.S. Senate rows", "precinct turnout/registration fields"],
-      "missingFields": ["precinct boundary geometry"],
+      "exportFormats": [
+        "XLSX"
+      ],
+      "sourceUrls": [
+        "https://www.sos.mn.gov/elections-voting/election-results"
+      ],
+      "exampleUrls": [
+        "https://www.sos.mn.gov/media/yt3llxwd/2024-general-federal-state-results-by-precinct-official.xlsx"
+      ],
+      "availableFields": [
+        "county results",
+        "precinct President rows",
+        "precinct U.S. Senate rows",
+        "precinct turnout/registration fields"
+      ],
+      "missingFields": [
+        "precinct boundary geometry"
+      ],
       "parserStatus": "native precinct review and turnout package loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -503,11 +765,23 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
-      "exportFormats": ["official PDF"],
-      "sourceUrls": ["https://www.sos.mo.gov/elections/results"],
-      "exampleUrls": ["https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf"],
-      "availableFields": ["county/reporting-jurisdiction President rows", "county/reporting-jurisdiction U.S. Senate rows"],
-      "missingFields": ["precinct data file", "state-native turnout denominator"],
+      "exportFormats": [
+        "official PDF"
+      ],
+      "sourceUrls": [
+        "https://www.sos.mo.gov/elections/results"
+      ],
+      "exampleUrls": [
+        "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf"
+      ],
+      "availableFields": [
+        "county/reporting-jurisdiction President rows",
+        "county/reporting-jurisdiction U.S. Senate rows"
+      ],
+      "missingFields": [
+        "precinct data file",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "county PDF package loaded; precinct data appears purchasable",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -522,11 +796,24 @@
       "dataFamily": "results_review",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "county",
-      "exportFormats": ["CSV", "PDF reference"],
-      "sourceUrls": ["https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv"],
-      "exampleUrls": ["https://www.sos.ms.gov/elections-voting/election-results/2024/2024-general-election-results"],
-      "availableFields": ["county President rows", "county U.S. Senate rows"],
-      "missingFields": ["precinct rows", "state-native turnout denominator"],
+      "exportFormats": [
+        "CSV",
+        "PDF reference"
+      ],
+      "sourceUrls": [
+        "https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv"
+      ],
+      "exampleUrls": [
+        "https://www.sos.ms.gov/elections-voting/election-results/2024/2024-general-election-results"
+      ],
+      "availableFields": [
+        "county President rows",
+        "county U.S. Senate rows"
+      ],
+      "missingFields": [
+        "precinct rows",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "mississippiElectionRecapCsv loaded for county review",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -541,11 +828,23 @@
       "dataFamily": "precinct_review_upgrade",
       "tier": "tier_7_scanned_system_printout",
       "reportingGrain": "precinct",
-      "exportFormats": ["image-only official PDFs", "OCR candidate CSV"],
-      "sourceUrls": ["https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_county.aspx"],
+      "exportFormats": [
+        "image-only official PDFs",
+        "OCR candidate CSV"
+      ],
+      "sourceUrls": [
+        "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_county.aspx"
+      ],
       "exampleUrls": [],
-      "availableFields": ["image-only precinct President rows", "image-only precinct U.S. Senate rows"],
-      "missingFields": ["reviewed structured precinct CSV", "total-column exclusion", "fully reconciled OCR output"],
+      "availableFields": [
+        "image-only precinct President rows",
+        "image-only precinct U.S. Senate rows"
+      ],
+      "missingFields": [
+        "reviewed structured precinct CSV",
+        "total-column exclusion",
+        "fully reconciled OCR output"
+      ],
       "parserStatus": "OCR scripts and reconciliation gate exist; output remains review-gated",
       "manualReviewBurden": "high",
       "confidence": "partial",
@@ -560,11 +859,23 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["XLSX"],
-      "sourceUrls": ["https://sosmt.gov/elections/results/"],
-      "exampleUrls": ["https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct"],
-      "availableFields": ["precinct President rows", "precinct U.S. Senate rows"],
-      "missingFields": ["precinct boundary geometry", "state-native turnout denominator"],
+      "exportFormats": [
+        "XLSX"
+      ],
+      "sourceUrls": [
+        "https://sosmt.gov/elections/results/"
+      ],
+      "exampleUrls": [
+        "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct"
+      ],
+      "availableFields": [
+        "precinct President rows",
+        "precinct U.S. Senate rows"
+      ],
+      "missingFields": [
+        "precinct boundary geometry",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "montanaPrecinctResultsXlsx loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -579,11 +890,23 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "reporting_unit",
-      "exportFormats": ["ZIP", "CSV"],
-      "sourceUrls": ["https://www.ncsbe.gov/results-data/election-results"],
+      "exportFormats": [
+        "ZIP",
+        "CSV"
+      ],
+      "sourceUrls": [
+        "https://www.ncsbe.gov/results-data/election-results"
+      ],
       "exampleUrls": [],
-      "availableFields": ["reporting-unit President rows", "Governor comparison rows", "county turnout"],
-      "missingFields": ["real-precinct-only filter", "precinct boundary geometry"],
+      "availableFields": [
+        "reporting-unit President rows",
+        "Governor comparison rows",
+        "county turnout"
+      ],
+      "missingFields": [
+        "real-precinct-only filter",
+        "precinct boundary geometry"
+      ],
       "parserStatus": "native reporting-unit review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -598,11 +921,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://vip.sos.nd.gov/PortalListDetails.aspx?ptlhPKID=53&ptlPKID=7"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://vip.sos.nd.gov/PortalListDetails.aspx?ptlhPKID=53&ptlPKID=7"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -617,11 +951,21 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
-      "exportFormats": ["official canvass PDF", "normalized CSV"],
-      "sourceUrls": ["https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf"],
+      "exportFormats": [
+        "official canvass PDF",
+        "normalized CSV"
+      ],
+      "sourceUrls": [
+        "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county President rows", "county U.S. Senate special rows"],
-      "missingFields": ["precinct/subcounty result rows"],
+      "availableFields": [
+        "county President rows",
+        "county U.S. Senate special rows"
+      ],
+      "missingFields": [
+        "precinct/subcounty result rows"
+      ],
       "parserStatus": "county canvass package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -636,11 +980,24 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "town_ward",
-      "exportFormats": ["XLS"],
-      "sourceUrls": ["https://www.sos.nh.gov/2024-general-election-results"],
-      "exampleUrls": ["https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls"],
-      "availableFields": ["town/ward President rows", "town/ward Governor comparison rows", "EAC turnout fallback"],
-      "missingFields": ["town/ward boundary geometry", "state-native turnout denominator"],
+      "exportFormats": [
+        "XLS"
+      ],
+      "sourceUrls": [
+        "https://www.sos.nh.gov/2024-general-election-results"
+      ],
+      "exampleUrls": [
+        "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls"
+      ],
+      "availableFields": [
+        "town/ward President rows",
+        "town/ward Governor comparison rows",
+        "EAC turnout fallback"
+      ],
+      "missingFields": [
+        "town/ward boundary geometry",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "newHampshireTownWardCsv loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -655,11 +1012,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://www.nj.gov/state/elections/election-information-results.shtml"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://www.nj.gov/state/elections/election-information-results.shtml"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -674,11 +1042,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://www.sos.nm.gov/voting-and-elections/election-results/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://www.sos.nm.gov/voting-and-elections/election-results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -693,11 +1072,22 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county",
-      "exportFormats": ["archived official statewide results", "county totals"],
-      "sourceUrls": ["https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx"],
+      "exportFormats": [
+        "archived official statewide results",
+        "county totals"
+      ],
+      "sourceUrls": [
+        "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county President rows", "county U.S. Senate rows"],
-      "missingFields": ["local/precinct rows", "state-native turnout denominator"],
+      "availableFields": [
+        "county President rows",
+        "county U.S. Senate rows"
+      ],
+      "missingFields": [
+        "local/precinct rows",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "native county review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -712,11 +1102,22 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
-      "exportFormats": ["official PDF", "normalized CSV"],
-      "sourceUrls": ["https://elections.ny.gov/2024-election-results"],
+      "exportFormats": [
+        "official PDF",
+        "normalized CSV"
+      ],
+      "sourceUrls": [
+        "https://elections.ny.gov/2024-election-results"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county President rows", "county U.S. Senate rows"],
-      "missingFields": ["precinct/local rows", "state-native turnout denominator"],
+      "availableFields": [
+        "county President rows",
+        "county U.S. Senate rows"
+      ],
+      "missingFields": [
+        "precinct/local rows",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "county PDF package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
@@ -731,11 +1132,22 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["XLSX", "official precinct rows"],
-      "sourceUrls": ["https://www.ohiosos.gov/elections/election-results-and-data/"],
+      "exportFormats": [
+        "XLSX",
+        "official precinct rows"
+      ],
+      "sourceUrls": [
+        "https://www.ohiosos.gov/elections/election-results-and-data/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["precinct presidential rows", "ward-level review rows", "turnout rows"],
-      "missingFields": ["same-row down-ballot comparison contest"],
+      "availableFields": [
+        "precinct presidential rows",
+        "ward-level review rows",
+        "turnout rows"
+      ],
+      "missingFields": [
+        "same-row down-ballot comparison contest"
+      ],
       "parserStatus": "native vote-share review package loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -750,11 +1162,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://oklahoma.gov/elections/elections-results.html"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://oklahoma.gov/elections/elections-results.html"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -769,11 +1192,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://sos.oregon.gov/elections/Pages/electionhistory.aspx"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://sos.oregon.gov/elections/Pages/electionhistory.aspx"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -788,11 +1222,23 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["TXT", "XLSX"],
-      "sourceUrls": ["https://www.pa.gov/agencies/vote/elections/election-results.html"],
+      "exportFormats": [
+        "TXT",
+        "XLSX"
+      ],
+      "sourceUrls": [
+        "https://www.pa.gov/agencies/vote/elections/election-results.html"
+      ],
       "exampleUrls": [],
-      "availableFields": ["precinct President rows", "precinct U.S. Senate rows", "county turnout"],
-      "missingFields": ["precinct boundary geometry", "precinct turnout denominator"],
+      "availableFields": [
+        "precinct President rows",
+        "precinct U.S. Senate rows",
+        "county turnout"
+      ],
+      "missingFields": [
+        "precinct boundary geometry",
+        "precinct turnout denominator"
+      ],
       "parserStatus": "native precinct review package loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -807,11 +1253,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "municipality",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://vote.sos.ri.gov/Home/Elections"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://vote.sos.ri.gov/Home/Elections"
+      ],
       "exampleUrls": [],
-      "availableFields": ["municipal/county-style totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "municipal/county-style totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -826,11 +1283,25 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["database query", "CSV/XLS likely"],
-      "sourceUrls": ["https://electionhistory.scvotes.gov/"],
-      "exampleUrls": ["https://electionhistory.scvotes.gov/"],
-      "availableFields": ["official election history database", "registration data when queried correctly"],
-      "missingFields": ["confirmed parser contract", "confirmed ballot method fields", "same-grain comparison mapping"],
+      "exportFormats": [
+        "database query",
+        "CSV/XLS likely"
+      ],
+      "sourceUrls": [
+        "https://electionhistory.scvotes.gov/"
+      ],
+      "exampleUrls": [
+        "https://electionhistory.scvotes.gov/"
+      ],
+      "availableFields": [
+        "official election history database",
+        "registration data when queried correctly"
+      ],
+      "missingFields": [
+        "confirmed parser contract",
+        "confirmed ballot method fields",
+        "same-grain comparison mapping"
+      ],
       "parserStatus": "candidate high-ROI source; parser not implemented",
       "manualReviewBurden": "low",
       "confidence": "candidate",
@@ -845,11 +1316,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -864,11 +1346,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://sos.tn.gov/elections/results"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://sos.tn.gov/elections/results"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -883,11 +1376,25 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_3_sanctioned_bulk_partial",
       "reportingGrain": "precinct",
-      "exportFormats": ["open data", "JSON/CSV"],
-      "sourceUrls": ["https://data.capitol.texas.gov/topic/elections"],
-      "exampleUrls": ["https://data.capitol.texas.gov/topic/elections"],
-      "availableFields": ["precinct/county election results where published", "county President versus U.S. Senate rows currently loaded"],
-      "missingFields": ["ballot method fields", "timely completeness", "state-native turnout denominator"],
+      "exportFormats": [
+        "open data",
+        "JSON/CSV"
+      ],
+      "sourceUrls": [
+        "https://data.capitol.texas.gov/topic/elections"
+      ],
+      "exampleUrls": [
+        "https://data.capitol.texas.gov/topic/elections"
+      ],
+      "availableFields": [
+        "precinct/county election results where published",
+        "county President versus U.S. Senate rows currently loaded"
+      ],
+      "missingFields": [
+        "ballot method fields",
+        "timely completeness",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "texasCountyJson loaded for county review; precinct/open-data upgrade not implemented",
       "manualReviewBurden": "medium",
       "confidence": "partial",
@@ -902,11 +1409,24 @@
       "dataFamily": "local_results",
       "tier": "tier_4_local_scattershot",
       "reportingGrain": "precinct",
-      "exportFormats": ["county website navigation", "local result pages"],
-      "sourceUrls": ["https://www.harrisvotes.com/Election-Results"],
-      "exampleUrls": ["https://www.harrisvotes.com/Election-Results"],
-      "availableFields": ["local county election results"],
-      "missingFields": ["statewide coverage", "registration denominator source", "consistent navigation across counties"],
+      "exportFormats": [
+        "county website navigation",
+        "local result pages"
+      ],
+      "sourceUrls": [
+        "https://www.harrisvotes.com/Election-Results"
+      ],
+      "exampleUrls": [
+        "https://www.harrisvotes.com/Election-Results"
+      ],
+      "availableFields": [
+        "local county election results"
+      ],
+      "missingFields": [
+        "statewide coverage",
+        "registration denominator source",
+        "consistent navigation across counties"
+      ],
       "parserStatus": "example local source only; parser not implemented",
       "manualReviewBurden": "high",
       "confidence": "candidate",
@@ -921,11 +1441,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://vote.utah.gov/election-results/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://vote.utah.gov/election-results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -940,11 +1471,21 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["CSV"],
-      "sourceUrls": ["https://www.elections.virginia.gov/resultsreports/election-results/"],
+      "exportFormats": [
+        "CSV"
+      ],
+      "sourceUrls": [
+        "https://www.elections.virginia.gov/resultsreports/election-results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["precinct presidential rows", "county turnout"],
-      "missingFields": ["same-row down-ballot comparison contest", "precinct boundary geometry"],
+      "availableFields": [
+        "precinct presidential rows",
+        "county turnout"
+      ],
+      "missingFields": [
+        "same-row down-ballot comparison contest",
+        "precinct boundary geometry"
+      ],
       "parserStatus": "native vote-share-only review package loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -959,11 +1500,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "town",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://sos.vermont.gov/elections/election-info-resources/elections-results-data/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["town/county-style totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "town/county-style totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",
@@ -978,11 +1530,23 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
-      "exportFormats": ["CSV"],
-      "sourceUrls": ["https://www.sos.wa.gov/elections/data-research/election-data-and-maps"],
+      "exportFormats": [
+        "CSV"
+      ],
+      "sourceUrls": [
+        "https://www.sos.wa.gov/elections/data-research/election-data-and-maps"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "participating precinct review rows", "county turnout fallback"],
-      "missingFields": ["complete statewide precinct export", "precinct boundary geometry", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "participating precinct review rows",
+        "county turnout fallback"
+      ],
+      "missingFields": [
+        "complete statewide precinct export",
+        "precinct boundary geometry",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "native participating precinct review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "partial",
@@ -994,19 +1558,35 @@
       "stateName": "Wisconsin",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "ward",
-      "exportFormats": ["XLSX"],
-      "sourceUrls": ["https://elections.wi.gov/elections/election-results"],
+      "exportFormats": [
+        "XLSX"
+      ],
+      "sourceUrls": [
+        "https://elections.wi.gov/elections/election-results"
+      ],
       "exampleUrls": [],
-      "availableFields": ["ward President rows", "ward U.S. Senate rows", "EAC fallback turnout"],
-      "missingFields": ["ward-level registration denominator"],
-      "parserStatus": "native ward review package loaded",
+      "availableFields": [
+        "ward President rows",
+        "ward U.S. Senate rows",
+        "EAC fallback turnout",
+        "EAC vote-method rows",
+        "Verified Voting equipment context",
+        "2012/2016/2020 county historical presidential baselines"
+      ],
+      "missingFields": [
+        "ward-level registration denominator",
+        "normalized post-election audit rows",
+        "county CVR availability verification",
+        "normalized incident/correction/recount/litigation rows"
+      ],
+      "parserStatus": "native ward review package loaded with historical baseline context",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Turnout rows use EAC local-jurisdiction fallback because WEC ward workbook lacks denominator fields.",
-      "nextAction": "Find ward-level registered-voter denominator if available."
+      "caveats": "Turnout rows use EAC local-jurisdiction fallback because WEC ward workbook lacks denominator fields. Historical rows are contextual county baselines from secondary tables with source footnotes.",
+      "nextAction": "Find ward-level registered-voter denominator if available; then complete audit, CVR availability, and incident/correction source inventories."
     },
     {
       "state": "WV",
@@ -1016,11 +1596,22 @@
       "dataFamily": "results_review_turnout",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct",
-      "exportFormats": ["detail XML ZIP"],
-      "sourceUrls": ["https://results.enr.clarityelections.com/WV/"],
+      "exportFormats": [
+        "detail XML ZIP"
+      ],
+      "sourceUrls": [
+        "https://results.enr.clarityelections.com/WV/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county results", "precinct President rows", "precinct U.S. Senate rows", "precinct turnout rows"],
-      "missingFields": ["precinct boundary geometry"],
+      "availableFields": [
+        "county results",
+        "precinct President rows",
+        "precinct U.S. Senate rows",
+        "precinct turnout rows"
+      ],
+      "missingFields": [
+        "precinct boundary geometry"
+      ],
       "parserStatus": "westVirginiaClarityCountyDetailXmlDirectory loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
@@ -1035,11 +1626,22 @@
       "dataFamily": "results_turnout",
       "tier": "unknown",
       "reportingGrain": "county",
-      "exportFormats": ["eac fallback turnout"],
-      "sourceUrls": ["https://sos.wyo.gov/Elections/Docs/Results/"],
+      "exportFormats": [
+        "eac fallback turnout"
+      ],
+      "sourceUrls": [
+        "https://sos.wyo.gov/Elections/Docs/Results/"
+      ],
       "exampleUrls": [],
-      "availableFields": ["county presidential totals", "EAC fallback turnout"],
-      "missingFields": ["local review rows", "same-grain comparison contest", "state-native turnout denominator"],
+      "availableFields": [
+        "county presidential totals",
+        "EAC fallback turnout"
+      ],
+      "missingFields": [
+        "local review rows",
+        "same-grain comparison contest",
+        "state-native turnout denominator"
+      ],
       "parserStatus": "EAC turnout config exists; local review source not classified",
       "manualReviewBurden": "unknown",
       "confidence": "candidate",

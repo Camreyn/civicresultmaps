@@ -1507,16 +1507,25 @@
         "expectedJurisdictions": 72
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Wisconsin post-election audit or canvass/recount artifacts have not been normalized into this administration context registry yet."
+        "status": "candidate",
+        "why": "WEC post-election voting equipment audit source page is identified, but row-level 2024 audit result normalization is still pending manual/browser collection because the site blocks scripted access.",
+        "sourceUrl": "https://elections.wi.gov/elections/election-security-integrity/post-election-voting-equipment-audits",
+        "localArtifact": "data/wi-2024-audit-context.csv",
+        "caveat": "Candidate source inventory only; not a loaded audit result dataset."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "County CVR availability has not been inventoried or normalized for Wisconsin 2024 yet."
+        "status": "partial",
+        "why": "A 72-county CVR availability tracking scaffold exists, but county availability/request paths have not all been verified and no CVR data is loaded.",
+        "sourceUrl": "https://elections.wi.gov/about/records-request",
+        "localArtifact": "data/wi-2024-cvr-availability.csv",
+        "caveat": "CVR availability inventory scaffold only; not a CVR dataset."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Incident, correction, and litigation notes have not been collected into a normalized source package yet."
+        "status": "candidate",
+        "why": "WEC 2024 general-election source location is identified for incident/correction follow-up, but official incident/recount/litigation rows have not been normalized yet.",
+        "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+        "localArtifact": "data/wi-2024-incident-context.csv",
+        "caveat": "Candidate source inventory only; not a loaded incident dataset."
       }
     },
     {

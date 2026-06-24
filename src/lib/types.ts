@@ -229,6 +229,10 @@ export type EquipmentRowSummary = {
 export type AdminSourceFamilyStatus = {
   status: "loaded" | "partial" | "candidate" | "needs_data" | "blocked" | "documented_exclusion";
   why?: string;
+  sourceUrl?: string;
+  localArtifact?: string;
+  normalizedArtifact?: string;
+  caveat?: string;
 };
 
 export type AdminSourceStatusSummary = {

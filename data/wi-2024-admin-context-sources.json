@@ -1,0 +1,27 @@
+{
+  "state": "WI",
+  "stateName": "Wisconsin",
+  "electionYear": 2024,
+  "generatedAt": "2026-06-24",
+  "caveat": "This is a source inventory for app readiness. It records official or candidate source locations and collection status; it is not a normalized row-level audit, CVR, or incident dataset.",
+  "audit": {
+    "status": "candidate",
+    "sourceTitle": "Wisconsin Elections Commission post-election voting equipment audit information",
+    "sourceUrl": "https://elections.wi.gov/elections/election-security-integrity/post-election-voting-equipment-audits",
+    "nextAction": "Use a browser or manual review because elections.wi.gov blocks scripted collection with Cloudflare. Normalize the 2024 audit selection/results fields when the official artifact is accessible."
+  },
+  "cvr": {
+    "status": "candidate",
+    "sourceTitle": "Wisconsin county cast vote record availability inventory",
+    "sourceUrl": "https://elections.wi.gov/about/records-request",
+    "localArtifact": "data/wi-2024-cvr-availability.csv",
+    "nextAction": "Confirm county-by-county CVR availability or public-record request path. Current artifact is a 72-county inventory scaffold, not a loaded CVR dataset."
+  },
+  "incidents": {
+    "status": "candidate",
+    "sourceTitle": "Wisconsin Elections Commission 2024 general election and public meeting materials",
+    "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+    "localArtifact": "data/wi-2024-incident-context.csv",
+    "nextAction": "Inventory official incident, correction, recount, and litigation records from WEC and county sources; normalize source-linked rows when found."
+  }
+}
