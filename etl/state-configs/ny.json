@@ -68,7 +68,7 @@
       "parser": "localComparisonCsv",
       "authority": "OpenElections source collection from New York county boards of elections",
       "timestampBasis": "Machine-readable county election-district source files collected in openelections/openelections-sources-ny 2024/general and normalized by scripts/normalize-ny-local-review.mjs.",
-      "confidence": "Local election-district review rows for NY counties with machine-readable CSV, HTML, or XLSX sources, plus legacy NYC local review rows. PDF-only counties remain excluded until a PDF extraction path is reviewed.",
+      "confidence": "Local election-district review rows for NY counties with machine-readable CSV, HTML, XLSX, or reviewed text-layer PDF sources, plus legacy NYC local review rows. Image-only or unreviewed PDF counties remain excluded until their extraction path is reviewed.",
       "status": "loaded"
     },
     {
@@ -95,8 +95,8 @@
     "sourceId": "ny-2024-local-review-openelections",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "sourceCoverage": "Machine-readable OpenElections county source files plus legacy NYC local review rows; PDF-only counties are not included in this review-row CSV yet.",
-    "warning": "New York local review rows are election-district President-versus-U.S. Senate comparisons normalized from machine-readable OpenElections county source files plus legacy NYC local review rows. Counties available only as PDFs are not included yet, and county-certified result totals remain the map authority."
+    "sourceCoverage": "Machine-readable OpenElections county source files, selected text-layer OpenElections PDFs, plus legacy NYC local review rows; image-only or unreviewed PDF counties are not included in this review-row CSV yet.",
+    "warning": "New York local review rows are election-district President-versus-U.S. Senate comparisons normalized from machine-readable OpenElections county source files, selected text-layer OpenElections PDFs, plus legacy NYC local review rows. Image-only or unreviewed PDF counties are not included yet, and county-certified result totals remain the map authority."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -121,7 +121,7 @@
     "trump": 3579519,
     "harris": 4619543,
     "other": 182367,
-    "reviewRows": 6060,
+    "reviewRows": 6273,
     "turnoutRows": 62
   },
   "capabilities": {

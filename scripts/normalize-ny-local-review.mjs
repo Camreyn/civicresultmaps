@@ -3,6 +3,7 @@ import path from "node:path";
 import https from "node:https";
 import { fileURLToPath } from "node:url";
 import XLSX from "xlsx";
+import { PDFParse } from "pdf-parse";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
@@ -13,7 +14,8 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
-const supportedExtensions = new Set([".csv", ".xlsx", ".html"]);
+const supportedPdfFiles = new Set(["Chemung.pdf", "Columbia.pdf", "Tompkins.pdf"]);
+const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -371,6 +373,89 @@ function htmlRows(filePath, county) {
   return completeRowsFromPending(pending);
 }
 
+function isPotentialContestHeader(line) {
+  return /representative|state senator|supreme court|county court|district attorney|proposal|proposition|member of assembly|family court|surrogate|city court/i.test(line);
+}
+
+function trailingNumberParse(line, office) {
+  const matches = [...line.matchAll(/\d[\d,]*/g)];
+  const candidates = [];
+  for (const width of [10, 9, 8]) {
+    if (matches.length < width) continue;
+    const selected = matches.slice(-width);
+    const nums = selected.map((match) => intValue(match[0]));
+    const label = cleanText(line.slice(0, selected[0].index));
+    if (!label || /^contest total|^total\b|^grand total|^town\/city total/i.test(label)) continue;
+    const candidateCount = office === "president" ? (width >= 10 ? 6 : 5) : 6;
+    if (nums.length <= candidateCount) continue;
+    const candidateSum = nums.slice(0, candidateCount).reduce((sum, value) => sum + value, 0);
+    const total = nums[nums.length - 1];
+    const withUnderOver = candidateSum + (nums[candidateCount] ?? 0) + (nums[candidateCount + 1] ?? 0);
+    const score = Math.min(Math.abs(candidateSum - total), Math.abs(withUnderOver - total));
+    if (candidateSum > 0 && total > 0 && score <= Math.max(3, total * 0.02)) {
+      candidates.push({ label, nums, candidateCount, score });
+    }
+  }
+  candidates.sort((a, b) => {
+    if (a.score !== b.score) return a.score - b.score;
+    const aPref = /LD:/i.test(a.label) ? -a.nums.length : a.nums.length;
+    const bPref = /LD:/i.test(b.label) ? -b.nums.length : b.nums.length;
+    return aPref - bPref;
+  });
+  return candidates[0] ?? null;
+}
+
+function pdfTextRows(text, county) {
+  const pending = new Map();
+  let currentOffice = "";
+  for (const rawLine of text.replace(/\r/g, "").split("\n")) {
+    const line = cleanText(rawLine);
+    if (!line || /^-- \d+ of \d+ --$/.test(line) || /^page \d+/i.test(line)) continue;
+    if (/^(president of the united states|president and vice president|electors for president)/i.test(line)) {
+      currentOffice = "president";
+      continue;
+    }
+    if (/^(us senate|united states senator)$/i.test(line)) {
+      currentOffice = "senate";
+      continue;
+    }
+    if (currentOffice && isPotentialContestHeader(line)) {
+      currentOffice = "";
+      continue;
+    }
+    if (!currentOffice) continue;
+
+    const parsed = trailingNumberParse(line, currentOffice);
+    if (!parsed) continue;
+    const key = parsed.label.toUpperCase();
+    const entry = pending.get(key) ?? { county, local_unit: parsed.label, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    if (currentOffice === "president") {
+      const other = parsed.nums.slice(4, parsed.candidateCount).reduce((sum, value) => sum + value, 0);
+      entry.pres_harris = parsed.nums[0] + parsed.nums[1];
+      entry.pres_trump = parsed.nums[2] + parsed.nums[3];
+      entry.pres_other = other;
+      entry.pres_total = entry.pres_harris + entry.pres_trump + entry.pres_other;
+    } else {
+      const other = parsed.nums.slice(4, parsed.candidateCount).reduce((sum, value) => sum + value, 0);
+      entry.comparison_dem = parsed.nums[0] + parsed.nums[1];
+      entry.comparison_rep = parsed.nums[2] + parsed.nums[3];
+      entry.comparison_other = other;
+    }
+    pending.set(key, entry);
+  }
+  return completeRowsFromPending(pending);
+}
+
+async function pdfRows(filePath, county) {
+  const parser = new PDFParse({ data: fs.readFileSync(filePath) });
+  try {
+    const result = await parser.getText();
+    return pdfTextRows(result.text, county);
+  } finally {
+    await parser.destroy();
+  }
+}
+
 function countyName(fileName) {
   return `${fileName.replace(/\.[^.]+$/i, "").replace(/\s+\(.+\)$/i, "")} County`;
 }
@@ -378,7 +463,11 @@ function countyName(fileName) {
 async function main() {
   ensureDir(sourceDir);
   const listing = JSON.parse(await get(apiUrl));
-  const selected = listing.filter((file) => supportedExtensions.has(path.extname(file.name).toLowerCase()) && !skipped.has(file.name));
+  const selected = listing.filter((file) => {
+    const ext = path.extname(file.name).toLowerCase();
+    if (!supportedExtensions.has(ext) || skipped.has(file.name)) return false;
+    return ext !== ".pdf" || supportedPdfFiles.has(file.name);
+  });
   const normalizedRows = [];
   const manifest = [];
 
@@ -389,7 +478,7 @@ async function main() {
     }
     const county = countyName(file.name);
     const ext = path.extname(file.name).toLowerCase();
-    const rows = ext === ".html" ? htmlRows(filePath, county) : workbookRows(filePath, county);
+    const rows = ext === ".html" ? htmlRows(filePath, county) : (ext === ".pdf" ? await pdfRows(filePath, county) : workbookRows(filePath, county));
     normalizedRows.push(...rows);
     manifest.push({ county, file: file.name, url: file.html_url, rows: rows.length });
     console.log(`${county}: ${rows.length}`);
