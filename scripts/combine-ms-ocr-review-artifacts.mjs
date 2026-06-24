@@ -117,6 +117,12 @@ function readCsv(file) {
   return parseCsv(fs.readFileSync(file, "utf8"));
 }
 
+function loadSourceOverrides(file) {
+  if (!file || !fs.existsSync(file)) return {};
+  const parsed = JSON.parse(fs.readFileSync(file, "utf8"));
+  return parsed.counties || {};
+}
+
 function canonicalCountyName(value) {
   return String(value ?? "").replace(/\s+Updated$/i, "").trim();
 }
@@ -161,14 +167,32 @@ function replacementKeys(textReconciliation, gridReconciliation) {
   return replacements.sort();
 }
 
+function normalizePageSet(values) {
+  if (!Array.isArray(values)) return null;
+  return new Set(values.map((value) => String(value)));
+}
+
+function pageAllowed(row, sourceOverrides) {
+  const override = sourceOverrides[canonicalCountyName(row.county)] || {};
+  const page = String(row.page);
+  const includePages = normalizePageSet(override.includePages);
+  if (includePages && !includePages.has(page)) return false;
+  const excludePages = normalizePageSet(override.excludePages);
+  if (excludePages && excludePages.has(page)) return false;
+  return true;
+}
+
 function writeCombinedCells(options, replacements) {
+  const sourceOverrides = loadSourceOverrides(options.sourceOverrides);
   const replacementSet = new Set(replacements);
-  const textRows = readCsv(options.textCells);
-  const gridRows = readCsv(options.gridCells).map((row) => ({
+  const allTextRows = readCsv(options.textCells);
+  const textRows = allTextRows.filter((row) => pageAllowed(row, sourceOverrides));
+  const allGridRows = readCsv(options.gridCells).map((row) => ({
     ...row,
     county: canonicalCountyName(row.county),
     warnings: [row.warnings, "grid_review_replacement"].filter(Boolean).join(";"),
   }));
+  const gridRows = allGridRows.filter((row) => pageAllowed(row, sourceOverrides));
   const rows = [];
   for (const row of textRows) {
     if (!replacementSet.has(candidateSummaryKey(row))) rows.push(row);
@@ -182,8 +206,10 @@ function writeCombinedCells(options, replacements) {
   fs.writeFileSync(options.outCells, [header.join(","), ...rows.map((row) => header.map((key) => csv(row[key])).join(","))].join("\n") + "\n");
   fs.writeFileSync(options.outCells.replace(/\.csv$/i, ".manifest.json"), JSON.stringify({
     generatedAt: new Date().toISOString(),
-    textCells: textRows.length,
-    gridCells: gridRows.length,
+    textCells: allTextRows.length,
+    filteredTextCells: textRows.length,
+    gridCells: allGridRows.length,
+    filteredGridCells: gridRows.length,
     outputCells: rows.length,
     replacementKeys: replacements,
     corrections: options.corrections,
