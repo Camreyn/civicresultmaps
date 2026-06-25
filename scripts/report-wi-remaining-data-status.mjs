@@ -8,6 +8,8 @@ const cvrPath = 'data/wi-2024-cvr-availability.csv';
 const collectionTrackerPath = 'data/wi-2024-remaining-data-collection-tracker.json';
 const publicSourceInventoryPath = 'data/wi-2024-public-source-inventory.json';
 const requestPacketSummaryPath = 'data/wi-2024-records-request-packet-summary.json';
+const wardGeometrySummaryPath = 'data/wi-2024-ward-geometry-summary.json';
+const wardGeometryJoinReportPath = 'data/wi-2024-ward-geometry-join-report.json';
 const outPath = 'data/wi-2024-remaining-data-status.json';
 
 function readJson(file) {
@@ -83,6 +85,8 @@ const admin = readJson(adminContextPath);
 const tracker = readJsonIfExists(collectionTrackerPath);
 const publicSourceInventory = readJsonIfExists(publicSourceInventoryPath);
 const requestPacketSummary = readJsonIfExists(requestPacketSummaryPath);
+const wardGeometrySummary = readJsonIfExists(wardGeometrySummaryPath);
+const wardGeometryJoinReport = readJsonIfExists(wardGeometryJoinReportPath);
 const cvrRows = normalizeCvrInventory();
 const partialWardSources = turnout.sourceArtifacts.filter((artifact) => artifact.reportingLevel === 'ward');
 const collectionTargets = tracker?.targets ?? [];
@@ -174,13 +178,47 @@ const report = {
       nextAction: admin.audit.nextAction,
     },
     municipalWardGeometry: {
-      status: 'not_loaded',
-      implementedContext:
-        'The app currently renders Wisconsin county geometry. County, city, and rest-of-county advisory scopes are tabular review scopes, not mapped ward polygons.',
-      currentGeometry: 'county_geometry_only',
+      status: wardGeometrySummary?.status ?? 'not_loaded',
+      implementedContext: wardGeometrySummary
+        ? 'Official Wisconsin Legislature/LTSB ArcGIS municipal ward geometry candidate has been collected as compressed GeoJSON. It is not promoted to production ward-map rendering until join validation against WEC review rows passes.'
+        : 'The app currently renders Wisconsin county geometry. County, city, and rest-of-county advisory scopes are tabular review scopes, not mapped ward polygons.',
+      currentGeometry: wardGeometrySummary ? 'county_geometry_production_with_ward_candidate_collected' : 'county_geometry_only',
+      candidate: wardGeometrySummary
+        ? {
+            authority: wardGeometrySummary.authority,
+            sourceTitle: wardGeometrySummary.sourceTitle,
+            sourceUrl: wardGeometrySummary.sourceUrl,
+            localGeojsonGzip: wardGeometrySummary.localGeojsonGzip,
+            localSummary: wardGeometrySummary.localSummary,
+            featureCount: wardGeometrySummary.featureCount,
+            countyCount: wardGeometrySummary.countyCount,
+            municipalityCount: wardGeometrySummary.municipalityCount,
+            totalPresidentialVotes: wardGeometrySummary.totalPresidentialVotes,
+            caveats: wardGeometrySummary.caveats,
+            joinValidation: wardGeometryJoinReport
+              ? {
+                  status: wardGeometryJoinReport.status,
+                  reportPath: wardGeometryJoinReportPath,
+                  reviewRows: wardGeometryJoinReport.summary.reviewRows,
+                  geometryFeatures: wardGeometryJoinReport.summary.geometryFeatures,
+                  matchedReviewRows: wardGeometryJoinReport.summary.matchedReviewRows,
+                  matchedPct: wardGeometryJoinReport.summary.matchedPct,
+                  exactPresidentialTotalRows: wardGeometryJoinReport.summary.exactPresidentialTotalRows,
+                  exactPresidentialTotalPctOfMatched: wardGeometryJoinReport.summary.exactPresidentialTotalPctOfMatched,
+                  unmatchedReviewRows: wardGeometryJoinReport.summary.unmatchedReviewRows,
+                  parseFailures: wardGeometryJoinReport.summary.parseFailures,
+                  mismatchedMatchedRows: wardGeometryJoinReport.summary.mismatchedMatchedRows,
+                  mismatchAbsTotal: wardGeometryJoinReport.summary.mismatchAbsTotal,
+                }
+              : null,
+          }
+        : null,
       flagInputStatus: 'not_used_as_flag_input',
-      nextAction:
-        'Find an official statewide municipal ward boundary dataset matching the 2024 election wards, normalize it to WEC county/municipality/ward keys, and add geometry join tests before enabling ward-level map rendering.',
+      nextAction: wardGeometrySummary
+        ? wardGeometryJoinReport?.status === 'join_validation_passed'
+          ? 'Join validation passed; next step is a UI/map integration spike that keeps county flags authoritative while exposing ward geometry as contextual drill-down.'
+          : 'Resolve the unmatched ward rows and documented vote-total deltas before enabling ward-level map rendering.'
+        : 'Find an official statewide municipal ward boundary dataset matching the 2024 election wards, normalize it to WEC county/municipality/ward keys, and add geometry join tests before enabling ward-level map rendering.',
     },
     rowLevelBallotMode: {
       status: 'not_available_from_wec_ward_workbook',

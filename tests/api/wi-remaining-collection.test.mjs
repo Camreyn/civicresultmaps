@@ -1,11 +1,13 @@
-﻿import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import assert from "node:assert/strict";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import test from "node:test";
 
 const tracker = JSON.parse(readFileSync("data/wi-2024-remaining-data-collection-tracker.json", "utf8"));
 const inventory = JSON.parse(readFileSync("data/wi-2024-public-source-inventory.json", "utf8"));
 const requestSummary = JSON.parse(readFileSync("data/wi-2024-records-request-packet-summary.json", "utf8"));
 const status = JSON.parse(readFileSync("data/wi-2024-remaining-data-status.json", "utf8"));
+const wardGeometry = JSON.parse(readFileSync("data/wi-2024-ward-geometry-summary.json", "utf8"));
+const wardGeometryJoinReport = JSON.parse(readFileSync("data/wi-2024-ward-geometry-join-report.json", "utf8"));
 
 const requiredFamilies = [
   "wardRegisteredVoterDenominators",
@@ -29,16 +31,20 @@ test("Wisconsin remaining-data collection tracker covers WEC and every county", 
 
   for (const target of targets) {
     for (const family of requiredFamilies) {
-      assert.ok(target.families[family], `${target.id} should track ${family}`);
-      assert.equal(target.families[family].parserStatus, "not_started");
+      assert.ok(target.families[family], target.id + " should track " + family);
+      if (target.id === "WI-WEC" && family === "municipalWardGeometry") {
+        assert.equal(target.families[family].parserStatus, "collected_geojson_not_promoted");
+      } else {
+        assert.equal(target.families[family].parserStatus, "not_started");
+      }
     }
   }
 });
 
 test("Wisconsin public source inventory keeps loaded context separate from missing data", () => {
   assert.equal(inventory.state, "WI");
-  assert.equal(inventory.probeEnabled, false);
-  assert.equal(inventory.summary.sourceCandidateCount, 4);
+  assert.equal(inventory.probeEnabled, true);
+  assert.equal(inventory.summary.sourceCandidateCount, 5);
   assert.equal(inventory.summary.requestPathCount, 1);
   assert.equal(inventory.summary.loadedContextCount, 2);
 
@@ -48,6 +54,7 @@ test("Wisconsin public source inventory keeps loaded context separate from missi
     "wec-2024-post-election-audit-report",
     "wec-election-results-2024-general",
     "wec-records-request",
+    "wi-legislature-2024-election-data-jan2025-wards",
   ]);
   assert.match(inventory.sources.find((source) => source.id === "wec-records-request").recommendation, /official request path/);
 });
@@ -68,7 +75,7 @@ test("Wisconsin records request packet summary covers WEC, counties, and municip
 test("Wisconsin remaining-data status references collection artifacts", () => {
   assert.equal(status.summary.collectionTrackerTargets, 73);
   assert.equal(status.summary.collectionTrackerFamilies, 4);
-  assert.equal(status.summary.publicSourceCandidateCount, 4);
+  assert.equal(status.summary.publicSourceCandidateCount, 5);
   assert.equal(status.summary.requestPacketCount, 74);
   assert.equal(status.collectionPlan.countyTargetCount, 72);
   assert.equal(status.collectionPlan.stateAgencyTargetCount, 1);
@@ -79,5 +86,36 @@ test("Wisconsin remaining-data package exposes npm pipeline entrypoints", () => 
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
   assert.equal(packageJson.scripts["etl:collect:wi:remaining"], "node scripts/collect-wi-public-source-inventory.mjs");
   assert.equal(packageJson.scripts["etl:requests:wi:remaining"], "node scripts/create-wi-records-request-packets.mjs");
+  assert.equal(packageJson.scripts["etl:collect:wi:ward-geometry"], "node scripts/collect-wi-ward-geometry.mjs");
+  assert.equal(packageJson.scripts["etl:validate:wi:ward-geometry"], "node scripts/validate-wi-ward-geometry-joins.mjs");
   assert.match(packageJson.scripts["test:api"], /wi-remaining-collection\.test\.mjs/);
+});
+
+
+test("Wisconsin ward geometry candidate is collected from official WI Legislature ArcGIS", () => {
+  assert.equal(wardGeometry.status, "public_candidate_collected_needs_join_validation");
+  assert.equal(wardGeometry.featureCount, 7086);
+  assert.equal(wardGeometry.countyCount, 72);
+  assert.equal(wardGeometry.municipalityCount, 1910);
+  assert.equal(wardGeometry.totalPresidentialVotes, 3422918);
+  assert.equal(wardGeometry.localGeojsonGzip, "data/wi-2024-ward-geometry.geojson.gz");
+  assert.equal(existsSync(wardGeometry.localGeojsonGzip), true);
+  assert.ok(statSync(wardGeometry.localGeojsonGzip).size > 1_000_000);
+  assert.match(wardGeometry.sourceUrl, /2024_Election_Data_with_2025_Wards/);
+  assert.match(wardGeometry.caveats.join(" "), /join validation/);
+});
+
+
+test("Wisconsin ward geometry join validation quantifies remaining mapping gaps", () => {
+  assert.equal(wardGeometryJoinReport.state, "WI");
+  assert.equal(wardGeometryJoinReport.status, "candidate_collected_join_validation_needs_review");
+  assert.equal(wardGeometryJoinReport.summary.reviewRows, 3503);
+  assert.equal(wardGeometryJoinReport.summary.geometryFeatures, 7086);
+  assert.equal(wardGeometryJoinReport.summary.matchedReviewRows, 3478);
+  assert.equal(wardGeometryJoinReport.summary.unmatchedReviewRows, 25);
+  assert.equal(wardGeometryJoinReport.summary.parseFailures, 0);
+  assert.equal(wardGeometryJoinReport.summary.exactPresidentialTotalRows, 3370);
+  assert.equal(wardGeometryJoinReport.summary.mismatchedMatchedRows, 108);
+  assert.equal(wardGeometryJoinReport.summary.matchedPct, 99.29);
+  assert.match(wardGeometryJoinReport.caveats.join(" "), /County-level production indicators remain authoritative/);
 });

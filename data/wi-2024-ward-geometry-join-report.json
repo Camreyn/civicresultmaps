@@ -1,0 +1,1812 @@
+{
+  "state": "WI",
+  "year": 2024,
+  "generatedAt": "2026-06-25T22:53:02.325Z",
+  "status": "candidate_collected_join_validation_needs_review",
+  "source": {
+    "stagingPath": ".etl/staging/wi-2024-staging.json",
+    "geometryPath": "data/wi-2024-ward-geometry.geojson.gz",
+    "geometrySource": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0"
+  },
+  "summary": {
+    "reviewRows": 3503,
+    "geometryFeatures": 7086,
+    "geometryJurisdictions": 1913,
+    "matchedReviewRows": 3478,
+    "unmatchedReviewRows": 25,
+    "parseFailures": 0,
+    "mismatchedMatchedRows": 108,
+    "exactPresidentialTotalRows": 3370,
+    "exactMajorPartyRows": 3370,
+    "matchedPct": 99.29,
+    "exactPresidentialTotalPctOfMatched": 96.89,
+    "exactMajorPartyPctOfMatched": 96.89,
+    "mismatchAbsTotal": 1850
+  },
+  "caveats": [
+    "The ArcGIS layer is official Wisconsin Legislature/LTSB data for November 2024 results with January 2025 wards.",
+    "This report validates row joins and vote totals before the geometry is allowed to power ward-level map rendering.",
+    "County-level production indicators remain authoritative; ward geometry is visualization context until this validation passes."
+  ],
+  "examples": {
+    "matched": [
+      {
+        "county": "Kenosha County",
+        "localUnit": "Town of BRIGHTON Wards 1-4",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "BRIGHTON",
+          "municipalityKey": "BRIGHTON",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "wardSpec": "1-4"
+        },
+        "geometryFeatureCount": 4,
+        "geometryLabels": [
+          "BRIGHTON - T 0001",
+          "BRIGHTON - T 0002",
+          "BRIGHTON - T 0003",
+          "BRIGHTON - T 0004"
+        ],
+        "wecTotals": {
+          "totalVotes": 1056,
+          "harris": 288,
+          "trump": 764
+        },
+        "geometryTotals": {
+          "totalVotes": 1056,
+          "harris": 288,
+          "trump": 764
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Town of PARIS Wards 1-2",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "PARIS",
+          "municipalityKey": "PARIS",
+          "wards": [
+            "1",
+            "2"
+          ],
+          "wardSpec": "1-2"
+        },
+        "geometryFeatureCount": 2,
+        "geometryLabels": [
+          "PARIS - T 0001",
+          "PARIS - T 0002"
+        ],
+        "wecTotals": {
+          "totalVotes": 998,
+          "harris": 313,
+          "trump": 672
+        },
+        "geometryTotals": {
+          "totalVotes": 998,
+          "harris": 313,
+          "trump": 672
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Town of RANDALL Wards 1-6",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "RANDALL",
+          "municipalityKey": "RANDALL",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "wardSpec": "1-6"
+        },
+        "geometryFeatureCount": 6,
+        "geometryLabels": [
+          "RANDALL - T 0001",
+          "RANDALL - T 0002",
+          "RANDALL - T 0003",
+          "RANDALL - T 0004",
+          "RANDALL - T 0005",
+          "RANDALL - T 0006"
+        ],
+        "wecTotals": {
+          "totalVotes": 2210,
+          "harris": 629,
+          "trump": 1547
+        },
+        "geometryTotals": {
+          "totalVotes": 2210,
+          "harris": 629,
+          "trump": 1547
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Town of SOMERS Wards 1-4",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "SOMERS",
+          "municipalityKey": "SOMERS",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "wardSpec": "1-4"
+        },
+        "geometryFeatureCount": 4,
+        "geometryLabels": [
+          "SOMERS - T 0001",
+          "SOMERS - T 0002",
+          "SOMERS - T 0003",
+          "SOMERS - T 0004"
+        ],
+        "wecTotals": {
+          "totalVotes": 567,
+          "harris": 234,
+          "trump": 323
+        },
+        "geometryTotals": {
+          "totalVotes": 567,
+          "harris": 234,
+          "trump": 323
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Town of WHEATLAND Wards 1-5",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "WHEATLAND",
+          "municipalityKey": "WHEATLAND",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "wardSpec": "1-5"
+        },
+        "geometryFeatureCount": 5,
+        "geometryLabels": [
+          "WHEATLAND - T 0001",
+          "WHEATLAND - T 0002",
+          "WHEATLAND - T 0003",
+          "WHEATLAND - T 0004",
+          "WHEATLAND - T 0005"
+        ],
+        "wecTotals": {
+          "totalVotes": 2191,
+          "harris": 714,
+          "trump": 1452
+        },
+        "geometryTotals": {
+          "totalVotes": 2191,
+          "harris": 714,
+          "trump": 1452
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Village of BRISTOL Wards 1-3",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "BRISTOL",
+          "municipalityKey": "BRISTOL",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "geometryFeatureCount": 3,
+        "geometryLabels": [
+          "Bristol - V 0001",
+          "Bristol - V 0002",
+          "Bristol - V 0003"
+        ],
+        "wecTotals": {
+          "totalVotes": 1499,
+          "harris": 500,
+          "trump": 982
+        },
+        "geometryTotals": {
+          "totalVotes": 1499,
+          "harris": 500,
+          "trump": 982
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Village of BRISTOL Wards 4-7",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "BRISTOL",
+          "municipalityKey": "BRISTOL",
+          "wards": [
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "wardSpec": "4-7"
+        },
+        "geometryFeatureCount": 4,
+        "geometryLabels": [
+          "Bristol - V 0004",
+          "Bristol - V 0005",
+          "Bristol - V 0006",
+          "Bristol - V 0007"
+        ],
+        "wecTotals": {
+          "totalVotes": 1876,
+          "harris": 618,
+          "trump": 1237
+        },
+        "geometryTotals": {
+          "totalVotes": 1876,
+          "harris": 618,
+          "trump": 1237
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Village of PADDOCK LAKE Wards 1-6",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "PADDOCK LAKE",
+          "municipalityKey": "PADDOCKLAKE",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "wardSpec": "1-6"
+        },
+        "geometryFeatureCount": 6,
+        "geometryLabels": [
+          "Paddock Lake - V 0001",
+          "Paddock Lake - V 0002",
+          "Paddock Lake - V 0003",
+          "Paddock Lake - V 0004",
+          "Paddock Lake - V 0005",
+          "Paddock Lake - V 0006"
+        ],
+        "wecTotals": {
+          "totalVotes": 1876,
+          "harris": 635,
+          "trump": 1210
+        },
+        "geometryTotals": {
+          "totalVotes": 1876,
+          "harris": 635,
+          "trump": 1210
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Village of PLEASANT PRAIRIE Wards 1-3",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "PLEASANT PRAIRIE",
+          "municipalityKey": "PLEASANTPRAIRIE",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "geometryFeatureCount": 3,
+        "geometryLabels": [
+          "Pleasant Prairie - V 0001",
+          "Pleasant Prairie - V 0002",
+          "Pleasant Prairie - V 0003"
+        ],
+        "wecTotals": {
+          "totalVotes": 3228,
+          "harris": 1435,
+          "trump": 1749
+        },
+        "geometryTotals": {
+          "totalVotes": 3228,
+          "harris": 1435,
+          "trump": 1749
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "Village of PLEASANT PRAIRIE Wards 4-5",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "PLEASANT PRAIRIE",
+          "municipalityKey": "PLEASANTPRAIRIE",
+          "wards": [
+            "4",
+            "5"
+          ],
+          "wardSpec": "4-5"
+        },
+        "geometryFeatureCount": 2,
+        "geometryLabels": [
+          "Pleasant Prairie - V 0004",
+          "Pleasant Prairie - V 0005"
+        ],
+        "wecTotals": {
+          "totalVotes": 1634,
+          "harris": 611,
+          "trump": 990
+        },
+        "geometryTotals": {
+          "totalVotes": 1634,
+          "harris": 611,
+          "trump": 990
+        },
+        "deltas": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        }
+      }
+    ],
+    "unmatched": [
+      {
+        "county": "Iowa County",
+        "localUnit": "VILLAGE OF BLANCHARDVILLE Wards 2-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "BLANCHARDVILLE",
+          "municipalityKey": "BLANCHARDVILLE",
+          "wards": [
+            "2",
+            "3"
+          ],
+          "wardSpec": "2-3"
+        },
+        "missingWards": [
+          "3"
+        ]
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "CITY OF BRODHEAD Wards 7-8",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "BRODHEAD",
+          "municipalityKey": "BRODHEAD",
+          "wards": [
+            "7",
+            "8"
+          ],
+          "wardSpec": "7-8"
+        },
+        "missingWards": [
+          "7",
+          "8"
+        ]
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "City of EVANSVILLE Wards 1-11",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "EVANSVILLE",
+          "municipalityKey": "EVANSVILLE",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
+          ],
+          "wardSpec": "1-11"
+        },
+        "missingWards": [
+          "10"
+        ]
+      },
+      {
+        "county": "La Crosse County",
+        "localUnit": "Village of HOLMEN Wards 1-5,12-13",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "HOLMEN",
+          "municipalityKey": "HOLMEN",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "12",
+            "13"
+          ],
+          "wardSpec": "1-5,12-13"
+        },
+        "missingWards": [
+          "13"
+        ]
+      },
+      {
+        "county": "La Crosse County",
+        "localUnit": "Village of WEST SALEM Wards 1-8",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "WEST SALEM",
+          "municipalityKey": "WESTSALEM",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "wardSpec": "1-8"
+        },
+        "missingWards": [
+          "8"
+        ]
+      },
+      {
+        "county": "Monroe County",
+        "localUnit": "Town of SHELDON Wards 1-2",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "SHELDON",
+          "municipalityKey": "SHELDON",
+          "wards": [
+            "1",
+            "2"
+          ],
+          "wardSpec": "1-2"
+        },
+        "missingWards": [
+          "2"
+        ]
+      },
+      {
+        "county": "Trempealeau County",
+        "localUnit": "Town of UNITY Wards 1-2",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "UNITY",
+          "municipalityKey": "UNITY",
+          "wards": [
+            "1",
+            "2"
+          ],
+          "wardSpec": "1-2"
+        },
+        "missingWards": [
+          "1"
+        ]
+      },
+      {
+        "county": "Trempealeau County",
+        "localUnit": "City of BLAIR Wards 1-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "BLAIR",
+          "municipalityKey": "BLAIR",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "missingWards": [
+          "3"
+        ]
+      },
+      {
+        "county": "Vernon County",
+        "localUnit": "Town of BERGEN Wards 1-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "BERGEN",
+          "municipalityKey": "BERGEN",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "missingWards": [
+          "3"
+        ]
+      },
+      {
+        "county": "Vernon County",
+        "localUnit": "Town of HARMONY Wards 1-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "HARMONY",
+          "municipalityKey": "HARMONY",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "missingWards": [
+          "2",
+          "3"
+        ]
+      },
+      {
+        "county": "Vernon County",
+        "localUnit": "Town of HILLSBORO Wards 1-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "HILLSBORO",
+          "municipalityKey": "HILLSBORO",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "missingWards": [
+          "3"
+        ]
+      },
+      {
+        "county": "Vernon County",
+        "localUnit": "Town of JEFFERSON Wards 1-4",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "JEFFERSON",
+          "municipalityKey": "JEFFERSON",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "wardSpec": "1-4"
+        },
+        "missingWards": [
+          "3",
+          "4"
+        ]
+      },
+      {
+        "county": "Vernon County",
+        "localUnit": "Town of STARK Wards 1-2",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "STARK",
+          "municipalityKey": "STARK",
+          "wards": [
+            "1",
+            "2"
+          ],
+          "wardSpec": "1-2"
+        },
+        "missingWards": [
+          "2"
+        ]
+      },
+      {
+        "county": "Vernon County",
+        "localUnit": "Town of VIROQUA Wards 1-4",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "VIROQUA",
+          "municipalityKey": "VIROQUA",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "wardSpec": "1-4"
+        },
+        "missingWards": [
+          "4"
+        ]
+      },
+      {
+        "county": "Vernon County",
+        "localUnit": "City of WESTBY Wards 1-5",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "WESTBY",
+          "municipalityKey": "WESTBY",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "wardSpec": "1-5"
+        },
+        "missingWards": [
+          "4",
+          "5"
+        ]
+      },
+      {
+        "county": "Jefferson County",
+        "localUnit": "City of FORT ATKINSON Wards 1-13",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "FORT ATKINSON",
+          "municipalityKey": "FORTATKINSON",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13"
+          ],
+          "wardSpec": "1-13"
+        },
+        "missingWards": [
+          "10"
+        ]
+      },
+      {
+        "county": "Manitowoc County",
+        "localUnit": "Village of MISHICOT Wards 1-4",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "MISHICOT",
+          "municipalityKey": "MISHICOT",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "wardSpec": "1-4"
+        },
+        "missingWards": [
+          "3",
+          "4"
+        ]
+      },
+      {
+        "county": "Bayfield County",
+        "localUnit": "City of BAYFIELD Wards 1-4",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "BAYFIELD",
+          "municipalityKey": "BAYFIELD",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "wardSpec": "1-4"
+        },
+        "missingWards": [
+          "2",
+          "3",
+          "4"
+        ]
+      },
+      {
+        "county": "Rusk County",
+        "localUnit": "Town of FLAMBEAU Wards 1-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "FLAMBEAU",
+          "municipalityKey": "FLAMBEAU",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "missingWards": [
+          "2"
+        ]
+      },
+      {
+        "county": "Sawyer County",
+        "localUnit": "Town of HAYWARD Wards 1-8",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "HAYWARD",
+          "municipalityKey": "HAYWARD",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8"
+          ],
+          "wardSpec": "1-8"
+        },
+        "missingWards": [
+          "8"
+        ]
+      },
+      {
+        "county": "Taylor County",
+        "localUnit": "City of MEDFORD Wards 1-9",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "MEDFORD",
+          "municipalityKey": "MEDFORD",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "wardSpec": "1-9"
+        },
+        "missingWards": [
+          "9"
+        ]
+      },
+      {
+        "county": "Door County",
+        "localUnit": "Town of BAILEYS HARBOR Wards 1-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "BAILEYS HARBOR",
+          "municipalityKey": "BAILEYSHARBOR",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "missingWards": [
+          "1"
+        ]
+      },
+      {
+        "county": "Door County",
+        "localUnit": "City of STURGEON BAY Wards 10-15,22",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "STURGEON BAY",
+          "municipalityKey": "STURGEONBAY",
+          "wards": [
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "22"
+          ],
+          "wardSpec": "10-15,22"
+        },
+        "missingWards": [
+          "22"
+        ]
+      },
+      {
+        "county": "Marinette County",
+        "localUnit": "Town of DUNBAR Wards 1-2",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "DUNBAR",
+          "municipalityKey": "DUNBAR",
+          "wards": [
+            "1",
+            "2"
+          ],
+          "wardSpec": "1-2"
+        },
+        "missingWards": [
+          "2"
+        ]
+      },
+      {
+        "county": "Waupaca County",
+        "localUnit": "Town of LARRABEE Wards 1-3",
+        "reason": "one_or_more_wards_not_found_in_geometry",
+        "parsed": {
+          "type": "Town",
+          "ctv": "T",
+          "municipality": "LARRABEE",
+          "municipalityKey": "LARRABEE",
+          "wards": [
+            "1",
+            "2",
+            "3"
+          ],
+          "wardSpec": "1-3"
+        },
+        "missingWards": [
+          "3"
+        ]
+      }
+    ],
+    "parseFailures": [],
+    "mismatched": [
+      {
+        "county": "Kenosha County",
+        "localUnit": "City of KENOSHA Ward 3",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "KENOSHA",
+          "municipalityKey": "KENOSHA",
+          "wards": [
+            "3"
+          ],
+          "wardSpec": "3"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Kenosha - C 0003"
+        ],
+        "wecTotals": {
+          "totalVotes": 703,
+          "harris": 408,
+          "trump": 283
+        },
+        "geometryTotals": {
+          "totalVotes": 706,
+          "harris": 409,
+          "trump": 285
+        },
+        "deltas": {
+          "totalVotes": 3,
+          "harris": 1,
+          "trump": 2
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "City of KENOSHA Ward 4",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "KENOSHA",
+          "municipalityKey": "KENOSHA",
+          "wards": [
+            "4"
+          ],
+          "wardSpec": "4"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Kenosha - C 0004"
+        ],
+        "wecTotals": {
+          "totalVotes": 310,
+          "harris": 150,
+          "trump": 156
+        },
+        "geometryTotals": {
+          "totalVotes": 313,
+          "harris": 151,
+          "trump": 158
+        },
+        "deltas": {
+          "totalVotes": 3,
+          "harris": 1,
+          "trump": 2
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "City of KENOSHA Ward 5",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "KENOSHA",
+          "municipalityKey": "KENOSHA",
+          "wards": [
+            "5"
+          ],
+          "wardSpec": "5"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Kenosha - C 0005"
+        ],
+        "wecTotals": {
+          "totalVotes": 968,
+          "harris": 570,
+          "trump": 377
+        },
+        "geometryTotals": {
+          "totalVotes": 969,
+          "harris": 570,
+          "trump": 378
+        },
+        "deltas": {
+          "totalVotes": 1,
+          "harris": 0,
+          "trump": 1
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "City of KENOSHA Ward 9",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "KENOSHA",
+          "municipalityKey": "KENOSHA",
+          "wards": [
+            "9"
+          ],
+          "wardSpec": "9"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Kenosha - C 0009"
+        ],
+        "wecTotals": {
+          "totalVotes": 1535,
+          "harris": 812,
+          "trump": 704
+        },
+        "geometryTotals": {
+          "totalVotes": 1536,
+          "harris": 812,
+          "trump": 705
+        },
+        "deltas": {
+          "totalVotes": 1,
+          "harris": 0,
+          "trump": 1
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "City of KENOSHA Ward 63",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "KENOSHA",
+          "municipalityKey": "KENOSHA",
+          "wards": [
+            "63"
+          ],
+          "wardSpec": "63"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Kenosha - C 0063"
+        ],
+        "wecTotals": {
+          "totalVotes": 4,
+          "harris": 0,
+          "trump": 4
+        },
+        "geometryTotals": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        },
+        "deltas": {
+          "totalVotes": -4,
+          "harris": 0,
+          "trump": -4
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "City of KENOSHA Ward 77",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "KENOSHA",
+          "municipalityKey": "KENOSHA",
+          "wards": [
+            "77"
+          ],
+          "wardSpec": "77"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Kenosha - C 0077"
+        ],
+        "wecTotals": {
+          "totalVotes": 2,
+          "harris": 2,
+          "trump": 0
+        },
+        "geometryTotals": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        },
+        "deltas": {
+          "totalVotes": -2,
+          "harris": -2,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Kenosha County",
+        "localUnit": "City of KENOSHA Ward 84",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "KENOSHA",
+          "municipalityKey": "KENOSHA",
+          "wards": [
+            "84"
+          ],
+          "wardSpec": "84"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Kenosha - C 0084"
+        ],
+        "wecTotals": {
+          "totalVotes": 2,
+          "harris": 0,
+          "trump": 2
+        },
+        "geometryTotals": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        },
+        "deltas": {
+          "totalVotes": -2,
+          "harris": 0,
+          "trump": -2
+        }
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "City of BELOIT Ward 1",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "BELOIT",
+          "municipalityKey": "BELOIT",
+          "wards": [
+            "1"
+          ],
+          "wardSpec": "1"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Beloit - C 0001"
+        ],
+        "wecTotals": {
+          "totalVotes": 285,
+          "harris": 159,
+          "trump": 124
+        },
+        "geometryTotals": {
+          "totalVotes": 288,
+          "harris": 161,
+          "trump": 125
+        },
+        "deltas": {
+          "totalVotes": 3,
+          "harris": 2,
+          "trump": 1
+        }
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "City of BELOIT Ward 2",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "BELOIT",
+          "municipalityKey": "BELOIT",
+          "wards": [
+            "2"
+          ],
+          "wardSpec": "2"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Beloit - C 0002"
+        ],
+        "wecTotals": {
+          "totalVotes": 914,
+          "harris": 474,
+          "trump": 434
+        },
+        "geometryTotals": {
+          "totalVotes": 915,
+          "harris": 475,
+          "trump": 434
+        },
+        "deltas": {
+          "totalVotes": 1,
+          "harris": 1,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "City of BELOIT Ward 3",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "BELOIT",
+          "municipalityKey": "BELOIT",
+          "wards": [
+            "3"
+          ],
+          "wardSpec": "3"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Beloit - C 0003"
+        ],
+        "wecTotals": {
+          "totalVotes": 749,
+          "harris": 379,
+          "trump": 360
+        },
+        "geometryTotals": {
+          "totalVotes": 750,
+          "harris": 380,
+          "trump": 360
+        },
+        "deltas": {
+          "totalVotes": 1,
+          "harris": 1,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "City of BELOIT Ward 29",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "BELOIT",
+          "municipalityKey": "BELOIT",
+          "wards": [
+            "29"
+          ],
+          "wardSpec": "29"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Beloit - C 0029"
+        ],
+        "wecTotals": {
+          "totalVotes": 4,
+          "harris": 4,
+          "trump": 0
+        },
+        "geometryTotals": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        },
+        "deltas": {
+          "totalVotes": -4,
+          "harris": -4,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "City of JANESVILLE Ward 32",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "JANESVILLE",
+          "municipalityKey": "JANESVILLE",
+          "wards": [
+            "32"
+          ],
+          "wardSpec": "32"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Janesville - C 0032"
+        ],
+        "wecTotals": {
+          "totalVotes": 749,
+          "harris": 361,
+          "trump": 379
+        },
+        "geometryTotals": {
+          "totalVotes": 750,
+          "harris": 362,
+          "trump": 379
+        },
+        "deltas": {
+          "totalVotes": 1,
+          "harris": 1,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Rock County",
+        "localUnit": "City of JANESVILLE Ward 38",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "JANESVILLE",
+          "municipalityKey": "JANESVILLE",
+          "wards": [
+            "38"
+          ],
+          "wardSpec": "38"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Janesville - C 0038"
+        ],
+        "wecTotals": {
+          "totalVotes": 1,
+          "harris": 1,
+          "trump": 0
+        },
+        "geometryTotals": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        },
+        "deltas": {
+          "totalVotes": -1,
+          "harris": -1,
+          "trump": 0
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "Village of CROSS PLAINS Wards 1-6",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "CROSS PLAINS",
+          "municipalityKey": "CROSSPLAINS",
+          "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "wardSpec": "1-6"
+        },
+        "geometryFeatureCount": 6,
+        "geometryLabels": [
+          "Cross Plains - V 0001",
+          "Cross Plains - V 0002",
+          "Cross Plains - V 0003",
+          "Cross Plains - V 0004",
+          "Cross Plains - V 0005",
+          "Cross Plains - V 0006"
+        ],
+        "wecTotals": {
+          "totalVotes": 2682,
+          "harris": 1789,
+          "trump": 855
+        },
+        "geometryTotals": {
+          "totalVotes": 2767,
+          "harris": 1843,
+          "trump": 883
+        },
+        "deltas": {
+          "totalVotes": 85,
+          "harris": 54,
+          "trump": 28
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "Village of CROSS PLAINS Ward 7",
+        "parsed": {
+          "type": "Village",
+          "ctv": "V",
+          "municipality": "CROSS PLAINS",
+          "municipalityKey": "CROSSPLAINS",
+          "wards": [
+            "7"
+          ],
+          "wardSpec": "7"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Cross Plains - V 0007"
+        ],
+        "wecTotals": {
+          "totalVotes": 85,
+          "harris": 54,
+          "trump": 28
+        },
+        "geometryTotals": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        },
+        "deltas": {
+          "totalVotes": -85,
+          "harris": -54,
+          "trump": -28
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of MADISON Ward 130",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "MADISON",
+          "municipalityKey": "MADISON",
+          "wards": [
+            "130"
+          ],
+          "wardSpec": "130"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Madison - C 0130"
+        ],
+        "wecTotals": {
+          "totalVotes": 2,
+          "harris": 0,
+          "trump": 2
+        },
+        "geometryTotals": {
+          "totalVotes": 0,
+          "harris": 0,
+          "trump": 0
+        },
+        "deltas": {
+          "totalVotes": -2,
+          "harris": 0,
+          "trump": -2
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 1",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "1"
+          ],
+          "wardSpec": "1"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0001"
+        ],
+        "wecTotals": {
+          "totalVotes": 1273,
+          "harris": 883,
+          "trump": 372
+        },
+        "geometryTotals": {
+          "totalVotes": 1284,
+          "harris": 891,
+          "trump": 375
+        },
+        "deltas": {
+          "totalVotes": 11,
+          "harris": 8,
+          "trump": 3
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 2",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "2"
+          ],
+          "wardSpec": "2"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0002"
+        ],
+        "wecTotals": {
+          "totalVotes": 958,
+          "harris": 667,
+          "trump": 275
+        },
+        "geometryTotals": {
+          "totalVotes": 967,
+          "harris": 673,
+          "trump": 278
+        },
+        "deltas": {
+          "totalVotes": 9,
+          "harris": 6,
+          "trump": 3
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 3",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "3"
+          ],
+          "wardSpec": "3"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0003"
+        ],
+        "wecTotals": {
+          "totalVotes": 620,
+          "harris": 456,
+          "trump": 159
+        },
+        "geometryTotals": {
+          "totalVotes": 627,
+          "harris": 461,
+          "trump": 161
+        },
+        "deltas": {
+          "totalVotes": 7,
+          "harris": 5,
+          "trump": 2
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 4",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "4"
+          ],
+          "wardSpec": "4"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0004"
+        ],
+        "wecTotals": {
+          "totalVotes": 794,
+          "harris": 582,
+          "trump": 200
+        },
+        "geometryTotals": {
+          "totalVotes": 804,
+          "harris": 589,
+          "trump": 203
+        },
+        "deltas": {
+          "totalVotes": 10,
+          "harris": 7,
+          "trump": 3
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 5",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "5"
+          ],
+          "wardSpec": "5"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0005"
+        ],
+        "wecTotals": {
+          "totalVotes": 622,
+          "harris": 458,
+          "trump": 157
+        },
+        "geometryTotals": {
+          "totalVotes": 629,
+          "harris": 463,
+          "trump": 159
+        },
+        "deltas": {
+          "totalVotes": 7,
+          "harris": 5,
+          "trump": 2
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 6",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "6"
+          ],
+          "wardSpec": "6"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0006"
+        ],
+        "wecTotals": {
+          "totalVotes": 539,
+          "harris": 355,
+          "trump": 172
+        },
+        "geometryTotals": {
+          "totalVotes": 545,
+          "harris": 359,
+          "trump": 174
+        },
+        "deltas": {
+          "totalVotes": 6,
+          "harris": 4,
+          "trump": 2
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 7",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "7"
+          ],
+          "wardSpec": "7"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0007"
+        ],
+        "wecTotals": {
+          "totalVotes": 526,
+          "harris": 388,
+          "trump": 125
+        },
+        "geometryTotals": {
+          "totalVotes": 533,
+          "harris": 392,
+          "trump": 128
+        },
+        "deltas": {
+          "totalVotes": 7,
+          "harris": 4,
+          "trump": 3
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 8",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "8"
+          ],
+          "wardSpec": "8"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0008"
+        ],
+        "wecTotals": {
+          "totalVotes": 927,
+          "harris": 639,
+          "trump": 268
+        },
+        "geometryTotals": {
+          "totalVotes": 937,
+          "harris": 646,
+          "trump": 271
+        },
+        "deltas": {
+          "totalVotes": 10,
+          "harris": 7,
+          "trump": 3
+        }
+      },
+      {
+        "county": "Dane County",
+        "localUnit": "City of SUN PRAIRIE Ward 9",
+        "parsed": {
+          "type": "City",
+          "ctv": "C",
+          "municipality": "SUN PRAIRIE",
+          "municipalityKey": "SUNPRAIRIE",
+          "wards": [
+            "9"
+          ],
+          "wardSpec": "9"
+        },
+        "geometryFeatureCount": 1,
+        "geometryLabels": [
+          "Sun Prairie - C 0009"
+        ],
+        "wecTotals": {
+          "totalVotes": 1201,
+          "harris": 794,
+          "trump": 388
+        },
+        "geometryTotals": {
+          "totalVotes": 1212,
+          "harris": 802,
+          "trump": 391
+        },
+        "deltas": {
+          "totalVotes": 11,
+          "harris": 8,
+          "trump": 3
+        }
+      }
+    ]
+  }
+}

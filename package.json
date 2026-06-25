@@ -98,7 +98,9 @@
     "etl:reconcile:wi:review": "node --experimental-strip-types scripts/report-wi-review-reconciliation.mjs",
     "etl:status:wi:remaining": "node scripts/report-wi-remaining-data-status.mjs",
     "etl:collect:wi:remaining": "node scripts/collect-wi-public-source-inventory.mjs",
-    "etl:requests:wi:remaining": "node scripts/create-wi-records-request-packets.mjs"
+    "etl:requests:wi:remaining": "node scripts/create-wi-records-request-packets.mjs",
+    "etl:collect:wi:ward-geometry": "node scripts/collect-wi-ward-geometry.mjs",
+    "etl:validate:wi:ward-geometry": "node scripts/validate-wi-ward-geometry-joins.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

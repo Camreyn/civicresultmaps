@@ -1,0 +1,39 @@
+{
+  "state": "WI",
+  "electionYear": 2024,
+  "generatedAt": "2026-06-25",
+  "sourceTitle": "November_2024_Election_Data_with_Jan2025_Wards",
+  "sourceDescription": "",
+  "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+  "serviceItemId": "878d8826218f42509e07437a82ef6b6e",
+  "authority": "Wisconsin Legislature / LTSB ArcGIS",
+  "status": "public_candidate_collected_needs_join_validation",
+  "localGeojson": "",
+  "localGeojsonGzip": "data/wi-2024-ward-geometry.geojson.gz",
+  "localRawGeojson": "",
+  "localSummary": "data/wi-2024-ward-geometry-summary.json",
+  "featureCount": 7086,
+  "countyCount": 72,
+  "municipalityCount": 1910,
+  "totalPresidentialVotes": 3422918,
+  "fields": [
+    "OBJECTID",
+    "GEOID",
+    "CNTY_FIPS",
+    "CNTY_NAME",
+    "MCD_FIPS",
+    "MCD_NAME",
+    "CTV",
+    "WARD_FIPS",
+    "WARDID",
+    "LABEL",
+    "PRETOT24",
+    "PREDEM24",
+    "PREREP24"
+  ],
+  "caveats": [
+    "FeatureServer description is November 2024 election data with January 2025 wards.",
+    "This is a collected municipal/ward geometry candidate; it is not promoted to production ward-map rendering until join validation passes.",
+    "The layer includes presidential vote fields but not registered-voter denominators, audit outcomes, or ballot-mode/CVR fields."
+  ]
+}

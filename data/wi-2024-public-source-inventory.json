@@ -3,10 +3,10 @@
   "stateName": "Wisconsin",
   "electionYear": 2024,
   "generatedAt": "2026-06-25",
-  "probeEnabled": false,
+  "probeEnabled": true,
   "tracker": "data/wi-2024-remaining-data-collection-tracker.json",
   "summary": {
-    "sourceCandidateCount": 4,
+    "sourceCandidateCount": 5,
     "requestPathCount": 1,
     "loadedContextCount": 2,
     "familyStatuses": {
@@ -53,7 +53,8 @@
         "label": "Municipal/ward boundary geometry valid for 2024 wards",
         "statusCounts": {
           "needs_source_inventory": 1,
-          "not_requested": 72
+          "not_requested": 72,
+          "public_candidate_collected_needs_join_validation": 1
         },
         "targetFields": [
           "county",
@@ -100,9 +101,12 @@
       "status": "candidate_public_page",
       "notes": "Known WEC election results page; current loaded WEC ward workbook lacks registered-voter and ballot-mode fields.",
       "probe": {
-        "checked": false,
-        "ok": null,
-        "status": null
+        "checked": true,
+        "ok": false,
+        "status": 403,
+        "finalUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+        "contentType": "text/html; charset=UTF-8",
+        "contentLength": ""
       },
       "recommendation": "Probe or manually inspect this candidate before creating new local-source rows."
     },
@@ -118,9 +122,12 @@
       "status": "request_path",
       "notes": "Primary official request path for non-posted statewide or WEC-held records.",
       "probe": {
-        "checked": false,
-        "ok": null,
-        "status": null
+        "checked": true,
+        "ok": false,
+        "status": 403,
+        "finalUrl": "https://elections.wi.gov/about/records-request",
+        "contentType": "text/html; charset=UTF-8",
+        "contentLength": ""
       },
       "recommendation": "Use this as the official request path for records not posted as public downloads."
     },
@@ -134,9 +141,12 @@
       "status": "loaded_partial_context",
       "notes": "Report provides selected reporting units, equipment, audited ballot totals, and aggregate findings, not per-unit discrepancy outcome rows.",
       "probe": {
-        "checked": false,
-        "ok": null,
-        "status": null
+        "checked": true,
+        "ok": false,
+        "status": 403,
+        "finalUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+        "contentType": "text/html; charset=UTF-8",
+        "contentLength": ""
       },
       "recommendation": "Keep as context; do not mark remaining family complete from this source alone."
     },
@@ -151,11 +161,33 @@
       "status": "loaded_fallback_context",
       "notes": "Loaded local-jurisdiction registered-voter and vote-method context; not WEC ward-level data.",
       "probe": {
-        "checked": false,
-        "ok": null,
-        "status": null
+        "checked": true,
+        "ok": true,
+        "status": 200,
+        "finalUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+        "contentType": "application/zip",
+        "contentLength": "2119187"
       },
       "recommendation": "Keep as context; do not mark remaining family complete from this source alone."
+    },
+    {
+      "id": "wi-legislature-2024-election-data-jan2025-wards",
+      "families": [
+        "municipalWardGeometry"
+      ],
+      "authority": "Wisconsin Legislature / LTSB ArcGIS",
+      "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+      "status": "public_candidate_collected_needs_join_validation",
+      "notes": "November_2024_Election_Data_with_Jan2025_Wards; 7086 polygon features collected. Validate against WEC ward review rows before production map use.",
+      "probe": {
+        "checked": true,
+        "ok": true,
+        "status": 200,
+        "finalUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+        "contentType": "application/json; GeoJSON query endpoint",
+        "contentLength": ""
+      },
+      "recommendation": "Use as the municipal/ward geometry candidate and run join validation before enabling ward-level map rendering."
     }
   ],
   "nextAction": "Inspect any reachable public candidates first, then generate records request packets for families that remain missing or partial."

@@ -11,7 +11,7 @@
     "noRemainingItemIsCurrentlyUsedAsAFlagInput": true,
     "collectionTrackerTargets": 73,
     "collectionTrackerFamilies": 4,
-    "publicSourceCandidateCount": 4,
+    "publicSourceCandidateCount": 5,
     "requestPacketCount": 74
   },
   "collectionPlan": {
@@ -62,9 +62,12 @@
         "status": "candidate_public_page",
         "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
         "probe": {
-          "checked": false,
-          "ok": null,
-          "status": null
+          "checked": true,
+          "ok": false,
+          "status": 403,
+          "finalUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+          "contentType": "text/html; charset=UTF-8",
+          "contentLength": ""
         }
       },
       {
@@ -77,9 +80,12 @@
         "status": "request_path",
         "sourceUrl": "https://elections.wi.gov/about/records-request",
         "probe": {
-          "checked": false,
-          "ok": null,
-          "status": null
+          "checked": true,
+          "ok": false,
+          "status": 403,
+          "finalUrl": "https://elections.wi.gov/about/records-request",
+          "contentType": "text/html; charset=UTF-8",
+          "contentLength": ""
         }
       },
       {
@@ -90,9 +96,12 @@
         "status": "loaded_partial_context",
         "sourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
         "probe": {
-          "checked": false,
-          "ok": null,
-          "status": null
+          "checked": true,
+          "ok": false,
+          "status": 403,
+          "finalUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+          "contentType": "text/html; charset=UTF-8",
+          "contentLength": ""
         }
       },
       {
@@ -104,9 +113,28 @@
         "status": "loaded_fallback_context",
         "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
         "probe": {
-          "checked": false,
-          "ok": null,
-          "status": null
+          "checked": true,
+          "ok": true,
+          "status": 200,
+          "finalUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+          "contentType": "application/zip",
+          "contentLength": "2119187"
+        }
+      },
+      {
+        "id": "wi-legislature-2024-election-data-jan2025-wards",
+        "families": [
+          "municipalWardGeometry"
+        ],
+        "status": "public_candidate_collected_needs_join_validation",
+        "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+        "probe": {
+          "checked": true,
+          "ok": true,
+          "status": 200,
+          "finalUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+          "contentType": "application/json; GeoJSON query endpoint",
+          "contentLength": ""
         }
       }
     ],
@@ -268,11 +296,41 @@
       "nextAction": "If per-reporting-unit discrepancy outcomes are needed, request or collect the submitted local audit materials; the published report provides selected reporting units, equipment, ballots audited, and statewide findings."
     },
     "municipalWardGeometry": {
-      "status": "not_loaded",
-      "implementedContext": "The app currently renders Wisconsin county geometry. County, city, and rest-of-county advisory scopes are tabular review scopes, not mapped ward polygons.",
-      "currentGeometry": "county_geometry_only",
+      "status": "public_candidate_collected_needs_join_validation",
+      "implementedContext": "Official Wisconsin Legislature/LTSB ArcGIS municipal ward geometry candidate has been collected as compressed GeoJSON. It is not promoted to production ward-map rendering until join validation against WEC review rows passes.",
+      "currentGeometry": "county_geometry_production_with_ward_candidate_collected",
+      "candidate": {
+        "authority": "Wisconsin Legislature / LTSB ArcGIS",
+        "sourceTitle": "November_2024_Election_Data_with_Jan2025_Wards",
+        "sourceUrl": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+        "localGeojsonGzip": "data/wi-2024-ward-geometry.geojson.gz",
+        "localSummary": "data/wi-2024-ward-geometry-summary.json",
+        "featureCount": 7086,
+        "countyCount": 72,
+        "municipalityCount": 1910,
+        "totalPresidentialVotes": 3422918,
+        "caveats": [
+          "FeatureServer description is November 2024 election data with January 2025 wards.",
+          "This is a collected municipal/ward geometry candidate; it is not promoted to production ward-map rendering until join validation passes.",
+          "The layer includes presidential vote fields but not registered-voter denominators, audit outcomes, or ballot-mode/CVR fields."
+        ],
+        "joinValidation": {
+          "status": "candidate_collected_join_validation_needs_review",
+          "reportPath": "data/wi-2024-ward-geometry-join-report.json",
+          "reviewRows": 3503,
+          "geometryFeatures": 7086,
+          "matchedReviewRows": 3478,
+          "matchedPct": 99.29,
+          "exactPresidentialTotalRows": 3370,
+          "exactPresidentialTotalPctOfMatched": 96.89,
+          "unmatchedReviewRows": 25,
+          "parseFailures": 0,
+          "mismatchedMatchedRows": 108,
+          "mismatchAbsTotal": 1850
+        }
+      },
       "flagInputStatus": "not_used_as_flag_input",
-      "nextAction": "Find an official statewide municipal ward boundary dataset matching the 2024 election wards, normalize it to WEC county/municipality/ward keys, and add geometry join tests before enabling ward-level map rendering."
+      "nextAction": "Resolve the unmatched ward rows and documented vote-total deltas before enabling ward-level map rendering."
     },
     "rowLevelBallotMode": {
       "status": "not_available_from_wec_ward_workbook",
