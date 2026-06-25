@@ -28,7 +28,7 @@ export type ResultRow = {
   state: string;
   year: number;
   office: string;
-  level: "county" | "state" | "district" | "precinct";
+  level: "county" | "state" | "district" | "precinct" | "city" | "rest_of_county";
   jurisdictionCode: string;
   jurisdictionName: string;
   votes: Record<string, number>;
@@ -84,6 +84,9 @@ export type CompletenessSummary = {
   historicalRowCount: number;
   equipmentRowCount: number;
   flaggedJurisdictions: number;
+  countyIndicatorCount: number;
+  flaggedCountyJurisdictions: number;
+  flaggedAreas: number;
   importRunCount: number;
   nativeImportCount: number;
   legacyImportCount: number;
@@ -115,7 +118,7 @@ export type AnalysisIndicator = {
   electionYear: number;
   jurisdictionCode: string;
   jurisdictionName: string;
-  level: "county" | "state" | "district" | "precinct";
+  level: "county" | "state" | "district" | "precinct" | "city" | "rest_of_county";
   type: string;
   severity: number;
   label: string;

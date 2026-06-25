@@ -810,6 +810,60 @@ function indicatorExplanation(type: string) {
   return "This advisory indicator marks a pattern from the imported review data that deserves human review.";
 }
 
+
+function indicatorScopeLabel(indicator: AnalysisIndicator) {
+  if (indicator.level === "city") {
+    return "Major city";
+  }
+  if (indicator.level === "rest_of_county") {
+    return "Rest of county";
+  }
+  return indicator.level === "county" ? "County" : indicator.level;
+}
+
+function auditContextSummary(indicator: AnalysisIndicator) {
+  const audit = indicator.metrics.auditContext as
+    | {
+        auditedBallots?: number;
+        caveat?: string;
+        matchedSelectionRows?: number;
+        sourceUrl?: string;
+        statewideFinding?: string;
+        topEquipment?: string[];
+      }
+    | undefined
+    | null;
+
+  if (!audit) {
+    return "No audit context loaded for this indicator.";
+  }
+
+  if (!audit.matchedSelectionRows) {
+    return "No WEC audit selected reporting units matched this review scope.";
+  }
+
+  const equipment = audit.topEquipment?.length ? ` Equipment: ${audit.topEquipment.join(", ")}.` : "";
+  const caveat = audit.caveat ? ` ${audit.caveat}` : " WEC report gives statewide findings, not per-unit discrepancy outcomes.";
+  return `${audit.matchedSelectionRows.toLocaleString()} WEC audit selection row${audit.matchedSelectionRows === 1 ? "" : "s"}; ${(audit.auditedBallots ?? 0).toLocaleString()} audited ballots.${equipment}${caveat}`;
+}
+
+function denominatorContextSummary(indicator: AnalysisIndicator) {
+  const denominator = indicator.metrics.denominatorContext as
+    | {
+        ballotModeContext?: string;
+        defaultTurnoutDenominator?: string;
+        missingDenominator?: string;
+      }
+    | undefined
+    | null;
+
+  if (!denominator) {
+    return "No denominator caveat loaded.";
+  }
+
+  return `${denominator.defaultTurnoutDenominator ?? "Turnout denominator not recorded"}. ${denominator.missingDenominator ?? ""}`.trim();
+}
+
 function severityBucket(severity: number) {
   if (severity >= 0.85) {
     return "High review priority";
@@ -1415,7 +1469,7 @@ function buildDataNoteSections(input: {
     },
     {
       detail: input.reviewRows.length
-        ? `${input.reviewRows.length.toLocaleString()} local review rows and ${input.completeness?.indicatorCount ?? 0} advisory flags.`
+        ? `${input.reviewRows.length.toLocaleString()} local review rows and ${input.completeness?.countyIndicatorCount ?? input.completeness?.indicatorCount ?? 0} county advisory flags.`
         : "No local review rows are loaded.",
       evidence:
         importWarnings.find((warning) => warning.toLowerCase().includes("review")) ??
@@ -1814,6 +1868,16 @@ export function WorkspaceTabs({
       return typeMatches && queryMatches;
     });
   }, [indicators, reviewQuery, reviewType]);
+
+  const countyIndicators = useMemo(() => indicators.filter((indicator) => indicator.level === "county"), [indicators]);
+  const flaggedCountyCount = useMemo(
+    () => new Set(countyIndicators.map((indicator) => indicator.jurisdictionCode)).size,
+    [countyIndicators],
+  );
+  const flaggedAreaCount = useMemo(
+    () => new Set(indicators.map((indicator) => `${indicator.level}:${indicator.jurisdictionCode}`)).size,
+    [indicators],
+  );
 
   const groupedIndicatorCounts = useMemo(() => {
     const counts = new Map<string, number>();
@@ -2775,7 +2839,7 @@ export function WorkspaceTabs({
             <div className="panel-header">
               <div>
                 <h2>Review Center</h2>
-                <span>{indicators.length} advisory indicators for {stateName}</span>
+                <span>{countyIndicators.length} county indicators and {indicators.length} total advisory indicators for {stateName}</span>
               </div>
               <div className="header-actions">
                 <Eli5>
@@ -2794,8 +2858,12 @@ export function WorkspaceTabs({
             </div>
             <div className="review-summary-grid">
               <article>
-                <span>Flagged jurisdictions</span>
-                <strong>{new Set(indicators.map((indicator) => indicator.jurisdictionCode)).size}</strong>
+                <span>Flagged counties</span>
+                <strong>{flaggedCountyCount}</strong>
+              </article>
+              <article>
+                <span>Flagged areas</span>
+                <strong>{flaggedAreaCount}</strong>
               </article>
               <article>
                 <span>Indicators</span>
@@ -3213,10 +3281,13 @@ export function WorkspaceTabs({
                       <div>
                         <span className="indicator-pill">! {indicator.label}</span>
                         <strong>{indicator.jurisdictionName}</strong>
+                        <small>{indicatorScopeLabel(indicator)}</small>
                       </div>
                       <p>{indicator.summary}</p>
                       <span className="review-explainer">{indicatorExplanation(indicator.type)}</span>
                       <small>{indicator.detail}</small>
+                      <small>{auditContextSummary(indicator)}</small>
+                      <small>{denominatorContextSummary(indicator)}</small>
                     </article>
                   ))}
                 </div>
@@ -3231,9 +3302,11 @@ export function WorkspaceTabs({
                     <thead>
                       <tr>
                         <th>Jurisdiction</th>
+                        <th>Scope</th>
                         <th>Flag</th>
                         <th>Severity</th>
                         <th>Priority</th>
+                        <th>Audit context</th>
                         <th>Summary</th>
                       </tr>
                     </thead>
@@ -3241,11 +3314,13 @@ export function WorkspaceTabs({
                       {filteredIndicators.map((indicator) => (
                         <tr key={indicator.id}>
                           <td>{indicator.jurisdictionName}</td>
+                          <td>{indicatorScopeLabel(indicator)}</td>
                           <td>
                             <span className="indicator-pill">! {indicator.label}</span>
                           </td>
                           <td className="mono">{indicator.severity.toFixed(3)}</td>
                           <td>{severityBucket(indicator.severity)}</td>
+                          <td>{auditContextSummary(indicator)}</td>
                           <td>{indicator.summary}</td>
                         </tr>
                       ))}

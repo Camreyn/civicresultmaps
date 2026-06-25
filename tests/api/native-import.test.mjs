@@ -22,6 +22,11 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /!artifact\.capabilities\.reviewGraphs/);
   assert.match(importer, /delete from analysis_indicators/);
   assert.match(importer, /analysisIndicatorsForNativeRows/);
+  assert.match(importer, /reviewScopesForNativeRows/);
+  assert.match(importer, /rest_of_county/);
+  assert.match(importer, /auditContextForScope/);
+  assert.match(importer, /denominatorContextForScope/);
+  assert.match(importer, /jurisdictionName: `\$\{split\.city\}, \$\{split\.county\} County`/);
   assert.match(importer, /insert into analysis_indicators/);
   assert.match(importer, /storedIndicatorRows/);
   assert.match(policy, /downBallotAverageThresholdPct: 2/);
@@ -39,4 +44,8 @@ test("native staging indicator report uses the shared review policy", () => {
   assert.match(script, /average_down_ballot_difference/);
   assert.match(script, /down_ballot_outliers/);
   assert.match(script, /uniqueFlaggedJurisdictions/);
+  assert.match(script, /uniqueFlaggedCountyJurisdictions/);
+  assert.match(script, /flaggedAreas/);
+  assert.match(script, /byLevel/);
+  assert.match(script, /cityNameForWard/);
 });

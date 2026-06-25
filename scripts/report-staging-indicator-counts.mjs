@@ -8,6 +8,20 @@ function normalizeJurisdictionName(name) {
   return String(name ?? "").trim().replace(/\s+County$/i, "");
 }
 
+function titleCase(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => (part.length <= 2 ? part.toUpperCase() : `${part[0].toUpperCase()}${part.slice(1)}`))
+    .join(" ");
+}
+
+function cityNameForWard(localUnit) {
+  const match = String(localUnit || "").match(/^\s*city of\s+(.+?)\s+(?:wards?|precincts?)\b/i);
+  return match ? titleCase(match[1]) : null;
+}
+
 function average(values) {
   const finite = values.filter(Number.isFinite);
   return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
@@ -31,72 +45,144 @@ function pearsonSafe(xs, ys) {
   return xDenominator && yDenominator ? numerator / (xDenominator * yDenominator) : 0;
 }
 
-function indicatorsForReviewRows(rows) {
+function scopesForReviewRows(stateCode, rows) {
   const byCounty = new Map();
 
   for (const row of rows) {
     if (!row.county) {
       continue;
     }
-
     const county = normalizeJurisdictionName(row.county);
     byCounty.set(county, [...(byCounty.get(county) ?? []), row]);
   }
 
+  const scopes = Array.from(byCounty.entries()).map(([county, countyRows]) => ({
+    county,
+    jurisdictionName: county,
+    level: "county",
+    rows: countyRows,
+    scopeKey: `county:${county}`,
+  }));
+
+  if (stateCode !== "WI") {
+    return scopes;
+  }
+
+  const cityGroups = new Map();
+  for (const row of rows) {
+    const city = cityNameForWard(row.localUnit ?? row.ward);
+    if (!city || !row.county) {
+      continue;
+    }
+    const county = normalizeJurisdictionName(row.county);
+    const key = `${county.toLowerCase()}|${city.toLowerCase()}`;
+    const group = cityGroups.get(key) ?? { city, county, rows: [] };
+    group.rows.push(row);
+    cityGroups.set(key, group);
+  }
+
+  for (const group of cityGroups.values()) {
+    if (group.rows.length < reviewPolicy.minWardRows) {
+      continue;
+    }
+    const cityLocalUnits = new Set(group.rows.map((row) => row.localUnit ?? row.ward));
+    const countyRows = byCounty.get(group.county) ?? [];
+    const restRows = countyRows.filter((row) => !cityLocalUnits.has(row.localUnit ?? row.ward));
+    if (!restRows.length) {
+      continue;
+    }
+    scopes.push({
+      city: group.city,
+      county: group.county,
+      jurisdictionName: `${group.city}, ${group.county} County`,
+      level: "city",
+      rows: group.rows,
+      scopeKey: `city:${group.county}:${group.city}`,
+    });
+    scopes.push({
+      city: group.city,
+      county: group.county,
+      jurisdictionName: `${group.county} County outside ${group.city}`,
+      level: "rest_of_county",
+      rows: restRows,
+      scopeKey: `rest_of_county:${group.county}:${group.city}`,
+    });
+  }
+
+  return scopes;
+}
+
+function metricsForRows(rows) {
+  const trumpCorrelation = pearsonSafe(
+    rows.map((row) => row.trump ?? 0),
+    rows.map((row) => row.trumpShare ?? 0),
+  );
+  const harrisCorrelation = pearsonSafe(
+    rows.map((row) => row.harris ?? 0),
+    rows.map((row) => row.harrisShare ?? 0),
+  );
+  const demAverageDropoff = average(rows.map((row) => row.demDropoff ?? 0));
+  const repAverageDropoff = average(rows.map((row) => row.repDropoff ?? 0));
+  const demOutliers = rows.filter(
+    (row) =>
+      (row.harris ?? 0) >= reviewPolicy.minCandidateVotes &&
+      Math.abs(row.demDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
+  ).length;
+  const repOutliers = rows.filter(
+    (row) =>
+      (row.trump ?? 0) >= reviewPolicy.minCandidateVotes &&
+      Math.abs(row.repDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
+  ).length;
+  const outlierTrigger = Math.max(3, Math.ceil(rows.length * 0.05));
+
+  return {
+    demAverageDropoff,
+    demOutliers,
+    harrisCorrelation,
+    outlierTrigger,
+    repAverageDropoff,
+    repOutliers,
+    rowCount: rows.length,
+    trumpCorrelation,
+  };
+}
+
+function indicatorsForReviewRows(stateCode, rows) {
   const indicators = [];
 
-  for (const [county, countyRows] of byCounty) {
-    if (countyRows.length < reviewPolicy.minWardRows) {
+  for (const scope of scopesForReviewRows(stateCode, rows)) {
+    if (scope.rows.length < reviewPolicy.minWardRows) {
       continue;
     }
 
-    const trumpCorrelation = pearsonSafe(
-      countyRows.map((row) => row.trump ?? 0),
-      countyRows.map((row) => row.trumpShare ?? 0),
-    );
-    const harrisCorrelation = pearsonSafe(
-      countyRows.map((row) => row.harris ?? 0),
-      countyRows.map((row) => row.harrisShare ?? 0),
-    );
-    const demAverageDropoff = average(countyRows.map((row) => row.demDropoff ?? 0));
-    const repAverageDropoff = average(countyRows.map((row) => row.repDropoff ?? 0));
-    const demOutliers = countyRows.filter(
-      (row) =>
-        (row.harris ?? 0) >= reviewPolicy.minCandidateVotes &&
-        Math.abs(row.demDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
-    ).length;
-    const repOutliers = countyRows.filter(
-      (row) =>
-        (row.trump ?? 0) >= reviewPolicy.minCandidateVotes &&
-        Math.abs(row.repDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
-    ).length;
-    const outlierTrigger = Math.max(3, Math.ceil(countyRows.length * 0.05));
+    const metrics = metricsForRows(scope.rows);
 
     if (
-      Math.abs(trumpCorrelation) >= reviewPolicy.voteShareCorrelationThreshold ||
-      Math.abs(harrisCorrelation) >= reviewPolicy.voteShareCorrelationThreshold
+      Math.abs(metrics.trumpCorrelation) >= reviewPolicy.voteShareCorrelationThreshold ||
+      Math.abs(metrics.harrisCorrelation) >= reviewPolicy.voteShareCorrelationThreshold
     ) {
-      indicators.push({ county, type: "vote_share_pattern" });
+      indicators.push({ ...scope, metrics, type: "vote_share_pattern" });
     }
 
     if (
-      Math.abs(demAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct ||
-      Math.abs(repAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct
+      Math.abs(metrics.demAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct ||
+      Math.abs(metrics.repAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct
     ) {
-      indicators.push({ county, type: "average_down_ballot_difference" });
+      indicators.push({ ...scope, metrics, type: "average_down_ballot_difference" });
     }
 
-    if (demOutliers + repOutliers >= outlierTrigger) {
-      indicators.push({ county, type: "down_ballot_outliers" });
+    if (metrics.demOutliers + metrics.repOutliers >= metrics.outlierTrigger) {
+      indicators.push({ ...scope, metrics, type: "down_ballot_outliers" });
     }
   }
 
   return indicators;
 }
 
-function countByType(indicators) {
+function countBy(indicators, key) {
   return indicators.reduce((counts, indicator) => {
-    counts[indicator.type] = (counts[indicator.type] ?? 0) + 1;
+    const value = indicator[key] ?? "unknown";
+    counts[value] = (counts[value] ?? 0) + 1;
     return counts;
   }, {});
 }
@@ -111,13 +197,18 @@ for (const file of files) {
   const artifact = JSON.parse(await readFile(path.join(stagingDir, file), "utf8"));
   const state = String(artifact.state?.code ?? file.slice(0, 2)).toUpperCase();
   const reviewRows = artifact.native?.reviewRows ?? [];
-  const indicators = indicatorsForReviewRows(reviewRows);
+  const indicators = indicatorsForReviewRows(state, reviewRows);
+  const countyIndicators = indicators.filter((indicator) => indicator.level === "county");
   rows.push({
     state,
     reviewRows: reviewRows.length,
     uniqueFlaggedJurisdictions: new Set(indicators.map((indicator) => indicator.county)).size,
+    uniqueFlaggedCountyJurisdictions: new Set(countyIndicators.map((indicator) => indicator.county)).size,
+    flaggedAreas: new Set(indicators.map((indicator) => indicator.scopeKey)).size,
     indicatorRows: indicators.length,
-    byType: countByType(indicators),
+    countyIndicatorRows: countyIndicators.length,
+    byLevel: countBy(indicators, "level"),
+    byType: countBy(indicators, "type"),
   });
 }
 

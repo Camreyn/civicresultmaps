@@ -138,9 +138,10 @@ function mapTitle(stateCode: string, capability: boolean, mapGeometrySourceCount
   return "Map geometry not present";
 }
 
-function reviewTitle(reviewCapable: boolean, reviewRows: number, indicators: number) {
+function reviewTitle(reviewCapable: boolean, reviewRows: number, countyIndicators: number, totalIndicators: number, flaggedAreas: number) {
   if (reviewRows > 0) {
-    return `Review rows: ${countLabel(reviewRows, "row")}; advisory flags identified: ${indicators.toLocaleString()}`;
+    const splitNote = flaggedAreas > countyIndicators ? `; ${flaggedAreas.toLocaleString()} flagged areas total` : "";
+    return `Review rows: ${countLabel(reviewRows, "row")}; county indicators: ${countyIndicators.toLocaleString()}; total advisory indicators: ${totalIndicators.toLocaleString()}${splitNote}`;
   }
 
   if (reviewCapable) {
@@ -157,6 +158,8 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
   const missingSourceUrls = summary?.sourcesMissingUrls ?? 0;
   const reviewRows = summary?.reviewRowCount ?? 0;
   const indicators = summary?.indicatorCount ?? 0;
+  const countyIndicators = summary?.countyIndicatorCount ?? indicators;
+  const flaggedAreas = summary?.flaggedAreas ?? summary?.flaggedJurisdictions ?? 0;
   const turnoutRows = summary?.turnoutRowCount ?? 0;
   const historicalRows = summary?.historicalRowCount ?? 0;
   const equipmentRows = summary?.equipmentRowCount ?? 0;
@@ -194,7 +197,7 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
     },
     {
       abbr: "Rv",
-      count: reviewRows,
+      count: countyIndicators,
       icon: BarChart3,
       key: "review",
       label: "Review",
@@ -203,7 +206,7 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
         count: reviewRows,
         partialWhen: indicators > 0,
       }),
-      title: reviewTitle(capabilities.reviewGraphs, reviewRows, indicators),
+      title: reviewTitle(capabilities.reviewGraphs, reviewRows, countyIndicators, indicators, flaggedAreas),
     },
     {
       abbr: "Tu",

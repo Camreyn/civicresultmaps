@@ -1,0 +1,401 @@
+{
+  "generatedAt": "2026-06-25T18:43:18.450Z",
+  "state": "WI",
+  "year": 2024,
+  "policy": {
+    "current": {
+      "downBallotAverageThresholdPct": 2,
+      "minCandidateVotes": 100,
+      "minWardRows": 8,
+      "outlierThresholdPct": 15,
+      "voteShareCorrelationThreshold": 0.35
+    },
+    "legacyComparison": {
+      "minimumRows": 10,
+      "note": "Legacy comparison uses the old mapper's precomputed ETA ward rows and historical row-inclusion behavior. It is a comparison target, not source of truth."
+    }
+  },
+  "summary": {
+    "currentCountyIndicatorRows": 107,
+    "currentUniqueFlaggedCounties": 67,
+    "legacyCountyIndicatorRows": 120,
+    "legacyUniqueFlaggedCounties": 70,
+    "oldOnlyCounties": [
+      "Eau Claire",
+      "Outagamie",
+      "Ozaukee",
+      "Walworth"
+    ],
+    "currentOnlyCounties": [
+      "Florence"
+    ]
+  },
+  "current": {
+    "flaggedCounties": [
+      "Adams",
+      "Ashland",
+      "Barron",
+      "Bayfield",
+      "Brown",
+      "Buffalo",
+      "Burnett",
+      "Calumet",
+      "Chippewa",
+      "Clark",
+      "Columbia",
+      "Crawford",
+      "Dane",
+      "Dodge",
+      "Door",
+      "Douglas",
+      "Dunn",
+      "Florence",
+      "Fond du Lac",
+      "Forest",
+      "Grant",
+      "Green",
+      "Green Lake",
+      "Iowa",
+      "Iron",
+      "Jackson",
+      "Jefferson",
+      "Juneau",
+      "Kenosha",
+      "Kewaunee",
+      "La Crosse",
+      "Lafayette",
+      "Langlade",
+      "Lincoln",
+      "Manitowoc",
+      "Marathon",
+      "Marinette",
+      "Marquette",
+      "Milwaukee",
+      "Monroe",
+      "Oconto",
+      "Oneida",
+      "Pepin",
+      "Pierce",
+      "Polk",
+      "Portage",
+      "Price",
+      "Racine",
+      "Richland",
+      "Rock",
+      "Rusk",
+      "Sauk",
+      "Sawyer",
+      "Shawano",
+      "Sheboygan",
+      "St. Croix",
+      "Taylor",
+      "Trempealeau",
+      "Vernon",
+      "Vilas",
+      "Washburn",
+      "Washington",
+      "Waukesha",
+      "Waupaca",
+      "Waushara",
+      "Winnebago",
+      "Wood"
+    ],
+    "byType": {
+      "average_down_ballot_difference": 54,
+      "vote_share_pattern": 53
+    }
+  },
+  "legacy": {
+    "flaggedCounties": [
+      "Adams",
+      "Ashland",
+      "Barron",
+      "Bayfield",
+      "Brown",
+      "Buffalo",
+      "Burnett",
+      "Calumet",
+      "Chippewa",
+      "Clark",
+      "Columbia",
+      "Crawford",
+      "Dane",
+      "Dodge",
+      "Door",
+      "Douglas",
+      "Dunn",
+      "Eau Claire",
+      "Fond du Lac",
+      "Forest",
+      "Grant",
+      "Green",
+      "Green Lake",
+      "Iowa",
+      "Iron",
+      "Jackson",
+      "Jefferson",
+      "Juneau",
+      "Kenosha",
+      "Kewaunee",
+      "La Crosse",
+      "Lafayette",
+      "Langlade",
+      "Lincoln",
+      "Manitowoc",
+      "Marathon",
+      "Marinette",
+      "Marquette",
+      "Milwaukee",
+      "Monroe",
+      "Oconto",
+      "Oneida",
+      "Outagamie",
+      "Ozaukee",
+      "Pepin",
+      "Pierce",
+      "Polk",
+      "Portage",
+      "Price",
+      "Racine",
+      "Richland",
+      "Rock",
+      "Rusk",
+      "Sauk",
+      "Sawyer",
+      "Shawano",
+      "Sheboygan",
+      "St. Croix",
+      "Taylor",
+      "Trempealeau",
+      "Vernon",
+      "Vilas",
+      "Walworth",
+      "Washburn",
+      "Washington",
+      "Waukesha",
+      "Waupaca",
+      "Waushara",
+      "Winnebago",
+      "Wood"
+    ],
+    "byType": {
+      "average_down_ballot_difference": 67,
+      "vote_share_pattern": 52,
+      "down_ballot_outliers": 1
+    }
+  },
+  "metricDeltas": [
+    {
+      "county": "Walworth",
+      "explanation": "Old-only because the legacy bundle's precomputed Senate comparison/drop-off values cross the average down-ballot threshold, while current staging recalculates from normalized WEC President and U.S. Senate rows and falls below threshold. This is a source row normalization and Senate comparison math delta, not a forced threshold change.",
+      "current": {
+        "flags": [],
+        "included": true,
+        "minimumRows": 8,
+        "metrics": {
+          "demAverageDropoff": 0.455854,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.057753,
+          "outlierTrigger": 3,
+          "repAverageDropoff": 1.272314,
+          "repOutliers": 0,
+          "rowCount": 37,
+          "trumpCorrelation": 0.180313
+        },
+        "wouldFlagIfIncluded": []
+      },
+      "legacy": {
+        "flags": [
+          "average_down_ballot_difference"
+        ],
+        "included": true,
+        "minimumRows": 10,
+        "metrics": {
+          "demAverageDropoff": 1.277838,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.057718,
+          "outlierTrigger": 3,
+          "repAverageDropoff": 2.176486,
+          "repOutliers": 0,
+          "rowCount": 37,
+          "trumpCorrelation": 0.180327
+        },
+        "wouldFlagIfIncluded": [
+          "average_down_ballot_difference"
+        ]
+      }
+    },
+    {
+      "county": "Eau Claire",
+      "explanation": "Old-only because the legacy bundle's precomputed Senate comparison/drop-off values cross the average down-ballot threshold, while current staging recalculates from normalized WEC President and U.S. Senate rows and falls below threshold. This is a source row normalization and Senate comparison math delta, not a forced threshold change.",
+      "current": {
+        "flags": [],
+        "included": true,
+        "minimumRows": 8,
+        "metrics": {
+          "demAverageDropoff": 0.01059,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.153115,
+          "outlierTrigger": 5,
+          "repAverageDropoff": 1.759957,
+          "repOutliers": 0,
+          "rowCount": 84,
+          "trumpCorrelation": 0.184414
+        },
+        "wouldFlagIfIncluded": []
+      },
+      "legacy": {
+        "flags": [
+          "average_down_ballot_difference"
+        ],
+        "included": true,
+        "minimumRows": 10,
+        "metrics": {
+          "demAverageDropoff": -0.308571,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.153142,
+          "outlierTrigger": 5,
+          "repAverageDropoff": 4.058452,
+          "repOutliers": 1,
+          "rowCount": 84,
+          "trumpCorrelation": 0.18444
+        },
+        "wouldFlagIfIncluded": [
+          "average_down_ballot_difference"
+        ]
+      }
+    },
+    {
+      "county": "Ozaukee",
+      "explanation": "Old-only because the legacy bundle's precomputed Senate comparison/drop-off values cross the average down-ballot threshold, while current staging recalculates from normalized WEC President and U.S. Senate rows and falls below threshold. This is a source row normalization and Senate comparison math delta, not a forced threshold change.",
+      "current": {
+        "flags": [],
+        "included": true,
+        "minimumRows": 8,
+        "metrics": {
+          "demAverageDropoff": 1.188124,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.344086,
+          "outlierTrigger": 3,
+          "repAverageDropoff": -0.586778,
+          "repOutliers": 0,
+          "rowCount": 51,
+          "trumpCorrelation": 0.335607
+        },
+        "wouldFlagIfIncluded": []
+      },
+      "legacy": {
+        "flags": [
+          "average_down_ballot_difference"
+        ],
+        "included": true,
+        "minimumRows": 10,
+        "metrics": {
+          "demAverageDropoff": 2.781373,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.344084,
+          "outlierTrigger": 3,
+          "repAverageDropoff": -1.275098,
+          "repOutliers": 0,
+          "rowCount": 51,
+          "trumpCorrelation": 0.33555
+        },
+        "wouldFlagIfIncluded": [
+          "average_down_ballot_difference"
+        ]
+      }
+    },
+    {
+      "county": "Outagamie",
+      "explanation": "Old-only because the legacy bundle's precomputed Senate comparison/drop-off values cross the average down-ballot threshold, while current staging recalculates from normalized WEC President and U.S. Senate rows and falls below threshold. This is a source row normalization and Senate comparison math delta, not a forced threshold change.",
+      "current": {
+        "flags": [],
+        "included": true,
+        "minimumRows": 8,
+        "metrics": {
+          "demAverageDropoff": 0.254503,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.129247,
+          "outlierTrigger": 5,
+          "repAverageDropoff": 1.765155,
+          "repOutliers": 0,
+          "rowCount": 86,
+          "trumpCorrelation": 0.20197
+        },
+        "wouldFlagIfIncluded": []
+      },
+      "legacy": {
+        "flags": [
+          "average_down_ballot_difference"
+        ],
+        "included": true,
+        "minimumRows": 10,
+        "metrics": {
+          "demAverageDropoff": 0.206977,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.129245,
+          "outlierTrigger": 5,
+          "repAverageDropoff": 3.60314,
+          "repOutliers": 0,
+          "rowCount": 86,
+          "trumpCorrelation": 0.201983
+        },
+        "wouldFlagIfIncluded": [
+          "average_down_ballot_difference"
+        ]
+      }
+    },
+    {
+      "county": "Florence",
+      "explanation": "Current-only because the current review policy uses minWardRows=8 and Florence has enough rows to evaluate; the legacy comparison target used a 10-row inclusion floor and skipped it.",
+      "current": {
+        "flags": [
+          "vote_share_pattern",
+          "average_down_ballot_difference"
+        ],
+        "included": true,
+        "minimumRows": 8,
+        "metrics": {
+          "demAverageDropoff": -0.714725,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.868,
+          "outlierTrigger": 3,
+          "repAverageDropoff": 3.03745,
+          "repOutliers": 0,
+          "rowCount": 8,
+          "trumpCorrelation": -0.870519
+        },
+        "wouldFlagIfIncluded": [
+          "vote_share_pattern",
+          "average_down_ballot_difference"
+        ]
+      },
+      "legacy": {
+        "flags": [],
+        "included": false,
+        "minimumRows": 10,
+        "metrics": {
+          "demAverageDropoff": -3.47875,
+          "demOutliers": 0,
+          "harrisCorrelation": 0.867907,
+          "outlierTrigger": 3,
+          "repAverageDropoff": 3.90625,
+          "repOutliers": 0,
+          "rowCount": 8,
+          "trumpCorrelation": -0.870277
+        },
+        "wouldFlagIfIncluded": [
+          "vote_share_pattern",
+          "average_down_ballot_difference"
+        ]
+      }
+    }
+  ],
+  "explanation": {
+    "countyNameNormalization": "Current staging stores county names as e.g. 'Walworth County'; the reconciliation normalizes both current and legacy names to bare county names before comparison.",
+    "threshold": "Current production policy remains minWardRows=8, downBallotAverageThresholdPct=2, voteShareCorrelationThreshold=0.35, outlierThresholdPct=15, minCandidateVotes=100.",
+    "sourceRowNormalization": "Current staging is regenerated from normalized WEC ward rows. Legacy ETA rows carried precomputed drop-off values, so average down-ballot metrics can differ even when county and ward coverage is similar.",
+    "senateComparisonMath": "The current native review recalculates President-vs-U.S. Senate differences from the normalized source rows; the legacy comparison uses the old bundle's static Senate comparison values.",
+    "rowInclusion": "Florence is included by current minWardRows=8 and excluded by the legacy comparison floor of 10 rows."
+  }
+}

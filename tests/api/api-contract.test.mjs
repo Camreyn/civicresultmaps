@@ -69,6 +69,10 @@ test("public completeness report exists for national readiness", () => {
   const packages = readFileSync("src/lib/native-source-packages.ts", "utf8");
 
   assert.match(types, /CompletenessSummary/);
+  assert.match(types, /countyIndicatorCount/);
+  assert.match(types, /flaggedCountyJurisdictions/);
+  assert.match(types, /flaggedAreas/);
+  assert.match(types, /rest_of_county/);
   assert.match(types, /sourceTier/);
   assert.match(types, /mapGeometrySourceCount/);
   assert.match(types, /latestImportSummary/);
@@ -80,6 +84,8 @@ test("public completeness report exists for national readiness", () => {
   assert.match(dataAccess, /latest_native_import_summary/);
   assert.match(dataAccess, /sourcesMissingUrls/);
   assert.match(dataAccess, /map_geometry_source_count/);
+  assert.match(dataAccess, /county_indicator_count/);
+  assert.match(dataAccess, /flagged_areas/);
   assert.match(dataAccess, /Map geometry source missing/);
   assert.match(overview, /Completeness API/);
   assert.match(overview, /Native official states/);
@@ -141,6 +147,9 @@ test("state switcher shows compact data availability", () => {
   assert.match(switcher, /Results/);
   assert.match(switcher, /Sources/);
   assert.match(switcher, /Review/);
+  assert.match(switcher, /county indicators/);
+  assert.match(switcher, /total advisory indicators/);
+  assert.match(switcher, /flagged areas total/);
   assert.match(switcher, /Turnout/);
   assert.match(switcher, /History/);
   assert.match(styles, /state-data-grid/);
@@ -182,6 +191,10 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /Alternative explanations/);
   assert.match(tabs, /Vote-share correlation/);
   assert.match(tabs, /advisory indicator/);
+  assert.match(tabs, /Flagged counties/);
+  assert.match(tabs, /Flagged areas/);
+  assert.match(tabs, /auditContextSummary/);
+  assert.match(tabs, /denominatorContextSummary/);
   assert.match(tabs, /severityBucket/);
   assert.match(tabs, /Vote-Share by Vote-Count Scatterplot/);
   assert.match(tabs, /Presidential-Versus-Comparison Drop-Off Histogram/);
@@ -219,6 +232,8 @@ test("review indicators explain advisory meaning", () => {
   assert.match(explorer, /clickable-row/);
   assert.match(explorer, /Inspect \$\{row\.jurisdictionName\}/);
   assert.match(overview, /Eli5/);
+  assert.match(overview, /county advisory indicator/);
+  assert.match(overview, /total advisory indicator/);
   assert.match(dataReviewTemplate, /Data review \/ source correction/);
   assert.match(dataReviewTemplate, /data-review/);
   assert.match(dataReviewTemplate, /I checked the Data Notes/);

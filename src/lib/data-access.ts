@@ -182,6 +182,9 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
       sourcesMissingUrls,
       indicatorCount,
+      countyIndicatorCount: indicatorCount,
+      flaggedCountyJurisdictions: indicatorCount,
+      flaggedAreas: indicatorCount,
       reviewRowCount,
       turnoutRowCount: 0,
       historicalRowCount: 0,
@@ -969,6 +972,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     historicalRowCount: string | number | null;
     equipmentRowCount: string | number | null;
     flaggedJurisdictions: string | number | null;
+    countyIndicatorCount: string | number | null;
+    flaggedCountyJurisdictions: string | number | null;
+    flaggedAreas: string | number | null;
     importRunCount: string | number | null;
     legacyImportCount: string | number | null;
     latestImportAt: Date | string | null;
@@ -1019,7 +1025,10 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         select
           state_code,
           count(*) as indicator_count,
-          count(distinct jurisdiction_code) as flagged_jurisdictions
+          count(*) filter (where level = 'county') as county_indicator_count,
+          count(distinct jurisdiction_code) as flagged_jurisdictions,
+          count(distinct jurisdiction_code) filter (where level = 'county') as flagged_county_jurisdictions,
+          count(distinct level || ':' || jurisdiction_code) as flagged_areas
         from analysis_indicators
         where election_year = ${input.year}
         group by state_code
@@ -1095,6 +1104,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         coalesce(source_counts.map_geometry_source_count, 0) as "mapGeometrySourceCount",
         coalesce(source_counts.sources_missing_urls, 0) as "sourcesMissingUrls",
         coalesce(indicator_counts.indicator_count, 0) as "indicatorCount",
+        coalesce(indicator_counts.county_indicator_count, 0) as "countyIndicatorCount",
+        coalesce(indicator_counts.flagged_county_jurisdictions, 0) as "flaggedCountyJurisdictions",
+        coalesce(indicator_counts.flagged_areas, 0) as "flaggedAreas",
         coalesce(review_row_counts.review_row_count, 0) as "reviewRowCount",
         coalesce(turnout_row_counts.turnout_row_count, 0) as "turnoutRowCount",
         coalesce(historical_row_counts.historical_row_count, 0) as "historicalRowCount",
@@ -1164,6 +1176,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       mapGeometrySourceCount,
       sourcesMissingUrls,
       indicatorCount,
+      countyIndicatorCount: Number(row.countyIndicatorCount ?? indicatorCount),
+      flaggedCountyJurisdictions: Number(row.flaggedCountyJurisdictions ?? row.flaggedJurisdictions ?? 0),
+      flaggedAreas: Number(row.flaggedAreas ?? row.flaggedJurisdictions ?? 0),
       reviewRowCount,
       turnoutRowCount: Number(row.turnoutRowCount ?? 0),
       historicalRowCount: Number(row.historicalRowCount ?? 0),

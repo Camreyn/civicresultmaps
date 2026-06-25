@@ -39,7 +39,7 @@ function advisoryFlagLabel(state: CompletenessSummary) {
     return "Not reviewed";
   }
 
-  return state.indicatorCount.toLocaleString();
+  return (state.countyIndicatorCount ?? state.indicatorCount).toLocaleString();
 }
 
 function advisoryFlagTitle(state: CompletenessSummary) {
@@ -47,7 +47,9 @@ function advisoryFlagTitle(state: CompletenessSummary) {
     return "No local review rows are loaded, so advisory flags have not been evaluated for this state.";
   }
 
-  return `${state.indicatorCount.toLocaleString()} advisory flag${state.indicatorCount === 1 ? "" : "s"} identified from ${state.reviewRowCount.toLocaleString()} review row${state.reviewRowCount === 1 ? "" : "s"}.`;
+  const countyIndicators = state.countyIndicatorCount ?? state.indicatorCount;
+  const flaggedAreas = state.flaggedAreas ?? state.flaggedJurisdictions;
+  return `${countyIndicators.toLocaleString()} county advisory indicator${countyIndicators === 1 ? "" : "s"}; ${state.indicatorCount.toLocaleString()} total advisory indicator${state.indicatorCount === 1 ? "" : "s"} across ${flaggedAreas.toLocaleString()} flagged area${flaggedAreas === 1 ? "" : "s"}, from ${state.reviewRowCount.toLocaleString()} review row${state.reviewRowCount === 1 ? "" : "s"}.`;
 }
 export function NationalOverview({ report, year }: NationalOverviewProps) {
   const [isCollapsed, setIsCollapsed] = useState(true);

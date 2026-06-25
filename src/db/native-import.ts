@@ -35,25 +35,53 @@ type NativeReviewRow = {
   sourceId: string;
 };
 
+type NativeIndicatorMetrics = {
+  demAverageDropoff: number;
+  demOutliers: number;
+  harrisCorrelation: number;
+  outlierTrigger: number;
+  repAverageDropoff: number;
+  repOutliers: number;
+  rowCount: number;
+  trumpCorrelation: number;
+} & Record<string, unknown>;
+
 type NativeAnalysisIndicator = {
   county: string;
   detail: string;
   jurisdictionCode: string;
+  jurisdictionName: string;
   label: string;
-  metrics: {
-    demAverageDropoff: number;
-    demOutliers: number;
-    harrisCorrelation: number;
-    outlierTrigger: number;
-    repAverageDropoff: number;
-    repOutliers: number;
-    rowCount: number;
-    trumpCorrelation: number;
-  };
+  level: "county" | "city" | "rest_of_county";
+  metrics: NativeIndicatorMetrics;
   severity: number;
   sourceId: string;
   summary: string;
   type: string;
+};
+
+type WisconsinAuditSelection = {
+  ballotsAudited: number;
+  county: string;
+  equipment: string;
+  municipality: string;
+  reportingUnit: string;
+};
+
+type WisconsinIndicatorContext = {
+  auditCaveat: string;
+  auditSelections: WisconsinAuditSelection[];
+  auditSourceUrl: string;
+  statewideAuditFinding: string;
+};
+
+type NativeReviewScope = {
+  city?: string;
+  county: string;
+  jurisdictionCode: string;
+  jurisdictionName: string;
+  level: NativeAnalysisIndicator["level"];
+  rows: NativeReviewRow[];
 };
 type NativeTurnoutRow = {
   county: string;
@@ -182,7 +210,7 @@ function pearsonSafe(xValues: number[], yValues: number[]) {
   return denominator ? numerator / denominator : 0;
 }
 
-function indicatorSeverity(metrics: NativeAnalysisIndicator["metrics"]) {
+function indicatorSeverity(metrics: NativeIndicatorMetrics) {
   const correlationScore =
     Math.max(Math.abs(metrics.trumpCorrelation), Math.abs(metrics.harrisCorrelation)) /
     Math.max(0.01, reviewPolicy.voteShareCorrelationThreshold);
@@ -195,7 +223,20 @@ function indicatorSeverity(metrics: NativeAnalysisIndicator["metrics"]) {
   return Number((correlationScore + averageDropoffScore + outlierScore).toFixed(4));
 }
 
-function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
+function titleCase(value: string) {
+  return value
+    .toLowerCase()
+    .split(/\s+/)
+    .map((part) => (part.length <= 2 ? part.toUpperCase() : `${part[0].toUpperCase()}${part.slice(1)}`))
+    .join(" ");
+}
+
+function cityNameForWard(localUnit: string) {
+  const match = String(localUnit || "").match(/^\s*city of\s+(.+?)\s+(?:wards?|precincts?)\b/i);
+  return match ? titleCase(match[1]) : null;
+}
+
+function reviewScopesForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
   const rowsByCounty = new Map<string, NativeReviewRow[]>();
 
   for (const row of rows) {
@@ -207,60 +248,230 @@ function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRo
     rowsByCounty.set(county, [...(rowsByCounty.get(county) ?? []), row]);
   }
 
-  const indicators: NativeAnalysisIndicator[] = [];
+  const scopes: NativeReviewScope[] = Array.from(rowsByCounty.entries()).map(([county, countyRows]) => ({
+    county,
+    jurisdictionCode: jurisdictionCode(stateCode, county),
+    jurisdictionName: county,
+    level: "county",
+    rows: countyRows,
+  }));
 
-  for (const [county, countyRows] of rowsByCounty) {
-    if (countyRows.length < reviewPolicy.minWardRows) {
+  if (stateCode !== "WI") {
+    return scopes;
+  }
+
+  const cityGroups = new Map<string, { city: string; county: string; rows: NativeReviewRow[] }>();
+  for (const row of rows) {
+    const city = cityNameForWard(row.localUnit);
+    if (!city || !row.county) {
+      continue;
+    }
+    const county = normalizeJurisdictionName(row.county);
+    const key = `${county.toLowerCase()}|${city.toLowerCase()}`;
+    const current = cityGroups.get(key) ?? { city, county, rows: [] };
+    current.rows.push(row);
+    cityGroups.set(key, current);
+  }
+
+  for (const split of cityGroups.values()) {
+    if (split.rows.length < reviewPolicy.minWardRows) {
+      continue;
+    }
+    const cityLocalUnits = new Set(split.rows.map((row) => row.localUnit));
+    const countyRows = rowsByCounty.get(split.county) ?? [];
+    const restRows = countyRows.filter((row) => !cityLocalUnits.has(row.localUnit));
+    if (!restRows.length) {
+      continue;
+    }
+
+    scopes.push({
+      city: split.city,
+      county: split.county,
+      jurisdictionCode: jurisdictionCode(stateCode, `${split.county}-${split.city}-city`),
+      jurisdictionName: `${split.city}, ${split.county} County`,
+      level: "city",
+      rows: split.rows,
+    });
+    scopes.push({
+      city: split.city,
+      county: split.county,
+      jurisdictionCode: jurisdictionCode(stateCode, `${split.county}-${split.city}-rest`),
+      jurisdictionName: `${split.county} County outside ${split.city}`,
+      level: "rest_of_county",
+      rows: restRows,
+    });
+  }
+
+  return scopes;
+}
+
+function splitCsvLine(line: string) {
+  const values: string[] = [];
+  let current = "";
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    if (char === '"' && line[index + 1] === '"') {
+      current += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === "," && !quoted) {
+      values.push(current);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  values.push(current);
+  return values;
+}
+
+function auditMunicipalityName(value: string) {
+  return titleCase(String(value || "").replace(/^[CTV]\.\s*/i, "").trim());
+}
+
+async function loadWisconsinIndicatorContext(stateCode: string): Promise<WisconsinIndicatorContext | null> {
+  if (stateCode !== "WI") {
+    return null;
+  }
+
+  try {
+    const [summaryText, csvText] = await Promise.all([
+      readFile("data/wi-2024-audit-summary.json", "utf8"),
+      readFile("data/wi-2024-audit-selections.csv", "utf8"),
+    ]);
+    const summary = JSON.parse(summaryText) as {
+      caveat?: string;
+      sourcePdfUrl?: string;
+      statewideFinding?: string;
+    };
+    const lines = csvText.trim().split(/\r?\n/).slice(1);
+    const auditSelections = lines.map((line) => {
+      const cells = splitCsvLine(line);
+      return {
+        ballotsAudited: Number(cells[7] || 0),
+        county: normalizeJurisdictionName(cells[3] ?? ""),
+        equipment: cells[6] ?? "",
+        municipality: cells[4] ?? "",
+        reportingUnit: cells[5] ?? "",
+      };
+    });
+    return {
+      auditCaveat:
+        summary.caveat ??
+        "The WEC final audit report provides statewide findings and selected reporting units, not per-unit discrepancy outcomes.",
+      auditSelections,
+      auditSourceUrl: summary.sourcePdfUrl ?? "",
+      statewideAuditFinding: summary.statewideFinding ?? "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+function auditContextForScope(scope: NativeReviewScope, context: WisconsinIndicatorContext | null) {
+  if (!context) {
+    return null;
+  }
+
+  let matched = context.auditSelections.filter((row) => row.county.toLowerCase() === scope.county.toLowerCase());
+  if (scope.level === "city" && scope.city) {
+    matched = matched.filter((row) => auditMunicipalityName(row.municipality).toLowerCase() === scope.city?.toLowerCase());
+  } else if (scope.level === "rest_of_county" && scope.city) {
+    matched = matched.filter((row) => auditMunicipalityName(row.municipality).toLowerCase() !== scope.city?.toLowerCase());
+  }
+
+  return {
+    auditedBallots: matched.reduce((sum, row) => sum + row.ballotsAudited, 0),
+    caveat: context.auditCaveat,
+    matchedSelectionRows: matched.length,
+    sourceUrl: context.auditSourceUrl,
+    statewideFinding: context.statewideAuditFinding,
+    topEquipment: Array.from(new Set(matched.map((row) => row.equipment).filter(Boolean))).slice(0, 6),
+  };
+}
+
+function denominatorContextForScope(stateCode: string, scope: NativeReviewScope) {
+  if (stateCode !== "WI") {
+    return null;
+  }
+
+  return {
+    ballotModeContext: "EAC local-jurisdiction vote-method rows are loaded as context only and are not used as advisory flag inputs.",
+    defaultTurnoutDenominator: "EAC 2024 local-jurisdiction turnout fallback",
+    localVoteRows: "WEC ward-level federal/state workbook",
+    missingDenominator: "WEC ward result rows do not include ward-level registered-voter denominators.",
+    scopeType: scope.level,
+  };
+}
+
+async function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
+  const indicators: NativeAnalysisIndicator[] = [];
+  const wisconsinContext = await loadWisconsinIndicatorContext(stateCode);
+
+  for (const scope of reviewScopesForNativeRows(stateCode, rows)) {
+    if (scope.rows.length < reviewPolicy.minWardRows) {
       continue;
     }
 
     const trumpCorrelation = pearsonSafe(
-      countyRows.map((row) => row.trump ?? 0),
-      countyRows.map((row) => row.trumpShare ?? 0),
+      scope.rows.map((row) => row.trump ?? 0),
+      scope.rows.map((row) => row.trumpShare ?? 0),
     );
     const harrisCorrelation = pearsonSafe(
-      countyRows.map((row) => row.harris ?? 0),
-      countyRows.map((row) => row.harrisShare ?? 0),
+      scope.rows.map((row) => row.harris ?? 0),
+      scope.rows.map((row) => row.harrisShare ?? 0),
     );
-    const demAverageDropoff = average(countyRows.map((row) => row.demDropoff ?? 0));
-    const repAverageDropoff = average(countyRows.map((row) => row.repDropoff ?? 0));
-    const demOutliers = countyRows.filter(
+    const demAverageDropoff = average(scope.rows.map((row) => row.demDropoff ?? 0));
+    const repAverageDropoff = average(scope.rows.map((row) => row.repDropoff ?? 0));
+    const demOutliers = scope.rows.filter(
       (row) =>
         (row.harris ?? 0) >= reviewPolicy.minCandidateVotes &&
         Math.abs(row.demDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
     ).length;
-    const repOutliers = countyRows.filter(
+    const repOutliers = scope.rows.filter(
       (row) =>
         (row.trump ?? 0) >= reviewPolicy.minCandidateVotes &&
         Math.abs(row.repDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
     ).length;
-    const outlierTrigger = Math.max(3, Math.ceil(countyRows.length * 0.05));
-    const metrics = {
+    const outlierTrigger = Math.max(3, Math.ceil(scope.rows.length * 0.05));
+    const metrics: NativeIndicatorMetrics = {
+      auditContext: auditContextForScope(scope, wisconsinContext),
+      county: scope.county,
       demAverageDropoff,
       demOutliers,
+      denominatorContext: denominatorContextForScope(stateCode, scope),
       harrisCorrelation,
       outlierTrigger,
       repAverageDropoff,
       repOutliers,
-      rowCount: countyRows.length,
+      rowCount: scope.rows.length,
+      scopeType: scope.level,
       trumpCorrelation,
+      ...(scope.city ? { city: scope.city } : {}),
     };
     const severity = indicatorSeverity(metrics);
-    const sourceId = countyRows.find((row) => row.sourceId)?.sourceId ?? "";
+    const sourceId = scope.rows.find((row) => row.sourceId)?.sourceId ?? "";
+    const base = {
+      county: scope.county,
+      jurisdictionCode: scope.jurisdictionCode,
+      jurisdictionName: scope.jurisdictionName,
+      level: scope.level,
+      metrics,
+      severity,
+      sourceId,
+    };
 
     if (
       Math.abs(trumpCorrelation) >= reviewPolicy.voteShareCorrelationThreshold ||
       Math.abs(harrisCorrelation) >= reviewPolicy.voteShareCorrelationThreshold
     ) {
       indicators.push({
-        county,
+        ...base,
         detail:
           "Bigger local reporting-unit vote totals move with candidate vote share strongly enough to pass the native review threshold. This is an advisory review flag, not proof of tampering.",
-        jurisdictionCode: jurisdictionCode(stateCode, county),
         label: "Vote-share pattern",
-        metrics,
-        severity,
-        sourceId,
         summary: `Vote-share correlation crossed threshold: Trump r=${trumpCorrelation.toFixed(3)}, Harris r=${harrisCorrelation.toFixed(3)}.`,
         type: "vote_share_pattern",
       });
@@ -271,14 +482,10 @@ function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRo
       Math.abs(repAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct
     ) {
       indicators.push({
-        county,
+        ...base,
         detail:
           "The average gap between presidential votes and same-party down-ballot votes is large enough to review. Split-ticket voting can explain some gap; this flag identifies areas needing supporting records.",
-        jurisdictionCode: jurisdictionCode(stateCode, county),
         label: "Average down-ballot difference",
-        metrics,
-        severity,
-        sourceId,
         summary: `Average President-vs-down-ballot difference crossed threshold: DEM ${demAverageDropoff.toFixed(2)}%, REP ${repAverageDropoff.toFixed(2)}%.`,
         type: "average_down_ballot_difference",
       });
@@ -286,14 +493,10 @@ function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRo
 
     if (demOutliers + repOutliers >= outlierTrigger) {
       indicators.push({
-        county,
+        ...base,
         detail:
           "Enough local result rows have unusually large President-versus-down-ballot differences to pass the outlier-count threshold. This is an advisory review flag, not proof of tampering.",
-        jurisdictionCode: jurisdictionCode(stateCode, county),
         label: "Down-ballot outliers",
-        metrics,
-        severity,
-        sourceId,
         summary: `Drop-off outlier count crossed threshold: DEM ${demOutliers}, REP ${repOutliers}, trigger ${outlierTrigger}.`,
         type: "down_ballot_outliers",
       });
@@ -575,7 +778,7 @@ export async function promoteNativeStagingArtifact(path: string) {
   }
 
   let storedIndicatorRows = 0;
-  for (const indicator of analysisIndicatorsForNativeRows(stateCode, native.reviewRows)) {
+  for (const indicator of await analysisIndicatorsForNativeRows(stateCode, native.reviewRows)) {
     await sql`
       insert into analysis_indicators (
         state_code,
@@ -595,8 +798,8 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${stateCode},
         ${electionYear},
         ${indicator.jurisdictionCode},
-        ${indicator.county},
-        'county',
+        ${indicator.jurisdictionName},
+        ${indicator.level},
         ${indicator.type},
         ${indicator.severity},
         ${indicator.label},
@@ -607,6 +810,7 @@ export async function promoteNativeStagingArtifact(path: string) {
       )
       on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
       do update set
+        jurisdiction_name = excluded.jurisdiction_name,
         severity = excluded.severity,
         summary = excluded.summary,
         detail = excluded.detail,
