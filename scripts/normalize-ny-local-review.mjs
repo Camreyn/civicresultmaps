@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
 
 function ensureDir(dir) {
@@ -952,6 +952,46 @@ function candidateOnlyPdfRows(text, county) {
   return completeRowsFromPending(pending);
 }
 
+function putnamGrandTotalRows(text, county) {
+  const pending = new Map();
+  let currentOffice = "";
+  for (const rawLine of text.replace(/\r/g, "").split("\n")) {
+    const line = cleanText(rawLine).replace(/\d+(?:\.\d+)?%/g, "");
+    if (/PUTNAM COUNTY ELECTORS FOR PRESIDENT/i.test(line)) {
+      currentOffice = "president";
+      continue;
+    }
+    if (/PUTNAM COUNTY UNITED STATES SENATOR/i.test(line)) {
+      currentOffice = "senate";
+      continue;
+    }
+    if (/^PUTNAM COUNTY /i.test(line)) {
+      currentOffice = "";
+      continue;
+    }
+    if (!currentOffice || /^(TOTAL|TOTAL TURNOUT|KIRSTEN|MICHAEL|KAMALA|DONALD|TIM|JD|TOTAL CANDIDATE|TOTAL VOTES|\()/i.test(line)) continue;
+    const match = line.match(/^([A-Z]{2}\s+\d{2})\s+(.+)$/);
+    if (!match) continue;
+    const localUnit = match[1];
+    const nums = [...match[2].matchAll(/\d[\d,]*/g)].map((value) => intValue(value[0]));
+    const key = localUnit.toUpperCase();
+    const entry = pending.get(key) ?? { county, local_unit: localUnit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    if (currentOffice === "president") {
+      if (nums.length < 20) continue;
+      entry.pres_total = nums.at(-3);
+      entry.pres_harris = nums.at(-2);
+      entry.pres_trump = nums.at(-1);
+      entry.pres_other = Math.max(0, entry.pres_total - entry.pres_harris - entry.pres_trump);
+    } else {
+      if (nums.length < 16) continue;
+      entry.comparison_dem = nums.at(-3);
+      entry.comparison_rep = nums.at(-2);
+      entry.comparison_other = nums.at(-1);
+    }
+    pending.set(key, entry);
+  }
+  return completeRowsFromPending(pending);
+}
 function lewisTableRows(text, county) {
   const chunks = text.replace(/\r/g, "").split(/-- \d+ of \d+ --/);
   const parseChunk = (chunkIndex, office) => {
@@ -1163,6 +1203,7 @@ async function pdfRows(filePath, county) {
     if (county === "Lewis County") return lewisTableRows(result.text, county);
     if (county === "Oneida County") return oneidaDetailedRows(result.text, county);
     if (county === "Onondaga County") return onondagaSummaryRows(result.text, county);
+    if (county === "Putnam County") return putnamGrandTotalRows(result.text, county);
     if (county === "St. Lawrence County") return stLawrenceDistrictRows(result.text, county);
     if (county === "Tioga County") return tiogaTableRows(result.text, county);
     if (county === "Warren County") return warrenSummaryRows(result.text, county);
