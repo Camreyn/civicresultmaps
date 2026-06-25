@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
 
 function ensureDir(dir) {
@@ -952,6 +952,98 @@ function candidateOnlyPdfRows(text, county) {
   return completeRowsFromPending(pending);
 }
 
+function dutchessDetailedRows(text, county) {
+  const chunks = text.replace(/\r/g, "").split(/-- \d+ of \d+ --/);
+  const parseContestRows = (startChunk, endChunk, office) => {
+    const rows = new Map();
+    const totals = { harris: 0, trump: 0, other: 0, total: 0 };
+    const visible = { harris: 0, trump: 0, other: 0, total: 0 };
+    let protectedUnit = "";
+    const segment = chunks.slice(startChunk, endChunk + 1).join("\n");
+    for (const rawLine of segment.split("\n")) {
+      const line = cleanText(rawLine);
+      if (!line) continue;
+      const totalMatch = line.match(/^Contest Total\s+(.+)$/i);
+      if (totalMatch) {
+        const nums = [...totalMatch[1].matchAll(/\d[\d,]*/g)].map((value) => intValue(value[0]));
+        if (office === "president" && nums.length >= 9) {
+          totals.harris = nums[0] + nums[1];
+          totals.trump = nums[2] + nums[3];
+          totals.other = nums[4] + nums[5] + nums[6];
+          totals.total = nums[8];
+        } else if (office === "senate" && nums.length >= 10) {
+          totals.harris = nums[0] + nums[1];
+          totals.trump = nums[2] + nums[3];
+          totals.other = nums[4];
+          totals.total = nums[9];
+        }
+        continue;
+      }
+      const protectedMatch = line.match(/^(.+?)\s+(?:\*\*\s+)+0\s+(\d+)$/);
+      if (protectedMatch) {
+        protectedUnit = cleanText(protectedMatch[1]);
+        continue;
+      }
+      const matches = [...line.matchAll(/\d[\d,]*/g)];
+      const width = office === "president" ? 9 : 10;
+      if (matches.length < width) continue;
+      const selected = matches.slice(-width);
+      const localUnit = cleanText(line.slice(0, selected[0].index));
+      if (!localUnit || /^Contest Total/i.test(localUnit)) continue;
+      const nums = selected.map((value) => intValue(value[0]));
+      const entry = office === "president"
+        ? {
+            localUnit,
+            harris: nums[0] + nums[1],
+            trump: nums[2] + nums[3],
+            other: nums[4] + nums[5] + nums[6],
+            total: nums[8],
+          }
+        : {
+            localUnit,
+            harris: nums[0] + nums[1],
+            trump: nums[2] + nums[3],
+            other: nums[4],
+            total: nums[9],
+          };
+      visible.harris += entry.harris;
+      visible.trump += entry.trump;
+      visible.other += entry.other;
+      visible.total += entry.total;
+      rows.set(localUnit.toUpperCase(), entry);
+    }
+    if (protectedUnit) {
+      const residual = {
+        localUnit: protectedUnit,
+        harris: Math.max(0, totals.harris - visible.harris),
+        trump: Math.max(0, totals.trump - visible.trump),
+        other: Math.max(0, totals.other - visible.other),
+        total: Math.max(0, totals.total - visible.total),
+      };
+      if (residual.total || residual.harris || residual.trump || residual.other) rows.set(protectedUnit.toUpperCase(), residual);
+    }
+    return rows;
+  };
+
+  const presidentRows = parseContestRows(0, 8, "president");
+  const senateRows = parseContestRows(9, 17, "senate");
+  return [...presidentRows.entries()]
+    .filter(([key]) => senateRows.has(key))
+    .map(([key, president]) => {
+      const senate = senateRows.get(key);
+      return {
+        county,
+        local_unit: president.localUnit,
+        pres_harris: president.harris,
+        pres_trump: president.trump,
+        pres_other: president.other,
+        pres_total: president.total,
+        comparison_dem: senate.harris,
+        comparison_rep: senate.trump,
+        comparison_other: senate.other,
+      };
+    });
+}
 function westchesterCanvassRows(text, county) {
   const chunks = text.replace(/\r/g, "").split(/-- \d+ of \d+ --/);
   const parseContestRows = (startChunk, endChunk, office) => {
@@ -1013,6 +1105,7 @@ async function pdfRows(filePath, county) {
     if (county === "Albany County") return albanyPrecinctSummaryRows(result.text, county);
     if (county === "Allegany County") return alleganySideBySideRows(result.text, county);
     if (county === "Chenango County") return chenangoAllRows(result.text, county);
+    if (county === "Dutchess County") return dutchessDetailedRows(result.text, county);
     if (county === "Essex County") return essexCanvassRows(result.text, county);
     if (county === "Genesee County") return geneseeTableRows(result.text, county);
     if (county === "Oneida County") return oneidaDetailedRows(result.text, county);
