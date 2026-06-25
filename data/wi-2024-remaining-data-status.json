@@ -12,12 +12,34 @@
     "collectionTrackerTargets": 73,
     "collectionTrackerFamilies": 4,
     "publicSourceCandidateCount": 5,
-    "requestPacketCount": 74
+    "requestPacketCount": 74,
+    "hardMissingFamiliesStillRequireRecordsRequests": [
+      "wardRegisteredVoterDenominators",
+      "rowLevelBallotMode",
+      "perAuditUnitOutcomes",
+      "wardGeometryCrosswalk"
+    ]
   },
   "collectionPlan": {
     "trackerArtifact": "data/wi-2024-remaining-data-collection-tracker.json",
     "publicSourceInventoryArtifact": "data/wi-2024-public-source-inventory.json",
     "requestPacketSummaryArtifact": "data/wi-2024-records-request-packet-summary.json",
+    "hardMissingSourceEvidenceArtifact": "data/wi-2024-hard-missing-source-evidence.json",
+    "hardMissingSourceEvidenceSummary": {
+      "officialUrlProbeCount": 4,
+      "officialUrlsReachable": 1,
+      "officialUrlsBlockedByCloudflare": 3,
+      "arcgisQueryCount": 6,
+      "relevantArcgisResultCount": 1,
+      "wecWardWorkbookProvidesHardMissingFields": false,
+      "geometryLayerProvidesHardMissingFields": false,
+      "familiesStillRequireRecordsRequests": [
+        "wardRegisteredVoterDenominators",
+        "rowLevelBallotMode",
+        "perAuditUnitOutcomes",
+        "wardGeometryCrosswalk"
+      ]
+    },
     "strategy": "public_downloads_first_then_public_records_requests",
     "targetCount": 73,
     "countyTargetCount": 72,
@@ -271,7 +293,14 @@
         }
       ],
       "flagInputStatus": "not_used_as_flag_input",
-      "nextAction": "If a statewide official WEC ward-level registered-voter file becomes available, normalize it by county, municipality, and ward and replace the EAC fallback only after reconciliation tests pass."
+      "publicSourceEvidence": {
+        "family": "wardRegisteredVoterDenominators",
+        "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+        "publicEvidence": [],
+        "requestRequired": true,
+        "requestPath": "Wisconsin Elections Commission first; county or municipal clerks if WEC identifies local custody."
+      },
+      "nextAction": "No public statewide machine-readable ward registered-voter denominator source was confirmed by the hard-missing probe. Request WEC first, then county/municipal custodians if WEC does not hold the records."
     },
     "perAuditUnitOutcomes": {
       "status": "not_published_in_final_report",
@@ -293,7 +322,14 @@
       "normalizedSelections": "data/wi-2024-audit-selections.csv",
       "sourcePdfUrl": "https://elections.wi.gov/sites/default/files/documents/2024%20Post-Election%20Voting%20Equipment%20Audit%20Final%20Report.pdf",
       "flagInputStatus": "context_only_not_clearance_or_confirmation",
-      "nextAction": "If per-reporting-unit discrepancy outcomes are needed, request or collect the submitted local audit materials; the published report provides selected reporting units, equipment, ballots audited, and statewide findings."
+      "publicSourceEvidence": {
+        "family": "perAuditUnitOutcomes",
+        "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+        "publicEvidence": [],
+        "requestRequired": true,
+        "requestPath": "WEC first for submitted local audit materials; selected municipal clerks if WEC does not hold per-unit outcome submissions."
+      },
+      "nextAction": "No public per-reporting-unit discrepancy outcome table was confirmed by the hard-missing probe. Request WEC submitted local audit materials first, then selected municipal clerks if WEC does not hold per-unit submissions."
     },
     "municipalWardGeometry": {
       "status": "candidate_collected_jurisdiction_reconciled_ward_version_deltas",
@@ -335,6 +371,37 @@
         }
       },
       "flagInputStatus": "not_used_as_flag_input",
+      "publicSourceEvidence": {
+        "geometryCandidate": {
+          "id": "878d8826218f42509e07437a82ef6b6e",
+          "title": "2024 Election Data with 2025 Wards",
+          "owner": "WI_Legislature",
+          "type": "Feature Service",
+          "url": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer",
+          "snippet": "2024 Wisconsin November Election Data with January 2025 Wards.",
+          "tags": [
+            "Municipal Wards",
+            "Election Data",
+            "LTSB",
+            "Wisconsin"
+          ],
+          "query": "November_2024_Election_Data_with_Jan2025_Wards",
+          "officialOwnerLikely": true,
+          "hardMissingFamiliesSuggested": {
+            "wardRegisteredVoterDenominators": false,
+            "rowLevelBallotMode": false,
+            "perAuditUnitOutcomes": false,
+            "wardGeometryCrosswalk": false
+          }
+        },
+        "crosswalk": {
+          "family": "wardGeometryCrosswalk",
+          "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+          "publicEvidence": [],
+          "requestRequired": true,
+          "requestPath": "Wisconsin Legislature/LTSB or WEC for a 2024 reporting-ward to January 2025 ward crosswalk."
+        }
+      },
       "nextAction": "Keep county flags authoritative and keep row-level ward rendering disabled for affected municipalities. A future map integration can safely use this geometry for jurisdiction-level context or require a 2024-to-2025 ward crosswalk for exact ward rendering."
     },
     "rowLevelBallotMode": {
@@ -349,7 +416,14 @@
         "badCountyCountyNames": 0
       },
       "flagInputStatus": "not_used_as_flag_input",
-      "nextAction": "Confirm county-by-county CVR availability or public-record request path. Current artifact is a 72-county inventory scaffold, not a loaded CVR dataset."
+      "publicSourceEvidence": {
+        "family": "rowLevelBallotMode",
+        "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+        "publicEvidence": [],
+        "requestRequired": true,
+        "requestPath": "WEC/county CVR or ballot-mode records request path; keep EAC vote-method rows as context only."
+      },
+      "nextAction": "No public statewide row-level ballot-mode or CVR source was confirmed by the hard-missing probe. Confirm county-by-county CVR availability or use the records request path; keep EAC vote-method context out of flag inputs."
     }
   },
   "sourceStatusNotes": [

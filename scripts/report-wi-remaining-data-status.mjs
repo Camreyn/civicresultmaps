@@ -10,6 +10,7 @@ const publicSourceInventoryPath = 'data/wi-2024-public-source-inventory.json';
 const requestPacketSummaryPath = 'data/wi-2024-records-request-packet-summary.json';
 const wardGeometrySummaryPath = 'data/wi-2024-ward-geometry-summary.json';
 const wardGeometryJoinReportPath = 'data/wi-2024-ward-geometry-join-report.json';
+const hardMissingSourceEvidencePath = 'data/wi-2024-hard-missing-source-evidence.json';
 const outPath = 'data/wi-2024-remaining-data-status.json';
 
 function readJson(file) {
@@ -87,6 +88,7 @@ const publicSourceInventory = readJsonIfExists(publicSourceInventoryPath);
 const requestPacketSummary = readJsonIfExists(requestPacketSummaryPath);
 const wardGeometrySummary = readJsonIfExists(wardGeometrySummaryPath);
 const wardGeometryJoinReport = readJsonIfExists(wardGeometryJoinReportPath);
+const hardMissingSourceEvidence = readJsonIfExists(hardMissingSourceEvidencePath);
 const cvrRows = normalizeCvrInventory();
 const partialWardSources = turnout.sourceArtifacts.filter((artifact) => artifact.reportingLevel === 'ward');
 const collectionTargets = tracker?.targets ?? [];
@@ -108,11 +110,25 @@ const report = {
     collectionTrackerFamilies: collectionFamilies.length,
     publicSourceCandidateCount: publicSourceInventory?.summary?.sourceCandidateCount ?? 0,
     requestPacketCount: requestPacketSummary?.packetCount ?? 0,
+    hardMissingFamiliesStillRequireRecordsRequests: hardMissingSourceEvidence?.summary?.familiesStillRequireRecordsRequests ?? [],
   },
   collectionPlan: {
     trackerArtifact: collectionTrackerPath,
     publicSourceInventoryArtifact: publicSourceInventoryPath,
     requestPacketSummaryArtifact: requestPacketSummaryPath,
+    hardMissingSourceEvidenceArtifact: hardMissingSourceEvidencePath,
+    hardMissingSourceEvidenceSummary: hardMissingSourceEvidence
+      ? {
+          officialUrlProbeCount: hardMissingSourceEvidence.summary.officialUrlProbeCount,
+          officialUrlsReachable: hardMissingSourceEvidence.summary.officialUrlsReachable,
+          officialUrlsBlockedByCloudflare: hardMissingSourceEvidence.summary.officialUrlsBlockedByCloudflare,
+          arcgisQueryCount: hardMissingSourceEvidence.summary.arcgisQueryCount,
+          relevantArcgisResultCount: hardMissingSourceEvidence.summary.relevantArcgisResultCount,
+          wecWardWorkbookProvidesHardMissingFields: hardMissingSourceEvidence.summary.wecWardWorkbookProvidesHardMissingFields,
+          geometryLayerProvidesHardMissingFields: hardMissingSourceEvidence.summary.geometryLayerProvidesHardMissingFields,
+          familiesStillRequireRecordsRequests: hardMissingSourceEvidence.summary.familiesStillRequireRecordsRequests,
+        }
+      : null,
     strategy: tracker?.strategy ?? 'public_downloads_first_then_public_records_requests',
     targetCount: collectionTargets.length,
     countyTargetCount: collectionTargets.filter((target) => target.targetType === 'county_clerk').length,
@@ -161,8 +177,9 @@ const report = {
         warningRequired: artifact.warningRequired,
       })),
       flagInputStatus: 'not_used_as_flag_input',
+      publicSourceEvidence: hardMissingSourceEvidence?.conclusions?.wardRegisteredVoterDenominators ?? null,
       nextAction:
-        'If a statewide official WEC ward-level registered-voter file becomes available, normalize it by county, municipality, and ward and replace the EAC fallback only after reconciliation tests pass.',
+        'No public statewide machine-readable ward registered-voter denominator source was confirmed by the hard-missing probe. Request WEC first, then county/municipal custodians if WEC does not hold the records.',
     },
     perAuditUnitOutcomes: {
       status: audit.aggregateAuditResults?.perUnitOutcomeStatus ?? 'not_published_in_final_report',
@@ -175,7 +192,8 @@ const report = {
       normalizedSelections: audit.normalizedSelections,
       sourcePdfUrl: audit.sourcePdfUrl,
       flagInputStatus: 'context_only_not_clearance_or_confirmation',
-      nextAction: admin.audit.nextAction,
+      publicSourceEvidence: hardMissingSourceEvidence?.conclusions?.perAuditUnitOutcomes ?? null,
+      nextAction: 'No public per-reporting-unit discrepancy outcome table was confirmed by the hard-missing probe. Request WEC submitted local audit materials first, then selected municipal clerks if WEC does not hold per-unit submissions.',
     },
     municipalWardGeometry: {
       status: wardGeometryJoinReport?.status ?? wardGeometrySummary?.status ?? 'not_loaded',
@@ -225,6 +243,10 @@ const report = {
           }
         : null,
       flagInputStatus: 'not_used_as_flag_input',
+      publicSourceEvidence: {
+        geometryCandidate: hardMissingSourceEvidence?.relevantArcgisResults?.find?.((source) => source.id === '878d8826218f42509e07437a82ef6b6e') ?? null,
+        crosswalk: hardMissingSourceEvidence?.conclusions?.wardGeometryCrosswalk ?? null,
+      },
       nextAction: wardGeometrySummary
         ? wardGeometryJoinReport?.status === 'join_validation_passed'
           ? 'Join validation passed; next step is a UI/map integration spike that keeps county flags authoritative while exposing ward geometry as contextual drill-down.'
@@ -244,7 +266,8 @@ const report = {
         badCountyCountyNames: cvrRows.filter((row) => /County County$/i.test(row.jurisdiction_name ?? row.county ?? '')).length,
       },
       flagInputStatus: 'not_used_as_flag_input',
-      nextAction: admin.cvr.nextAction,
+      publicSourceEvidence: hardMissingSourceEvidence?.conclusions?.rowLevelBallotMode ?? null,
+      nextAction: 'No public statewide row-level ballot-mode or CVR source was confirmed by the hard-missing probe. Confirm county-by-county CVR availability or use the records request path; keep EAC vote-method context out of flag inputs.',
     },
   },
   sourceStatusNotes: [

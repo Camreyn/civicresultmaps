@@ -100,7 +100,8 @@
     "etl:collect:wi:remaining": "node scripts/collect-wi-public-source-inventory.mjs",
     "etl:requests:wi:remaining": "node scripts/create-wi-records-request-packets.mjs",
     "etl:collect:wi:ward-geometry": "node scripts/collect-wi-ward-geometry.mjs",
-    "etl:validate:wi:ward-geometry": "node scripts/validate-wi-ward-geometry-joins.mjs"
+    "etl:validate:wi:ward-geometry": "node scripts/validate-wi-ward-geometry-joins.mjs",
+    "etl:collect:wi:hard-missing": "node scripts/collect-wi-hard-missing-source-evidence.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

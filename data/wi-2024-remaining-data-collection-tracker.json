@@ -176,20 +176,20 @@
       "requestPath": "https://elections.wi.gov/about/records-request",
       "families": {
         "wardRegisteredVoterDenominators": {
-          "collectionStatus": "statewide_not_found_public",
+          "collectionStatus": "records_request_required_no_public_statewide_source_found",
           "requested": false,
           "received": false,
           "parserStatus": "not_started",
           "normalizedArtifact": "",
-          "notes": "WEC first, then counties/municipalities where WEC does not hold records"
+          "notes": "Hard-missing source probe found no public statewide machine-readable WEC/ArcGIS ward registered-voter denominator file; request WEC first, then local custodians if needed."
         },
         "perAuditUnitOutcomes": {
-          "collectionStatus": "not_published_in_final_report",
+          "collectionStatus": "records_request_required_no_public_statewide_source_found",
           "requested": false,
           "received": false,
           "parserStatus": "not_started",
           "normalizedArtifact": "",
-          "notes": "WEC first for submitted audit materials, then selected municipalities if needed"
+          "notes": "Hard-missing source probe found no public per-reporting-unit discrepancy outcome table; request WEC submitted local audit materials first."
         },
         "municipalWardGeometry": {
           "collectionStatus": "public_candidate_collected_needs_join_validation",
@@ -197,15 +197,15 @@
           "received": true,
           "parserStatus": "collected_geojson_jurisdiction_reconciled_not_row_safe",
           "normalizedArtifact": "data/wi-2024-ward-geometry.geojson.gz",
-          "notes": "Official WI Legislature/LTSB Jan 2025 ward geometry has been collected and reconciles to WEC review rows at municipality totals, but row-level ward allocation differs in 38 jurisdictions; keep ward rendering disabled for those rows."
+          "notes": "Official WI Legislature/LTSB Jan 2025 ward geometry has been collected and reconciles to WEC review rows at municipality totals, but row-level ward allocation differs in 38 jurisdictions; keep ward rendering disabled for those rows. Exact row-level ward rendering still requires a 2024 reporting-ward to January 2025 ward crosswalk; hard-missing source probe found no public crosswalk table."
         },
         "rowLevelBallotMode": {
-          "collectionStatus": "not_available_from_wec_ward_workbook",
+          "collectionStatus": "records_request_required_no_public_statewide_source_found",
           "requested": false,
           "received": false,
           "parserStatus": "not_started",
           "normalizedArtifact": "",
-          "notes": "WEC/county CVR availability request, then county clerk request path"
+          "notes": "Hard-missing source probe found no public statewide row-level ballot-mode or CVR source; request WEC/county CVR or ballot-mode records if needed."
         }
       }
     },
@@ -3320,5 +3320,15 @@
     "featureCount": 7086,
     "countyCount": 72,
     "status": "public_candidate_collected_needs_join_validation"
+  },
+  "lastHardMissingSourceEvidence": {
+    "generatedAt": "2026-06-25",
+    "artifact": "data/wi-2024-hard-missing-source-evidence.json",
+    "familiesStillRequireRecordsRequests": [
+      "wardRegisteredVoterDenominators",
+      "rowLevelBallotMode",
+      "perAuditUnitOutcomes",
+      "wardGeometryCrosswalk"
+    ]
   }
 }

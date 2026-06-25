@@ -9,6 +9,14 @@ test("Wisconsin remaining-data report records unavailable statewide sources with
   assert.equal(report.electionYear, 2024);
   assert.equal(report.summary.countyFlagsRemainAuthoritative, true);
   assert.equal(report.summary.noRemainingItemIsCurrentlyUsedAsAFlagInput, true);
+  assert.deepEqual(report.summary.hardMissingFamiliesStillRequireRecordsRequests, [
+    "wardRegisteredVoterDenominators",
+    "rowLevelBallotMode",
+    "perAuditUnitOutcomes",
+    "wardGeometryCrosswalk",
+  ]);
+  assert.equal(report.collectionPlan.hardMissingSourceEvidenceSummary.wecWardWorkbookProvidesHardMissingFields, false);
+  assert.equal(report.collectionPlan.hardMissingSourceEvidenceSummary.geometryLayerProvidesHardMissingFields, false);
 
   assert.equal(report.remainingItems.wardRegisteredVoterDenominators.status, "statewide_not_found_public");
   assert.equal(report.remainingItems.wardRegisteredVoterDenominators.primaryFallback.status, "loaded_eac_fallback");
@@ -31,7 +39,11 @@ test("Wisconsin remaining-data report records unavailable statewide sources with
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.unresolvedJurisdictions, 0);
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.rowLevelWardRenderingSafe, false);
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.jurisdictionLevelRenderingSafe, true);
+  assert.equal(report.remainingItems.wardRegisteredVoterDenominators.publicSourceEvidence.requestRequired, true);
+  assert.equal(report.remainingItems.perAuditUnitOutcomes.publicSourceEvidence.requestRequired, true);
+  assert.equal(report.remainingItems.municipalWardGeometry.publicSourceEvidence.crosswalk.requestRequired, true);
   assert.equal(report.remainingItems.rowLevelBallotMode.status, "not_available_from_wec_ward_workbook");
+  assert.equal(report.remainingItems.rowLevelBallotMode.publicSourceEvidence.requestRequired, true);
   assert.equal(report.remainingItems.rowLevelBallotMode.cvrAvailabilityInventory.rowCount, 72);
   assert.equal(report.remainingItems.rowLevelBallotMode.cvrAvailabilityInventory.badCountyCountyNames, 0);
 });

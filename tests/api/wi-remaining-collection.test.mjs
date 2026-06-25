@@ -8,6 +8,7 @@ const requestSummary = JSON.parse(readFileSync("data/wi-2024-records-request-pac
 const status = JSON.parse(readFileSync("data/wi-2024-remaining-data-status.json", "utf8"));
 const wardGeometry = JSON.parse(readFileSync("data/wi-2024-ward-geometry-summary.json", "utf8"));
 const wardGeometryJoinReport = JSON.parse(readFileSync("data/wi-2024-ward-geometry-join-report.json", "utf8"));
+const hardMissingEvidence = JSON.parse(readFileSync("data/wi-2024-hard-missing-source-evidence.json", "utf8"));
 
 const requiredFamilies = [
   "wardRegisteredVoterDenominators",
@@ -124,4 +125,27 @@ test("Wisconsin ward geometry join validation quantifies remaining mapping gaps"
   assert.equal(wardGeometryJoinReport.summary.jurisdictionLevelRenderingSafe, true);
   assert.equal(wardGeometryJoinReport.residualClassification.interpretation.includes("ward-version/allocation mismatch"), true);
   assert.match(wardGeometryJoinReport.caveats.join(" "), /County-level production indicators remain authoritative/);
+});
+
+
+test("Wisconsin hard-missing source evidence proves public sources do not carry missing fields", () => {
+  assert.equal(hardMissingEvidence.state, "WI");
+  assert.equal(hardMissingEvidence.summary.officialUrlProbeCount, 4);
+  assert.equal(hardMissingEvidence.summary.officialUrlsReachable, 1);
+  assert.equal(hardMissingEvidence.summary.officialUrlsBlockedByCloudflare, 3);
+  assert.equal(hardMissingEvidence.summary.arcgisQueryCount, 6);
+  assert.equal(hardMissingEvidence.summary.relevantArcgisResultCount, 1);
+  assert.equal(hardMissingEvidence.summary.wecWardWorkbookSheetCount, 198);
+  assert.equal(hardMissingEvidence.summary.wecWardWorkbookProvidesHardMissingFields, false);
+  assert.equal(hardMissingEvidence.summary.geometryLayerProvidesHardMissingFields, false);
+  assert.deepEqual(hardMissingEvidence.summary.familiesStillRequireRecordsRequests, [
+    "wardRegisteredVoterDenominators",
+    "rowLevelBallotMode",
+    "perAuditUnitOutcomes",
+    "wardGeometryCrosswalk",
+  ]);
+  assert.equal(hardMissingEvidence.conclusions.wardRegisteredVoterDenominators.requestRequired, true);
+  assert.equal(hardMissingEvidence.conclusions.rowLevelBallotMode.requestRequired, true);
+  assert.equal(hardMissingEvidence.conclusions.perAuditUnitOutcomes.requestRequired, true);
+  assert.equal(hardMissingEvidence.conclusions.wardGeometryCrosswalk.requestRequired, true);
 });

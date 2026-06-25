@@ -1,0 +1,207 @@
+{
+  "state": "WI",
+  "electionYear": 2024,
+  "generatedAt": "2026-06-25T23:47:24.950Z",
+  "purpose": "Collect reproducible public-source evidence for Wisconsin hard-missing items: ward registered-voter denominators, row-level ballot mode/CVR, per-audit-unit outcomes, and exact ward crosswalk needs.",
+  "searchedFamilies": [
+    "wardRegisteredVoterDenominators",
+    "rowLevelBallotMode",
+    "perAuditUnitOutcomes",
+    "wardGeometryCrosswalk"
+  ],
+  "summary": {
+    "officialUrlProbeCount": 4,
+    "officialUrlsReachable": 1,
+    "officialUrlsBlockedByCloudflare": 3,
+    "arcgisQueryCount": 6,
+    "relevantArcgisResultCount": 1,
+    "officialCandidateTitles": [
+      "2024 Election Data with 2025 Wards"
+    ],
+    "wiLegislatureGeometryLayerFieldsChecked": 58,
+    "wecWardWorkbookSheetCount": 198,
+    "wecWardWorkbookProvidesHardMissingFields": false,
+    "geometryLayerProvidesHardMissingFields": false,
+    "familiesStillRequireRecordsRequests": [
+      "wardRegisteredVoterDenominators",
+      "rowLevelBallotMode",
+      "perAuditUnitOutcomes",
+      "wardGeometryCrosswalk"
+    ]
+  },
+  "officialUrlProbes": [
+    {
+      "url": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+      "ok": false,
+      "status": 403,
+      "finalUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+      "contentType": "text/html; charset=UTF-8",
+      "contentLength": "",
+      "blockedByCloudflare": true
+    },
+    {
+      "url": "https://elections.wi.gov/about/records-request",
+      "ok": false,
+      "status": 403,
+      "finalUrl": "https://elections.wi.gov/about/records-request",
+      "contentType": "text/html; charset=UTF-8",
+      "contentLength": "",
+      "blockedByCloudflare": true
+    },
+    {
+      "url": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+      "ok": false,
+      "status": 403,
+      "finalUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+      "contentType": "text/html; charset=UTF-8",
+      "contentLength": "",
+      "blockedByCloudflare": true
+    },
+    {
+      "url": "https://elections.wi.gov/sites/default/files/documents/Ward%20by%20Ward%20Report%20by%20Congressional%20District_November%205%202024%20General%20Election_Federal%20and%20State%20Contests.xlsx",
+      "ok": true,
+      "status": 200,
+      "finalUrl": "https://elections.wi.gov/sites/default/files/documents/Ward%20by%20Ward%20Report%20by%20Congressional%20District_November%205%202024%20General%20Election_Federal%20and%20State%20Contests.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentLength": "1411774",
+      "blockedByCloudflare": false
+    }
+  ],
+  "arcgisSearches": [
+    {
+      "query": "Wisconsin 2024 registered voters ward",
+      "url": "https://www.arcgis.com/sharing/rest/search?q=Wisconsin%202024%20registered%20voters%20ward&f=json&num=20",
+      "ok": true,
+      "status": 200,
+      "resultCount": 0,
+      "results": []
+    },
+    {
+      "query": "Wisconsin 2024 CVR cast vote record",
+      "url": "https://www.arcgis.com/sharing/rest/search?q=Wisconsin%202024%20CVR%20cast%20vote%20record&f=json&num=20",
+      "ok": true,
+      "status": 200,
+      "resultCount": 0,
+      "results": []
+    },
+    {
+      "query": "Wisconsin 2024 audit reporting unit discrepancy",
+      "url": "https://www.arcgis.com/sharing/rest/search?q=Wisconsin%202024%20audit%20reporting%20unit%20discrepancy&f=json&num=20",
+      "ok": true,
+      "status": 200,
+      "resultCount": 0,
+      "results": []
+    },
+    {
+      "query": "Wisconsin ward crosswalk 2024 2025",
+      "url": "https://www.arcgis.com/sharing/rest/search?q=Wisconsin%20ward%20crosswalk%202024%202025&f=json&num=20",
+      "ok": true,
+      "status": 200,
+      "resultCount": 0,
+      "results": []
+    },
+    {
+      "query": "Wisconsin 2024 election data wards registration absentee",
+      "url": "https://www.arcgis.com/sharing/rest/search?q=Wisconsin%202024%20election%20data%20wards%20registration%20absentee&f=json&num=20",
+      "ok": true,
+      "status": 200,
+      "resultCount": 0,
+      "results": []
+    },
+    {
+      "query": "November_2024_Election_Data_with_Jan2025_Wards",
+      "url": "https://www.arcgis.com/sharing/rest/search?q=November_2024_Election_Data_with_Jan2025_Wards&f=json&num=20",
+      "ok": true,
+      "status": 200,
+      "resultCount": 1,
+      "results": [
+        {
+          "id": "878d8826218f42509e07437a82ef6b6e",
+          "title": "2024 Election Data with 2025 Wards",
+          "owner": "WI_Legislature",
+          "type": "Feature Service",
+          "url": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer",
+          "snippet": "2024 Wisconsin November Election Data with January 2025 Wards.",
+          "tags": [
+            "Municipal Wards",
+            "Election Data",
+            "LTSB",
+            "Wisconsin"
+          ]
+        }
+      ]
+    }
+  ],
+  "relevantArcgisResults": [
+    {
+      "id": "878d8826218f42509e07437a82ef6b6e",
+      "title": "2024 Election Data with 2025 Wards",
+      "owner": "WI_Legislature",
+      "type": "Feature Service",
+      "url": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer",
+      "snippet": "2024 Wisconsin November Election Data with January 2025 Wards.",
+      "tags": [
+        "Municipal Wards",
+        "Election Data",
+        "LTSB",
+        "Wisconsin"
+      ],
+      "query": "November_2024_Election_Data_with_Jan2025_Wards",
+      "officialOwnerLikely": true,
+      "hardMissingFamiliesSuggested": {
+        "wardRegisteredVoterDenominators": false,
+        "rowLevelBallotMode": false,
+        "perAuditUnitOutcomes": false,
+        "wardGeometryCrosswalk": false
+      }
+    }
+  ],
+  "geometryLayerFieldEvidence": {
+    "source": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+    "title": "November_2024_Election_Data_with_Jan2025_Wards",
+    "fieldsChecked": 58,
+    "hasRegisteredVoterFields": false,
+    "hasBallotModeFields": false,
+    "hasAuditOutcomeFields": false,
+    "hasWardCrosswalkFields": false
+  },
+  "wecWardWorkbookEvidence": {
+    "file": "data/wi-2024-ward-by-ward-federal-state.xlsx",
+    "sheetCount": 198,
+    "sampledRowsPerSheet": 15,
+    "hasRegisteredVoterFields": false,
+    "hasBallotModeFields": false,
+    "hasAuditOutcomeFields": false
+  },
+  "conclusions": {
+    "wardRegisteredVoterDenominators": {
+      "family": "wardRegisteredVoterDenominators",
+      "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+      "publicEvidence": [],
+      "requestRequired": true,
+      "requestPath": "Wisconsin Elections Commission first; county or municipal clerks if WEC identifies local custody."
+    },
+    "rowLevelBallotMode": {
+      "family": "rowLevelBallotMode",
+      "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+      "publicEvidence": [],
+      "requestRequired": true,
+      "requestPath": "WEC/county CVR or ballot-mode records request path; keep EAC vote-method rows as context only."
+    },
+    "perAuditUnitOutcomes": {
+      "family": "perAuditUnitOutcomes",
+      "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+      "publicEvidence": [],
+      "requestRequired": true,
+      "requestPath": "WEC first for submitted local audit materials; selected municipal clerks if WEC does not hold per-unit outcome submissions."
+    },
+    "wardGeometryCrosswalk": {
+      "family": "wardGeometryCrosswalk",
+      "publicCollectionStatus": "no_public_machine_readable_statewide_source_found",
+      "publicEvidence": [],
+      "requestRequired": true,
+      "requestPath": "Wisconsin Legislature/LTSB or WEC for a 2024 reporting-ward to January 2025 ward crosswalk."
+    }
+  },
+  "nextAction": "No public statewide machine-readable hard-missing source was confirmed by this probe. Submit or track records requests for families marked no_public_machine_readable_statewide_source_found; do not use EAC/context rows as flag inputs."
+}
