@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
 
 function ensureDir(dir) {
@@ -952,6 +952,58 @@ function candidateOnlyPdfRows(text, county) {
   return completeRowsFromPending(pending);
 }
 
+function lewisTableRows(text, county) {
+  const chunks = text.replace(/\r/g, "").split(/-- \d+ of \d+ --/);
+  const parseChunk = (chunkIndex, office) => {
+    const rows = new Map();
+    const width = office === "president" ? 8 : 9;
+    for (const rawLine of (chunks[chunkIndex] ?? "").split("\n")) {
+      const line = cleanText(rawLine);
+      if (!line || /^(TOTALS|Lewis County|General|November|President|United|ED|Kamala|Tim|DEM|Donald|J\.D|WOR|Blank|Void|Scatter|Total|Kirsten|Michael|Diane)/i.test(line)) continue;
+      const matches = [...line.matchAll(/\d[\d,]*/g)];
+      if (matches.length < width) continue;
+      const selected = matches.slice(-width);
+      const localUnit = cleanText(line.slice(0, selected[0].index));
+      if (!localUnit) continue;
+      const nums = selected.map((value) => intValue(value[0]));
+      if (office === "president") {
+        rows.set(localUnit.toUpperCase(), {
+          localUnit,
+          pres_harris: nums[0] + nums[3],
+          pres_trump: nums[1] + nums[2],
+          pres_other: nums[4] + nums[5] + nums[6],
+          pres_total: nums[7],
+        });
+      } else {
+        rows.set(localUnit.toUpperCase(), {
+          localUnit,
+          comparison_dem: nums[0] + nums[3],
+          comparison_rep: nums[1] + nums[2],
+          comparison_other: nums[4],
+        });
+      }
+    }
+    return rows;
+  };
+  const presidentRows = parseChunk(0, "president");
+  const senateRows = parseChunk(1, "senate");
+  return [...presidentRows.entries()]
+    .filter(([key]) => senateRows.has(key))
+    .map(([key, president]) => {
+      const senate = senateRows.get(key);
+      return {
+        county,
+        local_unit: president.localUnit,
+        pres_harris: president.pres_harris,
+        pres_trump: president.pres_trump,
+        pres_other: president.pres_other,
+        pres_total: president.pres_total,
+        comparison_dem: senate.comparison_dem,
+        comparison_rep: senate.comparison_rep,
+        comparison_other: senate.comparison_other,
+      };
+    });
+}
 function dutchessDetailedRows(text, county) {
   const chunks = text.replace(/\r/g, "").split(/-- \d+ of \d+ --/);
   const parseContestRows = (startChunk, endChunk, office) => {
@@ -1108,6 +1160,7 @@ async function pdfRows(filePath, county) {
     if (county === "Dutchess County") return dutchessDetailedRows(result.text, county);
     if (county === "Essex County") return essexCanvassRows(result.text, county);
     if (county === "Genesee County") return geneseeTableRows(result.text, county);
+    if (county === "Lewis County") return lewisTableRows(result.text, county);
     if (county === "Oneida County") return oneidaDetailedRows(result.text, county);
     if (county === "Onondaga County") return onondagaSummaryRows(result.text, county);
     if (county === "St. Lawrence County") return stLawrenceDistrictRows(result.text, county);
