@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Columbia.pdf", "Fulton.pdf", "Genesee.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Columbia.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Oneida.pdf", "Onondaga.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
 
 function ensureDir(dir) {
@@ -724,6 +724,82 @@ function tiogaTableRows(text, county) {
   }
   return completeRowsFromPending(pending);
 }
+function essexCanvassRows(text, county) {
+  const pending = new Map();
+  for (const chunk of text.replace(/\r/g, "").split(/-- \d+ of \d+ --/)) {
+    const isPresident = /Presidential Electors for President and Vice President/i.test(chunk);
+    const isSenate = /United States Senator/i.test(chunk);
+    if (!isPresident && !isSenate) continue;
+    for (const rawLine of chunk.split("\n")) {
+      const line = cleanText(rawLine);
+      if (!line || /^(TOWN NAME|WHOLE|NUMBER|OF VOTES|CAST|Kamala|Donald|Write|VOIDS|BLANKS|Kirsten|Michael|Diane|Scattered|ESSEX COUNTY|GENERAL|At the|Presidential|United States|REPRESENTATIVE|STATE SENATOR|MEMBER|PROPOSAL|COUNTY|--)/i.test(line)) continue;
+      const matches = [...line.matchAll(/\d[\d,]*/g)];
+      if (matches.length < 6) continue;
+      const values = matches.map((match) => intValue(match[0]));
+      const town = cleanText(line.slice(0, matches[0].index));
+      if (!town) continue;
+      const ed = values[0];
+      const localUnit = ed === 0 ? town : `${town} ${ed}`;
+      const nums = values.slice(1);
+      const key = localUnit.toUpperCase();
+      const entry = pending.get(key) ?? { county, local_unit: localUnit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+      if (isPresident) {
+        entry.pres_harris = nums[1] + nums[2];
+        entry.pres_trump = nums[3] + nums[4];
+        entry.pres_other = nums.slice(5, -2).reduce((sum, value) => sum + value, 0);
+        entry.pres_total = nums[0];
+      } else {
+        entry.comparison_dem = nums[1] + nums[2];
+        entry.comparison_rep = nums[3] + nums[4];
+        entry.comparison_other = nums[5] + (nums[6] ?? 0);
+      }
+      pending.set(key, entry);
+    }
+  }
+  return completeRowsFromPending(pending);
+}
+
+function stLawrenceDistrictRows(text, county) {
+  const pending = new Map();
+  let currentOffice = "";
+  for (const rawLine of text.replace(/\r/g, "").split("\n")) {
+    const line = cleanText(rawLine);
+    if (!line) continue;
+    if (/Kamala D\. Harris/i.test(line)) {
+      currentOffice = "president";
+      continue;
+    }
+    if (/Kirsten E\. Gillibrand/i.test(line)) {
+      currentOffice = "senate";
+      continue;
+    }
+    if (currentOffice && /Representative|Proposal|Supreme|Assembly|Write-In Results/i.test(line)) {
+      currentOffice = "";
+      continue;
+    }
+    if (!currentOffice || /^(DISTRICT|TOTAL|VOTER|REGISTRATION|%|DEM|REP|CON|WOR|LAR|TOTAL TURNOUT|November|--)/i.test(line)) continue;
+    const normalized = line.replace(/\d+(?:\.\d+)?%/g, "");
+    const matches = [...normalized.matchAll(/\d[\d,]*/g)];
+    if (matches.length < (currentOffice === "president" ? 11 : 12)) continue;
+    const first = matches[0];
+    const localUnit = cleanText(`${normalized.slice(0, first.index)}${first[0]}`);
+    const nums = matches.slice(1).map((match) => intValue(match[0]));
+    const key = localUnit.toUpperCase();
+    const entry = pending.get(key) ?? { county, local_unit: localUnit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    if (currentOffice === "president") {
+      entry.pres_harris = nums[6];
+      entry.pres_trump = nums[7];
+      entry.pres_other = nums[8];
+      entry.pres_total = nums[9];
+    } else {
+      entry.comparison_dem = nums[7];
+      entry.comparison_rep = nums[8];
+      entry.comparison_other = nums[6] + nums[9];
+    }
+    pending.set(key, entry);
+  }
+  return completeRowsFromPending(pending);
+}
 function boundedPdfTextRows(text, county) {
   const pending = new Map();
   let currentOffice = "";
@@ -811,9 +887,11 @@ async function pdfRows(filePath, county) {
     const result = await parser.getText();
     if (county === "Albany County") return albanyPrecinctSummaryRows(result.text, county);
     if (county === "Allegany County") return alleganySideBySideRows(result.text, county);
+    if (county === "Essex County") return essexCanvassRows(result.text, county);
     if (county === "Genesee County") return geneseeTableRows(result.text, county);
     if (county === "Oneida County") return oneidaDetailedRows(result.text, county);
     if (county === "Onondaga County") return onondagaSummaryRows(result.text, county);
+    if (county === "St. Lawrence County") return stLawrenceDistrictRows(result.text, county);
     if (county === "Tioga County") return tiogaTableRows(result.text, county);
     if (county === "Fulton County" || county === "Seneca County") return candidateOnlyPdfRows(result.text, county);
     if (county === "Ulster County") return boundedPdfTextRows(result.text, county);
@@ -824,7 +902,9 @@ async function pdfRows(filePath, county) {
 }
 
 function countyName(fileName) {
-  return `${fileName.replace(/\.[^.]+$/i, "").replace(/\s+\(.+\)$/i, "")} County`;
+  const base = fileName.replace(/\.[^.]+$/i, "").replace(/\s+\(.+\)$/i, "");
+  if (base === "St Lawrence") return "St. Lawrence County";
+  return `${base} County`;
 }
 
 async function main() {
