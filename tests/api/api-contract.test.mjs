@@ -444,3 +444,12 @@ test("turnout collection inventory is available outside the app", () => {
   assert.match(inventoryDoc, /Loaded Turnout/);
   assert.match(inventoryDoc, /Wisconsin-Specific Request/);
 });
+
+test("indicator-dependent public reads are uncached", () => {
+  const api = readFileSync("src/lib/api.ts", "utf8");
+
+  assert.match(api, /export const listIndicators = uncachedListIndicators/);
+  assert.match(api, /export const listStates = uncachedListStates/);
+  assert.match(api, /export const listCompletenessReport = uncachedListCompletenessReport/);
+  assert.doesNotMatch(api, /\["public-data", "indicators"\]/);
+});

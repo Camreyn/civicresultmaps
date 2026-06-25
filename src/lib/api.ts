@@ -61,11 +61,7 @@ export const getCoverageSummary = unstable_cache(
   { revalidate: publicDataRevalidateSeconds },
 );
 
-export const listCompletenessReport = unstable_cache(
-  uncachedListCompletenessReport,
-  ["public-data", "completeness-report"],
-  { revalidate: publicDataRevalidateSeconds },
-);
+export const listCompletenessReport = uncachedListCompletenessReport;
 
 export const listEquipmentRows = unstable_cache(
   uncachedListEquipmentRows,
@@ -79,11 +75,7 @@ export const listHistoricalResultRows = unstable_cache(
   { revalidate: publicDataRevalidateSeconds },
 );
 
-export const listIndicators = unstable_cache(
-  uncachedListIndicators,
-  ["public-data", "indicators"],
-  { revalidate: publicDataRevalidateSeconds },
-);
+export const listIndicators = uncachedListIndicators;
 
 export const listElections = unstable_cache(
   uncachedListElections,
@@ -111,11 +103,7 @@ export const listSources = unstable_cache(
   { revalidate: publicDataRevalidateSeconds },
 );
 
-export const listStates = unstable_cache(
-  uncachedListStates,
-  ["public-data", "states"],
-  { revalidate: publicDataRevalidateSeconds },
-);
+export const listStates = uncachedListStates;
 
 export const listTurnoutRows = unstable_cache(
   uncachedListTurnoutRows,

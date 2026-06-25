@@ -1507,11 +1507,15 @@
         "expectedJurisdictions": 72
       },
       "audit": {
-        "status": "candidate",
-        "why": "WEC post-election voting equipment audit source page is identified, but row-level 2024 audit result normalization is still pending manual/browser collection because the site blocks scripted access.",
-        "sourceUrl": "https://elections.wi.gov/elections/election-security-integrity/post-election-voting-equipment-audits",
-        "localArtifact": "data/wi-2024-audit-context.csv",
-        "caveat": "Candidate source inventory only; not a loaded audit result dataset."
+        "status": "partial",
+        "why": "Official WEC 2024 post-election voting equipment audit report is collected and Appendix B selected reporting units are normalized. The report provides statewide findings and aggregate discussion, but not a per-reporting-unit discrepancy outcome table.",
+        "sourceDocumentId": "wi-2024-post-election-voting-equipment-audit-final-report",
+        "sourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+        "localArtifact": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.pdf",
+        "normalizedArtifact": "data/wi-2024-audit-selections.csv",
+        "summaryArtifact": "data/wi-2024-audit-summary.json",
+        "parser": "normalizeWiAuditReport",
+        "caveat": "Selection rows and statewide findings are loaded as audit context. Per-unit discrepancy outcomes are not published in this report and are not loaded."
       },
       "cvr": {
         "status": "partial",

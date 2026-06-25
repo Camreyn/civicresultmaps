@@ -9,6 +9,7 @@ function test(name, fn) {
 test("legacy importer parses static app-data bundles", () => {
   const importer = readFileSync("src/db/legacy-import.ts", "utf8");
   assert.match(importer, /presidentCountyResults/);
+  assert.match(importer, /import \{ reviewPolicy \} from "\.\.\/lib\/review-policy\.ts"/);
   assert.match(importer, /parseLegacyBundle/);
   assert.match(importer, /source\.slice\(firstBrace, lastBrace \+ 1\)/);
   assert.match(importer, /validateLegacyRows/);

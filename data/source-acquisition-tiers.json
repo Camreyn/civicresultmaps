@@ -1558,7 +1558,7 @@
       "stateName": "Wisconsin",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_historical",
+      "dataFamily": "results_review_turnout_historical_audit",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "ward",
       "exportFormats": [
@@ -1574,19 +1574,21 @@
         "EAC fallback turnout",
         "EAC vote-method rows",
         "Verified Voting equipment context",
-        "2012/2016/2020 county historical presidential baselines"
+        "2012/2016/2020 county historical presidential baselines",
+        "WEC post-election audit selected reporting units",
+        "WEC post-election audit statewide findings"
       ],
       "missingFields": [
         "ward-level registration denominator",
-        "normalized post-election audit rows",
+        "per-reporting-unit audit discrepancy outcomes",
         "county CVR availability verification",
         "normalized incident/correction/recount/litigation rows"
       ],
-      "parserStatus": "native ward review package loaded with historical baseline context",
+      "parserStatus": "native ward review package loaded with historical baseline and partial audit context",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Turnout rows use EAC local-jurisdiction fallback because WEC ward workbook lacks denominator fields. Historical rows are contextual county baselines from secondary tables with source footnotes.",
-      "nextAction": "Find ward-level registered-voter denominator if available; then complete audit, CVR availability, and incident/correction source inventories."
+      "caveats": "Turnout rows use EAC local-jurisdiction fallback because WEC ward workbook lacks denominator fields. Historical rows are contextual county baselines from secondary tables with source footnotes. WEC audit context includes selected reporting units and statewide findings, but the published report does not include per-reporting-unit discrepancy outcomes.",
+      "nextAction": "Find ward-level registered-voter denominator if available; request local audit submission materials if per-reporting-unit outcomes are needed; then complete CVR availability and incident/correction source inventories."
     },
     {
       "state": "WV",

@@ -1,0 +1,56 @@
+{
+  "state": "WI",
+  "electionYear": 2024,
+  "sourceDocumentId": "wi-2024-post-election-voting-equipment-audit-final-report",
+  "sourcePageUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+  "sourcePdfUrl": "https://elections.wi.gov/sites/default/files/documents/2024%20Post-Election%20Voting%20Equipment%20Audit%20Final%20Report.pdf",
+  "localPdf": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.pdf",
+  "extractedText": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.txt",
+  "normalizedSelections": "data/wi-2024-audit-selections.csv",
+  "reportDate": "2025-03-13",
+  "commissionMeetingDate": "2025-03-07",
+  "selectedReportingUnits": 373,
+  "selectedMunicipalities": 336,
+  "countiesCovered": 72,
+  "zeroBallotSelectedRows": 12,
+  "ballotsAudited": 327230,
+  "statewideFinding": "WEC staff reported no evidence that audited voting systems changed votes, incorrectly tabulated votes, altered outcomes, had programming errors, unauthorized software/hardware alterations, hacking, or equipment malfunctions that changed contest outcomes.",
+  "caveat": "Appendix B provides selected reporting units, auditable equipment, and ballots audited. The source report gives statewide findings and aggregate/error discussion, not a per-reporting-unit discrepancy outcome table.",
+  "equipmentSummary": [
+    {
+      "equipment": "ES&S DS200",
+      "rows": 178,
+      "ballotsAudited": 193229
+    },
+    {
+      "equipment": "Dominion Voting - ImageCast Evolution (ICE)",
+      "rows": 137,
+      "ballotsAudited": 102283
+    },
+    {
+      "equipment": "Dominion Voting - ImageCast X (ICX) VVPAT",
+      "rows": 23,
+      "ballotsAudited": 3691
+    },
+    {
+      "equipment": "Clear Ballot ClearCast",
+      "rows": 16,
+      "ballotsAudited": 16011
+    },
+    {
+      "equipment": "ES&S DS200/ES&S DS450",
+      "rows": 11,
+      "ballotsAudited": 9335
+    },
+    {
+      "equipment": "Dominion Voting - ImageCast Evolution (ICE)/ Dominion Voting - ImageCast X (ICX) VVPAT",
+      "rows": 4,
+      "ballotsAudited": 1685
+    },
+    {
+      "equipment": "ES&S DS200/ES&S DS450/ES&S DS850",
+      "rows": 4,
+      "ballotsAudited": 996
+    }
+  ]
+}

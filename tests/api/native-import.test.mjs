@@ -5,8 +5,10 @@ import test from "node:test";
 test("native importer promotes validated staging artifacts only", () => {
   const importer = readFileSync("src/db/native-import.ts", "utf8");
   const script = readFileSync("scripts/promote-native-staging.mjs", "utf8");
+  const policy = readFileSync("src/lib/review-policy.ts", "utf8");
 
   assert.match(importer, /promoteNativeStagingArtifact/);
+  assert.match(importer, /import \{ reviewPolicy \} from "\.\.\/lib\/review-policy\.ts"/);
   assert.match(importer, /Native staging artifact validation did not pass/);
   assert.match(importer, /must not self-authorize production writes/);
   assert.match(importer, /source_documents/);
@@ -22,9 +24,19 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /analysisIndicatorsForNativeRows/);
   assert.match(importer, /insert into analysis_indicators/);
   assert.match(importer, /storedIndicatorRows/);
-  assert.match(importer, /reviewPolicy/);
+  assert.match(policy, /downBallotAverageThresholdPct: 2/);
+  assert.match(policy, /voteShareCorrelationThreshold: 0\.35/);
   assert.match(importer, /certified_results = excluded\.certified_results/);
   assert.match(importer, /if \(native\.turnoutRows\.length > 0\)/);
   assert.doesNotMatch(importer, /parseLegacyBundle/);
   assert.match(script, /promoteNativeStagingArtifact/);
+});
+
+test("native staging indicator report uses the shared review policy", () => {
+  const script = readFileSync("scripts/report-staging-indicator-counts.mjs", "utf8");
+
+  assert.match(script, /reviewPolicy/);
+  assert.match(script, /average_down_ballot_difference/);
+  assert.match(script, /down_ballot_outliers/);
+  assert.match(script, /uniqueFlaggedJurisdictions/);
 });

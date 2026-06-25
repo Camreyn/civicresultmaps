@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
+import { reviewPolicy } from "../lib/review-policy.ts";
 
 type NativeSource = {
   id: string;
@@ -119,13 +120,6 @@ const candidateParties = {
   Other: "OTHER",
 } as const;
 
-const reviewPolicy = {
-  downBallotAverageThresholdPct: 6,
-  minCandidateVotes: 100,
-  minWardRows: 8,
-  outlierThresholdPct: 15,
-  voteShareCorrelationThreshold: 0.35,
-};
 
 function getDatabaseUrl() {
   return (

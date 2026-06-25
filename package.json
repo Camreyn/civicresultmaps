@@ -10,7 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:api && npm run test:etl",
-    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs",
+    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs",
     "test:etl": "python -m unittest discover -s tests/python",
     "db:generate": "drizzle-kit generate",
     "db:push": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",
@@ -42,6 +42,7 @@
     "etl:import:va": "python -m civic_etl.cli import --config etl/state-configs/va.json --out .etl/staging",
     "etl:import:wa": "python -m civic_etl.cli import --config etl/state-configs/wa.json --out .etl/staging",
     "native:promote": "node --experimental-strip-types --env-file=.env.local scripts/promote-native-staging.mjs",
+    "native:report-indicators": "node --experimental-strip-types scripts/report-staging-indicator-counts.mjs",
     "native:counts": "node --env-file=.env.local scripts/check-native-import-counts.mjs",
     "turnout:collect": "node scripts/collect-turnout-sources.mjs",
     "turnout:configs:eac": "node scripts/create-eac-turnout-state-configs.mjs",
@@ -92,7 +93,8 @@
     "etl:review:ms:ocr-combine": "node scripts/combine-ms-ocr-review-artifacts.mjs --corrections data/ms-2024-ocr-reviewed-corrections.csv",
     "etl:prepare:ny": "node scripts/normalize-ny-local-review.mjs",
     "etl:import:ny": "npm run etl:prepare:ny && python -m civic_etl.cli import --config etl/state-configs/ny.json --out .etl/staging",
-    "etl:collect:wi:historical": "node scripts/collect-wi-historical-baseline.mjs"
+    "etl:collect:wi:historical": "node scripts/collect-wi-historical-baseline.mjs",
+    "etl:normalize:wi:audit": "node scripts/normalize-wi-audit-report.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

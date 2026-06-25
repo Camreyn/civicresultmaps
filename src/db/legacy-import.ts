@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
-import { getDatabaseUrl } from "./url";
+import { reviewPolicy } from "../lib/review-policy.ts";
+import { getDatabaseUrl } from "./url.ts";
 
 type LegacyCountyResult = {
   county: string;
@@ -107,13 +108,6 @@ const candidateParties = {
   Other: "OTHER",
 } as const;
 
-const reviewPolicy = {
-  downBallotAverageThresholdPct: 6,
-  minCandidateVotes: 100,
-  minWardRows: 8,
-  outlierThresholdPct: 15,
-  voteShareCorrelationThreshold: 0.35,
-};
 
 function parseLegacyBundle(source: string): LegacyAppData {
   const firstBrace = source.indexOf("{");
