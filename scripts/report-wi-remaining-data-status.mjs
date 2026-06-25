@@ -178,11 +178,17 @@ const report = {
       nextAction: admin.audit.nextAction,
     },
     municipalWardGeometry: {
-      status: wardGeometrySummary?.status ?? 'not_loaded',
+      status: wardGeometryJoinReport?.status ?? wardGeometrySummary?.status ?? 'not_loaded',
       implementedContext: wardGeometrySummary
-        ? 'Official Wisconsin Legislature/LTSB ArcGIS municipal ward geometry candidate has been collected as compressed GeoJSON. It is not promoted to production ward-map rendering until join validation against WEC review rows passes.'
+        ? wardGeometryJoinReport?.status === 'candidate_collected_jurisdiction_reconciled_ward_version_deltas'
+          ? 'Official Wisconsin Legislature/LTSB ArcGIS municipal ward geometry candidate has been collected as compressed GeoJSON. It reconciles to WEC review rows at the municipality/jurisdiction total level, but row-level ward allocation differs in documented residual jurisdictions.'
+          : 'Official Wisconsin Legislature/LTSB ArcGIS municipal ward geometry candidate has been collected as compressed GeoJSON. It is not promoted to production ward-map rendering until join validation against WEC review rows passes.'
         : 'The app currently renders Wisconsin county geometry. County, city, and rest-of-county advisory scopes are tabular review scopes, not mapped ward polygons.',
-      currentGeometry: wardGeometrySummary ? 'county_geometry_production_with_ward_candidate_collected' : 'county_geometry_only',
+      currentGeometry: wardGeometryJoinReport?.summary?.jurisdictionLevelRenderingSafe
+        ? 'county_geometry_production_with_jurisdiction_reconciled_ward_candidate'
+        : wardGeometrySummary
+          ? 'county_geometry_production_with_ward_candidate_collected'
+          : 'county_geometry_only',
       candidate: wardGeometrySummary
         ? {
             authority: wardGeometrySummary.authority,
@@ -209,6 +215,11 @@ const report = {
                   parseFailures: wardGeometryJoinReport.summary.parseFailures,
                   mismatchedMatchedRows: wardGeometryJoinReport.summary.mismatchedMatchedRows,
                   mismatchAbsTotal: wardGeometryJoinReport.summary.mismatchAbsTotal,
+                  affectedJurisdictions: wardGeometryJoinReport.summary.affectedJurisdictions,
+                  affectedJurisdictionsReconciled: wardGeometryJoinReport.summary.affectedJurisdictionsReconciled,
+                  unresolvedJurisdictions: wardGeometryJoinReport.summary.unresolvedJurisdictions,
+                  rowLevelWardRenderingSafe: wardGeometryJoinReport.summary.rowLevelWardRenderingSafe,
+                  jurisdictionLevelRenderingSafe: wardGeometryJoinReport.summary.jurisdictionLevelRenderingSafe,
                 }
               : null,
           }
@@ -217,7 +228,9 @@ const report = {
       nextAction: wardGeometrySummary
         ? wardGeometryJoinReport?.status === 'join_validation_passed'
           ? 'Join validation passed; next step is a UI/map integration spike that keeps county flags authoritative while exposing ward geometry as contextual drill-down.'
-          : 'Resolve the unmatched ward rows and documented vote-total deltas before enabling ward-level map rendering.'
+          : wardGeometryJoinReport?.summary?.jurisdictionLevelRenderingSafe
+            ? 'Keep county flags authoritative and keep row-level ward rendering disabled for affected municipalities. A future map integration can safely use this geometry for jurisdiction-level context or require a 2024-to-2025 ward crosswalk for exact ward rendering.'
+            : 'Resolve the unmatched ward rows and documented vote-total deltas before enabling ward-level map rendering.'
         : 'Find an official statewide municipal ward boundary dataset matching the 2024 election wards, normalize it to WEC county/municipality/ward keys, and add geometry join tests before enabling ward-level map rendering.',
     },
     rowLevelBallotMode: {

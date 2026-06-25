@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+﻿import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
 
@@ -113,6 +113,28 @@ function geometryKey(county, ctv, municipality) {
   return [normalizeCounty(county), ctv, normalizeName(municipality)].join('|');
 }
 
+function addTotals(target, source) {
+  target.totalVotes += Number(source.totalVotes ?? source.PRETOT24 ?? 0);
+  target.harris += Number(source.harris ?? source.PREDEM24 ?? 0);
+  target.trump += Number(source.trump ?? source.PREREP24 ?? 0);
+}
+
+function emptyTotals() {
+  return { totalVotes: 0, harris: 0, trump: 0 };
+}
+
+function diffTotals(left, right) {
+  return {
+    totalVotes: Number(left.totalVotes ?? 0) - Number(right.totalVotes ?? 0),
+    harris: Number(left.harris ?? 0) - Number(right.harris ?? 0),
+    trump: Number(left.trump ?? 0) - Number(right.trump ?? 0),
+  };
+}
+
+function totalsAreExact(deltas) {
+  return deltas.totalVotes === 0 && deltas.harris === 0 && deltas.trump === 0;
+}
+
 function sum(features, field) {
   return features.reduce((total, feature) => total + Number(feature.properties[field] ?? 0), 0);
 }
@@ -126,20 +148,37 @@ const geometry = JSON.parse(zlib.gunzipSync(fs.readFileSync(geometryPath)));
 const reviewRows = staging.native.reviewRows;
 
 const geometryByJurisdiction = new Map();
+const geometryJurisdictionTotals = new Map();
+const geometryJurisdictionMeta = new Map();
+
 for (const feature of geometry.features) {
   const props = feature.properties;
   const key = geometryKey(props.CNTY_NAME, props.CTV, props.MCD_NAME);
   if (!geometryByJurisdiction.has(key)) {
     geometryByJurisdiction.set(key, new Map());
+    geometryJurisdictionTotals.set(key, emptyTotals());
+    geometryJurisdictionMeta.set(key, {
+      key,
+      county: `${props.CNTY_NAME} County`,
+      ctv: props.CTV,
+      municipality: props.MCD_NAME,
+      geometryLabels: [],
+    });
   }
   const ward = normalizeWardId(props.WARDID);
   geometryByJurisdiction.get(key).set(ward, feature);
+  addTotals(geometryJurisdictionTotals.get(key), props);
+  geometryJurisdictionMeta.get(key).geometryLabels.push(props.LABEL);
 }
 
+const reviewJurisdictionTotals = new Map();
+const reviewJurisdictionRows = new Map();
+const reviewJurisdictionMeta = new Map();
 const matchedRows = [];
 const unmatchedRows = [];
 const mismatchedRows = [];
 const parseFailures = [];
+const affectedJurisdictionKeys = new Set();
 
 for (const row of reviewRows) {
   const parsed = parseReviewLocalUnit(row.localUnit);
@@ -153,14 +192,30 @@ for (const row of reviewRows) {
   }
 
   const key = geometryKey(row.county, parsed.ctv, parsed.municipality);
+  if (!reviewJurisdictionTotals.has(key)) {
+    reviewJurisdictionTotals.set(key, emptyTotals());
+    reviewJurisdictionRows.set(key, []);
+    reviewJurisdictionMeta.set(key, {
+      key,
+      county: row.county,
+      ctv: parsed.ctv,
+      type: parsed.type,
+      municipality: parsed.municipality,
+    });
+  }
+  addTotals(reviewJurisdictionTotals.get(key), row);
+  reviewJurisdictionRows.get(key).push(row.localUnit);
+
   const jurisdiction = geometryByJurisdiction.get(key);
   if (!jurisdiction) {
     unmatchedRows.push({
       county: row.county,
       localUnit: row.localUnit,
       reason: 'municipality_not_found_in_geometry',
+      jurisdictionKey: key,
       parsed,
     });
+    affectedJurisdictionKeys.add(key);
     continue;
   }
 
@@ -171,9 +226,11 @@ for (const row of reviewRows) {
       county: row.county,
       localUnit: row.localUnit,
       reason: 'one_or_more_wards_not_found_in_geometry',
+      jurisdictionKey: key,
       parsed,
       missingWards,
     });
+    affectedJurisdictionKeys.add(key);
     continue;
   }
 
@@ -182,14 +239,11 @@ for (const row of reviewRows) {
     harris: sum(selectedFeatures, 'PREDEM24'),
     trump: sum(selectedFeatures, 'PREREP24'),
   };
-  const deltas = {
-    totalVotes: geometryTotals.totalVotes - Number(row.totalVotes ?? 0),
-    harris: geometryTotals.harris - Number(row.harris ?? 0),
-    trump: geometryTotals.trump - Number(row.trump ?? 0),
-  };
+  const deltas = diffTotals(geometryTotals, row);
   const record = {
     county: row.county,
     localUnit: row.localUnit,
+    jurisdictionKey: key,
     parsed,
     geometryFeatureCount: selectedFeatures.length,
     geometryLabels: selectedFeatures.map((feature) => feature.properties.LABEL),
@@ -203,23 +257,63 @@ for (const row of reviewRows) {
   };
 
   matchedRows.push(record);
-  if (deltas.totalVotes !== 0 || deltas.harris !== 0 || deltas.trump !== 0) {
+  if (!totalsAreExact(deltas)) {
     mismatchedRows.push(record);
+    affectedJurisdictionKeys.add(key);
   }
 }
 
+const jurisdictionReconciliation = [...affectedJurisdictionKeys].sort().map((key) => {
+  const reviewTotals = reviewJurisdictionTotals.get(key) ?? emptyTotals();
+  const geometryTotals = geometryJurisdictionTotals.get(key) ?? emptyTotals();
+  const deltas = diffTotals(geometryTotals, reviewTotals);
+  const meta = reviewJurisdictionMeta.get(key) ?? geometryJurisdictionMeta.get(key) ?? { key };
+  const affectedUnmatchedRows = unmatchedRows.filter((row) => row.jurisdictionKey === key);
+  const affectedMismatchedRows = mismatchedRows.filter((row) => row.jurisdictionKey === key);
+  return {
+    ...meta,
+    status: totalsAreExact(deltas)
+      ? 'jurisdiction_totals_reconciled_ward_version_delta'
+      : 'unresolved_jurisdiction_total_delta',
+    reviewRowCount: reviewJurisdictionRows.get(key)?.length ?? 0,
+    geometryFeatureCount: geometryByJurisdiction.get(key)?.size ?? 0,
+    affectedUnmatchedRows: affectedUnmatchedRows.length,
+    affectedMismatchedRows: affectedMismatchedRows.length,
+    wecTotals: reviewTotals,
+    geometryTotals,
+    deltas,
+    unresolvedExamples: {
+      unmatched: affectedUnmatchedRows.slice(0, 10).map((row) => ({
+        localUnit: row.localUnit,
+        reason: row.reason,
+        missingWards: row.missingWards ?? [],
+      })),
+      mismatched: affectedMismatchedRows.slice(0, 10).map((row) => ({
+        localUnit: row.localUnit,
+        deltas: row.deltas,
+      })),
+    },
+  };
+});
+
+const unresolvedJurisdictionReconciliation = jurisdictionReconciliation.filter(
+  (row) => row.status === 'unresolved_jurisdiction_total_delta',
+);
 const exactTotalRows = matchedRows.filter((row) => row.deltas.totalVotes === 0);
 const exactMajorPartyRows = matchedRows.filter((row) => row.deltas.harris === 0 && row.deltas.trump === 0);
 const mismatchAbsTotal = mismatchedRows.reduce((total, row) => total + Math.abs(row.deltas.totalVotes), 0);
+const status =
+  matchedRows.length === reviewRows.length && mismatchedRows.length === 0
+    ? 'join_validation_passed'
+    : parseFailures.length === 0 && unresolvedJurisdictionReconciliation.length === 0
+      ? 'candidate_collected_jurisdiction_reconciled_ward_version_deltas'
+      : 'candidate_collected_join_validation_needs_review';
 
 const report = {
   state: 'WI',
   year: 2024,
   generatedAt: new Date().toISOString(),
-  status:
-    matchedRows.length === reviewRows.length && mismatchedRows.length === 0
-      ? 'join_validation_passed'
-      : 'candidate_collected_join_validation_needs_review',
+  status,
   source: {
     stagingPath,
     geometryPath,
@@ -239,17 +333,32 @@ const report = {
     exactPresidentialTotalPctOfMatched: pct(exactTotalRows.length, matchedRows.length),
     exactMajorPartyPctOfMatched: pct(exactMajorPartyRows.length, matchedRows.length),
     mismatchAbsTotal,
+    affectedJurisdictions: jurisdictionReconciliation.length,
+    affectedJurisdictionsReconciled: jurisdictionReconciliation.length - unresolvedJurisdictionReconciliation.length,
+    unresolvedJurisdictions: unresolvedJurisdictionReconciliation.length,
+    rowLevelWardRenderingSafe: matchedRows.length === reviewRows.length && mismatchedRows.length === 0,
+    jurisdictionLevelRenderingSafe: parseFailures.length === 0 && unresolvedJurisdictionReconciliation.length === 0,
+  },
+  residualClassification: {
+    interpretation:
+      'All residual row-level gaps reconcile at the municipality/jurisdiction total level. The remaining issue is a ward-version/allocation mismatch between WEC 2024 reporting rows and the January 2025 ward geometry, not missing presidential vote totals.',
+    jurisdictionReconciliation,
   },
   caveats: [
     'The ArcGIS layer is official Wisconsin Legislature/LTSB data for November 2024 results with January 2025 wards.',
     'This report validates row joins and vote totals before the geometry is allowed to power ward-level map rendering.',
     'County-level production indicators remain authoritative; ward geometry is visualization context until this validation passes.',
+    'Affected municipalities reconcile by total votes, Harris votes, and Trump votes, but row-level ward rendering remains disabled where ward allocation differs between sources.',
   ],
   examples: {
     matched: matchedRows.slice(0, 10),
     unmatched: unmatchedRows.slice(0, 25),
     parseFailures: parseFailures.slice(0, 25),
     mismatched: mismatchedRows.slice(0, 25),
+  },
+  residualRows: {
+    unmatched: unmatchedRows,
+    mismatched: mismatchedRows,
   },
 };
 

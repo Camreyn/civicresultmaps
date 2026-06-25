@@ -296,9 +296,9 @@
       "nextAction": "If per-reporting-unit discrepancy outcomes are needed, request or collect the submitted local audit materials; the published report provides selected reporting units, equipment, ballots audited, and statewide findings."
     },
     "municipalWardGeometry": {
-      "status": "public_candidate_collected_needs_join_validation",
-      "implementedContext": "Official Wisconsin Legislature/LTSB ArcGIS municipal ward geometry candidate has been collected as compressed GeoJSON. It is not promoted to production ward-map rendering until join validation against WEC review rows passes.",
-      "currentGeometry": "county_geometry_production_with_ward_candidate_collected",
+      "status": "candidate_collected_jurisdiction_reconciled_ward_version_deltas",
+      "implementedContext": "Official Wisconsin Legislature/LTSB ArcGIS municipal ward geometry candidate has been collected as compressed GeoJSON. It reconciles to WEC review rows at the municipality/jurisdiction total level, but row-level ward allocation differs in documented residual jurisdictions.",
+      "currentGeometry": "county_geometry_production_with_jurisdiction_reconciled_ward_candidate",
       "candidate": {
         "authority": "Wisconsin Legislature / LTSB ArcGIS",
         "sourceTitle": "November_2024_Election_Data_with_Jan2025_Wards",
@@ -315,7 +315,7 @@
           "The layer includes presidential vote fields but not registered-voter denominators, audit outcomes, or ballot-mode/CVR fields."
         ],
         "joinValidation": {
-          "status": "candidate_collected_join_validation_needs_review",
+          "status": "candidate_collected_jurisdiction_reconciled_ward_version_deltas",
           "reportPath": "data/wi-2024-ward-geometry-join-report.json",
           "reviewRows": 3503,
           "geometryFeatures": 7086,
@@ -326,11 +326,16 @@
           "unmatchedReviewRows": 25,
           "parseFailures": 0,
           "mismatchedMatchedRows": 108,
-          "mismatchAbsTotal": 1850
+          "mismatchAbsTotal": 1850,
+          "affectedJurisdictions": 38,
+          "affectedJurisdictionsReconciled": 38,
+          "unresolvedJurisdictions": 0,
+          "rowLevelWardRenderingSafe": false,
+          "jurisdictionLevelRenderingSafe": true
         }
       },
       "flagInputStatus": "not_used_as_flag_input",
-      "nextAction": "Resolve the unmatched ward rows and documented vote-total deltas before enabling ward-level map rendering."
+      "nextAction": "Keep county flags authoritative and keep row-level ward rendering disabled for affected municipalities. A future map integration can safely use this geometry for jurisdiction-level context or require a 2024-to-2025 ward crosswalk for exact ward rendering."
     },
     "rowLevelBallotMode": {
       "status": "not_available_from_wec_ward_workbook",

@@ -33,7 +33,7 @@ test("Wisconsin remaining-data collection tracker covers WEC and every county", 
     for (const family of requiredFamilies) {
       assert.ok(target.families[family], target.id + " should track " + family);
       if (target.id === "WI-WEC" && family === "municipalWardGeometry") {
-        assert.equal(target.families[family].parserStatus, "collected_geojson_not_promoted");
+        assert.equal(target.families[family].parserStatus, "collected_geojson_jurisdiction_reconciled_not_row_safe");
       } else {
         assert.equal(target.families[family].parserStatus, "not_started");
       }
@@ -108,7 +108,7 @@ test("Wisconsin ward geometry candidate is collected from official WI Legislatur
 
 test("Wisconsin ward geometry join validation quantifies remaining mapping gaps", () => {
   assert.equal(wardGeometryJoinReport.state, "WI");
-  assert.equal(wardGeometryJoinReport.status, "candidate_collected_join_validation_needs_review");
+  assert.equal(wardGeometryJoinReport.status, "candidate_collected_jurisdiction_reconciled_ward_version_deltas");
   assert.equal(wardGeometryJoinReport.summary.reviewRows, 3503);
   assert.equal(wardGeometryJoinReport.summary.geometryFeatures, 7086);
   assert.equal(wardGeometryJoinReport.summary.matchedReviewRows, 3478);
@@ -117,5 +117,11 @@ test("Wisconsin ward geometry join validation quantifies remaining mapping gaps"
   assert.equal(wardGeometryJoinReport.summary.exactPresidentialTotalRows, 3370);
   assert.equal(wardGeometryJoinReport.summary.mismatchedMatchedRows, 108);
   assert.equal(wardGeometryJoinReport.summary.matchedPct, 99.29);
+  assert.equal(wardGeometryJoinReport.summary.affectedJurisdictions, 38);
+  assert.equal(wardGeometryJoinReport.summary.affectedJurisdictionsReconciled, 38);
+  assert.equal(wardGeometryJoinReport.summary.unresolvedJurisdictions, 0);
+  assert.equal(wardGeometryJoinReport.summary.rowLevelWardRenderingSafe, false);
+  assert.equal(wardGeometryJoinReport.summary.jurisdictionLevelRenderingSafe, true);
+  assert.equal(wardGeometryJoinReport.residualClassification.interpretation.includes("ward-version/allocation mismatch"), true);
   assert.match(wardGeometryJoinReport.caveats.join(" "), /County-level production indicators remain authoritative/);
 });

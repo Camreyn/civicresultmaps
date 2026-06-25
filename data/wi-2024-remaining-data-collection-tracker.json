@@ -195,9 +195,9 @@
           "collectionStatus": "public_candidate_collected_needs_join_validation",
           "requested": false,
           "received": true,
-          "parserStatus": "collected_geojson_not_promoted",
+          "parserStatus": "collected_geojson_jurisdiction_reconciled_not_row_safe",
           "normalizedArtifact": "data/wi-2024-ward-geometry.geojson.gz",
-          "notes": "November_2024_Election_Data_with_Jan2025_Wards; 7086 features collected from official WI Legislature ArcGIS FeatureServer. Service uses January 2025 wards with November 2024 election data, so join validation is required before map promotion."
+          "notes": "Official WI Legislature/LTSB Jan 2025 ward geometry has been collected and reconciles to WEC review rows at municipality totals, but row-level ward allocation differs in 38 jurisdictions; keep ward rendering disabled for those rows."
         },
         "rowLevelBallotMode": {
           "collectionStatus": "not_available_from_wec_ward_workbook",

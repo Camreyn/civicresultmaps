@@ -18,14 +18,19 @@ test("Wisconsin remaining-data report records unavailable statewide sources with
     ["Jefferson", "Milwaukee", "Oneida"],
   );
 
-  assert.equal(report.remainingItems.municipalWardGeometry.status, "public_candidate_collected_needs_join_validation");
-  assert.equal(report.remainingItems.municipalWardGeometry.currentGeometry, "county_geometry_production_with_ward_candidate_collected");
+  assert.equal(report.remainingItems.municipalWardGeometry.status, "candidate_collected_jurisdiction_reconciled_ward_version_deltas");
+  assert.equal(report.remainingItems.municipalWardGeometry.currentGeometry, "county_geometry_production_with_jurisdiction_reconciled_ward_candidate");
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.featureCount, 7086);
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.countyCount, 72);
-  assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.status, "candidate_collected_join_validation_needs_review");
+  assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.status, "candidate_collected_jurisdiction_reconciled_ward_version_deltas");
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.reportPath, "data/wi-2024-ward-geometry-join-report.json");
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.matchedReviewRows, 3478);
   assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.matchedPct, 99.29);
+  assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.affectedJurisdictions, 38);
+  assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.affectedJurisdictionsReconciled, 38);
+  assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.unresolvedJurisdictions, 0);
+  assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.rowLevelWardRenderingSafe, false);
+  assert.equal(report.remainingItems.municipalWardGeometry.candidate.joinValidation.jurisdictionLevelRenderingSafe, true);
   assert.equal(report.remainingItems.rowLevelBallotMode.status, "not_available_from_wec_ward_workbook");
   assert.equal(report.remainingItems.rowLevelBallotMode.cvrAvailabilityInventory.rowCount, 72);
   assert.equal(report.remainingItems.rowLevelBallotMode.cvrAvailabilityInventory.badCountyCountyNames, 0);
