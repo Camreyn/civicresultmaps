@@ -41,5 +41,11 @@ test("Wisconsin audit selections are normalized from WEC final report", () => {
   assert.equal(summary.selectedReportingUnits, 373);
   assert.equal(summary.countiesCovered, 72);
   assert.equal(summary.ballotsAudited, 327230);
+  assert.equal(summary.aggregateAuditResults.auditedBallots, 327230);
+  assert.equal(summary.aggregateAuditResults.ballotPositions, 5604670);
+  assert.equal(summary.aggregateAuditResults.locallyReportedPotentialEquipmentIssueErrors, 5);
+  assert.equal(summary.aggregateAuditResults.municipalitiesWithReportedPotentialIssues, 3);
+  assert.equal(summary.aggregateAuditResults.finalEquipmentErrorRate, "0%");
+  assert.equal(summary.aggregateAuditResults.perUnitOutcomeStatus, "not_published_in_final_report");
   assert.match(summary.caveat, /per-reporting-unit discrepancy outcome table/);
 });

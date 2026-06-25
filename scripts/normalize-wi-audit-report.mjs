@@ -15,6 +15,9 @@ const expectedRows = 373;
 const expectedCounties = 72;
 const expectedZeroBallotRows = 12;
 const expectedBallotsAudited = 327230;
+const expectedBallotPositions = 5604670;
+const expectedReportedPotentialIssueErrors = 5;
+const expectedPotentialIssueMunicipalities = 3;
 
 function csvEscape(value) {
   const text = String(value ?? "");
@@ -234,10 +237,40 @@ function validate(rows) {
   return { countyCount, zeroBallotRows, ballotsAudited };
 }
 
+function parseAggregateAuditResults(text) {
+  const normalizedText = text.replace(/\s+/g, " ");
+  const requiredSnippets = [
+    "staff found no reported errors that would be solely attributable to the electronic voting system",
+    "A total of 327,230 ballots were counted by hand",
+    "staff identified five errors in three municipalities",
+    "The total number of ballot positions on all audited ballots was 5,604,670",
+    "Error rate with five reported errors: 0.0000009%",
+    "Error rate without five reported errors: 0%",
+  ];
+  const missing = requiredSnippets.filter((snippet) => !normalizedText.includes(snippet));
+  if (missing.length) {
+    throw new Error(`Unable to verify aggregate Wisconsin audit result text:\n${missing.join("\n")}`);
+  }
+
+  return {
+    auditedBallots: expectedBallotsAudited,
+    auditedBallotShareOfAllBallots: "approximately 9.6%",
+    ballotPositions: expectedBallotPositions,
+    locallyReportedPotentialEquipmentIssueErrors: expectedReportedPotentialIssueErrors,
+    municipalitiesWithReportedPotentialIssues: expectedPotentialIssueMunicipalities,
+    finalEquipmentErrorRate: "0%",
+    errorRateWithFiveReportedErrors: "0.0000009%",
+    perUnitOutcomeStatus: "not_published_in_final_report",
+    summary:
+      "WEC staff identified five locally reported errors in three municipalities that could potentially be attributed to tabulation equipment, but determined the errors were partially or completely attributable to human factors and did not recommend including them in the final equipment error rate.",
+  };
+}
+
 await ensurePdf();
 const text = await extractText();
 const selections = parseAuditSelections(text);
 const summaryCounts = validate(selections);
+const aggregateAuditResults = parseAggregateAuditResults(text);
 const equipmentSummary = Object.entries(
   selections.reduce((groups, row) => {
     groups[row.auditableEquipment] ??= { rows: 0, ballotsAudited: 0 };
@@ -282,6 +315,7 @@ const summary = {
   countiesCovered: summaryCounts.countyCount,
   zeroBallotSelectedRows: summaryCounts.zeroBallotRows,
   ballotsAudited: summaryCounts.ballotsAudited,
+  aggregateAuditResults,
   statewideFinding:
     "WEC staff reported no evidence that audited voting systems changed votes, incorrectly tabulated votes, altered outcomes, had programming errors, unauthorized software/hardware alterations, hacking, or equipment malfunctions that changed contest outcomes.",
   caveat:

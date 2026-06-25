@@ -824,6 +824,11 @@ function indicatorScopeLabel(indicator: AnalysisIndicator) {
 function auditContextSummary(indicator: AnalysisIndicator) {
   const audit = indicator.metrics.auditContext as
     | {
+        aggregateAuditResults?: {
+          finalEquipmentErrorRate?: string;
+          locallyReportedPotentialEquipmentIssueErrors?: number;
+          perUnitOutcomeStatus?: string;
+        } | null;
         auditedBallots?: number;
         caveat?: string;
         matchedSelectionRows?: number;
@@ -843,8 +848,11 @@ function auditContextSummary(indicator: AnalysisIndicator) {
   }
 
   const equipment = audit.topEquipment?.length ? ` Equipment: ${audit.topEquipment.join(", ")}.` : "";
+  const aggregate = audit.aggregateAuditResults
+    ? ` Statewide WEC audit context: final equipment error rate ${audit.aggregateAuditResults.finalEquipmentErrorRate ?? "not reported"}; ${audit.aggregateAuditResults.locallyReportedPotentialEquipmentIssueErrors ?? 0} reported potential equipment-issue errors were reviewed as partially or completely human-factor issues.`
+    : "";
   const caveat = audit.caveat ? ` ${audit.caveat}` : " WEC report gives statewide findings, not per-unit discrepancy outcomes.";
-  return `${audit.matchedSelectionRows.toLocaleString()} WEC audit selection row${audit.matchedSelectionRows === 1 ? "" : "s"}; ${(audit.auditedBallots ?? 0).toLocaleString()} audited ballots.${equipment}${caveat}`;
+  return `${audit.matchedSelectionRows.toLocaleString()} WEC audit selection row${audit.matchedSelectionRows === 1 ? "" : "s"}; ${(audit.auditedBallots ?? 0).toLocaleString()} audited ballots.${equipment}${aggregate}${caveat}`;
 }
 
 function denominatorContextSummary(indicator: AnalysisIndicator) {
@@ -1364,9 +1372,15 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
     },
     {
       key: "turnout",
-      evidence: "EAC 2024 V2 local-jurisdiction fallback is used because the WEC ward results workbook does not include registered-voter denominator fields.",
+      evidence: "EAC 2024 V2 local-jurisdiction fallback is used because the WEC ward results workbook does not include registered-voter denominator fields; partial local ward denominators are cataloged but not statewide coverage.",
       status: "partial",
-      why: "Wisconsin turnout now has registered-voter denominators, but they come from EAC fallback data rather than the WEC ward results workbook itself.",
+      why: "Wisconsin turnout has registered-voter denominators from official EAC fallback data, while statewide ward-level registered-voter denominators and row-level ballot-mode inputs remain unavailable from the WEC ward workbook.",
+    },
+    {
+      key: "audit",
+      evidence: "WEC selected reporting units and statewide aggregate audit findings are loaded, including the final zero equipment error rate from the published report.",
+      status: "partial",
+      why: "The published WEC report does not include per-reporting-unit discrepancy outcome rows, so audit context is explanatory and not a per-unit clearance or confirmation signal.",
     },
   ],
 };

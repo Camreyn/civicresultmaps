@@ -25,6 +25,7 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /reviewScopesForNativeRows/);
   assert.match(importer, /rest_of_county/);
   assert.match(importer, /auditContextForScope/);
+  assert.match(importer, /aggregateAuditResults/);
   assert.match(importer, /denominatorContextForScope/);
   assert.match(importer, /jurisdictionName: `\$\{split\.city\}, \$\{split\.county\} County`/);
   assert.match(importer, /insert into analysis_indicators/);

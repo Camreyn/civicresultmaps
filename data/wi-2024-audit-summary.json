@@ -14,6 +14,17 @@
   "countiesCovered": 72,
   "zeroBallotSelectedRows": 12,
   "ballotsAudited": 327230,
+  "aggregateAuditResults": {
+    "auditedBallots": 327230,
+    "auditedBallotShareOfAllBallots": "approximately 9.6%",
+    "ballotPositions": 5604670,
+    "locallyReportedPotentialEquipmentIssueErrors": 5,
+    "municipalitiesWithReportedPotentialIssues": 3,
+    "finalEquipmentErrorRate": "0%",
+    "errorRateWithFiveReportedErrors": "0.0000009%",
+    "perUnitOutcomeStatus": "not_published_in_final_report",
+    "summary": "WEC staff identified five locally reported errors in three municipalities that could potentially be attributed to tabulation equipment, but determined the errors were partially or completely attributable to human factors and did not recommend including them in the final equipment error rate."
+  },
   "statewideFinding": "WEC staff reported no evidence that audited voting systems changed votes, incorrectly tabulated votes, altered outcomes, had programming errors, unauthorized software/hardware alterations, hacking, or equipment malfunctions that changed contest outcomes.",
   "caveat": "Appendix B provides selected reporting units, auditable equipment, and ballots audited. The source report gives statewide findings and aggregate/error discussion, not a per-reporting-unit discrepancy outcome table.",
   "equipmentSummary": [

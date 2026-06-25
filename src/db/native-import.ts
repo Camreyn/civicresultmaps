@@ -69,6 +69,7 @@ type WisconsinAuditSelection = {
 };
 
 type WisconsinIndicatorContext = {
+  aggregateAuditResults?: Record<string, unknown>;
   auditCaveat: string;
   auditSelections: WisconsinAuditSelection[];
   auditSourceUrl: string;
@@ -342,6 +343,7 @@ async function loadWisconsinIndicatorContext(stateCode: string): Promise<Wiscons
       readFile("data/wi-2024-audit-selections.csv", "utf8"),
     ]);
     const summary = JSON.parse(summaryText) as {
+      aggregateAuditResults?: Record<string, unknown>;
       caveat?: string;
       sourcePdfUrl?: string;
       statewideFinding?: string;
@@ -358,6 +360,7 @@ async function loadWisconsinIndicatorContext(stateCode: string): Promise<Wiscons
       };
     });
     return {
+      aggregateAuditResults: summary.aggregateAuditResults,
       auditCaveat:
         summary.caveat ??
         "The WEC final audit report provides statewide findings and selected reporting units, not per-unit discrepancy outcomes.",
@@ -383,6 +386,7 @@ function auditContextForScope(scope: NativeReviewScope, context: WisconsinIndica
   }
 
   return {
+    aggregateAuditResults: context.aggregateAuditResults ?? null,
     auditedBallots: matched.reduce((sum, row) => sum + row.ballotsAudited, 0),
     caveat: context.auditCaveat,
     matchedSelectionRows: matched.length,
