@@ -8,7 +8,186 @@
     "status": "remaining_items_documented_with_available_context_loaded",
     "countyFlagsRemainAuthoritative": true,
     "advisorySplitScopesRemainAdditionalContext": true,
-    "noRemainingItemIsCurrentlyUsedAsAFlagInput": true
+    "noRemainingItemIsCurrentlyUsedAsAFlagInput": true,
+    "collectionTrackerTargets": 73,
+    "collectionTrackerFamilies": 4,
+    "publicSourceCandidateCount": 4,
+    "requestPacketCount": 74
+  },
+  "collectionPlan": {
+    "trackerArtifact": "data/wi-2024-remaining-data-collection-tracker.json",
+    "publicSourceInventoryArtifact": "data/wi-2024-public-source-inventory.json",
+    "requestPacketSummaryArtifact": "data/wi-2024-records-request-packet-summary.json",
+    "strategy": "public_downloads_first_then_public_records_requests",
+    "targetCount": 73,
+    "countyTargetCount": 72,
+    "stateAgencyTargetCount": 1,
+    "dataFamilies": [
+      {
+        "id": "wardRegisteredVoterDenominators",
+        "label": "Ward-level registered-voter denominators",
+        "currentStatus": "statewide_not_found_public",
+        "flagPolicy": "context_only_until_statewide_or_near_statewide_ward_coverage_passes_tests",
+        "targetGrain": "county_municipality_ward"
+      },
+      {
+        "id": "perAuditUnitOutcomes",
+        "label": "Per-reporting-unit audit outcomes and discrepancies",
+        "currentStatus": "not_published_in_final_report",
+        "flagPolicy": "context_only_not_clearance_or_confirmation",
+        "targetGrain": "county_municipality_reporting_unit_contest"
+      },
+      {
+        "id": "municipalWardGeometry",
+        "label": "Municipal/ward boundary geometry valid for 2024 wards",
+        "currentStatus": "not_loaded",
+        "flagPolicy": "visualization_only_until_join_coverage_tests_pass",
+        "targetGrain": "geojson_feature_county_municipality_ward"
+      },
+      {
+        "id": "rowLevelBallotMode",
+        "label": "Row-level ballot-mode or CVR-style data",
+        "currentStatus": "not_available_from_wec_ward_workbook",
+        "flagPolicy": "not_used_as_flag_input_unless_same_grain_coverage_and_reconciliation_pass",
+        "targetGrain": "county_municipality_ward_or_reporting_unit_method"
+      }
+    ],
+    "publicSourceCandidates": [
+      {
+        "id": "wec-election-results-2024-general",
+        "families": [
+          "wardRegisteredVoterDenominators",
+          "rowLevelBallotMode"
+        ],
+        "status": "candidate_public_page",
+        "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+        "probe": {
+          "checked": false,
+          "ok": null,
+          "status": null
+        }
+      },
+      {
+        "id": "wec-records-request",
+        "families": [
+          "wardRegisteredVoterDenominators",
+          "perAuditUnitOutcomes",
+          "rowLevelBallotMode"
+        ],
+        "status": "request_path",
+        "sourceUrl": "https://elections.wi.gov/about/records-request",
+        "probe": {
+          "checked": false,
+          "ok": null,
+          "status": null
+        }
+      },
+      {
+        "id": "wec-2024-post-election-audit-report",
+        "families": [
+          "perAuditUnitOutcomes"
+        ],
+        "status": "loaded_partial_context",
+        "sourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+        "probe": {
+          "checked": false,
+          "ok": null,
+          "status": null
+        }
+      },
+      {
+        "id": "eac-2024-eavs-v2",
+        "families": [
+          "wardRegisteredVoterDenominators",
+          "rowLevelBallotMode"
+        ],
+        "status": "loaded_fallback_context",
+        "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+        "probe": {
+          "checked": false,
+          "ok": null,
+          "status": null
+        }
+      }
+    ],
+    "requestPacketSummary": {
+      "packetCount": 74,
+      "byTargetType": {
+        "state_agency": 1,
+        "county_clerk": 72,
+        "municipal_clerk": 1
+      },
+      "requiredFamilies": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "examplePackets": [
+        {
+          "targetId": "WI-WEC",
+          "targetType": "state_agency",
+          "targetName": "Wisconsin Elections Commission",
+          "county": "",
+          "familyIds": [
+            "wardRegisteredVoterDenominators",
+            "perAuditUnitOutcomes",
+            "municipalWardGeometry",
+            "rowLevelBallotMode"
+          ],
+          "outputFile": ".etl\\wi-records-requests\\wec-statewide-remaining-data-request.md"
+        },
+        {
+          "targetId": "WI-ADAMS-COUNTY",
+          "targetType": "county_clerk",
+          "targetName": "Adams County Clerk",
+          "county": "Adams County",
+          "familyIds": [
+            "wardRegisteredVoterDenominators",
+            "perAuditUnitOutcomes",
+            "municipalWardGeometry",
+            "rowLevelBallotMode"
+          ],
+          "outputFile": ".etl\\wi-records-requests\\adams-county-remaining-data-request.md"
+        },
+        {
+          "targetId": "WI-ASHLAND-COUNTY",
+          "targetType": "county_clerk",
+          "targetName": "Ashland County Clerk",
+          "county": "Ashland County",
+          "familyIds": [
+            "wardRegisteredVoterDenominators",
+            "perAuditUnitOutcomes",
+            "municipalWardGeometry",
+            "rowLevelBallotMode"
+          ],
+          "outputFile": ".etl\\wi-records-requests\\ashland-county-remaining-data-request.md"
+        },
+        {
+          "targetId": "WI-BARRON-COUNTY",
+          "targetType": "county_clerk",
+          "targetName": "Barron County Clerk",
+          "county": "Barron County",
+          "familyIds": [
+            "wardRegisteredVoterDenominators",
+            "perAuditUnitOutcomes",
+            "municipalWardGeometry",
+            "rowLevelBallotMode"
+          ],
+          "outputFile": ".etl\\wi-records-requests\\barron-county-remaining-data-request.md"
+        },
+        {
+          "targetId": "WI-MUNICIPAL-AUDIT-TEMPLATE",
+          "targetType": "municipal_clerk",
+          "targetName": "Selected municipal clerk",
+          "county": "",
+          "familyIds": [
+            "perAuditUnitOutcomes"
+          ],
+          "outputFile": ".etl\\wi-records-requests\\municipal-audit-submission-request-template.md"
+        }
+      ]
+    }
   },
   "remainingItems": {
     "wardRegisteredVoterDenominators": {

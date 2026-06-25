@@ -1,0 +1,3309 @@
+{
+  "state": "WI",
+  "stateName": "Wisconsin",
+  "electionYear": 2024,
+  "generatedAt": "2026-06-25",
+  "strategy": "public_downloads_first_then_public_records_requests",
+  "currentProductionFlagsRemainAuthoritative": true,
+  "dataFamilies": [
+    {
+      "id": "wardRegisteredVoterDenominators",
+      "label": "Ward-level registered-voter denominators",
+      "targetGrain": "county_municipality_ward",
+      "targetFields": [
+        "county",
+        "municipality",
+        "ward",
+        "registered_voters",
+        "denominator_date",
+        "timing",
+        "source_url"
+      ],
+      "currentStatus": "statewide_not_found_public",
+      "defaultRequestTarget": "WEC first, then counties/municipalities where WEC does not hold records",
+      "flagPolicy": "context_only_until_statewide_or_near_statewide_ward_coverage_passes_tests"
+    },
+    {
+      "id": "perAuditUnitOutcomes",
+      "label": "Per-reporting-unit audit outcomes and discrepancies",
+      "targetGrain": "county_municipality_reporting_unit_contest",
+      "targetFields": [
+        "county",
+        "municipality",
+        "reporting_unit",
+        "equipment",
+        "ballots_audited",
+        "contest",
+        "machine_total",
+        "hand_total",
+        "discrepancy",
+        "explanation",
+        "outcome_category",
+        "source_url"
+      ],
+      "currentStatus": "not_published_in_final_report",
+      "defaultRequestTarget": "WEC first for submitted audit materials, then selected municipalities if needed",
+      "flagPolicy": "context_only_not_clearance_or_confirmation"
+    },
+    {
+      "id": "municipalWardGeometry",
+      "label": "Municipal/ward boundary geometry valid for 2024 wards",
+      "targetGrain": "geojson_feature_county_municipality_ward",
+      "targetFields": [
+        "county",
+        "municipality",
+        "ward",
+        "geometry",
+        "source_valid_for_2024",
+        "match_confidence",
+        "source_url"
+      ],
+      "currentStatus": "not_loaded",
+      "defaultRequestTarget": "official statewide GIS/LTSB source first, then county GIS offices for gaps",
+      "flagPolicy": "visualization_only_until_join_coverage_tests_pass"
+    },
+    {
+      "id": "rowLevelBallotMode",
+      "label": "Row-level ballot-mode or CVR-style data",
+      "targetGrain": "county_municipality_ward_or_reporting_unit_method",
+      "targetFields": [
+        "county",
+        "municipality",
+        "ward_or_unit",
+        "method",
+        "voters",
+        "total_voters",
+        "source_field",
+        "grain",
+        "source_status",
+        "source_url"
+      ],
+      "currentStatus": "not_available_from_wec_ward_workbook",
+      "defaultRequestTarget": "WEC/county CVR availability request, then county clerk request path",
+      "flagPolicy": "not_used_as_flag_input_unless_same_grain_coverage_and_reconciliation_pass"
+    }
+  ],
+  "publicSourceCandidates": [
+    {
+      "id": "wec-election-results-2024-general",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "rowLevelBallotMode"
+      ],
+      "authority": "Wisconsin Elections Commission",
+      "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+      "status": "candidate_public_page",
+      "notes": "Known WEC election results page; current loaded WEC ward workbook lacks registered-voter and ballot-mode fields."
+    },
+    {
+      "id": "wec-records-request",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "rowLevelBallotMode"
+      ],
+      "authority": "Wisconsin Elections Commission",
+      "sourceUrl": "https://elections.wi.gov/about/records-request",
+      "status": "request_path",
+      "notes": "Primary official request path for non-posted statewide or WEC-held records."
+    },
+    {
+      "id": "wec-2024-post-election-audit-report",
+      "families": [
+        "perAuditUnitOutcomes"
+      ],
+      "authority": "Wisconsin Elections Commission",
+      "sourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+      "status": "loaded_partial_context",
+      "notes": "Report provides selected reporting units, equipment, audited ballot totals, and aggregate findings, not per-unit discrepancy outcome rows."
+    },
+    {
+      "id": "eac-2024-eavs-v2",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "rowLevelBallotMode"
+      ],
+      "authority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+      "status": "loaded_fallback_context",
+      "notes": "Loaded local-jurisdiction registered-voter and vote-method context; not WEC ward-level data."
+    }
+  ],
+  "requestTemplates": [
+    {
+      "id": "wec-statewide-remaining-data",
+      "targetType": "state_agency",
+      "targetName": "Wisconsin Elections Commission",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "priority": 1,
+      "outputFile": "wec-statewide-remaining-data-request.md"
+    },
+    {
+      "id": "county-remaining-data",
+      "targetType": "county_clerk",
+      "targetName": "{county} Clerk",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "rowLevelBallotMode",
+        "municipalWardGeometry"
+      ],
+      "priority": 2,
+      "outputFile": "{county_slug}-county-remaining-data-request.md"
+    },
+    {
+      "id": "municipal-audit-submission",
+      "targetType": "municipal_clerk",
+      "targetName": "Selected municipal clerk",
+      "families": [
+        "perAuditUnitOutcomes"
+      ],
+      "priority": 3,
+      "outputFile": "municipal-audit-submission-request-template.md"
+    }
+  ],
+  "targets": [
+    {
+      "id": "WI-WEC",
+      "targetType": "state_agency",
+      "name": "Wisconsin Elections Commission",
+      "jurisdiction": "statewide",
+      "priority": 1,
+      "requestPath": "https://elections.wi.gov/about/records-request",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "statewide_not_found_public",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "WEC first, then counties/municipalities where WEC does not hold records"
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_published_in_final_report",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "WEC first for submitted audit materials, then selected municipalities if needed"
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "needs_source_inventory",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "official statewide GIS/LTSB source first, then county GIS offices for gaps"
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_available_from_wec_ward_workbook",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "WEC/county CVR availability request, then county clerk request path"
+        }
+      }
+    },
+    {
+      "id": "WI-ADAMS-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Adams County Clerk",
+      "county": "Adams County",
+      "jurisdiction": "Adams County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-ASHLAND-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Ashland County Clerk",
+      "county": "Ashland County",
+      "jurisdiction": "Ashland County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-BARRON-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Barron County Clerk",
+      "county": "Barron County",
+      "jurisdiction": "Barron County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-BAYFIELD-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Bayfield County Clerk",
+      "county": "Bayfield County",
+      "jurisdiction": "Bayfield County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-BROWN-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Brown County Clerk",
+      "county": "Brown County",
+      "jurisdiction": "Brown County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-BUFFALO-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Buffalo County Clerk",
+      "county": "Buffalo County",
+      "jurisdiction": "Buffalo County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-BURNETT-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Burnett County Clerk",
+      "county": "Burnett County",
+      "jurisdiction": "Burnett County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-CALUMET-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Calumet County Clerk",
+      "county": "Calumet County",
+      "jurisdiction": "Calumet County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-CHIPPEWA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Chippewa County Clerk",
+      "county": "Chippewa County",
+      "jurisdiction": "Chippewa County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-CLARK-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Clark County Clerk",
+      "county": "Clark County",
+      "jurisdiction": "Clark County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-COLUMBIA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Columbia County Clerk",
+      "county": "Columbia County",
+      "jurisdiction": "Columbia County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-CRAWFORD-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Crawford County Clerk",
+      "county": "Crawford County",
+      "jurisdiction": "Crawford County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-DANE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Dane County Clerk",
+      "county": "Dane County",
+      "jurisdiction": "Dane County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-DODGE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Dodge County Clerk",
+      "county": "Dodge County",
+      "jurisdiction": "Dodge County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-DOOR-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Door County Clerk",
+      "county": "Door County",
+      "jurisdiction": "Door County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-DOUGLAS-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Douglas County Clerk",
+      "county": "Douglas County",
+      "jurisdiction": "Douglas County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-DUNN-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Dunn County Clerk",
+      "county": "Dunn County",
+      "jurisdiction": "Dunn County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-EAU-CLAIRE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Eau Claire County Clerk",
+      "county": "Eau Claire County",
+      "jurisdiction": "Eau Claire County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-FLORENCE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Florence County Clerk",
+      "county": "Florence County",
+      "jurisdiction": "Florence County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-FOND-DU-LAC-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Fond du Lac County Clerk",
+      "county": "Fond du Lac County",
+      "jurisdiction": "Fond du Lac County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-FOREST-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Forest County Clerk",
+      "county": "Forest County",
+      "jurisdiction": "Forest County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-GRANT-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Grant County Clerk",
+      "county": "Grant County",
+      "jurisdiction": "Grant County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-GREEN-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Green County Clerk",
+      "county": "Green County",
+      "jurisdiction": "Green County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-GREEN-LAKE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Green Lake County Clerk",
+      "county": "Green Lake County",
+      "jurisdiction": "Green Lake County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-IOWA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Iowa County Clerk",
+      "county": "Iowa County",
+      "jurisdiction": "Iowa County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-IRON-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Iron County Clerk",
+      "county": "Iron County",
+      "jurisdiction": "Iron County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-JACKSON-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Jackson County Clerk",
+      "county": "Jackson County",
+      "jurisdiction": "Jackson County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-JEFFERSON-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Jefferson County Clerk",
+      "county": "Jefferson County",
+      "jurisdiction": "Jefferson County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-JUNEAU-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Juneau County Clerk",
+      "county": "Juneau County",
+      "jurisdiction": "Juneau County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-KENOSHA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Kenosha County Clerk",
+      "county": "Kenosha County",
+      "jurisdiction": "Kenosha County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-KEWAUNEE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Kewaunee County Clerk",
+      "county": "Kewaunee County",
+      "jurisdiction": "Kewaunee County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-LA-CROSSE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "La Crosse County Clerk",
+      "county": "La Crosse County",
+      "jurisdiction": "La Crosse County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-LAFAYETTE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Lafayette County Clerk",
+      "county": "Lafayette County",
+      "jurisdiction": "Lafayette County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-LANGLADE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Langlade County Clerk",
+      "county": "Langlade County",
+      "jurisdiction": "Langlade County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-LINCOLN-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Lincoln County Clerk",
+      "county": "Lincoln County",
+      "jurisdiction": "Lincoln County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-MANITOWOC-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Manitowoc County Clerk",
+      "county": "Manitowoc County",
+      "jurisdiction": "Manitowoc County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-MARATHON-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Marathon County Clerk",
+      "county": "Marathon County",
+      "jurisdiction": "Marathon County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-MARINETTE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Marinette County Clerk",
+      "county": "Marinette County",
+      "jurisdiction": "Marinette County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-MARQUETTE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Marquette County Clerk",
+      "county": "Marquette County",
+      "jurisdiction": "Marquette County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-MENOMINEE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Menominee County Clerk",
+      "county": "Menominee County",
+      "jurisdiction": "Menominee County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-MILWAUKEE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Milwaukee County Clerk",
+      "county": "Milwaukee County",
+      "jurisdiction": "Milwaukee County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-MONROE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Monroe County Clerk",
+      "county": "Monroe County",
+      "jurisdiction": "Monroe County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-OCONTO-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Oconto County Clerk",
+      "county": "Oconto County",
+      "jurisdiction": "Oconto County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-ONEIDA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Oneida County Clerk",
+      "county": "Oneida County",
+      "jurisdiction": "Oneida County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-OUTAGAMIE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Outagamie County Clerk",
+      "county": "Outagamie County",
+      "jurisdiction": "Outagamie County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-OZAUKEE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Ozaukee County Clerk",
+      "county": "Ozaukee County",
+      "jurisdiction": "Ozaukee County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-PEPIN-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Pepin County Clerk",
+      "county": "Pepin County",
+      "jurisdiction": "Pepin County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-PIERCE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Pierce County Clerk",
+      "county": "Pierce County",
+      "jurisdiction": "Pierce County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-POLK-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Polk County Clerk",
+      "county": "Polk County",
+      "jurisdiction": "Polk County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-PORTAGE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Portage County Clerk",
+      "county": "Portage County",
+      "jurisdiction": "Portage County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-PRICE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Price County Clerk",
+      "county": "Price County",
+      "jurisdiction": "Price County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-RACINE-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Racine County Clerk",
+      "county": "Racine County",
+      "jurisdiction": "Racine County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-RICHLAND-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Richland County Clerk",
+      "county": "Richland County",
+      "jurisdiction": "Richland County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-ROCK-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Rock County Clerk",
+      "county": "Rock County",
+      "jurisdiction": "Rock County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-RUSK-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Rusk County Clerk",
+      "county": "Rusk County",
+      "jurisdiction": "Rusk County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-SAUK-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Sauk County Clerk",
+      "county": "Sauk County",
+      "jurisdiction": "Sauk County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-SAWYER-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Sawyer County Clerk",
+      "county": "Sawyer County",
+      "jurisdiction": "Sawyer County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-SHAWANO-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Shawano County Clerk",
+      "county": "Shawano County",
+      "jurisdiction": "Shawano County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-SHEBOYGAN-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Sheboygan County Clerk",
+      "county": "Sheboygan County",
+      "jurisdiction": "Sheboygan County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-ST-CROIX-COUNTY",
+      "targetType": "county_clerk",
+      "name": "St. Croix County Clerk",
+      "county": "St. Croix County",
+      "jurisdiction": "St. Croix County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-TAYLOR-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Taylor County Clerk",
+      "county": "Taylor County",
+      "jurisdiction": "Taylor County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-TREMPEALEAU-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Trempealeau County Clerk",
+      "county": "Trempealeau County",
+      "jurisdiction": "Trempealeau County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-VERNON-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Vernon County Clerk",
+      "county": "Vernon County",
+      "jurisdiction": "Vernon County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-VILAS-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Vilas County Clerk",
+      "county": "Vilas County",
+      "jurisdiction": "Vilas County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WALWORTH-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Walworth County Clerk",
+      "county": "Walworth County",
+      "jurisdiction": "Walworth County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WASHBURN-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Washburn County Clerk",
+      "county": "Washburn County",
+      "jurisdiction": "Washburn County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WASHINGTON-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Washington County Clerk",
+      "county": "Washington County",
+      "jurisdiction": "Washington County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WAUKESHA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Waukesha County Clerk",
+      "county": "Waukesha County",
+      "jurisdiction": "Waukesha County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WAUPACA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Waupaca County Clerk",
+      "county": "Waupaca County",
+      "jurisdiction": "Waupaca County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WAUSHARA-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Waushara County Clerk",
+      "county": "Waushara County",
+      "jurisdiction": "Waushara County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WINNEBAGO-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Winnebago County Clerk",
+      "county": "Winnebago County",
+      "jurisdiction": "Winnebago County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    },
+    {
+      "id": "WI-WOOD-COUNTY",
+      "targetType": "county_clerk",
+      "name": "Wood County Clerk",
+      "county": "Wood County",
+      "jurisdiction": "Wood County",
+      "priority": 2,
+      "requestPath": "County clerk or municipal clerk public records request path pending",
+      "families": {
+        "wardRegisteredVoterDenominators": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "perAuditUnitOutcomes": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "Use county only if WEC cannot provide local audit submission materials or points to local custodians."
+        },
+        "municipalWardGeometry": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        },
+        "rowLevelBallotMode": {
+          "collectionStatus": "not_requested",
+          "requested": false,
+          "received": false,
+          "parserStatus": "not_started",
+          "normalizedArtifact": "",
+          "notes": "County-level fallback collection target after statewide source inventory."
+        }
+      }
+    }
+  ]
+}

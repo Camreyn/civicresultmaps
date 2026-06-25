@@ -1,0 +1,162 @@
+{
+  "state": "WI",
+  "stateName": "Wisconsin",
+  "electionYear": 2024,
+  "generatedAt": "2026-06-25",
+  "probeEnabled": false,
+  "tracker": "data/wi-2024-remaining-data-collection-tracker.json",
+  "summary": {
+    "sourceCandidateCount": 4,
+    "requestPathCount": 1,
+    "loadedContextCount": 2,
+    "familyStatuses": {
+      "wardRegisteredVoterDenominators": {
+        "label": "Ward-level registered-voter denominators",
+        "statusCounts": {
+          "statewide_not_found_public": 1,
+          "not_requested": 72
+        },
+        "targetFields": [
+          "county",
+          "municipality",
+          "ward",
+          "registered_voters",
+          "denominator_date",
+          "timing",
+          "source_url"
+        ],
+        "flagPolicy": "context_only_until_statewide_or_near_statewide_ward_coverage_passes_tests"
+      },
+      "perAuditUnitOutcomes": {
+        "label": "Per-reporting-unit audit outcomes and discrepancies",
+        "statusCounts": {
+          "not_published_in_final_report": 1,
+          "not_requested": 72
+        },
+        "targetFields": [
+          "county",
+          "municipality",
+          "reporting_unit",
+          "equipment",
+          "ballots_audited",
+          "contest",
+          "machine_total",
+          "hand_total",
+          "discrepancy",
+          "explanation",
+          "outcome_category",
+          "source_url"
+        ],
+        "flagPolicy": "context_only_not_clearance_or_confirmation"
+      },
+      "municipalWardGeometry": {
+        "label": "Municipal/ward boundary geometry valid for 2024 wards",
+        "statusCounts": {
+          "needs_source_inventory": 1,
+          "not_requested": 72
+        },
+        "targetFields": [
+          "county",
+          "municipality",
+          "ward",
+          "geometry",
+          "source_valid_for_2024",
+          "match_confidence",
+          "source_url"
+        ],
+        "flagPolicy": "visualization_only_until_join_coverage_tests_pass"
+      },
+      "rowLevelBallotMode": {
+        "label": "Row-level ballot-mode or CVR-style data",
+        "statusCounts": {
+          "not_available_from_wec_ward_workbook": 1,
+          "not_requested": 72
+        },
+        "targetFields": [
+          "county",
+          "municipality",
+          "ward_or_unit",
+          "method",
+          "voters",
+          "total_voters",
+          "source_field",
+          "grain",
+          "source_status",
+          "source_url"
+        ],
+        "flagPolicy": "not_used_as_flag_input_unless_same_grain_coverage_and_reconciliation_pass"
+      }
+    }
+  },
+  "sources": [
+    {
+      "id": "wec-election-results-2024-general",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "rowLevelBallotMode"
+      ],
+      "authority": "Wisconsin Elections Commission",
+      "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+      "status": "candidate_public_page",
+      "notes": "Known WEC election results page; current loaded WEC ward workbook lacks registered-voter and ballot-mode fields.",
+      "probe": {
+        "checked": false,
+        "ok": null,
+        "status": null
+      },
+      "recommendation": "Probe or manually inspect this candidate before creating new local-source rows."
+    },
+    {
+      "id": "wec-records-request",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "rowLevelBallotMode"
+      ],
+      "authority": "Wisconsin Elections Commission",
+      "sourceUrl": "https://elections.wi.gov/about/records-request",
+      "status": "request_path",
+      "notes": "Primary official request path for non-posted statewide or WEC-held records.",
+      "probe": {
+        "checked": false,
+        "ok": null,
+        "status": null
+      },
+      "recommendation": "Use this as the official request path for records not posted as public downloads."
+    },
+    {
+      "id": "wec-2024-post-election-audit-report",
+      "families": [
+        "perAuditUnitOutcomes"
+      ],
+      "authority": "Wisconsin Elections Commission",
+      "sourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+      "status": "loaded_partial_context",
+      "notes": "Report provides selected reporting units, equipment, audited ballot totals, and aggregate findings, not per-unit discrepancy outcome rows.",
+      "probe": {
+        "checked": false,
+        "ok": null,
+        "status": null
+      },
+      "recommendation": "Keep as context; do not mark remaining family complete from this source alone."
+    },
+    {
+      "id": "eac-2024-eavs-v2",
+      "families": [
+        "wardRegisteredVoterDenominators",
+        "rowLevelBallotMode"
+      ],
+      "authority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+      "status": "loaded_fallback_context",
+      "notes": "Loaded local-jurisdiction registered-voter and vote-method context; not WEC ward-level data.",
+      "probe": {
+        "checked": false,
+        "ok": null,
+        "status": null
+      },
+      "recommendation": "Keep as context; do not mark remaining family complete from this source alone."
+    }
+  ],
+  "nextAction": "Inspect any reachable public candidates first, then generate records request packets for families that remain missing or partial."
+}

@@ -10,7 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:api && npm run test:etl",
-    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs",
+    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs",
     "test:etl": "python -m unittest discover -s tests/python",
     "db:generate": "drizzle-kit generate",
     "db:push": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",
@@ -96,7 +96,9 @@
     "etl:collect:wi:historical": "node scripts/collect-wi-historical-baseline.mjs",
     "etl:normalize:wi:audit": "node scripts/normalize-wi-audit-report.mjs",
     "etl:reconcile:wi:review": "node --experimental-strip-types scripts/report-wi-review-reconciliation.mjs",
-    "etl:status:wi:remaining": "node scripts/report-wi-remaining-data-status.mjs"
+    "etl:status:wi:remaining": "node scripts/report-wi-remaining-data-status.mjs",
+    "etl:collect:wi:remaining": "node scripts/collect-wi-public-source-inventory.mjs",
+    "etl:requests:wi:remaining": "node scripts/create-wi-records-request-packets.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

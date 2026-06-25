@@ -1,0 +1,982 @@
+{
+  "state": "WI",
+  "electionYear": 2024,
+  "generatedAt": "2026-06-25",
+  "tracker": "data/wi-2024-remaining-data-collection-tracker.json",
+  "outDir": ".etl/wi-records-requests",
+  "mode": "all",
+  "dryRun": false,
+  "packetCount": 74,
+  "byTargetType": {
+    "state_agency": 1,
+    "county_clerk": 72,
+    "municipal_clerk": 1
+  },
+  "requiredFamilies": [
+    "wardRegisteredVoterDenominators",
+    "perAuditUnitOutcomes",
+    "municipalWardGeometry",
+    "rowLevelBallotMode"
+  ],
+  "packets": [
+    {
+      "targetId": "WI-WEC",
+      "targetType": "state_agency",
+      "targetName": "Wisconsin Elections Commission",
+      "county": "",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\wec-statewide-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-ADAMS-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Adams County Clerk",
+      "county": "Adams County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\adams-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-ASHLAND-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Ashland County Clerk",
+      "county": "Ashland County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\ashland-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-BARRON-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Barron County Clerk",
+      "county": "Barron County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\barron-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-BAYFIELD-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Bayfield County Clerk",
+      "county": "Bayfield County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\bayfield-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-BROWN-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Brown County Clerk",
+      "county": "Brown County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\brown-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-BUFFALO-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Buffalo County Clerk",
+      "county": "Buffalo County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\buffalo-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-BURNETT-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Burnett County Clerk",
+      "county": "Burnett County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\burnett-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-CALUMET-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Calumet County Clerk",
+      "county": "Calumet County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\calumet-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-CHIPPEWA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Chippewa County Clerk",
+      "county": "Chippewa County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\chippewa-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-CLARK-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Clark County Clerk",
+      "county": "Clark County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\clark-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-COLUMBIA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Columbia County Clerk",
+      "county": "Columbia County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\columbia-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-CRAWFORD-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Crawford County Clerk",
+      "county": "Crawford County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\crawford-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-DANE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Dane County Clerk",
+      "county": "Dane County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\dane-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-DODGE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Dodge County Clerk",
+      "county": "Dodge County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\dodge-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-DOOR-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Door County Clerk",
+      "county": "Door County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\door-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-DOUGLAS-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Douglas County Clerk",
+      "county": "Douglas County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\douglas-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-DUNN-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Dunn County Clerk",
+      "county": "Dunn County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\dunn-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-EAU-CLAIRE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Eau Claire County Clerk",
+      "county": "Eau Claire County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\eau-claire-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-FLORENCE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Florence County Clerk",
+      "county": "Florence County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\florence-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-FOND-DU-LAC-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Fond du Lac County Clerk",
+      "county": "Fond du Lac County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\fond-du-lac-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-FOREST-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Forest County Clerk",
+      "county": "Forest County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\forest-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-GRANT-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Grant County Clerk",
+      "county": "Grant County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\grant-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-GREEN-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Green County Clerk",
+      "county": "Green County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\green-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-GREEN-LAKE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Green Lake County Clerk",
+      "county": "Green Lake County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\green-lake-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-IOWA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Iowa County Clerk",
+      "county": "Iowa County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\iowa-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-IRON-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Iron County Clerk",
+      "county": "Iron County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\iron-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-JACKSON-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Jackson County Clerk",
+      "county": "Jackson County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\jackson-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-JEFFERSON-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Jefferson County Clerk",
+      "county": "Jefferson County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\jefferson-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-JUNEAU-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Juneau County Clerk",
+      "county": "Juneau County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\juneau-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-KENOSHA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Kenosha County Clerk",
+      "county": "Kenosha County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\kenosha-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-KEWAUNEE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Kewaunee County Clerk",
+      "county": "Kewaunee County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\kewaunee-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-LA-CROSSE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "La Crosse County Clerk",
+      "county": "La Crosse County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\la-crosse-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-LAFAYETTE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Lafayette County Clerk",
+      "county": "Lafayette County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\lafayette-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-LANGLADE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Langlade County Clerk",
+      "county": "Langlade County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\langlade-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-LINCOLN-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Lincoln County Clerk",
+      "county": "Lincoln County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\lincoln-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MANITOWOC-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Manitowoc County Clerk",
+      "county": "Manitowoc County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\manitowoc-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MARATHON-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Marathon County Clerk",
+      "county": "Marathon County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\marathon-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MARINETTE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Marinette County Clerk",
+      "county": "Marinette County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\marinette-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MARQUETTE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Marquette County Clerk",
+      "county": "Marquette County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\marquette-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MENOMINEE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Menominee County Clerk",
+      "county": "Menominee County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\menominee-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MILWAUKEE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Milwaukee County Clerk",
+      "county": "Milwaukee County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\milwaukee-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MONROE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Monroe County Clerk",
+      "county": "Monroe County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\monroe-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-OCONTO-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Oconto County Clerk",
+      "county": "Oconto County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\oconto-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-ONEIDA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Oneida County Clerk",
+      "county": "Oneida County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\oneida-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-OUTAGAMIE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Outagamie County Clerk",
+      "county": "Outagamie County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\outagamie-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-OZAUKEE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Ozaukee County Clerk",
+      "county": "Ozaukee County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\ozaukee-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-PEPIN-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Pepin County Clerk",
+      "county": "Pepin County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\pepin-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-PIERCE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Pierce County Clerk",
+      "county": "Pierce County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\pierce-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-POLK-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Polk County Clerk",
+      "county": "Polk County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\polk-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-PORTAGE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Portage County Clerk",
+      "county": "Portage County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\portage-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-PRICE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Price County Clerk",
+      "county": "Price County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\price-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-RACINE-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Racine County Clerk",
+      "county": "Racine County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\racine-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-RICHLAND-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Richland County Clerk",
+      "county": "Richland County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\richland-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-ROCK-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Rock County Clerk",
+      "county": "Rock County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\rock-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-RUSK-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Rusk County Clerk",
+      "county": "Rusk County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\rusk-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-SAUK-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Sauk County Clerk",
+      "county": "Sauk County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\sauk-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-SAWYER-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Sawyer County Clerk",
+      "county": "Sawyer County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\sawyer-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-SHAWANO-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Shawano County Clerk",
+      "county": "Shawano County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\shawano-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-SHEBOYGAN-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Sheboygan County Clerk",
+      "county": "Sheboygan County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\sheboygan-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-ST-CROIX-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "St. Croix County Clerk",
+      "county": "St. Croix County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\st-croix-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-TAYLOR-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Taylor County Clerk",
+      "county": "Taylor County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\taylor-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-TREMPEALEAU-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Trempealeau County Clerk",
+      "county": "Trempealeau County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\trempealeau-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-VERNON-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Vernon County Clerk",
+      "county": "Vernon County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\vernon-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-VILAS-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Vilas County Clerk",
+      "county": "Vilas County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\vilas-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WALWORTH-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Walworth County Clerk",
+      "county": "Walworth County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\walworth-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WASHBURN-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Washburn County Clerk",
+      "county": "Washburn County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\washburn-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WASHINGTON-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Washington County Clerk",
+      "county": "Washington County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\washington-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WAUKESHA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Waukesha County Clerk",
+      "county": "Waukesha County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\waukesha-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WAUPACA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Waupaca County Clerk",
+      "county": "Waupaca County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\waupaca-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WAUSHARA-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Waushara County Clerk",
+      "county": "Waushara County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\waushara-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WINNEBAGO-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Winnebago County Clerk",
+      "county": "Winnebago County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\winnebago-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-WOOD-COUNTY",
+      "targetType": "county_clerk",
+      "targetName": "Wood County Clerk",
+      "county": "Wood County",
+      "familyIds": [
+        "wardRegisteredVoterDenominators",
+        "perAuditUnitOutcomes",
+        "municipalWardGeometry",
+        "rowLevelBallotMode"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\wood-county-remaining-data-request.md"
+    },
+    {
+      "targetId": "WI-MUNICIPAL-AUDIT-TEMPLATE",
+      "targetType": "municipal_clerk",
+      "targetName": "Selected municipal clerk",
+      "county": "",
+      "familyIds": [
+        "perAuditUnitOutcomes"
+      ],
+      "outputFile": ".etl\\wi-records-requests\\municipal-audit-submission-request-template.md"
+    }
+  ]
+}

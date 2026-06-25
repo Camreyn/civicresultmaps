@@ -5,10 +5,17 @@ const auditSummaryPath = 'data/wi-2024-audit-summary.json';
 const turnoutPackagePath = 'data/wi-2024-turnout-source-package.json';
 const adminContextPath = 'data/wi-2024-admin-context-sources.json';
 const cvrPath = 'data/wi-2024-cvr-availability.csv';
+const collectionTrackerPath = 'data/wi-2024-remaining-data-collection-tracker.json';
+const publicSourceInventoryPath = 'data/wi-2024-public-source-inventory.json';
+const requestPacketSummaryPath = 'data/wi-2024-records-request-packet-summary.json';
 const outPath = 'data/wi-2024-remaining-data-status.json';
 
 function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
+
+function readJsonIfExists(file) {
+  return fs.existsSync(file) ? readJson(file) : null;
 }
 
 function splitCsvLine(line) {
@@ -73,8 +80,13 @@ function countBy(rows, field) {
 const audit = readJson(auditSummaryPath);
 const turnout = readJson(turnoutPackagePath);
 const admin = readJson(adminContextPath);
+const tracker = readJsonIfExists(collectionTrackerPath);
+const publicSourceInventory = readJsonIfExists(publicSourceInventoryPath);
+const requestPacketSummary = readJsonIfExists(requestPacketSummaryPath);
 const cvrRows = normalizeCvrInventory();
 const partialWardSources = turnout.sourceArtifacts.filter((artifact) => artifact.reportingLevel === 'ward');
+const collectionTargets = tracker?.targets ?? [];
+const collectionFamilies = tracker?.dataFamilies ?? [];
 
 const report = {
   state: 'WI',
@@ -88,6 +100,45 @@ const report = {
     countyFlagsRemainAuthoritative: true,
     advisorySplitScopesRemainAdditionalContext: true,
     noRemainingItemIsCurrentlyUsedAsAFlagInput: true,
+    collectionTrackerTargets: collectionTargets.length,
+    collectionTrackerFamilies: collectionFamilies.length,
+    publicSourceCandidateCount: publicSourceInventory?.summary?.sourceCandidateCount ?? 0,
+    requestPacketCount: requestPacketSummary?.packetCount ?? 0,
+  },
+  collectionPlan: {
+    trackerArtifact: collectionTrackerPath,
+    publicSourceInventoryArtifact: publicSourceInventoryPath,
+    requestPacketSummaryArtifact: requestPacketSummaryPath,
+    strategy: tracker?.strategy ?? 'public_downloads_first_then_public_records_requests',
+    targetCount: collectionTargets.length,
+    countyTargetCount: collectionTargets.filter((target) => target.targetType === 'county_clerk').length,
+    stateAgencyTargetCount: collectionTargets.filter((target) => target.targetType === 'state_agency').length,
+    dataFamilies: collectionFamilies.map((family) => ({
+      id: family.id,
+      label: family.label,
+      currentStatus: family.currentStatus,
+      flagPolicy: family.flagPolicy,
+      targetGrain: family.targetGrain,
+    })),
+    publicSourceCandidates: publicSourceInventory?.sources?.map((source) => ({
+      id: source.id,
+      families: source.families,
+      status: source.status,
+      sourceUrl: source.sourceUrl,
+      probe: source.probe,
+    })) ?? [],
+    requestPacketSummary: requestPacketSummary
+      ? {
+          packetCount: requestPacketSummary.packetCount,
+          byTargetType: requestPacketSummary.byTargetType,
+          requiredFamilies: requestPacketSummary.requiredFamilies,
+          examplePackets: [
+            ...(requestPacketSummary.packets ?? []).filter((packet) => packet.targetType === 'state_agency').slice(0, 1),
+            ...(requestPacketSummary.packets ?? []).filter((packet) => packet.targetType === 'county_clerk').slice(0, 3),
+            ...(requestPacketSummary.packets ?? []).filter((packet) => packet.targetType === 'municipal_clerk').slice(0, 1),
+          ],
+        }
+      : null,
   },
   remainingItems: {
     wardRegisteredVoterDenominators: {
