@@ -13,9 +13,9 @@ const manifestPath = path.join(repoRoot, "data", "ny-2024-local-review-sources.j
 const apiUrl = "https://api.github.com/repos/openelections/openelections-sources-ny/contents/2024/general";
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
-const skipped = new Set(["Rockland (president only).xlsx", "Suffolk.txt", "Suffolk key.pdf"]);
+const skipped = new Set(["Rockland (president only).xlsx", "Suffolk key.pdf"]);
 const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
-const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf"]);
+const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf", ".txt"]);
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -67,6 +67,38 @@ function intValue(value) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function certifiedCountyTotals(county) {
+  const readRows = (fileName) => fs.readFileSync(path.join(repoRoot, "data", fileName), "utf8").trim().split(/\r?\n/).slice(1);
+  const president = readRows("ny-2024-general-president.csv")
+    .map((line) => line.split(","))
+    .find((row) => row[2] === county);
+  const senate = readRows("ny-2024-general-senate.csv")
+    .map((line) => line.split(","))
+    .find((row) => row[2] === county);
+  if (!president || !senate) throw new Error(`Missing certified NY totals for ${county}`);
+  return {
+    presTrump: intValue(president[3]),
+    presHarris: intValue(president[4]),
+    senateRep: intValue(senate[3]),
+    senateDem: intValue(senate[4]),
+  };
+}
+
+function assertCountyDrTotals(rows, county) {
+  const expected = certifiedCountyTotals(county);
+  const actual = rows.reduce((totals, row) => {
+    totals.presHarris += row.pres_harris;
+    totals.presTrump += row.pres_trump;
+    totals.senateDem += row.comparison_dem;
+    totals.senateRep += row.comparison_rep;
+    return totals;
+  }, { presHarris: 0, presTrump: 0, senateDem: 0, senateRep: 0 });
+  for (const key of Object.keys(expected)) {
+    if (actual[key] !== expected[key]) {
+      throw new Error(`${county} local review rows do not reconcile ${key}: parsed ${actual[key]}, expected ${expected[key]}`);
+    }
+  }
+}
 function isTotalRow(label) {
   return /^total\b/i.test(cleanText(label));
 }
@@ -1190,6 +1222,128 @@ function westchesterCanvassRows(text, county) {
       };
     });
 }
+const suffolkTownNames = {
+  "0": "Shelter Island",
+  "1": "Brookhaven",
+  "2": "Huntington",
+  "3": "Islip",
+  "4": "Babylon",
+  "5": "Smithtown",
+  "6": "Southampton",
+  "7": "East Hampton",
+  "8": "Southold",
+  "9": "Riverhead",
+};
+
+function suffolkCandidateRecord(line) {
+  return {
+    name: cleanText(line.slice(5, 30)),
+    party: cleanText(line.slice(30, 33)),
+    total: intValue(line.slice(34, 41)),
+  };
+}
+
+function suffolkTextRows(filePath, county) {
+  const sections = [];
+  let current = null;
+  for (const line of fs.readFileSync(filePath, "utf8").split(/\r?\n/)) {
+    if (line.startsWith("0064R")) {
+      current = { race: cleanText(line.slice(5, 45)), candidates: [], rows: [] };
+      sections.push(current);
+    } else if (current && line.startsWith("0044C")) {
+      current.candidates.push(suffolkCandidateRecord(line));
+    } else if (current && /^\d{4}E/.test(line)) {
+      current.rows.push(line);
+    }
+  }
+
+  const parseRace = (raceName, office) => {
+    const section = sections.find((entry) => entry.race === raceName);
+    if (!section) throw new Error(`Missing Suffolk race section: ${raceName}`);
+    const candidateTotals = Array(section.candidates.length).fill(0);
+    const demIndexes = [];
+    const repIndexes = [];
+    const otherIndexes = [];
+    section.candidates.forEach((candidate, index) => {
+      const candidateName = candidate.name.toLowerCase();
+      if (office === "president" && candidateName.includes("harris")) demIndexes.push(index);
+      else if (office === "president" && candidateName.includes("trump")) repIndexes.push(index);
+      else if (office === "senate" && candidateName.includes("gillibrand")) demIndexes.push(index);
+      else if (office === "senate" && candidateName.includes("sapraicone")) repIndexes.push(index);
+      else otherIndexes.push(index);
+    });
+
+    const rows = new Map();
+    for (const line of section.rows) {
+      const expectedLength = 52 + (4 * section.candidates.length);
+      if (line.length !== expectedLength || intValue(line.slice(0, 4)) !== expectedLength) {
+        throw new Error(`Unexpected Suffolk ${raceName} E-record length: ${line.length}, expected ${expectedLength}`);
+      }
+      const townCode = line.slice(5, 6);
+      const electionDistrict = line.slice(6, 9);
+      const localUnit = `${suffolkTownNames[townCode] ?? `Town ${townCode}`} ED ${electionDistrict}`;
+      const values = section.candidates.map((_, index) => intValue(line.slice(52 + (index * 4), 56 + (index * 4))));
+      values.forEach((value, index) => {
+        candidateTotals[index] += value;
+      });
+      const sumIndexes = (indexes) => indexes.reduce((sum, index) => sum + values[index], 0);
+      const key = `${townCode}-${electionDistrict}`;
+      if (office === "president") {
+        rows.set(key, {
+          county,
+          local_unit: localUnit,
+          pres_harris: sumIndexes(demIndexes),
+          pres_trump: sumIndexes(repIndexes),
+          pres_other: sumIndexes(otherIndexes),
+          pres_total: values.reduce((sum, value) => sum + value, 0),
+        });
+      } else {
+        rows.set(key, {
+          local_unit: localUnit,
+          comparison_dem: sumIndexes(demIndexes),
+          comparison_rep: sumIndexes(repIndexes),
+          comparison_other: sumIndexes(otherIndexes),
+        });
+      }
+    }
+
+    for (const index of [...demIndexes, ...repIndexes]) {
+      const expected = section.candidates[index].total;
+      if (candidateTotals[index] !== expected) {
+        throw new Error(`Suffolk ${raceName} candidate total mismatch for ${section.candidates[index].name}: parsed ${candidateTotals[index]}, expected ${expected}`);
+      }
+    }
+    return rows;
+  };
+
+  const presidentRows = parseRace("President and Vice President", "president");
+  const senateRows = parseRace("United States Senator", "senate");
+  if (presidentRows.size !== senateRows.size) {
+    throw new Error(`Suffolk president/senate ED row count mismatch: ${presidentRows.size} vs ${senateRows.size}`);
+  }
+  const rows = [...presidentRows.entries()].map(([key, president]) => {
+    const senate = senateRows.get(key);
+    if (!senate) throw new Error(`Missing Suffolk senate row for ${president.local_unit}`);
+    return {
+      county,
+      local_unit: president.local_unit,
+      pres_harris: president.pres_harris,
+      pres_trump: president.pres_trump,
+      pres_other: president.pres_other,
+      pres_total: president.pres_total,
+      comparison_dem: senate.comparison_dem,
+      comparison_rep: senate.comparison_rep,
+      comparison_other: senate.comparison_other,
+    };
+  }).filter((row) => row.pres_total || row.comparison_dem || row.comparison_rep || row.comparison_other);
+  assertCountyDrTotals(rows, county);
+  return rows;
+}
+
+function textRows(filePath, county) {
+  if (county === "Suffolk County") return suffolkTextRows(filePath, county);
+  throw new Error(`Unsupported NY text local review source for ${county}`);
+}
 async function pdfRows(filePath, county) {
   const parser = new PDFParse({ data: fs.readFileSync(filePath) });
   try {
@@ -1240,7 +1394,7 @@ async function main() {
     }
     const county = countyName(file.name);
     const ext = path.extname(file.name).toLowerCase();
-    const rows = ext === ".html" ? htmlRows(filePath, county) : (ext === ".pdf" ? await pdfRows(filePath, county) : workbookRows(filePath, county));
+    const rows = ext === ".html" ? htmlRows(filePath, county) : (ext === ".txt" ? textRows(filePath, county) : (ext === ".pdf" ? await pdfRows(filePath, county) : workbookRows(filePath, county)));
     normalizedRows.push(...rows);
     manifest.push({ county, file: file.name, url: file.html_url, rows: rows.length });
     console.log(`${county}: ${rows.length}`);
