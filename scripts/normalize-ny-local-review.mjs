@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Cortland.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Cortland.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Washington.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf", ".txt"]);
 
 function ensureDir(dir) {
@@ -1294,6 +1294,60 @@ function dutchessDetailedRows(text, county) {
       };
     });
 }
+function washingtonPrecinctReportRows(text, county) {
+  const rows = new Map();
+  const intFromText = (value) => intValue(String(value ?? ""));
+  const voteTotalsBeforePct = (line) => [...String(line ?? "").matchAll(/(\d[\d,]*)\s+\d+\.\d+%/g)].map((match) => intFromText(match[1]));
+  const castVotes = (page) => voteTotalsBeforePct(page.match(/Cast Votes:.*/)?.[0] ?? "").at(-1) ?? 0;
+  const candidateTotal = (page, marker, endMarkers) => {
+    const start = page.indexOf(marker);
+    if (start < 0) return 0;
+    let end = page.length;
+    for (const endMarker of endMarkers) {
+      const endIndex = page.indexOf(endMarker, start + marker.length);
+      if (endIndex >= 0 && endIndex < end) end = endIndex;
+    }
+    return voteTotalsBeforePct(page.slice(start, end)).at(-1) ?? 0;
+  };
+  const localUnit = (page) => cleanText(page.trim().split(/\r?\n/)[0])
+    .replace(/\s+\d+\s+of\s+\d+.*$/, "")
+    .replace(/ - (?:Fed )?ABS$/, "")
+    .trim();
+  const entryFor = (unit) => {
+    const key = unit.toUpperCase();
+    const entry = rows.get(key) ?? { county, local_unit: unit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+    rows.set(key, entry);
+    return entry;
+  };
+
+  for (const page of text.split(/-- \d+ of \d+ --/)) {
+    const unit = localUnit(page);
+    if (!unit) continue;
+    if (page.includes("Electors for President")) {
+      const harris = candidateTotal(page, "Kamala D. Harris", ["Donald J. Trump"]);
+      const trump = candidateTotal(page, "Donald J. Trump", ["Chase Oliver", "Claudia De La Cruz", "Void (W)", "Cast Votes:"]);
+      const total = castVotes(page);
+      const entry = entryFor(unit);
+      entry.pres_harris += harris;
+      entry.pres_trump += trump;
+      entry.pres_other += Math.max(0, total - harris - trump);
+      entry.pres_total += total;
+    }
+    if (page.includes("United States Senator")) {
+      const dem = candidateTotal(page, "Kirsten E.", ["Michael D."]);
+      const rep = candidateTotal(page, "Michael D.", ["Diane", "Chase Oliver", "Scattering", "Cast Votes:"]);
+      const total = castVotes(page);
+      const entry = entryFor(unit);
+      entry.comparison_dem += dem;
+      entry.comparison_rep += rep;
+      entry.comparison_other += Math.max(0, total - dem - rep);
+    }
+  }
+
+  const completedRows = [...rows.values()].filter((row) => row.pres_total && (row.comparison_dem || row.comparison_rep || row.comparison_other));
+  assertCountyDrTotals(completedRows, county);
+  return completedRows;
+}
 function westchesterCanvassRows(text, county) {
   const chunks = text.replace(/\r/g, "").split(/-- \d+ of \d+ --/);
   const parseContestRows = (startChunk, endChunk, office) => {
@@ -1489,6 +1543,7 @@ async function pdfRows(filePath, county) {
     if (county === "St. Lawrence County") return stLawrenceDistrictRows(result.text, county);
     if (county === "Tioga County") return tiogaTableRows(result.text, county);
     if (county === "Warren County") return warrenSummaryRows(result.text, county);
+    if (county === "Washington County") return washingtonPrecinctReportRows(result.text, county);
     if (county === "Westchester County") return westchesterCanvassRows(result.text, county);
     if (county === "Fulton County" || county === "Seneca County") return candidateOnlyPdfRows(result.text, county);
     if (county === "Ulster County") return boundedPdfTextRows(result.text, county);
