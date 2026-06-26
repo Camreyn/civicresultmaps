@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf", ".txt"]);
 
 function ensureDir(dir) {
@@ -984,6 +984,66 @@ function candidateOnlyPdfRows(text, county) {
   return completeRowsFromPending(pending);
 }
 
+function broomeStatementRows(text, county) {
+  const lines = text.split(/\r?\n/);
+  const findLine = (predicate, start = 0) => {
+    const index = lines.findIndex((line, lineIndex) => lineIndex >= start && predicate(line, lineIndex));
+    if (index < 0) throw new Error(`Missing Broome source marker for ${county}`);
+    return index;
+  };
+  const presidentEnd = findLine((line) => line.startsWith("TOTALS \t42,191"));
+  const senateStart = findLine((line, index) => line === "Kirsten E." && lines[index + 1] === "Gillibrand", presidentEnd);
+  const senateEnd = findLine((line) => line.startsWith("TOTALS \t42,415"), senateStart);
+
+  const parseRows = (start, end, office) => {
+    const rows = new Map();
+    for (let index = start; index <= end; index++) {
+      const rawLine = lines[index];
+      if (!rawLine.includes("\t")) continue;
+      const cells = rawLine.split("\t").map((cell) => cleanText(cell)).filter(Boolean);
+      const label = cells[0] || "";
+      if (!label || label === "TOTALS" || label === "Candidate" || label === "Voters" || /^(City|Town) of /i.test(label) || /^COUNTY/i.test(label)) continue;
+      if (!/%$/.test(cells.at(-1) ?? "")) continue;
+      const nums = cells.slice(1, -1).map(intValue);
+      const key = label.toUpperCase();
+      const entry = rows.get(key) ?? { county, local_unit: label, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+      if (office === "president") {
+        if (nums.length !== 9) continue;
+        entry.pres_harris = nums[0] + nums[3];
+        entry.pres_trump = nums[1] + nums[2];
+        entry.pres_other = nums[4];
+        entry.pres_total = nums[7];
+      } else {
+        if (nums.length !== 10) continue;
+        entry.comparison_dem = nums[0] + nums[3];
+        entry.comparison_rep = nums[1] + nums[2];
+        entry.comparison_other = nums[4] + nums[5];
+      }
+      rows.set(key, entry);
+    }
+    return rows;
+  };
+
+  const presidentRows = parseRows(0, presidentEnd, "president");
+  const senateRows = parseRows(senateStart, senateEnd, "senate");
+  const rows = [...presidentRows.entries()].map(([key, president]) => {
+    const senate = senateRows.get(key);
+    if (!senate) throw new Error(`Missing Broome senate row for ${president.local_unit}`);
+    return {
+      county,
+      local_unit: president.local_unit,
+      pres_harris: president.pres_harris,
+      pres_trump: president.pres_trump,
+      pres_other: president.pres_other,
+      pres_total: president.pres_total,
+      comparison_dem: senate.comparison_dem,
+      comparison_rep: senate.comparison_rep,
+      comparison_other: senate.comparison_other,
+    };
+  }).filter((row) => row.pres_total || row.comparison_dem || row.comparison_rep || row.comparison_other);
+  assertCountyDrTotals(rows, county);
+  return rows;
+}
 function putnamGrandTotalRows(text, county) {
   const pending = new Map();
   let currentOffice = "";
@@ -1350,6 +1410,7 @@ async function pdfRows(filePath, county) {
     const result = await parser.getText();
     if (county === "Albany County") return albanyPrecinctSummaryRows(result.text, county);
     if (county === "Allegany County") return alleganySideBySideRows(result.text, county);
+    if (county === "Broome County") return broomeStatementRows(result.text, county);
     if (county === "Chenango County") return chenangoAllRows(result.text, county);
     if (county === "Dutchess County") return dutchessDetailedRows(result.text, county);
     if (county === "Essex County") return essexCanvassRows(result.text, county);
