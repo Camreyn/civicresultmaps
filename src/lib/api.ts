@@ -120,4 +120,6 @@ export const listVoteMethodRows = unstable_cache(
 export { listNativeSourcePackages } from "./native-source-packages";
 export { listAdminSourceStatuses } from "./admin-source-packages";
 export { listSourceAcquisitionTiers } from "./source-acquisition-tiers";
+export { listSwingStateParity } from "./swing-state-parity";
+export { listElectronicIntegrityArtifacts } from "./electronic-integrity-artifacts";
 export { listTurnoutSourceStatuses } from "./turnout-source-packages";

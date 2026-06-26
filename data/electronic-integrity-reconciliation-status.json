@@ -1,0 +1,610 @@
+{
+  "caveat": "This report tracks electronic-integrity evidence availability and reconciliation readiness only. Missing, partial, or anomalous evidence is not proof of electronic tampering.",
+  "checkedAt": "2026-06-26",
+  "electionYear": 2024,
+  "sourceRegistry": "data/electronic-integrity-artifacts.json",
+  "states": [
+    {
+      "artifactRows": 8,
+      "auditStatus": "needs_data",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "needs_data",
+      "loadedArtifactRows": 1,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/az-2024-general-canvass-president.csv",
+          "type": "certified_results"
+        }
+      ],
+      "missingOrBlockedRows": 6,
+      "nextAction": "Find official subcounty result exports first, then inventory county CVR, ballot-image, tabulator-log, L&A, audit, and chain-of-custody availability.",
+      "overallStatus": "needs_evidence",
+      "requestArtifacts": [
+        {
+          "granularity": "county",
+          "reconciliationStatus": "county_only_not_subcounty",
+          "type": "reporting_unit_results",
+          "use": "County-only rows cannot localize machine or batch anomalies."
+        },
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Needed for independent ballot-level retabulation and comparison to certified totals."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "type": "audit_results",
+          "use": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 7,
+      "riskPosture": "county_review_only_electronic_evidence_missing",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": true,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 45,
+        "resultRows": 15,
+        "reviewRows": 15,
+        "sourceRows": 5,
+        "stagingPresent": true,
+        "turnoutRows": 15
+      },
+      "state": "AZ",
+      "stateName": "Arizona",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
+      "auditStatus": "needs_data",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "needs_data",
+      "loadedArtifactRows": 1,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/ga-2024-official-results-export.json",
+          "type": "certified_results"
+        }
+      ],
+      "missingOrBlockedRows": 6,
+      "nextAction": "Map same-grain comparison contests and inventory county CVR, ballot-image, adjudication, tabulator-log, audit, and L&A availability.",
+      "overallStatus": "partial",
+      "requestArtifacts": [
+        {
+          "granularity": "precinct_vote_share_only",
+          "reconciliationStatus": "same_row_comparison_contest_missing",
+          "type": "reporting_unit_results",
+          "use": "Local vote-share screening exists, but comparison-contest reconciliation is not mapped."
+        },
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Needed for independent ballot-level retabulation and comparison to certified totals."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "type": "audit_results",
+          "use": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 7,
+      "riskPosture": "precinct_vote_share_loaded_electronic_evidence_missing",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": false,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 0,
+        "resultRows": 159,
+        "reviewRows": 2684,
+        "sourceRows": 3,
+        "stagingPresent": true,
+        "turnoutRows": 159
+      },
+      "state": "GA",
+      "stateName": "Georgia",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
+      "auditStatus": "needs_data",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "needs_data",
+      "loadedArtifactRows": 2,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/mi-2024-general-election-results.txt",
+          "type": "certified_results"
+        },
+        {
+          "exists": true,
+          "localArtifact": "data/mi-2024-precinct-results.zip",
+          "type": "reporting_unit_results"
+        }
+      ],
+      "missingOrBlockedRows": 6,
+      "nextAction": "Inventory Michigan CVR availability and official post-election audit/L&A/log artifacts; then add CVR retabulation if public or obtainable.",
+      "overallStatus": "partial",
+      "requestArtifacts": [
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Needed for independent ballot-level retabulation and comparison to certified totals."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "type": "audit_results",
+          "use": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 6,
+      "riskPosture": "subcounty_review_loaded_admin_evidence_missing",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": true,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 0,
+        "resultRows": 83,
+        "reviewRows": 4428,
+        "sourceRows": 5,
+        "stagingPresent": true,
+        "turnoutRows": 83
+      },
+      "state": "MI",
+      "stateName": "Michigan",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
+      "auditStatus": "needs_data",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "needs_data",
+      "loadedArtifactRows": 2,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/nc-2024-results-precinct.zip",
+          "type": "certified_results"
+        },
+        {
+          "exists": true,
+          "localArtifact": "data/nc-2024-results-precinct.zip",
+          "type": "reporting_unit_results"
+        }
+      ],
+      "missingOrBlockedRows": 6,
+      "nextAction": "Inventory CVR, ballot-image, audit, L&A, tabulator-log, and chain-of-custody availability; separate real precincts from absentee/early/provisional reporting units.",
+      "overallStatus": "partial",
+      "requestArtifacts": [
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Needed for independent ballot-level retabulation and comparison to certified totals."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "type": "audit_results",
+          "use": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 6,
+      "riskPosture": "reporting_unit_review_loaded_admin_evidence_missing",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": false,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 0,
+        "resultRows": 100,
+        "reviewRows": 2861,
+        "sourceRows": 3,
+        "stagingPresent": true,
+        "turnoutRows": 100
+      },
+      "state": "NC",
+      "stateName": "North Carolina",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
+      "auditStatus": "needs_data",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "needs_data",
+      "loadedArtifactRows": 1,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/nv-2024-statewide-general-president.csv",
+          "type": "certified_results"
+        }
+      ],
+      "missingOrBlockedRows": 6,
+      "nextAction": "Find official local Nevada result exports and inventory county CVR, ballot-image, audit, L&A, and tabulator-log availability.",
+      "overallStatus": "needs_evidence",
+      "requestArtifacts": [
+        {
+          "granularity": "county",
+          "reconciliationStatus": "county_only_not_subcounty",
+          "type": "reporting_unit_results",
+          "use": "County-only comparison rows are weak for electronic-level review."
+        },
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Needed for independent ballot-level retabulation and comparison to certified totals."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "type": "audit_results",
+          "use": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 7,
+      "riskPosture": "county_review_only_electronic_evidence_missing",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": true,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 51,
+        "resultRows": 17,
+        "reviewRows": 17,
+        "sourceRows": 5,
+        "stagingPresent": true,
+        "turnoutRows": 17
+      },
+      "state": "NV",
+      "stateName": "Nevada",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
+      "auditStatus": "needs_data",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "blocked",
+      "loadedArtifactRows": 2,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/pa-2024-general-election-returns-precinct.txt",
+          "type": "certified_results"
+        },
+        {
+          "exists": true,
+          "localArtifact": "data/pa-2024-general-election-returns-precinct.txt",
+          "type": "reporting_unit_results"
+        }
+      ],
+      "missingOrBlockedRows": 6,
+      "nextAction": "Inventory county audit/L&A/log/chain-of-custody artifacts and mark CVR request paths with legal constraints before attempting CVR retabulation.",
+      "overallStatus": "partial",
+      "requestArtifacts": [
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "public_release_legally_constrained_not_loaded",
+          "type": "cast_vote_records",
+          "use": "CVR retabulation would be useful but should be tracked as constrained until an official lawful source is confirmed."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "type": "audit_results",
+          "use": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 6,
+      "riskPosture": "precinct_review_loaded_cvr_constrained_admin_evidence_missing",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": true,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 0,
+        "resultRows": 67,
+        "reviewRows": 9154,
+        "sourceRows": 4,
+        "stagingPresent": true,
+        "turnoutRows": 67
+      },
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
+      "auditStatus": "partial",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": true,
+      "cvrStatus": "partial",
+      "loadedArtifactRows": 2,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/wi-2024-ward-by-ward-federal-state.xlsx",
+          "type": "certified_results"
+        },
+        {
+          "exists": true,
+          "localArtifact": "data/wi-2024-ward-by-ward-federal-state.xlsx",
+          "type": "reporting_unit_results"
+        }
+      ],
+      "missingOrBlockedRows": 4,
+      "nextAction": "Keep Wisconsin tabled for flags; submit/track requests for row-level ballot mode/CVR, per-audit-unit audit outcomes, ward denominators, and exact ward crosswalk records.",
+      "overallStatus": "partial",
+      "requestArtifacts": [
+        {
+          "granularity": "county_availability_scaffold",
+          "reconciliationStatus": "availability_scaffold_only_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Documents request path; no ballot-level retabulation can be performed until CVRs are obtained."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed for independent CVR/image interpretation checks."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "selected_reporting_unit",
+          "reconciliationStatus": "selected_units_loaded_per_unit_outcomes_not_published",
+          "type": "audit_results",
+          "use": "Shows which reporting units were selected and aggregate audit findings; does not clear individual flagged units."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 6,
+      "riskPosture": "ward_review_loaded_partial_audit_context_hard_missing_records_requests",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": true,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 216,
+        "resultRows": 72,
+        "reviewRows": 3503,
+        "sourceRows": 6,
+        "stagingPresent": true,
+        "turnoutRows": 1851
+      },
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "tabulatorLogStatus": "needs_data"
+    }
+  ],
+  "summary": {
+    "canRecomputeFromCvrStates": [],
+    "canTriangulateMachineRiskStates": [
+      "WI"
+    ],
+    "loadedArtifactRows": 11,
+    "requestRequiredRows": 45,
+    "states": 7,
+    "statesWithReviewRows": [
+      "AZ",
+      "GA",
+      "MI",
+      "NC",
+      "NV",
+      "PA",
+      "WI"
+    ]
+  }
+}

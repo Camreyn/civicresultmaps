@@ -275,3 +275,27 @@ export type EquipmentClusterDiagnostic = {
   equipmentType: string;
   usage: string;
 };
+
+export type ElectronicIntegrityArtifactSummary = {
+  type: string;
+  status: string;
+  granularity: string;
+  sourceUrl?: string;
+  localArtifact?: string;
+  parser?: string;
+  reconciliationStatus: string;
+  requestRequired: boolean;
+  tamperDetectionUse: string;
+};
+
+export type ElectronicIntegrityStateSummary = {
+  state: string;
+  stateName: string;
+  electionYear: number;
+  priority: string;
+  overallStatus: string;
+  summary: string;
+  riskPosture: string;
+  nextAction: string;
+  artifacts: ElectronicIntegrityArtifactSummary[];
+};

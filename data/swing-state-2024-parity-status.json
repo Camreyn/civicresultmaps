@@ -1,0 +1,914 @@
+{
+  "generatedAt": "2026-06-26",
+  "electionYear": 2024,
+  "benchmarkState": "WI",
+  "swingStates": [
+    "AZ",
+    "GA",
+    "MI",
+    "NV",
+    "NC",
+    "PA",
+    "WI"
+  ],
+  "purpose": "Track swing-state parity against the Wisconsin package without replacing loaded result/review data. Parity means native review data plus explainable context: turnout denominator status, equipment, audit/CVR/incident context, source-acquisition tier, hard-missing evidence, and explicit next actions.",
+  "policy": {
+    "downBallotAverageThresholdPct": 2,
+    "minCandidateVotes": 100,
+    "minWardRows": 8,
+    "outlierThresholdPct": 15,
+    "voteShareCorrelationThreshold": 0.35
+  },
+  "summary": {
+    "states": 7,
+    "validatedNativeStagingStates": 7,
+    "statesWithLoadedEquipment": 7,
+    "statesWithAuditContext": 1,
+    "statesWithCvrContext": 1,
+    "statesWithIncidentContext": 1,
+    "statesWithSubcountyComparisonReview": 4,
+    "statesWithCountyOnlyReview": 2,
+    "statesWithHardMissingEvidence": 1
+  },
+  "states": [
+    {
+      "state": "AZ",
+      "stateName": "Arizona",
+      "electionYear": 2024,
+      "parityStatus": "partial_parity",
+      "nativeCoverage": {
+        "readinessGrade": "county_review_only",
+        "sourceTier": "tier_6_official_pdf_hostile",
+        "reportingGrain": "county",
+        "parserStatus": "native county review package loaded",
+        "resultRows": 15,
+        "reviewRows": 15,
+        "turnoutRows": 15,
+        "comparisonContest": "United States Senator",
+        "reviewWarning": "Arizona review rows are county-level President-versus-U.S. Senate comparisons from signed canvass county totals. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots.",
+        "validationPassed": true
+      },
+      "indicatorCoverage": {
+        "reviewRows": 15,
+        "flaggedCountyJurisdictions": 0,
+        "flaggedAreas": 0,
+        "indicatorRows": 0,
+        "countyIndicatorRows": 0,
+        "byLevel": {},
+        "byType": {}
+      },
+      "turnoutContext": {
+        "status": "loaded",
+        "sourceLevel": "county",
+        "denominatorType": "totalEligibleRegistration",
+        "registrationDenominatorTiming": "signedCanvass",
+        "source": {
+          "id": "az-2024-general-canvass-signed",
+          "category": "Official signed statewide canvass county presidential and turnout rows",
+          "status": "loaded",
+          "parser": "arizonaCanvassCountyCsv",
+          "localFile": "data/az-2024-general-canvass-president.csv",
+          "url": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+          "authority": "Arizona Secretary of State"
+        },
+        "registrationSource": null,
+        "notes": "Arizona turnout rows use the official signed statewide canvass Total Eligible Registration and Total Ballots Cast rows."
+      },
+      "administrationContext": {
+        "equipment": {
+          "status": "loaded",
+          "reportingLevel": "county",
+          "parser": "verifiedVotingEquipment",
+          "sourceDocumentId": "verified-voting-verifier-az-2024-equipment",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/4",
+          "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=4&db_year=2024&map=voteEquip&map_type=ppEquip",
+          "localArtifact": "data/verifiedvoting-az-2024-equipment.json",
+          "normalizedArtifact": "data/az-2024-equipment-context.csv",
+          "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+          "expectedJurisdictions": 15
+        },
+        "audit": {
+          "status": "needs_data",
+          "why": "Arizona 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "cvr": {
+          "status": "needs_data",
+          "why": "Arizona 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "incidents": {
+          "status": "needs_data",
+          "why": "Arizona 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        }
+      },
+      "sourceAcquisition": {
+        "tier": "tier_6_official_pdf_hostile",
+        "scope": "statewide",
+        "dataFamily": "results_review_turnout",
+        "reportingGrain": "county",
+        "parserStatus": "native county review package loaded",
+        "manualReviewBurden": "medium",
+        "confidence": "loaded",
+        "nextAction": "Look for official precinct-level Arizona result exports before upgrading review coverage.",
+        "sourceUrls": [
+          "https://azsos.gov/elections/results-data"
+        ]
+      },
+      "parityGaps": [
+        {
+          "id": "subcounty_review_rows",
+          "status": "missing_or_not_loaded",
+          "detail": "Current review rows are county-level only; Wisconsin parity has ward-level review rows."
+        },
+        {
+          "id": "audit_context",
+          "status": "needs_data",
+          "detail": "Arizona 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "cvr_or_ballot_mode_context",
+          "status": "needs_data",
+          "detail": "Arizona 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "incident_context",
+          "status": "needs_data",
+          "detail": "Arizona 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "hard_missing_source_evidence",
+          "status": "not_yet_probed",
+          "detail": "No Wisconsin-style public-source evidence probe or records-request packet has been generated for this state."
+        },
+        {
+          "id": "split_area_advisory_scopes",
+          "status": "not_implemented",
+          "detail": "City/rest-of-county advisory scopes are only implemented for Wisconsin ward naming so far."
+        },
+        {
+          "id": "subcounty_geometry",
+          "status": "county_geometry_only",
+          "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
+        }
+      ],
+      "nextAction": "Find and normalize official subcounty President plus comparison-contest rows before spending time on deeper context."
+    },
+    {
+      "state": "GA",
+      "stateName": "Georgia",
+      "electionYear": 2024,
+      "parityStatus": "partial_parity",
+      "nativeCoverage": {
+        "readinessGrade": "subcounty_vote_share_only",
+        "sourceTier": "tier_2_official_dashboard_endpoint",
+        "reportingGrain": "precinct",
+        "parserStatus": "native precinct vote-share review package loaded",
+        "resultRows": 159,
+        "reviewRows": 2684,
+        "turnoutRows": 159,
+        "comparisonContest": null,
+        "reviewWarning": "Georgia native review rows use official Georgia Secretary of State media-export precinct presidential vote-share screening only. No same-row down-ballot comparison contest is mapped in this package. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total, all in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts.",
+        "validationPassed": true
+      },
+      "indicatorCoverage": {
+        "reviewRows": 2684,
+        "flaggedCountyJurisdictions": 73,
+        "flaggedAreas": 73,
+        "indicatorRows": 73,
+        "countyIndicatorRows": 73,
+        "byLevel": {
+          "county": 73
+        },
+        "byType": {
+          "vote_share_pattern": 73
+        }
+      },
+      "turnoutContext": {
+        "status": "fallback_or_warning_required",
+        "sourceLevel": "jurisdiction",
+        "denominatorType": "registeredVoters",
+        "registrationDenominatorTiming": "eacReported",
+        "source": {
+          "id": "ga-2024-eac-turnout",
+          "category": "EAC fallback county turnout rows",
+          "status": "loaded",
+          "parser": "eacTurnoutCsv",
+          "localFile": "data/eac-2024-state-turnout/ga-2024-eac-turnout.csv",
+          "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "authority": "U.S. Election Assistance Commission"
+        },
+        "registrationSource": null,
+        "notes": "Georgia turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected."
+      },
+      "administrationContext": {
+        "equipment": {
+          "status": "loaded",
+          "reportingLevel": "county",
+          "parser": "verifiedVotingEquipment",
+          "sourceDocumentId": "verified-voting-verifier-ga-2024-equipment",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/13",
+          "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=13&db_year=2024&map=voteEquip&map_type=ppEquip",
+          "localArtifact": "data/verifiedvoting-ga-2024-equipment.json",
+          "normalizedArtifact": "data/ga-2024-equipment-context.csv",
+          "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+          "expectedJurisdictions": 159
+        },
+        "audit": {
+          "status": "needs_data",
+          "why": "Georgia 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "cvr": {
+          "status": "needs_data",
+          "why": "Georgia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "incidents": {
+          "status": "needs_data",
+          "why": "Georgia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        }
+      },
+      "sourceAcquisition": {
+        "tier": "tier_2_official_dashboard_endpoint",
+        "scope": "statewide",
+        "dataFamily": "results_review_turnout",
+        "reportingGrain": "precinct",
+        "parserStatus": "native precinct vote-share review package loaded",
+        "manualReviewBurden": "medium",
+        "confidence": "loaded",
+        "nextAction": "Identify official Georgia comparison-contest local rows at the same grain.",
+        "sourceUrls": [
+          "https://results.sos.ga.gov/"
+        ]
+      },
+      "parityGaps": [
+        {
+          "id": "same_row_comparison_contest",
+          "status": "missing_or_not_mapped",
+          "detail": "Local presidential vote-share rows are loaded, but no same-row comparison contest is mapped."
+        },
+        {
+          "id": "state_native_turnout_denominator",
+          "status": "fallback_or_candidate",
+          "detail": "Georgia turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected."
+        },
+        {
+          "id": "audit_context",
+          "status": "needs_data",
+          "detail": "Georgia 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "cvr_or_ballot_mode_context",
+          "status": "needs_data",
+          "detail": "Georgia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "incident_context",
+          "status": "needs_data",
+          "detail": "Georgia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "hard_missing_source_evidence",
+          "status": "not_yet_probed",
+          "detail": "No Wisconsin-style public-source evidence probe or records-request packet has been generated for this state."
+        },
+        {
+          "id": "split_area_advisory_scopes",
+          "status": "not_implemented",
+          "detail": "City/rest-of-county advisory scopes are only implemented for Wisconsin ward naming so far."
+        },
+        {
+          "id": "subcounty_geometry",
+          "status": "county_geometry_only",
+          "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
+        }
+      ],
+      "nextAction": "Map an official same-grain comparison contest, then rerun indicator counts."
+    },
+    {
+      "state": "MI",
+      "stateName": "Michigan",
+      "electionYear": 2024,
+      "parityStatus": "native_review_near_parity_admin_context_missing",
+      "nativeCoverage": {
+        "readinessGrade": "subcounty_comparison_review",
+        "sourceTier": "tier_1_official_export_database",
+        "reportingGrain": "precinct",
+        "parserStatus": "native precinct review package loaded",
+        "resultRows": 83,
+        "reviewRows": 4428,
+        "turnoutRows": 83,
+        "comparisonContest": "United States Senator",
+        "reviewWarning": "Michigan native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Precinct boundary geometry is not included in this package.",
+        "validationPassed": true
+      },
+      "indicatorCoverage": {
+        "reviewRows": 4428,
+        "flaggedCountyJurisdictions": 77,
+        "flaggedAreas": 77,
+        "indicatorRows": 128,
+        "countyIndicatorRows": 128,
+        "byLevel": {
+          "county": 128
+        },
+        "byType": {
+          "vote_share_pattern": 70,
+          "average_down_ballot_difference": 58
+        }
+      },
+      "turnoutContext": {
+        "status": "loaded",
+        "sourceLevel": "county",
+        "denominatorType": "novemberActiveRegisteredVoters",
+        "registrationDenominatorTiming": "novemberActiveRegisteredVoters",
+        "source": {
+          "id": "mi-2024-voter-turnout",
+          "category": "Official county turnout rows",
+          "status": "loaded",
+          "parser": "michiganMvicCountyTurnout",
+          "localFile": "data/mi-2024-voter-turnout.txt",
+          "url": "https://mvic.sos.state.mi.us/VoteHistory/GetVoterTurnoutFile?electionId=699",
+          "authority": "Michigan Secretary of State"
+        },
+        "registrationSource": {
+          "id": "mi-2024-registered-voter-count-json",
+          "category": "Official registered-voter denominator extraction",
+          "status": "loaded",
+          "parser": "pdfParseMichiganRegistrationJson",
+          "localFile": "data/mi-2024-registered-voter-count.json",
+          "url": "https://www.michigan.gov/sos/-/media/Project/Websites/sos/Election-Results-and-Statistics/Registered-Voter-Count/2024-Registered-Voter-Count.pdf",
+          "authority": "Michigan Secretary of State"
+        },
+        "notes": "Michigan turnout uses MVIC county voter turnout joined to November active registered voters extracted from the official SOS registration PDF."
+      },
+      "administrationContext": {
+        "equipment": {
+          "status": "loaded",
+          "reportingLevel": "county",
+          "parser": "verifiedVotingEquipment",
+          "sourceDocumentId": "verified-voting-verifier-mi-2024-equipment",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/26",
+          "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=26&db_year=2024&map=voteEquip&map_type=ppEquip",
+          "localArtifact": "data/verifiedvoting-mi-2024-equipment.json",
+          "normalizedArtifact": "data/mi-2024-equipment-context.csv",
+          "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+          "expectedJurisdictions": 83
+        },
+        "audit": {
+          "status": "needs_data",
+          "why": "Michigan 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "cvr": {
+          "status": "needs_data",
+          "why": "Michigan 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "incidents": {
+          "status": "needs_data",
+          "why": "Michigan 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        }
+      },
+      "sourceAcquisition": {
+        "tier": "tier_1_official_export_database",
+        "scope": "statewide",
+        "dataFamily": "results_review_turnout",
+        "reportingGrain": "precinct",
+        "parserStatus": "native precinct review package loaded",
+        "manualReviewBurden": "low",
+        "confidence": "loaded",
+        "nextAction": "Optional next step is precinct geometry and precinct-level turnout denominator if available.",
+        "sourceUrls": [
+          "https://mvic.sos.state.mi.us/VoteHistory/"
+        ]
+      },
+      "parityGaps": [
+        {
+          "id": "audit_context",
+          "status": "needs_data",
+          "detail": "Michigan 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "cvr_or_ballot_mode_context",
+          "status": "needs_data",
+          "detail": "Michigan 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "incident_context",
+          "status": "needs_data",
+          "detail": "Michigan 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "hard_missing_source_evidence",
+          "status": "not_yet_probed",
+          "detail": "No Wisconsin-style public-source evidence probe or records-request packet has been generated for this state."
+        },
+        {
+          "id": "split_area_advisory_scopes",
+          "status": "not_implemented",
+          "detail": "City/rest-of-county advisory scopes are only implemented for Wisconsin ward naming so far."
+        },
+        {
+          "id": "subcounty_geometry",
+          "status": "county_geometry_only",
+          "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
+        }
+      ],
+      "nextAction": "Add Wisconsin-style audit/CVR/incident inventories and a public-source evidence probe; keep current native flags visible while context catches up."
+    },
+    {
+      "state": "NV",
+      "stateName": "Nevada",
+      "electionYear": 2024,
+      "parityStatus": "partial_parity",
+      "nativeCoverage": {
+        "readinessGrade": "county_review_only",
+        "sourceTier": "tier_2_official_dashboard_endpoint",
+        "reportingGrain": "county",
+        "parserStatus": "native county review package loaded",
+        "resultRows": 17,
+        "reviewRows": 17,
+        "turnoutRows": 17,
+        "comparisonContest": "United States Senator",
+        "reviewWarning": "Nevada review rows are county-level President-versus-U.S. Senate comparisons from archived official statewide county totals. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots.",
+        "validationPassed": true
+      },
+      "indicatorCoverage": {
+        "reviewRows": 17,
+        "flaggedCountyJurisdictions": 0,
+        "flaggedAreas": 0,
+        "indicatorRows": 0,
+        "countyIndicatorRows": 0,
+        "byLevel": {},
+        "byType": {}
+      },
+      "turnoutContext": {
+        "status": "fallback_or_warning_required",
+        "sourceLevel": "jurisdiction",
+        "denominatorType": "registeredVoters",
+        "registrationDenominatorTiming": "eacReported",
+        "source": {
+          "id": "nv-2024-eac-turnout",
+          "category": "EAC fallback county turnout rows",
+          "status": "loaded",
+          "parser": "eacTurnoutCsv",
+          "localFile": "data/eac-2024-state-turnout/nv-2024-eac-turnout.csv",
+          "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "authority": "U.S. Election Assistance Commission"
+        },
+        "registrationSource": null,
+        "notes": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected."
+      },
+      "administrationContext": {
+        "equipment": {
+          "status": "loaded",
+          "reportingLevel": "county",
+          "parser": "verifiedVotingEquipment",
+          "sourceDocumentId": "verified-voting-verifier-nv-2024-equipment",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/32",
+          "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=32&db_year=2024&map=voteEquip&map_type=ppEquip",
+          "localArtifact": "data/verifiedvoting-nv-2024-equipment.json",
+          "normalizedArtifact": "data/nv-2024-equipment-context.csv",
+          "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+          "expectedJurisdictions": 17
+        },
+        "audit": {
+          "status": "needs_data",
+          "why": "Nevada 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "cvr": {
+          "status": "needs_data",
+          "why": "Nevada 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "incidents": {
+          "status": "needs_data",
+          "why": "Nevada 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        }
+      },
+      "sourceAcquisition": {
+        "tier": "tier_2_official_dashboard_endpoint",
+        "scope": "statewide",
+        "dataFamily": "results_review_turnout",
+        "reportingGrain": "county",
+        "parserStatus": "native county review package loaded",
+        "manualReviewBurden": "medium",
+        "confidence": "loaded",
+        "nextAction": "Find official local Nevada result export for precinct/subcounty review rows.",
+        "sourceUrls": [
+          "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx"
+        ]
+      },
+      "parityGaps": [
+        {
+          "id": "subcounty_review_rows",
+          "status": "missing_or_not_loaded",
+          "detail": "Current review rows are county-level only; Wisconsin parity has ward-level review rows."
+        },
+        {
+          "id": "state_native_turnout_denominator",
+          "status": "fallback_or_candidate",
+          "detail": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected."
+        },
+        {
+          "id": "audit_context",
+          "status": "needs_data",
+          "detail": "Nevada 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "cvr_or_ballot_mode_context",
+          "status": "needs_data",
+          "detail": "Nevada 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "incident_context",
+          "status": "needs_data",
+          "detail": "Nevada 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "hard_missing_source_evidence",
+          "status": "not_yet_probed",
+          "detail": "No Wisconsin-style public-source evidence probe or records-request packet has been generated for this state."
+        },
+        {
+          "id": "split_area_advisory_scopes",
+          "status": "not_implemented",
+          "detail": "City/rest-of-county advisory scopes are only implemented for Wisconsin ward naming so far."
+        },
+        {
+          "id": "subcounty_geometry",
+          "status": "county_geometry_only",
+          "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
+        }
+      ],
+      "nextAction": "Find and normalize official subcounty President plus comparison-contest rows before spending time on deeper context."
+    },
+    {
+      "state": "NC",
+      "stateName": "North Carolina",
+      "electionYear": 2024,
+      "parityStatus": "partial_parity",
+      "nativeCoverage": {
+        "readinessGrade": "subcounty_comparison_review",
+        "sourceTier": "tier_1_official_export_database",
+        "reportingGrain": "reporting_unit",
+        "parserStatus": "native reporting-unit review package loaded",
+        "resultRows": 100,
+        "reviewRows": 2861,
+        "turnoutRows": 100,
+        "comparisonContest": "North Carolina Governor",
+        "reviewWarning": "North Carolina native review rows use official precinct/reporting-unit presidential vote-share screening and presidential-versus-Governor same-party drop-off screening. The comparison contest is Governor, not U.S. Senate, because North Carolina did not have a 2024 U.S. Senate race. The NCSBE file includes non-real precinct reporting units such as early voting, absentee, provisional, and transfer rows.",
+        "validationPassed": true
+      },
+      "indicatorCoverage": {
+        "reviewRows": 2861,
+        "flaggedCountyJurisdictions": 91,
+        "flaggedAreas": 91,
+        "indicatorRows": 187,
+        "countyIndicatorRows": 187,
+        "byLevel": {
+          "county": 187
+        },
+        "byType": {
+          "vote_share_pattern": 57,
+          "average_down_ballot_difference": 91,
+          "down_ballot_outliers": 39
+        }
+      },
+      "turnoutContext": {
+        "status": "fallback_or_warning_required",
+        "sourceLevel": "jurisdiction",
+        "denominatorType": "registeredVoters",
+        "registrationDenominatorTiming": "eacReported",
+        "source": {
+          "id": "nc-2024-eac-turnout",
+          "category": "EAC fallback county turnout rows",
+          "status": "candidate",
+          "parser": "eacTurnoutCsv",
+          "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+          "url": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "authority": "U.S. Election Assistance Commission"
+        },
+        "registrationSource": null,
+        "notes": "North Carolina turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout-denominator artifact is collected."
+      },
+      "administrationContext": {
+        "equipment": {
+          "status": "loaded",
+          "reportingLevel": "county",
+          "parser": "verifiedVotingEquipment",
+          "sourceDocumentId": "verified-voting-verifier-nc-2024-equipment",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/37",
+          "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=37&db_year=2024&map=voteEquip&map_type=ppEquip",
+          "localArtifact": "data/verifiedvoting-nc-2024-equipment.json",
+          "normalizedArtifact": "data/nc-2024-equipment-context.csv",
+          "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+          "expectedJurisdictions": 100
+        },
+        "audit": {
+          "status": "needs_data",
+          "why": "North Carolina 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "cvr": {
+          "status": "needs_data",
+          "why": "North Carolina 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "incidents": {
+          "status": "needs_data",
+          "why": "North Carolina 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        }
+      },
+      "sourceAcquisition": {
+        "tier": "tier_1_official_export_database",
+        "scope": "statewide",
+        "dataFamily": "results_review_turnout",
+        "reportingGrain": "reporting_unit",
+        "parserStatus": "native reporting-unit review package loaded",
+        "manualReviewBurden": "medium",
+        "confidence": "loaded",
+        "nextAction": "Document reporting-unit filters before treating rows as precinct-only.",
+        "sourceUrls": [
+          "https://www.ncsbe.gov/results-data/election-results"
+        ]
+      },
+      "parityGaps": [
+        {
+          "id": "state_native_turnout_denominator",
+          "status": "fallback_or_candidate",
+          "detail": "North Carolina turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout-denominator artifact is collected."
+        },
+        {
+          "id": "audit_context",
+          "status": "needs_data",
+          "detail": "North Carolina 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "cvr_or_ballot_mode_context",
+          "status": "needs_data",
+          "detail": "North Carolina 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "incident_context",
+          "status": "needs_data",
+          "detail": "North Carolina 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "hard_missing_source_evidence",
+          "status": "not_yet_probed",
+          "detail": "No Wisconsin-style public-source evidence probe or records-request packet has been generated for this state."
+        },
+        {
+          "id": "split_area_advisory_scopes",
+          "status": "not_implemented",
+          "detail": "City/rest-of-county advisory scopes are only implemented for Wisconsin ward naming so far."
+        },
+        {
+          "id": "subcounty_geometry",
+          "status": "county_geometry_only",
+          "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
+        }
+      ],
+      "nextAction": "Add Wisconsin-style audit/CVR/incident inventories and a public-source evidence probe; keep current native flags visible while context catches up."
+    },
+    {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "electionYear": 2024,
+      "parityStatus": "native_review_near_parity_admin_context_missing",
+      "nativeCoverage": {
+        "readinessGrade": "subcounty_comparison_review",
+        "sourceTier": "tier_1_official_export_database",
+        "reportingGrain": "precinct",
+        "parserStatus": "native precinct review package loaded",
+        "resultRows": 67,
+        "reviewRows": 9154,
+        "turnoutRows": 67,
+        "comparisonContest": "United States Senator",
+        "reviewWarning": "Pennsylvania native review rows use precinct-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Two presidential precinct groups do not have Senate rows and are kept as vote-share-only rows.",
+        "validationPassed": true
+      },
+      "indicatorCoverage": {
+        "reviewRows": 9154,
+        "flaggedCountyJurisdictions": 66,
+        "flaggedAreas": 66,
+        "indicatorRows": 111,
+        "countyIndicatorRows": 111,
+        "byLevel": {
+          "county": 111
+        },
+        "byType": {
+          "vote_share_pattern": 58,
+          "average_down_ballot_difference": 52,
+          "down_ballot_outliers": 1
+        }
+      },
+      "turnoutContext": {
+        "status": "loaded",
+        "sourceLevel": "county",
+        "denominatorType": "registeredVoters",
+        "registrationDenominatorTiming": "certifiedVoterRegistrationSummary",
+        "source": {
+          "id": "pa-2024-vote-history-registration-summary",
+          "category": "Official county turnout and registration summary",
+          "status": "loaded",
+          "parser": "pennsylvaniaVoteHistoryXlsx",
+          "localFile": "data/pa-2024-voter-registration-vote-history-summary.xlsx",
+          "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/voter%20registration%20-%20vote%20history%20summary%20-%202024%20general.xlsx",
+          "authority": "Pennsylvania Department of State"
+        },
+        "registrationSource": null,
+        "notes": "Pennsylvania turnout rows use Vote History divided by Registered voters from the official DOS summary workbook."
+      },
+      "administrationContext": {
+        "equipment": {
+          "status": "loaded",
+          "reportingLevel": "county",
+          "parser": "verifiedVotingEquipment",
+          "sourceDocumentId": "verified-voting-verifier-pa-2024-equipment",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/42",
+          "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=42&db_year=2024&map=voteEquip&map_type=ppEquip",
+          "localArtifact": "data/verifiedvoting-pa-2024-equipment.json",
+          "normalizedArtifact": "data/pa-2024-equipment-context.csv",
+          "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+          "expectedJurisdictions": 67
+        },
+        "audit": {
+          "status": "needs_data",
+          "why": "Pennsylvania 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "cvr": {
+          "status": "needs_data",
+          "why": "Pennsylvania 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        "incidents": {
+          "status": "needs_data",
+          "why": "Pennsylvania 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        }
+      },
+      "sourceAcquisition": {
+        "tier": "tier_1_official_export_database",
+        "scope": "statewide",
+        "dataFamily": "results_review_turnout",
+        "reportingGrain": "precinct",
+        "parserStatus": "native precinct review package loaded",
+        "manualReviewBurden": "low",
+        "confidence": "loaded",
+        "nextAction": "Optional next steps are precinct geometry and precinct turnout denominator.",
+        "sourceUrls": [
+          "https://www.pa.gov/agencies/vote/elections/election-results.html"
+        ]
+      },
+      "parityGaps": [
+        {
+          "id": "audit_context",
+          "status": "needs_data",
+          "detail": "Pennsylvania 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "cvr_or_ballot_mode_context",
+          "status": "needs_data",
+          "detail": "Pennsylvania 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "incident_context",
+          "status": "needs_data",
+          "detail": "Pennsylvania 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        },
+        {
+          "id": "hard_missing_source_evidence",
+          "status": "not_yet_probed",
+          "detail": "No Wisconsin-style public-source evidence probe or records-request packet has been generated for this state."
+        },
+        {
+          "id": "split_area_advisory_scopes",
+          "status": "not_implemented",
+          "detail": "City/rest-of-county advisory scopes are only implemented for Wisconsin ward naming so far."
+        },
+        {
+          "id": "subcounty_geometry",
+          "status": "county_geometry_only",
+          "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
+        }
+      ],
+      "nextAction": "Add Wisconsin-style audit/CVR/incident inventories and a public-source evidence probe; keep current native flags visible while context catches up."
+    },
+    {
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "electionYear": 2024,
+      "parityStatus": "benchmark_tableable_with_records_requests_remaining",
+      "nativeCoverage": {
+        "readinessGrade": "subcounty_comparison_review",
+        "sourceTier": "tier_1_official_export_database",
+        "reportingGrain": "ward",
+        "parserStatus": "native ward review package loaded with historical baseline and partial audit context",
+        "resultRows": 72,
+        "reviewRows": 3503,
+        "turnoutRows": 1851,
+        "comparisonContest": "United States Senator",
+        "reviewWarning": "Wisconsin native review rows use ward-level presidential vote-share screening and presidential-versus-U.S. Senate same-party drop-off screening. Turnout rows use EAC 2024 V2 local-jurisdiction fallback data because the WEC ward results workbook does not include registered-voter denominator fields.",
+        "validationPassed": true
+      },
+      "indicatorCoverage": {
+        "reviewRows": 3503,
+        "flaggedCountyJurisdictions": 67,
+        "flaggedAreas": 126,
+        "indicatorRows": 187,
+        "countyIndicatorRows": 107,
+        "byLevel": {
+          "county": 107,
+          "city": 39,
+          "rest_of_county": 41
+        },
+        "byType": {
+          "average_down_ballot_difference": 84,
+          "vote_share_pattern": 103
+        }
+      },
+      "turnoutContext": {
+        "status": "loaded",
+        "sourceLevel": null,
+        "denominatorType": "registeredVoters",
+        "registrationDenominatorTiming": "eacReported",
+        "source": {
+          "id": "wi-2024-eac-turnout-csv",
+          "category": "Official EAC statewide turnout fallback",
+          "status": "loaded",
+          "parser": "normalizedTurnoutCsv",
+          "localFile": "data/wi-2024-eac-turnout.csv",
+          "url": "https://www.eac.gov/sites/default/files/2026-02/2024_EAVS_for_Public_Release_nolabel_V2_csv.zip",
+          "authority": "U.S. Election Assistance Commission"
+        },
+        "registrationSource": {
+          "id": "wi-2024-eac-registered-voter-denominator",
+          "category": "Official EAC registered-voter denominator",
+          "status": "loaded",
+          "parser": "eacA1aRegisteredVoterDenominator",
+          "localFile": "data/wi-2024-registered-voter-denominator-eac.json",
+          "url": "https://www.eac.gov/sites/default/files/2025-06/2024_EAVS_Codebook.xlsx",
+          "authority": "U.S. Election Assistance Commission"
+        },
+        "notes": "Statewide Wisconsin turnout coverage uses official EAC 2024 EAVS V2 jurisdiction-level fallback rows. A1a is total registration and F1a is total voters; this is not the same denominator/source family as the WEC presidential contest vote total."
+      },
+      "administrationContext": {
+        "equipment": {
+          "status": "loaded",
+          "reportingLevel": "county",
+          "parser": "verifiedVotingEquipment",
+          "sourceDocumentId": "verified-voting-verifier-wi-2024-equipment",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/55",
+          "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=55&db_year=2024&map=voteEquip&map_type=ppEquip",
+          "localArtifact": "data/verifiedvoting-wi-2024-equipment.json",
+          "normalizedArtifact": "data/wi-2024-equipment-context.csv",
+          "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+          "expectedJurisdictions": 72
+        },
+        "audit": {
+          "status": "partial",
+          "why": "Official WEC 2024 post-election voting equipment audit report is collected and Appendix B selected reporting units are normalized. The report provides statewide findings and aggregate discussion, but not a per-reporting-unit discrepancy outcome table.",
+          "sourceDocumentId": "wi-2024-post-election-voting-equipment-audit-final-report",
+          "sourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+          "localArtifact": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.pdf",
+          "normalizedArtifact": "data/wi-2024-audit-selections.csv",
+          "summaryArtifact": "data/wi-2024-audit-summary.json",
+          "parser": "normalizeWiAuditReport",
+          "caveat": "Selection rows and statewide findings are loaded as audit context. Per-unit discrepancy outcomes are not published in this report and are not loaded."
+        },
+        "cvr": {
+          "status": "partial",
+          "why": "A 72-county CVR availability tracking scaffold exists, but county availability/request paths have not all been verified and no CVR data is loaded.",
+          "sourceUrl": "https://elections.wi.gov/about/records-request",
+          "localArtifact": "data/wi-2024-cvr-availability.csv",
+          "caveat": "CVR availability inventory scaffold only; not a CVR dataset."
+        },
+        "incidents": {
+          "status": "candidate",
+          "why": "WEC 2024 general-election source location is identified for incident/correction follow-up, but official incident/recount/litigation rows have not been normalized yet.",
+          "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+          "localArtifact": "data/wi-2024-incident-context.csv",
+          "caveat": "Candidate source inventory only; not a loaded incident dataset."
+        }
+      },
+      "sourceAcquisition": {
+        "tier": "tier_1_official_export_database",
+        "scope": "statewide",
+        "dataFamily": "results_review_turnout_historical_audit",
+        "reportingGrain": "ward",
+        "parserStatus": "native ward review package loaded with historical baseline and partial audit context",
+        "manualReviewBurden": "low",
+        "confidence": "loaded",
+        "nextAction": "Find ward-level registered-voter denominator if available; request local audit submission materials if per-reporting-unit outcomes are needed; then complete CVR availability and incident/correction source inventories.",
+        "sourceUrls": [
+          "https://elections.wi.gov/elections/election-results"
+        ]
+      },
+      "parityGaps": [
+        {
+          "id": "hard_missing_records_requests",
+          "status": "request_required",
+          "detail": "Wisconsin has public-source evidence and request packets; the remaining hard-missing families require records requests."
+        },
+        {
+          "id": "subcounty_geometry",
+          "status": "candidate_context_only",
+          "detail": "Wisconsin ward geometry is collected as candidate context but is not promoted to row-level rendering."
+        }
+      ],
+      "nextAction": "Table Wisconsin until records-request responses arrive; keep county flags authoritative and use loaded audit/CVR/geometry items as context only."
+    }
+  ]
+}

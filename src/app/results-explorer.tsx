@@ -206,23 +206,44 @@ function polygonRings(feature: GeoFeature): number[][][] {
   return (feature.geometry.coordinates as number[][][][]).flat();
 }
 
-function makePath(
-  state: string,
-  rings: number[][][],
-  bounds: { maxX: number; maxY: number; minX: number; minY: number },
-) {
+type MapBounds = {
+  maxX: number;
+  maxY: number;
+  minX: number;
+  minY: number;
+  referenceLatitude: number;
+};
+
+function longitudeScale(referenceLatitude: number) {
+  const scale = Math.cos((referenceLatitude * Math.PI) / 180);
+  return Number.isFinite(scale) && scale > 0.1 ? scale : 1;
+}
+
+function projectedLongitude(lon: number, bounds: MapBounds) {
+  return lon * longitudeScale(bounds.referenceLatitude);
+}
+
+function mapFit(bounds: MapBounds) {
   const width = bounds.maxX - bounds.minX || 1;
   const height = bounds.maxY - bounds.minY || 1;
   const scale = Math.min(920 / width, 520 / height);
-  const offsetX = (960 - width * scale) / 2;
-  const offsetY = (560 - height * scale) / 2;
+  return {
+    offsetX: (mapViewBox.width - width * scale) / 2,
+    offsetY: (mapViewBox.height - height * scale) / 2,
+    scale,
+  };
+}
+
+function makePath(state: string, rings: number[][][], bounds: MapBounds) {
+  const { offsetX, offsetY, scale } = mapFit(bounds);
 
   return rings
     .map((ring) =>
       ring
         .map((coordinate, index) => {
           const [lon, lat] = mapCoordinate(state, coordinate);
-          const x = offsetX + (lon - bounds.minX) * scale;
+          const projectedX = projectedLongitude(lon, bounds);
+          const x = offsetX + (projectedX - bounds.minX) * scale;
           const y = offsetY + (bounds.maxY - lat) * scale;
           return `${index === 0 ? "M" : "L"}${x.toFixed(2)} ${y.toFixed(2)}`;
         })
@@ -232,24 +253,17 @@ function makePath(
     .join(" ");
 }
 
-function projectPoint([lon, lat]: number[], bounds: { maxX: number; maxY: number; minX: number; minY: number }) {
-  const width = bounds.maxX - bounds.minX || 1;
-  const height = bounds.maxY - bounds.minY || 1;
-  const scale = Math.min(920 / width, 520 / height);
-  const offsetX = (960 - width * scale) / 2;
-  const offsetY = (560 - height * scale) / 2;
+function projectPoint([lon, lat]: number[], bounds: MapBounds) {
+  const { offsetX, offsetY, scale } = mapFit(bounds);
+  const projectedX = projectedLongitude(lon, bounds);
 
   return {
-    x: offsetX + (lon - bounds.minX) * scale,
+    x: offsetX + (projectedX - bounds.minX) * scale,
     y: offsetY + (bounds.maxY - lat) * scale,
   };
 }
 
-function centroid(
-  state: string,
-  feature: GeoFeature,
-  bounds: { maxX: number; maxY: number; minX: number; minY: number },
-) {
+function centroid(state: string, feature: GeoFeature, bounds: MapBounds) {
   const positions = flattenPositions(feature.geometry.coordinates).map((coordinate) =>
     mapCoordinate(state, coordinate),
   );
@@ -263,19 +277,31 @@ function average(values: number[]) {
   return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
 }
 
-function coordinateBounds(points: number[][]) {
+function coordinateBounds(points: number[][]): MapBounds {
+  if (!points.length) {
+    return { maxX: 1, maxY: 1, minX: 0, minY: 0, referenceLatitude: 0 };
+  }
+
+  const referenceLatitude = average(points.map(([, lat]) => lat));
+  const scale = longitudeScale(referenceLatitude);
+
   return points.reduce(
-    (bounds, [lon, lat]) => ({
-      maxX: Math.max(bounds.maxX, lon),
-      maxY: Math.max(bounds.maxY, lat),
-      minX: Math.min(bounds.minX, lon),
-      minY: Math.min(bounds.minY, lat),
-    }),
+    (bounds, [lon, lat]) => {
+      const projectedX = lon * scale;
+      return {
+        ...bounds,
+        maxX: Math.max(bounds.maxX, projectedX),
+        maxY: Math.max(bounds.maxY, lat),
+        minX: Math.min(bounds.minX, projectedX),
+        minY: Math.min(bounds.minY, lat),
+      };
+    },
     {
       maxX: Number.NEGATIVE_INFINITY,
       maxY: Number.NEGATIVE_INFINITY,
       minX: Number.POSITIVE_INFINITY,
       minY: Number.POSITIVE_INFINITY,
+      referenceLatitude,
     },
   );
 }

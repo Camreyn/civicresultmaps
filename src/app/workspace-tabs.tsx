@@ -31,6 +31,7 @@ import type {
   AdminSourceStatusSummary,
   CompletenessSummary,
   CoverageSummary,
+  ElectronicIntegrityStateSummary,
   EquipmentClusterDiagnostic,
   EquipmentRowSummary,
   HistoricalResultRowSummary,
@@ -47,6 +48,7 @@ type WorkspaceTabsProps = {
   adminSourceStatus: AdminSourceStatusSummary | undefined;
   coverage: CoverageSummary | null;
   countyLabel: string;
+  electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
   equipmentRows: EquipmentRowSummary[];
   historicalRows: HistoricalResultRowSummary[];
   importRuns: ImportRunSummary[];
@@ -66,6 +68,7 @@ type TabKey =
   | "map"
   | "review"
   | "history"
+  | "electronic"
   | "planner"
   | "data"
   | "methodology"
@@ -145,6 +148,7 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: MapIcon, key: "map", label: "Map" },
   { icon: BarChart3, key: "review", label: "Review Center" },
   { icon: History, key: "history", label: "History" },
+  { icon: Server, key: "electronic", label: "Electronic Integrity" },
   { icon: ListChecks, key: "planner", label: "Source Planner" },
   { icon: FileCheck2, key: "data", label: "Data & Sources" },
   { icon: BookOpen, key: "methodology", label: "Review Guide" },
@@ -1170,6 +1174,33 @@ function adminFamilyWhy(status: AdminSourceStatusSummary | undefined, family: "a
   return status?.[family]?.why ?? `${family.toUpperCase()} source status has not been registered for this state.`;
 }
 
+function electronicQualityStatus(status: string | undefined): QualityBadgeStatus {
+  if (status === "loaded") {
+    return "ready";
+  }
+
+  if (status === "partial" || status === "candidate") {
+    return "partial";
+  }
+
+  if (status === "blocked") {
+    return "blocked";
+  }
+
+  return "missing";
+}
+
+function electronicArtifactLabel(type: string) {
+  return type
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function evidenceStatusLabel(status: string | undefined) {
+  return status ? status.replaceAll("_", " ") : "missing";
+}
+
 function isMapGeometrySource(source: SourceSummary) {
   if (source.status !== "loaded") {
     return false;
@@ -1814,6 +1845,7 @@ function dateLabel(value: string | null) {
 
 export function WorkspaceTabs({
   adminSourceStatus,
+  electronicIntegrityStatus,
   coverage,
   countyLabel,
   equipmentRows,
@@ -2222,6 +2254,16 @@ export function WorkspaceTabs({
   const voteMethodUnavailableRows = voteMethodRows.filter((row) => row.valueStatus !== "reported").length;
   const equipmentJurisdictions = new Set(equipmentRows.map((row) => row.jurisdictionCode || row.jurisdictionName)).size;
   const equipmentUniformityWarnings = equipmentRows.filter((row) => row.uniformityWarningRequired).length;
+  const electronicArtifacts = electronicIntegrityStatus?.artifacts ?? [];
+  const electronicLoadedArtifacts = electronicArtifacts.filter((artifact) => artifact.status === "loaded").length;
+  const electronicRequestRequired = electronicArtifacts.filter((artifact) => artifact.requestRequired).length;
+  const electronicCvrArtifact = electronicArtifacts.find((artifact) => artifact.type === "cast_vote_records");
+  const electronicAuditArtifact = electronicArtifacts.find((artifact) => artifact.type === "audit_results");
+  const electronicRequestArtifacts = electronicArtifacts.filter((artifact) => artifact.requestRequired);
+  const electronicStatusCounts = electronicArtifacts.reduce<Record<string, number>>((counts, artifact) => {
+    counts[artifact.status] = (counts[artifact.status] ?? 0) + 1;
+    return counts;
+  }, {});
   const equipmentDiagnostics = useMemo(
     () => equipmentClusterDiagnostics({ equipmentRows, indicators, reviewRowCount: reviewRows.length }).slice(0, 8),
     [equipmentRows, indicators, reviewRows.length],
@@ -3749,6 +3791,137 @@ export function WorkspaceTabs({
                   The importer looks for historicalBaseline.series rows in the legacy state bundle. Current repo data
                   only exposes populated historical series for a subset of states.
                 </span>
+              </div>
+            )}
+          </section>
+        </div>
+      )}
+
+
+      {activeTab === "electronic" && (
+        <div className="tab-panel-content">
+          <section className="panel electronic-integrity-panel" data-tour="electronic-integrity">
+            <div className="panel-header">
+              <div>
+                <h2>Electronic Integrity</h2>
+                <span>{electronicIntegrityStatus?.summary ?? "Evidence chain not registered for this state yet"}</span>
+              </div>
+              <div className="header-actions">
+                <Eli5>
+                  This is the checklist for checking machine-output risk responsibly. It tracks whether official results,
+                  local rows, CVRs, ballot images, logs, tests, audits, and custody records are available. Missing evidence
+                  means more records are needed; it does not prove electronic tampering.
+                </Eli5>
+                <QualityBadge
+                  detail={electronicIntegrityStatus?.riskPosture ?? "No electronic-integrity package is registered."}
+                  status={electronicQualityStatus(electronicIntegrityStatus?.overallStatus)}
+                />
+                <Server aria-hidden size={18} />
+              </div>
+            </div>
+            <div className="export-summary-grid">
+              <article>
+                <span>Evidence rows</span>
+                <strong>{electronicArtifacts.length.toLocaleString()}</strong>
+              </article>
+              <article>
+                <span>Loaded artifacts</span>
+                <strong>{electronicLoadedArtifacts.toLocaleString()}</strong>
+              </article>
+              <article>
+                <span>Requests needed</span>
+                <strong>{electronicRequestRequired.toLocaleString()}</strong>
+              </article>
+              <article>
+                <span>CVR status</span>
+                <strong>{evidenceStatusLabel(electronicCvrArtifact?.status)}</strong>
+              </article>
+            </div>
+            <div className="planner-note">
+              <strong>Use this carefully</strong>
+              <span>
+                These records help reconcile machine output against official totals and paper/audit evidence. They are
+                triage inputs, not a finding of tampering, and ballot-mode or turnout context should not become a flag
+                input unless row-level data supports it.
+              </span>
+            </div>
+            {electronicIntegrityStatus ? (
+              <>
+                <div className="admin-source-grid" aria-label={`${stateName} electronic integrity status`}>
+                  <article className={`admin-source-card ${electronicQualityStatus(electronicIntegrityStatus.overallStatus)}`}>
+                    <div>
+                      <span className="section-label">Overall</span>
+                      <strong>{evidenceStatusLabel(electronicIntegrityStatus.overallStatus)}</strong>
+                    </div>
+                    <p>{electronicIntegrityStatus.riskPosture}</p>
+                    <span className="pending">{electronicIntegrityStatus.nextAction}</span>
+                  </article>
+                  <article className={`admin-source-card ${electronicQualityStatus(electronicAuditArtifact?.status)}`}>
+                    <div>
+                      <span className="section-label">Audit context</span>
+                      <strong>{evidenceStatusLabel(electronicAuditArtifact?.status)}</strong>
+                    </div>
+                    <p>{electronicAuditArtifact?.tamperDetectionUse ?? "Audit context has not been registered."}</p>
+                    {electronicAuditArtifact?.sourceUrl ? (
+                      <a href={electronicAuditArtifact.sourceUrl} rel="noreferrer" target="_blank">
+                        Open source
+                      </a>
+                    ) : (
+                      <span className="pending">Audit source package needed</span>
+                    )}
+                  </article>
+                  <article className="admin-source-card partial">
+                    <div>
+                      <span className="section-label">Status mix</span>
+                      <strong>{Object.keys(electronicStatusCounts).length.toLocaleString()} statuses</strong>
+                    </div>
+                    <p>
+                      {Object.entries(electronicStatusCounts)
+                        .map(([status, count]) => `${evidenceStatusLabel(status)}: ${count}`)
+                        .join("; ") || "No registered evidence rows."}
+                    </p>
+                    <span className="pending">Registry checked {electronicIntegrityStatus.electionYear}</span>
+                  </article>
+                </div>
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Evidence</th>
+                        <th>Status</th>
+                        <th>Grain</th>
+                        <th>Reconciliation</th>
+                        <th>Request</th>
+                        <th>Use</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {electronicArtifacts.map((artifact) => (
+                        <tr key={artifact.type}>
+                          <td>{artifact.sourceUrl ? <a href={artifact.sourceUrl} rel="noreferrer" target="_blank">{electronicArtifactLabel(artifact.type)}</a> : electronicArtifactLabel(artifact.type)}</td>
+                          <td>{evidenceStatusLabel(artifact.status)}</td>
+                          <td>{artifact.granularity}</td>
+                          <td>{artifact.reconciliationStatus}</td>
+                          <td>{artifact.requestRequired ? "Needed" : "No"}</td>
+                          <td>{artifact.tamperDetectionUse}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {electronicRequestArtifacts.length > 0 && (
+                  <div className="planner-note">
+                    <strong>Open records queue</strong>
+                    <span>
+                      {electronicRequestArtifacts.map((artifact) => electronicArtifactLabel(artifact.type)).join(", ")}
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="empty-panel">
+                <strong>No electronic-integrity registry row for {stateName}</strong>
+                <span>Start by registering certified results, local reporting-unit results, CVR availability, audit output, and custody/log sources.</span>
               </div>
             )}
           </section>

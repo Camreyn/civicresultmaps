@@ -10,7 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:api && npm run test:etl",
-    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs",
+    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs && node tests/api/swing-state-parity.test.mjs && node tests/api/electronic-integrity.test.mjs",
     "test:etl": "python -m unittest discover -s tests/python",
     "db:generate": "drizzle-kit generate",
     "db:push": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",
@@ -101,7 +101,11 @@
     "etl:requests:wi:remaining": "node scripts/create-wi-records-request-packets.mjs",
     "etl:collect:wi:ward-geometry": "node scripts/collect-wi-ward-geometry.mjs",
     "etl:validate:wi:ward-geometry": "node scripts/validate-wi-ward-geometry-joins.mjs",
-    "etl:collect:wi:hard-missing": "node scripts/collect-wi-hard-missing-source-evidence.mjs"
+    "etl:collect:wi:hard-missing": "node scripts/collect-wi-hard-missing-source-evidence.mjs",
+    "etl:status:swing-parity": "node scripts/report-swing-state-parity.mjs",
+    "validate:electronic-integrity": "node scripts/validate-electronic-integrity-artifacts.mjs",
+    "etl:status:electronic-integrity": "node scripts/report-electronic-integrity-reconciliation.mjs",
+    "etl:requests:electronic-integrity": "node scripts/create-electronic-integrity-request-packets.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

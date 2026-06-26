@@ -1,0 +1,101 @@
+import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+
+function test(name, fn) {
+  fn();
+  console.log(`ok - ${name}`);
+}
+
+const registry = JSON.parse(readFileSync("data/electronic-integrity-artifacts.json", "utf8"));
+const expectedStates = ["AZ", "GA", "MI", "NC", "NV", "PA", "WI"];
+const requiredArtifactTypes = [
+  "audit_results",
+  "ballot_images",
+  "cast_vote_records",
+  "certified_results",
+  "chain_of_custody",
+  "logic_accuracy",
+  "reporting_unit_results",
+  "tabulator_logs",
+].sort();
+
+function state(code) {
+  return registry.states.find((entry) => entry.state === code);
+}
+
+function artifact(code, type) {
+  return state(code)?.artifacts.find((entry) => entry.type === type);
+}
+
+test("electronic integrity registry covers the swing-state parity batch", () => {
+  assert.match(registry.description, /does not allege or prove tampering/);
+  assert.deepEqual(
+    registry.states.map((entry) => entry.state).sort(),
+    expectedStates,
+  );
+  for (const code of expectedStates) {
+    assert.equal(artifact(code, "certified_results")?.status, "loaded");
+    assert.equal(typeof state(code)?.nextAction, "string");
+    assert.deepEqual(state(code).artifacts.map((entry) => entry.type).sort(), requiredArtifactTypes);
+  }
+});
+
+test("registry distinguishes loaded review evidence from unavailable electronic artifacts", () => {
+  assert.equal(artifact("WI", "reporting_unit_results")?.status, "loaded");
+  assert.equal(artifact("WI", "audit_results")?.status, "partial");
+  assert.equal(artifact("WI", "cast_vote_records")?.status, "partial");
+  assert.equal(artifact("MI", "reporting_unit_results")?.status, "loaded");
+  assert.equal(artifact("PA", "reporting_unit_results")?.status, "loaded");
+  assert.equal(artifact("PA", "cast_vote_records")?.status, "blocked");
+  assert.equal(artifact("AZ", "reporting_unit_results")?.reconciliationStatus, "county_only_not_subcounty");
+  assert.equal(artifact("NV", "reporting_unit_results")?.reconciliationStatus, "county_only_not_subcounty");
+  assert.equal(registry.states.some((entry) => artifact(entry.state, "cast_vote_records")?.status === "loaded"), false);
+  assert.equal(artifact("MI", "tabulator_logs")?.status, "needs_data");
+  assert.equal(artifact("NC", "chain_of_custody")?.requestRequired, true);
+});
+
+test("electronic integrity API and validation scripts are wired", () => {
+  assert.equal(existsSync("src/app/api/electronic-integrity/route.ts"), true);
+  assert.equal(existsSync("scripts/validate-electronic-integrity-artifacts.mjs"), true);
+  assert.equal(existsSync("scripts/report-electronic-integrity-reconciliation.mjs"), true);
+  assert.equal(existsSync("scripts/create-electronic-integrity-request-packets.mjs"), true);
+  const api = readFileSync("src/lib/api.ts", "utf8");
+  const route = readFileSync("src/app/api/electronic-integrity/route.ts", "utf8");
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const workflow = readFileSync(".github/workflows/ci.yml", "utf8");
+  const scripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
+  assert.match(api, /listElectronicIntegrityArtifacts/);
+  assert.match(route, /does not prove tampering/);
+  assert.match(tabs, /Electronic Integrity/);
+  assert.match(tabs, /Open records queue/);
+  assert.match(scripts["validate:electronic-integrity"], /validate-electronic-integrity-artifacts/);
+  assert.match(scripts["etl:status:electronic-integrity"], /report-electronic-integrity-reconciliation/);
+  assert.match(scripts["etl:requests:electronic-integrity"], /create-electronic-integrity-request-packets/);
+  assert.match(workflow, /validate:electronic-integrity/);
+});
+
+test("electronic reconciliation report records limits and request queues", () => {
+  const report = JSON.parse(readFileSync("data/electronic-integrity-reconciliation-status.json", "utf8"));
+  assert.match(report.caveat, /not proof of electronic tampering/);
+  assert.deepEqual(report.summary.canRecomputeFromCvrStates, []);
+  assert.equal(report.summary.requestRequiredRows, 45);
+  assert.ok(report.summary.statesWithReviewRows.includes("WI"));
+  const wi = report.states.find((entry) => entry.state === "WI");
+  assert.equal(wi.cvrStatus, "partial");
+  assert.equal(wi.auditStatus, "partial");
+  assert.equal(wi.canRecomputeFromCvr, false);
+  assert.ok(wi.staging.reviewRows > 0);
+});
+
+test("electronic request plan creates one packet per tracked swing state", () => {
+  const plan = JSON.parse(readFileSync("data/electronic-integrity-request-plan.json", "utf8"));
+  assert.match(plan.caveat, /does not prove tampering/);
+  assert.equal(plan.packetCount, 7);
+  assert.equal(plan.requestRequiredRows, 45);
+  assert.deepEqual(plan.byState.map((entry) => entry.state).sort(), expectedStates);
+  assert.equal(plan.byState.find((entry) => entry.state === "WI").statuses.partial, 2);
+  assert.equal(plan.byState.find((entry) => entry.state === "PA").statuses.blocked, 1);
+  for (const entry of plan.byState) {
+    assert.equal(existsSync(entry.outputFile), true, `${entry.outputFile} should exist`);
+  }
+});

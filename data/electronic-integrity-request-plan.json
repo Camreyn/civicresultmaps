@@ -1,0 +1,139 @@
+{
+  "caveat": "Request packets track evidence collection only. Missing, partial, or blocked evidence does not prove tampering.",
+  "generatedAt": "2026-06-26",
+  "registry": "data/electronic-integrity-artifacts.json",
+  "outDir": "data/electronic-integrity-request-packets",
+  "state": "all",
+  "dryRun": false,
+  "packetCount": 7,
+  "requestRequiredRows": 45,
+  "byState": [
+    {
+      "artifactTypes": [
+        "reporting_unit_results",
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/az-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 7,
+      "state": "AZ",
+      "stateName": "Arizona",
+      "statuses": {
+        "partial": 1,
+        "needs_data": 6
+      }
+    },
+    {
+      "artifactTypes": [
+        "reporting_unit_results",
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/ga-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 7,
+      "state": "GA",
+      "stateName": "Georgia",
+      "statuses": {
+        "partial": 1,
+        "needs_data": 6
+      }
+    },
+    {
+      "artifactTypes": [
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/mi-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 6,
+      "state": "MI",
+      "stateName": "Michigan",
+      "statuses": {
+        "needs_data": 6
+      }
+    },
+    {
+      "artifactTypes": [
+        "reporting_unit_results",
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/nv-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 7,
+      "state": "NV",
+      "stateName": "Nevada",
+      "statuses": {
+        "partial": 1,
+        "needs_data": 6
+      }
+    },
+    {
+      "artifactTypes": [
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/nc-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 6,
+      "state": "NC",
+      "stateName": "North Carolina",
+      "statuses": {
+        "needs_data": 6
+      }
+    },
+    {
+      "artifactTypes": [
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/pa-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 6,
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "statuses": {
+        "blocked": 1,
+        "needs_data": 5
+      }
+    },
+    {
+      "artifactTypes": [
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/wi-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 6,
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "statuses": {
+        "partial": 2,
+        "needs_data": 4
+      }
+    }
+  ]
+}

@@ -54,6 +54,9 @@ test("map joins support repository GeoJSON county name variants", () => {
   assert.match(explorer, /lon - 360/);
   assert.match(explorer, /KALAWAO/);
   assert.match(explorer, /function coordinateBounds/);
+  assert.match(explorer, /function longitudeScale/);
+  assert.match(explorer, /referenceLatitude/);
+  assert.match(explorer, /projectedLongitude/);
   assert.doesNotMatch(explorer, /Math\.(min|max)\(\.\.\./);
   assert.match(explorer, /mapJoinStats/);
   assert.match(explorer, /Map join needs review/);

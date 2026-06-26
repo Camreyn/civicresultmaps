@@ -1,0 +1,665 @@
+{
+  "checkedAt": "2026-06-26",
+  "electionYear": 2024,
+  "description": "Electronic integrity evidence registry for artifacts that can reconcile machine output against independent records. This registry is evidence availability and reconciliation status only; it does not allege or prove tampering.",
+  "artifactTypes": [
+    {
+      "type": "certified_results",
+      "label": "Certified results",
+      "purpose": "Official canvass totals used as the reconciliation target."
+    },
+    {
+      "type": "reporting_unit_results",
+      "label": "Reporting-unit results",
+      "purpose": "Precinct, ward, batch, or equivalent subtotals used to localize discrepancies."
+    },
+    {
+      "type": "cast_vote_records",
+      "label": "Cast vote records",
+      "purpose": "Ballot-level machine interpretations that can be independently retabulated and compared to certified totals."
+    },
+    {
+      "type": "ballot_images",
+      "label": "Ballot images",
+      "purpose": "Independent image evidence that can be compared to CVR interpretation when public or lawfully obtainable."
+    },
+    {
+      "type": "tabulator_logs",
+      "label": "Tabulator and EMS logs",
+      "purpose": "Machine event, upload, adjudication, and tabulation logs that can explain timing or equipment anomalies."
+    },
+    {
+      "type": "logic_accuracy",
+      "label": "Logic and accuracy records",
+      "purpose": "Pre-election test deck/results evidence that equipment was configured to count known ballots as expected."
+    },
+    {
+      "type": "audit_results",
+      "label": "Audit results",
+      "purpose": "Post-election paper or audit evidence that can confirm or challenge electronic tabulation."
+    },
+    {
+      "type": "chain_of_custody",
+      "label": "Chain of custody",
+      "purpose": "Custody, seal, transport, and storage records for ballots, equipment, and removable media."
+    }
+  ],
+  "states": [
+    {
+      "state": "AZ",
+      "stateName": "Arizona",
+      "priority": "swing",
+      "overallStatus": "needs_evidence",
+      "summary": "County certified results and county comparison rows are loaded, but subcounty electronic evidence families are not inventoried yet.",
+      "riskPosture": "county_review_only_electronic_evidence_missing",
+      "nextAction": "Find official subcounty result exports first, then inventory county CVR, ballot-image, tabulator-log, L&A, audit, and chain-of-custody availability.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county",
+          "sourceUrl": "https://azsos.gov/elections/results-data",
+          "localArtifact": "data/az-2024-general-canvass-president.csv",
+          "parser": "arizonaCanvassCountyCsv",
+          "reconciliationStatus": "certified_totals_loaded",
+          "requestRequired": false,
+          "tamperDetectionUse": "Baseline certified totals for CVR/reporting-unit reconciliation."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "partial",
+          "granularity": "county",
+          "localArtifact": "data/az-2024-general-canvass-senate.csv",
+          "parser": "countyComparisonCsv",
+          "reconciliationStatus": "county_only_not_subcounty",
+          "requestRequired": true,
+          "tamperDetectionUse": "County-only rows cannot localize machine or batch anomalies.",
+          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
+          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+        },
+        {
+          "type": "audit_results",
+          "status": "needs_data",
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+        }
+      ]
+    },
+    {
+      "state": "GA",
+      "stateName": "Georgia",
+      "priority": "swing",
+      "overallStatus": "partial",
+      "summary": "Official precinct presidential rows are loaded from the SOS media export, but same-grain comparison contest and electronic audit artifacts are not inventoried.",
+      "riskPosture": "precinct_vote_share_loaded_electronic_evidence_missing",
+      "nextAction": "Map same-grain comparison contests and inventory county CVR, ballot-image, adjudication, tabulator-log, audit, and L&A availability.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county",
+          "sourceUrl": "https://results.sos.ga.gov/",
+          "localArtifact": "data/ga-2024-official-results-export.json",
+          "parser": "georgiaMediaExportJson",
+          "reconciliationStatus": "certified_media_export_loaded_with_known_19_vote_gap",
+          "requestRequired": false,
+          "tamperDetectionUse": "Official totals baseline; known minor-party statewide/county gap remains documented."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "partial",
+          "granularity": "precinct_vote_share_only",
+          "sourceUrl": "https://results.sos.ga.gov/",
+          "localArtifact": "data/ga-2024-official-results-export.json",
+          "parser": "georgiaMediaExportJsonVoteShare",
+          "reconciliationStatus": "same_row_comparison_contest_missing",
+          "requestRequired": true,
+          "tamperDetectionUse": "Local vote-share screening exists, but comparison-contest reconciliation is not mapped.",
+          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
+          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+        },
+        {
+          "type": "audit_results",
+          "status": "needs_data",
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+        }
+      ]
+    },
+    {
+      "state": "MI",
+      "stateName": "Michigan",
+      "priority": "swing",
+      "overallStatus": "partial",
+      "summary": "Official MVIC county, precinct, turnout, and registration artifacts are loaded; CVR/ballot-image/log/audit artifacts still need inventory.",
+      "riskPosture": "subcounty_review_loaded_admin_evidence_missing",
+      "nextAction": "Inventory Michigan CVR availability and official post-election audit/L&A/log artifacts; then add CVR retabulation if public or obtainable.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county",
+          "sourceUrl": "https://mvic.sos.state.mi.us/VoteHistory/",
+          "localArtifact": "data/mi-2024-general-election-results.txt",
+          "parser": "michiganCountyTab",
+          "reconciliationStatus": "certified_results_loaded",
+          "requestRequired": false,
+          "tamperDetectionUse": "Certified county baseline for precinct and future CVR totals."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "loaded",
+          "granularity": "precinct",
+          "sourceUrl": "https://mvic.sos.state.mi.us/VoteHistory/",
+          "localArtifact": "data/mi-2024-precinct-results.zip",
+          "parser": "michiganMvicPrecinctZip",
+          "reconciliationStatus": "precinct_president_senate_review_loaded",
+          "requestRequired": false,
+          "tamperDetectionUse": "Precinct-level President/Senate comparison can localize statistical anomalies before CVR/log review."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
+          "requestPath": "Michigan Bureau of Elections, county clerks, or local clerks depending on record custody."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "Michigan Bureau of Elections, county clerks, or local clerks depending on record custody."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Michigan Bureau of Elections, county clerks, or local clerks depending on record custody."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Michigan Bureau of Elections, county clerks, or local clerks depending on record custody."
+        },
+        {
+          "type": "audit_results",
+          "status": "needs_data",
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+          "requestPath": "Michigan Bureau of Elections, county clerks, or local clerks depending on record custody."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Michigan Bureau of Elections, county clerks, or local clerks depending on record custody."
+        }
+      ]
+    },
+    {
+      "state": "NV",
+      "stateName": "Nevada",
+      "priority": "swing",
+      "overallStatus": "needs_evidence",
+      "summary": "County certified and Senate comparison rows are loaded from archived official county totals; subcounty electronic evidence is not inventoried.",
+      "riskPosture": "county_review_only_electronic_evidence_missing",
+      "nextAction": "Find official local Nevada result exports and inventory county CVR, ballot-image, audit, L&A, and tabulator-log availability.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county",
+          "sourceUrl": "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+          "localArtifact": "data/nv-2024-statewide-general-president.csv",
+          "parser": "nevadaStatewideGeneralCsv",
+          "reconciliationStatus": "county_totals_loaded_from_archived_official_page",
+          "requestRequired": false,
+          "tamperDetectionUse": "County baseline only; insufficient for machine or batch anomaly localization."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "partial",
+          "granularity": "county",
+          "localArtifact": "data/nv-2024-statewide-general-senate.csv",
+          "parser": "countyComparisonCsv",
+          "reconciliationStatus": "county_only_not_subcounty",
+          "requestRequired": true,
+          "tamperDetectionUse": "County-only comparison rows are weak for electronic-level review.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "audit_results",
+          "status": "needs_data",
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        }
+      ]
+    },
+    {
+      "state": "NC",
+      "stateName": "North Carolina",
+      "priority": "swing",
+      "overallStatus": "partial",
+      "summary": "Official NCSBE reporting-unit President/Governor rows are loaded, including vote-method-like reporting units; electronic evidence artifacts still need inventory.",
+      "riskPosture": "reporting_unit_review_loaded_admin_evidence_missing",
+      "nextAction": "Inventory CVR, ballot-image, audit, L&A, tabulator-log, and chain-of-custody availability; separate real precincts from absentee/early/provisional reporting units.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county_from_reporting_units",
+          "sourceUrl": "https://www.ncsbe.gov/results-data/election-results",
+          "localArtifact": "data/nc-2024-results-precinct.zip",
+          "parser": "northCarolinaPrecinctResultsZip",
+          "reconciliationStatus": "county_results_aggregated_from_official_reporting_unit_file",
+          "requestRequired": false,
+          "tamperDetectionUse": "Official reporting-unit source supports county totals and local anomaly localization."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "loaded",
+          "granularity": "reporting_unit",
+          "sourceUrl": "https://www.ncsbe.gov/results-data/election-results",
+          "localArtifact": "data/nc-2024-results-precinct.zip",
+          "parser": "northCarolinaPresidentVsGovernor",
+          "reconciliationStatus": "president_governor_reporting_unit_review_loaded",
+          "requestRequired": false,
+          "tamperDetectionUse": "Can localize anomalies by NCSBE reporting unit, with caveats for early/absentee/provisional rows."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
+          "requestPath": "North Carolina State Board of Elections or county boards depending on record custody."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "North Carolina State Board of Elections or county boards depending on record custody."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "North Carolina State Board of Elections or county boards depending on record custody."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "North Carolina State Board of Elections or county boards depending on record custody."
+        },
+        {
+          "type": "audit_results",
+          "status": "needs_data",
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+          "requestPath": "North Carolina State Board of Elections or county boards depending on record custody."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "North Carolina State Board of Elections or county boards depending on record custody."
+        }
+      ]
+    },
+    {
+      "state": "PA",
+      "stateName": "Pennsylvania",
+      "priority": "swing",
+      "overallStatus": "partial",
+      "summary": "Official precinct returns and county turnout/registration workbook are loaded; CVR availability is legally constrained and audit/log artifacts still need normalized inventory.",
+      "riskPosture": "precinct_review_loaded_cvr_constrained_admin_evidence_missing",
+      "nextAction": "Inventory county audit/L&A/log/chain-of-custody artifacts and mark CVR request paths with legal constraints before attempting CVR retabulation.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county_from_precinct_returns",
+          "sourceUrl": "https://www.pa.gov/agencies/vote/elections/election-results.html",
+          "localArtifact": "data/pa-2024-general-election-returns-precinct.txt",
+          "parser": "pennsylvaniaBulkCsv",
+          "reconciliationStatus": "precinct_returns_loaded_and_county_results_available",
+          "requestRequired": false,
+          "tamperDetectionUse": "Official precinct bulk file supports independent aggregation to county totals."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "loaded",
+          "granularity": "precinct",
+          "sourceUrl": "https://www.pa.gov/agencies/vote/elections/election-results.html",
+          "localArtifact": "data/pa-2024-general-election-returns-precinct.txt",
+          "parser": "pennsylvaniaBulkCsvPrecinctComparison",
+          "reconciliationStatus": "president_senate_precinct_review_loaded",
+          "requestRequired": false,
+          "tamperDetectionUse": "Precinct-level President/Senate comparison can localize statistical anomalies before audit/log review."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "blocked",
+          "granularity": "ballot",
+          "reconciliationStatus": "public_release_legally_constrained_not_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "CVR retabulation would be useful but should be tracked as constrained until an official lawful source is confirmed.",
+          "requestPath": "Pennsylvania Department of State or county boards; CVR release requires legal/public-records review before treating as obtainable."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "Pennsylvania Department of State or county boards; CVR release requires legal/public-records review before treating as obtainable."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Pennsylvania Department of State or county boards; CVR release requires legal/public-records review before treating as obtainable."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Pennsylvania Department of State or county boards; CVR release requires legal/public-records review before treating as obtainable."
+        },
+        {
+          "type": "audit_results",
+          "status": "needs_data",
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+          "requestPath": "Pennsylvania Department of State or county boards; CVR release requires legal/public-records review before treating as obtainable."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Pennsylvania Department of State or county boards; CVR release requires legal/public-records review before treating as obtainable."
+        }
+      ]
+    },
+    {
+      "state": "WI",
+      "stateName": "Wisconsin",
+      "priority": "swing",
+      "overallStatus": "partial",
+      "summary": "Official WEC ward rows, audit selections, EAC denominator fallback, CVR availability scaffold, and ward-geometry context are loaded; row-level ballot mode/CVR and per-audit-unit outcomes remain records-request items.",
+      "riskPosture": "ward_review_loaded_partial_audit_context_hard_missing_records_requests",
+      "nextAction": "Keep Wisconsin tabled for flags; submit/track requests for row-level ballot mode/CVR, per-audit-unit audit outcomes, ward denominators, and exact ward crosswalk records.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county_from_ward_results",
+          "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+          "localArtifact": "data/wi-2024-ward-by-ward-federal-state.xlsx",
+          "parser": "wisconsinWardByWardXlsx",
+          "reconciliationStatus": "ward_results_loaded_county_totals_generated",
+          "requestRequired": false,
+          "tamperDetectionUse": "Official ward workbook supports county totals and ward-level review rows."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "loaded",
+          "granularity": "ward",
+          "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+          "localArtifact": "data/wi-2024-ward-by-ward-federal-state.xlsx",
+          "parser": "wisconsinWardByWardXlsx",
+          "reconciliationStatus": "president_senate_ward_review_loaded",
+          "requestRequired": false,
+          "tamperDetectionUse": "Ward-level President/Senate comparison localizes advisory patterns."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "partial",
+          "granularity": "county_availability_scaffold",
+          "sourceUrl": "https://elections.wi.gov/about/records-request",
+          "localArtifact": "data/wi-2024-cvr-availability.csv",
+          "parser": "cvrAvailabilityCsv",
+          "reconciliationStatus": "availability_scaffold_only_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Documents request path; no ballot-level retabulation can be performed until CVRs are obtained.",
+          "requestPath": "Wisconsin Elections Commission, county clerks, or municipal clerks depending on record custody."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent CVR/image interpretation checks.",
+          "requestPath": "Wisconsin Elections Commission, county clerks, or municipal clerks depending on record custody."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Wisconsin Elections Commission, county clerks, or municipal clerks depending on record custody."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Wisconsin Elections Commission, county clerks, or municipal clerks depending on record custody."
+        },
+        {
+          "type": "audit_results",
+          "status": "partial",
+          "granularity": "selected_reporting_unit",
+          "sourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+          "localArtifact": "data/wi-2024-audit-selections.csv",
+          "parser": "normalizeWiAuditReport",
+          "reconciliationStatus": "selected_units_loaded_per_unit_outcomes_not_published",
+          "requestRequired": true,
+          "tamperDetectionUse": "Shows which reporting units were selected and aggregate audit findings; does not clear individual flagged units.",
+          "requestPath": "Wisconsin Elections Commission, county clerks, or municipal clerks depending on record custody."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Wisconsin Elections Commission, county clerks, or municipal clerks depending on record custody."
+        }
+      ]
+    }
+  ]
+}
