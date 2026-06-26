@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Cortland.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Washington.pdf", "Westchester.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Cattaraugus.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Cortland.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Washington.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf", ".txt"]);
 
 function ensureDir(dir) {
@@ -1050,6 +1050,74 @@ function cortlandTabbedRows(text, county) {
   assertCountyDrTotals(rows, county);
   return rows;
 }
+function cattaraugusCanvassRows(text, county) {
+  const lines = text.split(/\r?\n/);
+  const skipLabel = /^(TOTAL|Cattaraugus|Claudia|Cornell|Raymond|Kamala|Tim|WRITE|VOIDS|TOTAL VOTES|CAST|Donald|JD|BLANKS|Jill|Chase|Peter|Electors|and Vice|VOTE|DEM|United States|Diane|LaRouche|Kirsten|Michael|Sare)/i;
+  const methodLabel = /^(ABS|Early|Unscanned)/i;
+  const lineNums = (cells) => cells.slice(1).flatMap((cell) => String(cell).split(/\s+/)).map(intValue);
+  const findLine = (predicate, start = 0) => {
+    const index = lines.findIndex((line, lineIndex) => lineIndex >= start && predicate(line, lineIndex));
+    if (index < 0) throw new Error(`Missing Cattaraugus source marker for ${county}`);
+    return index;
+  };
+  const presidentEnd = findLine((line) => line.startsWith("TOTAL \t34525"));
+  const senateStart = findLine((line) => line.startsWith("United States Senator"), presidentEnd);
+  const senateEnd = findLine((line) => line.startsWith("TOTAL \t34523"), senateStart);
+
+  const parseRows = (start, end, office) => {
+    const rows = new Map();
+    let currentDistrict = "";
+    for (let index = start; index <= end; index++) {
+      const cells = lines[index].split("\t").map((cell) => cleanText(cell)).filter(Boolean);
+      if (cells.length < 2) continue;
+      const label = cells[0];
+      if (skipLabel.test(label)) continue;
+      let localUnit = label;
+      if (methodLabel.test(label)) {
+        if (!currentDistrict) continue;
+        localUnit = currentDistrict;
+      } else {
+        currentDistrict = label;
+      }
+      const nums = lineNums(cells);
+      if (nums.length < 3) continue;
+      const key = localUnit.toUpperCase();
+      const entry = rows.get(key) ?? { county, local_unit: localUnit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+      if (office === "president") {
+        entry.pres_harris += nums[1];
+        entry.pres_trump += nums[2];
+        entry.pres_other += Math.max(0, nums[0] - nums[1] - nums[2]);
+        entry.pres_total += nums[0];
+      } else {
+        entry.comparison_dem += nums[1];
+        entry.comparison_rep += nums[2];
+        entry.comparison_other += Math.max(0, nums[0] - nums[1] - nums[2]);
+      }
+      rows.set(key, entry);
+    }
+    return rows;
+  };
+
+  const presidentRows = parseRows(0, presidentEnd, "president");
+  const senateRows = parseRows(senateStart, senateEnd, "senate");
+  const rows = [...presidentRows.entries()].map(([key, president]) => {
+    const senate = senateRows.get(key);
+    if (!senate) throw new Error(`Missing Cattaraugus senate row for ${president.local_unit}`);
+    return {
+      county,
+      local_unit: president.local_unit,
+      pres_harris: president.pres_harris,
+      pres_trump: president.pres_trump,
+      pres_other: president.pres_other,
+      pres_total: president.pres_total,
+      comparison_dem: senate.comparison_dem,
+      comparison_rep: senate.comparison_rep,
+      comparison_other: senate.comparison_other,
+    };
+  }).filter((row) => row.pres_total || row.comparison_dem || row.comparison_rep || row.comparison_other);
+  assertCountyDrTotals(rows, county);
+  return rows;
+}
 function broomeStatementRows(text, county) {
   const lines = text.split(/\r?\n/);
   const findLine = (predicate, start = 0) => {
@@ -1531,6 +1599,7 @@ async function pdfRows(filePath, county) {
     if (county === "Albany County") return albanyPrecinctSummaryRows(result.text, county);
     if (county === "Allegany County") return alleganySideBySideRows(result.text, county);
     if (county === "Broome County") return broomeStatementRows(result.text, county);
+    if (county === "Cattaraugus County") return cattaraugusCanvassRows(result.text, county);
     if (county === "Chenango County") return chenangoAllRows(result.text, county);
     if (county === "Cortland County") return cortlandTabbedRows(result.text, county);
     if (county === "Dutchess County") return dutchessDetailedRows(result.text, county);
