@@ -14,7 +14,7 @@ const apiUrl = "https://api.github.com/repos/openelections/openelections-sources
 const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-election-mapper/main/data/ny-app-data.js";
 
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk key.pdf"]);
-const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
+const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Cortland.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf", ".txt"]);
 
 function ensureDir(dir) {
@@ -984,6 +984,72 @@ function candidateOnlyPdfRows(text, county) {
   return completeRowsFromPending(pending);
 }
 
+function cortlandTabbedRows(text, county) {
+  const lines = text.split(/\r?\n/);
+  const findLine = (predicate, start = 0) => {
+    const index = lines.findIndex((line, lineIndex) => lineIndex >= start && predicate(line, lineIndex));
+    if (index < 0) throw new Error(`Missing Cortland source marker for ${county}`);
+    return index;
+  };
+  const presidentStart = findLine((line) => line.startsWith("City of Cortland"));
+  const presidentEnd = findLine((line) => line.startsWith("3317 \t2610"), presidentStart);
+  const senateStart = findLine((line) => line.startsWith("City of Cortland"), presidentEnd);
+  const senateEnd = findLine((line) => line.startsWith("3247 \t2482"), senateStart);
+
+  const parseRows = (start, end, office) => {
+    const rows = new Map();
+    let legislativeDistrict = "";
+    for (let index = start; index <= end; index++) {
+      const cells = lines[index].split("\t").map((cell) => cleanText(cell)).filter(Boolean);
+      if (cells.length < 2) continue;
+      let label = cells[0];
+      let values = cells.slice(1);
+      if (/^L\.D\.\s+\d+/i.test(label)) {
+        legislativeDistrict = label;
+        label = cells[1] || "";
+        values = cells.slice(2);
+      }
+      if (!label || /^\d/.test(label) || /Totals|County|City of|Town of|OFFICIAL|Election|--/i.test(label)) continue;
+      if (values.length !== 36) continue;
+      const totalBlock = values.slice(27, 36).map(intValue);
+      const localUnit = `${legislativeDistrict} ${label}`.trim();
+      const key = localUnit.toUpperCase();
+      const entry = rows.get(key) ?? { county, local_unit: localUnit, pres_harris: 0, pres_trump: 0, pres_other: 0, pres_total: 0, comparison_dem: 0, comparison_rep: 0, comparison_other: 0 };
+      if (office === "president") {
+        entry.pres_harris = totalBlock[0] + totalBlock[3];
+        entry.pres_trump = totalBlock[1] + totalBlock[2];
+        entry.pres_other = totalBlock[4];
+        entry.pres_total = totalBlock[8];
+      } else {
+        entry.comparison_dem = totalBlock[0] + totalBlock[3];
+        entry.comparison_rep = totalBlock[1] + totalBlock[2];
+        entry.comparison_other = totalBlock[4] + totalBlock[5];
+      }
+      rows.set(key, entry);
+    }
+    return rows;
+  };
+
+  const presidentRows = parseRows(presidentStart, presidentEnd, "president");
+  const senateRows = parseRows(senateStart, senateEnd, "senate");
+  const rows = [...presidentRows.entries()].map(([key, president]) => {
+    const senate = senateRows.get(key);
+    if (!senate) throw new Error(`Missing Cortland senate row for ${president.local_unit}`);
+    return {
+      county,
+      local_unit: president.local_unit,
+      pres_harris: president.pres_harris,
+      pres_trump: president.pres_trump,
+      pres_other: president.pres_other,
+      pres_total: president.pres_total,
+      comparison_dem: senate.comparison_dem,
+      comparison_rep: senate.comparison_rep,
+      comparison_other: senate.comparison_other,
+    };
+  }).filter((row) => row.pres_total || row.comparison_dem || row.comparison_rep || row.comparison_other);
+  assertCountyDrTotals(rows, county);
+  return rows;
+}
 function broomeStatementRows(text, county) {
   const lines = text.split(/\r?\n/);
   const findLine = (predicate, start = 0) => {
@@ -1412,6 +1478,7 @@ async function pdfRows(filePath, county) {
     if (county === "Allegany County") return alleganySideBySideRows(result.text, county);
     if (county === "Broome County") return broomeStatementRows(result.text, county);
     if (county === "Chenango County") return chenangoAllRows(result.text, county);
+    if (county === "Cortland County") return cortlandTabbedRows(result.text, county);
     if (county === "Dutchess County") return dutchessDetailedRows(result.text, county);
     if (county === "Essex County") return essexCanvassRows(result.text, county);
     if (county === "Genesee County") return geneseeTableRows(result.text, county);
