@@ -1,4 +1,4 @@
-﻿import electronicIntegrityArtifacts from "../../data/electronic-integrity-artifacts.json";
+import electronicIntegrityArtifacts from "../../data/electronic-integrity-artifacts.json";
 
 export type ElectronicIntegrityPackage = typeof electronicIntegrityArtifacts;
 export type ElectronicIntegrityState = ElectronicIntegrityPackage["states"][number];

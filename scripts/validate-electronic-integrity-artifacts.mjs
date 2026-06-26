@@ -1,4 +1,4 @@
-﻿import { readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 
 const registryPath = "data/electronic-integrity-artifacts.json";
 const registry = JSON.parse(readFileSync(registryPath, "utf8").replace(/^\uFEFF/, ""));

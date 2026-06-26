@@ -1,4 +1,4 @@
-﻿import swingStateParity from "../../data/swing-state-2024-parity-status.json";
+import swingStateParity from "../../data/swing-state-2024-parity-status.json";
 
 export type SwingStateParityPackage = typeof swingStateParity;
 export type SwingStateParityState = SwingStateParityPackage["states"][number];

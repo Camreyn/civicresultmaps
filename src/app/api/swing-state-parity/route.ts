@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { apiEnvelope, listSwingStateParity, publicDataCacheHeaders, stateQuery } from "@/lib/api";
 
 export async function GET(request: NextRequest) {
