@@ -32,6 +32,7 @@ import type {
   CompletenessSummary,
   CoverageSummary,
   ElectronicIntegrityStateSummary,
+  ElectronicIntegrityRequestOperationSummary,
   EquipmentClusterDiagnostic,
   EquipmentRowSummary,
   HistoricalResultRowSummary,
@@ -49,6 +50,7 @@ type WorkspaceTabsProps = {
   coverage: CoverageSummary | null;
   countyLabel: string;
   electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
+  electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
   equipmentRows: EquipmentRowSummary[];
   historicalRows: HistoricalResultRowSummary[];
   importRuns: ImportRunSummary[];
@@ -1846,6 +1848,7 @@ function dateLabel(value: string | null) {
 export function WorkspaceTabs({
   adminSourceStatus,
   electronicIntegrityStatus,
+  electronicIntegrityRequests,
   coverage,
   countyLabel,
   equipmentRows,
@@ -2260,6 +2263,13 @@ export function WorkspaceTabs({
   const electronicCvrArtifact = electronicArtifacts.find((artifact) => artifact.type === "cast_vote_records");
   const electronicAuditArtifact = electronicArtifacts.find((artifact) => artifact.type === "audit_results");
   const electronicRequestArtifacts = electronicArtifacts.filter((artifact) => artifact.requestRequired);
+  const electronicRequestRows = electronicIntegrityRequests.requests;
+  const electronicDraftFiles = electronicIntegrityRequests.summary.draftFiles;
+  const electronicStateDraft = electronicDraftFiles.find((draft) => draft.state === selectedStateCode);
+  const electronicRequestStatusCounts = electronicRequestRows.reduce<Record<string, number>>((counts, request) => {
+    counts[request.status] = (counts[request.status] ?? 0) + 1;
+    return counts;
+  }, {});
   const electronicStatusCounts = electronicArtifacts.reduce<Record<string, number>>((counts, artifact) => {
     counts[artifact.status] = (counts[artifact.status] ?? 0) + 1;
     return counts;
@@ -3916,6 +3926,51 @@ export function WorkspaceTabs({
                       {electronicRequestArtifacts.map((artifact) => electronicArtifactLabel(artifact.type)).join(", ")}
                     </span>
                   </div>
+                )}
+                {electronicRequestRows.length > 0 && (
+                  <>
+                    <div className="planner-note">
+                      <strong>Request workflow</strong>
+                      <span>
+                        {Object.entries(electronicRequestStatusCounts)
+                          .map(([status, count]) => `${evidenceStatusLabel(status)}: ${count}`)
+                          .join("; ")}
+                        {electronicStateDraft ? ` Draft: ${electronicStateDraft.emailFile}` : ""}
+                      </span>
+                    </div>
+                    <div className="table-wrap">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Request ID</th>
+                            <th>Evidence</th>
+                            <th>Status</th>
+                            <th>Route</th>
+                            <th>Response</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {electronicRequestRows.map((request) => (
+                            <tr key={request.requestId}>
+                              <td>{request.requestId}</td>
+                              <td>{request.artifactLabel}</td>
+                              <td>{evidenceStatusLabel(request.status)}</td>
+                              <td>
+                                {request.recipientEmail || request.recipientPortalUrl ? (
+                                  <a href={request.recipientPortalUrl} rel="noreferrer" target="_blank">
+                                    {request.primaryCustodian}
+                                  </a>
+                                ) : (
+                                  request.primaryCustodian
+                                )}
+                              </td>
+                              <td>{request.responseSummary || request.feeStatus}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
                 )}
               </>
             ) : (

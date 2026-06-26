@@ -105,7 +105,9 @@
     "etl:status:swing-parity": "node scripts/report-swing-state-parity.mjs",
     "validate:electronic-integrity": "node scripts/validate-electronic-integrity-artifacts.mjs",
     "etl:status:electronic-integrity": "node scripts/report-electronic-integrity-reconciliation.mjs",
-    "etl:requests:electronic-integrity": "node scripts/create-electronic-integrity-request-packets.mjs"
+    "etl:requests:electronic-integrity": "node scripts/create-electronic-integrity-request-packets.mjs",
+    "etl:requests:electronic-integrity:sync": "node scripts/sync-electronic-integrity-request-operations.mjs",
+    "validate:electronic-integrity-requests": "node scripts/sync-electronic-integrity-request-operations.mjs --dry-run"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

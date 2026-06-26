@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-06-26",
+  "description": "Operational contact metadata for electronic-integrity public-records requests. Recipient fields are intentionally conservative: do not invent an email address when the current custodian must be verified before sending.",
+  "defaultRequester": {
+    "name": "[requester name]",
+    "organization": "[organization, if any]",
+    "email": "[requester email]",
+    "phone": "[requester phone, optional]"
+  },
+  "states": [
+    {
+      "state": "AZ",
+      "primaryCustodian": "Arizona Secretary of State Elections Division",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://azsos.gov/elections",
+      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "countyCustodianLikely": true,
+      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+    },
+    {
+      "state": "GA",
+      "primaryCustodian": "Georgia Secretary of State Elections Division",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://sos.ga.gov/page/elections",
+      "recipientLookupUrl": "https://sos.ga.gov/page/georgia-county-election-offices",
+      "countyCustodianLikely": true,
+      "notes": "County election offices may maintain county-specific CVRs, ballot images, equipment logs, L&A records, and custody records."
+    },
+    {
+      "state": "MI",
+      "primaryCustodian": "Michigan Department of State Bureau of Elections",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.michigan.gov/sos/elections",
+      "recipientLookupUrl": "https://mvic.sos.state.mi.us/Voter/Index/#yourclerk",
+      "countyCustodianLikely": true,
+      "notes": "County, city, or township clerks may maintain local tabulator logs, L&A materials, custody records, and detailed CVR/reporting-unit exports."
+    },
+    {
+      "state": "NC",
+      "primaryCustodian": "North Carolina State Board of Elections",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.ncsbe.gov/",
+      "recipientLookupUrl": "https://vt.ncsbe.gov/BOEInfo/",
+      "countyCustodianLikely": true,
+      "notes": "County boards may maintain county-specific equipment logs, L&A records, custody records, and detailed post-election records."
+    },
+    {
+      "state": "NV",
+      "primaryCustodian": "Nevada Secretary of State Elections Division",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.nvsos.gov/sos/elections",
+      "recipientLookupUrl": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+      "countyCustodianLikely": true,
+      "notes": "County clerks or registrars may maintain county-specific electronic election artifacts."
+    },
+    {
+      "state": "PA",
+      "primaryCustodian": "Pennsylvania Department of State Bureau of Elections",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.pa.gov/agencies/vote.html",
+      "recipientLookupUrl": "https://www.pa.gov/agencies/vote/contact-us/contact-your-election-officials.html",
+      "countyCustodianLikely": true,
+      "notes": "Pennsylvania counties commonly maintain county-level voting-system records; CVR access may be restricted or require county-specific handling."
+    },
+    {
+      "state": "WI",
+      "primaryCustodian": "Wisconsin Elections Commission",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://elections.wi.gov/",
+      "recipientLookupUrl": "https://elections.wi.gov/clerks/directory",
+      "countyCustodianLikely": true,
+      "notes": "Municipal clerks and county clerks may maintain local CVRs, ballot images where applicable, equipment logs, L&A records, custody records, and audit workpapers."
+    }
+  ]
+}

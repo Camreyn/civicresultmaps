@@ -7,6 +7,9 @@ function test(name, fn) {
 }
 
 const registry = JSON.parse(readFileSync("data/electronic-integrity-artifacts.json", "utf8"));
+const requestTracker = JSON.parse(readFileSync("data/electronic-integrity-request-tracker.json", "utf8"));
+const requestOps = JSON.parse(readFileSync("data/electronic-integrity-request-operations.json", "utf8"));
+const receivedFiles = JSON.parse(readFileSync("data/electronic-integrity-received-files.json", "utf8"));
 const expectedStates = ["AZ", "GA", "MI", "NC", "NV", "PA", "WI"];
 const requiredArtifactTypes = [
   "audit_results",
@@ -56,21 +59,29 @@ test("registry distinguishes loaded review evidence from unavailable electronic 
 
 test("electronic integrity API and validation scripts are wired", () => {
   assert.equal(existsSync("src/app/api/electronic-integrity/route.ts"), true);
+  assert.equal(existsSync("src/app/api/electronic-integrity-requests/route.ts"), true);
   assert.equal(existsSync("scripts/validate-electronic-integrity-artifacts.mjs"), true);
   assert.equal(existsSync("scripts/report-electronic-integrity-reconciliation.mjs"), true);
   assert.equal(existsSync("scripts/create-electronic-integrity-request-packets.mjs"), true);
+  assert.equal(existsSync("scripts/sync-electronic-integrity-request-operations.mjs"), true);
   const api = readFileSync("src/lib/api.ts", "utf8");
   const route = readFileSync("src/app/api/electronic-integrity/route.ts", "utf8");
+  const requestRoute = readFileSync("src/app/api/electronic-integrity-requests/route.ts", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
   const workflow = readFileSync(".github/workflows/ci.yml", "utf8");
   const scripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
   assert.match(api, /listElectronicIntegrityArtifacts/);
+  assert.match(api, /listElectronicIntegrityRequests/);
   assert.match(route, /does not prove tampering/);
+  assert.match(requestRoute, /records-request workflow only/);
   assert.match(tabs, /Electronic Integrity/);
   assert.match(tabs, /Open records queue/);
+  assert.match(tabs, /Request workflow/);
   assert.match(scripts["validate:electronic-integrity"], /validate-electronic-integrity-artifacts/);
   assert.match(scripts["etl:status:electronic-integrity"], /report-electronic-integrity-reconciliation/);
   assert.match(scripts["etl:requests:electronic-integrity"], /create-electronic-integrity-request-packets/);
+  assert.match(scripts["etl:requests:electronic-integrity:sync"], /sync-electronic-integrity-request-operations/);
+  assert.match(scripts["validate:electronic-integrity-requests"], /--dry-run/);
   assert.match(workflow, /validate:electronic-integrity/);
 });
 
@@ -98,4 +109,30 @@ test("electronic request plan creates one packet per tracked swing state", () =>
   for (const entry of plan.byState) {
     assert.equal(existsSync(entry.outputFile), true, `${entry.outputFile} should exist`);
   }
+});
+
+
+test("electronic request operations create sendable drafts and track per-artifact requests", () => {
+  assert.match(requestTracker.caveat, /do not prove electronic tampering/);
+  assert.equal(requestTracker.requests.length, 45);
+  assert.equal(receivedFiles.requestsTracked, 45);
+  assert.equal(receivedFiles.receivedFiles.length, 45);
+  assert.equal(requestOps.requestRows, 45);
+  assert.equal(requestOps.draftCount, 7);
+  assert.deepEqual(Object.keys(requestOps.rowsByState).sort(), expectedStates);
+  assert.equal(requestOps.rowsByStatus.draft_ready, 45);
+
+  const wiCvr = requestTracker.requests.find((entry) => entry.requestId === "EI-2024-WI-CAST-VOTE-RECORDS");
+  assert.equal(wiCvr.status, "draft_ready");
+  assert.equal(wiCvr.primaryCustodian, "Wisconsin Elections Commission");
+  assert.equal(wiCvr.recipientPortalUrl, "https://elections.wi.gov/");
+  assert.equal(wiCvr.countyCustodianLikely, true);
+
+  const wiDraft = requestOps.drafts.find((entry) => entry.state === "WI");
+  assert.equal(existsSync(wiDraft.emailFile), true);
+  assert.equal(existsSync(wiDraft.markdownFile), true);
+  const wiEmail = readFileSync(wiDraft.emailFile, "utf8");
+  assert.match(wiEmail, /Subject: Wisconsin 2024 electronic election records request/);
+  assert.match(wiEmail, /EI-2024-WI-CAST-VOTE-RECORDS/);
+  assert.match(wiEmail, /verify recipient email/);
 });

@@ -299,3 +299,52 @@ export type ElectronicIntegrityStateSummary = {
   nextAction: string;
   artifacts: ElectronicIntegrityArtifactSummary[];
 };
+
+export type ElectronicIntegrityRequestSummary = {
+  requestId: string;
+  electionYear: number;
+  state: string;
+  stateName: string;
+  artifactType: string;
+  artifactLabel: string;
+  artifactStatus: string;
+  requestRequired: boolean;
+  status: string;
+  primaryCustodian: string;
+  recipientEmail: string;
+  recipientPortalUrl: string;
+  recipientLookupUrl: string;
+  countyCustodianLikely: boolean;
+  requestPath: string;
+  requestedRecords: string;
+  sentAt: string;
+  acknowledgedAt: string;
+  closedAt: string;
+  feeStatus: string;
+  responseSummary: string;
+  receivedFiles: string[];
+  sourceUrl: string;
+  localArtifact: string;
+  notes: string;
+};
+
+export type ElectronicIntegrityRequestStateDraft = {
+  state: string;
+  emailFile: string;
+  markdownFile: string;
+  subject: string;
+  requestIds: string[];
+};
+
+export type ElectronicIntegrityRequestOperationSummary = {
+  caveat: string;
+  generatedAt: string;
+  requests: ElectronicIntegrityRequestSummary[];
+  summary: {
+    draftFiles: ElectronicIntegrityRequestStateDraft[];
+    requestRows: number;
+    rowsByStatus: Record<string, number>;
+    rowsByState: Record<string, number>;
+    states: number;
+  };
+};

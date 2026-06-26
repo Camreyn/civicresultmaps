@@ -10,6 +10,7 @@ import {
   listAdminSourceStatuses,
   listCompletenessReport,
   listElectronicIntegrityArtifacts,
+  listElectronicIntegrityRequests,
   listEquipmentRows,
   listHistoricalResultRows,
   listImportRuns,
@@ -48,6 +49,7 @@ export default async function Home({ searchParams }: HomeProps) {
     equipmentRows,
     adminSourceStatuses,
     electronicIntegrityArtifacts,
+    electronicIntegrityRequests,
   ] = await Promise.all([
     listStates(),
     listCompletenessReport({ year: selectedYear }),
@@ -63,6 +65,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }),
     listAdminSourceStatuses({ state: selectedState, year: selectedYear }),
     listElectronicIntegrityArtifacts({ state: selectedState, year: selectedYear }),
+    listElectronicIntegrityRequests({ state: selectedState, year: selectedYear }),
   ]);
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
@@ -157,6 +160,7 @@ export default async function Home({ searchParams }: HomeProps) {
             equipmentRows={equipmentRows}
             adminSourceStatus={adminSourceStatuses.states[0]}
             electronicIntegrityStatus={electronicIntegrityArtifacts.states[0]}
+            electronicIntegrityRequests={electronicIntegrityRequests}
           />
         </section>
       </div>

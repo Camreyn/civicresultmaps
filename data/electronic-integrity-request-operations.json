@@ -1,0 +1,129 @@
+{
+  "caveat": "Request operations track collection workflow only. Missing, partial, denied, or delayed records do not prove electronic tampering.",
+  "generatedAt": "2026-06-26",
+  "registry": "data/electronic-integrity-artifacts.json",
+  "contacts": "data/electronic-integrity-request-contacts.json",
+  "tracker": "data/electronic-integrity-request-tracker.json",
+  "receivedFiles": "data/electronic-integrity-received-files.json",
+  "draftDir": "data/electronic-integrity-request-email-drafts",
+  "state": "all",
+  "dryRun": false,
+  "failures": [],
+  "requestRows": 45,
+  "draftCount": 7,
+  "rowsByStatus": {
+    "draft_ready": 45
+  },
+  "rowsByState": {
+    "AZ": 7,
+    "GA": 7,
+    "MI": 6,
+    "NC": 6,
+    "NV": 7,
+    "PA": 6,
+    "WI": 6
+  },
+  "drafts": [
+    {
+      "state": "AZ",
+      "emailFile": "data/electronic-integrity-request-email-drafts/az-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/az-2024-electronic-integrity-request.md",
+      "subject": "Arizona 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-AZ-REPORTING-UNIT-RESULTS",
+        "EI-2024-AZ-CAST-VOTE-RECORDS",
+        "EI-2024-AZ-BALLOT-IMAGES",
+        "EI-2024-AZ-TABULATOR-LOGS",
+        "EI-2024-AZ-LOGIC-ACCURACY",
+        "EI-2024-AZ-AUDIT-RESULTS",
+        "EI-2024-AZ-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "GA",
+      "emailFile": "data/electronic-integrity-request-email-drafts/ga-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/ga-2024-electronic-integrity-request.md",
+      "subject": "Georgia 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-GA-REPORTING-UNIT-RESULTS",
+        "EI-2024-GA-CAST-VOTE-RECORDS",
+        "EI-2024-GA-BALLOT-IMAGES",
+        "EI-2024-GA-TABULATOR-LOGS",
+        "EI-2024-GA-LOGIC-ACCURACY",
+        "EI-2024-GA-AUDIT-RESULTS",
+        "EI-2024-GA-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "MI",
+      "emailFile": "data/electronic-integrity-request-email-drafts/mi-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/mi-2024-electronic-integrity-request.md",
+      "subject": "Michigan 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-MI-CAST-VOTE-RECORDS",
+        "EI-2024-MI-BALLOT-IMAGES",
+        "EI-2024-MI-TABULATOR-LOGS",
+        "EI-2024-MI-LOGIC-ACCURACY",
+        "EI-2024-MI-AUDIT-RESULTS",
+        "EI-2024-MI-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "NV",
+      "emailFile": "data/electronic-integrity-request-email-drafts/nv-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/nv-2024-electronic-integrity-request.md",
+      "subject": "Nevada 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-NV-REPORTING-UNIT-RESULTS",
+        "EI-2024-NV-CAST-VOTE-RECORDS",
+        "EI-2024-NV-BALLOT-IMAGES",
+        "EI-2024-NV-TABULATOR-LOGS",
+        "EI-2024-NV-LOGIC-ACCURACY",
+        "EI-2024-NV-AUDIT-RESULTS",
+        "EI-2024-NV-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "NC",
+      "emailFile": "data/electronic-integrity-request-email-drafts/nc-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/nc-2024-electronic-integrity-request.md",
+      "subject": "North Carolina 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-NC-CAST-VOTE-RECORDS",
+        "EI-2024-NC-BALLOT-IMAGES",
+        "EI-2024-NC-TABULATOR-LOGS",
+        "EI-2024-NC-LOGIC-ACCURACY",
+        "EI-2024-NC-AUDIT-RESULTS",
+        "EI-2024-NC-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "PA",
+      "emailFile": "data/electronic-integrity-request-email-drafts/pa-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/pa-2024-electronic-integrity-request.md",
+      "subject": "Pennsylvania 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-PA-CAST-VOTE-RECORDS",
+        "EI-2024-PA-BALLOT-IMAGES",
+        "EI-2024-PA-TABULATOR-LOGS",
+        "EI-2024-PA-LOGIC-ACCURACY",
+        "EI-2024-PA-AUDIT-RESULTS",
+        "EI-2024-PA-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "WI",
+      "emailFile": "data/electronic-integrity-request-email-drafts/wi-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/wi-2024-electronic-integrity-request.md",
+      "subject": "Wisconsin 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-WI-CAST-VOTE-RECORDS",
+        "EI-2024-WI-BALLOT-IMAGES",
+        "EI-2024-WI-TABULATOR-LOGS",
+        "EI-2024-WI-LOGIC-ACCURACY",
+        "EI-2024-WI-AUDIT-RESULTS",
+        "EI-2024-WI-CHAIN-OF-CUSTODY"
+      ]
+    }
+  ]
+}

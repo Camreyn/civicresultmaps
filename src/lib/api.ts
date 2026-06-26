@@ -122,4 +122,5 @@ export { listAdminSourceStatuses } from "./admin-source-packages";
 export { listSourceAcquisitionTiers } from "./source-acquisition-tiers";
 export { listSwingStateParity } from "./swing-state-parity";
 export { listElectronicIntegrityArtifacts } from "./electronic-integrity-artifacts";
+export { listElectronicIntegrityRequests } from "./electronic-integrity-requests";
 export { listTurnoutSourceStatuses } from "./turnout-source-packages";

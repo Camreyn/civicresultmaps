@@ -48,6 +48,9 @@ jobs:
       - name: Electronic integrity registry validation
         run: npm run validate:electronic-integrity
 
+      - name: Electronic integrity request workflow validation
+        run: npm run validate:electronic-integrity-requests
+
       - name: Production map join validation
         run: npm run validate:maps
 
