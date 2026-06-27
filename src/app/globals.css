@@ -1859,29 +1859,35 @@ input {
 }
 
 .request-attention-mark {
+  align-items: center;
+  background: rgba(240, 195, 106, 0.12);
+  border: 1px solid rgba(240, 195, 106, 0.34);
+  border-radius: 999px;
   color: var(--gold);
-  fill: none;
+  display: inline-flex;
   height: 52px;
-  overflow: visible;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3;
+  justify-content: center;
+  position: relative;
   width: 52px;
 }
 
-.request-attention-mark path:first-of-type {
-  fill: rgba(240, 195, 106, 0.2);
+.request-attention-mark svg {
+  position: relative;
+  z-index: 1;
 }
 
 .request-attention-ring {
   animation: requestPulse 2.4s ease-out infinite;
+  border: 1px solid rgba(240, 195, 106, 0.7);
+  border-radius: 999px;
+  inset: 5px;
   opacity: 0.4;
-  transform-origin: 32px 32px;
+  position: absolute;
 }
 
 .request-attention-ring.inner {
   animation-delay: 0.45s;
+  inset: 12px;
 }
 
 .request-banner-actions,

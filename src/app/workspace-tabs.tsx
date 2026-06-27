@@ -17,6 +17,7 @@ import {
   ListChecks,
   Mail,
   MapIcon,
+  Megaphone,
   Search,
   Send,
   ShieldCheck,
@@ -4098,12 +4099,11 @@ export function WorkspaceTabs({
             </div>
             {electronicRequestQueueCount > 0 && (
               <div className="request-attention-banner" role="status">
-                <svg aria-hidden className="request-attention-mark" viewBox="0 0 64 64">
-                  <circle className="request-attention-ring outer" cx="32" cy="32" r="24" />
-                  <circle className="request-attention-ring inner" cx="32" cy="32" r="15" />
-                  <path d="M22 35h14l6-6v14l-6-6H22z" />
-                  <path d="M42 26l5-5M45 32h7M42 38l5 5" />
-                </svg>
+                <span className="request-attention-mark">
+                  <span aria-hidden className="request-attention-ring outer" />
+                  <span aria-hidden className="request-attention-ring inner" />
+                  <Megaphone aria-hidden size={28} />
+                </span>
                 <div>
                   <strong>
                     {electronicRequestQueueCount.toLocaleString()} {electronicRequestQueueCount === 1 ? "request" : "requests"} need review for {stateName}
