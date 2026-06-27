@@ -1,16 +1,44 @@
 import type { Metadata } from "next";
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
+const siteUrl = "https://www.civicresultmaps.org";
+const siteDescription =
+  "Explore 2024 U.S. election result maps, state readiness, source provenance, review notes, and public data APIs from Civic Result Maps.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://civicresultmaps.org"),
-  title: "Civic Result Maps",
-  description: "Database-backed election result maps, provenance, public APIs, and ETL coverage.",
+  metadataBase: new URL(siteUrl),
+  applicationName: "Civic Result Maps",
+  title: {
+    default: "Civic Result Maps | 2024 Election Result Maps and Source Data",
+    template: "%s | Civic Result Maps",
+  },
+  description: siteDescription,
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
+    type: "website",
     title: "Civic Result Maps",
-    description: "Explore election results with source provenance and API-ready data.",
-    url: "https://civicresultmaps.org",
+    description: siteDescription,
+    url: siteUrl,
     siteName: "Civic Result Maps",
+  },
+  twitter: {
+    card: "summary",
+    title: "Civic Result Maps",
+    description: siteDescription,
   },
 };
 
