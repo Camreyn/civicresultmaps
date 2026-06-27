@@ -2646,6 +2646,14 @@ input {
   position: relative;
 }
 
+.chart-gate-frame {
+  min-height: 132px;
+}
+
+.screening-chart-shell.is-gated .chart-gate-frame {
+  filter: grayscale(0.45);
+  opacity: 0.28;
+}
 .screening-chart-shell.is-gated .screening-chart-frame {
   filter: grayscale(0.45);
   opacity: 0.28;

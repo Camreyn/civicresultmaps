@@ -1002,6 +1002,26 @@ function chartStatusLabel(status: ChartQualityStatus) {
   return "Acknowledgement required";
 }
 
+function staticChartDiagnostic(input: {
+  acknowledgementKey: string;
+  checked?: string[];
+  issues: string[];
+  rowCount: number;
+  status?: ChartQualityStatus;
+  summary: string;
+  title: string;
+}): ChartQualityDiagnostic {
+  const status = input.status ?? (input.rowCount <= 0 ? "blocked" : input.issues.length ? "acknowledgement_required" : "ready");
+  return {
+    acknowledgementKey: input.acknowledgementKey,
+    checked: input.checked ?? [],
+    issues: input.issues,
+    rowCount: input.rowCount,
+    status,
+    summary: input.summary,
+    title: input.title,
+  };
+}
 function qualityBadgeLabel(status: QualityBadgeStatus) {
   if (status === "ready") {
     return "Ready";
@@ -2347,6 +2367,94 @@ export function WorkspaceTabs({
   const selectedImportRuns = importRuns.filter((run) => run.state === selectedStateCode);
   const latestRun = selectedImportRuns[0];
   const sourcesWithoutUrls = sources.filter((source) => !source.sourceUrl.trim());
+  const currentImportIsLegacyOnly = hasLegacyImport(selectedImportRuns) && !hasNativeImport(selectedImportRuns);
+  const reviewCompletenessIssues = [
+    reviewGraphCoverageIsPartial
+      ? `Review charts cover ${reviewJurisdictionOptions.length.toLocaleString()} of ${results.length.toLocaleString()} loaded result jurisdictions, so this is not complete statewide chart coverage.`
+      : "",
+    reviewLimitation ?? "",
+    currentImportIsLegacyOnly ? "This state is still using a legacy static review bundle rather than a source-first native parser." : "",
+  ].filter(Boolean) as string[];
+  const flagMixDiagnostic = staticChartDiagnostic({
+    acknowledgementKey: `flag-mix:${selectedStateCode}:${groupedIndicatorCounts.length}:${reviewRows.length}:${results.length}` ,
+    checked: reviewCompletenessIssues.length ? [] : ["Flag mix uses the currently loaded advisory indicators for this state."],
+    issues: reviewCompletenessIssues,
+    rowCount: groupedIndicatorCounts.length,
+    status: groupedIndicatorCounts.length === 0 ? "blocked" : reviewCompletenessIssues.length ? "acknowledgement_required" : "ready",
+    summary:
+      reviewCompletenessIssues.length > 0
+        ? "This flag-mix chart is based on partial or caveated review data. Read the limits before interpreting the counts."
+        : "This flag-mix chart is based on the currently loaded advisory indicators for the selected state.",
+    title: `${stateName} flag mix`,
+  });
+  const historicalContextDiagnostic = staticChartDiagnostic({
+    acknowledgementKey: `history-context:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join("-")}` ,
+    checked: [`${filteredHistoricalRows.length.toLocaleString()} historical baseline rows are loaded for the enabled years.`],
+    issues: [
+      "Historical baseline charts are context views, not a complete audit or ballot-accounting record.",
+      "They should not be used as evidence by themselves, especially when source coverage or turnout denominators are missing.",
+    ],
+    rowCount: filteredHistoricalRows.length,
+    status: filteredHistoricalRows.length ? "acknowledgement_required" : "blocked",
+    summary: "Historical charts use contextual baseline rows. Read the source and coverage limits before comparing years.",
+    title: `${stateName} historical context charts`,
+  });
+  const klimekProxyDiagnostic = staticChartDiagnostic({
+    acknowledgementKey: `klimek-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join("-")}` ,
+    checked: [`${historicalRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
+    issues: [
+      "This is a proxy graph, not a complete Klimek fingerprint.",
+      "It uses county vote volume because true turnout percentages are not imported for these historical rows.",
+      "Do not interpret it as a complete turnout-fingerprint test.",
+    ],
+    rowCount: historicalRowsByYear.reduce((sum, yearGroup) => sum + yearGroup.rows.length, 0),
+    status: historicalRowsByYear.length ? "acknowledgement_required" : "blocked",
+    summary: "This Klimek-style view uses proxy inputs. Read the limits before viewing the fingerprint panels.",
+    title: `${stateName} Klimek-style proxy fingerprints`,
+  });
+  const shpilkinProxyDiagnostic = staticChartDiagnostic({
+    acknowledgementKey: `shpilkin-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join("-")}` ,
+    checked: [`${shpilkinRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
+    issues: [
+      "This groups county vote volume by vote-share buckets, not precinct-level or ballot-level distributions.",
+      "It does not replace turnout-based review or official source reconciliation when those data are missing.",
+    ],
+    rowCount: shpilkinRowsByYear.reduce((sum, yearGroup) => sum + yearGroup.buckets.length, 0),
+    status: shpilkinRowsByYear.length ? "acknowledgement_required" : "blocked",
+    summary: "This Shpilkin-style diagnostic uses limited county-level inputs. Read the limits before viewing the bucket charts.",
+    title: `${stateName} Shpilkin-style diagnostics`,
+  });
+  const voteMethodDiagnostic = staticChartDiagnostic({
+    acknowledgementKey: `vote-method:${selectedStateCode}:${voteMethodRows.length}:${voteMethodUnavailableRows}` ,
+    checked: voteMethodRows.length ? [`${voteMethodRows.length.toLocaleString()} participation-method rows are loaded.`] : [],
+    issues: [
+      "EAC participation-method rows describe how voters cast ballots; they do not split candidate votes by method.",
+      voteMethodUnavailableRows ? `${voteMethodUnavailableRows.toLocaleString()} method rows have unavailable values.` : "",
+    ].filter(Boolean) as string[],
+    rowCount: voteMethodRows.length,
+    status: voteMethodRows.length ? "acknowledgement_required" : "blocked",
+    summary: "Vote-method charts are partial context only. Read the limits before using them beside candidate results.",
+    title: `${stateName} vote-method context`,
+  });
+  const equipmentContextDiagnostic = staticChartDiagnostic({
+    acknowledgementKey: `equipment-context:${selectedStateCode}:${equipmentRows.length}:${equipmentDiagnostics.length}` ,
+    checked: equipmentRows.length ? [`${equipmentRows.length.toLocaleString()} equipment-context rows are loaded.`] : [],
+    issues: [
+      "Equipment charts are administration context only; they do not prove causation for vote patterns.",
+      "They may not prove every precinct inside a county used the same setup.",
+      equipmentUniformityWarnings ? `${equipmentUniformityWarnings.toLocaleString()} rows carry uniformity warning notes.` : "",
+    ].filter(Boolean) as string[],
+    rowCount: equipmentRows.length,
+    status: equipmentRows.length ? "acknowledgement_required" : "blocked",
+    summary: "Equipment charts are partial context. Read the limits before comparing equipment groups to flagged jurisdictions.",
+    title: `${stateName} equipment context`,
+  });
+  const flagMixAcknowledged = acknowledgedChartKeys.includes(flagMixDiagnostic.acknowledgementKey);
+  const historicalContextAcknowledged = acknowledgedChartKeys.includes(historicalContextDiagnostic.acknowledgementKey);
+  const klimekProxyAcknowledged = acknowledgedChartKeys.includes(klimekProxyDiagnostic.acknowledgementKey);
+  const shpilkinProxyAcknowledged = acknowledgedChartKeys.includes(shpilkinProxyDiagnostic.acknowledgementKey);
+  const voteMethodAcknowledged = acknowledgedChartKeys.includes(voteMethodDiagnostic.acknowledgementKey);
+  const equipmentContextAcknowledged = acknowledgedChartKeys.includes(equipmentContextDiagnostic.acknowledgementKey);
   const dataNoteSections = buildDataNoteSections({
     adminSourceStatus,
     completeness: selectedCompleteness,
@@ -3438,25 +3546,37 @@ export function WorkspaceTabs({
                 kind of advisory pattern.
               </Eli5>
             </div>
-            <div className="mini-bars">
-              {groupedIndicatorCounts.length ? (
-                groupedIndicatorCounts.map(([label, count]) => (
-                  <div className="mini-bar-row" key={label}>
-                    <span>{label}</span>
-                    <strong>{count}</strong>
-                    <i style={{ width: `${Math.max(8, (count / indicators.length) * 100)}%` }} />
-                  </div>
-                ))
-              ) : (
-                <div className="empty-state compact">
-                  <strong>{reviewRows.length ? "No advisory flags generated" : "Waiting on review data"}</strong>
-                  <span>
-                    {reviewRows.length
-                      ? reviewLimitation ?? "No loaded review rows crossed the current advisory thresholds."
-                      : "Expected path: reviewCharts.metadata.rows in the state bundle."}
-                  </span>
+            <ChartQualityNotice diagnostic={flagMixDiagnostic} />
+            <div
+              className={`screening-chart-shell ${flagMixDiagnostic.status !== "ready" && !flagMixAcknowledged ? "is-gated" : ""}`}
+            >
+              <div className="chart-gate-frame">
+                <div className="mini-bars">
+                  {groupedIndicatorCounts.length ? (
+                    groupedIndicatorCounts.map(([label, count]) => (
+                      <div className="mini-bar-row" key={label}>
+                        <span>{label}</span>
+                        <strong>{count}</strong>
+                        <i style={{ width: `${Math.max(8, (count / indicators.length) * 100)}%` }} />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="empty-state compact">
+                      <strong>{reviewRows.length ? "No advisory flags generated" : "Waiting on review data"}</strong>
+                      <span>
+                        {reviewRows.length
+                          ? reviewLimitation ?? "No loaded review rows crossed the current advisory thresholds."
+                          : "Expected path: reviewCharts.metadata.rows in the state bundle."}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+              <ChartGate
+                acknowledged={flagMixAcknowledged}
+                diagnostic={flagMixDiagnostic}
+                onAcknowledge={() => acknowledgeChart(flagMixDiagnostic.acknowledgementKey)}
+              />
             </div>
           </section>
         </div>
@@ -3571,7 +3691,10 @@ export function WorkspaceTabs({
                           each group, so you can compare the slices from year to year.
                         </Eli5>
                       </div>
-                      <div className="history-share-chart" role="img" aria-label="Statewide historical vote share chart">
+                      <ChartQualityNotice diagnostic={historicalContextDiagnostic} />
+<div className={`screening-chart-shell ${historicalContextDiagnostic.status !== "ready" && !historicalContextAcknowledged ? "is-gated" : ""}`}>
+  <div className="chart-gate-frame">
+<div className="history-share-chart" role="img" aria-label="Statewide historical vote share chart">
                         {filteredHistoricalSummaries.map((summary) => {
                           const demShare = summary.totalVotes > 0 ? (summary.demVotes / summary.totalVotes) * 100 : 0;
                           const repShare = summary.totalVotes > 0 ? (summary.repVotes / summary.totalVotes) * 100 : 0;
@@ -3591,6 +3714,13 @@ export function WorkspaceTabs({
                           );
                         })}
                       </div>
+  </div>
+  <ChartGate
+    acknowledged={historicalContextAcknowledged}
+    diagnostic={historicalContextDiagnostic}
+    onAcknowledge={() => acknowledgeChart(historicalContextDiagnostic.acknowledgementKey)}
+  />
+</div>
                     </article>
                   )}
 
@@ -3604,7 +3734,10 @@ export function WorkspaceTabs({
                           between them and second place.
                         </Eli5>
                       </div>
-                      <div className="history-margin-chart" role="img" aria-label="Historical winner margin chart">
+                      <ChartQualityNotice diagnostic={historicalContextDiagnostic} />
+<div className={`screening-chart-shell ${historicalContextDiagnostic.status !== "ready" && !historicalContextAcknowledged ? "is-gated" : ""}`}>
+  <div className="chart-gate-frame">
+<div className="history-margin-chart" role="img" aria-label="Historical winner margin chart">
                         {filteredHistoricalSummaries.map((summary) => {
                           const width = Math.max(4, (summary.marginPct / maxHistoricalMargin) * 100);
                           return (
@@ -3621,6 +3754,13 @@ export function WorkspaceTabs({
                           );
                         })}
                       </div>
+  </div>
+  <ChartGate
+    acknowledged={historicalContextAcknowledged}
+    diagnostic={historicalContextDiagnostic}
+    onAcknowledge={() => acknowledgeChart(historicalContextDiagnostic.acknowledgementKey)}
+  />
+</div>
                     </article>
                   )}
 
@@ -3634,7 +3774,10 @@ export function WorkspaceTabs({
                           year and the last selected year. Blue means movement toward Democrats; red means movement away.
                         </Eli5>
                       </div>
-                      <div className="history-swing-list">
+                      <ChartQualityNotice diagnostic={historicalContextDiagnostic} />
+<div className={`screening-chart-shell ${historicalContextDiagnostic.status !== "ready" && !historicalContextAcknowledged ? "is-gated" : ""}`}>
+  <div className="chart-gate-frame">
+<div className="history-swing-list">
                         {historicalCountyTrends.map((trend) => {
                           const width = Math.min(100, Math.max(5, Math.abs(trend.demShareChange) * 4));
                           return (
@@ -3654,6 +3797,13 @@ export function WorkspaceTabs({
                           );
                         })}
                       </div>
+  </div>
+  <ChartGate
+    acknowledged={historicalContextAcknowledged}
+    diagnostic={historicalContextDiagnostic}
+    onAcknowledge={() => acknowledgeChart(historicalContextDiagnostic.acknowledgementKey)}
+  />
+</div>
                     </article>
                   )}
 
@@ -3680,7 +3830,10 @@ export function WorkspaceTabs({
                           </span>
                         </div>
                       </div>
-                      <div className="fingerprint-grid">
+                      <ChartQualityNotice diagnostic={klimekProxyDiagnostic} />
+<div className={`screening-chart-shell ${klimekProxyDiagnostic.status !== "ready" && !klimekProxyAcknowledged ? "is-gated" : ""}`}>
+  <div className="chart-gate-frame">
+<div className="fingerprint-grid">
                         {historicalRowsByYear.map((yearGroup) => (
                           <div className="fingerprint-panel" key={yearGroup.year}>
                             <strong>{yearGroup.year}</strong>
@@ -3715,6 +3868,13 @@ export function WorkspaceTabs({
                           </div>
                         ))}
                       </div>
+  </div>
+  <ChartGate
+    acknowledged={klimekProxyAcknowledged}
+    diagnostic={klimekProxyDiagnostic}
+    onAcknowledge={() => acknowledgeChart(klimekProxyDiagnostic.acknowledgementKey)}
+  />
+</div>
                     </article>
                   )}
 
@@ -3741,7 +3901,10 @@ export function WorkspaceTabs({
                           </span>
                         </div>
                       </div>
-                      <div className="shpilkin-grid">
+                      <ChartQualityNotice diagnostic={shpilkinProxyDiagnostic} />
+<div className={`screening-chart-shell ${shpilkinProxyDiagnostic.status !== "ready" && !shpilkinProxyAcknowledged ? "is-gated" : ""}`}>
+  <div className="chart-gate-frame">
+<div className="shpilkin-grid">
                         {shpilkinRowsByYear.map((yearGroup) => (
                           <div className="shpilkin-panel" key={yearGroup.year}>
                             <strong>{yearGroup.year}</strong>
@@ -3771,6 +3934,13 @@ export function WorkspaceTabs({
                           </div>
                         ))}
                       </div>
+  </div>
+  <ChartGate
+    acknowledged={shpilkinProxyAcknowledged}
+    diagnostic={shpilkinProxyDiagnostic}
+    onAcknowledge={() => acknowledgeChart(shpilkinProxyDiagnostic.acknowledgementKey)}
+  />
+</div>
                     </article>
                   )}
                 </div>
@@ -4220,7 +4390,10 @@ export function WorkspaceTabs({
               </div>
               {voteMethodRows.length ? (
                 <>
-                  <div className="export-summary-grid vote-method-summary-grid">
+                  <ChartQualityNotice diagnostic={voteMethodDiagnostic} />
+<div className={`screening-chart-shell ${voteMethodDiagnostic.status !== "ready" && !voteMethodAcknowledged ? "is-gated" : ""}`}>
+  <div className="chart-gate-frame">
+<div className="export-summary-grid vote-method-summary-grid">
                     <article>
                       <span>Jurisdictions</span>
                       <strong>{voteMethodJurisdictions.toLocaleString()}</strong>
@@ -4238,6 +4411,13 @@ export function WorkspaceTabs({
                       <strong>Map ready</strong>
                     </article>
                   </div>
+  </div>
+  <ChartGate
+    acknowledged={voteMethodAcknowledged}
+    diagnostic={voteMethodDiagnostic}
+    onAcknowledge={() => acknowledgeChart(voteMethodDiagnostic.acknowledgementKey)}
+  />
+</div>
                   <div className="table-wrap">
                     <table>
                       <thead>
@@ -4312,7 +4492,10 @@ export function WorkspaceTabs({
               </div>
               {equipmentRows.length ? (
                 <>
-                  <div className="export-summary-grid vote-method-summary-grid">
+                  <ChartQualityNotice diagnostic={equipmentContextDiagnostic} />
+<div className={`screening-chart-shell ${equipmentContextDiagnostic.status !== "ready" && !equipmentContextAcknowledged ? "is-gated" : ""}`}>
+  <div className="chart-gate-frame">
+<div className="export-summary-grid vote-method-summary-grid">
                     <article>
                       <span>Jurisdictions</span>
                       <strong>{equipmentJurisdictions.toLocaleString()}</strong>
@@ -4334,6 +4517,13 @@ export function WorkspaceTabs({
                       <strong>Verifier</strong>
                     </article>
                   </div>
+  </div>
+  <ChartGate
+    acknowledged={equipmentContextAcknowledged}
+    diagnostic={equipmentContextDiagnostic}
+    onAcknowledge={() => acknowledgeChart(equipmentContextDiagnostic.acknowledgementKey)}
+  />
+</div>
                   <div className="vote-method-caveat">
                     <div>
                       <strong>Equipment Cluster Diagnostic</strong>

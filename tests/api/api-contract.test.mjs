@@ -204,6 +204,13 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /How to read this/);
   assert.match(tabs, /downloadSvgElement/);
   assert.match(tabs, /Partial screening data/);
+  assert.match(tabs, /staticChartDiagnostic/);
+  assert.match(tabs, /flagMixDiagnostic/);
+  assert.match(tabs, /historicalContextDiagnostic/);
+  assert.match(tabs, /klimekProxyDiagnostic/);
+  assert.match(tabs, /shpilkinProxyDiagnostic/);
+  assert.match(tabs, /voteMethodDiagnostic/);
+  assert.match(tabs, /equipmentContextDiagnostic/);
   assert.match(tabs, /Proxy graph, not a complete Klimek fingerprint/);
   assert.match(tabs, /methodologyGuides/);
   assert.match(tabs, /methodology-card/);
