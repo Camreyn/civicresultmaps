@@ -2837,6 +2837,10 @@ input {
   position: relative;
 }
 
+.screening-chart-shell.is-gated {
+  min-height: 240px;
+}
+
 .chart-gate-frame {
   min-height: 132px;
 }
