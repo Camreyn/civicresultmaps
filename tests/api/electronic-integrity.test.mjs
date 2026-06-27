@@ -77,6 +77,9 @@ test("electronic integrity API and validation scripts are wired", () => {
   assert.match(tabs, /Electronic Integrity/);
   assert.match(tabs, /Open records queue/);
   assert.match(tabs, /Request workflow/);
+  assert.match(tabs, /Copy email draft/);
+  assert.match(tabs, /Open mail app/);
+  assert.match(tabs, /Find custodian/);
   assert.match(scripts["validate:electronic-integrity"], /validate-electronic-integrity-artifacts/);
   assert.match(scripts["etl:status:electronic-integrity"], /report-electronic-integrity-reconciliation/);
   assert.match(scripts["etl:requests:electronic-integrity"], /create-electronic-integrity-request-packets/);
@@ -135,4 +138,13 @@ test("electronic request operations create sendable drafts and track per-artifac
   assert.match(wiEmail, /Subject: Wisconsin 2024 electronic election records request/);
   assert.match(wiEmail, /EI-2024-WI-CAST-VOTE-RECORDS/);
   assert.match(wiEmail, /verify recipient email/);
+});
+
+test("electronic request API exposes browser-ready email body and routing hints", () => {
+  const source = readFileSync("src/lib/electronic-integrity-requests.ts", "utf8");
+  assert.match(source, /requestEmailBody/);
+  assert.match(source, /mailtoHref/);
+  assert.match(source, /recipientHint/);
+  assert.match(source, /routingHint/);
+  assert.match(source, /Verify recipient email/);
 });

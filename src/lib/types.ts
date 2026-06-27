@@ -328,17 +328,32 @@ export type ElectronicIntegrityRequestSummary = {
   notes: string;
 };
 
+export type ElectronicIntegrityRequestContactSummary = {
+  state: string;
+  primaryCustodian: string;
+  recipientEmail: string;
+  recipientPortalUrl: string;
+  recipientLookupUrl: string;
+  countyCustodianLikely: boolean;
+  notes: string;
+};
+
 export type ElectronicIntegrityRequestStateDraft = {
   state: string;
   emailFile: string;
   markdownFile: string;
   subject: string;
   requestIds: string[];
+  emailBody: string;
+  mailtoHref: string;
+  recipientHint: string;
+  routingHint: string;
 };
 
 export type ElectronicIntegrityRequestOperationSummary = {
   caveat: string;
   generatedAt: string;
+  contacts: ElectronicIntegrityRequestContactSummary[];
   requests: ElectronicIntegrityRequestSummary[];
   summary: {
     draftFiles: ElectronicIntegrityRequestStateDraft[];

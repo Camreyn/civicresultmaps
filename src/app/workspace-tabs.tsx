@@ -6,6 +6,7 @@ import {
   BarChart3,
   BookOpen,
   CheckCircle2,
+  Copy,
   Database,
   Download,
   FileCheck2,
@@ -1866,6 +1867,7 @@ export function WorkspaceTabs({
   voteMethodRows,
 }: WorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("map");
+  const [copiedElectronicDraft, setCopiedElectronicDraft] = useState(false);
   const [enabledScreeningGraphs, setEnabledScreeningGraphs] = useState<ScreeningGraphType[]>([
     "voteShareScatter",
     "dropoffHistogram",
@@ -2270,6 +2272,25 @@ export function WorkspaceTabs({
     counts[request.status] = (counts[request.status] ?? 0) + 1;
     return counts;
   }, {});
+  const copyElectronicDraft = async () => {
+    if (!electronicStateDraft?.emailBody) return;
+    try {
+      await navigator.clipboard.writeText(electronicStateDraft.emailBody);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = electronicStateDraft.emailBody;
+      textarea.setAttribute("readonly", "true");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
+    setCopiedElectronicDraft(true);
+    window.setTimeout(() => setCopiedElectronicDraft(false), 2200);
+  };
+
   const electronicStatusCounts = electronicArtifacts.reduce<Record<string, number>>((counts, artifact) => {
     counts[artifact.status] = (counts[artifact.status] ?? 0) + 1;
     return counts;
@@ -3938,6 +3959,27 @@ export function WorkspaceTabs({
                         {electronicStateDraft ? ` Draft: ${electronicStateDraft.emailFile}` : ""}
                       </span>
                     </div>
+                    {electronicStateDraft && (
+                      <div className="request-draft-panel">
+                        <div>
+                          <strong>Email draft</strong>
+                          <span>{electronicStateDraft.routingHint} {electronicStateDraft.recipientHint}</span>
+                        </div>
+                        <div className="request-draft-actions">
+                          <button className="secondary-button" onClick={copyElectronicDraft} type="button">
+                            <Copy aria-hidden size={15} />
+                            {copiedElectronicDraft ? "Copied" : "Copy email draft"}
+                          </button>
+                          <a className="secondary-button" href={electronicStateDraft.mailtoHref}>
+                            <Mail aria-hidden size={15} />
+                            Open mail app
+                          </a>
+                          <a className="secondary-button" href={electronicRequestRows[0]?.recipientLookupUrl} rel="noreferrer" target="_blank">
+                            Find custodian
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     <div className="table-wrap">
                       <table>
                         <thead>

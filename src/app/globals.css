@@ -1779,6 +1779,44 @@ input {
   white-space: nowrap;
 }
 
+.request-draft-panel {
+  align-items: center;
+  background: rgba(244, 241, 234, 0.035);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 14px;
+}
+
+.request-draft-panel > div:first-child {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.request-draft-panel strong {
+  color: var(--foreground);
+}
+
+.request-draft-panel span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.request-draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.request-draft-actions a {
+  text-decoration: none;
+}
+
 .table-wrap {
   max-height: min(72vh, 760px);
   overflow: auto;
