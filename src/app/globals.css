@@ -2838,7 +2838,7 @@ input {
 }
 
 .screening-chart-shell.is-gated {
-  min-height: 240px;
+  min-height: 300px;
 }
 
 .chart-gate-frame {
@@ -2847,6 +2847,7 @@ input {
 
 .screening-chart-shell.is-gated .chart-gate-frame {
   filter: grayscale(0.45);
+  min-height: 300px;
   opacity: 0.28;
 }
 .screening-chart-shell.is-gated .screening-chart-frame {
