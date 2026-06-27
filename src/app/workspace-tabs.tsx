@@ -1859,6 +1859,78 @@ function ChartGate({
   );
 }
 
+function DataNotesPanel({
+  dataIssueUrl,
+  isCollapsed,
+  notes,
+  onToggle,
+  stateName,
+}: {
+  dataIssueUrl: string;
+  isCollapsed: boolean;
+  notes: DataNoteSection[];
+  onToggle: () => void;
+  stateName: string;
+}) {
+  const limitedCount = notes.filter((note) => note.status !== "ready").length;
+
+  return (
+    <aside
+      className={`workspace-notes ${isCollapsed ? "is-collapsed" : ""}`}
+      data-tour="data-notes"
+      aria-label={`${stateName} data notes`}
+    >
+      <button
+        aria-expanded={!isCollapsed}
+        className="notes-rail-button"
+        onClick={onToggle}
+        type="button"
+      >
+        <BookOpen aria-hidden size={16} />
+        <span>Data Notes</span>
+        {limitedCount > 0 && <strong>{limitedCount}</strong>}
+      </button>
+      <section className="panel data-notes-panel" aria-label={`${stateName} data notes detail`}>
+        <div className="panel-header">
+          <div>
+            <h2>Data Notes</h2>
+            <span>What is present, what is partial, and why missing pieces are not here yet</span>
+          </div>
+          <div className="header-actions">
+            <Eli5>
+              This is the health label for the selected state. It explains which data families are loaded and why a
+              missing section is missing instead of leaving people to guess.
+            </Eli5>
+            <button className="secondary-button" onClick={onToggle} type="button">
+              <BookOpen aria-hidden size={14} />
+              Collapse
+            </button>
+            <a className="secondary-link" data-tour="report-data-issue" href={dataIssueUrl} rel="noreferrer" target="_blank">
+              Report Data Issue
+            </a>
+          </div>
+        </div>
+        <div className="data-note-grid">
+          {notes.map((note) => (
+            <article className={`data-note-card ${note.status}`} key={note.key}>
+              <div className="data-note-head">
+                <strong>{note.label}</strong>
+                <QualityBadge detail={note.detail} status={note.status} />
+              </div>
+              <p>{note.detail}</p>
+              <span>{note.evidence}</span>
+              <div>
+                <span className="section-label">Why this is missing or limited</span>
+                <p>{note.why}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </aside>
+  );
+}
+
 function dateLabel(value: string | null) {
   if (!value) {
     return "Not finished";
@@ -1907,6 +1979,7 @@ export function WorkspaceTabs({
   ]);
   const [acknowledgedChartKeys, setAcknowledgedChartKeys] = useState<string[]>([]);
   const [requestGuideOpen, setRequestGuideOpen] = useState(false);
+  const [isDataNotesCollapsed, setIsDataNotesCollapsed] = useState(true);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
 
@@ -2887,42 +2960,9 @@ export function WorkspaceTabs({
           );
         })}
       </nav>
-
-      <section className="panel data-notes-panel" data-tour="data-notes" aria-label={`${stateName} data notes`}>
-        <div className="panel-header">
-          <div>
-            <h2>Data Notes</h2>
-            <span>What is present, what is partial, and why missing pieces are not here yet</span>
-          </div>
-          <div className="header-actions">
-            <Eli5>
-              This is the health label for the selected state. It explains which data families are loaded and why a
-              missing section is missing instead of leaving people to guess.
-            </Eli5>
-            <a className="secondary-link" data-tour="report-data-issue" href={dataIssueUrl} rel="noreferrer" target="_blank">
-              Report Data Issue
-            </a>
-          </div>
-        </div>
-        <div className="data-note-grid">
-          {dataNoteSections.map((note) => (
-            <article className={`data-note-card ${note.status}`} key={note.key}>
-              <div className="data-note-head">
-                <strong>{note.label}</strong>
-                <QualityBadge detail={note.detail} status={note.status} />
-              </div>
-              <p>{note.detail}</p>
-              <span>{note.evidence}</span>
-              <div>
-                <span className="section-label">Why this is missing or limited</span>
-                <p>{note.why}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {activeTab === "map" && (
+      <div className={`workspace-body ${isDataNotesCollapsed ? "notes-collapsed" : ""}`}>
+        <main className="workspace-main">
+          {activeTab === "map" && (
         <div className="tab-panel-content">
           <div className="content-grid">
             <ResultsExplorer
@@ -5113,6 +5153,15 @@ export function WorkspaceTabs({
           </section>
         </div>
       )}
+        </main>
+        <DataNotesPanel
+          dataIssueUrl={dataIssueUrl}
+          isCollapsed={isDataNotesCollapsed}
+          notes={dataNoteSections}
+          onToggle={() => setIsDataNotesCollapsed((value) => !value)}
+          stateName={stateName}
+        />
+      </div>
     </section>
   );
 }
