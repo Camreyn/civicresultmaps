@@ -77,6 +77,10 @@ test("electronic integrity API and validation scripts are wired", () => {
   assert.match(tabs, /Electronic Integrity/);
   assert.match(tabs, /Open records queue/);
   assert.match(tabs, /Request workflow/);
+  assert.match(tabs, /Records request guide/);
+  assert.match(tabs, /request-attention-banner/);
+  assert.match(tabs, /tab-alert-badge/);
+  assert.match(tabs, /site does not automatically submit requests/);
   assert.match(tabs, /Copy email draft/);
   assert.match(tabs, /Open mail app/);
   assert.match(tabs, /Find custodian/);

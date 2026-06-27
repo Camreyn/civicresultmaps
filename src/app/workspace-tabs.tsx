@@ -4,6 +4,7 @@ import JSZip from "jszip";
 import {
   Activity,
   BarChart3,
+  BellRing,
   BookOpen,
   CheckCircle2,
   Copy,
@@ -17,9 +18,11 @@ import {
   Mail,
   MapIcon,
   Search,
+  Send,
   ShieldCheck,
   Server,
   TriangleAlert,
+  X,
 } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { useEffect, useMemo, useState } from "react";
@@ -1902,6 +1905,7 @@ export function WorkspaceTabs({
     "shpilkin",
   ]);
   const [acknowledgedChartKeys, setAcknowledgedChartKeys] = useState<string[]>([]);
+  const [requestGuideOpen, setRequestGuideOpen] = useState(false);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
 
@@ -2286,6 +2290,7 @@ export function WorkspaceTabs({
   const electronicAuditArtifact = electronicArtifacts.find((artifact) => artifact.type === "audit_results");
   const electronicRequestArtifacts = electronicArtifacts.filter((artifact) => artifact.requestRequired);
   const electronicRequestRows = electronicIntegrityRequests.requests;
+  const electronicRequestQueueCount = electronicRequestRows.length;
   const electronicDraftFiles = electronicIntegrityRequests.summary.draftFiles;
   const electronicStateDraft = electronicDraftFiles.find((draft) => draft.state === selectedStateCode);
   const electronicRequestStatusCounts = electronicRequestRows.reduce<Record<string, number>>((counts, request) => {
@@ -2872,6 +2877,11 @@ export function WorkspaceTabs({
             >
               <Icon aria-hidden size={16} />
               <span>{tab.label}</span>
+              {tab.key === "electronic" && electronicRequestQueueCount > 0 && (
+                <span className="tab-alert-badge" aria-label={`${electronicRequestQueueCount} records requests need review`}>
+                  {electronicRequestQueueCount}
+                </span>
+              )}
             </button>
           );
         })}
@@ -4002,6 +4012,68 @@ export function WorkspaceTabs({
       {activeTab === "electronic" && (
         <div className="tab-panel-content">
           <section className="panel electronic-integrity-panel" data-tour="electronic-integrity">
+            {requestGuideOpen && (
+              <div
+                aria-labelledby="request-guide-title"
+                aria-modal="true"
+                className="request-guide-backdrop"
+                role="dialog"
+              >
+                <div className="request-guide-modal">
+                  <div className="request-guide-head">
+                    <div>
+                      <span className="section-label">Records request guide</span>
+                      <h3 id="request-guide-title">What this request does</h3>
+                    </div>
+                    <button
+                      aria-label="Close records request guide"
+                      className="icon-button"
+                      onClick={() => setRequestGuideOpen(false)}
+                      type="button"
+                    >
+                      <X aria-hidden size={18} />
+                    </button>
+                  </div>
+                  <div className="request-guide-body">
+                    <article>
+                      <strong>What the request is</strong>
+                      <p>
+                        It is a public-records request for election-system evidence such as CVRs, ballot images,
+                        tabulator logs, audit exports, logic-and-accuracy records, custody records, and reconciliation
+                        files. It asks whether the evidence exists and how to obtain it; it is not an allegation.
+                      </p>
+                    </article>
+                    <article>
+                      <strong>What to expect</strong>
+                      <p>
+                        Some offices answer by email, some use a records portal, and some redirect the request to a
+                        county, municipality, or vendor custodian. Fees, clarifying questions, delays, partial releases,
+                        or denials are normal outcomes that should be tracked.
+                      </p>
+                    </article>
+                    <article>
+                      <strong>How it works here</strong>
+                      <p>
+                        The app prepares a draft from the missing evidence list for {stateName}. Review the draft,
+                        verify the custodian, then use copy, email, or the lookup link to send it outside the app. The
+                        site does not automatically submit requests.
+                      </p>
+                    </article>
+                  </div>
+                  <div className="request-guide-actions">
+                    <button className="secondary-button" onClick={() => setRequestGuideOpen(false)} type="button">
+                      Got it
+                    </button>
+                    {electronicStateDraft && (
+                      <a className="secondary-button request-guide-primary" href={electronicStateDraft.mailtoHref}>
+                        <Mail aria-hidden size={15} />
+                        Open mail app
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="panel-header">
               <div>
                 <h2>Electronic Integrity</h2>
@@ -4017,9 +4089,44 @@ export function WorkspaceTabs({
                   detail={electronicIntegrityStatus?.riskPosture ?? "No electronic-integrity package is registered."}
                   status={electronicQualityStatus(electronicIntegrityStatus?.overallStatus)}
                 />
+                <button className="secondary-button" onClick={() => setRequestGuideOpen(true)} type="button">
+                  <BookOpen aria-hidden size={15} />
+                  Request guide
+                </button>
                 <Server aria-hidden size={18} />
               </div>
             </div>
+            {electronicRequestQueueCount > 0 && (
+              <div className="request-attention-banner" role="status">
+                <svg aria-hidden className="request-attention-mark" viewBox="0 0 64 64">
+                  <circle className="request-attention-ring outer" cx="32" cy="32" r="24" />
+                  <circle className="request-attention-ring inner" cx="32" cy="32" r="15" />
+                  <path d="M22 35h14l6-6v14l-6-6H22z" />
+                  <path d="M42 26l5-5M45 32h7M42 38l5 5" />
+                </svg>
+                <div>
+                  <strong>
+                    {electronicRequestQueueCount.toLocaleString()} {electronicRequestQueueCount === 1 ? "request" : "requests"} need review for {stateName}
+                  </strong>
+                  <span>
+                    These drafts ask for missing electronic evidence needed to reconcile machine output against official
+                    totals and audit/paper records. Review the guide before sending.
+                  </span>
+                </div>
+                <div className="request-banner-actions">
+                  <button className="secondary-button request-guide-primary" onClick={() => setRequestGuideOpen(true)} type="button">
+                    <BellRing aria-hidden size={15} />
+                    Read guide
+                  </button>
+                  {electronicStateDraft && (
+                    <a className="secondary-button" href={electronicStateDraft.mailtoHref}>
+                      <Send aria-hidden size={15} />
+                      Open draft
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
             <div className="export-summary-grid">
               <article>
                 <span>Evidence rows</span>
