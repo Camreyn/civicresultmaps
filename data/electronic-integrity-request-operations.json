@@ -1,6 +1,6 @@
 {
   "caveat": "Request operations track collection workflow only. Missing, partial, denied, or delayed records do not prove electronic tampering.",
-  "generatedAt": "2026-06-26",
+  "generatedAt": "2026-06-27",
   "registry": "data/electronic-integrity-artifacts.json",
   "contacts": "data/electronic-integrity-request-contacts.json",
   "tracker": "data/electronic-integrity-request-tracker.json",
@@ -9,10 +9,10 @@
   "state": "all",
   "dryRun": false,
   "failures": [],
-  "requestRows": 45,
-  "draftCount": 7,
+  "requestRows": 52,
+  "draftCount": 8,
   "rowsByStatus": {
-    "draft_ready": 45
+    "draft_ready": 52
   },
   "rowsByState": {
     "AZ": 7,
@@ -21,6 +21,7 @@
     "NC": 6,
     "NV": 7,
     "PA": 6,
+    "TX": 7,
     "WI": 6
   },
   "drafts": [
@@ -69,6 +70,20 @@
       ]
     },
     {
+      "state": "NC",
+      "emailFile": "data/electronic-integrity-request-email-drafts/nc-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/nc-2024-electronic-integrity-request.md",
+      "subject": "North Carolina 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-NC-CAST-VOTE-RECORDS",
+        "EI-2024-NC-BALLOT-IMAGES",
+        "EI-2024-NC-TABULATOR-LOGS",
+        "EI-2024-NC-LOGIC-ACCURACY",
+        "EI-2024-NC-AUDIT-RESULTS",
+        "EI-2024-NC-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
       "state": "NV",
       "emailFile": "data/electronic-integrity-request-email-drafts/nv-2024-electronic-integrity-request.eml",
       "markdownFile": "data/electronic-integrity-request-email-drafts/nv-2024-electronic-integrity-request.md",
@@ -84,20 +99,6 @@
       ]
     },
     {
-      "state": "NC",
-      "emailFile": "data/electronic-integrity-request-email-drafts/nc-2024-electronic-integrity-request.eml",
-      "markdownFile": "data/electronic-integrity-request-email-drafts/nc-2024-electronic-integrity-request.md",
-      "subject": "North Carolina 2024 electronic election records request",
-      "requestIds": [
-        "EI-2024-NC-CAST-VOTE-RECORDS",
-        "EI-2024-NC-BALLOT-IMAGES",
-        "EI-2024-NC-TABULATOR-LOGS",
-        "EI-2024-NC-LOGIC-ACCURACY",
-        "EI-2024-NC-AUDIT-RESULTS",
-        "EI-2024-NC-CHAIN-OF-CUSTODY"
-      ]
-    },
-    {
       "state": "PA",
       "emailFile": "data/electronic-integrity-request-email-drafts/pa-2024-electronic-integrity-request.eml",
       "markdownFile": "data/electronic-integrity-request-email-drafts/pa-2024-electronic-integrity-request.md",
@@ -109,6 +110,21 @@
         "EI-2024-PA-LOGIC-ACCURACY",
         "EI-2024-PA-AUDIT-RESULTS",
         "EI-2024-PA-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "TX",
+      "emailFile": "data/electronic-integrity-request-email-drafts/tx-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/tx-2024-electronic-integrity-request.md",
+      "subject": "Texas 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-TX-REPORTING-UNIT-RESULTS",
+        "EI-2024-TX-CAST-VOTE-RECORDS",
+        "EI-2024-TX-BALLOT-IMAGES",
+        "EI-2024-TX-TABULATOR-LOGS",
+        "EI-2024-TX-LOGIC-ACCURACY",
+        "EI-2024-TX-AUDIT-RESULTS",
+        "EI-2024-TX-CHAIN-OF-CUSTODY"
       ]
     },
     {

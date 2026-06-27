@@ -3851,7 +3851,7 @@ td {
   border-top: 1px solid var(--line);
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
   padding: 16px;
 }
 
@@ -3861,6 +3861,7 @@ td {
   border-radius: 8px;
   display: grid;
   gap: 10px;
+  min-width: 0;
   padding: 14px;
 }
 
@@ -3881,6 +3882,23 @@ td {
 .admin-source-card div {
   display: grid;
   gap: 4px;
+  min-width: 0;
+}
+
+.admin-source-card .section-label,
+.admin-source-card strong,
+.admin-source-card p,
+.admin-source-card .pending,
+.admin-source-card a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.admin-source-card .section-label {
+  line-height: 1.25;
+  margin-bottom: 0;
+  white-space: normal;
 }
 
 .admin-source-card p {

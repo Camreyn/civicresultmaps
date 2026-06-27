@@ -70,6 +70,13 @@ def _county_name(raw: Any) -> str:
     return titled if re.search(r"\bcounty\b$", titled, re.IGNORECASE) else f"{titled} County"
 
 
+def _texas_county_name(raw: Any) -> str:
+    value = str(raw or "").strip()
+    if re.fullmatch(r"la\s*salle(?:\s+county)?", value, re.IGNORECASE):
+        return "Lasalle County"
+    return _county_name(value)
+
+
 def _nevada_jurisdiction_name(raw: Any) -> str:
     value = str(raw or "").strip()
     if re.fullmatch(r"carson\s+city(?:\s+county)?", value, re.IGNORECASE):
@@ -1865,6 +1872,162 @@ def _indiana_enr_county_json_rows(config: EtlConfig, sources: dict[str, SourceCo
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: item["county"]), turnout_rows, metrics
 
+def _texas_vtd_zip_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+    certified_total: int,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["reviewCharts"]
+    source = sources[section["sourceId"]]
+    returns_file = section.get("returnsFile", "2024_General_Election_Returns.csv")
+    president_office = section.get("presidentOffice", "President")
+    comparison_office = section.get("comparisonOffice", "U.S. Sen")
+    comparison_label = section.get("comparisonContest", "United States Senator")
+    precincts: dict[tuple[str, str], dict[str, Any]] = {}
+
+    def values_for(row: dict[str, str]) -> dict[str, Any]:
+        county = _texas_county_name(row.get("County"))
+        vtd = str(row.get("VTD") or "").strip()
+        key = (county, vtd)
+        return precincts.setdefault(
+            key,
+            {
+                "county": county,
+                "vtd": vtd,
+                "cntyvtd": str(row.get("cntyvtd") or row.get("CNTYVTD") or "").strip(),
+                "vtdkey": str(row.get("vtdkeyvalue") or row.get("vtdkey") or "").strip(),
+                "pres_harris": 0,
+                "pres_other": 0,
+                "pres_total": 0,
+                "pres_trump": 0,
+                "sen_dem": 0,
+                "sen_other": 0,
+                "sen_rep": 0,
+                "sen_total": 0,
+            },
+        )
+
+    with zipfile.ZipFile(_artifact_path(source)) as archive, archive.open(returns_file) as handle:
+        reader = csv.DictReader((line.decode("utf-8-sig") for line in handle))
+        required = {"County", "VTD", "Office", "Party", "Votes"}
+        missing = sorted(required.difference(reader.fieldnames or []))
+        if missing:
+            raise ValueError(f"Texas VTD returns CSV missing columns: {', '.join(missing)}")
+
+        for row in reader:
+            office = str(row.get("Office") or "").strip()
+            if office not in {president_office, comparison_office}:
+                continue
+            values = values_for(row)
+            votes = int_text(row.get("Votes"))
+            party = str(row.get("Party") or "").strip().upper()
+            if office == president_office:
+                if party == "D":
+                    values["pres_harris"] += votes
+                elif party == "R":
+                    values["pres_trump"] += votes
+                else:
+                    values["pres_other"] += votes
+                values["pres_total"] += votes
+            elif party == "D":
+                values["sen_dem"] += votes
+                values["sen_total"] += votes
+            elif party == "R":
+                values["sen_rep"] += votes
+                values["sen_total"] += votes
+            else:
+                values["sen_other"] += votes
+                values["sen_total"] += votes
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    for values in sorted(precincts.values(), key=lambda item: (item["county"], item["vtd"])):
+        total = values["pres_total"]
+        if not total:
+            continue
+        has_senate = bool(values["sen_total"])
+        if has_senate:
+            comparison_rows += 1
+        local_unit = f"VTD {values['vtd']}"
+        local_keys = [part for part in [values["cntyvtd"], values["vtdkey"]] if part]
+        if local_keys:
+            local_unit += f" ({'; '.join(local_keys)})"
+        review_rows.append(
+            {
+                "county": values["county"],
+                "localUnit": local_unit,
+                "totalVotes": total,
+                "harris": values["pres_harris"],
+                "trump": values["pres_trump"],
+                "harrisShare": pct(values["pres_harris"], total),
+                "trumpShare": pct(values["pres_trump"], total),
+                "demDropoff": pct(values["pres_harris"] - values["sen_dem"], total) if has_senate else 0,
+                "repDropoff": pct(values["pres_trump"] - values["sen_rep"], total) if has_senate else 0,
+                "coverageMode": "presidentVsSenate" if has_senate else "voteShareOnly",
+                "comparisonContest": comparison_label,
+                "comparisonDemVotes": values["sen_dem"],
+                "comparisonRepVotes": values["sen_rep"],
+                "comparisonOtherVotes": values["sen_other"],
+                "sourceId": source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    turnout_section = config.raw.get("turnout", {})
+    if turnout_section.get("format") == "texasVtdZipVrto":
+        turnout_source = sources[turnout_section["sourceId"]]
+        vrto_file = turnout_section.get("vrtoFile", "2024_General_Election_VRTO.csv")
+        with zipfile.ZipFile(_artifact_path(turnout_source)) as archive, archive.open(vrto_file) as handle:
+            reader = csv.DictReader((line.decode("utf-8-sig") for line in handle))
+            required = {"County", "VTD", "CNTYVTD", "vtdkey", "TotalVR", "TotalTO"}
+            missing = sorted(required.difference(reader.fieldnames or []))
+            if missing:
+                raise ValueError(f"Texas VTD VRTO CSV missing columns: {', '.join(missing)}")
+            for row in reader:
+                county = _texas_county_name(row.get("County"))
+                vtd = str(row.get("VTD") or "").strip()
+                cntyvtd = str(row.get("CNTYVTD") or "").strip()
+                vtdkey = str(row.get("vtdkey") or "").strip()
+                registered = int_text(row.get("TotalVR"))
+                ballots = int_text(row.get("TotalTO"))
+                local_unit = f"VTD {vtd}"
+                local_keys = [part for part in [cntyvtd, vtdkey] if part]
+                if local_keys:
+                    local_unit += f" ({'; '.join(local_keys)})"
+                turnout_rows.append(
+                    {
+                        "county": county,
+                        "localUnit": local_unit,
+                        "ballotsCast": ballots,
+                        "registeredVoters": registered,
+                        "turnoutPct": pct(ballots, registered) if registered else None,
+                        "denominatorType": turnout_section.get("denominatorType", "registeredVoters"),
+                        "registrationDenominatorTiming": turnout_section.get("registrationDenominatorTiming", "vtdReported"),
+                        "warningRequired": bool(turnout_section.get("warningRequired", False)),
+                        "sourceId": turnout_source.id,
+                    }
+                )
+        turnout_metrics = {
+            "nativeTurnoutRows": len(turnout_rows),
+            "nativeRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
+            "nativeBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
+            "nativeTurnoutParser": "texasVtdZipVrto",
+        }
+
+    review_presidential_total = sum(row["totalVotes"] for row in review_rows)
+    metrics = {
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": comparison_label,
+        "nativeReviewPresidentialVotes": review_presidential_total,
+        "nativeReviewCertifiedVoteGap": certified_total - review_presidential_total,
+        **turnout_metrics,
+    }
+    return review_rows, turnout_rows, metrics
+
+
 def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -1896,7 +2059,7 @@ def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig])
         president = races.get(president_id)
         if not president:
             continue
-        county_name = _county_name(county.get("N"))
+        county_name = _texas_county_name(county.get("N"))
         harris, trump, other, total = party_votes(president)
         if not total:
             continue
@@ -1922,35 +2085,49 @@ def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig])
             dem, rep, _other, comparison_total = party_votes(comparison)
             comparison_by_county[county_name] = {"dem": dem, "rep": rep, "total": comparison_total}
 
-    review_rows: list[dict[str, Any]] = []
-    comparison_rows = 0
-    for row in sorted(result_rows, key=lambda item: item["jurisdictionName"]):
-        county = row["jurisdictionName"]
-        total = row["totalVotes"]
-        comparison = comparison_by_county.get(county, {"dem": 0, "rep": 0, "total": 0})
-        has_comparison = bool(comparison["total"])
-        if has_comparison:
-            comparison_rows += 1
-        review_rows.append(
-            {
-                "county": county,
-                "localUnit": "County total",
-                "totalVotes": total,
-                "harris": row["votes"]["Harris"],
-                "trump": row["votes"]["Trump"],
-                "harrisShare": pct(row["votes"]["Harris"], total),
-                "trumpShare": pct(row["votes"]["Trump"], total),
-                "demDropoff": pct(row["votes"]["Harris"] - comparison["dem"], total) if has_comparison else 0,
-                "repDropoff": pct(row["votes"]["Trump"] - comparison["rep"], total) if has_comparison else 0,
-                "coverageMode": section.get("comparisonCoverageMode", "presidentVsSenate") if has_comparison else "voteShareOnly",
-                "sourceId": source.id,
-            }
+    if config.raw.get("reviewCharts", {}).get("format") == "texasVtdZipPrecinctComparison":
+        review_rows, turnout_rows, review_metrics = _texas_vtd_zip_rows(
+            config,
+            sources,
+            sum(row["totalVotes"] for row in result_rows),
         )
+    else:
+        review_rows = []
+        comparison_rows = 0
+        for row in sorted(result_rows, key=lambda item: item["jurisdictionName"]):
+            county = row["jurisdictionName"]
+            total = row["totalVotes"]
+            comparison = comparison_by_county.get(county, {"dem": 0, "rep": 0, "total": 0})
+            has_comparison = bool(comparison["total"])
+            if has_comparison:
+                comparison_rows += 1
+            review_rows.append(
+                {
+                    "county": county,
+                    "localUnit": "County total",
+                    "totalVotes": total,
+                    "harris": row["votes"]["Harris"],
+                    "trump": row["votes"]["Trump"],
+                    "harrisShare": pct(row["votes"]["Harris"], total),
+                    "trumpShare": pct(row["votes"]["Trump"], total),
+                    "demDropoff": pct(row["votes"]["Harris"] - comparison["dem"], total) if has_comparison else 0,
+                    "repDropoff": pct(row["votes"]["Trump"] - comparison["rep"], total) if has_comparison else 0,
+                    "coverageMode": section.get("comparisonCoverageMode", "presidentVsSenate") if has_comparison else "voteShareOnly",
+                    "sourceId": source.id,
+                }
+            )
 
-    turnout_rows: list[dict[str, Any]] = []
-    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
-    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
-        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+        turnout_rows = []
+        turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+        if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+            turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+        review_metrics = {
+            "nativeReviewRows": len(review_rows),
+            "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+            "nativeComparisonRows": comparison_rows,
+            "nativeComparisonContest": section.get("comparisonContestLabel", "United States Senator"),
+            **turnout_metrics,
+        }
 
     metrics = {
         "nativeResultRows": len(result_rows),
@@ -1958,11 +2135,7 @@ def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig])
         "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
         "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
-        "nativeReviewRows": len(review_rows),
-        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
-        "nativeComparisonRows": comparison_rows,
-        "nativeComparisonContest": section.get("comparisonContestLabel", "United States Senator"),
-        **turnout_metrics,
+        **review_metrics,
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
 
@@ -3733,7 +3906,9 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         result_rows, review_rows, turnout_rows, metrics = _texas_county_json_rows(config, sources)
         _assert_native_expected(config, metrics)
         return {
-            "parser": "nativeTexasCountyJson",
+            "parser": "nativeTexasCountyJsonVtdReview"
+            if config.raw.get("reviewCharts", {}).get("format") == "texasVtdZipPrecinctComparison"
+            else "nativeTexasCountyJson",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

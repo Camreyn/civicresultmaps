@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const SWING_STATES = ["AZ", "GA", "MI", "NV", "NC", "PA", "WI"];
+const SWING_STATES = ["AZ", "GA", "MI", "NV", "NC", "PA", "TX", "WI"];
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const stagingDir = process.argv[2] ?? ".etl/staging";
 const outPath = process.argv[3] ?? "data/swing-state-2024-parity-status.json";

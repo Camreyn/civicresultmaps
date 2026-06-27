@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-06-26",
+  "checkedAt": "2026-06-27",
   "electionYear": 2024,
   "description": "Electronic integrity evidence registry for artifacts that can reconcile machine output against independent records. This registry is evidence availability and reconciliation status only; it does not allege or prove tampering.",
   "artifactTypes": [
@@ -308,93 +308,6 @@
       ]
     },
     {
-      "state": "NV",
-      "stateName": "Nevada",
-      "priority": "swing",
-      "overallStatus": "needs_evidence",
-      "summary": "County certified and Senate comparison rows are loaded from archived official county totals; subcounty electronic evidence is not inventoried.",
-      "riskPosture": "county_review_only_electronic_evidence_missing",
-      "nextAction": "Find official local Nevada result exports and inventory county CVR, ballot-image, audit, L&A, and tabulator-log availability.",
-      "artifacts": [
-        {
-          "type": "certified_results",
-          "status": "loaded",
-          "granularity": "county",
-          "sourceUrl": "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
-          "localArtifact": "data/nv-2024-statewide-general-president.csv",
-          "parser": "nevadaStatewideGeneralCsv",
-          "reconciliationStatus": "county_totals_loaded_from_archived_official_page",
-          "requestRequired": false,
-          "tamperDetectionUse": "County baseline only; insufficient for machine or batch anomaly localization."
-        },
-        {
-          "type": "reporting_unit_results",
-          "status": "partial",
-          "granularity": "county",
-          "localArtifact": "data/nv-2024-statewide-general-senate.csv",
-          "parser": "countyComparisonCsv",
-          "reconciliationStatus": "county_only_not_subcounty",
-          "requestRequired": true,
-          "tamperDetectionUse": "County-only comparison rows are weak for electronic-level review.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
-        },
-        {
-          "type": "cast_vote_records",
-          "status": "needs_data",
-          "granularity": "ballot",
-          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
-          "requestRequired": true,
-          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
-        },
-        {
-          "type": "ballot_images",
-          "status": "needs_data",
-          "granularity": "ballot_image",
-          "reconciliationStatus": "not_inventoried",
-          "requestRequired": true,
-          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
-        },
-        {
-          "type": "tabulator_logs",
-          "status": "needs_data",
-          "granularity": "tabulator_or_ems",
-          "reconciliationStatus": "not_inventoried",
-          "requestRequired": true,
-          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
-        },
-        {
-          "type": "logic_accuracy",
-          "status": "needs_data",
-          "granularity": "test_deck_or_testing_jurisdiction",
-          "reconciliationStatus": "not_inventoried",
-          "requestRequired": true,
-          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
-        },
-        {
-          "type": "audit_results",
-          "status": "needs_data",
-          "granularity": "audit_unit",
-          "reconciliationStatus": "not_inventoried",
-          "requestRequired": true,
-          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
-        },
-        {
-          "type": "chain_of_custody",
-          "status": "needs_data",
-          "granularity": "ballot_equipment_media",
-          "reconciliationStatus": "not_inventoried",
-          "requestRequired": true,
-          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
-        }
-      ]
-    },
-    {
       "state": "NC",
       "stateName": "North Carolina",
       "priority": "swing",
@@ -482,6 +395,93 @@
       ]
     },
     {
+      "state": "NV",
+      "stateName": "Nevada",
+      "priority": "swing",
+      "overallStatus": "needs_evidence",
+      "summary": "County certified and Senate comparison rows are loaded from archived official county totals; subcounty electronic evidence is not inventoried.",
+      "riskPosture": "county_review_only_electronic_evidence_missing",
+      "nextAction": "Find official local Nevada result exports and inventory county CVR, ballot-image, audit, L&A, and tabulator-log availability.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county",
+          "sourceUrl": "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+          "localArtifact": "data/nv-2024-statewide-general-president.csv",
+          "parser": "nevadaStatewideGeneralCsv",
+          "reconciliationStatus": "county_totals_loaded_from_archived_official_page",
+          "requestRequired": false,
+          "tamperDetectionUse": "County baseline only; insufficient for machine or batch anomaly localization."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "partial",
+          "granularity": "county",
+          "localArtifact": "data/nv-2024-statewide-general-senate.csv",
+          "parser": "countyComparisonCsv",
+          "reconciliationStatus": "county_only_not_subcounty",
+          "requestRequired": true,
+          "tamperDetectionUse": "County-only comparison rows are weak for electronic-level review.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "audit_results",
+          "status": "needs_data",
+          "granularity": "audit_unit",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+        }
+      ]
+    },
+    {
       "state": "PA",
       "stateName": "Pennsylvania",
       "priority": "swing",
@@ -565,6 +565,96 @@
           "requestRequired": true,
           "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
           "requestPath": "Pennsylvania Department of State or county boards; CVR release requires legal/public-records review before treating as obtainable."
+        }
+      ]
+    },
+    {
+      "state": "TX",
+      "stateName": "Texas",
+      "priority": "swing",
+      "overallStatus": "partial",
+      "summary": "Certified SOS county results and Capitol Data Portal VTD review/turnout context are loaded. SOS audit-program context is partial for selected counties, while CVR, ballot-image, log, L&A, and custody artifacts remain records-request items.",
+      "riskPosture": "vtd_review_loaded_partial_audit_context_electronic_evidence_missing_certified_total_gap",
+      "nextAction": "Investigate the VTD-versus-SOS county total gap, obtain any county/VTD crosswalk or correction notes, and route requests for CVR, ballot-image, tabulator-log, L&A, audit workpaper, and custody records.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county",
+          "sourceUrl": "https://www.sos.state.tx.us/elections/historical/index.shtml",
+          "localArtifact": "data/tx-2024-official-results/County.json",
+          "parser": "texasCountyJson",
+          "reconciliationStatus": "certified_county_results_loaded",
+          "requestRequired": false,
+          "tamperDetectionUse": "Certified county baseline for VTD, CVR, and audit reconciliation."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "partial",
+          "granularity": "vtd",
+          "sourceUrl": "https://data.capitol.texas.gov/topic/elections",
+          "localArtifact": "data/tx-2024-general-vtds-election-data.zip",
+          "parser": "texasVtdZipPrecinctComparison",
+          "reconciliationStatus": "vtd_president_senate_review_loaded_certified_total_gap_15854",
+          "requestRequired": true,
+          "tamperDetectionUse": "VTD President/Senate comparison can localize advisory patterns, but the presidential VTD aggregate is 15,854 votes above the SOS certified county package and needs source-side explanation before replacing certified totals.",
+          "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals and VTD/reporting-unit rows.",
+          "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
+          "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
+          "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "sourceUrl": "https://www.sos.state.tx.us/elections/laws/votingsystems.shtml",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
+          "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
+        },
+        {
+          "type": "audit_results",
+          "status": "partial",
+          "granularity": "selected_county_state_audit",
+          "sourceUrl": "https://www.sos.state.tx.us/elections/fad/index.shtml",
+          "reconciliationStatus": "selected_counties_public_audit_program_context_loaded_no_unit_workpapers",
+          "requestRequired": true,
+          "tamperDetectionUse": "Documents the SOS-selected 2023-2024 audit counties and published preliminary 2024 Val Verde findings, but does not provide statewide per-unit audit workpapers or outcomes.",
+          "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
+          "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
         }
       ]
     },

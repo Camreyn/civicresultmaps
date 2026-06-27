@@ -22,6 +22,7 @@
     "NV",
     "OH",
     "PA",
+    "TX",
     "VA",
     "WA",
     "WI",
@@ -275,6 +276,68 @@
         "Precinct boundary GeoJSON is not present in this package.",
         "Turnout rows use EAC 2024 V2 jurisdiction fallback data until an equal-or-finer Washington state source is collected."
       ]
+    },
+    {
+      "state": "TX",
+      "name": "Texas",
+      "priority": 5,
+      "nativeReadiness": "complete_county_map_vtd_review_turnout_partial_reconciliation",
+      "authority": "Texas Secretary of State; Texas Legislative Council Capitol Data Portal",
+      "configFile": "etl/state-configs/tx.json",
+      "legacyReferenceBundle": "data/tx-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Texas SOS official 2024 general county JSON results",
+          "sourceUrl": "https://results.texas-election.com/static/data/election/49664/1012/County.json",
+          "localFile": "data/tx-2024-official-results/County.json",
+          "parserHint": "Use race 1001 for certified county presidential rows and race 7958 for county U.S. Senate comparison totals when needed."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Texas Capitol Data Portal 2024 General Election VTD returns ZIP",
+          "sourceUrl": "https://data.capitol.texas.gov/dataset/35b16aee-0bb0-4866-b1ec-859f1f044241/resource/e1cd6332-6a7a-4c78-ad2a-852268f6c7a2/download/2024-general-vtds-election-data.zip",
+          "localFile": "data/tx-2024-general-vtds-election-data.zip",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Inside the ZIP, parse 2024_General_Election_Returns.csv; group by County/FIPS/VTD and compare Office=President with Office=U.S. Sen using Party D/R/other."
+        },
+        "turnout": {
+          "sourceTitle": "Texas Capitol Data Portal 2024 General Election VTD VRTO rows",
+          "sourceUrl": "https://data.capitol.texas.gov/dataset/35b16aee-0bb0-4866-b1ec-859f1f044241/resource/e1cd6332-6a7a-4c78-ad2a-852268f6c7a2/download/2024-general-vtds-election-data.zip",
+          "localFile": "data/tx-2024-general-vtds-election-data.zip",
+          "level": "precinct",
+          "denominator": "TotalVR registered voters from 2024_General_Election_VRTO.csv",
+          "ballotsCast": "TotalTO turnout from 2024_General_Election_VRTO.csv"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2748%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/tx-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 254,
+        "geometryFeatures": 254,
+        "stateTotal": 11388674,
+        "trump": 6393597,
+        "harris": 4835250,
+        "other": 159827,
+        "localReviewRows": 9348,
+        "turnoutRows": 9712
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_dropoff_vtd_export_with_certified_total_gap",
+        "turnoutMode": "capitol_data_portal_vtd_vrto"
+      },
+      "caveats": [
+        "Certified county result rows remain sourced from Texas SOS County.json.",
+        "The Capitol Data Portal VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674.",
+        "VTD rows are official local screening context, not replacement certified totals.",
+        "VTD boundary GeoJSON is not present in this package."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [
@@ -458,23 +521,6 @@
       "preferredComparisonContest": "U.S. Senate",
       "parserNeeded": "countyPresidentCsv loaded for New York official county package; precinct/subcounty parser still needed if a lower-level package is found",
       "blocker": "County-level President-versus-U.S. Senate review package is loaded from the NYSBOE official archive PDF; not precinct-level."
-    },
-    {
-      "state": "TX",
-      "name": "Texas",
-      "priority": 11,
-      "currentStatus": "official_county_review_package_collected",
-      "officialSourcePages": [
-        "https://results.texas-election.com/",
-        "https://results.texas-election.com/static/data/election/49664/1012/County.json"
-      ],
-      "requiredArtifacts": [
-        "official precinct-level or county-subdivision result rows for President",
-        "official precinct-level or county-subdivision result rows for U.S. Senate"
-      ],
-      "preferredComparisonContest": "U.S. Senate; current official County.json package supports county-level President-vs-U.S.-Senate comparison rows.",
-      "parserNeeded": "texasCountyJson package loaded; precinct/subcounty parser still needed if a lower-level package is found",
-      "blocker": "Official Texas 2024 Secretary of State County.json package is collected and parsed at county level. Remaining blocker for precinct-level flags is a precinct/subcounty export; this package has 254 county race rows, not precinct rows."
     },
     {
       "state": "WV",

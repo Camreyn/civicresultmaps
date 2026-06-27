@@ -10,7 +10,7 @@ const registry = JSON.parse(readFileSync("data/electronic-integrity-artifacts.js
 const requestTracker = JSON.parse(readFileSync("data/electronic-integrity-request-tracker.json", "utf8"));
 const requestOps = JSON.parse(readFileSync("data/electronic-integrity-request-operations.json", "utf8"));
 const receivedFiles = JSON.parse(readFileSync("data/electronic-integrity-received-files.json", "utf8"));
-const expectedStates = ["AZ", "GA", "MI", "NC", "NV", "PA", "WI"];
+const expectedStates = ["AZ", "GA", "MI", "NC", "NV", "PA", "TX", "WI"];
 const requiredArtifactTypes = [
   "audit_results",
   "ballot_images",
@@ -96,7 +96,7 @@ test("electronic reconciliation report records limits and request queues", () =>
   const report = JSON.parse(readFileSync("data/electronic-integrity-reconciliation-status.json", "utf8"));
   assert.match(report.caveat, /not proof of electronic tampering/);
   assert.deepEqual(report.summary.canRecomputeFromCvrStates, []);
-  assert.equal(report.summary.requestRequiredRows, 45);
+  assert.equal(report.summary.requestRequiredRows, 52);
   assert.ok(report.summary.statesWithReviewRows.includes("WI"));
   const wi = report.states.find((entry) => entry.state === "WI");
   assert.equal(wi.cvrStatus, "partial");
@@ -108,8 +108,8 @@ test("electronic reconciliation report records limits and request queues", () =>
 test("electronic request plan creates one packet per tracked swing state", () => {
   const plan = JSON.parse(readFileSync("data/electronic-integrity-request-plan.json", "utf8"));
   assert.match(plan.caveat, /does not prove tampering/);
-  assert.equal(plan.packetCount, 7);
-  assert.equal(plan.requestRequiredRows, 45);
+  assert.equal(plan.packetCount, 8);
+  assert.equal(plan.requestRequiredRows, 52);
   assert.deepEqual(plan.byState.map((entry) => entry.state).sort(), expectedStates);
   assert.equal(plan.byState.find((entry) => entry.state === "WI").statuses.partial, 2);
   assert.equal(plan.byState.find((entry) => entry.state === "PA").statuses.blocked, 1);
@@ -121,13 +121,13 @@ test("electronic request plan creates one packet per tracked swing state", () =>
 
 test("electronic request operations create sendable drafts and track per-artifact requests", () => {
   assert.match(requestTracker.caveat, /do not prove electronic tampering/);
-  assert.equal(requestTracker.requests.length, 45);
-  assert.equal(receivedFiles.requestsTracked, 45);
-  assert.equal(receivedFiles.receivedFiles.length, 45);
-  assert.equal(requestOps.requestRows, 45);
-  assert.equal(requestOps.draftCount, 7);
+  assert.equal(requestTracker.requests.length, 52);
+  assert.equal(receivedFiles.requestsTracked, 52);
+  assert.equal(receivedFiles.receivedFiles.length, 52);
+  assert.equal(requestOps.requestRows, 52);
+  assert.equal(requestOps.draftCount, 8);
   assert.deepEqual(Object.keys(requestOps.rowsByState).sort(), expectedStates);
-  assert.equal(requestOps.rowsByStatus.draft_ready, 45);
+  assert.equal(requestOps.rowsByStatus.draft_ready, 52);
 
   const wiCvr = requestTracker.requests.find((entry) => entry.requestId === "EI-2024-WI-CAST-VOTE-RECORDS");
   assert.equal(wiCvr.status, "draft_ready");

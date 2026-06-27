@@ -12,11 +12,11 @@ function gapIds(state) {
 test("swing-state parity report tracks all 2024 swing states against Wisconsin", () => {
   assert.equal(report.electionYear, 2024);
   assert.equal(report.benchmarkState, "WI");
-  assert.deepEqual(report.swingStates, ["AZ", "GA", "MI", "NV", "NC", "PA", "WI"]);
-  assert.equal(report.summary.states, 7);
-  assert.equal(report.summary.validatedNativeStagingStates, 7);
-  assert.equal(report.summary.statesWithLoadedEquipment, 7);
-  assert.equal(report.summary.statesWithAuditContext, 1);
+  assert.deepEqual(report.swingStates, ["AZ", "GA", "MI", "NV", "NC", "PA", "TX", "WI"]);
+  assert.equal(report.summary.states, 8);
+  assert.equal(report.summary.validatedNativeStagingStates, 8);
+  assert.equal(report.summary.statesWithLoadedEquipment, 8);
+  assert.equal(report.summary.statesWithAuditContext, 2);
   assert.equal(report.summary.statesWithCvrContext, 1);
   assert.equal(report.summary.statesWithIncidentContext, 1);
   assert.equal(report.summary.statesWithHardMissingEvidence, 1);
@@ -39,6 +39,15 @@ test("non-Wisconsin swing states distinguish native review parity from missing c
   assert.equal(states.get("PA").nativeCoverage.reviewRows, 9154);
   assert.equal(states.get("NC").nativeCoverage.reportingGrain, "reporting_unit");
   assert.ok(gapIds("NC").includes("state_native_turnout_denominator"));
+
+  assert.equal(states.get("TX").parityStatus, "native_review_near_parity_admin_context_missing");
+  assert.equal(states.get("TX").nativeCoverage.reportingGrain, "precinct");
+  assert.equal(states.get("TX").nativeCoverage.reviewRows, 9348);
+  assert.equal(states.get("TX").nativeCoverage.turnoutRows, 9712);
+  assert.equal(states.get("TX").nativeCoverage.comparisonContest, "United States Senator");
+  assert.equal(states.get("TX").administrationContext.audit.status, "partial");
+  assert.equal(gapIds("TX").includes("audit_context"), false);
+  assert.ok(gapIds("TX").includes("subcounty_geometry"));
 
   assert.equal(states.get("GA").nativeCoverage.readinessGrade, "subcounty_vote_share_only");
   assert.ok(gapIds("GA").includes("same_row_comparison_contest"));

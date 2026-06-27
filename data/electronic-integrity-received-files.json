@@ -1,7 +1,7 @@
 {
   "caveat": "Received files ledger links raw productions and normalized artifacts to request IDs. Empty rows mean no files have been accessioned yet.",
-  "generatedAt": "2026-06-26",
-  "requestsTracked": 45,
+  "generatedAt": "2026-06-27",
+  "requestsTracked": 52,
   "receivedFiles": [
     {
       "requestId": "EI-2024-AZ-AUDIT-RESULTS",
@@ -424,6 +424,83 @@
     {
       "requestId": "EI-2024-PA-TABULATOR-LOGS",
       "state": "PA",
+      "artifactType": "tabulator_logs",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-TX-AUDIT-RESULTS",
+      "state": "TX",
+      "artifactType": "audit_results",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-TX-BALLOT-IMAGES",
+      "state": "TX",
+      "artifactType": "ballot_images",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-TX-CAST-VOTE-RECORDS",
+      "state": "TX",
+      "artifactType": "cast_vote_records",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-TX-CHAIN-OF-CUSTODY",
+      "state": "TX",
+      "artifactType": "chain_of_custody",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-TX-LOGIC-ACCURACY",
+      "state": "TX",
+      "artifactType": "logic_accuracy",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-TX-REPORTING-UNIT-RESULTS",
+      "state": "TX",
+      "artifactType": "reporting_unit_results",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-TX-TABULATOR-LOGS",
+      "state": "TX",
       "artifactType": "tabulator_logs",
       "status": "none_received",
       "receivedAt": "",

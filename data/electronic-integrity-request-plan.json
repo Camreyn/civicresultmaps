@@ -1,12 +1,12 @@
 {
   "caveat": "Request packets track evidence collection only. Missing, partial, or blocked evidence does not prove tampering.",
-  "generatedAt": "2026-06-26",
+  "generatedAt": "2026-06-27",
   "registry": "data/electronic-integrity-artifacts.json",
   "outDir": "data/electronic-integrity-request-packets",
   "state": "all",
   "dryRun": false,
-  "packetCount": 7,
-  "requestRequiredRows": 45,
+  "packetCount": 8,
+  "requestRequiredRows": 52,
   "byState": [
     {
       "artifactTypes": [
@@ -65,6 +65,23 @@
     },
     {
       "artifactTypes": [
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/nc-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 6,
+      "state": "NC",
+      "stateName": "North Carolina",
+      "statuses": {
+        "needs_data": 6
+      }
+    },
+    {
+      "artifactTypes": [
         "reporting_unit_results",
         "cast_vote_records",
         "ballot_images",
@@ -91,16 +108,18 @@
         "audit_results",
         "chain_of_custody"
       ],
-      "outputFile": "data/electronic-integrity-request-packets/nc-2024-electronic-integrity-request.md",
+      "outputFile": "data/electronic-integrity-request-packets/pa-2024-electronic-integrity-request.md",
       "requestRequiredRows": 6,
-      "state": "NC",
-      "stateName": "North Carolina",
+      "state": "PA",
+      "stateName": "Pennsylvania",
       "statuses": {
-        "needs_data": 6
+        "blocked": 1,
+        "needs_data": 5
       }
     },
     {
       "artifactTypes": [
+        "reporting_unit_results",
         "cast_vote_records",
         "ballot_images",
         "tabulator_logs",
@@ -108,12 +127,12 @@
         "audit_results",
         "chain_of_custody"
       ],
-      "outputFile": "data/electronic-integrity-request-packets/pa-2024-electronic-integrity-request.md",
-      "requestRequiredRows": 6,
-      "state": "PA",
-      "stateName": "Pennsylvania",
+      "outputFile": "data/electronic-integrity-request-packets/tx-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 7,
+      "state": "TX",
+      "stateName": "Texas",
       "statuses": {
-        "blocked": 1,
+        "partial": 2,
         "needs_data": 5
       }
     },

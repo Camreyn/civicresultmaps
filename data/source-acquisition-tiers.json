@@ -1377,29 +1377,32 @@
       "tier": "tier_3_sanctioned_bulk_partial",
       "reportingGrain": "precinct",
       "exportFormats": [
-        "open data",
-        "JSON/CSV"
+        "compressed CSV ZIP",
+        "VTD returns CSV",
+        "VTD VRTO CSV"
       ],
       "sourceUrls": [
         "https://data.capitol.texas.gov/topic/elections"
       ],
       "exampleUrls": [
-        "https://data.capitol.texas.gov/topic/elections"
+        "https://data.capitol.texas.gov/dataset/35b16aee-0bb0-4866-b1ec-859f1f044241/resource/e1cd6332-6a7a-4c78-ad2a-852268f6c7a2/download/2024-general-vtds-election-data.zip"
       ],
       "availableFields": [
-        "precinct/county election results where published",
-        "county President versus U.S. Senate rows currently loaded"
+        "certified county President rows from Texas SOS County.json",
+        "VTD President rows",
+        "VTD U.S. Senate comparison rows",
+        "VTD registered-voter and turnout rows"
       ],
       "missingFields": [
         "ballot method fields",
-        "timely completeness",
-        "state-native turnout denominator"
+        "precinct/VTD boundary geometry",
+        "full reconciliation between VTD presidential aggregate and SOS county certified-result package"
       ],
-      "parserStatus": "texasCountyJson loaded for county review; precinct/open-data upgrade not implemented",
+      "parserStatus": "texasCountyJsonVtdReview loaded for certified county results plus VTD President-versus-U.S.-Senate review and VTD turnout rows",
       "manualReviewBurden": "medium",
-      "confidence": "partial",
-      "caveats": "State-sanctioned but may be incomplete or slow to update.",
-      "nextAction": "Evaluate Texas open data project for precinct result export completeness and build parser if sufficient."
+      "confidence": "loaded_with_caveat",
+      "caveats": "The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674. Use VTD rows as official local screening context, not as replacement certified totals.",
+      "nextAction": "Add VTD boundary geometry and investigate the VTD-versus-SOS county total gap; then inventory Texas audit/CVR/incident context."
     },
     {
       "state": "TX",

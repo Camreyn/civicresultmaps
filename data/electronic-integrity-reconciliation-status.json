@@ -1,6 +1,6 @@
 {
   "caveat": "This report tracks electronic-integrity evidence availability and reconciliation readiness only. Missing, partial, or anomalous evidence is not proof of electronic tampering.",
-  "checkedAt": "2026-06-26",
+  "checkedAt": "2026-06-27",
   "electionYear": 2024,
   "sourceRegistry": "data/electronic-integrity-artifacts.json",
   "states": [
@@ -510,6 +510,90 @@
       "auditStatus": "partial",
       "ballotImageStatus": "needs_data",
       "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "needs_data",
+      "loadedArtifactRows": 1,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/tx-2024-official-results/County.json",
+          "type": "certified_results"
+        }
+      ],
+      "missingOrBlockedRows": 5,
+      "nextAction": "Investigate the VTD-versus-SOS county total gap, obtain any county/VTD crosswalk or correction notes, and route requests for CVR, ballot-image, tabulator-log, L&A, audit workpaper, and custody records.",
+      "overallStatus": "partial",
+      "requestArtifacts": [
+        {
+          "granularity": "vtd",
+          "reconciliationStatus": "vtd_president_senate_review_loaded_certified_total_gap_15854",
+          "type": "reporting_unit_results",
+          "use": "VTD President/Senate comparison can localize advisory patterns, but the presidential VTD aggregate is 15,854 votes above the SOS certified county package and needs source-side explanation before replacing certified totals."
+        },
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Needed for independent ballot-level retabulation and comparison to certified totals and VTD/reporting-unit rows."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
+        },
+        {
+          "granularity": "selected_county_state_audit",
+          "reconciliationStatus": "selected_counties_public_audit_program_context_loaded_no_unit_workpapers",
+          "type": "audit_results",
+          "use": "Documents the SOS-selected 2023-2024 audit counties and published preliminary 2024 Val Verde findings, but does not provide statewide per-unit audit workpapers or outcomes."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly."
+        }
+      ],
+      "requestRequiredRows": 7,
+      "riskPosture": "vtd_review_loaded_partial_audit_context_electronic_evidence_missing_certified_total_gap",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": false,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 0,
+        "resultRows": 254,
+        "reviewRows": 9348,
+        "sourceRows": 4,
+        "stagingPresent": true,
+        "turnoutRows": 9712
+      },
+      "state": "TX",
+      "stateName": "Texas",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
+      "auditStatus": "partial",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
       "canTriangulateMachineRisk": true,
       "cvrStatus": "partial",
       "loadedArtifactRows": 2,
@@ -594,9 +678,9 @@
     "canTriangulateMachineRiskStates": [
       "WI"
     ],
-    "loadedArtifactRows": 11,
-    "requestRequiredRows": 45,
-    "states": 7,
+    "loadedArtifactRows": 12,
+    "requestRequiredRows": 52,
+    "states": 8,
     "statesWithReviewRows": [
       "AZ",
       "GA",
@@ -604,6 +688,7 @@
       "NC",
       "NV",
       "PA",
+      "TX",
       "WI"
     ]
   }

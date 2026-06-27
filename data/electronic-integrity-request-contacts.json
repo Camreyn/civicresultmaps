@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-06-26",
+  "checkedAt": "2026-06-27",
   "description": "Operational contact metadata for electronic-integrity public-records requests. Recipient fields are intentionally conservative: do not invent an email address when the current custodian must be verified before sending.",
   "defaultRequester": {
     "name": "[requester name]",
@@ -61,6 +61,15 @@
       "recipientLookupUrl": "https://www.pa.gov/agencies/vote/contact-us/contact-your-election-officials.html",
       "countyCustodianLikely": true,
       "notes": "Pennsylvania counties commonly maintain county-level voting-system records; CVR access may be restricted or require county-specific handling."
+    },
+    {
+      "state": "TX",
+      "primaryCustodian": "Texas Secretary of State Elections Division",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.sos.state.tx.us/records.shtml",
+      "recipientLookupUrl": "https://www.sos.state.tx.us/elections/voter/county.shtml",
+      "countyCustodianLikely": true,
+      "notes": "Texas SOS open-records routing covers Elections Division records; county election officials or other local election authorities may maintain county-specific CVRs, ballot images, equipment logs, L&A records, custody records, and detailed audit workpapers."
     },
     {
       "state": "WI",

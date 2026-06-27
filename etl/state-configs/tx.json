@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "tx-2024-capitol-vtd-results-zip",
+      "category": "Official 2024 general VTD precinct results and turnout rows",
+      "url": "https://data.capitol.texas.gov/dataset/35b16aee-0bb0-4866-b1ec-859f1f044241/resource/e1cd6332-6a7a-4c78-ad2a-852268f6c7a2/download/2024-general-vtds-election-data.zip",
+      "localFile": "data/tx-2024-general-vtds-election-data.zip",
+      "parser": "texasVtdZipPrecinctComparison",
+      "authority": "Texas Legislative Council Capitol Data Portal",
+      "timestampBasis": "Capitol Data Portal comprehensive compressed VTD election data package for 2024 General Election returns and VRTO rows, downloaded June 27, 2026.",
+      "confidence": "State-sanctioned Texas Capitol Data Portal VTD-level package with President, U.S. Senate, and VTD registration/turnout rows. Used for local review and turnout context; certified county totals remain sourced from Texas SOS County.json.",
+      "status": "loaded"
+    },
+    {
       "id": "tx-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2748%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -40,30 +51,31 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "tx-2024-eac-turnout",
+    "format": "texasVtdZipVrto",
+    "sourceId": "tx-2024-capitol-vtd-results-zip",
+    "vrtoFile": "2024_General_Election_VRTO.csv",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Texas turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "registrationDenominatorTiming": "vtdReported",
+    "sourceLevel": "precinct",
+    "notes": "Texas turnout rows use the Capitol Data Portal 2024 General Election VTD VRTO file. VTD turnout totals are local review context and are kept separate from certified SOS county presidential result totals.",
     "warningRequired": false,
     "expected": {
-      "rowCount": 254,
-      "ballotsCast": 11488820,
-      "registeredVoters": 18623931
+      "rowCount": 9712,
+      "ballotsCast": 11460798,
+      "registeredVoters": 18686517
     }
   },
   "expected": {
     "jurisdictions": 254,
     "resultRows": 254,
-    "sources": 3,
+    "sources": 4,
     "geometryFeatures": 254,
     "stateTotal": 11388674,
     "trump": 6393597,
     "harris": 4835250,
     "other": 159827,
-    "reviewRows": 254,
-    "turnoutRows": 254
+    "reviewRows": 9348,
+    "turnoutRows": 9712
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -82,10 +94,13 @@
     "comparisonCoverageMode": "presidentVsSenate"
   },
   "reviewCharts": {
-    "format": "texasCountyJsonCountyComparison",
-    "sourceId": "tx-2024-official-county-results",
+    "format": "texasVtdZipPrecinctComparison",
+    "sourceId": "tx-2024-capitol-vtd-results-zip",
+    "returnsFile": "2024_General_Election_Returns.csv",
+    "presidentOffice": "President",
+    "comparisonOffice": "U.S. Sen",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "warning": "Texas review rows are county-level President-versus-U.S. Senate comparisons from the official Secretary of State County.json package. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+    "warning": "Texas native review rows use Capitol Data Portal VTD-level 2024 General Election President-versus-U.S. Senate rows. Certified county result rows remain sourced from Texas SOS County.json. The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS county certified-result package total of 11,388,674, so review charts must be treated as official VTD screening context rather than replacement certified totals."
   }
 }

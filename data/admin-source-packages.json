@@ -1352,8 +1352,11 @@
         "expectedJurisdictions": 254
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Texas 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "reportingLevel": "selected_county",
+        "sourceDocumentId": "texas-sos-2024-election-audit-program",
+        "sourceUrl": "https://www.sos.state.tx.us/elections/fad/index.shtml",
+        "why": "Texas SOS audit program identifies the 2023-2024 audit counties and publishes preliminary 2024 Val Verde findings, but statewide per-unit audit workpapers and outcomes are not normalized."
       },
       "cvr": {
         "status": "needs_data",

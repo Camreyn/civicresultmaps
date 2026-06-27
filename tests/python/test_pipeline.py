@@ -273,25 +273,42 @@ class PipelineTests(unittest.TestCase):
         turnout = next(row for row in artifact["native"]["turnoutRows"] if row["county"] == "Barbour County" and row["localUnit"] == "PRECINCT 1")
         self.assertEqual(turnout["ballotsCast"], 477)
         self.assertEqual(turnout["registeredVoters"], 797)
-    def test_texas_county_json_parser_builds_county_rows(self):
+    def test_texas_county_json_parser_builds_county_rows_with_vtd_review(self):
         config = load_config("etl/state-configs/tx.json")
         report = validate_config(config)
         artifact = build_staging_artifact(config, report)
 
         self.assertTrue(report.passed)
-        self.assertEqual(artifact["native"]["parser"], "nativeTexasCountyJson")
+        self.assertEqual(artifact["native"]["parser"], "nativeTexasCountyJsonVtdReview")
         self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 254)
         self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 11388674)
         self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 6393597)
         self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 4835250)
         self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 159827)
-        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 254)
-        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 254)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 9348)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 9346)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
-        harris = next(row for row in artifact["native"]["reviewRows"] if row["county"] == "Harris County")
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewPresidentialVotes"], 11404528)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewCertifiedVoteGap"], -15854)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 9712)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 18686517)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 11460798)
+        harris = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Harris County" and row["localUnit"] == "VTD 0001 (2010001; 4234)"
+        )
         self.assertEqual(harris["coverageMode"], "presidentVsSenate")
-        self.assertEqual(harris["harris"], 808771)
-        self.assertEqual(harris["trump"], 722695)
+        self.assertEqual(harris["harris"], 936)
+        self.assertEqual(harris["trump"], 351)
+        self.assertEqual(harris["comparisonDemVotes"], 947)
+        turnout = next(
+            row
+            for row in artifact["native"]["turnoutRows"]
+            if row["county"] == "Harris County" and row["localUnit"] == "VTD 0001 (2010001; 4234)"
+        )
+        self.assertEqual(turnout["ballotsCast"], 1324)
+        self.assertEqual(turnout["registeredVoters"], 1672)
     def test_kentucky_general_recap_text_parser_builds_precinct_review_rows(self):
         config = load_config("etl/state-configs/ky.json")
         report = validate_config(config)
