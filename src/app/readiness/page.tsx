@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks } from "lucide-react";
+import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks, Radar } from "lucide-react";
 import { listAdminSourceStatuses, listCompletenessReport, listNativeSourcePackages, listSourceAcquisitionTiers, listTurnoutSourceStatuses } from "@/lib/api";
 import {
   getNativeSourcePackage,
@@ -457,6 +457,10 @@ export default async function ReadinessPage() {
           <a className="topbar-link" href="/">
             <ArrowLeft aria-hidden size={15} />
             Workspace
+          </a>
+          <a className="topbar-link" href="/timeline">
+            <Radar aria-hidden size={15} />
+            Timeline
           </a>
           <span className="domain">civicresultmaps.org</span>
         </div>

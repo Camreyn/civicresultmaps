@@ -1,6 +1,7 @@
 import {
   CheckCircle2,
   CircleDashed,
+  Radar,
 } from "lucide-react";
 import { NationalOverview } from "./national-overview";
 import { StateSwitcher } from "./state-switcher";
@@ -87,6 +88,10 @@ export default async function Home({ searchParams }: HomeProps) {
         <div className="topbar-actions">
           <a className="topbar-link" href="/?tab=support">
             Support
+          </a>
+          <a className="topbar-link" href="/timeline">
+            <Radar aria-hidden size={15} />
+            Timeline
           </a>
           <a className="topbar-link" data-tour="readiness-link" href="/readiness">
             Readiness

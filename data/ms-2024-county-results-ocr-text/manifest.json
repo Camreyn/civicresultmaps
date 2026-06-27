@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-06-24T04:01:00.690Z",
+  "pdfDir": "data/ms-2024-county-results-pdfs",
+  "outDir": "data/ms-2024-county-results-ocr-text",
+  "imageDir": ".etl/ocr/ms-county-results-images",
+  "tessdataDir": ".etl/ocr/tesseract-cache",
+  "engine": "tesseractjs",
+  "renderer": "pdf-parse",
+  "scale": 3,
+  "rotate": 270,
+  "dpi": 300,
+  "psm": 4,
+  "lang": "eng",
+  "firstPages": 0,
+  "tools": {
+    "pdfParse": "pdf-parse",
+    "tesseractjs": "tesseract.js"
+  },
+  "files": [
+    {
+      "pdf": "Greene.pdf",
+      "pages": 7,
+      "textFile": "Greene.txt",
+      "pageTextDir": "pages\\Greene",
+      "images": [
+        "Greene\\page-001-rot270.png",
+        "Greene\\page-002-rot270.png",
+        "Greene\\page-003-rot270.png",
+        "Greene\\page-004-rot270.png",
+        "Greene\\page-005-rot270.png",
+        "Greene\\page-006-rot270.png",
+        "Greene\\page-007-rot270.png"
+      ],
+      "sourceImages": [
+        "Greene\\page-001.png",
+        "Greene\\page-002.png",
+        "Greene\\page-003.png",
+        "Greene\\page-004.png",
+        "Greene\\page-005.png",
+        "Greene\\page-006.png",
+        "Greene\\page-007.png"
+      ]
+    }
+  ],
+  "warnings": []
+}
