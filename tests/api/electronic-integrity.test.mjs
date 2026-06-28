@@ -10,6 +10,7 @@ const registry = JSON.parse(readFileSync("data/electronic-integrity-artifacts.js
 const requestTracker = JSON.parse(readFileSync("data/electronic-integrity-request-tracker.json", "utf8"));
 const requestOps = JSON.parse(readFileSync("data/electronic-integrity-request-operations.json", "utf8"));
 const receivedFiles = JSON.parse(readFileSync("data/electronic-integrity-received-files.json", "utf8"));
+const swingParity = JSON.parse(readFileSync("data/swing-state-2024-parity-status.json", "utf8"));
 const expectedStates = ["AZ", "GA", "MI", "NC", "NV", "PA", "TX", "WI"];
 const requiredArtifactTypes = [
   "audit_results",
@@ -142,6 +143,38 @@ test("electronic request operations create sendable drafts and track per-artifac
   assert.match(wiEmail, /Subject: Wisconsin 2024 electronic election records request/);
   assert.match(wiEmail, /EI-2024-WI-CAST-VOTE-RECORDS/);
   assert.match(wiEmail, /verify recipient email/);
+});
+
+
+
+test("timeline source collection events are backed by explicit source records", () => {
+  const source = readFileSync("src/lib/suspicious-events.ts", "utf8");
+  const component = readFileSync("src/app/timeline/suspicious-timeline.tsx", "utf8");
+  const timelineTemplate = readFileSync(".github/ISSUE_TEMPLATE/timeline-addition.yml", "utf8");
+
+  assert.match(source, /swing-state-2024-parity-status\.json/);
+  assert.match(source, /listSourceCollectionEvents/);
+  assert.match(source, /sources: dedupeSources/);
+  assert.doesNotMatch(component, /event\.sourceLabel/);
+  assert.doesNotMatch(component, /event\.sourceUrl/);
+  assert.match(component, /event\.sources\.map/);
+  assert.match(component, /timeline-addition\.yml/);
+  assert.match(component, /Submit Timeline Addition/);
+  assert.match(timelineTemplate, /Source URL/);
+  assert.match(timelineTemplate, /Event date/);
+  assert.match(timelineTemplate, /Timeline category/);
+  assert.match(timelineTemplate, /not proof of misconduct/);
+
+  assert.equal(swingParity.states.length, expectedStates.length);
+  for (const entry of swingParity.states) {
+    assert.ok(expectedStates.includes(entry.state), `${entry.state} should be in the timeline source batch`);
+    assert.ok(entry.nativeCoverage.reviewRows > 0, `${entry.state} should expose review row counts`);
+    assert.ok(entry.nativeCoverage.parserStatus, `${entry.state} should expose parser status`);
+    assert.ok(entry.sourceAcquisition.sourceUrls.length > 0, `${entry.state} should include source URLs`);
+    for (const sourceUrl of entry.sourceAcquisition.sourceUrls) {
+      assert.match(sourceUrl, /^https:\/\//, `${entry.state} source URL should be HTTPS`);
+    }
+  }
 });
 
 test("electronic request API exposes browser-ready email body and routing hints", () => {

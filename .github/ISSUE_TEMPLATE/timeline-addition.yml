@@ -1,0 +1,83 @@
+name: Timeline addition
+description: Submit a source-backed timeline event for Civic Result Maps.
+title: "[Timeline addition] "
+labels:
+  - timeline
+  - data-review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for source-backed additions to the suspicious-event timeline. The timeline tracks review prompts and evidence gaps only; it does not allege or prove tampering.
+  - type: input
+    id: event_date
+    attributes:
+      label: Event date
+      description: Use the date the source event occurred or was published.
+      placeholder: 2024-11-20
+    validations:
+      required: true
+  - type: input
+    id: state_or_scope
+    attributes:
+      label: State or scope
+      description: Two-letter state code, state name, county/local jurisdiction, or National.
+      placeholder: WI, Arizona, Maricopa County, or National
+    validations:
+      required: true
+  - type: dropdown
+    id: timeline_category
+    attributes:
+      label: Timeline category
+      options:
+        - Results / reporting-unit data
+        - Audit or recount record
+        - Machine logs / testing / configuration
+        - Paper evidence / CVR / ballot images
+        - Chain of custody / incident context
+        - Records request / source acquisition
+        - Other sourced review prompt
+    validations:
+      required: true
+  - type: input
+    id: source_url
+    attributes:
+      label: Source URL
+      description: Link to the official source, dataset, PDF, court record, agency page, or other primary source.
+      placeholder: https://...
+    validations:
+      required: true
+  - type: textarea
+    id: event_summary
+    attributes:
+      label: What should be added to the timeline?
+      description: Summarize the event in one or two paragraphs. Include exact source wording only when necessary.
+      placeholder: The state/county published...
+    validations:
+      required: true
+  - type: textarea
+    id: review_question
+    attributes:
+      label: Review question or evidence gap
+      description: Explain what this event helps reviewers check, reconcile, or request next.
+      placeholder: This helps determine whether...
+    validations:
+      required: true
+  - type: textarea
+    id: suggested_timeline_fields
+    attributes:
+      label: Suggested timeline fields
+      description: Optional structured details such as title, status, severity, local artifact, affected jurisdictions, or alternate explanations.
+      placeholder: |
+        Title: ...
+        Status: ...
+        Evidence needed: ...
+  - type: checkboxes
+    id: responsible_review
+    attributes:
+      label: Responsible review checklist
+      options:
+        - label: I included a source URL or enough source details for maintainers to verify the event.
+          required: true
+        - label: I understand timeline events are review prompts, not proof of misconduct by themselves.
+          required: true

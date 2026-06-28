@@ -2,13 +2,14 @@
 
 import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
-import { Activity, AlertTriangle, Download, FileSearch, Filter, RadioTower, Search, ShieldQuestion } from "lucide-react";
+import { Activity, AlertTriangle, Download, FileSearch, Filter, PlusCircle, RadioTower, Search, ShieldQuestion } from "lucide-react";
 import type { SuspiciousEventCategory, SuspiciousEventSeverity, SuspiciousTimelineEvent } from "@/lib/suspicious-events";
 
 type TimelineSummary = {
   byCategory: Record<string, number>;
   elevated: number;
   events: number;
+  sources: number;
   states: number;
 };
 
@@ -35,6 +36,24 @@ const categoryOptions: Array<{ label: string; value: "all" | SuspiciousEventCate
   { label: "Records request", value: "records_request" },
 ];
 
+const githubIssueUrl = "https://github.com/Camreyn/civicresultmaps/issues/new";
+const githubTimelineAdditionTemplate = "timeline-addition.yml";
+
+function buildTimelineAdditionUrl() {
+  const params = new URLSearchParams({
+    event_date: "YYYY-MM-DD",
+    event_summary: "Please summarize the source-backed event that should be added to the timeline.",
+    labels: "timeline,data-review",
+    review_question: "What review question, evidence gap, or source-acquisition checkpoint does this event document?",
+    source_url: "https://",
+    state_or_scope: "State / county / national",
+    template: githubTimelineAdditionTemplate,
+    title: "[Timeline addition] ",
+  });
+
+  return `${githubIssueUrl}?${params.toString()}`;
+}
+
 function csvEscape(value: unknown) {
   const text = value === null || value === undefined ? "" : String(value);
   return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
@@ -56,9 +75,7 @@ function downloadCsv(filename: string, events: SuspiciousTimelineEvent[]) {
     "evidence_needed",
     "tampering_example",
     "alternate_explanation",
-    "source_label",
-    "source_url",
-    "local_artifact",
+    "sources",
   ];
   const rows = events.map((event) => [
     event.date,
@@ -75,9 +92,7 @@ function downloadCsv(filename: string, events: SuspiciousTimelineEvent[]) {
     event.evidenceNeeded,
     event.tamperingExample,
     event.alternateExplanation,
-    event.sourceLabel,
-    event.sourceUrl,
-    event.localArtifact,
+    event.sources.map((source) => [source.label, source.url, source.localArtifact].filter(Boolean).join(" | ")).join("; "),
   ]);
   const content = [headers, ...rows].map((row) => row.map(csvEscape).join(",")).join("\n");
   const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
@@ -127,6 +142,7 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
   const [category, setCategory] = useState<"all" | SuspiciousEventCategory>("all");
   const [severity, setSeverity] = useState<"all" | SuspiciousEventSeverity>("all");
   const [query, setQuery] = useState("");
+  const timelineAdditionUrl = useMemo(() => buildTimelineAdditionUrl(), []);
 
   const filteredEvents = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -145,6 +161,7 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
             event.tamperingExample,
             event.alternateExplanation,
             event.scope,
+            event.sources.map((source) => [source.label, source.url, source.localArtifact].filter(Boolean).join(" ")).join(" "),
           ]
             .join(" ")
             .toLowerCase()
@@ -173,12 +190,21 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
           <p>{caveat}</p>
         </div>
         <div className="timeline-scanner" aria-hidden>
-          <span className="timeline-scanner-sweep" />
-          <span className="timeline-scanner-row" />
-          <span className="timeline-scanner-row alt" />
-          <span className="timeline-scanner-pulse one" />
-          <span className="timeline-scanner-pulse two" />
-          <span className="timeline-scanner-pulse three" />
+          <svg className="timeline-scanner-radar" viewBox="0 0 100 100">
+            <circle className="timeline-scanner-ring outer" cx="50" cy="50" r="32" />
+            <circle className="timeline-scanner-ring inner" cx="50" cy="50" r="16" />
+            <line className="timeline-scanner-axis" x1="50" x2="50" y1="7" y2="93" />
+            <line className="timeline-scanner-axis" x1="7" x2="93" y1="50" y2="50" />
+            <g className="timeline-scanner-sweep">
+              <polygon points="50,50 100,43.5 100,56.5" />
+              <line x1="50" x2="100" y1="50" y2="50" />
+            </g>
+            <line className="timeline-scanner-row" x1="7" x2="93" y1="28" y2="28" />
+            <line className="timeline-scanner-row alt" x1="7" x2="93" y1="68" y2="68" />
+            <circle className="timeline-scanner-pulse one" cx="28" cy="32" r="2.1" />
+            <circle className="timeline-scanner-pulse two" cx="76" cy="46" r="2.1" />
+            <circle className="timeline-scanner-pulse three" cx="44" cy="75" r="2.1" />
+          </svg>
         </div>
       </section>
 
@@ -196,8 +222,8 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
           <strong>{summary.elevated.toLocaleString()}</strong>
         </article>
         <article>
-          <span>Categories</span>
-          <strong>{Object.keys(summary.byCategory).length.toLocaleString()}</strong>
+          <span>Sources</span>
+          <strong>{summary.sources.toLocaleString()}</strong>
         </article>
       </section>
 
@@ -232,10 +258,16 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
             <h2>Review stream</h2>
             <span>{filteredEvents.length.toLocaleString()} events visible</span>
           </div>
-          <button type="button" onClick={() => downloadCsv("national-suspicious-event-timeline.csv", filteredEvents)}>
-            <Download aria-hidden size={16} />
-            Export CSV
-          </button>
+          <div className="timeline-console-actions">
+            <a href={timelineAdditionUrl} rel="noreferrer" target="_blank">
+              <PlusCircle aria-hidden size={16} />
+              Submit Timeline Addition
+            </a>
+            <button type="button" onClick={() => downloadCsv("national-suspicious-event-timeline.csv", filteredEvents)}>
+              <Download aria-hidden size={16} />
+              Export CSV
+            </button>
+          </div>
         </div>
 
         <div className="timeline-toolbar" aria-label="Timeline filters">
@@ -321,14 +353,18 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
                   </article>
                 </div>
                 <div className="timeline-source-row">
-                  {event.sourceUrl ? (
-                    <a href={event.sourceUrl} target="_blank" rel="noreferrer">
-                      {event.sourceLabel}
-                    </a>
-                  ) : (
-                    <span>{event.sourceLabel}</span>
-                  )}
-                  {event.localArtifact ? <code>{event.localArtifact}</code> : null}
+                  {event.sources.map((source, sourceIndex) => (
+                    <span className="timeline-source-item" key={`${event.id}-source-${sourceIndex}`}>
+                      {source.url ? (
+                        <a href={source.url} target="_blank" rel="noreferrer">
+                          {source.label}
+                        </a>
+                      ) : (
+                        <span>{source.label}</span>
+                      )}
+                      {source.localArtifact ? <code>{source.localArtifact}</code> : null}
+                    </span>
+                  ))}
                 </div>
               </div>
             </article>
