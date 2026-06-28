@@ -4870,14 +4870,14 @@ td {
   transform-origin: 50% 50%;
 }
 
-.timeline-scanner-sweep polygon {
+.timeline-scanner-sweep path {
   fill: rgba(53, 199, 163, 0.24);
 }
 
 .timeline-scanner-sweep line {
   stroke: rgba(53, 199, 163, 0.72);
   stroke-linecap: round;
-  stroke-width: 0.8;
+  stroke-width: 0.95;
 }
 
 .timeline-scanner-row {

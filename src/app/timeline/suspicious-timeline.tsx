@@ -196,8 +196,8 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
             <line className="timeline-scanner-axis" x1="50" x2="50" y1="7" y2="93" />
             <line className="timeline-scanner-axis" x1="7" x2="93" y1="50" y2="50" />
             <g className="timeline-scanner-sweep">
-              <polygon points="50,50 100,43.5 100,56.5" />
-              <line x1="50" x2="100" y1="50" y2="50" />
+              <path d="M50 50 L96.4 37.6 A48 48 0 0 1 96.4 62.4 Z" />
+              <line x1="50" x2="96.4" y1="50" y2="37.6" />
             </g>
             <line className="timeline-scanner-row" x1="7" x2="93" y1="28" y2="28" />
             <line className="timeline-scanner-row alt" x1="7" x2="93" y1="68" y2="68" />
