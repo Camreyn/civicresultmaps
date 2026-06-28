@@ -155,6 +155,9 @@ test("timeline source collection events are backed by explicit source records", 
   assert.match(source, /swing-state-2024-parity-status\.json/);
   assert.match(source, /listSourceCollectionEvents/);
   assert.match(source, /sources: dedupeSources/);
+  assert.match(source, /externalReviewTimelineEvents/);
+  assert.match(source, /smartelections\.us/);
+  assert.match(source, /electiontruthalliance\.org/);
   assert.doesNotMatch(component, /event\.sourceLabel/);
   assert.doesNotMatch(component, /event\.sourceUrl/);
   assert.match(component, /event\.sources\.map/);
