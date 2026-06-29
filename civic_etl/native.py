@@ -3770,6 +3770,53 @@ def _ma_pd43_local_unit(ward: str, precinct: str) -> str:
     return "Municipality total"
 
 
+def _massachusetts_pd43_county_result_rows(
+    source: SourceConfig,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {
+            "county",
+            "harris_votes",
+            "trump_votes",
+            "other_votes",
+            "total_votes",
+        }
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Massachusetts PD43+ county totals CSV missing columns: {', '.join(missing)}")
+
+        for index, row in enumerate(reader, start=2):
+            county = _county_name(row.get("county"))
+            if not county:
+                raise ValueError(f"Massachusetts county totals row {index} is missing county")
+            harris = int_text(row.get("harris_votes"))
+            trump = int_text(row.get("trump_votes"))
+            other = int_text(row.get("other_votes"))
+            total = int_text(row.get("total_votes"))
+            if total != harris + trump + other:
+                raise ValueError(f"Massachusetts county totals row {index} total does not equal candidate vote sum")
+            rows.append(
+                {
+                    "jurisdictionName": county,
+                    "jurisdictionCode": county.upper(),
+                    "level": "county",
+                    "votes": {
+                        "Trump": trump,
+                        "Harris": harris,
+                        "Other": other,
+                    },
+                    "totalVotes": total,
+                    "margin": trump - harris,
+                    "marginPct": pct(trump - harris, total),
+                    "sourceId": source.id,
+                }
+            )
+
+    return rows
+
+
 def _massachusetts_pd43_rows(
     config: EtlConfig,
     sources: dict[str, SourceConfig],
@@ -3848,27 +3895,31 @@ def _massachusetts_pd43_rows(
                 "total": total,
             }
 
-    result_rows: list[dict[str, Any]] = []
-    for city, values in sorted(municipalities.items()):
-        total = values["total"]
-        if not total:
-            continue
-        result_rows.append(
-            {
-                "jurisdictionName": city,
-                "jurisdictionCode": city.upper(),
-                "level": "city",
-                "votes": {
-                    "Trump": values["trump"],
-                    "Harris": values["harris"],
-                    "Other": values["other"],
-                },
-                "totalVotes": total,
-                "margin": values["trump"] - values["harris"],
-                "marginPct": pct(values["trump"] - values["harris"], total),
-                "sourceId": president_source.id,
-            }
-        )
+    county_source_id = certified_section.get("countySourceId")
+    if county_source_id:
+        result_rows = _massachusetts_pd43_county_result_rows(sources[county_source_id])
+    else:
+        result_rows = []
+        for city, values in sorted(municipalities.items()):
+            total = values["total"]
+            if not total:
+                continue
+            result_rows.append(
+                {
+                    "jurisdictionName": city,
+                    "jurisdictionCode": city.upper(),
+                    "level": "city",
+                    "votes": {
+                        "Trump": values["trump"],
+                        "Harris": values["harris"],
+                        "Other": values["other"],
+                    },
+                    "totalVotes": total,
+                    "margin": values["trump"] - values["harris"],
+                    "marginPct": pct(values["trump"] - values["harris"], total),
+                    "sourceId": president_source.id,
+                }
+            )
 
     review_rows: list[dict[str, Any]] = []
     comparison_rows = 0
@@ -4227,12 +4278,15 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "MA" and config.raw.get("certifiedResults", {}).get("format") == "massachusettsPd43PrecinctCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _massachusetts_pd43_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeMassachusettsPd43PrecinctCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
 

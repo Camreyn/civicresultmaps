@@ -613,11 +613,15 @@
       "reportingGrain": "city_town_ward_precinct",
       "exportFormats": [
         "official PD43+ CSV download",
-        "EAC fallback turnout"
+        "EAC fallback turnout",
+        "official PD43+ county-filtered HTML totals",
+        "Wikipedia historical county table"
       ],
       "sourceUrls": [
         "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
+        "https://electionstats.state.ma.us/elections/view/165300/",
         "https://electionstats.state.ma.us/elections/download/165304/precincts_include:1/",
+        "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Massachusetts",
         "https://www.eac.gov/research-and-data/studies-and-reports"
       ],
       "exampleUrls": [
@@ -628,16 +632,17 @@
         "municipality President rows",
         "ward/precinct President rows",
         "ward/precinct U.S. Senate comparison rows",
-        "EAC fallback turnout"
+        "EAC fallback turnout",
+        "official county President totals",
+        "county historical presidential baseline"
       ],
       "missingFields": [
-        "state-native turnout denominator",
-        "county field in PD43+ bulk result rows"
+        "state-native turnout denominator"
       ],
-      "parserStatus": "massachusettsPd43PrecinctCsv loaded for municipal results and President-vs-U.S. Senate review rows",
+      "parserStatus": "massachusettsPd43PrecinctCsv loaded for county certified results, municipal review rows, President-vs-U.S. Senate review rows, and historical county baselines",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "PD43+ bulk CSV rows are municipality-centric and do not include county, so review grouping uses city/town rather than county. Turnout denominators still use EAC fallback rows.",
+      "caveats": "PD43+ bulk CSV rows are municipality-centric and do not include county, so county certified result rows are collected from official PD43+ county-filtered County Totals pages. Turnout denominators still use EAC fallback rows.",
       "nextAction": "Find a Massachusetts state-native turnout denominator export or official city/town registration denominator to replace EAC fallback turnout."
     },
     {

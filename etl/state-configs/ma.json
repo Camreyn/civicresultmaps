@@ -37,6 +37,28 @@
       "timestampBasis": "Official PD43+ 2024 U.S. Senate General Election download including precincts; downloaded June 29, 2026.",
       "confidence": "Official Massachusetts PD43+ CSV export paired to the presidential precinct export by city/town, ward, and precinct.",
       "status": "loaded"
+    },
+    {
+      "id": "ma-2024-president-pd43-county-pages",
+      "category": "Official PD43+ presidential county-filtered totals",
+      "url": "https://electionstats.state.ma.us/elections/view/165300/",
+      "localFile": "data/ma-2024-president-county-results.csv",
+      "parser": "massachusettsPd43CountyTotalsCsv",
+      "authority": "Massachusetts Secretary of the Commonwealth, PD43+",
+      "timestampBasis": "Official PD43+ 2024 President General Election county-filtered result pages; downloaded June 29, 2026.",
+      "confidence": "Official Massachusetts PD43+ county-filtered pages. The collector stores the County Totals row for each of the 14 counties and validates that county rows reconcile to the certified statewide presidential totals.",
+      "status": "loaded"
+    },
+    {
+      "id": "ma-historical-presidential-wikipedia-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Massachusetts",
+      "localFile": "data/ma-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Wikipedia county presidential tables with Massachusetts election-result source footnotes",
+      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 29, 2026.",
+      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Massachusetts election-result sources where available.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -54,9 +76,9 @@
     }
   },
   "expected": {
-    "jurisdictions": 351,
-    "resultRows": 351,
-    "sources": 3,
+    "jurisdictions": 14,
+    "resultRows": 14,
+    "sources": 5,
     "stateTotal": 3512930,
     "trump": 1251303,
     "harris": 2126518,
@@ -67,14 +89,15 @@
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
-    "map": false,
+    "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "massachusettsPd43PrecinctCsv",
-    "sourceId": "ma-2024-president-pd43-precincts"
+    "sourceId": "ma-2024-president-pd43-precincts",
+    "countySourceId": "ma-2024-president-pd43-county-pages"
   },
   "reviewCharts": {
     "format": "massachusettsPd43PrecinctCsv",
@@ -82,5 +105,18 @@
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
     "warning": "Massachusetts review rows are official PD43+ city/town, ward, and precinct rows comparing President against U.S. Senate. Jurisdiction grouping is municipality-centric because the PD43+ bulk export does not include county in the row schema."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ma-historical-presidential-wikipedia-county",
+    "warning": "Massachusetts historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 42,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
