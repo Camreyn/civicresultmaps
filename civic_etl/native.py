@@ -1630,6 +1630,168 @@ def _clarity_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
 
 
+def _arkansas_totalresults_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    source_dir = _artifact_path(source)
+    if not source_dir.is_dir():
+        raise ValueError(f"Arkansas TotalResults source must be a directory: {source_dir}")
+
+    election_info = json.loads((source_dir / section.get("electionInfoFile", "election-info.json")).read_text(encoding="utf-8-sig"))
+    federal_results = json.loads((source_dir / section.get("federalResultsFile", "federal-results.json")).read_text(encoding="utf-8-sig"))
+    manifest = json.loads((source_dir / section.get("manifestFile", "manifest.json")).read_text(encoding="utf-8-sig"))
+    county_files = manifest.get("files", [])
+
+    county_names = {
+        str(location_id): _county_name(location.get("locationName"))
+        for location_id, location in (election_info.get("response", {}).get("locations") or {}).items()
+    }
+    president_contest_id = str(section.get("presidentContestId", "366"))
+    trump_choice_id = str(section.get("trumpChoiceId", "789"))
+    harris_choice_id = str(section.get("harrisChoiceId", "791"))
+    dem_party_id = str(section.get("demPartyId", "2099"))
+    rep_party_id = str(section.get("repPartyId", "2096"))
+    comparison_contest_ids = {str(value) for value in section.get("comparisonContestIds", [])}
+
+    def choice_totals(choices: list[dict[str, Any]]) -> tuple[int, int, int, int]:
+        harris = 0
+        trump = 0
+        other = 0
+        for choice in choices or []:
+            choice_id = str(choice.get("choiceID") or choice.get("choiceId") or choice.get("id") or "")
+            votes = int_text(choice.get("totalVotes"))
+            if choice_id == harris_choice_id:
+                harris += votes
+            elif choice_id == trump_choice_id:
+                trump += votes
+            else:
+                other += votes
+        return harris, trump, other, harris + trump + other
+
+    def comparison_totals(choices: list[dict[str, Any]]) -> tuple[int, int, int]:
+        dem = 0
+        rep = 0
+        total = 0
+        for choice in choices or []:
+            votes = int_text(choice.get("totalVotes"))
+            total += votes
+            party_id = str(choice.get("partyID") or choice.get("partyId") or "")
+            if party_id == dem_party_id:
+                dem += votes
+            elif party_id == rep_party_id:
+                rep += votes
+        return dem, rep, total
+
+    president = (federal_results.get("response", {}).get("contests") or {}).get(president_contest_id)
+    if not president:
+        raise ValueError(f"Arkansas federal results missing U.S. President contest {president_contest_id}")
+
+    result_rows: list[dict[str, Any]] = []
+    for location_id, location in sorted((president.get("locations") or {}).items(), key=lambda item: county_names.get(str(item[0]), "")):
+        county = county_names.get(str(location_id)) or _county_name(location_id)
+        harris, trump, other, total = choice_totals(location.get("choices") or [])
+        if not total:
+            continue
+        result_rows.append(
+            {
+                "jurisdictionName": county,
+                "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                "level": "county",
+                "votes": {
+                    "Trump": trump,
+                    "Harris": harris,
+                    "Other": other,
+                },
+                "totalVotes": total,
+                "margin": trump - harris,
+                "marginPct": pct(trump - harris, total),
+                "sourceId": source.id,
+            }
+        )
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    missing_comparison_rows = 0
+    for entry in sorted(county_files, key=lambda item: county_names.get(str(item.get("locationId")), "")):
+        location_id = str(entry.get("locationId") or "")
+        county = county_names.get(location_id) or _county_name(entry.get("countyName"))
+        relative_file = str(entry.get("file") or "")
+        if not relative_file:
+            continue
+        county_data = json.loads((source_dir / relative_file).read_text(encoding="utf-8-sig"))
+        contests = county_data.get("response", {}).get("contests") or {}
+        county_president = contests.get(president_contest_id)
+        if not county_president:
+            raise ValueError(f"Arkansas county result file missing U.S. President contest: {relative_file}")
+
+        comparison_by_unit: dict[str, dict[str, int]] = {}
+        for contest_id, contest in contests.items():
+            contest_id = str(contest_id)
+            if contest_id == president_contest_id:
+                continue
+            if comparison_contest_ids and contest_id not in comparison_contest_ids:
+                continue
+            for unit_id, unit in (contest.get("locations") or {}).items():
+                dem, rep, total = comparison_totals(unit.get("choices") or [])
+                if not total:
+                    continue
+                bucket = comparison_by_unit.setdefault(str(unit_id), {"dem": 0, "rep": 0, "total": 0})
+                bucket["dem"] += dem
+                bucket["rep"] += rep
+                bucket["total"] += total
+
+        for unit_id, unit in sorted((county_president.get("locations") or {}).items(), key=lambda item: str(item[0])):
+            harris, trump, _other, total = choice_totals(unit.get("choices") or [])
+            if not total:
+                continue
+            comparison = comparison_by_unit.get(str(unit_id), {"dem": 0, "rep": 0, "total": 0})
+            has_comparison = comparison["total"] > 0
+            if has_comparison:
+                comparison_rows += 1
+            else:
+                missing_comparison_rows += 1
+            review_rows.append(
+                {
+                    "county": county,
+                    "localUnit": f"Reporting unit {unit_id}",
+                    "totalVotes": total,
+                    "harris": harris,
+                    "trump": trump,
+                    "harrisShare": pct(harris, total),
+                    "trumpShare": pct(trump, total),
+                    "demDropoff": pct(harris - comparison["dem"], total) if has_comparison else 0,
+                    "repDropoff": pct(trump - comparison["rep"], total) if has_comparison else 0,
+                    "coverageMode": section.get("comparisonCoverageMode", "presidentVsUSHouse") if has_comparison else "voteShareOnly",
+                    "sourceId": source.id,
+                }
+            )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": section.get("comparisonContestLabel", "United States House"),
+        "nativeMissingComparisonRows": missing_comparison_rows,
+        **turnout_metrics,
+    }
+    return (
+        sorted(result_rows, key=lambda item: item["jurisdictionName"]),
+        sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])),
+        turnout_rows,
+        metrics,
+    )
+
+
 def _wv_choice_precinct_votes(contest: ET.Element | None, party: str | None = None) -> dict[str, int]:
     votes_by_precinct: dict[str, int] = {}
     if contest is None:
@@ -4202,6 +4364,17 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "metrics": metrics,
         }
 
+    if config.code == "AR" and config.raw.get("certifiedResults", {}).get("format") == "arkansasTotalResultsFederalJson":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _arkansas_totalresults_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeArkansasTotalResultsFederalJson",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
     if config.code == "IN" and config.raw.get("certifiedResults", {}).get("format") == "indianaEnrCountyJson":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _indiana_enr_county_json_rows(config, sources)

@@ -1,10 +1,9 @@
 {
   "code": "AR",
   "name": "Arkansas",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Arkansas Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ar-2024-eac-turnout",
@@ -15,6 +14,28 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "ar-2024-official-totalresults-federal",
+      "category": "Official 2024 general election federal contest results",
+      "url": "https://enr.totalresults.com/arkansas/",
+      "localFile": "data/ar-2024-official-results",
+      "parser": "arkansasTotalResultsFederalJson",
+      "authority": "Arkansas Secretary of State",
+      "timestampBasis": "Arkansas Secretary of State TotalResults public API for the November 5, 2024 General Election, election ID 1846, official response lastUpdated 2025-12-16T19:41:49.5225815Z.",
+      "confidence": "Official Arkansas Secretary of State TotalResults JSON package collected from the public results API. The statewide federal bucket contains county totals; county-scoped federal buckets expose subcounty reporting-unit IDs but not human-readable precinct names.",
+      "status": "loaded"
+    },
+    {
+      "id": "ar-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2705%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ar-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Arkansas county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -33,22 +54,50 @@
     }
   },
   "expected": {
-    "jurisdictions": 73,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "jurisdictions": 75,
+    "resultRows": 75,
+    "sources": 3,
+    "geometryFeatures": 75,
+    "stateTotal": 1182676,
+    "trump": 759241,
+    "harris": 396905,
+    "other": 26530,
+    "reviewRows": 2779,
     "turnoutRows": 73
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "arkansasTotalResultsFederalJson",
+    "sourceId": "ar-2024-official-totalresults-federal",
+    "electionInfoFile": "election-info.json",
+    "federalResultsFile": "federal-results.json",
+    "manifestFile": "manifest.json",
+    "presidentContestId": "366",
+    "trumpChoiceId": "789",
+    "harrisChoiceId": "791",
+    "repPartyId": "2096",
+    "demPartyId": "2099",
+    "comparisonContestLabel": "United States House",
+    "comparisonContestIds": [
+      "161",
+      "227",
+      "237",
+      "645"
+    ],
+    "comparisonCoverageMode": "presidentVsUSHouse"
+  },
+  "reviewCharts": {
+    "format": "arkansasTotalResultsFederalJson",
+    "sourceId": "ar-2024-official-totalresults-federal",
+    "comparisonContest": "United States House",
+    "coverageMode": "presidentVsUSHouse",
+    "warning": "Arkansas review rows use official TotalResults county-scoped federal reporting-unit IDs for President-versus-U.S. House comparisons. The API exposes stable local result IDs but not human-readable precinct names; review rows are advisory screening inputs, not confirmed findings."
   }
 }

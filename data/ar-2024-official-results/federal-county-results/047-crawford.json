@@ -1,0 +1,4434 @@
+{
+  "versionID": "v1",
+  "lastUpdated": "2025-12-16T19:41:49.5225815Z",
+  "electionID": "1846",
+  "message": "",
+  "isOfficial": true,
+  "turnout": {
+    "registeredVoters": 1828129,
+    "precinctsReporting": 192150,
+    "precinctsPartiallyReporting": 0,
+    "totalPrecincts": 192150,
+    "totalBallotsCast": 1190172,
+    "reportingPercent": 100,
+    "votePercent": 65.1
+  },
+  "response": {
+    "contestType": "FED",
+    "contests": {
+      "17": {
+        "contestID": "17",
+        "districtID": null,
+        "precinctsReporting": 13,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 13,
+        "totalVotes": 22938,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "32",
+            "totalVotes": 17812,
+            "partyID": "2096",
+            "votePercent": 77.65,
+            "isWinner": false
+          },
+          {
+            "choiceID": "31",
+            "totalVotes": 839,
+            "partyID": "1",
+            "votePercent": 3.66,
+            "isWinner": false
+          },
+          {
+            "choiceID": "30",
+            "totalVotes": 4287,
+            "partyID": "2099",
+            "votePercent": 18.69,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1823,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1437,
+                "partyID": "2096",
+                "votePercent": 78.83,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 69,
+                "partyID": "1",
+                "votePercent": 3.78,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 317,
+                "partyID": "2099",
+                "votePercent": 17.39,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2387,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1884,
+                "partyID": "2096",
+                "votePercent": 78.93,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 96,
+                "partyID": "1",
+                "votePercent": 4.02,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 407,
+                "partyID": "2099",
+                "votePercent": 17.05,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 991,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 694,
+                "partyID": "2096",
+                "votePercent": 70.03,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 47,
+                "partyID": "1",
+                "votePercent": 4.74,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 250,
+                "partyID": "2099",
+                "votePercent": 25.23,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1633,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1289,
+                "partyID": "2096",
+                "votePercent": 78.93,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 54,
+                "partyID": "1",
+                "votePercent": 3.31,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 290,
+                "partyID": "2099",
+                "votePercent": 17.76,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1143,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 842,
+                "partyID": "2096",
+                "votePercent": 73.67,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 45,
+                "partyID": "1",
+                "votePercent": 3.94,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 256,
+                "partyID": "2099",
+                "votePercent": 22.4,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1890,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1494,
+                "partyID": "2096",
+                "votePercent": 79.05,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 65,
+                "partyID": "1",
+                "votePercent": 3.44,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 331,
+                "partyID": "2099",
+                "votePercent": 17.51,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1601,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1194,
+                "partyID": "2096",
+                "votePercent": 74.58,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 70,
+                "partyID": "1",
+                "votePercent": 4.37,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 337,
+                "partyID": "2099",
+                "votePercent": 21.05,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1923,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1430,
+                "partyID": "2096",
+                "votePercent": 74.36,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 55,
+                "partyID": "1",
+                "votePercent": 2.86,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 438,
+                "partyID": "2099",
+                "votePercent": 22.78,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1526,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1161,
+                "partyID": "2096",
+                "votePercent": 76.08,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 57,
+                "partyID": "1",
+                "votePercent": 3.74,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 308,
+                "partyID": "2099",
+                "votePercent": 20.18,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2104,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1744,
+                "partyID": "2096",
+                "votePercent": 82.89,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 83,
+                "partyID": "1",
+                "votePercent": 3.94,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 277,
+                "partyID": "2099",
+                "votePercent": 13.17,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1731,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1245,
+                "partyID": "2096",
+                "votePercent": 71.92,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 61,
+                "partyID": "1",
+                "votePercent": 3.52,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 425,
+                "partyID": "2099",
+                "votePercent": 24.55,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2282,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1885,
+                "partyID": "2096",
+                "votePercent": 82.6,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 75,
+                "partyID": "1",
+                "votePercent": 3.29,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 322,
+                "partyID": "2099",
+                "votePercent": 14.11,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1904,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "32",
+                "totalVotes": 1513,
+                "partyID": "2096",
+                "votePercent": 79.46,
+                "isWinner": false
+              },
+              {
+                "choiceID": "31",
+                "totalVotes": 62,
+                "partyID": "1",
+                "votePercent": 3.26,
+                "isWinner": false
+              },
+              {
+                "choiceID": "30",
+                "totalVotes": 329,
+                "partyID": "2099",
+                "votePercent": 17.28,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "28": {
+        "contestID": "28",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 1009,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "56",
+            "totalVotes": 708,
+            "partyID": "2096",
+            "votePercent": 70.17,
+            "isWinner": false
+          },
+          {
+            "choiceID": "55",
+            "totalVotes": 301,
+            "partyID": "2099",
+            "votePercent": 29.83,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1009,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "56",
+                "totalVotes": 708,
+                "partyID": "2096",
+                "votePercent": 70.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "55",
+                "totalVotes": 301,
+                "partyID": "2099",
+                "votePercent": 29.83,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "53": {
+        "contestID": "53",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 530,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "105",
+            "totalVotes": 292,
+            "partyID": "1",
+            "votePercent": 55.09,
+            "isWinner": false
+          },
+          {
+            "choiceID": "104",
+            "totalVotes": 238,
+            "partyID": "1",
+            "votePercent": 44.91,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 530,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "105",
+                "totalVotes": 292,
+                "partyID": "1",
+                "votePercent": 55.09,
+                "isWinner": false
+              },
+              {
+                "choiceID": "104",
+                "totalVotes": 238,
+                "partyID": "1",
+                "votePercent": 44.91,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "60": {
+        "contestID": "60",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 42,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "119",
+            "totalVotes": 19,
+            "partyID": "1",
+            "votePercent": 45.24,
+            "isWinner": false
+          },
+          {
+            "choiceID": "118",
+            "totalVotes": 23,
+            "partyID": "1",
+            "votePercent": 54.76,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 42,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "119",
+                "totalVotes": 19,
+                "partyID": "1",
+                "votePercent": 45.24,
+                "isWinner": false
+              },
+              {
+                "choiceID": "118",
+                "totalVotes": 23,
+                "partyID": "1",
+                "votePercent": 54.76,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "91": {
+        "contestID": "91",
+        "districtID": null,
+        "precinctsReporting": 13,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 13,
+        "totalVotes": 20355,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "200",
+            "totalVotes": 9817,
+            "partyID": "1",
+            "votePercent": 48.23,
+            "isWinner": false
+          },
+          {
+            "choiceID": "201",
+            "totalVotes": 10538,
+            "partyID": "1",
+            "votePercent": 51.77,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1610,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 767,
+                "partyID": "1",
+                "votePercent": 47.64,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 843,
+                "partyID": "1",
+                "votePercent": 52.36,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2153,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 1018,
+                "partyID": "1",
+                "votePercent": 47.28,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 1135,
+                "partyID": "1",
+                "votePercent": 52.72,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 862,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 414,
+                "partyID": "1",
+                "votePercent": 48.03,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 448,
+                "partyID": "1",
+                "votePercent": 51.97,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1435,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 701,
+                "partyID": "1",
+                "votePercent": 48.85,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 734,
+                "partyID": "1",
+                "votePercent": 51.15,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1022,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 543,
+                "partyID": "1",
+                "votePercent": 53.13,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 479,
+                "partyID": "1",
+                "votePercent": 46.87,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1711,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 843,
+                "partyID": "1",
+                "votePercent": 49.27,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 868,
+                "partyID": "1",
+                "votePercent": 50.73,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1455,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 687,
+                "partyID": "1",
+                "votePercent": 47.22,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 768,
+                "partyID": "1",
+                "votePercent": 52.78,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1690,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 774,
+                "partyID": "1",
+                "votePercent": 45.8,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 916,
+                "partyID": "1",
+                "votePercent": 54.2,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1336,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 649,
+                "partyID": "1",
+                "votePercent": 48.58,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 687,
+                "partyID": "1",
+                "votePercent": 51.42,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1862,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 897,
+                "partyID": "1",
+                "votePercent": 48.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 965,
+                "partyID": "1",
+                "votePercent": 51.83,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1488,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 750,
+                "partyID": "1",
+                "votePercent": 50.4,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 738,
+                "partyID": "1",
+                "votePercent": 49.6,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1994,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 953,
+                "partyID": "1",
+                "votePercent": 47.79,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 1041,
+                "partyID": "1",
+                "votePercent": 52.21,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1737,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "200",
+                "totalVotes": 821,
+                "partyID": "1",
+                "votePercent": 47.27,
+                "isWinner": false
+              },
+              {
+                "choiceID": "201",
+                "totalVotes": 916,
+                "partyID": "1",
+                "votePercent": 52.73,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "96": {
+        "contestID": "96",
+        "districtID": null,
+        "precinctsReporting": 13,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 13,
+        "totalVotes": 23183,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "211",
+            "totalVotes": 21155,
+            "partyID": "1",
+            "votePercent": 91.25,
+            "isWinner": false
+          },
+          {
+            "choiceID": "210",
+            "totalVotes": 2028,
+            "partyID": "1",
+            "votePercent": 8.75,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1813,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1690,
+                "partyID": "1",
+                "votePercent": 93.22,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 123,
+                "partyID": "1",
+                "votePercent": 6.78,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2413,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 2212,
+                "partyID": "1",
+                "votePercent": 91.67,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 201,
+                "partyID": "1",
+                "votePercent": 8.33,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1007,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 908,
+                "partyID": "1",
+                "votePercent": 90.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 99,
+                "partyID": "1",
+                "votePercent": 9.83,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1639,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1480,
+                "partyID": "1",
+                "votePercent": 90.3,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 159,
+                "partyID": "1",
+                "votePercent": 9.7,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1152,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1065,
+                "partyID": "1",
+                "votePercent": 92.45,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 87,
+                "partyID": "1",
+                "votePercent": 7.55,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1920,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1767,
+                "partyID": "1",
+                "votePercent": 92.03,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 153,
+                "partyID": "1",
+                "votePercent": 7.97,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1628,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1482,
+                "partyID": "1",
+                "votePercent": 91.03,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 146,
+                "partyID": "1",
+                "votePercent": 8.97,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1960,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1797,
+                "partyID": "1",
+                "votePercent": 91.68,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 163,
+                "partyID": "1",
+                "votePercent": 8.32,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1537,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1393,
+                "partyID": "1",
+                "votePercent": 90.63,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 144,
+                "partyID": "1",
+                "votePercent": 9.37,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2146,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1919,
+                "partyID": "1",
+                "votePercent": 89.42,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 227,
+                "partyID": "1",
+                "votePercent": 10.58,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1740,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1573,
+                "partyID": "1",
+                "votePercent": 90.4,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 167,
+                "partyID": "1",
+                "votePercent": 9.6,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2287,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 2097,
+                "partyID": "1",
+                "votePercent": 91.69,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 190,
+                "partyID": "1",
+                "votePercent": 8.31,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1941,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "211",
+                "totalVotes": 1772,
+                "partyID": "1",
+                "votePercent": 91.29,
+                "isWinner": false
+              },
+              {
+                "choiceID": "210",
+                "totalVotes": 169,
+                "partyID": "1",
+                "votePercent": 8.71,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "104": {
+        "contestID": "104",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 515,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "227",
+            "totalVotes": 205,
+            "partyID": "1",
+            "votePercent": 39.81,
+            "isWinner": false
+          },
+          {
+            "choiceID": "226",
+            "totalVotes": 310,
+            "partyID": "1",
+            "votePercent": 60.19,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 515,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "227",
+                "totalVotes": 205,
+                "partyID": "1",
+                "votePercent": 39.81,
+                "isWinner": false
+              },
+              {
+                "choiceID": "226",
+                "totalVotes": 310,
+                "partyID": "1",
+                "votePercent": 60.19,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "132": {
+        "contestID": "132",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 1747,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "279",
+            "totalVotes": 454,
+            "partyID": "2099",
+            "votePercent": 25.99,
+            "isWinner": false
+          },
+          {
+            "choiceID": "281",
+            "totalVotes": 1293,
+            "partyID": "2096",
+            "votePercent": 74.01,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1747,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "279",
+                "totalVotes": 454,
+                "partyID": "2099",
+                "votePercent": 25.99,
+                "isWinner": false
+              },
+              {
+                "choiceID": "281",
+                "totalVotes": 1293,
+                "partyID": "2096",
+                "votePercent": 74.01,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "152": {
+        "contestID": "152",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 1555,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "320",
+            "totalVotes": 1153,
+            "partyID": "2096",
+            "votePercent": 74.15,
+            "isWinner": false
+          },
+          {
+            "choiceID": "319",
+            "totalVotes": 402,
+            "partyID": "2099",
+            "votePercent": 25.85,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1555,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "320",
+                "totalVotes": 1153,
+                "partyID": "2096",
+                "votePercent": 74.15,
+                "isWinner": false
+              },
+              {
+                "choiceID": "319",
+                "totalVotes": 402,
+                "partyID": "2099",
+                "votePercent": 25.85,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "161": {
+        "contestID": "161",
+        "districtID": null,
+        "precinctsReporting": 13,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 13,
+        "totalVotes": 20770,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "342",
+            "totalVotes": 16268,
+            "partyID": "2096",
+            "votePercent": 78.32,
+            "isWinner": false
+          },
+          {
+            "choiceID": "341",
+            "totalVotes": 3471,
+            "partyID": "2099",
+            "votePercent": 16.71,
+            "isWinner": false
+          },
+          {
+            "choiceID": "340",
+            "totalVotes": 1031,
+            "partyID": "1",
+            "votePercent": 4.96,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1621,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1325,
+                "partyID": "2096",
+                "votePercent": 81.74,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 238,
+                "partyID": "2099",
+                "votePercent": 14.68,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 58,
+                "partyID": "1",
+                "votePercent": 3.58,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2152,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1711,
+                "partyID": "2096",
+                "votePercent": 79.51,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 327,
+                "partyID": "2099",
+                "votePercent": 15.2,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 114,
+                "partyID": "1",
+                "votePercent": 5.3,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 888,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 635,
+                "partyID": "2096",
+                "votePercent": 71.51,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 206,
+                "partyID": "2099",
+                "votePercent": 23.2,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 47,
+                "partyID": "1",
+                "votePercent": 5.29,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1517,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1207,
+                "partyID": "2096",
+                "votePercent": 79.56,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 240,
+                "partyID": "2099",
+                "votePercent": 15.82,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 70,
+                "partyID": "1",
+                "votePercent": 4.61,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1080,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 793,
+                "partyID": "2096",
+                "votePercent": 73.43,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 228,
+                "partyID": "2099",
+                "votePercent": 21.11,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 59,
+                "partyID": "1",
+                "votePercent": 5.46,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1745,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1371,
+                "partyID": "2096",
+                "votePercent": 78.57,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 269,
+                "partyID": "2099",
+                "votePercent": 15.42,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 105,
+                "partyID": "1",
+                "votePercent": 6.02,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1423,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1077,
+                "partyID": "2096",
+                "votePercent": 75.69,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 274,
+                "partyID": "2099",
+                "votePercent": 19.26,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 72,
+                "partyID": "1",
+                "votePercent": 5.06,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1705,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1305,
+                "partyID": "2096",
+                "votePercent": 76.54,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 323,
+                "partyID": "2099",
+                "votePercent": 18.94,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 77,
+                "partyID": "1",
+                "votePercent": 4.52,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1393,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1061,
+                "partyID": "2096",
+                "votePercent": 76.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 265,
+                "partyID": "2099",
+                "votePercent": 19.02,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 67,
+                "partyID": "1",
+                "votePercent": 4.81,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1901,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1581,
+                "partyID": "2096",
+                "votePercent": 83.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 219,
+                "partyID": "2099",
+                "votePercent": 11.52,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 101,
+                "partyID": "1",
+                "votePercent": 5.31,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1520,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1124,
+                "partyID": "2096",
+                "votePercent": 73.95,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 328,
+                "partyID": "2099",
+                "votePercent": 21.58,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 68,
+                "partyID": "1",
+                "votePercent": 4.47,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2105,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1722,
+                "partyID": "2096",
+                "votePercent": 81.81,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 274,
+                "partyID": "2099",
+                "votePercent": 13.02,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 109,
+                "partyID": "1",
+                "votePercent": 5.18,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1720,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "342",
+                "totalVotes": 1356,
+                "partyID": "2096",
+                "votePercent": 78.84,
+                "isWinner": false
+              },
+              {
+                "choiceID": "341",
+                "totalVotes": 280,
+                "partyID": "2099",
+                "votePercent": 16.28,
+                "isWinner": false
+              },
+              {
+                "choiceID": "340",
+                "totalVotes": 84,
+                "partyID": "1",
+                "votePercent": 4.88,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "193": {
+        "contestID": "193",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 1913,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "404",
+            "totalVotes": 407,
+            "partyID": "2099",
+            "votePercent": 21.28,
+            "isWinner": false
+          },
+          {
+            "choiceID": "406",
+            "totalVotes": 1506,
+            "partyID": "2096",
+            "votePercent": 78.72,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1913,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "404",
+                "totalVotes": 407,
+                "partyID": "2099",
+                "votePercent": 21.28,
+                "isWinner": false
+              },
+              {
+                "choiceID": "406",
+                "totalVotes": 1506,
+                "partyID": "2096",
+                "votePercent": 78.72,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "207": {
+        "contestID": "207",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 2298,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "433",
+            "totalVotes": 422,
+            "partyID": "2099",
+            "votePercent": 18.36,
+            "isWinner": false
+          },
+          {
+            "choiceID": "434",
+            "totalVotes": 1876,
+            "partyID": "2096",
+            "votePercent": 81.64,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2298,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "433",
+                "totalVotes": 422,
+                "partyID": "2099",
+                "votePercent": 18.36,
+                "isWinner": false
+              },
+              {
+                "choiceID": "434",
+                "totalVotes": 1876,
+                "partyID": "2096",
+                "votePercent": 81.64,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "232": {
+        "contestID": "232",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 297,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "481",
+            "totalVotes": 208,
+            "partyID": "1",
+            "votePercent": 70.03,
+            "isWinner": false
+          },
+          {
+            "choiceID": "482",
+            "totalVotes": 89,
+            "partyID": "1",
+            "votePercent": 29.97,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 297,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "481",
+                "totalVotes": 208,
+                "partyID": "1",
+                "votePercent": 70.03,
+                "isWinner": false
+              },
+              {
+                "choiceID": "482",
+                "totalVotes": 89,
+                "partyID": "1",
+                "votePercent": 29.97,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "245": {
+        "contestID": "245",
+        "districtID": null,
+        "precinctsReporting": 7,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 7,
+        "totalVotes": 10650,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "529",
+            "totalVotes": 1724,
+            "partyID": "2099",
+            "votePercent": 16.19,
+            "isWinner": false
+          },
+          {
+            "choiceID": "528",
+            "totalVotes": 8926,
+            "partyID": "2096",
+            "votePercent": 83.81,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1145,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "529",
+                "totalVotes": 197,
+                "partyID": "2099",
+                "votePercent": 17.21,
+                "isWinner": false
+              },
+              {
+                "choiceID": "528",
+                "totalVotes": 948,
+                "partyID": "2096",
+                "votePercent": 82.79,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1197,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "529",
+                "totalVotes": 183,
+                "partyID": "2099",
+                "votePercent": 15.29,
+                "isWinner": false
+              },
+              {
+                "choiceID": "528",
+                "totalVotes": 1014,
+                "partyID": "2096",
+                "votePercent": 84.71,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1579,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "529",
+                "totalVotes": 275,
+                "partyID": "2099",
+                "votePercent": 17.42,
+                "isWinner": false
+              },
+              {
+                "choiceID": "528",
+                "totalVotes": 1304,
+                "partyID": "2096",
+                "votePercent": 82.58,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1840,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "529",
+                "totalVotes": 327,
+                "partyID": "2099",
+                "votePercent": 17.77,
+                "isWinner": false
+              },
+              {
+                "choiceID": "528",
+                "totalVotes": 1513,
+                "partyID": "2096",
+                "votePercent": 82.23,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1288,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "529",
+                "totalVotes": 267,
+                "partyID": "2099",
+                "votePercent": 20.73,
+                "isWinner": false
+              },
+              {
+                "choiceID": "528",
+                "totalVotes": 1021,
+                "partyID": "2096",
+                "votePercent": 79.27,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2095,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "529",
+                "totalVotes": 263,
+                "partyID": "2099",
+                "votePercent": 12.55,
+                "isWinner": false
+              },
+              {
+                "choiceID": "528",
+                "totalVotes": 1832,
+                "partyID": "2096",
+                "votePercent": 87.45,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1506,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "529",
+                "totalVotes": 212,
+                "partyID": "2099",
+                "votePercent": 14.08,
+                "isWinner": false
+              },
+              {
+                "choiceID": "528",
+                "totalVotes": 1294,
+                "partyID": "2096",
+                "votePercent": 85.92,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "250": {
+        "contestID": "250",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 1658,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "538",
+            "totalVotes": 1350,
+            "partyID": "2096",
+            "votePercent": 81.42,
+            "isWinner": false
+          },
+          {
+            "choiceID": "537",
+            "totalVotes": 308,
+            "partyID": "2099",
+            "votePercent": 18.58,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1658,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "538",
+                "totalVotes": 1350,
+                "partyID": "2096",
+                "votePercent": 81.42,
+                "isWinner": false
+              },
+              {
+                "choiceID": "537",
+                "totalVotes": 308,
+                "partyID": "2099",
+                "votePercent": 18.58,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "252": {
+        "contestID": "252",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 1838,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "542",
+            "totalVotes": 1431,
+            "partyID": "2096",
+            "votePercent": 77.86,
+            "isWinner": false
+          },
+          {
+            "choiceID": "541",
+            "totalVotes": 407,
+            "partyID": "2099",
+            "votePercent": 22.14,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1838,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "542",
+                "totalVotes": 1431,
+                "partyID": "2096",
+                "votePercent": 77.86,
+                "isWinner": false
+              },
+              {
+                "choiceID": "541",
+                "totalVotes": 407,
+                "partyID": "2099",
+                "votePercent": 22.14,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "266": {
+        "contestID": "266",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 2177,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "578",
+            "totalVotes": 393,
+            "partyID": "2099",
+            "votePercent": 18.05,
+            "isWinner": false
+          },
+          {
+            "choiceID": "579",
+            "totalVotes": 1784,
+            "partyID": "2096",
+            "votePercent": 81.95,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2177,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "578",
+                "totalVotes": 393,
+                "partyID": "2099",
+                "votePercent": 18.05,
+                "isWinner": false
+              },
+              {
+                "choiceID": "579",
+                "totalVotes": 1784,
+                "partyID": "2096",
+                "votePercent": 81.95,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "297": {
+        "contestID": "297",
+        "districtID": null,
+        "precinctsReporting": 13,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 13,
+        "totalVotes": 22939,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "637",
+            "totalVotes": 13544,
+            "partyID": "1",
+            "votePercent": 59.04,
+            "isWinner": false
+          },
+          {
+            "choiceID": "636",
+            "totalVotes": 9395,
+            "partyID": "1",
+            "votePercent": 40.96,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1809,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 1100,
+                "partyID": "1",
+                "votePercent": 60.81,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 709,
+                "partyID": "1",
+                "votePercent": 39.19,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2381,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 1431,
+                "partyID": "1",
+                "votePercent": 60.1,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 950,
+                "partyID": "1",
+                "votePercent": 39.9,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 993,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 555,
+                "partyID": "1",
+                "votePercent": 55.89,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 438,
+                "partyID": "1",
+                "votePercent": 44.11,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1626,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 984,
+                "partyID": "1",
+                "votePercent": 60.52,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 642,
+                "partyID": "1",
+                "votePercent": 39.48,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1136,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 629,
+                "partyID": "1",
+                "votePercent": 55.37,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 507,
+                "partyID": "1",
+                "votePercent": 44.63,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1901,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 1119,
+                "partyID": "1",
+                "votePercent": 58.86,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 782,
+                "partyID": "1",
+                "votePercent": 41.14,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1611,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 914,
+                "partyID": "1",
+                "votePercent": 56.73,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 697,
+                "partyID": "1",
+                "votePercent": 43.27,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1957,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 1152,
+                "partyID": "1",
+                "votePercent": 58.87,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 805,
+                "partyID": "1",
+                "votePercent": 41.13,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1521,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 884,
+                "partyID": "1",
+                "votePercent": 58.12,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 637,
+                "partyID": "1",
+                "votePercent": 41.88,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2128,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 1245,
+                "partyID": "1",
+                "votePercent": 58.51,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 883,
+                "partyID": "1",
+                "votePercent": 41.49,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1705,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 921,
+                "partyID": "1",
+                "votePercent": 54.02,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 784,
+                "partyID": "1",
+                "votePercent": 45.98,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2248,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 1408,
+                "partyID": "1",
+                "votePercent": 62.63,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 840,
+                "partyID": "1",
+                "votePercent": 37.37,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1923,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "637",
+                "totalVotes": 1202,
+                "partyID": "1",
+                "votePercent": 62.51,
+                "isWinner": false
+              },
+              {
+                "choiceID": "636",
+                "totalVotes": 721,
+                "partyID": "1",
+                "votePercent": 37.49,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "298": {
+        "contestID": "298",
+        "districtID": null,
+        "precinctsReporting": 7,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 7,
+        "totalVotes": 7095,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "638",
+            "totalVotes": 7095,
+            "partyID": "2096",
+            "votePercent": 100,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 983,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "638",
+                "totalVotes": 983,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 779,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "638",
+                "totalVotes": 779,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 973,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "638",
+                "totalVotes": 973,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1303,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "638",
+                "totalVotes": 1303,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1539,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "638",
+                "totalVotes": 1539,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 151,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "638",
+                "totalVotes": 151,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1367,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "638",
+                "totalVotes": 1367,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "309": {
+        "contestID": "309",
+        "districtID": null,
+        "precinctsReporting": 13,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 13,
+        "totalVotes": 19383,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "659",
+            "totalVotes": 19383,
+            "partyID": "2096",
+            "votePercent": 100,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1523,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1523,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2047,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 2047,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 810,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 810,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1397,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1397,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 983,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 983,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1613,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1613,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1348,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1348,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1582,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1582,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1286,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1286,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1809,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1809,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1405,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1405,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2000,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 2000,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1580,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "659",
+                "totalVotes": 1580,
+                "partyID": "2096",
+                "votePercent": 100,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "353": {
+        "contestID": "353",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 298,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "764",
+            "totalVotes": 156,
+            "partyID": "1",
+            "votePercent": 52.35,
+            "isWinner": false
+          },
+          {
+            "choiceID": "763",
+            "totalVotes": 142,
+            "partyID": "1",
+            "votePercent": 47.65,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 298,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "764",
+                "totalVotes": 156,
+                "partyID": "1",
+                "votePercent": 52.35,
+                "isWinner": false
+              },
+              {
+                "choiceID": "763",
+                "totalVotes": 142,
+                "partyID": "1",
+                "votePercent": 47.65,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "366": {
+        "contestID": "366",
+        "districtID": null,
+        "precinctsReporting": 13,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 13,
+        "totalVotes": 23834,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "790",
+            "totalVotes": 66,
+            "partyID": "2097",
+            "votePercent": 0.28,
+            "isWinner": false
+          },
+          {
+            "choiceID": "791",
+            "totalVotes": 4753,
+            "partyID": "2099",
+            "votePercent": 19.94,
+            "isWinner": false
+          },
+          {
+            "choiceID": "789",
+            "totalVotes": 18615,
+            "partyID": "2096",
+            "votePercent": 78.1,
+            "isWinner": false
+          },
+          {
+            "choiceID": "788",
+            "totalVotes": 116,
+            "partyID": "1",
+            "votePercent": 0.49,
+            "isWinner": false
+          },
+          {
+            "choiceID": "794",
+            "totalVotes": 239,
+            "partyID": "1",
+            "votePercent": 1,
+            "isWinner": false
+          },
+          {
+            "choiceID": "793",
+            "totalVotes": 32,
+            "partyID": "1",
+            "votePercent": 0.13,
+            "isWinner": false
+          },
+          {
+            "choiceID": "792",
+            "totalVotes": 13,
+            "partyID": "1",
+            "votePercent": 0.05,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1883,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 8,
+                "partyID": "2097",
+                "votePercent": 0.42,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 360,
+                "partyID": "2099",
+                "votePercent": 19.12,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1472,
+                "partyID": "2096",
+                "votePercent": 78.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 9,
+                "partyID": "1",
+                "votePercent": 0.48,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 30,
+                "partyID": "1",
+                "votePercent": 1.59,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 4,
+                "partyID": "1",
+                "votePercent": 0.21,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 0,
+                "partyID": "1",
+                "votePercent": 0,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28198300": {
+            "locationId": "28198300",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2465,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 6,
+                "partyID": "2097",
+                "votePercent": 0.24,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 455,
+                "partyID": "2099",
+                "votePercent": 18.46,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1959,
+                "partyID": "2096",
+                "votePercent": 79.47,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 19,
+                "partyID": "1",
+                "votePercent": 0.77,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 19,
+                "partyID": "1",
+                "votePercent": 0.77,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 3,
+                "partyID": "1",
+                "votePercent": 0.12,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 4,
+                "partyID": "1",
+                "votePercent": 0.16,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "28232497": {
+            "locationId": "28232497",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1041,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 2,
+                "partyID": "2097",
+                "votePercent": 0.19,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 256,
+                "partyID": "2099",
+                "votePercent": 24.59,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 759,
+                "partyID": "2096",
+                "votePercent": 72.91,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 6,
+                "partyID": "1",
+                "votePercent": 0.58,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 15,
+                "partyID": "1",
+                "votePercent": 1.44,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 2,
+                "partyID": "1",
+                "votePercent": 0.19,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.1,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "29928376": {
+            "locationId": "29928376",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1691,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 8,
+                "partyID": "2097",
+                "votePercent": 0.47,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 310,
+                "partyID": "2099",
+                "votePercent": 18.33,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1348,
+                "partyID": "2096",
+                "votePercent": 79.72,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 8,
+                "partyID": "1",
+                "votePercent": 0.47,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 16,
+                "partyID": "1",
+                "votePercent": 0.95,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 0,
+                "partyID": "1",
+                "votePercent": 0,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.06,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "50662941": {
+            "locationId": "50662941",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1181,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 2,
+                "partyID": "2097",
+                "votePercent": 0.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 276,
+                "partyID": "2099",
+                "votePercent": 23.37,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 887,
+                "partyID": "2096",
+                "votePercent": 75.11,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 7,
+                "partyID": "1",
+                "votePercent": 0.59,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 9,
+                "partyID": "1",
+                "votePercent": 0.76,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 0,
+                "partyID": "1",
+                "votePercent": 0,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 0,
+                "partyID": "1",
+                "votePercent": 0,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "57016230": {
+            "locationId": "57016230",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1944,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 3,
+                "partyID": "2097",
+                "votePercent": 0.15,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 362,
+                "partyID": "2099",
+                "votePercent": 18.62,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1550,
+                "partyID": "2096",
+                "votePercent": 79.73,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 8,
+                "partyID": "1",
+                "votePercent": 0.41,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 18,
+                "partyID": "1",
+                "votePercent": 0.93,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 2,
+                "partyID": "1",
+                "votePercent": 0.1,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.05,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "65604530": {
+            "locationId": "65604530",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1671,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 3,
+                "partyID": "2097",
+                "votePercent": 0.18,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 371,
+                "partyID": "2099",
+                "votePercent": 22.2,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1273,
+                "partyID": "2096",
+                "votePercent": 76.18,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.06,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 19,
+                "partyID": "1",
+                "votePercent": 1.14,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 4,
+                "partyID": "1",
+                "votePercent": 0.24,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 0,
+                "partyID": "1",
+                "votePercent": 0,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "75419520": {
+            "locationId": "75419520",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2017,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 4,
+                "partyID": "2097",
+                "votePercent": 0.2,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 503,
+                "partyID": "2099",
+                "votePercent": 24.94,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1474,
+                "partyID": "2096",
+                "votePercent": 73.08,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 11,
+                "partyID": "1",
+                "votePercent": 0.55,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 22,
+                "partyID": "1",
+                "votePercent": 1.09,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 3,
+                "partyID": "1",
+                "votePercent": 0.15,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 0,
+                "partyID": "1",
+                "votePercent": 0,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "78137943": {
+            "locationId": "78137943",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1589,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 7,
+                "partyID": "2097",
+                "votePercent": 0.44,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 350,
+                "partyID": "2099",
+                "votePercent": 22.03,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1211,
+                "partyID": "2096",
+                "votePercent": 76.21,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 6,
+                "partyID": "1",
+                "votePercent": 0.38,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 12,
+                "partyID": "1",
+                "votePercent": 0.76,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.06,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 2,
+                "partyID": "1",
+                "votePercent": 0.13,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2234,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 7,
+                "partyID": "2097",
+                "votePercent": 0.31,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 301,
+                "partyID": "2099",
+                "votePercent": 13.47,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1898,
+                "partyID": "2096",
+                "votePercent": 84.96,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 8,
+                "partyID": "1",
+                "votePercent": 0.36,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 18,
+                "partyID": "1",
+                "votePercent": 0.81,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.04,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.04,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07676059": {
+            "locationId": "07676059",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1794,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 5,
+                "partyID": "2097",
+                "votePercent": 0.28,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 470,
+                "partyID": "2099",
+                "votePercent": 26.2,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1296,
+                "partyID": "2096",
+                "votePercent": 72.24,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 6,
+                "partyID": "1",
+                "votePercent": 0.33,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 16,
+                "partyID": "1",
+                "votePercent": 0.89,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.06,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 0,
+                "partyID": "1",
+                "votePercent": 0,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 2333,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 4,
+                "partyID": "2097",
+                "votePercent": 0.17,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 369,
+                "partyID": "2099",
+                "votePercent": 15.82,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1907,
+                "partyID": "2096",
+                "votePercent": 81.74,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 20,
+                "partyID": "1",
+                "votePercent": 0.86,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 23,
+                "partyID": "1",
+                "votePercent": 0.99,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 9,
+                "partyID": "1",
+                "votePercent": 0.39,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 1,
+                "partyID": "1",
+                "votePercent": 0.04,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1991,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "790",
+                "totalVotes": 7,
+                "partyID": "2097",
+                "votePercent": 0.35,
+                "isWinner": false
+              },
+              {
+                "choiceID": "791",
+                "totalVotes": 370,
+                "partyID": "2099",
+                "votePercent": 18.58,
+                "isWinner": false
+              },
+              {
+                "choiceID": "789",
+                "totalVotes": 1581,
+                "partyID": "2096",
+                "votePercent": 79.41,
+                "isWinner": false
+              },
+              {
+                "choiceID": "788",
+                "totalVotes": 7,
+                "partyID": "1",
+                "votePercent": 0.35,
+                "isWinner": false
+              },
+              {
+                "choiceID": "794",
+                "totalVotes": 22,
+                "partyID": "1",
+                "votePercent": 1.1,
+                "isWinner": false
+              },
+              {
+                "choiceID": "793",
+                "totalVotes": 2,
+                "partyID": "1",
+                "votePercent": 0.1,
+                "isWinner": false
+              },
+              {
+                "choiceID": "792",
+                "totalVotes": 2,
+                "partyID": "1",
+                "votePercent": 0.1,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "449": {
+        "contestID": "449",
+        "districtID": null,
+        "precinctsReporting": 3,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 3,
+        "totalVotes": 3149,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "977",
+            "totalVotes": 574,
+            "partyID": "2099",
+            "votePercent": 18.23,
+            "isWinner": false
+          },
+          {
+            "choiceID": "978",
+            "totalVotes": 2575,
+            "partyID": "2096",
+            "votePercent": 81.77,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 597,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "977",
+                "totalVotes": 108,
+                "partyID": "2099",
+                "votePercent": 18.09,
+                "isWinner": false
+              },
+              {
+                "choiceID": "978",
+                "totalVotes": 489,
+                "partyID": "2096",
+                "votePercent": 81.91,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "07146717": {
+            "locationId": "07146717",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 716,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "977",
+                "totalVotes": 117,
+                "partyID": "2099",
+                "votePercent": 16.34,
+                "isWinner": false
+              },
+              {
+                "choiceID": "978",
+                "totalVotes": 599,
+                "partyID": "2096",
+                "votePercent": 83.66,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          },
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 1836,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "977",
+                "totalVotes": 349,
+                "partyID": "2099",
+                "votePercent": 19.01,
+                "isWinner": false
+              },
+              {
+                "choiceID": "978",
+                "totalVotes": 1487,
+                "partyID": "2096",
+                "votePercent": 80.99,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "512": {
+        "contestID": "512",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 46,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "1131",
+            "totalVotes": 29,
+            "partyID": "1",
+            "votePercent": 63.04,
+            "isWinner": false
+          },
+          {
+            "choiceID": "1130",
+            "totalVotes": 17,
+            "partyID": "1",
+            "votePercent": 36.96,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "04615341": {
+            "locationId": "04615341",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 46,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "1131",
+                "totalVotes": 29,
+                "partyID": "1",
+                "votePercent": 63.04,
+                "isWinner": false
+              },
+              {
+                "choiceID": "1130",
+                "totalVotes": 17,
+                "partyID": "1",
+                "votePercent": 36.96,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "627": {
+        "contestID": "627",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 542,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "1359",
+            "totalVotes": 321,
+            "partyID": "1",
+            "votePercent": 59.23,
+            "isWinner": false
+          },
+          {
+            "choiceID": "1360",
+            "totalVotes": 221,
+            "partyID": "1",
+            "votePercent": 40.77,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "82457004": {
+            "locationId": "82457004",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 542,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "1359",
+                "totalVotes": 321,
+                "partyID": "1",
+                "votePercent": 59.23,
+                "isWinner": false
+              },
+              {
+                "choiceID": "1360",
+                "totalVotes": 221,
+                "partyID": "1",
+                "votePercent": 40.77,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      },
+      "635": {
+        "contestID": "635",
+        "districtID": null,
+        "precinctsReporting": 1,
+        "precinctsPartiallyReporting": 0,
+        "totalPrecincts": 1,
+        "totalVotes": 520,
+        "recountType": 0,
+        "hasRecount": false,
+        "hasLocationResults": false,
+        "choices": [
+          {
+            "choiceID": "1374",
+            "totalVotes": 180,
+            "partyID": "1",
+            "votePercent": 34.62,
+            "isWinner": false
+          },
+          {
+            "choiceID": "1375",
+            "totalVotes": 340,
+            "partyID": "1",
+            "votePercent": 65.38,
+            "isWinner": false
+          }
+        ],
+        "writeInChoices": null,
+        "locations": {
+          "16520857": {
+            "locationId": "16520857",
+            "precinctsReporting": 1,
+            "precinctsPartiallyReporting": 0,
+            "totalPrecincts": 1,
+            "totalVotes": 520,
+            "hasLocationResults": false,
+            "choices": [
+              {
+                "choiceID": "1374",
+                "totalVotes": 180,
+                "partyID": "1",
+                "votePercent": 34.62,
+                "isWinner": false
+              },
+              {
+                "choiceID": "1375",
+                "totalVotes": 340,
+                "partyID": "1",
+                "votePercent": 65.38,
+                "isWinner": false
+              }
+            ],
+            "writeinChoices": null
+          }
+        }
+      }
+    }
+  },
+  "errorMessage": null
+}
