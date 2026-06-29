@@ -1127,6 +1127,24 @@ class PipelineTests(unittest.TestCase):
             3,
         )
 
+    def test_idaho_county_president_csv_builds_results_without_review_rows(self):
+        config = load_config("etl/state-configs/id.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+        native = artifact["native"]
+
+        self.assertTrue(report.passed)
+        self.assertEqual(native["parser"], "nativeIdahoCountyPresidentCsv")
+        self.assertEqual(len(native["resultRows"]), 44)
+        self.assertEqual(len(native["reviewRows"]), 0)
+        self.assertEqual(len(native["turnoutRows"]), 44)
+        self.assertEqual(native["metrics"]["nativeResultTotalVotes"], 904967)
+        self.assertEqual(native["metrics"]["nativeTrumpVotes"], 605246)
+        self.assertEqual(native["metrics"]["nativeHarrisVotes"], 274972)
+        self.assertEqual(native["metrics"]["nativeOtherVotes"], 24749)
+        ada = next(row for row in native["resultRows"] if row["jurisdictionName"] == "Ada County")
+        self.assertEqual(ada["votes"], {"Trump": 143759, "Harris": 116116, "Other": 7544})
+
     def test_normalized_turnout_only_staging_parses_csv_contract(self):
         tmp = self.fixture_dir("normalized-turnout")
         csv_path = tmp / "az-turnout.csv"

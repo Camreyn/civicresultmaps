@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import csv
 import xml.etree.ElementTree as ET
@@ -1532,7 +1532,7 @@ def _county_president_csv_rows(
         missing_label=missing_label,
         county_normalizer=county_normalizer,
     )
-    if not review_rows:
+    if not review_rows and config.capabilities.get("reviewGraphs", False):
         review_rows, review_metrics = _county_comparison_review_rows(
             config,
             sources,
@@ -1541,7 +1541,7 @@ def _county_president_csv_rows(
             county_normalizer=county_normalizer,
         )
 
-    if not review_rows:
+    if not review_rows and config.capabilities.get("reviewGraphs", False):
         review_rows = [
             {
                 "county": row["jurisdictionName"],
@@ -5631,6 +5631,21 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeMississippiElectionRecapCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+    if config.code == "ID" and config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(
+            config,
+            sources,
+            missing_label="Idaho official county results",
+        )
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeIdahoCountyPresidentCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

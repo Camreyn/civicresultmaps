@@ -1,10 +1,9 @@
 {
   "code": "ID",
   "name": "Idaho",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Idaho Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "id-2024-eac-turnout",
@@ -15,6 +14,28 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "id-2024-general-official-xml-index",
+      "category": "Official 2024 General Election county XML result endpoints",
+      "url": "https://archive.voteidaho.gov/results/2024/general/xml.html",
+      "localFile": "data/id-2024-general-president.csv",
+      "parser": "idahoOfficialCountyXml",
+      "authority": "Idaho Secretary of State",
+      "timestampBasis": "Idaho Secretary of State official 2024 General Election XML county result endpoints generated November 20, 2024.",
+      "confidence": "Official Vote Idaho county XML endpoints normalized by scripts/normalize_id_official_results.py to county presidential rows. Five stale XML county endpoints use Vote Idaho official map Trump/Harris values plus public county-table Other totals that cite the same Vote Idaho archive; rejected write-in administrative rows are excluded from candidate totals.",
+      "status": "loaded"
+    },
+    {
+      "id": "id-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2716%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/id-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Idaho county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +55,29 @@
   },
   "expected": {
     "jurisdictions": 44,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
+    "resultRows": 44,
+    "sources": 3,
+    "geometryFeatures": 44,
+    "stateTotal": 904967,
+    "trump": 605246,
+    "harris": 274972,
+    "other": 24749,
     "reviewRows": 0,
     "turnoutRows": 44
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
+    "certifiedResults": true,
+    "map": true,
     "reviewGraphs": false,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "id-2024-general-official-xml-index",
+    "otherColumns": [
+      "other"
+    ]
   }
 }
