@@ -1,0 +1,86 @@
+{
+  "Root": {
+    "WriteTime": "2024-11-05T17:03:35.89",
+    "Region": {
+      "JURISDICTIONID": "1059",
+      "FIPS": "18037",
+      "JURISDICTION_NAME": "Dubois",
+      "JURISDICTION_TYPE_NAME": "Locality",
+      "Office_Info": {
+        "GENERAL_OFFICE_NAME": "Dubois County Election Board",
+        "GENERAL_OFFICE_TYPE": "Election Board",
+        "FULL_ADDRESS": "One Courthouse Square",
+        "CITY": "Jasper",
+        "STATE": "In",
+        "ZIP": "47546",
+        "PHONE": "8124817035"
+      },
+      "Reporting_Regions": {
+        "Regions": {
+          "REPORTING_JURISDICTION_UID": "1E68508D-AD9A-4EC1-A43F-BE1788BC4A9A",
+          "REPORTING_JURISDICTIONID": "1059",
+          "REPORTING_JURISDICTION_NAME": "Dubois",
+          "REPORTING_JURISDICTION_TYPE_NAME": "Locality",
+          "Referendums": {
+            "Referendum": [
+              {
+                "REFERENDUM_TYPE_NAME": "Ratification Of State Constitutional Amendment",
+                "REFERENDUM_TITLE": "Public Question #1",
+                "REFERENDUM_TEXT": "Shall the Constitution of the State of Indiana be amended to remove the state superintendent of public instruction from the list of officeholders who shall discharge the powers and duties of the governor if the office of the governor and lieutenant governor are both vacant?",
+                "POSITIVE_RESULTS": 0,
+                "NEGATIVE_RESULTS": 0,
+                "SortOrder": "430",
+                "RETENTION_NAME": null,
+                "IS_CHIEFJUSTICE": "0"
+              },
+              {
+                "REFERENDUM_TYPE_NAME": "Supreme Court Justice Retention",
+                "REFERENDUM_TITLE": "Retention of Justice of the Supreme Court of Indiana - Massa",
+                "REFERENDUM_TEXT": "Shall Justice Mark S. Massa be retained in office?",
+                "POSITIVE_RESULTS": 0,
+                "NEGATIVE_RESULTS": 0,
+                "SortOrder": "450",
+                "JUDGE_LASTNAME": "Massa",
+                "RETENTION_NAME": "Mark S.",
+                "IS_CHIEFJUSTICE": "0"
+              },
+              {
+                "REFERENDUM_TYPE_NAME": "Supreme Court Justice Retention",
+                "REFERENDUM_TITLE": "Retention of Justice of the Supreme Court of Indiana - Molter",
+                "REFERENDUM_TEXT": "Shall Justice Derek Read Molter be retained in office?",
+                "POSITIVE_RESULTS": 0,
+                "NEGATIVE_RESULTS": 0,
+                "SortOrder": "450",
+                "JUDGE_LASTNAME": "Molter",
+                "RETENTION_NAME": "Derek Read",
+                "IS_CHIEFJUSTICE": "0"
+              },
+              {
+                "REFERENDUM_TYPE_NAME": "Supreme Court Justice Retention",
+                "REFERENDUM_TITLE": "Retention of Justice of the Supreme Court of Indiana - Rush",
+                "REFERENDUM_TEXT": "Shall Justice Loretta H. Rush be retained in office? (CJ)",
+                "POSITIVE_RESULTS": 0,
+                "NEGATIVE_RESULTS": 0,
+                "SortOrder": "450",
+                "JUDGE_LASTNAME": "Rush",
+                "RETENTION_NAME": "Loretta H. (CJ)",
+                "IS_CHIEFJUSTICE": "1"
+              },
+              {
+                "REFERENDUM_TYPE_NAME": "Court Of Appeals Judge Retention",
+                "REFERENDUM_TITLE": "Court of Appeals Judicial Retention - Fourth District",
+                "REFERENDUM_TEXT": "Shall Judge Rudolph Reginald Pyle III be retained in office?",
+                "POSITIVE_RESULTS": 0,
+                "NEGATIVE_RESULTS": 0,
+                "SortOrder": "460",
+                "JUDGE_LASTNAME": "Pyle III",
+                "RETENTION_NAME": "Rudolph Reginald",
+                "IS_CHIEFJUSTICE": "0"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
