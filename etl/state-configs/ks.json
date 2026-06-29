@@ -4,7 +4,6 @@
   "authority": "U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ks-2024-eac-turnout",
@@ -15,6 +14,50 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-2024-presidential-results",
+      "category": "Official presidential precinct and county result rows",
+      "url": "https://sos.ks.gov/elections/24elec/2024-Presidential-Results.xlsx",
+      "localFile": "data/ks-2024-presidential-results.xlsx",
+      "parser": "kansasPresidentialResultsXlsx",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2024 Presidential Election Results workbook downloaded June 29, 2026.",
+      "confidence": "Official Kansas SOS workbook with long-form precinct presidential rows and county turnout tab. Used for county certified-result rows and presidential side of local review rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-2024-general-us-house-precinct",
+      "category": "Official U.S. House precinct result rows",
+      "url": "https://sos.ks.gov/elections/24elec/2024-General-Election-United-States-House-of-Representatives-Precinct-Results.xlsx",
+      "localFile": "data/ks-2024-general-us-house-precinct.xlsx",
+      "parser": "kansasUsHousePrecinctXlsx",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2024 General Election U.S. House precinct workbook downloaded June 29, 2026.",
+      "confidence": "Official Kansas SOS U.S. House precinct workbook. The parser combines the long-form official sheet with Johnson, Sedgwick, Shawnee, and Wyandotte wide-format county tabs for President-versus-U.S.-House review rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-2024-general-official-vote-totals",
+      "category": "Official certified vote totals PDF",
+      "url": "https://sos.ks.gov/elections/24elec/2024-General-Election-Official-Vote-Totals.pdf",
+      "localFile": "data/ks-2024-general-official-vote-totals.pdf",
+      "parser": "officialCanvassPdfReference",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2024 General Election certified vote totals PDF downloaded June 29, 2026.",
+      "confidence": "Official certified vote-total PDF retained as provenance and manual reconciliation context; machine rows are parsed from the official XLSX workbooks.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2720%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ks-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Kansas county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +77,41 @@
   },
   "expected": {
     "jurisdictions": 105,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 105,
+    "sources": 5,
+    "geometryFeatures": 105,
+    "stateTotal": 1327591,
+    "trump": 758802,
+    "harris": 544853,
+    "other": 23936,
+    "reviewRows": 3739,
     "turnoutRows": 105
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "kansasPresidentialResultsXlsx",
+    "sourceId": "ks-2024-presidential-results",
+    "sheetName": "2024 Presidential Results"
+  },
+  "reviewCharts": {
+    "format": "kansasUsHousePrecinctXlsx",
+    "sourceId": "ks-2024-general-us-house-precinct",
+    "sheetName": "OfficialPrecinctLevelResults",
+    "wideSheets": [
+      "JOHNSON",
+      "SEDGWICK",
+      "SHAWNEE",
+      "WYANDOTTE"
+    ],
+    "comparisonContest": "United States House of Representatives",
+    "coverageMode": "presidentVsUSHouse",
+    "warning": "Kansas review rows use official Kansas Secretary of State precinct presidential rows and President-versus-U.S.-House same-row comparisons. The U.S. House workbook stores Johnson, Sedgwick, Shawnee, and Wyandotte in separate wide-format tabs; three nonzero presidential local rows do not have a matching House comparison and are kept as vote-share-only rows. U.S. House is district-based, so these are advisory screening inputs, not confirmed findings."
   }
 }

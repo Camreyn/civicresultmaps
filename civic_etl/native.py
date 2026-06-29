@@ -4005,6 +4005,431 @@ def _kentucky_general_recap_text_rows(config: EtlConfig, sources: dict[str, Sour
     return result_rows, review_rows, turnout_rows, metrics
 
 
+
+KS_HOUSE_WIDE_SHEETS = {
+    "JOHNSON": {"county": "Johnson", "localUnitColumn": 1, "firstCandidateColumn": 2},
+    "SEDGWICK": {"county": "Sedgwick", "localUnitColumn": 0, "firstCandidateColumn": 1},
+    "SHAWNEE": {"county": "Shawnee", "localUnitColumn": 1, "firstCandidateColumn": 2},
+    "WYANDOTTE": {"county": "Wyandotte", "localUnitColumn": 0, "firstCandidateColumn": 1},
+}
+
+KS_HOUSE_WIDE_CANDIDATE_PARTIES = {
+    "dem nancy boyda": "dem",
+    "dem sharice davids": "dem",
+    "esau freeman": "dem",
+    "lib john hauer": "other",
+    "lib steve roberts": "other",
+    "prasanth reddy": "rep",
+    "rep derek schmidt": "rep",
+    "rep prasanth reddy": "rep",
+    "ron estes": "rep",
+    "sharice davids": "dem",
+    "steve roberts": "other",
+    "write-in": "other",
+}
+
+
+def _ks_party_bucket(value: Any) -> str:
+    label = " ".join(str(value or "").strip().lower().split())
+    if not label:
+        return "other"
+    if label in KS_HOUSE_WIDE_CANDIDATE_PARTIES:
+        return KS_HOUSE_WIDE_CANDIDATE_PARTIES[label]
+    if label.startswith(("dem", "democratic")):
+        return "dem"
+    if label.startswith(("rep", "republican")):
+        return "rep"
+    return "other"
+
+
+def _ks_result_values() -> dict[str, int]:
+    return {
+        "comparison_dem": 0,
+        "comparison_other": 0,
+        "comparison_rep": 0,
+        "comparison_total": 0,
+        "pres_harris": 0,
+        "pres_other": 0,
+        "pres_total": 0,
+        "pres_trump": 0,
+    }
+
+
+def _ks_add_presidential_row(target: dict[str, int], party: Any, votes: int) -> None:
+    bucket = _ks_party_bucket(party)
+    if bucket == "dem":
+        target["pres_harris"] += votes
+    elif bucket == "rep":
+        target["pres_trump"] += votes
+    else:
+        target["pres_other"] += votes
+    target["pres_total"] += votes
+
+
+def _ks_add_comparison_row(target: dict[str, int], party: Any, votes: int) -> None:
+    bucket = _ks_party_bucket(party)
+    if bucket == "dem":
+        target["comparison_dem"] += votes
+    elif bucket == "rep":
+        target["comparison_rep"] += votes
+    else:
+        target["comparison_other"] += votes
+    target["comparison_total"] += votes
+
+
+def _ks_row_text(row: list[Any], columns: dict[str, int], name: str) -> str:
+    return str(_row_value(row, columns, name) or "").strip()
+
+
+def _ks_int_text(value: Any) -> int:
+    try:
+        return int_text(value)
+    except ValueError:
+        return 0
+
+
+def _kansas_president_rows(
+    source: SourceConfig,
+    sheet_name: str,
+) -> tuple[dict[str, dict[str, int]], dict[tuple[str, str], dict[str, int]]]:
+    rows = read_xlsx_sheet(_artifact_path(source), sheet_name)
+    if not rows:
+        raise ValueError("Kansas presidential workbook is empty")
+    columns = _column_index(rows[0])
+    required = {"County", "Precinct", "Party", "Votes"}
+    missing = sorted(required.difference(columns))
+    if missing:
+        raise ValueError(f"Kansas presidential workbook missing columns: {', '.join(missing)}")
+
+    counties: dict[str, dict[str, int]] = {}
+    precincts: dict[tuple[str, str], dict[str, int]] = {}
+    for row in rows[1:]:
+        county = _county_name(_ks_row_text(row, columns, "County"))
+        local_unit = _ks_row_text(row, columns, "Precinct")
+        if not county or not local_unit:
+            continue
+        votes = int_text(_row_value(row, columns, "Votes"))
+        county_values = counties.setdefault(county, _ks_result_values())
+        precinct_values = precincts.setdefault((county, local_unit), _ks_result_values())
+        party = _row_value(row, columns, "Party")
+        _ks_add_presidential_row(county_values, party, votes)
+        _ks_add_presidential_row(precinct_values, party, votes)
+
+    return counties, precincts
+
+
+def _kansas_house_rows(source: SourceConfig, section: dict[str, Any]) -> dict[tuple[str, str], dict[str, int]]:
+    precincts: dict[tuple[str, str], dict[str, int]] = {}
+    rows = read_xlsx_sheet(_artifact_path(source), section.get("sheetName", "OfficialPrecinctLevelResults"))
+    if rows:
+        columns = _column_index(rows[0])
+        required = {"County", "Precinct", "Party", "Votes"}
+        missing = sorted(required.difference(columns))
+        if missing:
+            raise ValueError(f"Kansas U.S. House workbook missing columns: {', '.join(missing)}")
+        for row in rows[1:]:
+            county = _county_name(_ks_row_text(row, columns, "County"))
+            local_unit = _ks_row_text(row, columns, "Precinct")
+            if not county or not local_unit:
+                continue
+            values = precincts.setdefault((county, local_unit), _ks_result_values())
+            _ks_add_comparison_row(
+                values,
+                _row_value(row, columns, "Party"),
+                int_text(_row_value(row, columns, "Votes")),
+            )
+
+    for sheet_name in section.get("wideSheets", list(KS_HOUSE_WIDE_SHEETS)):
+        sheet_config = KS_HOUSE_WIDE_SHEETS[sheet_name]
+        county = _county_name(sheet_config["county"])
+        rows = read_xlsx_sheet(_artifact_path(source), sheet_name)
+        if len(rows) < 2:
+            continue
+        candidate_header = rows[1]
+        local_unit_column = int(sheet_config["localUnitColumn"])
+        first_candidate_column = int(sheet_config["firstCandidateColumn"])
+        for row in rows[2:]:
+            local_unit = str(row[local_unit_column] if len(row) > local_unit_column else "").strip()
+            if not local_unit or re.fullmatch(r"county totals", local_unit, re.IGNORECASE):
+                continue
+            values = precincts.setdefault((county, local_unit), _ks_result_values())
+            for column in range(first_candidate_column, max(len(row), len(candidate_header))):
+                candidate = candidate_header[column] if len(candidate_header) > column else ""
+                if not str(candidate or "").strip():
+                    continue
+                votes = _ks_int_text(row[column] if len(row) > column else 0)
+                _ks_add_comparison_row(values, candidate, votes)
+
+    return precincts
+
+
+def _kansas_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    certified_section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    president_source = sources[certified_section["sourceId"]]
+    house_source = sources[review_section["sourceId"]]
+    counties, precincts = _kansas_president_rows(
+        president_source,
+        certified_section.get("sheetName", "2024 Presidential Results"),
+    )
+    house_precincts = _kansas_house_rows(house_source, review_section)
+
+    result_rows = [
+        {
+            "jurisdictionName": county,
+            "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+            "level": "county",
+            "votes": {
+                "Trump": values["pres_trump"],
+                "Harris": values["pres_harris"],
+                "Other": values["pres_other"],
+            },
+            "totalVotes": values["pres_total"],
+            "margin": values["pres_trump"] - values["pres_harris"],
+            "marginPct": pct(values["pres_trump"] - values["pres_harris"], values["pres_total"]),
+            "sourceId": president_source.id,
+        }
+        for county, values in sorted(counties.items())
+        if values["pres_total"]
+    ]
+
+    comparison_rows = 0
+    review_rows: list[dict[str, Any]] = []
+    for (county, local_unit), values in sorted(precincts.items()):
+        total = values["pres_total"]
+        if not total:
+            continue
+        comparison = house_precincts.get((county, local_unit))
+        has_comparison = bool(comparison and comparison["comparison_total"])
+        if has_comparison:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": local_unit,
+                "totalVotes": total,
+                "harris": values["pres_harris"],
+                "trump": values["pres_trump"],
+                "harrisShare": pct(values["pres_harris"], total),
+                "trumpShare": pct(values["pres_trump"], total),
+                "demDropoff": pct(values["pres_harris"] - comparison["comparison_dem"], total)
+                if has_comparison and comparison
+                else 0,
+                "repDropoff": pct(values["pres_trump"] - comparison["comparison_rep"], total)
+                if has_comparison and comparison
+                else 0,
+                "coverageMode": review_section.get("coverageMode", "presidentVsUSHouse")
+                if has_comparison
+                else "voteShareOnly",
+                "comparisonContest": review_section.get(
+                    "comparisonContest",
+                    "United States House of Representatives",
+                ),
+                "comparisonDemVotes": comparison["comparison_dem"] if comparison else 0,
+                "comparisonRepVotes": comparison["comparison_rep"] if comparison else 0,
+                "comparisonOtherVotes": comparison["comparison_other"] if comparison else 0,
+                "sourceId": house_source.id if has_comparison else president_source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    result_total = sum(row["totalVotes"] for row in result_rows)
+    trump = sum(row["votes"]["Trump"] for row in result_rows)
+    harris = sum(row["votes"]["Harris"] for row in result_rows)
+    other = sum(row["votes"]["Other"] for row in result_rows)
+    metrics = {
+        "nativeComparisonContest": review_section.get(
+            "comparisonContest",
+            "United States House of Representatives",
+        ),
+        "nativeComparisonRows": comparison_rows,
+        "nativeHarrisVotes": harris,
+        "nativeKansasHousePrecinctRows": len(house_precincts),
+        "nativeOtherVotes": other,
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": result_total,
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeTrumpVotes": trump,
+        **turnout_metrics,
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+def _la_party_from_candidate(candidate: str) -> str:
+    match = re.search(r"\(([^)]+)\)\s*$", candidate)
+    party = match.group(1).upper() if match else ""
+    if party == "DEM":
+        return "dem"
+    if party == "REP":
+        return "rep"
+    return "other"
+
+
+def _louisiana_sos_precinct_csv_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    source_dir = _artifact_path(source)
+    president_race_id = str(section.get("presidentRaceId", "67190"))
+    president_path = source_dir / f"ByPrecinct_{president_race_id}.csv"
+    if not president_path.exists():
+        raise FileNotFoundError(f"missing Louisiana presidential precinct CSV: {president_path}")
+
+    candidate_columns = {"harris": "", "trump": "", "other": []}
+    parish_values: dict[str, dict[str, int]] = {}
+    precincts: dict[tuple[str, str, str], dict[str, int]] = {}
+    with president_path.open(newline="", encoding="utf-8-sig") as handle:
+        reader = csv.DictReader(handle)
+        fieldnames = reader.fieldnames or []
+        for field in fieldnames:
+            normalized = field.lower()
+            if "kamala" in normalized and "harris" in normalized:
+                candidate_columns["harris"] = field
+            elif "donald" in normalized and "trump" in normalized:
+                candidate_columns["trump"] = field
+            elif field not in {"Office", "Parish", "Ward", "Precinct"}:
+                candidate_columns["other"].append(field)
+
+        if not candidate_columns["harris"] or not candidate_columns["trump"]:
+            raise ValueError("Louisiana presidential CSV is missing Harris or Trump candidate columns")
+
+        for row in reader:
+            parish = str(row.get("Parish") or "").strip()
+            ward = str(row.get("Ward") or "").strip()
+            precinct = str(row.get("Precinct") or "").strip()
+            if not parish:
+                continue
+            harris = int_text(row.get(candidate_columns["harris"]))
+            trump = int_text(row.get(candidate_columns["trump"]))
+            other = sum(int_text(row.get(column)) for column in candidate_columns["other"])
+            total = harris + trump + other
+            parish_bucket = parish_values.setdefault(parish, {"harris": 0, "trump": 0, "other": 0, "total": 0})
+            parish_bucket["harris"] += harris
+            parish_bucket["trump"] += trump
+            parish_bucket["other"] += other
+            parish_bucket["total"] += total
+            if total:
+                precincts[(parish, ward, precinct)] = {"harris": harris, "trump": trump, "other": other, "total": total}
+
+    result_rows = [
+        {
+            "jurisdictionName": f"{parish} Parish",
+            "jurisdictionCode": parish.upper().replace(" ", "-"),
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": source.id,
+        }
+        for parish, values in sorted(parish_values.items())
+        if values["total"]
+    ]
+
+    comparison_by_key: dict[tuple[str, str, str], dict[str, Any]] = {}
+    comparison_rows = 0
+    comparable_rows = 0
+    for race_id in section.get("comparisonRaceIds", []):
+        race_path = source_dir / f"ByPrecinct_{race_id}.csv"
+        if not race_path.exists():
+            raise FileNotFoundError(f"missing Louisiana comparison precinct CSV: {race_path}")
+        with race_path.open(newline="", encoding="utf-8-sig") as handle:
+            reader = csv.DictReader(handle)
+            fieldnames = reader.fieldnames or []
+            vote_columns = [field for field in fieldnames if field not in {"Office", "Parish", "Ward", "Precinct"}]
+            for row in reader:
+                parish = str(row.get("Parish") or "").strip()
+                ward = str(row.get("Ward") or "").strip()
+                precinct = str(row.get("Precinct") or "").strip()
+                key = (parish, ward, precinct)
+                values = {"dem": 0, "rep": 0, "other": 0}
+                dem_present = False
+                rep_present = False
+                for column in vote_columns:
+                    votes = int_text(row.get(column))
+                    bucket = _la_party_from_candidate(column)
+                    values[bucket] += votes
+                    dem_present = dem_present or bucket == "dem"
+                    rep_present = rep_present or bucket == "rep"
+                total = values["dem"] + values["rep"] + values["other"]
+                if total:
+                    comparison_rows += 1
+                if total and dem_present and rep_present:
+                    comparable_rows += 1
+                comparison_by_key[key] = {
+                    **values,
+                    "demPresent": dem_present,
+                    "repPresent": rep_present,
+                    "total": total,
+                    "raceId": str(race_id),
+                    "office": str(row.get("Office") or ""),
+                }
+
+    review_section = config.raw.get("reviewCharts", {})
+    review_rows: list[dict[str, Any]] = []
+    for (parish, ward, precinct), president in sorted(precincts.items()):
+        total = president["total"]
+        comparison = comparison_by_key.get((parish, ward, precinct))
+        has_comparison = bool(comparison and comparison["total"])
+        has_comparable_house = bool(has_comparison and comparison["demPresent"] and comparison["repPresent"])
+        local_unit = f"Ward {ward}, Precinct {precinct}" if ward and precinct else ward or precinct or "Parish vote mode"
+        review_rows.append(
+            {
+                "county": f"{parish} Parish",
+                "localUnit": local_unit,
+                "totalVotes": total,
+                "harris": president["harris"],
+                "trump": president["trump"],
+                "harrisShare": pct(president["harris"], total),
+                "trumpShare": pct(president["trump"], total),
+                "demDropoff": pct(president["harris"] - comparison["dem"], total) if has_comparable_house else 0,
+                "repDropoff": pct(president["trump"] - comparison["rep"], total) if has_comparable_house else 0,
+                "coverageMode": "presidentVsHouse" if has_comparable_house else "oneSidedHouseComparison" if has_comparison else "voteShareOnly",
+                "comparisonContest": comparison["office"] if comparison else review_section.get("comparisonContest", ""),
+                "comparisonDemVotes": comparison["dem"] if comparison else 0,
+                "comparisonDemCandidatePresent": bool(comparison and comparison["demPresent"]),
+                "comparisonRepVotes": comparison["rep"] if comparison else 0,
+                "comparisonRepCandidatePresent": bool(comparison and comparison["repPresent"]),
+                "comparisonOtherVotes": comparison["other"] if comparison else 0,
+                "comparisonRaceId": comparison["raceId"] if comparison else "",
+                "sourceId": source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    result_total = sum(row["totalVotes"] for row in result_rows)
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": result_total,
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparableComparisonRows": comparable_rows,
+        "nativeComparisonContest": review_section.get("comparisonContest", "United States Representative"),
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in review_rows),
+        "nativeReviewCertifiedVoteGap": result_total - sum(row["totalVotes"] for row in review_rows),
+        **turnout_metrics,
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+
 def _ma_pd43_precinct_key(row: dict[str, str]) -> tuple[str, str, str]:
     return (
         str(row.get("City/Town") or "").strip(),
@@ -4358,6 +4783,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeKentuckyGeneralRecapTextDirectory",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "KS" and config.raw.get("certifiedResults", {}).get("format") == "kansasPresidentialResultsXlsx":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _kansas_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeKansasPresidentialHouseXlsx",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

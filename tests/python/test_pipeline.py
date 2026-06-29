@@ -833,6 +833,37 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 2)
         self.assertEqual(artifact["native"]["resultRows"][0]["jurisdictionName"], "Alpha County")
 
+    def test_kansas_presidential_house_xlsx_parser_builds_precinct_review_rows(self):
+        config = load_config("etl/state-configs/ks.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+        native = artifact["native"]
+
+        self.assertTrue(report.passed)
+        self.assertEqual(native["parser"], "nativeKansasPresidentialHouseXlsx")
+        self.assertEqual(len(native["resultRows"]), 105)
+        self.assertEqual(len(native["reviewRows"]), 3739)
+        self.assertEqual(len(native["turnoutRows"]), 105)
+        self.assertEqual(native["metrics"]["nativeResultTotalVotes"], 1327591)
+        self.assertEqual(native["metrics"]["nativeTrumpVotes"], 758802)
+        self.assertEqual(native["metrics"]["nativeHarrisVotes"], 544853)
+        self.assertEqual(native["metrics"]["nativeOtherVotes"], 23936)
+        self.assertEqual(native["metrics"]["nativeComparisonRows"], 3736)
+
+        johnson = next(
+            row
+            for row in native["reviewRows"]
+            if row["county"] == "Johnson County" and row["localUnit"] == "Aubry Township Precinct 01"
+        )
+        self.assertEqual(johnson["coverageMode"], "presidentVsUSHouse")
+        self.assertEqual(johnson["comparisonDemVotes"], 63)
+        self.assertEqual(johnson["comparisonRepVotes"], 82)
+        self.assertAlmostEqual(johnson["repDropoff"], 6.4103)
+        self.assertEqual(
+            sum(1 for row in native["reviewRows"] if row["coverageMode"] == "voteShareOnly"),
+            3,
+        )
+
     def test_normalized_turnout_only_staging_parses_csv_contract(self):
         tmp = self.fixture_dir("normalized-turnout")
         csv_path = tmp / "az-turnout.csv"
