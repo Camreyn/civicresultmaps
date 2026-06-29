@@ -102,7 +102,11 @@ function resultNameForFeature(state: string, name: string) {
 
 function isNonGeographicResultRow(state: string, name: string) {
   const normalized = normalizeName(name);
-  return (state === "ME" && normalized === "STATEUOCAVA") || (state === "RI" && normalized === "FEDERALPRECINCTS");
+  return (
+    (state === "ME" && normalized === "STATEUOCAVA") ||
+    (state === "MO" && normalized === "KANSASCITY") ||
+    (state === "RI" && normalized === "FEDERALPRECINCTS")
+  );
 }
 
 function compareRows(a: ResultRow, b: ResultRow, sortKey: SortKey) {
