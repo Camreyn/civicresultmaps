@@ -549,21 +549,25 @@ export async function listIndicators(input: {
     const sql = neon(getDatabaseUrl());
     rows = (await sql`
       select
-        id,
-        state_code as "state",
-        election_year as "electionYear",
-        jurisdiction_code as "jurisdictionCode",
-        jurisdiction_name as "jurisdictionName",
-        level,
-        indicator_type as "type",
-        severity,
-        label,
-        summary,
-        detail,
-        metrics
+        analysis_indicators.id,
+        analysis_indicators.state_code as "state",
+        analysis_indicators.election_year as "electionYear",
+        analysis_indicators.jurisdiction_code as "jurisdictionCode",
+        analysis_indicators.jurisdiction_name as "jurisdictionName",
+        analysis_indicators.level,
+        analysis_indicators.indicator_type as "type",
+        analysis_indicators.severity,
+        analysis_indicators.label,
+        analysis_indicators.summary,
+        analysis_indicators.detail,
+        analysis_indicators.metrics
       from analysis_indicators
-      where state_code = ${input.state}
-        and election_year = ${input.year}
+      inner join capability_flags
+        on analysis_indicators.state_code = capability_flags.state_code
+        and analysis_indicators.election_year = capability_flags.election_year
+        and capability_flags.review_graphs = true
+      where analysis_indicators.state_code = ${input.state}
+        and analysis_indicators.election_year = ${input.year}
       order by severity desc, jurisdiction_name, label
     `) as typeof rows;
   } catch {
@@ -636,6 +640,10 @@ export async function listReviewRows(input: {
         case when ${Boolean(input.includeMetrics)} then review_rows.metrics else '{}'::jsonb end as metrics,
         source_documents.slug as "sourceSlug"
       from review_rows
+      inner join capability_flags
+        on review_rows.state_code = capability_flags.state_code
+        and review_rows.election_year = capability_flags.election_year
+        and capability_flags.review_graphs = true
       left join source_documents on review_rows.source_document_id = source_documents.id
       where review_rows.state_code = ${input.state}
         and review_rows.election_year = ${input.year}
@@ -1023,23 +1031,31 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       ),
       indicator_counts as (
         select
-          state_code,
+          analysis_indicators.state_code,
           count(*) as indicator_count,
           count(*) filter (where level = 'county') as county_indicator_count,
           count(distinct jurisdiction_code) as flagged_jurisdictions,
           count(distinct jurisdiction_code) filter (where level = 'county') as flagged_county_jurisdictions,
           count(distinct level || ':' || jurisdiction_code) as flagged_areas
         from analysis_indicators
-        where election_year = ${input.year}
-        group by state_code
+        inner join capability_flags
+          on analysis_indicators.state_code = capability_flags.state_code
+          and analysis_indicators.election_year = capability_flags.election_year
+          and capability_flags.review_graphs = true
+        where analysis_indicators.election_year = ${input.year}
+        group by analysis_indicators.state_code
       ),
       review_row_counts as (
         select
-          state_code,
+          review_rows.state_code,
           count(*) as review_row_count
         from review_rows
-        where election_year = ${input.year}
-        group by state_code
+        inner join capability_flags
+          on review_rows.state_code = capability_flags.state_code
+          and review_rows.election_year = capability_flags.election_year
+          and capability_flags.review_graphs = true
+        where review_rows.election_year = ${input.year}
+        group by review_rows.state_code
       ),
       turnout_row_counts as (
         select

@@ -50,3 +50,11 @@ test("native staging indicator report uses the shared review policy", () => {
   assert.match(script, /byLevel/);
   assert.match(script, /cityNameForWard/);
 });
+
+test("review indicator reads require enabled review graph capability", () => {
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+
+  assert.match(dataAccess, /inner join capability_flags\s+on analysis_indicators\.state_code = capability_flags\.state_code/);
+  assert.match(dataAccess, /inner join capability_flags\s+on review_rows\.state_code = capability_flags\.state_code/);
+  assert.match(dataAccess, /capability_flags\.review_graphs = true/);
+});
