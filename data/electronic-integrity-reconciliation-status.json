@@ -427,7 +427,7 @@
       "ballotImageStatus": "needs_data",
       "canRecomputeFromCvr": false,
       "canTriangulateMachineRisk": false,
-      "cvrStatus": "needs_data",
+      "cvrStatus": "partial",
       "loadedArtifactRows": 1,
       "localArtifactChecks": [
         {
@@ -436,21 +436,21 @@
           "type": "certified_results"
         }
       ],
-      "missingOrBlockedRows": 6,
-      "nextAction": "Find official local Nevada result exports and inventory county CVR, ballot-image, audit, L&A, and tabulator-log availability.",
-      "overallStatus": "needs_evidence",
+      "missingOrBlockedRows": 5,
+      "nextAction": "Collect official local Nevada result exports for the 16 non-Clark jurisdictions and inventory county audit, ballot-image, L&A, tabulator-log, and chain-of-custody availability.",
+      "overallStatus": "partial",
       "requestArtifacts": [
         {
-          "granularity": "county",
-          "reconciliationStatus": "county_only_not_subcounty",
+          "granularity": "clark_precinct_cvr_plus_statewide_county",
+          "reconciliationStatus": "clark_precinct_cvr_loaded_non_clark_county_only",
           "type": "reporting_unit_results",
-          "use": "County-only comparison rows are weak for electronic-level review."
+          "use": "Clark precinct rows can localize review screens inside Clark County; other counties still need local reporting-unit results."
         },
         {
-          "granularity": "ballot",
-          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "granularity": "clark_ballot_cvr_normalized_to_precinct_review",
+          "reconciliationStatus": "clark_cvr_normalized_certified_county_delta_noted_non_clark_not_inventoried",
           "type": "cast_vote_records",
-          "use": "Needed for independent ballot-level retabulation and comparison to certified totals."
+          "use": "Clark CVR supports precinct aggregation and review; full ballot-level retabulation still requires raw CVR handling and non-Clark availability inventory."
         },
         {
           "granularity": "ballot_image",
@@ -484,7 +484,7 @@
         }
       ],
       "requestRequiredRows": 7,
-      "riskPosture": "county_review_only_electronic_evidence_missing",
+      "riskPosture": "partial_clark_precinct_review_non_clark_evidence_missing",
       "staging": {
         "capabilities": {
           "certifiedResults": true,
@@ -496,8 +496,8 @@
         },
         "historicalRows": 51,
         "resultRows": 17,
-        "reviewRows": 17,
-        "sourceRows": 5,
+        "reviewRows": 749,
+        "sourceRows": 6,
         "stagingPresent": true,
         "turnoutRows": 17
       },

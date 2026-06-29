@@ -118,7 +118,7 @@
     ]
   },
   "reviewCharts": {
-    "format": "ohioPrecinctVoteShare",
+    "format": "ohioPrecinctPresidentVsSenate",
     "sourceId": "oh-2024-statewide-races-precinct-level-xlsx",
     "sheetName": "President and Vice President",
     "headerRow": 2,
@@ -132,12 +132,54 @@
         "candidateContains": "Kamala D. Harris"
       }
     },
-    "warning": "Ohio vote-share review uses official precinct presidential rows only. Down-ballot comparison flags remain disabled until a same-row comparison contest is mapped.",
+    "warning": "Ohio native review rows use official precinct presidential vote-share screening and President-versus-U.S. Senate same-party drop-off screening from the Secretary of State precinct workbook.",
     "policy": {
       "outlierThresholdPct": 15,
       "minCandidateVotes": 100,
       "voteShareCorrelationThreshold": 0.35
     }
+  },
+  "comparisonContest": {
+    "label": "United States Senator",
+    "sourceId": "oh-2024-statewide-races-precinct-level-xlsx",
+    "sheetName": "U.S. Congress",
+    "headerRow": 2,
+    "dataStartRow": 5,
+    "majorCandidates": {
+      "dem": {
+        "candidateContains": "Sherrod Brown"
+      },
+      "rep": {
+        "candidateContains": "Bernie Moreno"
+      }
+    },
+    "otherCandidates": [
+      {
+        "key": "kissick",
+        "label": "Don Kissick (L)",
+        "candidateContains": "Don Kissick"
+      },
+      {
+        "key": "faris",
+        "label": "Stephen Faris (WI)",
+        "candidateContains": "Stephen Faris"
+      },
+      {
+        "key": "pastorius",
+        "label": "David Allen Pastorius (WI)",
+        "candidateContains": "David Allen Pastorius"
+      },
+      {
+        "key": "russell",
+        "label": "Nathan Russell (WI)",
+        "candidateContains": "Nathan Russell"
+      },
+      {
+        "key": "shabazz",
+        "label": "Tariq K. Shabazz (WI)",
+        "candidateContains": "Tariq K. Shabazz"
+      }
+    ]
   },
   "turnout": {
     "format": "ohioPrecinctTurnoutXlsx",

@@ -1050,8 +1050,12 @@
         "why": "Nevada 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Nevada 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "why": "Clark County 2024 General CVR is publicly linked by the official county elections site and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 16 Nevada jurisdictions is still not inventoried.",
+        "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+        "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+        "parser": "normalize-nv-clark-cvr.py",
+        "caveat": "Normalized precinct aggregate only; raw Clark CVR zip is not committed. Clark CVR totals differ slightly from certified county totals."
       },
       "incidents": {
         "status": "needs_data",

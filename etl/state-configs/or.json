@@ -1,10 +1,9 @@
-{
+﻿{
   "code": "OR",
   "name": "Oregon",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Oregon Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "or-2024-eac-turnout",
@@ -15,6 +14,61 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "or-2024-general-official-results",
+      "category": "Official statewide and county results abstract",
+      "url": "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+      "localFile": "data/or-2024-general-official-results.pdf",
+      "parser": "oregonOfficialResultsPdf",
+      "authority": "Oregon Secretary of State",
+      "timestampBasis": "Official November 5, 2024 General Election Abstract of Votes PDF.",
+      "confidence": "Official Oregon Secretary of State abstract used by scripts/normalize-or-official-results.mjs to produce county President and Attorney General CSVs.",
+      "status": "loaded"
+    },
+    {
+      "id": "or-2024-general-president-county",
+      "category": "Official presidential county results",
+      "url": "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+      "localFile": "data/or-2024-general-president.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "Oregon Secretary of State",
+      "timestampBasis": "Official November 5, 2024 General Election Abstract of Votes President county table normalized June 29, 2026.",
+      "confidence": "Official Oregon Secretary of State county presidential totals normalized from the abstract PDF by scripts/normalize-or-official-results.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "or-2024-general-attorney-general-county",
+      "category": "Official Attorney General county results",
+      "url": "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+      "localFile": "data/or-2024-general-attorney-general.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Oregon Secretary of State",
+      "timestampBasis": "Official November 5, 2024 General Election Abstract of Votes Attorney General county table normalized June 29, 2026.",
+      "confidence": "Official Oregon Secretary of State county Attorney General totals normalized from the abstract PDF by scripts/normalize-or-official-results.mjs for review comparisons.",
+      "status": "loaded"
+    },
+    {
+      "id": "or-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2741%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/or-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Oregon county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    },
+    {
+      "id": "or-2024-general-precinct-level-results",
+      "category": "Official county precinct-level result package",
+      "url": "https://records.sos.state.or.us/ORSOSCMSearch/Search/SearchMain.aspx?t1=notes&q1=2024+General+Election+Precinct+Level+Results&op1=AND&arch=0&page=1&size=50",
+      "localFile": "data/or-2024-precinct-data/manifest.json",
+      "parser": "oregonOrmsPrecinctPackage",
+      "authority": "Oregon Secretary of State",
+      "timestampBasis": "Oregon Records Management Solution county precinct-level result records collected June 29, 2026.",
+      "confidence": "Official county precinct-level artifacts are collected for provenance and later OCR-backed normalization. Current review rows use official county abstract totals because many ORMS precinct PDFs are image-only.",
       "status": "loaded"
     }
   ],
@@ -34,21 +88,36 @@
   },
   "expected": {
     "jurisdictions": 36,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 36,
+    "sources": 6,
+    "geometryFeatures": 36,
+    "stateTotal": 2244493,
+    "trump": 919480,
+    "harris": 1240600,
+    "other": 84413,
+    "reviewRows": 36,
     "turnoutRows": 36
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "or-2024-general-president-county",
+    "otherColumns": [
+      "other"
+    ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "or-2024-general-attorney-general-county",
+    "comparisonContest": "Attorney General",
+    "coverageMode": "presidentVsAttorneyGeneral",
+    "warning": "Oregon review rows are county-level President-versus-Attorney General comparisons from official Abstract of Votes county totals. They support county-level flags and directional screening, but they are not precinct-level vote-share scatter plots. Official county precinct artifacts are collected for provenance and later OCR-backed normalization."
   }
 }

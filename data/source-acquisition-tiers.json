@@ -455,30 +455,33 @@
       "stateName": "Illinois",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official by-office CSV downloads",
+        "EAC fallback turnout"
       ],
       "sourceUrls": [
-        "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx"
+        "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
+        "https://www.eac.gov/research-and-data/studies-and-reports"
       ],
       "exampleUrls": [],
       "availableFields": [
-        "county presidential totals",
+        "precinct presidential results",
+        "precinct U.S. House results",
+        "jurisdiction registration by precinct",
         "EAC fallback turnout"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator artifact promoted separately",
+        "statewide Senate/Governor same-grain comparison contest for 2024"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Illinois result exports and local reporting-unit availability."
+      "parserStatus": "illinoisElectionResultsByOfficeCsvDirectory loaded for official presidential jurisdiction results and precinct President-vs-U.S.-House review rows",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded",
+      "caveats": "Illinois 2024 has no statewide U.S. Senate or Governor contest in the by-office package. Review rows compare President to U.S. House only where the jurisdiction/precinct key is unambiguous and the House row has both Democratic and Republican candidate votes; split/multi-district precinct keys and uncontested House rows are omitted.",
+      "nextAction": "Optional next steps are precinct/district geometry and a state-native turnout denominator source; keep the U.S. House comparison caveat visible."
     },
     {
       "state": "IN",
@@ -1020,14 +1023,17 @@
         "EAC turnout fallback"
       ],
       "missingFields": [
+        "town/ward U.S. House or Executive Council comparison rows for corroboration",
+        "historical President-versus-Governor ticket-splitting baseline",
         "town/ward boundary geometry",
-        "state-native turnout denominator"
+        "state-native turnout denominator",
+        "post-election audit, recount, CVR availability, and incident/correction artifacts"
       ],
-      "parserStatus": "newHampshireTownWardCsv loaded",
-      "manualReviewBurden": "low",
-      "confidence": "loaded",
-      "caveats": "Live SOS page is access-limited from this environment; archived XLS artifacts are retained.",
-      "nextAction": "Optional next steps are town/ward geometry and state-native turnout denominator."
+      "parserStatus": "newHampshireTownWardCsv loaded with low-confidence Governor-only directional screen",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_directional_caveat",
+      "caveats": "Live SOS page is access-limited from this environment; archived XLS artifacts are retained. The only same-grain comparison currently loaded is Governor, and the 2024 Governor race has large candidate-specific ticket splitting, so Directional Screen labels should be treated as low-confidence proxies until corroborated.",
+      "nextAction": "Collect clean same-grain U.S. House or Executive Council comparison rows if available, add NH historical President-versus-Governor baselines, then replace EAC turnout fallback with a state-native denominator and inventory audit/CVR/incident artifacts."
     },
     {
       "state": "NJ",
@@ -1096,28 +1102,33 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout",
       "tier": "tier_2_official_dashboard_endpoint",
-      "reportingGrain": "county",
+      "reportingGrain": "precinct",
       "exportFormats": [
         "archived official statewide results",
-        "county totals"
+        "county totals",
+        "Clark County CVR zip",
+        "normalized Clark precinct review CSV"
       ],
       "sourceUrls": [
-        "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx"
+        "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+        "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
+        "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
       ],
       "exampleUrls": [],
       "availableFields": [
         "county President rows",
-        "county U.S. Senate rows"
+        "county U.S. Senate rows",
+        "Clark County precinct President/Senate CVR review rows"
       ],
       "missingFields": [
-        "local/precinct rows",
+        "local/precinct rows for 16 non-Clark jurisdictions",
         "state-native turnout denominator"
       ],
-      "parserStatus": "native county review package loaded",
+      "parserStatus": "native partial subcounty review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained.",
-      "nextAction": "Find official local Nevada result export for precinct/subcounty review rows."
+      "caveats": "Clark County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained.",
+      "nextAction": "Collect official local result exports or records-request productions for the 16 non-Clark Nevada jurisdictions and a state-native turnout denominator."
     },
     {
       "state": "NY",

@@ -13,6 +13,7 @@
     "FL",
     "GA",
     "IA",
+    "IL",
     "KY",
     "MD",
     "MI",
@@ -412,6 +413,69 @@
         "Precinct boundary GeoJSON is not present in this package."
       ],
       "legacyReferenceBundle": "data/md-app-data.js"
+    },
+    {
+      "state": "IL",
+      "name": "Illinois",
+      "priority": 13,
+      "nativeReadiness": "complete_jurisdiction_results_precinct_house_review_eac_turnout",
+      "authority": "Illinois State Board of Elections",
+      "configFile": "etl/state-configs/il.json",
+      "legacyReferenceBundle": "data/il-2024-official-results",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Illinois State Board of Elections 2024 General by-office CSV downloads",
+          "sourceUrl": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
+          "localFile": "data/il-2024-official-results",
+          "parserHint": "Parse 66-120-PRESIDENT AND VICE PRESIDENT-2024GE.csv; aggregate candidate rows by JurisName, treating Illinois city election authorities as separate jurisdictions and excluding over-vote, under-vote, and blank-ballot rows from candidate totals."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Illinois State Board of Elections 2024 General President and U.S. House by-office CSV downloads",
+          "sourceUrl": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
+          "localFile": "data/il-2024-official-results",
+          "level": "precinct",
+          "comparisonContest": "U.S. House",
+          "parserHint": "Join President precinct rows to 1st-17th Congress CSV rows by JurisdictionID/JurisName/PrecinctName; omit keys with multiple House districts and rows without both Democratic and Republican House votes."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/il-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC turnout ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "Census county boundary GeoJSON",
+          "sourceUrl": "https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html",
+          "localFile": "data/il-counties.geojson",
+          "appReadyFile": "data/il-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 108,
+        "geometryFeatures": 102,
+        "stateTotal": 5649779,
+        "trump": 2449079,
+        "harris": 3062863,
+        "other": 137837,
+        "localReviewRows": 6655,
+        "turnoutRows": 108
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_house_contested_precinct_dropoff",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback"
+      },
+      "caveats": [
+        "Illinois result rows are election-jurisdiction rows, not pure county rows; several city election authorities are separate jurisdictions.",
+        "The 2024 by-office package has no statewide U.S. Senate or Governor contest, so advisory comparison uses U.S. House.",
+        "Review rows omit 292 precinct keys that appear in multiple House districts and 3,080 uncontested or one-party House precincts.",
+        "County boundary geometry has 102 county features and does not fully represent 108 Illinois election jurisdictions."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [
@@ -544,17 +608,20 @@
       "state": "NV",
       "name": "Nevada",
       "priority": 8,
-      "currentStatus": "native_county_review_only",
+      "currentStatus": "partial_clark_precinct_review_loaded",
       "officialSourcePages": [
-        "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx"
+        "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+        "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
+        "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
       ],
       "requiredArtifacts": [
-        "official precinct or local reporting-unit results for President",
-        "same-row U.S. Senate local results"
+        "official precinct or local reporting-unit results for President and U.S. Senate for the 16 non-Clark Nevada jurisdictions",
+        "state-native turnout denominator rows",
+        "post-election audit, CVR availability, tabulator-log, L&A, custody, and incident/correction artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "nevadaLocalResultsExport",
-      "blocker": "Native Nevada currently has county-level President-versus-Senate review rows; collect local rows before comparable advisory flags are calculated."
+      "parserNeeded": "localComparisonCsv loaded for Clark County CVR precinct rows; local exports still needed for the remaining Nevada jurisdictions",
+      "blocker": "Clark County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 16 jurisdictions still have only county-level President-versus-Senate review rows."
     },
     {
       "state": "NH",
@@ -568,12 +635,15 @@
         "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-governor_3.xls"
       ],
       "requiredArtifacts": [
+        "clean same-grain U.S. House or Executive Council comparison rows if available",
+        "historical President-versus-Governor ticket-splitting baseline",
         "town/ward boundary geometry if map overlays below county level are required",
-        "state-native turnout denominator artifact if replacing EAC turnout fallback"
+        "state-native turnout denominator artifact if replacing EAC turnout fallback",
+        "post-election audit, recount, CVR availability, and incident/correction artifacts"
       ],
-      "preferredComparisonContest": "Governor",
-      "parserNeeded": "newHampshireTownWardCsv loaded for 10 county result rows, 304 town/ward President-versus-Governor review rows, and 320 EAC turnout rows.",
-      "blocker": "New Hampshire now has official town/ward President-versus-Governor review rows from archived Secretary of State legacy Excel workbooks. The live SOS page still returns access denied from this environment, so the retained archive URLs and local artifacts are the reproducible source path. Town/ward boundary geometry is still not collected."
+      "preferredComparisonContest": "Governor currently loaded as a low-confidence proxy; corroborate with U.S. House, Executive Council, or historical baseline rows before interpreting direction as candidate benefit.",
+      "parserNeeded": "newHampshireTownWardCsv loaded for 10 county result rows, 304 town/ward President-versus-Governor review rows, and 320 EAC turnout rows. Directional screen confidence is low for Governor-only comparisons.",
+      "blocker": "New Hampshire now has official town/ward President-versus-Governor review rows from archived Secretary of State legacy Excel workbooks. The live SOS page still returns access denied from this environment, so the retained archive URLs and local artifacts are the reproducible source path. Because the Governor race shows large ticket splitting, Harris/DEM Directional Screen values are low-confidence proxies until corroborating comparison contests, historical baselines, turnout denominators, and administration records are collected."
     },
     {
       "state": "NY",

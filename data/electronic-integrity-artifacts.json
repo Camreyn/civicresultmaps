@@ -486,10 +486,10 @@
       "state": "NV",
       "stateName": "Nevada",
       "priority": "swing",
-      "overallStatus": "needs_evidence",
-      "summary": "County certified and Senate comparison rows are loaded from archived official county totals; subcounty electronic evidence is not inventoried.",
-      "riskPosture": "county_review_only_electronic_evidence_missing",
-      "nextAction": "Find official local Nevada result exports and inventory county CVR, ballot-image, audit, L&A, and tabulator-log availability.",
+      "overallStatus": "partial",
+      "summary": "County certified and Senate comparison rows are loaded statewide; Clark County CVR precinct President/Senate review rows are normalized; other subcounty electronic evidence remains incomplete.",
+      "riskPosture": "partial_clark_precinct_review_non_clark_evidence_missing",
+      "nextAction": "Collect official local Nevada result exports for the 16 non-Clark jurisdictions and inventory county audit, ballot-image, L&A, tabulator-log, and chain-of-custody availability.",
       "artifacts": [
         {
           "type": "certified_results",
@@ -505,22 +505,26 @@
         {
           "type": "reporting_unit_results",
           "status": "partial",
-          "granularity": "county",
-          "localArtifact": "data/nv-2024-statewide-general-senate.csv",
-          "parser": "countyComparisonCsv",
-          "reconciliationStatus": "county_only_not_subcounty",
+          "granularity": "clark_precinct_cvr_plus_statewide_county",
+          "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+          "parser": "localComparisonCsv",
+          "reconciliationStatus": "clark_precinct_cvr_loaded_non_clark_county_only",
           "requestRequired": true,
-          "tamperDetectionUse": "County-only comparison rows are weak for electronic-level review.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+          "tamperDetectionUse": "Clark precinct rows can localize review screens inside Clark County; other counties still need local reporting-unit results.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.",
+          "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
         },
         {
           "type": "cast_vote_records",
-          "status": "needs_data",
-          "granularity": "ballot",
-          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "status": "partial",
+          "granularity": "clark_ballot_cvr_normalized_to_precinct_review",
+          "reconciliationStatus": "clark_cvr_normalized_certified_county_delta_noted_non_clark_not_inventoried",
           "requestRequired": true,
-          "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
-          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody."
+          "tamperDetectionUse": "Clark CVR supports precinct aggregation and review; full ballot-level retabulation still requires raw CVR handling and non-Clark availability inventory.",
+          "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.",
+          "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+          "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+          "parser": "normalize-nv-clark-cvr.py"
         },
         {
           "type": "ballot_images",

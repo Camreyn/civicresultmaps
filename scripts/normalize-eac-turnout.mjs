@@ -68,6 +68,14 @@ function toInt(value) {
   return Number.isFinite(parsed) ? String(Math.trunc(parsed)) : "";
 }
 
+function toNonnegativeInt(value) {
+  const parsed = toInt(value);
+  if (parsed === "") {
+    return "";
+  }
+  return Number(parsed) >= 0 ? parsed : "";
+}
+
 function firstValue(row, aliases) {
   for (const alias of aliases) {
     const value = row[alias];
@@ -134,12 +142,13 @@ function normalizeEacTurnoutRows(inputRows, options = {}) {
 
     const state = String(options.state || rowState).trim().toUpperCase();
     const jurisdictionName = String(firstValue(row, aliases.jurisdiction) || state).trim();
-    const ballotsCast = toInt(firstValue(row, aliases.ballotsCast));
-    const registeredVoters = toInt(firstValue(row, aliases.registeredVoters));
+    const ballotsCast = toNonnegativeInt(firstValue(row, aliases.ballotsCast));
+    const registeredVoters = toNonnegativeInt(firstValue(row, aliases.registeredVoters));
     const ballotsNumber = Number(ballotsCast);
     const registeredNumber = Number(registeredVoters);
+    const hasBallotsCast = ballotsCast !== "" && Number.isFinite(ballotsNumber) && ballotsNumber >= 0;
     const hasPositiveDenominator = Number.isFinite(registeredNumber) && registeredNumber > 0;
-    if (!state || !jurisdictionName || !ballotsCast) {
+    if (!state || !jurisdictionName) {
       return [];
     }
 
@@ -161,10 +170,10 @@ function normalizeEacTurnoutRows(inputRows, options = {}) {
         source_url: options.sourceUrl || EAC_SOURCE_URL,
         state,
         turnout_pct:
-          Number.isFinite(ballotsNumber) && hasPositiveDenominator
+          hasBallotsCast && hasPositiveDenominator
             ? ((ballotsNumber / registeredNumber) * 100).toFixed(4)
             : "",
-        warning_required: hasPositiveDenominator ? "false" : "true",
+        warning_required: hasBallotsCast && hasPositiveDenominator ? "false" : "true",
       },
     ];
   });

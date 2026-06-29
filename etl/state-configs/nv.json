@@ -39,6 +39,17 @@
       "status": "loaded"
     },
     {
+      "id": "nv-clark-2024-cvr-precinct-review",
+      "category": "Clark County official CVR precinct President/Senate review rows",
+      "url": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+      "localFile": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+      "parser": "localComparisonCsv",
+      "authority": "Clark County Election Department",
+      "timestampBasis": "Clark County 2024 General Election final CVR export linked from the official county elections reports/data page; normalized June 29, 2026.",
+      "confidence": "Official Clark County cast vote record export aggregated by PrecinctPortion into President-versus-U.S. Senate local review rows. County CVR totals differ slightly from statewide certified county totals, so this is precinct review context rather than a certified county replacement.",
+      "status": "loaded"
+    },
+    {
       "id": "nv-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2732%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -71,11 +82,31 @@
     ]
   },
   "reviewCharts": {
-    "format": "countyComparisonCsv",
-    "sourceId": "nv-2024-silver-state-senate",
+    "format": "localComparisonCsv",
+    "sourceId": "nv-clark-2024-cvr-precinct-review",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "warning": "Nevada review rows are county-level President-versus-U.S. Senate comparisons from archived official statewide county totals. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots."
+    "sourceCoverage": "Clark County official CVR precinct rows are loaded; the other 16 Nevada jurisdictions remain county-only until local exports or records-request productions are collected.",
+    "partialCoverage": true,
+    "missingJurisdictions": [
+      "Carson City",
+      "Churchill County",
+      "Douglas County",
+      "Elko County",
+      "Esmeralda County",
+      "Eureka County",
+      "Humboldt County",
+      "Lander County",
+      "Lincoln County",
+      "Lyon County",
+      "Mineral County",
+      "Nye County",
+      "Pershing County",
+      "Storey County",
+      "Washoe County",
+      "White Pine County"
+    ],
+    "warning": "Nevada review rows now include Clark County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and Clark CVR totals differ slightly from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -107,13 +138,13 @@
   "expected": {
     "jurisdictions": 17,
     "resultRows": 17,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 17,
     "stateTotal": 1484840,
     "trump": 751205,
     "harris": 705197,
     "other": 28438,
-    "reviewRows": 17,
+    "reviewRows": 749,
     "turnoutRows": 17
   },
   "capabilities": {

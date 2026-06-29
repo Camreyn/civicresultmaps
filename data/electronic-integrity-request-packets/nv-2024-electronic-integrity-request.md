@@ -3,8 +3,8 @@
 This request seeks machine-readable records that can reconcile electronic election-system output against official results, paper/audit evidence, and custody records. Existing advisory indicators are not allegations or proof of tampering.
 
 Requested evidence families:
-- Reporting-unit results: status=partial; grain=county; reconciliation=county_only_not_subcounty. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
-- Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
+- Reporting-unit results: status=partial; grain=clark_precinct_cvr_plus_statewide_county; reconciliation=clark_precinct_cvr_loaded_non_clark_county_only. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
+- Cast vote records: status=partial; grain=clark_ballot_cvr_normalized_to_precinct_review; reconciliation=clark_cvr_normalized_certified_county_delta_noted_non_clark_not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 - Logic and accuracy records: status=needs_data; grain=test_deck_or_testing_jurisdiction; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.

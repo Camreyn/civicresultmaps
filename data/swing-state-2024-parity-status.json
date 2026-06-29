@@ -14,6 +14,8 @@
   ],
   "purpose": "Track swing-state parity against the Wisconsin package without replacing loaded result/review data. Parity means native review data plus explainable context: turnout denominator status, equipment, audit/CVR/incident context, source-acquisition tier, hard-missing evidence, and explicit next actions.",
   "policy": {
+    "countyDistributionDropoffThresholdPct": 4,
+    "countyDistributionZThreshold": 2,
     "downBallotAverageThresholdPct": 2,
     "minCandidateVotes": 100,
     "minWardRows": 8,
@@ -25,10 +27,10 @@
     "validatedNativeStagingStates": 8,
     "statesWithLoadedEquipment": 8,
     "statesWithAuditContext": 2,
-    "statesWithCvrContext": 1,
+    "statesWithCvrContext": 2,
     "statesWithIncidentContext": 1,
-    "statesWithSubcountyComparisonReview": 5,
-    "statesWithCountyOnlyReview": 2,
+    "statesWithSubcountyComparisonReview": 6,
+    "statesWithCountyOnlyReview": 1,
     "statesWithHardMissingEvidence": 1
   },
   "states": [
@@ -51,12 +53,16 @@
       },
       "indicatorCoverage": {
         "reviewRows": 15,
-        "flaggedCountyJurisdictions": 0,
-        "flaggedAreas": 0,
-        "indicatorRows": 0,
-        "countyIndicatorRows": 0,
-        "byLevel": {},
-        "byType": {}
+        "flaggedCountyJurisdictions": 14,
+        "flaggedAreas": 14,
+        "indicatorRows": 14,
+        "countyIndicatorRows": 14,
+        "byLevel": {
+          "county": 14
+        },
+        "byType": {
+          "county_down_ballot_distribution": 14
+        }
       },
       "turnoutContext": {
         "status": "loaded",
@@ -418,25 +424,29 @@
       "electionYear": 2024,
       "parityStatus": "partial_parity",
       "nativeCoverage": {
-        "readinessGrade": "county_review_only",
+        "readinessGrade": "subcounty_comparison_review",
         "sourceTier": "tier_2_official_dashboard_endpoint",
-        "reportingGrain": "county",
-        "parserStatus": "native county review package loaded",
+        "reportingGrain": "precinct",
+        "parserStatus": "native partial subcounty review package loaded",
         "resultRows": 17,
-        "reviewRows": 17,
+        "reviewRows": 749,
         "turnoutRows": 17,
         "comparisonContest": "United States Senator",
-        "reviewWarning": "Nevada review rows are county-level President-versus-U.S. Senate comparisons from archived official statewide county totals. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots.",
+        "reviewWarning": "Nevada review rows now include Clark County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and Clark CVR totals differ slightly from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
         "validationPassed": true
       },
       "indicatorCoverage": {
-        "reviewRows": 17,
-        "flaggedCountyJurisdictions": 0,
-        "flaggedAreas": 0,
-        "indicatorRows": 0,
-        "countyIndicatorRows": 0,
-        "byLevel": {},
-        "byType": {}
+        "reviewRows": 749,
+        "flaggedCountyJurisdictions": 1,
+        "flaggedAreas": 1,
+        "indicatorRows": 1,
+        "countyIndicatorRows": 1,
+        "byLevel": {
+          "county": 1
+        },
+        "byType": {
+          "average_down_ballot_difference": 1
+        }
       },
       "turnoutContext": {
         "status": "fallback_or_warning_required",
@@ -473,8 +483,12 @@
           "why": "Nevada 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
         },
         "cvr": {
-          "status": "needs_data",
-          "why": "Nevada 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+          "status": "partial",
+          "why": "Clark County 2024 General CVR is publicly linked by the official county elections site and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 16 Nevada jurisdictions is still not inventoried.",
+          "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+          "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+          "parser": "normalize-nv-clark-cvr.py",
+          "caveat": "Normalized precinct aggregate only; raw Clark CVR zip is not committed. Clark CVR totals differ slightly from certified county totals."
         },
         "incidents": {
           "status": "needs_data",
@@ -485,20 +499,22 @@
         "tier": "tier_2_official_dashboard_endpoint",
         "scope": "statewide",
         "dataFamily": "results_review_turnout",
-        "reportingGrain": "county",
-        "parserStatus": "native county review package loaded",
+        "reportingGrain": "precinct",
+        "parserStatus": "native partial subcounty review package loaded",
         "manualReviewBurden": "medium",
         "confidence": "loaded",
-        "nextAction": "Find official local Nevada result export for precinct/subcounty review rows.",
+        "nextAction": "Collect official local result exports or records-request productions for the 16 non-Clark Nevada jurisdictions and a state-native turnout denominator.",
         "sourceUrls": [
-          "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx"
+          "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+          "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
+          "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
         ]
       },
       "parityGaps": [
         {
-          "id": "subcounty_review_rows",
-          "status": "missing_or_not_loaded",
-          "detail": "Current review rows are county-level only; Wisconsin parity has ward-level review rows."
+          "id": "statewide_subcounty_review_coverage",
+          "status": "partial",
+          "detail": "Clark County official CVR precinct rows are loaded; the other 16 Nevada jurisdictions remain county-only until local exports or records-request productions are collected."
         },
         {
           "id": "state_native_turnout_denominator",
@@ -509,11 +525,6 @@
           "id": "audit_context",
           "status": "needs_data",
           "detail": "Nevada 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
-        },
-        {
-          "id": "cvr_or_ballot_mode_context",
-          "status": "needs_data",
-          "detail": "Nevada 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
         },
         {
           "id": "incident_context",
@@ -536,7 +547,7 @@
           "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
         }
       ],
-      "nextAction": "Find and normalize official subcounty President plus comparison-contest rows before spending time on deeper context."
+      "nextAction": "Add Wisconsin-style audit/CVR/incident inventories and a public-source evidence probe; keep current native flags visible while context catches up."
     },
     {
       "state": "NC",
@@ -806,16 +817,16 @@
       },
       "indicatorCoverage": {
         "reviewRows": 9348,
-        "flaggedCountyJurisdictions": 171,
-        "flaggedAreas": 171,
-        "indicatorRows": 308,
-        "countyIndicatorRows": 308,
+        "flaggedCountyJurisdictions": 172,
+        "flaggedAreas": 172,
+        "indicatorRows": 309,
+        "countyIndicatorRows": 309,
         "byLevel": {
-          "county": 308
+          "county": 309
         },
         "byType": {
           "vote_share_pattern": 150,
-          "average_down_ballot_difference": 157,
+          "average_down_ballot_difference": 158,
           "down_ballot_outliers": 1
         }
       },

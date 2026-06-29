@@ -1269,7 +1269,7 @@
       "stateName": "Nevada",
       "artifactType": "cast_vote_records",
       "artifactLabel": "Cast vote records",
-      "artifactStatus": "needs_data",
+      "artifactStatus": "partial",
       "requestRequired": true,
       "status": "draft_ready",
       "primaryCustodian": "Nevada Secretary of State Elections Division",
@@ -1278,7 +1278,7 @@
       "recipientLookupUrl": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
       "countyCustodianLikely": true,
       "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.",
-      "requestedRecords": "Needed for independent ballot-level retabulation and comparison to certified totals.",
+      "requestedRecords": "Clark CVR supports precinct aggregation and review; full ballot-level retabulation still requires raw CVR handling and non-Clark availability inventory.",
       "preferredFormats": [
         "original export",
         "CSV",
@@ -1295,8 +1295,8 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
-      "localArtifact": "",
+      "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+      "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
       "notes": "County clerks or registrars may maintain county-specific electronic election artifacts."
     },
     {
@@ -1389,7 +1389,7 @@
       "recipientLookupUrl": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
       "countyCustodianLikely": true,
       "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.",
-      "requestedRecords": "County-only comparison rows are weak for electronic-level review.",
+      "requestedRecords": "Clark precinct rows can localize review screens inside Clark County; other counties still need local reporting-unit results.",
       "preferredFormats": [
         "original export",
         "CSV",
@@ -1406,8 +1406,8 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
-      "localArtifact": "data/nv-2024-statewide-general-senate.csv",
+      "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+      "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
       "notes": "County clerks or registrars may maintain county-specific electronic election artifacts."
     },
     {

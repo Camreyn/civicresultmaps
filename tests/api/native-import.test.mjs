@@ -34,7 +34,11 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /comparableDownBallotRowCount/);
   assert.match(importer, /comparisonCoverageMode/);
   assert.match(importer, /directionalScreenConfidence/);
+  assert.match(importer, /directionalScreenReason/);
+  assert.match(importer, /presidentVsGovernor/);
   assert.match(importer, /presidentVsUSHouse/);
+  assert.match(explorer, /Harris \/ DEM \(low\)/);
+  assert.match(explorer, /Governor-only/);
   assert.match(explorer, /DEM pres > House/);
   assert.match(explorer, /REP pres > House/);
   assert.match(explorer, /Harris share pattern/);

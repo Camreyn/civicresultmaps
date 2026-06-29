@@ -79,7 +79,11 @@ function parseArgs(argv) {
 
 function intValue(value) {
   const parsed = Number(String(value || "").replace(/[^\d.-]/g, ""));
-  return Number.isFinite(parsed) ? Math.trunc(parsed) : 0;
+  if (!Number.isFinite(parsed)) {
+    return 0;
+  }
+  const integer = Math.trunc(parsed);
+  return integer >= 0 ? integer : 0;
 }
 
 function writeCsv(file, rows) {
@@ -129,9 +133,12 @@ function extractEacStateTurnout(options) {
           return EAC_CODEBOOK_URL;
         }
         if (column === "notes") {
-          return row.warning_required === "true"
-            ? "EAC reports zero registered voters for this jurisdiction; denominator warning required."
-            : "EAC 2024 EAVS V2 A1a Total Reg registered-voter denominator.";
+          if (row.warning_required !== "true") {
+            return "EAC 2024 EAVS V2 A1a Total Reg registered-voter denominator.";
+          }
+          return row.registered_voters
+            ? "EAC reports an unavailable turnout numerator for this jurisdiction; turnout warning required."
+            : "EAC reports zero or unavailable registered voters for this jurisdiction; denominator warning required.";
         }
         return row[column] ?? "";
       }),
@@ -154,7 +161,7 @@ function extractEacStateTurnout(options) {
       caveats: [
         "EAC A1a Total Reg is the registered-voter denominator used for this fallback collection.",
         "Prefer state election office denominator artifacts when they provide equal or finer official detail.",
-        "Rows with zero registered voters are warning-gated and have blank turnout percentages.",
+        "Rows with zero or unavailable registered voters, or unavailable turnout numerators, are warning-gated and have blank turnout percentages.",
       ],
     };
     writeFileSync(denominatorJsonFile, `${JSON.stringify(denominatorSummary, null, 2)}\n`);

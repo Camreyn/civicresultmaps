@@ -1,10 +1,9 @@
 {
   "code": "IL",
   "name": "Illinois",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Illinois State Board of Elections",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "il-2024-eac-turnout",
@@ -16,6 +15,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "il-2024-general-by-office-csvs",
+      "category": "Official precinct result CSVs by office",
+      "url": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
+      "localFile": "data/il-2024-official-results",
+      "parser": "illinoisElectionResultsByOfficeCsvDirectory",
+      "authority": "Illinois State Board of Elections",
+      "timestampBasis": "Official 2024 General Election by-office CSV downloads collected June 29, 2026.",
+      "confidence": "Official Illinois State Board of Elections CSV exports. Presidential rows are aggregated to Illinois election jurisdictions for certified results; advisory review rows join President to U.S. House only where the same jurisdiction/precinct key is unambiguous and the House race has both Democratic and Republican candidate votes.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -24,7 +34,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Illinois turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Illinois turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout denominator artifact is promoted separately.",
     "warningRequired": false,
     "expected": {
       "rowCount": 108,
@@ -34,21 +44,32 @@
   },
   "expected": {
     "jurisdictions": 108,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 108,
+    "sources": 2,
+    "stateTotal": 5649779,
+    "trump": 2449079,
+    "harris": 3062863,
+    "other": 137837,
+    "reviewRows": 6655,
     "turnoutRows": 108
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "illinoisElectionResultsByOfficeCsvDirectory",
+    "sourceId": "il-2024-general-by-office-csvs"
+  },
+  "reviewCharts": {
+    "format": "illinoisElectionResultsByOfficeCsvDirectory",
+    "sourceId": "il-2024-general-by-office-csvs",
+    "comparisonContest": "U.S. House",
+    "coverageMode": "presidentVsHouseContestedPrecinct",
+    "warning": "Illinois review rows compare official precinct President rows with U.S. House rows where the jurisdiction/precinct key is unambiguous and the House contest has both Democratic and Republican candidate votes. Rows are omitted for precinct keys appearing in multiple House districts and for uncontested or one-party House comparison rows. This is an advisory same-election comparison, not a statewide Senate or Governor comparison."
   }
 }

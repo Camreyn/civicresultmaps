@@ -1,4 +1,4 @@
-﻿import unittest
+import unittest
 import zipfile
 import json
 from pathlib import Path
@@ -74,6 +74,84 @@ def write_xlsx(path: Path, sheet_name: str, rows: list[list[object]]):
         archive.writestr("xl/workbook.xml", workbook)
         archive.writestr("xl/_rels/workbook.xml.rels", rels)
         archive.writestr("xl/worksheets/sheet1.xml", worksheet)
+
+
+def write_xlsx_workbook(path: Path, sheets: dict[str, list[list[object]]]):
+    def cell_ref(column_index: int, row_index: int) -> str:
+        column = ""
+        current = column_index + 1
+        while current:
+            current, remainder = divmod(current - 1, 26)
+            column = chr(ord("A") + remainder) + column
+        return f"{column}{row_index}"
+
+    worksheets = []
+    for sheet_index, (sheet_name, rows) in enumerate(sheets.items(), start=1):
+        sheet_rows = []
+        for row_index, row in enumerate(rows, start=1):
+            cells = []
+            for column_index, value in enumerate(row):
+                ref = cell_ref(column_index, row_index)
+                if isinstance(value, (int, float)):
+                    cells.append(f'<c r="{ref}"><v>{value}</v></c>')
+                else:
+                    cells.append(f'<c r="{ref}" t="inlineStr"><is><t>{escape(str(value))}</t></is></c>')
+            sheet_rows.append(f'<row r="{row_index}">{"".join(cells)}</row>')
+        worksheet = (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+            f'<sheetData>{"".join(sheet_rows)}</sheetData>'
+            "</worksheet>"
+        )
+        worksheets.append((sheet_index, sheet_name, worksheet))
+
+    workbook_sheets = "".join(
+        f'<sheet name="{escape(sheet_name)}" sheetId="{sheet_index}" r:id="rId{sheet_index}"/>'
+        for sheet_index, sheet_name, _ in worksheets
+    )
+    workbook = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+        f'<sheets>{workbook_sheets}</sheets>'
+        "</workbook>"
+    )
+    rels_entries = "".join(
+        f'<Relationship Id="rId{sheet_index}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet{sheet_index}.xml"/>'
+        for sheet_index, _, _ in worksheets
+    )
+    rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        f'{rels_entries}'
+        "</Relationships>"
+    )
+    root_rels = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+        "</Relationships>"
+    )
+    overrides = "".join(
+        f'<Override PartName="/xl/worksheets/sheet{sheet_index}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'
+        for sheet_index, _, _ in worksheets
+    )
+    content_types = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        '<Default Extension="xml" ContentType="application/xml"/>'
+        '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+        f'{overrides}'
+        "</Types>"
+    )
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("[Content_Types].xml", content_types)
+        archive.writestr("_rels/.rels", root_rels)
+        archive.writestr("xl/workbook.xml", workbook)
+        archive.writestr("xl/_rels/workbook.xml.rels", rels)
+        for sheet_index, _, worksheet in worksheets:
+            archive.writestr(f"xl/worksheets/sheet{sheet_index}.xml", worksheet)
 
 
 class PipelineTests(unittest.TestCase):
@@ -160,6 +238,51 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 5756106)
         self.assertTrue(any(row["coverageMode"] == "presidentVsGovernor" for row in artifact["native"]["reviewRows"]))
 
+    def test_oklahoma_official_csv_zip_parser_builds_county_and_precinct_rows(self):
+        config = load_config("etl/state-configs/ok.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeOklahomaOfficialCsvZip")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 77)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 1566173)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1036213)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 499599)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 30361)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 1977)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 1517)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOklahomaHousePrecinctRows"], 1517)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOklahomaVoteShareOnlyRows"], 460)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOklahomaZeroTotalPresidentialPrecincts"], 9)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 77)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 1573274)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 2442211)
+        adair = next(row for row in artifact["native"]["resultRows"] if row["jurisdictionName"] == "Adair County")
+        self.assertEqual(adair["votes"]["Trump"], 5860)
+        self.assertEqual(adair["votes"]["Harris"], 1289)
+        self.assertEqual(adair["votes"]["Other"], 107)
+        first_review = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Adair County" and row["localUnit"] == "010001"
+        )
+        self.assertEqual(first_review["coverageMode"], "presidentVsUSHouse")
+        self.assertEqual(first_review["comparisonContest"], "FOR UNITED STATES REPRESENTATIVE DISTRICT 02")
+        self.assertEqual(first_review["harris"], 47)
+        self.assertEqual(first_review["trump"], 267)
+        self.assertEqual(first_review["totalVotes"], 323)
+        self.assertEqual(first_review["comparisonDemVotes"], 58)
+        self.assertEqual(first_review["comparisonRepVotes"], 241)
+        vote_share_only = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Alfalfa County" and row["localUnit"] == "020110"
+        )
+        self.assertEqual(vote_share_only["coverageMode"], "voteShareOnly")
+        self.assertEqual(vote_share_only["comparisonDemVotes"], 0)
+        self.assertEqual(vote_share_only["comparisonRepVotes"], 0)
+
     def test_washington_native_staging_parses_official_csv_exports(self):
         config = load_config("etl/state-configs/wa.json")
         report = validate_config(config)
@@ -181,6 +304,39 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 3949810)
         self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
         self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
+
+    def test_illinois_native_staging_parses_official_by_office_csvs(self):
+        config = load_config("etl/state-configs/il.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeIllinoisElectionResultsByOfficeCsvDirectory")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 108)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 5649779)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 2449079)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 3062863)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 137837)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 6655)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 6655)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "U.S. House")
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewMultiDistrictPrecinctsOmitted"], 292)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewUncontestedHousePrecinctsOmitted"], 3080)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 108)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 8970541)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 5717147)
+        adams = next(row for row in artifact["native"]["resultRows"] if row["jurisdictionName"] == "Adams County")
+        self.assertEqual(adams["votes"]["Trump"], 23161)
+        self.assertEqual(adams["votes"]["Harris"], 8111)
+        cache = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Alexander County" and row["localUnit"] == "CACHE"
+        )
+        self.assertEqual(cache["coverageMode"], "presidentVsHouseContestedPrecinct")
+        self.assertEqual(cache["comparisonContest"], "12TH CONGRESS")
+        self.assertEqual(cache["comparisonDemVotes"], 44)
+        self.assertEqual(cache["comparisonRepVotes"], 45)
 
     def test_arizona_canvass_parser_builds_county_rows_and_turnout(self):
         config = load_config("etl/state-configs/az.json")
@@ -279,7 +435,6 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(first_review["comparisonContest"], "U. S. Representative -- 3rd Congressional District")
         self.assertEqual(first_review["harris"], 58)
         self.assertEqual(first_review["trump"], 624)
-
     def test_west_virginia_clarity_detailxml_parser_builds_precinct_rows(self):
         config = load_config("etl/state-configs/wv.json")
         report = validate_config(config)
@@ -670,13 +825,17 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 17)
         self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 2256275)
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 1486297)
-        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 17)
-        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 17)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 749)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 749)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
-        carson_city = next(row for row in artifact["native"]["reviewRows"] if row["county"] == "Carson City")
-        self.assertEqual(carson_city["coverageMode"], "presidentVsSenate")
-        self.assertEqual(carson_city["comparisonDemVotes"], 13454)
-        self.assertEqual(carson_city["comparisonRepVotes"], 15389)
+        self.assertIn("Clark County official CVR precinct rows", artifact["native"]["metrics"]["nativeReviewSourceCoverage"])
+        clark_precinct = next(row for row in artifact["native"]["reviewRows"] if row["localUnit"] == "1000 (1000|00)")
+        self.assertEqual(clark_precinct["county"], "Clark County")
+        self.assertEqual(clark_precinct["coverageMode"], "presidentVsSenate")
+        self.assertEqual(clark_precinct["harris"], 286)
+        self.assertEqual(clark_precinct["trump"], 357)
+        self.assertEqual(clark_precinct["comparisonDemVotes"], 283)
+        self.assertEqual(clark_precinct["comparisonRepVotes"], 319)
         self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalRows"], 51)
         self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalYears"], [2012, 2016, 2020])
         self.assertEqual(artifact["native"]["historicalRows"][0]["jurisdictionName"], "Carson City")
@@ -775,25 +934,43 @@ class PipelineTests(unittest.TestCase):
                 ["Beta", 20, 8, 3],
             ],
         )
-        write_xlsx(
+        write_xlsx_workbook(
             precinct,
-            "President and Vice President",
-            [
-                ["Title"],
-                [
-                    "County Name",
-                    "Precinct Name",
-                    "Precinct Code",
-                    "Registered Voters",
-                    "Ballots Counted",
-                    "Donald J. Trump",
-                    "Kamala D. Harris",
+            {
+                "President and Vice President": [
+                    ["Title"],
+                    [
+                        "County Name",
+                        "Precinct Name",
+                        "Precinct Code",
+                        "Registered Voters",
+                        "Ballots Counted",
+                        "Donald J. Trump",
+                        "Kamala D. Harris",
+                    ],
+                    ["Total", "", "", 300, 170, 90, 65],
+                    [""],
+                    ["Alpha", "Precinct 1", "001", 100, 60, 20, 35],
+                    ["Beta", "Precinct 2", "002", 200, 110, 70, 30],
                 ],
-                ["Total", "", "", 300, 170, 90, 65],
-                [""],
-                ["Alpha", "Precinct 1", "001", 100, 60, 20, 35],
-                ["Beta", "Precinct 2", "002", 200, 110, 70, 30],
-            ],
+                "U.S. Congress": [
+                    ["Title"],
+                    [
+                        "County Name",
+                        "Precinct Name",
+                        "Precinct Code",
+                        "Registered Voters",
+                        "Ballots Counted",
+                        "Sherrod Brown (D)",
+                        "Don Kissick (L)",
+                        "Bernie Moreno (R)",
+                    ],
+                    ["Total", "", "", 300, 170, 75, 7, 82],
+                    [""],
+                    ["Alpha", "Precinct 1", "001", 100, 60, 30, 2, 18],
+                    ["Beta", "Precinct 2", "002", 200, 110, 45, 5, 64],
+                ],
+            },
         )
         config_path.write_text(
             json.dumps(
@@ -843,7 +1020,7 @@ class PipelineTests(unittest.TestCase):
                         ],
                     },
                     "reviewCharts": {
-                        "format": "ohioPrecinctVoteShare",
+                        "format": "ohioPrecinctPresidentVsSenate",
                         "sourceId": "precinct",
                         "sheetName": "President and Vice President",
                         "headerRow": 2,
@@ -853,6 +1030,20 @@ class PipelineTests(unittest.TestCase):
                             "trump": {"candidateContains": "Donald J. Trump"},
                             "harris": {"candidateContains": "Kamala D. Harris"},
                         },
+                    },
+                    "comparisonContest": {
+                        "label": "United States Senator",
+                        "sourceId": "precinct",
+                        "sheetName": "U.S. Congress",
+                        "headerRow": 2,
+                        "dataStartRow": 5,
+                        "majorCandidates": {
+                            "dem": {"candidateContains": "Sherrod Brown"},
+                            "rep": {"candidateContains": "Bernie Moreno"},
+                        },
+                        "otherCandidates": [
+                            {"key": "kissick", "label": "Don Kissick (L)", "candidateContains": "Don Kissick"}
+                        ],
                     },
                     "turnout": {
                         "format": "ohioPrecinctTurnoutXlsx",
@@ -894,7 +1085,16 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 2)
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 2)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 2)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
         self.assertEqual(artifact["native"]["resultRows"][0]["jurisdictionName"], "Alpha County")
+        alpha = artifact["native"]["reviewRows"][0]
+        self.assertEqual(alpha["coverageMode"], "presidentVsSenate")
+        self.assertEqual(alpha["comparisonContest"], "United States Senator")
+        self.assertEqual(alpha["comparisonDemVotes"], 30)
+        self.assertEqual(alpha["comparisonRepVotes"], 18)
+        self.assertAlmostEqual(alpha["demDropoff"], 8.3333)
+        self.assertAlmostEqual(alpha["repDropoff"], 3.3333)
 
     def test_kansas_presidential_house_xlsx_parser_builds_precinct_review_rows(self):
         config = load_config("etl/state-configs/ks.json")
@@ -937,6 +1137,7 @@ class PipelineTests(unittest.TestCase):
                     "state,election_year,jurisdiction_name,level,ballots_cast,registered_voters,denominator_note,warning_required,source_url",
                     "AZ,2024,Maricopa County,county,200,250,EAC-reported registered-voter denominator,false,https://www.eac.gov/research-and-data/studies-and-reports",
                     "AZ,2024,Pima County,county,100,,Missing registered-voter denominator,true,https://www.eac.gov/research-and-data/studies-and-reports",
+                    "AZ,2024,Cache County,county,-99,300,EAC-reported registered-voter denominator,false,https://www.eac.gov/research-and-data/studies-and-reports",
                 ]
             )
             + "\n",
@@ -969,9 +1170,9 @@ class PipelineTests(unittest.TestCase):
                         "sourceId": "az-normalized-turnout",
                         "sourceLevel": "county",
                         "expected": {
-                            "rowCount": 2,
+                            "rowCount": 3,
                             "ballotsCast": 300,
-                            "registeredVoters": 250,
+                            "registeredVoters": 550,
                         },
                     },
                     "expected": {
@@ -979,7 +1180,7 @@ class PipelineTests(unittest.TestCase):
                         "resultRows": 0,
                         "sources": 1,
                         "reviewRows": 0,
-                        "turnoutRows": 2,
+                        "turnoutRows": 3,
                     },
                     "capabilities": {
                         "sourcePlanner": True,
@@ -999,10 +1200,14 @@ class PipelineTests(unittest.TestCase):
         artifact = build_staging_artifact(config, report)
 
         self.assertTrue(report.passed)
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 2)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 3)
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 300)
         self.assertEqual(artifact["native"]["turnoutRows"][0]["turnoutPct"], 80)
         self.assertTrue(artifact["native"]["turnoutRows"][1]["warningRequired"])
+        sentinel_row = artifact["native"]["turnoutRows"][2]
+        self.assertEqual(sentinel_row["ballotsCast"], 0)
+        self.assertIsNone(sentinel_row["turnoutPct"])
+        self.assertTrue(sentinel_row["warningRequired"])
 
     def test_maryland_precinct_csv_parser_builds_precinct_review_rows(self):
         config = load_config("etl/state-configs/md.json")
@@ -1036,7 +1241,6 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(allegany["comparisonRepVotes"], 413)
         self.assertEqual(allegany["demDropoff"], 3.0)
         self.assertEqual(allegany["repDropoff"], 1.4)
-
     def test_staging_artifact_blocks_production_write(self):
         config = load_config("etl/state-configs/wi.json")
         report = validate_config(config)
@@ -1079,3 +1283,5 @@ class PipelineTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+

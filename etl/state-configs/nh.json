@@ -110,6 +110,14 @@
     "sourceId": "nh-2024-town-ward-president-governor",
     "comparisonContest": "Governor",
     "coverageMode": "presidentVsGovernor",
-    "warning": "New Hampshire review rows are town/ward-level President-versus-Governor comparisons from archived official Secretary of State workbooks. Governor is used because New Hampshire did not have a 2024 U.S. Senate race. Town/ward boundary geometry is not included."
+    "directionalScreenConfidence": "low",
+    "directionalScreenReason": "Governor is the only same-grain comparison contest currently loaded for New Hampshire, and 2024 Governor ticket splitting is large enough to drive Harris/DEM directional labels without implying an election-administration anomaly.",
+    "corroborationNeeded": [
+      "town/ward U.S. House or Executive Council comparison rows where district coverage is clean",
+      "historical New Hampshire President-versus-Governor split-ticket baselines",
+      "state-native turnout or registration denominators",
+      "post-election audit, recount, CVR availability, and incident/correction records"
+    ],
+    "warning": "New Hampshire review rows are town/ward-level President-versus-Governor comparisons from archived official Secretary of State workbooks. Governor is used because New Hampshire did not have a 2024 U.S. Senate race. Directional labels from this comparison are low-confidence ticket-splitting proxies until corroborated by additional contests, historical baselines, or administration records. Town/ward boundary geometry is not included."
   }
 }

@@ -12,8 +12,8 @@ Requester:
 [requester phone, optional]
 
 Requested evidence families and tracking IDs:
-- EI-2024-NV-REPORTING-UNIT-RESULTS - Reporting-unit results: status=partial; grain=county; reconciliation=county_only_not_subcounty. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
-- EI-2024-NV-CAST-VOTE-RECORDS - Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
+- EI-2024-NV-REPORTING-UNIT-RESULTS - Reporting-unit results: status=partial; grain=clark_precinct_cvr_plus_statewide_county; reconciliation=clark_precinct_cvr_loaded_non_clark_county_only. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
+- EI-2024-NV-CAST-VOTE-RECORDS - Cast vote records: status=partial; grain=clark_ballot_cvr_normalized_to_precinct_review; reconciliation=clark_cvr_normalized_certified_county_delta_noted_non_clark_not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 - EI-2024-NV-BALLOT-IMAGES - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 - EI-2024-NV-TABULATOR-LOGS - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 - EI-2024-NV-LOGIC-ACCURACY - Logic and accuracy records: status=needs_data; grain=test_deck_or_testing_jurisdiction; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.

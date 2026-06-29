@@ -53,7 +53,8 @@ test("registry distinguishes loaded review evidence from unavailable electronic 
   assert.equal(artifact("PA", "reporting_unit_results")?.status, "loaded");
   assert.equal(artifact("PA", "cast_vote_records")?.status, "blocked");
   assert.equal(artifact("AZ", "reporting_unit_results")?.reconciliationStatus, "county_only_not_subcounty");
-  assert.equal(artifact("NV", "reporting_unit_results")?.reconciliationStatus, "county_only_not_subcounty");
+  assert.equal(artifact("NV", "reporting_unit_results")?.reconciliationStatus, "clark_precinct_cvr_loaded_non_clark_county_only");
+  assert.equal(artifact("NV", "cast_vote_records")?.status, "partial");
   assert.equal(registry.states.some((entry) => artifact(entry.state, "cast_vote_records")?.status === "loaded"), false);
   assert.equal(artifact("MI", "tabulator_logs")?.status, "needs_data");
   assert.equal(artifact("NC", "chain_of_custody")?.requestRequired, true);

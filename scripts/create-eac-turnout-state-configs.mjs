@@ -59,7 +59,20 @@ const STATE_NAMES = {
 
 function intValue(value) {
   const parsed = Number(String(value || "").replace(/[^\d.-]/g, ""));
-  return Number.isFinite(parsed) ? Math.trunc(parsed) : 0;
+  if (!Number.isFinite(parsed)) {
+    return 0;
+  }
+  const integer = Math.trunc(parsed);
+  return integer >= 0 ? integer : 0;
+}
+
+function hasNonnegativeValue(value) {
+  const raw = String(value ?? "").trim();
+  if (!raw) {
+    return false;
+  }
+  const parsed = Number(raw.replace(/[^\d.-]/g, ""));
+  return Number.isFinite(parsed) && parsed >= 0;
 }
 
 function parseArgs(argv) {
@@ -99,7 +112,7 @@ function turnoutTotals(turnoutFile) {
       const registered = intValue(row.registered_voters);
       totals.ballotsCast += intValue(row.ballots_cast);
       totals.registeredVoters += registered > 0 ? registered : 0;
-      totals.warningRows += row.warning_required === "true" || registered <= 0 ? 1 : 0;
+      totals.warningRows += row.warning_required === "true" || !hasNonnegativeValue(row.ballots_cast) || registered <= 0 ? 1 : 0;
       return totals;
     },
     { ballotsCast: 0, registeredVoters: 0, warningRows: 0 },

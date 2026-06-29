@@ -73,7 +73,7 @@ def artifact_metadata(local_file: str) -> dict[str, Any]:
 
 
 def load_config(path: str | Path) -> EtlConfig:
-    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    data = json.loads(Path(path).read_text(encoding="utf-8-sig"))
     sources = [
         SourceConfig(
             id=item["id"],

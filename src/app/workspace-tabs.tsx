@@ -1390,8 +1390,7 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
       status: "partial",
       why: "Maryland needs official state-native registered-voter/ballots-cast denominator rows mapped before turnout can be treated as complete in this app.",
     },
-  ],
-  MI: [
+  ],  MI: [
     {
       key: "review",
       evidence: "Michigan native review rows support presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
@@ -1433,9 +1432,9 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
     },
     {
       key: "review",
-      evidence: "Nevada native data is county-level statewide-results data only.",
-      status: "missing",
-      why: "Precinct/reporting-unit presidential rows and same-row down-ballot comparison fields are not loaded yet, so review graphs remain disabled until a lower-level official export is collected.",
+      evidence: "Clark County official CVR precinct President-versus-U.S. Senate review rows are loaded alongside Nevada statewide county totals.",
+      status: "partial",
+      why: "Clark County now supports precinct-level advisory screening, but the other 16 Nevada jurisdictions remain county-only until local exports or records-request productions are collected. Clark CVR totals differ slightly from certified county totals, so source-row inspection remains required.",
     },
     {
       key: "turnout",
@@ -1447,9 +1446,9 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   OH: [
     {
       key: "review",
-      evidence: "Ohio native review rows currently support presidential vote-share screening.",
+      evidence: "Ohio native review rows support presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
       status: "partial",
-      why: "Down-ballot comparison flags are disabled until a same-row comparison contest is mapped, so review graphs should be read as vote-share-only screening.",
+      why: "The comparison uses the Ohio Secretary of State precinct-level U.S. Senate rows from the same workbook; review graphs remain advisory screening views, not ballot-level ticket-splitting evidence.",
     },
   ],
   PA: [
@@ -1572,8 +1571,9 @@ function buildDataNoteSections(input: {
   const legacyOnly = input.completeness ? input.completeness.legacyImportCount > 0 && input.completeness.nativeImportCount === 0 : false;
   const mapGeometrySourceCount =
     input.completeness?.mapGeometrySourceCount ?? input.sources.filter(isMapGeometrySource).length;
-  const mapIsReady = Boolean(capabilities?.map && mapGeometrySourceCount > 0);
-  const mapIsPartial = Boolean(capabilities?.map || mapGeometrySourceCount > 0);
+  const hasResultRows = input.results.length > 0;
+  const mapIsReady = Boolean(hasResultRows && capabilities?.map && mapGeometrySourceCount > 0);
+  const mapIsPartial = Boolean(hasResultRows && (capabilities?.map || mapGeometrySourceCount > 0));
 
   const sections: DataNoteSection[] = [
     {
@@ -1603,22 +1603,28 @@ function buildDataNoteSections(input: {
     {
       detail: mapIsReady
         ? `County map geometry is available from ${mapGeometrySourceCount.toLocaleString()} loaded geometry source${mapGeometrySourceCount === 1 ? "" : "s"}.`
-        : capabilities?.map
-          ? "A map capability flag exists, but no loaded geometry source is tracked."
-          : "Map geometry is not available for this state.",
+        : !hasResultRows
+          ? "Result-map geometry is unavailable until certified result rows are loaded."
+          : capabilities?.map
+            ? "A map capability flag exists, but no loaded geometry source is tracked."
+            : "Map geometry is not available for this state.",
       evidence: input.coverage?.validation.warnings.length
         ? input.coverage.validation.warnings.join(" ")
         : mapIsReady
           ? "No map-join warning is currently reported."
-          : "Loaded county geometry source evidence is missing.",
+          : !hasResultRows
+            ? "There are no loaded result rows to join to map boundaries."
+            : "Loaded county geometry source evidence is missing.",
       key: "map",
       label: "Map",
       status: mapIsReady ? (input.coverage?.validation.passed === false ? "partial" : "ready") : mapIsPartial ? "partial" : "missing",
       why: mapIsReady
         ? "The map can be used, but any join warning means boundaries and result rows should be checked before relying on shading."
-        : capabilities?.map
-          ? "The database map flag is not enough by itself; a loaded geometry source must be tracked before this state should appear map-ready."
-          : "County boundary geometry or name matching has not been validated for this state yet.",
+        : !hasResultRows
+          ? "Collect certified result rows before treating boundary geometry or equipment geography as a result map."
+          : capabilities?.map
+            ? "The database map flag is not enough by itself; a loaded geometry source must be tracked before this state should appear map-ready."
+            : "County boundary geometry or name matching has not been validated for this state yet.",
     },
     {
       detail: input.reviewRows.length
@@ -3144,7 +3150,7 @@ export function WorkspaceTabs({
                       <div>
                         <strong>{candidate}</strong>
                         <span>
-                          {votes.toLocaleString()} · {pct(votes, totalVotes)}
+                          {votes.toLocaleString()} Â· {pct(votes, totalVotes)}
                         </span>
                       </div>
                       <i
@@ -3878,7 +3884,7 @@ export function WorkspaceTabs({
                         </div>
                       </dl>
                       <small>
-                        {summary.rows.toLocaleString()} rows · {summary.sourceCount} source
+                        {summary.rows.toLocaleString()} rows Â· {summary.sourceCount} source
                         {summary.sourceCount === 1 ? "" : "s"}
                       </small>
                     </article>
@@ -4542,7 +4548,7 @@ export function WorkspaceTabs({
                 <strong>Latest selected-state import</strong>
                 <span>
                   {latestRun
-                    ? `${latestRun.status} · ${dateLabel(latestRun.finishedAt ?? latestRun.startedAt)}`
+                    ? `${latestRun.status} Â· ${dateLabel(latestRun.finishedAt ?? latestRun.startedAt)}`
                     : "No import run found for this state."}
                 </span>
               </article>
@@ -4964,7 +4970,7 @@ export function WorkspaceTabs({
                 <ul className="reviewer-checklist">
                   {reviewerChecklist.map((entry) => (
                     <li key={entry.item}>
-                      <span aria-hidden>✓</span>
+                      <span aria-hidden>âœ“</span>
                       {entry.item}
                     </li>
                   ))}
@@ -5220,7 +5226,7 @@ export function WorkspaceTabs({
                     {run.state} {run.electionYear}
                   </strong>
                   <span>
-                    {run.parser} · {dateLabel(run.startedAt)}
+                    {run.parser} Â· {dateLabel(run.startedAt)}
                   </span>
                   <span className="mono">{run.status}</span>
                   {Object.keys(run.summary).length > 0 && (
@@ -5229,7 +5235,7 @@ export function WorkspaceTabs({
                         .slice(0, 5)
                         .map(([key, value]) => `${key}: ${summaryValue(value)}`)
                         .filter(Boolean)
-                        .join(" · ")}
+                        .join(" Â· ")}
                     </span>
                   )}
                 </li>

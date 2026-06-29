@@ -268,7 +268,7 @@ npm run native:promote -- .etl/staging/wi-2024-staging.json
 
 ## Native Ohio Import
 
-Ohio is the first native official-source parser in this repo. It reads:
+Ohio is the first native official-source parser in this repo. It reads official county results plus precinct-level presidential, U.S. Senate comparison, and turnout rows:
 
 - `data/oh-2024-statewide-race-summary.xlsx`
 - `data/oh-2024-statewide-races-precinct-level.xlsx`
@@ -282,6 +282,7 @@ Those paths are declared in `etl/state-configs/oh.json`. The XLSX parser reads t
 - 2,533,699 Harris votes
 - 53,973 other votes
 - 8,878 precinct review rows
+- 8,878 precinct President-versus-U.S. Senate comparison rows
 - 8,878 precinct turnout rows
 
 Run metadata validation:

@@ -196,7 +196,7 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
     }
   }
 
-  const hasHouseComparison = ["oneSidedHouseComparison", "presidentVsHouse", "presidentVsUSHouse"].some((mode) => coverageModes.has(mode));
+  const hasHouseComparison = Array.from(coverageModes).some((mode) => /house/i.test(mode));
 
   if (harrisSignals > 0 || trumpSignals > 0) {
     const caveat = hasHouseComparison
@@ -582,13 +582,14 @@ export function ResultsExplorer({
   useEffect(() => {
     if (
       mapMode !== "equipment" &&
-      (geoStatus === "error" || (geoStatus === "ready" && features.length === 0)) &&
+      (results.length === 0 || geoStatus === "error" || (geoStatus === "ready" && features.length === 0)) &&
       equipmentGeoStatus === "ready" &&
-      equipmentFeatures.length > 0
+      equipmentFeatures.length > 0 &&
+      equipmentRows.length > 0
     ) {
       setMapMode("equipment");
     }
-  }, [equipmentFeatures.length, equipmentGeoStatus, features.length, geoStatus, mapMode]);
+  }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, features.length, geoStatus, mapMode, results.length]);
 
   const resultsByName = useMemo(() => {
     const map = new Map<string, ResultRow>();
@@ -988,7 +989,7 @@ export function ResultsExplorer({
                 aria-pressed={mapMode === mode}
                 data-tour={mode === "method" ? "method-mode-button" : undefined}
                 disabled={
-                  (resultGeometryRequiredModes.has(mode as MapMode) && baseGeometryUnavailable) ||
+                  (resultGeometryRequiredModes.has(mode as MapMode) && (baseGeometryUnavailable || results.length === 0)) ||
                   (mode === "method" && voteMethodRows.length === 0) ||
                   (mode === "equipment" && (equipmentRows.length === 0 || !equipmentGeometryAvailable))
                 }
@@ -1035,7 +1036,15 @@ export function ResultsExplorer({
             </span>
           </div>
         )}
-        {baseGeometryUnavailable && equipmentGeometryAvailable && (
+        {results.length === 0 && equipmentGeometryAvailable ? (
+          <div className="map-warning" role="status">
+            <strong>Certified results not loaded yet</strong>
+            <span>
+              Winner, Margin, Votes, Method, advisory flags, and directional screening need certified result rows.
+              Showing the Verified Voting equipment GIS layer when selected.
+            </span>
+          </div>
+        ) : baseGeometryUnavailable && equipmentGeometryAvailable ? (
           <div className="map-warning" role="status">
             <strong>Result geometry not loaded yet</strong>
             <span>
@@ -1043,7 +1052,7 @@ export function ResultsExplorer({
               Voting equipment GIS layer instead.
             </span>
           </div>
-        )}
+        ) : null}
         {hasMapJoinWarnings && (
           <div className="map-warning" role="status">
             <strong>Map join needs review</strong>
@@ -1372,189 +1381,202 @@ export function ResultsExplorer({
             </span>
           </div>
         </div>
-        <div className="review-direction-notice" role="note">
-          <strong>About the directional review column</strong>
-          <p>
-            The column below is not a finding that interference occurred, and it does not prove that any candidate
-            actually received extra votes. It is a rough advisory screen from the loaded review indicators. For
-            down-ballot comparison flags, the app compares same-party presidential votes against a comparison race
-            such as U.S. Senate or Governor, then labels the direction with the larger relative gap. When that
-            comparison is U.S. House, the column names presidential-over-House dropoff direction instead of
-            candidate benefit because House races are district- and candidate-specific controls.
-          </p>
-          <p>
-            That direction can be affected by split-ticket voting, incumbency, local candidate strength, undervotes,
-            uncontested races, one-sided comparison races, reporting-unit definitions, missing comparison rows, or ordinary political geography.
-            Treat it as "if this pattern needs review, this is the side the math points toward," not as a causal claim
-            or a conclusion.
-          </p>
-        </div>
-        <div className="table-tools">
-          <label className="table-search" htmlFor="result-search">
-            <Search aria-hidden size={16} />
-            <input
-              autoComplete="off"
-              id="result-search"
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={`Filter ${countyLabel.toLowerCase()} results`}
-              type="search"
-              value={query}
-            />
-          </label>
-          <label className="sort-select-label" htmlFor="result-sort">
-            <ArrowDownAZ aria-hidden size={16} />
-            <select
-              className="sort-select"
-              id="result-sort"
-              onChange={(event) => setSortKey(event.target.value as SortKey)}
-              value={sortKey}
-            >
-              <option value="margin">Margin</option>
-              <option value="total">Total votes</option>
-              <option value="jurisdiction">Jurisdiction</option>
-              <option value="winner">Winner</option>
-            </select>
-          </label>
-          <label className="toggle-label" htmlFor="flagged-only">
-            <input
-              checked={showFlaggedOnly}
-              id="flagged-only"
-              onChange={(event) => setShowFlaggedOnly(event.target.checked)}
-              type="checkbox"
-            />
-            Flagged only
-          </label>
-        </div>
-        {pinnedMapName && pinnedMapResult && (
-          <div className="selected-result-callout" role="status">
-            <div>
-              <span className="section-label">Selected From Map</span>
-              <strong>{pinnedMapName}</strong>
-              <span>
-                {pinnedMapResult.winner} by {pinnedMapResult.marginVotes.toLocaleString()} votes (
-                {pinnedMapResult.marginPct.toFixed(2)}%) · {pinnedMapResult.totalVotes.toLocaleString()} total votes
-              </span>
+        {results.length > 0 ? (
+          <>
+            <div className="review-direction-notice" role="note">
+              <strong>About the directional review column</strong>
+              <p>
+                The column below is not a finding that interference occurred, and it does not prove that any candidate
+                actually received extra votes. It is a rough advisory screen from the loaded review indicators. For
+                down-ballot comparison flags, the app compares same-party presidential votes against a comparison race
+                such as U.S. Senate or Governor, then labels the direction with the larger relative gap. Governor-only
+                comparisons are marked low confidence because they can mostly reflect ordinary race-specific ticket
+                splitting. When the comparison is U.S. House, the column names presidential-over-House dropoff direction
+                instead of candidate benefit because House races are district- and candidate-specific controls.
+              </p>
+              <p>
+                That direction can be affected by split-ticket voting, incumbency, local candidate strength, undervotes,
+                uncontested races, one-sided comparison races, reporting-unit definitions, missing comparison rows, or ordinary political geography.
+                Treat it as "if this pattern needs review, this is the side the math points toward," not as a causal claim
+                or a conclusion.
+              </p>
             </div>
-            <div className="selected-result-actions">
-              <span>{pinnedMapIndicators.length} advisory flags</span>
-              {pinnedSource?.sourceUrl && (
-                <a href={pinnedSource.sourceUrl} rel="noreferrer" target="_blank">
-                  <ExternalLink aria-hidden size={14} />
-                  Source
-                </a>
-              )}
-              <button aria-label="Clear selected county" onClick={clearPinnedJurisdiction} type="button">
-                <X aria-hidden size={15} />
-              </button>
+            <div className="table-tools">
+              <label className="table-search" htmlFor="result-search">
+                <Search aria-hidden size={16} />
+                <input
+                  autoComplete="off"
+                  id="result-search"
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={`Filter ${countyLabel.toLowerCase()} results`}
+                  type="search"
+                  value={query}
+                />
+              </label>
+              <label className="sort-select-label" htmlFor="result-sort">
+                <ArrowDownAZ aria-hidden size={16} />
+                <select
+                  className="sort-select"
+                  id="result-sort"
+                  onChange={(event) => setSortKey(event.target.value as SortKey)}
+                  value={sortKey}
+                >
+                  <option value="margin">Margin</option>
+                  <option value="total">Total votes</option>
+                  <option value="jurisdiction">Jurisdiction</option>
+                  <option value="winner">Winner</option>
+                </select>
+              </label>
+              <label className="toggle-label" htmlFor="flagged-only">
+                <input
+                  checked={showFlaggedOnly}
+                  id="flagged-only"
+                  onChange={(event) => setShowFlaggedOnly(event.target.checked)}
+                  type="checkbox"
+                />
+                Flagged only
+              </label>
             </div>
+            {pinnedMapName && pinnedMapResult && (
+              <div className="selected-result-callout" role="status">
+                <div>
+                  <span className="section-label">Selected From Map</span>
+                  <strong>{pinnedMapName}</strong>
+                  <span>
+                    {pinnedMapResult.winner} by {pinnedMapResult.marginVotes.toLocaleString()} votes (
+                    {pinnedMapResult.marginPct.toFixed(2)}%) · {pinnedMapResult.totalVotes.toLocaleString()} total votes
+                  </span>
+                </div>
+                <div className="selected-result-actions">
+                  <span>{pinnedMapIndicators.length} advisory flags</span>
+                  {pinnedSource?.sourceUrl && (
+                    <a href={pinnedSource.sourceUrl} rel="noreferrer" target="_blank">
+                      <ExternalLink aria-hidden size={14} />
+                      Source
+                    </a>
+                  )}
+                  <button aria-label="Clear selected county" onClick={clearPinnedJurisdiction} type="button">
+                    <X aria-hidden size={15} />
+                  </button>
+                </div>
+              </div>
+            )}
+            <div className="table-wrap" data-tour="results-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Jurisdiction</th>
+                    <th>Flags</th>
+                    <th>Directional screen</th>
+                    <th>Winner</th>
+                    <th>Harris</th>
+                    <th>Trump</th>
+                    <th>Total</th>
+                    <th>Margin</th>
+                    <th>Source</th>
+                    <th>Inspect</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visibleResults.map((row) => {
+                    const isPinnedRow = pinnedMapName && normalizeName(row.jurisdictionName) === normalizeName(pinnedMapName);
+                    const isPreviewRow =
+                      !isPinnedRow && selectedMapName && normalizeName(row.jurisdictionName) === normalizeName(selectedMapName);
+                    const rowIndicators = indicatorsByJurisdiction.get(row.jurisdictionCode) ?? indicatorsByName.get(normalizeName(row.jurisdictionName)) ?? [];
+                    const benefit = possibleFlagBenefit(rowIndicators);
+                    const rowClassName = [
+                      "clickable-row",
+                      isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
+                    const handleRowInspect = (target: EventTarget | null) => {
+                      if (target instanceof HTMLElement && target.closest("a, button, input, select, textarea")) {
+                        return;
+                      }
+
+                      inspectJurisdiction(row.jurisdictionName);
+                    };
+
+                    return (
+                    <tr
+                      aria-label={`Inspect ${row.jurisdictionName}`}
+                      className={rowClassName}
+                      key={row.jurisdictionCode}
+                      onClick={(event) => handleRowInspect(event.target)}
+                      onKeyDown={(event) => {
+                        if (event.key !== "Enter" && event.key !== " ") {
+                          return;
+                        }
+
+                        if (event.target instanceof HTMLElement && event.target.closest("a, button, input, select, textarea")) {
+                          return;
+                        }
+
+                        event.preventDefault();
+                        inspectJurisdiction(row.jurisdictionName);
+                      }}
+                      tabIndex={0}
+                      title={`Inspect ${row.jurisdictionName}`}
+                    >
+                      <td>{row.jurisdictionName}</td>
+                      <td>
+                        {rowIndicators.length > 0 ? (
+                          <div className="indicator-stack">
+                            {rowIndicators.map((indicator) => (
+                              <span className="indicator-pill" key={indicator.id} title={indicator.detail}>
+                                ! {indicator.label}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="no-indicator">-</span>
+                        )}
+                      </td>
+                      <td className="benefit-cell" title={benefit.title}>{benefit.label}</td>
+                      <td className={row.winner === "Harris" ? "winner-harris" : "winner-trump"}>
+                        {row.winner}
+                      </td>
+                      <td className="mono">{(row.votes.Harris ?? 0).toLocaleString()}</td>
+                      <td className="mono">{(row.votes.Trump ?? 0).toLocaleString()}</td>
+                      <td className="mono">{row.totalVotes.toLocaleString()}</td>
+                      <td className="mono">
+                        {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)
+                      </td>
+                      <td className="mono">
+                        {selectedSourceUrl(row.sourceId) ? (
+                          <a className="table-source-link" href={selectedSourceUrl(row.sourceId)} rel="noreferrer" target="_blank">
+                            {row.sourceId}
+                          </a>
+                        ) : (
+                          row.sourceId
+                        )}
+                      </td>
+                      <td className="mono">
+                        <button
+                          className="table-link-button"
+                          onClick={() => inspectJurisdiction(row.jurisdictionName)}
+                          type="button"
+                        >
+                          Inspect
+                        </button>
+                      </td>
+                    </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <div className="empty-panel" data-tour="results-table">
+            <strong>No certified result rows loaded for {selectedState}</strong>
+            <span>
+              Advisory flags and directional screening require certified result rows plus review indicators. Turnout
+              and equipment context may still be available in Data & Sources.
+            </span>
           </div>
         )}
-        <div className="table-wrap" data-tour="results-table">
-          <table>
-            <thead>
-              <tr>
-                  <th>Jurisdiction</th>
-                  <th>Flags</th>
-                  <th>Directional screen</th>
-                  <th>Winner</th>
-                <th>Harris</th>
-                <th>Trump</th>
-                <th>Total</th>
-                <th>Margin</th>
-                <th>Source</th>
-                <th>Inspect</th>
-              </tr>
-            </thead>
-            <tbody>
-              {visibleResults.map((row) => {
-                const isPinnedRow = pinnedMapName && normalizeName(row.jurisdictionName) === normalizeName(pinnedMapName);
-                const isPreviewRow =
-                  !isPinnedRow && selectedMapName && normalizeName(row.jurisdictionName) === normalizeName(selectedMapName);
-                const rowIndicators = indicatorsByJurisdiction.get(row.jurisdictionCode) ?? indicatorsByName.get(normalizeName(row.jurisdictionName)) ?? [];
-                const benefit = possibleFlagBenefit(rowIndicators);
-                const rowClassName = [
-                  "clickable-row",
-                  isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : null,
-                ]
-                  .filter(Boolean)
-                  .join(" ");
-                const handleRowInspect = (target: EventTarget | null) => {
-                  if (target instanceof HTMLElement && target.closest("a, button, input, select, textarea")) {
-                    return;
-                  }
-
-                  inspectJurisdiction(row.jurisdictionName);
-                };
-
-                return (
-                <tr
-                  aria-label={`Inspect ${row.jurisdictionName}`}
-                  className={rowClassName}
-                  key={row.jurisdictionCode}
-                  onClick={(event) => handleRowInspect(event.target)}
-                  onKeyDown={(event) => {
-                    if (event.key !== "Enter" && event.key !== " ") {
-                      return;
-                    }
-
-                    if (event.target instanceof HTMLElement && event.target.closest("a, button, input, select, textarea")) {
-                      return;
-                    }
-
-                    event.preventDefault();
-                    inspectJurisdiction(row.jurisdictionName);
-                  }}
-                  tabIndex={0}
-                  title={`Inspect ${row.jurisdictionName}`}
-                >
-                  <td>{row.jurisdictionName}</td>
-                  <td>
-                    {rowIndicators.length > 0 ? (
-                      <div className="indicator-stack">
-                        {rowIndicators.map((indicator) => (
-                          <span className="indicator-pill" key={indicator.id} title={indicator.detail}>
-                            ! {indicator.label}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="no-indicator">-</span>
-                    )}
-                  </td>
-                  <td className="benefit-cell" title={benefit.title}>{benefit.label}</td>
-                  <td className={row.winner === "Harris" ? "winner-harris" : "winner-trump"}>
-                    {row.winner}
-                  </td>
-                  <td className="mono">{(row.votes.Harris ?? 0).toLocaleString()}</td>
-                  <td className="mono">{(row.votes.Trump ?? 0).toLocaleString()}</td>
-                  <td className="mono">{row.totalVotes.toLocaleString()}</td>
-                  <td className="mono">
-                    {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)
-                  </td>
-                  <td className="mono">
-                    {selectedSourceUrl(row.sourceId) ? (
-                      <a className="table-source-link" href={selectedSourceUrl(row.sourceId)} rel="noreferrer" target="_blank">
-                        {row.sourceId}
-                      </a>
-                    ) : (
-                      row.sourceId
-                    )}
-                  </td>
-                  <td className="mono">
-                    <button
-                      className="table-link-button"
-                      onClick={() => inspectJurisdiction(row.jurisdictionName)}
-                      type="button"
-                    >
-                      Inspect
-                    </button>
-                  </td>
-                </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
       </section>
     </section>
   );

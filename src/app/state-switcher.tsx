@@ -106,25 +106,39 @@ function countLabel(count: number | null, unit: string) {
   return `${count.toLocaleString()} ${unit}${count === 1 ? "" : "s"}`;
 }
 
-function mapPresence(stateCode: string, capability: boolean, mapGeometrySourceCount: number, equipmentRows: number) {
-  if (hasBaseResultGeometry(stateCode) && capability && mapGeometrySourceCount > 0) {
+function resultMapIsReady(summary: {
+  capability: boolean;
+  mapGeometrySourceCount: number;
+  resultRows: number;
+  stateCode: string;
+}) {
+  return (
+    summary.resultRows > 0 &&
+    hasBaseResultGeometry(summary.stateCode) &&
+    summary.capability &&
+    summary.mapGeometrySourceCount > 0
+  );
+}
+
+function mapPresence(stateCode: string, capability: boolean, mapGeometrySourceCount: number, resultRows: number) {
+  if (resultMapIsReady({ capability, mapGeometrySourceCount, resultRows, stateCode })) {
     return "loaded" as const;
   }
 
-  if (equipmentRows > 0 || capability || mapGeometrySourceCount > 0) {
+  if (resultRows > 0 && (capability || mapGeometrySourceCount > 0)) {
     return "partial" as const;
   }
 
   return "missing" as const;
 }
 
-function mapTitle(stateCode: string, capability: boolean, mapGeometrySourceCount: number, equipmentRows: number) {
-  if (hasBaseResultGeometry(stateCode) && capability && mapGeometrySourceCount > 0) {
+function mapTitle(stateCode: string, capability: boolean, mapGeometrySourceCount: number, resultRows: number) {
+  if (resultMapIsReady({ capability, mapGeometrySourceCount, resultRows, stateCode })) {
     return `Result map geometry available: ${countLabel(mapGeometrySourceCount, "loaded geometry source")}`;
   }
 
-  if (equipmentRows > 0) {
-    return "Equipment GIS map available; result-map county geometry is not loaded yet";
+  if (resultRows === 0) {
+    return "Result map unavailable until certified result rows are loaded";
   }
 
   if (capability) {
@@ -192,8 +206,8 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
       icon: MapIcon,
       key: "map",
       label: "Map",
-      presence: mapPresence(state.code, capabilities.map, mapGeometrySourceCount, equipmentRows),
-      title: mapTitle(state.code, capabilities.map, mapGeometrySourceCount, equipmentRows),
+      presence: mapPresence(state.code, capabilities.map, mapGeometrySourceCount, resultRows),
+      title: mapTitle(state.code, capabilities.map, mapGeometrySourceCount, resultRows),
     },
     {
       abbr: "Rv",
@@ -264,11 +278,24 @@ function stateMatchesFilter(state: StateSummary, summary: CompletenessSummary | 
   }
 
   if (filter === "has-result-map") {
-    return hasBaseResultGeometry(state.code) && summary.mapGeometrySourceCount > 0;
+    return resultMapIsReady({
+      capability: summary.capabilities.map,
+      mapGeometrySourceCount: summary.mapGeometrySourceCount,
+      resultRows: summary.resultRows,
+      stateCode: state.code,
+    });
   }
 
   if (filter === "equipment-map-only") {
-    return !hasBaseResultGeometry(state.code) && summary.equipmentRowCount > 0;
+    return (
+      summary.equipmentRowCount > 0 &&
+      !resultMapIsReady({
+        capability: summary.capabilities.map,
+        mapGeometrySourceCount: summary.mapGeometrySourceCount,
+        resultRows: summary.resultRows,
+        stateCode: state.code,
+      })
+    );
   }
 
   if (filter === "missing-turnout") {

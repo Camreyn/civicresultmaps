@@ -39,3 +39,13 @@ test("EAC normalizer warning-gates missing denominators", () => {
   assert.equal(normalized[0].turnout_pct, "");
   assert.equal(normalized[0].warning_required, "true");
 });
+test("EAC normalizer warning-gates negative sentinel turnout values", () => {
+  const rows = parseCsv("State,Jurisdiction,Total Voters,Registered Voters\nUT,Cache County,-99,81455\n");
+  const normalized = normalizeEacTurnoutRows(rows, { year: 2024 });
+
+  assert.equal(normalized.length, 1);
+  assert.equal(normalized[0].ballots_cast, "");
+  assert.equal(normalized[0].registered_voters, "81455");
+  assert.equal(normalized[0].turnout_pct, "");
+  assert.equal(normalized[0].warning_required, "true");
+});

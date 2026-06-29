@@ -17,7 +17,7 @@ test("swing-state parity report tracks all 2024 swing states against Wisconsin",
   assert.equal(report.summary.validatedNativeStagingStates, 8);
   assert.equal(report.summary.statesWithLoadedEquipment, 8);
   assert.equal(report.summary.statesWithAuditContext, 2);
-  assert.equal(report.summary.statesWithCvrContext, 1);
+  assert.equal(report.summary.statesWithCvrContext, 2);
   assert.equal(report.summary.statesWithIncidentContext, 1);
   assert.equal(report.summary.statesWithHardMissingEvidence, 1);
 });
@@ -58,9 +58,15 @@ test("non-Wisconsin swing states distinguish native review parity from missing c
   assert.ok(gapIds("GA").includes("same_row_comparison_contest"));
 
   assert.equal(states.get("AZ").nativeCoverage.readinessGrade, "county_review_only");
-  assert.equal(states.get("NV").nativeCoverage.readinessGrade, "county_review_only");
+  assert.equal(states.get("NV").nativeCoverage.readinessGrade, "subcounty_comparison_review");
+  assert.equal(states.get("NV").nativeCoverage.reportingGrain, "precinct");
+  assert.equal(states.get("NV").nativeCoverage.reviewRows, 749);
+  assert.equal(states.get("NV").nativeCoverage.comparisonContest, "United States Senator");
+  assert.equal(states.get("NV").indicatorCoverage.flaggedCountyJurisdictions, 1);
+  assert.equal(states.get("NV").indicatorCoverage.indicatorRows, 1);
   assert.ok(gapIds("AZ").includes("subcounty_review_rows"));
-  assert.ok(gapIds("NV").includes("subcounty_review_rows"));
+  assert.ok(gapIds("NV").includes("statewide_subcounty_review_coverage"));
+  assert.equal(gapIds("NV").includes("subcounty_review_rows"), false);
 });
 
 test("parity generator and npm script are registered", () => {
@@ -74,5 +80,6 @@ test("parity generator and npm script are registered", () => {
   assert.match(packageJson.scripts["test:api"], /swing-state-parity\.test\.mjs/);
   assert.match(generator, /hard_missing_source_evidence/);
   assert.match(generator, /subcounty_review_rows/);
+  assert.match(generator, /statewide_subcounty_review_coverage/);
   assert.match(generator, /same_row_comparison_contest/);
 });
