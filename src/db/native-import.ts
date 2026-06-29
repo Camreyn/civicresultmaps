@@ -184,6 +184,23 @@ function average(values: number[]) {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+function standardDeviation(values: number[]) {
+  if (values.length < 2) {
+    return 0;
+  }
+
+  const mean = average(values);
+  return Math.sqrt(average(values.map((value) => (value - mean) ** 2)));
+}
+
+function finiteNumbers(values: Array<number | undefined>) {
+  return values.filter((value): value is number => typeof value === "number" && Number.isFinite(value));
+}
+
+function zScore(value: number | undefined, mean: number, deviation: number) {
+  return typeof value === "number" && Number.isFinite(value) && deviation ? (value - mean) / deviation : 0;
+}
+
 function pearsonSafe(xValues: number[], yValues: number[]) {
   const length = Math.min(xValues.length, yValues.length);
 
@@ -410,9 +427,102 @@ function denominatorContextForScope(stateCode: string, scope: NativeReviewScope)
   };
 }
 
+function countyDistributionIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
+  if (rows.length < reviewPolicy.minWardRows) {
+    return [] as NativeAnalysisIndicator[];
+  }
+
+  const countyRows = rows.filter(
+    (row) => row.county && normalizeJurisdictionName(row.localUnit || row.county) === normalizeJurisdictionName(row.county),
+  );
+
+  if (countyRows.length !== rows.length) {
+    return [] as NativeAnalysisIndicator[];
+  }
+
+  const demValues = finiteNumbers(countyRows.map((row) => row.demDropoff));
+  const repValues = finiteNumbers(countyRows.map((row) => row.repDropoff));
+  if (!demValues.length && !repValues.length) {
+    return [] as NativeAnalysisIndicator[];
+  }
+
+  const demMean = average(demValues);
+  const repMean = average(repValues);
+  const demDeviation = standardDeviation(demValues);
+  const repDeviation = standardDeviation(repValues);
+  const indicators: NativeAnalysisIndicator[] = [];
+
+  for (const row of countyRows) {
+    const demDropoff = row.demDropoff ?? 0;
+    const repDropoff = row.repDropoff ?? 0;
+    const demDistributionZ = zScore(row.demDropoff, demMean, demDeviation);
+    const repDistributionZ = zScore(row.repDropoff, repMean, repDeviation);
+    const absoluteTrigger =
+      Math.abs(demDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct ||
+      Math.abs(repDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct;
+    const distributionTrigger =
+      Math.abs(demDistributionZ) >= reviewPolicy.countyDistributionZThreshold ||
+      Math.abs(repDistributionZ) >= reviewPolicy.countyDistributionZThreshold;
+
+    if (!absoluteTrigger && !distributionTrigger) {
+      continue;
+    }
+
+    const county = normalizeJurisdictionName(row.county);
+    const metrics: NativeIndicatorMetrics = {
+      county,
+      countyDistributionDropoffThresholdPct: reviewPolicy.countyDistributionDropoffThresholdPct,
+      countyDistributionZThreshold: reviewPolicy.countyDistributionZThreshold,
+      demAverageDropoff: demDropoff,
+      demDistributionMean: demMean,
+      demDistributionStdDev: demDeviation,
+      demDistributionZ,
+      demOutliers: Math.abs(demDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct ? 1 : 0,
+      harrisCorrelation: 0,
+      outlierTrigger: 1,
+      repAverageDropoff: repDropoff,
+      repDistributionMean: repMean,
+      repDistributionStdDev: repDeviation,
+      repDistributionZ,
+      repOutliers: Math.abs(repDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct ? 1 : 0,
+      rowCount: 1,
+      scopeType: "county",
+      statewideCountyRows: countyRows.length,
+      trumpCorrelation: 0,
+    };
+    const maxZ = Math.max(Math.abs(demDistributionZ), Math.abs(repDistributionZ));
+    const maxDropoff = Math.max(Math.abs(demDropoff), Math.abs(repDropoff));
+    const severity = Number(
+      (
+        maxZ / Math.max(0.1, reviewPolicy.countyDistributionZThreshold) +
+        maxDropoff / Math.max(0.1, reviewPolicy.countyDistributionDropoffThresholdPct)
+      ).toFixed(4),
+    );
+
+    indicators.push({
+      county,
+      detail:
+        "This county-level President-versus-comparison-contest difference is large in absolute terms or relative to the statewide county distribution. It is an advisory county review screen, not precinct-level evidence or proof of tampering.",
+      jurisdictionCode: jurisdictionCode(stateCode, county),
+      jurisdictionName: county,
+      label: "County comparison outlier",
+      level: "county",
+      metrics,
+      severity,
+      sourceId: row.sourceId,
+      summary: `County comparison crossed threshold: DEM ${demDropoff.toFixed(2)}%, REP ${repDropoff.toFixed(2)}%, DEM z=${demDistributionZ.toFixed(2)}, REP z=${repDistributionZ.toFixed(2)}.`,
+      type: "county_down_ballot_distribution",
+    });
+  }
+
+  return indicators;
+}
+
 async function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
   const indicators: NativeAnalysisIndicator[] = [];
   const wisconsinContext = await loadWisconsinIndicatorContext(stateCode);
+
+  indicators.push(...countyDistributionIndicatorsForNativeRows(stateCode, rows));
 
   for (const scope of reviewScopesForNativeRows(stateCode, rows)) {
     if (scope.rows.length < reviewPolicy.minWardRows) {

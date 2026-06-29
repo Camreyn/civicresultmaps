@@ -27,6 +27,18 @@ function average(values) {
   return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
 }
 
+function standardDeviation(values) {
+  if (values.length < 2) {
+    return 0;
+  }
+  const mean = average(values);
+  return Math.sqrt(average(values.map((value) => (value - mean) ** 2)));
+}
+
+function zScore(value, mean, deviation) {
+  return Number.isFinite(value) && deviation ? (value - mean) / deviation : 0;
+}
+
 function pearsonSafe(xs, ys) {
   const pairs = xs
     .map((x, index) => [x, ys[index]])
@@ -147,8 +159,65 @@ function metricsForRows(rows) {
   };
 }
 
+function countyDistributionIndicatorsForReviewRows(stateCode, rows) {
+  if (rows.length < reviewPolicy.minWardRows) {
+    return [];
+  }
+  const countyRows = rows.filter(
+    (row) => row.county && normalizeJurisdictionName(row.localUnit ?? row.county) === normalizeJurisdictionName(row.county),
+  );
+  if (countyRows.length !== rows.length) {
+    return [];
+  }
+  const demValues = countyRows.map((row) => row.demDropoff).filter(Number.isFinite);
+  const repValues = countyRows.map((row) => row.repDropoff).filter(Number.isFinite);
+  if (!demValues.length && !repValues.length) {
+    return [];
+  }
+  const demMean = average(demValues);
+  const repMean = average(repValues);
+  const demDeviation = standardDeviation(demValues);
+  const repDeviation = standardDeviation(repValues);
+  const indicators = [];
+  for (const row of countyRows) {
+    const demDropoff = row.demDropoff ?? 0;
+    const repDropoff = row.repDropoff ?? 0;
+    const demDistributionZ = zScore(row.demDropoff, demMean, demDeviation);
+    const repDistributionZ = zScore(row.repDropoff, repMean, repDeviation);
+    const absoluteTrigger =
+      Math.abs(demDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct ||
+      Math.abs(repDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct;
+    const distributionTrigger =
+      Math.abs(demDistributionZ) >= reviewPolicy.countyDistributionZThreshold ||
+      Math.abs(repDistributionZ) >= reviewPolicy.countyDistributionZThreshold;
+    if (!absoluteTrigger && !distributionTrigger) {
+      continue;
+    }
+    const county = normalizeJurisdictionName(row.county);
+    indicators.push({
+      county,
+      jurisdictionName: county,
+      level: "county",
+      metrics: {
+        demAverageDropoff: demDropoff,
+        demDistributionZ,
+        repAverageDropoff: repDropoff,
+        repDistributionZ,
+        rowCount: 1,
+        statewideCountyRows: countyRows.length,
+      },
+      rows: [row],
+      scopeKey: `county:${county}`,
+      type: "county_down_ballot_distribution",
+    });
+  }
+  return indicators;
+}
+
 function indicatorsForReviewRows(stateCode, rows) {
   const indicators = [];
+
+  indicators.push(...countyDistributionIndicatorsForReviewRows(stateCode, rows));
 
   for (const scope of scopesForReviewRows(stateCode, rows)) {
     if (scope.rows.length < reviewPolicy.minWardRows) {

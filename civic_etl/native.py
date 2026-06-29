@@ -2210,6 +2210,96 @@ class _HtmlTableParser(HTMLParser):
             self._in_row = False
 
 
+
+def _florida_extract_totals(source: SourceConfig) -> dict[str, Any]:
+    with _artifact_path(source).open("r", encoding="latin-1", newline="") as handle:
+        rows = list(csv.DictReader(handle, delimiter="	"))
+
+    president_by_county: dict[str, dict[str, int]] = {}
+    senate_by_county: dict[str, dict[str, int]] = {}
+    race_codes = set()
+    president_rows = 0
+    senate_rows = 0
+
+    for row in rows:
+        race_code = str(row.get("RaceCode", "")).strip().upper()
+        race_codes.add(race_code)
+        county = _county_name(row.get("CountyName", ""))
+        if not county:
+            continue
+        party = str(row.get("PartyCode", "")).strip().upper()
+        votes = int_text(row.get("CanVotes"))
+
+        if race_code == "PRE":
+            president_rows += 1
+            current = president_by_county.setdefault(county, {"Trump": 0, "Harris": 0, "Other": 0})
+            if party == "REP":
+                current["Trump"] += votes
+            elif party == "DEM":
+                current["Harris"] += votes
+            else:
+                current["Other"] += votes
+        elif race_code == "USS":
+            senate_rows += 1
+            current = senate_by_county.setdefault(county, {"REP": 0, "DEM": 0})
+            if party in current:
+                current[party] += votes
+
+    return {
+        "rows": rows,
+        "raceCodes": sorted(code for code in race_codes if code),
+        "presidentByCounty": president_by_county,
+        "senateByCounty": senate_by_county,
+        "presidentRows": president_rows,
+        "senateRows": senate_rows,
+    }
+
+
+def _verify_florida_extract(
+    review_section: dict[str, Any],
+    sources: dict[str, SourceConfig],
+    result_rows: list[dict[str, Any]],
+    review_rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    source_id = review_section.get("verificationSourceId")
+    if not source_id:
+        return {}
+
+    extract = _florida_extract_totals(sources[source_id])
+    president_by_county = extract["presidentByCounty"]
+    senate_by_county = extract["senateByCounty"]
+    mismatches: list[str] = []
+
+    for row in result_rows:
+        county = row["jurisdictionName"]
+        expected = president_by_county.get(county)
+        if expected != row["votes"]:
+            mismatches.append(f"{county} presidential extract mismatch")
+
+    for row in review_rows:
+        county = row["county"]
+        expected = senate_by_county.get(county)
+        if not expected:
+            mismatches.append(f"{county} senate extract missing")
+            continue
+        if expected["DEM"] != row.get("comparisonDemVotes") or expected["REP"] != row.get("comparisonRepVotes"):
+            mismatches.append(f"{county} senate extract mismatch")
+
+    if mismatches:
+        preview = "; ".join(mismatches[:6])
+        raise ValueError(f"Florida official extract verification failed: {preview}")
+
+    return {
+        "nativeExtractRows": len(extract["rows"]),
+        "nativeExtractRaceCount": len(extract["raceCodes"]),
+        "nativeExtractPresidentRows": extract["presidentRows"],
+        "nativeExtractSenateRows": extract["senateRows"],
+        "nativeExtractCountyCount": len(president_by_county),
+        "nativeExtractSourceId": source_id,
+        "nativeExtractVerificationPassed": True,
+        "nativeCountyDistributionAnalysis": bool(review_section.get("countyDistributionAnalysis")),
+    }
+
 def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -2306,6 +2396,8 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
                 }
             )
 
+    verification_metrics = _verify_florida_extract(review_section, sources, result_rows, review_rows)
+
     turnout_rows: list[dict[str, Any]] = []
     turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
     if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
@@ -2321,6 +2413,7 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
         "nativeReviewWarning": review_section.get("warning", ""),
         "nativeComparisonRows": comparison_rows,
         "nativeComparisonContest": review_section.get("comparisonContest", ""),
+        **verification_metrics,
         **turnout_metrics,
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: item["county"]), turnout_rows, metrics

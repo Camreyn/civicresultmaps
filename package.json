@@ -111,7 +111,9 @@
     "validate:electronic-integrity-requests": "node scripts/sync-electronic-integrity-request-operations.mjs --dry-run",
     "etl:reconcile:tx:vtd": "node scripts/report-tx-vtd-reconciliation.mjs",
     "etl:collect:ma:county": "node scripts/collect-ma-county-results.mjs",
-    "etl:collect:ma:historical": "node scripts/collect-ma-historical-baseline.mjs"
+    "etl:collect:ma:historical": "node scripts/collect-ma-historical-baseline.mjs",
+    "etl:collect:fl": "node scripts/collect-fl-results-extract.mjs",
+    "etl:analyze:fl": "node scripts/report-fl-county-review-analysis.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

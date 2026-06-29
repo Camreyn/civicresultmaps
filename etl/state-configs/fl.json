@@ -39,6 +39,17 @@
       "status": "loaded"
     },
     {
+      "id": "fl-2024-general-results-extract",
+      "category": "Official statewide results extract",
+      "url": "https://results.elections.myflorida.com/downloadresults.asp?ElectionDate=11/5/2024&DATAMODE=",
+      "localFile": "data/fl-2024-general-results-extract.tsv",
+      "parser": "floridaResultsExtractTsv",
+      "authority": "Florida Department of State, Division of Elections",
+      "timestampBasis": "Official November 5, 2024 General Election results extract downloaded from the Division of Elections data download utility.",
+      "confidence": "Official tab-delimited statewide extract used to verify county presidential and U.S. Senate rows before county-distribution review indicators are generated.",
+      "status": "loaded"
+    },
+    {
       "id": "fl-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2712%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -72,7 +83,9 @@
     "repCandidateContains": "Rick Scott",
     "demCandidateContains": "Debbie Mucarsel-Powell",
     "coverageMode": "presidentVsSenate",
-    "warning": "Florida review rows are county-level President-versus-U.S. Senate comparisons from official county detail tables. They are useful for statewide county review, but they are not precinct-level vote-share scatter plots."
+    "warning": "Florida review rows are county-level President-versus-U.S. Senate comparisons from official county detail tables, verified against the official statewide tab-delimited results extract. County-distribution indicators compare counties against the statewide county pattern; they are useful for statewide county review, but they are not precinct-level vote-share scatter plots.",
+    "verificationSourceId": "fl-2024-general-results-extract",
+    "countyDistributionAnalysis": true
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -104,7 +117,7 @@
   "expected": {
     "jurisdictions": 67,
     "resultRows": 67,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 67,
     "stateTotal": 10893752,
     "trump": 6110125,
