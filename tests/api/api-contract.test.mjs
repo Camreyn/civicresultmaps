@@ -201,6 +201,11 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /severityBucket/);
   assert.match(tabs, /Vote-Share by Vote-Count Scatterplot/);
   assert.match(tabs, /Presidential-Versus-Comparison Drop-Off Histogram/);
+  assert.match(tabs, /Ticket-Splitting Proxy/);
+  assert.match(tabs, /buildTicketSplitSummary/);
+  assert.match(tabs, /comparisonContestFromCoverageMode/);
+  assert.match(tabs, /comparisonContestLabel/);
+  assert.match(tabs, /comparison-contest proxy/);
   assert.match(tabs, /How to read this/);
   assert.match(tabs, /downloadSvgElement/);
   assert.match(tabs, /Partial screening data/);

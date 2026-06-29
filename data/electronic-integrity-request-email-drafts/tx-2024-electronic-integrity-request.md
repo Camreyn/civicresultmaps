@@ -18,7 +18,7 @@ Requester:
 [requester phone, optional]
 
 Requested evidence families and tracking IDs:
-- EI-2024-TX-REPORTING-UNIT-RESULTS - Reporting-unit results: status=partial; grain=vtd; reconciliation=vtd_president_senate_review_loaded_certified_total_gap_15854. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
+- EI-2024-TX-REPORTING-UNIT-RESULTS - Reporting-unit results: status=partial; grain=vtd; reconciliation=vtd_president_senate_review_loaded_generic_write_in_scope_gap_15854. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
 - EI-2024-TX-CAST-VOTE-RECORDS - Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
 - EI-2024-TX-BALLOT-IMAGES - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
 - EI-2024-TX-TABULATOR-LOGS - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.

@@ -45,6 +45,11 @@ test("non-Wisconsin swing states distinguish native review parity from missing c
   assert.equal(states.get("TX").nativeCoverage.reviewRows, 9348);
   assert.equal(states.get("TX").nativeCoverage.turnoutRows, 9712);
   assert.equal(states.get("TX").nativeCoverage.comparisonContest, "United States Senator");
+  assert.match(states.get("TX").nativeCoverage.reviewWarning, /generic Write-In votes/);
+  const txReconciliation = JSON.parse(readFileSync("data/tx-2024-vtd-reconciliation-summary.json", "utf8"));
+  assert.equal(txReconciliation.stateTotals.deltasVtdMinusCertified.total, 15854);
+  assert.equal(txReconciliation.stateTotals.deltasVtdMinusCertified.genericWriteInMinusDeclaredWriteIn, 16161);
+  assert.equal(txReconciliation.countyRows, 254);
   assert.equal(states.get("TX").administrationContext.audit.status, "partial");
   assert.equal(gapIds("TX").includes("audit_context"), false);
   assert.ok(gapIds("TX").includes("subcounty_geometry"));
@@ -65,6 +70,7 @@ test("parity generator and npm script are registered", () => {
   const route = readFileSync("src/app/api/swing-state-parity/route.ts", "utf8");
   const lib = readFileSync("src/lib/swing-state-parity.ts", "utf8");
   assert.match(packageJson.scripts["etl:status:swing-parity"], /report-swing-state-parity/);
+  assert.match(packageJson.scripts["etl:reconcile:tx:vtd"], /report-tx-vtd-reconciliation/);
   assert.match(packageJson.scripts["test:api"], /swing-state-parity\.test\.mjs/);
   assert.match(generator, /hard_missing_source_evidence/);
   assert.match(generator, /subcounty_review_rows/);

@@ -609,29 +609,36 @@
       "jurisdictionName": "Statewide",
       "scope": "statewide",
       "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "municipality",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "city_town_ward_precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official PD43+ CSV download",
+        "EAC fallback turnout"
       ],
       "sourceUrls": [
-        "https://electionstats.state.ma.us/"
+        "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
+        "https://electionstats.state.ma.us/elections/download/165304/precincts_include:1/",
+        "https://www.eac.gov/research-and-data/studies-and-reports"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://electionstats.state.ma.us/elections/view/165300/",
+        "https://electionstats.state.ma.us/elections/view/165304/"
+      ],
       "availableFields": [
-        "municipal/county-style totals",
+        "municipality President rows",
+        "ward/precinct President rows",
+        "ward/precinct U.S. Senate comparison rows",
         "EAC fallback turnout"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator",
+        "county field in PD43+ bulk result rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Massachusetts geography is municipality-centric; classify before assuming county joins.",
-      "nextAction": "Classify official Massachusetts exports and local comparison-contest availability."
+      "parserStatus": "massachusettsPd43PrecinctCsv loaded for municipal results and President-vs-U.S. Senate review rows",
+      "manualReviewBurden": "low",
+      "confidence": "loaded",
+      "caveats": "PD43+ bulk CSV rows are municipality-centric and do not include county, so review grouping uses city/town rather than county. Turnout denominators still use EAC fallback rows.",
+      "nextAction": "Find a Massachusetts state-native turnout denominator export or official city/town registration denominator to replace EAC fallback turnout."
     },
     {
       "state": "MD",
@@ -1391,18 +1398,19 @@
         "certified county President rows from Texas SOS County.json",
         "VTD President rows",
         "VTD U.S. Senate comparison rows",
-        "VTD registered-voter and turnout rows"
+        "VTD registered-voter and turnout rows",
+        "VTD reconciliation summary for certified county versus VTD presidential scope"
       ],
       "missingFields": [
         "ballot method fields",
         "precinct/VTD boundary geometry",
-        "full reconciliation between VTD presidential aggregate and SOS county certified-result package"
+        "source-side explanation for generic VTD write-in rows versus named certified write-in candidates"
       ],
-      "parserStatus": "texasCountyJsonVtdReview loaded for certified county results plus VTD President-versus-U.S.-Senate review and VTD turnout rows",
+      "parserStatus": "texasCountyJsonVtdReview loaded with VTD write-in reconciliation summary",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674. Use VTD rows as official local screening context, not as replacement certified totals.",
-      "nextAction": "Add VTD boundary geometry and investigate the VTD-versus-SOS county total gap; then inventory Texas audit/CVR/incident context."
+      "caveats": "The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674. The reconciliation artifact identifies the primary source as VTD generic Write-In rows: 24,730 VTD generic write-in votes versus 8,569 SOS named declared write-in votes. Use VTD rows as official local screening context, not as replacement certified totals.",
+      "nextAction": "Request source-side notes or county crosswalk documentation for VTD generic write-in handling, then add VTD boundary geometry."
     },
     {
       "state": "TX",

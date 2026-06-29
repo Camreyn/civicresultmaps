@@ -3,7 +3,7 @@
 This request seeks machine-readable records that can reconcile electronic election-system output against official results, paper/audit evidence, and custody records. Existing advisory indicators are not allegations or proof of tampering.
 
 Requested evidence families:
-- Reporting-unit results: status=partial; grain=vtd; reconciliation=vtd_president_senate_review_loaded_certified_total_gap_15854. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
+- Reporting-unit results: status=partial; grain=vtd; reconciliation=vtd_president_senate_review_loaded_generic_write_in_scope_gap_15854. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
 - Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
 - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.
 - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody.

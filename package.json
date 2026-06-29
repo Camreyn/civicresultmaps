@@ -67,6 +67,7 @@
     "validate:provenance": "node scripts/validate-production-provenance.mjs",
     "etl:prepare:ky": "node scripts/extract-ky-recap-pdf-text.mjs",
     "etl:import:ky": "npm run etl:prepare:ky && python -m civic_etl.cli import --config etl/state-configs/ky.json --out .etl/staging",
+    "etl:import:ma": "python -m civic_etl.cli import --config etl/state-configs/ma.json --out .etl/staging",
     "etl:prepare:wv": "node scripts/collect-wv-clarity-county-reports.mjs",
     "etl:import:wv": "npm run etl:prepare:wv && python -m civic_etl.cli import --config etl/state-configs/wv.json --out .etl/staging",
     "etl:prepare:ia": "node scripts/collect-ia-clarity-county-reports.mjs",
@@ -107,7 +108,8 @@
     "etl:status:electronic-integrity": "node scripts/report-electronic-integrity-reconciliation.mjs",
     "etl:requests:electronic-integrity": "node scripts/create-electronic-integrity-request-packets.mjs",
     "etl:requests:electronic-integrity:sync": "node scripts/sync-electronic-integrity-request-operations.mjs",
-    "validate:electronic-integrity-requests": "node scripts/sync-electronic-integrity-request-operations.mjs --dry-run"
+    "validate:electronic-integrity-requests": "node scripts/sync-electronic-integrity-request-operations.mjs --dry-run",
+    "etl:reconcile:tx:vtd": "node scripts/report-tx-vtd-reconciliation.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

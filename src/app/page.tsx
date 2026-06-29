@@ -38,7 +38,8 @@ export default async function Home({ searchParams }: HomeProps) {
   const [
     states,
     completenessReport,
-    results,
+    countyResults,
+    cityResults,
     sources,
     coverage,
     importRuns,
@@ -55,6 +56,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listStates(),
     listCompletenessReport({ year: selectedYear }),
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
+    listResults({ state: selectedState, year: selectedYear, level: "city" }),
     listSources({ state: selectedState, year: selectedYear }),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     listImportRuns(),
@@ -68,6 +70,8 @@ export default async function Home({ searchParams }: HomeProps) {
     listElectronicIntegrityArtifacts({ state: selectedState, year: selectedYear }),
     listElectronicIntegrityRequests({ state: selectedState, year: selectedYear }),
   ]);
+  const results = countyResults.length ? countyResults : cityResults;
+  const resultLevelLabel = results[0]?.level === "city" ? "Municipality" : undefined;
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
   const selectedCompleteness = completenessReport.find((summary) => summary.state === selectedStateCode);
@@ -149,7 +153,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
           <WorkspaceTabs
             coverage={coverage}
-            countyLabel={selected?.countyLabel ?? "County"}
+            countyLabel={resultLevelLabel ?? selected?.countyLabel ?? "County"}
             historicalRows={historicalRows}
             importRuns={importRuns}
             indicators={indicators}

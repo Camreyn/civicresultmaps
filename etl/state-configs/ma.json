@@ -1,10 +1,9 @@
 {
   "code": "MA",
   "name": "Massachusetts",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Massachusetts Secretary of the Commonwealth",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ma-2024-eac-turnout",
@@ -16,6 +15,28 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "ma-2024-president-pd43-precincts",
+      "category": "Official PD43+ presidential city/town, ward, and precinct rows",
+      "url": "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
+      "localFile": "data/ma-2024-president-precinct-results.csv",
+      "parser": "massachusettsPd43PrecinctCsv",
+      "authority": "Massachusetts Secretary of the Commonwealth, PD43+",
+      "timestampBasis": "Official PD43+ 2024 President General Election download including precincts; downloaded June 29, 2026.",
+      "confidence": "Official Massachusetts PD43+ CSV export. Rows are city/town, ward, and precinct records; Massachusetts review grouping is municipality-centric rather than county-centric.",
+      "status": "loaded"
+    },
+    {
+      "id": "ma-2024-us-senate-pd43-precincts",
+      "category": "Official PD43+ U.S. Senate city/town, ward, and precinct rows",
+      "url": "https://electionstats.state.ma.us/elections/download/165304/precincts_include:1/",
+      "localFile": "data/ma-2024-us-senate-precinct-results.csv",
+      "parser": "massachusettsPd43PrecinctCsv",
+      "authority": "Massachusetts Secretary of the Commonwealth, PD43+",
+      "timestampBasis": "Official PD43+ 2024 U.S. Senate General Election download including precincts; downloaded June 29, 2026.",
+      "confidence": "Official Massachusetts PD43+ CSV export paired to the presidential precinct export by city/town, ward, and precinct.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -24,7 +45,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Massachusetts turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Massachusetts turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout denominator artifact is collected.",
     "warningRequired": false,
     "expected": {
       "rowCount": 351,
@@ -34,21 +55,32 @@
   },
   "expected": {
     "jurisdictions": 351,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 351,
+    "sources": 3,
+    "stateTotal": 3512930,
+    "trump": 1251303,
+    "harris": 2126518,
+    "other": 135109,
+    "reviewRows": 2382,
     "turnoutRows": 351
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "massachusettsPd43PrecinctCsv",
+    "sourceId": "ma-2024-president-pd43-precincts"
+  },
+  "reviewCharts": {
+    "format": "massachusettsPd43PrecinctCsv",
+    "sourceId": "ma-2024-us-senate-pd43-precincts",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Massachusetts review rows are official PD43+ city/town, ward, and precinct rows comparing President against U.S. Senate. Jurisdiction grouping is municipality-centric because the PD43+ bulk export does not include county in the row schema."
   }
 }

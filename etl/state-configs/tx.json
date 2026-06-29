@@ -35,8 +35,9 @@
       "parser": "texasVtdZipPrecinctComparison",
       "authority": "Texas Legislative Council Capitol Data Portal",
       "timestampBasis": "Capitol Data Portal comprehensive compressed VTD election data package for 2024 General Election returns and VRTO rows, downloaded June 27, 2026.",
-      "confidence": "State-sanctioned Texas Capitol Data Portal VTD-level package with President, U.S. Senate, and VTD registration/turnout rows. Used for local review and turnout context; certified county totals remain sourced from Texas SOS County.json.",
-      "status": "loaded"
+      "confidence": "State-sanctioned Texas Capitol Data Portal VTD-level package with President, U.S. Senate, and VTD registration/turnout rows. Used for local review and turnout context; certified county totals remain sourced from Texas SOS County.json. The companion reconciliation summary documents the VTD generic write-in scope difference versus SOS named declared write-in totals.",
+      "status": "loaded",
+      "reconciliationArtifact": "data/tx-2024-vtd-reconciliation-summary.json"
     },
     {
       "id": "tx-county-geometry",
@@ -101,6 +102,8 @@
     "comparisonOffice": "U.S. Sen",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "warning": "Texas native review rows use Capitol Data Portal VTD-level 2024 General Election President-versus-U.S. Senate rows. Certified county result rows remain sourced from Texas SOS County.json. The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS county certified-result package total of 11,388,674, so review charts must be treated as official VTD screening context rather than replacement certified totals."
+    "warning": "Texas native review rows use Capitol Data Portal VTD-level 2024 General Election President-versus-U.S. Senate rows. Certified county result rows remain sourced from Texas SOS County.json. The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS county certified-result package total of 11,388,674. Reconciliation shows the gap is primarily a write-in scope difference: VTD rows include 24,730 generic Write-In votes, while SOS certified county rows include 8,569 named declared write-in candidate votes. Use VTD rows as official local screening context rather than replacement certified totals.",
+    "reconciliationArtifact": "data/tx-2024-vtd-reconciliation-summary.json",
+    "reconciliationCountyArtifact": "data/tx-2024-vtd-county-reconciliation.csv"
   }
 }

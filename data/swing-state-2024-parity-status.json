@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-27",
+  "generatedAt": "2026-06-28",
   "electionYear": 2024,
   "benchmarkState": "WI",
   "swingStates": [
@@ -796,12 +796,12 @@
         "readinessGrade": "subcounty_comparison_review",
         "sourceTier": "tier_3_sanctioned_bulk_partial",
         "reportingGrain": "precinct",
-        "parserStatus": "texasCountyJsonVtdReview loaded for certified county results plus VTD President-versus-U.S.-Senate review and VTD turnout rows",
+        "parserStatus": "texasCountyJsonVtdReview loaded with VTD write-in reconciliation summary",
         "resultRows": 254,
         "reviewRows": 9348,
         "turnoutRows": 9712,
         "comparisonContest": "United States Senator",
-        "reviewWarning": "Texas native review rows use Capitol Data Portal VTD-level 2024 General Election President-versus-U.S. Senate rows. Certified county result rows remain sourced from Texas SOS County.json. The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS county certified-result package total of 11,388,674, so review charts must be treated as official VTD screening context rather than replacement certified totals.",
+        "reviewWarning": "Texas native review rows use Capitol Data Portal VTD-level 2024 General Election President-versus-U.S. Senate rows. Certified county result rows remain sourced from Texas SOS County.json. The VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS county certified-result package total of 11,388,674. Reconciliation shows the gap is primarily a write-in scope difference: VTD rows include 24,730 generic Write-In votes, while SOS certified county rows include 8,569 named declared write-in candidate votes. Use VTD rows as official local screening context rather than replacement certified totals.",
         "validationPassed": true
       },
       "indicatorCoverage": {
@@ -870,10 +870,10 @@
         "scope": "statewide",
         "dataFamily": "results_review_turnout",
         "reportingGrain": "precinct",
-        "parserStatus": "texasCountyJsonVtdReview loaded for certified county results plus VTD President-versus-U.S.-Senate review and VTD turnout rows",
+        "parserStatus": "texasCountyJsonVtdReview loaded with VTD write-in reconciliation summary",
         "manualReviewBurden": "medium",
         "confidence": "loaded_with_caveat",
-        "nextAction": "Add VTD boundary geometry and investigate the VTD-versus-SOS county total gap; then inventory Texas audit/CVR/incident context.",
+        "nextAction": "Request source-side notes or county crosswalk documentation for VTD generic write-in handling, then add VTD boundary geometry.",
         "sourceUrls": [
           "https://data.capitol.texas.gov/topic/elections"
         ]

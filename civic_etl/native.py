@@ -1876,6 +1876,7 @@ def _texas_vtd_zip_rows(
     config: EtlConfig,
     sources: dict[str, SourceConfig],
     certified_total: int,
+    certified_presidential_totals: dict[str, int],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["reviewCharts"]
     source = sources[section["sourceId"]]
@@ -1884,6 +1885,7 @@ def _texas_vtd_zip_rows(
     comparison_office = section.get("comparisonOffice", "U.S. Sen")
     comparison_label = section.get("comparisonContest", "United States Senator")
     precincts: dict[tuple[str, str], dict[str, Any]] = {}
+    vtd_presidential_totals = {"Trump": 0, "Harris": 0, "Stein": 0, "Oliver": 0, "GenericWriteIn": 0, "Other": 0}
 
     def values_for(row: dict[str, str]) -> dict[str, Any]:
         county = _texas_county_name(row.get("County"))
@@ -1922,12 +1924,22 @@ def _texas_vtd_zip_rows(
             votes = int_text(row.get("Votes"))
             party = str(row.get("Party") or "").strip().upper()
             if office == president_office:
+                name = str(row.get("Name") or "").strip().upper()
                 if party == "D":
                     values["pres_harris"] += votes
+                    vtd_presidential_totals["Harris"] += votes
                 elif party == "R":
                     values["pres_trump"] += votes
+                    vtd_presidential_totals["Trump"] += votes
                 else:
                     values["pres_other"] += votes
+                    vtd_presidential_totals["Other"] += votes
+                    if name == "STEIN":
+                        vtd_presidential_totals["Stein"] += votes
+                    elif name == "OLIVER":
+                        vtd_presidential_totals["Oliver"] += votes
+                    elif party == "W" or name == "WRITE-IN":
+                        vtd_presidential_totals["GenericWriteIn"] += votes
                 values["pres_total"] += votes
             elif party == "D":
                 values["sen_dem"] += votes
@@ -2016,6 +2028,9 @@ def _texas_vtd_zip_rows(
         }
 
     review_presidential_total = sum(row["totalVotes"] for row in review_rows)
+    certified_other = certified_presidential_totals.get("Other", 0)
+    vtd_named_minor = vtd_presidential_totals["Stein"] + vtd_presidential_totals["Oliver"]
+    certified_named_minor = certified_presidential_totals.get("Stein", 0) + certified_presidential_totals.get("Oliver", 0)
     metrics = {
         "nativeReviewRows": len(review_rows),
         "nativeReviewWarning": section.get("warning", ""),
@@ -2023,6 +2038,14 @@ def _texas_vtd_zip_rows(
         "nativeComparisonContest": comparison_label,
         "nativeReviewPresidentialVotes": review_presidential_total,
         "nativeReviewCertifiedVoteGap": certified_total - review_presidential_total,
+        "nativeReviewVtdMinusCertifiedVotes": review_presidential_total - certified_total,
+        "nativeReviewTrumpVtdMinusCertified": vtd_presidential_totals["Trump"] - certified_presidential_totals.get("Trump", 0),
+        "nativeReviewHarrisVtdMinusCertified": vtd_presidential_totals["Harris"] - certified_presidential_totals.get("Harris", 0),
+        "nativeReviewOtherVtdMinusCertified": vtd_presidential_totals["Other"] - certified_other,
+        "nativeReviewNamedMinorVtdMinusCertified": vtd_named_minor - certified_named_minor,
+        "nativeReviewGenericWriteInVotes": vtd_presidential_totals["GenericWriteIn"],
+        "nativeCertifiedDeclaredWriteInVotes": certified_presidential_totals.get("DeclaredWriteIn", 0),
+        "nativeReviewGenericWriteInOverCertifiedDeclaredWriteIns": vtd_presidential_totals["GenericWriteIn"] - certified_presidential_totals.get("DeclaredWriteIn", 0),
         **turnout_metrics,
     }
     return review_rows, turnout_rows, metrics
@@ -2054,6 +2077,7 @@ def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig])
 
     result_rows: list[dict[str, Any]] = []
     comparison_by_county: dict[str, dict[str, int]] = {}
+    certified_presidential_totals = {"Trump": 0, "Harris": 0, "Other": 0, "Stein": 0, "Oliver": 0, "DeclaredWriteIn": 0}
     for fips, county in sorted(county_data.items()):
         races = county.get("Races", {})
         president = races.get(president_id)
@@ -2063,6 +2087,19 @@ def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig])
         harris, trump, other, total = party_votes(president)
         if not total:
             continue
+        certified_presidential_totals["Trump"] += trump
+        certified_presidential_totals["Harris"] += harris
+        certified_presidential_totals["Other"] += other
+        for candidate in president.get("C", {}).values():
+            candidate_votes = int_text(candidate.get("V"))
+            candidate_name = str(candidate.get("N") or "").upper()
+            candidate_party = str(candidate.get("P") or "").strip().upper()
+            if candidate_party == "W":
+                certified_presidential_totals["DeclaredWriteIn"] += candidate_votes
+            elif "JILL STEIN" in candidate_name:
+                certified_presidential_totals["Stein"] += candidate_votes
+            elif "CHASE OLIVER" in candidate_name:
+                certified_presidential_totals["Oliver"] += candidate_votes
         result_rows.append(
             {
                 "jurisdictionName": county_name,
@@ -2090,6 +2127,7 @@ def _texas_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig])
             config,
             sources,
             sum(row["totalVotes"] for row in result_rows),
+            certified_presidential_totals,
         )
     else:
         review_rows = []
@@ -3711,6 +3749,180 @@ def _kentucky_general_recap_text_rows(config: EtlConfig, sources: dict[str, Sour
     }
     return result_rows, review_rows, turnout_rows, metrics
 
+
+def _ma_pd43_precinct_key(row: dict[str, str]) -> tuple[str, str, str]:
+    return (
+        str(row.get("City/Town") or "").strip(),
+        str(row.get("Ward") or "").strip(),
+        str(row.get("Pct") or "").strip(),
+    )
+
+
+def _ma_pd43_local_unit(ward: str, precinct: str) -> str:
+    ward_value = ward if ward and ward != "-" else ""
+    precinct_value = precinct if precinct and precinct != "-" else ""
+    if ward_value and precinct_value:
+        return f"Ward {ward_value}, Precinct {precinct_value}"
+    if ward_value:
+        return f"Ward {ward_value}"
+    if precinct_value:
+        return f"Precinct {precinct_value}"
+    return "Municipality total"
+
+
+def _massachusetts_pd43_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    certified_section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    president_source = sources[certified_section["sourceId"]]
+    senate_source = sources[review_section["sourceId"]]
+    comparison_label = review_section.get("comparisonContest", "United States Senator")
+
+    municipalities: dict[str, dict[str, int]] = {}
+    precincts: dict[tuple[str, str, str], dict[str, int]] = {}
+    with _artifact_path(president_source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {
+            "City/Town",
+            "Ward",
+            "Pct",
+            "Harris/ Walz",
+            "Trump/ Vance",
+            "Total Votes Cast",
+        }
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Massachusetts PD43+ presidential CSV missing columns: {', '.join(missing)}")
+
+        for row in reader:
+            city, ward, precinct = _ma_pd43_precinct_key(row)
+            if not city or city.upper() == "TOTALS":
+                continue
+            harris = int_text(row.get("Harris/ Walz"))
+            trump = int_text(row.get("Trump/ Vance"))
+            total = int_text(row.get("Total Votes Cast"))
+            if not total:
+                continue
+            other = max(total - harris - trump, 0)
+            values = municipalities.setdefault(city, {"harris": 0, "trump": 0, "other": 0, "total": 0})
+            values["harris"] += harris
+            values["trump"] += trump
+            values["other"] += other
+            values["total"] += total
+            precincts[(city, ward, precinct)] = {
+                "harris": harris,
+                "trump": trump,
+                "other": other,
+                "total": total,
+            }
+
+    senate_rows: dict[tuple[str, str, str], dict[str, int]] = {}
+    with _artifact_path(senate_source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {
+            "City/Town",
+            "Ward",
+            "Pct",
+            "Elizabeth Ann Warren",
+            "John Deaton",
+            "All Others",
+            "Total Votes Cast",
+        }
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Massachusetts PD43+ U.S. Senate CSV missing columns: {', '.join(missing)}")
+
+        for row in reader:
+            key = _ma_pd43_precinct_key(row)
+            if not key[0] or key[0].upper() == "TOTALS":
+                continue
+            total = int_text(row.get("Total Votes Cast"))
+            if not total:
+                continue
+            senate_rows[key] = {
+                "dem": int_text(row.get("Elizabeth Ann Warren")),
+                "rep": int_text(row.get("John Deaton")),
+                "other": int_text(row.get("All Others")),
+                "total": total,
+            }
+
+    result_rows: list[dict[str, Any]] = []
+    for city, values in sorted(municipalities.items()):
+        total = values["total"]
+        if not total:
+            continue
+        result_rows.append(
+            {
+                "jurisdictionName": city,
+                "jurisdictionCode": city.upper(),
+                "level": "city",
+                "votes": {
+                    "Trump": values["trump"],
+                    "Harris": values["harris"],
+                    "Other": values["other"],
+                },
+                "totalVotes": total,
+                "margin": values["trump"] - values["harris"],
+                "marginPct": pct(values["trump"] - values["harris"], total),
+                "sourceId": president_source.id,
+            }
+        )
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    for (city, ward, precinct), values in sorted(precincts.items()):
+        total = values["total"]
+        if not total:
+            continue
+        senate = senate_rows.get((city, ward, precinct))
+        if senate:
+            comparison_rows += 1
+        local_unit = _ma_pd43_local_unit(ward, precinct)
+        review_rows.append(
+            {
+                "county": city,
+                "localUnit": local_unit,
+                "totalVotes": total,
+                "harris": values["harris"],
+                "trump": values["trump"],
+                "harrisShare": pct(values["harris"], total),
+                "trumpShare": pct(values["trump"], total),
+                "demDropoff": pct(values["harris"] - senate["dem"], total) if senate else 0,
+                "repDropoff": pct(values["trump"] - senate["rep"], total) if senate else 0,
+                "coverageMode": "presidentVsSenate" if senate else "voteShareOnly",
+                "comparisonContest": comparison_label if senate else "",
+                "comparisonDemVotes": senate["dem"] if senate else 0,
+                "comparisonRepVotes": senate["rep"] if senate else 0,
+                "comparisonOtherVotes": senate["other"] if senate else 0,
+                "sourceId": senate_source.id if senate else president_source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    certified_total = sum(row["totalVotes"] for row in result_rows)
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": certified_total,
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": comparison_label,
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in review_rows),
+        "nativeReviewCertifiedVoteGap": certified_total - sum(row["totalVotes"] for row in review_rows),
+        **turnout_metrics,
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+
 def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     checks = {
         "nativeResultRows": config.expected.result_rows,
@@ -4009,6 +4221,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
             "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "MA" and config.raw.get("certifiedResults", {}).get("format") == "massachusettsPd43PrecinctCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _massachusetts_pd43_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeMassachusettsPd43PrecinctCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
             "metrics": metrics,
         }
 

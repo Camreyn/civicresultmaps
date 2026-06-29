@@ -2733,6 +2733,44 @@ input {
   padding: 14px;
 }
 
+.ticket-split-panel {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.ticket-split-panel > div:first-child {
+  display: grid;
+  gap: 6px;
+}
+
+.ticket-split-panel > div:first-child strong {
+  color: var(--foreground);
+  font-size: 18px;
+}
+
+.ticket-split-panel p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.ticket-split-summary {
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  padding: 0;
+}
+
+.ticket-split-summary article {
+  min-width: 0;
+}
+
+.ticket-split-summary strong {
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+
 .screening-card-head {
   align-items: flex-start;
   display: flex;

@@ -314,6 +314,12 @@
           "localFile": "data/tx-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "reconciliation": {
+          "sourceTitle": "Texas 2024 VTD versus certified county reconciliation summary",
+          "localFile": "data/tx-2024-vtd-reconciliation-summary.json",
+          "countyDeltaFile": "data/tx-2024-vtd-county-reconciliation.csv",
+          "parserHint": "Run npm run etl:reconcile:tx:vtd after replacing the Texas SOS County.json or Capitol Data Portal VTD ZIP artifacts."
         }
       },
       "expected": {
@@ -334,7 +340,7 @@
       },
       "caveats": [
         "Certified county result rows remain sourced from Texas SOS County.json.",
-        "The Capitol Data Portal VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674.",
+        "The Capitol Data Portal VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674. The reconciliation summary attributes the main scope difference to VTD generic Write-In rows totaling 24,730 versus 8,569 SOS named declared write-in votes.",
         "VTD rows are official local screening context, not replacement certified totals.",
         "VTD boundary GeoJSON is not present in this package."
       ]

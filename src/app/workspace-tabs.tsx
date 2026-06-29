@@ -1080,12 +1080,73 @@ function reviewCoverageModes(rows: ReviewRowSummary[]) {
   );
 }
 
+function comparisonContestFromCoverageMode(value: unknown) {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  const normalized = value.toLowerCase();
+  if (normalized.includes("senate")) {
+    return "United States Senator";
+  }
+
+  if (normalized.includes("governor")) {
+    return "Governor";
+  }
+
+  if (normalized.includes("representative") || normalized.includes("house")) {
+    return "United States Representative";
+  }
+
+  return "";
+}
+
+function comparisonContestLabel(row: ReviewRowSummary) {
+  return typeof row.metrics.comparisonContest === "string" && row.metrics.comparisonContest
+    ? row.metrics.comparisonContest
+    : comparisonContestFromCoverageMode(row.metrics.coverageMode);
+}
+
 function reviewComparisonContests(rows: ReviewRowSummary[]) {
-  return new Set(
-    rows
-      .map((row) => (typeof row.metrics.comparisonContest === "string" ? row.metrics.comparisonContest : ""))
-      .filter(Boolean),
-  );
+  return new Set(rows.map(comparisonContestLabel).filter(Boolean));
+}
+
+function formatSignedPct(value: number | null) {
+  if (value === null || !Number.isFinite(value)) {
+    return "n/a";
+  }
+
+  return (value > 0 ? "+" : "") + value.toFixed(1) + "%";
+}
+
+function buildTicketSplitSummary(rows: ReviewRowSummary[]) {
+  const values = rows
+    .filter((row) => comparisonContestLabel(row))
+    .map((row) => ({
+      demDropoff: normalizePct(row.demDropoff),
+      repDropoff: normalizePct(row.repDropoff),
+    }))
+    .filter(
+      (row): row is { demDropoff: number; repDropoff: number } =>
+        row.demDropoff !== null && row.repDropoff !== null,
+    );
+  const rowCount = values.length;
+  const averageDemDropoff = rowCount ? values.reduce((sum, row) => sum + row.demDropoff, 0) / rowCount : null;
+  const averageRepDropoff = rowCount ? values.reduce((sum, row) => sum + row.repDropoff, 0) / rowCount : null;
+  const thresholdPct = 5;
+
+  return {
+    averageDemDropoff,
+    averageRepDropoff,
+    comparisonContests: [...reviewComparisonContests(rows)],
+    demAheadRows: values.filter((row) => row.demDropoff > 0).length,
+    materialRows: values.filter(
+      (row) => Math.abs(row.demDropoff) >= thresholdPct || Math.abs(row.repDropoff) >= thresholdPct,
+    ).length,
+    repAheadRows: values.filter((row) => row.repDropoff > 0).length,
+    rowCount,
+    thresholdPct,
+  };
 }
 
 function comparableReviewUnitName(value: string) {
@@ -2123,6 +2184,12 @@ export function WorkspaceTabs({
     rows: selectedReviewRows,
     stateCode: selectedStateCode,
   });
+  const statewideTicketSplitSummary = useMemo(() => buildTicketSplitSummary(reviewRows), [reviewRows]);
+  const selectedTicketSplitSummary = useMemo(() => buildTicketSplitSummary(selectedReviewRows), [selectedReviewRows]);
+  const ticketSplitComparisonLabel = statewideTicketSplitSummary.comparisonContests.length
+    ? statewideTicketSplitSummary.comparisonContests.join(", ")
+    : "No comparison contest loaded";
+  const reviewElectionYearLabel = reviewRows[0]?.electionYear ?? "selected election";
   const scatterAcknowledged = acknowledgedChartKeys.includes(scatterDiagnostic.acknowledgementKey);
   const dropoffAcknowledged = acknowledgedChartKeys.includes(dropoffDiagnostic.acknowledgementKey);
   const acknowledgeChart = (key: string) => {
@@ -3242,6 +3309,72 @@ export function WorkspaceTabs({
                     </div>
                   </div>
                 )}
+
+                <div className="ticket-split-panel" data-tour="ticket-splitting">
+                  <div>
+                    <span className="section-label">Ticket-Splitting Proxy</span>
+                    <strong>President vs comparison contest</strong>
+                    <p>
+                      This summarizes the loaded same-row drop-off values for {stateName} {reviewElectionYearLabel}.
+                      Positive values mean the presidential candidate ran ahead of the same-party comparison candidate in the
+                      loaded review rows.
+                    </p>
+                  </div>
+                  {statewideTicketSplitSummary.rowCount > 0 ? (
+                    <>
+                      <div className="export-summary-grid ticket-split-summary">
+                        <article>
+                          <span>Comparison contest</span>
+                          <strong>{ticketSplitComparisonLabel}</strong>
+                        </article>
+                        <article>
+                          <span>Rows with values</span>
+                          <strong>{statewideTicketSplitSummary.rowCount.toLocaleString()}</strong>
+                        </article>
+                        <article>
+                          <span>State avg DEM gap</span>
+                          <strong>{formatSignedPct(statewideTicketSplitSummary.averageDemDropoff)}</strong>
+                        </article>
+                        <article>
+                          <span>State avg REP gap</span>
+                          <strong>{formatSignedPct(statewideTicketSplitSummary.averageRepDropoff)}</strong>
+                        </article>
+                        <article>
+                          <span>DEM ahead rows</span>
+                          <strong>{statewideTicketSplitSummary.demAheadRows.toLocaleString()}</strong>
+                        </article>
+                        <article>
+                          <span>REP ahead rows</span>
+                          <strong>{statewideTicketSplitSummary.repAheadRows.toLocaleString()}</strong>
+                        </article>
+                        <article>
+                          <span>
+                            {">= "}
+                            {statewideTicketSplitSummary.thresholdPct}
+                            {"% local gap"}
+                          </span>
+                          <strong>{statewideTicketSplitSummary.materialRows.toLocaleString()}</strong>
+                        </article>
+                        <article>
+                          <span>Selected area avg</span>
+                          <strong>
+                            D {formatSignedPct(selectedTicketSplitSummary.averageDemDropoff)} / R{" "}
+                            {formatSignedPct(selectedTicketSplitSummary.averageRepDropoff)}
+                          </strong>
+                        </article>
+                      </div>
+                      <p className="planner-note">
+                        This is not ballot-level ticket-splitting. It is a comparison-contest proxy built from the same
+                        review rows that feed the drop-off histogram and CSV export.
+                      </p>
+                    </>
+                  ) : (
+                    <p className="planner-note">
+                      No same-row comparison contest is loaded for this state and election, so the ticket-splitting
+                      proxy is unavailable until review rows include presidential and comparison-contest values.
+                    </p>
+                  )}
+                </div>
 
                 <div className="screening-grid" data-tour="screening-grid">
                   {enabledScreeningGraphs.includes("voteShareScatter") && (

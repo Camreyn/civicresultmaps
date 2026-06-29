@@ -573,9 +573,9 @@
       "stateName": "Texas",
       "priority": "swing",
       "overallStatus": "partial",
-      "summary": "Certified SOS county results and Capitol Data Portal VTD review/turnout context are loaded. SOS audit-program context is partial for selected counties, while CVR, ballot-image, log, L&A, and custody artifacts remain records-request items.",
-      "riskPosture": "vtd_review_loaded_partial_audit_context_electronic_evidence_missing_certified_total_gap",
-      "nextAction": "Investigate the VTD-versus-SOS county total gap, obtain any county/VTD crosswalk or correction notes, and route requests for CVR, ballot-image, tabulator-log, L&A, audit workpaper, and custody records.",
+      "summary": "Certified SOS county results and Capitol Data Portal VTD review/turnout context are loaded. The VTD-versus-certified presidential gap is reconciled to a generic-write-in scope difference, while CVR, ballot-image, log, L&A, and custody artifacts remain records-request items.",
+      "riskPosture": "vtd_review_loaded_partial_audit_context_electronic_evidence_missing_generic_write_in_scope_gap",
+      "nextAction": "Request source-side notes for generic VTD write-in handling and any county/VTD correction notes, then route requests for CVR, ballot-image, tabulator-log, L&A, audit workpaper, and custody records.",
       "artifacts": [
         {
           "type": "certified_results",
@@ -595,9 +595,9 @@
           "sourceUrl": "https://data.capitol.texas.gov/topic/elections",
           "localArtifact": "data/tx-2024-general-vtds-election-data.zip",
           "parser": "texasVtdZipPrecinctComparison",
-          "reconciliationStatus": "vtd_president_senate_review_loaded_certified_total_gap_15854",
+          "reconciliationStatus": "vtd_president_senate_review_loaded_generic_write_in_scope_gap_15854",
           "requestRequired": true,
-          "tamperDetectionUse": "VTD President/Senate comparison can localize advisory patterns, but the presidential VTD aggregate is 15,854 votes above the SOS certified county package and needs source-side explanation before replacing certified totals.",
+          "tamperDetectionUse": "VTD President/Senate comparison can localize advisory patterns. The presidential VTD aggregate is 15,854 votes above the SOS certified county package primarily because VTD rows carry 24,730 generic Write-In votes while SOS certified rows carry 8,569 named declared write-in votes.",
           "requestPath": "Texas Secretary of State Elections Division, county election officials, or local election authorities depending on record custody."
         },
         {
