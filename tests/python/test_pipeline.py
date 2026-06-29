@@ -370,6 +370,14 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(adair["trump"], 298)
         self.assertEqual(adair["comparisonDemVotes"], 21)
         self.assertEqual(adair["comparisonRepVotes"], 284)
+        campbell = next(row for row in artifact["native"]["reviewRows"] if row["county"] == "Campbell County" and row["localUnit"] == "A402")
+        self.assertEqual(campbell["coverageMode"], "oneSidedHouseComparison")
+        self.assertFalse(campbell["comparisonDemCandidatePresent"])
+        self.assertTrue(campbell["comparisonRepCandidatePresent"])
+        self.assertEqual(campbell["comparisonDemVotes"], 0)
+        self.assertGreater(campbell["comparisonRepVotes"], 0)
+        self.assertEqual(campbell["demDropoff"], 0)
+        self.assertEqual(campbell["repDropoff"], 0)
 
     def test_new_hampshire_town_ward_csv_parser_builds_review_rows(self):
         config = load_config("etl/state-configs/nh.json")

@@ -567,7 +567,9 @@ function comparisonContextForScope(scope: NativeReviewScope) {
     unknown: "the comparison mode is not recorded",
     voteShareOnly: "no same-row down-ballot comparison is loaded",
   };
-  const directionalScreenReason = lowConfidenceReasons[comparisonCoverageMode] ?? "";
+  const directionalScreenReason =
+    lowConfidenceReasons[comparisonCoverageMode] ??
+    (/house/i.test(comparisonCoverageMode) ? "U.S. House races are district- and candidate-specific controls" : "");
 
   return {
     comparisonCoverageMode,

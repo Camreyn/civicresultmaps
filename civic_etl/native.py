@@ -3796,9 +3796,11 @@ def _ky_apply_row(target: dict[str, int], contest: str, party: str, candidate: s
 
     if contest == "house":
         if party == "REP":
+            target["house_rep_present"] = 1
             target["house_rep"] += total
             target["house_total"] += total
         elif party == "DEM":
+            target["house_dem_present"] = 1
             target["house_dem"] += total
             target["house_total"] += total
         elif total:
@@ -3809,8 +3811,10 @@ def _ky_apply_row(target: dict[str, int], contest: str, party: str, candidate: s
 def _kentucky_empty_values() -> dict[str, int]:
     return {
         "house_dem": 0,
+        "house_dem_present": 0,
         "house_other": 0,
         "house_rep": 0,
+        "house_rep_present": 0,
         "house_total": 0,
         "pres_harris": 0,
         "pres_other": 0,
@@ -3959,6 +3963,7 @@ def _kentucky_general_recap_text_rows(config: EtlConfig, sources: dict[str, Sour
         has_house = bool(values["house_total"])
         if has_house:
             comparison_rows += 1
+        has_comparable_house = bool(has_house and values["house_dem_present"] and values["house_rep_present"])
         review_rows.append(
             {
                 "county": county,
@@ -3968,12 +3973,14 @@ def _kentucky_general_recap_text_rows(config: EtlConfig, sources: dict[str, Sour
                 "trump": values["pres_trump"],
                 "harrisShare": pct(values["pres_harris"], total),
                 "trumpShare": pct(values["pres_trump"], total),
-                "demDropoff": pct(values["pres_harris"] - values["house_dem"], total) if has_house else 0,
-                "repDropoff": pct(values["pres_trump"] - values["house_rep"], total) if has_house else 0,
-                "coverageMode": "presidentVsHouse" if has_house else "voteShareOnly",
+                "demDropoff": pct(values["pres_harris"] - values["house_dem"], total) if has_comparable_house else 0,
+                "repDropoff": pct(values["pres_trump"] - values["house_rep"], total) if has_comparable_house else 0,
+                "coverageMode": "presidentVsHouse" if has_comparable_house else "oneSidedHouseComparison" if has_house else "voteShareOnly",
                 "comparisonContest": section.get("comparisonContest", "United States Representative"),
                 "comparisonDemVotes": values["house_dem"],
+                "comparisonDemCandidatePresent": bool(values["house_dem_present"]),
                 "comparisonRepVotes": values["house_rep"],
+                "comparisonRepCandidatePresent": bool(values["house_rep_present"]),
                 "comparisonOtherVotes": values["house_other"],
                 "sourceId": source.id,
             }

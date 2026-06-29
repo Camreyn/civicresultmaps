@@ -1380,7 +1380,7 @@ export function ResultsExplorer({
           </p>
           <p>
             That direction can be affected by split-ticket voting, incumbency, local candidate strength, undervotes,
-            uncontested races, reporting-unit definitions, missing comparison rows, or ordinary political geography.
+            uncontested races, one-sided comparison races, reporting-unit definitions, missing comparison rows, or ordinary political geography.
             Treat it as "if this pattern needs review, this is the side the math points toward," not as a causal claim
             or a conclusion.
           </p>
