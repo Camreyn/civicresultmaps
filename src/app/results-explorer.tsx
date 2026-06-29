@@ -130,7 +130,10 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
 
   let harrisSignals = 0;
   let trumpSignals = 0;
+  let harrisShareSignals = 0;
+  let trumpShareSignals = 0;
   const evidence: string[] = [];
+  const shareEvidence: string[] = [];
 
   for (const indicator of indicators) {
     const demAverageDropoff = metricNumber(indicator.metrics, "demAverageDropoff");
@@ -156,23 +159,50 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
         evidence.push(`REP down-ballot gap ${repAverageDropoff.toFixed(2)} points`);
       }
     }
+
+    if (indicator.type === "vote_share_pattern") {
+      const harrisCorrelation = metricNumber(indicator.metrics, "harrisCorrelation");
+      const trumpCorrelation = metricNumber(indicator.metrics, "trumpCorrelation");
+      if (harrisCorrelation !== null) {
+        harrisShareSignals += Math.abs(harrisCorrelation);
+        shareEvidence.push(`Harris share r=${harrisCorrelation.toFixed(3)}`);
+      }
+      if (trumpCorrelation !== null) {
+        trumpShareSignals += Math.abs(trumpCorrelation);
+        shareEvidence.push(`Trump share r=${trumpCorrelation.toFixed(3)}`);
+      }
+    }
   }
 
-  if (harrisSignals === 0 && trumpSignals === 0) {
-    return { label: "Unclear", title: "The loaded advisory metrics do not support even a directional review inference." };
+  if (harrisSignals > 0 || trumpSignals > 0) {
+    const title = `Advisory directional screen only. It summarizes which candidate's same-party presidential total is higher relative to the comparison contest in loaded review rows; it is not proof of interference, causation, or actual benefit. ${evidence.slice(0, 3).join("; ")}.`;
+
+    if (harrisSignals > trumpSignals * 1.2) {
+      return { label: "Harris / DEM", title };
+    }
+
+    if (trumpSignals > harrisSignals * 1.2) {
+      return { label: "Trump / REP", title };
+    }
+
+    return { label: "Mixed", title };
   }
 
-  const title = `Advisory directional screen only. It summarizes which candidate's same-party presidential total is higher relative to the comparison contest in loaded review rows; it is not proof of interference, causation, or actual benefit. ${evidence.slice(0, 3).join("; ")}.`;
+  if (harrisShareSignals > 0 || trumpShareSignals > 0) {
+    const title = `Vote-share-only advisory screen. No same-row down-ballot comparison is loaded for this jurisdiction, so this does not infer candidate benefit; it only names which candidate-share correlation is stronger in the loaded vote-share flag. ${shareEvidence.slice(0, 3).join("; ")}.`;
 
-  if (harrisSignals > trumpSignals * 1.2) {
-    return { label: "Harris / DEM", title };
+    if (harrisShareSignals > trumpShareSignals * 1.2) {
+      return { label: "Harris share", title };
+    }
+
+    if (trumpShareSignals > harrisShareSignals * 1.2) {
+      return { label: "Trump share", title };
+    }
+
+    return { label: "Mixed share", title };
   }
 
-  if (trumpSignals > harrisSignals * 1.2) {
-    return { label: "Trump / REP", title };
-  }
-
-  return { label: "Mixed", title };
+  return { label: "Unclear", title: "The loaded advisory metrics do not support even a directional review inference." };
 }
 function flattenPositions(coordinates: unknown): number[][] {
   if (!Array.isArray(coordinates)) {

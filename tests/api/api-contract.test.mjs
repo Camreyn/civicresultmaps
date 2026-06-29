@@ -246,6 +246,9 @@ test("review indicators explain advisory meaning", () => {
   assert.match(explorer, /Eli5/);
   assert.match(explorer, /clickable-row/);
   assert.match(explorer, /Inspect \$\{row\.jurisdictionName\}/);
+  assert.match(explorer, /Vote-share-only advisory screen/);
+  assert.match(explorer, /Harris share/);
+  assert.match(explorer, /Trump share/);
   assert.match(overview, /Eli5/);
   assert.match(overview, /county advisory indicator/);
   assert.match(overview, /total advisory indicator/);
