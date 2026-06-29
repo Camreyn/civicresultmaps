@@ -1371,6 +1371,26 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
       why: "Florida needs a state-native official registered-voter/ballots-cast denominator package mapped before turnout can be treated as complete in this app.",
     },
   ],
+  MD: [
+    {
+      key: "sources",
+      evidence: "Maryland State Board of Elections all-precinct CSV is loaded for official President and U.S. Senate local rows; Census county geometry is joined for maps, and EAC 2024 V2 remains the turnout denominator fallback.",
+      status: "partial",
+      why: "Maryland now has source-first county result rows and precinct review rows from an official statewide CSV, but turnout still uses EAC fallback data and precinct boundary overlays are not included.",
+    },
+    {
+      key: "review",
+      evidence: "Maryland native review rows support precinct-level President-versus-U.S. Senate same-party drop-off screening.",
+      status: "ready",
+      why: "The review screen uses 1,958 official precinct/election-district rows with Harris/Trump presidential votes paired to Alsobrooks/Hogan Senate votes at the same local reporting grain.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 jurisdiction fallback rows are loaded while a state-native denominator package is pending.",
+      status: "partial",
+      why: "Maryland needs official state-native registered-voter/ballots-cast denominator rows mapped before turnout can be treated as complete in this app.",
+    },
+  ],
   MI: [
     {
       key: "review",

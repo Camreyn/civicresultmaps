@@ -651,29 +651,42 @@
       "jurisdictionName": "Statewide",
       "scope": "statewide",
       "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official statewide all-precinct CSV",
+        "official precinct reference XLSX",
+        "EAC fallback turnout"
       ],
       "sourceUrls": [
-        "https://elections.maryland.gov/elections/2024/index.html"
+        "https://elections.maryland.gov/elections/archive/2024/election_data/PG24_AllPrecincts.csv",
+        "https://elections.maryland.gov/elections/archive/2024/Polling%20Places%20AEMS%20PG24.xlsx",
+        "https://www.eac.gov/research-and-data/studies-and-reports"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://elections.maryland.gov/elections/archive/2024/election_data/index.html"
+      ],
       "availableFields": [
-        "county presidential totals",
+        "county presidential totals aggregated from precinct rows",
+        "precinct President candidate rows",
+        "same-grain U.S. Senate comparison rows",
+        "early vote totals",
+        "election night vote totals",
+        "mail-in ballot round 1 totals",
+        "provisional totals",
+        "mail-in ballot round 2 totals",
         "EAC fallback turnout"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native precinct registered-voter denominator",
+        "precinct boundary geometry",
+        "audit/CVR/incident artifacts"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Maryland result exports and local reporting-unit availability."
+      "parserStatus": "marylandPrecinctCsv parser loaded in etl/state-configs/md.json",
+      "manualReviewBurden": "low",
+      "confidence": "loaded",
+      "caveats": "Official SBE precinct candidate rows support President-versus-U.S.-Senate directional screening. Turnout still uses EAC jurisdiction fallback until a Maryland-native registered-voter denominator is collected.",
+      "nextAction": "Collect Maryland state-native registered-voter/ballots-cast denominator rows and any post-election audit/CVR/incident artifacts."
     },
     {
       "state": "ME",

@@ -14,6 +14,7 @@
     "GA",
     "IA",
     "KY",
+    "MD",
     "MI",
     "MN",
     "MS",
@@ -344,6 +345,73 @@
         "VTD rows are official local screening context, not replacement certified totals.",
         "VTD boundary GeoJSON is not present in this package."
       ]
+    },
+    {
+      "state": "MD",
+      "name": "Maryland",
+      "priority": 7,
+      "nativeReadiness": "complete_county_map_precinct_review_turnout_fallback",
+      "authority": "Maryland State Board of Elections",
+      "configFile": "etl/state-configs/md.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Maryland SBE 2024 Presidential General all-precinct CSV",
+          "sourceUrl": "https://elections.maryland.gov/elections/archive/2024/election_data/PG24_AllPrecincts.csv",
+          "localFile": "data/md-2024-general-all-precincts.csv",
+          "parserHint": "Filter Office Name=President - Vice Pres; aggregate county rows from Election District - Precinct candidate rows using ballot-mode vote columns."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Maryland SBE 2024 Presidential General all-precinct CSV",
+          "sourceUrl": "https://elections.maryland.gov/elections/archive/2024/election_data/PG24_AllPrecincts.csv",
+          "localFile": "data/md-2024-general-all-precincts.csv",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senator",
+          "parserHint": "Pair President - Vice Pres rows with U.S. Senator rows by County Name and Election District - Precinct; compare Kamala D. Harris with Angela Alsobrooks and Donald J. Trump with Larry Hogan."
+        },
+        "precinctReference": {
+          "sourceTitle": "Maryland SBE 2024 precinct and polling-place reference workbook",
+          "sourceUrl": "https://elections.maryland.gov/elections/archive/2024/Polling%20Places%20AEMS%20PG24.xlsx",
+          "localFile": "data/md-2024-precinct-reference.xlsx",
+          "parserHint": "Reference context only; vote totals come from PG24_AllPrecincts.csv."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/md-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2724%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/md-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 24,
+        "geometryFeatures": 24,
+        "stateTotal": 3038334,
+        "trump": 1035550,
+        "harris": 1902577,
+        "other": 100207,
+        "localReviewRows": 1958,
+        "turnoutRows": 24
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_dropoff_precinct_csv",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback"
+      },
+      "caveats": [
+        "The all-precinct CSV includes official ballot-mode vote columns and same-grain President/U.S. Senate rows, but not same-row registered-voter denominators.",
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a Maryland state-native denominator source is collected.",
+        "Precinct boundary GeoJSON is not present in this package."
+      ],
+      "legacyReferenceBundle": "data/md-app-data.js"
     }
   ],
   "sourceDiscoveryQueue": [

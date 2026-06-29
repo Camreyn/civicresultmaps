@@ -1313,6 +1313,189 @@ def _county_president_csv_rows(
         **turnout_metrics,
     }
     return result_rows, review_rows, turnout_rows, metrics
+
+MARYLAND_VOTE_COLUMNS = [
+    "Early Votes",
+    "Election Night Votes",
+    "Mail-In Ballot 1 Votes",
+    "Provisional Votes",
+    "Mail-In Ballot 2 Votes",
+]
+
+
+def _maryland_candidate_votes(row: dict[str, Any]) -> int:
+    return sum(int_text(row.get(column)) for column in MARYLAND_VOTE_COLUMNS)
+
+
+def _maryland_candidate_bucket(row: dict[str, Any], contest: str) -> str:
+    candidate = " ".join(str(row.get("Candidate Name") or "").lower().split())
+    party = str(row.get("Party") or "").strip().upper()
+
+    if contest == "President - Vice Pres":
+        if "kamala d. harris" in candidate:
+            return "harris"
+        if "donald j. trump" in candidate:
+            return "trump"
+        return "other"
+
+    if contest == "U.S. Senator":
+        if "angela alsobrooks" in candidate or party == "DEM":
+            return "dem"
+        if "larry hogan" in candidate or party == "REP":
+            return "rep"
+
+    return "other"
+
+
+def _maryland_precinct_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    result_section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    result_source = sources[result_section["sourceId"]]
+    turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    presidential: dict[tuple[str, str], dict[str, Any]] = {}
+    senate: dict[tuple[str, str], dict[str, Any]] = {}
+    county_totals: dict[str, dict[str, int]] = {}
+    mode_totals = {
+        "president": {column: 0 for column in MARYLAND_VOTE_COLUMNS},
+        "senate": {column: 0 for column in MARYLAND_VOTE_COLUMNS},
+    }
+
+    with _artifact_path(result_source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {
+            "County Name",
+            "Election District - Precinct",
+            "Office Name",
+            "Candidate Name",
+            "Party",
+            *MARYLAND_VOTE_COLUMNS,
+        }
+        missing = sorted(required.difference(reader.fieldnames or []))
+        if missing:
+            raise ValueError(f"Maryland precinct CSV missing columns: {', '.join(missing)}")
+
+        for row in reader:
+            contest = str(row.get("Office Name") or "").strip()
+            if contest not in {"President - Vice Pres", "U.S. Senator"}:
+                continue
+
+            county = str(row.get("County Name") or "").strip()
+            precinct = str(row.get("Election District - Precinct") or "").strip()
+            if not county or not precinct:
+                continue
+
+            votes = _maryland_candidate_votes(row)
+            key = (county, precinct)
+            if contest == "President - Vice Pres":
+                bucket = _maryland_candidate_bucket(row, contest)
+                current = presidential.setdefault(
+                    key,
+                    {
+                        "county": county,
+                        "localUnit": precinct,
+                        "harris": 0,
+                        "trump": 0,
+                        "other": 0,
+                        "totalVotes": 0,
+                        "sourceId": result_source.id,
+                    },
+                )
+                current[bucket] += votes
+                current["totalVotes"] += votes
+                county_bucket = county_totals.setdefault(county, {"harris": 0, "trump": 0, "other": 0, "total": 0})
+                county_bucket[bucket] += votes
+                county_bucket["total"] += votes
+                for column in MARYLAND_VOTE_COLUMNS:
+                    mode_totals["president"][column] += int_text(row.get(column))
+            else:
+                bucket = _maryland_candidate_bucket(row, contest)
+                if bucket == "other":
+                    continue
+                current = senate.setdefault(
+                    key,
+                    {
+                        "county": county,
+                        "localUnit": precinct,
+                        "dem": 0,
+                        "rep": 0,
+                    },
+                )
+                current[bucket] += votes
+                for column in MARYLAND_VOTE_COLUMNS:
+                    mode_totals["senate"][column] += int_text(row.get(column))
+
+    missing_senate = sorted(set(presidential).difference(senate))
+    extra_senate = sorted(set(senate).difference(presidential))
+    if missing_senate or extra_senate:
+        raise ValueError(
+            "Maryland precinct President and U.S. Senate keys do not match: "
+            f"{len(missing_senate)} missing Senate rows, {len(extra_senate)} extra Senate rows"
+        )
+
+    review_rows: list[dict[str, Any]] = []
+    for key, row in sorted(presidential.items()):
+        comparison = senate[key]
+        total = row["totalVotes"]
+        harris = row["harris"]
+        trump = row["trump"]
+        comparison_dem = comparison["dem"]
+        comparison_rep = comparison["rep"]
+        review_rows.append(
+            {
+                "county": row["county"],
+                "localUnit": row["localUnit"],
+                "totalVotes": total,
+                "harris": harris,
+                "trump": trump,
+                "harrisShare": pct(harris, total),
+                "trumpShare": pct(trump, total),
+                "comparisonDemVotes": comparison_dem,
+                "comparisonRepVotes": comparison_rep,
+                "comparisonDemCandidatePresent": True,
+                "comparisonRepCandidatePresent": True,
+                "demDropoff": pct(harris - comparison_dem, total),
+                "repDropoff": pct(trump - comparison_rep, total),
+                "coverageMode": review_section.get("coverageMode", "presidentVsSenate"),
+                "sourceId": row["sourceId"],
+            }
+        )
+
+    result_rows = [
+        {
+            "jurisdictionName": county,
+            "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": result_source.id,
+        }
+        for county, values in sorted(county_totals.items())
+    ]
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": len(review_rows),
+        "nativeComparisonContest": review_section.get("comparisonContest", "U.S. Senator"),
+        "nativePresidentialModeVotes": mode_totals["president"],
+        "nativeSenateModeVotes": mode_totals["senate"],
+        **turnout_metrics,
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+
 def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     section = config.raw.get("historicalBaselines", {})
     if section.get("format") != "historicalPresidentialCsv":
@@ -4690,6 +4873,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "parser": f"native{turnout_format[0].upper()}{turnout_format[1:]}",
             "resultRows": [],
             "reviewRows": [],
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "MD" and config.raw.get("certifiedResults", {}).get("format") == "marylandPrecinctCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _maryland_precinct_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeMarylandPrecinctCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
             "metrics": metrics,
         }

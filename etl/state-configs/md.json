@@ -1,10 +1,9 @@
 {
   "code": "MD",
   "name": "Maryland",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Maryland State Board of Elections",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "md-2024-eac-turnout",
@@ -16,15 +15,66 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "md-2024-general-all-precincts",
+      "category": "Official 2024 general election all-precinct candidate rows",
+      "url": "https://elections.maryland.gov/elections/archive/2024/election_data/PG24_AllPrecincts.csv",
+      "localFile": "data/md-2024-general-all-precincts.csv",
+      "parser": "marylandPrecinctCsv",
+      "authority": "Maryland State Board of Elections",
+      "timestampBasis": "Official Maryland State Board of Elections 2024 Presidential General Election raw precinct data file; downloaded June 29, 2026.",
+      "confidence": "Official statewide raw precinct CSV. Rows include county, election district-precinct, office, candidate, party, winner/write-in markers, and early, election-night, mail-in, provisional, and second mail-in vote columns. President and U.S. Senate rows reconcile at the same 1,958 local reporting units.",
+      "status": "loaded"
+    },
+    {
+      "id": "md-2024-precinct-reference",
+      "category": "Official 2024 precinct and polling-place reference workbook",
+      "url": "https://elections.maryland.gov/elections/archive/2024/Polling%20Places%20AEMS%20PG24.xlsx",
+      "localFile": "data/md-2024-precinct-reference.xlsx",
+      "parser": "marylandPrecinctReferenceXlsx",
+      "authority": "Maryland State Board of Elections",
+      "timestampBasis": "Official Maryland State Board of Elections 2024 Presidential General Election precinct and polling-place workbook; downloaded June 29, 2026.",
+      "confidence": "Official precinct reference artifact used as administration context. The native review parser still uses the all-precinct candidate CSV as the source of vote totals.",
+      "status": "loaded"
+    },
+    {
+      "id": "md-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2724%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/md-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Maryland county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "marylandPrecinctCsv",
+    "sourceId": "md-2024-general-all-precincts",
+    "presidentialContest": "President - Vice Pres",
+    "statewideTotals": {
+      "total": 3038334,
+      "trump": 1035550,
+      "harris": 1902577,
+      "other": 100207
+    }
+  },
+  "reviewCharts": {
+    "format": "marylandPrecinctCsv",
+    "sourceId": "md-2024-general-all-precincts",
+    "comparisonContest": "U.S. Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Maryland review rows use official State Board of Elections precinct-level President-versus-U.S.-Senate comparisons. The precinct CSV includes ballot-mode columns, but no same-row registered-voter denominator; turnout remains EAC jurisdiction fallback until a state-native denominator source is collected. Precinct boundary geometry is not included."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "md-2024-eac-turnout",
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Maryland turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Maryland turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout denominator artifact is collected.",
     "warningRequired": false,
     "expected": {
       "rowCount": 24,
@@ -34,20 +84,21 @@
   },
   "expected": {
     "jurisdictions": 24,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 24,
+    "sources": 4,
+    "geometryFeatures": 24,
+    "stateTotal": 3038334,
+    "trump": 1035550,
+    "harris": 1902577,
+    "other": 100207,
+    "reviewRows": 1958,
     "turnoutRows": 24
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

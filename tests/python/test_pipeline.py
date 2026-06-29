@@ -1004,6 +1004,39 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["turnoutRows"][0]["turnoutPct"], 80)
         self.assertTrue(artifact["native"]["turnoutRows"][1]["warningRequired"])
 
+    def test_maryland_precinct_csv_parser_builds_precinct_review_rows(self):
+        config = load_config("etl/state-configs/md.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeMarylandPrecinctCsv")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 24)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 3038334)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1035550)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 1902577)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 100207)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 1958)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 1958)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "U.S. Senator")
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 24)
+        self.assertEqual(artifact["native"]["metrics"]["nativePresidentialModeVotes"]["Mail-In Ballot 1 Votes"], 508880)
+        self.assertEqual(artifact["native"]["metrics"]["nativePresidentialModeVotes"]["Mail-In Ballot 2 Votes"], 243709)
+
+        allegany = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Allegany County" and row["localUnit"] == "001-000"
+        )
+        self.assertEqual(allegany["coverageMode"], "presidentVsSenate")
+        self.assertEqual(allegany["harris"], 72)
+        self.assertEqual(allegany["trump"], 420)
+        self.assertEqual(allegany["totalVotes"], 500)
+        self.assertEqual(allegany["comparisonDemVotes"], 57)
+        self.assertEqual(allegany["comparisonRepVotes"], 413)
+        self.assertEqual(allegany["demDropoff"], 3.0)
+        self.assertEqual(allegany["repDropoff"], 1.4)
+
     def test_staging_artifact_blocks_production_write(self):
         config = load_config("etl/state-configs/wi.json")
         report = validate_config(config)
