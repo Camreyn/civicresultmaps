@@ -134,8 +134,23 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
   let trumpShareSignals = 0;
   const evidence: string[] = [];
   const shareEvidence: string[] = [];
+  const coverageModes = new Set<string>();
+  let lowConfidenceDirectional = false;
+  let lowConfidenceReason = "";
 
   for (const indicator of indicators) {
+    const coverageMode = indicator.metrics.comparisonCoverageMode;
+    if (typeof coverageMode === "string" && coverageMode) {
+      coverageModes.add(coverageMode);
+    }
+    if (indicator.metrics.directionalScreenConfidence === "low") {
+      lowConfidenceDirectional = true;
+      const reason = indicator.metrics.directionalScreenReason;
+      if (!lowConfidenceReason && typeof reason === "string") {
+        lowConfidenceReason = reason;
+      }
+    }
+
     const demAverageDropoff = metricNumber(indicator.metrics, "demAverageDropoff");
     const repAverageDropoff = metricNumber(indicator.metrics, "repAverageDropoff");
     if (indicator.type.includes("down_ballot")) {
@@ -146,7 +161,7 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
         } else {
           trumpSignals += points;
         }
-        evidence.push(`DEM down-ballot gap ${demAverageDropoff.toFixed(2)} points`);
+        evidence.push(`DEM presidential-vs-comparison gap ${demAverageDropoff.toFixed(2)} points`);
       }
 
       if (repAverageDropoff !== null && repAverageDropoff !== 0) {
@@ -156,7 +171,7 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
         } else {
           harrisSignals += points;
         }
-        evidence.push(`REP down-ballot gap ${repAverageDropoff.toFixed(2)} points`);
+        evidence.push(`REP presidential-vs-comparison gap ${repAverageDropoff.toFixed(2)} points`);
       }
     }
 
@@ -164,42 +179,49 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
       const harrisCorrelation = metricNumber(indicator.metrics, "harrisCorrelation");
       const trumpCorrelation = metricNumber(indicator.metrics, "trumpCorrelation");
       if (harrisCorrelation !== null) {
-        harrisShareSignals += Math.abs(harrisCorrelation);
+        harrisShareSignals += Math.max(0, harrisCorrelation);
         shareEvidence.push(`Harris share r=${harrisCorrelation.toFixed(3)}`);
       }
       if (trumpCorrelation !== null) {
-        trumpShareSignals += Math.abs(trumpCorrelation);
+        trumpShareSignals += Math.max(0, trumpCorrelation);
         shareEvidence.push(`Trump share r=${trumpCorrelation.toFixed(3)}`);
       }
     }
   }
 
+  const hasHouseComparison = ["oneSidedHouseComparison", "presidentVsHouse", "presidentVsUSHouse"].some((mode) => coverageModes.has(mode));
+
   if (harrisSignals > 0 || trumpSignals > 0) {
-    const title = `Advisory directional screen only. It summarizes which candidate's same-party presidential total is higher relative to the comparison contest in loaded review rows; it is not proof of interference, causation, or actual benefit. ${evidence.slice(0, 3).join("; ")}.`;
+    const caveat = hasHouseComparison
+      ? "U.S. House races are district- and candidate-specific controls, so this label names presidential-over-House dropoff direction instead of candidate benefit."
+      : lowConfidenceDirectional
+        ? `The loaded comparison mode is limited, so this label should not be treated as a candidate-benefit inference${lowConfidenceReason ? `: ${lowConfidenceReason}` : ""}.`
+        : "It summarizes which candidate's same-party presidential total is higher relative to the comparison contest in loaded review rows.";
+    const title = `Advisory directional screen only. ${caveat} It is not proof of interference, causation, or actual benefit. ${evidence.slice(0, 3).join("; ")}.`;
 
     if (harrisSignals > trumpSignals * 1.2) {
-      return { label: "Harris / DEM", title };
+      return { label: hasHouseComparison ? "DEM pres > House" : lowConfidenceDirectional ? "Harris / DEM (low)" : "Harris / DEM", title };
     }
 
     if (trumpSignals > harrisSignals * 1.2) {
-      return { label: "Trump / REP", title };
+      return { label: hasHouseComparison ? "REP pres > House" : lowConfidenceDirectional ? "Trump / REP (low)" : "Trump / REP", title };
     }
 
-    return { label: "Mixed", title };
+    return { label: hasHouseComparison ? "Mixed House gap" : "Mixed", title };
   }
 
   if (harrisShareSignals > 0 || trumpShareSignals > 0) {
     const title = `Vote-share-only advisory screen. No same-row down-ballot comparison is loaded for this jurisdiction, so this does not infer candidate benefit; it only names which candidate-share correlation is stronger in the loaded vote-share flag. ${shareEvidence.slice(0, 3).join("; ")}.`;
 
     if (harrisShareSignals > trumpShareSignals * 1.2) {
-      return { label: "Harris share", title };
+      return { label: "Harris share pattern", title };
     }
 
     if (trumpShareSignals > harrisShareSignals * 1.2) {
-      return { label: "Trump share", title };
+      return { label: "Trump share pattern", title };
     }
 
-    return { label: "Mixed share", title };
+    return { label: "Mixed share pattern", title };
   }
 
   return { label: "Unclear", title: "The loaded advisory metrics do not support even a directional review inference." };
@@ -1349,7 +1371,9 @@ export function ResultsExplorer({
             The column below is not a finding that interference occurred, and it does not prove that any candidate
             actually received extra votes. It is a rough advisory screen from the loaded review indicators. For
             down-ballot comparison flags, the app compares same-party presidential votes against a comparison race
-            such as U.S. Senate or Governor, then labels the direction with the larger relative gap.
+            such as U.S. Senate or Governor, then labels the direction with the larger relative gap. When that
+            comparison is U.S. House, the column names presidential-over-House dropoff direction instead of
+            candidate benefit because House races are district- and candidate-specific controls.
           </p>
           <p>
             That direction can be affected by split-ticket voting, incumbency, local candidate strength, undervotes,
@@ -1528,4 +1552,3 @@ export function ResultsExplorer({
     </section>
   );
 }
-

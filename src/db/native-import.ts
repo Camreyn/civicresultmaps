@@ -24,6 +24,11 @@ type NativeResultRow = {
 
 type NativeReviewRow = {
   county: string;
+  comparisonDemCandidatePresent?: boolean;
+  comparisonDemVotes?: number;
+  comparisonRepCandidatePresent?: boolean;
+  comparisonRepVotes?: number;
+  coverageMode?: string;
   localUnit: string;
   totalVotes?: number;
   harris?: number;
@@ -432,9 +437,14 @@ function countyDistributionIndicatorsForNativeRows(stateCode: string, rows: Nati
     return [] as NativeAnalysisIndicator[];
   }
 
-  const countyRows = rows.filter(
-    (row) => row.county && normalizeJurisdictionName(row.localUnit || row.county) === normalizeJurisdictionName(row.county),
-  );
+  const countyRows = rows.filter((row) => {
+    const localUnit = String(row.localUnit || "").trim();
+    return (
+      row.county &&
+      (normalizeJurisdictionName(localUnit || row.county) === normalizeJurisdictionName(row.county) ||
+        /^county\s+total$/i.test(localUnit))
+    );
+  });
 
   if (countyRows.length !== rows.length) {
     return [] as NativeAnalysisIndicator[];
@@ -518,6 +528,54 @@ function countyDistributionIndicatorsForNativeRows(stateCode: string, rows: Nati
   return indicators;
 }
 
+function isComparableDownBallotRow(row: NativeReviewRow) {
+  if (row.coverageMode === "voteShareOnly" || row.coverageMode === "oneSidedHouseComparison") {
+    return false;
+  }
+
+  if (
+    typeof row.comparisonDemCandidatePresent === "boolean" ||
+    typeof row.comparisonRepCandidatePresent === "boolean"
+  ) {
+    return Boolean(row.comparisonDemCandidatePresent && row.comparisonRepCandidatePresent);
+  }
+
+  if (typeof row.comparisonDemVotes === "number" || typeof row.comparisonRepVotes === "number") {
+    return Number(row.comparisonDemVotes ?? 0) > 0 && Number(row.comparisonRepVotes ?? 0) > 0;
+  }
+
+  return row.coverageMode !== undefined || Number.isFinite(row.demDropoff) || Number.isFinite(row.repDropoff);
+}
+
+function comparisonContextForScope(scope: NativeReviewScope) {
+  const coverageModes = Array.from(
+    new Set(
+      scope.rows
+        .map((row) => row.coverageMode)
+        .filter((value): value is string => typeof value === "string" && value.trim().length > 0),
+    ),
+  ).sort();
+  const comparisonCoverageMode =
+    coverageModes.length === 1 ? coverageModes[0] : coverageModes.length > 1 ? "mixed" : "unknown";
+  const lowConfidenceReasons: Record<string, string> = {
+    mixed: "mixed comparison modes are loaded in this scope",
+    oneSidedHouseComparison: "the comparison race is one-sided or not fully comparable",
+    presidentVsGovernor:
+      "Governor is a statewide executive race with candidate-specific ticket splitting; corroborate with additional contests or historical baselines before inferring candidate benefit",
+    presidentVsHouse: "U.S. House races are district- and candidate-specific controls",
+    presidentVsUSHouse: "U.S. House races are district- and candidate-specific controls",
+    unknown: "the comparison mode is not recorded",
+    voteShareOnly: "no same-row down-ballot comparison is loaded",
+  };
+  const directionalScreenReason = lowConfidenceReasons[comparisonCoverageMode] ?? "";
+
+  return {
+    comparisonCoverageMode,
+    directionalScreenConfidence: directionalScreenReason ? "low" : "standard",
+    directionalScreenReason,
+  };
+}
+
 async function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
   const indicators: NativeAnalysisIndicator[] = [];
   const wisconsinContext = await loadWisconsinIndicatorContext(stateCode);
@@ -537,26 +595,30 @@ async function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeRe
       scope.rows.map((row) => row.harris ?? 0),
       scope.rows.map((row) => row.harrisShare ?? 0),
     );
-    const demAverageDropoff = average(scope.rows.map((row) => row.demDropoff ?? 0));
-    const repAverageDropoff = average(scope.rows.map((row) => row.repDropoff ?? 0));
-    const demOutliers = scope.rows.filter(
+    const downBallotRows = scope.rows.filter(isComparableDownBallotRow);
+    const demAverageDropoff = average(downBallotRows.map((row) => row.demDropoff ?? 0));
+    const repAverageDropoff = average(downBallotRows.map((row) => row.repDropoff ?? 0));
+    const demOutliers = downBallotRows.filter(
       (row) =>
         (row.harris ?? 0) >= reviewPolicy.minCandidateVotes &&
         Math.abs(row.demDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
     ).length;
-    const repOutliers = scope.rows.filter(
+    const repOutliers = downBallotRows.filter(
       (row) =>
         (row.trump ?? 0) >= reviewPolicy.minCandidateVotes &&
         Math.abs(row.repDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
     ).length;
-    const outlierTrigger = Math.max(3, Math.ceil(scope.rows.length * 0.05));
+    const outlierTrigger = Math.max(3, Math.ceil(downBallotRows.length * 0.05));
     const metrics: NativeIndicatorMetrics = {
       auditContext: auditContextForScope(scope, wisconsinContext),
+      ...comparisonContextForScope(scope),
+      comparableDownBallotRowCount: downBallotRows.length,
       county: scope.county,
       demAverageDropoff,
       demOutliers,
       denominatorContext: denominatorContextForScope(stateCode, scope),
       harrisCorrelation,
+      incomparableDownBallotRowCount: scope.rows.length - downBallotRows.length,
       outlierTrigger,
       repAverageDropoff,
       repOutliers,
@@ -1112,3 +1174,4 @@ export async function promoteNativeStagingArtifact(path: string) {
     ...summary,
   };
 }
+
