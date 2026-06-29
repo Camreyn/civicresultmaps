@@ -1,10 +1,9 @@
 {
   "code": "CA",
   "name": "California",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "California Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ca-2024-eac-turnout",
@@ -15,6 +14,50 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "ca-2024-general-president-sov",
+      "category": "Official presidential county results",
+      "url": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/16-president.xlsx",
+      "localFile": "data/ca-2024-general-president.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "California Secretary of State",
+      "timestampBasis": "Official November 5, 2024 General Election Statement of Vote President by County XLSX.",
+      "confidence": "Official California Secretary of State Statement of Vote workbook normalized to county rows by scripts/normalize-ca-sov-workbooks.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "ca-2024-general-us-senate-full-term-sov",
+      "category": "Official U.S. Senate full-term county results",
+      "url": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/19-uss-ft.xlsx",
+      "localFile": "data/ca-2024-general-us-senate-full-term.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "California Secretary of State",
+      "timestampBasis": "Official November 5, 2024 General Election Statement of Vote U.S. Senator full-term by County XLSX.",
+      "confidence": "Official California Secretary of State Statement of Vote workbook normalized to county comparison rows by scripts/normalize-ca-sov-workbooks.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "ca-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2706%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ca-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for California county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    },
+    {
+      "id": "ca-historical-presidential-sov-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results",
+      "localFile": "data/ca-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "California Secretary of State",
+      "timestampBasis": "Official California Statement of Vote President by County workbooks for 2012, 2016, and 2020 normalized June 29, 2026.",
+      "confidence": "Official California Secretary of State county presidential baselines used for historical context only. Individual rows carry the per-year Statement of Vote workbook URL.",
       "status": "loaded"
     }
   ],
@@ -34,21 +77,49 @@
   },
   "expected": {
     "jurisdictions": 58,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 58,
+    "sources": 5,
+    "geometryFeatures": 58,
+    "stateTotal": 15865475,
+    "trump": 6081697,
+    "harris": 9276179,
+    "other": 507599,
+    "reviewRows": 58,
     "turnoutRows": 58
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "ca-2024-general-president-sov",
+    "otherColumns": [
+      "other"
+    ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "ca-2024-general-us-senate-full-term-sov",
+    "comparisonContest": "United States Senator (Full Term)",
+    "coverageMode": "presidentVsSenate",
+    "warning": "California review rows are county-level President-versus-U.S. Senate full-term comparisons from official Statement of Vote county totals. They are useful for county-level context, but they are not precinct-level vote-share scatter plots."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ca-historical-presidential-sov-county",
+    "warning": "California historical baseline rows are official county-level presidential results from 2012, 2016, and 2020 Statement of Vote workbooks. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 174,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
