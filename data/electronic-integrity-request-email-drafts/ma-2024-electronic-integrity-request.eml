@@ -1,0 +1,31 @@
+To: [verify recipient email or paste this body into the official records portal]
+Subject: Massachusetts 2024 electronic election records request
+
+Hello,
+
+I am requesting public records for the Massachusetts 2024 general election that can reconcile electronic election-system output against official results, paper/audit evidence, and custody records. This is an evidence-availability request only; it is not an allegation or proof of tampering.
+
+Requester:
+[requester name]
+[organization, if any]
+[requester email]
+[requester phone, optional]
+
+Requested evidence families and tracking IDs:
+- EI-2024-MA-CAST-VOTE-RECORDS - Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on record custody.
+- EI-2024-MA-BALLOT-IMAGES - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, local election commissions, or vendor-hosted election-system exports depending on retention and custody.
+- EI-2024-MA-TABULATOR-LOGS - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, local election commissions, or voting-system vendors depending on record custody.
+- EI-2024-MA-LOGIC-ACCURACY - Logic and accuracy records: status=needs_data; grain=test_deck_or_testing_jurisdiction; reconciliation=not_inventoried. Suggested custodian/path: Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on record custody.
+- EI-2024-MA-AUDIT-RESULTS - Audit results: status=partial; grain=statewide_audit_summary; reconciliation=official_statewide_post_election_audit_page_identified_detailed_unit_workpapers_not_loaded. Suggested custodian/path: Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on audit workpaper custody.
+- EI-2024-MA-CHAIN-OF-CUSTODY - Chain of custody: status=needs_data; grain=ballot_equipment_media; reconciliation=not_inventoried. Suggested custodian/path: Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on record custody.
+
+Preferred production format: original exports where available, CSV, XLSX, JSON, log bundles, audit workpapers, record layouts, or data dictionaries. Please preserve original filenames, timestamps, export settings, and field definitions.
+
+If your office does not maintain a requested record, please identify the state, county, municipal, vendor, or other custodian most likely to maintain it. If fees are expected, please provide an estimate before processing.
+
+Primary custodian path currently recorded for routing:
+Massachusetts Secretary of the Commonwealth Elections Division
+https://www.sec.state.ma.us/divisions/elections/elections-and-voting.htm
+Lookup/redirect reference: https://www.sec.state.ma.us/divisions/elections/elections-and-voting.htm
+
+Thank you.

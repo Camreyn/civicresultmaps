@@ -221,6 +221,94 @@
       ]
     },
     {
+      "state": "MA",
+      "stateName": "Massachusetts",
+      "priority": "standard",
+      "overallStatus": "partial",
+      "summary": "Official PD43+ county-certified and municipality/ward/precinct President-versus-U.S. Senate rows are loaded and reconcile to certified totals. The Harris/DEM directional screen is mostly a President-versus-Senate split-ticket screen, so CVR, audit workpapers, logs, and custody records are needed before treating it as an electronic-integrity finding.",
+      "riskPosture": "municipality_precinct_review_loaded_candidate_specific_senate_comparison_admin_evidence_missing",
+      "nextAction": "Use the official post-election audit page as partial audit context, then request CVRs or equivalent ballot-level exports, ballot images where available, tabulator/EMS logs, logic-and-accuracy records, detailed audit workpapers, and chain-of-custody records from the Secretary or municipal custodians.",
+      "artifacts": [
+        {
+          "type": "certified_results",
+          "status": "loaded",
+          "granularity": "county_from_pd43_county_pages",
+          "sourceUrl": "https://electionstats.state.ma.us/elections/view/165300/",
+          "localArtifact": "data/ma-2024-president-county-results.csv",
+          "parser": "massachusettsPd43CountyTotalsCsv",
+          "reconciliationStatus": "county_totals_loaded_and_reconcile_to_statewide_presidential_total",
+          "requestRequired": false,
+          "tamperDetectionUse": "Certified county baseline for reporting-unit, CVR, and audit reconciliation."
+        },
+        {
+          "type": "reporting_unit_results",
+          "status": "loaded",
+          "granularity": "city_town_ward_precinct",
+          "sourceUrl": "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
+          "localArtifact": "data/ma-2024-president-precinct-results.csv",
+          "parser": "massachusettsPd43PrecinctCsvPresidentVsSenate",
+          "reconciliationStatus": "president_senate_review_loaded_zero_certified_vote_gap",
+          "requestRequired": false,
+          "tamperDetectionUse": "Official PD43+ President/Senate comparison localizes advisory patterns by city/town, ward, and precinct, but cannot distinguish ordinary split-ticket voting from machine or custody issues by itself."
+        },
+        {
+          "type": "cast_vote_records",
+          "status": "needs_data",
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to retabulate presidential and U.S. Senate selections by ballot, precinct, vote method, batch, ballot style, and tabulator to separate normal candidate-specific roll-off from machine-output anomalies.",
+          "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on record custody."
+        },
+        {
+          "type": "ballot_images",
+          "status": "needs_data",
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed where public or lawfully obtainable to compare voter-mark interpretation against CVR or tabulator interpretation in municipalities with large President-versus-Senate gaps.",
+          "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, local election commissions, or vendor-hosted election-system exports depending on retention and custody."
+        },
+        {
+          "type": "tabulator_logs",
+          "status": "needs_data",
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to review scanner, EMS, upload, memory-device, adjudication, and timing records for any municipality where advisory gaps remain after normal roll-off controls.",
+          "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, local election commissions, or voting-system vendors depending on record custody."
+        },
+        {
+          "type": "logic_accuracy",
+          "status": "needs_data",
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to confirm voting systems counted known President and U.S. Senate test ballots as configured before the election.",
+          "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on record custody."
+        },
+        {
+          "type": "audit_results",
+          "status": "partial",
+          "granularity": "statewide_audit_summary",
+          "sourceUrl": "https://www.sec.state.ma.us/divisions/elections/recent-updates/2024-post-election-audits.htm",
+          "reconciliationStatus": "official_statewide_post_election_audit_page_identified_detailed_unit_workpapers_not_loaded",
+          "requestRequired": true,
+          "tamperDetectionUse": "Provides official audit context, but detailed municipal, precinct, batch, contest, and discrepancy workpapers are still needed before treating advisory directional screens as cleared or confirmed.",
+          "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on audit workpaper custody."
+        },
+        {
+          "type": "chain_of_custody",
+          "status": "needs_data",
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "requestRequired": true,
+          "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, hand-count, optical-scan, and removable-media handling around any municipality-level anomaly.",
+          "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on record custody."
+        }
+      ]
+    },
+    {
       "state": "MI",
       "stateName": "Michigan",
       "priority": "swing",

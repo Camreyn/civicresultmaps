@@ -4,7 +4,7 @@ const registryPath = "data/electronic-integrity-artifacts.json";
 const registry = JSON.parse(readFileSync(registryPath, "utf8").replace(/^\uFEFF/, ""));
 const failures = [];
 const warnings = [];
-const requiredStates = ["AZ", "GA", "MI", "NV", "NC", "PA", "TX", "WI"];
+const requiredStates = ["AZ", "GA", "MA", "MI", "NV", "NC", "PA", "TX", "WI"];
 const statusValues = new Set(["loaded", "partial", "candidate", "needs_data", "blocked", "documented_exclusion"]);
 const overallStatusValues = new Set(["loaded", "partial", "needs_evidence", "blocked"]);
 const requiredArtifactTypes = [
@@ -52,7 +52,7 @@ for (const state of registry.states ?? []) {
   if (!/^[A-Z]{2}$/.test(state.state ?? "")) fail(state.state ?? "UNKNOWN", "state must be a two-letter code");
   if (seenStates.has(state.state)) fail(state.state, "duplicate state row");
   seenStates.add(state.state);
-  if (!requiredStates.includes(state.state)) warn(state.state, "state is outside the current swing-state electronic-integrity batch");
+  if (!requiredStates.includes(state.state)) warn(state.state, "state is outside the current electronic-integrity request batch");
   if (!state.stateName) fail(state.state, "stateName is required");
   if (!overallStatusValues.has(state.overallStatus)) fail(state.state, `unknown overallStatus: ${state.overallStatus}`);
   for (const field of ["summary", "riskPosture", "nextAction"]) {

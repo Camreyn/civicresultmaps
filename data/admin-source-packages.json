@@ -608,8 +608,12 @@
         "expectedJurisdictions": 14
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Massachusetts 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "sourceDocumentId": "ma-2024-post-election-audits",
+        "sourceUrl": "https://www.sec.state.ma.us/divisions/elections/recent-updates/2024-post-election-audits.htm",
+        "parser": "officialAuditPageInventory",
+        "why": "Massachusetts publishes an official 2024 post-election audit page and statewide audit spreadsheet, but detailed municipal, precinct, batch, contest, discrepancy, and workpaper records are not normalized into this registry yet.",
+        "caveat": "Treat the statewide audit page as partial context only; it does not provide the ballot-level CVR, tabulator-log, custody, or detailed per-unit workpaper evidence needed to evaluate MA directional screens."
       },
       "cvr": {
         "status": "needs_data",

@@ -1,6 +1,6 @@
 {
   "caveat": "Request operations track collection workflow only. Missing, partial, denied, or delayed records do not prove electronic tampering.",
-  "generatedAt": "2026-06-28",
+  "generatedAt": "2026-06-29",
   "registry": "data/electronic-integrity-artifacts.json",
   "contacts": "data/electronic-integrity-request-contacts.json",
   "tracker": "data/electronic-integrity-request-tracker.json",
@@ -9,14 +9,15 @@
   "state": "all",
   "dryRun": false,
   "failures": [],
-  "requestRows": 52,
-  "draftCount": 8,
+  "requestRows": 58,
+  "draftCount": 9,
   "rowsByStatus": {
-    "draft_ready": 52
+    "draft_ready": 58
   },
   "rowsByState": {
     "AZ": 7,
     "GA": 7,
+    "MA": 6,
     "MI": 6,
     "NC": 6,
     "NV": 7,
@@ -53,6 +54,20 @@
         "EI-2024-GA-LOGIC-ACCURACY",
         "EI-2024-GA-AUDIT-RESULTS",
         "EI-2024-GA-CHAIN-OF-CUSTODY"
+      ]
+    },
+    {
+      "state": "MA",
+      "emailFile": "data/electronic-integrity-request-email-drafts/ma-2024-electronic-integrity-request.eml",
+      "markdownFile": "data/electronic-integrity-request-email-drafts/ma-2024-electronic-integrity-request.md",
+      "subject": "Massachusetts 2024 electronic election records request",
+      "requestIds": [
+        "EI-2024-MA-CAST-VOTE-RECORDS",
+        "EI-2024-MA-BALLOT-IMAGES",
+        "EI-2024-MA-TABULATOR-LOGS",
+        "EI-2024-MA-LOGIC-ACCURACY",
+        "EI-2024-MA-AUDIT-RESULTS",
+        "EI-2024-MA-CHAIN-OF-CUSTODY"
       ]
     },
     {

@@ -1,7 +1,7 @@
 {
   "caveat": "Received files ledger links raw productions and normalized artifacts to request IDs. Empty rows mean no files have been accessioned yet.",
-  "generatedAt": "2026-06-28",
-  "requestsTracked": 52,
+  "generatedAt": "2026-06-29",
+  "requestsTracked": 58,
   "receivedFiles": [
     {
       "requestId": "EI-2024-AZ-AUDIT-RESULTS",
@@ -149,6 +149,72 @@
     {
       "requestId": "EI-2024-GA-TABULATOR-LOGS",
       "state": "GA",
+      "artifactType": "tabulator_logs",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-MA-AUDIT-RESULTS",
+      "state": "MA",
+      "artifactType": "audit_results",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-MA-BALLOT-IMAGES",
+      "state": "MA",
+      "artifactType": "ballot_images",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-MA-CAST-VOTE-RECORDS",
+      "state": "MA",
+      "artifactType": "cast_vote_records",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-MA-CHAIN-OF-CUSTODY",
+      "state": "MA",
+      "artifactType": "chain_of_custody",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-MA-LOGIC-ACCURACY",
+      "state": "MA",
+      "artifactType": "logic_accuracy",
+      "status": "none_received",
+      "receivedAt": "",
+      "files": [],
+      "accessionNotes": "",
+      "normalizedArtifactPath": "",
+      "ingestScript": ""
+    },
+    {
+      "requestId": "EI-2024-MA-TABULATOR-LOGS",
+      "state": "MA",
       "artifactType": "tabulator_logs",
       "status": "none_received",
       "receivedAt": "",

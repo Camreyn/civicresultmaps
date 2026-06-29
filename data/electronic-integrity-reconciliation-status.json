@@ -174,6 +174,89 @@
     },
     {
       "artifactRows": 8,
+      "auditStatus": "partial",
+      "ballotImageStatus": "needs_data",
+      "canRecomputeFromCvr": false,
+      "canTriangulateMachineRisk": false,
+      "cvrStatus": "needs_data",
+      "loadedArtifactRows": 2,
+      "localArtifactChecks": [
+        {
+          "exists": true,
+          "localArtifact": "data/ma-2024-president-county-results.csv",
+          "type": "certified_results"
+        },
+        {
+          "exists": true,
+          "localArtifact": "data/ma-2024-president-precinct-results.csv",
+          "type": "reporting_unit_results"
+        }
+      ],
+      "missingOrBlockedRows": 5,
+      "nextAction": "Use the official post-election audit page as partial audit context, then request CVRs or equivalent ballot-level exports, ballot images where available, tabulator/EMS logs, logic-and-accuracy records, detailed audit workpapers, and chain-of-custody records from the Secretary or municipal custodians.",
+      "overallStatus": "partial",
+      "requestArtifacts": [
+        {
+          "granularity": "ballot",
+          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "type": "cast_vote_records",
+          "use": "Needed to retabulate presidential and U.S. Senate selections by ballot, precinct, vote method, batch, ballot style, and tabulator to separate normal candidate-specific roll-off from machine-output anomalies."
+        },
+        {
+          "granularity": "ballot_image",
+          "reconciliationStatus": "not_inventoried",
+          "type": "ballot_images",
+          "use": "Needed where public or lawfully obtainable to compare voter-mark interpretation against CVR or tabulator interpretation in municipalities with large President-versus-Senate gaps."
+        },
+        {
+          "granularity": "tabulator_or_ems",
+          "reconciliationStatus": "not_inventoried",
+          "type": "tabulator_logs",
+          "use": "Needed to review scanner, EMS, upload, memory-device, adjudication, and timing records for any municipality where advisory gaps remain after normal roll-off controls."
+        },
+        {
+          "granularity": "test_deck_or_testing_jurisdiction",
+          "reconciliationStatus": "not_inventoried",
+          "type": "logic_accuracy",
+          "use": "Needed to confirm voting systems counted known President and U.S. Senate test ballots as configured before the election."
+        },
+        {
+          "granularity": "statewide_audit_summary",
+          "reconciliationStatus": "official_statewide_post_election_audit_page_identified_detailed_unit_workpapers_not_loaded",
+          "type": "audit_results",
+          "use": "Provides official audit context, but detailed municipal, precinct, batch, contest, and discrepancy workpapers are still needed before treating advisory directional screens as cleared or confirmed."
+        },
+        {
+          "granularity": "ballot_equipment_media",
+          "reconciliationStatus": "not_inventoried",
+          "type": "chain_of_custody",
+          "use": "Needed to explain custody, seal, transport, storage, hand-count, optical-scan, and removable-media handling around any municipality-level anomaly."
+        }
+      ],
+      "requestRequiredRows": 6,
+      "riskPosture": "municipality_precinct_review_loaded_candidate_specific_senate_comparison_admin_evidence_missing",
+      "staging": {
+        "capabilities": {
+          "certifiedResults": true,
+          "historicalBaseline": true,
+          "map": true,
+          "reviewGraphs": true,
+          "sourcePlanner": true,
+          "turnout": true
+        },
+        "historicalRows": 42,
+        "resultRows": 14,
+        "reviewRows": 2382,
+        "sourceRows": 5,
+        "stagingPresent": true,
+        "turnoutRows": 351
+      },
+      "state": "MA",
+      "stateName": "Massachusetts",
+      "tabulatorLogStatus": "needs_data"
+    },
+    {
+      "artifactRows": 8,
       "auditStatus": "needs_data",
       "ballotImageStatus": "needs_data",
       "canRecomputeFromCvr": false,
@@ -678,12 +761,13 @@
     "canTriangulateMachineRiskStates": [
       "WI"
     ],
-    "loadedArtifactRows": 12,
-    "requestRequiredRows": 52,
-    "states": 8,
+    "loadedArtifactRows": 14,
+    "requestRequiredRows": 58,
+    "states": 9,
     "statesWithReviewRows": [
       "AZ",
       "GA",
+      "MA",
       "MI",
       "NC",
       "NV",

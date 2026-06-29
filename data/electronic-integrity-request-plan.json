@@ -1,12 +1,12 @@
 {
   "caveat": "Request packets track evidence collection only. Missing, partial, or blocked evidence does not prove tampering.",
-  "generatedAt": "2026-06-28",
+  "generatedAt": "2026-06-29",
   "registry": "data/electronic-integrity-artifacts.json",
   "outDir": "data/electronic-integrity-request-packets",
   "state": "all",
   "dryRun": false,
-  "packetCount": 8,
-  "requestRequiredRows": 52,
+  "packetCount": 9,
+  "requestRequiredRows": 58,
   "byState": [
     {
       "artifactTypes": [
@@ -44,6 +44,24 @@
       "statuses": {
         "partial": 1,
         "needs_data": 6
+      }
+    },
+    {
+      "artifactTypes": [
+        "cast_vote_records",
+        "ballot_images",
+        "tabulator_logs",
+        "logic_accuracy",
+        "audit_results",
+        "chain_of_custody"
+      ],
+      "outputFile": "data/electronic-integrity-request-packets/ma-2024-electronic-integrity-request.md",
+      "requestRequiredRows": 6,
+      "state": "MA",
+      "stateName": "Massachusetts",
+      "statuses": {
+        "needs_data": 5,
+        "partial": 1
       }
     },
     {
