@@ -39,6 +39,17 @@
       "status": "loaded"
     },
     {
+      "id": "in-2024-official-enr-jurisdiction-inventory",
+      "category": "Official archived 2024 general election county jurisdiction JSON inventory",
+      "url": "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/site/data/JurR_*_B.json&from=20241101&to=20250131&output=json",
+      "localFile": "data/in-2024-enr-jurisdiction-reports",
+      "parser": "indianaEnrJurisdictionDirectoryInventory",
+      "authority": "Indiana Election Division",
+      "timestampBasis": "Internet Archive captures of official Indiana Election Division ENR county JurR JSON files for November 5, 2024 General Election, captured November 6, 2024.",
+      "confidence": "Archived official Indiana ENR county jurisdiction JSON inventory. These files preserve county office/contact and reporting-region/referendum structures, but the collected files do not contain President or U.S. Senate candidate result rows and are not advisory flag inputs.",
+      "status": "loaded"
+    },
+    {
       "id": "in-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2718%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -67,7 +78,7 @@
   "expected": {
     "jurisdictions": 92,
     "resultRows": 92,
-    "sources": 4,
+    "sources": 5,
     "geometryFeatures": 92,
     "stateTotal": 2936677,
     "trump": 1720347,
