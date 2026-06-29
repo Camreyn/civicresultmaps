@@ -1,10 +1,9 @@
 {
   "code": "LA",
   "name": "Louisiana",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Louisiana Secretary of State",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "la-2024-eac-turnout",
@@ -16,6 +15,39 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "la-2024-sos-human-readable-results",
+      "category": "Official Louisiana 2024 general election human-readable workbook",
+      "url": "https://s3-us-west-2.amazonaws.com/mediaresults.sos.la.gov/HumanReadableElectionResults/20241105/Election+Results+(11-05-2024).xlsx",
+      "localFile": "data/la-2024-general-election-results.xlsx",
+      "parser": "louisianaSosHumanReadableWorkbook",
+      "authority": "Louisiana Secretary of State",
+      "timestampBasis": "Official Louisiana Secretary of State 2024 general election human-readable workbook downloaded June 29, 2026.",
+      "confidence": "Official human-readable workbook retained for provenance and manual inspection. The native parser reads the paired official precinct CSV artifacts directly.",
+      "status": "loaded"
+    },
+    {
+      "id": "la-2024-sos-precinct-csv-results",
+      "category": "Official Louisiana 2024 general election precinct CSV results",
+      "url": "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential",
+      "localFile": "data/la-2024-general-election-results",
+      "parser": "louisianaSosPrecinctCsvDirectory",
+      "authority": "Louisiana Secretary of State",
+      "timestampBasis": "Official Louisiana Secretary of State static election-results CSV blobs for November 5, 2024; downloaded June 29, 2026 from /ElectionResults/ElectionResults/Data?blob=20241105/csv/ByPrecinct_{raceId}.csv.",
+      "confidence": "Official precinct-level CSV package for President and all six U.S. House races. Review rows compare President to U.S. House where both party columns exist; U.S. House is district- and candidate-specific and is a weaker comparison than a statewide Senate or Governor contest.",
+      "status": "loaded"
+    },
+    {
+      "id": "la-county-geometry",
+      "category": "Parish boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/la-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb parish geography service artifact.",
+      "confidence": "Parish geometry is used for Louisiana parish map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -24,7 +56,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Louisiana turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Louisiana turnout rows use EAC 2024 V2 parish/jurisdiction fallback rows until a state-native turnout artifact is collected.",
     "warningRequired": false,
     "expected": {
       "rowCount": 64,
@@ -32,22 +64,42 @@
       "registeredVoters": 3046376
     }
   },
+  "certifiedResults": {
+    "format": "louisianaSosPrecinctCsvDirectory",
+    "sourceId": "la-2024-sos-precinct-csv-results",
+    "presidentRaceId": "67190",
+    "comparisonRaceIds": [
+      "67171",
+      "67187",
+      "67188",
+      "67174",
+      "67175",
+      "67189"
+    ]
+  },
+  "reviewCharts": {
+    "format": "louisianaSosPrecinctCsvDirectory",
+    "sourceId": "la-2024-sos-precinct-csv-results",
+    "comparisonContest": "United States Representative",
+    "coverageMode": "presidentVsHouse",
+    "warning": "Louisiana review rows use official precinct/mode President rows compared with U.S. House rows where the same parish, ward, and precinct or vote-mode key is available. This is weaker than a statewide same-office comparison because House districts, uncontested or same-party races, incumbency, and candidate effects can dominate the signal. One-sided House rows are retained as vote-share context but do not produce drop-off direction."
+  },
   "expected": {
     "jurisdictions": 64,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 64,
+    "sources": 4,
+    "stateTotal": 2006975,
+    "trump": 1208505,
+    "harris": 766870,
+    "other": 31600,
+    "reviewRows": 3885,
     "turnoutRows": 64
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

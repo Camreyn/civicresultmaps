@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import csv
 import xml.etree.ElementTree as ET
@@ -4795,6 +4795,18 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeKansasPresidentialHouseXlsx",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "LA" and config.raw.get("certifiedResults", {}).get("format") == "louisianaSosPrecinctCsvDirectory":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _louisiana_sos_precinct_csv_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeLouisianaSosPrecinctCsvDirectory",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

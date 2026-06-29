@@ -1,4 +1,4 @@
-import unittest
+﻿import unittest
 import zipfile
 import json
 from pathlib import Path
@@ -250,6 +250,36 @@ class PipelineTests(unittest.TestCase):
         turnout = next(row for row in artifact["native"]["turnoutRows"] if row["county"] == "Adair County" and row["localUnit"] == "1NW")
         self.assertEqual(turnout["ballotsCast"], 802)
         self.assertEqual(turnout["registeredVoters"], 1060)
+    def test_louisiana_sos_precinct_csv_parser_builds_house_review_rows(self):
+        config = load_config("etl/state-configs/la.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeLouisianaSosPrecinctCsvDirectory")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 64)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 2006975)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1208505)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 766870)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 31600)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 3885)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 3911)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparableComparisonRows"], 3119)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 64)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Representative")
+        acadia = next(row for row in artifact["native"]["resultRows"] if row["jurisdictionName"] == "Acadia Parish")
+        self.assertEqual(acadia["votes"]["Harris"], 4695)
+        self.assertEqual(acadia["votes"]["Trump"], 21783)
+        first_review = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Acadia Parish" and row["localUnit"] == "Ward 01, Precinct 01"
+        )
+        self.assertEqual(first_review["coverageMode"], "presidentVsHouse")
+        self.assertEqual(first_review["comparisonContest"], "U. S. Representative -- 3rd Congressional District")
+        self.assertEqual(first_review["harris"], 58)
+        self.assertEqual(first_review["trump"], 624)
+
     def test_west_virginia_clarity_detailxml_parser_builds_precinct_rows(self):
         config = load_config("etl/state-configs/wv.json")
         report = validate_config(config)
