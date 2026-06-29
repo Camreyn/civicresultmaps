@@ -3267,6 +3267,27 @@ tr.clickable-row:focus-visible td {
   background: rgba(53, 199, 163, 0.08);
 }
 
+.review-direction-notice {
+  background: rgba(240, 195, 106, 0.1);
+  border-bottom: 1px solid rgba(240, 195, 106, 0.32);
+  border-top: 1px solid rgba(240, 195, 106, 0.32);
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+}
+
+.review-direction-notice strong {
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.review-direction-notice p {
+  line-height: 1.55;
+  margin: 0;
+  max-width: 980px;
+}
+
 .table-link-button {
   background: transparent;
   border: 0;

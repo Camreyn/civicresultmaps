@@ -159,10 +159,10 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
   }
 
   if (harrisSignals === 0 && trumpSignals === 0) {
-    return { label: "Unclear", title: "The loaded advisory metrics do not support a directional benefit inference." };
+    return { label: "Unclear", title: "The loaded advisory metrics do not support even a directional review inference." };
   }
 
-  const title = `Directional inference only, not proof. ${evidence.slice(0, 3).join("; ")}.`;
+  const title = `Advisory directional screen only. It summarizes which candidate's same-party presidential total is higher relative to the comparison contest in loaded review rows; it is not proof of interference, causation, or actual benefit. ${evidence.slice(0, 3).join("; ")}.`;
 
   if (harrisSignals > trumpSignals * 1.2) {
     return { label: "Harris / DEM", title };
@@ -1313,6 +1313,21 @@ export function ResultsExplorer({
             </span>
           </div>
         </div>
+        <div className="review-direction-notice" role="note">
+          <strong>About the directional review column</strong>
+          <p>
+            The column below is not a finding that interference occurred, and it does not prove that any candidate
+            actually received extra votes. It is a rough advisory screen from the loaded review indicators. For
+            down-ballot comparison flags, the app compares same-party presidential votes against a comparison race
+            such as U.S. Senate or Governor, then labels the direction with the larger relative gap.
+          </p>
+          <p>
+            That direction can be affected by split-ticket voting, incumbency, local candidate strength, undervotes,
+            uncontested races, reporting-unit definitions, missing comparison rows, or ordinary political geography.
+            Treat it as "if this pattern needs review, this is the side the math points toward," not as a causal claim
+            or a conclusion.
+          </p>
+        </div>
         <div className="table-tools">
           <label className="table-search" htmlFor="result-search">
             <Search aria-hidden size={16} />
@@ -1379,7 +1394,7 @@ export function ResultsExplorer({
               <tr>
                   <th>Jurisdiction</th>
                   <th>Flags</th>
-                  <th>Possible benefit</th>
+                  <th>Directional screen</th>
                   <th>Winner</th>
                 <th>Harris</th>
                 <th>Trump</th>
