@@ -65,6 +65,18 @@ function average(values) {
   return finite.length ? finite.reduce((sum, value) => sum + value, 0) / finite.length : 0;
 }
 
+function standardDeviation(values) {
+  if (values.length < 2) {
+    return 0;
+  }
+  const mean = average(values);
+  return Math.sqrt(average(values.map((value) => (value - mean) ** 2)));
+}
+
+function zScore(value, mean, deviation) {
+  return Number.isFinite(value) && deviation ? (value - mean) / deviation : 0;
+}
+
 function pearsonSafe(xs, ys) {
   const pairs = xs.map((x, index) => [x, ys[index]]).filter(([x, y]) => Number.isFinite(x) && Number.isFinite(y));
   if (pairs.length < 2) {
@@ -147,6 +159,19 @@ function scopesForReviewRows(stateCode, rows, policy) {
   return scopes;
 }
 
+function isComparableDownBallotRow(row) {
+  if (row.coverageMode === "voteShareOnly" || row.coverageMode === "oneSidedHouseComparison") {
+    return false;
+  }
+  if (typeof row.comparisonDemCandidatePresent === "boolean" || typeof row.comparisonRepCandidatePresent === "boolean") {
+    return Boolean(row.comparisonDemCandidatePresent && row.comparisonRepCandidatePresent);
+  }
+  if (typeof row.comparisonDemVotes === "number" || typeof row.comparisonRepVotes === "number") {
+    return Number(row.comparisonDemVotes ?? 0) > 0 && Number(row.comparisonRepVotes ?? 0) > 0;
+  }
+  return row.coverageMode !== undefined || Number.isFinite(row.demDropoff) || Number.isFinite(row.repDropoff);
+}
+
 function metricsForRows(rows, policy) {
   const trumpCorrelation = pearsonSafe(
     rows.map((row) => row.trump ?? 0),
@@ -156,20 +181,23 @@ function metricsForRows(rows, policy) {
     rows.map((row) => row.harris ?? 0),
     rows.map((row) => row.harrisShare ?? 0),
   );
-  const demAverageDropoff = average(rows.map((row) => row.demDropoff ?? 0));
-  const repAverageDropoff = average(rows.map((row) => row.repDropoff ?? 0));
-  const demOutliers = rows.filter(
+  const downBallotRows = rows.filter(isComparableDownBallotRow);
+  const demAverageDropoff = average(downBallotRows.map((row) => row.demDropoff ?? 0));
+  const repAverageDropoff = average(downBallotRows.map((row) => row.repDropoff ?? 0));
+  const demOutliers = downBallotRows.filter(
     (row) => (row.harris ?? 0) >= policy.minCandidateVotes && Math.abs(row.demDropoff ?? 0) >= policy.outlierThresholdPct,
   ).length;
-  const repOutliers = rows.filter(
+  const repOutliers = downBallotRows.filter(
     (row) => (row.trump ?? 0) >= policy.minCandidateVotes && Math.abs(row.repDropoff ?? 0) >= policy.outlierThresholdPct,
   ).length;
-  const outlierTrigger = Math.max(3, Math.ceil(rows.length * 0.05));
+  const outlierTrigger = Math.max(3, Math.ceil(downBallotRows.length * 0.05));
 
   return {
+    comparableDownBallotRowCount: downBallotRows.length,
     demAverageDropoff,
     demOutliers,
     harrisCorrelation,
+    incomparableDownBallotRowCount: rows.length - downBallotRows.length,
     outlierTrigger,
     repAverageDropoff,
     repOutliers,
@@ -178,8 +206,65 @@ function metricsForRows(rows, policy) {
   };
 }
 
+function countyDistributionIndicatorsForReviewRows(stateCode, rows, policy) {
+  if (rows.length < policy.minWardRows) {
+    return [];
+  }
+  const countyRows = rows.filter(
+    (row) => row.county && normalizeJurisdictionName(row.localUnit ?? row.county) === normalizeJurisdictionName(row.county),
+  );
+  if (countyRows.length !== rows.length) {
+    return [];
+  }
+  const demValues = countyRows.map((row) => row.demDropoff).filter(Number.isFinite);
+  const repValues = countyRows.map((row) => row.repDropoff).filter(Number.isFinite);
+  if (!demValues.length && !repValues.length) {
+    return [];
+  }
+  const demMean = average(demValues);
+  const repMean = average(repValues);
+  const demDeviation = standardDeviation(demValues);
+  const repDeviation = standardDeviation(repValues);
+  const indicators = [];
+  for (const row of countyRows) {
+    const demDropoff = row.demDropoff ?? 0;
+    const repDropoff = row.repDropoff ?? 0;
+    const demDistributionZ = zScore(row.demDropoff, demMean, demDeviation);
+    const repDistributionZ = zScore(row.repDropoff, repMean, repDeviation);
+    const absoluteTrigger =
+      Math.abs(demDropoff) >= policy.countyDistributionDropoffThresholdPct ||
+      Math.abs(repDropoff) >= policy.countyDistributionDropoffThresholdPct;
+    const distributionTrigger =
+      Math.abs(demDistributionZ) >= policy.countyDistributionZThreshold ||
+      Math.abs(repDistributionZ) >= policy.countyDistributionZThreshold;
+    if (!absoluteTrigger && !distributionTrigger) {
+      continue;
+    }
+    const county = normalizeJurisdictionName(row.county);
+    indicators.push({
+      county,
+      jurisdictionName: county,
+      level: "county",
+      metrics: {
+        demAverageDropoff: demDropoff,
+        demDistributionZ,
+        repAverageDropoff: repDropoff,
+        repDistributionZ,
+        rowCount: 1,
+        statewideCountyRows: countyRows.length,
+      },
+      rows: [row],
+      scopeKey: `county:${county}`,
+      type: "county_down_ballot_distribution",
+    });
+  }
+  return indicators;
+}
+
 function indicatorsForReviewRows(stateCode, rows, policy) {
   const indicators = [];
+
+  indicators.push(...countyDistributionIndicatorsForReviewRows(stateCode, rows, policy));
 
   for (const scope of scopesForReviewRows(stateCode, rows, policy)) {
     if (scope.rows.length < policy.minWardRows) {
@@ -269,6 +354,16 @@ function parityGaps({ adminStatus, acquisitionRow, config, metrics, state, wiRem
       id: "same_row_comparison_contest",
       status: "missing_or_not_mapped",
       detail: "Local presidential vote-share rows are loaded, but no same-row comparison contest is mapped.",
+    });
+  }
+
+  if (config.reviewCharts?.partialCoverage) {
+    gaps.push({
+      id: "statewide_subcounty_review_coverage",
+      status: "partial",
+      detail:
+        config.reviewCharts.sourceCoverage ??
+        "Subcounty review rows are loaded for only part of the state; remaining jurisdictions still need local exports.",
     });
   }
 

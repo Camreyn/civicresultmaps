@@ -53,6 +53,7 @@ test("map joins support repository GeoJSON county name variants", () => {
   assert.match(explorer, /ak-house-districts\.geojson/);
   assert.match(explorer, /lon - 360/);
   assert.match(explorer, /KALAWAO/);
+  assert.match(explorer, /KANSASCITY/);
   assert.match(explorer, /function coordinateBounds/);
   assert.match(explorer, /function longitudeScale/);
   assert.match(explorer, /referenceLatitude/);

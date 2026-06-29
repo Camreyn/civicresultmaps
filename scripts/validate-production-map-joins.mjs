@@ -57,7 +57,7 @@ function isAllowedMissingBoundary(state, name) {
 
 function isNonGeographicResultRow(state, name) {
   const normalized = normalizeName(name);
-  return (state === "ME" && normalized === "STATEUOCAVA") || (state === "RI" && normalized === "FEDERALPRECINCTS");
+  return (state === "ME" && normalized === "STATEUOCAVA") || (state === "MO" && normalized === "KANSASCITY") || (state === "RI" && normalized === "FEDERALPRECINCTS");
 }
 
 async function fetchJson(url) {
@@ -77,6 +77,7 @@ for (const state of states) {
       fetchJson(`${geoBaseUrl}/${geoJsonPath(state)}`),
     ]);
     const resultKeys = new Set(results.data.map((row) => normalizeName(row.jurisdictionName)));
+    const featureKeys = new Set();
     const unmatched = [];
     let blankNames = 0;
 
@@ -87,10 +88,17 @@ for (const state of states) {
         continue;
       }
 
-      if (!resultKeys.has(normalizeName(resultNameForFeature(state, name))) && !isAllowedMissingBoundary(state, name)) {
+      const resultName = resultNameForFeature(state, name);
+      featureKeys.add(normalizeName(resultName));
+      if (!resultKeys.has(normalizeName(resultName)) && !isAllowedMissingBoundary(state, name)) {
         unmatched.push(String(name));
       }
     }
+
+    const unmappedRows = results.data
+      .filter((row) => !isNonGeographicResultRow(state, row.jurisdictionName) && !featureKeys.has(normalizeName(row.jurisdictionName)))
+      .map((row) => row.jurisdictionName)
+      .sort((a, b) => a.localeCompare(b));
 
     report.push({
       state,
@@ -99,6 +107,8 @@ for (const state of states) {
       blankNames,
       unmatched: unmatched.slice(0, 12),
       unmatchedCount: unmatched.length,
+      unmappedRows: unmappedRows.slice(0, 12),
+      unmappedRowCount: unmappedRows.length,
     });
   } catch (error) {
     report.push({
@@ -108,7 +118,7 @@ for (const state of states) {
   }
 }
 
-const failures = report.filter((row) => row.error || row.blankNames > 0 || row.unmatchedCount > 0);
+const failures = report.filter((row) => row.error || row.blankNames > 0 || row.unmatchedCount > 0 || row.unmappedRowCount > 0);
 console.log(JSON.stringify({ checkedStates: report.length, failures, summary: report }, null, 2));
 
 if (failures.length > 0) {
