@@ -48,6 +48,17 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Iowa county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "ia-historical-presidential-wikipedia-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Iowa",
+      "localFile": "data/ia-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Wikipedia county presidential tables with state election office source footnotes",
+      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 30, 2026.",
+      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL; use these rows as historical context, not as 2024 certified data or a replacement for official Iowa Secretary of State results.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -65,7 +76,7 @@
   "expected": {
     "jurisdictions": 99,
     "resultRows": 99,
-    "sources": 4,
+    "sources": 5,
     "geometryFeatures": 99,
     "stateTotal": 1663506,
     "trump": 927019,
@@ -80,7 +91,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "iowaClarityCountyDetailXmlDirectory",
@@ -96,5 +107,18 @@
     "comparisonContest": "United States Representative",
     "coverageMode": "presidentVsUSHouse",
     "warning": "Iowa review rows are precinct-level President-versus-U.S. House comparisons from official Secretary of State county detail XML report ZIPs. U.S. House is district-based; treat these as advisory review inputs, not confirmed findings."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ia-historical-presidential-wikipedia-county",
+    "warning": "Iowa historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with state-source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 297,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
