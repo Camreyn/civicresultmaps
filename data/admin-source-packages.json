@@ -1576,16 +1576,25 @@
         "expectedJurisdictions": 55
       },
       "audit": {
-        "status": "needs_data",
-        "why": "West Virginia 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_policy",
+        "sourceDocumentId": "wv-sos-election-security-hand-count-audit",
+        "sourceUrl": "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
+        "why": "West Virginia Secretary of State election-security materials document a hand-count audit requirement and related voting-system security context, but 2024 county audit selection/outcome artifacts have not been collected or normalized.",
+        "caveat": "Candidate source inventory only; no 2024 post-election audit result rows are loaded for West Virginia."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "West Virginia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "West Virginia 2024 cast-vote-record availability and request paths have not been inventoried or normalized into this administration context registry yet.",
+        "caveat": "No CVR dataset or county CVR availability table is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "West Virginia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_reporting_path",
+        "sourceDocumentId": "wv-sos-election-security-complaint-reporting",
+        "sourceUrl": "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
+        "why": "West Virginia Secretary of State election-security materials identify official complaint/reporting paths for election-law violations, but 2024 incident, correction, recount, and litigation records have not been normalized.",
+        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, or litigation dataset."
       }
     },
     {

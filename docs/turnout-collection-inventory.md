@@ -60,3 +60,7 @@ For Wisconsin, ask for:
 - Join keys that match the WEC ward-by-ward workbook, if ward-level data exists.
 - Expected row count and statewide denominator total.
 - Caveats for same-day registration, inactive voters, absentee ballots, provisional ballots, and reporting-unit changes.
+
+## West Virginia Update
+
+West Virginia now has state-native precinct turnout rows configured from official Secretary of State county detail XML reports at data/wv-2024-county-detailxml-reports. The parser uses VoterTurnout precinct ballotsCast and totalVoters fields, with 1,649 turnout rows, 770,587 ballots cast, and 1,187,991 registered-voter denominator total. The remaining turnout-adjacent gap is official precinct boundary geometry for subcounty overlays, not turnout denominator provenance.

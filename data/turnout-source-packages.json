@@ -1238,21 +1238,21 @@
       "year": 2024,
       "priority": 49,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "precinct",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/wv-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
-      "expectedTurnoutRows": 55,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "denominatorTiming": "officialCountyReport",
+      "sourceTitle": "West Virginia SOS official county detail XML turnout rows",
+      "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+      "localFile": "data/wv-2024-county-detailxml-reports",
+      "parser": "westVirginiaClarityCountyDetailXmlDirectory",
+      "expectedTurnoutRows": 1649,
+      "statusNote": "Official West Virginia Secretary of State county detail XML reports are loaded through the WV native ETL config. Each county detail.xml VoterTurnout Precinct row provides ballotsCast and totalVoters fields at precinct grain.",
+      "nextAction": "Keep the Clarity detail XML source and precinct-geometry caveat visible; collect official precinct boundary geometry if subcounty map overlays are required.",
       "coverage": {
-        "jurisdictionRows": 55,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/wv-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 1210415,
-        "ballotsCast": 769206,
+        "jurisdictionRows": 1649,
+        "registeredVoterDenominatorFile": "data/wv-2024-county-detailxml-reports",
+        "registeredVoters": 1187991,
+        "ballotsCast": 770587,
         "warningRows": 0
       }
     },
@@ -1417,6 +1417,35 @@
       "caveats": [
         "EAC F1a Total Voters is not identical to WEC presidential contest total votes.",
         "WEC remains the official source for Wisconsin presidential result rows; EAC is the statewide turnout fallback."
+      ]
+    },
+    {
+      "state": "WV",
+      "name": "West Virginia",
+      "authority": "West Virginia Secretary of State",
+      "sourceLevel": "precinct",
+      "turnoutSource": {
+        "sourceTitle": "West Virginia SOS official county detail XML VoterTurnout rows",
+        "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+        "localFile": "data/wv-2024-county-detailxml-reports",
+        "parser": "westVirginiaClarityCountyDetailXmlDirectory"
+      },
+      "denominatorSource": {
+        "sourceTitle": "West Virginia SOS county detail XML totalVoters field",
+        "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+        "localFile": "data/wv-2024-county-detailxml-reports",
+        "parser": "westVirginiaClarityCountyDetailXmlDirectory",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "officialCountyReport"
+      },
+      "expected": {
+        "turnoutRows": 1649,
+        "registeredVoters": 1187991,
+        "ballotsCast": 770587
+      },
+      "caveats": [
+        "Turnout rows are precinct-level VoterTurnout rows inside official county detail.xml reports.",
+        "The current map package includes county geometry only; official precinct boundary geometry was not identified in this package."
       ]
     }
   ],

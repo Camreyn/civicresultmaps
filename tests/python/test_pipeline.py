@@ -459,6 +459,8 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 1648)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 1648)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 1649)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutBallotsCast"], 770587)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRegisteredVoters"], 1187991)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
         barbour = next(row for row in artifact["native"]["reviewRows"] if row["county"] == "Barbour County" and row["localUnit"] == "PRECINCT 1")
         self.assertEqual(barbour["coverageMode"], "presidentVsSenate")
