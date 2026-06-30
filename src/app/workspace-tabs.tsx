@@ -3063,6 +3063,7 @@ export function WorkspaceTabs({
               equipmentRows={equipmentRows}
               indicators={indicators}
               results={results}
+              reviewRows={reviewRows}
               selectedState={selectedStateCode}
               sources={sources}
               voteMethodRows={voteMethodRows}

@@ -18,13 +18,14 @@ import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
-import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
+import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, ReviewRowSummary, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 
 type ResultsExplorerProps = {
   countyLabel: string;
   equipmentRows: EquipmentRowSummary[];
   indicators: AnalysisIndicator[];
   results: ResultRow[];
+  reviewRows: ReviewRowSummary[];
   selectedState: string;
   sources: SourceSummary[];
   voteMethodRows: VoteMethodRowSummary[];
@@ -130,9 +131,32 @@ function metricNumber(metrics: Record<string, unknown>, key: string) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
+function voteShareFallbackBenefit(row: ResultRow | undefined, hasVoteShareReviewRows: boolean) {
+  if (!row || !hasVoteShareReviewRows || (row.winner !== "Harris" && row.winner !== "Trump")) {
+    return null;
+  }
+
+  return {
+    label: `${row.winner} share`,
+    title:
+      "Vote-share-only advisory screen. Local review rows are loaded for this jurisdiction, but no stronger directional advisory indicator was generated. This label follows the certified local presidential winner and does not infer candidate benefit.",
+  };
+}
+
+function reviewRowIsVoteShareOnly(row: ReviewRowSummary) {
+  const coverageMode = row.metrics && typeof row.metrics.coverageMode === "string" ? row.metrics.coverageMode : "";
+  return (
+    coverageMode === "voteShareOnly" ||
+    (row.harrisShare !== null &&
+      row.trumpShare !== null &&
+      (row.demDropoff === null || row.demDropoff === 0) &&
+      (row.repDropoff === null || row.repDropoff === 0))
+  );
+}
+
+function possibleFlagBenefit(indicators: AnalysisIndicator[], row?: ResultRow, hasVoteShareReviewRows = false) {
   if (!indicators.length) {
-    return { label: "-", title: "No advisory indicators are loaded for this jurisdiction." };
+    return voteShareFallbackBenefit(row, hasVoteShareReviewRows) ?? { label: "-", title: "No advisory indicators are loaded for this jurisdiction." };
   }
 
   let harrisSignals = 0;
@@ -231,7 +255,10 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[]) {
     return { label: "Mixed share pattern", title };
   }
 
-  return { label: "Unclear", title: "The loaded advisory metrics do not support even a directional review inference." };
+  return (
+    voteShareFallbackBenefit(row, hasVoteShareReviewRows) ??
+    { label: "Unclear", title: "The loaded advisory metrics do not support even a directional review inference." }
+  );
 }
 function flattenPositions(coordinates: unknown): number[][] {
   if (!Array.isArray(coordinates)) {
@@ -489,6 +516,7 @@ export function ResultsExplorer({
   equipmentRows,
   indicators,
   results,
+  reviewRows,
   selectedState,
   sources,
   voteMethodRows,
@@ -620,6 +648,26 @@ export function ResultsExplorer({
     }
     return map;
   }, [indicators]);
+
+  const voteShareReviewByJurisdiction = useMemo(() => {
+    const map = new Set<string>();
+    for (const row of reviewRows) {
+      if (reviewRowIsVoteShareOnly(row)) {
+        map.add(row.jurisdictionCode);
+      }
+    }
+    return map;
+  }, [reviewRows]);
+
+  const voteShareReviewByName = useMemo(() => {
+    const map = new Set<string>();
+    for (const row of reviewRows) {
+      if (reviewRowIsVoteShareOnly(row)) {
+        map.add(normalizeName(row.jurisdictionName));
+      }
+    }
+    return map;
+  }, [reviewRows]);
 
   const sourceById = useMemo(() => {
     const map = new Map<string, SourceSummary>();
@@ -1483,7 +1531,10 @@ export function ResultsExplorer({
                     const isPreviewRow =
                       !isPinnedRow && selectedMapName && normalizeName(row.jurisdictionName) === normalizeName(selectedMapName);
                     const rowIndicators = indicatorsByJurisdiction.get(row.jurisdictionCode) ?? indicatorsByName.get(normalizeName(row.jurisdictionName)) ?? [];
-                    const benefit = possibleFlagBenefit(rowIndicators);
+                    const hasVoteShareReviewRows =
+                      voteShareReviewByJurisdiction.has(row.jurisdictionCode) ||
+                      voteShareReviewByName.has(normalizeName(row.jurisdictionName));
+                    const benefit = possibleFlagBenefit(rowIndicators, row, hasVoteShareReviewRows);
                     const rowClassName = [
                       "clickable-row",
                       isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : null,
