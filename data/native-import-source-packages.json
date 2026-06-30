@@ -152,7 +152,8 @@
       "caveats": [
         "MVIC live download endpoints are browser-protected; local official export artifacts are already stored in the repo.",
         "Turnout is county-level, not precinct-level.",
-        "Precinct boundary GeoJSON is not present in this package."
+        "Precinct boundary GeoJSON is not present in this package.",
+        "Historical baseline rows for 2020, 2016, and 2012 are not committed or parsed yet, so Michigan historical baseline capability remains disabled."
       ]
     },
     {

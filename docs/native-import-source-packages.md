@@ -66,7 +66,7 @@ Expected validation:
 | Local review rows | 4,428 |
 | Turnout rows | 83 |
 
-Caveats: MVIC live download endpoints are browser-protected, but the official downloaded artifacts are present. Turnout is county-level. Precinct boundary GeoJSON is not included.
+Caveats: MVIC live download endpoints are browser-protected, but the official downloaded artifacts are present. Turnout is county-level. Precinct boundary GeoJSON is not included. Historical baseline rows for 2020, 2016, and 2012 are not committed or parsed yet, so the Michigan historical baseline capability remains disabled.
 
 ## Pennsylvania
 
