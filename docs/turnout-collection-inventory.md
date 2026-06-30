@@ -46,6 +46,9 @@ Ask the data team for:
 - Parser hints: sheet/table name, header row, join keys, county field, precinct/ward field.
 - Caveats: inactive-voter treatment, election-day registration, provisional/absentee handling, overseas/federal-only ballots, or reporting-unit mismatch.
 
+## Nebraska Update
+
+Nebraska now retains the official Secretary of State post-general eligible-voter registration report at `data/ne-2024-post-general-eligible-voter-report.pdf`. The current ETL still uses EAC 2024 V2 turnout rows for ballots-cast normalization, with the Nebraska report recorded as a state-native denominator cross-check until a mixed-source turnout normalizer is added.
 ## Wisconsin-Specific Request
 
 For Wisconsin, ask for:
