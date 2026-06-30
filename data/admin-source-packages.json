@@ -767,16 +767,19 @@
         "expectedJurisdictions": 116
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Missouri 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "needs_inventory",
+        "why": "Missouri 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet.",
+        "nextAction": "Inventory Missouri SOS audit-related pages and county election authority publications; record whether any 2024 post-election audit selection, scope, and discrepancy reports are published or require a records request."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Missouri 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "needs_inventory",
+        "why": "Missouri 2024 CVR availability has not been inventoried or normalized into this administration context registry yet.",
+        "nextAction": "Confirm whether any Missouri state or county election authority publishes CVRs or requires county-level records requests; keep this separate from the SOS purchasable precinct-level result file."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Missouri 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "needs_inventory",
+        "why": "Missouri 2024 incident, correction, recount, and litigation artifacts have not been inventoried or normalized into this administration context registry yet.",
+        "nextAction": "Inventory Missouri SOS notices, court/recount records, county correction notices, and official election authority updates before adding any administration-context rows."
       }
     },
     {

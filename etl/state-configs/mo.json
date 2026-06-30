@@ -70,6 +70,72 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Missouri county map joins. Kansas City is reported separately by the Missouri results PDF and does not have a separate county polygon in this geometry file.",
       "status": "loaded"
+    },
+    {
+      "id": "mo-2024-general-turnout-pdf",
+      "category": "Official 2024 general election voter turnout PDF",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/Nov2024OfficialVoterTurnout.pdf",
+      "localFile": "data/mo-2024-general-turnout.pdf",
+      "parser": "missouriSosTurnoutPdf",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Official Missouri Secretary of State 2024 General Election voter turnout report for November 5, 2024.",
+      "confidence": "Official voter-turnout PDF with registered, active, inactive, actual-voter, and turnout percentage rows by county/reporting jurisdiction.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-2024-general-turnout",
+      "category": "Normalized official 2024 general election turnout rows",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/Nov2024OfficialVoterTurnout.pdf",
+      "localFile": "data/mo-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Normalized from the Missouri Secretary of State 2024 General Election voter turnout report by scripts/normalize-mo-sos-pdfs.mjs.",
+      "confidence": "State-native registered-voter denominator and actual-voter rows replace the EAC fallback for Missouri turnout display.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-2012-general-results-by-county-pdf",
+      "category": "Official 2012 general election presidential county results PDF",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/OfficialResults11-6-12.pdf",
+      "localFile": "data/mo-2012-general-election-by-county.pdf",
+      "parser": "missouriSosHistoricalCountyPdf",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Official Missouri Secretary of State 2012 general election U.S. President and Vice President county/reporting-jurisdiction results.",
+      "confidence": "Official historical county/reporting-jurisdiction presidential rows used only as contextual baseline data.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-2016-general-results-by-county-pdf",
+      "category": "Official 2016 general election presidential county results PDF",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November82016-GeneralElection.pdf",
+      "localFile": "data/mo-2016-general-election-by-county.pdf",
+      "parser": "missouriSosHistoricalCountyPdf",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Official Missouri Secretary of State 2016 general election U.S. President and Vice President county/reporting-jurisdiction results.",
+      "confidence": "Official historical party-column county/reporting-jurisdiction presidential rows used only as contextual baseline data; county-level write-in detail is not exposed in the parsed presidential table.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-2020-general-results-by-county-pdf",
+      "category": "Official 2020 general election presidential county results PDF",
+      "url": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November32020.pdf",
+      "localFile": "data/mo-2020-general-election-by-county.pdf",
+      "parser": "missouriSosHistoricalCountyPdf",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Official Missouri Secretary of State 2020 general election U.S. President and Vice President county/reporting-jurisdiction results.",
+      "confidence": "Official historical county/reporting-jurisdiction presidential rows used only as contextual baseline data.",
+      "status": "loaded"
+    },
+    {
+      "id": "mo-historical-presidential-baseline",
+      "category": "Normalized official 2012/2016/2020 presidential county baseline rows",
+      "url": "https://www.sos.mo.gov/elections/results",
+      "localFile": "data/mo-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Missouri Secretary of State",
+      "timestampBasis": "Normalized from Missouri Secretary of State official 2012, 2016, and 2020 general election county/reporting-jurisdiction presidential PDFs by scripts/normalize-mo-sos-pdfs.mjs.",
+      "confidence": "Contextual historical baselines only. The 2016 by-county presidential PDF exposes named party columns but not county-level write-in detail, so 2016 other/total values are the sum of visible non-major-party columns.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -92,23 +158,23 @@
     "warning": "Missouri review rows are county/reporting-jurisdiction President-versus-U.S. Senate comparisons from the official Secretary of State results-by-county PDF. Kansas City is reported separately from counties by the source PDF. These rows are useful for county/reporting-jurisdiction review, but they are not precinct-level vote-share scatter plots."
   },
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "mo-2024-eac-turnout",
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "mo-2024-general-turnout",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
+    "registrationDenominatorTiming": "sosElectionTurnoutReport",
     "sourceLevel": "jurisdiction",
-    "notes": "Missouri turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Missouri turnout rows use the official Secretary of State 2024 General Election voter turnout report, normalized by scripts/normalize-mo-sos-pdfs.mjs.",
     "warningRequired": false,
     "expected": {
       "rowCount": 116,
-      "ballotsCast": 3126837,
-      "registeredVoters": 4388787
+      "ballotsCast": 2995376,
+      "registeredVoters": 4433383
     }
   },
   "expected": {
     "jurisdictions": 116,
     "resultRows": 116,
-    "sources": 6,
+    "sources": 12,
     "geometryFeatures": 115,
     "stateTotal": 2995327,
     "trump": 1751986,
@@ -123,6 +189,19 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "mo-historical-presidential-baseline",
+    "warning": "Missouri historical baseline rows are county/reporting-jurisdiction presidential results from official Secretary of State 2012, 2016, and 2020 PDFs. Use them as contextual baseline rows, not as 2024 certified data. The 2016 PDF exposes party columns but not county-level write-in detail, so 2016 other/total values are visible-column sums.",
+    "expected": {
+      "rowCount": 348,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
