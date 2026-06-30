@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "id-2024-general-official-congressional-map",
+      "category": "Official 2024 General Election U.S. House county map results",
+      "url": "https://archive.voteidaho.gov/results/2024/general/congressional.html",
+      "localFile": "data/id-2024-general-us-house.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Idaho Secretary of State",
+      "timestampBasis": "Idaho Secretary of State official 2024 General Election congressional results map archive.",
+      "confidence": "Official Vote Idaho congressional map widgets normalized by scripts/normalize_id_official_congressional_results.py to county-level Democratic, Republican, and other U.S. House comparison totals. Ada County is split across congressional districts on the source page and aggregated back to county scope.",
+      "status": "loaded"
+    },
+    {
       "id": "id-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2716%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -56,20 +67,20 @@
   "expected": {
     "jurisdictions": 44,
     "resultRows": 44,
-    "sources": 3,
+    "sources": 4,
     "geometryFeatures": 44,
     "stateTotal": 904967,
     "trump": 605246,
     "harris": 274972,
     "other": 24749,
-    "reviewRows": 0,
+    "reviewRows": 44,
     "turnoutRows": 44
   },
   "capabilities": {
     "sourcePlanner": true,
     "certifiedResults": true,
     "map": true,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   },
@@ -79,5 +90,12 @@
     "otherColumns": [
       "other"
     ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "id-2024-general-official-congressional-map",
+    "comparisonContest": "United States Representative",
+    "coverageMode": "presidentVsUSHouse",
+    "warning": "Idaho review rows are county-level President-versus-U.S. House comparisons from the official Vote Idaho archive. The public archive does not expose presidential precinct-level rows in the collected source package; U.S. House is district-based, so these are advisory screening inputs, not confirmed findings."
   }
 }
