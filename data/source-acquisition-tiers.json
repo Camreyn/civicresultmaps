@@ -488,31 +488,44 @@
       "stateName": "Indiana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_equipment",
       "tier": "tier_2_official_dashboard_endpoint",
-      "reportingGrain": "county",
+      "reportingGrain": "county results plus supplemental precinct review",
       "exportFormats": [
-        "archived ENR JSON"
+        "archived ENR JSON",
+        "supplemental MIT/OpenElections CSV",
+        "EAC fallback turnout CSV",
+        "Verified Voting equipment CSV"
       ],
       "sourceUrls": [
-        "https://enr.indianavoters.in.gov/"
+        "https://enr.indianavoters.in.gov/",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://doi.org/10.7910/DVN/NYTPDU",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18"
       ],
       "exampleUrls": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json"
       ],
       "availableFields": [
-        "county President rows",
-        "county U.S. Senate rows",
-        "county turnout fallback"
+        "official county President rows",
+        "official county U.S. Senate rows",
+        "supplemental precinct President-versus-U.S.-Senate review rows",
+        "EAC county turnout fallback",
+        "county election equipment context"
       ],
       "missingFields": [
-        "precinct/subcounty result rows"
+        "official precinct/subcounty President rows",
+        "official precinct/subcounty U.S. Senate rows at the same grain",
+        "state-native turnout and registered-voter denominator rows",
+        "precinct boundary geometry",
+        "2020/2016/2012 historical baselines",
+        "audit, recount, CVR availability, incident, and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson package loaded",
+      "parserStatus": "indianaEnrCountyJson loaded for official county results; localComparisonCsv loaded for MIT/OpenElections supplemental precinct review rows; equipment context CSV present",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Archived ENR category files contain 92 county RegionSummary rows, not precinct rows.",
-      "nextAction": "Find whether Indiana exposes precinct/subcounty ENR exports elsewhere."
+      "caveats": "Archived ENR category files contain 92 county RegionSummary rows, not precinct rows. MIT/OpenElections review rows are supplemental advisory inputs with published Indiana caveats; certified totals remain official Indiana ENR. Equipment context is county-level administration context only.",
+      "nextAction": "Request official Indiana precinct/subcounty President and U.S. Senate rows, state-native turnout denominators, precinct geometry, historical baselines, and audit/recount/CVR/incident/correction records before upgrading beyond supplemental local review."
     },
     {
       "state": "KS",
