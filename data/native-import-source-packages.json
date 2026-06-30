@@ -788,23 +788,25 @@
       "state": "NH",
       "name": "New Hampshire",
       "priority": 9,
-      "currentStatus": "official_town_ward_review_package_collected",
+      "currentStatus": "official_town_ward_review_turnout_package_collected",
       "officialSourcePages": [
         "https://www.sos.nh.gov/2024-general-election-results",
         "https://web.archive.org/web/20260130123951id_/https://www.sos.nh.gov/2024-general-election-results",
         "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls",
-        "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-governor_3.xls"
+        "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-governor_3.xls",
+        "https://web.archive.org/web/20250311214424id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-1_3.xlsx",
+        "https://web.archive.org/web/20250201102742id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-2_4.xlsx",
+        "https://web.archive.org/web/20250611055417id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-ballots-cast_14.xls",
+        "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx"
       ],
       "requiredArtifacts": [
-        "clean same-grain U.S. House or Executive Council comparison rows if available",
-        "historical President-versus-Governor ticket-splitting baseline",
+        "historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
         "town/ward boundary geometry if map overlays below county level are required",
-        "state-native turnout denominator artifact if replacing EAC turnout fallback",
-        "post-election audit, recount, CVR availability, and incident/correction artifacts"
+        "normalized post-election audit, recount, CVR availability, incident/correction, and litigation artifacts"
       ],
-      "preferredComparisonContest": "Governor currently loaded as a low-confidence proxy; corroborate with U.S. House, Executive Council, or historical baseline rows before interpreting direction as candidate benefit.",
-      "parserNeeded": "newHampshireTownWardCsv loaded for 10 county result rows, 304 town/ward President-versus-Governor review rows, and 320 EAC turnout rows. Directional screen confidence is low for Governor-only comparisons.",
-      "blocker": "New Hampshire now has official town/ward President-versus-Governor review rows from archived Secretary of State legacy Excel workbooks. The live SOS page still returns access denied from this environment, so the retained archive URLs and local artifacts are the reproducible source path. Because the Governor race shows large ticket splitting, Harris/DEM Directional Screen values are low-confidence proxies until corroborating comparison contests, historical baselines, turnout denominators, and administration records are collected."
+      "preferredComparisonContest": "U.S. House, loaded from official Congressional District 1 and 2 town/ward workbooks; keep district-based comparison caveat visible.",
+      "parserNeeded": "newHampshireTownWardCsv loaded for 10 county result rows, 304 town/ward President-versus-U.S.-House review rows, and 304 state-native town/ward turnout rows from official ballots-cast and names-on-checklist workbooks.",
+      "blocker": "New Hampshire now has official town/ward President-versus-U.S. House review rows and state-native town/ward turnout denominators from archived Secretary of State workbooks. The live SOS page still returns access denied from this environment, so retained archive URLs and local artifacts are the reproducible source path. Remaining blockers are historical split-ticket baselines, town/ward geometry, and normalized audit/recount/CVR/incident/correction/litigation records."
     },
     {
       "state": "NY",

@@ -6,17 +6,6 @@
   "office": "President",
   "sources": [
     {
-      "id": "nh-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
-      "url": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/nh-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
-      "authority": "U.S. Election Assistance Commission",
-      "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
-      "status": "loaded"
-    },
-    {
       "id": "nh-2024-ge-president-workbook",
       "category": "Official archived 2024 general election President town/ward workbook",
       "url": "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls",
@@ -40,13 +29,13 @@
     },
     {
       "id": "nh-2024-town-ward-president-governor",
-      "category": "Normalized 2024 general election President and Governor town/ward CSV",
+      "category": "Normalized 2024 general election President, Governor, U.S. House, turnout, and checklist town/ward CSV",
       "url": "https://www.sos.nh.gov/2024-general-election-results",
       "localFile": "data/nh-2024-town-ward-president-governor.csv",
       "parser": "newHampshireTownWardCsv",
       "authority": "New Hampshire Secretary of State",
-      "timestampBasis": "Derived from archived official New Hampshire Secretary of State President and Governor workbooks with scripts/normalize-nh-general-workbooks.mjs.",
-      "confidence": "Deterministic normalization of official workbook sheets; President and Governor workbook totals reconcile to the summary sheets.",
+      "timestampBasis": "Derived from archived official New Hampshire Secretary of State President, Governor, U.S. House, ballots-cast, and names-on-checklist workbooks with scripts/normalize-nh-general-workbooks.mjs.",
+      "confidence": "Deterministic normalization of official workbook sheets; President and Governor workbook totals reconcile to summary sheets, U.S. House rows are same-grain district comparisons, and state-native turnout/checklist rows are included with a one-vote ballots-cast summary/detail caveat.",
       "status": "loaded"
     },
     {
@@ -59,33 +48,88 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for New Hampshire county map joins; town/ward boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "nh-2024-ge-congressional-district-1-workbook",
+      "category": "Official archived 2024 general election U.S. House District 1 town/ward workbook",
+      "url": "https://web.archive.org/web/20250311214424id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-1_3.xlsx",
+      "localFile": "data/nh-2024-ge-congressional-district-1.xlsx",
+      "parser": "referenceLegacyXlsx",
+      "authority": "New Hampshire Secretary of State",
+      "timestampBasis": "Internet Archive capture of official New Hampshire Secretary of State 2024 General Election Congressional District 1 workbook.",
+      "confidence": "Official state-hosted workbook archived by the Internet Archive; normalized by scripts/normalize-nh-general-workbooks.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-2024-ge-congressional-district-2-workbook",
+      "category": "Official archived 2024 general election U.S. House District 2 town/ward workbook",
+      "url": "https://web.archive.org/web/20250201102742id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-2_4.xlsx",
+      "localFile": "data/nh-2024-ge-congressional-district-2.xlsx",
+      "parser": "referenceLegacyXlsx",
+      "authority": "New Hampshire Secretary of State",
+      "timestampBasis": "Internet Archive capture of official New Hampshire Secretary of State 2024 General Election Congressional District 2 workbook.",
+      "confidence": "Official state-hosted workbook archived by the Internet Archive; normalized by scripts/normalize-nh-general-workbooks.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-2024-ge-ballots-cast-workbook",
+      "category": "Official archived 2024 general election town/ward ballots-cast workbook",
+      "url": "https://web.archive.org/web/20250611055417id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-ballots-cast_14.xls",
+      "localFile": "data/nh-2024-ge-ballots-cast.xls",
+      "parser": "referenceLegacyXls",
+      "authority": "New Hampshire Secretary of State",
+      "timestampBasis": "Internet Archive capture of official New Hampshire Secretary of State 2024 General Election ballots-cast workbook.",
+      "confidence": "Official state-hosted workbook archived by the Internet Archive; normalized by scripts/normalize-nh-general-workbooks.mjs. Detailed town/ward rows sum to 831,468 ballots cast while the county summary totals 831,467 after a source correction note.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-2024-ge-names-on-checklist-workbook",
+      "category": "Official archived 2024 general election town/ward names-on-checklist workbook",
+      "url": "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx",
+      "localFile": "data/nh-2024-ge-names-on-checklist.xlsx",
+      "parser": "referenceLegacyXlsx",
+      "authority": "New Hampshire Secretary of State",
+      "timestampBasis": "Internet Archive capture of official New Hampshire Secretary of State 2024 General Election names-on-checklist workbook.",
+      "confidence": "Official state-hosted workbook archived by the Internet Archive; normalized by scripts/normalize-nh-general-workbooks.mjs as town/ward registered-voter denominator context.",
+      "status": "loaded"
+    },
+    {
+      "id": "nh-2024-admin-source-inventory",
+      "category": "New Hampshire 2024 administration source inventory and blockers",
+      "url": "https://www.sos.nh.gov/2024-general-election-results",
+      "localFile": "data/nh-2024-admin-source-inventory.json",
+      "parser": "newHampshireAdminSourceInventoryJson",
+      "authority": "New Hampshire Secretary of State; official public records and GIS request paths",
+      "timestampBasis": "Worker source pass and Internet Archive CDX enumeration on 2026-06-30.",
+      "confidence": "Inventory artifact documents loaded comparison/turnout artifacts, official recount sheet candidates, county-only geometry status, and audit/CVR/source-request blockers. It is context only, not a normalized incident or audit dataset.",
+      "status": "loaded"
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "nh-2024-eac-turnout",
-    "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "New Hampshire turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
-    "warningRequired": true,
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "nh-2024-town-ward-president-governor",
+    "denominatorType": "namesOnChecklist",
+    "registrationDenominatorTiming": "postElectionNamesOnChecklist",
+    "sourceLevel": "town_ward",
+    "notes": "New Hampshire turnout rows now use official Secretary of State town/ward ballots-cast and names-on-checklist workbooks normalized into the NH town/ward CSV. Detailed ballots-cast rows sum to 831,468, one above the workbook county summary total after the source correction note.",
+    "warningRequired": false,
     "expected": {
-      "rowCount": 320,
-      "ballotsCast": 829090,
-      "registeredVoters": 1008952
+      "rowCount": 304,
+      "ballotsCast": 831468,
+      "registeredVoters": 1013075
     }
   },
   "expected": {
     "jurisdictions": 10,
     "resultRows": 10,
-    "sources": 5,
+    "sources": 9,
     "geometryFeatures": 10,
     "stateTotal": 826189,
     "trump": 395523,
     "harris": 418488,
     "other": 12178,
     "reviewRows": 304,
-    "turnoutRows": 320
+    "turnoutRows": 304
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -108,16 +152,15 @@
   "reviewCharts": {
     "format": "newHampshireTownWardCsv",
     "sourceId": "nh-2024-town-ward-president-governor",
-    "comparisonContest": "Governor",
-    "coverageMode": "presidentVsGovernor",
-    "directionalScreenConfidence": "low",
-    "directionalScreenReason": "Governor is the only same-grain comparison contest currently loaded for New Hampshire, and 2024 Governor ticket splitting is large enough to drive Harris/DEM directional labels without implying an election-administration anomaly.",
+    "comparisonContest": "U.S. House",
+    "coverageMode": "presidentVsHouseDistrict",
+    "directionalScreenConfidence": "medium",
+    "directionalScreenReason": "U.S. House district workbooks provide same town/ward-grain Democratic and Republican comparison rows for all loaded New Hampshire President rows. The comparison is cleaner than Governor, but still district-based rather than a single statewide contest.",
     "corroborationNeeded": [
-      "town/ward U.S. House or Executive Council comparison rows where district coverage is clean",
-      "historical New Hampshire President-versus-Governor split-ticket baselines",
-      "state-native turnout or registration denominators",
-      "post-election audit, recount, CVR availability, and incident/correction records"
+      "historical New Hampshire President-versus-U.S. House and President-versus-Governor split-ticket baselines",
+      "town/ward boundary geometry or an official reporting-unit crosswalk",
+      "normalized post-election audit, recount, CVR availability, incident/correction, and litigation records"
     ],
-    "warning": "New Hampshire review rows are town/ward-level President-versus-Governor comparisons from archived official Secretary of State workbooks. Governor is used because New Hampshire did not have a 2024 U.S. Senate race. Directional labels from this comparison are low-confidence ticket-splitting proxies until corroborated by additional contests, historical baselines, or administration records. Town/ward boundary geometry is not included."
+    "warning": "New Hampshire review rows are town/ward-level President-versus-U.S.-House comparisons from archived official Secretary of State workbooks. U.S. House is a same-grain comparison but district-based rather than a single statewide contest, so directional labels remain advisory screening context. State-native ballots-cast and names-on-checklist turnout rows are loaded from official workbooks; detailed ballots-cast rows sum one vote above the county summary after a source correction note. Town/ward boundary geometry is not included."
   }
 }
