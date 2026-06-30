@@ -1155,76 +1155,78 @@ def _local_comparison_review_rows(
     if section.get("format") != "localComparisonCsv":
         return [], {"nativeReviewRows": 0}
 
-    source = sources[section["sourceId"]]
+    source_ids = section.get("sourceIds") or [section["sourceId"]]
     valid_counties = {row["jurisdictionName"] for row in result_rows}
     review_rows: list[dict[str, Any]] = []
-    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
-        reader = csv.DictReader(handle)
-        required = {
-            "state",
-            "election_year",
-            "county",
-            "local_unit",
-            "pres_harris",
-            "pres_trump",
-            "pres_other",
-            "pres_total",
-            "comparison_dem",
-            "comparison_rep",
-            "comparison_other",
-        }
-        missing = sorted(required.difference(set(reader.fieldnames or [])))
-        if missing:
-            raise ValueError(f"{missing_label} local comparison CSV missing columns: {', '.join(missing)}")
+    for source_id in source_ids:
+        source = sources[source_id]
+        with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            required = {
+                "state",
+                "election_year",
+                "county",
+                "local_unit",
+                "pres_harris",
+                "pres_trump",
+                "pres_other",
+                "pres_total",
+                "comparison_dem",
+                "comparison_rep",
+                "comparison_other",
+            }
+            missing = sorted(required.difference(set(reader.fieldnames or [])))
+            if missing:
+                raise ValueError(f"{missing_label} local comparison CSV missing columns: {', '.join(missing)}")
 
-        for index, row in enumerate(reader, start=2):
-            state = str(row.get("state") or "").strip().upper()
-            if state != config.code:
-                raise ValueError(f"{missing_label} local comparison row {index} has wrong state: {row.get('state')!r}")
-            year = int_text(row.get("election_year"))
-            if year != config.election_year:
-                raise ValueError(f"{missing_label} local comparison row {index} has wrong election year: {row.get('election_year')!r}")
-            county = county_normalizer(row.get("county"))
-            if county not in valid_counties:
-                raise ValueError(f"{missing_label} local comparison row {index} does not match a presidential county row: {row.get('county')!r}")
-            local_unit = str(row.get("local_unit") or "").strip()
-            if not local_unit:
-                raise ValueError(f"{missing_label} local comparison row {index} is missing local_unit")
+            for index, row in enumerate(reader, start=2):
+                state = str(row.get("state") or "").strip().upper()
+                if state != config.code:
+                    raise ValueError(f"{missing_label} local comparison row {index} has wrong state: {row.get('state')!r}")
+                year = int_text(row.get("election_year"))
+                if year != config.election_year:
+                    raise ValueError(f"{missing_label} local comparison row {index} has wrong election year: {row.get('election_year')!r}")
+                county = county_normalizer(row.get("county"))
+                if county not in valid_counties:
+                    raise ValueError(f"{missing_label} local comparison row {index} does not match a presidential county row: {row.get('county')!r}")
+                local_unit = str(row.get("local_unit") or "").strip()
+                if not local_unit:
+                    raise ValueError(f"{missing_label} local comparison row {index} is missing local_unit")
 
-            harris = int_text(row.get("pres_harris"))
-            trump = int_text(row.get("pres_trump"))
-            other = int_text(row.get("pres_other"))
-            total = int_text(row.get("pres_total")) or harris + trump + other
-            if not total:
-                continue
-            comparison_dem = int_text(row.get("comparison_dem"))
-            comparison_rep = int_text(row.get("comparison_rep"))
-            comparison_other = int_text(row.get("comparison_other"))
-            dem_dropoff = pct(harris - comparison_dem, total)
-            rep_dropoff = pct(trump - comparison_rep, total)
-            if str(row.get("dem_dropoff") or "").strip():
-                dem_dropoff = round(float(str(row.get("dem_dropoff")).replace("%", "")), 4)
-            if str(row.get("rep_dropoff") or "").strip():
-                rep_dropoff = round(float(str(row.get("rep_dropoff")).replace("%", "")), 4)
-            review_rows.append(
-                {
-                    "county": county,
-                    "localUnit": local_unit,
-                    "totalVotes": total,
-                    "harris": harris,
-                    "trump": trump,
-                    "harrisShare": pct(harris, total),
-                    "trumpShare": pct(trump, total),
-                    "demDropoff": dem_dropoff,
-                    "repDropoff": rep_dropoff,
-                    "coverageMode": section.get("coverageMode", "presidentVsComparisonContest"),
-                    "comparisonContest": section.get("comparisonContest", ""),
-                    "comparisonDemVotes": comparison_dem,
-                    "comparisonRepVotes": comparison_rep,
-                    "comparisonOtherVotes": comparison_other,
-                    "sourceId": source.id,
-                }
-            )
+                harris = int_text(row.get("pres_harris"))
+                trump = int_text(row.get("pres_trump"))
+                other = int_text(row.get("pres_other"))
+                total = int_text(row.get("pres_total")) or harris + trump + other
+                if not total:
+                    continue
+                comparison_dem = int_text(row.get("comparison_dem"))
+                comparison_rep = int_text(row.get("comparison_rep"))
+                comparison_other = int_text(row.get("comparison_other"))
+                dem_dropoff = pct(harris - comparison_dem, total)
+                rep_dropoff = pct(trump - comparison_rep, total)
+                if str(row.get("dem_dropoff") or "").strip():
+                    dem_dropoff = round(float(str(row.get("dem_dropoff")).replace("%", "")), 4)
+                if str(row.get("rep_dropoff") or "").strip():
+                    rep_dropoff = round(float(str(row.get("rep_dropoff")).replace("%", "")), 4)
+                review_rows.append(
+                    {
+                        "county": county,
+                        "localUnit": local_unit,
+                        "totalVotes": total,
+                        "harris": harris,
+                        "trump": trump,
+                        "harrisShare": pct(harris, total),
+                        "trumpShare": pct(trump, total),
+                        "demDropoff": dem_dropoff,
+                        "repDropoff": rep_dropoff,
+                        "coverageMode": section.get("coverageMode", "presidentVsComparisonContest"),
+                        "comparisonContest": section.get("comparisonContest", ""),
+                        "comparisonDemVotes": comparison_dem,
+                        "comparisonRepVotes": comparison_rep,
+                        "comparisonOtherVotes": comparison_other,
+                        "sourceId": source.id,
+                    }
+                )
 
     return sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])), {
         "nativeReviewRows": len(review_rows),
@@ -6063,8 +6065,3 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         "turnoutRows": turnout_rows,
         "metrics": metrics,
     }
-
-
-
-
-

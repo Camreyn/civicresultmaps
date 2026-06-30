@@ -1107,28 +1107,32 @@
         "archived official statewide results",
         "county totals",
         "Clark County CVR zip",
-        "normalized Clark precinct review CSV"
+        "Washoe County CVR csv",
+        "normalized Clark/Washoe precinct review CSVs"
       ],
       "sourceUrls": [
         "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
         "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
-        "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
+        "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+        "https://www.washoecounty.gov/voters/results/archivedresults.php",
+        "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
       ],
       "exampleUrls": [],
       "availableFields": [
         "county President rows",
         "county U.S. Senate rows",
-        "Clark County precinct President/Senate CVR review rows"
+        "Clark County precinct President/Senate CVR review rows",
+        "Washoe County precinct President/Senate CVR review rows"
       ],
       "missingFields": [
-        "local/precinct rows for 16 non-Clark jurisdictions",
+        "local/precinct rows for 15 non-Clark/non-Washoe jurisdictions",
         "state-native turnout denominator"
       ],
       "parserStatus": "native partial subcounty review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Clark County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained.",
-      "nextAction": "Collect official local result exports or records-request productions for the 16 non-Clark Nevada jurisdictions and a state-native turnout denominator."
+      "caveats": "Clark County and Washoe County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained.",
+      "nextAction": "Collect official local result exports or records-request productions for the 15 non-Clark/non-Washoe Nevada jurisdictions and a state-native turnout denominator."
     },
     {
       "state": "NY",
