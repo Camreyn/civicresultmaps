@@ -525,18 +525,17 @@
       "state": "KY",
       "name": "Kentucky",
       "priority": 3,
-      "currentStatus": "official_precinct_review_package_collected_partial_ocr_gap",
+      "currentStatus": "official_precinct_review_package_collected",
       "officialSourcePages": [
         "https://elect.ky.gov/results/Pages/default.aspx",
         "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx"
       ],
       "requiredArtifacts": [
-        "OCR or manual extraction for Elliott County official recap PDF",
         "precinct boundary geometry if subcounty map overlays are required"
       ],
       "preferredComparisonContest": "U.S. House by district; loaded as precinct-level President-versus-U.S.-House review rows where the county recap PDF includes both contests.",
-      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 119 county result rows and 3,060 precinct review rows; Elliott County still needs OCR/manual extraction.",
-      "blocker": "Kentucky now has official county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page. The parser loads 119 county result rows and 3,060 precinct-level President-versus-U.S.-House review rows. Elliott County text extraction is image-only from this environment, and six counties are county-only/no precinct-review from the extracted text."
+      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 120 county result rows and 3,067 precinct review rows; Elliott County uses a manual transcription from rendered official PDF pages because its PDF is image-only.",
+      "blocker": "Kentucky now has official county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page. The parser loads 120 county result rows and 3,067 precinct-level President-versus-U.S.-House review rows. Elliott County text extraction is image-only from this environment, so its President and U.S. House rows are manually transcribed from rendered official PDF pages; six counties are county-only/no precinct-review from the extracted text."
     },
     {
       "state": "MS",

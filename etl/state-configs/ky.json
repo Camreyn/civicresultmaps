@@ -35,7 +35,7 @@
       "parser": "officialCountyRecapPdfDirectory",
       "authority": "Kentucky State Board of Elections",
       "timestampBasis": "Official county recap PDFs from the Kentucky State Board of Elections 2024 General Recap Sheets page.",
-      "confidence": "Official county recap PDFs retained as source artifacts. Most are text-extractable precinct result reports; Elliott County requires OCR/manual extraction before it can be parsed from this environment.",
+      "confidence": "Official county recap PDFs retained as source artifacts. Most are text-extractable precinct result reports; Elliott County is image-only and is covered by a manual transcription in the derived text artifact.",
       "status": "loaded"
     },
     {
@@ -45,7 +45,7 @@
       "localFile": "data/ky-2024-general-recap-text",
       "parser": "kentuckyGeneralRecapTextDirectory",
       "authority": "Kentucky State Board of Elections",
-      "timestampBasis": "Text extracted from the committed official Kentucky county recap PDFs with scripts/extract-ky-recap-pdf-text.mjs.",
+      "timestampBasis": "Text extracted from the committed official Kentucky county recap PDFs with scripts/extract-ky-recap-pdf-text.mjs; Elliott County is manually transcribed from rendered official PDF pages.",
       "confidence": "Deterministic text extraction used because the Python ETL has no PDF parser dependency. Official PDFs remain committed beside the derived text.",
       "status": "loaded"
     },
@@ -77,13 +77,13 @@
   },
   "expected": {
     "jurisdictions": 120,
-    "resultRows": 119,
+    "resultRows": 120,
     "sources": 5,
-    "stateTotal": 2033200,
-    "trump": 1313188,
-    "harris": 690489,
-    "other": 29523,
-    "reviewRows": 3060,
+    "stateTotal": 2036111,
+    "trump": 1315523,
+    "harris": 691021,
+    "other": 29567,
+    "reviewRows": 3067,
     "turnoutRows": 120
   },
   "capabilities": {
@@ -99,12 +99,12 @@
     "sourceId": "ky-2024-general-recap-text",
     "pdfSourceId": "ky-2024-general-recap-pdfs",
     "comparisonContest": "United States Representative",
-    "missingCountyCaveat": "Elliott County official PDF is image-only in current extraction and needs OCR/manual extraction before Kentucky reaches all 120 counties."
+    "manualTranscriptionCaveat": "Elliott County official PDF is image-only; the derived text artifact includes a manual transcription of President and U.S. House rows from rendered official PDF pages."
   },
   "reviewCharts": {
     "format": "kentuckyGeneralRecapTextDirectory",
     "sourceId": "ky-2024-general-recap-text",
     "comparisonContest": "United States Representative",
-    "warning": "Kentucky review rows are precinct-level President-versus-U.S. House comparisons extracted from official county recap PDFs. U.S. House is district-based and some counties have uncontested or county-only rows; Elliott County still needs OCR/manual extraction."
+    "warning": "Kentucky review rows are precinct-level President-versus-U.S. House comparisons extracted from official county recap PDFs. U.S. House is district-based and some counties have uncontested or county-only rows; Elliott County is image-only and uses a manual transcription of the President and U.S. House rows from the official PDF scan."
   }
 }
