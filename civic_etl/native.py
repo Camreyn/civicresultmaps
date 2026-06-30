@@ -5833,6 +5833,8 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "TX" and config.raw.get("certifiedResults", {}).get("format") == "texasCountyJson":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _texas_county_json_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeTexasCountyJsonVtdReview"
@@ -5841,6 +5843,7 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
     if config.code == "NH" and config.raw.get("certifiedResults", {}).get("format") == "newHampshireTownWardCsv":

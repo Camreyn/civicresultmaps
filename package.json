@@ -110,6 +110,7 @@
     "etl:requests:electronic-integrity:sync": "node scripts/sync-electronic-integrity-request-operations.mjs",
     "validate:electronic-integrity-requests": "node scripts/sync-electronic-integrity-request-operations.mjs --dry-run",
     "etl:reconcile:tx:vtd": "node scripts/report-tx-vtd-reconciliation.mjs",
+    "etl:collect:tx:historical": "node scripts/collect-tx-historical-baseline.mjs",
     "etl:collect:ma:county": "node scripts/collect-ma-county-results.mjs",
     "etl:collect:ma:historical": "node scripts/collect-ma-historical-baseline.mjs",
     "etl:prepare:ca": "node scripts/normalize-ca-sov-workbooks.mjs",

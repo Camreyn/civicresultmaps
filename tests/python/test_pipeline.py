@@ -490,6 +490,14 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 9712)
         self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 18686517)
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 11460798)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalRows"], 762)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalYears"], [2012, 2016, 2020])
+        self.assertEqual(len(artifact["native"]["historicalRows"]), 762)
+        first_historical = artifact["native"]["historicalRows"][0]
+        self.assertEqual(first_historical["jurisdictionName"], "Anderson County")
+        self.assertEqual(first_historical["electionYear"], 2012)
+        self.assertEqual(first_historical["demVotes"], 3813)
+        self.assertEqual(first_historical["repVotes"], 12262)
         harris = next(
             row
             for row in artifact["native"]["reviewRows"]
