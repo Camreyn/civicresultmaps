@@ -81,6 +81,50 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for New York county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "ny-2012-general-official-pdf",
+      "category": "Official 2012 general election results PDF",
+      "url": "https://ny.elstats-staging.com/eng/files/serve/106",
+      "localFile": "data/ny-2012-general.pdf",
+      "parser": "officialHistoricalResultsPdf",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "Official NYSBOE archive document 106, 2012-11-06_General.pdf, compiled from official records and republished June 30, 2023.",
+      "confidence": "Official historical general-election PDF retained as source artifact for county presidential baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "ny-2016-general-official-pdf",
+      "category": "Official 2016 general election results PDF",
+      "url": "https://ny.elstats-staging.com/eng/files/serve/116",
+      "localFile": "data/ny-2016-general.pdf",
+      "parser": "officialHistoricalResultsPdf",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "Official NYSBOE archive document 116, 2016-11-08_General.pdf, compiled from official records and republished June 30, 2023.",
+      "confidence": "Official historical general-election PDF retained as source artifact for county presidential baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "ny-2020-general-official-pdf",
+      "category": "Official 2020 general election results PDF",
+      "url": "https://ny.elstats-staging.com/eng/files/serve/128",
+      "localFile": "data/ny-2020-general.pdf",
+      "parser": "officialHistoricalResultsPdf",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "Official NYSBOE archive document 128, 2020-11-03_General.pdf, compiled from official records and republished June 30, 2023.",
+      "confidence": "Official historical general-election PDF retained as source artifact for county presidential baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "ny-historical-presidential-official-pdfs",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://elections.ny.gov/election-results",
+      "localFile": "data/ny-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "New York State Board of Elections",
+      "timestampBasis": "County presidential rows normalized by scripts/collect-ny-historical-baseline.mjs from official NYSBOE general-election PDFs for 2012, 2016, and 2020.",
+      "confidence": "Official county historical presidential baselines used for context only. 2012 and 2016 other-vote totals include the separate NYSBOE official presidential write-in final total pages; 2020 uses the presidential table write-in column.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -115,7 +159,7 @@
   "expected": {
     "jurisdictions": 62,
     "resultRows": 62,
-    "sources": 7,
+    "sources": 11,
     "geometryFeatures": 62,
     "stateTotal": 8381429,
     "trump": 3579519,
@@ -130,6 +174,19 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ny-historical-presidential-official-pdfs",
+    "warning": "New York historical baseline rows are county-level presidential results from official NYSBOE general-election PDFs for 2012, 2016, and 2020. Use them as contextual baseline rows, not as 2024 certified data. 2012 and 2016 include separate official presidential write-in final totals; 2020 uses the presidential table write-in column.",
+    "expected": {
+      "rowCount": 186,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }

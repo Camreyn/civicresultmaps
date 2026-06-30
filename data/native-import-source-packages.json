@@ -747,23 +747,30 @@
       "state": "NY",
       "name": "New York",
       "priority": 10,
-      "currentStatus": "official_county_review_package_collected",
+      "currentStatus": "official_county_review_historical_package_collected",
       "officialSourcePages": [
         "https://elections.ny.gov/election-results",
         "https://results.elections.ny.gov/",
         "https://results.elections.ny.gov/document/476",
         "https://results.elections.ny.gov/contest/5591",
-        "https://ny.elstats-staging.com/eng/files/serve/476"
+        "https://ny.elstats-staging.com/eng/files/serve/476",
+        "https://ny.elstats-staging.com/eng/files/serve/106",
+        "https://ny.elstats-staging.com/eng/files/serve/116",
+        "https://ny.elstats-staging.com/eng/files/serve/128"
       ],
       "requiredArtifacts": [
         "official archive PDF document 476 for 2024-11-05 Presidential General results",
         "normalized county President CSV extracted from official PDF",
         "normalized county U.S. Senate CSV extracted from official PDF",
-        "county geometry for map joins"
+        "official 2012/2016/2020 general-election PDFs for county historical presidential baselines",
+        "normalized historical presidential baseline CSV generated from the official PDFs",
+        "EAC fallback turnout rows until a state-native denominator package is collected",
+        "county geometry for map joins",
+        "Verified Voting county equipment context for advisory administration metadata"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for New York official county package; precinct/subcounty parser still needed if a lower-level package is found",
-      "blocker": "County-level President-versus-U.S. Senate review package is loaded from the NYSBOE official archive PDF; not precinct-level."
+      "parserNeeded": "countyPresidentCsv loaded for New York official county package; historicalPresidentialCsv now loaded from official NYSBOE PDFs; precinct/subcounty parser still needed if an official lower-level package is found",
+      "blocker": "County-level President-versus-U.S. Senate review package and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. The package is not precinct-level, EAC turnout remains a fallback instead of state-native denominator rows, and official CVR availability, audit/recount/correction/incident records, and precinct geometry still need source collection."
     },
     {
       "state": "WV",
