@@ -50,6 +50,17 @@
       "status": "loaded"
     },
     {
+      "id": "in-2024-mit-precinct-president-senate",
+      "category": "MIT/OpenElections supplemental precinct President and U.S. Senate review rows",
+      "url": "https://doi.org/10.7910/DVN/NYTPDU",
+      "localFile": "data/in-2024-mit-local-review.csv",
+      "parser": "localComparisonCsv",
+      "authority": "MIT Election Data and Science Lab with official Indiana ENR and supplemental OpenElections county sources",
+      "timestampBasis": "MIT Election Data and Science Lab 2024 precinct returns by individual state dataset published May 1, 2026; Indiana rows normalize official state ENR and supplemental county/OpenElections sources.",
+      "confidence": "Supplemental precinct review artifact for advisory flags only. MIT warns Indiana Senate/Governor totals are overreported in some counties and precinct labels are not always unique identifiers; certified map/result totals remain the official Indiana ENR county JSON.",
+      "status": "loaded"
+    },
+    {
       "id": "in-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2718%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -78,13 +89,13 @@
   "expected": {
     "jurisdictions": 92,
     "resultRows": 92,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 92,
     "stateTotal": 2936677,
     "trump": 1720347,
     "harris": 1163603,
     "other": 52727,
-    "reviewRows": 92,
+    "reviewRows": 5253,
     "turnoutRows": 92
   },
   "capabilities": {
@@ -103,11 +114,11 @@
     "comparisonCoverageMode": "presidentVsSenate"
   },
   "reviewCharts": {
-    "format": "indianaEnrCountyJsonCountyComparison",
-    "sourceId": "in-2024-official-enr-president",
-    "comparisonSourceId": "in-2024-official-enr-senate",
+    "format": "localComparisonCsv",
+    "sourceId": "in-2024-mit-precinct-president-senate",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "warning": "Indiana review rows are county-level President-versus-U.S. Senate comparisons from archived official ENR county JSON. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+    "sourceCoverage": "MIT/OpenElections supplemental Indiana precinct rows: 5,253 local President-versus-U.S.-Senate review rows across all 92 counties, generated from Dataverse file 13731143 with TOTAL mode used per county where present and all non-total modes summed otherwise.",
+    "warning": "Indiana local review rows use MIT/OpenElections supplemental precinct President-versus-U.S. Senate rows. Certified county totals remain official Indiana ENR. MIT warns Senate totals are overreported in some counties and precinct labels are not always unique identifiers."
   }
 }

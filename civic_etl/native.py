@@ -5770,6 +5770,14 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "IN" and config.raw.get("certifiedResults", {}).get("format") == "indianaEnrCountyJson":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _indiana_enr_county_json_rows(config, sources)
+        if config.raw.get("reviewCharts", {}).get("format") == "localComparisonCsv":
+            review_rows, review_metrics = _local_comparison_review_rows(
+                config,
+                sources,
+                result_rows,
+                missing_label="Indiana MIT/OpenElections supplemental precinct review",
+            )
+            metrics = {**metrics, **review_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeIndianaEnrCountyJson",
