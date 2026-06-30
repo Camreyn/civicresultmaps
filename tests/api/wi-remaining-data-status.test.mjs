@@ -93,3 +93,15 @@ test("Wisconsin admin context scopes audit, CVR, incidents, and equipment eviden
   assert.match(adminContext.incidents.scopeNote, /not a normalized incident/);
   assert.match(adminContext.incidents.recordsRequestNeed, /recount filings\/outcomes/);
 });
+
+test("Wisconsin turnout source registry keeps EAC warning rows visible", () => {
+  const turnoutPackages = JSON.parse(readFileSync("data/turnout-source-packages.json", "utf8"));
+  const wisconsin = turnoutPackages.stateYearStatuses.find((entry) => entry.state === "WI" && entry.year === 2024);
+  const turnoutCsv = readFileSync(wisconsin.localFile, "utf8").trim().split(/\r?\n/);
+  const header = turnoutCsv[0].split(",");
+  const warningIndex = header.indexOf("warning_required");
+  const warningRows = turnoutCsv.slice(1).filter((line) => line.split(",")[warningIndex] === "true").length;
+
+  assert.equal(wisconsin.coverage.warningRows, warningRows);
+  assert.equal(wisconsin.coverage.warningRows, 2);
+});
