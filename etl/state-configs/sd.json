@@ -16,6 +16,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "sd-historical-presidential-wikipedia-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_South_Dakota",
+      "localFile": "data/sd-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Wikipedia county presidential tables with South Dakota election-result source footnotes",
+      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 30, 2026.",
+      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite South Dakota election result sources where available.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 66,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,
@@ -49,6 +60,19 @@
     "map": false,
     "reviewGraphs": false,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "sd-historical-presidential-wikipedia-county",
+    "warning": "South Dakota historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 198,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
