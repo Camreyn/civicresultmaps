@@ -1320,29 +1320,32 @@
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
-        "database query",
-        "CSV/XLS likely"
+        "official CSV download",
+        "Election History table export"
       ],
       "sourceUrls": [
-        "https://electionhistory.scvotes.gov/"
+        "https://electionhistory.scvotes.gov/",
+        "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false"
       ],
       "exampleUrls": [
-        "https://electionhistory.scvotes.gov/"
+        "https://electionhistory.scvotes.gov/contest/7131",
+        "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false"
       ],
       "availableFields": [
-        "official election history database",
-        "registration data when queried correctly"
+        "official presidential county and precinct CSV rows",
+        "official U.S. House county and precinct CSV comparison rows",
+        "EAC fallback turnout"
       ],
       "missingFields": [
-        "confirmed parser contract",
-        "confirmed ballot method fields",
-        "same-grain comparison mapping"
+        "state-native turnout denominator",
+        "precinct boundary geometry",
+        "statewide same-office comparison contest"
       ],
-      "parserStatus": "candidate high-ROI source; parser not implemented",
+      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads",
       "manualReviewBurden": "low",
-      "confidence": "candidate",
-      "caveats": "Needs endpoint/export investigation before treating as loaded.",
-      "nextAction": "Investigate SC election history query/export parameters and build a parser if CSV/XLS export is available."
+      "confidence": "loaded",
+      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening.",
+      "nextAction": "Optional upgrades are state-native turnout denominators, precinct boundary geometry, and any official statewide comparison race if one becomes available."
     },
     {
       "state": "SD",

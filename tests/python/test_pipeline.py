@@ -1267,6 +1267,51 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(allegany["comparisonRepVotes"], 413)
         self.assertEqual(allegany["demDropoff"], 3.0)
         self.assertEqual(allegany["repDropoff"], 1.4)
+    def test_south_carolina_election_history_parser_builds_precinct_review_rows(self):
+        config = load_config("etl/state-configs/sc.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+
+        self.assertTrue(report.passed)
+        self.assertEqual(artifact["native"]["parser"], "nativeSouthCarolinaElectionHistoryCsv")
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 46)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 2548140)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1483747)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 1028452)
+        self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 35941)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2401)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 2400)
+        self.assertEqual(artifact["native"]["metrics"]["nativeMissingComparisonRows"], 1)
+        self.assertEqual(artifact["native"]["metrics"]["nativePresidentialPrecinctRows"], 2446)
+        self.assertEqual(artifact["native"]["metrics"]["nativeZeroPresidentialPrecinctRows"], 45)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonPrecinctRows"], 2491)
+        self.assertEqual(artifact["native"]["metrics"]["nativeDuplicateComparisonRows"], 45)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States House")
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 46)
+
+        abbeville = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Abbeville County" and row["localUnit"] == "Abbeville No. 01"
+        )
+        self.assertEqual(abbeville["coverageMode"], "presidentVsUSHouse")
+        self.assertEqual(abbeville["harris"], 354)
+        self.assertEqual(abbeville["trump"], 923)
+        self.assertEqual(abbeville["totalVotes"], 1292)
+        self.assertEqual(abbeville["comparisonDemVotes"], 311)
+        self.assertEqual(abbeville["comparisonRepVotes"], 877)
+        self.assertEqual(abbeville["comparisonOtherVotes"], 81)
+        self.assertEqual(abbeville["demDropoff"], 3.3282)
+        self.assertEqual(abbeville["repDropoff"], 3.5604)
+
+        failsafe = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Bamberg County" and row["localUnit"] == "Failsafe Provisional"
+        )
+        self.assertEqual(failsafe["coverageMode"], "voteShareOnly")
+        self.assertEqual(failsafe["harris"], 1)
+        self.assertEqual(failsafe["comparisonDemVotes"], 0)
     def test_staging_artifact_blocks_production_write(self):
         config = load_config("etl/state-configs/wi.json")
         report = validate_config(config)
@@ -1303,11 +1348,9 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(status, 0)
         staged_files = list(tmp.glob("*-2024-staging.json"))
         self.assertEqual(len(staged_files), 50)
-        for state in ["ak", "az", "ga", "mi", "mn", "nc", "nv", "oh", "pa", "wa", "wi", "wy"]:
+        for state in ["ak", "az", "ga", "mi", "mn", "nc", "nv", "oh", "pa", "sc", "wa", "wi", "wy"]:
             self.assertTrue((tmp / f"{state}-2024-staging.json").exists())
 
 
 if __name__ == "__main__":
     unittest.main()
-
-

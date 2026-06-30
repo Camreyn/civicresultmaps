@@ -1,10 +1,9 @@
 {
   "code": "SC",
   "name": "South Carolina",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "South Carolina Election Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "sc-2024-eac-turnout",
@@ -15,6 +14,39 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "sc-2024-election-history-president",
+      "category": "Official 2024 general election presidential CSV results",
+      "url": "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+      "localFile": "data/sc-2024-election-history/president-7131.csv",
+      "parser": "southCarolinaElectionHistoryCsv",
+      "authority": "South Carolina Election Commission",
+      "timestampBasis": "South Carolina Elections Database official CSV download for General Nov 2024 President of the United States, contest id 7131, collected June 30, 2026.",
+      "confidence": "Official South Carolina Elections Database CSV with statewide, county, and precinct rows. County rows are used for certified result totals; precinct rows are used as the presidential side of local review rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "sc-2024-election-history-us-house",
+      "category": "Official 2024 general election U.S. House CSV comparison results",
+      "url": "https://electionhistory.scvotes.gov/",
+      "localFile": "data/sc-2024-election-history",
+      "parser": "southCarolinaElectionHistoryUsHouseCsvDirectory",
+      "authority": "South Carolina Election Commission",
+      "timestampBasis": "South Carolina Elections Database official CSV downloads for General Nov 2024 U.S. House contests 7124 through 7130, collected June 30, 2026.",
+      "confidence": "Official South Carolina Elections Database CSVs with congressional-district, county, and precinct rows. The parser aggregates duplicate county/precinct keys created by congressional-district splits before comparing to presidential precinct rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "sc-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2745%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/sc-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for South Carolina county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     }
   ],
@@ -34,21 +66,43 @@
   },
   "expected": {
     "jurisdictions": 46,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 46,
+    "sources": 4,
+    "geometryFeatures": 46,
+    "stateTotal": 2548140,
+    "trump": 1483747,
+    "harris": 1028452,
+    "other": 35941,
+    "reviewRows": 2401,
     "turnoutRows": 46
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "southCarolinaElectionHistoryCsv",
+    "sourceId": "sc-2024-election-history-president",
+    "contestId": "7131"
+  },
+  "reviewCharts": {
+    "format": "southCarolinaElectionHistoryCsv",
+    "sourceId": "sc-2024-election-history-us-house",
+    "comparisonContest": "United States House",
+    "comparisonContestIds": [
+      "7124",
+      "7125",
+      "7126",
+      "7127",
+      "7128",
+      "7129",
+      "7130"
+    ],
+    "coverageMode": "presidentVsUSHouse",
+    "warning": "South Carolina review rows use official South Carolina Elections Database precinct presidential rows and President-versus-U.S.-House comparison rows. U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before comparison, one nonzero presidential row lacks a nonzero House comparison and is kept as vote-share-only, and precinct boundary geometry is not included. Use these rows as advisory screening inputs, not confirmed findings."
   }
 }
