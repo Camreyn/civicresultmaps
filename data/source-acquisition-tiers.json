@@ -1609,18 +1609,22 @@
       ],
       "exampleUrls": [],
       "availableFields": [
-        "precinct presidential rows",
-        "county turnout"
+        "official presidential locality rows",
+        "official precinct President rows",
+        "official precinct U.S. Senate comparison rows",
+        "official precinct turnout and registration rows",
+        "official ENR change-log summary",
+        "county-equivalent geometry"
       ],
       "missingFields": [
-        "same-row down-ballot comparison contest",
-        "precinct boundary geometry"
+        "precinct boundary geometry",
+        "normalized audit, recount, CVR availability, incident, litigation, and correction records beyond ENR change-log summary and equipment context"
       ],
-      "parserStatus": "native vote-share-only review package loaded",
+      "parserStatus": "native Virginia ElectionStats and ENR package loaded for certified locality results, precinct President-versus-U.S. Senate review rows, and precinct turnout/registration rows",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "No same-row down-ballot comparison contest is mapped yet.",
-      "nextAction": "Map a Virginia comparison contest at the same reporting-unit grain."
+      "caveats": "Review rows use the official VA ENR all-results CSV and ENR canonical precinct names, which can differ from the historical contest CSV display names. The ENR turnout file reports TotalVoteTurnout across the ballot, not presidential contest votes. Precinct boundary geometry and deeper audit/CVR/incident records remain uncollected.",
+      "nextAction": "Collect precinct boundary geometry and official audit/CVR/recount/litigation records or document source-side blockers."
     },
     {
       "state": "VT",

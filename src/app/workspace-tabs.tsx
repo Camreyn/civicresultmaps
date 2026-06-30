@@ -1461,9 +1461,9 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
   VA: [
     {
       key: "sources",
-      evidence: "Virginia Department of Elections presidential locality and precinct rows are loaded from the official Elections Database contest CSV, and Census county-equivalent geometry is joined for maps.",
+      evidence: "Virginia Department of Elections presidential locality and precinct rows are loaded from the official Elections Database contest CSV, with official ENR all-contest precinct results, ENR turnout rows, and Census county-equivalent geometry joined for maps.",
       status: "partial",
-      why: "Virginia now has source-first locality results, precinct screening rows, and map geometry, but turnout still uses EAC fallback data.",
+      why: "Virginia now has source-first locality results, same-precinct President-versus-U.S. Senate review rows, state-native turnout denominators, and map geometry, but precinct boundary overlays and dedicated audit/recount/CVR/litigation records still need collection.",
     },
     {
       key: "map",
@@ -1473,15 +1473,15 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
     },
     {
       key: "review",
-      evidence: "Virginia official precinct presidential rows are loaded for vote-share screening.",
+      evidence: "Virginia official ENR precinct rows support presidential vote-share and President-versus-U.S. Senate same-party drop-off screening.",
       status: "partial",
-      why: "No same-row down-ballot comparison contest is mapped yet, so down-ballot flags are disabled and review charts should be read as vote-share-only screens.",
+      why: "The comparison uses the Virginia Department of Elections ENR U.S. Senate precinct rows from the same all-contest export; review graphs remain advisory screening views, not ballot-level ticket-splitting evidence.",
     },
     {
       key: "turnout",
-      evidence: "EAC 2024 V2 locality/jurisdiction fallback rows are loaded.",
-      status: "partial",
-      why: "Virginia needs a state-native registered-voter/ballots-cast denominator package mapped before turnout can be treated as complete in this app.",
+      evidence: "Virginia Department of Elections ENR precinct turnout rows are loaded with ballots cast, total registered voters, active registered voters, and inactive registered voters.",
+      status: "ready",
+      why: "ENR turnout is election-level turnout by precinct, so ballots cast can exceed presidential-contest votes; use it as a turnout denominator, not as a presidential vote total.",
     },
   ],
   WA: [
