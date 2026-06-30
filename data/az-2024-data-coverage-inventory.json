@@ -8,6 +8,23 @@
     "authorityPriority":  "Official state and county election sources first; secondary sources are context only and caveated.",
     "loadedArtifacts":  [
                             {
+                                "id":  "az-2024-eac-turnout",
+                                "sourceAuthority":  "U.S. Election Assistance Commission",
+                                "sourceUrl":  "https://www.eac.gov/research-and-data/studies-and-reports",
+                                "localPath":  "data/eac-2024-state-turnout/az-2024-eac-turnout.csv",
+                                "electionYear":  2024,
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "eacTurnoutCsv via etl/state-configs/az.json source az-2024-eac-turnout",
+                                "expectedCounts":  {
+                                                       "rows":  15
+                                                   },
+                                "caveats":  [
+                                                "National EAC fallback turnout rows are retained as benchmark context after Arizona signed canvass turnout rows were loaded.",
+                                                "The configured AZ turnout source is the signed Arizona canvass, not the EAC fallback CSV."
+                                            ],
+                                "confidence":  "loaded_benchmark_context"
+                            },
+                            {
                                 "id":  "az-2024-general-canvass-president",
                                 "sourceAuthority":  "Arizona Secretary of State",
                                 "sourceUrl":  "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
