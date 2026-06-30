@@ -5367,12 +5367,15 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.raw.get("turnoutOnly") and turnout_format in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
         sources = _source_map(config)
         turnout_rows, metrics = _normalized_turnout_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": f"native{turnout_format[0].upper()}{turnout_format[1:]}",
             "resultRows": [],
             "reviewRows": [],
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
 
