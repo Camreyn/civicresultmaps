@@ -557,27 +557,27 @@
       "nativeCoverage": {
         "readinessGrade": "subcounty_comparison_review",
         "sourceTier": "tier_1_official_export_database",
-        "reportingGrain": "reporting_unit",
-        "parserStatus": "native reporting-unit review package loaded",
+        "reportingGrain": "precinct_review_county_certified",
+        "parserStatus": "native county certified package loaded; review rows filtered to official Real Precinct=Y rows",
         "resultRows": 100,
-        "reviewRows": 2861,
+        "reviewRows": 2658,
         "turnoutRows": 100,
         "comparisonContest": "North Carolina Governor",
-        "reviewWarning": "North Carolina native review rows use official precinct/reporting-unit presidential vote-share screening and presidential-versus-Governor same-party drop-off screening. The comparison contest is Governor, not U.S. Senate, because North Carolina did not have a 2024 U.S. Senate race. The NCSBE file includes non-real precinct reporting units such as early voting, absentee, provisional, and transfer rows.",
+        "reviewWarning": "North Carolina native review rows use the official NCSBE Real Precinct=Y filter for precinct-only presidential vote-share screening and presidential-versus-Governor same-party drop-off screening. Certified county totals still aggregate all official reporting units, including early voting, absentee, provisional, and transfer rows. The comparison contest is Governor, not U.S. Senate, because North Carolina did not have a 2024 U.S. Senate race.",
         "validationPassed": true
       },
       "indicatorCoverage": {
-        "reviewRows": 2861,
-        "flaggedCountyJurisdictions": 91,
-        "flaggedAreas": 91,
-        "indicatorRows": 187,
-        "countyIndicatorRows": 187,
+        "reviewRows": 2658,
+        "flaggedCountyJurisdictions": 86,
+        "flaggedAreas": 86,
+        "indicatorRows": 206,
+        "countyIndicatorRows": 206,
         "byLevel": {
-          "county": 187
+          "county": 206
         },
         "byType": {
-          "vote_share_pattern": 57,
-          "average_down_ballot_difference": 91,
+          "vote_share_pattern": 81,
+          "average_down_ballot_difference": 86,
           "down_ballot_outliers": 39
         }
       },
@@ -628,11 +628,11 @@
         "tier": "tier_1_official_export_database",
         "scope": "statewide",
         "dataFamily": "results_review_turnout",
-        "reportingGrain": "reporting_unit",
-        "parserStatus": "native reporting-unit review package loaded",
+        "reportingGrain": "precinct_review_county_certified",
+        "parserStatus": "native county certified package loaded; review rows filtered to official Real Precinct=Y rows",
         "manualReviewBurden": "medium",
         "confidence": "loaded",
-        "nextAction": "Document reporting-unit filters before treating rows as precinct-only.",
+        "nextAction": "Keep the Real Precinct=Y review coverage caveat visible; next upgrades are precinct boundary geometry, state-native turnout denominators, historical baselines, and audit/recount/CVR/incident/correction records.",
         "sourceUrls": [
           "https://www.ncsbe.gov/results-data/election-results"
         ]

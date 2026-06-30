@@ -13,7 +13,7 @@
       "parser": "northCarolinaPrecinctResultsZip",
       "authority": "North Carolina State Board of Elections",
       "timestampBasis": "Official NCSBE ENRS precinct results ZIP for the November 5, 2024 general election.",
-      "confidence": "Official North Carolina State Board of Elections precinct result export with contest, candidate party, voting method columns, and total votes.",
+      "confidence": "Official North Carolina State Board of Elections precinct result export with contest, candidate party, vote-method columns, total votes, and Real Precinct flag.",
       "status": "loaded"
     },
     {
@@ -52,7 +52,15 @@
   "reviewCharts": {
     "format": "northCarolinaPresidentVsGovernor",
     "sourceId": "nc-2024-results-precinct-zip",
-    "warning": "North Carolina native review rows use official precinct/reporting-unit presidential vote-share screening and presidential-versus-Governor same-party drop-off screening. The comparison contest is Governor, not U.S. Senate, because North Carolina did not have a 2024 U.S. Senate race. The NCSBE file includes non-real precinct reporting units such as early voting, absentee, provisional, and transfer rows."
+    "realPrecinctFilter": {
+      "column": "Real Precinct",
+      "includeValue": "Y",
+      "appliesTo": "reviewRowsOnly",
+      "excludedReportingUnits": 250,
+      "excludedPresidentialVotes": 1775402,
+      "includedPresidentialVotes": 3923739
+    },
+    "warning": "North Carolina native review rows use the official NCSBE Real Precinct=Y filter for precinct-only presidential vote-share screening and presidential-versus-Governor same-party drop-off screening. Certified county totals still aggregate all official reporting units, including early voting, absentee, provisional, and transfer rows. The comparison contest is Governor, not U.S. Senate, because North Carolina did not have a 2024 U.S. Senate race."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -76,7 +84,7 @@
     "trump": 2898423,
     "harris": 2715375,
     "other": 85343,
-    "reviewRows": 2861,
+    "reviewRows": 2658,
     "turnoutRows": 100
   },
   "capabilities": {

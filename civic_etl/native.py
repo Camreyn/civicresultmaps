@@ -634,11 +634,16 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
     president_contest = section.get("presidentContest", "US PRESIDENT")
     comparison_section = config.raw.get("comparisonContest", {})
     comparison_contest = comparison_section.get("contestName", "NC GOVERNOR")
+    review_section = config.raw.get("reviewCharts", {})
+    real_precinct_filter = review_section.get("realPrecinctFilter", {})
+    real_precinct_column = real_precinct_filter.get("column", "Real Precinct")
+    real_precinct_value = str(real_precinct_filter.get("includeValue", "Y")).strip().upper()
 
     precincts: dict[tuple[str, str], dict[str, int]] = {}
     counties: dict[str, dict[str, int]] = {}
     comparison_rows = 0
-
+    review_excluded_reporting_units: set[tuple[str, str]] = set()
+    review_excluded_presidential_votes = 0
     with zipfile.ZipFile(_artifact_path(source)) as archive:
         names = archive.namelist()
         if not names:
@@ -647,6 +652,8 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
             text = (line.decode("utf-8-sig", errors="replace") for line in raw)
             reader = csv.DictReader(text, delimiter="\t")
             required = {"County", "Precinct", "Contest Name", "Choice Party", "Total Votes"}
+            if real_precinct_filter:
+                required.add(real_precinct_column)
             missing = required.difference(reader.fieldnames or [])
             if missing:
                 raise ValueError(f"North Carolina precinct source missing columns: {', '.join(sorted(missing))}")
@@ -661,6 +668,25 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
                 party = str(row.get("Choice Party") or "").strip().upper()
                 votes = int_text(row.get("Total Votes"))
                 if not county or not precinct:
+                    continue
+
+                if contest == president_contest:
+                    county_bucket = counties.setdefault(county, {"harris": 0, "other": 0, "total": 0, "trump": 0})
+                    if party == "DEM":
+                        county_bucket["harris"] += votes
+                    elif party == "REP":
+                        county_bucket["trump"] += votes
+                    else:
+                        county_bucket["other"] += votes
+                    county_bucket["total"] += votes
+
+                is_review_unit = True
+                if real_precinct_filter:
+                    is_review_unit = str(row.get(real_precinct_column) or "").strip().upper() == real_precinct_value
+                if not is_review_unit:
+                    if contest == president_contest:
+                        review_excluded_reporting_units.add((county, precinct))
+                        review_excluded_presidential_votes += votes
                     continue
 
                 key = (county, precinct)
@@ -678,18 +704,13 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
                 )
 
                 if contest == president_contest:
-                    county_bucket = counties.setdefault(county, {"harris": 0, "other": 0, "total": 0, "trump": 0})
                     if party == "DEM":
                         bucket["pres_dem"] += votes
-                        county_bucket["harris"] += votes
                     elif party == "REP":
                         bucket["pres_rep"] += votes
-                        county_bucket["trump"] += votes
                     else:
                         bucket["pres_other"] += votes
-                        county_bucket["other"] += votes
                     bucket["pres_total"] += votes
-                    county_bucket["total"] += votes
                 elif party == "DEM":
                     bucket["gov_dem"] += votes
                     bucket["gov_total"] += votes
@@ -754,9 +775,14 @@ def _north_carolina_rows(config: EtlConfig, sources: dict[str, SourceConfig]) ->
         "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
         "nativeReviewRows": len(review_rows),
-        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeReviewWarning": review_section.get("warning", ""),
         "nativeComparisonRows": comparison_rows,
         "nativeComparisonContest": comparison_section.get("label"),
+        "nativeReviewReportingUnitFilter": f"{real_precinct_column}={real_precinct_value}" if real_precinct_filter else "",
+        "nativeReviewExcludedReportingUnits": len(review_excluded_reporting_units),
+        "nativeReviewExcludedPresidentialVotes": review_excluded_presidential_votes,
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in review_rows),
+        "nativeReviewCertifiedVoteGap": sum(row["totalVotes"] for row in result_rows) - sum(row["totalVotes"] for row in review_rows),
         **turnout_metrics,
     }
     return result_rows, review_rows, turnout_rows, metrics

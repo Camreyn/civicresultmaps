@@ -331,7 +331,7 @@ function nativeReadinessGrade(config, acquisitionRow, metrics) {
   if (!hasComparison) {
     return "subcounty_vote_share_only";
   }
-  if (["precinct", "ward", "reporting_unit"].includes(grain)) {
+  if (["precinct", "ward", "reporting_unit", "precinct_review_county_certified"].includes(grain)) {
     return "subcounty_comparison_review";
   }
   return "loaded_review_needs_classification";

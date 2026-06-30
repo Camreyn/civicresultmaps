@@ -37,7 +37,7 @@ test("non-Wisconsin swing states distinguish native review parity from missing c
   assert.equal(states.get("PA").parityStatus, "native_review_near_parity_admin_context_missing");
   assert.equal(states.get("MI").nativeCoverage.reportingGrain, "precinct");
   assert.equal(states.get("PA").nativeCoverage.reviewRows, 9154);
-  assert.equal(states.get("NC").nativeCoverage.reportingGrain, "reporting_unit");
+  assert.equal(states.get("NC").nativeCoverage.reportingGrain, "precinct_review_county_certified");
   assert.ok(gapIds("NC").includes("state_native_turnout_denominator"));
 
   assert.equal(states.get("TX").parityStatus, "native_review_near_parity_admin_context_missing");

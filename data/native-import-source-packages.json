@@ -351,6 +351,69 @@
       ]
     },
     {
+      "state": "NC",
+      "name": "North Carolina",
+      "priority": 6,
+      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout",
+      "authority": "North Carolina State Board of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/nc.json",
+      "legacyReferenceBundle": "data/nc-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "North Carolina State Board of Elections 2024 general precinct results ZIP",
+          "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+          "localFile": "data/nc-2024-results-precinct.zip",
+          "parserHint": "Parse results_pct_20241105.txt inside the ZIP; aggregate US PRESIDENT rows by County across all reporting units for certified county totals. The file includes Election Day, Early Voting, Absentee by Mail, Provisional, Total Votes, and Real Precinct fields."
+        },
+        "localReviewRows": {
+          "sourceTitle": "North Carolina State Board of Elections 2024 general precinct results ZIP",
+          "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/results_pct_20241105.zip",
+          "localFile": "data/nc-2024-results-precinct.zip",
+          "level": "precinct",
+          "comparisonContest": "Governor",
+          "parserHint": "Filter review rows to Real Precinct=Y, then pair US PRESIDENT with NC GOVERNOR by County and Precinct. Certified county totals still aggregate all reporting units; Real Precinct=Y review rows cover 3,923,739 of 5,699,141 presidential votes."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2737%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/nc-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 100,
+        "geometryFeatures": 100,
+        "stateTotal": 5699141,
+        "trump": 2898423,
+        "harris": 2715375,
+        "other": 85343,
+        "localReviewRows": 2658,
+        "turnoutRows": 100
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_governor_real_precinct_filter",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback"
+      },
+      "caveats": [
+        "Certified county totals aggregate all NCSBE reporting units from the official results ZIP.",
+        "Review charts filter to official Real Precinct=Y rows, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; early voting, absentee, provisional, transfer, and other non-real reporting units account for 1,775,402 presidential votes and remain in certified county totals only.",
+        "Governor is the same-grain comparison contest because North Carolina had no 2024 U.S. Senate race.",
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a state-native North Carolina denominator source is collected.",
+        "Precinct boundary GeoJSON, 2020/2016/2012 baselines, audit/recount/CVR availability, and incident/correction records remain gaps."
+      ]
+    },
+    {
       "state": "SC",
       "name": "South Carolina",
       "priority": 6,

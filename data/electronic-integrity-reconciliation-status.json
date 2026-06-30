@@ -359,7 +359,7 @@
         }
       ],
       "missingOrBlockedRows": 6,
-      "nextAction": "Inventory CVR, ballot-image, audit, L&A, tabulator-log, and chain-of-custody availability; separate real precincts from absentee/early/provisional reporting units.",
+      "nextAction": "Inventory CVR, ballot-image, audit, L&A, tabulator-log, and chain-of-custody availability; keep certified county totals distinct from Real Precinct=Y review coverage.",
       "overallStatus": "partial",
       "requestArtifacts": [
         {
@@ -400,7 +400,7 @@
         }
       ],
       "requestRequiredRows": 6,
-      "riskPosture": "reporting_unit_review_loaded_admin_evidence_missing",
+      "riskPosture": "real_precinct_review_loaded_admin_evidence_missing",
       "staging": {
         "capabilities": {
           "certifiedResults": true,
@@ -412,7 +412,7 @@
         },
         "historicalRows": 0,
         "resultRows": 100,
-        "reviewRows": 2861,
+        "reviewRows": 2658,
         "sourceRows": 3,
         "stagingPresent": true,
         "turnoutRows": 100

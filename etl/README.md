@@ -150,13 +150,13 @@ Those paths are declared in `etl/state-configs/nc.json`. The parser validates:
 - 2,898,423 Trump votes
 - 2,715,375 Harris votes
 - 85,343 other votes
-- 2,861 precinct/reporting-unit review rows
-- 2,861 joined President-versus-Governor comparison rows
+- 2,658 Real Precinct=Y review rows
+- 2,658 joined President-versus-Governor comparison rows
 - 100 county geometry features joined to the result rows
 
-The North Carolina import uses Governor as the same-party comparison contest because North Carolina did not have a 2024 U.S. Senate race. The official NCSBE file also includes non-real precinct reporting units such as early voting, absentee, provisional, and transfer rows; those are preserved as local review rows.
+The North Carolina import uses Governor as the same-party comparison contest because North Carolina did not have a 2024 U.S. Senate race. Certified county totals aggregate all official NCSBE reporting units. Review rows are filtered to `Real Precinct=Y`, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; non-real early voting, absentee, provisional, and transfer-style reporting units remain in certified county totals but are excluded from precinct-only review charts.
 
-The North Carolina map uses Census county geometry for county-level result inspection. Precinct/reporting-unit boundary geometry is not included in this package.
+The North Carolina map uses Census county geometry for county-level result inspection. Precinct boundary geometry is not included in this package.
 
 Run native staging:
 
