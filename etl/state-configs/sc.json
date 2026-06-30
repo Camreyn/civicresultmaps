@@ -7,13 +7,24 @@
   "sources": [
     {
       "id": "sc-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC fallback turnout rows retained for denominator cross-check",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/sc-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows retained as a benchmark only. South Carolina turnout ETL now prefers the official SC VREMS county voter-history package, which is warning-required because its denominator includes some inactive voters printed for the selected election.",
+      "status": "loaded"
+    },
+    {
+      "id": "sc-2024-vrems-turnout",
+      "category": "Official 2024 general election VREMS county voter-history turnout rows",
+      "url": "https://vrems.scvotes.sc.gov/Statistics/VoterHistoryResults",
+      "localFile": "data/sc-2024-vrems-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "South Carolina Election Commission",
+      "timestampBasis": "South Carolina VREMS voter-history county statistics for 2024 General Election, collected June 30, 2026.",
+      "confidence": "Official SC VREMS county registered and participating voter-history rows. The source page notes registered counts are printed registration-list counts and include active voters plus some inactive voters, so turnout rows are warning-required and should not be treated as active-registration denominators.",
       "status": "loaded"
     },
     {
@@ -51,23 +62,23 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "sc-2024-eac-turnout",
-    "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "South Carolina turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
-    "warningRequired": false,
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "sc-2024-vrems-turnout",
+    "denominatorType": "printedRegistrationListVoters",
+    "registrationDenominatorTiming": "voterHistoryElectionList",
+    "sourceLevel": "county",
+    "notes": "South Carolina turnout rows use official SC VREMS 2024 General Election county voter-history statistics. The source page states registration numbers include all active voters plus some inactive voters printed on election lists, so rows are warning-required and are not interchangeable with active-registration denominators.",
+    "warningRequired": true,
     "expected": {
       "rowCount": 46,
-      "ballotsCast": 2566404,
-      "registeredVoters": 3851187
+      "ballotsCast": 2553185,
+      "registeredVoters": 3851930
     }
   },
   "expected": {
     "jurisdictions": 46,
     "resultRows": 46,
-    "sources": 4,
+    "sources": 5,
     "geometryFeatures": 46,
     "stateTotal": 2548140,
     "trump": 1483747,

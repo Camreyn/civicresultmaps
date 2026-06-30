@@ -1046,22 +1046,22 @@
       "year": 2024,
       "priority": 41,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
-      "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/sc-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "sourceLevel": "county",
+      "denominatorType": "printedRegistrationListVoters",
+      "denominatorTiming": "voterHistoryElectionList",
+      "sourceTitle": "Official SC VREMS 2024 General Election voter-history county statistics",
+      "sourceUrl": "https://vrems.scvotes.sc.gov/Statistics/VoterHistoryResults",
+      "localFile": "data/sc-2024-vrems-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 46,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official SC VREMS county voter-history rows are validated in ETL and promoted as warning-required turnout context.",
+      "nextAction": "Keep printed-registration-list denominator caveat visible; find active registered-voter denominators at county or precinct grain before removing the warning.",
       "coverage": {
         "jurisdictionRows": 46,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/sc-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 3851187,
-        "ballotsCast": 2566404,
-        "warningRows": 0
+        "registeredVoterDenominatorFile": "",
+        "registeredVoters": 3851930,
+        "ballotsCast": 2553185,
+        "warningRows": 46
       }
     },
     {
@@ -1388,6 +1388,36 @@
       },
       "caveats": [
         "Turnout is county-level, not precinct-level."
+      ]
+    },
+    {
+      "state": "SC",
+      "name": "South Carolina",
+      "authority": "South Carolina Election Commission",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "SC VREMS 2024 General Election voter-history county statistics",
+        "sourceUrl": "https://vrems.scvotes.sc.gov/Statistics/VoterHistoryResults",
+        "localFile": "data/sc-2024-vrems-turnout.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "SC VREMS printed registration-list voter-history denominator",
+        "sourceUrl": "https://vrems.scvotes.sc.gov/Statistics/VoterHistoryResults",
+        "localFile": "data/sc-2024-vrems-turnout.csv",
+        "parser": "normalizedTurnoutCsv",
+        "denominatorType": "printedRegistrationListVoters",
+        "denominatorTiming": "voterHistoryElectionList"
+      },
+      "expected": {
+        "turnoutRows": 46,
+        "registeredVoters": 3851930,
+        "ballotsCast": 2553185
+      },
+      "caveats": [
+        "Turnout is county-level, not precinct-level.",
+        "The SC VREMS source page says registration numbers include voters printed on election lists: all active voters plus some inactive voters. Rows are warning-required and should not be treated as active-registration denominators.",
+        "The VREMS statewide summary includes an unassigned/null-county row with 2 registered voters and 1 participating voter; the normalized artifact keeps only the 46 county rows for joins."
       ]
     },
     {

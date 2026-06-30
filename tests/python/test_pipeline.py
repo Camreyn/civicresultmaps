@@ -1332,6 +1332,10 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeDuplicateComparisonRows"], 45)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States House")
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 46)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 3851930)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 2553185)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutWarningRows"], 46)
+        self.assertTrue(all(row["warningRequired"] for row in artifact["native"]["turnoutRows"]))
 
         abbeville = next(
             row
