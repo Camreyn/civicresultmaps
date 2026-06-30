@@ -507,12 +507,20 @@
           "status": "partial",
           "granularity": "clark_washoe_precinct_cvr_plus_statewide_county",
           "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+          "localArtifacts": [
+            "data/nv-clark-2024-general-cvr-precinct-review.csv",
+            "data/nv-washoe-2024-general-cvr-precinct-review.csv"
+          ],
           "parser": "localComparisonCsv",
           "reconciliationStatus": "clark_washoe_precinct_cvr_loaded_other_counties_county_only",
           "requestRequired": true,
           "tamperDetectionUse": "Clark and Washoe precinct rows can localize review screens inside those counties; other counties still need local reporting-unit results.",
           "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.",
-          "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
+          "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+          "sourceUrls": [
+            "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+            "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
+          ]
         },
         {
           "type": "cast_vote_records",
@@ -523,7 +531,15 @@
           "tamperDetectionUse": "Clark and Washoe CVRs support precinct aggregation and review; full ballot-level retabulation still requires raw CVR handling and other county availability inventory.",
           "requestPath": "Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.",
           "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+          "sourceUrls": [
+            "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+            "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
+          ],
           "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+          "localArtifacts": [
+            "data/nv-clark-2024-general-cvr-precinct-review.csv",
+            "data/nv-washoe-2024-general-cvr-precinct-review.csv"
+          ],
           "parser": "normalize-nv-clark-cvr.py"
         },
         {

@@ -53,8 +53,20 @@ test("registry distinguishes loaded review evidence from unavailable electronic 
   assert.equal(artifact("PA", "reporting_unit_results")?.status, "loaded");
   assert.equal(artifact("PA", "cast_vote_records")?.status, "blocked");
   assert.equal(artifact("AZ", "reporting_unit_results")?.reconciliationStatus, "county_only_not_subcounty");
-  assert.equal(artifact("NV", "reporting_unit_results")?.reconciliationStatus, "clark_washoe_precinct_cvr_loaded_other_counties_county_only");
-  assert.equal(artifact("NV", "cast_vote_records")?.status, "partial");
+  const nvReportingUnit = artifact("NV", "reporting_unit_results");
+  const nvCvr = artifact("NV", "cast_vote_records");
+  assert.equal(nvReportingUnit?.reconciliationStatus, "clark_washoe_precinct_cvr_loaded_other_counties_county_only");
+  assert.deepEqual(nvReportingUnit?.sourceUrls, [
+    "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+    "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
+  ]);
+  assert.deepEqual(nvReportingUnit?.localArtifacts, [
+    "data/nv-clark-2024-general-cvr-precinct-review.csv",
+    "data/nv-washoe-2024-general-cvr-precinct-review.csv",
+  ]);
+  assert.equal(nvCvr?.status, "partial");
+  assert.deepEqual(nvCvr?.sourceUrls, nvReportingUnit?.sourceUrls);
+  assert.deepEqual(nvCvr?.localArtifacts, nvReportingUnit?.localArtifacts);
   assert.equal(registry.states.some((entry) => artifact(entry.state, "cast_vote_records")?.status === "loaded"), false);
   assert.equal(artifact("MI", "tabulator_logs")?.status, "needs_data");
   assert.equal(artifact("NC", "chain_of_custody")?.requestRequired, true);
