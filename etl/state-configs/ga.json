@@ -53,9 +53,11 @@
     }
   },
   "reviewCharts": {
-    "format": "georgiaMediaExportJsonVoteShare",
+    "format": "georgiaMediaExportJsonHouseComparison",
     "sourceId": "ga-2024-official-results",
-    "warning": "Georgia native review rows use official Georgia Secretary of State media-export precinct presidential vote-share screening only. No same-row down-ballot comparison contest is mapped in this package. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total, all in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts."
+    "comparisonContest": "U.S. House",
+    "comparisonContestRegex": "^US House of Representatives - District \\d+$",
+    "warning": "Georgia native review rows use official Georgia Secretary of State media-export precinct presidential rows paired with U.S. House rows from the same SOS media export where comparable. U.S. House is district-based and candidate-specific, so directional screens are low-confidence advisory context rather than candidate-benefit findings. Eight nonzero precinct rows have one-sided House comparison coverage, 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations, county presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -80,6 +82,10 @@
     "harris": 2548017,
     "other": 38932,
     "reviewRows": 2684,
+    "comparisonRows": 2684,
+    "comparableComparisonRows": 2637,
+    "oneSidedComparisonRows": 8,
+    "multiDistrictComparisonRows": 39,
     "turnoutRows": 159
   },
   "capabilities": {

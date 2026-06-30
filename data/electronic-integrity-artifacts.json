@@ -137,9 +137,9 @@
       "stateName": "Georgia",
       "priority": "swing",
       "overallStatus": "partial",
-      "summary": "Official precinct presidential rows are loaded from the SOS media export, but same-grain comparison contest and electronic audit artifacts are not inventoried.",
-      "riskPosture": "precinct_vote_share_loaded_electronic_evidence_missing",
-      "nextAction": "Map same-grain comparison contests and inventory county CVR, ballot-image, adjudication, tabulator-log, audit, and L&A availability.",
+      "summary": "Official SOS county presidential rows and precinct President-versus-U.S.-House advisory review rows are loaded from the media export, but turnout is EAC fallback and electronic audit/CVR/incident artifacts are not inventoried.",
+      "riskPosture": "precinct_house_review_loaded_electronic_evidence_missing",
+      "nextAction": "Inventory county CVR, ballot-image, adjudication, tabulator-log, audit, L&A, recount, incident, and correction availability; collect state-native turnout denominators, historical baselines, and precinct geometry.",
       "artifacts": [
         {
           "type": "certified_results",
@@ -154,15 +154,14 @@
         },
         {
           "type": "reporting_unit_results",
-          "status": "partial",
-          "granularity": "precinct_vote_share_only",
+          "status": "loaded",
+          "granularity": "precinct_president_vs_us_house",
           "sourceUrl": "https://results.sos.ga.gov/",
           "localArtifact": "data/ga-2024-official-results-export.json",
-          "parser": "georgiaMediaExportJsonVoteShare",
-          "reconciliationStatus": "same_row_comparison_contest_missing",
-          "requestRequired": true,
-          "tamperDetectionUse": "Local vote-share screening exists, but comparison-contest reconciliation is not mapped.",
-          "requestPath": "Georgia county election offices or Secretary of State open records request path."
+          "parser": "georgiaMediaExportJsonHouseComparison",
+          "reconciliationStatus": "official_media_export_precinct_president_vs_house_loaded_with_house_caveats",
+          "requestRequired": false,
+          "tamperDetectionUse": "Local advisory screening exists with U.S. House comparison rows, but House races are district-based and candidate-specific, and one-sided or multi-district composite rows are excluded from down-ballot dropoff calculations; electronic audit/CVR/log records are still needed before treating any advisory signal as confirmed or cleared."
         },
         {
           "type": "cast_vote_records",
