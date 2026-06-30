@@ -26,6 +26,7 @@ const defaults = {
   skipOcr: false,
   forceOcr: false,
   failOnReview: false,
+  allowUnusedCorrections: false,
 };
 
 const expectedCandidateKeys = ["harris", "trump", "pinkins", "wicker"];
@@ -60,6 +61,7 @@ function usage() {
     "  --skip-ocr                   Reuse existing OCR text and only extract/reconcile/report.",
     "  --force-ocr                  Re-OCR selected counties even when text exists.",
     "  --fail-on-review             Exit nonzero if any county is not import-ready.",
+    "  --allow-unused-corrections   Permit broader correction files during partial verification runs.",
     "  --help                       Show this help.",
   ].join("\n"));
 }
@@ -91,6 +93,7 @@ function parseArgs(argv) {
     else if (arg === "--skip-ocr") options.skipOcr = true;
     else if (arg === "--force-ocr") options.forceOcr = true;
     else if (arg === "--fail-on-review") options.failOnReview = true;
+    else if (arg === "--allow-unused-corrections") options.allowUnusedCorrections = true;
     else throw new Error("Unknown option: " + arg);
   }
   return options;
@@ -275,6 +278,7 @@ function runExtractor(options) {
 function runReconciler(options) {
   const args = ["scripts/reconcile-ms-ocr-grid-cells.mjs", "--cells", options.cells, "--source-overrides", options.sourceOverrides, "--out", options.reconciliation];
   if (options.corrections) args.push("--corrections", options.corrections);
+  if (options.allowUnusedCorrections) args.push("--allow-unused-corrections");
   runNode(args);
 }
 
