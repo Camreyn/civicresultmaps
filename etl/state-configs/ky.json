@@ -59,6 +59,17 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Kentucky county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "ky-historical-presidential-official-county",
+      "category": "Official historical county presidential results",
+      "url": "https://elect.ky.gov/results/Pages/default.aspx",
+      "localFile": "data/ky-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Kentucky Secretary of State",
+      "timestampBasis": "Official Kentucky general election result PDFs for 2012, 2016, and 2020 downloaded from the Kentucky election-results archive by scripts/collect-ky-historical-baseline.mjs.",
+      "confidence": "Official historical county presidential baseline rows used for context only. The script retains source PDFs in data/ky-historical-official-results and validates statewide Democratic, Republican, and total-vote sums against the PDF candidate total rows.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -78,7 +89,7 @@
   "expected": {
     "jurisdictions": 120,
     "resultRows": 120,
-    "sources": 5,
+    "sources": 6,
     "stateTotal": 2036111,
     "trump": 1315523,
     "harris": 691021,
@@ -92,7 +103,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "kentuckyGeneralRecapTextDirectory",
@@ -106,5 +117,18 @@
     "sourceId": "ky-2024-general-recap-text",
     "comparisonContest": "United States Representative",
     "warning": "Kentucky review rows are precinct-level President-versus-U.S. House comparisons extracted from official county recap PDFs. U.S. House is district-based and some counties have uncontested or county-only rows; Elliott County is image-only and uses a manual transcription of the President and U.S. House rows from the official PDF scan."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ky-historical-presidential-official-county",
+    "warning": "Kentucky historical baseline rows are official county-level presidential results from 2012, 2016, and 2020 Kentucky election-results PDFs. Use them as contextual baseline rows, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 360,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }

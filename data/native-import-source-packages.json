@@ -531,17 +531,22 @@
       "state": "KY",
       "name": "Kentucky",
       "priority": 3,
-      "currentStatus": "official_precinct_review_package_collected",
+      "currentStatus": "official_precinct_review_package_collected_historical_loaded",
       "officialSourcePages": [
         "https://elect.ky.gov/results/Pages/default.aspx",
-        "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx"
+        "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+        "https://elect.ky.gov/SiteCollectionDocuments/Election%20Results/2010-2019/2012/2012genresults.pdf",
+        "https://elect.ky.gov/results/2010-2019/Documents/2016%20General%20Election%20Results.pdf",
+        "https://elect.ky.gov/results/2020-2029/Documents/2020%20General%20Election%20Results.pdf"
       ],
       "requiredArtifacts": [
-        "precinct boundary geometry if subcounty map overlays are required"
+        "precinct boundary geometry if subcounty map overlays are required",
+        "state-native turnout denominator artifact if replacing EAC fallback turnout",
+        "post-election audit, recount, CVR availability, incident, correction, litigation, or equipment-administration records beyond the loaded equipment context"
       ],
       "preferredComparisonContest": "U.S. House by district; loaded as precinct-level President-versus-U.S.-House review rows where the county recap PDF includes both contests.",
-      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 120 county result rows and 3,067 precinct review rows; Elliott County uses a manual transcription from rendered official PDF pages because its PDF is image-only.",
-      "blocker": "Kentucky now has official county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page. The parser loads 120 county result rows and 3,067 precinct-level President-versus-U.S.-House review rows. Elliott County text extraction is image-only from this environment, so its President and U.S. House rows are manually transcribed from rendered official PDF pages; six counties are county-only/no precinct-review from the extracted text."
+      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 120 county result rows and 3,067 precinct review rows; historicalPresidentialCsv loaded for 360 official 2012/2016/2020 county baseline rows; Elliott County uses a manual transcription from rendered official PDF pages because its 2024 recap PDF is image-only.",
+      "blocker": "Kentucky has official 2024 county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page, and official 2012/2016/2020 county historical presidential baselines are now generated from Kentucky election-results PDFs. Remaining gaps are precinct boundary geometry, state-native turnout denominators beyond EAC fallback, audit/recount/CVR/incident/correction inventories, and six counties that remain county-only/no precinct-review from extracted 2024 recap text."
     },
     {
       "state": "MS",

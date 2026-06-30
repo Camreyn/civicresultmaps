@@ -17,7 +17,19 @@ for (const file of files) {
     const buffer = await fs.readFile(input);
     parser = new PDFParse({ data: buffer });
     const result = await parser.getText();
-    const text = `# Source: ${file}\n# ByteSize: ${stat.size}\n\n${result.text.replace(/\r\n/g, '\n')}`;
+    const extracted = result.text.replace(/\r\n/g, '\n');
+    const extractedLength = extracted.trim().length;
+    let existing = '';
+    try {
+      existing = await fs.readFile(output, 'utf8');
+    } catch {
+      existing = '';
+    }
+    if (extractedLength < 1000 && existing.trim().length > extractedLength) {
+      console.log(`${file}\t${result.text.length}\tmanual-preserved`);
+      continue;
+    }
+    const text = `# Source: ${file}\n# ByteSize: ${stat.size}\n\n${extracted}`;
     await fs.writeFile(output, text, 'utf8');
     console.log(`${file}\t${result.text.length}`);
   } finally {

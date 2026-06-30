@@ -562,32 +562,42 @@
       "stateName": "Kentucky",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review",
+      "dataFamily": "results_review_turnout_historical_equipment",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "precinct",
       "exportFormats": [
         "official county recap PDFs",
-        "extracted text"
+        "extracted text",
+        "official historical PDF results",
+        "EAC turnout fallback"
       ],
       "sourceUrls": [
-        "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx"
+        "https://elect.ky.gov/results/Pages/default.aspx",
+        "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/21"
       ],
       "exampleUrls": [
         "https://elect.ky.gov/results/Pages/default.aspx"
       ],
       "availableFields": [
         "precinct President rows",
-        "precinct U.S. House comparison rows for most counties"
+        "precinct U.S. House comparison rows for most counties",
+        "county EAC turnout fallback rows",
+        "2012/2016/2020 official county presidential historical baselines",
+        "county equipment context"
       ],
       "missingFields": [
-        "Elliott County OCR/manual extraction",
-        "some county precinct detail"
+        "six counties have county-only/no precinct-review rows from extracted recap text",
+        "state-native turnout denominator",
+        "precinct boundary geometry",
+        "audit/recount/CVR/incident or correction artifacts"
       ],
-      "parserStatus": "kentuckyGeneralRecapTextDirectory loaded with partial OCR gap",
+      "parserStatus": "kentuckyGeneralRecapTextDirectory loaded with Elliott manual transcription; historicalPresidentialCsv loaded from official 2012/2016/2020 Kentucky result PDFs",
       "manualReviewBurden": "high",
-      "confidence": "partial",
-      "caveats": "County recap PDFs are official but some text extraction is image-only or county-only.",
-      "nextAction": "OCR/manual review Elliott County and document county-only exceptions."
+      "confidence": "loaded_with_caveat",
+      "caveats": "County recap PDFs are official, but some text extraction is image-only or county-only. Elliott County uses manual transcription from rendered official PDF pages. Historical baseline rows are official county context only; turnout uses EAC fallback until a Kentucky-native denominator is collected.",
+      "nextAction": "Collect precinct boundary geometry, replace EAC fallback with state-native turnout denominators if available, and inventory audit/recount/CVR/incident or correction artifacts."
     },
     {
       "state": "LA",
