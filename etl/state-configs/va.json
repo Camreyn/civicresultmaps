@@ -39,6 +39,17 @@
       "timestampBasis": "Census TIGERweb county-equivalent geography service artifact.",
       "confidence": "County-equivalent geometry is used for Virginia county and independent-city map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "va-historical-presidential-electionstats-locality",
+      "category": "Historical locality presidential baseline rows",
+      "url": "https://historical.elections.virginia.gov/contest/144567",
+      "localFile": "data/va-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Virginia Department of Elections, Virginia Elections Database",
+      "timestampBasis": "Official Virginia Elections Database presidential contest exports for 2012, 2016, and 2020 downloaded June 30, 2026.",
+      "confidence": "Official Virginia Department of Elections historical locality result exports used for context only. Individual rows carry the per-year contest URL. The 2016 locality rows sum 11 votes below the State row in minor/write-in/total scope while Clinton and Trump locality sums match the State row.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -80,7 +91,7 @@
   "expected": {
     "jurisdictions": 133,
     "resultRows": 133,
-    "sources": 3,
+    "sources": 4,
     "stateTotal": 4505941,
     "trump": 2075085,
     "harris": 2335395,
@@ -94,6 +105,19 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "va-historical-presidential-electionstats-locality",
+    "warning": "Virginia historical baseline rows are official Virginia Elections Database locality-level presidential results from 2012, 2016, and 2020. Use them as contextual baseline rows, not as 2024 certified data. The 2016 locality rows sum 11 votes below the State row in minor/write-in/total scope, while Democratic and Republican locality sums match the State row.",
+    "expected": {
+      "rowCount": 400,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }

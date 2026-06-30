@@ -118,7 +118,8 @@
     "etl:collect:fl": "node scripts/collect-fl-results-extract.mjs",
     "etl:analyze:fl": "node scripts/report-fl-county-review-analysis.mjs",
     "etl:validate:ks": "python -m civic_etl.cli validate --config etl/state-configs/ks.json",
-    "etl:import:ks": "python -m civic_etl.cli import --config etl/state-configs/ks.json --out .etl/staging"
+    "etl:import:ks": "python -m civic_etl.cli import --config etl/state-configs/ks.json --out .etl/staging",
+    "etl:collect:va:historical": "node scripts/collect-va-historical-baseline.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
