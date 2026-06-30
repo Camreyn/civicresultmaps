@@ -1,4 +1,6 @@
 import coverage from "../src/lib/map-geometry-coverage.json" with { type: "json" };
+import fs from "node:fs";
+import path from "node:path";
 
 const states = coverage.baseResultGeometryStates;
 
@@ -6,6 +8,38 @@ const appBaseUrl = process.env.CIVIC_MAPS_BASE_URL ?? "https://civicresultmaps.o
 const geoBaseUrl =
   process.env.CIVIC_MAPS_GEO_BASE_URL ??
   "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
+
+function stripBom(value) {
+  return String(value ?? "").replace(/^\uFEFF/, "");
+}
+
+function readLocalStateConfig(state) {
+  const configPath = path.join("etl", "state-configs", `${String(state).toLowerCase()}.json`);
+  if (!fs.existsSync(configPath)) {
+    return null;
+  }
+  return JSON.parse(stripBom(fs.readFileSync(configPath, "utf8")));
+}
+
+function resultlessMapSkipReason(state, config) {
+  if (!config) {
+    return null;
+  }
+
+  if (config.turnoutOnly === true) {
+    return `${state} is configured as turnout-only; no production result-map join is expected yet.`;
+  }
+
+  if (config.capabilities?.certifiedResults === false || config.capabilities?.map === false) {
+    return `${state} config does not enable certified result maps yet.`;
+  }
+
+  if (Number(config.expected?.resultRows ?? NaN) === 0) {
+    return `${state} config expects zero 2024 result rows.`;
+  }
+
+  return null;
+}
 
 function normalizeName(name) {
   return String(name ?? "")
@@ -72,10 +106,28 @@ const report = [];
 
 for (const state of states) {
   try {
+    const config = readLocalStateConfig(state);
     const [results, geojson] = await Promise.all([
       fetchJson(`${appBaseUrl}/api/results?state=${state}&year=2024&level=county`),
       fetchJson(`${geoBaseUrl}/${geoJsonPath(state)}`),
     ]);
+    const skipReason = resultlessMapSkipReason(state, config);
+    if ((results.data?.length ?? 0) === 0 && skipReason) {
+      report.push({
+        state,
+        resultRows: 0,
+        boundaries: geojson.features?.length ?? 0,
+        blankNames: 0,
+        unmatched: [],
+        unmatchedCount: 0,
+        unmappedRows: [],
+        unmappedRowCount: 0,
+        skipped: true,
+        skipReason,
+      });
+      continue;
+    }
+
     const resultKeys = new Set(results.data.map((row) => normalizeName(row.jurisdictionName)));
     const featureKeys = new Set();
     const unmatched = [];
@@ -119,7 +171,8 @@ for (const state of states) {
 }
 
 const failures = report.filter((row) => row.error || row.blankNames > 0 || row.unmatchedCount > 0 || row.unmappedRowCount > 0);
-console.log(JSON.stringify({ checkedStates: report.length, failures, summary: report }, null, 2));
+const skipped = report.filter((row) => row.skipped);
+console.log(JSON.stringify({ checkedStates: report.length, skippedStates: skipped.length, failures, skipped, summary: report }, null, 2));
 
 if (failures.length > 0) {
   process.exitCode = 1;
