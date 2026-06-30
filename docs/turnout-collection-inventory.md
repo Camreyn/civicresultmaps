@@ -7,8 +7,8 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 ## Summary
 
 - States checked: 50
-- Turnout loaded in database or validated native staging: 8
-- Native config present but turnout missing: 2
+- Turnout loaded in database or validated native staging: 9
+- Loaded through official EAC fallback while state-native ward denominator remains missing: 1
 - Need native turnout package: 40
 
 ## Loaded Turnout
@@ -22,18 +22,18 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | PA Pennsylvania | 67 | county | registeredVoters | `data/pa-2024-voter-registration-vote-history-summary.xlsx` |
 | SC South Carolina | 46 | county | printedRegistrationListVoters | `data/sc-2024-vrems-turnout.csv` |
 | VA Virginia | 2,669 | precinct | registeredVoters | `data/va-2024-enr-election-turnout.csv` |
+| WI Wisconsin | 1,851 | local_jurisdiction | registeredVoters | `data/wi-2024-eac-turnout.csv` |
 | WV West Virginia | 1,649 | precinct | registeredVoters | `data/wv-2024-county-detailxml-reports` |
 
-## Native Config Present, Turnout Missing
+## Loaded Fallback, State-Native Denominator Still Missing
 
 | State | Current status | Needed |
 | --- | --- | --- |
-| WI Wisconsin | Native presidential and review ETL is loaded, but turnout rows are 0. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county-level is usable with caveats. |
-| MO Missouri | Native presidential, review, and state-native turnout ETL config is loaded, but database turnout rows may remain 0 until staging is imported/promoted. | Run `npm run etl:prepare:mo` and `npm run etl:import:mo`; turnout source is the official Missouri SOS 2024 General Election voter turnout PDF normalized to `data/mo-2024-general-turnout.csv`. |
+| WI Wisconsin | Native presidential and review ETL is loaded, and official EAC 2024 EAVS V2 local-jurisdiction turnout rows are configured and loaded as fallback context. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county- or municipality-level is usable only with caveats. |
 
-## States Needing Native Turnout Packages
+## States Needing Native Turnout Packages Or State-Native Replacements
 
-These states do not currently have native turnout ETL configs or database turnout rows.
+These states still need a state-native turnout package or review of whether fallback turnout coverage is sufficient for the current caveats.
 
 `AK`, `AL`, `AR`, `AZ`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `IA`, `ID`, `IL`, `IN`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `UT`, `VT`, `WA`, `WY`
 
@@ -65,6 +65,8 @@ For Wisconsin, ask for:
 - Join keys that match the WEC ward-by-ward workbook, if ward-level data exists.
 - Expected row count and statewide denominator total.
 - Caveats for same-day registration, inactive voters, absentee ballots, provisional ballots, and reporting-unit changes.
+
+Current Wisconsin caveat: the WEC ward-by-ward federal/state results workbook does not include registered-voter denominator fields. The loaded EAC fallback uses A1a Total Reg and F1a Total Voters at EAC local-jurisdiction grain, totaling 1,851 rows, 3,933,068 registered voters, and 3,434,185 voters. It is official turnout context, but it is not same-grain WEC ward denominator data and is not used as an advisory flag input.
 
 ## West Virginia Update
 
