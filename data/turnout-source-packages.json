@@ -898,13 +898,13 @@
       "sourceLevel": "jurisdiction",
       "denominatorType": "registeredVoters",
       "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows plus Nebraska SOS canvass voting-statistics cross-check",
+      "sourceTitle": "EAC fallback turnout rows plus generated Nebraska SOS canvass voting-statistics reconciliation",
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/ne-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 93,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. Nebraska SOS state-native canvass voting-statistics tables and the post-general eligible-voter registration report are documented as cross-checks; the canvass statewide Total Voting value is 965,236 versus 965,145 EAC fallback ballots cast.",
-      "nextAction": "Add a Nebraska canvass voting-statistics normalizer before replacing EAC fallback turnout. Reconcile the canvass total-voting value, EAC ballots-cast value, county rows, and denominator timing; keep source caveats visible.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. The generated Nebraska SOS canvass voting-statistics reconciliation documents 93 county rows, matching 1,263,487 registered voters, and a canvass statewide Total Voting value of 965,236 versus 965,145 EAC fallback ballots cast.",
+      "nextAction": "Keep EAC fallback turnout active until the generated canvass reconciliation is reviewed for replacement semantics; request precinct/subcounty turnout and geometry only if subcounty advisory coverage is upgraded.",
       "coverage": {
         "jurisdictionRows": 93,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ne-2024-eac-registered-voter-denominator.json",
@@ -914,7 +914,12 @@
         "stateNativeCanvassFile": "data/ne-2024-general-canvass-book.pdf",
         "stateNativeRegistrationReport": "data/ne-2024-post-general-eligible-voter-report.pdf",
         "stateNativeCanvassTotalVoting": 965236,
-        "sourceDifferenceNote": "Current loaded EAC fallback ballots cast is 965,145; Nebraska SOS canvass statewide Total Voting is 965,236."
+        "sourceDifferenceNote": "Current loaded EAC fallback ballots cast is 965,145; Nebraska SOS canvass statewide Total Voting is 965,236. The generated reconciliation shows 34 county ballot-count deltas and no registered-voter denominator delta.",
+        "stateNativeCanvassReconciliationFile": "data/ne-2024-canvass-voting-statistics-reconciliation.csv",
+        "stateNativeCanvassReconciliationSummary": "data/ne-2024-canvass-voting-statistics-reconciliation-summary.json",
+        "stateNativeCanvassBallotsCastDelta": 91,
+        "stateNativeCanvassRegisteredVoterDelta": 0,
+        "stateNativeCanvassRowsWithBallotDelta": 34
       },
       "stateNativeCanvassSourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
       "stateNativeRegistrationSourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/vrstats/2024VR/Post-Election-Statewide-November-2024.pdf"
