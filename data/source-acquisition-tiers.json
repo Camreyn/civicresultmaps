@@ -400,7 +400,7 @@
       "stateName": "Iowa",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct",
       "exportFormats": [
@@ -417,17 +417,19 @@
         "county results",
         "precinct President rows",
         "precinct U.S. House comparison rows",
-        "precinct turnout/registration fields"
+        "precinct turnout/registration fields",
+        "President and U.S. House candidate vote type splits in official detail XML"
       ],
       "missingFields": [
-        "ballot method fields",
-        "precinct boundary geometry"
+        "normalized ballot-method package for the public vote-method API/UI",
+        "precinct boundary geometry",
+        "normalized post-election audit, recount, CVR availability, incident, correction, and litigation artifacts"
       ],
-      "parserStatus": "iowaClarityCountyDetailXmlDirectory loaded for results, review, and turnout",
+      "parserStatus": "iowaClarityCountyDetailXmlDirectory loaded for results, review, and precinct turnout; detail XML VoteType fields are confirmed but not normalized into vote-method rows",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "U.S. House is district-based, so review rows remain advisory.",
-      "nextAction": "Treat as an example Tier 2 goal state; optional next step is precinct geometry."
+      "caveats": "U.S. House is district-based, so review rows remain advisory. The official detail XML includes candidate VoteType splits such as Election Day and Absentee, but the public vote-method contract does not yet load Iowa Clarity method rows. County geometry is loaded; precinct boundary geometry and normalized admin/audit/CVR/incident artifacts remain uncollected.",
+      "nextAction": "Use data/ia-2024-data-coverage-inventory.json as the current IA source-search record; next steps are an Iowa Clarity vote-method normalizer, official precinct boundary geometry/crosswalk collection, and requests for 2024 audit, recount, CVR availability, incident, correction, and litigation records."
     },
     {
       "state": "ID",

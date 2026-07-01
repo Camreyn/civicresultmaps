@@ -518,21 +518,21 @@
       "year": 2024,
       "priority": 19,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "precinct",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/ia-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
-      "expectedTurnoutRows": 99,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "denominatorTiming": "officialCountyReport",
+      "sourceTitle": "Iowa SOS official county detail XML VoterTurnout rows",
+      "sourceUrl": "https://electionresults.iowa.gov/IA/122322/web.345435/",
+      "localFile": "data/ia-2024-county-detailxml-reports",
+      "parser": "iowaClarityCountyDetailXmlDirectory",
+      "expectedTurnoutRows": 1651,
+      "statusNote": "Official Iowa Secretary of State county detail XML reports are loaded through the IA native ETL config. Each county detail.xml VoterTurnout Precinct row provides ballotsCast and totalVoters fields at precinct grain.",
+      "nextAction": "Keep the Clarity detail XML source and precinct-geometry caveat visible; normalize Clarity VoteType rows separately if Iowa vote-method display rows are added.",
       "coverage": {
-        "jurisdictionRows": 99,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ia-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 2256774,
-        "ballotsCast": 1674011,
+        "jurisdictionRows": 1651,
+        "registeredVoterDenominatorFile": "data/ia-2024-county-detailxml-reports",
+        "registeredVoters": 1893715,
+        "ballotsCast": 1672068,
         "warningRows": 0
       }
     },
@@ -1457,6 +1457,37 @@
         "Turnout is county-level, not precinct-level.",
         "Voters Voting is election-level turnout, not presidential contest votes.",
         "EAC 2024 EAVS county rows remain retained as benchmark context but are no longer the configured Indiana turnout source."
+      ]
+    },
+    {
+      "state": "IA",
+      "name": "Iowa",
+      "authority": "Iowa Secretary of State",
+      "sourceLevel": "precinct",
+      "turnoutSource": {
+        "sourceTitle": "Iowa SOS official county detail XML VoterTurnout rows",
+        "sourceUrl": "https://electionresults.iowa.gov/IA/122322/web.345435/",
+        "localFile": "data/ia-2024-county-detailxml-reports",
+        "parser": "iowaClarityCountyDetailXmlDirectory"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Iowa SOS county detail XML totalVoters field",
+        "sourceUrl": "https://electionresults.iowa.gov/IA/122322/web.345435/",
+        "localFile": "data/ia-2024-county-detailxml-reports",
+        "parser": "iowaClarityCountyDetailXmlDirectory",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "officialCountyReport"
+      },
+      "expected": {
+        "turnoutRows": 1651,
+        "registeredVoters": 1893715,
+        "ballotsCast": 1672068
+      },
+      "caveats": [
+        "Turnout rows are precinct-level VoterTurnout rows inside official county detail.xml reports.",
+        "The loaded ballotsCast field is election-level turnout, not presidential contest votes.",
+        "County map geometry is loaded; official precinct boundary geometry is not loaded.",
+        "EAC 2024 EAVS Iowa rows remain retained as benchmark context but are no longer the configured Iowa turnout source."
       ]
     },
     {

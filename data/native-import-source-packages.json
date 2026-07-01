@@ -1010,18 +1010,26 @@
       "state": "IA",
       "name": "Iowa",
       "priority": 2,
-      "currentStatus": "official_precinct_review_package_collected",
+      "currentStatus": "official_precinct_review_turnout_package_collected_admin_request_paths_documented",
       "officialSourcePages": [
         "https://electionresults.iowa.gov/IA/122322/web.345435/",
-        "https://electionresults.iowa.gov/IA/122322/current_ver.txt"
+        "https://electionresults.iowa.gov/IA/122322/current_ver.txt",
+        "https://www.legis.iowa.gov/docs/code/50.51.pdf",
+        "https://www.legis.iowa.gov/docs/code/50.48.pdf",
+        "https://www.legis.iowa.gov/docs/code/50.50.pdf"
       ],
       "requiredArtifacts": [
         "official county detailxml.zip reports for all 99 counties",
-        "precinct boundary geometry if subcounty map overlays are required"
+        "Iowa Clarity VoteType normalizer/public vote-method package if method display rows are added",
+        "official precinct boundary geometry or reporting-unit crosswalk if subcounty map overlays are required",
+        "2024 selected-precinct audit reports/selection list/outcomes",
+        "2024 recount or administrative-audit request/result packets if any",
+        "CVR availability/request-path responses by county or state custodian",
+        "official incident, correction, and litigation records if published or provided by request"
       ],
       "preferredComparisonContest": "U.S. House by district; loaded from official county detail XML reports as precinct-level President-vs-U.S.-House review rows.",
-      "parserNeeded": "iowaClarityCountyDetailXmlDirectory loaded for 99 county result rows, 1,653 precinct review rows, and 1,651 precinct turnout rows.",
-      "blocker": "Iowa now has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-House review rows. Remaining optional gap: precinct boundary geometry for subcounty map overlays."
+      "parserNeeded": "iowaClarityCountyDetailXmlDirectory loaded for 99 county result rows, 1,653 precinct review rows, and 1,651 precinct turnout rows. data/ia-2024-data-coverage-inventory.json documents confirmed Clarity VoteType fields and remaining geometry/admin request paths.",
+      "blocker": "Iowa has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-House review rows and state-native precinct turnout rows. Remaining gaps are a normalized Iowa vote-method package for Clarity VoteType fields, official precinct boundary geometry for subcounty overlays, and normalized audit/recount/CVR availability/incident/correction/litigation artifacts."
     },
     {
       "state": "KY",
