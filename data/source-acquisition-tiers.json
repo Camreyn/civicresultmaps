@@ -579,18 +579,23 @@
       "stateName": "Kentucky",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_historical_equipment",
+      "dataFamily": "results_review_turnout_historical_equipment_admin_inventory",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "precinct",
       "exportFormats": [
         "official county recap PDFs",
         "extracted text",
         "official historical PDF results",
-        "EAC turnout fallback"
+        "EAC turnout fallback",
+        "official turnout and registration PDF leads"
       ],
       "sourceUrls": [
         "https://elect.ky.gov/results/Pages/default.aspx",
         "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+        "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+        "https://elect.ky.gov/Resources/Pages/Registration-Statistics.aspx",
+        "https://elect.ky.gov/Resources/Pages/Voting-Systems.aspx",
+        "https://elect.ky.gov/About-Us/Pages/County-Clerks.aspx",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/21"
       ],
@@ -601,20 +606,22 @@
         "precinct President rows",
         "precinct U.S. House comparison rows for most counties",
         "county EAC turnout fallback rows",
+        "candidate State Board 2024 general turnout rows by county and precinct",
+        "candidate State Board 2024 general registration denominator rows by county and precinct",
         "2012/2016/2020 official county presidential historical baselines",
         "county equipment context"
       ],
       "missingFields": [
         "six counties have county-only/no precinct-review rows from extracted recap text",
-        "state-native turnout denominator",
-        "precinct boundary geometry",
-        "audit/recount/CVR/incident or correction artifacts"
+        "state-native turnout parser/reconciliation against county-clerk official documentation",
+        "precinct boundary geometry or result-to-geometry crosswalk",
+        "normalized audit/recount/CVR/incident/correction/litigation artifacts"
       ],
-      "parserStatus": "kentuckyGeneralRecapTextDirectory loaded with Elliott manual transcription; historicalPresidentialCsv loaded from official 2012/2016/2020 Kentucky result PDFs",
+      "parserStatus": "kentuckyGeneralRecapTextDirectory loaded with Elliott manual transcription; historicalPresidentialCsv loaded from official 2012/2016/2020 Kentucky result PDFs; State Board turnout and registration PDFs collected as candidate leads only",
       "manualReviewBurden": "high",
       "confidence": "loaded_with_caveat",
-      "caveats": "County recap PDFs are official, but some text extraction is image-only or county-only. Elliott County uses manual transcription from rendered official PDF pages. Historical baseline rows are official county context only; turnout uses EAC fallback until a Kentucky-native denominator is collected.",
-      "nextAction": "Collect precinct boundary geometry, replace EAC fallback with state-native turnout denominators if available, and inventory audit/recount/CVR/incident or correction artifacts."
+      "caveats": "County recap PDFs are official, but some text extraction is image-only or county-only. Elliott County uses manual transcription from rendered official PDF pages. Historical baseline rows are official county context only. Turnout uses EAC fallback until Kentucky State Board turnout/registration PDFs are parsed, reconciled, and caveated against the State Board warning that turnout reports are unofficial and can differ after rolls reopen.",
+      "nextAction": "Implement a Kentucky turnout/registration PDF parser and reconciliation report, collect precinct boundary geometry or a reporting-unit crosswalk, and request/normalize audit/recount/CVR/incident/correction/litigation artifacts from the State Board, county clerks, county boards, or court/board dockets."
     },
     {
       "state": "LA",

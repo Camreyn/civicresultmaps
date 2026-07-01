@@ -257,3 +257,18 @@ Caveats: official Indiana ENR category JSON is county-level, and the collected J
 - Equipment context: `data/ga-2024-equipment-context.csv` from Verified Voting, context only
 
 Expected validation: 159 county result rows, 159 county geometry features, 2,684 precinct review rows, 159 EAC fallback turnout rows, and 477 official county historical baseline rows. Remaining gaps: Georgia-native turnout/registration denominators, official precinct boundary geometry/crosswalks, and normalized official audit/recount/CVR/incident/correction records. Current advisory review rows are public-interest screening inputs only, not findings.
+
+## Kentucky Wave 7 Update
+
+- Config: etl/state-configs/ky.json
+- Authority: Kentucky State Board of Elections; Kentucky county clerks; U.S. Election Assistance Commission; U.S. Census Bureau
+- County results source: data/ky-2024-general-recap-text, derived from official county recap PDFs in data/ky-2024-general-recap-sheets
+- Local review source: data/ky-2024-general-recap-text
+- Comparison contest: U.S. House by district, with one-sided/uncontested and county-only caveats
+- Turnout source: EAC 2024 county/jurisdiction fallback rows at data/eac-2024-state-turnout/ky-2024-eac-turnout.csv; Kentucky State Board turnout and registration PDFs are collected as candidate state-native leads at data/ky-2024-general-turnout-by-county.pdf, data/ky-2024-general-turnout-by-precinct.pdf, data/ky-2024-general-registration-by-county.pdf, and data/ky-2024-general-registration-by-precinct.pdf
+- Historical baseline source: data/ky-historical-presidential-baseline.csv, generated from official Kentucky 2012, 2016, and 2020 general-election result PDFs
+- County boundary: data/ky-counties.geojson
+- Administration/source inventory: data/ky-2024-data-coverage-inventory.json
+- Equipment context: data/ky-2024-equipment-context.csv from Verified Voting, context only
+
+Expected validation: 120 county result rows, 120 county geometry features, 3,067 precinct review rows, 120 EAC fallback turnout rows, and 360 official county historical baseline rows. Remaining gaps: a Kentucky turnout/registration PDF parser and reconciliation report before replacing EAC fallback, county-clerk official turnout documentation if source-native turnout rows are promoted, map-ready precinct boundary geometry or a reporting-unit crosswalk, and normalized audit/recount/CVR/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
