@@ -120,5 +120,25 @@
         2020
       ]
     }
+  },
+  "coverageInventory": {
+    "localFile": "data/pa-2024-data-coverage-inventory.json",
+    "checkedAt": "2026-07-01",
+    "status": "official_precinct_review_county_turnout_loaded_precinct_registration_lead_collected",
+    "officialSourceSearchPath": [
+      "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+      "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/election%20data%20handbook%20general.pdf",
+      "https://www.pa.gov/agencies/vote/elections/post-election-audits/2024-general-rla-report",
+      "https://www.pa.gov/agencies/vote/elections/election-security",
+      "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-systems",
+      "https://www.pa.gov/agencies/vote/contact-us/contact-your-election-officials"
+    ],
+    "caveats": [
+      "Official precinct voter-registration rows are collected as a denominator lead only; no same-grain precinct vote-history or ballots-cast rows are loaded.",
+      "Current turnout rows remain county-level vote-history divided by registered voters.",
+      "Precinct boundary geometry is not loaded, so maps remain county-level.",
+      "2024 RLA source context is identified but not normalized into row-level audit context.",
+      "Historical baselines remain secondary contextual rows until official Pennsylvania historical bulk returns are normalized."
+    ]
   }
 }
