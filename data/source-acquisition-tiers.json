@@ -1135,13 +1135,15 @@
       "stateName": "New Hampshire",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_admin_inventory",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "town_ward",
       "exportFormats": [
         "XLS",
         "XLSX",
-        "normalized CSV"
+        "normalized CSV",
+        "archived official 2016 XLS/XLSX baseline leads",
+        "admin inventory JSON"
       ],
       "sourceUrls": [
         "https://www.sos.nh.gov/2024-general-election-results"
@@ -1149,7 +1151,10 @@
       "exampleUrls": [
         "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls",
         "https://web.archive.org/web/20250311214424id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-1_3.xlsx",
-        "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx"
+        "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx",
+        "https://web.archive.org/cdx?url=www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-president*&output=json&fl=timestamp,original,statuscode,mimetype&filter=statuscode:200&collapse=urlkey",
+        "https://web.archive.org/web/20240720085749id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-governor.xls",
+        "https://web.archive.org/web/20240720085753id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-congressional-district-1.xlsx"
       ],
       "availableFields": [
         "town/ward President rows",
@@ -1158,19 +1163,21 @@
         "town/ward ballots-cast rows",
         "town/ward names-on-checklist registered-voter denominator rows",
         "county geometry",
-        "county equipment context"
+        "county equipment context",
+        "official 2016 archive leads for President, Governor, and U.S. House historical baseline feasibility",
+        "NH administration/source inventory with recount, geometry, audit, CVR, incident, correction, and litigation request paths"
       ],
       "missingFields": [
-        "historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
+        "loaded 2012/2016/2020 historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
         "town/ward boundary geometry",
         "normalized post-election audit rows",
         "normalized recount, CVR availability, incident/correction, and litigation rows"
       ],
-      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs",
+      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs; data/nh-2024-admin-source-inventory.json now records official 2016 historical-baseline archive leads and remaining admin/geometry request paths",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_district_comparison_caveat",
-      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals.",
-      "nextAction": "Add official historical baselines, request town/ward geometry, and normalize official audit/recount/CVR/incident/correction/litigation records."
+      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals. The 2016 historical archive lead is not loaded until artifacts are downloaded, parsed, and reconciled; 2020 and 2012 remain targeted archive/records-request items.",
+      "nextAction": "Download and parse the official 2016 archived President, Governor, and U.S. House XLS/XLSX leads; continue targeted archive/records requests for 2020 and 2012; request town/ward geometry or a reporting-unit crosswalk; normalize official audit/recount/CVR/incident/correction/litigation records if obtained."
     },
     {
       "state": "NJ",
