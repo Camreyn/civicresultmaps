@@ -6357,15 +6357,17 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "GA" and config.raw.get("certifiedResults", {}).get("format") == "georgiaMediaExportJson":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _georgia_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeGeorgiaMediaExportJson",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
-
     if config.code == "WA" and config.raw.get("certifiedResults", {}).get("format") == "washingtonCsvExports":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _washington_rows(config, sources)
