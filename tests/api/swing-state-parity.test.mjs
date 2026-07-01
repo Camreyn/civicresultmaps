@@ -60,10 +60,10 @@ test("non-Wisconsin swing states distinguish native review parity from missing c
   assert.equal(states.get("AZ").nativeCoverage.readinessGrade, "county_review_only");
   assert.equal(states.get("NV").nativeCoverage.readinessGrade, "subcounty_comparison_review");
   assert.equal(states.get("NV").nativeCoverage.reportingGrain, "precinct");
-  assert.equal(states.get("NV").nativeCoverage.reviewRows, 1036);
+  assert.equal(states.get("NV").nativeCoverage.reviewRows, 1057);
   assert.equal(states.get("NV").nativeCoverage.comparisonContest, "United States Senator");
-  assert.equal(states.get("NV").indicatorCoverage.flaggedCountyJurisdictions, 1);
-  assert.equal(states.get("NV").indicatorCoverage.indicatorRows, 1);
+  assert.equal(states.get("NV").indicatorCoverage.flaggedCountyJurisdictions, 3);
+  assert.equal(states.get("NV").indicatorCoverage.indicatorRows, 4);
   assert.ok(gapIds("AZ").includes("subcounty_review_rows"));
   assert.ok(gapIds("NV").includes("statewide_subcounty_review_coverage"));
   assert.equal(gapIds("NV").includes("subcounty_review_rows"), false);

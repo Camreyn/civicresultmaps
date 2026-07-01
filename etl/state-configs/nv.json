@@ -61,6 +61,28 @@
       "status": "loaded"
     },
     {
+      "id": "nv-humboldt-2024-cvr-precinct-review",
+      "category": "Humboldt County official CVR precinct President/Senate review rows",
+      "url": "https://www.humboldtcountynv.gov/DocumentCenter/View/7893",
+      "localFile": "data/nv-humboldt-2024-general-cvr-precinct-review.csv",
+      "parser": "localComparisonCsv",
+      "authority": "Humboldt County Clerk",
+      "timestampBasis": "Humboldt County 2024 General Election CVR linked from the official county elections page and normalized July 1, 2026.",
+      "confidence": "Official Humboldt County cast vote record CSV aggregated by PrecinctPortion into President-versus-U.S. Senate local review rows. The raw CVR is retained at data/nv-humboldt-2024-general-cvr.csv. County CVR totals are precinct review context and are not a replacement for statewide certified county totals.",
+      "status": "loaded"
+    },
+    {
+      "id": "nv-2024-source-coverage-inventory",
+      "category": "Nevada 2024 remaining source coverage and administration context inventory",
+      "url": "https://www.humboldtcountynv.gov/317/Elections",
+      "localFile": "data/nv-2024-source-coverage-inventory.json",
+      "parser": "coverageInventoryJson",
+      "authority": "CivicResultMaps official-source inventory using Nevada Secretary of State and county election sources",
+      "timestampBasis": "State-scoped source coverage pass completed July 1, 2026.",
+      "confidence": "Inventory artifact documents Humboldt CVR collection, remaining local-result gaps, blocked NVSOS/Silver State live access, state-native turnout blockers, and audit/CVR/L&A/tabulator-log/custody/incident source needs. It is context only and not a vote-result parser.",
+      "status": "loaded"
+    },
+    {
       "id": "nv-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2732%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -97,7 +119,7 @@
     "sourceId": "nv-clark-2024-cvr-precinct-review",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "sourceCoverage": "Clark County and Washoe County official CVR precinct rows are loaded; the other 15 Nevada jurisdictions remain county-only until local exports or records-request productions are collected.",
+    "sourceCoverage": "Clark County, Washoe County, and Humboldt County official CVR precinct rows are loaded; the other 14 Nevada jurisdictions remain county-only until local exports or records-request productions are collected.",
     "partialCoverage": true,
     "missingJurisdictions": [
       "Carson City",
@@ -106,7 +128,6 @@
       "Elko County",
       "Esmeralda County",
       "Eureka County",
-      "Humboldt County",
       "Lander County",
       "Lincoln County",
       "Lyon County",
@@ -116,10 +137,11 @@
       "Storey County",
       "White Pine County"
     ],
-    "warning": "Nevada review rows now include Clark County and Washoe County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and county CVR totals may differ from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
+    "warning": "Nevada review rows now include Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and county CVR totals may differ from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
     "sourceIds": [
       "nv-clark-2024-cvr-precinct-review",
-      "nv-washoe-2024-cvr-precinct-review"
+      "nv-washoe-2024-cvr-precinct-review",
+      "nv-humboldt-2024-cvr-precinct-review"
     ]
   },
   "turnout": {
@@ -128,7 +150,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected. A July 1, 2026 source pass found that the archived NVSOS statewide result page lacks turnout/registration markers and live NVSOS turnout/registration pages returned Incapsula challenge pages or empty responses from scripted access.",
     "warningRequired": true,
     "expected": {
       "rowCount": 17,
@@ -152,13 +174,13 @@
   "expected": {
     "jurisdictions": 17,
     "resultRows": 17,
-    "sources": 7,
+    "sources": 9,
     "geometryFeatures": 17,
     "stateTotal": 1484840,
     "trump": 751205,
     "harris": 705197,
     "other": 28438,
-    "reviewRows": 1036,
+    "reviewRows": 1057,
     "turnoutRows": 17
   },
   "capabilities": {

@@ -1207,31 +1207,37 @@
         "county totals",
         "Clark County CVR zip",
         "Washoe County CVR csv",
-        "normalized Clark/Washoe precinct review CSVs"
+        "Humboldt County CVR csv",
+        "normalized Clark/Washoe/Humboldt precinct review CSVs"
       ],
       "sourceUrls": [
         "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
         "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
         "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
         "https://www.washoecounty.gov/voters/results/archivedresults.php",
-        "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
+        "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
+        "https://www.humboldtcountynv.gov/317/Elections",
+        "https://www.humboldtcountynv.gov/DocumentCenter/View/7893"
       ],
       "exampleUrls": [],
       "availableFields": [
         "county President rows",
         "county U.S. Senate rows",
         "Clark County precinct President/Senate CVR review rows",
-        "Washoe County precinct President/Senate CVR review rows"
+        "Washoe County precinct President/Senate CVR review rows",
+        "Humboldt County precinct President/Senate CVR review rows",
+        "county equipment context"
       ],
       "missingFields": [
-        "local/precinct rows for 15 non-Clark/non-Washoe jurisdictions",
-        "state-native turnout denominator"
+        "local/precinct rows for 14 non-Clark/non-Washoe/non-Humboldt jurisdictions",
+        "state-native turnout denominator",
+        "post-election audit, L&A, tabulator-log, custody, incident/correction, and remaining CVR availability artifacts"
       ],
       "parserStatus": "native partial subcounty review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Clark County and Washoe County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained.",
-      "nextAction": "Collect official local result exports or records-request productions for the 15 non-Clark/non-Washoe Nevada jurisdictions and a state-native turnout denominator."
+      "caveats": "Clark County, Washoe County, and Humboldt County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained. The July 1, 2026 NV source inventory records blocked state-native turnout access and remaining audit/CVR/L&A/tabulator-log/custody/incident evidence needs.",
+      "nextAction": "Collect official local result exports or records-request productions for the 14 non-Clark/non-Washoe/non-Humboldt Nevada jurisdictions, a state-native turnout denominator, and administration evidence artifacts identified in data/nv-2024-source-coverage-inventory.json."
     },
     {
       "state": "NY",
