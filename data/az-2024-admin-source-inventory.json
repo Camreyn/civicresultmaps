@@ -1,0 +1,134 @@
+{
+    "state":  "AZ",
+    "stateName":  "Arizona",
+    "electionYear":  2024,
+    "checkedAt":  "2026-07-01",
+    "authority":  "Arizona Secretary of State and Arizona county election offices",
+    "caveat":  "This is a source inventory for administration context. It records official source locations, current collection status, and request needs; it is not a normalized row-level audit, CVR, incident, recount, correction, or litigation dataset and does not allege fraud or misconduct.",
+    "resultCoverage":  {
+                           "status":  "county_loaded_subcounty_blocked",
+                           "sourceTitle":  "Arizona Secretary of State 2024 General Election Information",
+                           "sourceUrl":  "https://azsos.gov/elections/election-information/2024-election-info",
+                           "loadedArtifacts":  [
+                                                   "data/az-2024-general-canvass-president.csv",
+                                                   "data/az-2024-general-canvass-senate.csv",
+                                                   "data/az-counties.geojson"
+                                               ],
+                           "loadedReportingGrain":  "county",
+                           "preferredBlockedReportingGrain":  "precinct_or_local_reporting_unit",
+                           "preferredComparisonContest":  "U.S. Senate",
+                           "sourcePathNotes":  [
+                                                   "The SOS 2024 Election Information page links the signed statewide canvass and all 15 county canvass PDFs.",
+                                                   "The linked statewide canvass supports county certified President, U.S. Senate, and turnout denominator rows already loaded in the AZ config.",
+                                                   "The public results app at https://results.arizona.vote and the SOS result/canvass hosts returned Cloudflare challenges to scripted fetches from this worker."
+                                               ],
+                           "requestNeed":  "Request official 2024 general election precinct or local reporting-unit result exports for President and U.S. Senate, including county/reporting-unit identifiers, vote method or batch fields if releasable, and any crosswalk needed to join county canvass totals."
+                       },
+    "turnoutDenominators":  {
+                                "status":  "state_native_county_loaded",
+                                "sourceTitle":  "Arizona Secretary of State signed 2024 statewide canvass",
+                                "sourceUrl":  "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+                                "localArtifact":  "data/az-2024-general-canvass-president.csv",
+                                "parser":  "normalizedTurnoutCsv from the Arizona signed canvass transcription",
+                                "reportingGrain":  "county",
+                                "ballotsCast":  3428011,
+                                "registeredVoters":  4367593,
+                                "rows":  15,
+                                "caveat":  "The denominator is the county Total Eligible Registration field from the signed canvass. It is not a precinct denominator and should not be used as same-grain subcounty turnout evidence."
+                            },
+    "handCountAudit":  {
+                           "status":  "official_summary_and_county_documents_identified_not_normalized",
+                           "sourceTitle":  "Arizona SOS 2024 General Election hand count results",
+                           "sourceUrl":  "https://azsos.gov/elections/election-information/2024-election-info",
+                           "statutoryReferenceUrl":  "https://www.azleg.gov/ars/16/00602.htm",
+                           "summary":  {
+                                           "counties":  15,
+                                           "completed":  13,
+                                           "notPerformed":  2,
+                                           "completedNoDiscrepancies":  5,
+                                           "completedWithinAcceptableMargin":  8
+                                       },
+                           "notPerformedCounties":  [
+                                                        "Apache",
+                                                        "La Paz"
+                                                    ],
+                           "completedNoDiscrepanciesCounties":  [
+                                                                    "Coconino",
+                                                                    "Greenlee",
+                                                                    "Pinal",
+                                                                    "Yavapai",
+                                                                    "Yuma"
+                                                                ],
+                           "completedWithinAcceptableMarginCounties":  [
+                                                                           "Cochise",
+                                                                           "Gila",
+                                                                           "Graham",
+                                                                           "Maricopa",
+                                                                           "Mohave",
+                                                                           "Navajo",
+                                                                           "Pima",
+                                                                           "Santa Cruz"
+                                                                       ],
+                           "parserNeeded":  "Normalize county hand-count documents only if row-level audit-unit, contest, machine-count, hand-count, discrepancy, and resolution fields are needed. The current inventory records official summary status but does not create audit rows.",
+                           "caveat":  "The SOS page states county hand counts are required when county political parties participate and that county results are reported to the Secretary of State. Summary status is audit context only and should not be treated as per-unit clearance for advisory rows."
+                       },
+    "recountsAndLitigation":  {
+                                  "status":  "official_recount_and_litigation_paths_identified_not_normalized",
+                                  "sourceTitle":  "Arizona SOS 2024 General Election litigation and recount information",
+                                  "sourceUrls":  [
+                                                     "https://azsos.gov/elections/election-information/2024-election-information/litigation-info",
+                                                     "https://apps.azsos.gov/election/2024/ge/CV24_033532_Election_Order_rev.pdf",
+                                                     "https://apps.azsos.gov/election/2024/ge/Maricopa_Recount_LA_Cert_20241122135333749.pdf",
+                                                     "https://apps.azsos.gov/election/2024/ge/LD2_RECOUNT_Maricopa_County_HC_Audit_Report_NOV2024_FINAL.pdf",
+                                                     "https://apps.azsos.gov/election/2024/ge/Maricopa_RecountOrderLD2.pdf"
+                                                 ],
+                                  "identifiedRecount":  {
+                                                            "caseNumber":  "CV2024-033532",
+                                                            "filingDate":  "2024-11-25",
+                                                            "jurisdiction":  "Maricopa County",
+                                                            "contests":  [
+                                                                             "State Representative for Legislative District 2",
+                                                                             "Maricopa County Supervisor District 3",
+                                                                             "Town of Fountain Hills Council Member"
+                                                                         ],
+                                                            "reportedOutcome":  "No change in outcome",
+                                                            "scopeNote":  "The identified recount is not a presidential or U.S. Senate recount."
+                                                        },
+                                  "litigationPageNotes":  [
+                                                              "The SOS litigation page lists 2024 general-election recount and election-contest information plus pending election-related cases.",
+                                                              "Most listed pending cases are docket references rather than normalized incident, correction, or result-change rows."
+                                                          ],
+                                  "parserNeeded":  "If normalized context rows are required, extract case number, contest, jurisdiction, filing date, outcome, linked docket, and affected source artifact from the SOS litigation page and linked court documents.",
+                                  "caveat":  "Recount/litigation source links are context and request leads. They are not proof of fraud or misconduct and do not replace certified canvass totals."
+                              },
+    "cvrBallotImagesLogsAndCustody":  {
+                                          "status":  "request_required",
+                                          "stateRequestPortal":  "https://azsos.nextrequest.com/",
+                                          "countyContactDirectory":  "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
+                                          "countyCustodyLikely":  true,
+                                          "requestedFamilies":  [
+                                                                    "cast vote records or equivalent ballot-level export, if public or lawfully releasable",
+                                                                    "ballot images, if public or lawfully releasable",
+                                                                    "tabulator and EMS logs",
+                                                                    "logic and accuracy records",
+                                                                    "chain-of-custody, seal, transport, storage, and removable-media records",
+                                                                    "adjudication, duplication, and correction records",
+                                                                    "precinct/reporting-unit boundary geometry or crosswalks"
+                                                                ],
+                                          "requestNeed":  "Route state-maintained records through the SOS NextRequest portal and county-maintained election records through the county election officials listed by the SOS. Ask custodians to identify alternate custodians when records are county, vendor, court, or municipal records.",
+                                          "caveat":  "No Arizona CVR, ballot-image, tabulator-log, L\u0026A, or chain-of-custody dataset is loaded in this repository."
+                                      },
+    "otherOfficialContext":  {
+                                 "earlyBallotsDroppedOffElectionDay":  {
+                                                                           "status":  "identified_not_normalized",
+                                                                           "sourceUrl":  "https://apps.azsos.gov/election/2024/ge/EarlyBallotsDroppedElectionDayGENERAL.pdf",
+                                                                           "caveat":  "This is a statewide/county official context artifact for ballot-processing volume, not a vote-result source or an advisory indicator by itself."
+                                                                       },
+                                 "countyCanvasses":  {
+                                                         "status":  "identified_not_downloaded_in_this_pass",
+                                                         "sourceUrl":  "https://azsos.gov/elections/election-information/2024-election-info",
+                                                         "count":  15,
+                                                         "caveat":  "County canvass PDFs are source leads for deeper county-level provenance. The current ETL uses the signed statewide canvass transcription for loaded county President, U.S. Senate, and turnout rows."
+                                                     }
+                             }
+}

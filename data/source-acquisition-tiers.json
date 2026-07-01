@@ -162,25 +162,36 @@
         "script-blocked county result pages"
       ],
       "sourceUrls": [
-        "https://azsos.gov/elections/results-data"
+        "https://azsos.gov/elections/election-information/2024-election-info",
+        "https://azsos.gov/elections/results-data",
+        "https://azsos.gov/elections/election-information/2024-election-information/litigation-info",
+        "https://azsos.nextrequest.com/",
+        "https://azsos.gov/elections/about-elections/county-election-officials-contact-information"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+        "https://apps.azsos.gov/election/2024/ge/LD2_RECOUNT_Maricopa_County_HC_Audit_Report_NOV2024_FINAL.pdf"
+      ],
       "availableFields": [
         "county President versus U.S. Senate rows",
-        "county turnout"
+        "county turnout",
+        "state-native county turnout denominators from signed canvass",
+        "official county hand-count audit status summary and document links",
+        "Maricopa recount and statewide litigation source paths",
+        "SOS public-records portal and county election-office request paths"
       ],
       "missingFields": [
         "precinct review rows",
         "precinct boundary geometry",
         "statewide precinct/local reporting-unit export",
         "same-grain precinct U.S. Senate rows",
-        "CVR, audit/recount, incident/correction records"
+        "normalized CVR, ballot-image, tabulator-log, L&A, custody, audit-unit, incident, correction, recount, and litigation rows"
       ],
-      "parserStatus": "native county review package loaded",
+      "parserStatus": "native county review package loaded; AZ admin/source inventory documents hand-count, recount/litigation, and records-request paths without normalizing electronic evidence rows",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Current rows are county-level advisory inputs, not precinct scatter plots. The 2026-06-30 AZ coverage inventory records that the SOS results/data page and signed canvass path remain script-hostile from this environment, and spot checks of Maricopa, Pima, and Yavapai county result pages also blocked scripted collection. No official statewide precinct/local President plus same-grain U.S. Senate export was confirmed.",
-      "nextAction": "Use data/az-2024-data-coverage-inventory.json as the current AZ source-search record; next step is county-by-county manual collection or public-records requests for precinct/local President and U.S. Senate rows, precinct geometry, CVR/audit/recount, and incident/correction records."
+      "caveats": "Current rows are county-level advisory inputs, not precinct scatter plots. The 2026-07-01 AZ coverage inventory records official SOS hand-count status summaries, county canvass links, Maricopa recount/litigation links, and records-request paths, but no official statewide precinct/local President plus same-grain U.S. Senate export or normalized CVR/log/custody/audit-unit rows are loaded.",
+      "nextAction": "Use data/az-2024-admin-source-inventory.json and data/az-2024-data-coverage-inventory.json as the current AZ source-search records; next step is county-by-county manual collection or records requests for precinct/local President and U.S. Senate rows, precinct geometry/crosswalks, CVR/ballot-image/log/L&A/custody records, and detailed audit/recount/incident/correction rows."
     },
     {
       "state": "CA",

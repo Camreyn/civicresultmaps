@@ -16,9 +16,9 @@ test("swing-state parity report tracks all 2024 swing states against Wisconsin",
   assert.equal(report.summary.states, 8);
   assert.equal(report.summary.validatedNativeStagingStates, 8);
   assert.equal(report.summary.statesWithLoadedEquipment, 8);
-  assert.equal(report.summary.statesWithAuditContext, 2);
-  assert.equal(report.summary.statesWithCvrContext, 2);
-  assert.equal(report.summary.statesWithIncidentContext, 1);
+  assert.equal(report.summary.statesWithAuditContext, 3);
+  assert.equal(report.summary.statesWithCvrContext, 3);
+  assert.equal(report.summary.statesWithIncidentContext, 2);
   assert.equal(report.summary.statesWithHardMissingEvidence, 1);
 });
 

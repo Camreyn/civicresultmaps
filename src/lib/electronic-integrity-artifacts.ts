@@ -5,6 +5,12 @@ export type ElectronicIntegrityState = ElectronicIntegrityPackage["states"][numb
 export type ElectronicIntegrityArtifact = ElectronicIntegrityState["artifacts"][number];
 export type ElectronicIntegrityArtifactStatus = ElectronicIntegrityArtifact["status"];
 export type ElectronicIntegrityArtifactType = ElectronicIntegrityArtifact["type"];
+type ElectronicIntegrityArtifactRecord = ElectronicIntegrityArtifact & {
+  requestRequired?: boolean;
+};
+type ElectronicIntegrityStateRecord = Omit<ElectronicIntegrityState, "artifacts"> & {
+  artifacts: ElectronicIntegrityArtifactRecord[];
+};
 
 export function listElectronicIntegrityArtifacts(input: {
   state?: string;
@@ -14,7 +20,8 @@ export function listElectronicIntegrityArtifacts(input: {
 } = {}) {
   const requestedState = input.state?.toUpperCase();
   const year = input.year ?? electronicIntegrityArtifacts.electionYear;
-  const states = electronicIntegrityArtifacts.states
+  const sourceStates = electronicIntegrityArtifacts.states as unknown as ElectronicIntegrityStateRecord[];
+  const states = sourceStates
     .filter((entry) => !requestedState || entry.state === requestedState)
     .map((entry) => ({
       ...entry,

@@ -143,16 +143,31 @@
         "expectedJurisdictions": 15
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Arizona 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "reportingLevel": "county_summary",
+        "sourceDocumentId": "az-sos-2024-hand-count-results",
+        "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-info",
+        "localArtifact": "data/az-2024-admin-source-inventory.json",
+        "why": "Arizona SOS 2024 Election Information identifies county hand-count documents and statuses: 13 counties completed hand counts, two were not performed because required party participation was not designated, and completed counties are summarized as no discrepancies or within the acceptable margin. Detailed audit-unit rows and workpapers are not normalized.",
+        "caveat": "County hand-count summary context is not per-unit audit clearance and is not proof of fraud or misconduct."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Arizona 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "records_request_path",
+        "sourceDocumentId": "az-sos-nextrequest-county-contact-paths",
+        "sourceUrl": "https://azsos.nextrequest.com/",
+        "localArtifact": "data/az-2024-admin-source-inventory.json",
+        "why": "The Arizona SOS public-records portal and county election contact directory are documented as request paths for CVRs or equivalent ballot-level exports, ballot images, tabulator/EMS logs, L&A records, and custody records. No AZ CVR or ballot-image dataset is loaded.",
+        "caveat": "Request-path inventory only; county custody and lawful releasability must be confirmed before CVR retabulation."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Arizona 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "reportingLevel": "statewide_recount_litigation_inventory",
+        "sourceDocumentId": "az-sos-2024-litigation-and-recount-info",
+        "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-information/litigation-info",
+        "localArtifact": "data/az-2024-admin-source-inventory.json",
+        "why": "The Arizona SOS litigation page identifies a 2024 general-election recount/election-contest row for Maricopa County Superior Court case CV2024-033532 with no change in outcome and links pending election-related dockets. Normalized incident, correction, recount, and litigation rows are not loaded.",
+        "caveat": "The identified recount involved Legislative District 2, Maricopa County Supervisor District 3, and Fountain Hills Town Council contests, not President or U.S. Senate. Docket links are context and request leads only."
       }
     },
     {
