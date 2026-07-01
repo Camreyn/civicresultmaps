@@ -437,20 +437,20 @@
         }
       ],
       "missingOrBlockedRows": 5,
-      "nextAction": "Collect official local Nevada result exports for the 16 non-Clark jurisdictions and inventory county audit, ballot-image, L&A, tabulator-log, and chain-of-custody availability.",
+      "nextAction": "Collect official local Nevada result exports for the 14 jurisdictions outside Clark, Washoe, and Humboldt and inventory county audit, ballot-image, L&A, tabulator-log, and chain-of-custody availability.",
       "overallStatus": "partial",
       "requestArtifacts": [
         {
-          "granularity": "clark_precinct_cvr_plus_statewide_county",
-          "reconciliationStatus": "clark_precinct_cvr_loaded_non_clark_county_only",
+          "granularity": "clark_washoe_humboldt_precinct_cvr_plus_statewide_county",
+          "reconciliationStatus": "clark_washoe_humboldt_precinct_cvr_loaded_other_counties_county_only",
           "type": "reporting_unit_results",
-          "use": "Clark precinct rows can localize review screens inside Clark County; other counties still need local reporting-unit results."
+          "use": "Clark, Washoe, and Humboldt precinct rows can localize review screens inside those counties; the other 14 Nevada jurisdictions still need local reporting-unit results."
         },
         {
-          "granularity": "clark_ballot_cvr_normalized_to_precinct_review",
-          "reconciliationStatus": "clark_cvr_normalized_certified_county_delta_noted_non_clark_not_inventoried",
+          "granularity": "clark_washoe_humboldt_ballot_cvr_normalized_to_precinct_review",
+          "reconciliationStatus": "clark_washoe_humboldt_cvr_normalized_certified_county_delta_possible_other_counties_not_inventoried",
           "type": "cast_vote_records",
-          "use": "Clark CVR supports precinct aggregation and review; full ballot-level retabulation still requires raw CVR handling and non-Clark availability inventory."
+          "use": "Clark, Washoe, and Humboldt CVRs support precinct aggregation and review; full ballot-level retabulation still requires raw CVR handling and other county availability inventory."
         },
         {
           "granularity": "ballot_image",
@@ -484,7 +484,7 @@
         }
       ],
       "requestRequiredRows": 7,
-      "riskPosture": "partial_clark_precinct_review_non_clark_evidence_missing",
+      "riskPosture": "partial_clark_washoe_humboldt_precinct_review_other_evidence_missing",
       "staging": {
         "capabilities": {
           "certifiedResults": true,
@@ -496,8 +496,8 @@
         },
         "historicalRows": 51,
         "resultRows": 17,
-        "reviewRows": 749,
-        "sourceRows": 6,
+        "reviewRows": 1057,
+        "sourceRows": 9,
         "stagingPresent": true,
         "turnoutRows": 17
       },
