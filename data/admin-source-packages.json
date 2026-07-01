@@ -402,33 +402,44 @@
         "apiUrl": "https://verifiedvoting.org/wp-content/themes/dt-the7-child/verifier/api/api_sandbox.php?state_fips=19&db_year=2024&map=voteEquip&map_type=ppEquip",
         "localArtifact": "data/verifiedvoting-ia-2024-equipment.json",
         "normalizedArtifact": "data/ia-2024-equipment-context.csv",
-        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Most rows are counties, but some states report state-level rows and some county rows can summarize mixed tabulation, accessible-device, absentee, poll-book, or other configurations. Treat it as source-linked context, not proof every precinct in a county used one identical setup, and not a turnout or vote-result source.",
+        "caveat": "Verified Voting Verifier data is jurisdiction-level election-administration context. Treat it as source-linked context only, not votes, turnout, audit outcomes, incident evidence, or proof every precinct in a county used one identical setup.",
         "expectedJurisdictions": 99
       },
       "audit": {
         "status": "candidate",
-        "reportingLevel": "selected_precinct_report_request_path",
-        "sourceDocumentId": "ia-code-50-51-election-audits",
-        "sourceUrl": "https://www.legis.iowa.gov/docs/code/50.51.pdf",
+        "reportingLevel": "statewide_source_lead_and_county_report_request_path",
+        "sourceDocumentId": "ia-sos-2024-general-county-precinct-audits",
+        "sourceUrl": "https://sos.iowa.gov/sites/default/files/2025-02/2024PrecinctAudits.png",
+        "relatedSourceUrls": [
+          "https://sos.iowa.gov/iowans/election-results-statistics",
+          "https://www.legis.iowa.gov/docs/code/50.51.pdf"
+        ],
         "localArtifact": "data/ia-2024-data-coverage-inventory.json",
-        "why": "Iowa Code section 50.51 establishes post-election audits and county audit reports to the state commissioner, but 2024 selected-precinct audit reports, selection lists, and outcome rows have not been collected or normalized.",
-        "caveat": "Candidate request-path inventory only; no 2024 Iowa audit result rows are loaded."
+        "why": "The Iowa SOS election results/statistics page links an official 2024 General Election County Precinct Audits image, and Iowa Code section 50.51 establishes post-election audits and county audit reports to the state commissioner. The image and code path are documented, but selected-precinct audit reports, selection metadata, and outcome rows are not normalized.",
+        "caveat": "Candidate source-path inventory only; no 2024 Iowa audit result rows are loaded. Scripted download of the audit image returned a Cloudflare challenge from this environment."
       },
       "cvr": {
         "status": "needs_data",
-        "sourceUrl": "https://sos.iowa.gov/elections/auditors/",
+        "reportingLevel": "county_or_state_records_request_path",
+        "sourceDocumentId": "ia-county-auditor-cvr-request-path",
+        "sourceUrl": "https://sos.iowa.gov/elections/auditors/official-directory",
         "localArtifact": "data/ia-2024-data-coverage-inventory.json",
-        "why": "No statewide public Iowa CVR package or county CVR availability table was identified in repo artifacts. Scripted access to the SOS auditors page returned a browser challenge, so county auditor or state records-request follow-up is needed.",
-        "caveat": "No CVR dataset or county availability table is loaded."
+        "why": "No statewide public Iowa CVR package or county CVR availability table was identified in repo artifacts. County auditor/state records-request follow-up is needed to confirm custody, lawful availability, export format, ballot secrecy constraints, cost, and timing.",
+        "caveat": "Request-path inventory only; no CVR dataset or CVR availability table is loaded."
       },
       "incidents": {
         "status": "candidate",
-        "reportingLevel": "statewide_and_county_request_path",
-        "sourceDocumentId": "ia-code-50-48-50-50-recount-admin-audit",
+        "reportingLevel": "state_code_and_county_request_path",
+        "sourceDocumentId": "ia-recount-admin-audit-incident-request-paths",
         "sourceUrl": "https://www.legis.iowa.gov/docs/code/50.48.pdf",
+        "relatedSourceUrls": [
+          "https://www.legis.iowa.gov/docs/code/50.50.pdf",
+          "https://sos.iowa.gov/elections/",
+          "https://sos.iowa.gov/elections/auditors/official-directory"
+        ],
         "localArtifact": "data/ia-2024-data-coverage-inventory.json",
-        "why": "Iowa Code sections 50.48 and 50.50 document recount and administrative audit paths, but official 2024 recount/admin-audit outcomes, incident, correction, and litigation records have not been normalized.",
-        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, administrative audit, or litigation dataset."
+        "why": "Iowa Code sections 50.48 and 50.50 document recount and administrative-audit mechanics, and county auditor contacts are documented as request paths for incident/correction/canvass-note follow-up. Official 2024 recount/admin-audit outcome rows, incident records, correction notices, and litigation records have not been normalized.",
+        "caveat": "Candidate source inventory only; future records must stay descriptive and source-linked and must not be characterized as proof of misconduct."
       }
     },
     {

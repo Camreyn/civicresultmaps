@@ -411,36 +411,46 @@
       "stateName": "Iowa",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_admin_context",
+      "dataFamily": "results_review_turnout_geometry_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct",
       "exportFormats": [
         "JSON",
-        "detail XML ZIP"
+        "detail XML ZIP",
+        "Excel/statistical report links",
+        "county precinct shapefile ZIP leads"
       ],
       "sourceUrls": [
-        "https://electionresults.iowa.gov/IA/"
+        "https://electionresults.iowa.gov/IA/",
+        "https://sos.iowa.gov/iowans/election-results-statistics",
+        "https://sos.iowa.gov/shapefiles-county-precincts"
       ],
       "exampleUrls": [
-        "https://electionresults.iowa.gov/IA/122322/web.345435/"
+        "https://electionresults.iowa.gov/IA/122322/web.345435/",
+        "https://sos.iowa.gov/sites/default/files/2025-02/2024PrecinctAudits.png"
       ],
       "availableFields": [
         "county results",
         "precinct President rows",
         "precinct U.S. House comparison rows",
         "precinct turnout/registration fields",
-        "President and U.S. House candidate vote type splits in official detail XML"
+        "President and U.S. House candidate vote type splits in official detail XML",
+        "official county precinct shapefile source leads",
+        "official 2024 county precinct-audit source lead",
+        "official historical result/statistical-report replacement leads"
       ],
       "missingFields": [
         "normalized ballot-method package for the public vote-method API/UI",
-        "precinct boundary geometry",
-        "normalized post-election audit, recount, CVR availability, incident, correction, and litigation artifacts"
+        "collected and crosswalked precinct boundary geometry",
+        "normalized post-election audit selection/outcome rows",
+        "normalized recount, CVR availability, incident, correction, and litigation artifacts",
+        "official historical baseline parser replacing secondary contextual rows"
       ],
-      "parserStatus": "iowaClarityCountyDetailXmlDirectory loaded for results, review, and precinct turnout; detail XML VoteType fields are confirmed but not normalized into vote-method rows",
+      "parserStatus": "iowaClarityCountyDetailXmlDirectory loaded for results, review, and precinct turnout; detail XML VoteType fields are confirmed but not normalized into vote-method rows; official SOS shapefile, precinct-audit, and historical replacement leads are inventoried but not normalized",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "U.S. House is district-based, so review rows remain advisory. The official detail XML includes candidate VoteType splits such as Election Day and Absentee, but the public vote-method contract does not yet load Iowa Clarity method rows. County geometry is loaded; precinct boundary geometry and normalized admin/audit/CVR/incident artifacts remain uncollected.",
-      "nextAction": "Use data/ia-2024-data-coverage-inventory.json as the current IA source-search record; next steps are an Iowa Clarity vote-method normalizer, official precinct boundary geometry/crosswalk collection, and requests for 2024 audit, recount, CVR availability, incident, correction, and litigation records."
+      "caveats": "U.S. House is district-based, so review rows remain advisory. The official detail XML includes candidate VoteType splits such as Election Day and Absentee, but the public vote-method contract does not yet load Iowa Clarity method rows. County geometry is loaded; official precinct shapefile ZIP leads require collection, normalization, and Clarity precinct-name crosswalk work. The 2024 precinct-audit image is identified but not normalized. Historical baseline rows remain secondary context until official SOS historical county artifacts are parsed.",
+      "nextAction": "Use data/ia-2024-data-coverage-inventory.json as the current IA source-search record; next steps are an Iowa Clarity vote-method normalizer, official SOS precinct shapefile collection/crosswalk work, browser/manual collection or request-produced 2024 audit records, and request/normalization paths for recount, CVR availability, incident, correction, litigation, and official historical baseline replacement artifacts."
     },
     {
       "state": "ID",
