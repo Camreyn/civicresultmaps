@@ -203,3 +203,19 @@ Caveats: review rows are President-versus-U.S.-House rather than a single statew
 - County boundary: `data/nh-counties.geojson`
 
 Expected validation: 10 county rows, 304 town/ward review rows, 304 turnout rows, 831,468 detailed ballots cast, and 1,013,075 names-on-checklist registered-voter denominator rows. Remaining gaps: official town/ward geometry, historical split-ticket baselines, and normalized audit/recount/CVR/incident/correction/litigation records.
+
+## Indiana Wave 5 Update
+
+- Config: `etl/state-configs/in.json`
+- Authority: Indiana Election Division
+- County results source: `data/in-2024-official-results/OffCatC_1019_A.json`, archived official ENR county President JSON
+- County comparison source: `data/in-2024-official-results/OffCatC_1006_A.json`, archived official ENR county U.S. Senate JSON
+- Local review source: `data/in-2024-mit-local-review.csv` from MIT/OpenElections supplemental Indiana precinct rows
+- Turnout source: `data/in-2024-general-turnout.csv`, normalized from the official Indiana Election Division 2024 General Election Turnout and Registration PDF
+- Turnout denominator: county Registered Voters; ballots cast field is Voters Voting
+- County boundary: `data/in-counties.geojson`
+- Coverage inventory: `data/in-2024-data-coverage-inventory.json`
+
+Expected validation: 92 county rows, 92 county geometry features, 2,936,677 presidential votes, 1,720,347 Trump votes, 1,163,603 Harris votes, 52,727 other votes, 5,253 supplemental local review rows, and 92 county turnout rows totaling 2,976,599 voters voting and 4,837,802 registered voters.
+
+Caveats: official Indiana ENR category JSON is county-level, and the collected JurR county JSON inventory does not include President or U.S. Senate candidate result rows. Local advisory review still uses supplemental MIT/OpenElections precinct rows with upstream caveats; request official same-grain precinct/subcounty President and U.S. Senate rows before removing the supplemental-source warning. Historical 2012/2016/2020 official archive links are source-cited in the coverage inventory but not normalized yet.
