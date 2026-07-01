@@ -22,6 +22,10 @@ const states = completeness?.data ?? (await fetchJson("/api/states")).data;
 const failures = [];
 const summary = [];
 
+function stripBom(value) {
+  return String(value ?? "").replace(/^\uFEFF/, "");
+}
+
 function sourceIdVariants(stateCode, year, sourceId) {
   const value = String(sourceId ?? "").trim();
   const lowerState = String(stateCode ?? "").toLowerCase();
@@ -40,7 +44,7 @@ function sourceIdVariants(stateCode, year, sourceId) {
 function addLocalConfigSourceIds(sourceIds, stateCode) {
   const configPath = path.join("etl", "state-configs", String(stateCode).toLowerCase() + ".json");
   if (!fs.existsSync(configPath)) return;
-  const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  const config = JSON.parse(stripBom(fs.readFileSync(configPath, "utf8")));
   for (const source of config.sources ?? []) {
     for (const variant of sourceIdVariants(stateCode, year, source.id)) sourceIds.add(variant);
   }
