@@ -77,6 +77,8 @@ Caveats: MVIC live download endpoints are browser-protected, but the official do
 - Local review source: `data/pa-2024-general-election-returns-precinct.txt`
 - Comparison contest: U.S. Senate, same precinct returns file
 - Turnout source: `data/pa-2024-voter-registration-vote-history-summary.xlsx`
+- Precinct registration denominator lead: `data/pa-2024-general-voter-registration-precinct.txt` (official DOS precinct registered-voter rows; not loaded as turnout until same-grain precinct vote-history/ballots-cast rows are collected)
+- Coverage inventory: `data/pa-2024-data-coverage-inventory.json`
 - Turnout denominator: registered voters
 - County boundary: `data/pa-counties.geojson`
 
@@ -93,7 +95,7 @@ Expected validation:
 | Local review rows | 9,154 |
 | Turnout rows | 67 |
 
-Caveats: the official readme says the election returns data was extracted January 10, 2025; the direct file name includes `20250129`. Turnout is county-level. Precinct boundary GeoJSON is not included.
+Caveats: the official readme says the election returns data was extracted January 10, 2025; the direct file name includes `20250129`. Turnout is county-level. The collected precinct registration file is a denominator lead only because no same-grain precinct vote-history/ballots-cast source is loaded. Precinct boundary GeoJSON is not included. The PA coverage inventory also records official 2024 RLA context and official 2012/2016/2020 historical bulk-return source leads for a future replacement of secondary historical baselines.
 
 ## Nebraska Wave 5 Update
 

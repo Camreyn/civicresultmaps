@@ -1,0 +1,167 @@
+{
+  "state": "PA",
+  "stateName": "Pennsylvania",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "purpose": "State-scoped coverage inventory for Pennsylvania 2024 result, review, turnout, registration, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "status": "official_precinct_review_county_turnout_loaded_precinct_registration_lead_collected",
+  "authorityPriority": "Official Pennsylvania Department of State, county boards of elections, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
+  "loadedArtifacts": [
+    {
+      "id": "pa-2024-precinct-results",
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/er/erstat_2024_g_268768_20250129.txt",
+      "localPath": "data/pa-2024-general-election-returns-precinct.txt",
+      "electionYear": 2024,
+      "reportingGrain": "precinct",
+      "parserNormalizationPath": "civic_etl/native.py _pennsylvania_rows via etl/state-configs/pa.json certifiedResults.format=pennsylvaniaBulkCsv and reviewCharts.format=pennsylvaniaBulkCsvPrecinctComparison",
+      "expectedCounts": { "countyResultRows": 67, "stateTotal": 7031737, "trump": 3543041, "harris": 3420865, "other": 67831, "reviewRows": 9154, "comparisonRows": 9152, "comparisonContest": "United States Senator" },
+      "caveats": [
+        "Official readme says the data was extracted January 10, 2025; the direct bulk filename includes 20250129.",
+        "Two presidential precinct groups do not have matching U.S. Senate rows and are retained as vote-share-only review rows.",
+        "Official precinct election returns are maintained by county boards of elections; this state bulk file is the current committed statewide review source."
+      ],
+      "confidence": "loaded_precinct_review"
+    },
+    {
+      "id": "pa-2024-vote-history-registration-summary",
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/voter%20registration%20-%20vote%20history%20summary%20-%202024%20general.xlsx",
+      "localPath": "data/pa-2024-voter-registration-vote-history-summary.xlsx",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "civic_etl/native.py _pennsylvania_rows turnout workbook parser via etl/state-configs/pa.json turnout.format=pennsylvaniaVoteHistoryXlsx",
+      "expectedCounts": { "rows": 67, "ballotsCast": 7074630, "registeredVoters": 9175132 },
+      "caveats": [
+        "Loaded turnout rows are county-level vote-history divided by registered voters, not precinct-level turnout rows.",
+        "The Pennsylvania data handbook describes the vote-history and voter-registration summary as SURE-derived point-in-time data and notes possible discrepancies due to protected voters and county data-entry practices."
+      ],
+      "confidence": "loaded_county_turnout_denominator"
+    },
+    {
+      "id": "pa-2024-precinct-registration",
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/2024-general-election/vr/vrstat2024_g%289187%29_20241223.txt",
+      "localPath": "data/pa-2024-general-voter-registration-precinct.txt",
+      "electionYear": 2024,
+      "reportingGrain": "precinct",
+      "parserNormalizationPath": "candidate source only; a Pennsylvania precinct-registration normalizer should use the Department of State precinct voter registration layout before this file is used as a denominator input",
+      "expectedCounts": { "rowsExcludingPlaceholder": 9186, "counties": 67, "registeredVoters": 9175133 },
+      "caveats": [
+        "This file supplies precinct-level registered-voter counts, not precinct vote-history or ballots-cast counts; its statewide registered-voter total is one voter higher than the loaded county vote-history workbook total.",
+        "Do not use it as a precinct turnout input until same-grain ballots-cast or vote-history rows are collected and joined to the precinct return keys.",
+        "The first placeholder row has county code 0 and is excluded from the row and registered-voter counts above."
+      ],
+      "confidence": "collected_denominator_lead_not_loaded"
+    },
+    {
+      "id": "pa-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer",
+      "localPath": "data/pa-counties.geojson",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "censusTigerGeojson via etl/state-configs/pa.json source pa-county-geometry",
+      "expectedCounts": { "features": 67 },
+      "caveats": ["County geometry supports current map joins.", "Precinct boundary geometry is not included."],
+      "confidence": "loaded_county_geometry"
+    },
+    {
+      "id": "pa-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier with Pennsylvania Department of State certified-system cross-checks",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/42",
+      "localPath": "data/pa-2024-equipment-context.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/normalize-verifiedvoting-equipment.mjs",
+      "expectedCounts": { "jurisdictions": 67 },
+      "caveats": [
+        "Equipment context is jurisdiction-level administration context, not vote-result, turnout, or proof that every precinct or ballot mode used one identical setup.",
+        "Pennsylvania Department of State pages document certified voting systems and county voting-system map paths; the normalized row file remains a Verified Voting context artifact."
+      ],
+      "confidence": "loaded_context_only"
+    },
+    {
+      "id": "pa-historical-presidential-baseline",
+      "sourceAuthority": "Wikipedia county presidential tables with Pennsylvania Department of State source footnotes where available",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Pennsylvania",
+      "localPath": "data/pa-historical-presidential-baseline.csv",
+      "electionYear": "2012, 2016, 2020",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "historicalPresidentialCsv via etl/state-configs/pa.json historicalBaselines.format=historicalPresidentialCsv",
+      "expectedCounts": { "rows": 201, "years": [2012, 2016, 2020] },
+      "caveats": [
+        "Secondary contextual baseline only.",
+        "Do not use as 2024 certified data or as a replacement for official historical canvass artifacts.",
+        "Official Pennsylvania bulk election-return files exist for 2012, 2016, and 2020 and should replace this secondary baseline in a dedicated parser pass."
+      ],
+      "confidence": "loaded_secondary_context"
+    }
+  ],
+  "officialSourceSearchPath": [
+    {
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+      "checkedFor": ["2024 bulk result rows", "2024 precinct voter-registration rows", "historical 2012/2016/2020 official bulk result source leads"],
+      "result": "The official historical election data page describes public access to summary data and official returns, links 2024 General Election Returns Precinct Data and 2024 General Voter Registration Precinct Data, and exposes 2012, 2016, and 2020 General Election Returns data/readme paths.",
+      "blocker": "No precinct-level 2024 vote-history or ballots-cast summary file was identified on this page; the collected precinct registration file is denominator-only."
+    },
+    {
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/election%20data%20handbook%20general.pdf",
+      "checkedFor": ["data dictionary", "SURE caveats", "vote-history grain", "bulk election returns notes"],
+      "result": "The handbook says the 2024 data comes from SURE and certified county election results, explains that vote history is associated with voter records, and defines the loaded vote-history/registration workbook as county, district, party, and age summary tables.",
+      "blocker": "The handbook does not document a precinct vote-history/ballots-cast summary table that can pair with the precinct registration file."
+    },
+    {
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/agencies/vote/elections/post-election-audits/2024-general-rla-report",
+      "checkedFor": ["2024 post-election audit context", "risk-limiting audit contest", "batch count", "county count", "discrepancy summary"],
+      "result": "The 2024 general RLA page says the state treasurer race was audited, 55 ballot batches in 32 counties were selected, and seven vote discrepancies were identified, with the largest a two-vote change.",
+      "blocker": "Detailed RLA result rows are source-linked but not normalized into row-level audit context in this pass; county 2% statistical recount records are still county-maintained/request-path items."
+    },
+    {
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/agencies/vote/elections/election-security",
+      "checkedFor": ["reconciliation procedures", "logic-and-accuracy testing", "audit requirements", "custody/security context"],
+      "result": "The election-security page states that all 67 county boards publicly begin official computation after Election Day, with reconciliation procedures comparing registered voters with ballots cast and checking reported votes from each election district. It also describes logic-and-accuracy testing and the two audit types.",
+      "blocker": "This is statewide process context, not a normalized 2024 county incident, correction, L&A, custody, or tabulator-log artifact."
+    },
+    {
+      "sourceAuthority": "Pennsylvania Department of State",
+      "sourceUrl": "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-systems",
+      "checkedFor": ["certified voting systems", "county voting-system map path", "electronic poll-book map path"],
+      "result": "The voting-systems page states all 67 counties deploy systems that produce voter-verifiable paper records, links county voting-system and poll-book maps, and lists certified voting systems and electronic poll books.",
+      "blocker": "The current normalized equipment rows remain county-level context and do not provide precinct-level equipment assignments."
+    },
+    {
+      "sourceAuthority": "Pennsylvania Department of State and county boards of elections",
+      "sourceUrl": "https://www.pa.gov/agencies/vote/contact-us/contact-your-election-officials",
+      "checkedFor": ["county custodian path", "precinct boundary geometry request path", "CVR/tabulator/audit/custody records request path"],
+      "result": "The contact page states Pennsylvania elections are run by the Commonwealth's 67 county boards of elections and lists county election-office contacts.",
+      "blocker": "Precinct boundary geometry, county 2% statistical recount worksheets, CVR availability, ballot images, tabulator logs, chain-of-custody records, and incident/correction records remain county-maintained or request-path work unless a statewide publication is identified."
+    }
+  ],
+  "historicalBaselineSourceLeads": [
+    { "year": 2020, "sourceAuthority": "Pennsylvania Department of State", "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/ElectionReturns_2020_General_ReadMeFile.txt", "status": "official_source_cited_not_normalized", "notes": "Official readme describes the 2020 General precinct election returns file and data extraction date. Replace secondary county baselines with official bulk rows in a dedicated historical parser pass." },
+    { "year": 2016, "sourceAuthority": "Pennsylvania Department of State", "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/ElectionReturns_2016_General_ReadMeFile.txt", "status": "official_source_cited_not_normalized", "notes": "Official readme describes the 2016 General precinct election returns file and data extraction date. Replace secondary county baselines with official bulk rows in a dedicated historical parser pass." },
+    { "year": 2012, "sourceAuthority": "Pennsylvania Department of State", "sourceUrl": "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/bulk-data/ElectionReturns_2012_General_ReadMeFile.txt", "status": "official_source_cited_not_normalized", "notes": "Official readme describes the 2012 General precinct election returns file and data extraction date. Replace secondary county baselines with official bulk rows in a dedicated historical parser pass." }
+  ],
+  "requestPath": {
+    "neededArtifact": "Same-grain precinct turnout/ballots-cast rows and precinct boundary geometry that can join to the Pennsylvania precinct return keys.",
+    "preferredAuthorities": ["Pennsylvania Department of State Bureau of Elections", "Pennsylvania county boards of elections", "county GIS offices where precinct boundary geometry is maintained locally"],
+    "requestFields": ["election date and election type", "county code/name", "precinct code and precinct name", "municipality, ward, district, MCD, FIPS, VTD, and split identifiers matching the returns and registration files", "registered-voter denominator and timing", "ballots-cast or vote-history count by precinct", "vote method fields if available", "geometry or authoritative crosswalk for precinct boundaries", "whether rows are final/certified and how they reconcile to county totals"],
+    "publicContactPath": "Pennsylvania Department of State election data contact in the handbook is ra-elections@pa.gov; county election-office contacts are listed at https://www.pa.gov/agencies/vote/contact-us/contact-your-election-officials."
+  },
+  "gaps": [
+    { "artifact": "precinct_turnout_or_vote_history_rows", "status": "not_found_publicly", "neededFor": "Same-grain turnout screening and denominator context below county level.", "preferredAuthority": "Pennsylvania Department of State SURE summary export or county boards of elections if no statewide export exists.", "remainingRisk": "Current turnout rows are county-level; the collected precinct registration file cannot by itself calculate precinct turnout." },
+    { "artifact": "precinct_boundary_geometry", "status": "not_loaded", "neededFor": "Subcounty map joins for precinct review rows.", "preferredAuthority": "County election/GIS offices or an official statewide precinct boundary publication if available.", "remainingRisk": "The current map remains county-level even though advisory review rows are precinct-level." },
+    { "artifact": "official_historical_presidential_baselines", "status": "source_cited_not_normalized", "neededFor": "Replacing secondary contextual 2012, 2016, and 2020 county baselines with official Department of State bulk return rows.", "preferredAuthority": "Pennsylvania Department of State historical bulk election returns files.", "remainingRisk": "Historical baseline capability is enabled but remains secondary contextual data until official historical bulk rows are collected and normalized." },
+    { "artifact": "audit_recount_cvr_incident_correction_records", "status": "partially_inventoried_not_normalized", "neededFor": "Independent reconciliation and administrative context for explaining advisory rows.", "preferredAuthority": "Pennsylvania Department of State, county boards of elections, official audit reports, official recount/correction notices, court records, and records-request productions.", "remainingRisk": "Loaded artifacts do not independently recompute totals from CVRs or provide row-level 2% statistical recount, incident, correction, custody, or tabulator-log context." }
+  ],
+  "confidenceNotes": [
+    "Pennsylvania has strong official precinct President-versus-U.S. Senate review coverage and county turnout coverage.",
+    "The new official precinct voter-registration file is useful denominator evidence, but it is intentionally not wired into turnout until same-grain ballots-cast or vote-history rows are collected.",
+    "Next implementation step is a small Pennsylvania precinct-registration parser/crosswalk report only after a same-grain turnout source or explicit denominator-only display requirement is approved."
+  ]
+}
