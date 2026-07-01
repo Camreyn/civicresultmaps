@@ -1288,16 +1288,26 @@
         "expectedJurisdictions": 46
       },
       "audit": {
-        "status": "needs_data",
-        "why": "South Carolina 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "reportingLevel": "statewide_and_selected_county",
+        "sourceDocumentId": "scvotes-2024-general-election-audits",
+        "sourceUrl": "https://scvotes.gov/elections-statistics/election-audits/",
+        "localArtifact": "",
+        "parser": "sourceInventoryOnly",
+        "why": "SCVotes publishes 2024 General Election hand-count audit, results-verification audit, Lee County election-results audit, and County Audit Program report links. These are inventoried as official source context but not normalized into per-unit audit outcome rows.",
+        "caveat": "Audit context is source inventory only; do not interpret it as normalized discrepancy data until the PDFs are collected, parsed, and reconciled."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "South Carolina 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://scvotes.gov/elections-statistics/election-results/",
+        "why": "No official statewide 2024 cast-vote-record or ballot-image export was identified in the SCVotes results, audit, or VREMS source pass.",
+        "caveat": "CVR availability remains unverified; request records from the South Carolina Election Commission or county election offices before marking CVR context loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "South Carolina 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceUrl": "https://scvotes.gov/elections-statistics/election-results/",
+        "why": "SCVotes election-results and audit pages are identified for recount, correction, and litigation follow-up, but no normalized 2024 incident/correction/recount/litigation rows are loaded.",
+        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, or litigation dataset."
       }
     },
     {

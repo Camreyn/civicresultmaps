@@ -1419,18 +1419,20 @@
       "availableFields": [
         "official presidential county and precinct CSV rows",
         "official U.S. House county and precinct CSV comparison rows",
-        "EAC fallback turnout"
+        "official VREMS county voter-history turnout and printed-list registration rows",
+        "official VREMS precinct/polling-place locator export",
+        "EAC turnout fallback retained as a benchmark"
       ],
       "missingFields": [
-        "state-native turnout denominator",
-        "precinct boundary geometry",
-        "statewide same-office comparison contest"
+        "map-ready precinct boundary geometry",
+        "statewide same-office comparison contest",
+        "active-registered-voter denominator artifact at the same grain as precinct results"
       ],
-      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads",
+      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads; county turnout now uses normalized SC VREMS voter-history rows",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening.",
-      "nextAction": "Optional upgrades are state-native turnout denominators, precinct boundary geometry, and any official statewide comparison race if one becomes available."
+      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening. SC VREMS turnout denominators are printed registration-list counts that include active voters plus some inactive voters for the selected election, so turnout rows are warning-required.",
+      "nextAction": "Optional upgrades are map-ready precinct boundary geometry, an active-voter denominator at county or precinct grain, and any official statewide comparison race if one becomes available."
     },
     {
       "state": "SD",

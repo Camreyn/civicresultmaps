@@ -72,3 +72,24 @@ Important caveats:
 - Ward labels need normalization before joining to WEC ward result rows.
 
 Native ETL should import these rows as partial Wisconsin turnout and expose missing counties explicitly.
+
+## South Carolina
+
+Status: official county turnout package loaded with warning-required denominator caveat
+
+- Config: `etl/state-configs/sc.json`
+- Collector: `npm run etl:collect:sc:turnout`
+- Source page: `https://vrems.scvotes.sc.gov/Statistics/VoterHistoryResults`
+- Local artifact: `data/sc-2024-vrems-turnout.csv`
+- Reporting level: county
+- Ballots-cast field: SC VREMS `totalVoting` participating voters
+- Denominator field: SC VREMS `totalRegistered` printed registration-list voters
+- Expected rows: 46
+- Expected county-row total voting: 2,553,185
+- Expected county-row registered voters: 3,851,930
+
+Important caveats:
+
+- The SC VREMS page states registration numbers include voters printed on election lists: all active registered voters plus some inactive voters.
+- The statewide VREMS summary includes an unassigned/null-county row with 2 registered voters and 1 participating voter; the normalized artifact keeps the 46 named counties for joins.
+- Turnout rows are county-level and warning-required, not precinct-level denominators.

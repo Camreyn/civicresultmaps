@@ -25,6 +25,7 @@
     "NV",
     "OH",
     "PA",
+    "SC",
     "TX",
     "VA",
     "WA",
@@ -347,6 +348,68 @@
         "The Capitol Data Portal VTD presidential rows aggregate to 11,404,528 votes, 15,854 above the SOS County.json certified-result package total of 11,388,674. The reconciliation summary attributes the main scope difference to VTD generic Write-In rows totaling 24,730 versus 8,569 SOS named declared write-in votes.",
         "VTD rows are official local screening context, not replacement certified totals.",
         "VTD boundary GeoJSON is not present in this package."
+      ]
+    },
+    {
+      "state": "SC",
+      "name": "South Carolina",
+      "priority": 6,
+      "nativeReadiness": "complete_county_map_precinct_review_county_turnout_warning_required",
+      "authority": "South Carolina Election Commission",
+      "configFile": "etl/state-configs/sc.json",
+      "legacyReferenceBundle": "data/sc-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "South Carolina Elections Database official 2024 General Election President CSV",
+          "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+          "localFile": "data/sc-2024-election-history/president-7131.csv",
+          "parserHint": "southCarolinaElectionHistoryCsv filters County rows for certified county totals and Precinct rows for local presidential review inputs."
+        },
+        "localReviewRows": {
+          "sourceTitle": "South Carolina Elections Database official 2024 General Election U.S. House CSV downloads",
+          "sourceUrl": "https://electionhistory.scvotes.gov/",
+          "localFile": "data/sc-2024-election-history",
+          "level": "precinct",
+          "comparisonContest": "U.S. House by congressional district",
+          "parserHint": "Parse U.S. House contest CSVs 7124 through 7130 and aggregate duplicate county/precinct keys from congressional-district splits before comparing to presidential precinct rows."
+        },
+        "turnout": {
+          "sourceTitle": "SC VREMS 2024 General Election voter-history county statistics",
+          "sourceUrl": "https://vrems.scvotes.sc.gov/Statistics/VoterHistoryResults",
+          "localFile": "data/sc-2024-vrems-turnout.csv",
+          "level": "county",
+          "denominator": "Printed registration-list voters from VREMS totalRegistered",
+          "ballotsCast": "VREMS totalVoting participating voters"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2745%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/sc-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 46,
+        "geometryFeatures": 46,
+        "stateTotal": 2548140,
+        "trump": 1483747,
+        "harris": 1028452,
+        "other": 35941,
+        "localReviewRows": 2401,
+        "turnoutRows": 46
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_dropoff_district_based",
+        "turnoutMode": "sc_vrems_county_voter_history_warning_required"
+      },
+      "caveats": [
+        "U.S. House is district-based rather than a single statewide comparison race; review rows remain advisory.",
+        "The parser aggregates duplicate county/precinct keys created by congressional-district splits before calculating dropoff.",
+        "SC VREMS registration denominators are printed registration-list counts and include active voters plus some inactive voters, so turnout rows are warning-required.",
+        "Precinct boundary GeoJSON is not included; only county geometry and a VREMS precinct/polling-place reference path are identified."
       ]
     },
     {
