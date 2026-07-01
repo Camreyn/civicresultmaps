@@ -350,19 +350,20 @@
       "availableFields": [
         "precinct presidential rows",
         "precinct U.S. House comparison rows from the same official media export",
-        "county turnout from EAC fallback"
+        "county turnout from EAC fallback",
+        "official 2012/2016/2020 county historical presidential baselines from Georgia SOS media exports",
+        "county equipment context from Verified Voting Verifier"
       ],
       "missingFields": [
         "state-native turnout denominator",
         "precinct boundary geometry",
-        "2020/2016/2012 historical baselines",
-        "normalized audit/recount/CVR/incident/correction records"
+        "normalized official audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export",
+      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export; official county historical baseline CSV generated from 2012/2016/2020 SOS media exports",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings. Of 2,684 nonzero presidential precinct review rows, 2,637 have comparable two-party U.S. House rows, 8 have one-sided House comparison coverage, and 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts. Turnout remains EAC fallback and precinct geometry/historical/admin evidence are not loaded.",
-      "nextAction": "Collect state-native turnout denominators, precinct boundary geometry, 2020/2016/2012 historical baselines, and official audit/recount/CVR/incident/correction artifacts."
+      "caveats": "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings. Of 2,684 nonzero presidential precinct review rows, 2,637 have comparable two-party U.S. House rows, 8 have one-sided House comparison coverage, and 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts. Turnout remains EAC fallback and precinct geometry/admin evidence are not loaded. Historical rows are official county-level SOS media-export baselines for context only; the 2020 media export reports the original November general-election export total and should not be mixed with separate recount tables without reconciliation.",
+      "nextAction": "Use data/ga-2024-data-coverage-inventory.json as the current GA source-search record; next steps are state-native turnout denominators, precinct boundary geometry/crosswalks, and official audit/recount/CVR/incident/correction artifacts."
     },
     {
       "state": "HI",

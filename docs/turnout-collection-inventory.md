@@ -101,3 +101,7 @@ Indiana now uses official Indiana Election Division county turnout and registrat
 ## Nevada Update
 
 Nevada still uses EAC 2024 V2 county/jurisdiction fallback turnout rows in `data/eac-2024-state-turnout/nv-2024-eac-turnout.csv`. A July 1, 2026 official-source pass found that the archived NVSOS statewide result page contains county result tables but no turnout/registration/export markers, while live NVSOS turnout and registration pages returned Incapsula challenge pages, empty content, or transport errors from scripted access. Keep Nevada in the native-turnout-needed list until a state-native county or precinct turnout denominator artifact is collected.
+
+## Georgia Update
+
+Georgia still uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ga-2024-eac-turnout.csv`, totaling 159 rows, 5,297,500 ballots cast, and 8,234,335 registered voters. The 2024 Georgia SOS media export is loaded for county results and precinct President-versus-U.S.-House review rows, and official 2012/2016/2020 SOS media exports are now normalized for county historical baselines, but no Georgia-native ballots-cast plus registered-voter denominator package was loaded in this pass. Keep Georgia in the native-turnout-needed list until a state or county denominator artifact is collected and reconciled.

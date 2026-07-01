@@ -832,6 +832,88 @@
         "Loaded turnout rows use EAC fallback values. The official canvass reports 965,236 statewide Total Voting versus 965,145 EAC fallback ballots cast, so a Nebraska-specific turnout normalizer must reconcile the source difference before replacing fallback rows.",
         "The canvass Reported Problems section is inventoried as administration context only; audit/recount/CVR/litigation records remain source-request items."
       ]
+    },
+    {
+      "state": "GA",
+      "name": "Georgia",
+      "priority": 6,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_official_historical_admin_context_partial",
+      "authority": "Georgia Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting Verifier",
+      "configFile": "etl/state-configs/ga.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Georgia SOS official 2024 media export",
+          "sourceUrl": "https://results.sos.ga.gov/cdn/results/Georgia/export-2024NovGen.json",
+          "localFile": "data/ga-2024-official-results-export.json",
+          "parserHint": "georgiaMediaExportJson aggregates county President of the US rows by county."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Georgia SOS official 2024 media export precinct President and U.S. House rows",
+          "sourceUrl": "https://results.sos.ga.gov/cdn/results/Georgia/export-2024NovGen.json",
+          "localFile": "data/ga-2024-official-results-export.json",
+          "level": "precinct",
+          "comparisonContest": "U.S. House",
+          "parserHint": "georgiaMediaExportJsonHouseComparison pairs precinct President of the US rows with same-export U.S. House district rows where comparable; one-sided and multi-district rows are caveated."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ga-2024-eac-turnout.csv",
+          "level": "county",
+          "denominator": "EAC registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Georgia SOS official historical media exports",
+          "sourceUrl": "https://results.sos.ga.gov/",
+          "localFile": "data/ga-2012-official-results-export.json; data/ga-2016-official-results-export.json; data/ga-2020-official-results-export.json; data/ga-historical-presidential-baseline.csv",
+          "parserHint": "Run node scripts/collect-ga-historical-baseline.mjs to regenerate 477 county presidential baseline rows for 2012, 2016, and 2020."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2713%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ga-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "adminSourceInventory": {
+          "sourceTitle": "Georgia 2024 data coverage inventory",
+          "localFile": "data/ga-2024-data-coverage-inventory.json",
+          "parserHint": "Documents remaining state-native turnout, precinct geometry, audit/recount/CVR/incident/correction, and county request-path gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Georgia 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/13",
+          "localFile": "data/ga-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit outcomes, or precinct-uniform equipment claims."
+        }
+      },
+      "expected": {
+        "countyRows": 159,
+        "geometryFeatures": 159,
+        "stateTotal": 5250066,
+        "trump": 2663117,
+        "harris": 2548017,
+        "other": 38932,
+        "localReviewRows": 2684,
+        "turnoutRows": 159,
+        "historicalBaselineRows": 477
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_with_district_caveats",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalMode": "official_sos_media_export_county_baselines"
+      },
+      "caveats": [
+        "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings.",
+        "County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows.",
+        "Turnout remains EAC fallback; state-native turnout denominators are not loaded.",
+        "Precinct boundary GeoJSON is not present in this package.",
+        "Historical rows are context only; the 2020 media export reports the original November general-election export total and should not be mixed with recount tables without reconciliation."
+      ],
+      "legacyReferenceBundle": "data/ga-app-data.js"
     }
   ],
   "sourceDiscoveryQueue": [
