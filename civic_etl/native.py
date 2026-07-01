@@ -5919,12 +5919,15 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             sources,
             missing_label="Nebraska official canvass",
         )
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeNebraskaCountyPresidentCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
     if config.code == "NY" and config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
