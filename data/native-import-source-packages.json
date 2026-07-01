@@ -356,7 +356,7 @@
       "state": "NC",
       "name": "North Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout",
+      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_historical",
       "authority": "North Carolina State Board of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/nc.json",
       "legacyReferenceBundle": "data/nc-app-data.js",
@@ -389,6 +389,12 @@
           "localFile": "data/nc-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "North Carolina State Board of Elections historical precinct results ZIPs",
+          "sourceUrl": "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
+          "localFile": "data/nc-2012-results-precinct.zip; data/nc-2016-results-precinct.zip; data/nc-2020-results-precinct.zip; data/nc-historical-presidential-baseline.csv",
+          "parserHint": "Run npm run etl:collect:nc:historical to aggregate official NCSBE 2012, 2016, and 2020 US President rows to 300 county historicalPresidentialCsv baseline rows."
         }
       },
       "expected": {
@@ -399,20 +405,23 @@
         "harris": 2715375,
         "other": 85343,
         "localReviewRows": 2658,
-        "turnoutRows": 100
+        "turnoutRows": 100,
+        "historicalBaselineRows": 300
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_governor_real_precinct_filter",
-        "turnoutMode": "eac_2024_v2_jurisdiction_fallback"
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalBaselineMode": "official_ncsbe_precinct_zip_county_aggregates"
       },
       "caveats": [
         "Certified county totals aggregate all NCSBE reporting units from the official results ZIP.",
         "Review charts filter to official Real Precinct=Y rows, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; early voting, absentee, provisional, transfer, and other non-real reporting units account for 1,775,402 presidential votes and remain in certified county totals only.",
         "Governor is the same-grain comparison contest because North Carolina had no 2024 U.S. Senate race.",
-        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a state-native North Carolina denominator source is collected.",
-        "Precinct boundary GeoJSON, 2020/2016/2012 baselines, audit/recount/CVR availability, and incident/correction records remain gaps."
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a state-native North Carolina denominator source is collected and mapped into the turnout contract.",
+        "Historical baseline rows are official NCSBE county aggregates for context only.",
+        "Precinct boundary GeoJSON, normalized audit/recount/CVR availability, and incident/correction records remain gaps."
       ]
     },
     {

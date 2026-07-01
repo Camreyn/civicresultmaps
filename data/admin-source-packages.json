@@ -886,16 +886,30 @@
         "expectedJurisdictions": 100
       },
       "audit": {
-        "status": "needs_data",
-        "why": "North Carolina 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "sourceUrls": [
+          "https://www.ncsbe.gov/about-elections/election-security/post-election-procedures-and-audits",
+          "https://s3.amazonaws.com/dl.ncsbe.gov/sboe/election-security/audit-results/2024/2024%20General%20Post-Election%20Audit%20Results.pdf"
+        ],
+        "localArtifact": null,
+        "why": "NCSBE publishes post-election procedure descriptions and a 2024 General Election Audit Results PDF. The current registry records the source path, but per-county audit selections/outcomes are not normalized into administration rows yet."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "North Carolina 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrls": [
+          "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
+          "https://www.ncsbe.gov/results-data/voter-registration-data",
+          "https://www.ncsbe.gov/results-data/voter-history-data"
+        ],
+        "why": "The public NCSBE results/data pages expose result, voter-registration, and voter-history files, but no statewide public 2024 CVR export was confirmed in this pass. Keep CVR availability on the records-request path before adding row-level CVR context."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "North Carolina 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrls": [
+          "https://www.ncsbe.gov/about-elections/election-security/investigations-division",
+          "https://www.ncsbe.gov/about-elections/election-security/post-election-procedures-and-audits"
+        ],
+        "why": "NCSBE publishes investigations and post-election procedure pages, but 2024 incident, correction, recount, litigation, and post-certification correction records are not normalized here. Use county/state records requests or official published case records before marking this context loaded."
       }
     },
     {
