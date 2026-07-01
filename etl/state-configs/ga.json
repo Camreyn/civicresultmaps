@@ -37,6 +37,72 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Georgia county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "ga-2012-official-results",
+      "category": "Official historical presidential results export",
+      "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2012NovGen.json",
+      "localFile": "data/ga-2012-official-results-export.json",
+      "parser": "georgiaMediaExportJsonHistoricalSource",
+      "authority": "Georgia Secretary of State",
+      "timestampBasis": "Official Georgia Secretary of State media export for the November 6, 2012 General Election, created January 8, 2025.",
+      "confidence": "Official county presidential rows retained as source artifact for contextual historical baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "ga-2016-official-results",
+      "category": "Official historical presidential results export",
+      "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2016NovGen.json",
+      "localFile": "data/ga-2016-official-results-export.json",
+      "parser": "georgiaMediaExportJsonHistoricalSource",
+      "authority": "Georgia Secretary of State",
+      "timestampBasis": "Official Georgia Secretary of State media export for the November 8, 2016 General Election, created January 8, 2025.",
+      "confidence": "Official county presidential rows retained as source artifact for contextual historical baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "ga-2020-official-results",
+      "category": "Official historical presidential results export",
+      "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2020NovGen.json",
+      "localFile": "data/ga-2020-official-results-export.json",
+      "parser": "georgiaMediaExportJsonHistoricalSource",
+      "authority": "Georgia Secretary of State",
+      "timestampBasis": "Official Georgia Secretary of State media export for the November 3, 2020 General Election, created January 8, 2025.",
+      "confidence": "Official media-export county presidential rows retained as contextual historical baseline source. This artifact reports the original November general export total; do not mix it with separate recount result tables without an explicit reconciliation pass.",
+      "status": "loaded"
+    },
+    {
+      "id": "ga-historical-presidential-baseline",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2020NovGen.json",
+      "localFile": "data/ga-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Georgia Secretary of State",
+      "timestampBasis": "County presidential rows normalized by scripts/collect-ga-historical-baseline.mjs from official Georgia SOS media exports for 2012, 2016, and 2020.",
+      "confidence": "Official county-level historical presidential baselines used for context only. Individual rows carry the per-year SOS media-export URL.",
+      "status": "loaded"
+    },
+    {
+      "id": "ga-2024-equipment-context",
+      "category": "Voting equipment administration context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/13",
+      "localFile": "data/ga-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContextCsv",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verified Voting Verifier 2024 county-level equipment context normalized in this repository.",
+      "confidence": "Jurisdiction-level election-administration context only. Do not use as vote, turnout, audit, or precinct-uniform equipment evidence.",
+      "status": "loaded"
+    },
+    {
+      "id": "ga-2024-data-coverage-inventory",
+      "category": "Georgia data coverage and source-gap inventory",
+      "url": "https://results.sos.ga.gov/",
+      "localFile": "data/ga-2024-data-coverage-inventory.json",
+      "parser": "georgiaCoverageInventoryJson",
+      "authority": "Georgia Secretary of State; U.S. Census Bureau; U.S. Election Assistance Commission; Verified Voting Verifier",
+      "timestampBasis": "State-scoped Georgia source inventory updated July 1, 2026.",
+      "confidence": "Inventory and request-path documentation only; not a vote-result, turnout, audit, or geometry source by itself.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -76,7 +142,7 @@
   "expected": {
     "jurisdictions": 159,
     "resultRows": 159,
-    "sources": 3,
+    "sources": 9,
     "stateTotal": 5250066,
     "trump": 2663117,
     "harris": 2548017,
@@ -94,6 +160,19 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ga-historical-presidential-baseline",
+    "warning": "Georgia historical baseline rows are official county-level presidential results from Georgia Secretary of State media exports for 2012, 2016, and 2020. Use them as contextual baseline rows, not as 2024 certified data. The 2020 media export reports the original November general-election export total; separate recount result tables should be reconciled before replacing or combining those rows.",
+    "expected": {
+      "rowCount": 477,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }

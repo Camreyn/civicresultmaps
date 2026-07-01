@@ -1,0 +1,201 @@
+{
+  "state": "GA",
+  "stateName": "Georgia",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "purpose": "State-scoped coverage inventory for Georgia 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "status": "official_precinct_review_county_map_eac_turnout_official_historical_loaded_admin_context_partial",
+  "authorityPriority": "Official Georgia Secretary of State, county election offices, official GIS/Census, EAC, and official audit/recount records first; secondary sources are context only and caveated.",
+  "loadedArtifacts": [
+    {
+      "id": "ga-2024-official-results",
+      "sourceAuthority": "Georgia Secretary of State",
+      "sourceUrl": "https://results.sos.ga.gov/cdn/results/Georgia/export-2024NovGen.json",
+      "localPath": "data/ga-2024-official-results-export.json",
+      "electionYear": 2024,
+      "reportingGrain": "county_and_precinct",
+      "parserNormalizationPath": "civic_etl/native.py _georgia_rows via etl/state-configs/ga.json certifiedResults.format=georgiaMediaExportJson and reviewCharts.format=georgiaMediaExportJsonHouseComparison",
+      "expectedCounts": {
+        "countyRows": 159,
+        "stateTotal": 5250066,
+        "trump": 2663117,
+        "harris": 2548017,
+        "other": 38932,
+        "reviewRows": 2684,
+        "comparableComparisonRows": 2637,
+        "oneSidedComparisonRows": 8,
+        "multiDistrictComparisonRows": 39,
+        "zeroTotalReviewRowsOmitted": 17
+      },
+      "caveats": [
+        "County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows.",
+        "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings.",
+        "One-sided House comparison rows and multi-district composite precinct keys are not down-ballot dropoff evidence."
+      ],
+      "confidence": "loaded_official_results_and_precinct_review"
+    },
+    {
+      "id": "ga-2024-eac-turnout",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localPath": "data/eac-2024-state-turnout/ga-2024-eac-turnout.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county_jurisdiction",
+      "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/ga.json turnout.format=eacTurnoutCsv",
+      "expectedCounts": {
+        "rows": 159,
+        "ballotsCast": 5297500,
+        "registeredVoters": 8234335
+      },
+      "caveats": [
+        "EAC fallback turnout is official national reporting context, not Georgia-native same-grain turnout denominator data.",
+        "Turnout rows are county/jurisdiction grain while review rows are precinct grain."
+      ],
+      "confidence": "loaded_fallback_turnout"
+    },
+    {
+      "id": "ga-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2713%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localPath": "data/ga-counties.geojson",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "censusTigerwebCountyGeojson via etl/state-configs/ga.json source ga-county-geometry",
+      "expectedCounts": {
+        "features": 159
+      },
+      "caveats": [
+        "County geometry supports current county result map joins.",
+        "Precinct boundary geometry is not included."
+      ],
+      "confidence": "loaded_county_geometry"
+    },
+    {
+      "id": "ga-historical-presidential-baseline",
+      "sourceAuthority": "Georgia Secretary of State",
+      "sourceUrl": "https://results.sos.ga.gov/",
+      "localPath": "data/ga-2012-official-results-export.json; data/ga-2016-official-results-export.json; data/ga-2020-official-results-export.json; data/ga-historical-presidential-baseline.csv",
+      "electionYear": "2012,2016,2020",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/collect-ga-historical-baseline.mjs to historicalPresidentialCsv via etl/state-configs/ga.json historicalBaselines.format=historicalPresidentialCsv",
+      "expectedCounts": {
+        "rows": 477,
+        "years": [2012, 2016, 2020]
+      },
+      "caveats": [
+        "Historical rows are contextual baselines only, not 2024 certified data.",
+        "The 2020 media export reports the original November general-election export total; separate recount result tables should be reconciled before replacing or combining those rows."
+      ],
+      "confidence": "loaded_official_historical_context"
+    },
+    {
+      "id": "ga-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/13",
+      "localPath": "data/ga-2024-equipment-context.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/normalize-verifiedvoting-equipment.mjs; surfaced through data/admin-source-packages.json and API equipment context paths",
+      "expectedCounts": {
+        "jurisdictions": 159
+      },
+      "caveats": [
+        "Secondary jurisdiction-level election-administration context only.",
+        "Do not infer every precinct or ballot mode used one identical setup; do not use this as vote, turnout, audit, or incident evidence."
+      ],
+      "confidence": "loaded_context_only"
+    }
+  ],
+  "officialSourceSearchPath": [
+    {
+      "sourceAuthority": "Georgia Secretary of State",
+      "sourceUrl": "https://results.sos.ga.gov/",
+      "checkedFor": [
+        "2024 official result export",
+        "county presidential rows",
+        "precinct presidential rows",
+        "precinct U.S. House comparison rows",
+        "2012, 2016, and 2020 historical media exports"
+      ],
+      "result": "The official SOS media-export family is loaded for 2024 result/review rows and for 2012/2016/2020 county historical baselines.",
+      "blocker": "The export does not provide precinct boundary geometry or registered-voter denominator fields needed for state-native same-grain turnout screening."
+    },
+    {
+      "sourceAuthority": "Georgia Secretary of State and county election offices",
+      "sourceUrl": "https://sos.ga.gov/page/georgia-county-election-offices",
+      "checkedFor": [
+        "county election-office request path",
+        "CVR, ballot-image, tabulator-log, L&A, custody, incident, correction, and detailed audit records"
+      ],
+      "result": "The repository already contains Georgia electronic-integrity request scaffolding and county-custodian request paths for records that are not in the public result export.",
+      "blocker": "No normalized statewide CVR, ballot-image, tabulator-log, L&A, custody, incident, correction, recount, or detailed audit outcome artifacts are loaded."
+    },
+    {
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "checkedFor": [
+        "turnout fallback rows",
+        "registered-voter denominator fallback"
+      ],
+      "result": "EAC 2024 V2 Georgia county/jurisdiction turnout rows are loaded and validate to 159 rows.",
+      "blocker": "EAC rows remain fallback context until Georgia-native turnout and registration denominator rows are collected."
+    },
+    {
+      "sourceAuthority": "U.S. Census Bureau and Georgia/county GIS offices",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2713%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "checkedFor": [
+        "county geometry",
+        "precinct boundary geometry lead"
+      ],
+      "result": "County geometry is loaded from Census TIGERweb.",
+      "blocker": "No official statewide precinct boundary geometry or precinct-to-result crosswalk is committed."
+    }
+  ],
+  "requestPath": {
+    "neededArtifact": "Georgia-native 2024 turnout/registration denominator rows and official precinct boundary geometry; detailed audit/recount/CVR/incident/correction records for administration context.",
+    "preferredAuthorities": [
+      "Georgia Secretary of State Elections Division",
+      "Georgia State Election Board for meeting/order context where applicable",
+      "Georgia county election offices",
+      "official county or state GIS offices"
+    ],
+    "requestFields": [
+      "election date and contest names",
+      "county and precinct/reporting-unit identifier",
+      "ballots cast or voter participation count",
+      "registered-voter denominator and timing",
+      "precinct boundary geometry or reporting-unit crosswalk",
+      "audit selection unit, batch/precinct, hand-count and machine-count fields where available",
+      "CVR, ballot image, tabulator/EMS log, L&A, chain-of-custody, incident, correction, recount, and litigation record identifiers where public or lawfully releasable"
+    ],
+    "publicContactPath": "Use Georgia SOS and county election-office public-records/contact paths; county custody is likely for several electronic records."
+  },
+  "gaps": [
+    {
+      "artifact": "state_native_turnout_registration_denominator",
+      "status": "not_loaded",
+      "neededFor": "Replacing EAC fallback turnout and evaluating turnout/registration at Georgia-native grain.",
+      "preferredAuthority": "Georgia Secretary of State or county election offices.",
+      "remainingRisk": "Current turnout card uses official EAC fallback rows rather than Georgia-native denominator rows."
+    },
+    {
+      "artifact": "precinct_boundary_geometry",
+      "status": "not_loaded",
+      "neededFor": "Subcounty map overlays for loaded precinct review rows.",
+      "preferredAuthority": "Georgia Secretary of State, county election/GIS offices, or official statewide precinct boundary publication if available.",
+      "remainingRisk": "Current public map remains county-level even though review rows are precinct table/graph inputs."
+    },
+    {
+      "artifact": "audit_recount_cvr_incident_correction_records",
+      "status": "request_path_documented_not_normalized",
+      "neededFor": "Independent reconciliation and administrative context for explaining advisory rows.",
+      "preferredAuthority": "Georgia Secretary of State, State Election Board, and county election offices.",
+      "remainingRisk": "Loaded artifacts do not independently recompute totals from CVRs, adjudication records, audit batches, recount tables, or incident/correction records."
+    }
+  ],
+  "confidenceNotes": [
+    "Official 2024 result/review rows and official 2012/2016/2020 county historical baselines are loaded from Georgia SOS media exports.",
+    "Current Georgia advisory indicators remain public-interest screening outputs only; they are not proof of fraud or misconduct.",
+    "Next source step is Georgia-native turnout/registration denominator collection and precinct boundary/crosswalk collection, followed by county/state requests for detailed audit, CVR, recount, incident, correction, and custody records."
+  ]
+}
