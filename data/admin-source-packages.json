@@ -705,16 +705,19 @@
         "expectedJurisdictions": 83
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Michigan 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceInventory": "data/mi-2024-admin-source-inventory.json",
+        "why": "Michigan post-election audit and recount source paths are documented, but row-level 2024 selection/outcome artifacts are not normalized into this administration registry yet."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Michigan 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceInventory": "data/mi-2024-admin-source-inventory.json",
+        "why": "Michigan CVR availability and custodian/request paths are documented as request needs; no statewide public 2024 CVR export is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Michigan 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceInventory": "data/mi-2024-admin-source-inventory.json",
+        "why": "Michigan incident, correction, recount, and litigation source paths are inventoried, but normalized row-level records are not loaded."
       }
     },
     {

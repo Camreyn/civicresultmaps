@@ -101,7 +101,7 @@
       "state": "MI",
       "name": "Michigan",
       "priority": 2,
-      "nativeReadiness": "complete_county_map_precinct_review_county_turnout",
+      "nativeReadiness": "complete_county_map_precinct_review_county_turnout_secondary_historical_admin_inventory",
       "authority": "Michigan Secretary of State",
       "configFile": "etl/state-configs/mi.json",
       "legacyReferenceBundle": "data/mi-app-data.js",
@@ -135,6 +135,17 @@
           "appReadyFile": "data/mi-counties.js",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Wikipedia Michigan county presidential tables with Michigan SOS result-page citations where available",
+          "sourceUrl": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Michigan",
+          "localFile": "data/mi-historical-presidential-baseline.csv",
+          "parserHint": "Run node scripts/collect-mi-historical-baseline.mjs to regenerate 249 county presidential baseline rows for 2012, 2016, and 2020; replace with official SOS historical exports if collected."
+        },
+        "adminSourceInventory": {
+          "sourceTitle": "Michigan 2024 administration, geometry, historical-source, and request-path inventory",
+          "localFile": "data/mi-2024-admin-source-inventory.json",
+          "parserHint": "Documents loaded and missing Michigan administration-context source paths; not normalized audit/CVR/incident rows."
         }
       },
       "expected": {
@@ -145,19 +156,23 @@
         "harris": 2736533,
         "other": 111017,
         "localReviewRows": 4428,
-        "turnoutRows": 83
+        "turnoutRows": 83,
+        "historicalBaselineRows": 249
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff",
-        "turnoutMode": "county_turnout_joined_to_registration_pdf"
+        "turnoutMode": "county_turnout_joined_to_registration_pdf",
+        "historicalBaselineMode": "secondary_wikipedia_county_context",
+        "adminInventoryStatus": "source_paths_documented_not_row_level_loaded"
       },
       "caveats": [
         "MVIC live download endpoints are browser-protected; local official export artifacts are already stored in the repo.",
         "Turnout is county-level, not precinct-level.",
         "Precinct boundary GeoJSON is not present in this package.",
-        "Historical baseline rows for 2020, 2016, and 2012 are not committed or parsed yet, so Michigan historical baseline capability remains disabled."
+        "Historical baseline rows are contextual secondary county tables, not official replacement certified totals; official MVIC/mielections historical endpoints were not script-readable from this environment.",
+        "Administration source inventory is documented, but normalized audit/recount/CVR/incident/correction rows are not loaded."
       ]
     },
     {

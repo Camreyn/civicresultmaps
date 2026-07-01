@@ -762,13 +762,15 @@
       "stateName": "Michigan",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_admin_context",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
         "TXT",
         "ZIP",
-        "PDF registration reference"
+        "PDF registration reference",
+        "secondary historical CSV",
+        "admin source inventory JSON"
       ],
       "sourceUrls": [
         "https://mvic.sos.state.mi.us/VoteHistory/"
@@ -778,17 +780,21 @@
         "county results",
         "precinct President rows",
         "precinct U.S. Senate rows",
-        "county registration/turnout"
+        "county registration/turnout",
+        "2012, 2016, and 2020 county historical presidential baseline rows",
+        "equipment context",
+        "administration source inventory"
       ],
       "missingFields": [
         "precinct boundary geometry",
-        "2020, 2016, and 2012 county historical presidential baselines"
+        "official script-readable 2012/2016/2020 historical county presidential exports",
+        "normalized audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native precinct review package loaded",
+      "parserStatus": "native precinct review package loaded with secondary historical baseline and administration source inventory",
       "manualReviewBurden": "low",
-      "confidence": "loaded",
-      "caveats": "Turnout is county-level, not precinct-level. Historical baseline capability remains disabled until official Michigan county presidential rows for 2020, 2016, and 2012 are committed and parsed.",
-      "nextAction": "Optional next steps are precinct geometry, a precinct-level turnout denominator if available, and official historical county presidential baseline exports for 2020, 2016, and 2012."
+      "confidence": "loaded_with_caveat",
+      "caveats": "Turnout is county-level, not precinct-level. Historical baseline rows are secondary contextual county tables because MVIC and mielections.us official historical paths were not script-readable in this environment; replace with official Michigan SOS exports if collected. Administration inventory documents source paths and request needs but does not load row-level audit, recount, CVR, incident, or correction records.",
+      "nextAction": "Collect official script-readable Michigan historical result exports, official statewide precinct boundary geometry or reporting-unit crosswalks, and row-level 2024 audit/recount/CVR/incident/correction artifacts if available."
     },
     {
       "state": "MN",

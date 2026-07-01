@@ -50,6 +50,17 @@
       "status": "loaded"
     },
     {
+      "id": "mi-historical-presidential-wikipedia-county",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Michigan",
+      "localFile": "data/mi-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Wikipedia county presidential tables with Michigan Secretary of State result-page citations where available",
+      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 downloaded July 1, 2026 by scripts/collect-mi-historical-baseline.mjs.",
+      "confidence": "Secondary contextual baseline. MVIC and mielections.us official historical pages were not script-readable from this environment; replace with official Michigan SOS historical exports if collected.",
+      "status": "loaded"
+    },
+    {
       "id": "mi-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer",
@@ -95,7 +106,7 @@
   "expected": {
     "jurisdictions": 83,
     "resultRows": 83,
-    "sources": 5,
+    "sources": 6,
     "stateTotal": 5664186,
     "trump": 2816636,
     "harris": 2736533,
@@ -109,6 +120,19 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "mi-historical-presidential-wikipedia-county",
+    "warning": "Michigan historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with Michigan official result-page citations where available. Use them as contextual baseline rows, not as 2024 certified data. Prefer replacing them with official Michigan Secretary of State historical MVIC or mielections.us exports if those can be collected.",
+    "expected": {
+      "rowCount": 249,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
