@@ -10,7 +10,7 @@ This note is an internal source and review-path inventory for Mississippi. It do
 - Same-grain comparison contest: loaded from the same SOS recap CSV using county-level U.S. Senate rows.
 - Statewide reference PDF: retained at `data/ms-2024-official-statewide-results.pdf` for provenance next to the parsed CSV.
 - County geometry: loaded from Census TIGERweb county GeoJSON at `data/ms-counties.geojson`.
-- Turnout denominator: loaded from EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ms-2024-eac-turnout.csv`; this remains a fallback until a Mississippi-native turnout or registration source is collected.
+- Turnout denominator: loaded from EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ms-2024-eac-turnout.csv`; this remains the active turnout source. The official Mississippi SOS November 2024 Active Voter Count denominator lead is collected at `data/ms-2024-november-active-voter-count.pdf` and normalized to `data/ms-2024-november-active-voter-count.csv` by `npm run etl:collect:ms:active-voters`, but it is candidate context only until paired with official ballots-cast or voter-participation rows.
 - Equipment context: loaded separately in `data/admin-source-packages.json` from Verified Voting Verifier county-level context, normalized to `data/ms-2024-equipment-context.csv`. This is administration context only, not a turnout or vote-result source.
 
 ## Precinct Review Path
@@ -41,13 +41,13 @@ Next action: collect official Mississippi SOS historical county presidential art
 
 ## Turnout Denominator Follow-Up
 
-The Mississippi SOS Active Voter Count Reports page is an official denominator lead: `https://www.sos.ms.gov/elections-voting/active-voter-count-reports`. The page describes monthly county active-voter counts compared with Census voting-age population estimates. These reports are not a drop-in replacement for the current EAC turnout rows because they are monthly active-registration denominators and do not by themselves provide ballots-cast rows, election-day denominator timing, or a same-grain turnout calculation.
+The Mississippi SOS Active Voter Count Reports page is an official denominator lead: `https://www.sos.ms.gov/elections-voting/active-voter-count-reports`. The page describes monthly county active-voter counts compared with Census voting-age population estimates. This pass collected the November 2024 report from `https://www.sos.ms.gov/sites/default/files/active-voter-count-reports/2024November%20Voter%20Count%20Red.pdf` and normalized 82 county rows totaling 1,980,751 active voters against a 2,238,135 CVAP estimate.
 
-Next action: collect the November or December 2024 active-voter report as a state-native denominator cross-check, then pair it only with an official Mississippi ballots-cast or voter-participation artifact before replacing the EAC turnout fallback.
+These reports are not a drop-in replacement for the current EAC turnout rows because they are monthly active-registration denominators and do not by themselves provide ballots-cast rows, election-day denominator timing, or a same-grain turnout calculation. Next action: pair the collected November 2024 active-voter denominator lead only with an official Mississippi ballots-cast or voter-participation artifact before replacing the EAC turnout fallback.
 
 ## Remaining 2024 Source Gaps
 
-- Mississippi-native turnout or registration denominator rows to replace the EAC fallback.
+- Official Mississippi ballots-cast or voter-participation rows to pair with the collected November 2024 active-voter denominator lead before replacing the EAC fallback.
 - Precinct-level structured President-versus-U.S. Senate review CSV promoted from reviewed county PDF OCR/manual review.
 - Precinct boundary geometry if subcounty map overlays are required.
 - Post-election audit, CVR availability, incident/correction/litigation, tabulator/EMS log, logic-and-accuracy, and custody records. These are tracked as `needs_data` administration context, not as findings.

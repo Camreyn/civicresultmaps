@@ -410,6 +410,8 @@ test("native source package handoff is validated in CI", () => {
   const msCombinedReviewScript = readFileSync("scripts/combine-ms-ocr-review-artifacts.mjs", "utf8");
   const msReviewedCorrections = readFileSync("data/ms-2024-ocr-reviewed-corrections.csv", "utf8");
   const msVerifier = readFileSync("scripts/verify-ms-ocr-pipeline.mjs", "utf8");
+  const msActiveVoterScript = readFileSync("scripts/collect-ms-active-voter-count.mjs", "utf8");
+  const msActiveVoterRows = readFileSync("data/ms-2024-november-active-voter-count.csv", "utf8");
   const msCoverageDoc = readFileSync("docs/ms-2024-data-coverage.md", "utf8");
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows"], /extract-ms-recap-ocr-text-rows/);
   assert.match(packageScripts["etl:extract:ms:pdf-text-layer"], /extract-ms-pdf-text-layer/);
@@ -419,6 +421,7 @@ test("native source package handoff is validated in CI", () => {
   assert.match(packageScripts["etl:template:ms:ocr-corrections"], /create-ms-ocr-correction-template/);
   assert.match(packageScripts["etl:template:ms:ocr-corrections:sample"], /ms-sample-ocr-correction-template/);
   assert.match(packageScripts["etl:verify:ms:ocr"], /verify-ms-ocr-pipeline/);
+  assert.match(packageScripts["etl:collect:ms:active-voters"], /collect-ms-active-voter-count/);
   assert.match(packageScripts["etl:verify:ms:ocr:reviewed"], /--allow-unused-corrections/);
   assert.match(packageScripts["etl:verify:ms:ocr:sample"], /--skip-ocr/);
   assert.match(msTextExtractor, /text_row_fallback/);
@@ -452,11 +455,16 @@ test("native source package handoff is validated in CI", () => {
   assert.match(msVerifier, /allowUnusedCorrections/);
   assert.match(msVerifier, /import_ready/);
   assert.match(msVerifier, /missing_ocr/);
+  assert.match(msActiveVoterScript, /denominator lead only/);
+  assert.match(msActiveVoterScript, /expectedRows/);
+  assert.match(msActiveVoterRows, /MS,2024,2024-11,01,Adams,22555,18249/);
+  assert.equal(msActiveVoterRows.trim().split(/\r?\n/).length, 83);
   assert.match(msCoverageDoc, /11 import-ready counties/);
   assert.match(msCoverageDoc, /EAC 2024 V2 county\/jurisdiction fallback/);
   assert.match(msCoverageDoc, /historical baselines were not added/);
   assert.match(msCoverageDoc, /2020 General Election/);
   assert.match(msCoverageDoc, /Active Voter Count Reports page is an official denominator lead/);
+  assert.match(msCoverageDoc, /1,980,751 active voters/);
   assert.match(msCoverageDoc, /do not by themselves provide ballots-cast rows/);
   assert.match(msReconciler, /precinctExtractedTotal/);
   assert.match(msReconciler, /detected_total_column_cells/);
