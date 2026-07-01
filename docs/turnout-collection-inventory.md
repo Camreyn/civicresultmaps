@@ -53,6 +53,10 @@ Ask the data team for:
 - Parser hints: sheet/table name, header row, join keys, county field, precinct/ward field.
 - Caveats: inactive-voter treatment, election-day registration, provisional/absentee handling, overseas/federal-only ballots, or reporting-unit mismatch.
 
+## Mississippi Update
+
+Mississippi currently uses official EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ms-2024-eac-turnout.csv`, totaling 82 jurisdiction rows, 1,225,176 ballots cast, and 2,131,726 registered voters. The Mississippi SOS Active Voter Count Reports page (`https://www.sos.ms.gov/elections-voting/active-voter-count-reports`) is a state-native denominator lead because it publishes monthly county active-voter counts, but those reports are not a complete turnout replacement unless paired with official Mississippi ballots-cast or voter-participation rows and documented denominator timing.
+
 ## Nebraska Update
 
 Nebraska now retains three turnout-relevant source paths: EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ne-2024-eac-turnout.csv`, the official Secretary of State 2024 General Canvass Book at `data/ne-2024-general-canvass-book.pdf`, and the official post-general eligible-voter registration report at `data/ne-2024-post-general-eligible-voter-report.pdf`. The current ETL still emits EAC fallback turnout rows: 93 rows, 965,145 ballots cast, and 1,263,487 registered voters. The canvass book's county voting-statistics section reports 1,263,487 registered voters and 965,236 total voting statewide, so a Nebraska canvass voting-statistics normalizer must reconcile that 91-vote source difference before replacing the EAC parser. The public inventory and request paths are documented in `data/ne-2024-admin-source-inventory.json`.

@@ -1,6 +1,6 @@
 # Mississippi 2024 Data Coverage
 
-Checked at: 2026-06-30
+Checked at: 2026-07-01
 
 This note is an internal source and review-path inventory for Mississippi. It does not replace the ETL config, source registries, or reviewed staging artifacts.
 
@@ -29,9 +29,21 @@ Remaining precinct-review blocker: complete OCR or manual review for the other c
 
 ## Historical Baselines
 
-2020, 2016, and 2012 historical baselines were not added in this pass. No source-cited official historical Mississippi county presidential artifacts are present in the repo, and live direct checks against likely SOS historical recap URL patterns were blocked or rejected from this environment, including the known 2024 CSV path. That only documents an acquisition blocker from this environment; it is not evidence that the Secretary of State does not publish historical files.
+2020, 2016, and 2012 historical baselines were not added in this pass. No source-cited official historical Mississippi county presidential artifacts are present in the repo. The live Mississippi SOS election-results index confirms archive pages for the target elections:
 
-Next action: collect official Mississippi SOS historical county presidential artifacts for 2020, 2016, and 2012 from the SOS election results archive or request them from the SOS Elections Division. For each artifact, record source URL, local path, reporting grain, parser path, expected county count, candidate totals, caveats, and confidence before enabling `historicalBaseline` for Mississippi.
+- 2020 General Election: `https://www.sos.ms.gov/elections-voting/election-results/2020/2020-general-election`
+- 2016 General Election: `https://www.sos.ms.gov/elections-voting/election-results/2016/2016-general-election`
+- 2012 Election Results: `https://www.sos.ms.gov/elections-voting/election-results/2012/2012-election-results`
+
+Those archive pages render the result tables through an iframe in the current site. The text fetch used in this pass did not expose stable direct county presidential artifact URLs, so no historical parser or CSV was added. That documents an acquisition blocker from this environment; it is not evidence that the Secretary of State does not publish or retain the historical files.
+
+Next action: collect official Mississippi SOS historical county presidential artifacts for 2020, 2016, and 2012 from the archive iframe targets, from any linked official recap files, or by request to the SOS Elections Division/Public Records Request path. For each artifact, record source URL, local path, reporting grain, parser path, expected county count, candidate totals, caveats, and confidence before enabling `historicalBaseline` for Mississippi.
+
+## Turnout Denominator Follow-Up
+
+The Mississippi SOS Active Voter Count Reports page is an official denominator lead: `https://www.sos.ms.gov/elections-voting/active-voter-count-reports`. The page describes monthly county active-voter counts compared with Census voting-age population estimates. These reports are not a drop-in replacement for the current EAC turnout rows because they are monthly active-registration denominators and do not by themselves provide ballots-cast rows, election-day denominator timing, or a same-grain turnout calculation.
+
+Next action: collect the November or December 2024 active-voter report as a state-native denominator cross-check, then pair it only with an official Mississippi ballots-cast or voter-participation artifact before replacing the EAC turnout fallback.
 
 ## Remaining 2024 Source Gaps
 
