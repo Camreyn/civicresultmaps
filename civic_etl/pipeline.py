@@ -18,6 +18,7 @@ REQUIRED_CAPABILITIES = {
 }
 
 PRODUCTION_WRITE_STATUSES = {"promoted"}
+SOURCE_STATUSES = {"loaded", "candidate", "needs_data", "superseded", "documented_exclusion"}
 
 
 def artifact_metadata(local_file: str) -> dict[str, Any]:
@@ -145,6 +146,11 @@ def validate_config(config: EtlConfig) -> ValidationReport:
             errors.append(f"source {source.id} must use an https URL")
         if not source.parser:
             errors.append(f"source {source.id} is missing parser metadata")
+        if source.status not in SOURCE_STATUSES:
+            errors.append(
+                f"source {source.id} has invalid source status {source.status}; "
+                f"expected one of {', '.join(sorted(SOURCE_STATUSES))}"
+            )
         if source.status in PRODUCTION_WRITE_STATUSES:
             errors.append(f"source {source.id} cannot request production promotion from config")
         if source.status != "loaded":

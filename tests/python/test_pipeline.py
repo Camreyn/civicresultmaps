@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import replace
 import zipfile
 import json
 from pathlib import Path
@@ -159,6 +160,21 @@ class PipelineTests(unittest.TestCase):
         path = Path(".etl-test") / name
         path.mkdir(parents=True, exist_ok=True)
         return path
+
+    def test_config_rejects_source_statuses_outside_production_enum(self):
+        config = load_config("etl/state-configs/wi.json")
+        config = replace(
+            config,
+            sources=[replace(config.sources[0], status="partial"), *config.sources[1:]],
+        )
+
+        report = validate_config(config)
+
+        self.assertFalse(report.passed)
+        self.assertIn(
+            "source wi-2024-ward-by-ward-federal-state-xlsx has invalid source status partial",
+            report.errors[0],
+        )
 
     def test_wisconsin_config_validates(self):
         config = load_config("etl/state-configs/wi.json")
