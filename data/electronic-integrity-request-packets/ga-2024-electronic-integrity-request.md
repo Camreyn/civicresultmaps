@@ -3,7 +3,7 @@
 This request seeks machine-readable records that can reconcile electronic election-system output against official results, paper/audit evidence, and custody records. Existing advisory indicators are not allegations or proof of tampering.
 
 Requested evidence families:
-- Reporting-unit results: status=partial; grain=precinct_vote_share_only; reconciliation=same_row_comparison_contest_missing. Suggested custodian/path: Georgia county election offices or Secretary of State open records request path.
+- Reporting-unit results: status=loaded; grain=precinct_president_vs_us_house; reconciliation=official_media_export_precinct_president_vs_house_loaded_with_house_caveats. U.S. House rows are district-based and candidate-specific, so remaining requests should focus on evidence that can reconcile electronic system output against paper/audit, CVR, log, custody, recount, incident, and correction records.
 - Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Georgia county election offices or Secretary of State open records request path.
 - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Georgia county election offices or Secretary of State open records request path.
 - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Georgia county election offices or Secretary of State open records request path.

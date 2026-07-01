@@ -529,7 +529,7 @@ function countyDistributionIndicatorsForNativeRows(stateCode: string, rows: Nati
 }
 
 function isComparableDownBallotRow(row: NativeReviewRow) {
-  if (row.coverageMode === "voteShareOnly" || row.coverageMode === "oneSidedHouseComparison") {
+  if (row.coverageMode === "voteShareOnly" || row.coverageMode === "oneSidedHouseComparison" || row.coverageMode === "multiDistrictHouseComparison") {
     return false;
   }
 
@@ -559,6 +559,7 @@ function comparisonContextForScope(scope: NativeReviewScope) {
     coverageModes.length === 1 ? coverageModes[0] : coverageModes.length > 1 ? "mixed" : "unknown";
   const lowConfidenceReasons: Record<string, string> = {
     mixed: "mixed comparison modes are loaded in this scope",
+    multiDistrictHouseComparison: "the comparison race aggregates multiple U.S. House districts under one local key",
     oneSidedHouseComparison: "the comparison race is one-sided or not fully comparable",
     presidentVsGovernor:
       "Governor is a statewide executive race with candidate-specific ticket splitting; corroborate with additional contests or historical baselines before inferring candidate benefit",

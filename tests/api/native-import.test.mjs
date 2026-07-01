@@ -31,6 +31,7 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /comparisonContextForScope/);
   assert.match(importer, /isComparableDownBallotRow/);
   assert.match(importer, /oneSidedHouseComparison/);
+  assert.match(importer, /multiDistrictHouseComparison/);
   assert.match(importer, /comparableDownBallotRowCount/);
   assert.match(importer, /comparisonCoverageMode/);
   assert.match(importer, /directionalScreenConfidence/);

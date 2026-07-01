@@ -1340,9 +1340,9 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
     },
     {
       key: "review",
-      evidence: "Georgia native review rows use official media-export precinct presidential vote-share screening.",
+      evidence: "Georgia native review rows use official media-export precinct presidential rows paired with U.S. House comparison rows where comparable.",
       status: "partial",
-      why: "No same-row down-ballot comparison contest is mapped yet, county presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts.",
+      why: "U.S. House is district-based and candidate-specific, so directional screens remain low-confidence advisory context; one-sided and multi-district House rows are excluded from down-ballot dropoff calculations.",
     },
     {
       key: "turnout",

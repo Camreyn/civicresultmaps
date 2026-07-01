@@ -153,6 +153,18 @@ def _candidate_bucket(candidate: str, dem_needles: list[str], rep_needles: list[
     return "other"
 
 
+def _party_bucket(party: Any, candidate: Any = "") -> str | None:
+    normalized_party = str(party or "").strip().lower()
+    if normalized_party in {"dem", "democrat", "democratic"}:
+        return "dem"
+    if normalized_party in {"rep", "republican"}:
+        return "rep"
+    normalized_candidate = " ".join(str(candidate or "").lower().split())
+    if normalized_candidate in {"over votes", "under votes", "blank ballots"}:
+        return None
+    return "other"
+
+
 def _ohio_county_results(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -757,6 +769,12 @@ def _georgia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
     candidate_rules = section.get("candidateRules", {})
     dem_needles = candidate_rules.get("harris", ["Kamala"])
     rep_needles = candidate_rules.get("trump", ["Donald"])
+    review_section = config.raw.get("reviewCharts", {})
+    comparison_pattern = re.compile(
+        review_section.get("comparisonContestRegex", r"^US House of Representatives - District \d+$"),
+        re.IGNORECASE,
+    )
+    comparison_label = review_section.get("comparisonContest", "U.S. House")
 
     payload = json.loads(_artifact_path(source).read_text(encoding="utf-8"))
     statewide_item = next((item for item in payload.get("results", {}).get("ballotItems", []) if item.get("name") == contest_name), None)
@@ -775,70 +793,130 @@ def _georgia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
 
     result_rows: list[dict[str, Any]] = []
     precincts: dict[tuple[str, str, str], dict[str, Any]] = {}
+    comparison_by_key: dict[tuple[str, str, str], dict[str, Any]] = {}
     for local in payload.get("localResults", []):
         county = _county_name(local.get("name"))
         if not county:
             continue
         item = next((candidate for candidate in local.get("ballotItems", []) if candidate.get("name") == contest_name), None)
-        if not item:
-            continue
-
-        values = {"harris": 0, "other": 0, "total": 0, "trump": 0}
-        for option in item.get("ballotOptions", []):
-            votes = int_text(option.get("voteCount"))
-            bucket = _candidate_bucket(str(option.get("name") or ""), dem_needles, rep_needles)
-            if bucket == "dem":
-                values["harris"] += votes
-            elif bucket == "rep":
-                values["trump"] += votes
-            else:
-                values["other"] += votes
-            values["total"] += votes
-
-            for precinct in option.get("precinctResults") or []:
-                precinct_id = str(precinct.get("id") or "").strip()
-                precinct_name = str(precinct.get("name") or precinct_id).strip()
-                if not precinct_name:
-                    continue
-                precinct_key = (county, precinct_id, precinct_name)
-                precinct_values = precincts.setdefault(
-                    precinct_key,
-                    {"harris": 0, "other": 0, "total": 0, "trump": 0},
-                )
-                precinct_votes = int_text(precinct.get("voteCount"))
+        if item:
+            values = {"harris": 0, "other": 0, "total": 0, "trump": 0}
+            for option in item.get("ballotOptions", []):
+                votes = int_text(option.get("voteCount"))
+                bucket = _candidate_bucket(str(option.get("name") or ""), dem_needles, rep_needles)
                 if bucket == "dem":
-                    precinct_values["harris"] += precinct_votes
+                    values["harris"] += votes
                 elif bucket == "rep":
-                    precinct_values["trump"] += precinct_votes
+                    values["trump"] += votes
                 else:
-                    precinct_values["other"] += precinct_votes
-                precinct_values["total"] += precinct_votes
+                    values["other"] += votes
+                values["total"] += votes
 
-        if values["total"]:
-            result_rows.append(
-                {
-                    "jurisdictionName": county,
-                    "jurisdictionCode": county.upper().replace(" COUNTY", ""),
-                    "level": "county",
-                    "votes": {
-                        "Trump": values["trump"],
-                        "Harris": values["harris"],
-                        "Other": values["other"],
-                    },
-                    "totalVotes": values["total"],
-                    "margin": values["trump"] - values["harris"],
-                    "marginPct": pct(values["trump"] - values["harris"], values["total"]),
-                    "sourceId": source.id,
-                }
-            )
+                for precinct in option.get("precinctResults") or []:
+                    precinct_id = str(precinct.get("id") or "").strip()
+                    precinct_name = str(precinct.get("name") or precinct_id).strip()
+                    if not precinct_name:
+                        continue
+                    precinct_key = (county, precinct_id, precinct_name)
+                    precinct_values = precincts.setdefault(
+                        precinct_key,
+                        {"harris": 0, "other": 0, "total": 0, "trump": 0},
+                    )
+                    precinct_votes = int_text(precinct.get("voteCount"))
+                    if bucket == "dem":
+                        precinct_values["harris"] += precinct_votes
+                    elif bucket == "rep":
+                        precinct_values["trump"] += precinct_votes
+                    else:
+                        precinct_values["other"] += precinct_votes
+                    precinct_values["total"] += precinct_votes
+
+            if values["total"]:
+                result_rows.append(
+                    {
+                        "jurisdictionName": county,
+                        "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                        "level": "county",
+                        "votes": {
+                            "Trump": values["trump"],
+                            "Harris": values["harris"],
+                            "Other": values["other"],
+                        },
+                        "totalVotes": values["total"],
+                        "margin": values["trump"] - values["harris"],
+                        "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+                        "sourceId": source.id,
+                    }
+                )
+
+        for comparison_item in local.get("ballotItems", []):
+            comparison_name = str(comparison_item.get("name") or "").strip()
+            if not comparison_pattern.search(comparison_name):
+                continue
+            for option in comparison_item.get("ballotOptions") or []:
+                bucket = _party_bucket(option.get("politicalParty"), option.get("name"))
+                if bucket is None:
+                    continue
+                for precinct in option.get("precinctResults") or []:
+                    precinct_id = str(precinct.get("id") or "").strip()
+                    precinct_name = str(precinct.get("name") or precinct_id).strip()
+                    if not precinct_name:
+                        continue
+                    precinct_key = (county, precinct_id, precinct_name)
+                    comparison = comparison_by_key.setdefault(
+                        precinct_key,
+                        {
+                            "dem": 0,
+                            "demPresent": False,
+                            "other": 0,
+                            "rep": 0,
+                            "repPresent": False,
+                            "total": 0,
+                            "contests": set(),
+                        },
+                    )
+                    precinct_votes = int_text(precinct.get("voteCount"))
+                    if bucket == "dem":
+                        comparison["dem"] += precinct_votes
+                        comparison["demPresent"] = True
+                    elif bucket == "rep":
+                        comparison["rep"] += precinct_votes
+                        comparison["repPresent"] = True
+                    else:
+                        comparison["other"] += precinct_votes
+                    comparison["total"] += precinct_votes
+                    comparison["contests"].add(comparison_name)
 
     review_rows: list[dict[str, Any]] = []
     zero_total_review_rows = 0
+    comparison_rows = 0
+    comparable_rows = 0
+    one_sided_comparison_rows = 0
+    multi_district_comparison_rows = 0
     for (county, precinct_id, precinct_name), values in sorted(precincts.items()):
         total = values["total"]
         if not total:
             zero_total_review_rows += 1
             continue
+        comparison = comparison_by_key.get((county, precinct_id, precinct_name))
+        contests = sorted(comparison["contests"]) if comparison else []
+        has_comparison = bool(comparison and comparison["total"])
+        has_multi_district_comparison = bool(has_comparison and len(contests) > 1)
+        has_comparable_house = bool(
+            has_comparison
+            and comparison
+            and comparison["demPresent"]
+            and comparison["repPresent"]
+            and not has_multi_district_comparison
+        )
+        if has_comparison:
+            comparison_rows += 1
+        if has_comparable_house:
+            comparable_rows += 1
+        elif has_multi_district_comparison:
+            multi_district_comparison_rows += 1
+        elif has_comparison:
+            one_sided_comparison_rows += 1
         review_rows.append(
             {
                 "county": county,
@@ -848,9 +926,16 @@ def _georgia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
                 "trump": values["trump"],
                 "harrisShare": pct(values["harris"], total),
                 "trumpShare": pct(values["trump"], total),
-                "demDropoff": 0,
-                "repDropoff": 0,
-                "coverageMode": "voteShareOnly",
+                "demDropoff": pct(values["harris"] - comparison["dem"], total) if has_comparable_house and comparison else 0,
+                "repDropoff": pct(values["trump"] - comparison["rep"], total) if has_comparable_house and comparison else 0,
+                "coverageMode": "presidentVsUSHouse" if has_comparable_house else "multiDistrictHouseComparison" if has_multi_district_comparison else "oneSidedHouseComparison" if has_comparison else "voteShareOnly",
+                "comparisonContest": contests[0] if len(contests) == 1 else comparison_label if has_comparison else "",
+                "comparisonContests": contests,
+                "comparisonDemVotes": comparison["dem"] if comparison else 0,
+                "comparisonDemCandidatePresent": bool(comparison and comparison["demPresent"]),
+                "comparisonRepVotes": comparison["rep"] if comparison else 0,
+                "comparisonRepCandidatePresent": bool(comparison and comparison["repPresent"]),
+                "comparisonOtherVotes": comparison["other"] if comparison else 0,
                 "sourceId": source.id,
             }
         )
@@ -875,12 +960,16 @@ def _georgia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
         "nativeReviewRows": len(review_rows),
         "nativeReviewZeroTotalRowsOmitted": zero_total_review_rows,
         "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparableComparisonRows": comparable_rows,
+        "nativeOneSidedComparisonRows": one_sided_comparison_rows,
+        "nativeMultiDistrictComparisonRows": multi_district_comparison_rows,
+        "nativeComparisonContest": comparison_label,
         "nativeStatewideCertifiedVoteGap": local_values["total"] - statewide_values["total"],
         "nativeStatewideCertifiedVotes": statewide_values["total"],
         **turnout_metrics,
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
-
 
 ILLINOIS_NON_CANDIDATE_ROWS = {"Over Votes", "Under Votes", "Blank Ballots"}
 
