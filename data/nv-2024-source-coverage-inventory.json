@@ -1,0 +1,232 @@
+{
+  "state": "NV",
+  "stateName": "Nevada",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "purpose": "State-scoped coverage inventory for Nevada 2024 result, review, turnout, CVR, audit, L&A, tabulator-log, custody, equipment, and incident/correction source paths. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "status": "partial_clark_washoe_humboldt_precinct_review_loaded",
+  "authorityPriority": "Official state and county election sources first; secondary sources are context only and caveated.",
+  "loadedArtifacts": [
+    {
+      "id": "nv-2024-silver-state-president",
+      "sourceAuthority": "Nevada Secretary of State",
+      "sourceUrl": "https://web.archive.org/web/20250911041627/https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+      "localPath": "data/nv-2024-statewide-general-president.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "nevadaStatewideGeneralCsv via etl/state-configs/nv.json certifiedResults",
+      "expectedCounts": {
+        "rows": 17,
+        "stateTotal": 1484840,
+        "trump": 751205,
+        "harris": 705197,
+        "other": 28438
+      },
+      "caveats": [
+        "The live NVSOS/Silver State page returned an Incapsula challenge from this environment on 2026-07-01.",
+        "The archived official page contains county columns, but no precinct, CSV, Excel, export, registered-voter, or turnout markers were found in the page markup checked on 2026-07-01."
+      ],
+      "confidence": "loaded_county_certified_from_archived_official_page"
+    },
+    {
+      "id": "nv-2024-silver-state-senate",
+      "sourceAuthority": "Nevada Secretary of State",
+      "sourceUrl": "https://web.archive.org/web/20250911041627/https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+      "localPath": "data/nv-2024-statewide-general-senate.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "countyComparisonCsv via etl/state-configs/nv.json source nv-2024-silver-state-senate",
+      "expectedCounts": {
+        "rows": 17,
+        "comparisonContest": "United States Senator"
+      },
+      "caveats": [
+        "County U.S. Senate rows are same county grain as the certified presidential rows, but they are not local/precinct reporting-unit review rows."
+      ],
+      "confidence": "loaded_county_comparison"
+    },
+    {
+      "id": "nv-clark-2024-cvr-precinct-review",
+      "sourceAuthority": "Clark County Election Department",
+      "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+      "localPath": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+      "electionYear": 2024,
+      "reportingGrain": "precinct_portion",
+      "parserNormalizationPath": "scripts/normalize-nv-clark-cvr.py to localComparisonCsv",
+      "expectedCounts": {
+        "reviewRows": 749
+      },
+      "caveats": [
+        "Normalized precinct aggregate only; the raw Clark County CVR ZIP is not committed.",
+        "County CVR aggregates can differ from certified county totals and are review context rather than replacement certified totals."
+      ],
+      "confidence": "loaded_official_county_cvr_precinct_review"
+    },
+    {
+      "id": "nv-washoe-2024-cvr-precinct-review",
+      "sourceAuthority": "Washoe County Registrar of Voters",
+      "sourceUrl": "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
+      "localPath": "data/nv-washoe-2024-general-cvr-precinct-review.csv",
+      "electionYear": 2024,
+      "reportingGrain": "precinct_portion",
+      "parserNormalizationPath": "scripts/normalize-nv-clark-cvr.py to localComparisonCsv",
+      "expectedCounts": {
+        "reviewRows": 287
+      },
+      "caveats": [
+        "Normalized precinct aggregate only; the raw Washoe County CVR CSV is not committed.",
+        "County CVR aggregates can differ from certified county totals and are review context rather than replacement certified totals."
+      ],
+      "confidence": "loaded_official_county_cvr_precinct_review"
+    },
+    {
+      "id": "nv-humboldt-2024-cvr-precinct-review",
+      "sourceAuthority": "Humboldt County Clerk",
+      "sourceUrl": "https://www.humboldtcountynv.gov/DocumentCenter/View/7893",
+      "localPath": "data/nv-humboldt-2024-general-cvr-precinct-review.csv",
+      "sourceLocalPath": "data/nv-humboldt-2024-general-cvr.csv",
+      "electionYear": 2024,
+      "reportingGrain": "precinct_portion",
+      "parserNormalizationPath": "scripts/normalize-nv-clark-cvr.py to localComparisonCsv",
+      "expectedCounts": {
+        "reviewRows": 21,
+        "presidentialVotes": 8030,
+        "comparisonVotes": 7968,
+        "cvrRows": 8037
+      },
+      "caveats": [
+        "Official county CVR is normalized to precinct President-versus-U.S. Senate review rows; it is not a replacement for certified county totals.",
+        "The official Humboldt page also links Statement of Votes Cast Excel/PDF and canvass/abstract files, but this pass only normalized the CVR because it matched the existing Nevada CVR layout."
+      ],
+      "confidence": "loaded_official_county_cvr_precinct_review"
+    },
+    {
+      "id": "nv-2024-eac-turnout",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localPath": "data/eac-2024-state-turnout/nv-2024-eac-turnout.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/nv.json turnout",
+      "expectedCounts": {
+        "rows": 17,
+        "ballotsCast": 1486297,
+        "registeredVoters": 2256275
+      },
+      "caveats": [
+        "National EAC fallback turnout rows remain configured because a state-native Nevada county turnout denominator artifact was not collected in this pass.",
+        "Live Nevada SOS turnout and registration pages returned Incapsula challenge pages or empty responses from this environment on 2026-07-01."
+      ],
+      "confidence": "loaded_official_federal_fallback"
+    }
+  ],
+  "remainingLocalReviewGaps": {
+    "missingJurisdictionCount": 14,
+    "jurisdictions": [
+      "Carson City",
+      "Churchill County",
+      "Douglas County",
+      "Elko County",
+      "Esmeralda County",
+      "Eureka County",
+      "Lander County",
+      "Lincoln County",
+      "Lyon County",
+      "Mineral County",
+      "Nye County",
+      "Pershing County",
+      "Storey County",
+      "White Pine County"
+    ],
+    "neededArtifact": "Official precinct/local reporting-unit President and U.S. Senate rows or official CVR/SOV exports that can be normalized to the same local grain.",
+    "sourceSideBlocker": "No single statewide Nevada precinct/local President plus U.S. Senate export was identified. Live NVSOS/Silver State pages are script-blocked from this environment. County-by-county official exports or public-records productions are still needed for the remaining 14 jurisdictions."
+  },
+  "sourceChecks": [
+    {
+      "sourceAuthority": "Nevada Secretary of State",
+      "sourceUrl": "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+      "status": "blocked_live_access",
+      "checkedAt": "2026-07-01",
+      "finding": "Returned Incapsula challenge page from scripted access."
+    },
+    {
+      "sourceAuthority": "Nevada Secretary of State archived result page",
+      "sourceUrl": "https://web.archive.org/web/20250911041627/https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+      "status": "loaded_county_results_only",
+      "checkedAt": "2026-07-01",
+      "finding": "Archived page exposes official county result tables. Markup check found no precinct, CSV, Excel, export, registered-voter, or turnout markers."
+    },
+    {
+      "sourceAuthority": "Humboldt County Clerk",
+      "sourceUrl": "https://www.humboldtcountynv.gov/317/Elections",
+      "status": "official_local_exports_found",
+      "checkedAt": "2026-07-01",
+      "finding": "Official page links 2024 General canvass/abstract, summary, Statement of Votes Cast Excel/PDF, and CVR artifacts. CVR artifact normalized in this pass."
+    },
+    {
+      "sourceAuthority": "Douglas County Clerk-Treasurer",
+      "sourceUrl": "https://cltr.douglascountynv.gov/elections/results-and-resources",
+      "status": "needs_follow_up",
+      "checkedAt": "2026-07-01",
+      "finding": "Official result/resource page was reachable, but no parser-ready 2024 President plus U.S. Senate local export was confirmed in this pass."
+    },
+    {
+      "sourceAuthority": "Nevada Secretary of State turnout and registration pages",
+      "sourceUrls": [
+        "https://www.nvsos.gov/sos/elections/election-information/voter-turnout-statistics",
+        "https://www.nvsos.gov/sos/elections/election-information/voter-registration-statistics",
+        "https://www.nvsos.gov/sos/elections/voters/voter-registration-statistics",
+        "https://www.nvsos.gov/sos/elections/election-results/2024-election-results"
+      ],
+      "status": "blocked_live_access",
+      "checkedAt": "2026-07-01",
+      "finding": "Live pages returned Incapsula challenge pages, zero-length content, or transport errors from scripted access; no state-native turnout denominator artifact was collected."
+    }
+  ],
+  "administrationContext": {
+    "equipment": {
+      "status": "loaded",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/32",
+      "localPath": "data/nv-2024-equipment-context.csv",
+      "reportingGrain": "county",
+      "caveat": "Jurisdiction-level election-administration context only; not a vote, turnout, audit, or incident dataset."
+    },
+    "cvr": {
+      "status": "partial",
+      "loadedJurisdictions": [
+        "Clark County",
+        "Washoe County",
+        "Humboldt County"
+      ],
+      "missingJurisdictionCount": 14,
+      "caveat": "Loaded CVR-derived rows are normalized precinct aggregates for review context. Other counties still need official CVR availability checks or records-request productions."
+    },
+    "audit": {
+      "status": "needs_data",
+      "caveat": "No normalized 2024 Nevada post-election audit selection, scope, discrepancy, or outcome artifact is loaded. Request Secretary of State and county audit records before treating audit context as loaded."
+    },
+    "logicAccuracy": {
+      "status": "needs_data",
+      "caveat": "No normalized 2024 Nevada L&A test deck, notice, result, or machine acceptance artifact is loaded."
+    },
+    "tabulatorLogs": {
+      "status": "needs_data",
+      "caveat": "No normalized Nevada tabulator, EMS, adjudication, upload, or removable-media log artifact is loaded."
+    },
+    "custody": {
+      "status": "needs_data",
+      "caveat": "No normalized chain-of-custody artifact for ballots, equipment, or media is loaded."
+    },
+    "incidentsCorrections": {
+      "status": "needs_data",
+      "caveat": "No normalized 2024 Nevada incident, correction, recount, or litigation dataset is loaded."
+    }
+  },
+  "nextActions": [
+    "Collect or request official precinct/local President and U.S. Senate rows, CVRs, or SOV exports for the remaining 14 Nevada jurisdictions.",
+    "Prioritize reachable official county pages with result/resource exports before records requests.",
+    "Collect a state-native county or precinct turnout denominator artifact if Nevada publishes one outside the blocked live SOS pages.",
+    "Inventory and normalize audit, CVR availability, tabulator-log, L&A, custody, incident, correction, recount, and litigation artifacts separately from vote-result rows."
+  ]
+}

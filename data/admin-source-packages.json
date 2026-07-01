@@ -1091,27 +1091,30 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "Nevada 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Nevada 2024 post-election audit artifacts have not been normalized. The NV source coverage inventory records audit selection/scope/outcome records as still needing Secretary of State or county collection."
       },
       "cvr": {
         "status": "partial",
-        "why": "Clark County and Washoe County 2024 General CVRs are publicly linked by official county elections sites and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 15 Nevada jurisdictions is still not inventoried.",
+        "why": "Clark County, Washoe County, and Humboldt County 2024 General CVRs are publicly linked by official county elections sites and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 14 Nevada jurisdictions is still not inventoried.",
         "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
         "sourceUrls": [
           "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
-          "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
+          "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
+          "https://www.humboldtcountynv.gov/DocumentCenter/View/7893"
         ],
         "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
         "localArtifacts": [
           "data/nv-clark-2024-general-cvr-precinct-review.csv",
-          "data/nv-washoe-2024-general-cvr-precinct-review.csv"
+          "data/nv-washoe-2024-general-cvr-precinct-review.csv",
+          "data/nv-humboldt-2024-general-cvr-precinct-review.csv"
         ],
         "parser": "normalize-nv-clark-cvr.py",
-        "caveat": "Normalized precinct aggregate only; raw county CVR exports are not committed. County CVR totals may differ from certified county totals."
+        "sourceInventoryArtifact": "data/nv-2024-source-coverage-inventory.json",
+        "caveat": "Normalized precinct aggregate only. The raw Humboldt County CVR is committed, while raw Clark and Washoe CVR exports are not. County CVR totals may differ from certified county totals."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "Nevada 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Nevada 2024 incident, correction, recount, litigation, L&A, tabulator-log, and custody artifacts have not been normalized. The NV source coverage inventory records these as records-request or county/source follow-up items."
       }
     },
     {

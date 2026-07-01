@@ -429,23 +429,24 @@
         "reportingGrain": "precinct",
         "parserStatus": "native partial subcounty review package loaded",
         "resultRows": 17,
-        "reviewRows": 1036,
+        "reviewRows": 1057,
         "turnoutRows": 17,
         "comparisonContest": "United States Senator",
-        "reviewWarning": "Nevada review rows now include Clark County and Washoe County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and county CVR totals may differ from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
+        "reviewWarning": "Nevada review rows now include Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and county CVR totals may differ from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
         "validationPassed": true
       },
       "indicatorCoverage": {
-        "reviewRows": 1036,
-        "flaggedCountyJurisdictions": 1,
-        "flaggedAreas": 1,
-        "indicatorRows": 1,
-        "countyIndicatorRows": 1,
+        "reviewRows": 1057,
+        "flaggedCountyJurisdictions": 3,
+        "flaggedAreas": 3,
+        "indicatorRows": 4,
+        "countyIndicatorRows": 4,
         "byLevel": {
-          "county": 1
+          "county": 4
         },
         "byType": {
-          "average_down_ballot_difference": 1
+          "average_down_ballot_difference": 3,
+          "vote_share_pattern": 1
         }
       },
       "turnoutContext": {
@@ -463,7 +464,7 @@
           "authority": "U.S. Election Assistance Commission"
         },
         "registrationSource": null,
-        "notes": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected."
+        "notes": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected. A July 1, 2026 source pass found that the archived NVSOS statewide result page lacks turnout/registration markers and live NVSOS turnout/registration pages returned Incapsula challenge pages or empty responses from scripted access."
       },
       "administrationContext": {
         "equipment": {
@@ -484,11 +485,11 @@
         },
         "cvr": {
           "status": "partial",
-          "why": "Clark County and Washoe County 2024 General CVRs are publicly linked by official county elections sites and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 15 Nevada jurisdictions is still not inventoried.",
-          "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
-          "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
+          "why": "Clark County, Washoe County, and Humboldt County 2024 General CVRs are publicly linked by official county elections sites and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 14 Nevada jurisdictions is still not inventoried.",
+          "sourceUrl": "https://www.humboldtcountynv.gov/DocumentCenter/View/7893",
+          "localArtifact": "data/nv-humboldt-2024-general-cvr-precinct-review.csv",
           "parser": "normalize-nv-clark-cvr.py",
-          "caveat": "Normalized precinct aggregate only; raw county CVR exports are not committed. County CVR totals may differ from certified county totals."
+          "caveat": "Normalized precinct aggregates only; the raw Humboldt County CVR is committed, while raw Clark and Washoe county CVR exports are not committed. County CVR totals may differ from certified county totals."
         },
         "incidents": {
           "status": "needs_data",
@@ -503,25 +504,27 @@
         "parserStatus": "native partial subcounty review package loaded",
         "manualReviewBurden": "medium",
         "confidence": "loaded",
-        "nextAction": "Collect official local result exports or records-request productions for the 15 non-Clark/non-Washoe Nevada jurisdictions and a state-native turnout denominator.",
+        "nextAction": "Collect official local result exports or records-request productions for the 14 non-Clark/non-Washoe/non-Humboldt Nevada jurisdictions, a state-native turnout denominator, and administration evidence artifacts identified in data/nv-2024-source-coverage-inventory.json.",
         "sourceUrls": [
           "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
           "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
           "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
           "https://www.washoecounty.gov/voters/results/archivedresults.php",
-          "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
+          "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
+          "https://www.humboldtcountynv.gov/317/Elections",
+          "https://www.humboldtcountynv.gov/DocumentCenter/View/7893"
         ]
       },
       "parityGaps": [
         {
           "id": "statewide_subcounty_review_coverage",
           "status": "partial",
-          "detail": "Clark County and Washoe County official CVR precinct rows are loaded; the other 15 Nevada jurisdictions remain county-only until local exports or records-request productions are collected."
+          "detail": "Clark County, Washoe County, and Humboldt County official CVR precinct rows are loaded; the other 14 Nevada jurisdictions remain county-only until local exports or records-request productions are collected."
         },
         {
           "id": "state_native_turnout_denominator",
           "status": "fallback_or_candidate",
-          "detail": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected."
+          "detail": "Nevada turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected. A July 1, 2026 source pass found that the archived NVSOS statewide result page lacks turnout/registration markers and live NVSOS turnout/registration pages returned Incapsula challenge pages or empty responses from scripted access."
         },
         {
           "id": "audit_context",
@@ -549,7 +552,7 @@
           "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
         }
       ],
-      "nextAction": "Add Wisconsin-style audit/CVR/incident inventories and a public-source evidence probe; keep current native flags visible while context catches up."
+      "nextAction": "Add official local exports for the remaining 14 Nevada jurisdictions and collect state-native turnout plus audit/CVR/L&A/tabulator-log/custody/incident evidence; keep current native flags visible while context catches up."
     },
     {
       "state": "NC",
