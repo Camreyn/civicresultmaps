@@ -531,7 +531,7 @@
       "state": "KY",
       "stateName": "Kentucky",
       "electionYear": 2024,
-      "status": "loaded",
+      "status": "partial",
       "priority": "standard",
       "equipment": {
         "status": "loaded",
@@ -546,16 +546,16 @@
         "expectedJurisdictions": 120
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Kentucky 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "why": "Kentucky 2024 post-election audit source paths are documented in data/ky-2024-data-coverage-inventory.json, but no normalized audit selection/outcome rows are loaded. Use Kentucky State Board, county boards, county clerks, and official court/board records before adding row-level audit context."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Kentucky 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "blocked",
+        "why": "No statewide Kentucky 2024 CVR dataset or county-by-county CVR availability statement is loaded. data/ky-2024-data-coverage-inventory.json documents county-clerk/county-board request paths and requires ballot-secrecy/redaction caveats before normalization."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Kentucky 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "why": "Kentucky incident, correction, recount/recanvass, and litigation request paths are documented in data/ky-2024-data-coverage-inventory.json, but no normalized row package is loaded."
       }
     },
     {

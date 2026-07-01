@@ -17,6 +17,28 @@
       "status": "loaded"
     },
     {
+      "id": "ky-2024-state-turnout-pdf-lead",
+      "category": "Official 2024 general election turnout PDF lead",
+      "url": "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+      "localFile": "data/ky-2024-general-turnout-by-county.pdf; data/ky-2024-general-turnout-by-precinct.pdf",
+      "parser": "kentuckyTurnoutPdfCandidate",
+      "authority": "Kentucky State Board of Elections",
+      "timestampBasis": "Kentucky State Board of Elections 2024 General Voter Turnout by County and by Precinct PDFs dated January 6, 2025.",
+      "confidence": "Candidate state-native turnout lead only. The State Board turnout page warns turnout reports are unofficial and may differ from election results because they are run after voter-registration rolls reopen; county-clerk official documentation or a reconciliation parser is needed before replacing EAC fallback rows.",
+      "status": "candidate"
+    },
+    {
+      "id": "ky-2024-general-registration-pdf-lead",
+      "category": "Official 2024 general election registration denominator PDF lead",
+      "url": "https://elect.ky.gov/Resources/Pages/Registration-Statistics.aspx",
+      "localFile": "data/ky-2024-general-registration-by-county.pdf; data/ky-2024-general-registration-by-precinct.pdf",
+      "parser": "kentuckyRegistrationPdfCandidate",
+      "authority": "Kentucky State Board of Elections",
+      "timestampBasis": "Kentucky State Board of Elections 2024 General Registration Statistics as of October 11, 2024.",
+      "confidence": "Candidate denominator lead only. Registration PDFs provide county and precinct registered-voter counts, but they are not a complete turnout replacement until paired and reconciled with ballots-cast/voting rows.",
+      "status": "candidate"
+    },
+    {
       "id": "ky-2024-general-recap-sheets-page",
       "category": "Official 2024 general election county recap sheet index",
       "url": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
@@ -61,6 +83,17 @@
       "status": "loaded"
     },
     {
+      "id": "ky-2024-equipment-context",
+      "category": "County equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/21",
+      "localFile": "data/verifiedvoting-ky-2024-equipment.json; data/ky-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipment",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verified Voting Verifier 2024 Kentucky county equipment context collected for administration-source inventory.",
+      "confidence": "Secondary jurisdiction-level election-administration context only. Do not use as vote, turnout, audit, incident, or precinct-uniformity evidence.",
+      "status": "loaded"
+    },
+    {
       "id": "ky-historical-presidential-official-county",
       "category": "Official historical county presidential results",
       "url": "https://elect.ky.gov/results/Pages/default.aspx",
@@ -70,6 +103,17 @@
       "timestampBasis": "Official Kentucky general election result PDFs for 2012, 2016, and 2020 downloaded from the Kentucky election-results archive by scripts/collect-ky-historical-baseline.mjs.",
       "confidence": "Official historical county presidential baseline rows used for context only. The script retains source PDFs in data/ky-historical-official-results and validates statewide Democratic, Republican, and total-vote sums against the PDF candidate total rows.",
       "status": "loaded"
+    },
+    {
+      "id": "ky-2024-data-coverage-inventory",
+      "category": "Kentucky 2024 data coverage and administration source inventory",
+      "url": "https://elect.ky.gov/results/Pages/default.aspx",
+      "localFile": "data/ky-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventory",
+      "authority": "Kentucky State Board of Elections; Kentucky county clerks; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting Verifier",
+      "timestampBasis": "State-scoped source inventory checked July 1, 2026.",
+      "confidence": "Inventory only. Documents loaded artifacts, official turnout and registration leads, county-clerk request paths, precinct geometry gaps, and audit/recount/CVR/incident/correction blockers.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -78,7 +122,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Kentucky turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Kentucky turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until the collected Kentucky State Board turnout and registration PDF leads are parsed, reconciled, and caveated against county-clerk official documentation.",
     "warningRequired": false,
     "expected": {
       "rowCount": 120,
@@ -89,7 +133,7 @@
   "expected": {
     "jurisdictions": 120,
     "resultRows": 120,
-    "sources": 6,
+    "sources": 10,
     "stateTotal": 2036111,
     "trump": 1315523,
     "harris": 691021,

@@ -646,15 +646,54 @@
       "localFile": "data/eac-2024-state-turnout/ky-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 120,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active validated ETL turnout source. Kentucky State Board 2024 general turnout and registration PDFs are now collected as candidate state-native leads, but the State Board turnout page says those turnout reports are unofficial and can differ from election results after voter rolls reopen.",
+      "nextAction": "Build a Kentucky turnout/registration PDF normalizer and reconciliation report before replacing EAC fallback rows; reconcile State Board county turnout total 2,086,320 against EAC fallback ballots cast 2,086,090 and retain county-clerk official documentation caveats.",
       "coverage": {
         "jurisdictionRows": 120,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ky-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 3548136,
         "ballotsCast": 2086090,
         "warningRows": 0
-      }
+      },
+      "stateNativeLeads": [
+        {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Voter Turnout by County",
+          "sourceUrl": "https://elect.ky.gov/Resources/Documents/2024G%20Voter%20Turnout%20by%20County.pdf",
+          "localFile": "data/ky-2024-general-turnout-by-county.pdf",
+          "reportingLevel": "county",
+          "ballotsCastField": "Number voting",
+          "denominatorField": "Total Reg.",
+          "expectedRows": 120,
+          "statewideBallotsCast": 2086320,
+          "statewideRegisteredVoters": 3548136,
+          "status": "candidate"
+        },
+        {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Voter Turnout by Precinct",
+          "sourceUrl": "https://elect.ky.gov/Resources/Documents/2024G%20Voter%20Turnout%20by%20Precinct.pdf",
+          "localFile": "data/ky-2024-general-turnout-by-precinct.pdf",
+          "reportingLevel": "precinct",
+          "ballotsCastField": "Number voting",
+          "denominatorField": "Total Reg.",
+          "status": "candidate"
+        },
+        {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Registration Statistics by County",
+          "sourceUrl": "https://elect.ky.gov/Resources/Documents/voterstatscounty-November%20General%202024.pdf",
+          "localFile": "data/ky-2024-general-registration-by-county.pdf",
+          "reportingLevel": "county",
+          "denominatorField": "Registered",
+          "status": "candidate"
+        },
+        {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Registration Statistics by Precinct",
+          "sourceUrl": "https://elect.ky.gov/Resources/Documents/voterstatsprecinct-November%20General%202024.pdf",
+          "localFile": "data/ky-2024-general-registration-by-precinct.pdf",
+          "reportingLevel": "precinct",
+          "denominatorField": "Registered",
+          "status": "candidate"
+        }
+      ]
     },
     {
       "state": "LA",

@@ -1027,22 +1027,70 @@
       "state": "KY",
       "name": "Kentucky",
       "priority": 3,
-      "currentStatus": "official_precinct_review_package_collected_historical_loaded",
+      "currentStatus": "official_precinct_review_package_collected_historical_loaded_state_turnout_leads_collected_admin_inventory_documented",
       "officialSourcePages": [
         "https://elect.ky.gov/results/Pages/default.aspx",
         "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+        "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+        "https://elect.ky.gov/Resources/Pages/Registration-Statistics.aspx",
+        "https://elect.ky.gov/Resources/Pages/Voting-Systems.aspx",
+        "https://elect.ky.gov/Resources/Pages/County-Election-Plans.aspx",
+        "https://elect.ky.gov/About-Us/Pages/County-Clerks.aspx",
         "https://elect.ky.gov/SiteCollectionDocuments/Election%20Results/2010-2019/2012/2012genresults.pdf",
         "https://elect.ky.gov/results/2010-2019/Documents/2016%20General%20Election%20Results.pdf",
         "https://elect.ky.gov/results/2020-2029/Documents/2020%20General%20Election%20Results.pdf"
       ],
       "requiredArtifacts": [
-        "precinct boundary geometry if subcounty map overlays are required",
-        "state-native turnout denominator artifact if replacing EAC fallback turnout",
-        "post-election audit, recount, CVR availability, incident, correction, litigation, or equipment-administration records beyond the loaded equipment context"
+        "Kentucky turnout/registration PDF parser plus reconciliation before replacing EAC fallback turnout",
+        "county-clerk official turnout documentation if source-native turnout rows are promoted",
+        "precinct boundary geometry or publishable reporting-unit crosswalk if subcounty map overlays are required",
+        "post-election audit selection/outcome records, recount/recanvass records, CVR availability/request paths, incident/correction records, and litigation records beyond the loaded equipment context"
       ],
       "preferredComparisonContest": "U.S. House by district; loaded as precinct-level President-versus-U.S.-House review rows where the county recap PDF includes both contests.",
-      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 120 county result rows and 3,067 precinct review rows; historicalPresidentialCsv loaded for 360 official 2012/2016/2020 county baseline rows; Elliott County uses a manual transcription from rendered official PDF pages because its 2024 recap PDF is image-only.",
-      "blocker": "Kentucky has official 2024 county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page, and official 2012/2016/2020 county historical presidential baselines are now generated from Kentucky election-results PDFs. Remaining gaps are precinct boundary geometry, state-native turnout denominators beyond EAC fallback, audit/recount/CVR/incident/correction inventories, and six counties that remain county-only/no precinct-review from extracted 2024 recap text."
+      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 120 county result rows and 3,067 precinct review rows; historicalPresidentialCsv loaded for 360 official 2012/2016/2020 county baseline rows; EAC fallback turnout remains active. Kentucky State Board 2024 turnout and registration PDFs are now committed as candidate leads, but a parser/reconciliation report is needed before replacing EAC fallback rows because the State Board turnout page says those turnout statistics are unofficial.",
+      "blocker": "Kentucky has official 2024 county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page, official 2012/2016/2020 county historical presidential baselines generated from Kentucky election-results PDFs, county geometry, and loaded county equipment context. Wave 7 collected State Board 2024 turnout and registration PDFs as state-native leads and documented county-clerk/request paths in data/ky-2024-data-coverage-inventory.json. Remaining blockers are a turnout/registration PDF parser and reconciliation, precinct boundary geometry, normalized audit/recount/CVR/incident/correction/litigation records, and six counties that remain county-only/no precinct-review from extracted 2024 recap text.",
+      "availableArtifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Recap Sheets",
+          "sourceUrl": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+          "localFile": "data/ky-2024-general-recap-sheets; data/ky-2024-general-recap-text",
+          "parserHint": "kentuckyGeneralRecapTextDirectory extracts county President totals and precinct President rows from official county recap text artifacts."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Recap Sheets",
+          "sourceUrl": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+          "localFile": "data/ky-2024-general-recap-text",
+          "level": "precinct",
+          "comparisonContest": "U.S. House by district",
+          "parserHint": "Compare President rows with United States Representative rows at county/precinct grain where both contests are present; keep one-sided and county-only caveats visible."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback plus Kentucky State Board turnout/registration PDF leads",
+          "sourceUrl": "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+          "localFile": "data/eac-2024-state-turnout/ky-2024-eac-turnout.csv; data/ky-2024-general-turnout-by-county.pdf; data/ky-2024-general-turnout-by-precinct.pdf; data/ky-2024-general-registration-by-county.pdf; data/ky-2024-general-registration-by-precinct.pdf",
+          "level": "county_and_precinct_lead",
+          "denominator": "EAC fallback currently active; Kentucky State Board registration PDFs collected as candidate denominators",
+          "parserHint": "Current ETL uses eacTurnoutCsv. A future Kentucky PDF normalizer should reconcile State Board county turnout total 2,086,320 against EAC fallback ballots cast 2,086,090 and retain the State Board unofficial-turnout caveat."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2721%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ky-counties.geojson",
+          "parserHint": "County map joins only; precinct boundaries are not included."
+        },
+        "adminSourceInventory": {
+          "sourceTitle": "Kentucky 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://elect.ky.gov/results/Pages/default.aspx",
+          "localFile": "data/ky-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded artifacts, State Board turnout/registration leads, county-clerk request paths, precinct geometry gaps, and audit/recount/CVR/incident/correction blockers."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Kentucky 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/21",
+          "localFile": "data/verifiedvoting-ky-2024-equipment.json; data/ky-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or precinct-uniformity proof."
+        }
+      }
     },
     {
       "state": "MS",
