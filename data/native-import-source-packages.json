@@ -930,7 +930,7 @@
       "state": "IN",
       "name": "Indiana",
       "priority": 1,
-      "currentStatus": "official_county_results_turnout_loaded_supplemental_precinct_review_official_precinct_rows_missing",
+      "currentStatus": "official_county_results_turnout_2016_2020_historical_loaded_supplemental_precinct_review_official_precinct_rows_missing",
       "officialSourcePages": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
@@ -940,22 +940,25 @@
         "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
         "https://www.in.gov/sos/elections/election-commission/election-results/",
         "https://www.in.gov/sos/elections/statistics-and-maps/",
-        "https://www.in.gov/sos/elections/indiana-recount-commission/"
+        "https://www.in.gov/sos/elections/indiana-recount-commission/",
+        "https://enr.indianavoters.in.gov/archive/2016General/data/OffCatC_1767_A.json",
+        "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json"
       ],
       "requiredArtifacts": [
         "official precinct-level or county-subdivision result rows for President, if Indiana publishes or provides them",
-        "official precinct-level or county-subdivision result rows for U.S. Senate at the same reporting-unit grain, if Indiana publishes or provides them",
+        "official same-grain U.S. Senate rows for advisory comparison if President rows are available below county",
         "precinct or lower-level turnout and registered-voter denominator rows if same-grain turnout screening is required",
         "precinct or local reporting-unit boundary geometry, if subcounty map overlays are required",
         "audit, recount, CVR availability, incident, correction, and certification records for 2024 administration context",
-        "normalized 2020, 2016, and 2012 historical presidential baselines from official Indiana archive sources",
+        "official 2012 county presidential baseline artifact if complete 2012/2016/2020 historical context is required",
         "official county 2024 turnout and registration rows are loaded from the Indiana Election Division PDF",
         "supplemental MIT/OpenElections President and U.S. Senate local review rows are loaded for advisory flag calculation",
-        "Verified Voting county equipment context is loaded as secondary administration context only"
+        "Verified Voting county equipment context is loaded as secondary administration context only",
+        "official 2016 and 2020 county historical presidential baselines are loaded from ENR archive JSON"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official Indiana county turnout from scripts/normalize-in-turnout.mjs; indianaEnrJurisdictionDirectoryInventory collected for official county JurR inventory; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. A new parser remains needed if official precinct/subcounty Indiana candidate rows are obtained.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified county totals, official Indiana Election Division county turnout/registration rows are now normalized, and official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags can be calculated from MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, precinct geometry, normalized historical baselines, and audit/recount/CVR/incident/correction records remain preferred if available from the Indiana Election Division or county election offices.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, and official 2016/2020 county historical baselines are normalized. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows and an official script-readable 2012 county presidential baseline remain preferred/request-path items.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"
@@ -1010,39 +1013,95 @@
       "state": "IA",
       "name": "Iowa",
       "priority": 2,
-      "currentStatus": "official_precinct_review_package_collected",
+      "currentStatus": "official_precinct_review_turnout_package_collected_admin_request_paths_documented",
       "officialSourcePages": [
         "https://electionresults.iowa.gov/IA/122322/web.345435/",
-        "https://electionresults.iowa.gov/IA/122322/current_ver.txt"
+        "https://electionresults.iowa.gov/IA/122322/current_ver.txt",
+        "https://www.legis.iowa.gov/docs/code/50.51.pdf",
+        "https://www.legis.iowa.gov/docs/code/50.48.pdf",
+        "https://www.legis.iowa.gov/docs/code/50.50.pdf"
       ],
       "requiredArtifacts": [
         "official county detailxml.zip reports for all 99 counties",
-        "precinct boundary geometry if subcounty map overlays are required"
+        "Iowa Clarity VoteType normalizer/public vote-method package if method display rows are added",
+        "official precinct boundary geometry or reporting-unit crosswalk if subcounty map overlays are required",
+        "2024 selected-precinct audit reports/selection list/outcomes",
+        "2024 recount or administrative-audit request/result packets if any",
+        "CVR availability/request-path responses by county or state custodian",
+        "official incident, correction, and litigation records if published or provided by request"
       ],
       "preferredComparisonContest": "U.S. House by district; loaded from official county detail XML reports as precinct-level President-vs-U.S.-House review rows.",
-      "parserNeeded": "iowaClarityCountyDetailXmlDirectory loaded for 99 county result rows, 1,653 precinct review rows, and 1,651 precinct turnout rows.",
-      "blocker": "Iowa now has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-House review rows. Remaining optional gap: precinct boundary geometry for subcounty map overlays."
+      "parserNeeded": "iowaClarityCountyDetailXmlDirectory loaded for 99 county result rows, 1,653 precinct review rows, and 1,651 precinct turnout rows. data/ia-2024-data-coverage-inventory.json documents confirmed Clarity VoteType fields and remaining geometry/admin request paths.",
+      "blocker": "Iowa has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-House review rows and state-native precinct turnout rows. Remaining gaps are a normalized Iowa vote-method package for Clarity VoteType fields, official precinct boundary geometry for subcounty overlays, and normalized audit/recount/CVR availability/incident/correction/litigation artifacts."
     },
     {
       "state": "KY",
       "name": "Kentucky",
       "priority": 3,
-      "currentStatus": "official_precinct_review_package_collected_historical_loaded",
+      "currentStatus": "official_precinct_review_package_collected_historical_loaded_state_turnout_leads_collected_admin_inventory_documented",
       "officialSourcePages": [
         "https://elect.ky.gov/results/Pages/default.aspx",
         "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+        "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+        "https://elect.ky.gov/Resources/Pages/Registration-Statistics.aspx",
+        "https://elect.ky.gov/Resources/Pages/Voting-Systems.aspx",
+        "https://elect.ky.gov/Resources/Pages/County-Election-Plans.aspx",
+        "https://elect.ky.gov/About-Us/Pages/County-Clerks.aspx",
         "https://elect.ky.gov/SiteCollectionDocuments/Election%20Results/2010-2019/2012/2012genresults.pdf",
         "https://elect.ky.gov/results/2010-2019/Documents/2016%20General%20Election%20Results.pdf",
         "https://elect.ky.gov/results/2020-2029/Documents/2020%20General%20Election%20Results.pdf"
       ],
       "requiredArtifacts": [
-        "precinct boundary geometry if subcounty map overlays are required",
-        "state-native turnout denominator artifact if replacing EAC fallback turnout",
-        "post-election audit, recount, CVR availability, incident, correction, litigation, or equipment-administration records beyond the loaded equipment context"
+        "Kentucky turnout/registration PDF parser plus reconciliation before replacing EAC fallback turnout",
+        "county-clerk official turnout documentation if source-native turnout rows are promoted",
+        "precinct boundary geometry or publishable reporting-unit crosswalk if subcounty map overlays are required",
+        "post-election audit selection/outcome records, recount/recanvass records, CVR availability/request paths, incident/correction records, and litigation records beyond the loaded equipment context"
       ],
       "preferredComparisonContest": "U.S. House by district; loaded as precinct-level President-versus-U.S.-House review rows where the county recap PDF includes both contests.",
-      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 120 county result rows and 3,067 precinct review rows; historicalPresidentialCsv loaded for 360 official 2012/2016/2020 county baseline rows; Elliott County uses a manual transcription from rendered official PDF pages because its 2024 recap PDF is image-only.",
-      "blocker": "Kentucky has official 2024 county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page, and official 2012/2016/2020 county historical presidential baselines are now generated from Kentucky election-results PDFs. Remaining gaps are precinct boundary geometry, state-native turnout denominators beyond EAC fallback, audit/recount/CVR/incident/correction inventories, and six counties that remain county-only/no precinct-review from extracted 2024 recap text."
+      "parserNeeded": "kentuckyGeneralRecapTextDirectory loaded for 120 county result rows and 3,067 precinct review rows; historicalPresidentialCsv loaded for 360 official 2012/2016/2020 county baseline rows; EAC fallback turnout remains active. Kentucky State Board 2024 turnout and registration PDFs are now committed as candidate leads, but a parser/reconciliation report is needed before replacing EAC fallback rows because the State Board turnout page says those turnout statistics are unofficial.",
+      "blocker": "Kentucky has official 2024 county recap PDFs collected from the State Board of Elections 2024 General Recap Sheets page, official 2012/2016/2020 county historical presidential baselines generated from Kentucky election-results PDFs, county geometry, and loaded county equipment context. Wave 7 collected State Board 2024 turnout and registration PDFs as state-native leads and documented county-clerk/request paths in data/ky-2024-data-coverage-inventory.json. Remaining blockers are a turnout/registration PDF parser and reconciliation, precinct boundary geometry, normalized audit/recount/CVR/incident/correction/litigation records, and six counties that remain county-only/no precinct-review from extracted 2024 recap text.",
+      "availableArtifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Recap Sheets",
+          "sourceUrl": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+          "localFile": "data/ky-2024-general-recap-sheets; data/ky-2024-general-recap-text",
+          "parserHint": "kentuckyGeneralRecapTextDirectory extracts county President totals and precinct President rows from official county recap text artifacts."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Kentucky State Board of Elections 2024 General Recap Sheets",
+          "sourceUrl": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+          "localFile": "data/ky-2024-general-recap-text",
+          "level": "precinct",
+          "comparisonContest": "U.S. House by district",
+          "parserHint": "Compare President rows with United States Representative rows at county/precinct grain where both contests are present; keep one-sided and county-only caveats visible."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback plus Kentucky State Board turnout/registration PDF leads",
+          "sourceUrl": "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+          "localFile": "data/eac-2024-state-turnout/ky-2024-eac-turnout.csv; data/ky-2024-general-turnout-by-county.pdf; data/ky-2024-general-turnout-by-precinct.pdf; data/ky-2024-general-registration-by-county.pdf; data/ky-2024-general-registration-by-precinct.pdf",
+          "level": "county_and_precinct_lead",
+          "denominator": "EAC fallback currently active; Kentucky State Board registration PDFs collected as candidate denominators",
+          "parserHint": "Current ETL uses eacTurnoutCsv. A future Kentucky PDF normalizer should reconcile State Board county turnout total 2,086,320 against EAC fallback ballots cast 2,086,090 and retain the State Board unofficial-turnout caveat."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2721%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ky-counties.geojson",
+          "parserHint": "County map joins only; precinct boundaries are not included."
+        },
+        "adminSourceInventory": {
+          "sourceTitle": "Kentucky 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://elect.ky.gov/results/Pages/default.aspx",
+          "localFile": "data/ky-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded artifacts, State Board turnout/registration leads, county-clerk request paths, precinct geometry gaps, and audit/recount/CVR/incident/correction blockers."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Kentucky 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/21",
+          "localFile": "data/verifiedvoting-ky-2024-equipment.json; data/ky-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or precinct-uniformity proof."
+        }
+      }
     },
     {
       "state": "MS",
@@ -1182,16 +1241,19 @@
         "https://www.washoecounty.gov/voters/results/archivedresults.php",
         "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
         "https://www.humboldtcountynv.gov/317/Elections",
-        "https://www.humboldtcountynv.gov/DocumentCenter/View/7893"
+        "https://www.humboldtcountynv.gov/DocumentCenter/View/7893",
+        "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information"
       ],
       "requiredArtifacts": [
         "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt",
-        "state-native turnout denominator rows",
-        "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, and incident/correction artifacts"
+        "state-native turnout denominator rows with ballots-cast, registered-voter denominator, timing, and inactive-voter treatment notes",
+        "official precinct/local reporting-unit geometry or crosswalks for subcounty review rows",
+        "official 2012, 2016, and 2020 Nevada historical presidential baseline exports if available to replace secondary context rows",
+        "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, incident/correction, recount, and litigation artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; local exports still needed for the remaining Nevada jurisdictions",
-      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 1, 2026 source inventory also records blocked state-native turnout access and unnormalized audit/CVR/L&A/tabulator-log/custody/incident source needs."
+      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; local exports or request-produced SOV/CVR files still needed for the remaining Nevada jurisdictions. A normalizedTurnoutCsv-style parser is needed before replacing EAC fallback turnout, and a geometry/crosswalk parser is needed before mapping subcounty review rows.",
+      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 1, 2026 source inventory records county-by-county request paths, blocked state-native turnout access, county-only map geometry, secondary historical baseline caveats, and unnormalized audit/CVR/L&A/tabulator-log/custody/incident source needs."
     },
     {
       "state": "NH",

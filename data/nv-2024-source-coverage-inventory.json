@@ -224,9 +224,261 @@
     }
   },
   "nextActions": [
-    "Collect or request official precinct/local President and U.S. Senate rows, CVRs, or SOV exports for the remaining 14 Nevada jurisdictions.",
-    "Prioritize reachable official county pages with result/resource exports before records requests.",
+    "Collect or request official precinct/local President and U.S. Senate rows, CVRs, or SOV exports for the remaining 14 Nevada jurisdictions listed in remainingJurisdictionSourceMatrix.",
+    "Prioritize reachable official county pages with result/resource exports before records requests, then use the Nevada SOS county-clerk contact path for blocked or non-exporting counties.",
     "Collect a state-native county or precinct turnout denominator artifact if Nevada publishes one outside the blocked live SOS pages.",
-    "Inventory and normalize audit, CVR availability, tabulator-log, L&A, custody, incident, correction, recount, and litigation artifacts separately from vote-result rows."
-  ]
+    "Inventory and normalize audit, CVR availability, tabulator-log, L&A, custody, incident, correction, recount, and litigation artifacts separately from vote-result rows.",
+    "Replace secondary 2012/2016/2020 historical baseline rows with official Nevada SOS historical exports if a script-readable or records-request-produced artifact is obtained."
+  ],
+  "remainingJurisdictionSourceMatrix": [
+    {
+      "jurisdiction": "Carson City",
+      "officialSourceUrl": "https://www.carson.org/government/departments-a-f/clerk-recorder/elections",
+      "scriptedCheckStatus": "blocked_dns_or_site_resolution",
+      "finding": "A scripted check of the likely Carson City election results path could not resolve www.carson.org from this environment. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local statement of votes cast, CVR availability, turnout/registration denominators, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records from the Carson City Clerk-Recorder or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Churchill County",
+      "officialSourceUrl": "https://www.churchillcountynv.gov/134/Elections",
+      "scriptedCheckStatus": "reachable_no_parser_ready_export_found",
+      "finding": "Official county elections page was reachable, but visible links did not expose a parser-ready 2024 President plus U.S. Senate local export or CVR during this pass.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR, turnout/registration denominators, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records from the Churchill County Clerk/Treasurer.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Douglas County",
+      "officialSourceUrl": "https://cltr.douglascountynv.gov/elections/results-and-resources",
+      "scriptedCheckStatus": "reachable_no_parser_ready_export_found",
+      "finding": "The official Results and Resources page states prior results are available and links the Nevada SOS, but no parser-ready 2024 President plus U.S. Senate local export was confirmed in the visible page links.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR, turnout/registration denominators, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records from the Douglas County Clerk-Treasurer Elections Office.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Elko County",
+      "officialSourceUrl": "https://www.elkocountynv.net/departments/clerk/elections/index.php",
+      "scriptedCheckStatus": "not_found_from_scripted_check",
+      "finding": "The likely official elections path returned 404 from scripted access. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Elko County Clerk or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Esmeralda County",
+      "officialSourceUrl": "https://accessesmeralda.com/county-offices/clerk-treasurer/elections/",
+      "scriptedCheckStatus": "reachable_no_parser_ready_export_found",
+      "finding": "Official county clerk-treasurer elections page was reachable, but the visible page links did not expose a parser-ready 2024 President plus U.S. Senate local export or CVR during this pass.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Esmeralda County Clerk-Treasurer.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Eureka County",
+      "officialSourceUrl": "https://www.eurekacountynv.gov/government/clerk_treasurer/elections.php",
+      "scriptedCheckStatus": "not_found_from_scripted_check",
+      "finding": "The likely official elections path returned 404 from scripted access. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Eureka County Clerk-Treasurer or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Lander County",
+      "officialSourceUrl": "https://landercountynv.org/your_government/county_clerk/elections.php",
+      "scriptedCheckStatus": "not_found_from_scripted_check",
+      "finding": "The likely official elections path returned 404 from scripted access. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Lander County Clerk or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Lincoln County",
+      "officialSourceUrl": "https://lincolncountynv.gov/government/clerk/election/",
+      "scriptedCheckStatus": "blocked_ssl_from_scripted_check",
+      "finding": "The likely official clerk election path failed scripted TLS validation. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Lincoln County Clerk or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Lyon County",
+      "officialSourceUrl": "https://www.lyon-county.org/55/Elections",
+      "scriptedCheckStatus": "reachable_no_parser_ready_export_found",
+      "finding": "Official county elections page was reachable, but visible links did not expose a parser-ready 2024 President plus U.S. Senate local export or CVR during this pass.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Lyon County Clerk/Treasurer.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Mineral County",
+      "officialSourceUrl": "https://mineralcountynv.us/government/clerk_treasurer/elections.php",
+      "scriptedCheckStatus": "not_found_from_scripted_check",
+      "finding": "The likely official elections path returned 404 from scripted access. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Mineral County Clerk-Treasurer or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Nye County",
+      "officialSourceUrl": "https://www.nyecountynv.gov/267/Elections",
+      "scriptedCheckStatus": "reachable_no_parser_ready_export_found",
+      "finding": "Official county elections page was reachable, but visible links did not expose a parser-ready 2024 President plus U.S. Senate local export or CVR during this pass.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Nye County Clerk.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Pershing County",
+      "officialSourceUrl": "https://pershingcountynv.gov/government/clerk-treasurer/elections/",
+      "scriptedCheckStatus": "not_found_from_scripted_check",
+      "finding": "The likely official elections path returned 404 from scripted access. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Pershing County Clerk-Treasurer or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "Storey County",
+      "officialSourceUrl": "https://www.storeycounty.org/187/Elections",
+      "scriptedCheckStatus": "not_found_from_scripted_check",
+      "finding": "The likely official elections path returned 404 from scripted access. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the Storey County Clerk-Treasurer or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    },
+    {
+      "jurisdiction": "White Pine County",
+      "officialSourceUrl": "https://www.whitepinecounty.net/164/Elections",
+      "scriptedCheckStatus": "not_found_from_scripted_check",
+      "finding": "The likely official elections path returned 404 from scripted access. No parser-ready 2024 President plus U.S. Senate local export was collected.",
+      "requestPath": "Request 2024 General precinct/local SOV or CVR and administration records from the White Pine County Clerk or through the Nevada SOS county-clerk contact path.",
+      "neededArtifacts": [
+        "2024 General precinct/local President rows",
+        "2024 General precinct/local U.S. Senate rows at the same grain",
+        "CVR availability or CVR export if public or lawfully producible",
+        "ballots-cast and registered-voter denominator rows with timing notes",
+        "audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation records"
+      ]
+    }
+  ],
+  "turnoutDenominatorStatus": {
+    "status": "eac_fallback_loaded_state_native_needed",
+    "loadedArtifact": "data/eac-2024-state-turnout/nv-2024-eac-turnout.csv",
+    "loadedRows": 17,
+    "loadedBallotsCast": 1486297,
+    "loadedRegisteredVoters": 2256275,
+    "stateNativeLeads": [
+      "https://www.nvsos.gov/sos/elections/election-information/voter-turnout-statistics",
+      "https://www.nvsos.gov/sos/elections/election-information/voter-registration-statistics",
+      "https://www.nvsos.gov/sos/elections/voters/voter-registration-statistics",
+      "https://www.nvsos.gov/sos/elections/election-results/2024-election-results"
+    ],
+    "blocker": "Live NVSOS turnout, registration, and 2024 election-results pages returned Incapsula challenge pages, empty content, or transport errors from scripted access. County pages checked in this pass did not expose a complete state-native ballots-cast plus denominator package.",
+    "requestPath": "Request county or statewide 2024 ballots-cast and registered-voter denominator rows, including denominator timing and inactive-voter treatment, from the Nevada SOS Elections Division or county clerks/registrars."
+  },
+  "geometryStatus": {
+    "countyGeometry": {
+      "status": "loaded",
+      "localPath": "data/nv-counties.geojson",
+      "authority": "U.S. Census Bureau",
+      "features": 17
+    },
+    "subcountyGeometry": {
+      "status": "not_loaded",
+      "neededArtifact": "Official precinct/local reporting-unit boundaries or a map-ready crosswalk matching local result/CVR precinct identifiers.",
+      "requestPath": "Request 2024 precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry from county GIS/election offices and the Nevada SOS if maintained centrally."
+    }
+  },
+  "historicalBaselineStatus": {
+    "status": "loaded_secondary_context",
+    "localPath": "data/nv-historical-presidential-baseline.csv",
+    "years": [
+      2012,
+      2016,
+      2020
+    ],
+    "rowCount": 51,
+    "caveat": "Historical rows are secondary county presidential tables with state election office source footnotes. They are contextual baselines only and should be replaced with official Nevada SOS historical exports if a script-readable or request-produced artifact is collected."
+  },
+  "websiteApiDisplayPathChecked": {
+    "paths": [
+      "/api/results?state=NV&year=2024&level=county",
+      "/api/sources?state=NV&year=2024",
+      "/api/coverage?state=NV&year=2024",
+      "/api/review-rows?state=NV&year=2024&limit=500&includeMetrics=true",
+      "/api/turnout?state=NV&year=2024",
+      "/api/historical-baselines?state=NV&year=2024",
+      "/api/admin-sources?state=NV&year=2024",
+      "/api/electronic-integrity?state=NV"
+    ],
+    "uiPath": "src/app/workspace-tabs.tsx renders NV source links, partial review coverage warnings, raw review rows, turnout rows, historical baselines, equipment context, and administration source status from the public API/data-access layer.",
+    "checkedBy": "Static source-path inspection in Wave 7 NV worker; no production promotion or production API verification was run."
+  }
 }

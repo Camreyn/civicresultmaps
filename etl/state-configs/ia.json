@@ -59,6 +59,17 @@
       "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 30, 2026.",
       "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL; use these rows as historical context, not as 2024 certified data or a replacement for official Iowa Secretary of State results.",
       "status": "loaded"
+    },
+    {
+      "id": "ia-2024-data-coverage-inventory",
+      "category": "Iowa 2024 source coverage and request-path inventory",
+      "url": "https://www.legis.iowa.gov/docs/code/50.51.pdf",
+      "localFile": "data/ia-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Iowa Secretary of State; Iowa General Assembly; U.S. Census Bureau",
+      "timestampBasis": "Wave 7 source-discovery pass completed July 1, 2026.",
+      "confidence": "State-specific inventory documenting loaded official result, turnout, and county-geometry sources plus remaining ballot-method normalization, precinct-geometry, audit, recount, CVR, and incident request paths. It is provenance context only and does not add vote rows.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -76,7 +87,7 @@
   "expected": {
     "jurisdictions": 99,
     "resultRows": 99,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 99,
     "stateTotal": 1663506,
     "trump": 927019,
