@@ -235,7 +235,8 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /WEC ward results workbook/);
   assert.match(tabs, /Washington participating-county precinct rows/);
   assert.match(tabs, /5,309 vote gap/);
-  assert.match(tabs, /North Carolina uses official reporting-unit rows/);
+  assert.match(tabs, /North Carolina uses official Real Precinct=Y rows/);
+  assert.match(tabs, /3,923,739 of 5,699,141 presidential votes/);
   assert.match(tabs, /Arizona SOS signed statewide canvass county presidential rows are loaded/);
   assert.match(tabs, /PDF host still blocks scripted downloads/);
   assert.match(tabs, /Georgia SOS media export JSON/);

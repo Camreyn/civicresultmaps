@@ -399,9 +399,9 @@
       "stateName": "North Carolina",
       "priority": "swing",
       "overallStatus": "partial",
-      "summary": "Official NCSBE reporting-unit President/Governor rows are loaded, including vote-method-like reporting units; electronic evidence artifacts still need inventory.",
-      "riskPosture": "reporting_unit_review_loaded_admin_evidence_missing",
-      "nextAction": "Inventory CVR, ballot-image, audit, L&A, tabulator-log, and chain-of-custody availability; separate real precincts from absentee/early/provisional reporting units.",
+      "summary": "Official NCSBE county certified totals aggregate all reporting units; local review rows are filtered to Real Precinct=Y President/Governor precinct rows. Electronic evidence artifacts still need inventory.",
+      "riskPosture": "real_precinct_review_loaded_admin_evidence_missing",
+      "nextAction": "Inventory CVR, ballot-image, audit, L&A, tabulator-log, and chain-of-custody availability; keep certified county totals distinct from Real Precinct=Y review coverage.",
       "artifacts": [
         {
           "type": "certified_results",
@@ -417,13 +417,13 @@
         {
           "type": "reporting_unit_results",
           "status": "loaded",
-          "granularity": "reporting_unit",
+          "granularity": "real_precinct",
           "sourceUrl": "https://www.ncsbe.gov/results-data/election-results",
           "localArtifact": "data/nc-2024-results-precinct.zip",
           "parser": "northCarolinaPresidentVsGovernor",
-          "reconciliationStatus": "president_governor_reporting_unit_review_loaded",
+          "reconciliationStatus": "president_governor_real_precinct_review_loaded",
           "requestRequired": false,
-          "tamperDetectionUse": "Can localize anomalies by NCSBE reporting unit, with caveats for early/absentee/provisional rows."
+          "tamperDetectionUse": "Can localize advisory patterns by NCSBE Real Precinct=Y rows; early/absentee/provisional/transfer reporting units remain in certified county totals but are excluded from review charts."
         },
         {
           "type": "cast_vote_records",
