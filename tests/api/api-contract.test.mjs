@@ -403,6 +403,7 @@ test("native source package handoff is validated in CI", () => {
   const msCombinedReviewScript = readFileSync("scripts/combine-ms-ocr-review-artifacts.mjs", "utf8");
   const msReviewedCorrections = readFileSync("data/ms-2024-ocr-reviewed-corrections.csv", "utf8");
   const msVerifier = readFileSync("scripts/verify-ms-ocr-pipeline.mjs", "utf8");
+  const msCoverageDoc = readFileSync("docs/ms-2024-data-coverage.md", "utf8");
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows"], /extract-ms-recap-ocr-text-rows/);
   assert.match(packageScripts["etl:extract:ms:pdf-text-layer"], /extract-ms-pdf-text-layer/);
   assert.match(packageScripts["etl:promote:ms:ocr-recovery"], /promote-ms-ocr-recovery-text/);
@@ -411,6 +412,7 @@ test("native source package handoff is validated in CI", () => {
   assert.match(packageScripts["etl:template:ms:ocr-corrections"], /create-ms-ocr-correction-template/);
   assert.match(packageScripts["etl:template:ms:ocr-corrections:sample"], /ms-sample-ocr-correction-template/);
   assert.match(packageScripts["etl:verify:ms:ocr"], /verify-ms-ocr-pipeline/);
+  assert.match(packageScripts["etl:verify:ms:ocr:reviewed"], /--allow-unused-corrections/);
   assert.match(packageScripts["etl:verify:ms:ocr:sample"], /--skip-ocr/);
   assert.match(msTextExtractor, /text_row_fallback/);
   assert.match(msTextExtractor, /This is a fallback companion to grid-cell extraction/);
@@ -440,13 +442,18 @@ test("native source package handoff is validated in CI", () => {
   assert.match(msVerifier, /--rotate/);
   assert.match(msVerifier, /--psm/);
   assert.match(msVerifier, /failOnReview/);
+  assert.match(msVerifier, /allowUnusedCorrections/);
   assert.match(msVerifier, /import_ready/);
   assert.match(msVerifier, /missing_ocr/);
+  assert.match(msCoverageDoc, /11 import-ready counties/);
+  assert.match(msCoverageDoc, /EAC 2024 V2 county\/jurisdiction fallback/);
+  assert.match(msCoverageDoc, /historical baselines were not added/);
   assert.match(msReconciler, /precinctExtractedTotal/);
   assert.match(msReconciler, /detected_total_column_cells/);
   assert.match(msReconciler, /--corrections/);
   assert.match(msReconciler, /manual_correction/);
   assert.match(msReconciler, /manual_addition/);
+  assert.match(msReconciler, /unusedCorrections/);
   assert.match(msReconciler, /Correction rows did not match candidate cells/);
 });
 

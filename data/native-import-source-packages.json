@@ -562,11 +562,12 @@
       "requiredArtifacts": [
         "OCR text generated from official county recapitulation PDFs with npm run etl:ocr:ms if precinct-level review is pursued; the default renderer/OCR path is Node-based and rotates the sideways recapitulation sheets before OCR, with optional external Poppler/Tesseract mode",
         "reviewed structured precinct-level President-versus-U.S. Senate CSV promoted from scripts/extract-ms-recap-grid-cells.mjs output",
-        "state-native turnout denominator artifact if replacing EAC turnout fallback"
+        "state-native turnout denominator artifact if replacing EAC turnout fallback",
+        "official 2020, 2016, and 2012 Mississippi SOS county presidential artifacts before enabling historical baselines"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "mississippiElectionRecapCsv is loaded for county review. For precinct-level rows, run scripts/ocr-ms-county-result-pdfs.mjs, run scripts/extract-ms-recap-grid-cells.mjs to produce review-gated cell candidates, reconcile/review the candidate CSV, then promote a structured precinct review artifact.",
-      "blocker": "Mississippi county-level President-versus-U.S. Senate review rows are live from the Secretary of State statewide recap CSV. Precinct-level advisory flags remain blocked until the image-only county recapitulation PDFs are OCRed, reviewed, and parsed into structured rows."
+      "parserNeeded": "mississippiElectionRecapCsv is loaded for county review. For precinct-level rows, run scripts/ocr-ms-county-result-pdfs.mjs or reuse checked-in OCR text, run scripts/extract-ms-recap-ocr-text-rows.mjs and scripts/reconcile-ms-ocr-grid-cells.mjs, apply reviewed corrections with npm run etl:verify:ms:ocr:reviewed for partial-review status, then promote only a fully reviewed structured precinct artifact.",
+      "blocker": "Mississippi county-level President-versus-U.S. Senate review rows are live from the Secretary of State statewide recap CSV. On 2026-06-30, the reviewed partial OCR path reported 11 import-ready counties, 61 review-required counties, and 10 missing-OCR counties; precinct-level advisory flags remain blocked until all county recapitulation PDFs are OCRed or manually reviewed, reconciled to the official recap totals, and parsed into structured rows. Historical baselines remain blocked until official SOS county presidential artifacts for 2020, 2016, and 2012 are collected and source-cited."
     },
     {
       "state": "MO",

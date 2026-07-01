@@ -8,6 +8,7 @@ const defaults = {
   sourceOverrides: "data/ms-2024-ocr-source-overrides.json",
   out: ".etl/ocr/ms-grid-reconciliation.csv",
   corrections: "",
+  allowUnusedCorrections: false,
 };
 
 const candidateAliases = [
@@ -30,6 +31,7 @@ function usage() {
     "  --source-overrides <file>  Optional source/reconciliation override JSON. Default: " + defaults.sourceOverrides,
     "  --out <file>    Reconciliation CSV output. Default: " + defaults.out,
     "  --corrections <file>  Optional human-reviewed correction CSV.",
+    "  --allow-unused-corrections  Permit correction rows that do not match this partial candidate-cell set.",
     "  --help          Show this help.",
   ].join("\n"));
 }
@@ -44,6 +46,7 @@ function parseArgs(argv) {
     else if (arg === "--source-overrides") options.sourceOverrides = argv[++index];
     else if (arg === "--out") options.out = argv[++index];
     else if (arg === "--corrections") options.corrections = argv[++index];
+    else if (arg === "--allow-unused-corrections") options.allowUnusedCorrections = true;
     else throw new Error("Unknown option: " + arg);
   }
   return options;
@@ -197,10 +200,10 @@ function loadCorrections(correctionsPath) {
   return { additions, updates };
 }
 
-function applyCorrections(cells, corrections) {
+function applyCorrections(cells, corrections, options = {}) {
   const unusedUpdates = new Set(corrections.updates.keys());
   const correctedCells = [];
-  const metrics = { correctionAdditions: 0, correctionExclusions: 0, correctionUpdates: 0 };
+  const metrics = { correctionAdditions: 0, correctionExclusions: 0, correctionUpdates: 0, unusedCorrections: 0 };
 
   for (const cell of cells) {
     const key = correctionKey(cell);
@@ -223,9 +226,10 @@ function applyCorrections(cells, corrections) {
     metrics.correctionUpdates += 1;
   }
 
-  if (unusedUpdates.size) {
+  if (unusedUpdates.size && !options.allowUnusedCorrections) {
     throw new Error("Correction rows did not match candidate cells: " + [...unusedUpdates].join(", "));
   }
+  metrics.unusedCorrections = unusedUpdates.size;
 
   for (const correction of corrections.additions) {
     correctedCells.push({
@@ -386,7 +390,7 @@ async function main() {
 
   const inputCells = parseCsv(fs.readFileSync(options.cells, "utf8"));
   const corrections = loadCorrections(options.corrections);
-  const corrected = applyCorrections(inputCells, corrections);
+  const corrected = applyCorrections(inputCells, corrections, { allowUnusedCorrections: options.allowUnusedCorrections });
   const officialTotals = loadOfficialTotals(options.recap);
   const sourceOverrides = loadSourceOverrides(options.sourceOverrides);
   const report = summarize(corrected.cells, officialTotals, sourceOverrides);

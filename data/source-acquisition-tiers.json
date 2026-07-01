@@ -864,13 +864,14 @@
       ],
       "missingFields": [
         "precinct rows",
-        "state-native turnout denominator"
+        "state-native turnout denominator",
+        "2020/2016/2012 source-cited historical baseline artifacts"
       ],
-      "parserStatus": "mississippiElectionRecapCsv loaded for county review",
+      "parserStatus": "mississippiElectionRecapCsv loaded for county review; historical baselines remain blocked pending official SOS county artifacts",
       "manualReviewBurden": "low",
       "confidence": "loaded",
       "caveats": "County-level review is useful but not a precinct-level scatter plot.",
-      "nextAction": "Keep loaded county package; use county PDFs only for precinct-level upgrade."
+      "nextAction": "Keep loaded county package; collect official Mississippi SOS 2020, 2016, and 2012 county presidential artifacts before enabling historicalBaseline."
     },
     {
       "state": "MS",
@@ -894,14 +895,14 @@
       ],
       "missingFields": [
         "reviewed structured precinct CSV",
-        "total-column exclusion",
+        "complete correction-reviewed OCR coverage for all counties",
         "fully reconciled OCR output"
       ],
-      "parserStatus": "OCR scripts and reconciliation gate exist; output remains review-gated",
+      "parserStatus": "OCR scripts and reconciliation gate exist; 2026-06-30 reviewed partial verification reported 11 import-ready counties, 61 review-required counties, and 10 missing-OCR counties",
       "manualReviewBurden": "high",
       "confidence": "partial",
-      "caveats": "OCR recovered sample/probe cells, but blanks, total columns, rotation, and grid issues prevent import until reconciled.",
-      "nextAction": "Continue OCR reconciliation and promote only reviewed, reconciled precinct rows."
+      "caveats": "OCR and reviewed corrections recover some counties, but most county outputs remain review-gated; correction additions can represent reviewed cells that are not present in the partial checked-in OCR text. Do not import precinct rows until all counties reconcile to the official SOS recap totals.",
+      "nextAction": "Continue OCR/manual review for the 61 review-required counties and 10 missing-OCR counties, rerun npm run etl:verify:ms:ocr:reviewed, then promote only fully reviewed precinct rows."
     },
     {
       "state": "MT",
