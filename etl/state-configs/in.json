@@ -7,13 +7,24 @@
   "sources": [
     {
       "id": "in-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC fallback turnout rows retained as benchmark context",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/in-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows retained as benchmark context after Indiana official county turnout rows were collected.",
+      "status": "loaded"
+    },
+    {
+      "id": "in-2024-general-turnout",
+      "category": "Official 2024 general election county turnout and registration rows",
+      "url": "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
+      "localFile": "data/in-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "Indiana Election Division",
+      "timestampBasis": "Official 2024 General Election Turnout and Registration report dated February 7, 2025.",
+      "confidence": "County registered-voter and voters-voting rows normalized from the official Indiana Election Division PDF by scripts/normalize-in-turnout.mjs. The PDF is retained at data/in-2024-general-turnout-report.pdf.",
       "status": "loaded"
     },
     {
@@ -84,23 +95,23 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "in-2024-eac-turnout",
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "in-2024-general-turnout",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Indiana turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "registrationDenominatorTiming": "sosElectionTurnoutReport",
+    "sourceLevel": "county",
+    "notes": "Indiana turnout rows use the official Indiana Election Division 2024 General Election Turnout and Registration county report. EAC 2024 V2 county/jurisdiction fallback rows remain retained as benchmark context.",
     "warningRequired": false,
     "expected": {
       "rowCount": 92,
-      "ballotsCast": 2986839,
-      "registeredVoters": 4840856
+      "ballotsCast": 2976599,
+      "registeredVoters": 4837802
     }
   },
   "expected": {
     "jurisdictions": 92,
     "resultRows": 92,
-    "sources": 7,
+    "sources": 8,
     "geometryFeatures": 92,
     "stateTotal": 2936677,
     "trump": 1720347,
@@ -131,5 +142,32 @@
     "coverageMode": "presidentVsSenate",
     "sourceCoverage": "MIT/OpenElections supplemental Indiana precinct rows: 5,253 local President-versus-U.S.-Senate review rows across all 92 counties, generated from Dataverse file 13731143 with TOTAL mode used per county where present and all non-total modes summed otherwise.",
     "warning": "Indiana local review rows use MIT/OpenElections supplemental precinct President-versus-U.S. Senate rows. Certified county totals remain official Indiana ENR. MIT warns Senate totals are overreported in some counties and precinct labels are not always unique identifiers."
+  },
+  "coverageInventory": {
+    "localFile": "data/in-2024-data-coverage-inventory.json",
+    "checkedAt": "2026-07-01",
+    "status": "official_county_results_turnout_loaded_supplemental_precinct_review",
+    "officialSourceSearchPath": [
+      "https://enr.indianavoters.in.gov/archive/2024General/index.html",
+      "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
+      "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
+      "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/site/data/JurR_*_B.json&from=20241101&to=20250131&output=json",
+      "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
+      "https://www.in.gov/sos/elections/election-commission/election-results/",
+      "https://www.in.gov/sos/elections/statistics-and-maps/"
+    ],
+    "caveats": [
+      "Official Indiana ENR category JSON currently supports county certified President and U.S. Senate rows, not precinct/subcounty candidate rows.",
+      "Official JurR county JSON inventory files preserve county jurisdiction/contact and reporting-region structures but do not contain President or U.S. Senate candidate result rows.",
+      "Local review rows remain supplemental MIT/OpenElections advisory inputs until official same-grain precinct/subcounty President and U.S. Senate rows are obtained.",
+      "Official Indiana turnout is loaded at county grain; precinct turnout denominators and precinct boundary geometry remain uncollected."
+    ],
+    "remainingGaps": [
+      "official precinct/subcounty President rows",
+      "official same-grain precinct/subcounty U.S. Senate comparison rows",
+      "precinct/local reporting-unit boundary geometry",
+      "normalized official 2012/2016/2020 county presidential historical baselines",
+      "official audit/recount/CVR availability/incident/correction records normalized for Indiana"
+    ]
   }
 }

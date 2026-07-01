@@ -498,42 +498,47 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_equipment",
       "tier": "tier_2_official_dashboard_endpoint",
-      "reportingGrain": "county results plus supplemental precinct review",
+      "reportingGrain": "county results and turnout plus supplemental precinct review",
       "exportFormats": [
         "archived ENR JSON",
+        "official turnout PDF normalized CSV",
         "supplemental MIT/OpenElections CSV",
-        "EAC fallback turnout CSV",
+        "EAC fallback turnout CSV retained as benchmark",
         "Verified Voting equipment CSV"
       ],
       "sourceUrls": [
         "https://enr.indianavoters.in.gov/",
+        "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
+        "https://www.in.gov/sos/elections/election-commission/election-results/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18"
       ],
       "exampleUrls": [
-        "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json"
+        "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
+        "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf"
       ],
       "availableFields": [
         "official county President rows",
         "official county U.S. Senate rows",
+        "official county registered-voter and voters-voting turnout rows",
         "supplemental precinct President-versus-U.S.-Senate review rows",
-        "EAC county turnout fallback",
+        "EAC county turnout fallback retained as benchmark",
         "county election equipment context"
       ],
       "missingFields": [
         "official precinct/subcounty President rows",
         "official precinct/subcounty U.S. Senate rows at the same grain",
-        "state-native turnout and registered-voter denominator rows",
+        "precinct turnout and registered-voter denominator rows",
         "precinct boundary geometry",
-        "2020/2016/2012 historical baselines",
+        "normalized 2020/2016/2012 historical baselines",
         "audit, recount, CVR availability, incident, and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson loaded for official county results; localComparisonCsv loaded for MIT/OpenElections supplemental precinct review rows; equipment context CSV present",
+      "parserStatus": "indianaEnrCountyJson loaded for official county results; normalizedTurnoutCsv loaded for official Indiana county turnout; localComparisonCsv loaded for MIT/OpenElections supplemental precinct review rows; equipment context CSV present",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Archived ENR category files contain 92 county RegionSummary rows, not precinct rows. MIT/OpenElections review rows are supplemental advisory inputs with published Indiana caveats; certified totals remain official Indiana ENR. Equipment context is county-level administration context only.",
-      "nextAction": "Request official Indiana precinct/subcounty President and U.S. Senate rows, state-native turnout denominators, precinct geometry, historical baselines, and audit/recount/CVR/incident/correction records before upgrading beyond supplemental local review."
+      "caveats": "Archived ENR category files contain 92 county RegionSummary rows, not precinct rows. Official turnout is county-level voters-voting/registered-voter context from the Indiana Election Division report. MIT/OpenElections review rows are supplemental advisory inputs with published Indiana caveats; certified totals remain official Indiana ENR. Equipment context is county-level administration context only.",
+      "nextAction": "Request official Indiana precinct/subcounty President and U.S. Senate rows, precinct turnout denominators, precinct geometry, normalized historical baselines, and audit/recount/CVR/incident/correction records before upgrading beyond supplemental local review."
     },
     {
       "state": "KS",

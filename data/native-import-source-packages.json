@@ -673,31 +673,81 @@
       "state": "IN",
       "name": "Indiana",
       "priority": 1,
-      "currentStatus": "supplemental_precinct_review_loaded_official_precinct_rows_missing",
+      "currentStatus": "official_county_results_turnout_loaded_supplemental_precinct_review_official_precinct_rows_missing",
       "officialSourcePages": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
         "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/site/data/JurR_*_B.json&from=20241101&to=20250131&output=json",
         "https://enr.indianavoters.in.gov/archive/2024General/index.html",
-        "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/archive/2024General/data/JurR_*_B.json&from=20241101&to=20250131&output=json"
+        "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/archive/2024General/data/JurR_*_B.json&from=20241101&to=20250131&output=json",
+        "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
+        "https://www.in.gov/sos/elections/election-commission/election-results/",
+        "https://www.in.gov/sos/elections/statistics-and-maps/",
+        "https://www.in.gov/sos/elections/indiana-recount-commission/"
       ],
       "requiredArtifacts": [
         "official precinct-level or county-subdivision result rows for President, if Indiana publishes or provides them",
         "official precinct-level or county-subdivision result rows for U.S. Senate at the same reporting-unit grain, if Indiana publishes or provides them",
-        "state-native turnout and registered-voter denominator rows by county or lower reporting unit",
+        "precinct or lower-level turnout and registered-voter denominator rows if same-grain turnout screening is required",
         "precinct or local reporting-unit boundary geometry, if subcounty map overlays are required",
         "audit, recount, CVR availability, incident, correction, and certification records for 2024 administration context",
-        "2020, 2016, and 2012 historical presidential baselines with source provenance",
+        "normalized 2020, 2016, and 2012 historical presidential baselines from official Indiana archive sources",
+        "official county 2024 turnout and registration rows are loaded from the Indiana Election Division PDF",
         "supplemental MIT/OpenElections President and U.S. Senate local review rows are loaded for advisory flag calculation",
         "Verified Voting county equipment context is loaded as secondary administration context only"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; indianaEnrJurisdictionDirectoryInventory collected for official county JurR inventory; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. A new parser remains needed if official precinct/subcounty Indiana candidate rows are obtained.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified county totals, and official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags can now be calculated from MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, state-native turnout denominators, precinct geometry, historical baselines, and audit/recount/CVR/incident/correction records remain preferred if available from the Indiana Election Division or county election offices.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official Indiana county turnout from scripts/normalize-in-turnout.mjs; indianaEnrJurisdictionDirectoryInventory collected for official county JurR inventory; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. A new parser remains needed if official precinct/subcounty Indiana candidate rows are obtained.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified county totals, official Indiana Election Division county turnout/registration rows are now normalized, and official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags can be calculated from MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, precinct geometry, normalized historical baselines, and audit/recount/CVR/incident/correction records remain preferred if available from the Indiana Election Division or county election offices.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"
-      ]
+      ],
+      "availableArtifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Indiana Election Division archived 2024 General ENR President county JSON",
+          "sourceUrl": "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
+          "localFile": "data/in-2024-official-results/OffCatC_1019_A.json",
+          "parserHint": "indianaEnrCountyJson aggregates RegionSummary candidate rows by county."
+        },
+        "countyComparisonRows": {
+          "sourceTitle": "Indiana Election Division archived 2024 General ENR U.S. Senate county JSON",
+          "sourceUrl": "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
+          "localFile": "data/in-2024-official-results/OffCatC_1006_A.json",
+          "level": "county",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "indianaEnrCountyJson comparisonFile loads RegionSummary candidate rows by county."
+        },
+        "localReviewRows": {
+          "sourceTitle": "MIT Election Data and Science Lab supplemental Indiana precinct rows",
+          "sourceUrl": "https://doi.org/10.7910/DVN/NYTPDU",
+          "localFile": "data/in-2024-mit-local-review.csv",
+          "level": "precinct_supplemental",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "localComparisonCsv; supplemental advisory rows only until official same-grain rows are obtained."
+        },
+        "turnout": {
+          "sourceTitle": "Indiana Election Division 2024 General Election Turnout and Registration report",
+          "sourceUrl": "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
+          "localFile": "data/in-2024-general-turnout.csv",
+          "level": "county",
+          "denominator": "Registered Voters",
+          "ballotsCast": "Voters Voting",
+          "parserHint": "Run node scripts/normalize-in-turnout.mjs after replacing data/in-2024-general-turnout-report.pdf."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2718%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/in-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Indiana 2024 data coverage inventory",
+          "localFile": "data/in-2024-data-coverage-inventory.json",
+          "parserHint": "Source-search inventory only; not a vote parser."
+        }
+      }
     },
     {
       "state": "IA",
