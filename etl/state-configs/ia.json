@@ -70,6 +70,50 @@
       "timestampBasis": "Wave 7 source-discovery pass completed July 1, 2026.",
       "confidence": "State-specific inventory documenting loaded official result, turnout, and county-geometry sources plus remaining ballot-method normalization, precinct-geometry, audit, recount, CVR, and incident request paths. It is provenance context only and does not add vote rows.",
       "status": "candidate"
+    },
+    {
+      "id": "ia-2024-clarity-vote-type-method-lead",
+      "category": "Official Clarity VoteType vote-method candidate rows",
+      "url": "https://electionresults.iowa.gov/IA/122322/web.345435/",
+      "localFile": "data/ia-2024-county-detailxml-reports",
+      "parser": "notImplementedIowaClarityVoteTypeNormalizer",
+      "authority": "Iowa Secretary of State",
+      "timestampBasis": "Wave 9 source-inspection pass confirmed VoteType rows in the loaded county detail XML reports on July 1, 2026.",
+      "confidence": "Official county detail XML reports include candidate-by-VoteType rows such as Election Day and Absentee for President and U.S. House. These are candidate contest votes by method, not all-ballot turnout by method, so they remain a candidate source until a dedicated vote-method normalizer and public caveat are added.",
+      "status": "candidate"
+    },
+    {
+      "id": "ia-2024-official-precinct-shapefile-lead",
+      "category": "Official precinct boundary shapefile candidate source",
+      "url": "https://sos.iowa.gov/shapefiles-county-precincts",
+      "localFile": "data/ia-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Iowa Secretary of State",
+      "timestampBasis": "Wave 9 source-discovery pass confirmed Iowa SOS county precinct shapefile index on July 1, 2026.",
+      "confidence": "Official Iowa SOS shapefile index provides county precinct ZIP links, but statewide precinct geometry is not collected, normalized, or crosswalked to Clarity precinct names in this package. County geometry remains the active map join source.",
+      "status": "candidate"
+    },
+    {
+      "id": "ia-2024-general-precinct-audit-lead",
+      "category": "Official 2024 general precinct audit candidate source",
+      "url": "https://sos.iowa.gov/sites/default/files/2025-02/2024PrecinctAudits.png",
+      "localFile": "data/ia-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Iowa Secretary of State",
+      "timestampBasis": "Wave 9 source-discovery pass confirmed the official SOS 2024 General Election County Precinct Audits image link on July 1, 2026.",
+      "confidence": "Official audit source lead only. Scripted download returned a Cloudflare browser challenge from this environment, and selected-precinct audit outcome rows are not normalized.",
+      "status": "candidate"
+    },
+    {
+      "id": "ia-official-historical-canvass-leads",
+      "category": "Official historical county canvass replacement leads",
+      "url": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "localFile": "data/ia-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Iowa Secretary of State",
+      "timestampBasis": "Wave 9 source-discovery pass confirmed Iowa SOS historical election-result/statistical report index on July 1, 2026.",
+      "confidence": "The active historical baseline CSV already covers 2012, 2016, and 2020 as secondary context. This official SOS index is documented as a future replacement lead before changing the loaded historical baseline source.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -87,7 +131,7 @@
   "expected": {
     "jurisdictions": 99,
     "resultRows": 99,
-    "sources": 6,
+    "sources": 10,
     "geometryFeatures": 99,
     "stateTotal": 1663506,
     "trump": 927019,

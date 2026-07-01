@@ -4,12 +4,15 @@
   "stateName": "Iowa",
   "electionYear": 2024,
   "checkedAt": "2026-07-01",
-  "purpose": "Wave 7 Iowa source-coverage inventory for loaded official result, review, turnout, and geometry artifacts plus remaining ballot-method normalization, precinct-geometry, audit, recount, CVR, and incident request paths.",
+  "purpose": "Wave 9 Iowa source-coverage inventory for loaded official result, review, turnout, county geometry, and equipment artifacts plus official vote-method, precinct-geometry, audit, historical-replacement, recount, CVR, incident, correction, and litigation source leads.",
   "firstReads": {
     "developerIndex": "docs/developer/index.md was not present in the worktree.",
     "requiredFilesRead": [
       "AGENTS.md",
+      "docs/developer/index.md (missing in worktree; absence recorded)",
       "README.md",
+      "package.json",
+      "scripts/state-metadata.mjs",
       "etl/state-configs/ia.json",
       "data/source-acquisition-tiers.json",
       "data/native-import-source-packages.json",
@@ -79,6 +82,18 @@
         ]
       },
       "confidenceNotes": "Secondary contextual baseline only. Do not use as replacement certified totals."
+    },
+    {
+      "id": "ia-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/19",
+      "localArtifactPath": "data/verifiedvoting-ia-2024-equipment.json; data/ia-2024-equipment-context.csv",
+      "reportingGrain": "county administration context",
+      "parserOrNormalizationPath": "scripts/collect-equipment-sources.mjs and scripts/normalize-verifiedvoting-equipment.mjs via admin source package registry",
+      "expectedRowsOrTotals": {
+        "equipmentRows": 99
+      },
+      "confidenceNotes": "Equipment context is jurisdiction-level metadata only. It is not a vote, turnout, audit, incident, or precinct-uniformity source."
     }
   ],
   "sourceFindings": [
@@ -90,28 +105,40 @@
       "localArtifactPath": "data/ia-2024-county-detailxml-reports/*/detailxml.zip",
       "reportingGrain": "precinct candidate vote type",
       "parserOrNormalizationPath": "not currently normalized into the public vote-method CSV/API contract",
-      "evidence": "Sample county detail XML includes Choice/VoteType rows for President with Election Day and Absentee precinct votes, plus VoterTurnout precinct ballotsCast and totalVoters fields.",
-      "caveats": "The current public vote-method loader reads normalized CSVs under data/eac-2024-vote-methods. Iowa Clarity VoteType rows are candidate/contest votes by method, not all-ballot turnout by method, so a dedicated normalizer and UI caveat are needed before publication."
+      "evidence": "Loaded county detail XML reports include Choice/VoteType rows for President and U.S. House with method labels such as Election Day and Absentee. The public vote-method loader currently reads data/eac-2024-vote-methods/*.csv and has no Iowa Clarity VoteType normalizer.",
+      "caveats": "VoteType rows are candidate/contest votes by method, not all-ballot turnout by method. Do not expose them through the public vote-method API/UI until a dedicated normalizer, reconciliation checks, and UI caveat exist.",
+      "feasibility": "Feasible as a future candidate-by-method normalizer if it clearly labels rows as contest-vote method splits, reconciles candidate VoteType sums to contest candidate totals, handles null precinct groupResults, and avoids presenting the rows as all-ballot turnout by method."
     },
     {
       "topic": "precinctBoundaryGeometry",
-      "status": "needs_data",
-      "sourceAuthority": "Iowa Secretary of State and county auditors",
-      "sourceUrl": "https://sos.iowa.gov/elections/auditors/",
-      "localArtifactPath": "not collected",
-      "reportingGrain": "precinct boundary geometry or precinct crosswalk",
+      "status": "official_source_identified_not_collected",
+      "sourceAuthority": "Iowa Secretary of State",
+      "sourceUrl": "https://sos.iowa.gov/shapefiles-county-precincts",
+      "localArtifactPath": "not collected; source lead documented in this inventory",
+      "reportingGrain": "county precinct boundary shapefile ZIPs",
       "parserOrNormalizationPath": "not implemented",
-      "caveats": "The current package contains county geometry only. Scripted access to the SOS auditors page returned a Cloudflare browser challenge from this environment on July 1, 2026; use browser/manual follow-up or county auditor requests for statewide precinct boundary GIS or a reporting-unit crosswalk."
+      "caveats": "The current package contains county geometry only. A future geometry task must collect the official ZIPs, normalize to web-safe GeoJSON, and build a Clarity precinct-name crosswalk before subcounty overlays can be trusted.",
+      "relatedSourceUrls": [
+        "https://sos.iowa.gov/precinct-and-district-shapefiles",
+        "https://sos.iowa.gov/shapefiles-city-precincts",
+        "https://sos.iowa.gov/redistricting-reprecincting"
+      ],
+      "evidence": "The Iowa SOS redistricting/reprecincting pages publish precinct and district shapefile indexes, including county precinct shapefile ZIP links."
     },
     {
       "topic": "postElectionAudit",
-      "status": "candidate_request_path",
-      "sourceAuthority": "Iowa General Assembly; Iowa Secretary of State and county commissioners",
-      "sourceUrl": "https://www.legis.iowa.gov/docs/code/50.51.pdf",
-      "localArtifactPath": "not collected",
-      "reportingGrain": "selected precinct audit report",
+      "status": "official_source_identified_not_normalized",
+      "sourceAuthority": "Iowa Secretary of State; Iowa General Assembly; county commissioners",
+      "sourceUrl": "https://sos.iowa.gov/sites/default/files/2025-02/2024PrecinctAudits.png",
+      "localArtifactPath": "not collected; scripted download returned a Cloudflare challenge",
+      "reportingGrain": "2024 general-election county precinct-audit selection image and county audit report path",
       "parserOrNormalizationPath": "not implemented",
-      "caveats": "Iowa Code section 50.51 establishes election audits and county audit reports to the state commissioner, but this pass did not identify or normalize 2024 selected-precinct audit reports or outcomes. Request the 2024 county audit reports and any statewide selection list before loading audit context."
+      "caveats": "The image/source lead is not a normalized selected-precinct/outcome table. Scripted download from this environment returned a Cloudflare challenge on July 1, 2026, so use browser/manual collection or a request-produced artifact before loading audit rows.",
+      "relatedSourceUrls": [
+        "https://sos.iowa.gov/iowans/election-results-statistics",
+        "https://www.legis.iowa.gov/docs/code/50.51.pdf"
+      ],
+      "evidence": "The Iowa SOS election results/statistics page links an official 2024 General Election County Precinct Audits image. Iowa Code section 50.51 establishes the audit process and county reports to the state commissioner."
     },
     {
       "topic": "recountAndAdministrativeAudit",
@@ -119,18 +146,19 @@
       "sourceAuthority": "Iowa General Assembly; Iowa Secretary of State and county commissioners",
       "sourceUrl": "https://www.legis.iowa.gov/docs/code/50.48.pdf",
       "relatedSourceUrls": [
-        "https://www.legis.iowa.gov/docs/code/50.50.pdf"
+        "https://www.legis.iowa.gov/docs/code/50.50.pdf",
+        "https://sos.iowa.gov/elections/auditors/official-directory"
       ],
       "localArtifactPath": "not collected",
       "reportingGrain": "contest/county recount or administrative audit report",
       "parserOrNormalizationPath": "not implemented",
-      "caveats": "Iowa Code sections 50.48 and 50.50 document recount and administrative audit mechanics. No official 2024 recount request/result packet or administrative audit outcome rows were collected in this pass."
+      "caveats": "Iowa Code sections 50.48 and 50.50 document recount and administrative audit mechanics. No official 2024 recount request/result packet or administrative audit outcome rows were collected in this pass; use SOS/county auditor request paths for follow-up."
     },
     {
       "topic": "cvrAvailability",
       "status": "needs_data",
       "sourceAuthority": "Iowa Secretary of State and county auditors",
-      "sourceUrl": "https://sos.iowa.gov/elections/auditors/",
+      "sourceUrl": "https://sos.iowa.gov/elections/auditors/official-directory",
       "localArtifactPath": "not collected",
       "reportingGrain": "county CVR availability or records request response",
       "parserOrNormalizationPath": "not implemented",
@@ -144,19 +172,38 @@
       "localArtifactPath": "not collected",
       "reportingGrain": "incident, correction, litigation, or canvass-note record",
       "parserOrNormalizationPath": "not implemented",
-      "caveats": "No normalized official 2024 incident, correction, litigation, or canvass-note artifact is loaded. Keep any future rows source-linked and descriptive only; do not characterize them as misconduct or proof of election problems."
+      "caveats": "No normalized official 2024 incident, correction, litigation, or canvass-note artifact is loaded. Keep any future rows source-linked and descriptive only; do not characterize them as misconduct or proof of election problems.",
+      "relatedSourceUrls": [
+        "https://sos.iowa.gov/elections/auditors/official-directory"
+      ]
+    },
+    {
+      "topic": "officialHistoricalReplacementLeads",
+      "status": "official_source_identified_not_loaded",
+      "sourceAuthority": "Iowa Secretary of State",
+      "sourceUrl": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "localArtifactPath": "not collected; active context remains data/ia-historical-presidential-baseline.csv",
+      "reportingGrain": "county historical canvass/statistical report leads",
+      "parserOrNormalizationPath": "not implemented; current loaded parser remains scripts/collect-ia-historical-baseline.mjs and historicalPresidentialCsv",
+      "evidence": "The Iowa SOS election results/statistics page publishes official election-result and statistical-report links for historical cycles. The active Iowa baseline already has 297 county rows for 2012, 2016, and 2020 from secondary tables with state-source footnotes.",
+      "caveats": "Do not replace the loaded historical baseline until official 2012, 2016, and 2020 Iowa county presidential artifacts are collected and parsed reproducibly. Current historical rows remain contextual secondary baselines, not certified replacement totals."
     }
   ],
   "scriptedAccessNotes": [
     {
-      "url": "https://sos.iowa.gov/elections/results/",
+      "url": "https://sos.iowa.gov/iowans/election-results-statistics",
       "checkedAt": "2026-07-01",
-      "result": "Cloudflare browser challenge from Invoke-WebRequest; Clarity result package endpoints under electionresults.iowa.gov remain the reproducible official result source path."
+      "result": "Browser/web discovery identified official 2024 precinct results Excel, voter-registration totals, statistical reports, county precinct-audit image, and historical result/statistical-report leads. Direct scripted file download from sos.iowa.gov can return Cloudflare challenges from this environment."
     },
     {
-      "url": "https://sos.iowa.gov/elections/auditors/",
+      "url": "https://sos.iowa.gov/shapefiles-county-precincts",
       "checkedAt": "2026-07-01",
-      "result": "Cloudflare browser challenge from Invoke-WebRequest; use browser/manual follow-up or direct county auditor requests for precinct geometry, CVR availability, audit reports, and incident/correction context."
+      "result": "Official Iowa SOS county precinct shapefile index identified as a geometry lead. ZIP artifacts are not collected or normalized in this pass."
+    },
+    {
+      "url": "https://sos.iowa.gov/sites/default/files/2025-02/2024PrecinctAudits.png",
+      "checkedAt": "2026-07-01",
+      "result": "Official 2024 General Election County Precinct Audits source lead identified; Invoke-WebRequest returned a Cloudflare browser challenge, so no local audit image was committed."
     }
   ],
   "websiteApiDisplayPathChecked": [
@@ -164,13 +211,16 @@
     "/api/coverage?state=IA&year=2024",
     "/api/review-rows?state=IA&year=2024&limit=500&includeMetrics=true",
     "/api/turnout?state=IA&year=2024&limit=500",
+    "/api/vote-methods?state=IA&year=2024&limit=500",
     "/api/admin-sources?state=IA&year=2024",
-    "src/app/workspace-tabs.tsx Data & Sources, Turnout, Administration, and Review Export panels"
+    "/api/historical-baselines?state=IA&limit=500&includeMetrics=true",
+    "src/app/workspace-tabs.tsx Data & Sources, Turnout, History, Administration, Review Export, and Export/API panels"
   ],
   "remainingRisks": [
-    "No official statewide precinct boundary geometry is loaded, so current public map joins are county-level.",
-    "Clarity VoteType rows are confirmed in source XML, but no Iowa vote-method normalizer/public CSV is loaded yet.",
-    "Official 2024 selected audit reports, recount/admin audit outcomes, CVR availability, and incident/correction/litigation artifacts remain request-path tasks.",
-    "Historical baseline rows remain secondary context and should be replaced with official Iowa historical exports if a reproducible official source is collected."
+    "No official statewide precinct boundary geometry is loaded, so current public map joins are county-level. Official SOS county precinct shapefile ZIPs are identified but need collection, normalization, and Clarity precinct-name crosswalk work.",
+    "Clarity VoteType rows are confirmed in source XML, but no Iowa vote-method normalizer/public CSV is loaded yet. These rows are candidate contest votes by method, not all-ballot turnout by method.",
+    "The official SOS 2024 General Election County Precinct Audits image is identified, but no selected-precinct/outcome table is normalized and scripted download is Cloudflare-challenged from this environment.",
+    "Official 2024 recount/admin audit outcomes, CVR availability, and incident/correction/litigation artifacts remain request-path tasks.",
+    "Historical baseline rows remain secondary context and should be replaced only after official Iowa historical county presidential artifacts are collected and parsed reproducibly."
   ]
 }

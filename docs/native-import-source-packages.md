@@ -174,6 +174,22 @@ Caveats: review rows are county/reporting-jurisdiction President-versus-U.S.-Sen
 Expected validation: 100 county result rows, 100 county geometry features, 5,699,141 presidential votes, 2,898,423 Trump votes, 2,715,375 Harris votes, 85,343 other presidential votes, 2,658 Real Precinct=Y review rows, 100 EAC fallback turnout rows, and 300 historical baseline rows across 2012, 2016, and 2020.
 
 Caveats: certified county totals aggregate all official NCSBE reporting units, while review rows filter to Real Precinct=Y and exclude early voting, absentee, provisional, transfer, and other non-real reporting units from precinct-only review charts. Historical baselines are county-level context only. Remaining gaps are state-native turnout normalization, map-ready precinct boundary geometry, normalized audit/recount/CVR availability, and incident/correction/litigation records.
+## Iowa Wave 9 Update
+
+- Config: `etl/state-configs/ia.json`
+- Authority: Iowa Secretary of State; U.S. Census Bureau; Verified Voting equipment context
+- County and precinct result source: `data/ia-2024-county-detailxml-reports`, collected from the official Iowa SOS Clarity results app
+- Comparison contest: U.S. House by district, same county detail XML reports, with district-based advisory caveat
+- Turnout source: official county detail XML `VoterTurnout` precinct rows, using `ballotsCast` and `totalVoters`
+- County boundary: `data/ia-counties.geojson`; official SOS county precinct shapefile ZIPs are now documented source leads but not collected or crosswalked
+- Historical baseline source: `data/ia-historical-presidential-baseline.csv`, secondary contextual 2012/2016/2020 county rows; official SOS historical result/statistical report leads are documented for future replacement
+- Administration/source inventory: `data/ia-2024-data-coverage-inventory.json`; includes Clarity VoteType vote-method feasibility, SOS precinct shapefile leads, the official 2024 General Election County Precinct Audits image lead, and recount/CVR/incident/correction/litigation request paths
+- Equipment context: `data/ia-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation: 99 county result rows, 99 county geometry features, 1,653 precinct review rows, 1,651 precinct turnout rows, and 297 contextual historical baseline rows across 2012, 2016, and 2020.
+
+Remaining gaps: an Iowa Clarity VoteType normalizer and public vote-method caveat, collected and crosswalked precinct geometry, normalized 2024 audit selection/outcome rows, official historical baseline replacement artifacts, and normalized recount/CVR availability/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
+
 ## Native ETL Acceptance Criteria
 
 For each state, the native importer should fail before promotion if:
