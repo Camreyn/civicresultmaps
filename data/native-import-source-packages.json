@@ -930,7 +930,7 @@
       "state": "IN",
       "name": "Indiana",
       "priority": 1,
-      "currentStatus": "official_county_results_turnout_loaded_supplemental_precinct_review_official_precinct_rows_missing",
+      "currentStatus": "official_county_results_turnout_2016_2020_historical_loaded_supplemental_precinct_review_official_precinct_rows_missing",
       "officialSourcePages": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
@@ -940,22 +940,25 @@
         "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
         "https://www.in.gov/sos/elections/election-commission/election-results/",
         "https://www.in.gov/sos/elections/statistics-and-maps/",
-        "https://www.in.gov/sos/elections/indiana-recount-commission/"
+        "https://www.in.gov/sos/elections/indiana-recount-commission/",
+        "https://enr.indianavoters.in.gov/archive/2016General/data/OffCatC_1767_A.json",
+        "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json"
       ],
       "requiredArtifacts": [
         "official precinct-level or county-subdivision result rows for President, if Indiana publishes or provides them",
-        "official precinct-level or county-subdivision result rows for U.S. Senate at the same reporting-unit grain, if Indiana publishes or provides them",
+        "official same-grain U.S. Senate rows for advisory comparison if President rows are available below county",
         "precinct or lower-level turnout and registered-voter denominator rows if same-grain turnout screening is required",
         "precinct or local reporting-unit boundary geometry, if subcounty map overlays are required",
         "audit, recount, CVR availability, incident, correction, and certification records for 2024 administration context",
-        "normalized 2020, 2016, and 2012 historical presidential baselines from official Indiana archive sources",
+        "official 2012 county presidential baseline artifact if complete 2012/2016/2020 historical context is required",
         "official county 2024 turnout and registration rows are loaded from the Indiana Election Division PDF",
         "supplemental MIT/OpenElections President and U.S. Senate local review rows are loaded for advisory flag calculation",
-        "Verified Voting county equipment context is loaded as secondary administration context only"
+        "Verified Voting county equipment context is loaded as secondary administration context only",
+        "official 2016 and 2020 county historical presidential baselines are loaded from ENR archive JSON"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official Indiana county turnout from scripts/normalize-in-turnout.mjs; indianaEnrJurisdictionDirectoryInventory collected for official county JurR inventory; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. A new parser remains needed if official precinct/subcounty Indiana candidate rows are obtained.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified county totals, official Indiana Election Division county turnout/registration rows are now normalized, and official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags can be calculated from MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, precinct geometry, normalized historical baselines, and audit/recount/CVR/incident/correction records remain preferred if available from the Indiana Election Division or county election offices.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, and official 2016/2020 county historical baselines are normalized. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows and an official script-readable 2012 county presidential baseline remain preferred/request-path items.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"

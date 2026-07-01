@@ -83,6 +83,39 @@
       "status": "loaded"
     },
     {
+      "id": "in-2016-official-enr-president",
+      "category": "Official archived 2016 general election county presidential JSON results",
+      "url": "https://enr.indianavoters.in.gov/archive/2016General/data/OffCatC_1767_A.json",
+      "localFile": "data/in-2016-official-president-county.json",
+      "parser": "indianaEnrHistoricalCountyRaceJsonSource",
+      "authority": "Indiana Election Division",
+      "timestampBasis": "Official Indiana Election Division ENR archive for November 8, 2016 General Election; ENR write time April 22, 2017.",
+      "confidence": "Official county-level presidential ENR category JSON retained as source artifact for contextual historical baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "in-2020-official-enr-president",
+      "category": "Official archived 2020 general election county presidential JSON results",
+      "url": "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json",
+      "localFile": "data/in-2020-official-president-county.json",
+      "parser": "indianaEnrHistoricalCountyRaceJsonSource",
+      "authority": "Indiana Election Division",
+      "timestampBasis": "Official Indiana Election Division ENR archive for November 3, 2020 General Election; ENR write time July 17, 2021.",
+      "confidence": "Official county-level presidential ENR category JSON retained as source artifact for contextual historical baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "in-historical-presidential-official-enr",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json",
+      "localFile": "data/in-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Indiana Election Division",
+      "timestampBasis": "County presidential rows normalized by scripts/collect-in-historical-baseline.mjs from official Indiana ENR archives for 2016 and 2020.",
+      "confidence": "Official county-level historical presidential baselines used for context only. The 2012 official ENR archive path remains source-cited but was not script-readable from the checked JSON paths, so 2012 rows are not included yet.",
+      "status": "loaded"
+    },
+    {
       "id": "in-2024-equipment-context",
       "category": "County election equipment context",
       "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18",
@@ -111,7 +144,7 @@
   "expected": {
     "jurisdictions": 92,
     "resultRows": 92,
-    "sources": 8,
+    "sources": 11,
     "geometryFeatures": 92,
     "stateTotal": 2936677,
     "trump": 1720347,
@@ -126,7 +159,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "indianaEnrCountyJson",
@@ -146,7 +179,7 @@
   "coverageInventory": {
     "localFile": "data/in-2024-data-coverage-inventory.json",
     "checkedAt": "2026-07-01",
-    "status": "official_county_results_turnout_loaded_supplemental_precinct_review",
+    "status": "official_county_results_turnout_historical_loaded_supplemental_precinct_review",
     "officialSourceSearchPath": [
       "https://enr.indianavoters.in.gov/archive/2024General/index.html",
       "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
@@ -160,14 +193,27 @@
       "Official Indiana ENR category JSON currently supports county certified President and U.S. Senate rows, not precinct/subcounty candidate rows.",
       "Official JurR county JSON inventory files preserve county jurisdiction/contact and reporting-region structures but do not contain President or U.S. Senate candidate result rows.",
       "Local review rows remain supplemental MIT/OpenElections advisory inputs until official same-grain precinct/subcounty President and U.S. Senate rows are obtained.",
-      "Official Indiana turnout is loaded at county grain; precinct turnout denominators and precinct boundary geometry remain uncollected."
+      "Official Indiana turnout is loaded at county grain; precinct turnout denominators and precinct boundary geometry remain uncollected.",
+      "Indiana historical baseline rows are loaded for official 2016 and 2020 county presidential ENR archives only; 2012 remains source-cited but unnormalized pending a script-readable official artifact."
     ],
     "remainingGaps": [
       "official precinct/subcounty President rows",
       "official same-grain precinct/subcounty U.S. Senate comparison rows",
       "precinct/local reporting-unit boundary geometry",
-      "normalized official 2012/2016/2020 county presidential historical baselines",
+      "official 2012 county presidential historical baseline artifact",
       "official audit/recount/CVR availability/incident/correction records normalized for Indiana"
     ]
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "in-historical-presidential-official-enr",
+    "warning": "Indiana historical baseline rows are official county-level presidential results from Indiana Election Division ENR archives for 2016 and 2020. Use them as contextual baseline rows, not as 2024 certified data. The official 2012 archive page is source-cited in the coverage inventory, but the checked ENR JSON paths did not expose a script-readable county presidential category artifact, so 2012 remains a request/follow-up gap.",
+    "expected": {
+      "rowCount": 184,
+      "years": [
+        2016,
+        2020
+      ]
+    }
   }
 }
