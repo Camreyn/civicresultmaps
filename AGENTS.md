@@ -95,7 +95,9 @@ For the worked state, report:
 
 If calculated indicators are zero, state why: no review rows, below threshold, unsupported grain, missing same-grain comparison rows, or a suspected importer/display issue. Do not describe advisory indicators as proof of fraud or misconduct.
 
-Production promotion is separate. Do not run `npm run native:promote -- .etl/staging/<state>-2024-staging.json`, `npm run native:counts -- <state>`, or production API verification as a write/check cycle unless production promotion has been explicitly authorized for that state. When promotion is authorized, rerun the indicator report before promotion and confirm `storedIndicatorRows` after promotion.
+Production promotion is separate for workers. State workers must not run `npm run native:promote -- .etl/staging/<state>-2024-staging.json`, `npm run native:counts -- <state>`, or production API verification as a write/check cycle from their worker branches.
+
+For managed-thread coordinator waves, production promotion is authorized after the wave's PRs are merged and any shared-file conflicts are reconciled. The coordinator must promote state-by-state from clean merged `origin/main`, rerun the indicator report before promotion, run `npm run native:promote -- .etl/staging/<state>-2024-staging.json`, confirm `storedIndicatorRows` with `npm run native:counts -- <state>`, and then rerun relevant production validators such as `validate:maps`, `validate:provenance`, `validate:source-packages`, `validate:turnout-packages`, and `validate:admin-packages`.
 
 Prefer these checks:
 
