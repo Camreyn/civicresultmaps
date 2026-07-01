@@ -1197,30 +1197,47 @@
       "stateName": "New York",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_equipment",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
       "exportFormats": [
         "official PDF",
-        "normalized CSV"
+        "normalized CSV",
+        "EAC fallback turnout CSV",
+        "Verified Voting equipment context"
       ],
       "sourceUrls": [
-        "https://elections.ny.gov/2024-election-results"
+        "https://elections.ny.gov/election-results",
+        "https://results.elections.ny.gov/document/476",
+        "https://ny.elstats-staging.com/eng/files/serve/476",
+        "https://ny.elstats-staging.com/eng/files/serve/106",
+        "https://ny.elstats-staging.com/eng/files/serve/116",
+        "https://ny.elstats-staging.com/eng/files/serve/128",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36"
       ],
       "exampleUrls": [],
       "availableFields": [
-        "county President rows",
-        "county U.S. Senate rows"
+        "2024 county President rows from official NYSBOE archive PDF",
+        "2024 county U.S. Senate comparison rows from the same official archive PDF",
+        "EAC 2024 county/jurisdiction turnout fallback rows",
+        "county geometry",
+        "2012/2016/2020 county presidential historical baselines from official NYSBOE PDFs",
+        "Verified Voting county equipment context"
       ],
       "missingFields": [
-        "precinct/local rows",
-        "state-native turnout denominator"
+        "official precinct/local reporting-unit President rows from NYSBOE or county boards",
+        "official same-grain precinct/local U.S. Senate comparison rows from NYSBOE or county boards",
+        "state-native turnout/registration denominator artifact to replace EAC fallback",
+        "official CVR availability inventory",
+        "official audit/recount/correction/incident/litigation record package",
+        "precinct boundary geometry"
       ],
-      "parserStatus": "county PDF package loaded",
+      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv review rows, EAC turnout fallback, official PDF historical baseline, and county equipment context; official precinct/subcounty parser still needs a source package",
       "manualReviewBurden": "medium",
-      "confidence": "loaded",
-      "caveats": "Current rows are county-level advisory inputs.",
-      "nextAction": "Find official NY local reporting-unit exports before upgrading review coverage."
+      "confidence": "loaded_with_caveat",
+      "caveats": "Current certified results and historical baselines are official county-level rows. Local review rows are supplemental OpenElections county-board source normalizations and legacy NYC rows, not a complete official NYSBOE precinct package. EAC turnout fallback and Verified Voting equipment context remain advisory metadata.",
+      "nextAction": "Request or locate official NYSBOE/county precinct-level President and U.S. Senate rows plus state-native turnout denominators, CVR availability, audit/recount/correction/incident records, and precinct geometry."
     },
     {
       "state": "OH",

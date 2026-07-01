@@ -94,6 +94,7 @@
     "etl:promote:ms:ocr-recovery": "node scripts/promote-ms-ocr-recovery-text.mjs",
     "etl:review:ms:ocr-combine": "node scripts/combine-ms-ocr-review-artifacts.mjs --corrections data/ms-2024-ocr-reviewed-corrections.csv",
     "etl:prepare:ny": "node scripts/normalize-ny-local-review.mjs",
+    "etl:collect:ny:historical": "node scripts/collect-ny-historical-baseline.mjs",
     "etl:import:ny": "npm run etl:prepare:ny && python -m civic_etl.cli import --config etl/state-configs/ny.json --out .etl/staging",
     "etl:collect:wi:historical": "node scripts/collect-wi-historical-baseline.mjs",
     "etl:normalize:wi:audit": "node scripts/normalize-wi-audit-report.mjs",
