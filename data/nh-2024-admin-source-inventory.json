@@ -1,0 +1,68 @@
+{
+  "state": "NH",
+  "stateName": "New Hampshire",
+  "electionYear": 2024,
+  "checkedAt": "2026-06-30",
+  "authority": "New Hampshire Secretary of State and official public records/GIS source paths",
+  "sameGrainComparison": {
+    "status": "loaded",
+    "reportingGrain": "town_ward",
+    "contest": "U.S. House, congressional districts 1 and 2",
+    "sourceUrls": [
+      "https://web.archive.org/web/20250311214424id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-1_3.xlsx",
+      "https://web.archive.org/web/20250201102742id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-2_4.xlsx"
+    ],
+    "localArtifacts": [
+      "data/nh-2024-ge-congressional-district-1.xlsx",
+      "data/nh-2024-ge-congressional-district-2.xlsx",
+      "data/nh-2024-town-ward-president-governor.csv"
+    ],
+    "parser": "scripts/normalize-nh-general-workbooks.mjs",
+    "caveat": "U.S. House rows are same town/ward grain but district-based, not a single statewide contest. Use as a cleaner same-grain comparison than Governor, with district-contest caveats visible."
+  },
+  "turnoutDenominators": {
+    "status": "loaded",
+    "reportingGrain": "town_ward",
+    "sourceUrls": [
+      "https://web.archive.org/web/20250611055417id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-ballots-cast_14.xls",
+      "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx"
+    ],
+    "localArtifacts": [
+      "data/nh-2024-ge-ballots-cast.xls",
+      "data/nh-2024-ge-names-on-checklist.xlsx",
+      "data/nh-2024-town-ward-president-governor.csv"
+    ],
+    "parser": "scripts/normalize-nh-general-workbooks.mjs",
+    "ballotsCastDetailTotal": 831468,
+    "namesOnChecklistTotal": 1013075,
+    "sameDayRegistrationTotal": 96623,
+    "caveat": "The ballots-cast workbook county summary totals 831,467 while detailed town/ward rows sum to 831,468 after the source's Strafford County correction note. The normalized rows retain detailed town/ward values and keep this reconciliation caveat."
+  },
+  "geometry": {
+    "status": "blocked",
+    "loadedArtifact": "data/nh-counties.geojson",
+    "loadedLevel": "county",
+    "needed": "Official town/ward geometry or a reproducible town-to-ward boundary crosswalk for subcounty overlays.",
+    "requestPath": "Ask New Hampshire Secretary of State or the state GIS clearinghouse for 2024 general-election town/ward reporting-unit boundaries that match the SOS workbook labels.",
+    "caveat": "County geometry is loaded; town/ward geometry is not included and should not be inferred from result workbook names alone."
+  },
+  "recountsCorrectionsIncidentsLitigation": {
+    "status": "partial_inventory",
+    "sourceUrl": "https://www.sos.nh.gov/2024-general-election-results",
+    "archivedRecountArtifactsIdentified": [
+      "2024-ge-recount-results-sheet-election-results-grafton-dist-7-tot.xlsx",
+      "2024-ge-recount-results-sheet-election-results-hills-dist-9-tot.xlsx",
+      "2024-ge-recount-results-sheet-election-results-hills-dist-17-tot.xlsx",
+      "2024-ge-recount-results-sheet-election-results-hills-dist-18-tot.xlsx",
+      "2024-ge-recount-results-sheet-election-results-hills-dist-24-tot.xlsx",
+      "2024-ge-recount-results-sheet-election-results-strafford-dist-4-tot.xlsx",
+      "2024-ge-recount-results-sheet-election-results-sullivan-dist-5-tot.xlsx"
+    ],
+    "caveat": "Archived official recount result sheets were identified for legislative districts, but no normalized recount, incident, correction, or litigation row package is loaded in this PR."
+  },
+  "auditAndCvr": {
+    "status": "needs_source_inventory",
+    "needed": "Official 2024 post-election audit artifacts, CVR availability statements or request paths, and any tabulator-log or custody records that the state or local offices make public.",
+    "caveat": "No CVR dataset, post-election audit result table, or per-unit discrepancy artifact is loaded. Treat this as a source-request queue, not evidence of an administration issue."
+  }
+}

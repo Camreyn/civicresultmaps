@@ -878,22 +878,22 @@
       "year": 2024,
       "priority": 34,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
-      "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/nh-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
-      "expectedTurnoutRows": 320,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "sourceLevel": "town_ward",
+      "denominatorType": "namesOnChecklist",
+      "denominatorTiming": "postElectionNamesOnChecklist",
+      "sourceTitle": "Official town/ward ballots-cast and names-on-checklist workbooks",
+      "sourceUrl": "https://www.sos.nh.gov/2024-general-election-results",
+      "localFile": "data/nh-2024-town-ward-president-governor.csv",
+      "parser": "newHampshireTownWardCsv",
+      "expectedTurnoutRows": 304,
+      "statusNote": "Promoted turnout rows can now be generated from official New Hampshire Secretary of State ballots-cast and names-on-checklist workbooks normalized into the NH town/ward CSV.",
+      "nextAction": "Keep the one-vote ballots-cast summary/detail caveat visible; request town/ward geometry and historical turnout context if subcounty overlays are added.",
       "coverage": {
-        "jurisdictionRows": 320,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nh-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 1008952,
-        "ballotsCast": 829090,
-        "warningRows": 16
+        "jurisdictionRows": 304,
+        "registeredVoterDenominatorFile": "data/nh-2024-ge-names-on-checklist.xlsx",
+        "registeredVoters": 1013075,
+        "ballotsCast": 831468,
+        "warningRows": 0
       }
     },
     {
@@ -1477,6 +1477,35 @@
       "caveats": [
         "Turnout rows are precinct-level VoterTurnout rows inside official county detail.xml reports.",
         "The current map package includes county geometry only; official precinct boundary geometry was not identified in this package."
+      ]
+    },
+    {
+      "state": "NH",
+      "name": "New Hampshire",
+      "authority": "New Hampshire Secretary of State",
+      "sourceLevel": "town_ward",
+      "turnoutSource": {
+        "sourceTitle": "New Hampshire SOS ballots-cast workbook",
+        "sourceUrl": "https://web.archive.org/web/20250611055417id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-ballots-cast_14.xls",
+        "localFile": "data/nh-2024-ge-ballots-cast.xls",
+        "parser": "newHampshireTownWardCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "New Hampshire SOS names-on-checklist workbook",
+        "sourceUrl": "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx",
+        "localFile": "data/nh-2024-ge-names-on-checklist.xlsx",
+        "parser": "newHampshireTownWardCsv",
+        "denominatorType": "namesOnChecklist",
+        "denominatorTiming": "postElectionNamesOnChecklist"
+      },
+      "expected": {
+        "turnoutRows": 304,
+        "registeredVoters": 1013075,
+        "ballotsCast": 831468
+      },
+      "caveats": [
+        "Detailed town/ward ballots-cast rows sum to 831,468 while the workbook county summary totals 831,467 after a source correction note.",
+        "Town/ward geometry is not part of this package."
       ]
     }
   ],

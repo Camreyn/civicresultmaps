@@ -173,3 +173,16 @@ Expected validation:
 | Turnout rows | 46 |
 
 Caveats: review rows are President-versus-U.S.-House rather than a single statewide comparison contest. Precinct boundary geometry is not committed; the official SC VREMS precinct/polling-place export is a locator/reference path, not map-ready boundary geometry. Historical baselines and normalized audit/CVR/incident/recount/litigation rows remain future work.
+
+## New Hampshire Wave 4 Update
+
+- Config: `etl/state-configs/nh.json`
+- Authority: New Hampshire Secretary of State
+- County results source: `data/nh-2024-town-ward-president-governor.csv`, normalized from archived official President workbook rows
+- Local review source: `data/nh-2024-town-ward-president-governor.csv`
+- Comparison contest: U.S. House by congressional district, same town/ward grain, with district-based comparison caveat
+- Turnout source: `data/nh-2024-ge-ballots-cast.xls` plus `data/nh-2024-ge-names-on-checklist.xlsx`, normalized into the same town/ward CSV
+- Turnout denominator: names on checklist
+- County boundary: `data/nh-counties.geojson`
+
+Expected validation: 10 county rows, 304 town/ward review rows, 304 turnout rows, 831,468 detailed ballots cast, and 1,013,075 names-on-checklist registered-voter denominator rows. Remaining gaps: official town/ward geometry, historical split-ticket baselines, and normalized audit/recount/CVR/incident/correction/litigation records.

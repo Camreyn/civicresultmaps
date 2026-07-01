@@ -1245,6 +1245,8 @@ def _new_hampshire_town_ward_rows(
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
+    review_section = config.raw.get("reviewCharts", {})
+    use_house_comparison = review_section.get("comparisonContest") == "U.S. House"
     counties: dict[str, dict[str, int]] = {}
     review_rows: list[dict[str, Any]] = []
     comparison_rows = 0
@@ -1265,6 +1267,8 @@ def _new_hampshire_town_ward_rows(
             "gov_other",
             "gov_total",
         }
+        if use_house_comparison:
+            required.update({"house_dem", "house_rep", "house_other", "house_total"})
         missing = sorted(required.difference(set(reader.fieldnames or [])))
         if missing:
             raise ValueError(f"New Hampshire town/ward CSV missing columns: {', '.join(missing)}")
@@ -1296,9 +1300,17 @@ def _new_hampshire_town_ward_rows(
             gov_rep = int_text(row.get("gov_rep"))
             gov_other = int_text(row.get("gov_other"))
             gov_total = int_text(row.get("gov_total"))
+            house_dem = int_text(row.get("house_dem"))
+            house_rep = int_text(row.get("house_rep"))
+            house_other = int_text(row.get("house_other"))
+            house_total = int_text(row.get("house_total"))
+            comparison_dem = house_dem if use_house_comparison else gov_dem
+            comparison_rep = house_rep if use_house_comparison else gov_rep
+            comparison_other = house_other if use_house_comparison else gov_other
+            comparison_total = house_total if use_house_comparison else gov_total
             if not total:
                 continue
-            has_comparison = bool(gov_total)
+            has_comparison = bool(comparison_total)
             if has_comparison:
                 comparison_rows += 1
             review_rows.append(
@@ -1310,13 +1322,13 @@ def _new_hampshire_town_ward_rows(
                     "trump": trump,
                     "harrisShare": pct(harris, total),
                     "trumpShare": pct(trump, total),
-                    "demDropoff": pct(harris - gov_dem, total) if has_comparison else 0,
-                    "repDropoff": pct(trump - gov_rep, total) if has_comparison else 0,
-                    "coverageMode": config.raw.get("reviewCharts", {}).get("coverageMode", "presidentVsGovernor") if has_comparison else "voteShareOnly",
-                    "comparisonContest": config.raw.get("reviewCharts", {}).get("comparisonContest", ""),
-                    "comparisonDemVotes": gov_dem,
-                    "comparisonRepVotes": gov_rep,
-                    "comparisonOtherVotes": gov_other,
+                    "demDropoff": pct(harris - comparison_dem, total) if has_comparison else 0,
+                    "repDropoff": pct(trump - comparison_rep, total) if has_comparison else 0,
+                    "coverageMode": review_section.get("coverageMode", "presidentVsGovernor") if has_comparison else "voteShareOnly",
+                    "comparisonContest": review_section.get("comparisonContest", ""),
+                    "comparisonDemVotes": comparison_dem,
+                    "comparisonRepVotes": comparison_rep,
+                    "comparisonOtherVotes": comparison_other,
                     "sourceId": source.id,
                 }
             )
@@ -1352,13 +1364,12 @@ def _new_hampshire_town_ward_rows(
         "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
         "nativeReviewRows": len(review_rows),
-        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeReviewWarning": review_section.get("warning", ""),
         "nativeComparisonRows": comparison_rows,
-        "nativeComparisonContest": config.raw.get("reviewCharts", {}).get("comparisonContest", ""),
+        "nativeComparisonContest": review_section.get("comparisonContest", ""),
         **turnout_metrics,
     }
     return result_rows, sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])), turnout_rows, metrics
-
 
 
 def _mississippi_election_recap_rows(

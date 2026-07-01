@@ -1071,31 +1071,38 @@
       "tier": "tier_1_official_export_database",
       "reportingGrain": "town_ward",
       "exportFormats": [
-        "XLS"
+        "XLS",
+        "XLSX",
+        "normalized CSV"
       ],
       "sourceUrls": [
         "https://www.sos.nh.gov/2024-general-election-results"
       ],
       "exampleUrls": [
-        "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls"
+        "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls",
+        "https://web.archive.org/web/20250311214424id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-1_3.xlsx",
+        "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx"
       ],
       "availableFields": [
         "town/ward President rows",
-        "town/ward Governor comparison rows",
-        "EAC turnout fallback"
+        "town/ward U.S. House comparison rows by congressional district",
+        "town/ward Governor comparison rows retained as context",
+        "town/ward ballots-cast rows",
+        "town/ward names-on-checklist registered-voter denominator rows",
+        "county geometry",
+        "county equipment context"
       ],
       "missingFields": [
-        "town/ward U.S. House or Executive Council comparison rows for corroboration",
-        "historical President-versus-Governor ticket-splitting baseline",
+        "historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
         "town/ward boundary geometry",
-        "state-native turnout denominator",
-        "post-election audit, recount, CVR availability, and incident/correction artifacts"
+        "normalized post-election audit rows",
+        "normalized recount, CVR availability, incident/correction, and litigation rows"
       ],
-      "parserStatus": "newHampshireTownWardCsv loaded with low-confidence Governor-only directional screen",
+      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs",
       "manualReviewBurden": "medium",
-      "confidence": "loaded_with_directional_caveat",
-      "caveats": "Live SOS page is access-limited from this environment; archived XLS artifacts are retained. The only same-grain comparison currently loaded is Governor, and the 2024 Governor race has large candidate-specific ticket splitting, so Directional Screen labels should be treated as low-confidence proxies until corroborated.",
-      "nextAction": "Collect clean same-grain U.S. House or Executive Council comparison rows if available, add NH historical President-versus-Governor baselines, then replace EAC turnout fallback with a state-native denominator and inventory audit/CVR/incident artifacts."
+      "confidence": "loaded_with_district_comparison_caveat",
+      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals.",
+      "nextAction": "Add official historical baselines, request town/ward geometry, and normalize official audit/recount/CVR/incident/correction/litigation records."
     },
     {
       "state": "NJ",

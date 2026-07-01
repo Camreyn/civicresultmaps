@@ -968,15 +968,22 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "New Hampshire 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "New Hampshire 2024 post-election audit artifacts have not been normalized. The NH source inventory artifact records this as an official-source request item.",
+        "localArtifact": "data/nh-2024-admin-source-inventory.json",
+        "caveat": "Source inventory only; no audit result rows are loaded."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "New Hampshire 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "New Hampshire 2024 CVR availability artifacts or request paths have not been normalized. The NH source inventory artifact records this as an official-source request item.",
+        "localArtifact": "data/nh-2024-admin-source-inventory.json",
+        "caveat": "Source inventory only; no CVR data is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "New Hampshire 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "why": "Archived official 2024 general-election recount result sheet filenames were identified, but recount, incident, correction, and litigation rows are not normalized.",
+        "sourceUrl": "https://www.sos.nh.gov/2024-general-election-results",
+        "localArtifact": "data/nh-2024-admin-source-inventory.json",
+        "caveat": "Partial source inventory only; not a loaded incident/recount dataset."
       }
     },
     {
