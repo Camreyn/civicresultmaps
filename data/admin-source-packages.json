@@ -1126,16 +1126,23 @@
         "expectedJurisdictions": 88
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Ohio 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceDocumentId": "oh-sos-election-official-manual-post-election-activities",
+        "sourceUrl": "https://www.ohiosos.gov/elections/elections-officials/rules/",
+        "reportingLevel": "county",
+        "why": "Ohio Secretary of State election-official materials document post-election audit and recount procedures, but 2024 county-level audit result artifacts have not yet been collected or normalized into this administration context registry."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Ohio 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceDocumentId": "oh-sos-dir2024-18-data-act",
+        "sourceUrl": "https://www.ohiosos.gov/assets/dir2024-18-house-bill-33-and-the-data-analysis-transparency-archive-act-implementation.pdf",
+        "reportingLevel": "county",
+        "why": "Ohio Secretary of State Directive 2024-18 describes DATA Act implementation for election-data retention and transparency, but county CVR availability, public access paths, and normalized 2024 CVR artifacts have not been inventoried."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "Ohio 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://www.ohiosos.gov/elections/elections-officials/rules/",
+        "why": "Ohio 2024 incident, correction, recount, and litigation artifacts have not been inventoried or normalized into this administration context registry yet; start with Secretary of State directives/advisories and county board records."
       }
     },
     {

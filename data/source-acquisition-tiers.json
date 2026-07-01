@@ -1244,7 +1244,7 @@
       "stateName": "Ohio",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_admin",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
@@ -1257,17 +1257,23 @@
       "exampleUrls": [],
       "availableFields": [
         "precinct presidential rows",
+        "precinct U.S. Senate comparison rows",
         "ward-level review rows",
-        "turnout rows"
+        "precinct registered-voter turnout denominator rows",
+        "county equipment context"
       ],
       "missingFields": [
-        "same-row down-ballot comparison contest"
+        "precinct boundary geometry",
+        "normalized official post-election audit result rows",
+        "statewide CVR availability inventory",
+        "incident, correction, recount, and litigation source inventory",
+        "2020, 2016, and 2012 historical baselines"
       ],
-      "parserStatus": "native vote-share review package loaded",
+      "parserStatus": "native official XLSX package loaded for county certified results, precinct President-versus-U.S.-Senate review rows, and precinct registered-voter turnout rows",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Down-ballot comparison flags remain disabled until a same-row comparison contest is mapped.",
-      "nextAction": "Map an Ohio comparison contest at the same reporting-unit grain."
+      "caveats": "Ohio comparison screening is mapped from the Secretary of State precinct-level U.S. Senate rows in the same official workbook as the presidential precinct rows. County geometry is loaded for map joins, but precinct boundary geometry is not loaded. Audit, DATA Act/CVR availability, incident/correction/recount/litigation context, and official historical baselines remain source-inventory gaps.",
+      "nextAction": "Collect official precinct boundary geometry if available; inventory Ohio 2024 post-election audit/CVR/recount/correction/litigation sources; then add official 2020/2016/2012 county presidential baselines."
     },
     {
       "state": "OK",

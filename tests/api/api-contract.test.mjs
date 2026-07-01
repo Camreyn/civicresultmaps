@@ -393,6 +393,8 @@ test("native source package handoff is validated in CI", () => {
   assert.match(acquisitionRegistry, /electionhistory\.scvotes\.gov/);
   assert.match(acquisitionRegistry, /electionresults\.iowa\.gov/);
   assert.match(acquisitionRegistry, /data\.capitol\.texas\.gov/);
+  assert.match(acquisitionRegistry, /precinct U\.S\. Senate comparison rows/);
+  assert.match(acquisitionRegistry, /DATA Act/);
   assert.match(acquisitionRegistry, /does not replace loaded result or review data/);
   const msTextExtractor = readFileSync("scripts/extract-ms-recap-ocr-text-rows.mjs", "utf8");
   const msReconciler = readFileSync("scripts/reconcile-ms-ocr-grid-cells.mjs", "utf8");
