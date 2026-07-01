@@ -1005,14 +1005,19 @@
       "localFile": "data/eac-2024-state-turnout/ny-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 62,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. NYSBOE 11/01/2024 county enrollment and election-district enrollment reports are documented denominator leads, but they are not ballots-cast/voter-history turnout replacements by themselves.",
+      "nextAction": "Collect a state-native New York ballots-cast or voter-history artifact and reconcile it with NYSBOE county or election-district enrollment denominators before replacing EAC fallback turnout; see data/ny-2024-data-coverage-inventory.json.",
       "coverage": {
         "jurisdictionRows": 62,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ny-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 13579416,
         "ballotsCast": 8389626,
-        "warningRows": 0
+        "warningRows": 0,
+        "stateNativeDenominatorLeads": [
+          "https://elections.ny.gov/enrollment-county",
+          "https://elections.ny.gov/enrollment-election-district"
+        ],
+        "coverageInventory": "data/ny-2024-data-coverage-inventory.json"
       }
     },
     {
