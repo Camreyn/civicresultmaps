@@ -391,16 +391,29 @@
         "expectedJurisdictions": 99
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Iowa 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "selected_precinct_report_request_path",
+        "sourceDocumentId": "ia-code-50-51-election-audits",
+        "sourceUrl": "https://www.legis.iowa.gov/docs/code/50.51.pdf",
+        "localArtifact": "data/ia-2024-data-coverage-inventory.json",
+        "why": "Iowa Code section 50.51 establishes post-election audits and county audit reports to the state commissioner, but 2024 selected-precinct audit reports, selection lists, and outcome rows have not been collected or normalized.",
+        "caveat": "Candidate request-path inventory only; no 2024 Iowa audit result rows are loaded."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Iowa 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://sos.iowa.gov/elections/auditors/",
+        "localArtifact": "data/ia-2024-data-coverage-inventory.json",
+        "why": "No statewide public Iowa CVR package or county CVR availability table was identified in repo artifacts. Scripted access to the SOS auditors page returned a browser challenge, so county auditor or state records-request follow-up is needed.",
+        "caveat": "No CVR dataset or county availability table is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Iowa 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_and_county_request_path",
+        "sourceDocumentId": "ia-code-50-48-50-50-recount-admin-audit",
+        "sourceUrl": "https://www.legis.iowa.gov/docs/code/50.48.pdf",
+        "localArtifact": "data/ia-2024-data-coverage-inventory.json",
+        "why": "Iowa Code sections 50.48 and 50.50 document recount and administrative audit paths, but official 2024 recount/admin-audit outcomes, incident, correction, and litigation records have not been normalized.",
+        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, administrative audit, or litigation dataset."
       }
     },
     {

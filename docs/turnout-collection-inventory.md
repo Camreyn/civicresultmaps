@@ -7,15 +7,16 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 ## Summary
 
 - States checked: 50
-- Turnout loaded in database or validated native staging: 10
+- Turnout loaded in database or validated native staging: 12
 - Loaded through official EAC fallback while state-native ward denominator remains missing: 1
-- Need native turnout package: 39
+- Need native turnout package: 38
 
 ## Loaded Turnout
 
 | State | DB rows | Level | Denominator | Local artifact |
 | --- | ---: | --- | --- | --- |
 | IN Indiana | 92 | county | registeredVoters | `data/in-2024-general-turnout.csv` |
+| IA Iowa | 1,651 | precinct | registeredVoters | `data/ia-2024-county-detailxml-reports` |
 | MI Michigan | 83 | county | novemberActiveRegisteredVoters | `data/mi-2024-voter-turnout.txt` |
 | MN Minnesota | 4,103 | precinct | registeredVotersPlusElectionDayRegistrations | `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx` |
 | MO Missouri | 116 | jurisdiction | registeredVoters | `data/mo-2024-general-turnout.csv` |
@@ -37,7 +38,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 These states still need a state-native turnout package or review of whether fallback turnout coverage is sufficient for the current caveats.
 
-`AK`, `AL`, `AR`, `AZ`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `IA`, `ID`, `IL`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `UT`, `VT`, `WA`, `WY`
+`AK`, `AL`, `AR`, `AZ`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `ID`, `IL`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `UT`, `VT`, `WA`, `WY`
 
 ## Standard Request For Each Missing State
 
@@ -72,6 +73,10 @@ Missouri now uses official Secretary of State 2024 General Election voter-turnou
 ## North Carolina Update
 
 North Carolina still uses EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/nc-2024-eac-turnout.csv` for the active turnout contract. A July 1, 2026 official-source pass confirmed two state-native leads: the NCSBE 2024 General Election Turnout page cites `history_stats_20241105.zip` for statewide voting-method totals, and the NCSBE Historical Registered Voter Stats table links the 2024 Nov. 5 registered-voter stats ZIP with county/precinct/demographic registration fields. These official artifacts should be collected and normalized together before replacing EAC fallback rows, because the current NCSBE turnout page is statewide summary text and the registered-voter stats file is a denominator source rather than a complete ballots-cast replacement by itself.
+## Iowa Update
+
+Iowa now uses state-native official precinct turnout rows from Iowa Secretary of State Clarity county detail XML reports at `data/ia-2024-county-detailxml-reports`. The parser reads each county `VoterTurnout` precinct `ballotsCast` and `totalVoters` field, with 1,651 turnout rows, 1,672,068 ballots cast, and 1,893,715 registered-voter denominator total. The same detail XML reports include President and U.S. House `VoteType` candidate splits such as Election Day and Absentee, but those fields are not yet normalized into the public vote-method API/UI contract. Remaining turnout-adjacent gaps are official precinct boundary geometry and a dedicated Iowa Clarity vote-method normalizer if method display rows are added.
+
 ## Wisconsin-Specific Request
 
 For Wisconsin, ask for:
