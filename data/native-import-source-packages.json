@@ -18,6 +18,7 @@
     "MD",
     "MI",
     "MN",
+    "MO",
     "MS",
     "MT",
     "NC",
@@ -666,6 +667,69 @@
         "County boundary geometry is loaded for map joins; official precinct boundary geometry is not included.",
         "Historical 2020, 2016, and 2012 county baselines have not been normalized from official Montana sources yet."
       ]
+    },
+    {
+      "state": "MO",
+      "name": "Missouri",
+      "priority": 15,
+      "nativeReadiness": "complete_county_map_county_review_turnout_historical_admin_inventory_precinct_file_purchase_blocker",
+      "authority": "Missouri Secretary of State",
+      "configFile": "etl/state-configs/mo.json",
+      "legacyReferenceBundle": "data/mo-2024-general-results-by-county.pdf",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Missouri SOS official 2024 general election results by county PDF and normalized presidential CSV",
+          "sourceUrl": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
+          "localFile": "data/mo-2024-general-president.csv",
+          "parserHint": "countyPresidentCsv rows extracted from the official SOS results-by-county PDF and cross-checked against the official grand total PDF."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Missouri SOS official 2024 general election results by county PDF and normalized U.S. Senate CSV",
+          "sourceUrl": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
+          "localFile": "data/mo-2024-general-senate.csv",
+          "level": "county_reporting_jurisdiction",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "countyComparisonCsv rows compare President and U.S. Senate at the same county/reporting-jurisdiction grain; Kansas City is a separate reporting jurisdiction in the source PDF."
+        },
+        "turnout": {
+          "sourceTitle": "Missouri SOS official 2024 General Election voter turnout report",
+          "sourceUrl": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/Nov2024OfficialVoterTurnout.pdf",
+          "localFile": "data/mo-2024-general-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "registered voters from SOS turnout report",
+          "ballotsCast": "actual voters from SOS turnout report"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2729%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/mo-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 116,
+        "geometryFeatures": 115,
+        "stateTotal": 2995327,
+        "trump": 1751986,
+        "harris": 1200599,
+        "other": 42742,
+        "localReviewRows": 116,
+        "turnoutRows": 116
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_dropoff_county_reporting_jurisdiction_pdf",
+        "turnoutMode": "sos_2024_registered_voter_turnout_report"
+      },
+      "caveats": [
+        "Review rows are county/reporting-jurisdiction advisory inputs, not precinct scatter plots.",
+        "The SOS results page says precinct-level general election data files are available for purchase from the Elections Division, so subcounty advisory rows remain blocked until that file is obtained.",
+        "Kansas City is reported separately from counties in the SOS PDFs and does not have a separate county polygon in the loaded Census county geometry.",
+        "Historical 2012/2016/2020 presidential baselines are loaded from official SOS PDFs; the 2016 PDF does not expose county-level write-in detail, so other/total values use visible-column sums.",
+        "Administration-source inventory is recorded in data/mo-2024-admin-source-inventory.json, but normalized audit, CVR availability, incident/correction, recount, and litigation rows are not loaded."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [
@@ -766,16 +830,20 @@
       "officialSourcePages": [
         "https://www.sos.mo.gov/elections/results",
         "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf",
-        "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf"
+        "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
+        "https://www.sos.mo.gov/elections/security",
+        "https://www.sos.mo.gov/elections/qualsystems",
+        "https://www.sos.mo.gov/elections/elections_integrity",
+        "https://www.sos.mo.gov/CMSImages/ElectionGoVoteMissouri/CurrentElectionLawBook.pdf"
       ],
       "requiredArtifacts": [
         "official purchasable precinct-level data file if subcounty advisory flags are required",
         "official precinct boundary geometry if subcounty map overlays are required",
-        "post-election audit, CVR availability, incident, correction, recount, and litigation artifacts for administration context"
+        "normalized post-election audit selection/outcome artifacts, CVR availability rows, incident/correction rows, recount records, and litigation records for administration context"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for Missouri official county/reporting-jurisdiction package; normalizedTurnoutCsv and historicalPresidentialCsv are generated from official Missouri SOS PDFs by scripts/normalize-mo-sos-pdfs.mjs; precinct data must be purchased from Missouri SOS for subcounty rows",
-      "blocker": "Missouri now has official county/reporting-jurisdiction President-versus-U.S. Senate review rows, state-native 2024 registered-voter turnout denominators, and 2012/2016/2020 official historical presidential baselines from Secretary of State PDFs. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained. Audit, CVR availability, incident/correction, recount, and litigation artifacts still need a dedicated administration-source inventory."
+      "parserNeeded": "countyPresidentCsv loaded for Missouri official county/reporting-jurisdiction package; normalizedTurnoutCsv and historicalPresidentialCsv are generated from official Missouri SOS PDFs by scripts/normalize-mo-sos-pdfs.mjs; data/mo-2024-admin-source-inventory.json records official administration-source paths; precinct data must be purchased from Missouri SOS for subcounty rows",
+      "blocker": "Missouri has official county/reporting-jurisdiction President-versus-U.S. Senate review rows, state-native 2024 registered-voter turnout denominators, 2012/2016/2020 official historical presidential baselines, and an official administration-source inventory for audit/CVR/incident/recount/litigation/equipment context. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained. Normalized audit outcomes, county CVR availability, incident/correction, recount, and litigation rows are still not loaded."
     },
     {
       "state": "NE",

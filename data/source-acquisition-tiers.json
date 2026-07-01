@@ -822,7 +822,7 @@
       "stateName": "Missouri",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_historical_equipment",
+      "dataFamily": "results_review_turnout_historical_equipment_admin_context",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
       "exportFormats": [
@@ -839,21 +839,22 @@
         "county/reporting-jurisdiction U.S. Senate comparison rows",
         "state-native registered-voter turnout denominators",
         "2012/2016/2020 official county/reporting-jurisdiction presidential historical baselines",
-        "Verified Voting equipment context"
+        "Verified Voting equipment context",
+        "official administration-source inventory for audit, CVR availability, incident/correction, recount, litigation, and qualified-system context"
       ],
       "missingFields": [
         "official purchasable precinct-level President rows",
         "official purchasable precinct-level U.S. Senate rows",
         "precinct boundary geometry",
-        "post-election audit artifacts",
-        "CVR availability records",
-        "incident/correction/recount/litigation records"
+        "normalized 2024 post-election audit selection/outcome artifacts",
+        "county-by-county CVR availability records",
+        "normalized incident/correction/recount/litigation rows"
       ],
-      "parserStatus": "countyPresidentCsv loaded for official county/reporting-jurisdiction results; normalizedTurnoutCsv and historicalPresidentialCsv generated from official Missouri SOS PDFs by scripts/normalize-mo-sos-pdfs.mjs",
+      "parserStatus": "countyPresidentCsv loaded for official county/reporting-jurisdiction results; normalizedTurnoutCsv and historicalPresidentialCsv generated from official Missouri SOS PDFs by scripts/normalize-mo-sos-pdfs.mjs; administration-source inventory recorded in data/mo-2024-admin-source-inventory.json",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_blocker",
       "caveats": "County/reporting-jurisdiction review rows are official and source-cited, but they are not precinct-level advisory rows. Kansas City is a separate reporting jurisdiction in the SOS PDFs and does not have a separate county polygon. The 2016 historical baseline sums visible party columns because the by-county PDF does not expose county-level write-in detail.",
-      "nextAction": "Purchase or request Missouri SOS precinct-level general election files for 2024 President and U.S. Senate, then add precinct geometry and administration-source inventories for audit, CVR availability, incidents, corrections, recounts, and litigation."
+      "nextAction": "Purchase or request Missouri SOS precinct-level general election files for 2024 President and U.S. Senate, then add precinct geometry and collect/normalize 2024 audit certificates, CVR availability rows, incidents, corrections, recounts, and litigation records."
     },
     {
       "state": "MS",

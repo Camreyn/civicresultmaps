@@ -767,19 +767,31 @@
         "expectedJurisdictions": 116
       },
       "audit": {
-        "status": "needs_inventory",
-        "why": "Missouri 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet.",
-        "nextAction": "Inventory Missouri SOS audit-related pages and county election authority publications; record whether any 2024 post-election audit selection, scope, and discrepancy reports are published or require a records request."
+        "status": "candidate",
+        "reportingLevel": "local_election_authority",
+        "sourceDocumentId": "mo-2024-post-election-verification-source-inventory",
+        "sourceUrl": "https://www.sos.mo.gov/CMSImages/ElectionGoVoteMissouri/CurrentElectionLawBook.pdf",
+        "localArtifact": "data/mo-2024-admin-source-inventory.json",
+        "why": "Missouri election-law materials identify post-election verification/manual recount procedures and certificate filing paths, but 2024 selected-precinct/outcome artifacts have not been collected or normalized.",
+        "caveat": "Candidate source inventory only; no 2024 Missouri post-election audit result rows are loaded."
       },
       "cvr": {
-        "status": "needs_inventory",
-        "why": "Missouri 2024 CVR availability has not been inventoried or normalized into this administration context registry yet.",
-        "nextAction": "Confirm whether any Missouri state or county election authority publishes CVRs or requires county-level records requests; keep this separate from the SOS purchasable precinct-level result file."
+        "status": "candidate",
+        "reportingLevel": "county_availability_request_path",
+        "sourceDocumentId": "mo-2024-cvr-availability-source-inventory",
+        "sourceUrl": "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
+        "localArtifact": "data/mo-2024-admin-source-inventory.json",
+        "why": "Missouri rules define cast vote records, and local election authorities are the practical request path, but no statewide public 2024 CVR export or county CVR availability table is loaded.",
+        "caveat": "Candidate source inventory only; not a CVR dataset and not the SOS purchasable precinct-level result file."
       },
       "incidents": {
-        "status": "needs_inventory",
-        "why": "Missouri 2024 incident, correction, recount, and litigation artifacts have not been inventoried or normalized into this administration context registry yet.",
-        "nextAction": "Inventory Missouri SOS notices, court/recount records, county correction notices, and official election authority updates before adding any administration-context rows."
+        "status": "candidate",
+        "reportingLevel": "statewide_and_local_source_inventory",
+        "sourceDocumentId": "mo-2024-incidents-recounts-litigation-source-inventory",
+        "sourceUrl": "https://www.sos.mo.gov/elections/elections_integrity",
+        "localArtifact": "data/mo-2024-admin-source-inventory.json",
+        "why": "Missouri SOS Elections Integrity materials identify complaint paths and HAVA determinations, and the results page is the official recount-results location. No normalized 2024 incident, correction, recount, or litigation rows are loaded.",
+        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, or litigation dataset."
       }
     },
     {

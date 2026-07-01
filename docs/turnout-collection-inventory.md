@@ -7,9 +7,9 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 ## Summary
 
 - States checked: 50
-- Turnout loaded in database or validated native staging: 9
+- Turnout loaded in database or validated native staging: 10
 - Loaded through official EAC fallback while state-native ward denominator remains missing: 1
-- Need native turnout package: 40
+- Need native turnout package: 39
 
 ## Loaded Turnout
 
@@ -17,6 +17,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | --- | ---: | --- | --- | --- |
 | MI Michigan | 83 | county | novemberActiveRegisteredVoters | `data/mi-2024-voter-turnout.txt` |
 | MN Minnesota | 4,103 | precinct | registeredVotersPlusElectionDayRegistrations | `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx` |
+| MO Missouri | 116 | jurisdiction | registeredVoters | `data/mo-2024-general-turnout.csv` |
 | NH New Hampshire | 304 | town_ward | namesOnChecklist | `data/nh-2024-town-ward-president-governor.csv` |
 | OH Ohio | 8,878 | precinct | registeredVoters | `data/oh-2024-statewide-races-precinct-level.xlsx` |
 | PA Pennsylvania | 67 | county | registeredVoters | `data/pa-2024-voter-registration-vote-history-summary.xlsx` |
@@ -54,6 +55,10 @@ Ask the data team for:
 ## Nebraska Update
 
 Nebraska now retains the official Secretary of State post-general eligible-voter registration report at `data/ne-2024-post-general-eligible-voter-report.pdf`. The current ETL still uses EAC 2024 V2 turnout rows for ballots-cast normalization, with the Nebraska report recorded as a state-native denominator cross-check until a mixed-source turnout normalizer is added.
+
+## Missouri Update
+
+Missouri now uses official Secretary of State 2024 General Election voter-turnout rows at `data/mo-2024-general-turnout.csv`, normalized from `data/mo-2024-general-turnout.pdf` by `scripts/normalize-mo-sos-pdfs.mjs`. The rows include 116 county/reporting-jurisdiction records, 2,995,376 actual voters, and 4,433,383 registered voters. Kansas City is a separate reporting jurisdiction in the SOS source, matching the Missouri result CSV caveat.
 
 ## Wisconsin-Specific Request
 

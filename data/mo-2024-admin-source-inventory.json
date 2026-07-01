@@ -1,0 +1,67 @@
+{
+  "state": "MO",
+  "stateName": "Missouri",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "authority": "Missouri Secretary of State and local election authorities",
+  "caveat": "This is a source inventory for administration context. It records official source locations, current collection status, and request needs; it is not a normalized row-level audit, CVR, incident, recount, correction, or litigation dataset.",
+  "precinctResults": {
+    "status": "blocked_purchase_required",
+    "sourceTitle": "Missouri Secretary of State election results and statistics",
+    "sourceUrl": "https://www.sos.mo.gov/elections/results",
+    "localArtifactsLoaded": [
+      "data/mo-2024-general-president.csv",
+      "data/mo-2024-general-senate.csv",
+      "data/mo-2024-general-turnout.csv",
+      "data/mo-historical-presidential-baseline.csv"
+    ],
+    "scopeNote": "Official county/reporting-jurisdiction President, U.S. Senate, turnout, and historical baseline rows are loaded. The SOS results page identifies precinct-level general-election result files as purchasable from the Elections Division, so precinct-level Missouri review rows remain blocked until that file is obtained.",
+    "requestNeed": "Purchase or request 2024 general election precinct-level result files for President and U.S. Senate, plus any reporting-unit definitions needed to distinguish Kansas City and county jurisdictions."
+  },
+  "equipment": {
+    "status": "loaded_context",
+    "sourceTitle": "Verified Voting Verifier Missouri 2024 equipment context; Missouri SOS qualified voting systems and election-security pages",
+    "sourceUrls": [
+      "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/29",
+      "https://www.sos.mo.gov/elections/security",
+      "https://www.sos.mo.gov/elections/qualsystems"
+    ],
+    "localArtifact": "data/verifiedvoting-mo-2024-equipment.json",
+    "normalizedArtifact": "data/mo-2024-equipment-context.csv",
+    "scopeNote": "Verifier rows are jurisdiction-level equipment context only. The SOS election-security page documents statewide requirements and links the qualified voting systems page, which lists systems approved for Missouri statutory requirements.",
+    "nextAction": "If official county equipment assignments are needed beyond Verifier context, request 2024 county equipment inventories or certification records from the Secretary of State or each local election authority."
+  },
+  "audit": {
+    "status": "candidate",
+    "sourceTitle": "Missouri election law book and SOS election-security page",
+    "sourceUrls": [
+      "https://www.sos.mo.gov/elections/security",
+      "https://www.sos.mo.gov/CMSImages/ElectionGoVoteMissouri/CurrentElectionLawBook.pdf"
+    ],
+    "reportingLevel": "local_election_authority",
+    "scopeNote": "Missouri rules describe post-election verification/manual recount procedures, including a public random selection of at least five percent of precincts, certificates filed with the Secretary of State and public records, and discrepancy investigation before certification when thresholds are exceeded. No 2024 statewide audit selection/outcome table is loaded.",
+    "recordsRequestNeed": "Collect or request 2024 post-election verification certificates, selected precincts, selected contests, machine totals, hand totals, discrepancies, explanations, and final outcomes from the Secretary of State or local election authorities."
+  },
+  "cvr": {
+    "status": "candidate",
+    "sourceTitle": "Missouri election law book CVR definition and SOS/local records request path",
+    "sourceUrls": [
+      "https://www.sos.mo.gov/CMSImages/ElectionGoVoteMissouri/CurrentElectionLawBook.pdf",
+      "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority"
+    ],
+    "scopeNote": "Missouri rules define cast vote records in the electronic-voting-system context, but no statewide public 2024 CVR export or county CVR availability table is loaded. Keep CVR availability separate from the purchasable precinct-level results file.",
+    "recordsRequestNeed": "Confirm county-by-county whether 2024 general-election CVRs exist, are releasable, and how they can be requested, including custodian, format, redaction limits, and ballot-mode fields."
+  },
+  "incidentsCorrectionsRecountsLitigation": {
+    "status": "candidate",
+    "sourceTitle": "Missouri SOS election results, Elections Integrity Unit, HAVA determinations, and election law book",
+    "sourceUrls": [
+      "https://www.sos.mo.gov/elections/results",
+      "https://www.sos.mo.gov/elections/elections_integrity",
+      "https://www.sos.mo.gov/CMSImages/ElectionIntegrity/HAVA_Hearing_Determination_Memo-Kramer.pdf",
+      "https://www.sos.mo.gov/CMSImages/ElectionGoVoteMissouri/CurrentElectionLawBook.pdf"
+    ],
+    "scopeNote": "The SOS results page lists historical recount result links for some past elections but not a 2024 general-election recount link in the checked page. The Elections Integrity page identifies complaint paths and published HAVA determinations; the 2026 Kramer determination references 2022 and 2024 voter-registration/list and reconciliation allegations and related federal-court hearing-process orders. No normalized 2024 incident, correction, recount, or litigation rows are loaded.",
+    "recordsRequestNeed": "Inventory official 2024 amended canvasses, correction notices, recount petitions/outcomes, HAVA determinations, court dockets/orders, and local incident reports before adding row-level administration context."
+  }
+}
