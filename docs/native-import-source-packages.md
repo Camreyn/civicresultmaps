@@ -223,8 +223,10 @@ Caveats: review rows are President-versus-U.S.-House rather than a single statew
 - Turnout source: `data/nh-2024-ge-ballots-cast.xls` plus `data/nh-2024-ge-names-on-checklist.xlsx`, normalized into the same town/ward CSV
 - Turnout denominator: names on checklist
 - County boundary: `data/nh-counties.geojson`
+- Administration/source inventory: `data/nh-2024-admin-source-inventory.json`
+- Historical baseline lead: official archived 2016 President county XLS files plus `2016-ge-governor.xls` and 2016 congressional district XLSX files were identified through Internet Archive CDX, but are not downloaded or loaded.
 
-Expected validation: 10 county rows, 304 town/ward review rows, 304 turnout rows, 831,468 detailed ballots cast, and 1,013,075 names-on-checklist registered-voter denominator rows. Remaining gaps: official town/ward geometry, historical split-ticket baselines, and normalized audit/recount/CVR/incident/correction/litigation records.
+Expected validation: 10 county rows, 304 town/ward review rows, 304 turnout rows, 831,468 detailed ballots cast, and 1,013,075 names-on-checklist registered-voter denominator rows. Remaining gaps: a 2016 historical normalizer and downloaded archive artifacts, targeted official archive/records-request paths for 2020 and 2012 historical baselines, official town/ward geometry, and normalized audit/recount/CVR/incident/correction/litigation records.
 
 ## Indiana Wave 5 Update
 
