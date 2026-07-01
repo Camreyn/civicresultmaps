@@ -26,6 +26,9 @@ Requested evidence families and tracking IDs:
 - EI-2024-NV-AUDIT-RESULTS - Audit results: status=needs_data; grain=audit_unit; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 - EI-2024-NV-CHAIN-OF-CUSTODY - Chain of custody: status=needs_data; grain=ballot_equipment_media; reconciliation=not_inventoried. Suggested custodian/path: Nevada Secretary of State, county clerks/registrars, or local election departments depending on record custody.
 
+
+Remaining jurisdiction request matrix: data/nv-2024-county-source-request-matrix.tsv lists the 14 jurisdictions outside Clark, Washoe, and Humboldt with official county source pages, source-check statuses, and requested local result, turnout, geometry, CVR, audit, logic-and-accuracy, tabulator-log, custody, incident, correction, recount, and litigation artifacts.
+
 Preferred production format: original exports where available, CSV, XLSX, JSON, log bundles, audit workpapers, record layouts, or data dictionaries. Please preserve original filenames, timestamps, export settings, and field definitions.
 
 If your office does not maintain a requested record, please identify the state, county, municipal, vendor, or other custodian most likely to maintain it. If fees are expected, please provide an estimate before processing.
