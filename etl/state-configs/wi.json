@@ -80,7 +80,7 @@
       "authority": "Wisconsin Elections Commission",
       "timestampBasis": "2024 Post-Election Voting Equipment Audit Final Report dated March 13, 2025.",
       "confidence": "Official WEC audit context. Appendix B selected reporting units and statewide findings are normalized, but the published report does not include per-reporting-unit discrepancy outcome rows.",
-      "status": "loaded_context"
+      "status": "loaded"
     },
     {
       "id": "wi-2024-audit-summary",
@@ -91,7 +91,7 @@
       "authority": "Wisconsin Elections Commission",
       "timestampBasis": "Local summary generated from the official WEC final audit report.",
       "confidence": "Context only. Captures selected reporting-unit counts, statewide findings, and aggregate error-rate discussion; it is not a per-reporting-unit audit outcome table.",
-      "status": "loaded_context"
+      "status": "loaded"
     },
     {
       "id": "wi-2024-cvr-availability",
@@ -102,7 +102,7 @@
       "authority": "Wisconsin Elections Commission and Wisconsin county clerks",
       "timestampBasis": "County inventory scaffold generated for 2024 general-election records requests.",
       "confidence": "Scaffold only. It tracks county-by-county CVR availability/request follow-up and does not confirm public CVR release or load CVR records.",
-      "status": "partial_context"
+      "status": "partial"
     },
     {
       "id": "wi-2024-incident-context",
@@ -113,7 +113,7 @@
       "authority": "Wisconsin Elections Commission and Wisconsin county clerks",
       "timestampBasis": "Candidate inventory row retained for 2024 general-election follow-up.",
       "confidence": "Candidate source inventory only. Official incident, correction, recount, and litigation rows have not been normalized, and WEC pages were blocked by Cloudflare during scripted collection.",
-      "status": "candidate_context"
+      "status": "candidate"
     },
     {
       "id": "wi-2024-equipment-context",
@@ -124,7 +124,7 @@
       "authority": "Verified Voting Verifier with WEC audit-report cross-reference for audited selected units",
       "timestampBasis": "Verified Voting 2024 equipment context normalized for Wisconsin; WEC audit report retained for official audited-equipment context.",
       "confidence": "Context only. Jurisdiction-level equipment metadata is not vote, turnout, or proof of precinct-uniform equipment configuration.",
-      "status": "loaded_context"
+      "status": "loaded"
     },
     {
       "id": "wi-2024-ward-geometry-candidate",
@@ -135,7 +135,7 @@
       "authority": "Wisconsin Legislature / LTSB ArcGIS",
       "timestampBasis": "November 2024 election data with January 2025 wards feature service collected June 25, 2026.",
       "confidence": "Visualization candidate only. Join validation reconciles jurisdiction totals, but row-level ward allocation differs in documented residual jurisdictions, so production ward rendering remains disabled pending a 2024-to-2025 ward crosswalk.",
-      "status": "candidate_context"
+      "status": "candidate"
     },
     {
       "id": "wi-2024-hard-missing-source-evidence",
@@ -146,7 +146,7 @@
       "authority": "Wisconsin Elections Commission, Wisconsin Legislature / LTSB ArcGIS, and U.S. Election Assistance Commission",
       "timestampBasis": "Public source probe generated June 25, 2026 against WEC pages, the WEC ward workbook, ArcGIS search, and the LTSB ward feature service.",
       "confidence": "Documents that public machine-readable sources did not expose ward registered-voter denominators, row-level ballot mode/CVR, per-audit-unit outcomes, or exact ward crosswalk fields. Records requests remain required.",
-      "status": "loaded_context"
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
