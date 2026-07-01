@@ -118,6 +118,23 @@
         "Live Nevada SOS turnout and registration pages returned Incapsula challenge pages or empty responses from this environment on 2026-07-01."
       ],
       "confidence": "loaded_official_federal_fallback"
+    },
+    {
+      "id": "nv-2024-county-source-request-matrix",
+      "sourceAuthority": "CivicResultMaps official-source inventory using Nevada Secretary of State and county election sources",
+      "sourceUrl": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+      "localPath": "data/nv-2024-county-source-request-matrix.tsv",
+      "electionYear": 2024,
+      "reportingGrain": "jurisdiction_request_matrix",
+      "parserNormalizationPath": "countySourceRequestMatrixTsv via etl/state-configs/nv.json source nv-2024-county-source-request-matrix",
+      "expectedCounts": {
+        "remainingJurisdictions": 14
+      },
+      "caveats": [
+        "Context-only request matrix; it does not contain vote totals and is not a parser input for advisory calculations.",
+        "Rows document official county pages, scripted check status, and requested result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation artifacts for the 14 jurisdictions outside Clark, Washoe, and Humboldt."
+      ],
+      "confidence": "loaded_context_request_matrix"
     }
   ],
   "remainingLocalReviewGaps": {
@@ -139,7 +156,10 @@
       "White Pine County"
     ],
     "neededArtifact": "Official precinct/local reporting-unit President and U.S. Senate rows or official CVR/SOV exports that can be normalized to the same local grain.",
-    "sourceSideBlocker": "No single statewide Nevada precinct/local President plus U.S. Senate export was identified. Live NVSOS/Silver State pages are script-blocked from this environment. County-by-county official exports or public-records productions are still needed for the remaining 14 jurisdictions."
+    "sourceSideBlocker": "No single statewide Nevada precinct/local President plus U.S. Senate export was identified. Live NVSOS/Silver State pages are script-blocked from this environment. County-by-county official exports or public-records productions are still needed for the remaining 14 jurisdictions.",
+    "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
+    "sourceMatrixRows": 14,
+    "sourceMatrixPurpose": "Per-jurisdiction request checklist for result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation follow-up."
   },
   "sourceChecks": [
     {
@@ -200,31 +220,37 @@
         "Humboldt County"
       ],
       "missingJurisdictionCount": 14,
-      "caveat": "Loaded CVR-derived rows are normalized precinct aggregates for review context. Other counties still need official CVR availability checks or records-request productions."
+      "caveat": "Loaded CVR-derived rows are normalized precinct aggregates for review context. Other counties still need official CVR availability checks or records-request productions.",
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     },
     "audit": {
       "status": "needs_data",
-      "caveat": "No normalized 2024 Nevada post-election audit selection, scope, discrepancy, or outcome artifact is loaded. Request Secretary of State and county audit records before treating audit context as loaded."
+      "caveat": "No normalized 2024 Nevada post-election audit selection, scope, discrepancy, or outcome artifact is loaded. Request Secretary of State and county audit records before treating audit context as loaded.",
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     },
     "logicAccuracy": {
       "status": "needs_data",
-      "caveat": "No normalized 2024 Nevada L&A test deck, notice, result, or machine acceptance artifact is loaded."
+      "caveat": "No normalized 2024 Nevada L&A test deck, notice, result, or machine acceptance artifact is loaded.",
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     },
     "tabulatorLogs": {
       "status": "needs_data",
-      "caveat": "No normalized Nevada tabulator, EMS, adjudication, upload, or removable-media log artifact is loaded."
+      "caveat": "No normalized Nevada tabulator, EMS, adjudication, upload, or removable-media log artifact is loaded.",
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     },
     "custody": {
       "status": "needs_data",
-      "caveat": "No normalized chain-of-custody artifact for ballots, equipment, or media is loaded."
+      "caveat": "No normalized chain-of-custody artifact for ballots, equipment, or media is loaded.",
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     },
     "incidentsCorrections": {
       "status": "needs_data",
-      "caveat": "No normalized 2024 Nevada incident, correction, recount, or litigation dataset is loaded."
+      "caveat": "No normalized 2024 Nevada incident, correction, recount, or litigation dataset is loaded.",
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     }
   },
   "nextActions": [
-    "Collect or request official precinct/local President and U.S. Senate rows, CVRs, or SOV exports for the remaining 14 Nevada jurisdictions listed in remainingJurisdictionSourceMatrix.",
+    "Use data/nv-2024-county-source-request-matrix.tsv to collect or request official precinct/local President and U.S. Senate rows, CVRs, or SOV exports for the remaining 14 Nevada jurisdictions listed in remainingJurisdictionSourceMatrix.",
     "Prioritize reachable official county pages with result/resource exports before records requests, then use the Nevada SOS county-clerk contact path for blocked or non-exporting counties.",
     "Collect a state-native county or precinct turnout denominator artifact if Nevada publishes one outside the blocked live SOS pages.",
     "Inventory and normalize audit, CVR availability, tabulator-log, L&A, custody, incident, correction, recount, and litigation artifacts separately from vote-result rows.",
@@ -441,7 +467,8 @@
       "https://www.nvsos.gov/sos/elections/election-results/2024-election-results"
     ],
     "blocker": "Live NVSOS turnout, registration, and 2024 election-results pages returned Incapsula challenge pages, empty content, or transport errors from scripted access. County pages checked in this pass did not expose a complete state-native ballots-cast plus denominator package.",
-    "requestPath": "Request county or statewide 2024 ballots-cast and registered-voter denominator rows, including denominator timing and inactive-voter treatment, from the Nevada SOS Elections Division or county clerks/registrars."
+    "requestPath": "Request county or statewide 2024 ballots-cast and registered-voter denominator rows, including denominator timing and inactive-voter treatment, from the Nevada SOS Elections Division or county clerks/registrars.",
+    "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
   },
   "geometryStatus": {
     "countyGeometry": {
@@ -453,7 +480,8 @@
     "subcountyGeometry": {
       "status": "not_loaded",
       "neededArtifact": "Official precinct/local reporting-unit boundaries or a map-ready crosswalk matching local result/CVR precinct identifiers.",
-      "requestPath": "Request 2024 precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry from county GIS/election offices and the Nevada SOS if maintained centrally."
+      "requestPath": "Request 2024 precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry from county GIS/election offices and the Nevada SOS if maintained centrally.",
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     }
   },
   "historicalBaselineStatus": {
@@ -465,7 +493,16 @@
       2020
     ],
     "rowCount": 51,
-    "caveat": "Historical rows are secondary county presidential tables with state election office source footnotes. They are contextual baselines only and should be replaced with official Nevada SOS historical exports if a script-readable or request-produced artifact is collected."
+    "caveat": "Historical rows are secondary county presidential tables with state election office source footnotes. They are contextual baselines only and should be replaced with official Nevada SOS historical exports if a script-readable or request-produced artifact is collected.",
+    "officialReplacementFeasibility": {
+      "status": "needs_official_export_or_records_request",
+      "checkedAt": "2026-07-01",
+      "officialLeads": [
+        "https://www.nvsos.gov/sos/elections/election-results/2024-election-results",
+        "https://www.nvsos.gov/sos/elections/election-information/previous-elections"
+      ],
+      "blocker": "No script-readable official Nevada SOS 2012, 2016, or 2020 county presidential export was collected; current rows remain secondary context with state-source footnotes until an official export, canvass, or records-request production is obtained."
+    }
   },
   "websiteApiDisplayPathChecked": {
     "paths": [

@@ -931,7 +931,7 @@
       "state": "IN",
       "name": "Indiana",
       "priority": 1,
-      "currentStatus": "official_county_results_turnout_2016_2020_historical_loaded_supplemental_precinct_review_official_precinct_rows_missing",
+      "currentStatus": "official_county_results_turnout_2016_2020_historical_loaded_supplemental_precinct_review_admin_paths_documented_official_precinct_rows_missing",
       "officialSourcePages": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
@@ -943,7 +943,10 @@
         "https://www.in.gov/sos/elections/statistics-and-maps/",
         "https://www.in.gov/sos/elections/indiana-recount-commission/",
         "https://enr.indianavoters.in.gov/archive/2016General/data/OffCatC_1767_A.json",
-        "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json"
+        "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json",
+        "https://indianavoters.in.gov/ENRHistorical/ElectionResults?year=2012",
+        "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
+        "https://www.in.gov/sos/elections/election-administrators-portal/"
       ],
       "requiredArtifacts": [
         "official precinct-level or county-subdivision result rows for President, if Indiana publishes or provides them",
@@ -955,11 +958,14 @@
         "official county 2024 turnout and registration rows are loaded from the Indiana Election Division PDF",
         "supplemental MIT/OpenElections President and U.S. Senate local review rows are loaded for advisory flag calculation",
         "Verified Voting county equipment context is loaded as secondary administration context only",
-        "official 2016 and 2020 county historical presidential baselines are loaded from ENR archive JSON"
+        "official 2016 and 2020 county historical presidential baselines are loaded from ENR archive JSON",
+        "official VSTOP audit selection/outcome rows if published or request-produced",
+        "official CVR availability/exportability records or request-produced county CVR records",
+        "official Recount Commission/county incident, correction, recount, and litigation records"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, and official 2016/2020 county historical baselines are normalized. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows and an official script-readable 2012 county presidential baseline remain preferred/request-path items.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. Future parsers are needed only if an official precinct/subcounty result export, stable 2012 official county table/export, VSTOP audit rows, CVR availability records, or incident/correction/recount rows are obtained.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, official 2016/2020 county historical baselines are normalized, and VSTOP/Recount Commission/admin source paths are documented. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, a repeatably script-readable 2012 county presidential baseline, and normalized audit/CVR/incident/correction records remain preferred/request-path items.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"
@@ -1319,15 +1325,16 @@
         "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information"
       ],
       "requiredArtifacts": [
-        "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt",
+        "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt, tracked in data/nv-2024-county-source-request-matrix.tsv",
         "state-native turnout denominator rows with ballots-cast, registered-voter denominator, timing, and inactive-voter treatment notes",
         "official precinct/local reporting-unit geometry or crosswalks for subcounty review rows",
         "official 2012, 2016, and 2020 Nevada historical presidential baseline exports if available to replace secondary context rows",
         "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, incident/correction, recount, and litigation artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; local exports or request-produced SOV/CVR files still needed for the remaining Nevada jurisdictions. A normalizedTurnoutCsv-style parser is needed before replacing EAC fallback turnout, and a geometry/crosswalk parser is needed before mapping subcounty review rows.",
-      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 1, 2026 source inventory records county-by-county request paths, blocked state-native turnout access, county-only map geometry, secondary historical baseline caveats, and unnormalized audit/CVR/L&A/tabulator-log/custody/incident source needs."
+      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; data/nv-2024-county-source-request-matrix.tsv now tracks the remaining 14 jurisdiction request paths. Local exports or request-produced SOV/CVR files are still needed before statewide precinct advisory coverage can be calculated. A normalizedTurnoutCsv-style parser is needed before replacing EAC fallback turnout, and a geometry/crosswalk parser is needed before mapping subcounty review rows.",
+      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 1, 2026 source inventory and data/nv-2024-county-source-request-matrix.tsv record county-by-county request paths, blocked state-native turnout access, county-only map geometry, secondary historical baseline caveats, and unnormalized audit/CVR/L&A/tabulator-log/custody/incident source needs.",
+      "requestMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
     },
     {
       "state": "NH",
@@ -1458,23 +1465,32 @@
       "state": "WV",
       "name": "West Virginia",
       "priority": 12,
-      "currentStatus": "official_precinct_review_turnout_package_collected_admin_context_partial",
+      "currentStatus": "official_precinct_review_turnout_package_collected_admin_context_inventory_expanded",
       "officialSourcePages": [
         "https://results.enr.clarityelections.com/WV/122766/web.345435/",
         "https://results.enr.clarityelections.com/WV/122766/current_ver.txt",
         "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
-        "https://sos.wv.gov/elections/Pages/VoteRegTotals.aspx"
+        "https://sos.wv.gov/elections/Pages/VoteRegTotals.aspx",
+        "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+        "https://sos.wv.gov/elections/Pages/Guidance.aspx",
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Canvassing%20Manual.pdf",
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Recount%20Manual.pdf",
+        "https://sos.wv.gov/FormSearch/Elections/Complaint_Challenge/ElectionsComplaintForm.pdf",
+        "https://sos.wv.gov/about/Pages/FOIAReq.aspx",
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Voter%20Data%20Request.pdf",
+        "https://sos.wv.gov/west-virginia-county-clerk-directory"
       ],
       "requiredArtifacts": [
         "official county detailxml.zip reports for all 55 counties",
         "precinct boundary geometry if subcounty map overlays are required",
         "official 2024 post-election audit selection/outcome artifacts if published or obtainable",
         "CVR availability/request-path inventory",
-        "incident, correction, recount, and litigation source inventory"
+        "incident, correction, recount, and litigation source inventory",
+        "data/wv-2024-data-coverage-inventory.json documenting loaded artifacts, official request paths, historical-source leads, and display caveats"
       ],
       "preferredComparisonContest": "U.S. Senate; loaded from official county detail XML reports as precinct-level President-vs-U.S.-Senate review rows.",
-      "parserNeeded": "westVirginiaClarityCountyDetailXmlDirectory loaded for 55 county result rows, 1,648 precinct review rows, and 1,649 precinct turnout rows. Equipment context is loaded separately from Verified Voting county context; audit/CVR/incident records remain source-inventory tasks.",
-      "blocker": "West Virginia has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-Senate review rows and state-native precinct turnout denominators from VoterTurnout totalVoters/ballotsCast. Remaining gaps are official statewide precinct boundary geometry for subcounty overlays and normalized administration context for audit outcomes, CVR availability, incidents, corrections, recounts, and litigation.",
+      "parserNeeded": "westVirginiaClarityCountyDetailXmlDirectory loaded for 55 county result rows, 1,648 precinct review rows, and 1,649 precinct turnout rows. Equipment context is loaded separately from Verified Voting county context; data/wv-2024-data-coverage-inventory.json documents official SOS/county request paths for audit outcomes, CVR availability, recounts, corrections, incidents, litigation, precinct geometry, and historical baselines.",
+      "blocker": "West Virginia has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-Senate review rows and state-native precinct turnout denominators from VoterTurnout totalVoters/ballotsCast. Remaining gaps are official statewide precinct boundary geometry for subcounty overlays, normalized 2024 hand-count audit selection/outcome rows, CVR availability responses, recount/correction/incident/litigation records, and normalized 2012/2016/2020 historical baseline rows. The Wave 9 coverage inventory records the current official request/source paths without loading those rows.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "West Virginia SOS official county detail XML reports",
@@ -1504,6 +1520,12 @@
           "localFile": "data/wv-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "coverageInventory": {
+          "sourceTitle": "West Virginia 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+          "localFile": "data/wv-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded result/review/turnout/equipment artifacts, official SOS/county request paths for precinct geometry, audit/CVR/recount/incident/correction/litigation records, historical-source leads, and display caveats. Inventory only; no normalized administration rows are loaded."
         },
         "equipmentContext": {
           "sourceTitle": "Verified Voting Verifier West Virginia 2024 equipment context",

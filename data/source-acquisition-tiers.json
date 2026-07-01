@@ -520,7 +520,7 @@
       "stateName": "Indiana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_equipment",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county_plus_supplemental_precinct",
       "exportFormats": [
@@ -536,7 +536,10 @@
         "https://www.in.gov/sos/elections/election-commission/election-results/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://doi.org/10.7910/DVN/NYTPDU",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18"
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18",
+        "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
+        "https://www.in.gov/sos/elections/indiana-recount-commission/",
+        "https://indianavoters.in.gov/ENRHistorical/ElectionResults?year=2012"
       ],
       "exampleUrls": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
@@ -549,7 +552,10 @@
         "supplemental precinct President-versus-U.S.-Senate review rows",
         "EAC county turnout fallback retained as benchmark",
         "county election equipment context",
-        "official 2016 and 2020 county historical presidential baselines"
+        "official 2016 and 2020 county historical presidential baselines",
+        "official VSTOP post-election risk-limiting audit source path documented",
+        "official Recount Commission petition/order/minute source path documented",
+        "current official ENRHistorical 2012 result page identified but not script-replayable from this environment"
       ],
       "missingFields": [
         "official precinct/subcounty President rows",
@@ -557,13 +563,16 @@
         "precinct turnout and registered-voter denominator rows",
         "precinct boundary geometry",
         "official 2012 county historical presidential baseline",
-        "audit, recount, CVR availability, incident, and correction records"
+        "normalized official VSTOP audit selection/outcome rows",
+        "normalized official recount/contest/correction records",
+        "official CVR availability or request-produced CVR records",
+        "official incident and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson package loaded; official 2016/2020 historicalPresidentialCsv loaded from ENR archives; supplemental MIT/OpenElections precinct review rows loaded; official precinct/subcounty rows remain blocked",
+      "parserStatus": "indianaEnrCountyJson package loaded; official 2016/2020 historicalPresidentialCsv loaded from ENR archives; supplemental MIT/OpenElections precinct review rows loaded; official VSTOP audit and Recount Commission source paths are documented but not normalized; official precinct/subcounty rows and script-replayable 2012 baseline remain blocked",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2016 and 2020 only; 2012 remains source-cited but unnormalized pending a script-readable official artifact.",
-      "nextAction": "Request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, plus a script-readable official 2012 county presidential baseline artifact."
+      "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2016 and 2020 only; the current official ENRHistorical 2012 page is source-cited but Cloudflare/session protected from repeatable scripted collection in this environment, so 2012 remains unnormalized pending an official downloadable artifact or request-produced table.",
+      "nextAction": "Request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, a script-readable official 2012 county presidential baseline artifact, and VSTOP/Recount Commission/CVR/incident records suitable for normalization."
     },
     {
       "state": "KS",
@@ -1267,7 +1276,8 @@
         "Humboldt County CVR csv",
         "normalized Clark/Washoe/Humboldt precinct review CSVs",
         "county election pages",
-        "records-request path"
+        "records-request path",
+        "county source request matrix TSV"
       ],
       "sourceUrls": [
         "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
@@ -1286,7 +1296,8 @@
         "Clark County precinct President/Senate CVR review rows",
         "Washoe County precinct President/Senate CVR review rows",
         "Humboldt County precinct President/Senate CVR review rows",
-        "county equipment context"
+        "county equipment context",
+        "14-jurisdiction result/turnout/geometry/admin request matrix"
       ],
       "missingFields": [
         "local/precinct rows for 14 non-Clark/non-Washoe/non-Humboldt jurisdictions",
@@ -1295,11 +1306,11 @@
         "official 2012/2016/2020 historical baseline replacement for secondary context rows",
         "post-election audit, L&A, tabulator-log, custody, incident/correction, recount, litigation, and remaining CVR availability artifacts"
       ],
-      "parserStatus": "native partial subcounty review package loaded",
+      "parserStatus": "native partial subcounty review package loaded; request-matrix artifact documents remaining jurisdiction collection targets",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Clark County, Washoe County, and Humboldt County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained. The July 1, 2026 NV source inventory now records county-by-county request paths for the remaining 14 jurisdictions plus state-native turnout, precinct geometry, historical-baseline replacement, and audit/CVR/L&A/tabulator-log/custody/incident evidence needs.",
-      "nextAction": "Use data/nv-2024-source-coverage-inventory.json remainingJurisdictionSourceMatrix to collect official local result exports or records-request productions for the 14 non-Clark/non-Washoe/non-Humboldt jurisdictions, then collect a state-native turnout denominator and administration evidence artifacts."
+      "caveats": "Clark County, Washoe County, and Humboldt County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained. The July 1, 2026 NV source inventory and request matrix record county-by-county request paths for the remaining 14 jurisdictions plus state-native turnout, precinct geometry, historical-baseline replacement, and audit/CVR/L&A/tabulator-log/custody/incident evidence needs.",
+      "nextAction": "Use data/nv-2024-county-source-request-matrix.tsv and data/nv-2024-source-coverage-inventory.json to collect official local result exports or records-request productions for the 14 non-Clark/non-Washoe/non-Humboldt jurisdictions, then collect a state-native turnout denominator and administration evidence artifacts."
     },
     {
       "state": "NY",
@@ -1856,7 +1867,12 @@
         "detail XML ZIP"
       ],
       "sourceUrls": [
-        "https://results.enr.clarityelections.com/WV/"
+        "https://results.enr.clarityelections.com/WV/",
+        "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
+        "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+        "https://sos.wv.gov/elections/Pages/Guidance.aspx",
+        "https://sos.wv.gov/about/Pages/FOIAReq.aspx",
+        "https://sos.wv.gov/west-virginia-county-clerk-directory"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -1864,19 +1880,21 @@
         "precinct President rows",
         "precinct U.S. Senate rows",
         "precinct turnout rows",
-        "county equipment context"
+        "county equipment context",
+        "official SOS canvass/recount/complaint/FOIA/voter-data request paths documented in data/wv-2024-data-coverage-inventory.json",
+        "official historical results source leads for 2020 and 2008-2017"
       ],
       "missingFields": [
         "official statewide precinct boundary geometry",
         "normalized 2024 post-election audit selection/outcome artifacts",
-        "CVR availability/request-path inventory",
+        "normalized CVR availability rows",
         "incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "westVirginiaClarityCountyDetailXmlDirectory loaded for results/review/turnout; Verified Voting county equipment context loaded",
+      "parserStatus": "westVirginiaClarityCountyDetailXmlDirectory loaded for results/review/turnout; Verified Voting county equipment context loaded; data/wv-2024-data-coverage-inventory.json documents official geometry, audit, CVR, recount, incident/correction, litigation, and historical-source request paths",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Rows are advisory review inputs, not confirmed findings. Equipment context is jurisdiction-level metadata only. County map geometry is loaded; no official statewide precinct boundary geometry package was identified in this pass.",
-      "nextAction": "Collect or document an official statewide precinct boundary source if one exists, then inventory official WV SOS/county audit, CVR, incident, correction, recount, and litigation artifacts."
+      "caveats": "Rows are advisory review inputs, not confirmed findings. Equipment context is jurisdiction-level metadata only. County map geometry is loaded; no official statewide precinct boundary geometry package was identified in this pass. The Wave 9 inventory documents official request/source paths only; no audit outcome, CVR, incident, correction, recount, litigation, or historical baseline rows are loaded.",
+      "nextAction": "Request official statewide precinct boundary geometry or county precinct crosswalks, then request and normalize 2024 hand-count audit selections/outcomes, CVR availability responses, recount/correction/incident/litigation records, and official 2012/2016/2020 historical baseline artifacts."
     },
     {
       "state": "WY",
