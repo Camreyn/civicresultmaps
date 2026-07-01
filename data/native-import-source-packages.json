@@ -1284,7 +1284,7 @@
       "state": "NY",
       "name": "New York",
       "priority": 10,
-      "currentStatus": "official_county_review_historical_package_collected",
+      "currentStatus": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented",
       "officialSourcePages": [
         "https://elections.ny.gov/election-results",
         "https://results.elections.ny.gov/",
@@ -1293,21 +1293,88 @@
         "https://ny.elstats-staging.com/eng/files/serve/476",
         "https://ny.elstats-staging.com/eng/files/serve/106",
         "https://ny.elstats-staging.com/eng/files/serve/116",
-        "https://ny.elstats-staging.com/eng/files/serve/128"
+        "https://ny.elstats-staging.com/eng/files/serve/128",
+        "https://elections.ny.gov/enrollment-county",
+        "https://elections.ny.gov/enrollment-election-district",
+        "https://elections.ny.gov/flateau-database",
+        "https://flateau.elections.ny.gov/",
+        "https://elections.ny.gov/election-security",
+        "https://elections.ny.gov/freedom-information-law-foil-requests",
+        "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+        "https://elections.ny.gov/voting-technology"
       ],
       "requiredArtifacts": [
         "official archive PDF document 476 for 2024-11-05 Presidential General results",
         "normalized county President CSV extracted from official PDF",
         "normalized county U.S. Senate CSV extracted from official PDF",
+        "supplemental OpenElections local review rows for machine-readable, selected text-layer PDF, Suffolk text, and legacy NYC coverage",
         "official 2012/2016/2020 general-election PDFs for county historical presidential baselines",
         "normalized historical presidential baseline CSV generated from the official PDFs",
-        "EAC fallback turnout rows until a state-native denominator package is collected",
+        "EAC fallback turnout rows until a New York-native ballots-cast or voter-history package is collected",
+        "NYSBOE county and election-district enrollment reports as denominator leads only",
         "county geometry for map joins",
-        "Verified Voting county equipment context for advisory administration metadata"
+        "Verified Voting county equipment context for advisory administration metadata",
+        "NYSBOE audit, FOIL, county-board roster, Flateau/VEDA, and voting-technology paths documented in data/ny-2024-data-coverage-inventory.json"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for New York official county package; historicalPresidentialCsv now loaded from official NYSBOE PDFs; precinct/subcounty parser still needed if an official lower-level package is found",
-      "blocker": "County-level President-versus-U.S. Senate review package and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. The package is not precinct-level, EAC turnout remains a fallback instead of state-native denominator rows, and official CVR availability, audit/recount/correction/incident records, and precinct geometry still need source collection."
+      "parserNeeded": "countyPresidentCsv loaded for New York official county package; localComparisonCsv loaded for partial supplemental local review rows; historicalPresidentialCsv loaded from official NYSBOE PDFs; eacTurnoutCsv remains active. A complete official election-district parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed before full same-grain NY local coverage can replace the current caveats.",
+      "blocker": "County-level President and U.S. Senate rows and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. Partial local review rows cover 49 county equivalents through OpenElections/legacy NYC sources, while Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized review coverage. EAC turnout remains fallback because NYSBOE enrollment reports are denominator leads, not ballots-cast rows. CVR availability, audit comparison reports, incident/correction/recount/litigation records, and precinct/election-district geometry still need source collection or request-produced artifacts.",
+      "availableArtifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "New York State Board of Elections official 2024 general election results PDF",
+          "sourceUrl": "https://results.elections.ny.gov/document/476",
+          "localFile": "data/ny-2024-general-president.csv; data/ny-2024-presidential-general.pdf",
+          "parserHint": "countyPresidentCsv extracted from official archive document 476; county-certified rows remain the map authority."
+        },
+        "countyComparisonRows": {
+          "sourceTitle": "New York State Board of Elections official 2024 U.S. Senate county rows",
+          "sourceUrl": "https://results.elections.ny.gov/document/476",
+          "localFile": "data/ny-2024-general-senate.csv",
+          "level": "county",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "countyComparisonCsv extracted from the same official archive PDF as President."
+        },
+        "localReviewRows": {
+          "sourceTitle": "OpenElections 2024 New York county-board source collection plus legacy NYC rows",
+          "sourceUrl": "https://github.com/openelections/openelections-sources-ny/tree/master/2024/general",
+          "localFile": "data/ny-2024-local-review.csv; data/ny-2024-local-review-sources.json",
+          "level": "election_district_or_local_unit_partial",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "scripts/normalize-ny-local-review.mjs normalizes machine-readable files, selected text-layer PDFs, Suffolk text rows, and legacy NYC rows; image-only, president-only, unsupported, or unreviewed counties stay excluded until reviewed."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback plus NYSBOE enrollment denominator leads",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ny-2024-eac-turnout.csv; data/eac-2024-state-turnout/ny-2024-eac-registered-voter-denominator.json",
+          "level": "county_jurisdiction_fallback",
+          "denominator": "EAC registered voters for loaded rows; NYSBOE 11/01/2024 county and election-district enrollment reports are candidate denominator leads",
+          "parserHint": "Current ETL uses eacTurnoutCsv. A future New York turnout normalizer should collect ballots-cast or voter-history rows and reconcile them with NYSBOE enrollment denominators before replacing fallback rows."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "New York State Board of Elections official historical general-election PDFs",
+          "sourceUrl": "https://elections.ny.gov/election-results",
+          "localFile": "data/ny-2012-general.pdf; data/ny-2016-general.pdf; data/ny-2020-general.pdf; data/ny-historical-presidential-baseline.csv",
+          "parserHint": "Run node scripts/collect-ny-historical-baseline.mjs to regenerate 186 official county presidential baseline rows for 2012, 2016, and 2020."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2736%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ny-counties.geojson",
+          "parserHint": "County map joins only; precinct/election-district boundaries are not included."
+        },
+        "coverageInventory": {
+          "sourceTitle": "New York 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://elections.ny.gov/flateau-database",
+          "localFile": "data/ny-2024-data-coverage-inventory.json",
+          "parserHint": "Documents excluded local review counties, state-native turnout denominator leads, Flateau/VEDA future local data path, county-board request paths, audit/CVR/incident/recount/litigation blockers, and display caveats."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier New York 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36",
+          "localFile": "data/verifiedvoting-ny-2024-equipment.json; data/ny-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
+        }
+      }
     },
     {
       "state": "WV",

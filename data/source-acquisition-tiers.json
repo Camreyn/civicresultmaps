@@ -1295,7 +1295,9 @@
         "official PDF",
         "normalized CSV",
         "EAC fallback turnout CSV",
-        "Verified Voting equipment context"
+        "Verified Voting equipment context",
+        "NYSBOE enrollment report leads",
+        "NYSBOE Flateau/VEDA future local-data path"
       ],
       "sourceUrls": [
         "https://elections.ny.gov/election-results",
@@ -1305,6 +1307,13 @@
         "https://ny.elstats-staging.com/eng/files/serve/116",
         "https://ny.elstats-staging.com/eng/files/serve/128",
         "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://elections.ny.gov/enrollment-county",
+        "https://elections.ny.gov/enrollment-election-district",
+        "https://elections.ny.gov/flateau-database",
+        "https://flateau.elections.ny.gov/",
+        "https://elections.ny.gov/election-security",
+        "https://elections.ny.gov/freedom-information-law-foil-requests",
+        "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
         "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36"
       ],
       "exampleUrls": [],
@@ -1314,21 +1323,23 @@
         "EAC 2024 county/jurisdiction turnout fallback rows",
         "county geometry",
         "2012/2016/2020 county presidential historical baselines from official NYSBOE PDFs",
-        "Verified Voting county equipment context"
+        "Verified Voting county equipment context",
+        "NYSBOE 11/01/2024 county enrollment report lead and election-district enrollment report lead",
+        "NYSBOE post-election audit, FOIL, county-board roster, and Flateau/VEDA request/publication paths documented in data/ny-2024-data-coverage-inventory.json"
       ],
       "missingFields": [
-        "official precinct/local reporting-unit President rows from NYSBOE or county boards",
-        "official same-grain precinct/local U.S. Senate comparison rows from NYSBOE or county boards",
-        "state-native turnout/registration denominator artifact to replace EAC fallback",
+        "official precinct/local reporting-unit President rows from NYSBOE or county boards for counties still outside local review coverage",
+        "official same-grain precinct/local U.S. Senate comparison rows from NYSBOE or county boards for counties still outside local review coverage",
+        "state-native ballots-cast or voter-history artifact to pair with NYSBOE enrollment denominators before replacing EAC fallback",
         "official CVR availability inventory",
         "official audit/recount/correction/incident/litigation record package",
-        "precinct boundary geometry"
+        "precinct or election-district boundary geometry and result-label crosswalk"
       ],
-      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv review rows, EAC turnout fallback, official PDF historical baseline, and county equipment context; official precinct/subcounty parser still needs a source package",
+      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv partial review rows, EAC turnout fallback, official PDF historical baseline, county equipment context, and NY coverage inventory; official full-state precinct/election-district parser still needs a complete source package and crosswalk",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "Current certified results and historical baselines are official county-level rows. Local review rows are supplemental OpenElections county-board source normalizations and legacy NYC rows, not a complete official NYSBOE precinct package. EAC turnout fallback and Verified Voting equipment context remain advisory metadata.",
-      "nextAction": "Request or locate official NYSBOE/county precinct-level President and U.S. Senate rows plus state-native turnout denominators, CVR availability, audit/recount/correction/incident records, and precinct geometry."
+      "nextAction": "Use data/ny-2024-data-coverage-inventory.json to request or locate official NYSBOE/county election-district President and U.S. Senate rows, ballots-cast/voter-history rows paired with enrollment denominators, CVR availability, audit/recount/correction/incident records, and precinct/election-district geometry or crosswalks."
     },
     {
       "state": "OH",
