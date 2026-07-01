@@ -497,7 +497,7 @@
       "state": "IN",
       "stateName": "Indiana",
       "electionYear": 2024,
-      "status": "loaded",
+      "status": "partial",
       "priority": "standard",
       "equipment": {
         "status": "loaded",
@@ -512,16 +512,37 @@
         "expectedJurisdictions": 92
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Indiana 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceAuthority": "Indiana Secretary of State Election Division / VSTOP",
+        "sourceUrl": "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
+        "why": "Official VSTOP post-election risk-limiting audit report path is documented for Indiana, but 2024 county/audit-unit selection and outcome rows are not normalized into CivicResultMaps yet.",
+        "neededFields": [
+          "audit date and election",
+          "county or audit unit",
+          "contest audited",
+          "ballots or batches sampled",
+          "discrepancy/outcome fields",
+          "official report URL"
+        ]
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Indiana 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceAuthority": "Indiana Election Division and county election offices",
+        "sourceUrl": "https://www.in.gov/sos/elections/election-administrators-portal/",
+        "why": "No official statewide 2024 cast vote record package or CVR availability table was identified in the loaded artifacts. Request county/state CVR availability, retention, exportability, and public-records process before loading CVR context."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Indiana 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceAuthority": "Indiana Recount Commission / Indiana Election Division / county election offices",
+        "sourceUrl": "https://www.in.gov/sos/elections/indiana-recount-commission/",
+        "why": "Official Recount Commission orders, petitions, and minutes are documented as source paths, but 2024 recount, contest, incident, correction, and litigation rows are not normalized for Indiana yet.",
+        "neededFields": [
+          "filing or order date",
+          "contest and jurisdiction",
+          "petition/order/minute URL",
+          "status or outcome",
+          "relationship to certified ENR totals if any"
+        ]
       }
     },
     {
@@ -1705,17 +1726,32 @@
         "caveat": "Candidate source inventory only; no 2024 post-election audit result rows are loaded for West Virginia."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "West Virginia 2024 cast-vote-record availability and request paths have not been inventoried or normalized into this administration context registry yet.",
-        "caveat": "No CVR dataset or county CVR availability table is loaded."
+        "status": "candidate",
+        "reportingLevel": "county_request_path",
+        "sourceDocumentId": "wv-sos-foia-and-voter-data-request-paths",
+        "sourceUrl": "https://sos.wv.gov/about/Pages/FOIAReq.aspx",
+        "relatedSourceUrls": [
+          "https://sos.wv.gov/FormSearch/Elections/Informational/Voter%20Data%20Request.pdf",
+          "https://sos.wv.gov/west-virginia-county-clerk-directory"
+        ],
+        "localArtifact": "data/wv-2024-data-coverage-inventory.json",
+        "why": "West Virginia SOS FOIA, voter-data request, and county clerk paths are now documented for CVR/public-records availability follow-up, but no county CVR availability table or CVR dataset has been collected or normalized.",
+        "caveat": "Request-path inventory only; no CVR dataset, ballot-image record, or county CVR availability table is loaded. Voter-registration and voter-history products are not CVRs."
       },
       "incidents": {
         "status": "candidate",
-        "reportingLevel": "statewide_reporting_path",
+        "reportingLevel": "statewide_and_county_request_path",
         "sourceDocumentId": "wv-sos-election-security-complaint-reporting",
         "sourceUrl": "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
-        "why": "West Virginia Secretary of State election-security materials identify official complaint/reporting paths for election-law violations, but 2024 incident, correction, recount, and litigation records have not been normalized.",
-        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, or litigation dataset."
+        "relatedSourceUrls": [
+          "https://sos.wv.gov/FormSearch/Elections/Complaint_Challenge/ElectionsComplaintForm.pdf",
+          "https://sos.wv.gov/FormSearch/Elections/Informational/Canvassing%20Manual.pdf",
+          "https://sos.wv.gov/FormSearch/Elections/Informational/Recount%20Manual.pdf",
+          "https://sos.wv.gov/about/Pages/FOIAReq.aspx"
+        ],
+        "localArtifact": "data/wv-2024-data-coverage-inventory.json",
+        "why": "West Virginia SOS election-security, complaint, canvass, recount, and FOIA paths are documented, but 2024 incident, correction, complaint disposition, recount, and litigation records have not been normalized.",
+        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, complaint-disposition, or litigation dataset. Complaints and investigations may be confidential or restricted."
       }
     },
     {

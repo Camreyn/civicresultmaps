@@ -138,8 +138,9 @@ Caveats: review rows are county-level President-versus-U.S. Senate two-year spec
 - Turnout denominator: totalVoters registered-voter field; expected 1,649 rows, 770,587 ballots cast, and 1,187,991 registered voters
 - County boundary: data/wv-counties.geojson
 - Equipment context: data/wv-2024-equipment-context.csv from Verified Voting, context only
+- Coverage/admin inventory: data/wv-2024-data-coverage-inventory.json documents official SOS/county request paths for precinct geometry, hand-count audit outcomes, CVR availability, recount/correction/incident/litigation records, and official historical baseline source leads
 
-Remaining gaps: official statewide precinct boundary geometry for subcounty overlays, 2024 audit selection/outcome artifacts, CVR availability/request paths, and incident/correction/recount/litigation inventories. The loaded review rows remain advisory screening inputs, not findings.
+Remaining gaps: official statewide precinct boundary geometry for subcounty overlays, normalized 2024 audit selection/outcome artifacts, CVR availability rows, incident/correction/recount/litigation records, and loaded 2012/2016/2020 historical baseline rows. The loaded review rows remain advisory screening inputs, not findings; the Wave 9 inventory records source/request paths only for the remaining administration context.
 
 ## Missouri Wave 5 Update
 
@@ -186,6 +187,19 @@ Caveats: certified county totals aggregate all official NCSBE reporting units, w
 - Coverage inventory: `data/nv-2024-source-coverage-inventory.json` plus Wave 9 request matrix `data/nv-2024-county-source-request-matrix.tsv`
 
 Expected validation: 17 county result rows, 17 county geometry features, 1,484,840 presidential votes, 1,057 local review rows from Clark/Washoe/Humboldt CVR precinct aggregates, 17 EAC fallback turnout rows, and 51 secondary historical baseline rows. Remaining risks: 14 Nevada jurisdictions still need official local President and U.S. Senate rows or CVR/SOV exports, state-native turnout denominators, precinct/local geometry or crosswalks, official 2012/2016/2020 historical replacement artifacts, and normalized audit/CVR/L&A/tabulator-log/custody/incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+
+
+## Indiana Wave 9 Update
+
+- Config: `etl/state-configs/in.json`
+- Authority: Indiana Election Division; Indiana Secretary of State Election Division / VSTOP; Indiana Recount Commission; U.S. Census Bureau
+- 2024 county results: official archived ENR President and U.S. Senate category JSON remains loaded from `data/in-2024-official-results/OffCatC_1019_A.json` and `data/in-2024-official-results/OffCatC_1006_A.json`.
+- Local review: `data/in-2024-mit-local-review.csv` remains supplemental MIT/OpenElections President-versus-U.S.-Senate precinct context, not certified replacement totals.
+- Turnout: official Indiana Election Division county turnout and registration rows remain loaded at `data/in-2024-general-turnout.csv`.
+- Historical baseline: official 2016 and 2020 county presidential rows remain loaded from ENR archive JSON; the current official 2012 ENRHistorical endpoint is now documented but not repeatably script-readable from this environment, so 2012 remains a request/downloadable-artifact gap.
+- Administration context: VSTOP post-election risk-limiting audit, Election Administrator Portal, and Recount Commission source paths are documented in `data/in-2024-data-coverage-inventory.json` and `data/admin-source-packages.json`; no normalized audit, CVR, incident, correction, recount, or litigation rows are loaded.
+
+Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 184 historical baseline rows for 2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
 
 ## Native ETL Acceptance Criteria
 

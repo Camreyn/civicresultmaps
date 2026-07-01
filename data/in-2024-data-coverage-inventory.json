@@ -4,7 +4,7 @@
   "electionYear": 2024,
   "checkedAt": "2026-07-01",
   "purpose": "State-scoped coverage inventory for Indiana 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_county_results_turnout_historical_loaded_supplemental_precinct_review",
+  "status": "official_county_results_turnout_2016_2020_historical_loaded_supplemental_precinct_review_admin_paths_documented",
   "authorityPriority": "Official Indiana Election Division, Indiana Election Commission/Recount Commission, county election offices, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -240,8 +240,8 @@
         "official historical result archive links",
         "2012, 2016, and 2020 general election source path"
       ],
-      "result": "Official page lists 2020 General Election Results, 2016 November General Election, and 2012 November General Election archive links.",
-      "blocker": "Historical baseline rows are source-cited but not normalized in this pass; a dedicated historical ENR parser or CSV extraction should be added before enabling historicalBaseline."
+      "result": "Official page lists the current ENRHistorical result endpoint for 2012, plus 2016 and 2020 general-election archive links. The 2016 and 2020 ENR JSON category artifacts are loaded; 2012 was reachable as a browser page but was not repeatably script-readable from this environment.",
+      "blocker": "Keep 2012 as a request/downloadable-artifact gap until an official table, CSV, PDF, or stable endpoint can be collected reproducibly."
     },
     {
       "sourceAuthority": "Indiana Secretary of State Election Division",
@@ -298,13 +298,35 @@
     },
     {
       "sourceAuthority": "Indiana Election Division",
-      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2012General/index.html",
+      "sourceUrl": "https://indianavoters.in.gov/ENRHistorical/ElectionResults?year=2012",
       "checkedFor": [
         "official 2012 county presidential rows",
         "script-readable ENR JSON paths"
       ],
-      "result": "The official 2012 archive landing page is listed by the Indiana Election Results page, but the checked /data and /site/data settings/statewide/category JSON paths returned missing-blob or transport errors from this environment.",
-      "blocker": "2012 county presidential baseline rows remain unnormalized until a script-readable official artifact or county table is obtained."
+      "result": "The official Election Results page now links 2012 to the current ENRHistorical endpoint. Direct fetches were intermittent or challenge-protected, and the older archive/blob paths still did not expose a repeatable county presidential JSON artifact from this environment.",
+      "blocker": "2012 county presidential baseline rows remain unnormalized until a stable official export, table capture, or request-produced county artifact is obtained."
+    },
+    {
+      "sourceAuthority": "Indiana Secretary of State Election Division / VSTOP",
+      "sourceUrl": "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
+      "checkedFor": [
+        "post-election risk-limiting audit reports",
+        "audit selection/outcome source path",
+        "normalized audit-unit rows"
+      ],
+      "result": "Official VSTOP RLA report page is documented as the audit source path for a future administration-context pass.",
+      "blocker": "No 2024 county/audit-unit selection, sample, discrepancy, or outcome rows are normalized into the Indiana package yet."
+    },
+    {
+      "sourceAuthority": "Indiana Election Administrator Portal",
+      "sourceUrl": "https://www.in.gov/sos/elections/election-administrators-portal/",
+      "checkedFor": [
+        "county administration materials",
+        "CVR availability or request path",
+        "incident/correction records path"
+      ],
+      "result": "Official administrator portal is documented as a request/source path for administration records not present in the public ENR artifacts.",
+      "blocker": "No statewide CVR availability table, CVR export package, incident log, correction log, or custody artifact was collected."
     }
   ],
   "historicalBaselineSourceLeads": [
@@ -325,9 +347,9 @@
     {
       "year": 2012,
       "sourceAuthority": "Indiana Election Division",
-      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2012General/index.html",
-      "status": "source_cited_json_path_blocked",
-      "notes": "Official archive page remains source-cited, but checked ENR JSON paths did not expose a script-readable county presidential category artifact from this environment. Request an official 2012 county table or archive artifact before adding rows."
+      "sourceUrl": "https://indianavoters.in.gov/ENRHistorical/ElectionResults?year=2012",
+      "status": "official_endpoint_identified_not_script_replayable",
+      "notes": "The Indiana Election Results page links 2012 to the current ENRHistorical endpoint, but repeated scripted fetches were intermittent/challenge-protected and older archive JSON paths remained missing. Request or collect a stable official county presidential table before adding rows."
     }
   ],
   "requestPath": {
@@ -366,23 +388,25 @@
     },
     {
       "artifact": "2012_historical_presidential_baseline",
-      "status": "source_cited_json_path_blocked",
+      "status": "official_endpoint_identified_not_script_replayable",
       "neededFor": "Complete 2012/2016/2020 county historical baseline context.",
       "preferredAuthority": "Indiana Election Division archived general election results or official county table export.",
-      "remainingRisk": "Indiana historical baseline capability now includes official 2016 and 2020 county rows only; 2012 remains missing until an official script-readable artifact is obtained."
+      "remainingRisk": "Indiana historical baseline capability includes official 2016 and 2020 county rows only; 2012 remains missing until a stable official export, table capture, or request-produced artifact is obtained."
     },
     {
       "artifact": "audit_recount_cvr_incident_correction_records",
-      "status": "not_normalized",
+      "status": "source_paths_documented_not_normalized",
       "neededFor": "Independent reconciliation and administrative context for explaining advisory rows.",
       "preferredAuthority": "Indiana Election Division, Indiana Recount Commission, VSTOP/RLA reports, and county election offices.",
-      "remainingRisk": "Loaded artifacts do not independently recompute county totals from CVRs or explain local administration events."
+      "remainingRisk": "VSTOP and Recount Commission source paths are documented, but loaded artifacts do not independently recompute county totals from CVRs or explain local administration events."
     }
   ],
   "confidenceNotes": [
     "Official county result and county turnout artifacts are suitable for county-level public-interest review with visible caveats.",
     "No official statewide precinct/subcounty President and same-grain U.S. Senate result export was confirmed in this pass.",
     "Next source step is a targeted Indiana Election Division request, followed by county-by-county collection only if the state confirms no statewide export exists.",
-    "Official 2016 and 2020 county presidential historical baseline rows are now normalized from Indiana ENR archives; 2012 remains a documented official-source request gap."
+    "Official 2016 and 2020 county presidential historical baseline rows are now normalized from Indiana ENR archives; 2012 remains a documented official-source request gap.",
+    "Official VSTOP audit and Recount Commission source paths are documented for Indiana, but no normalized audit/recount/CVR/incident/correction rows are loaded.",
+    "The current official 2012 ENRHistorical page is identified, but collection remains blocked until a stable official export/table or request-produced county artifact is available."
   ]
 }
