@@ -1,27 +1,32 @@
 {
   "caveat": "This report tracks electronic-integrity evidence availability and reconciliation readiness only. Missing, partial, or anomalous evidence is not proof of electronic tampering.",
-  "checkedAt": "2026-06-27",
+  "checkedAt": "2026-07-01",
   "electionYear": 2024,
   "sourceRegistry": "data/electronic-integrity-artifacts.json",
   "states": [
     {
       "artifactRows": 8,
-      "auditStatus": "needs_data",
+      "auditStatus": "partial",
       "ballotImageStatus": "needs_data",
       "canRecomputeFromCvr": false,
       "canTriangulateMachineRisk": false,
-      "cvrStatus": "needs_data",
-      "loadedArtifactRows": 1,
+      "cvrStatus": "candidate",
+      "loadedArtifactRows": 2,
       "localArtifactChecks": [
         {
           "exists": true,
           "localArtifact": "data/az-2024-general-canvass-president.csv",
           "type": "certified_results"
+        },
+        {
+          "exists": true,
+          "localArtifact": "data/az-2024-admin-source-inventory.json",
+          "type": "audit_results"
         }
       ],
-      "missingOrBlockedRows": 6,
-      "nextAction": "Find official subcounty result exports first, then inventory county CVR, ballot-image, tabulator-log, L&A, audit, and chain-of-custody availability.",
-      "overallStatus": "needs_evidence",
+      "missingOrBlockedRows": 5,
+      "nextAction": "Request official subcounty President plus U.S. Senate result exports first, then use the SOS NextRequest and county contact paths to inventory CVR, ballot-image, tabulator-log, L&A, detailed audit, and chain-of-custody availability.",
+      "overallStatus": "partial",
       "requestArtifacts": [
         {
           "granularity": "county",
@@ -31,7 +36,7 @@
         },
         {
           "granularity": "ballot",
-          "reconciliationStatus": "not_inventoried_no_cvr_loaded",
+          "reconciliationStatus": "request_path_documented_no_cvr_loaded",
           "type": "cast_vote_records",
           "use": "Needed for independent ballot-level retabulation and comparison to certified totals."
         },
@@ -54,10 +59,10 @@
           "use": "Needed to confirm voting systems counted known test ballots as configured before the election."
         },
         {
-          "granularity": "audit_unit",
-          "reconciliationStatus": "not_inventoried",
+          "granularity": "county_hand_count_summary",
+          "reconciliationStatus": "official_hand_count_summary_identified_detailed_unit_workpapers_not_normalized",
           "type": "audit_results",
-          "use": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance."
+          "use": "Official hand-count summaries provide county-level audit context, but detailed audit-unit workpapers and machine-vs-hand count fields are still needed before treating advisory rows as cleared or confirmed."
         },
         {
           "granularity": "ballot_equipment_media",
@@ -67,7 +72,7 @@
         }
       ],
       "requestRequiredRows": 7,
-      "riskPosture": "county_review_only_electronic_evidence_missing",
+      "riskPosture": "county_review_only_partial_admin_context_electronic_evidence_missing",
       "staging": {
         "capabilities": {
           "certifiedResults": true,
@@ -761,7 +766,7 @@
     "canTriangulateMachineRiskStates": [
       "WI"
     ],
-    "loadedArtifactRows": 14,
+    "loadedArtifactRows": 15,
     "requestRequiredRows": 58,
     "states": 9,
     "statesWithReviewRows": [

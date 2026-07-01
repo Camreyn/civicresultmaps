@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-29",
+  "generatedAt": "2026-07-01",
   "electionYear": 2024,
   "benchmarkState": "WI",
   "swingStates": [
@@ -26,9 +26,9 @@
     "states": 8,
     "validatedNativeStagingStates": 8,
     "statesWithLoadedEquipment": 8,
-    "statesWithAuditContext": 2,
-    "statesWithCvrContext": 2,
-    "statesWithIncidentContext": 1,
+    "statesWithAuditContext": 3,
+    "statesWithCvrContext": 3,
+    "statesWithIncidentContext": 2,
     "statesWithSubcountyComparisonReview": 6,
     "statesWithCountyOnlyReview": 1,
     "statesWithHardMissingEvidence": 1
@@ -95,16 +95,31 @@
           "expectedJurisdictions": 15
         },
         "audit": {
-          "status": "needs_data",
-          "why": "Arizona 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+          "status": "partial",
+          "reportingLevel": "county_summary",
+          "sourceDocumentId": "az-sos-2024-hand-count-results",
+          "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-info",
+          "localArtifact": "data/az-2024-admin-source-inventory.json",
+          "why": "Arizona SOS 2024 Election Information identifies county hand-count documents and statuses: 13 counties completed hand counts, two were not performed because required party participation was not designated, and completed counties are summarized as no discrepancies or within the acceptable margin. Detailed audit-unit rows and workpapers are not normalized.",
+          "caveat": "County hand-count summary context is not per-unit audit clearance and is not proof of fraud or misconduct."
         },
         "cvr": {
-          "status": "needs_data",
-          "why": "Arizona 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+          "status": "candidate",
+          "reportingLevel": "records_request_path",
+          "sourceDocumentId": "az-sos-nextrequest-county-contact-paths",
+          "sourceUrl": "https://azsos.nextrequest.com/",
+          "localArtifact": "data/az-2024-admin-source-inventory.json",
+          "why": "The Arizona SOS public-records portal and county election contact directory are documented as request paths for CVRs or equivalent ballot-level exports, ballot images, tabulator/EMS logs, L&A records, and custody records. No AZ CVR or ballot-image dataset is loaded.",
+          "caveat": "Request-path inventory only; county custody and lawful releasability must be confirmed before CVR retabulation."
         },
         "incidents": {
-          "status": "needs_data",
-          "why": "Arizona 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+          "status": "partial",
+          "reportingLevel": "statewide_recount_litigation_inventory",
+          "sourceDocumentId": "az-sos-2024-litigation-and-recount-info",
+          "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-information/litigation-info",
+          "localArtifact": "data/az-2024-admin-source-inventory.json",
+          "why": "The Arizona SOS litigation page identifies a 2024 general-election recount/election-contest row for Maricopa County Superior Court case CV2024-033532 with no change in outcome and links pending election-related dockets. Normalized incident, correction, recount, and litigation rows are not loaded.",
+          "caveat": "The identified recount involved Legislative District 2, Maricopa County Supervisor District 3, and Fountain Hills Town Council contests, not President or U.S. Senate. Docket links are context and request leads only."
         }
       },
       "sourceAcquisition": {
@@ -112,12 +127,16 @@
         "scope": "statewide",
         "dataFamily": "results_review_turnout",
         "reportingGrain": "county",
-        "parserStatus": "native county review package loaded",
+        "parserStatus": "native county review package loaded; AZ admin/source inventory documents hand-count, recount/litigation, and records-request paths without normalizing electronic evidence rows",
         "manualReviewBurden": "medium",
         "confidence": "loaded",
-        "nextAction": "Look for official precinct-level Arizona result exports before upgrading review coverage.",
+        "nextAction": "Use data/az-2024-admin-source-inventory.json and data/az-2024-data-coverage-inventory.json as the current AZ source-search records; next step is county-by-county manual collection or records requests for precinct/local President and U.S. Senate rows, precinct geometry/crosswalks, CVR/ballot-image/log/L&A/custody records, and detailed audit/recount/incident/correction rows.",
         "sourceUrls": [
-          "https://azsos.gov/elections/results-data"
+          "https://azsos.gov/elections/election-information/2024-election-info",
+          "https://azsos.gov/elections/results-data",
+          "https://azsos.gov/elections/election-information/2024-election-information/litigation-info",
+          "https://azsos.nextrequest.com/",
+          "https://azsos.gov/elections/about-elections/county-election-officials-contact-information"
         ]
       },
       "parityGaps": [
@@ -125,21 +144,6 @@
           "id": "subcounty_review_rows",
           "status": "missing_or_not_loaded",
           "detail": "Current review rows are county-level only; Wisconsin parity has ward-level review rows."
-        },
-        {
-          "id": "audit_context",
-          "status": "needs_data",
-          "detail": "Arizona 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
-        },
-        {
-          "id": "cvr_or_ballot_mode_context",
-          "status": "needs_data",
-          "detail": "Arizona 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
-        },
-        {
-          "id": "incident_context",
-          "status": "needs_data",
-          "detail": "Arizona 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
         },
         {
           "id": "hard_missing_source_evidence",
@@ -157,7 +161,7 @@
           "detail": "Current production map geometry is county-level; subcounty review rows are tabular context."
         }
       ],
-      "nextAction": "Find and normalize official subcounty President plus comparison-contest rows before spending time on deeper context."
+      "nextAction": "Find and normalize official subcounty President plus comparison-contest rows; keep the newly inventoried hand-count, recount/litigation, and records-request paths as administration context until detailed rows are collected."
     },
     {
       "state": "GA",

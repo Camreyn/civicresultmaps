@@ -11,16 +11,16 @@
       "stateName": "Arizona",
       "artifactType": "audit_results",
       "artifactLabel": "Audit results",
-      "artifactStatus": "needs_data",
+      "artifactStatus": "partial",
       "requestRequired": true,
       "status": "draft_ready",
       "primaryCustodian": "Arizona Secretary of State Elections Division",
       "recipientEmail": "",
-      "recipientPortalUrl": "https://azsos.gov/elections",
-      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "recipientPortalUrl": "https://azsos.nextrequest.com/",
+      "recipientLookupUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "countyCustodianLikely": true,
-      "requestPath": "Arizona county election departments or Secretary of State public-records request path.",
-      "requestedRecords": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
+      "requestPath": "Use the SOS hand-count document links as source leads, then request detailed county audit workpapers from county election departments or the SOS depending on custody.",
+      "requestedRecords": "Official hand-count summaries provide county-level audit context, but detailed audit-unit workpapers and machine-vs-hand count fields are still needed before treating advisory rows as cleared or confirmed.",
       "preferredFormats": [
         "original export",
         "CSV",
@@ -37,9 +37,9 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
-      "localArtifact": "",
-      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+      "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-info",
+      "localArtifact": "data/az-2024-admin-source-inventory.json",
+      "notes": "Use the SOS NextRequest portal for state-maintained records. County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, detailed audit artifacts, and subcounty result exports."
     },
     {
       "requestId": "EI-2024-AZ-BALLOT-IMAGES",
@@ -53,10 +53,10 @@
       "status": "draft_ready",
       "primaryCustodian": "Arizona Secretary of State Elections Division",
       "recipientEmail": "",
-      "recipientPortalUrl": "https://azsos.gov/elections",
-      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "recipientPortalUrl": "https://azsos.nextrequest.com/",
+      "recipientLookupUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "countyCustodianLikely": true,
-      "requestPath": "Arizona county election departments or Secretary of State public-records request path.",
+      "requestPath": "Use the Arizona SOS NextRequest portal and county election departments to confirm whether ballot images are public or lawfully releasable and who maintains them.",
       "requestedRecords": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
       "preferredFormats": [
         "original export",
@@ -74,9 +74,9 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
+      "sourceUrl": "https://azsos.nextrequest.com/",
       "localArtifact": "",
-      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+      "notes": "Use the SOS NextRequest portal for state-maintained records. County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, detailed audit artifacts, and subcounty result exports."
     },
     {
       "requestId": "EI-2024-AZ-CAST-VOTE-RECORDS",
@@ -90,10 +90,10 @@
       "status": "draft_ready",
       "primaryCustodian": "Arizona Secretary of State Elections Division",
       "recipientEmail": "",
-      "recipientPortalUrl": "https://azsos.gov/elections",
-      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "recipientPortalUrl": "https://azsos.nextrequest.com/",
+      "recipientLookupUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "countyCustodianLikely": true,
-      "requestPath": "Arizona county election departments or Secretary of State public-records request path.",
+      "requestPath": "Use the Arizona SOS NextRequest portal for state-maintained records and the SOS county election officials directory for county-maintained CVRs or equivalent ballot-level exports.",
       "requestedRecords": "Needed for independent ballot-level retabulation and comparison to certified totals.",
       "preferredFormats": [
         "original export",
@@ -111,9 +111,9 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
+      "sourceUrl": "https://azsos.nextrequest.com/",
       "localArtifact": "",
-      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+      "notes": "Use the SOS NextRequest portal for state-maintained records. County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, detailed audit artifacts, and subcounty result exports."
     },
     {
       "requestId": "EI-2024-AZ-CHAIN-OF-CUSTODY",
@@ -127,10 +127,10 @@
       "status": "draft_ready",
       "primaryCustodian": "Arizona Secretary of State Elections Division",
       "recipientEmail": "",
-      "recipientPortalUrl": "https://azsos.gov/elections",
-      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "recipientPortalUrl": "https://azsos.nextrequest.com/",
+      "recipientLookupUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "countyCustodianLikely": true,
-      "requestPath": "Arizona county election departments or Secretary of State public-records request path.",
+      "requestPath": "Request custody, seal, transport, storage, ballot duplication, adjudication, and removable-media records from county election departments or redirected custodians.",
       "requestedRecords": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
       "preferredFormats": [
         "original export",
@@ -148,9 +148,9 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
+      "sourceUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "localArtifact": "",
-      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+      "notes": "Use the SOS NextRequest portal for state-maintained records. County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, detailed audit artifacts, and subcounty result exports."
     },
     {
       "requestId": "EI-2024-AZ-LOGIC-ACCURACY",
@@ -164,10 +164,10 @@
       "status": "draft_ready",
       "primaryCustodian": "Arizona Secretary of State Elections Division",
       "recipientEmail": "",
-      "recipientPortalUrl": "https://azsos.gov/elections",
-      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "recipientPortalUrl": "https://azsos.nextrequest.com/",
+      "recipientLookupUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "countyCustodianLikely": true,
-      "requestPath": "Arizona county election departments or Secretary of State public-records request path.",
+      "requestPath": "Request 2024 general-election logic-and-accuracy certificates, test decks, results, and discrepancy/resolution records from county election departments or the SOS if state-maintained.",
       "requestedRecords": "Needed to confirm voting systems counted known test ballots as configured before the election.",
       "preferredFormats": [
         "original export",
@@ -185,9 +185,9 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
+      "sourceUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "localArtifact": "",
-      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+      "notes": "Use the SOS NextRequest portal for state-maintained records. County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, detailed audit artifacts, and subcounty result exports."
     },
     {
       "requestId": "EI-2024-AZ-REPORTING-UNIT-RESULTS",
@@ -201,10 +201,10 @@
       "status": "draft_ready",
       "primaryCustodian": "Arizona Secretary of State Elections Division",
       "recipientEmail": "",
-      "recipientPortalUrl": "https://azsos.gov/elections",
-      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "recipientPortalUrl": "https://azsos.nextrequest.com/",
+      "recipientLookupUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "countyCustodianLikely": true,
-      "requestPath": "Arizona county election departments or Secretary of State public-records request path.",
+      "requestPath": "Request official precinct or local reporting-unit President and U.S. Senate exports from the Arizona Secretary of State or all 15 county election departments, including reporting-unit crosswalks and canvass reconciliation notes.",
       "requestedRecords": "County-only rows cannot localize machine or batch anomalies.",
       "preferredFormats": [
         "original export",
@@ -222,9 +222,9 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
+      "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
       "localArtifact": "data/az-2024-general-canvass-senate.csv",
-      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+      "notes": "Use the SOS NextRequest portal for state-maintained records. County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, detailed audit artifacts, and subcounty result exports."
     },
     {
       "requestId": "EI-2024-AZ-TABULATOR-LOGS",
@@ -238,10 +238,10 @@
       "status": "draft_ready",
       "primaryCustodian": "Arizona Secretary of State Elections Division",
       "recipientEmail": "",
-      "recipientPortalUrl": "https://azsos.gov/elections",
-      "recipientLookupUrl": "https://azsos.gov/elections/voters/contact-election-officials",
+      "recipientPortalUrl": "https://azsos.nextrequest.com/",
+      "recipientLookupUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "countyCustodianLikely": true,
-      "requestPath": "Arizona county election departments or Secretary of State public-records request path.",
+      "requestPath": "Request tabulator, EMS, upload, adjudication, and removable-media logs from the maintaining county election department or redirected custodian.",
       "requestedRecords": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
       "preferredFormats": [
         "original export",
@@ -259,9 +259,9 @@
       "feeStatus": "unknown",
       "responseSummary": "",
       "receivedFiles": [],
-      "sourceUrl": "",
+      "sourceUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information",
       "localArtifact": "",
-      "notes": "County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, and detailed audit artifacts."
+      "notes": "Use the SOS NextRequest portal for state-maintained records. County election departments may maintain CVRs, ballot images, tabulator logs, L&A materials, custody records, detailed audit artifacts, and subcounty result exports."
     },
     {
       "requestId": "EI-2024-GA-AUDIT-RESULTS",

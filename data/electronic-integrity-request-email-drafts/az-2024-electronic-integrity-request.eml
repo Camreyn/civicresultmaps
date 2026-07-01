@@ -12,13 +12,13 @@ Requester:
 [requester phone, optional]
 
 Requested evidence families and tracking IDs:
-- EI-2024-AZ-REPORTING-UNIT-RESULTS - Reporting-unit results: status=partial; grain=county; reconciliation=county_only_not_subcounty. Suggested custodian/path: Arizona county election departments or Secretary of State public-records request path.
-- EI-2024-AZ-CAST-VOTE-RECORDS - Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Arizona county election departments or Secretary of State public-records request path.
-- EI-2024-AZ-BALLOT-IMAGES - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Arizona county election departments or Secretary of State public-records request path.
-- EI-2024-AZ-TABULATOR-LOGS - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Arizona county election departments or Secretary of State public-records request path.
-- EI-2024-AZ-LOGIC-ACCURACY - Logic and accuracy records: status=needs_data; grain=test_deck_or_testing_jurisdiction; reconciliation=not_inventoried. Suggested custodian/path: Arizona county election departments or Secretary of State public-records request path.
-- EI-2024-AZ-AUDIT-RESULTS - Audit results: status=needs_data; grain=audit_unit; reconciliation=not_inventoried. Suggested custodian/path: Arizona county election departments or Secretary of State public-records request path.
-- EI-2024-AZ-CHAIN-OF-CUSTODY - Chain of custody: status=needs_data; grain=ballot_equipment_media; reconciliation=not_inventoried. Suggested custodian/path: Arizona county election departments or Secretary of State public-records request path.
+- EI-2024-AZ-REPORTING-UNIT-RESULTS - Reporting-unit results: status=partial; grain=county; reconciliation=county_only_not_subcounty. Suggested custodian/path: Request official precinct or local reporting-unit President and U.S. Senate exports from the Arizona Secretary of State or all 15 county election departments, including reporting-unit crosswalks and canvass reconciliation notes.
+- EI-2024-AZ-CAST-VOTE-RECORDS - Cast vote records: status=needs_data; grain=ballot; reconciliation=not_inventoried_no_cvr_loaded. Suggested custodian/path: Use the Arizona SOS NextRequest portal for state-maintained records and the SOS county election officials directory for county-maintained CVRs or equivalent ballot-level exports.
+- EI-2024-AZ-BALLOT-IMAGES - Ballot images: status=needs_data; grain=ballot_image; reconciliation=not_inventoried. Suggested custodian/path: Use the Arizona SOS NextRequest portal and county election departments to confirm whether ballot images are public or lawfully releasable and who maintains them.
+- EI-2024-AZ-TABULATOR-LOGS - Tabulator and EMS logs: status=needs_data; grain=tabulator_or_ems; reconciliation=not_inventoried. Suggested custodian/path: Request tabulator, EMS, upload, adjudication, and removable-media logs from the maintaining county election department or redirected custodian.
+- EI-2024-AZ-LOGIC-ACCURACY - Logic and accuracy records: status=needs_data; grain=test_deck_or_testing_jurisdiction; reconciliation=not_inventoried. Suggested custodian/path: Request 2024 general-election logic-and-accuracy certificates, test decks, results, and discrepancy/resolution records from county election departments or the SOS if state-maintained.
+- EI-2024-AZ-AUDIT-RESULTS - Audit results: status=partial; grain=county_hand_count_summary; reconciliation=official_hand_count_summary_identified_detailed_unit_workpapers_not_normalized. Suggested custodian/path: Use the SOS hand-count document links as source leads, then request detailed county audit workpapers from county election departments or the SOS depending on custody.
+- EI-2024-AZ-CHAIN-OF-CUSTODY - Chain of custody: status=needs_data; grain=ballot_equipment_media; reconciliation=not_inventoried. Suggested custodian/path: Request custody, seal, transport, storage, ballot duplication, adjudication, and removable-media records from county election departments or redirected custodians.
 
 Preferred production format: original exports where available, CSV, XLSX, JSON, log bundles, audit workpapers, record layouts, or data dictionaries. Please preserve original filenames, timestamps, export settings, and field definitions.
 
@@ -26,7 +26,7 @@ If your office does not maintain a requested record, please identify the state, 
 
 Primary custodian path currently recorded for routing:
 Arizona Secretary of State Elections Division
-https://azsos.gov/elections
-Lookup/redirect reference: https://azsos.gov/elections/voters/contact-election-officials
+https://azsos.nextrequest.com/
+Lookup/redirect reference: https://azsos.gov/elections/about-elections/county-election-officials-contact-information
 
 Thank you.

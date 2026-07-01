@@ -49,21 +49,23 @@
       "state": "AZ",
       "stateName": "Arizona",
       "priority": "swing",
-      "overallStatus": "needs_evidence",
-      "summary": "County certified results and county comparison rows are loaded, but subcounty electronic evidence families are not inventoried yet.",
-      "riskPosture": "county_review_only_electronic_evidence_missing",
-      "nextAction": "Find official subcounty result exports first, then inventory county CVR, ballot-image, tabulator-log, L&A, audit, and chain-of-custody availability.",
+      "overallStatus": "partial",
+      "summary": "County certified results, county comparison rows, official hand-count summary context, Maricopa recount/litigation links, and records-request paths are inventoried, but subcounty results and ballot-level/log/custody evidence are not loaded.",
+      "riskPosture": "county_review_only_partial_admin_context_electronic_evidence_missing",
+      "nextAction": "Request official subcounty President plus U.S. Senate result exports first, then use the SOS NextRequest and county contact paths to inventory CVR, ballot-image, tabulator-log, L&A, detailed audit, and chain-of-custody availability.",
       "artifacts": [
         {
           "type": "certified_results",
           "status": "loaded",
           "granularity": "county",
-          "sourceUrl": "https://azsos.gov/elections/results-data",
+          "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-info",
           "localArtifact": "data/az-2024-general-canvass-president.csv",
           "parser": "arizonaCanvassCountyCsv",
           "reconciliationStatus": "certified_totals_loaded",
           "requestRequired": false,
-          "tamperDetectionUse": "Baseline certified totals for CVR/reporting-unit reconciliation."
+          "tamperDetectionUse": "Baseline certified totals for CVR/reporting-unit reconciliation.",
+          "requestPath": "Arizona Secretary of State NextRequest portal or county election departments depending on record custody.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json"
         },
         {
           "type": "reporting_unit_results",
@@ -74,7 +76,9 @@
           "reconciliationStatus": "county_only_not_subcounty",
           "requestRequired": true,
           "tamperDetectionUse": "County-only rows cannot localize machine or batch anomalies.",
-          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+          "requestPath": "Request official precinct or local reporting-unit President and U.S. Senate exports from the Arizona Secretary of State or all 15 county election departments, including reporting-unit crosswalks and canvass reconciliation notes.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json",
+          "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf"
         },
         {
           "type": "cast_vote_records",
@@ -83,7 +87,9 @@
           "reconciliationStatus": "not_inventoried_no_cvr_loaded",
           "requestRequired": true,
           "tamperDetectionUse": "Needed for independent ballot-level retabulation and comparison to certified totals.",
-          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+          "requestPath": "Use the Arizona SOS NextRequest portal for state-maintained records and the SOS county election officials directory for county-maintained CVRs or equivalent ballot-level exports.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json",
+          "sourceUrl": "https://azsos.nextrequest.com/"
         },
         {
           "type": "ballot_images",
@@ -92,7 +98,9 @@
           "reconciliationStatus": "not_inventoried",
           "requestRequired": true,
           "tamperDetectionUse": "Needed to compare voter-mark interpretation against CVR or tabulator interpretation where public or lawfully obtainable.",
-          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+          "requestPath": "Use the Arizona SOS NextRequest portal and county election departments to confirm whether ballot images are public or lawfully releasable and who maintains them.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json",
+          "sourceUrl": "https://azsos.nextrequest.com/"
         },
         {
           "type": "tabulator_logs",
@@ -101,7 +109,9 @@
           "reconciliationStatus": "not_inventoried",
           "requestRequired": true,
           "tamperDetectionUse": "Needed to review machine events, uploads, adjudication, media handling, and timing anomalies.",
-          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+          "requestPath": "Request tabulator, EMS, upload, adjudication, and removable-media logs from the maintaining county election department or redirected custodian.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json",
+          "sourceUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information"
         },
         {
           "type": "logic_accuracy",
@@ -110,16 +120,21 @@
           "reconciliationStatus": "not_inventoried",
           "requestRequired": true,
           "tamperDetectionUse": "Needed to confirm voting systems counted known test ballots as configured before the election.",
-          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+          "requestPath": "Request 2024 general-election logic-and-accuracy certificates, test decks, results, and discrepancy/resolution records from county election departments or the SOS if state-maintained.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json",
+          "sourceUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information"
         },
         {
           "type": "audit_results",
-          "status": "needs_data",
-          "granularity": "audit_unit",
-          "reconciliationStatus": "not_inventoried",
+          "status": "partial",
+          "granularity": "county_hand_count_summary",
+          "reconciliationStatus": "official_hand_count_summary_identified_detailed_unit_workpapers_not_normalized",
           "requestRequired": true,
-          "tamperDetectionUse": "Needed to compare electronic tabulation against paper or audit evidence without treating aggregate audit summaries as per-unit clearance.",
-          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+          "tamperDetectionUse": "Official hand-count summaries provide county-level audit context, but detailed audit-unit workpapers and machine-vs-hand count fields are still needed before treating advisory rows as cleared or confirmed.",
+          "requestPath": "Use the SOS hand-count document links as source leads, then request detailed county audit workpapers from county election departments or the SOS depending on custody.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json",
+          "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-info",
+          "localArtifact": "data/az-2024-admin-source-inventory.json"
         },
         {
           "type": "chain_of_custody",
@@ -128,7 +143,9 @@
           "reconciliationStatus": "not_inventoried",
           "requestRequired": true,
           "tamperDetectionUse": "Needed to explain custody, seal, transport, storage, and removable-media handling around any machine-output anomaly.",
-          "requestPath": "Arizona county election departments or Secretary of State public-records request path."
+          "requestPath": "Request custody, seal, transport, storage, ballot duplication, adjudication, and removable-media records from county election departments or redirected custodians.",
+          "sourceInventoryArtifact": "data/az-2024-admin-source-inventory.json",
+          "sourceUrl": "https://azsos.gov/elections/about-elections/county-election-officials-contact-information"
         }
       ]
     },

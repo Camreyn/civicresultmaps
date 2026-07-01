@@ -130,25 +130,31 @@
   },
   "coverageInventory": {
     "localFile": "data/az-2024-data-coverage-inventory.json",
-    "checkedAt": "2026-06-30",
-    "status": "county_review_loaded_precinct_rows_not_found",
+    "checkedAt": "2026-07-01",
+    "status": "county_review_loaded_precinct_rows_not_found_admin_context_partial",
     "officialSourceSearchPath": [
+      "https://azsos.gov/elections/election-information/2024-election-info",
       "https://azsos.gov/elections/results-data",
       "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
       "https://elections.maricopa.gov/results-and-data/election-results.html",
       "https://www.recorder.pima.gov/Elections",
-      "https://www.yavapaivotes.gov/election-results"
+      "https://www.yavapaivotes.gov/election-results",
+      "https://azsos.gov/elections/election-information/2024-election-information/litigation-info",
+      "https://azsos.nextrequest.com/",
+      "https://azsos.gov/elections/about-elections/county-election-officials-contact-information"
     ],
     "caveats": [
       "The signed Arizona canvass package supports county certified results, county President-versus-U.S. Senate advisory review, and county turnout denominators only.",
       "No official statewide precinct/local reporting-unit President and same-grain U.S. Senate export was accessible or confirmed in the 2026-06-30 source check.",
-      "Maricopa, Pima, and Yavapai county result pages blocked scripted access from this environment; county-by-county manual collection or public-records requests remain the next source step."
+      "Maricopa, Pima, and Yavapai county result pages blocked scripted access from this environment; county-by-county manual collection or public-records requests remain the next source step.",
+      "The 2026-07-01 source pass identified official SOS hand-count audit summaries, county canvass links, Maricopa recount/litigation links, and records-request paths; these are administration context only and are not normalized audit/CVR/incident rows."
     ],
     "remainingGaps": [
       "precinct/local reporting-unit President rows",
       "same-grain precinct/local U.S. Senate comparison rows",
       "precinct boundary geometry",
       "audit/recount/CVR/incident/correction records normalized for AZ"
-    ]
+    ],
+    "adminSourceInventory": "data/az-2024-admin-source-inventory.json"
   }
 }

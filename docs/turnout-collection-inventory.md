@@ -7,14 +7,15 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 ## Summary
 
 - States checked: 50
-- Turnout loaded in database or validated native staging: 10
+- Turnout loaded in database or validated native staging: 11
 - Loaded through official EAC fallback while state-native ward denominator remains missing: 1
-- Need native turnout package: 39
+- Need native turnout package: 38
 
 ## Loaded Turnout
 
 | State | DB rows | Level | Denominator | Local artifact |
 | --- | ---: | --- | --- | --- |
+| AZ Arizona | 15 | county | totalEligibleRegistration | `data/az-2024-general-canvass-president.csv` |
 | IN Indiana | 92 | county | registeredVoters | `data/in-2024-general-turnout.csv` |
 | MI Michigan | 83 | county | novemberActiveRegisteredVoters | `data/mi-2024-voter-turnout.txt` |
 | MN Minnesota | 4,103 | precinct | registeredVotersPlusElectionDayRegistrations | `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx` |
@@ -37,7 +38,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 These states still need a state-native turnout package or review of whether fallback turnout coverage is sufficient for the current caveats.
 
-`AK`, `AL`, `AR`, `AZ`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `IA`, `ID`, `IL`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `UT`, `VT`, `WA`, `WY`
+`AK`, `AL`, `AR`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `IA`, `ID`, `IL`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `UT`, `VT`, `WA`, `WY`
 
 ## Standard Request For Each Missing State
 

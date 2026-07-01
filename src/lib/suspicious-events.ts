@@ -11,6 +11,22 @@ export type SuspiciousTimelineSource = {
   localArtifact?: string;
 };
 
+type ElectronicIntegrityTimelineArtifact = {
+  granularity: string;
+  localArtifact?: string;
+  reconciliationStatus: string;
+  requestRequired?: boolean;
+  sourceUrl?: string;
+  status: string;
+  tamperDetectionUse: string;
+  type: string;
+};
+type ElectronicIntegrityTimelineState = {
+  artifacts: ElectronicIntegrityTimelineArtifact[];
+  state: string;
+  stateName: string;
+};
+
 export type SuspiciousTimelineEvent = {
   id: string;
   date: string;
@@ -458,7 +474,8 @@ const externalReviewTimelineEvents: SuspiciousTimelineEvent[] = [
 ];
 
 export function listSuspiciousTimelineEvents() {
-  const events: SuspiciousTimelineEvent[] = electronicIntegrityArtifacts.states.flatMap((state) =>
+  const artifactStates = electronicIntegrityArtifacts.states as unknown as ElectronicIntegrityTimelineState[];
+  const events: SuspiciousTimelineEvent[] = artifactStates.flatMap((state) =>
     state.artifacts
       .filter((artifact) => artifact.requestRequired || artifact.status === "partial" || artifact.status === "blocked")
       .filter((artifact) => artifact.type in artifactTimelineMeta)
