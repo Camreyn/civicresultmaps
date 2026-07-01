@@ -1855,7 +1855,12 @@
         "detail XML ZIP"
       ],
       "sourceUrls": [
-        "https://results.enr.clarityelections.com/WV/"
+        "https://results.enr.clarityelections.com/WV/",
+        "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
+        "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+        "https://sos.wv.gov/elections/Pages/Guidance.aspx",
+        "https://sos.wv.gov/about/Pages/FOIAReq.aspx",
+        "https://sos.wv.gov/west-virginia-county-clerk-directory"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -1863,19 +1868,21 @@
         "precinct President rows",
         "precinct U.S. Senate rows",
         "precinct turnout rows",
-        "county equipment context"
+        "county equipment context",
+        "official SOS canvass/recount/complaint/FOIA/voter-data request paths documented in data/wv-2024-data-coverage-inventory.json",
+        "official historical results source leads for 2020 and 2008-2017"
       ],
       "missingFields": [
         "official statewide precinct boundary geometry",
         "normalized 2024 post-election audit selection/outcome artifacts",
-        "CVR availability/request-path inventory",
+        "normalized CVR availability rows",
         "incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "westVirginiaClarityCountyDetailXmlDirectory loaded for results/review/turnout; Verified Voting county equipment context loaded",
+      "parserStatus": "westVirginiaClarityCountyDetailXmlDirectory loaded for results/review/turnout; Verified Voting county equipment context loaded; data/wv-2024-data-coverage-inventory.json documents official geometry, audit, CVR, recount, incident/correction, litigation, and historical-source request paths",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Rows are advisory review inputs, not confirmed findings. Equipment context is jurisdiction-level metadata only. County map geometry is loaded; no official statewide precinct boundary geometry package was identified in this pass.",
-      "nextAction": "Collect or document an official statewide precinct boundary source if one exists, then inventory official WV SOS/county audit, CVR, incident, correction, recount, and litigation artifacts."
+      "caveats": "Rows are advisory review inputs, not confirmed findings. Equipment context is jurisdiction-level metadata only. County map geometry is loaded; no official statewide precinct boundary geometry package was identified in this pass. The Wave 9 inventory documents official request/source paths only; no audit outcome, CVR, incident, correction, recount, litigation, or historical baseline rows are loaded.",
+      "nextAction": "Request official statewide precinct boundary geometry or county precinct crosswalks, then request and normalize 2024 hand-count audit selections/outcomes, CVR availability responses, recount/correction/incident/litigation records, and official 2012/2016/2020 historical baseline artifacts."
     },
     {
       "state": "WY",

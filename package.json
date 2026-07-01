@@ -69,6 +69,7 @@
     "etl:import:ky": "npm run etl:prepare:ky && python -m civic_etl.cli import --config etl/state-configs/ky.json --out .etl/staging",
     "etl:import:ma": "python -m civic_etl.cli import --config etl/state-configs/ma.json --out .etl/staging",
     "etl:prepare:wv": "node scripts/collect-wv-clarity-county-reports.mjs",
+    "etl:validate:wv": "npm run etl:prepare:wv && python -m civic_etl.cli validate --config etl/state-configs/wv.json",
     "etl:import:wv": "npm run etl:prepare:wv && python -m civic_etl.cli import --config etl/state-configs/wv.json --out .etl/staging",
     "etl:prepare:ia": "node scripts/collect-ia-clarity-county-reports.mjs",
     "etl:import:ia": "npm run etl:prepare:ia && python -m civic_etl.cli import --config etl/state-configs/ia.json --out .etl/staging",

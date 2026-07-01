@@ -138,8 +138,9 @@ Caveats: review rows are county-level President-versus-U.S. Senate two-year spec
 - Turnout denominator: totalVoters registered-voter field; expected 1,649 rows, 770,587 ballots cast, and 1,187,991 registered voters
 - County boundary: data/wv-counties.geojson
 - Equipment context: data/wv-2024-equipment-context.csv from Verified Voting, context only
+- Coverage/admin inventory: data/wv-2024-data-coverage-inventory.json documents official SOS/county request paths for precinct geometry, hand-count audit outcomes, CVR availability, recount/correction/incident/litigation records, and official historical baseline source leads
 
-Remaining gaps: official statewide precinct boundary geometry for subcounty overlays, 2024 audit selection/outcome artifacts, CVR availability/request paths, and incident/correction/recount/litigation inventories. The loaded review rows remain advisory screening inputs, not findings.
+Remaining gaps: official statewide precinct boundary geometry for subcounty overlays, normalized 2024 audit selection/outcome artifacts, CVR availability rows, incident/correction/recount/litigation records, and loaded 2012/2016/2020 historical baseline rows. The loaded review rows remain advisory screening inputs, not findings; the Wave 9 inventory records source/request paths only for the remaining administration context.
 
 ## Missouri Wave 5 Update
 

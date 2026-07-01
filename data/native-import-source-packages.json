@@ -1392,23 +1392,32 @@
       "state": "WV",
       "name": "West Virginia",
       "priority": 12,
-      "currentStatus": "official_precinct_review_turnout_package_collected_admin_context_partial",
+      "currentStatus": "official_precinct_review_turnout_package_collected_admin_context_inventory_expanded",
       "officialSourcePages": [
         "https://results.enr.clarityelections.com/WV/122766/web.345435/",
         "https://results.enr.clarityelections.com/WV/122766/current_ver.txt",
         "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
-        "https://sos.wv.gov/elections/Pages/VoteRegTotals.aspx"
+        "https://sos.wv.gov/elections/Pages/VoteRegTotals.aspx",
+        "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+        "https://sos.wv.gov/elections/Pages/Guidance.aspx",
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Canvassing%20Manual.pdf",
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Recount%20Manual.pdf",
+        "https://sos.wv.gov/FormSearch/Elections/Complaint_Challenge/ElectionsComplaintForm.pdf",
+        "https://sos.wv.gov/about/Pages/FOIAReq.aspx",
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Voter%20Data%20Request.pdf",
+        "https://sos.wv.gov/west-virginia-county-clerk-directory"
       ],
       "requiredArtifacts": [
         "official county detailxml.zip reports for all 55 counties",
         "precinct boundary geometry if subcounty map overlays are required",
         "official 2024 post-election audit selection/outcome artifacts if published or obtainable",
         "CVR availability/request-path inventory",
-        "incident, correction, recount, and litigation source inventory"
+        "incident, correction, recount, and litigation source inventory",
+        "data/wv-2024-data-coverage-inventory.json documenting loaded artifacts, official request paths, historical-source leads, and display caveats"
       ],
       "preferredComparisonContest": "U.S. Senate; loaded from official county detail XML reports as precinct-level President-vs-U.S.-Senate review rows.",
-      "parserNeeded": "westVirginiaClarityCountyDetailXmlDirectory loaded for 55 county result rows, 1,648 precinct review rows, and 1,649 precinct turnout rows. Equipment context is loaded separately from Verified Voting county context; audit/CVR/incident records remain source-inventory tasks.",
-      "blocker": "West Virginia has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-Senate review rows and state-native precinct turnout denominators from VoterTurnout totalVoters/ballotsCast. Remaining gaps are official statewide precinct boundary geometry for subcounty overlays and normalized administration context for audit outcomes, CVR availability, incidents, corrections, recounts, and litigation.",
+      "parserNeeded": "westVirginiaClarityCountyDetailXmlDirectory loaded for 55 county result rows, 1,648 precinct review rows, and 1,649 precinct turnout rows. Equipment context is loaded separately from Verified Voting county context; data/wv-2024-data-coverage-inventory.json documents official SOS/county request paths for audit outcomes, CVR availability, recounts, corrections, incidents, litigation, precinct geometry, and historical baselines.",
+      "blocker": "West Virginia has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-Senate review rows and state-native precinct turnout denominators from VoterTurnout totalVoters/ballotsCast. Remaining gaps are official statewide precinct boundary geometry for subcounty overlays, normalized 2024 hand-count audit selection/outcome rows, CVR availability responses, recount/correction/incident/litigation records, and normalized 2012/2016/2020 historical baseline rows. The Wave 9 coverage inventory records the current official request/source paths without loading those rows.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "West Virginia SOS official county detail XML reports",
@@ -1438,6 +1447,12 @@
           "localFile": "data/wv-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "coverageInventory": {
+          "sourceTitle": "West Virginia 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+          "localFile": "data/wv-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded result/review/turnout/equipment artifacts, official SOS/county request paths for precinct geometry, audit/CVR/recount/incident/correction/litigation records, historical-source leads, and display caveats. Inventory only; no normalized administration rows are loaded."
         },
         "equipmentContext": {
           "sourceTitle": "Verified Voting Verifier West Virginia 2024 equipment context",
