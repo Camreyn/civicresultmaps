@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "state": "WV",
+  "stateName": "West Virginia",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "purpose": "Wave 9 West Virginia source-coverage inventory for loaded official result, review, turnout, map, equipment, historical-source, and administration-context paths. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "status": "official_precinct_review_turnout_county_map_loaded_admin_context_inventory_expanded",
+  "firstReads": {
+    "developerIndex": "docs/developer/index.md was not present in the worktree.",
+    "requiredFilesRead": [
+      "AGENTS.md",
+      "README.md",
+      "package.json",
+      "scripts/state-metadata.mjs",
+      "data/source-acquisition-tiers.json",
+      "data/native-import-source-packages.json",
+      "docs/turnout-collection-inventory.md",
+      "docs/native-import-source-packages.md",
+      "etl/state-configs/wv.json"
+    ]
+  },
+  "loadedArtifacts": [
+    {
+      "id": "wv-2024-county-detailxml-reports",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+      "localArtifactPath": "data/wv-2024-county-detailxml-reports",
+      "electionYear": 2024,
+      "reportingGrain": "precinct",
+      "parserOrNormalizationPath": "civic_etl.native nativeWestVirginiaClarityCountyDetailXmlDirectory via etl/state-configs/wv.json",
+      "expectedRowsOrTotals": {
+        "countyResultRows": 55,
+        "precinctReviewRows": 1648,
+        "precinctTurnoutRows": 1649,
+        "stateTotalVotes": 762390,
+        "trumpVotes": 533556,
+        "harrisVotes": 214309,
+        "otherVotes": 14525,
+        "turnoutBallotsCast": 770587,
+        "registeredVoters": 1187991
+      },
+      "confidenceNotes": "Official county detailxml.zip reports from the West Virginia Secretary of State Clarity results app. The parser loads certified county presidential totals, precinct President-versus-U.S. Senate review rows, and VoterTurnout precinct ballotsCast/totalVoters rows."
+    },
+    {
+      "id": "wv-2024-official-clarity-results",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+      "localArtifactPath": "data/wv-2024-official-results/details.json",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "legacy clarityCountyJson source context; active certified/review parser uses county detail XML directory",
+      "expectedRowsOrTotals": {
+        "countyResultRows": 55,
+        "stateTotalVotes": 762390
+      },
+      "confidenceNotes": "Official statewide Clarity package remains source provenance for the election package and county report discovery. The statewide JSON package itself is county-level."
+    },
+    {
+      "id": "wv-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2754%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifactPath": "data/wv-counties.geojson",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "censusTigerwebCountyGeojson via etl/state-configs/wv.json source wv-county-geometry",
+      "expectedRowsOrTotals": {
+        "geometryFeatures": 55
+      },
+      "confidenceNotes": "County geometry supports current county map joins. It is not precinct boundary geometry."
+    },
+    {
+      "id": "wv-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/54",
+      "localArtifactPath": "data/wv-2024-equipment-context.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "scripts/normalize-verifiedvoting-equipment.mjs; surfaced through data/admin-source-packages.json and API equipment context paths",
+      "expectedRowsOrTotals": {
+        "jurisdictions": 55
+      },
+      "confidenceNotes": "Jurisdiction-level election-administration context only. Do not infer every precinct or ballot mode used one identical setup; do not use this as vote, turnout, audit, incident, or cause evidence."
+    }
+  ],
+  "sourceFindings": [
+    {
+      "topic": "officialResultsComparisonAndTurnout",
+      "status": "loaded",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+      "localArtifactPath": "data/wv-2024-county-detailxml-reports",
+      "reportingGrain": "precinct",
+      "parserOrNormalizationPath": "westVirginiaClarityCountyDetailXmlDirectory",
+      "evidence": "The official 2024 General Election Clarity archive exposes county detailxml.zip reports. The parser confirms 55 county result rows, 1,648 precinct President-versus-U.S. Senate review rows, and 1,649 precinct turnout rows.",
+      "caveats": "Review rows are advisory screening inputs only, not findings. Precinct rows are table/chart inputs; current map geometry remains county-level."
+    },
+    {
+      "topic": "precinctBoundaryGeometry",
+      "status": "needs_data",
+      "sourceAuthority": "West Virginia Secretary of State and county clerks",
+      "sourceUrl": "https://sos.wv.gov/west-virginia-county-clerk-directory",
+      "relatedSourceUrls": [
+        "https://apps.sos.wv.gov/Elections/Voter/FindMyPollingPlace",
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Voter%20Data%20Request.pdf"
+      ],
+      "localArtifactPath": "not collected",
+      "reportingGrain": "precinct boundary geometry or precinct-to-address/reporting-unit crosswalk",
+      "parserOrNormalizationPath": "not implemented",
+      "evidence": "The SOS polling-place lookup returns political districts and polling place for an individual voter record, and the SOS voter-data request form allows precinct number and precinct voter-registration-list requests. No official statewide precinct boundary GIS package was identified in this pass.",
+      "caveats": "Do not derive public precinct boundaries from voter records. Request an official GIS boundary file or a non-private precinct/reporting-unit crosswalk from the Secretary of State or county clerks before enabling subcounty map overlays."
+    },
+    {
+      "topic": "postElectionAudit",
+      "status": "policy_documented_outcomes_need_data",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
+      "relatedSourceUrls": [
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Canvassing%20Manual.pdf"
+      ],
+      "localArtifactPath": "not collected",
+      "reportingGrain": "county selected precinct hand-count audit",
+      "parserOrNormalizationPath": "not implemented",
+      "evidence": "The SOS election-security page documents a post-election hand-count audit after each election, and the canvassing manual documents random precinct selection, hand-count workflow, the 1% threshold, and transmission of the Canvass Audit Verification Form.",
+      "caveats": "The public source path documents policy and procedure only. No normalized 2024 county selection list, selected precincts, hand-count tallies, discrepancy rows, or outcome artifacts are loaded."
+    },
+    {
+      "topic": "recountsCorrectionsAndCanvassRecords",
+      "status": "procedure_documented_outcomes_need_data",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://sos.wv.gov/FormSearch/Elections/Informational/Recount%20Manual.pdf",
+      "relatedSourceUrls": [
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Canvassing%20Manual.pdf",
+        "https://sos.wv.gov/west-virginia-county-clerk-directory"
+      ],
+      "localArtifactPath": "not collected",
+      "reportingGrain": "contest/county recount request, recount result, canvass correction, or board record",
+      "parserOrNormalizationPath": "not implemented",
+      "evidence": "The SOS recount manual documents recount timelines and request procedures, while the canvassing manual documents board records, correction handling, certification timing, and county transmission paths.",
+      "caveats": "No official 2024 recount request/result packet, canvass correction row, or county board record set is normalized. Request county canvass records or SOS-held transmission records before loading this context."
+    },
+    {
+      "topic": "cvrAvailabilityAndRequestPaths",
+      "status": "request_path_documented_not_loaded",
+      "sourceAuthority": "West Virginia Secretary of State and county clerks",
+      "sourceUrl": "https://sos.wv.gov/about/Pages/FOIAReq.aspx",
+      "relatedSourceUrls": [
+        "https://sos.wv.gov/FormSearch/Elections/Informational/Voter%20Data%20Request.pdf",
+        "https://sos.wv.gov/west-virginia-county-clerk-directory"
+      ],
+      "localArtifactPath": "not collected",
+      "reportingGrain": "county CVR availability, public-records response, or export format/cost/timing inventory",
+      "parserOrNormalizationPath": "not implemented",
+      "evidence": "The SOS FOIA page provides state public-records request and completed-request database paths. The SOS voter-data request form documents statewide and partial voter-list/voter-history request products, including delimited text delivery, precinct number, and precinct voter-registration-list options.",
+      "caveats": "No CVR dataset or county CVR availability table is loaded. Voter-registration/voter-history products are not CVRs and may include privacy/use restrictions."
+    },
+    {
+      "topic": "incidentComplaintLitigation",
+      "status": "complaint_path_documented_records_need_data",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://sos.wv.gov/FormSearch/Elections/Complaint_Challenge/ElectionsComplaintForm.pdf",
+      "relatedSourceUrls": [
+        "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
+        "https://sos.wv.gov/about/Pages/FOIAReq.aspx"
+      ],
+      "localArtifactPath": "not collected",
+      "reportingGrain": "incident, correction, complaint, investigation, or litigation record",
+      "parserOrNormalizationPath": "not implemented",
+      "evidence": "The SOS election-security page documents confidential complaint intake via See Something, Text Something, and the official election-law complaint form documents a sworn complaint path with SOS Investigations contact information.",
+      "caveats": "Complaints and investigations may be confidential or restricted. No 2024 incident, correction, complaint disposition, investigation, or litigation rows are normalized."
+    },
+    {
+      "topic": "historicalBaselines",
+      "status": "official_source_leads_confirmed_not_loaded",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+      "localArtifactPath": "not collected",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "not implemented",
+      "evidence": "The SOS historical results page links the 2020 General Election Clarity archive and an official 2008-2017 historical results app, while 2024 uses the loaded Clarity path.",
+      "caveats": "No 2012, 2016, or 2020 West Virginia county historical baseline rows are loaded. A future normalizer should collect official SOS archives and reconcile county presidential totals before enabling historicalBaseline for WV."
+    }
+  ],
+  "websiteApiDisplayPathChecked": [
+    "/api/sources?state=WV&year=2024",
+    "/api/coverage?state=WV&year=2024",
+    "/api/review-rows?state=WV&year=2024&limit=500&includeMetrics=true",
+    "/api/turnout?state=WV&year=2024&limit=500",
+    "/api/admin-sources?state=WV&year=2024",
+    "/api/equipment?state=WV&year=2024",
+    "src/app/workspace-tabs.tsx Data & Sources, Turnout, Administration, and Review Export panels"
+  ],
+  "productionChecked": false,
+  "remainingRisks": [
+    "No official statewide precinct boundary geometry or precinct-to-result crosswalk is loaded, so current public map joins remain county-level even though WV has precinct review and turnout rows.",
+    "Post-election hand-count audit policy is documented, but 2024 county selection/outcome artifacts are not normalized.",
+    "CVR availability, recount outcomes, canvass corrections, complaint dispositions, incident records, and litigation records remain request-path items.",
+    "Historical baseline source leads are official, but no 2012, 2016, or 2020 WV historical baseline rows are loaded yet.",
+    "Current advisory indicators are data/reconciliation signals only and are not evidence of fraud or misconduct."
+  ]
+}
