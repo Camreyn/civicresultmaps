@@ -105,3 +105,26 @@ test("Wisconsin turnout source registry keeps EAC warning rows visible", () => {
   assert.equal(wisconsin.coverage.warningRows, warningRows);
   assert.equal(wisconsin.coverage.warningRows, 2);
 });
+test("Wisconsin ETL config lists remaining admin context as non-flag provenance", () => {
+  const config = JSON.parse(readFileSync("etl/state-configs/wi.json", "utf8"));
+  const sources = new Map(config.sources.map((source) => [source.id, source]));
+
+  for (const sourceId of [
+    "wi-2024-audit-selections",
+    "wi-2024-audit-summary",
+    "wi-2024-cvr-availability",
+    "wi-2024-incident-context",
+    "wi-2024-equipment-context",
+    "wi-2024-ward-geometry-candidate",
+    "wi-2024-hard-missing-source-evidence",
+  ]) {
+    assert.equal(sources.has(sourceId), true, sourceId + " should be listed in Wisconsin config sources");
+  }
+
+  assert.equal(config.expected.sources, config.sources.length);
+  assert.match(sources.get("wi-2024-cvr-availability").confidence, /Scaffold only/);
+  assert.match(sources.get("wi-2024-incident-context").confidence, /Candidate source inventory only/);
+  assert.match(sources.get("wi-2024-audit-summary").confidence, /not a per-reporting-unit audit outcome table/);
+  assert.match(sources.get("wi-2024-ward-geometry-candidate").confidence, /production ward rendering remains disabled/);
+  assert.match(sources.get("wi-2024-hard-missing-source-evidence").confidence, /Records requests remain required/);
+});

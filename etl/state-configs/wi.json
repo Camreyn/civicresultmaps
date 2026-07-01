@@ -70,6 +70,83 @@
       "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 24, 2026.",
       "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Wisconsin Elections Commission or official election-result sources where available.",
       "status": "loaded"
+    },
+    {
+      "id": "wi-2024-audit-selections",
+      "category": "Official post-election audit selection and aggregate context",
+      "url": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+      "localFile": "data/wi-2024-audit-selections.csv",
+      "parser": "normalizeWiAuditReport",
+      "authority": "Wisconsin Elections Commission",
+      "timestampBasis": "2024 Post-Election Voting Equipment Audit Final Report dated March 13, 2025.",
+      "confidence": "Official WEC audit context. Appendix B selected reporting units and statewide findings are normalized, but the published report does not include per-reporting-unit discrepancy outcome rows.",
+      "status": "loaded_context"
+    },
+    {
+      "id": "wi-2024-audit-summary",
+      "category": "Official post-election audit summary",
+      "url": "https://elections.wi.gov/sites/default/files/documents/2024%20Post-Election%20Voting%20Equipment%20Audit%20Final%20Report.pdf",
+      "localFile": "data/wi-2024-audit-summary.json",
+      "parser": "normalizeWiAuditReport",
+      "authority": "Wisconsin Elections Commission",
+      "timestampBasis": "Local summary generated from the official WEC final audit report.",
+      "confidence": "Context only. Captures selected reporting-unit counts, statewide findings, and aggregate error-rate discussion; it is not a per-reporting-unit audit outcome table.",
+      "status": "loaded_context"
+    },
+    {
+      "id": "wi-2024-cvr-availability",
+      "category": "County CVR availability scaffold",
+      "url": "https://elections.wi.gov/about/records-request",
+      "localFile": "data/wi-2024-cvr-availability.csv",
+      "parser": "wisconsinCvrAvailabilityInventory",
+      "authority": "Wisconsin Elections Commission and Wisconsin county clerks",
+      "timestampBasis": "County inventory scaffold generated for 2024 general-election records requests.",
+      "confidence": "Scaffold only. It tracks county-by-county CVR availability/request follow-up and does not confirm public CVR release or load CVR records.",
+      "status": "partial_context"
+    },
+    {
+      "id": "wi-2024-incident-context",
+      "category": "Incident, correction, recount, and litigation source inventory",
+      "url": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+      "localFile": "data/wi-2024-incident-context.csv",
+      "parser": "wisconsinIncidentContextInventory",
+      "authority": "Wisconsin Elections Commission and Wisconsin county clerks",
+      "timestampBasis": "Candidate inventory row retained for 2024 general-election follow-up.",
+      "confidence": "Candidate source inventory only. Official incident, correction, recount, and litigation rows have not been normalized, and WEC pages were blocked by Cloudflare during scripted collection.",
+      "status": "candidate_context"
+    },
+    {
+      "id": "wi-2024-equipment-context",
+      "category": "Election equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/55",
+      "localFile": "data/wi-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipment",
+      "authority": "Verified Voting Verifier with WEC audit-report cross-reference for audited selected units",
+      "timestampBasis": "Verified Voting 2024 equipment context normalized for Wisconsin; WEC audit report retained for official audited-equipment context.",
+      "confidence": "Context only. Jurisdiction-level equipment metadata is not vote, turnout, or proof of precinct-uniform equipment configuration.",
+      "status": "loaded_context"
+    },
+    {
+      "id": "wi-2024-ward-geometry-candidate",
+      "category": "Municipal ward geometry candidate",
+      "url": "https://services1.arcgis.com/FDsAtKBk8Hy4cAH0/arcgis/rest/services/2024_Election_Data_with_2025_Wards/FeatureServer/0",
+      "localFile": "data/wi-2024-ward-geometry-summary.json",
+      "parser": "wisconsinWardGeometryArcgis",
+      "authority": "Wisconsin Legislature / LTSB ArcGIS",
+      "timestampBasis": "November 2024 election data with January 2025 wards feature service collected June 25, 2026.",
+      "confidence": "Visualization candidate only. Join validation reconciles jurisdiction totals, but row-level ward allocation differs in documented residual jurisdictions, so production ward rendering remains disabled pending a 2024-to-2025 ward crosswalk.",
+      "status": "candidate_context"
+    },
+    {
+      "id": "wi-2024-hard-missing-source-evidence",
+      "category": "Hard-missing source evidence",
+      "url": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
+      "localFile": "data/wi-2024-hard-missing-source-evidence.json",
+      "parser": "collectWiHardMissingSourceEvidence",
+      "authority": "Wisconsin Elections Commission, Wisconsin Legislature / LTSB ArcGIS, and U.S. Election Assistance Commission",
+      "timestampBasis": "Public source probe generated June 25, 2026 against WEC pages, the WEC ward workbook, ArcGIS search, and the LTSB ward feature service.",
+      "confidence": "Documents that public machine-readable sources did not expose ward registered-voter denominators, row-level ballot mode/CVR, per-audit-unit outcomes, or exact ward crosswalk fields. Records requests remain required.",
+      "status": "loaded_context"
     }
   ],
   "certifiedResults": {
@@ -136,7 +213,7 @@
   "expected": {
     "jurisdictions": 72,
     "resultRows": 72,
-    "sources": 6,
+    "sources": 13,
     "stateTotal": 3422918,
     "trump": 1697626,
     "harris": 1668229,
