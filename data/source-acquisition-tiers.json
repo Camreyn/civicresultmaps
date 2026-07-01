@@ -158,7 +158,8 @@
       "reportingGrain": "county",
       "exportFormats": [
         "signed canvass PDF",
-        "normalized local artifact"
+        "normalized local artifact",
+        "script-blocked county result pages"
       ],
       "sourceUrls": [
         "https://azsos.gov/elections/results-data"
@@ -170,13 +171,16 @@
       ],
       "missingFields": [
         "precinct review rows",
-        "precinct boundary geometry"
+        "precinct boundary geometry",
+        "statewide precinct/local reporting-unit export",
+        "same-grain precinct U.S. Senate rows",
+        "CVR, audit/recount, incident/correction records"
       ],
       "parserStatus": "native county review package loaded",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Current rows are county-level advisory inputs, not precinct scatter plots.",
-      "nextAction": "Look for official precinct-level Arizona result exports before upgrading review coverage."
+      "caveats": "Current rows are county-level advisory inputs, not precinct scatter plots. The 2026-06-30 AZ coverage inventory records that the SOS results/data page and signed canvass path remain script-hostile from this environment, and spot checks of Maricopa, Pima, and Yavapai county result pages also blocked scripted collection. No official statewide precinct/local President plus same-grain U.S. Senate export was confirmed.",
+      "nextAction": "Use data/az-2024-data-coverage-inventory.json as the current AZ source-search record; next step is county-by-county manual collection or public-records requests for precinct/local President and U.S. Senate rows, precinct geometry, CVR/audit/recount, and incident/correction records."
     },
     {
       "state": "CA",

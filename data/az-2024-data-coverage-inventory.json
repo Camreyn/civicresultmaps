@@ -1,0 +1,234 @@
+{
+    "state":  "AZ",
+    "stateName":  "Arizona",
+    "electionYear":  2024,
+    "checkedAt":  "2026-06-30",
+    "purpose":  "State-scoped coverage inventory for Arizona 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+    "status":  "county_review_loaded_precinct_rows_not_found",
+    "authorityPriority":  "Official state and county election sources first; secondary sources are context only and caveated.",
+    "loadedArtifacts":  [
+                            {
+                                "id":  "az-2024-eac-turnout",
+                                "sourceAuthority":  "U.S. Election Assistance Commission",
+                                "sourceUrl":  "https://www.eac.gov/research-and-data/studies-and-reports",
+                                "localPath":  "data/eac-2024-state-turnout/az-2024-eac-turnout.csv",
+                                "electionYear":  2024,
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "eacTurnoutCsv via etl/state-configs/az.json source az-2024-eac-turnout",
+                                "expectedCounts":  {
+                                                       "rows":  15
+                                                   },
+                                "caveats":  [
+                                                "National EAC fallback turnout rows are retained as benchmark context after Arizona signed canvass turnout rows were loaded.",
+                                                "The configured AZ turnout source is the signed Arizona canvass, not the EAC fallback CSV."
+                                            ],
+                                "confidence":  "loaded_benchmark_context"
+                            },
+                            {
+                                "id":  "az-2024-general-canvass-president",
+                                "sourceAuthority":  "Arizona Secretary of State",
+                                "sourceUrl":  "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+                                "localPath":  "data/az-2024-general-canvass-president.csv",
+                                "electionYear":  2024,
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "civic_etl/native.py _arizona_rows via etl/state-configs/az.json certifiedResults.format=arizonaCanvassCountyCsv",
+                                "expectedCounts":  {
+                                                       "rows":  15,
+                                                       "stateTotal":  3390161,
+                                                       "trump":  1770242,
+                                                       "harris":  1582860,
+                                                       "other":  37059
+                                                   },
+                                "caveats":  [
+                                                "The local CSV is a county-level transcription from the official signed canvass PDF because the SOS PDF host presents a Cloudflare challenge to scripted collection.",
+                                                "The signed canvass does not provide precinct-level or local reporting-unit presidential rows."
+                                            ],
+                                "confidence":  "loaded_county_certified"
+                            },
+                            {
+                                "id":  "az-2024-general-canvass-senate",
+                                "sourceAuthority":  "Arizona Secretary of State",
+                                "sourceUrl":  "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+                                "localPath":  "data/az-2024-general-canvass-senate.csv",
+                                "electionYear":  2024,
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "civic_etl/native.py _county_comparison_review_rows via etl/state-configs/az.json reviewCharts.format=countyComparisonCsv",
+                                "expectedCounts":  {
+                                                       "rows":  15,
+                                                       "comparisonContest":  "United States Senator"
+                                                   },
+                                "caveats":  [
+                                                "Rows support county-level President-versus-U.S. Senate advisory comparison only.",
+                                                "They are not precinct-level vote-share scatter rows and cannot localize subcounty patterns."
+                                            ],
+                                "confidence":  "loaded_county_comparison"
+                            },
+                            {
+                                "id":  "az-2024-turnout",
+                                "sourceAuthority":  "Arizona Secretary of State",
+                                "sourceUrl":  "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+                                "localPath":  "data/az-2024-general-canvass-president.csv",
+                                "electionYear":  2024,
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "civic_etl/native.py _normalized_turnout_rows via etl/state-configs/az.json turnout.format=normalizedTurnoutCsv",
+                                "expectedCounts":  {
+                                                       "rows":  15,
+                                                       "ballotsCast":  3428011,
+                                                       "registeredVoters":  4367593
+                                                   },
+                                "caveats":  [
+                                                "Denominator is the signed canvass Total Eligible Registration field, not a precinct denominator.",
+                                                "EAC fallback rows remain retained as benchmark context but are not the configured AZ turnout source."
+                                            ],
+                                "confidence":  "loaded_county_denominator"
+                            },
+                            {
+                                "id":  "az-county-geometry",
+                                "sourceAuthority":  "U.S. Census Bureau",
+                                "sourceUrl":  "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2704%27\u0026outFields=NAME,BASENAME,GEOID,STATE,COUNTY\u0026returnGeometry=true\u0026outSR=4326\u0026f=geojson",
+                                "localPath":  "data/az-counties.geojson",
+                                "electionYear":  2024,
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "censusTigerwebCountyGeojson via etl/state-configs/az.json source az-county-geometry",
+                                "expectedCounts":  {
+                                                       "features":  15
+                                                   },
+                                "caveats":  [
+                                                "County geometry supports the current county result map joins.",
+                                                "Precinct boundary geometry is not included."
+                                            ],
+                                "confidence":  "loaded_county_geometry"
+                            },
+                            {
+                                "id":  "az-2024-equipment-context",
+                                "sourceAuthority":  "Verified Voting Verifier",
+                                "sourceUrl":  "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/4",
+                                "localPath":  "data/az-2024-equipment-context.csv",
+                                "electionYear":  2024,
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "scripts/normalize-verifiedvoting-equipment.mjs",
+                                "expectedCounts":  {
+                                                       "jurisdictions":  15
+                                                   },
+                                "caveats":  [
+                                                "Equipment context is jurisdiction-level administration context, not vote-result, turnout, or proof that every precinct or ballot mode used one identical setup.",
+                                                "Use only as context alongside official result, turnout, audit, CVR, and custody records."
+                                            ],
+                                "confidence":  "loaded_context_only"
+                            },
+                            {
+                                "id":  "az-historical-presidential-baseline",
+                                "sourceAuthority":  "Wikipedia county presidential tables with state election office source footnotes",
+                                "sourceUrl":  "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Arizona",
+                                "localPath":  "data/az-historical-presidential-baseline.csv",
+                                "electionYear":  "2012, 2016, 2020",
+                                "reportingGrain":  "county",
+                                "parserNormalizationPath":  "historicalPresidentialCsv via etl/state-configs/az.json historicalBaselines.format=historicalPresidentialCsv",
+                                "expectedCounts":  {
+                                                       "rows":  45,
+                                                       "years":  [
+                                                                     2012,
+                                                                     2016,
+                                                                     2020
+                                                                 ]
+                                                   },
+                                "caveats":  [
+                                                "Secondary contextual baseline only.",
+                                                "Do not use as 2024 certified data or as a replacement for official historical canvass artifacts.",
+                                                "The normalized CSV source_url column carries the per-year Wikipedia page URL for 2012, 2016, and 2020 rows."
+                                            ],
+                                "confidence":  "loaded_secondary_context",
+                                "sourceUrls":  [
+                                                   "https://en.wikipedia.org/wiki/2012_United_States_presidential_election_in_Arizona",
+                                                   "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Arizona",
+                                                   "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Arizona"
+                                               ]
+                            }
+                        ],
+    "officialSourceSearchPath":  [
+                                     {
+                                         "sourceAuthority":  "Arizona Secretary of State",
+                                         "sourceUrl":  "https://azsos.gov/elections/results-data",
+                                         "checkedFor":  [
+                                                            "2024 statewide precinct-level or local reporting-unit result export",
+                                                            "President rows",
+                                                            "same-grain U.S. Senate comparison rows",
+                                                            "downloadable CSV/XLSX/JSON result data"
+                                                        ],
+                                         "result":  "Scripted access returns a Cloudflare challenge from this environment. Existing visible/result-page path links to the signed statewide canvass PDF already normalized at county level.",
+                                         "blocker":  "No accessible statewide precinct/local reporting-unit export was found through the official SOS results/data path during this pass."
+                                     },
+                                     {
+                                         "sourceAuthority":  "Arizona Secretary of State",
+                                         "sourceUrl":  "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+                                         "checkedFor":  [
+                                                            "county certified results",
+                                                            "county turnout denominator",
+                                                            "precinct/local reporting-unit rows"
+                                                        ],
+                                         "result":  "County certified President, U.S. Senate, and turnout fields are loaded from the signed canvass. The canvass does not carry precinct/local reporting-unit rows.",
+                                         "blocker":  "Official source is county-level for this use case."
+                                     },
+                                     {
+                                         "sourceAuthority":  "Maricopa County Elections Department",
+                                         "sourceUrl":  "https://elections.maricopa.gov/results-and-data/election-results.html",
+                                         "checkedFor":  [
+                                                            "local result export",
+                                                            "precinct-level President rows",
+                                                            "same-grain U.S. Senate rows"
+                                                        ],
+                                         "result":  "Scripted access returned HTTP 403 from this environment.",
+                                         "blocker":  "County page may need browser/manual collection or a public-records request before statewide county stitching is feasible."
+                                     },
+                                     {
+                                         "sourceAuthority":  "Pima County Recorder",
+                                         "sourceUrl":  "https://www.recorder.pima.gov/Elections",
+                                         "checkedFor":  [
+                                                            "local result export",
+                                                            "precinct-level President rows",
+                                                            "same-grain U.S. Senate rows"
+                                                        ],
+                                         "result":  "Scripted access returned a Cloudflare challenge from this environment.",
+                                         "blocker":  "County page may need browser/manual collection or a public-records request before statewide county stitching is feasible."
+                                     },
+                                     {
+                                         "sourceAuthority":  "Yavapai County Elections",
+                                         "sourceUrl":  "https://www.yavapaivotes.gov/election-results",
+                                         "checkedFor":  [
+                                                            "local result export",
+                                                            "precinct-level President rows",
+                                                            "same-grain U.S. Senate rows"
+                                                        ],
+                                         "result":  "Scripted access returned an access-denied response from this environment.",
+                                         "blocker":  "County page may need browser/manual collection or a public-records request before statewide county stitching is feasible."
+                                     }
+                                 ],
+    "gaps":  [
+                 {
+                     "artifact":  "precinct_or_local_reporting_unit_results",
+                     "status":  "not_found",
+                     "neededFor":  "Same-grain President-versus-U.S. Senate review rows below county level.",
+                     "preferredAuthority":  "Arizona Secretary of State statewide export, or all 15 county election departments if no statewide export exists.",
+                     "remainingRisk":  "County-only review can identify county-level comparison patterns but cannot localize or validate precinct-level effects."
+                 },
+                 {
+                     "artifact":  "precinct_boundary_geometry",
+                     "status":  "not_loaded",
+                     "neededFor":  "Subcounty map joins if precinct/local result rows are collected.",
+                     "preferredAuthority":  "County election/GIS offices or an official statewide precinct boundary publication if available.",
+                     "remainingRisk":  "The current map remains county-level."
+                 },
+                 {
+                     "artifact":  "audit_recount_cvr_incident_correction_records",
+                     "status":  "not_inventoried",
+                     "neededFor":  "Independent reconciliation, electronic-record review, recount/correction context, and explanation of any advisory row.",
+                     "preferredAuthority":  "Arizona Secretary of State and county election departments through official publication or records request.",
+                     "remainingRisk":  "No loaded AZ artifact can independently recompute county totals from CVRs or explain local administration events."
+                 }
+             ],
+    "confidenceNotes":  [
+                            "Loaded AZ result, review, turnout, geometry, equipment, and historical artifacts are suitable for county-level public-interest review with visible caveats.",
+                            "No official statewide precinct-level or county-local result export was accessible or confirmed in this pass, so no scripted collection/normalization upgrade was added.",
+                            "Next implementation step should be a county-by-county official source inventory or public-records request packet before parser work."
+                        ]
+}

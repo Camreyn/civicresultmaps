@@ -127,5 +127,28 @@
     "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": true
+  },
+  "coverageInventory": {
+    "localFile": "data/az-2024-data-coverage-inventory.json",
+    "checkedAt": "2026-06-30",
+    "status": "county_review_loaded_precinct_rows_not_found",
+    "officialSourceSearchPath": [
+      "https://azsos.gov/elections/results-data",
+      "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+      "https://elections.maricopa.gov/results-and-data/election-results.html",
+      "https://www.recorder.pima.gov/Elections",
+      "https://www.yavapaivotes.gov/election-results"
+    ],
+    "caveats": [
+      "The signed Arizona canvass package supports county certified results, county President-versus-U.S. Senate advisory review, and county turnout denominators only.",
+      "No official statewide precinct/local reporting-unit President and same-grain U.S. Senate export was accessible or confirmed in the 2026-06-30 source check.",
+      "Maricopa, Pima, and Yavapai county result pages blocked scripted access from this environment; county-by-county manual collection or public-records requests remain the next source step."
+    ],
+    "remainingGaps": [
+      "precinct/local reporting-unit President rows",
+      "same-grain precinct/local U.S. Senate comparison rows",
+      "precinct boundary geometry",
+      "audit/recount/CVR/incident/correction records normalized for AZ"
+    ]
   }
 }
