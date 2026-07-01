@@ -978,7 +978,7 @@
       "stateName": "North Carolina",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_admin_context",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct_review_county_certified",
       "exportFormats": [
@@ -986,26 +986,32 @@
         "CSV"
       ],
       "sourceUrls": [
-        "https://www.ncsbe.gov/results-data/election-results"
+        "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
+        "https://www.ncsbe.gov/results-data/voter-turnout/2024-general-election-turnout",
+        "https://www.ncsbe.gov/results-data/voter-registration-data",
+        "https://www.ncsbe.gov/results-data/voting-maps-redistricting",
+        "https://www.ncsbe.gov/about-elections/election-security/post-election-procedures-and-audits"
       ],
       "exampleUrls": [],
       "availableFields": [
         "certified county President rows from all reporting units",
         "Real Precinct=Y President review rows",
         "Real Precinct=Y Governor comparison rows",
-        "EAC fallback county turnout"
+        "EAC fallback county turnout",
+        "official 2012/2016/2020 county historical presidential baselines",
+        "official precinct shapefile folder lead",
+        "official 2024 post-election audit PDF lead"
       ],
       "missingFields": [
-        "state-native turnout denominator",
-        "precinct boundary geometry",
-        "2020/2016/2012 historical baselines",
-        "audit/recount/CVR/incident/correction records"
+        "state-native turnout denominator loaded into the turnout contract",
+        "precinct boundary geometry normalized for map joins",
+        "normalized audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native county certified package loaded; review rows filtered to official Real Precinct=Y rows",
+      "parserStatus": "native county certified package loaded; review rows filtered to official Real Precinct=Y rows; historicalPresidentialCsv loaded from official NCSBE 2012/2016/2020 precinct result ZIPs",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Certified county totals aggregate all official reporting units, including early, absentee, provisional, and transfer rows. Review charts now use only rows where the NCSBE Real Precinct field is Y, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; excluded non-real reporting units account for 1,775,402 presidential votes.",
-      "nextAction": "Keep the Real Precinct=Y review coverage caveat visible; next upgrades are precinct boundary geometry, state-native turnout denominators, historical baselines, and audit/recount/CVR/incident/correction records."
+      "caveats": "Certified county totals aggregate all official reporting units, including early, absentee, provisional, and transfer rows. Review charts use only rows where the NCSBE Real Precinct field is Y, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; excluded non-real reporting units account for 1,775,402 presidential votes. Historical baselines are county aggregates for context only.",
+      "nextAction": "Keep the Real Precinct=Y review coverage caveat visible; next upgrades are a state-native turnout parser from NCSBE voter-history/registration stats, normalized precinct boundary geometry from the NCSBE shapefile folder, and normalized audit/recount/CVR/incident/correction records."
     },
     {
       "state": "ND",

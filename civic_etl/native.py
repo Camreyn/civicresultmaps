@@ -5989,15 +5989,17 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "NC" and config.raw.get("certifiedResults", {}).get("format") == "northCarolinaPrecinctResultsZip":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _north_carolina_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeNorthCarolinaPrecinctResultsZip",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
-
     if config.code == "AZ" and config.raw.get("certifiedResults", {}).get("format") == "arizonaCanvassCountyCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _arizona_rows(config, sources)

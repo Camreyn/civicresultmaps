@@ -65,6 +65,10 @@ Nebraska now retains three turnout-relevant source paths: EAC 2024 V2 county/jur
 
 Missouri now uses official Secretary of State 2024 General Election voter-turnout rows at `data/mo-2024-general-turnout.csv`, normalized from `data/mo-2024-general-turnout.pdf` by `scripts/normalize-mo-sos-pdfs.mjs`. The rows include 116 county/reporting-jurisdiction records, 2,995,376 actual voters, and 4,433,383 registered voters. Kansas City is a separate reporting jurisdiction in the SOS source, matching the Missouri result CSV caveat.
 
+
+## North Carolina Update
+
+North Carolina still uses EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/nc-2024-eac-turnout.csv` for the active turnout contract. A July 1, 2026 official-source pass confirmed two state-native leads: the NCSBE 2024 General Election Turnout page cites `history_stats_20241105.zip` for statewide voting-method totals, and the NCSBE Historical Registered Voter Stats table links the 2024 Nov. 5 registered-voter stats ZIP with county/precinct/demographic registration fields. These official artifacts should be collected and normalized together before replacing EAC fallback rows, because the current NCSBE turnout page is statewide summary text and the registered-voter stats file is a denominator source rather than a complete ballots-cast replacement by itself.
 ## Wisconsin-Specific Request
 
 For Wisconsin, ask for:
