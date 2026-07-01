@@ -1404,6 +1404,26 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
       why: "Precinct review data is loaded, but precinct boundary overlays are not sourced yet, so graph outliers need source-row inspection.",
     },
   ],
+  MS: [
+    {
+      key: "review",
+      evidence: "Mississippi statewide recap CSV rows are loaded for county-level President-versus-U.S. Senate review.",
+      status: "partial",
+      why: "The current review rows are county-level advisory screening inputs, not precinct-level scatter plots. The reviewed OCR path still reports 11 import-ready Mississippi OCR counties, 61 review-required counties, and 10 missing-OCR counties before any precinct promotion.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 county/jurisdiction fallback rows are loaded while Mississippi-native turnout remains pending.",
+      status: "partial",
+      why: "The SOS Active Voter Count Reports page is an official denominator lead, but active-voter counts still need an official ballots-cast or voter-participation partner before replacing the EAC turnout fallback.",
+    },
+    {
+      key: "history",
+      evidence: "The SOS election-results archive exposes 2020, 2016, and 2012 election result pages, but no source-cited county presidential artifacts are committed yet.",
+      status: "missing",
+      why: "Historical baseline charts stay disabled until official SOS county presidential artifacts are collected from archive iframe targets, direct recap files, or the SOS request path and parsed with provenance.",
+    },
+  ],
   NC: [
     {
       key: "map",

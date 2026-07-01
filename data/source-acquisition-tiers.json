@@ -877,7 +877,11 @@
         "https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv"
       ],
       "exampleUrls": [
-        "https://www.sos.ms.gov/elections-voting/election-results/2024/2024-general-election-results"
+        "https://www.sos.ms.gov/elections-voting/election-results/2024/2024-general-election-results",
+        "https://www.sos.ms.gov/elections-voting/election-results/2020/2020-general-election",
+        "https://www.sos.ms.gov/elections-voting/election-results/2016/2016-general-election",
+        "https://www.sos.ms.gov/elections-voting/election-results/2012/2012-election-results",
+        "https://www.sos.ms.gov/elections-voting/active-voter-count-reports"
       ],
       "availableFields": [
         "county President rows",
@@ -885,14 +889,14 @@
       ],
       "missingFields": [
         "precinct rows",
-        "state-native turnout denominator",
-        "2020/2016/2012 source-cited historical baseline artifacts"
+        "state-native ballots-cast turnout rows paired with a denominator artifact",
+        "2020/2016/2012 source-cited historical baseline artifacts from the SOS archive iframe/direct file/request path"
       ],
-      "parserStatus": "mississippiElectionRecapCsv loaded for county review; historical baselines remain blocked pending official SOS county artifacts",
+      "parserStatus": "mississippiElectionRecapCsv loaded for county review; historical baselines remain blocked pending official SOS county artifacts from the archive iframe/direct file/request path",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "County-level review is useful but not a precinct-level scatter plot.",
-      "nextAction": "Keep loaded county package; collect official Mississippi SOS 2020, 2016, and 2012 county presidential artifacts before enabling historicalBaseline."
+      "caveats": "County-level review is useful but not a precinct-level scatter plot. SOS Active Voter Count Reports are a denominator lead only and do not replace ballots-cast turnout rows by themselves.",
+      "nextAction": "Keep loaded county package; collect official Mississippi SOS 2020, 2016, and 2012 county presidential artifacts and a Mississippi-native ballots-cast plus denominator package before enabling historicalBaseline or replacing EAC turnout."
     },
     {
       "state": "MS",

@@ -790,14 +790,16 @@
       "localFile": "data/eac-2024-state-turnout/ms-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 82,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database. Mississippi SOS Active Voter Count Reports are an official denominator lead, but they need an official ballots-cast/voter-participation partner before replacing EAC fallback turnout.",
+      "nextAction": "Collect the November or December 2024 Mississippi SOS Active Voter Count Report as a denominator cross-check, then pair it with official Mississippi ballots-cast or voter-participation rows before replacing the EAC fallback.",
       "coverage": {
         "jurisdictionRows": 82,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ms-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 2131726,
         "ballotsCast": 1225176,
-        "warningRows": 0
+        "warningRows": 0,
+        "denominatorCandidateSourceUrl": "https://www.sos.ms.gov/elections-voting/active-voter-count-reports",
+        "denominatorCandidateCaveat": "Active voter counts are monthly registration denominators and do not by themselves provide ballots-cast turnout rows or election-day denominator timing."
       }
     },
     {

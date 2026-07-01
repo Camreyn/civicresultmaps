@@ -244,6 +244,10 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /17 zero-total precinct entries are omitted/);
   assert.match(tabs, /Nevada Secretary of State archived statewide general election results/);
   assert.match(tabs, /live NVSOS and Silver State hosts still return Incapsula/);
+  assert.match(tabs, /Mississippi statewide recap CSV rows are loaded/);
+  assert.match(tabs, /11 import-ready Mississippi OCR counties/);
+  assert.match(tabs, /SOS Active Voter Count Reports page is an official denominator lead/);
+  assert.match(tabs, /archive iframe targets, direct recap files, or the SOS request path/);
   assert.doesNotMatch(tabs, /Sources API/);
   assert.match(explorer, /Eli5/);
   assert.match(explorer, /clickable-row/);
@@ -451,6 +455,9 @@ test("native source package handoff is validated in CI", () => {
   assert.match(msCoverageDoc, /11 import-ready counties/);
   assert.match(msCoverageDoc, /EAC 2024 V2 county\/jurisdiction fallback/);
   assert.match(msCoverageDoc, /historical baselines were not added/);
+  assert.match(msCoverageDoc, /2020 General Election/);
+  assert.match(msCoverageDoc, /Active Voter Count Reports page is an official denominator lead/);
+  assert.match(msCoverageDoc, /do not by themselves provide ballots-cast rows/);
   assert.match(msReconciler, /precinctExtractedTotal/);
   assert.match(msReconciler, /detected_total_column_cells/);
   assert.match(msReconciler, /--corrections/);
