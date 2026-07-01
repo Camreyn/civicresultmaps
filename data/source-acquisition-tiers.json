@@ -499,7 +499,7 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_equipment",
       "tier": "tier_2_official_dashboard_endpoint",
-      "reportingGrain": "county results and turnout plus supplemental precinct review",
+      "reportingGrain": "county_plus_supplemental_precinct",
       "exportFormats": [
         "archived ENR JSON",
         "official turnout PDF normalized CSV",
@@ -525,21 +525,22 @@
         "official county registered-voter and voters-voting turnout rows",
         "supplemental precinct President-versus-U.S.-Senate review rows",
         "EAC county turnout fallback retained as benchmark",
-        "county election equipment context"
+        "county election equipment context",
+        "official 2016 and 2020 county historical presidential baselines"
       ],
       "missingFields": [
         "official precinct/subcounty President rows",
-        "official precinct/subcounty U.S. Senate rows at the same grain",
+        "official same-grain precinct/subcounty U.S. Senate comparison rows",
         "precinct turnout and registered-voter denominator rows",
         "precinct boundary geometry",
-        "normalized 2020/2016/2012 historical baselines",
+        "official 2012 county historical presidential baseline",
         "audit, recount, CVR availability, incident, and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson loaded for official county results; normalizedTurnoutCsv loaded for official Indiana county turnout; localComparisonCsv loaded for MIT/OpenElections supplemental precinct review rows; equipment context CSV present",
+      "parserStatus": "indianaEnrCountyJson package loaded; official 2016/2020 historicalPresidentialCsv loaded from ENR archives; supplemental MIT/OpenElections precinct review rows loaded; official precinct/subcounty rows remain blocked",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Archived ENR category files contain 92 county RegionSummary rows, not precinct rows. Official turnout is county-level voters-voting/registered-voter context from the Indiana Election Division report. MIT/OpenElections review rows are supplemental advisory inputs with published Indiana caveats; certified totals remain official Indiana ENR. Equipment context is county-level administration context only.",
-      "nextAction": "Request official Indiana precinct/subcounty President and U.S. Senate rows, precinct turnout denominators, precinct geometry, normalized historical baselines, and audit/recount/CVR/incident/correction records before upgrading beyond supplemental local review."
+      "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2016 and 2020 only; 2012 remains source-cited but unnormalized pending a script-readable official artifact.",
+      "nextAction": "Request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, plus a script-readable official 2012 county presidential baseline artifact."
     },
     {
       "state": "KS",

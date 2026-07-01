@@ -4,7 +4,7 @@
   "electionYear": 2024,
   "checkedAt": "2026-07-01",
   "purpose": "State-scoped coverage inventory for Indiana 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_county_results_turnout_loaded_supplemental_precinct_review",
+  "status": "official_county_results_turnout_historical_loaded_supplemental_precinct_review",
   "authorityPriority": "Official Indiana Election Division, Indiana Election Commission/Recount Commission, county election offices, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -153,6 +153,40 @@
         "Does not replace official Indiana result, turnout, audit, recount, CVR, incident, correction, or custody records."
       ],
       "confidence": "loaded_context_only"
+    },
+    {
+      "id": "in-historical-presidential-official-enr",
+      "sourceAuthority": "Indiana Election Division",
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json",
+      "localPath": "data/in-2016-official-president-county.json; data/in-2020-official-president-county.json; data/in-historical-presidential-baseline.csv",
+      "electionYear": "2016, 2020",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/collect-in-historical-baseline.mjs to historicalPresidentialCsv via etl/state-configs/in.json historicalBaselines.format=historicalPresidentialCsv",
+      "expectedCounts": {
+        "2016": {
+          "demVotes": 1035956,
+          "repVotes": 1556514,
+          "otherVotes": 135668,
+          "totalVotes": 2728138
+        },
+        "2020": {
+          "demVotes": 1242416,
+          "repVotes": 1729519,
+          "otherVotes": 61186,
+          "totalVotes": 3033121
+        },
+        "rows": 184,
+        "years": [
+          2016,
+          2020
+        ],
+        "countiesPerYear": 92
+      },
+      "caveats": [
+        "Historical rows are contextual county baselines, not 2024 certified data.",
+        "The 2012 official archive page remains source-cited, but checked ENR JSON paths did not expose a script-readable county presidential category artifact."
+      ],
+      "confidence": "loaded_official_context_partial_years"
     }
   ],
   "officialSourceSearchPath": [
@@ -241,29 +275,59 @@
       ],
       "result": "Official page identifies the Recount Commission, meeting/minute links, and guidelines.",
       "blocker": "No normalized 2024 recount/correction dataset was added; use this as a source path for a dedicated administration-context pass."
+    },
+    {
+      "sourceAuthority": "Indiana Election Division",
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2016General/data/OffCatC_1767_A.json",
+      "checkedFor": [
+        "official 2016 county presidential rows",
+        "historical baseline source artifact"
+      ],
+      "result": "Official ENR category JSON exposes county presidential candidate rows under each county Races.Race.Candidates block and was normalized to data/in-historical-presidential-baseline.csv.",
+      "blocker": "Not a 2024 precinct/subcounty source."
+    },
+    {
+      "sourceAuthority": "Indiana Election Division",
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json",
+      "checkedFor": [
+        "official 2020 county presidential rows",
+        "historical baseline source artifact"
+      ],
+      "result": "Official ENR category JSON exposes county presidential candidate rows under each county Races.Race.Candidates block and was normalized to data/in-historical-presidential-baseline.csv.",
+      "blocker": "Not a 2024 precinct/subcounty source."
+    },
+    {
+      "sourceAuthority": "Indiana Election Division",
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2012General/index.html",
+      "checkedFor": [
+        "official 2012 county presidential rows",
+        "script-readable ENR JSON paths"
+      ],
+      "result": "The official 2012 archive landing page is listed by the Indiana Election Results page, but the checked /data and /site/data settings/statewide/category JSON paths returned missing-blob or transport errors from this environment.",
+      "blocker": "2012 county presidential baseline rows remain unnormalized until a script-readable official artifact or county table is obtained."
     }
   ],
   "historicalBaselineSourceLeads": [
     {
       "year": 2020,
       "sourceAuthority": "Indiana Election Division",
-      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2020General/index.html",
-      "status": "source_cited_not_normalized",
-      "notes": "Official archive page says 2020 results are final. County presidential baseline normalization remains future work."
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2020General/data/OffCatC_1019_A.json",
+      "status": "loaded_official_county_baseline",
+      "notes": "Official county presidential rows normalized to data/in-historical-presidential-baseline.csv by scripts/collect-in-historical-baseline.mjs."
     },
     {
       "year": 2016,
       "sourceAuthority": "Indiana Election Division",
-      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2016General/index.html",
-      "status": "source_cited_not_normalized",
-      "notes": "Official archive page says 2016 results are final. County presidential baseline normalization remains future work."
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2016General/data/OffCatC_1767_A.json",
+      "status": "loaded_official_county_baseline",
+      "notes": "Official county presidential rows normalized to data/in-historical-presidential-baseline.csv by scripts/collect-in-historical-baseline.mjs."
     },
     {
       "year": 2012,
       "sourceAuthority": "Indiana Election Division",
       "sourceUrl": "https://enr.indianavoters.in.gov/archive/2012General/index.html",
-      "status": "source_cited_not_normalized",
-      "notes": "Official archive link is listed on the Indiana Election Results page. County presidential baseline normalization remains future work."
+      "status": "source_cited_json_path_blocked",
+      "notes": "Official archive page remains source-cited, but checked ENR JSON paths did not expose a script-readable county presidential category artifact from this environment. Request an official 2012 county table or archive artifact before adding rows."
     }
   ],
   "requestPath": {
@@ -301,11 +365,11 @@
       "remainingRisk": "The current map remains county-level."
     },
     {
-      "artifact": "historical_presidential_baselines",
-      "status": "source_cited_not_normalized",
-      "neededFor": "County historical baseline context for 2012, 2016, and 2020.",
-      "preferredAuthority": "Indiana Election Division archived general election results.",
-      "remainingRisk": "Historical baseline capability remains disabled for Indiana until rows are normalized and validated."
+      "artifact": "2012_historical_presidential_baseline",
+      "status": "source_cited_json_path_blocked",
+      "neededFor": "Complete 2012/2016/2020 county historical baseline context.",
+      "preferredAuthority": "Indiana Election Division archived general election results or official county table export.",
+      "remainingRisk": "Indiana historical baseline capability now includes official 2016 and 2020 county rows only; 2012 remains missing until an official script-readable artifact is obtained."
     },
     {
       "artifact": "audit_recount_cvr_incident_correction_records",
@@ -318,6 +382,7 @@
   "confidenceNotes": [
     "Official county result and county turnout artifacts are suitable for county-level public-interest review with visible caveats.",
     "No official statewide precinct/subcounty President and same-grain U.S. Senate result export was confirmed in this pass.",
-    "Next source step is a targeted Indiana Election Division request, followed by county-by-county collection only if the state confirms no statewide export exists."
+    "Next source step is a targeted Indiana Election Division request, followed by county-by-county collection only if the state confirms no statewide export exists.",
+    "Official 2016 and 2020 county presidential historical baseline rows are now normalized from Indiana ENR archives; 2012 remains a documented official-source request gap."
   ]
 }
