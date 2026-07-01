@@ -16,7 +16,13 @@
       "data/mo-historical-presidential-baseline.csv"
     ],
     "scopeNote": "Official county/reporting-jurisdiction President, U.S. Senate, turnout, and historical baseline rows are loaded. The SOS results page identifies precinct-level general-election result files as purchasable from the Elections Division, so precinct-level Missouri review rows remain blocked until that file is obtained.",
-    "requestNeed": "Purchase or request 2024 general election precinct-level result files for President and U.S. Senate, plus any reporting-unit definitions needed to distinguish Kansas City and county jurisdictions."
+    "requestNeed": "Purchase or request 2024 general election precinct-level result files for President and U.S. Senate, plus any reporting-unit definitions needed to distinguish Kansas City and county jurisdictions.",
+    "checkedPageEvidence": {
+      "checkedAt": "2026-07-01",
+      "officialStatement": "The Missouri SOS results page states that precinct-level election results are available for general November elections from 1996 to 2024 and directs purchasers/questions to the Elections Division.",
+      "resultFileRange": "1996-2024 general elections",
+      "contactPath": "Missouri SOS Elections Division email listed on the results page"
+    }
   },
   "equipment": {
     "status": "loaded_context",
@@ -39,7 +45,7 @@
       "https://www.sos.mo.gov/CMSImages/ElectionGoVoteMissouri/CurrentElectionLawBook.pdf"
     ],
     "reportingLevel": "local_election_authority",
-    "scopeNote": "Missouri rules describe post-election verification/manual recount procedures, including a public random selection of at least five percent of precincts, certificates filed with the Secretary of State and public records, and discrepancy investigation before certification when thresholds are exceeded. No 2024 statewide audit selection/outcome table is loaded.",
+    "scopeNote": "Missouri rules describe post-election verification/manual recount procedures, including a public random selection of at least five percent of precincts, certificates filed with the Secretary of State and public records, and discrepancy investigation before certification when thresholds are exceeded. The SOS election-security page also states that Missouri has 116 election jurisdictions, each with its own voting system, and that election results are audited by local election officials before certification. No 2024 statewide audit selection/outcome table is loaded.",
     "recordsRequestNeed": "Collect or request 2024 post-election verification certificates, selected precincts, selected contests, machine totals, hand totals, discrepancies, explanations, and final outcomes from the Secretary of State or local election authorities."
   },
   "cvr": {
@@ -63,5 +69,28 @@
     ],
     "scopeNote": "The SOS results page lists historical recount result links for some past elections but not a 2024 general-election recount link in the checked page. The Elections Integrity page identifies complaint paths and published HAVA determinations; the 2026 Kramer determination references 2022 and 2024 voter-registration/list and reconciliation allegations and related federal-court hearing-process orders. No normalized 2024 incident, correction, recount, or litigation rows are loaded.",
     "recordsRequestNeed": "Inventory official 2024 amended canvasses, correction notices, recount petitions/outcomes, HAVA determinations, court dockets/orders, and local incident reports before adding row-level administration context."
+  },
+  "precinctGeometryCrosswalks": {
+    "status": "blocked_no_statewide_geometry_identified",
+    "sourceTitle": "Missouri SOS local election authority directory and county/request path",
+    "sourceUrls": [
+      "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
+      "https://www.sos.mo.gov/elections/results"
+    ],
+    "loadedGeometry": {
+      "localArtifact": "data/mo-counties.geojson",
+      "authority": "U.S. Census Bureau TIGERweb",
+      "reportingLevel": "county",
+      "scopeNote": "Loaded map geometry supports county joins only. Kansas City is a separate SOS reporting jurisdiction and does not have a separate Census county polygon."
+    },
+    "scopeNote": "No official statewide precinct-boundary geometry or precinct-to-county/reporting-jurisdiction crosswalk was identified in this pass. Missouri precinct review rows should not be mapped or joined below county/reporting-jurisdiction grain until the purchasable precinct file is paired with an official boundary file or reporting-unit crosswalk.",
+    "requestNeed": "Request 2024 precinct boundary GIS, precinct identifiers, split precinct definitions, and crosswalk fields that join the purchasable precinct result file to county/Kansas City/St. Louis City reporting jurisdictions."
+  },
+  "displayApiCaveats": {
+    "status": "documented_county_reporting_jurisdiction_only",
+    "reviewLevel": "county_reporting_jurisdiction",
+    "mapLevel": "county_with_kansas_city_reporting_jurisdiction_caveat",
+    "advisoryUse": "Current Missouri advisory rows compare official President and U.S. Senate rows at county/reporting-jurisdiction grain only. They are screening inputs, not findings, and not precinct-level scatter plots.",
+    "productionPromotion": "No production promotion is authorized from this worker pass. Regenerate staging and run native:report-indicators before any later promotion."
   }
 }
