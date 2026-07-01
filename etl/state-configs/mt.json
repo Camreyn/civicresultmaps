@@ -88,7 +88,7 @@
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
     "notes": "Montana turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout denominator artifact is collected.",
-    "warningRequired": false,
+    "warningRequired": true,
     "expected": {
       "rowCount": 56,
       "ballotsCast": 612423,

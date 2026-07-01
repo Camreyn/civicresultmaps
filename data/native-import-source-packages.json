@@ -19,6 +19,7 @@
     "MI",
     "MN",
     "MS",
+    "MT",
     "NC",
     "NH",
     "NV",
@@ -477,6 +478,68 @@
         "Review rows omit 292 precinct keys that appear in multiple House districts and 3,080 uncontested or one-party House precincts.",
         "County boundary geometry has 102 county features and does not fully represent 108 Illinois election jurisdictions."
       ]
+    },
+    {
+      "state": "MT",
+      "name": "Montana",
+      "priority": 14,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout",
+      "authority": "Montana Secretary of State",
+      "configFile": "etl/state-configs/mt.json",
+      "legacyReferenceBundle": "data/mt-2024-general-precinct-by-precinct.xlsx",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Montana SOS official 2024 General Election precinct-by-precinct workbook",
+          "sourceUrl": "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
+          "localFile": "data/mt-2024-general-precinct-by-precinct.xlsx",
+          "parserHint": "Parse Sheet1; filter Race Name=PRESIDENT & VICE PRESIDENT, aggregate by CountyName, and bucket Harris/Trump by Party or Last Name. The workbook omits 27 presidential write-in votes that are present in the separate certified canvass total."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Montana SOS official 2024 General Election precinct-by-precinct workbook",
+          "sourceUrl": "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
+          "localFile": "data/mt-2024-general-precinct-by-precinct.xlsx",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Pair PRESIDENT & VICE PRESIDENT and UNITED STATES SENATOR rows by CountyName, County ID, and PrecinctName; compare Harris/Trump to Tester/Sheehy plus other Senate candidates."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/mt-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2730%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/mt-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 56,
+        "geometryFeatures": 56,
+        "stateTotal": 602963,
+        "trump": 352079,
+        "harris": 231906,
+        "other": 18978,
+        "localReviewRows": 726,
+        "turnoutRows": 56
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_dropoff_precinct_workbook_with_certified_write_in_gap",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_warning_required"
+      },
+      "caveats": [
+        "Official precinct workbook rows aggregate to 602,963 presidential votes, 27 below the 602,990 certified canvass total because presidential write-ins are reported in the separate canvass context rather than the workbook rows parsed for native results.",
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data and are warning-marked until a Montana state-native county or precinct denominator artifact is collected.",
+        "County boundary geometry is loaded for map joins; official precinct boundary geometry is not included.",
+        "Historical 2020, 2016, and 2012 county baselines have not been normalized from official Montana sources yet."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [
@@ -586,25 +649,6 @@
       "preferredComparisonContest": "U.S. Senate",
       "parserNeeded": "countyPresidentCsv loaded for Missouri official county/reporting-jurisdiction package; precinct data must be purchased from Missouri SOS for subcounty rows",
       "blocker": "Missouri now has official county/reporting-jurisdiction President-versus-U.S. Senate review rows from the Secretary of State results-by-county PDF. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained."
-    },
-    {
-      "state": "MT",
-      "name": "Montana",
-      "priority": 6,
-      "currentStatus": "official_precinct_review_package_collected",
-      "officialSourcePages": [
-        "https://sosmt.gov/elections/results/",
-        "https://electionresults.mt.gov/ResultsList.aspx?eid=450002785",
-        "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
-        "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass"
-      ],
-      "requiredArtifacts": [
-        "official precinct boundary geometry if map overlays below county level are required",
-        "state-native county or precinct turnout denominator artifact if replacing EAC turnout fallback"
-      ],
-      "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "montanaPrecinctResultsXlsx loaded for official precinct President-versus-U.S. Senate review rows",
-      "blocker": "Montana now has official precinct-level President-versus-U.S. Senate review rows from the Secretary of State 2024 general precinct workbook. Precinct boundary geometry is not included, and turnout still uses EAC county fallback rows."
     },
     {
       "state": "NE",

@@ -584,7 +584,10 @@ def _normalized_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]
                     "registrationDenominatorTiming": row.get("denominator_note")
                     or row.get("denominator_timing")
                     or section.get("registrationDenominatorTiming", "notRecorded"),
-                    "warningRequired": _truthy(row.get("warning_required")) or not has_ballots_cast or not has_positive_denominator,
+                    "warningRequired": bool(section.get("warningRequired", False))
+                    or _truthy(row.get("warning_required"))
+                    or not has_ballots_cast
+                    or not has_positive_denominator,
                     "sourceId": source.id,
                 }
             )
@@ -595,6 +598,7 @@ def _normalized_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]
         "nativeRegisteredVoters": sum(int(row["registeredVoters"] or 0) for row in output),
         "nativeBallotsCast": sum(row["ballotsCast"] for row in output),
         "nativeTurnoutParser": section.get("format", "normalizedTurnoutCsv"),
+        "nativeTurnoutWarningRows": sum(1 for row in output if row["warningRequired"]),
     }
     checks = {
         "nativeTurnoutRows": expected.get("rowCount"),
@@ -6072,8 +6076,3 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         "turnoutRows": turnout_rows,
         "metrics": metrics,
     }
-
-
-
-
-

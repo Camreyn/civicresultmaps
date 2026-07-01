@@ -909,31 +909,43 @@
       "stateName": "Montana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_admin",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
         "XLSX"
       ],
       "sourceUrls": [
-        "https://sosmt.gov/elections/results/"
+        "https://sosmt.gov/elections/results/",
+        "https://electionresults.mt.gov/ResultsList.aspx?eid=450002785",
+        "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
+        "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass",
+        "https://sosmt.gov/elections/systems/"
       ],
       "exampleUrls": [
-        "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct"
+        "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
+        "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass"
       ],
       "availableFields": [
         "precinct President rows",
-        "precinct U.S. Senate rows"
+        "precinct U.S. Senate rows",
+        "official statewide canvass context",
+        "EAC fallback county/jurisdiction turnout rows",
+        "county geometry",
+        "Verified Voting county equipment context"
       ],
       "missingFields": [
+        "state-native turnout denominator",
         "precinct boundary geometry",
-        "state-native turnout denominator"
+        "normalized official 2020/2016/2012 county historical baselines",
+        "normalized post-election audit/recount/CVR availability artifacts",
+        "normalized incident/correction/litigation records"
       ],
-      "parserStatus": "montanaPrecinctResultsXlsx loaded",
+      "parserStatus": "montanaPrecinctResultsXlsx loaded for official precinct President-versus-U.S. Senate review rows; EAC fallback turnout is warning-marked; historical and admin-context artifacts remain inventory/documentation gaps",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Workbook does not include separate write-in canvass votes; turnout uses EAC fallback.",
-      "nextAction": "Optional next steps are precinct geometry and state-native turnout denominator."
+      "caveats": "Official workbook rows omit 27 presidential write-in votes that are included in the separate certified canvass total. County maps use Census county geometry only. Turnout currently uses warning-marked EAC fallback rows until a Montana state-native denominator artifact is collected.",
+      "nextAction": "Collect or normalize Montana state-native turnout denominators, precinct boundary geometry, official 2020/2016/2012 county historical baselines, and post-election audit/recount/CVR/incident/correction context."
     },
     {
       "state": "NC",
