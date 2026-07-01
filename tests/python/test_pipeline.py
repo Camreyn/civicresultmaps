@@ -216,6 +216,8 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 4428)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 4416)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 83)
+        self.assertFalse(artifact["capabilities"]["historicalBaseline"])
+        self.assertEqual(artifact["native"].get("historicalRows", []), [])
         self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
 
     def test_north_carolina_native_staging_parses_precinct_zip(self):

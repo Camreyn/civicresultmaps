@@ -745,13 +745,14 @@
         "county registration/turnout"
       ],
       "missingFields": [
-        "precinct boundary geometry"
+        "precinct boundary geometry",
+        "2020, 2016, and 2012 county historical presidential baselines"
       ],
       "parserStatus": "native precinct review package loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Turnout is county-level, not precinct-level.",
-      "nextAction": "Optional next step is precinct geometry and precinct-level turnout denominator if available."
+      "caveats": "Turnout is county-level, not precinct-level. Historical baseline capability remains disabled until official Michigan county presidential rows for 2020, 2016, and 2012 are committed and parsed.",
+      "nextAction": "Optional next steps are precinct geometry, a precinct-level turnout denominator if available, and official historical county presidential baseline exports for 2020, 2016, and 2012."
     },
     {
       "state": "MN",
