@@ -497,7 +497,7 @@
       "state": "IN",
       "stateName": "Indiana",
       "electionYear": 2024,
-      "status": "loaded",
+      "status": "partial",
       "priority": "standard",
       "equipment": {
         "status": "loaded",
@@ -512,16 +512,37 @@
         "expectedJurisdictions": 92
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Indiana 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceAuthority": "Indiana Secretary of State Election Division / VSTOP",
+        "sourceUrl": "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
+        "why": "Official VSTOP post-election risk-limiting audit report path is documented for Indiana, but 2024 county/audit-unit selection and outcome rows are not normalized into CivicResultMaps yet.",
+        "neededFields": [
+          "audit date and election",
+          "county or audit unit",
+          "contest audited",
+          "ballots or batches sampled",
+          "discrepancy/outcome fields",
+          "official report URL"
+        ]
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Indiana 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceAuthority": "Indiana Election Division and county election offices",
+        "sourceUrl": "https://www.in.gov/sos/elections/election-administrators-portal/",
+        "why": "No official statewide 2024 cast vote record package or CVR availability table was identified in the loaded artifacts. Request county/state CVR availability, retention, exportability, and public-records process before loading CVR context."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Indiana 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceAuthority": "Indiana Recount Commission / Indiana Election Division / county election offices",
+        "sourceUrl": "https://www.in.gov/sos/elections/indiana-recount-commission/",
+        "why": "Official Recount Commission orders, petitions, and minutes are documented as source paths, but 2024 recount, contest, incident, correction, and litigation rows are not normalized for Indiana yet.",
+        "neededFields": [
+          "filing or order date",
+          "contest and jurisdiction",
+          "petition/order/minute URL",
+          "status or outcome",
+          "relationship to certified ENR totals if any"
+        ]
       }
     },
     {

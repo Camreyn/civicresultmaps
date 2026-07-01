@@ -174,6 +174,19 @@ Caveats: review rows are county/reporting-jurisdiction President-versus-U.S.-Sen
 Expected validation: 100 county result rows, 100 county geometry features, 5,699,141 presidential votes, 2,898,423 Trump votes, 2,715,375 Harris votes, 85,343 other presidential votes, 2,658 Real Precinct=Y review rows, 100 EAC fallback turnout rows, and 300 historical baseline rows across 2012, 2016, and 2020.
 
 Caveats: certified county totals aggregate all official NCSBE reporting units, while review rows filter to Real Precinct=Y and exclude early voting, absentee, provisional, transfer, and other non-real reporting units from precinct-only review charts. Historical baselines are county-level context only. Remaining gaps are state-native turnout normalization, map-ready precinct boundary geometry, normalized audit/recount/CVR availability, and incident/correction/litigation records.
+
+## Indiana Wave 9 Update
+
+- Config: `etl/state-configs/in.json`
+- Authority: Indiana Election Division; Indiana Secretary of State Election Division / VSTOP; Indiana Recount Commission; U.S. Census Bureau
+- 2024 county results: official archived ENR President and U.S. Senate category JSON remains loaded from `data/in-2024-official-results/OffCatC_1019_A.json` and `data/in-2024-official-results/OffCatC_1006_A.json`.
+- Local review: `data/in-2024-mit-local-review.csv` remains supplemental MIT/OpenElections President-versus-U.S.-Senate precinct context, not certified replacement totals.
+- Turnout: official Indiana Election Division county turnout and registration rows remain loaded at `data/in-2024-general-turnout.csv`.
+- Historical baseline: official 2016 and 2020 county presidential rows remain loaded from ENR archive JSON; the current official 2012 ENRHistorical endpoint is now documented but not repeatably script-readable from this environment, so 2012 remains a request/downloadable-artifact gap.
+- Administration context: VSTOP post-election risk-limiting audit, Election Administrator Portal, and Recount Commission source paths are documented in `data/in-2024-data-coverage-inventory.json` and `data/admin-source-packages.json`; no normalized audit, CVR, incident, correction, recount, or litigation rows are loaded.
+
+Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 184 historical baseline rows for 2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
+
 ## Native ETL Acceptance Criteria
 
 For each state, the native importer should fail before promotion if:
