@@ -1,0 +1,136 @@
+{
+  "state": "NE",
+  "stateName": "Nebraska",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "authority": "Nebraska Secretary of State and Nebraska county election offices",
+  "sameGrainComparison": {
+    "status": "county_loaded_precinct_blocked",
+    "loadedReportingGrain": "county",
+    "preferredBlockedReportingGrain": "precinct_or_local_reporting_unit",
+    "contest": "U.S. Senate two-year special election",
+    "sourceUrls": [
+      "https://sos.nebraska.gov/previous-elections",
+      "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf"
+    ],
+    "localArtifacts": [
+      "data/ne-2024-general-canvass-president.csv",
+      "data/ne-2024-general-canvass-senate-two-year.csv"
+    ],
+    "parser": "countyPresidentCsv with countyComparisonCsv",
+    "requestPath": "Ask the Nebraska Secretary of State Elections Division or the relevant county election offices for official 2024 general election precinct or local reporting-unit result rows for President and U.S. Senate, including join keys and any reporting-unit crosswalk used by the canvass or tabulation system.",
+    "caveat": "Current review rows are official county-level President-versus-U.S. Senate two-year special election comparisons. The public SOS previous-elections page exposes canvass PDFs, but this pass did not identify an official statewide precinct/subcounty President plus U.S. Senate result export."
+  },
+  "turnoutDenominators": {
+    "status": "fallback_loaded_state_native_canvass_path_documented",
+    "loadedTurnoutSource": {
+      "sourceTitle": "U.S. EAC 2024 EAVS V2 Nebraska jurisdiction turnout fallback",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifact": "data/eac-2024-state-turnout/ne-2024-eac-turnout.csv",
+      "parser": "eacTurnoutCsv",
+      "ballotsCast": 965145,
+      "registeredVoters": 1263487,
+      "rows": 93
+    },
+    "stateNativeSources": [
+      {
+        "sourceTitle": "Nebraska SOS 2024 General Canvass Book voting statistics",
+        "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+        "localArtifact": "data/ne-2024-general-canvass-book.pdf",
+        "reportingGrain": "county",
+        "availableFields": [
+          "registered voters by county and party/status",
+          "precinct count",
+          "polling place voting",
+          "early voting",
+          "all-mail precinct voting",
+          "provisional ballots",
+          "military and overseas ballots",
+          "new/former resident ballots",
+          "total voting"
+        ],
+        "statewideRegisteredVoters": 1263487,
+        "statewideTotalVoting": 965236
+      },
+      {
+        "sourceTitle": "Nebraska SOS post-general eligible-voter registration report",
+        "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/vrstats/2024VR/Post-Election-Statewide-November-2024.pdf",
+        "localArtifact": "data/ne-2024-post-general-eligible-voter-report.pdf",
+        "reportingGrain": "county_district",
+        "availableFields": [
+          "eligible voter registration denominators by county and district"
+        ]
+      }
+    ],
+    "parserNeeded": "A Nebraska canvass voting-statistics normalizer should parse pages 6-9 of the official canvass book before replacing the EAC fallback rows. It should reconcile the canvass statewide total voting value of 965,236 against the current EAC fallback ballots-cast total of 965,145 and keep the source distinction visible.",
+    "caveat": "The current ETL still emits EAC fallback turnout rows. The official canvass and post-general registration reports are retained as state-native source paths and cross-checks, not yet as normalized turnout rows."
+  },
+  "geometry": {
+    "status": "county_loaded_precinct_or_subcounty_blocked",
+    "loadedArtifact": "data/ne-counties.geojson",
+    "loadedLevel": "county",
+    "officialSourceUrls": [
+      "https://sos.nebraska.gov/elections/district-subdivision-maps",
+      "https://sos.nebraska.gov/elections/voter-file-requests",
+      "https://sos.nebraska.gov/election-officials-contact-information"
+    ],
+    "sourcePathNotes": [
+      "The SOS District & Subdivision Maps page publishes statewide district maps and GIS shapefiles for congressional, legislative, regent, state board of education, public service commission, and supreme court districts.",
+      "The voter-file request path documents precinct, polling place, district details, and voter history fields, but the file is restricted and cannot be posted or made accessible on the Internet.",
+      "The county election office directory is the official path for county-level requests if precinct boundary geometry or reporting-unit crosswalks are maintained locally."
+    ],
+    "needed": "Official precinct/subcounty boundary geometry or a publishable reporting-unit crosswalk matching any lower-level President and U.S. Senate result rows.",
+    "caveat": "District shapefiles are not a substitute for precinct or reporting-unit boundaries. Do not infer precinct geometry from voter-file fields or county names."
+  },
+  "reportedProblemsCorrectionsIncidents": {
+    "status": "partial_canvass_inventory",
+    "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+    "localArtifact": "data/ne-2024-general-canvass-book.pdf",
+    "canvassSection": "Reported Problems",
+    "identifiedItems": [
+      {
+        "jurisdiction": "Dawson County",
+        "summary": "Dawson Public Power District Dawson Subdivision was listed as vote-for-one instead of vote-for-up-to-two on ballots sent before corrected ballots were issued."
+      },
+      {
+        "jurisdiction": "Gage County",
+        "summary": "Lower Big Blue NRD Subdistrict 1 was omitted from 32 of 41 ballot styles; the canvass states the one-candidate contest was not outcome-impacting."
+      },
+      {
+        "jurisdiction": "Johnson County",
+        "summary": "State Board of Education District 2 was omitted from one ballot style in one precinct; the canvass states the margin meant the issue did not impact the outcome."
+      }
+    ],
+    "caveat": "These are official canvass-reported administration notes. They are not normalized incident or litigation rows and are not evidence of fraud or misconduct."
+  },
+  "auditRecountCvrLitigation": {
+    "status": "needs_source_inventory",
+    "publicSourcePass": [
+      "https://sos.nebraska.gov/previous-elections",
+      "https://sos.nebraska.gov/elections-division",
+      "https://sos.nebraska.gov/election-officials-contact-information"
+    ],
+    "needed": [
+      "official 2024 post-election audit selection and outcome artifacts if published or obtainable",
+      "official recount records for 2024 contests if any were conducted",
+      "CVR availability statement or request path, including any county-level custody/privacy caveats",
+      "normalized litigation or correction records beyond the canvass Reported Problems section"
+    ],
+    "requestPath": "Use the Nebraska Secretary of State Elections Division contact path (sos.elect@nebraska.gov, 402-471-2555) and county election office directory for records that are not posted on the public previous-elections or canvass pages.",
+    "caveat": "No statewide CVR dataset, post-election audit result table, recount package, or litigation row package is loaded in this repository for Nebraska 2024."
+  },
+  "equipmentContext": {
+    "status": "supplemental_loaded_official_request_path_documented",
+    "loadedSupplementalSource": {
+      "sourceTitle": "Verified Voting Verifier Nebraska 2024 equipment context",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/31",
+      "localArtifacts": [
+        "data/verifiedvoting-ne-2024-equipment.json",
+        "data/ne-2024-equipment-context.csv"
+      ],
+      "parser": "verifiedVotingEquipment"
+    },
+    "officialRequestPath": "The SOS Elections Division page states that the division oversees election tabulation equipment; request official county equipment records from the Nebraska Secretary of State Elections Division or county election offices when source-native equipment provenance is required.",
+    "caveat": "Verified Voting rows are context only and should not be used as vote, turnout, or precinct-uniformity proof."
+  }
+}

@@ -22,6 +22,7 @@
     "MS",
     "MT",
     "NC",
+    "NE",
     "NH",
     "NV",
     "OH",
@@ -730,6 +731,92 @@
         "Historical 2012/2016/2020 presidential baselines are loaded from official SOS PDFs; the 2016 PDF does not expose county-level write-in detail, so other/total values use visible-column sums.",
         "Administration-source inventory is recorded in data/mo-2024-admin-source-inventory.json, but normalized audit, CVR availability, incident/correction, recount, and litigation rows are not loaded."
       ]
+    },
+    {
+      "state": "NE",
+      "name": "Nebraska",
+      "priority": 11,
+      "nativeReadiness": "complete_county_map_county_review_eac_turnout_historical_admin_inventory_precinct_path_blocked",
+      "authority": "Nebraska Secretary of State",
+      "configFile": "etl/state-configs/ne.json",
+      "legacyReferenceBundle": "data/ne-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Nebraska SOS 2024 General Canvass Book county presidential rows",
+          "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+          "localFile": "data/ne-2024-general-canvass-president.csv",
+          "parserHint": "countyPresidentCsv normalized from official canvass pages 11-12; the retained PDF is data/ne-2024-general-canvass-book.pdf."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Nebraska SOS 2024 General Canvass Book U.S. Senate two-year special county rows",
+          "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+          "localFile": "data/ne-2024-general-canvass-senate-two-year.csv",
+          "level": "county",
+          "comparisonContest": "U.S. Senate two-year special election",
+          "parserHint": "countyComparisonCsv normalized from canvass page 17. This is a county-level review source, not a precinct/subcounty result export."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback turnout plus Nebraska SOS canvass and post-general denominator cross-checks",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ne-2024-eac-turnout.csv; data/ne-2024-general-canvass-book.pdf; data/ne-2024-post-general-eligible-voter-report.pdf",
+          "level": "county",
+          "denominator": "EAC registered voters for loaded rows; Nebraska canvass and post-general registration reports retained as state-native cross-checks",
+          "ballotsCast": "EAC normalized ballots_cast for loaded rows; canvass Total Voting is documented for a future Nebraska normalizer",
+          "stateNativeSourceUrls": [
+            "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+            "https://sos.nebraska.gov/sites/default/files/doc/elections/vrstats/2024VR/Post-Election-Statewide-November-2024.pdf"
+          ]
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2731%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ne-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Nebraska SOS historical General Canvass Books",
+          "sourceUrl": "https://sos.nebraska.gov/previous-elections",
+          "localFile": "data/ne-2012-general-canvass-book.pdf; data/ne-2016-general-canvass-book.pdf; data/ne-2020-general-canvass-book.pdf; data/ne-historical-presidential-baseline.csv",
+          "parserHint": "scripts/normalize-ne-historical-baseline.mjs regenerates 279 county presidential baseline rows for 2012, 2016, and 2020."
+        },
+        "adminSourceInventory": {
+          "sourceTitle": "Nebraska 2024 administration, turnout, geometry, and request-path inventory",
+          "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+          "localFile": "data/ne-2024-admin-source-inventory.json",
+          "parserHint": "Inventory only; documents canvass Reported Problems, turnout/crosswalk request paths, and audit/recount/CVR/litigation/equipment gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Nebraska 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/31",
+          "localFile": "data/ne-2024-equipment-context.csv",
+          "parserHint": "Supplemental context only; request official equipment records from Nebraska SOS or county election offices when source-native equipment provenance is needed."
+        }
+      },
+      "expected": {
+        "countyRows": 93,
+        "geometryFeatures": 93,
+        "stateTotal": 952182,
+        "trump": 564816,
+        "harris": 369995,
+        "other": 17371,
+        "localReviewRows": 93,
+        "turnoutRows": 93,
+        "historicalBaselineRows": 279
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "county_president_vs_senate_two_year_dropoff_precinct_blocked",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_canvass_cross_check",
+        "historicalMode": "official_canvass_books_2012_2016_2020"
+      },
+      "caveats": [
+        "Current review rows are county-level advisory inputs, not precinct/subcounty scatter plots.",
+        "The public SOS pass did not identify a statewide precinct/subcounty President and U.S. Senate export; request those rows and matching geometry/crosswalk before upgrading subcounty advisory coverage.",
+        "Loaded turnout rows use EAC fallback values. The official canvass reports 965,236 statewide Total Voting versus 965,145 EAC fallback ballots cast, so a Nebraska-specific turnout normalizer must reconcile the source difference before replacing fallback rows.",
+        "The canvass Reported Problems section is inventoried as administration context only; audit/recount/CVR/litigation records remain source-request items."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [
@@ -899,23 +986,30 @@
       "state": "NE",
       "name": "Nebraska",
       "priority": 7,
-      "currentStatus": "official_county_review_historical_baseline_package_collected_precinct_path_blocked",
+      "currentStatus": "official_county_review_historical_admin_inventory_collected_precinct_path_blocked",
       "officialSourcePages": [
         "https://sos.nebraska.gov/previous-elections",
         "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+        "https://sos.nebraska.gov/elections/voter-registration-statistics",
         "https://sos.nebraska.gov/sites/default/files/doc/elections/vrstats/2024VR/Post-Election-Statewide-November-2024.pdf",
-        "https://sos.nebraska.gov/elections/district-subdivision-maps"
+        "https://sos.nebraska.gov/elections/district-subdivision-maps",
+        "https://sos.nebraska.gov/elections/voter-file-requests",
+        "https://sos.nebraska.gov/elections-division",
+        "https://sos.nebraska.gov/election-officials-contact-information"
       ],
       "requiredArtifacts": [
         "official precinct-level or local reporting-unit result rows for President",
         "official precinct-level or local reporting-unit result rows for U.S. Senate",
         "precinct/subcounty boundary geometry or official reporting-unit crosswalk if subcounty map overlays are required",
-        "state-native ballots-cast turnout rows if replacing EAC fallback turnout",
-        "post-election audit, recount, CVR availability, incident, correction, litigation, and county equipment source records"
+        "Nebraska canvass voting-statistics normalizer if replacing EAC fallback turnout; reconcile official canvass Total Voting 965,236 against EAC fallback ballots cast 965,145",
+        "official 2024 post-election audit selection/outcome artifacts if published or obtainable",
+        "official recount records for 2024 contests if any were conducted",
+        "CVR availability statement or request path with county/state custody and privacy caveats",
+        "normalized incident, correction, litigation, and official equipment source records beyond the canvass Reported Problems and supplemental equipment context"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for Nebraska official canvass county package; scripts/normalize-ne-historical-baseline.mjs loads official historical county baselines; precinct/subcounty parser still needed if a lower-level result package is found",
-      "blocker": "Nebraska has official county-level President-versus-U.S. Senate two-year review rows and official 2012/2016/2020 county presidential baselines from General Canvass Books. The live SOS source pages expose previous canvass PDFs, registration statistics, and district/subdivision maps, but no official statewide precinct/subcounty President and U.S. Senate result export was identified in the public page pass. Collect or request those rows before calculating comparable advisory flags below county level.",
+      "parserNeeded": "countyPresidentCsv and countyComparisonCsv are loaded for Nebraska official county canvass rows; scripts/normalize-ne-historical-baseline.mjs loads official historical county baselines; a Nebraska canvass voting-statistics parser is needed before replacing EAC turnout; precinct/subcounty result and geometry parsers remain blocked pending source acquisition.",
+      "blocker": "Nebraska has official county-level President-versus-U.S. Senate two-year review rows, EAC fallback turnout with state-native canvass and registration cross-check paths, official 2012/2016/2020 county presidential baselines, county geometry, and an administration-source inventory. The live SOS previous-elections, voter-registration, district-map, voter-file, Elections Division, and county contact pages do not expose a statewide public precinct/subcounty President plus U.S. Senate result export or matching precinct/subcounty geometry. Request those rows and crosswalk/geometry before calculating comparable advisory flags below county level.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "Nebraska SOS 2024 General Canvass Book",
@@ -933,16 +1027,35 @@
         },
         "turnout": {
           "sourceTitle": "EAC fallback turnout plus Nebraska post-general eligible-voter denominator cross-check",
-          "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/vrstats/2024VR/Post-Election-Statewide-November-2024.pdf",
-          "localFile": "data/eac-2024-state-turnout/ne-2024-eac-turnout.csv; data/ne-2024-post-general-eligible-voter-report.pdf",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ne-2024-eac-turnout.csv; data/ne-2024-general-canvass-book.pdf; data/ne-2024-post-general-eligible-voter-report.pdf",
           "level": "county",
-          "denominator": "EAC registered voters; state report retained for cross-check"
+          "denominator": "EAC registered voters for loaded rows; Nebraska canvass and post-general reports retained as state-native cross-checks",
+          "parserHint": "Loaded ETL uses eacTurnoutCsv. Add a Nebraska canvass voting-statistics normalizer before replacing fallback rows; reconcile EAC ballots cast 965,145 against canvass Total Voting 965,236."
         },
         "historicalBaseline": {
           "sourceTitle": "Nebraska SOS historical General Canvass Books",
           "sourceUrl": "https://sos.nebraska.gov/previous-elections",
           "localFile": "data/ne-2012-general-canvass-book.pdf; data/ne-2016-general-canvass-book.pdf; data/ne-2020-general-canvass-book.pdf; data/ne-historical-presidential-baseline.csv",
           "parserHint": "Run node scripts/normalize-ne-historical-baseline.mjs to regenerate 279 county presidential baseline rows for 2012, 2016, and 2020"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2731%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ne-counties.geojson",
+          "parserHint": "County map joins only; precinct/subcounty boundaries are not included."
+        },
+        "adminSourceInventory": {
+          "sourceTitle": "Nebraska 2024 administration, turnout, geometry, and request-path inventory",
+          "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+          "localFile": "data/ne-2024-admin-source-inventory.json",
+          "parserHint": "Documents canvass Reported Problems, canvass voting statistics, voter-file/county request paths, equipment context caveats, and audit/recount/CVR/litigation gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Nebraska 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/31",
+          "localFile": "data/ne-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, or proof of precinct-uniform equipment."
         }
       }
     },

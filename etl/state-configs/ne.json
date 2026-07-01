@@ -72,6 +72,17 @@
       "status": "loaded"
     },
     {
+      "id": "ne-2024-admin-source-inventory",
+      "category": "Nebraska 2024 administration, turnout, geometry, and request-path inventory",
+      "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+      "localFile": "data/ne-2024-admin-source-inventory.json",
+      "parser": "sourceInventoryJson",
+      "authority": "Nebraska Secretary of State",
+      "timestampBasis": "Official public-source pass documented July 1, 2026, using Nebraska SOS canvass, voter-registration, district-map, voter-file, Elections Division, and county election office contact pages.",
+      "confidence": "Documents that county-level result/review/history sources are loaded; the canvass contains state-native county voting statistics and Reported Problems notes; public precinct/subcounty result rows, matching geometry/crosswalk, audit, recount, CVR, litigation, and official equipment source records remain request-path items.",
+      "status": "loaded"
+    },
+    {
       "id": "ne-2020-general-canvass-book",
       "category": "Official 2020 General Canvass Book PDF",
       "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2020/2020-General-Canvass-Book.pdf",
@@ -139,19 +150,26 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Nebraska turnout rows currently use EAC 2024 V2 county/jurisdiction fallback ballots-cast and registered-voter rows. The official Nebraska post-general eligible-voter report is retained as a state-native registration denominator cross-check; add a mixed-source turnout normalizer before replacing the EAC parser.",
+    "notes": "Nebraska turnout rows currently use EAC 2024 V2 county/jurisdiction fallback ballots-cast and registered-voter rows. The official 2024 General Canvass Book also includes county voting-statistics tables with registered voters and total voting by method, and the post-general eligible-voter report is retained as a state-native registration denominator cross-check. Add a Nebraska canvass voting-statistics normalizer before replacing the EAC parser.",
     "warningRequired": false,
     "expected": {
       "rowCount": 93,
       "ballotsCast": 965145,
       "registeredVoters": 1263487
     },
-    "stateNativeDenominatorSourceId": "ne-2024-post-general-eligible-voter-report"
+    "stateNativeDenominatorSourceId": "ne-2024-post-general-eligible-voter-report",
+    "stateNativeCanvassVotingStatisticsSourceId": "ne-2024-general-canvass-book",
+    "stateNativeCanvassVotingStatistics": {
+      "registeredVoters": 1263487,
+      "totalVoting": 965236,
+      "reportingGrain": "county",
+      "caveat": "The current EAC fallback ballots-cast total is 965,145; the official canvass Total Voting statewide value is 965,236. Reconcile this source difference before replacing fallback turnout rows."
+    }
   },
   "expected": {
     "jurisdictions": 93,
     "resultRows": 93,
-    "sources": 10,
+    "sources": 11,
     "geometryFeatures": 93,
     "stateTotal": 952182,
     "trump": 564816,

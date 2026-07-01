@@ -949,15 +949,26 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "Nebraska 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://sos.nebraska.gov/elections-division",
+        "why": "No official Nebraska 2024 post-election audit selection/outcome artifact was identified on the public previous-elections or canvass pages in this pass. Request records from the Nebraska Secretary of State Elections Division or county election offices before adding normalized audit rows."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Nebraska 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://sos.nebraska.gov/election-officials-contact-information",
+        "why": "No public statewide Nebraska 2024 CVR dataset or CVR availability statement was identified. Use SOS Elections Division and county election office request paths to determine whether CVR exports exist and what custody/privacy caveats apply."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Nebraska 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+        "localArtifact": "data/ne-2024-admin-source-inventory.json",
+        "why": "The official canvass Reported Problems section identifies Dawson, Gage, and Johnson county administration notes. These are inventoried as source context only; normalized incident, correction, litigation, or recount rows are not loaded."
+      },
+      "inventory": {
+        "status": "loaded",
+        "sourceDocumentId": "ne-2024-admin-source-inventory",
+        "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+        "localArtifact": "data/ne-2024-admin-source-inventory.json",
+        "caveat": "Inventory documents official canvass Reported Problems notes, source/request paths for precinct results and geometry, turnout cross-checks, and remaining audit/recount/CVR/litigation/equipment gaps. It is not a normalized incident or audit outcome package."
       }
     },
     {

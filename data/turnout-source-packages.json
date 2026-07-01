@@ -857,20 +857,26 @@
       "sourceLevel": "jurisdiction",
       "denominatorType": "registeredVoters",
       "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
+      "sourceTitle": "EAC fallback turnout rows plus Nebraska SOS canvass voting-statistics cross-check",
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/ne-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 93,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. Nebraska SOS state-native canvass voting-statistics tables and the post-general eligible-voter registration report are documented as cross-checks; the canvass statewide Total Voting value is 965,236 versus 965,145 EAC fallback ballots cast.",
+      "nextAction": "Add a Nebraska canvass voting-statistics normalizer before replacing EAC fallback turnout. Reconcile the canvass total-voting value, EAC ballots-cast value, county rows, and denominator timing; keep source caveats visible.",
       "coverage": {
         "jurisdictionRows": 93,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ne-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 1263487,
         "ballotsCast": 965145,
-        "warningRows": 0
-      }
+        "warningRows": 0,
+        "stateNativeCanvassFile": "data/ne-2024-general-canvass-book.pdf",
+        "stateNativeRegistrationReport": "data/ne-2024-post-general-eligible-voter-report.pdf",
+        "stateNativeCanvassTotalVoting": 965236,
+        "sourceDifferenceNote": "Current loaded EAC fallback ballots cast is 965,145; Nebraska SOS canvass statewide Total Voting is 965,236."
+      },
+      "stateNativeCanvassSourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+      "stateNativeRegistrationSourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/vrstats/2024VR/Post-Election-Statewide-November-2024.pdf"
     },
     {
       "state": "NH",

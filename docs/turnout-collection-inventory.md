@@ -55,7 +55,7 @@ Ask the data team for:
 
 ## Nebraska Update
 
-Nebraska now retains the official Secretary of State post-general eligible-voter registration report at `data/ne-2024-post-general-eligible-voter-report.pdf`. The current ETL still uses EAC 2024 V2 turnout rows for ballots-cast normalization, with the Nebraska report recorded as a state-native denominator cross-check until a mixed-source turnout normalizer is added.
+Nebraska now retains three turnout-relevant source paths: EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ne-2024-eac-turnout.csv`, the official Secretary of State 2024 General Canvass Book at `data/ne-2024-general-canvass-book.pdf`, and the official post-general eligible-voter registration report at `data/ne-2024-post-general-eligible-voter-report.pdf`. The current ETL still emits EAC fallback turnout rows: 93 rows, 965,145 ballots cast, and 1,263,487 registered voters. The canvass book's county voting-statistics section reports 1,263,487 registered voters and 965,236 total voting statewide, so a Nebraska canvass voting-statistics normalizer must reconcile that 91-vote source difference before replacing the EAC parser. The public inventory and request paths are documented in `data/ne-2024-admin-source-inventory.json`.
 
 ## Missouri Update
 
