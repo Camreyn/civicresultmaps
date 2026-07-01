@@ -39,6 +39,17 @@
       "status": "candidate"
     },
     {
+      "id": "ky-2024-turnout-registration-reconciliation",
+      "category": "Kentucky State Board turnout and registration reconciliation report",
+      "url": "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+      "localFile": "data/ky-2024-turnout-registration-reconciliation.csv; data/ky-2024-turnout-registration-reconciliation-summary.json",
+      "parser": "kentuckyTurnoutRegistrationReconciliation",
+      "authority": "Kentucky State Board of Elections; U.S. Election Assistance Commission",
+      "timestampBasis": "Generated July 1, 2026 from Kentucky State Board 2024 General county turnout and registration PDFs by scripts/reconcile-ky-turnout-registration.mjs, with EAC fallback rows as the active comparison source.",
+      "confidence": "Candidate county-level reconciliation only. The State Board turnout page says turnout reports are unofficial and may differ from election results because they are run after voter-registration rolls reopen; keep EAC fallback active until county-clerk official documentation and replacement semantics are reviewed.",
+      "status": "candidate"
+    },
+    {
       "id": "ky-2024-general-recap-sheets-page",
       "category": "Official 2024 general election county recap sheet index",
       "url": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
@@ -122,7 +133,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Kentucky turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until the collected Kentucky State Board turnout and registration PDF leads are parsed, reconciled, and caveated against county-clerk official documentation.",
+    "notes": "Kentucky turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. The collected Kentucky State Board county turnout and registration PDFs now have a generated county reconciliation report showing the same registered-voter denominator and a 230-voter State Board minus EAC ballots-cast delta, but the State Board unofficial-turnout caveat and county-clerk official documentation need review before replacing EAC fallback rows.",
     "warningRequired": false,
     "expected": {
       "rowCount": 120,
@@ -133,7 +144,7 @@
   "expected": {
     "jurisdictions": 120,
     "resultRows": 120,
-    "sources": 10,
+    "sources": 11,
     "stateTotal": 2036111,
     "trump": 1315523,
     "harris": 691021,

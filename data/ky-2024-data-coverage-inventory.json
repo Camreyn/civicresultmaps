@@ -4,7 +4,7 @@
   "electionYear": 2024,
   "checkedAt": "2026-07-01",
   "purpose": "State-scoped coverage inventory for Kentucky 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_precinct_review_county_map_eac_turnout_official_historical_loaded_state_turnout_leads_collected_admin_context_partial",
+  "status": "official_precinct_review_county_map_eac_turnout_official_historical_loaded_state_turnout_reconciliation_documented_admin_context_partial",
   "authorityPriority": "Official Kentucky State Board of Elections, county clerks, county boards of elections, official GIS/Census, EAC, and official court/board records first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -57,20 +57,52 @@
       "localPath": "data/ky-2024-general-turnout-by-county.pdf; data/ky-2024-general-turnout-by-precinct.pdf; data/ky-2024-general-registration-by-county.pdf; data/ky-2024-general-registration-by-precinct.pdf",
       "electionYear": 2024,
       "reportingGrain": "county_and_precinct",
-      "parserNormalizationPath": "Not yet normalized; candidate parser should reconcile the State Board turnout PDFs against EAC fallback rows and the October 11, 2024 general registration statistics PDFs before replacing turnout.format=eacTurnoutCsv.",
+      "parserNormalizationPath": "scripts/reconcile-ky-turnout-registration.mjs parses the State Board county turnout and county registration PDFs into data/ky-2024-turnout-registration-reconciliation.csv with summary data/ky-2024-turnout-registration-reconciliation-summary.json. The reconciliation is a candidate county cross-check only; it does not replace turnout.format=eacTurnoutCsv.",
       "expectedCounts": {
         "countyRows": 120,
         "countyTurnoutBallotsCast": 2086320,
         "countyRegisteredVoters": 3548136,
         "precinctTurnoutPdfPages": 56,
-        "precinctRegistrationPdfPages": 160
+        "precinctRegistrationPdfPages": 160,
+        "reconciliationRows": 120,
+        "registrationPdfPrecinctCount": 3232,
+        "stateBoardMinusEacBallotsCastDelta": 230,
+        "stateBoardMinusEacRegisteredVotersDelta": 0,
+        "rowsWithBallotDelta": 85
       },
       "caveats": [
         "The State Board turnout page says turnout reports cannot accurately be compared to the election results page because they are run after voter-registration rolls reopen.",
         "The same page says the turnout statistics should be considered unofficial and official documentation can be obtained from the County Clerk's office.",
-        "The county turnout PDF reports 2,086,320 voters and 3,548,136 registered voters statewide, while the current EAC fallback rows report 2,086,090 ballots cast with the same registered-voter denominator; reconcile before replacing the loaded EAC fallback."
+        "The county turnout PDF reports 2,086,320 voters and 3,548,136 registered voters statewide, while the current EAC fallback rows report 2,086,090 ballots cast with the same registered-voter denominator; reconcile before replacing the loaded EAC fallback.",
+        "The generated county reconciliation reports 2,086,320 State Board voters versus 2,086,090 EAC fallback ballots cast, a 230-voter State Board minus EAC delta across 85 county rows, with no registered-voter denominator delta.",
+        "The reconciliation is retained as provenance and request planning context only; it is not an active turnout replacement."
       ],
-      "confidence": "candidate_state_native_turnout_lead"
+      "confidence": "candidate_state_native_turnout_reconciliation_generated"
+    },
+    {
+      "id": "ky-2024-turnout-registration-reconciliation",
+      "sourceAuthority": "Kentucky State Board of Elections; U.S. Election Assistance Commission",
+      "sourceUrl": "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+      "localPath": "data/ky-2024-turnout-registration-reconciliation.csv; data/ky-2024-turnout-registration-reconciliation-summary.json",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/reconcile-ky-turnout-registration.mjs parses county-level State Board turnout and registration PDFs, joins EAC fallback rows, and writes a reproducible reconciliation report. The active ETL turnout source remains ky-2024-eac-turnout.",
+      "expectedCounts": {
+        "rows": 120,
+        "stateBoardNumberVoting": 2086320,
+        "eacBallotsCast": 2086090,
+        "registeredVoters": 3548136,
+        "registrationPdfPrecinctCount": 3232,
+        "stateBoardMinusEacBallotsCastDelta": 230,
+        "stateBoardMinusEacRegisteredVotersDelta": 0,
+        "rowsWithBallotDelta": 85
+      },
+      "caveats": [
+        "County-level reconciliation only; precinct turnout and registration PDFs remain collected leads until a reporting-unit crosswalk handles precinct rows and district subtotal rows safely.",
+        "The State Board turnout page says turnout reports are unofficial and may differ from election results because they are run after voter-registration rolls reopen.",
+        "Keep EAC fallback active until county-clerk official documentation and replacement semantics are reviewed."
+      ],
+      "confidence": "candidate_reconciliation_not_loaded_turnout_replacement"
     },
     {
       "id": "ky-county-geometry",
@@ -149,8 +181,8 @@
         "precinct turnout rows",
         "county turnout rows"
       ],
-      "result": "2024 General Voter Turnout by County and by Precinct PDFs were collected as candidate state-native turnout leads.",
-      "blocker": "The page states turnout reports are unofficial and can differ from election results because they are run after voter rolls reopen; county-clerk documentation or a reconciliation parser is needed before replacing EAC fallback turnout."
+      "result": "2024 General Voter Turnout by County and by Precinct PDFs were collected as candidate state-native turnout leads; the county turnout PDF is now parsed into a reproducible EAC reconciliation report.",
+      "blocker": "The page states turnout reports are unofficial and can differ from election results because they are run after voter rolls reopen; county-clerk documentation and replacement semantics review are still needed before replacing EAC fallback turnout. Precinct rows still need a reporting-unit crosswalk because the PDFs include district subtotals."
     },
     {
       "sourceAuthority": "Kentucky State Board of Elections",
@@ -160,8 +192,8 @@
         "county registration rows",
         "precinct registration rows"
       ],
-      "result": "October 11, 2024 general registration statistics PDFs by county and precinct were collected as denominator leads.",
-      "blocker": "Registration PDFs alone do not provide ballots-cast/voting counts and must be reconciled with turnout rows before serving as active turnout denominators."
+      "result": "October 11, 2024 general registration statistics PDFs by county and precinct were collected as denominator leads; the county registration PDF is now parsed and reconciles to the State Board turnout PDF and EAC denominator total of 3,548,136 registered voters.",
+      "blocker": "Registration PDFs alone do not provide an active turnout replacement, and precinct-level registration rows need a crosswalk before subcounty denominator loading."
     },
     {
       "sourceAuthority": "Kentucky State Board of Elections and county clerks",
@@ -225,10 +257,10 @@
   "gaps": [
     {
       "artifact": "state_native_turnout_registration_denominator",
-      "status": "candidate_collected_not_loaded",
+      "status": "county_reconciliation_generated_not_loaded",
       "neededFor": "Replacing EAC fallback turnout and evaluating turnout/registration at Kentucky-native grain.",
       "preferredAuthority": "Kentucky State Board of Elections and county clerks.",
-      "remainingRisk": "Current turnout rows use official EAC fallback data. Kentucky State Board turnout PDFs are collected but need parser and reconciliation because the source page warns the reports are unofficial."
+      "remainingRisk": "Current turnout rows use official EAC fallback data. A county-level State Board turnout/registration reconciliation now exists, but the State Board page warns the reports are unofficial and county-clerk official documentation is still needed before replacement."
     },
     {
       "artifact": "precinct_boundary_geometry",
@@ -247,7 +279,7 @@
   ],
   "confidenceNotes": [
     "Official 2024 result/review rows and official 2012/2016/2020 county historical baselines are loaded from Kentucky election-results artifacts.",
-    "Kentucky State Board 2024 turnout and registration PDFs are now retained as candidate state-native leads, but the active ETL still uses EAC fallback turnout until a reconciliation parser and county-clerk caveat path are implemented.",
+    "Kentucky State Board 2024 turnout and registration county PDFs now have a generated reconciliation against EAC fallback rows: same 3,548,136 registered-voter denominator, 2,086,320 State Board voters versus 2,086,090 EAC ballots cast, and EAC fallback remains active pending official county-clerk documentation review.",
     "Current Kentucky advisory indicators remain public-interest screening outputs only; they are not proof of fraud or misconduct."
   ]
 }

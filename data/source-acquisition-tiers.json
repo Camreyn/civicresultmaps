@@ -639,19 +639,20 @@
         "candidate State Board 2024 general turnout rows by county and precinct",
         "candidate State Board 2024 general registration denominator rows by county and precinct",
         "2012/2016/2020 official county presidential historical baselines",
-        "county equipment context"
+        "county equipment context",
+        "county turnout/registration reconciliation report"
       ],
       "missingFields": [
         "six counties have county-only/no precinct-review rows from extracted recap text",
-        "state-native turnout parser/reconciliation against county-clerk official documentation",
+        "county-clerk official turnout documentation and intentional active-turnout replacement review",
         "precinct boundary geometry or result-to-geometry crosswalk",
         "normalized audit/recount/CVR/incident/correction/litigation artifacts"
       ],
-      "parserStatus": "kentuckyGeneralRecapTextDirectory loaded with Elliott manual transcription; historicalPresidentialCsv loaded from official 2012/2016/2020 Kentucky result PDFs; State Board turnout and registration PDFs collected as candidate leads only",
+      "parserStatus": "kentuckyGeneralRecapTextDirectory loaded with Elliott manual transcription; historicalPresidentialCsv loaded from official 2012/2016/2020 Kentucky result PDFs; scripts/reconcile-ky-turnout-registration.mjs now generates a county State Board turnout/registration versus EAC fallback reconciliation, but EAC remains active.",
       "manualReviewBurden": "high",
       "confidence": "loaded_with_caveat",
-      "caveats": "County recap PDFs are official, but some text extraction is image-only or county-only. Elliott County uses manual transcription from rendered official PDF pages. Historical baseline rows are official county context only. Turnout uses EAC fallback until Kentucky State Board turnout/registration PDFs are parsed, reconciled, and caveated against the State Board warning that turnout reports are unofficial and can differ after rolls reopen.",
-      "nextAction": "Implement a Kentucky turnout/registration PDF parser and reconciliation report, collect precinct boundary geometry or a reporting-unit crosswalk, and request/normalize audit/recount/CVR/incident/correction/litigation artifacts from the State Board, county clerks, county boards, or court/board dockets."
+      "caveats": "County recap PDFs are official, but some text extraction is image-only or county-only. Elliott County uses manual transcription from rendered official PDF pages. Historical baseline rows are official county context only. Turnout uses EAC fallback; the generated State Board county reconciliation is candidate provenance only because the State Board warns turnout reports are unofficial and can differ after rolls reopen.",
+      "nextAction": "Review county-clerk official turnout documentation before any active turnout replacement, build a precinct turnout/registration parser with reporting-unit crosswalk, collect precinct boundary geometry or a reporting-unit crosswalk, and request/normalize audit/recount/CVR/incident/correction/litigation artifacts from the State Board, county clerks, county boards, or court/board dockets."
     },
     {
       "state": "LA",
