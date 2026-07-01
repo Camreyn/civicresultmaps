@@ -1,0 +1,169 @@
+{
+  "sourceAuthority": "Virginia Department of Elections",
+  "sourceUrl": "https://enr.elections.virginia.gov/cdn/results/d2c804ee-4ec2-46bb-91d7-5b41526eab03/Election%20Change%20Log_8d8cefda-3e5d-49be-932d-b24063bebd27.csv",
+  "sourceBlobName": "Election Change Log_8d8cefda-3e5d-49be-932d-b24063bebd27.csv",
+  "generatedAt": "2026-06-30T23:27:07.013Z",
+  "electionYear": 2024,
+  "reportingGrain": "locality/precinct change-log rows",
+  "parser": "scripts/collect-va-enr-sources.mjs",
+  "localArtifactPath": "data/va-2024-enr-election-change-log-summary.json",
+  "rows": 328793,
+  "firstTimestamp": "11/05/2024 19:41:51",
+  "lastTimestamp": "11/14/2024 10:12:53",
+  "localityCount": 133,
+  "topFields": [
+    {
+      "value": "Total Vote Count",
+      "count": 170857
+    },
+    {
+      "value": "Ballot Count",
+      "count": 63461
+    },
+    {
+      "value": "Under Vote Count",
+      "count": 45655
+    },
+    {
+      "value": "Write In Vote Count",
+      "count": 17318
+    },
+    {
+      "value": "Turnout Count",
+      "count": 16293
+    },
+    {
+      "value": "Ballots Cast Count",
+      "count": 8536
+    },
+    {
+      "value": "Over Vote Count",
+      "count": 6673
+    }
+  ],
+  "topSources": [
+    {
+      "value": "Manual Entry",
+      "count": 328793
+    }
+  ],
+  "topChangeReasons": [
+    {
+      "value": "Initial Entry",
+      "count": 152642
+    },
+    {
+      "value": "Precinct Results Update",
+      "count": 63170
+    },
+    {
+      "value": "File Import",
+      "count": 52831
+    },
+    {
+      "value": "No data entered on election night",
+      "count": 28930
+    },
+    {
+      "value": "Manual Entry",
+      "count": 16293
+    },
+    {
+      "value": "Data entry error in central office",
+      "count": 8258
+    },
+    {
+      "value": "Incomplete results reported from precinct",
+      "count": 2627
+    },
+    {
+      "value": "Other",
+      "count": 2186
+    },
+    {
+      "value": "Reported wrong from precinct",
+      "count": 1235
+    },
+    {
+      "value": "Tabulation error in the precinct",
+      "count": 621
+    }
+  ],
+  "topContests": [
+    {
+      "value": "President and Vice President",
+      "count": 66051
+    },
+    {
+      "value": "Member, United States Senate",
+      "count": 46079
+    },
+    {
+      "value": "Proposed Constitutional Amendment",
+      "count": 39612
+    },
+    {
+      "value": "Member, House of Representatives (5th District)",
+      "count": 6669
+    },
+    {
+      "value": "Member, House of Representatives (9th District)",
+      "count": 6506
+    },
+    {
+      "value": "Member, House of Representatives (6th District)",
+      "count": 6294
+    },
+    {
+      "value": "Member, House of Representatives (2nd District)",
+      "count": 5343
+    },
+    {
+      "value": "Member, House of Representatives (4th District)",
+      "count": 5144
+    },
+    {
+      "value": "Member, House of Representatives (1st District)",
+      "count": 4811
+    },
+    {
+      "value": "Member, House of Representatives (10th District)",
+      "count": 4140
+    },
+    {
+      "value": "Member, House of Representatives (7th District)",
+      "count": 4098
+    },
+    {
+      "value": "Member School Board (Chesapeake City)",
+      "count": 4019
+    }
+  ],
+  "topVotingMethods": [
+    {
+      "value": "Early Voting",
+      "count": 88418
+    },
+    {
+      "value": "Election Day",
+      "count": 86400
+    },
+    {
+      "value": "Mailed Absentee",
+      "count": 85498
+    },
+    {
+      "value": "Post-Election",
+      "count": 57478
+    },
+    {
+      "value": "Provisional",
+      "count": 10999
+    }
+  ],
+  "caveats": [
+    "Summary is derived from the official ENR Election Change Log CSV because the raw change-log export is large.",
+    "Rows document source-system updates and initial entries; they are provenance context, not evidence of misconduct.",
+    "Use the official report URL to regenerate the summary or inspect raw row-level changes."
+  ]
+}

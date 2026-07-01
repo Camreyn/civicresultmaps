@@ -929,10 +929,36 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 2075085)
         self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 2335395)
         self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 95461)
-        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2670)
-        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 0)
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 133)
-        self.assertTrue(any(row["coverageMode"] == "voteShareOnly" for row in artifact["native"]["reviewRows"]))
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 2669)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 2669)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "Member, United States Senate")
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewPresidentialVotes"], 4505941)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 2669)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 4537976)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 6434637)
+        self.assertTrue(all(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
+
+        chincoteague = next(
+            row
+            for row in artifact["native"]["reviewRows"]
+            if row["county"] == "Accomack County" and row["localUnit"] == "101 - Chincoteague"
+        )
+        self.assertEqual(chincoteague["harris"], 776)
+        self.assertEqual(chincoteague["trump"], 1406)
+        self.assertEqual(chincoteague["totalVotes"], 2199)
+        self.assertEqual(chincoteague["comparisonDemVotes"], 831)
+        self.assertEqual(chincoteague["comparisonRepVotes"], 1340)
+        self.assertEqual(chincoteague["comparisonOtherVotes"], 4)
+        self.assertEqual(chincoteague["demDropoff"], -2.5011)
+        self.assertEqual(chincoteague["repDropoff"], 3.0014)
+
+        turnout = next(
+            row
+            for row in artifact["native"]["turnoutRows"]
+            if row["county"] == "Accomack County" and row["localUnit"] == "101 - Chincoteague"
+        )
+        self.assertEqual(turnout["ballotsCast"], 2266)
+        self.assertEqual(turnout["registeredVoters"], 3129)
 
     def test_georgia_media_export_parser_builds_native_rows(self):
         config = load_config("etl/state-configs/ga.json")

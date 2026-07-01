@@ -126,7 +126,8 @@
     "etl:prepare:mo": "node scripts/normalize-mo-sos-pdfs.mjs",
     "etl:validate:mo": "npm run etl:prepare:mo && python -m civic_etl.cli validate --config etl/state-configs/mo.json",
     "etl:import:mo": "npm run etl:prepare:mo && python -m civic_etl.cli import --config etl/state-configs/mo.json --out .etl/staging",
-    "etl:collect:sc:turnout": "node scripts/collect-sc-vrems-turnout.mjs"
+    "etl:collect:sc:turnout": "node scripts/collect-sc-vrems-turnout.mjs",
+    "etl:collect:va:enr": "node scripts/collect-va-enr-sources.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

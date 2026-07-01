@@ -3247,6 +3247,179 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: item["county"]), turnout_rows, metrics
 
 
+def _virginia_title(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    titled = text.title() if text.isupper() else text
+    return (
+        titled.replace(" Of ", " of ")
+        .replace(" And ", " and ")
+        .replace(" & ", " and ")
+        .replace("'S", "'s")
+        .replace("F.T.", "F.T.")
+    )
+
+
+def _virginia_enr_vote_count(row: dict[str, str]) -> int:
+    return int_text(row.get("TOTAL_VOTES")) + int_text(row.get("WriteInVote"))
+
+
+def _virginia_enr_review_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("reviewCharts", {})
+    if section.get("format") != "virginiaEnrElectionResultsCsv":
+        return [], {"nativeComparisonRows": 0, "nativeComparisonContest": None}
+
+    source = sources[section["sourceId"]]
+    president_office = section.get("presidentOffice", "President and Vice President")
+    comparison_office = section.get("comparisonOffice", "Member, United States Senate")
+    dem_candidates = set(section.get("demCandidates", ["Kamala D. Harris", "Timothy M. Kaine"]))
+    rep_candidates = set(section.get("repCandidates", ["Donald J. Trump", "Hung Cao"]))
+    required = {
+        "CandidateName",
+        "TOTAL_VOTES",
+        "WriteInVote",
+        "LocalityName",
+        "PrecinctId",
+        "PrecinctName",
+        "OfficeTitle",
+    }
+    grouped: dict[tuple[str, str, str], dict[str, int]] = {}
+
+    with _artifact_path(source).open("r", encoding=section.get("encoding", "cp1252"), newline="") as handle:
+        reader = csv.DictReader(handle)
+        missing = required.difference(reader.fieldnames or [])
+        if missing:
+            raise ValueError(f"Virginia ENR election results CSV missing columns: {', '.join(sorted(missing))}")
+
+        for row in reader:
+            office = str(row.get("OfficeTitle") or "").strip()
+            if office not in {president_office, comparison_office}:
+                continue
+            county = _virginia_title(row.get("LocalityName"))
+            precinct_id = str(row.get("PrecinctId") or "").strip()
+            precinct_name = _virginia_title(row.get("PrecinctName"))
+            if not county or not precinct_name:
+                continue
+            candidate = str(row.get("CandidateName") or "").strip()
+            votes = _virginia_enr_vote_count(row)
+            prefix = "pres" if office == president_office else "comparison"
+            values = grouped.setdefault(
+                (county, precinct_id, precinct_name),
+                {
+                    "pres_dem": 0,
+                    "pres_other": 0,
+                    "pres_rep": 0,
+                    "pres_total": 0,
+                    "comparison_dem": 0,
+                    "comparison_other": 0,
+                    "comparison_rep": 0,
+                    "comparison_total": 0,
+                },
+            )
+            if candidate in dem_candidates:
+                bucket = "dem"
+            elif candidate in rep_candidates:
+                bucket = "rep"
+            else:
+                bucket = "other"
+            values[f"{prefix}_{bucket}"] += votes
+            values[f"{prefix}_total"] += votes
+
+    output: list[dict[str, Any]] = []
+    comparison_rows = 0
+    missing_comparison_rows = 0
+    for county, precinct_id, precinct_name in sorted(grouped):
+        values = grouped[(county, precinct_id, precinct_name)]
+        total = values["pres_total"]
+        if not total:
+            continue
+        has_comparison = values["comparison_total"] > 0
+        if has_comparison:
+            comparison_rows += 1
+        else:
+            missing_comparison_rows += 1
+        output.append(
+            {
+                "county": county,
+                "localUnit": precinct_name,
+                "totalVotes": total,
+                "harris": values["pres_dem"],
+                "trump": values["pres_rep"],
+                "harrisShare": pct(values["pres_dem"], total),
+                "trumpShare": pct(values["pres_rep"], total),
+                "demDropoff": pct(values["pres_dem"] - values["comparison_dem"], total) if has_comparison else 0,
+                "repDropoff": pct(values["pres_rep"] - values["comparison_rep"], total) if has_comparison else 0,
+                "coverageMode": section.get("coverageMode", "presidentVsSenate") if has_comparison else "voteShareOnly",
+                "comparisonContest": section.get("comparisonContest", "Member, United States Senate") if has_comparison else "",
+                "comparisonDemVotes": values["comparison_dem"],
+                "comparisonRepVotes": values["comparison_rep"],
+                "comparisonOtherVotes": values["comparison_other"],
+                "sourceId": source.id,
+            }
+        )
+
+    return output, {
+        "nativeReviewRows": len(output),
+        "nativeReviewWarning": section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeMissingComparisonRows": missing_comparison_rows,
+        "nativeComparisonContest": section.get("comparisonContest", "Member, United States Senate") if comparison_rows else None,
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in output),
+    }
+
+
+def _virginia_enr_turnout_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("turnout", {})
+    if section.get("format") != "virginiaEnrTurnoutCsv":
+        return [], {"nativeTurnoutRows": 0}
+
+    source = sources[section["sourceId"]]
+    required = {
+        "locality",
+        "precinct",
+        "TotalVoteTurnout",
+        "ActiveRegisteredVoters",
+        "InactiveRegisteredVoters",
+        "TotalRegisteredVoters",
+    }
+    output: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        missing = required.difference(reader.fieldnames or [])
+        if missing:
+            raise ValueError(f"Virginia ENR turnout CSV missing columns: {', '.join(sorted(missing))}")
+
+        for row in reader:
+            county = _virginia_title(row.get("locality"))
+            local_unit = _virginia_title(row.get("precinct"))
+            if not county or not local_unit:
+                continue
+            ballots = int_text(row.get("TotalVoteTurnout"))
+            registered = int_text(row.get("TotalRegisteredVoters"))
+            output.append(
+                {
+                    "county": county,
+                    "localUnit": local_unit,
+                    "level": section.get("sourceLevel", "precinct"),
+                    "ballotsCast": ballots,
+                    "registeredVoters": registered,
+                    "turnoutPct": pct(ballots, registered) if registered else None,
+                    "denominatorType": section.get("denominatorType", "registeredVoters"),
+                    "registrationDenominatorTiming": section.get("registrationDenominatorTiming", "officialEnrFinal"),
+                    "warningRequired": bool(section.get("warningRequired", False)),
+                    "sourceId": source.id,
+                }
+            )
+
+    totals = {
+        "nativeTurnoutRows": len(output),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in output),
+        "nativeRegisteredVoters": sum(row["registeredVoters"] for row in output),
+    }
+    return output, totals
+
+
 def _virginia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -3358,9 +3531,15 @@ def _virginia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple
     if state_values and local_values != state_values:
         raise ValueError(f"Virginia locality totals do not match State row: {local_values} != {state_values}")
 
+    enr_review_rows, enr_review_metrics = _virginia_enr_review_rows(config, sources)
+    if enr_review_rows:
+        review_rows = enr_review_rows
+
     turnout_rows: list[dict[str, Any]] = []
     turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
-    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+    if config.raw.get("turnout", {}).get("format") == "virginiaEnrTurnoutCsv":
+        turnout_rows, turnout_metrics = _virginia_enr_turnout_rows(config, sources)
+    elif config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
         turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
 
     metrics = {
@@ -3373,6 +3552,7 @@ def _virginia_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple
         "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
         "nativeComparisonRows": 0,
         "nativeComparisonContest": None,
+        **enr_review_metrics,
         **turnout_metrics,
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics

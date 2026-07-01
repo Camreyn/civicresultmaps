@@ -1464,8 +1464,14 @@
         "why": "Virginia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Virginia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "reportingLevel": "precinct",
+        "parser": "virginiaEnrChangeLogSummaryJson",
+        "sourceDocumentId": "va-2024-enr-election-change-log-summary",
+        "sourceUrl": "https://enr.elections.virginia.gov/cdn/results/d2c804ee-4ec2-46bb-91d7-5b41526eab03/Election%20Change%20Log_8d8cefda-3e5d-49be-932d-b24063bebd27.csv",
+        "localArtifact": "data/va-2024-enr-election-change-log-summary.json",
+        "caveat": "Official ENR change-log summary documents source-system updates and initial entries. It does not replace audit, recount, CVR, litigation, or incident record collection and is not evidence of misconduct.",
+        "why": "Official ENR change-log summary is loaded for correction and provenance context; audit, recount, CVR availability, incident, and litigation records still need dedicated collection."
       }
     },
     {
