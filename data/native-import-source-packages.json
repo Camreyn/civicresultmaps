@@ -1185,16 +1185,19 @@
         "https://www.washoecounty.gov/voters/results/archivedresults.php",
         "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv",
         "https://www.humboldtcountynv.gov/317/Elections",
-        "https://www.humboldtcountynv.gov/DocumentCenter/View/7893"
+        "https://www.humboldtcountynv.gov/DocumentCenter/View/7893",
+        "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information"
       ],
       "requiredArtifacts": [
         "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt",
-        "state-native turnout denominator rows",
-        "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, and incident/correction artifacts"
+        "state-native turnout denominator rows with ballots-cast, registered-voter denominator, timing, and inactive-voter treatment notes",
+        "official precinct/local reporting-unit geometry or crosswalks for subcounty review rows",
+        "official 2012, 2016, and 2020 Nevada historical presidential baseline exports if available to replace secondary context rows",
+        "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, incident/correction, recount, and litigation artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; local exports still needed for the remaining Nevada jurisdictions",
-      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 1, 2026 source inventory also records blocked state-native turnout access and unnormalized audit/CVR/L&A/tabulator-log/custody/incident source needs."
+      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; local exports or request-produced SOV/CVR files still needed for the remaining Nevada jurisdictions. A normalizedTurnoutCsv-style parser is needed before replacing EAC fallback turnout, and a geometry/crosswalk parser is needed before mapping subcounty review rows.",
+      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 1, 2026 source inventory records county-by-county request paths, blocked state-native turnout access, county-only map geometry, secondary historical baseline caveats, and unnormalized audit/CVR/L&A/tabulator-log/custody/incident source needs."
     },
     {
       "state": "NH",
