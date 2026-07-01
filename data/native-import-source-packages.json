@@ -832,20 +832,22 @@
       "state": "NV",
       "name": "Nevada",
       "priority": 8,
-      "currentStatus": "partial_clark_precinct_review_loaded",
+      "currentStatus": "partial_clark_washoe_precinct_review_loaded",
       "officialSourcePages": [
         "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
         "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
-        "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
+        "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+        "https://www.washoecounty.gov/voters/results/archivedresults.php",
+        "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
       ],
       "requiredArtifacts": [
-        "official precinct or local reporting-unit results for President and U.S. Senate for the 16 non-Clark Nevada jurisdictions",
+        "official precinct or local reporting-unit results for President and U.S. Senate for the 15 Nevada jurisdictions outside Clark and Washoe",
         "state-native turnout denominator rows",
         "post-election audit, CVR availability, tabulator-log, L&A, custody, and incident/correction artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "localComparisonCsv loaded for Clark County CVR precinct rows; local exports still needed for the remaining Nevada jurisdictions",
-      "blocker": "Clark County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 16 jurisdictions still have only county-level President-versus-Senate review rows."
+      "parserNeeded": "localComparisonCsv loaded for Clark County and Washoe County CVR precinct rows; local exports still needed for the remaining Nevada jurisdictions",
+      "blocker": "Clark County and Washoe County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 15 jurisdictions still have only county-level President-versus-Senate review rows."
     },
     {
       "state": "NH",

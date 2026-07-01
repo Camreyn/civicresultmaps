@@ -429,14 +429,14 @@
         "reportingGrain": "precinct",
         "parserStatus": "native partial subcounty review package loaded",
         "resultRows": 17,
-        "reviewRows": 749,
+        "reviewRows": 1036,
         "turnoutRows": 17,
         "comparisonContest": "United States Senator",
-        "reviewWarning": "Nevada review rows now include Clark County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and Clark CVR totals differ slightly from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
+        "reviewWarning": "Nevada review rows now include Clark County and Washoe County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and county CVR totals may differ from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
         "validationPassed": true
       },
       "indicatorCoverage": {
-        "reviewRows": 749,
+        "reviewRows": 1036,
         "flaggedCountyJurisdictions": 1,
         "flaggedAreas": 1,
         "indicatorRows": 1,
@@ -484,11 +484,11 @@
         },
         "cvr": {
           "status": "partial",
-          "why": "Clark County 2024 General CVR is publicly linked by the official county elections site and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 16 Nevada jurisdictions is still not inventoried.",
+          "why": "Clark County and Washoe County 2024 General CVRs are publicly linked by official county elections sites and normalized to precinct President-versus-U.S. Senate review rows. CVR availability for the other 15 Nevada jurisdictions is still not inventoried.",
           "sourceUrl": "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
           "localArtifact": "data/nv-clark-2024-general-cvr-precinct-review.csv",
           "parser": "normalize-nv-clark-cvr.py",
-          "caveat": "Normalized precinct aggregate only; raw Clark CVR zip is not committed. Clark CVR totals differ slightly from certified county totals."
+          "caveat": "Normalized precinct aggregate only; raw county CVR exports are not committed. County CVR totals may differ from certified county totals."
         },
         "incidents": {
           "status": "needs_data",
@@ -503,18 +503,20 @@
         "parserStatus": "native partial subcounty review package loaded",
         "manualReviewBurden": "medium",
         "confidence": "loaded",
-        "nextAction": "Collect official local result exports or records-request productions for the 16 non-Clark Nevada jurisdictions and a state-native turnout denominator.",
+        "nextAction": "Collect official local result exports or records-request productions for the 15 non-Clark/non-Washoe Nevada jurisdictions and a state-native turnout denominator.",
         "sourceUrls": [
           "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
           "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
-          "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip"
+          "https://elections.clarkcountynv.gov/electionresultsTV/cvr/24G/24G_CVRExport_NOV_Final_Confidential.zip",
+          "https://www.washoecounty.gov/voters/results/archivedresults.php",
+          "https://www.washoecounty.gov/voters/results/resultsfiles/2024generalcvr.csv"
         ]
       },
       "parityGaps": [
         {
           "id": "statewide_subcounty_review_coverage",
           "status": "partial",
-          "detail": "Clark County official CVR precinct rows are loaded; the other 16 Nevada jurisdictions remain county-only until local exports or records-request productions are collected."
+          "detail": "Clark County and Washoe County official CVR precinct rows are loaded; the other 15 Nevada jurisdictions remain county-only until local exports or records-request productions are collected."
         },
         {
           "id": "state_native_turnout_denominator",

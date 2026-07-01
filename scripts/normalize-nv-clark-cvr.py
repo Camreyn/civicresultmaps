@@ -1,8 +1,9 @@
-﻿import argparse
+import argparse
 import csv
 import re
 import zipfile
 from collections import defaultdict
+from contextlib import contextmanager
 from pathlib import Path
 
 
@@ -24,81 +25,100 @@ def precinct_name(value):
     return f"{match.group(1)} ({match.group(2)})" if match else text
 
 
-def candidate_indexes(contests, candidates, contest_name):
+def candidate_indexes(contests, candidates, contest_names):
+    if isinstance(contest_names, str):
+        contest_names = (contest_names,)
     indexes = {}
     for index, contest in enumerate(contests):
-        if str(contest or "").strip().lower().startswith(contest_name):
+        contest_text = str(contest or "").strip().lower()
+        if any(contest_text.startswith(contest_name) for contest_name in contest_names):
             indexes[str(candidates[index] or "").strip()] = index
     return indexes
 
 
-def read_cvr_rows(zip_path):
-    with zipfile.ZipFile(zip_path) as archive:
-        if len(archive.namelist()) != 1:
-            raise ValueError(f"Expected one CSV in {zip_path}, got {archive.namelist()!r}")
-        with archive.open(archive.namelist()[0]) as raw:
-            lines = (line.decode("utf-8-sig", errors="replace") for line in raw)
-            reader = csv.reader(lines)
-            next(reader)
-            contests = next(reader)
-            candidates = next(reader)
-            next(reader)
+@contextmanager
+def open_cvr_csv(input_path):
+    if input_path.suffix.lower() == ".zip":
+        with zipfile.ZipFile(input_path) as archive:
+            csv_names = [name for name in archive.namelist() if name.lower().endswith(".csv")]
+            if len(csv_names) != 1:
+                raise ValueError(f"Expected one CSV in {input_path}, got {archive.namelist()!r}")
+            with archive.open(csv_names[0]) as raw:
+                yield (line.decode("utf-8-sig", errors="replace") for line in raw)
+    else:
+        with input_path.open("r", encoding="utf-8-sig", errors="replace", newline="") as handle:
+            yield handle
 
-            president = candidate_indexes(contests, candidates, "president ")
-            senate = candidate_indexes(contests, candidates, "united states senate")
-            required_candidates = {
-                "Harris, Kamala D.",
-                "Trump, Donald J.",
-                "Oliver, Chase",
-                "Skousen, Joel",
-                "None of These Candidates",
-                "Rosen, Jacky S.",
-                "Brown, Sam",
-                "Cunningham, Chris",
-                "Hansen, Janine",
+
+def find_candidate(indexes, label):
+    normalized_label = label.lower()
+    matches = [index for candidate, index in indexes.items() if candidate.lower().startswith(normalized_label)]
+    if not matches:
+        raise ValueError(f"CVR missing expected candidate prefix: {label}")
+    return matches[0]
+
+
+def read_cvr_rows(input_path):
+    with open_cvr_csv(input_path) as lines:
+        reader = csv.reader(lines)
+        next(reader)
+        contests = next(reader)
+        candidates = next(reader)
+        next(reader)
+
+        president = candidate_indexes(contests, candidates, "president ")
+        senate = candidate_indexes(contests, candidates, ("united states senate", "united states senator"))
+        indexes = {
+            "pres_harris": find_candidate(president, "Harris, Kamala D."),
+            "pres_trump": find_candidate(president, "Trump, Donald J."),
+            "pres_oliver": find_candidate(president, "Oliver, Chase"),
+            "pres_skousen": find_candidate(president, "Skousen, Joel"),
+            "pres_none": find_candidate(president, "None of"),
+            "senate_rosen": find_candidate(senate, "Rosen, Jacky S."),
+            "senate_brown": find_candidate(senate, "Brown, Sam"),
+            "senate_cunningham": find_candidate(senate, "Cunningham, Chris"),
+            "senate_hansen": find_candidate(senate, "Hansen, Janine"),
+            "senate_none": find_candidate(senate, "None of"),
+        }
+
+        rows = defaultdict(
+            lambda: {
+                "pres_harris": 0,
+                "pres_trump": 0,
+                "pres_other": 0,
+                "comparison_dem": 0,
+                "comparison_rep": 0,
+                "comparison_other": 0,
+                "cvr_rows": 0,
             }
-            missing = sorted(required_candidates.difference(set(president) | set(senate)))
-            if missing:
-                raise ValueError(f"Clark CVR missing expected candidates: {', '.join(missing)}")
+        )
+        for row in reader:
+            if len(row) <= max(indexes.values()):
+                continue
+            local_unit = precinct_name(row[6])
+            if not local_unit:
+                continue
+            bucket = rows[local_unit]
+            bucket["cvr_rows"] += 1
+            if vote_value(row[indexes["pres_harris"]]):
+                bucket["pres_harris"] += 1
+            if vote_value(row[indexes["pres_trump"]]):
+                bucket["pres_trump"] += 1
+            for key in ("pres_oliver", "pres_skousen", "pres_none"):
+                if vote_value(row[indexes[key]]):
+                    bucket["pres_other"] += 1
+            if vote_value(row[indexes["senate_rosen"]]):
+                bucket["comparison_dem"] += 1
+            if vote_value(row[indexes["senate_brown"]]):
+                bucket["comparison_rep"] += 1
+            for key in ("senate_cunningham", "senate_hansen", "senate_none"):
+                if vote_value(row[indexes[key]]):
+                    bucket["comparison_other"] += 1
 
-            rows = defaultdict(
-                lambda: {
-                    "pres_harris": 0,
-                    "pres_trump": 0,
-                    "pres_other": 0,
-                    "comparison_dem": 0,
-                    "comparison_rep": 0,
-                    "comparison_other": 0,
-                    "cvr_rows": 0,
-                }
-            )
-            for row in reader:
-                if len(row) < 26:
-                    continue
-                local_unit = precinct_name(row[6])
-                if not local_unit:
-                    continue
-                bucket = rows[local_unit]
-                bucket["cvr_rows"] += 1
-                if vote_value(row[president["Harris, Kamala D."]]):
-                    bucket["pres_harris"] += 1
-                if vote_value(row[president["Trump, Donald J."]]):
-                    bucket["pres_trump"] += 1
-                for candidate in ("Oliver, Chase", "Skousen, Joel", "None of These Candidates"):
-                    if vote_value(row[president[candidate]]):
-                        bucket["pres_other"] += 1
-                if vote_value(row[senate["Rosen, Jacky S."]]):
-                    bucket["comparison_dem"] += 1
-                if vote_value(row[senate["Brown, Sam"]]):
-                    bucket["comparison_rep"] += 1
-                for candidate in ("Cunningham, Chris", "Hansen, Janine", "None of These Candidates"):
-                    if vote_value(row[senate[candidate]]):
-                        bucket["comparison_other"] += 1
-
-            return rows
+        return rows
 
 
-def write_normalized(rows, output_path, source_url):
+def write_normalized(rows, output_path, county, source_url):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     fields = [
         "state",
@@ -130,7 +150,7 @@ def write_normalized(rows, output_path, source_url):
                 {
                     "state": "NV",
                     "election_year": 2024,
-                    "county": "Clark County",
+                    "county": county,
                     "local_unit": local_unit,
                     "pres_harris": row["pres_harris"],
                     "pres_trump": row["pres_trump"],
@@ -150,13 +170,15 @@ def write_normalized(rows, output_path, source_url):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Normalize Clark County, Nevada 2024 General CVR rows into local review rows."
+        description="Normalize Nevada 2024 General CVR rows into local review rows."
     )
     parser.add_argument(
-        "--zip",
+        "--input",
         default="data/nv-clark-2024-general-cvr.zip",
-        help="Path to the downloaded Clark County CVR zip.",
+        help="Path to the downloaded county CVR CSV or ZIP.",
     )
+    parser.add_argument("--zip", dest="zip_path", help=argparse.SUPPRESS)
+    parser.add_argument("--county", default="Clark County")
     parser.add_argument(
         "--out",
         default="data/nv-clark-2024-general-cvr-precinct-review.csv",
@@ -165,8 +187,9 @@ def main():
     parser.add_argument("--source-url", default=DEFAULT_SOURCE_URL)
     args = parser.parse_args()
 
-    rows = read_cvr_rows(Path(args.zip))
-    written = write_normalized(rows, Path(args.out), args.source_url)
+    input_path = Path(args.zip_path or args.input)
+    rows = read_cvr_rows(input_path)
+    written = write_normalized(rows, Path(args.out), args.county, args.source_url)
     print(f"wrote {written} precinct review rows to {args.out}")
 
 
