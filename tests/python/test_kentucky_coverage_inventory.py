@@ -21,6 +21,7 @@ class KentuckyCoverageInventoryTests(unittest.TestCase):
         for source_id in [
             "ky-2024-state-turnout-pdf-lead",
             "ky-2024-general-registration-pdf-lead",
+            "ky-2024-turnout-registration-reconciliation",
             "ky-2024-data-coverage-inventory",
         ]:
             self.assertIn(source_id, sources)
@@ -42,8 +43,23 @@ class KentuckyCoverageInventoryTests(unittest.TestCase):
         )
         self.assertEqual(turnout["expectedCounts"]["countyTurnoutBallotsCast"], 2086320)
         self.assertEqual(turnout["expectedCounts"]["countyRegisteredVoters"], 3548136)
+        self.assertEqual(turnout["expectedCounts"]["reconciliationRows"], 120)
+        self.assertEqual(turnout["expectedCounts"]["stateBoardMinusEacBallotsCastDelta"], 230)
+        self.assertEqual(turnout["expectedCounts"]["stateBoardMinusEacRegisteredVotersDelta"], 0)
         self.assertTrue(any("unofficial" in note for note in turnout["caveats"]))
         self.assertTrue(any(gap["artifact"] == "precinct_boundary_geometry" for gap in inventory["gaps"]))
+
+    def test_kentucky_turnout_reconciliation_summary_keeps_eac_active(self):
+        summary = json.loads(Path("data/ky-2024-turnout-registration-reconciliation-summary.json").read_text())
+        csv_rows = Path("data/ky-2024-turnout-registration-reconciliation.csv").read_text().strip().splitlines()
+
+        self.assertEqual(summary["rowCount"], 120)
+        self.assertEqual(len(csv_rows) - 1, 120)
+        self.assertEqual(summary["stateBoardTurnoutTotals"]["numberVoting"], 2086320)
+        self.assertEqual(summary["eacTotals"]["ballotsCast"], 2086090)
+        self.assertEqual(summary["deltas"]["ballotsCastStateBoardMinusEac"], 230)
+        self.assertEqual(summary["deltas"]["registeredVotersStateBoardMinusEac"], 0)
+        self.assertIn("Keep EAC fallback turnout active", summary["activeTurnoutDecision"])
 
 
 if __name__ == "__main__":

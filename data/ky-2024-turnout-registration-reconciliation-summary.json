@@ -1,0 +1,35 @@
+{
+  "state": "KY",
+  "electionYear": 2024,
+  "generatedAt": "2026-07-01",
+  "turnoutSourceUrl": "https://elect.ky.gov/Resources/Documents/2024G%20Voter%20Turnout%20by%20County.pdf",
+  "turnoutPageUrl": "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+  "registrationSourceUrl": "https://elect.ky.gov/Resources/Documents/voterstatscounty-November%20General%202024.pdf",
+  "registrationPageUrl": "https://elect.ky.gov/Resources/Pages/Registration-Statistics.aspx",
+  "eacSourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+  "rowCount": 120,
+  "stateBoardTurnoutTotals": {
+    "rows": 120,
+    "registeredVoters": 3548136,
+    "numberVoting": 2086320
+  },
+  "registrationPdfTotals": {
+    "rows": 120,
+    "precinctCount": 3232,
+    "registeredVoters": 3548136
+  },
+  "eacTotals": {
+    "ballotsCast": 2086090,
+    "registeredVoters": 3548136
+  },
+  "deltas": {
+    "ballotsCastStateBoardMinusEac": 230,
+    "registeredVotersStateBoardMinusEac": 0,
+    "rowsWithBallotDelta": 85,
+    "rowsWithRegisteredVoterDelta": 0,
+    "positiveBallotDeltaRows": 80,
+    "negativeBallotDeltaRows": 5
+  },
+  "activeTurnoutDecision": "Keep EAC fallback turnout active for Kentucky. The State Board page says turnout reports are unofficial and may differ from election results because they are run after voter-registration rolls reopen; county-clerk official documentation is needed before replacing the active turnout source.",
+  "precinctPdfStatus": "County-level PDFs are parsed here. Precinct turnout and registration PDFs remain collected source leads until a reporting-unit crosswalk handles precinct rows and district subtotal rows safely."
+}

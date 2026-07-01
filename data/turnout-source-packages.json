@@ -646,8 +646,8 @@
       "localFile": "data/eac-2024-state-turnout/ky-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 120,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active validated ETL turnout source. Kentucky State Board 2024 general turnout and registration PDFs are now collected as candidate state-native leads, but the State Board turnout page says those turnout reports are unofficial and can differ from election results after voter rolls reopen.",
-      "nextAction": "Build a Kentucky turnout/registration PDF normalizer and reconciliation report before replacing EAC fallback rows; reconcile State Board county turnout total 2,086,320 against EAC fallback ballots cast 2,086,090 and retain county-clerk official documentation caveats.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active validated ETL turnout source. Kentucky State Board county turnout and registration PDFs now have a generated county reconciliation report, but the State Board turnout page says those reports are unofficial and can differ from election results after voter rolls reopen.",
+      "nextAction": "Review data/ky-2024-turnout-registration-reconciliation-summary.json with county-clerk official turnout documentation before intentionally replacing EAC fallback rows; build a separate precinct-level parser/crosswalk before using State Board precinct turnout or registration rows.",
       "coverage": {
         "jurisdictionRows": 120,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ky-2024-eac-registered-voter-denominator.json",
@@ -693,7 +693,18 @@
           "denominatorField": "Registered",
           "status": "candidate"
         }
-      ]
+      ],
+      "reconciliation": {
+        "localFile": "data/ky-2024-turnout-registration-reconciliation.csv; data/ky-2024-turnout-registration-reconciliation-summary.json",
+        "parser": "scripts/reconcile-ky-turnout-registration.mjs",
+        "stateBoardNumberVoting": 2086320,
+        "eacBallotsCast": 2086090,
+        "registeredVoters": 3548136,
+        "ballotsCastDeltaStateBoardMinusEac": 230,
+        "registeredVotersDeltaStateBoardMinusEac": 0,
+        "rowsWithBallotDelta": 85,
+        "status": "candidate_reconciliation_not_active_replacement"
+      }
     },
     {
       "state": "LA",
