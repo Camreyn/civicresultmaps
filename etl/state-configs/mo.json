@@ -136,6 +136,17 @@
       "timestampBasis": "Normalized from Missouri Secretary of State official 2012, 2016, and 2020 general election county/reporting-jurisdiction presidential PDFs by scripts/normalize-mo-sos-pdfs.mjs.",
       "confidence": "Contextual historical baselines only. The 2016 by-county presidential PDF exposes named party columns but not county-level write-in detail, so 2016 other/total values are the sum of visible non-major-party columns.",
       "status": "loaded"
+    },
+    {
+      "id": "mo-2024-admin-source-inventory",
+      "category": "Missouri 2024 administration-source inventory",
+      "url": "https://www.sos.mo.gov/elections/security",
+      "localFile": "data/mo-2024-admin-source-inventory.json",
+      "parser": "sourceInventoryJson",
+      "authority": "Missouri Secretary of State and local election authorities",
+      "timestampBasis": "Source inventory checked on 2026-07-01 against Missouri SOS results, election security, qualified systems, Elections Integrity/HAVA, local election authority, and election law book pages.",
+      "confidence": "Inventory source paths only. Equipment context is loaded separately from Verified Voting; audit, CVR, incident/correction, recount, and litigation rows are not normalized or loaded.",
+      "status": "candidate"
     }
   ],
   "certifiedResults": {
@@ -174,7 +185,7 @@
   "expected": {
     "jurisdictions": 116,
     "resultRows": 116,
-    "sources": 12,
+    "sources": 13,
     "geometryFeatures": 115,
     "stateTotal": 2995327,
     "trump": 1751986,
