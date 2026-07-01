@@ -776,18 +776,60 @@
       "state": "WV",
       "name": "West Virginia",
       "priority": 12,
-      "currentStatus": "official_precinct_review_package_collected",
+      "currentStatus": "official_precinct_review_turnout_package_collected_admin_context_partial",
       "officialSourcePages": [
         "https://results.enr.clarityelections.com/WV/122766/web.345435/",
-        "https://results.enr.clarityelections.com/WV/122766/current_ver.txt"
+        "https://results.enr.clarityelections.com/WV/122766/current_ver.txt",
+        "https://sos.wv.gov/elections/Pages/ElectionSecurity.aspx",
+        "https://sos.wv.gov/elections/Pages/VoteRegTotals.aspx"
       ],
       "requiredArtifacts": [
         "official county detailxml.zip reports for all 55 counties",
-        "precinct boundary geometry if subcounty map overlays are required"
+        "precinct boundary geometry if subcounty map overlays are required",
+        "official 2024 post-election audit selection/outcome artifacts if published or obtainable",
+        "CVR availability/request-path inventory",
+        "incident, correction, recount, and litigation source inventory"
       ],
       "preferredComparisonContest": "U.S. Senate; loaded from official county detail XML reports as precinct-level President-vs-U.S.-Senate review rows.",
-      "parserNeeded": "westVirginiaClarityCountyDetailXmlDirectory loaded for 55 county result rows, 1,648 precinct review rows, and 1,649 precinct turnout rows.",
-      "blocker": "West Virginia now has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-Senate review rows. Remaining optional gap: precinct boundary geometry for subcounty map overlays."
+      "parserNeeded": "westVirginiaClarityCountyDetailXmlDirectory loaded for 55 county result rows, 1,648 precinct review rows, and 1,649 precinct turnout rows. Equipment context is loaded separately from Verified Voting county context; audit/CVR/incident records remain source-inventory tasks.",
+      "blocker": "West Virginia has official county detailxml.zip reports collected from the Secretary of State Clarity results app. The parser loads precinct-level President-versus-U.S.-Senate review rows and state-native precinct turnout denominators from VoterTurnout totalVoters/ballotsCast. Remaining gaps are official statewide precinct boundary geometry for subcounty overlays and normalized administration context for audit outcomes, CVR availability, incidents, corrections, recounts, and litigation.",
+      "availableArtifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "West Virginia SOS official county detail XML reports",
+          "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+          "localFile": "data/wv-2024-county-detailxml-reports",
+          "parserHint": "Aggregate U.S. PRESIDENT precinct Choice/VoteType rows by county."
+        },
+        "localReviewRows": {
+          "sourceTitle": "West Virginia SOS official county detail XML reports",
+          "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+          "localFile": "data/wv-2024-county-detailxml-reports",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Pair U.S. PRESIDENT and U.S. SENATOR precinct Choice/VoteType rows by county and precinct name."
+        },
+        "turnout": {
+          "sourceTitle": "West Virginia SOS county detail XML VoterTurnout rows",
+          "sourceUrl": "https://results.enr.clarityelections.com/WV/122766/web.345435/",
+          "localFile": "data/wv-2024-county-detailxml-reports",
+          "level": "precinct",
+          "denominator": "VoterTurnout Precinct totalVoters",
+          "ballotsCast": "VoterTurnout Precinct ballotsCast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2754%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/wv-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier West Virginia 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/54",
+          "localFile": "data/wv-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes or turnout."
+        }
+      }
     }
   ]
 }

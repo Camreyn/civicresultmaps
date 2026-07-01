@@ -1717,7 +1717,7 @@
       "stateName": "West Virginia",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct",
       "exportFormats": [
@@ -1731,16 +1731,20 @@
         "county results",
         "precinct President rows",
         "precinct U.S. Senate rows",
-        "precinct turnout rows"
+        "precinct turnout rows",
+        "county equipment context"
       ],
       "missingFields": [
-        "precinct boundary geometry"
+        "official statewide precinct boundary geometry",
+        "normalized 2024 post-election audit selection/outcome artifacts",
+        "CVR availability/request-path inventory",
+        "incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "westVirginiaClarityCountyDetailXmlDirectory loaded",
+      "parserStatus": "westVirginiaClarityCountyDetailXmlDirectory loaded for results/review/turnout; Verified Voting county equipment context loaded",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Rows are advisory review inputs, not confirmed findings.",
-      "nextAction": "Treat as an example Tier 2 goal state; optional next step is precinct geometry."
+      "caveats": "Rows are advisory review inputs, not confirmed findings. Equipment context is jurisdiction-level metadata only. County map geometry is loaded; no official statewide precinct boundary geometry package was identified in this pass.",
+      "nextAction": "Collect or document an official statewide precinct boundary source if one exists, then inventory official WV SOS/county audit, CVR, incident, correction, recount, and litigation artifacts."
     },
     {
       "state": "WY",

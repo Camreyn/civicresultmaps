@@ -121,6 +121,20 @@ Expected validation:
 | Historical baseline rows | 279 |
 
 Caveats: review rows are county-level President-versus-U.S. Senate two-year special election comparisons, not precinct/subcounty scatter plots. The official public source pass did not identify statewide precinct/subcounty President and U.S. Senate result exports; request those rows and matching reporting-unit geometry before upgrading advisory coverage below county level.
+
+## West Virginia Wave 4 Update
+
+- Config: etl/state-configs/wv.json
+- Authority: West Virginia Secretary of State
+- County and precinct result source: data/wv-2024-county-detailxml-reports
+- Comparison contest: U.S. Senate, same precinct detail XML rows
+- Turnout source: official county detail XML VoterTurnout precinct rows
+- Turnout denominator: totalVoters registered-voter field; expected 1,649 rows, 770,587 ballots cast, and 1,187,991 registered voters
+- County boundary: data/wv-counties.geojson
+- Equipment context: data/wv-2024-equipment-context.csv from Verified Voting, context only
+
+Remaining gaps: official statewide precinct boundary geometry for subcounty overlays, 2024 audit selection/outcome artifacts, CVR availability/request paths, and incident/correction/recount/litigation inventories. The loaded review rows remain advisory screening inputs, not findings.
+
 ## Native ETL Acceptance Criteria
 
 For each state, the native importer should fail before promotion if:

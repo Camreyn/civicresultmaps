@@ -35,7 +35,7 @@
       "parser": "westVirginiaClarityCountyDetailXmlDirectory",
       "authority": "West Virginia Secretary of State",
       "timestampBasis": "Official county detailxml.zip reports from the West Virginia Secretary of State Clarity results app for the November 5, 2024 General Election.",
-      "confidence": "Official county-level Clarity report ZIPs. Each detail.xml contains precinct-level President, U.S. Senate, and turnout rows for that county.",
+      "confidence": "Official county-level Clarity report ZIPs. Each detail.xml contains precinct-level President, U.S. Senate, and VoterTurnout rows for that county. The VoterTurnout Precinct totalVoters field is the state-native registered-voter denominator used by this config.",
       "status": "loaded"
     },
     {
@@ -59,7 +59,9 @@
     "notes": "West Virginia turnout rows come from official county detail XML reports with precinct totalVoters and ballotsCast fields.",
     "warningRequired": false,
     "expected": {
-      "rowCount": 1649
+      "rowCount": 1649,
+      "registeredVoters": 1187991,
+      "ballotsCast": 770587
     }
   },
   "expected": {
