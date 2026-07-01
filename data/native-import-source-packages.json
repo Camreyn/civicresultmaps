@@ -494,12 +494,17 @@
       ],
       "requiredArtifacts": [
         "official precinct-level or county-subdivision result rows for President, if Indiana publishes or provides them",
-        "official precinct-level or county-subdivision result rows for U.S. Senate, if Indiana publishes or provides them",
-        "supplemental MIT/OpenElections President and U.S. Senate local review rows are loaded for advisory flag calculation"
+        "official precinct-level or county-subdivision result rows for U.S. Senate at the same reporting-unit grain, if Indiana publishes or provides them",
+        "state-native turnout and registered-voter denominator rows by county or lower reporting unit",
+        "precinct or local reporting-unit boundary geometry, if subcounty map overlays are required",
+        "audit, recount, CVR availability, incident, correction, and certification records for 2024 administration context",
+        "2020, 2016, and 2012 historical presidential baselines with source provenance",
+        "supplemental MIT/OpenElections President and U.S. Senate local review rows are loaded for advisory flag calculation",
+        "Verified Voting county equipment context is loaded as secondary administration context only"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; indianaEnrJurisdictionDirectoryInventory collected for official county JurR inventory; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified county totals, and official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags can now be calculated from MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows remain preferred if available from the Indiana Election Division or county election offices.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; indianaEnrJurisdictionDirectoryInventory collected for official county JurR inventory; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. A new parser remains needed if official precinct/subcounty Indiana candidate rows are obtained.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified county totals, and official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags can now be calculated from MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, state-native turnout denominators, precinct geometry, historical baselines, and audit/recount/CVR/incident/correction records remain preferred if available from the Indiana Election Division or county election offices.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"

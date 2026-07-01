@@ -70,6 +70,17 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Indiana county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "in-2024-equipment-context",
+      "category": "County election equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18",
+      "localFile": "data/in-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContextCsv",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verified Voting Verifier 2024 Indiana jurisdiction equipment context normalized for CivicResultMaps.",
+      "confidence": "County-level election-administration context only. This secondary source does not replace official Indiana result, turnout, audit, recount, CVR, or incident/correction records and does not prove or disprove advisory flags.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -89,7 +100,7 @@
   "expected": {
     "jurisdictions": 92,
     "resultRows": 92,
-    "sources": 6,
+    "sources": 7,
     "geometryFeatures": 92,
     "stateTotal": 2936677,
     "trump": 1720347,

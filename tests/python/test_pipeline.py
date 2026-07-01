@@ -373,6 +373,10 @@ class PipelineTests(unittest.TestCase):
 
         self.assertTrue(report.passed)
         self.assertEqual(artifact["native"]["parser"], "nativeIndianaEnrCountyJson")
+        self.assertEqual(len(artifact["sources"]), 7)
+        equipment_source = next(source for source in artifact["sources"] if source["id"] == "in-2024-equipment-context")
+        self.assertEqual(equipment_source["parser"], "verifiedVotingEquipmentContextCsv")
+        self.assertTrue(equipment_source["metadata"]["artifacts"][0]["exists"])
         self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 92)
         self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 2936677)
         self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1720347)
