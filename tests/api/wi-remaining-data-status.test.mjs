@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
 const report = JSON.parse(readFileSync("data/wi-2024-remaining-data-status.json", "utf8"));
@@ -63,4 +63,45 @@ test("Wisconsin CVR availability scaffold uses clean county names", () => {
   const csv = readFileSync("data/wi-2024-cvr-availability.csv", "utf8");
   assert.match(csv, /Adams County,not_inventoried/);
   assert.doesNotMatch(csv, /County County/);
+});
+
+test("Wisconsin admin context scopes audit, CVR, incidents, and equipment evidence", () => {
+  const adminContext = JSON.parse(readFileSync("data/wi-2024-admin-context-sources.json", "utf8"));
+  const cvrCsv = readFileSync(adminContext.cvr.localArtifact, "utf8").trim().split(/\r?\n/);
+
+  assert.equal(adminContext.generatedAt, "2026-06-30");
+  assert.equal(adminContext.equipment.status, "loaded_context");
+  assert.equal(existsSync(adminContext.equipment.localArtifact), true);
+  assert.equal(existsSync(adminContext.equipment.normalizedArtifact), true);
+  assert.equal(existsSync(adminContext.equipment.officialAuditArtifact), true);
+  assert.match(adminContext.equipment.scopeNote, /not vote or turnout data/);
+  assert.match(adminContext.equipment.officialAuditSourceUrl, /post-election-voting-equipment-audit/);
+  assert.equal(adminContext.audit.status, "partial");
+  assert.equal(existsSync(adminContext.audit.localArtifact), true);
+  assert.equal(existsSync(adminContext.audit.normalizedArtifact), true);
+  assert.equal(existsSync(adminContext.audit.summaryArtifact), true);
+  assert.match(adminContext.audit.scopeNote, /does not include a per-reporting-unit discrepancy outcome table/);
+  assert.match(adminContext.audit.recordsRequestNeed, /Submitted local audit materials/);
+  assert.equal(adminContext.cvr.status, "partial");
+  assert.equal(existsSync(adminContext.cvr.localArtifact), true);
+  assert.equal(cvrCsv.length - 1, 72);
+  assert.equal(cvrCsv.every((line, index) => index === 0 || line.includes(",not_inventoried,")), true);
+  assert.match(adminContext.cvr.scopeNote, /not a loaded CVR dataset/);
+  assert.match(adminContext.cvr.recordsRequestNeed, /County-by-county CVR availability/);
+  assert.equal(adminContext.incidents.status, "candidate");
+  assert.equal(existsSync(adminContext.incidents.localArtifact), true);
+  assert.match(adminContext.incidents.scopeNote, /not a normalized incident/);
+  assert.match(adminContext.incidents.recordsRequestNeed, /recount filings\/outcomes/);
+});
+
+test("Wisconsin turnout source registry keeps EAC warning rows visible", () => {
+  const turnoutPackages = JSON.parse(readFileSync("data/turnout-source-packages.json", "utf8"));
+  const wisconsin = turnoutPackages.stateYearStatuses.find((entry) => entry.state === "WI" && entry.year === 2024);
+  const turnoutCsv = readFileSync(wisconsin.localFile, "utf8").trim().split(/\r?\n/);
+  const header = turnoutCsv[0].split(",");
+  const warningIndex = header.indexOf("warning_required");
+  const warningRows = turnoutCsv.slice(1).filter((line) => line.split(",")[warningIndex] === "true").length;
+
+  assert.equal(wisconsin.coverage.warningRows, warningRows);
+  assert.equal(wisconsin.coverage.warningRows, 2);
 });

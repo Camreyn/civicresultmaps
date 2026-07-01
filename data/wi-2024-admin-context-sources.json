@@ -2,8 +2,19 @@
   "state": "WI",
   "stateName": "Wisconsin",
   "electionYear": 2024,
-  "generatedAt": "2026-06-24",
+  "generatedAt": "2026-06-30",
   "caveat": "This is a source inventory for app readiness. It records official or candidate source locations and collection status; it is not a normalized row-level audit, CVR, or incident dataset.",
+  "equipment": {
+    "status": "loaded_context",
+    "sourceTitle": "Verified Voting Verifier Wisconsin 2024 equipment context plus WEC audited-equipment context",
+    "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/55",
+    "officialAuditSourceUrl": "https://elections.wi.gov/resources/reports/2024-post-election-voting-equipment-audit-report",
+    "localArtifact": "data/verifiedvoting-wi-2024-equipment.json",
+    "normalizedArtifact": "data/wi-2024-equipment-context.csv",
+    "officialAuditArtifact": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.pdf",
+    "scopeNote": "Verifier rows are jurisdiction-level equipment context, not vote or turnout data. The WEC audit report provides official audited-equipment context for selected reporting units, but does not replace a statewide official equipment inventory.",
+    "nextAction": "Use equipment rows as context only; cite the WEC audit report when discussing audited selected units and keep the Verifier source caveat visible."
+  },
   "audit": {
     "status": "partial",
     "sourceTitle": "Wisconsin 2024 Post-Election Voting Equipment Audit Report",
@@ -12,20 +23,26 @@
     "localArtifact": "data/wi-2024-audit/2024-post-election-voting-equipment-audit-final-report.pdf",
     "normalizedArtifact": "data/wi-2024-audit-selections.csv",
     "summaryArtifact": "data/wi-2024-audit-summary.json",
-    "nextAction": "If per-reporting-unit discrepancy outcomes are needed, request or collect the submitted local audit materials; the published report provides selected reporting units, equipment, ballots audited, and statewide findings."
+    "nextAction": "If per-reporting-unit discrepancy outcomes are needed, request or collect the submitted local audit materials; the published report provides selected reporting units, equipment, ballots audited, and statewide findings.",
+    "scopeNote": "Loaded audit rows cover Appendix B selected reporting units and aggregate statewide findings. The published report does not include a per-reporting-unit discrepancy outcome table.",
+    "recordsRequestNeed": "Submitted local audit materials or per-reporting-unit outcome/discrepancy tables, preferably keyed by county, municipality, reporting unit, contest, equipment, machine total, hand total, discrepancy, explanation, and outcome category."
   },
   "cvr": {
-    "status": "candidate",
+    "status": "partial",
     "sourceTitle": "Wisconsin county cast vote record availability inventory",
     "sourceUrl": "https://elections.wi.gov/about/records-request",
     "localArtifact": "data/wi-2024-cvr-availability.csv",
-    "nextAction": "Confirm county-by-county CVR availability or public-record request path. Current artifact is a 72-county inventory scaffold, not a loaded CVR dataset."
+    "nextAction": "Confirm county-by-county CVR availability or public-record request path. Current artifact is a 72-county inventory scaffold, not a loaded CVR dataset.",
+    "scopeNote": "The current artifact is a 72-county availability scaffold. It does not confirm county CVR publication or custody and is not a loaded CVR dataset.",
+    "recordsRequestNeed": "County-by-county CVR availability, custodian, request URL/email, file format, ballot-mode fields, and whether public CVR release is blocked, partial, or available for the November 5, 2024 general election."
   },
   "incidents": {
     "status": "candidate",
     "sourceTitle": "Wisconsin Elections Commission 2024 general election and public meeting materials",
     "sourceUrl": "https://elections.wi.gov/elections/election-results/2024/november-5-general-election",
     "localArtifact": "data/wi-2024-incident-context.csv",
-    "nextAction": "Inventory official incident, correction, recount, and litigation records from WEC and county sources; normalize source-linked rows when found."
+    "nextAction": "Inventory official incident, correction, recount, and litigation records from WEC and county sources; normalize source-linked rows when found.",
+    "scopeNote": "Candidate source inventory only; not a normalized incident, correction, recount, or litigation dataset.",
+    "recordsRequestNeed": "Official source-linked records for incidents, tabulation corrections, amended canvasses, recount filings/outcomes, and election-related litigation, with event date, jurisdiction, status, source URL, and local artifact path."
   }
 }
