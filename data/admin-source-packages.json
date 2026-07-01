@@ -1006,14 +1006,14 @@
         "status": "partial",
         "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
         "localArtifact": "data/ne-2024-admin-source-inventory.json",
-        "why": "The official canvass Reported Problems section identifies Dawson, Gage, and Johnson county administration notes. These are inventoried as source context only; normalized incident, correction, litigation, or recount rows are not loaded."
+        "why": "The official canvass Reported Problems section identifies Dawson, Gage, and Johnson county administration notes. These are inventoried as source context only; normalized incident, correction, litigation, or recount rows are not loaded. The separate canvass voting-statistics reconciliation is turnout provenance, not incident evidence."
       },
       "inventory": {
         "status": "loaded",
         "sourceDocumentId": "ne-2024-admin-source-inventory",
         "sourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
         "localArtifact": "data/ne-2024-admin-source-inventory.json",
-        "caveat": "Inventory documents official canvass Reported Problems notes, source/request paths for precinct results and geometry, turnout cross-checks, and remaining audit/recount/CVR/litigation/equipment gaps. It is not a normalized incident or audit outcome package."
+        "caveat": "Inventory documents official canvass Reported Problems notes, source/request paths for precinct results and geometry, generated turnout reconciliation artifacts, and remaining audit/recount/CVR/litigation/equipment gaps. It is not a normalized incident or audit outcome package."
       }
     },
     {

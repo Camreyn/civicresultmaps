@@ -72,6 +72,17 @@
       "status": "loaded"
     },
     {
+      "id": "ne-2024-canvass-voting-statistics-reconciliation",
+      "category": "Official 2024 General Canvass Book voting-statistics reconciliation",
+      "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+      "localFile": "data/ne-2024-canvass-voting-statistics-reconciliation.csv",
+      "parser": "scripts/normalize-ne-canvass-voting-statistics.mjs",
+      "authority": "Nebraska Secretary of State; U.S. Election Assistance Commission",
+      "timestampBasis": "Generated July 1, 2026 from Nebraska Secretary of State 2024 General Canvass Book voting-statistics pages 6-9 and EAC 2024 EAVS V2 Nebraska fallback rows.",
+      "confidence": "Reproducible reconciliation artifact only. It confirms 93 county rows, matching 1,263,487 registered voters, and a canvass Total Voting value of 965,236 versus 965,145 EAC fallback ballots cast. Active ETL turnout remains EAC fallback until this source difference is reviewed.",
+      "status": "loaded"
+    },
+    {
       "id": "ne-2024-admin-source-inventory",
       "category": "Nebraska 2024 administration, turnout, geometry, and request-path inventory",
       "url": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
@@ -150,7 +161,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Nebraska turnout rows currently use EAC 2024 V2 county/jurisdiction fallback ballots-cast and registered-voter rows. The official 2024 General Canvass Book also includes county voting-statistics tables with registered voters and total voting by method, and the post-general eligible-voter report is retained as a state-native registration denominator cross-check. Add a Nebraska canvass voting-statistics normalizer before replacing the EAC parser.",
+    "notes": "Nebraska turnout rows currently use EAC 2024 V2 county/jurisdiction fallback ballots-cast and registered-voter rows. The official 2024 General Canvass Book voting-statistics tables are normalized into a reconciliation artifact, and the post-general eligible-voter report is retained as a state-native registration denominator cross-check. The reconciliation confirms matching registered-voter totals but a 91-vote canvass Total Voting versus EAC ballots-cast difference, so EAC remains active until that source distinction is reviewed.",
     "warningRequired": false,
     "expected": {
       "rowCount": 93,
@@ -163,13 +174,21 @@
       "registeredVoters": 1263487,
       "totalVoting": 965236,
       "reportingGrain": "county",
-      "caveat": "The current EAC fallback ballots-cast total is 965,145; the official canvass Total Voting statewide value is 965,236. Reconcile this source difference before replacing fallback turnout rows."
-    }
+      "caveat": "The current EAC fallback ballots-cast total is 965,145; the official canvass Total Voting statewide value is 965,236. The generated reconciliation explains the county-level source difference, but the active turnout contract remains EAC fallback until the replacement semantics are intentionally reviewed.",
+      "eacBallotsCast": 965145,
+      "ballotsCastDeltaCanvassMinusEac": 91,
+      "registeredVotersDeltaCanvassMinusEac": 0,
+      "reconciliationRows": 93,
+      "rowsWithBallotDelta": 34,
+      "reconciliationArtifact": "data/ne-2024-canvass-voting-statistics-reconciliation.csv",
+      "reconciliationSummaryArtifact": "data/ne-2024-canvass-voting-statistics-reconciliation-summary.json"
+    },
+    "stateNativeCanvassVotingStatisticsReconciliationSourceId": "ne-2024-canvass-voting-statistics-reconciliation"
   },
   "expected": {
     "jurisdictions": 93,
     "resultRows": 93,
-    "sources": 11,
+    "sources": 12,
     "geometryFeatures": 93,
     "stateTotal": 952182,
     "trump": 564816,

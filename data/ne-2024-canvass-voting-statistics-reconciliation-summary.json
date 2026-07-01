@@ -1,0 +1,32 @@
+{
+  "state": "NE",
+  "electionYear": 2024,
+  "generatedAt": "2026-07-01",
+  "canvassSourceUrl": "https://sos.nebraska.gov/sites/default/files/doc/elections/2024/2024%20General%20Canvass%20Book.pdf",
+  "eacSourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+  "rowCount": 93,
+  "canvassTotals": {
+    "precincts": 1326,
+    "registeredVoters": 1263487,
+    "pollingPlaceVoting": 564660,
+    "earlyVoting": 341054,
+    "allMailPrecincts": 46417,
+    "provisionalBallots": 10620,
+    "militaryOverseas": 2395,
+    "newFormerResident": 90,
+    "totalVoting": 965236
+  },
+  "eacTotals": {
+    "ballotsCast": 965145,
+    "registeredVoters": 1263487
+  },
+  "deltas": {
+    "ballotsCastCanvassMinusEac": 91,
+    "registeredVotersCanvassMinusEac": 0,
+    "rowsWithBallotDelta": 34,
+    "rowsWithRegisteredVoterDelta": 0,
+    "positiveBallotDeltaRows": 23,
+    "negativeBallotDeltaRows": 11
+  },
+  "activeTurnoutDecision": "Keep EAC fallback turnout active for Nebraska until the canvass Total Voting versus EAC ballots-cast source difference is reviewed and the ETL turnout contract is intentionally switched."
+}
