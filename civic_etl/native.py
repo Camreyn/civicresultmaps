@@ -5904,12 +5904,15 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             missing_label="Missouri official county results",
             county_normalizer=_missouri_jurisdiction_name,
         )
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeMissouriCountyPresidentCsv",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
     if config.code == "NE" and config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":

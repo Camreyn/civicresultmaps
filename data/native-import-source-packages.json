@@ -636,7 +636,7 @@
       "state": "MO",
       "name": "Missouri",
       "priority": 5,
-      "currentStatus": "official_county_review_package_collected",
+      "currentStatus": "official_county_review_turnout_historical_package_collected_precinct_file_purchase_blocker",
       "officialSourcePages": [
         "https://www.sos.mo.gov/elections/results",
         "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf",
@@ -644,11 +644,12 @@
       ],
       "requiredArtifacts": [
         "official purchasable precinct-level data file if subcounty advisory flags are required",
-        "state-native turnout denominator artifact if replacing EAC turnout fallback"
+        "official precinct boundary geometry if subcounty map overlays are required",
+        "post-election audit, CVR availability, incident, correction, recount, and litigation artifacts for administration context"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for Missouri official county/reporting-jurisdiction package; precinct data must be purchased from Missouri SOS for subcounty rows",
-      "blocker": "Missouri now has official county/reporting-jurisdiction President-versus-U.S. Senate review rows from the Secretary of State results-by-county PDF. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained."
+      "parserNeeded": "countyPresidentCsv loaded for Missouri official county/reporting-jurisdiction package; normalizedTurnoutCsv and historicalPresidentialCsv are generated from official Missouri SOS PDFs by scripts/normalize-mo-sos-pdfs.mjs; precinct data must be purchased from Missouri SOS for subcounty rows",
+      "blocker": "Missouri now has official county/reporting-jurisdiction President-versus-U.S. Senate review rows, state-native 2024 registered-voter turnout denominators, and 2012/2016/2020 official historical presidential baselines from Secretary of State PDFs. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained. Audit, CVR availability, incident/correction, recount, and litigation artifacts still need a dedicated administration-source inventory."
     },
     {
       "state": "NE",

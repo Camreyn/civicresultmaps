@@ -8,8 +8,8 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 - States checked: 50
 - Turnout loaded in database: 4
-- Native config present but turnout missing: 1
-- Need native turnout package: 45
+- Native config present but turnout missing: 2
+- Need native turnout package: 44
 
 ## Loaded Turnout
 
@@ -25,12 +25,13 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | State | Current status | Needed |
 | --- | --- | --- |
 | WI Wisconsin | Native presidential and review ETL is loaded, but turnout rows are 0. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county-level is usable with caveats. |
+| MO Missouri | Native presidential, review, and state-native turnout ETL config is loaded, but database turnout rows may remain 0 until staging is imported/promoted. | Run `npm run etl:prepare:mo` and `npm run etl:import:mo`; turnout source is the official Missouri SOS 2024 General Election voter turnout PDF normalized to `data/mo-2024-general-turnout.csv`. |
 
 ## States Needing Native Turnout Packages
 
 These states do not currently have native turnout ETL configs or database turnout rows.
 
-`AK`, `AL`, `AR`, `AZ`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `IA`, `ID`, `IL`, `IN`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MO`, `MS`, `MT`, `NC`, `ND`, `NE`, `NH`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SC`, `SD`, `TN`, `TX`, `UT`, `VA`, `VT`, `WA`, `WV`, `WY`
+`AK`, `AL`, `AR`, `AZ`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `IA`, `ID`, `IL`, `IN`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NH`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SC`, `SD`, `TN`, `TX`, `UT`, `VA`, `VT`, `WA`, `WV`, `WY`
 
 ## Standard Request For Each Missing State
 
