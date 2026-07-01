@@ -1452,9 +1452,9 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
     },
     {
       key: "review",
-      evidence: "Clark County and Washoe County official CVR precinct President-versus-U.S. Senate review rows are loaded alongside Nevada statewide county totals.",
+      evidence: "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-U.S. Senate review rows are loaded alongside Nevada statewide county totals.",
       status: "partial",
-      why: "Clark County and Washoe County now support precinct-level advisory screening, but the other 15 Nevada jurisdictions remain county-only until local exports or records-request productions are collected. County CVR totals may differ from certified county totals, so source-row inspection remains required.",
+      why: "Clark County, Washoe County, and Humboldt County now support precinct-level advisory screening, but the other 14 Nevada jurisdictions remain county-only until local exports or records-request productions are collected. County CVR totals may differ from certified county totals, so source-row inspection remains required.",
     },
     {
       key: "turnout",

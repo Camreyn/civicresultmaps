@@ -174,6 +174,19 @@ Caveats: review rows are county/reporting-jurisdiction President-versus-U.S.-Sen
 Expected validation: 100 county result rows, 100 county geometry features, 5,699,141 presidential votes, 2,898,423 Trump votes, 2,715,375 Harris votes, 85,343 other presidential votes, 2,658 Real Precinct=Y review rows, 100 EAC fallback turnout rows, and 300 historical baseline rows across 2012, 2016, and 2020.
 
 Caveats: certified county totals aggregate all official NCSBE reporting units, while review rows filter to Real Precinct=Y and exclude early voting, absentee, provisional, transfer, and other non-real reporting units from precinct-only review charts. Historical baselines are county-level context only. Remaining gaps are state-native turnout normalization, map-ready precinct boundary geometry, normalized audit/recount/CVR availability, and incident/correction/litigation records.
+## Nevada Wave 9 Update
+
+- Config: `etl/state-configs/nv.json`
+- Authority: Nevada Secretary of State; Nevada county clerks/registrars; U.S. Election Assistance Commission; U.S. Census Bureau
+- County results source: `data/nv-2024-statewide-general-president.csv`, transcribed from an archived official NVSOS statewide general results page because live NVSOS/Silver State pages are script-blocked
+- Local review source: `data/nv-clark-2024-general-cvr-precinct-review.csv`, `data/nv-washoe-2024-general-cvr-precinct-review.csv`, and `data/nv-humboldt-2024-general-cvr-precinct-review.csv`
+- Comparison contest: U.S. Senate, using official county CVR precinct aggregates for Clark, Washoe, and Humboldt only
+- Turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/nv-2024-eac-turnout.csv`; state-native turnout remains blocked by source access and missing artifacts
+- County boundary: `data/nv-counties.geojson`
+- Coverage inventory: `data/nv-2024-source-coverage-inventory.json` plus Wave 9 request matrix `data/nv-2024-county-source-request-matrix.tsv`
+
+Expected validation: 17 county result rows, 17 county geometry features, 1,484,840 presidential votes, 1,057 local review rows from Clark/Washoe/Humboldt CVR precinct aggregates, 17 EAC fallback turnout rows, and 51 secondary historical baseline rows. Remaining risks: 14 Nevada jurisdictions still need official local President and U.S. Senate rows or CVR/SOV exports, state-native turnout denominators, precinct/local geometry or crosswalks, official 2012/2016/2020 historical replacement artifacts, and normalized audit/CVR/L&A/tabulator-log/custody/incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+
 ## Native ETL Acceptance Criteria
 
 For each state, the native importer should fail before promotion if:

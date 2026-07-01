@@ -83,6 +83,17 @@
       "status": "loaded"
     },
     {
+      "id": "nv-2024-county-source-request-matrix",
+      "category": "Nevada 2024 remaining jurisdiction source request matrix",
+      "url": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+      "localFile": "data/nv-2024-county-source-request-matrix.tsv",
+      "parser": "countySourceRequestMatrixTsv",
+      "authority": "CivicResultMaps official-source inventory using Nevada Secretary of State and county election sources",
+      "timestampBasis": "State-scoped source request matrix generated from the July 1, 2026 Nevada source coverage pass.",
+      "confidence": "Context-only request matrix for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt. It documents official county pages, source-check statuses, and requested result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation artifacts; it is not a vote-result parser.",
+      "status": "loaded"
+    },
+    {
       "id": "nv-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2732%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -174,7 +185,7 @@
   "expected": {
     "jurisdictions": 17,
     "resultRows": 17,
-    "sources": 9,
+    "sources": 10,
     "geometryFeatures": 17,
     "stateTotal": 1484840,
     "trump": 751205,
