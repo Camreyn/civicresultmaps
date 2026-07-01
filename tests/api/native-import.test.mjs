@@ -77,3 +77,15 @@ test("review indicator reads require enabled review graph capability", () => {
   assert.match(dataAccess, /inner join capability_flags\s+on review_rows\.state_code = capability_flags\.state_code/);
   assert.match(dataAccess, /capability_flags\.review_graphs = true/);
 });
+test("new york coverage inventory preserves supplemental review caveats", () => {
+  const config = JSON.parse(readFileSync("etl/state-configs/ny.json", "utf8"));
+  const inventory = JSON.parse(readFileSync("data/ny-2024-data-coverage-inventory.json", "utf8"));
+  const localReview = inventory.loadedArtifacts.find((artifact) => artifact.id === "ny-2024-local-review-openelections");
+
+  assert.match(config.reviewCharts.warning, /county-certified result totals remain the map authority/);
+  assert.equal(localReview.expectedCounts.reviewRows, 9753);
+  assert.equal(localReview.expectedCounts.missingCountyEquivalents, 13);
+  assert.ok(localReview.excludedOrNotYetReviewedCounties.includes("Rockland County"));
+  assert.ok(localReview.excludedOrNotYetReviewedCounties.includes("Monroe County"));
+  assert.match(inventory.displayCaveats.join(" "), /EAC turnout rows are fallback context/);
+});

@@ -2,8 +2,35 @@
   "state": "NH",
   "stateName": "New Hampshire",
   "electionYear": 2024,
-  "checkedAt": "2026-06-30",
+  "checkedAt": "2026-07-01",
   "authority": "New Hampshire Secretary of State and official public records/GIS source paths",
+  "artifactRole": "source inventory only",
+  "localArtifact": "data/nh-2024-admin-source-inventory.json",
+  "reportingGrain": "town_ward",
+  "parserOrNormalizationPath": "scripts/normalize-nh-general-workbooks.mjs for loaded 2024 result, review, and turnout rows; no admin-row parser is loaded from this inventory.",
+  "loadedPackageSummary": {
+    "status": "loaded",
+    "sourceUrl": "https://www.sos.nh.gov/2024-general-election-results",
+    "localArtifacts": [
+      "data/nh-2024-ge-president.xls",
+      "data/nh-2024-ge-governor.xls",
+      "data/nh-2024-ge-congressional-district-1.xlsx",
+      "data/nh-2024-ge-congressional-district-2.xlsx",
+      "data/nh-2024-ge-ballots-cast.xls",
+      "data/nh-2024-ge-names-on-checklist.xlsx",
+      "data/nh-2024-town-ward-president-governor.csv"
+    ],
+    "expectedRowsOrTotals": {
+      "countyResultRows": 10,
+      "townWardReviewRows": 304,
+      "townWardTurnoutRows": 304,
+      "presidentialVotes": 826189,
+      "ballotsCastDetailTotal": 831468,
+      "namesOnChecklistTotal": 1013075,
+      "sameDayRegistrationTotal": 96623
+    },
+    "caveat": "The live SOS page remains access-limited from this environment, so archived official workbook URLs and committed local artifacts are the reproducible source path. Detailed town/ward ballots-cast rows sum to 831,468 while the workbook county summary totals 831,467 after the source correction note."
+  },
   "sameGrainComparison": {
     "status": "loaded",
     "reportingGrain": "town_ward",
@@ -18,6 +45,7 @@
       "data/nh-2024-town-ward-president-governor.csv"
     ],
     "parser": "scripts/normalize-nh-general-workbooks.mjs",
+    "expectedRows": 304,
     "caveat": "U.S. House rows are same town/ward grain but district-based, not a single statewide contest. Use as a cleaner same-grain comparison than Governor, with district-contest caveats visible."
   },
   "turnoutDenominators": {
@@ -36,19 +64,92 @@
     "ballotsCastDetailTotal": 831468,
     "namesOnChecklistTotal": 1013075,
     "sameDayRegistrationTotal": 96623,
-    "caveat": "The ballots-cast workbook county summary totals 831,467 while detailed town/ward rows sum to 831,468 after the source's Strafford County correction note. The normalized rows retain detailed town/ward values and keep this reconciliation caveat."
+    "caveat": "The normalized rows retain detailed town/ward values and keep the one-vote ballots-cast summary/detail reconciliation caveat."
   },
-  "geometry": {
-    "status": "blocked",
+  "historicalBaselineFeasibility": {
+    "status": "candidate_2016_official_archive_lead",
+    "target": "President-versus-U.S. House and President-versus-Governor split-ticket baselines for 2012, 2016, and 2020, preferably at town/ward grain and county context if town/ward matching is blocked.",
+    "archiveCdxCheckedAt": "2026-07-01",
+    "availableOfficialArchiveLeads": [
+      {
+        "year": 2016,
+        "authority": "New Hampshire Secretary of State",
+        "sourceUrl": "https://web.archive.org/cdx?url=www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-president*&output=json&fl=timestamp,original,statuscode,mimetype&filter=statuscode:200&collapse=urlkey",
+        "reportingGrain": "county workbook files with town/ward rows to be confirmed during parser work",
+        "artifactCandidates": [
+          "2016-ge-president-summary-and-belknap.xls",
+          "2016-ge-president-carroll.xls",
+          "2016-ge-president-cheshire.xls",
+          "2016-ge-president-coos.xls",
+          "2016-ge-president-grafton.xls",
+          "2016-ge-president-hillsborough.xls",
+          "2016-ge-president-merrimack.xls",
+          "2016-ge-president-rockingham.xls",
+          "2016-ge-president-strafford-and-sullivan.xls",
+          "2016-ge-governor.xls",
+          "2016-ge-congressional-district-1.xlsx",
+          "2016-ge-congressional-district-2.xlsx"
+        ],
+        "parserNeeded": "Extend scripts/normalize-nh-general-workbooks.mjs or add a sibling historical normalizer after downloading the archived official 2016 XLS/XLSX artifacts.",
+        "confidence": "official_archive_lead"
+      }
+    ],
+    "blockedOrUnresolvedLeads": [
+      {
+        "year": 2020,
+        "authority": "New Hampshire Secretary of State",
+        "sourceUrl": "https://www.sos.nh.gov/2020-general-election-results",
+        "status": "needs_targeted_archive_or_records_request",
+        "checkedPatterns": [
+          "2020-ge-president*",
+          "*2020*president*",
+          "*2020*governor*",
+          "*2020*congressional*"
+        ],
+        "caveat": "The tested Internet Archive CDX filename patterns returned no usable workbook candidates or transient 503 responses; do not treat secondary 2020 county summaries as replacements for official town/ward baselines."
+      },
+      {
+        "year": 2012,
+        "authority": "New Hampshire Secretary of State",
+        "sourceUrl": "https://www.sos.nh.gov/2012-general-election-results",
+        "status": "needs_targeted_archive_or_records_request",
+        "checkedPatterns": [
+          "2012-ge-president*"
+        ],
+        "caveat": "No official 2012 workbook candidates were confirmed in this pass."
+      }
+    ],
+    "caveat": "No historical baseline rows are loaded. The 2016 archive lead is a source-acquisition path only until official artifacts are downloaded, parsed, and reconciled."
+  },
+  "geometryAndCrosswalk": {
+    "status": "county_geometry_loaded_town_ward_geometry_blocked",
     "loadedArtifact": "data/nh-counties.geojson",
     "loadedLevel": "county",
-    "needed": "Official town/ward geometry or a reproducible town-to-ward boundary crosswalk for subcounty overlays.",
-    "requestPath": "Ask New Hampshire Secretary of State or the state GIS clearinghouse for 2024 general-election town/ward reporting-unit boundaries that match the SOS workbook labels.",
-    "caveat": "County geometry is loaded; town/ward geometry is not included and should not be inferred from result workbook names alone."
+    "loadedAuthority": "U.S. Census Bureau",
+    "needed": "Official town/ward geometry or a reproducible reporting-unit crosswalk for 2024 SOS town/ward labels.",
+    "candidateSourcePaths": [
+      {
+        "authority": "U.S. Census Bureau",
+        "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer",
+        "use": "County geometry only; already loaded for map joins."
+      },
+      {
+        "authority": "U.S. Census Bureau",
+        "sourceUrl": "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html",
+        "use": "County subdivision/place geometry may help town-level context but will not by itself split cities into voting wards."
+      },
+      {
+        "authority": "New Hampshire Secretary of State or New Hampshire GIS clearinghouse/local city GIS offices",
+        "sourceUrl": "https://www.sos.nh.gov/2024-general-election-results",
+        "use": "Request 2024 general-election town/ward reporting-unit boundaries or an official crosswalk matching SOS workbook labels."
+      }
+    ],
+    "caveat": "Town/ward geometry is not included and should not be inferred from result workbook names alone. A town-only Census layer would still leave city wards unresolved."
   },
   "recountsCorrectionsIncidentsLitigation": {
     "status": "partial_inventory",
     "sourceUrl": "https://www.sos.nh.gov/2024-general-election-results",
+    "reportingGrain": "legislative district recount sheets, not presidential town/ward rows",
     "archivedRecountArtifactsIdentified": [
       "2024-ge-recount-results-sheet-election-results-grafton-dist-7-tot.xlsx",
       "2024-ge-recount-results-sheet-election-results-hills-dist-9-tot.xlsx",
@@ -58,11 +159,27 @@
       "2024-ge-recount-results-sheet-election-results-strafford-dist-4-tot.xlsx",
       "2024-ge-recount-results-sheet-election-results-sullivan-dist-5-tot.xlsx"
     ],
+    "parserNeeded": "A recount-sheet normalizer should be added only after the official XLSX recount artifacts are downloaded and their contest/district scope is reviewed.",
     "caveat": "Archived official recount result sheets were identified for legislative districts, but no normalized recount, incident, correction, or litigation row package is loaded in this PR."
   },
   "auditAndCvr": {
     "status": "needs_source_inventory",
     "needed": "Official 2024 post-election audit artifacts, CVR availability statements or request paths, and any tabulator-log or custody records that the state or local offices make public.",
+    "candidateRequestAuthorities": [
+      "New Hampshire Secretary of State",
+      "New Hampshire Attorney General election-law/civil-bureau public records path if litigation or complaint records are required",
+      "City and town clerks for ward-specific CVR, recount, correction, or incident records when state-level publication is absent"
+    ],
     "caveat": "No CVR dataset, post-election audit result table, or per-unit discrepancy artifact is loaded. Treat this as a source-request queue, not evidence of an administration issue."
+  },
+  "websiteAndApiDisplayPath": {
+    "status": "configuration_checked",
+    "displaySurfaces": [
+      "county map joins use data/nh-counties.geojson",
+      "review graphs use 304 town/ward President-versus-U.S.-House rows",
+      "turnout context uses 304 town/ward ballots-cast/names-on-checklist rows"
+    ],
+    "productionChecked": false,
+    "caveat": "Production promotion and production API checks were not authorized for this worker pass."
   }
 }

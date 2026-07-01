@@ -1036,22 +1036,22 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "New Hampshire 2024 post-election audit artifacts have not been normalized. The NH source inventory artifact records this as an official-source request item.",
+        "why": "New Hampshire 2024 post-election audit artifacts have not been normalized. The expanded NH source inventory records audit/CVR request authorities and keeps this as an official-source request item, not a loaded audit dataset.",
         "localArtifact": "data/nh-2024-admin-source-inventory.json",
         "caveat": "Source inventory only; no audit result rows are loaded."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "New Hampshire 2024 CVR availability artifacts or request paths have not been normalized. The NH source inventory artifact records this as an official-source request item.",
+        "why": "New Hampshire 2024 CVR availability artifacts or request paths have not been normalized. The expanded NH source inventory records state and local request paths for CVR, tabulator-log, custody, and ward-specific records if public.",
         "localArtifact": "data/nh-2024-admin-source-inventory.json",
         "caveat": "Source inventory only; no CVR data is loaded."
       },
       "incidents": {
         "status": "partial",
-        "why": "Archived official 2024 general-election recount result sheet filenames were identified, but recount, incident, correction, and litigation rows are not normalized.",
+        "why": "The NH source inventory now identifies archived official 2024 legislative-district recount sheet filenames and request paths, but recount, incident, correction, and litigation rows are not normalized.",
         "sourceUrl": "https://www.sos.nh.gov/2024-general-election-results",
         "localArtifact": "data/nh-2024-admin-source-inventory.json",
-        "caveat": "Partial source inventory only; not a loaded incident/recount dataset."
+        "caveat": "Partial source inventory only; not a loaded incident/recount/litigation dataset and not evidence of an administration issue."
       }
     },
     {
@@ -1181,16 +1181,28 @@
         "expectedJurisdictions": 62
       },
       "audit": {
-        "status": "needs_data",
-        "why": "New York 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceDocumentId": "ny-sboe-election-security-post-election-audit",
+        "sourceUrl": "https://elections.ny.gov/election-security",
+        "reportingLevel": "county_board_voting_machine_or_system",
+        "localArtifact": "data/ny-2024-data-coverage-inventory.json",
+        "why": "NYSBOE documents the Election Law 9-211 post-election audit path and states audit comparison reports are filed with the State Board, but 2024 county audit selection and comparison reports have not been collected or normalized."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "New York 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceDocumentId": "ny-sboe-foil-and-county-board-roster",
+        "sourceUrl": "https://elections.ny.gov/freedom-information-law-foil-requests",
+        "reportingLevel": "county_or_state_request_path",
+        "localArtifact": "data/ny-2024-data-coverage-inventory.json",
+        "why": "The NYSBOE FOIL page and county board roster provide request paths for CVR availability and custody questions, but no New York 2024 CVR artifacts or county availability responses are loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "New York 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceDocumentId": "ny-2024-admin-records-request-paths",
+        "sourceUrl": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+        "reportingLevel": "county_or_state_request_path",
+        "localArtifact": "data/ny-2024-data-coverage-inventory.json",
+        "why": "The NYSBOE county board roster, FOIL page, election-security page, and official court/board records are documented request paths, but normalized 2024 incident, correction, recount, and litigation rows are not loaded."
       }
     },
     {

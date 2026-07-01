@@ -913,18 +913,19 @@
       ],
       "availableFields": [
         "county President rows",
-        "county U.S. Senate rows"
+        "county U.S. Senate rows",
+        "November 2024 active-voter denominator lead"
       ],
       "missingFields": [
         "precinct rows",
-        "state-native ballots-cast turnout rows paired with a denominator artifact",
+        "state-native ballots-cast turnout rows to pair with the collected November 2024 active-voter denominator lead",
         "2020/2016/2012 source-cited historical baseline artifacts from the SOS archive iframe/direct file/request path"
       ],
-      "parserStatus": "mississippiElectionRecapCsv loaded for county review; historical baselines remain blocked pending official SOS county artifacts from the archive iframe/direct file/request path",
+      "parserStatus": "mississippiElectionRecapCsv loaded for county review; scripts/collect-ms-active-voter-count.mjs normalizes the official November 2024 Active Voter Count denominator lead; historical baselines remain blocked pending official SOS county artifacts from the archive iframe/direct file/request path",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "County-level review is useful but not a precinct-level scatter plot. SOS Active Voter Count Reports are a denominator lead only and do not replace ballots-cast turnout rows by themselves.",
-      "nextAction": "Keep loaded county package; collect official Mississippi SOS 2020, 2016, and 2012 county presidential artifacts and a Mississippi-native ballots-cast plus denominator package before enabling historicalBaseline or replacing EAC turnout."
+      "caveats": "County-level review is useful but not a precinct-level scatter plot. The collected SOS Active Voter Count PDF is a denominator lead only and does not replace ballots-cast turnout rows by itself.",
+      "nextAction": "Keep loaded county package; pair the collected November 2024 active-voter denominator lead with official Mississippi ballots-cast/voter-participation rows before replacing EAC turnout, and collect official Mississippi SOS 2020, 2016, and 2012 county presidential artifacts before enabling historicalBaseline."
     },
     {
       "state": "MS",
@@ -1136,13 +1137,15 @@
       "stateName": "New Hampshire",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_admin_inventory",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "town_ward",
       "exportFormats": [
         "XLS",
         "XLSX",
-        "normalized CSV"
+        "normalized CSV",
+        "archived official 2016 XLS/XLSX baseline leads",
+        "admin inventory JSON"
       ],
       "sourceUrls": [
         "https://www.sos.nh.gov/2024-general-election-results"
@@ -1150,7 +1153,10 @@
       "exampleUrls": [
         "https://web.archive.org/web/20241219172754id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-president_3.xls",
         "https://web.archive.org/web/20250311214424id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-congressional-district-1_3.xlsx",
-        "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx"
+        "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx",
+        "https://web.archive.org/cdx?url=www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-president*&output=json&fl=timestamp,original,statuscode,mimetype&filter=statuscode:200&collapse=urlkey",
+        "https://web.archive.org/web/20240720085749id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-governor.xls",
+        "https://web.archive.org/web/20240720085753id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-congressional-district-1.xlsx"
       ],
       "availableFields": [
         "town/ward President rows",
@@ -1159,19 +1165,21 @@
         "town/ward ballots-cast rows",
         "town/ward names-on-checklist registered-voter denominator rows",
         "county geometry",
-        "county equipment context"
+        "county equipment context",
+        "official 2016 archive leads for President, Governor, and U.S. House historical baseline feasibility",
+        "NH administration/source inventory with recount, geometry, audit, CVR, incident, correction, and litigation request paths"
       ],
       "missingFields": [
-        "historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
+        "loaded 2012/2016/2020 historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
         "town/ward boundary geometry",
         "normalized post-election audit rows",
         "normalized recount, CVR availability, incident/correction, and litigation rows"
       ],
-      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs",
+      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs; data/nh-2024-admin-source-inventory.json now records official 2016 historical-baseline archive leads and remaining admin/geometry request paths",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_district_comparison_caveat",
-      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals.",
-      "nextAction": "Add official historical baselines, request town/ward geometry, and normalize official audit/recount/CVR/incident/correction/litigation records."
+      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals. The 2016 historical archive lead is not loaded until artifacts are downloaded, parsed, and reconciled; 2020 and 2012 remain targeted archive/records-request items.",
+      "nextAction": "Download and parse the official 2016 archived President, Governor, and U.S. House XLS/XLSX leads; continue targeted archive/records requests for 2020 and 2012; request town/ward geometry or a reporting-unit crosswalk; normalize official audit/recount/CVR/incident/correction/litigation records if obtained."
     },
     {
       "state": "NJ",
@@ -1295,7 +1303,9 @@
         "official PDF",
         "normalized CSV",
         "EAC fallback turnout CSV",
-        "Verified Voting equipment context"
+        "Verified Voting equipment context",
+        "NYSBOE enrollment report leads",
+        "NYSBOE Flateau/VEDA future local-data path"
       ],
       "sourceUrls": [
         "https://elections.ny.gov/election-results",
@@ -1305,6 +1315,13 @@
         "https://ny.elstats-staging.com/eng/files/serve/116",
         "https://ny.elstats-staging.com/eng/files/serve/128",
         "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://elections.ny.gov/enrollment-county",
+        "https://elections.ny.gov/enrollment-election-district",
+        "https://elections.ny.gov/flateau-database",
+        "https://flateau.elections.ny.gov/",
+        "https://elections.ny.gov/election-security",
+        "https://elections.ny.gov/freedom-information-law-foil-requests",
+        "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
         "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36"
       ],
       "exampleUrls": [],
@@ -1314,21 +1331,23 @@
         "EAC 2024 county/jurisdiction turnout fallback rows",
         "county geometry",
         "2012/2016/2020 county presidential historical baselines from official NYSBOE PDFs",
-        "Verified Voting county equipment context"
+        "Verified Voting county equipment context",
+        "NYSBOE 11/01/2024 county enrollment report lead and election-district enrollment report lead",
+        "NYSBOE post-election audit, FOIL, county-board roster, and Flateau/VEDA request/publication paths documented in data/ny-2024-data-coverage-inventory.json"
       ],
       "missingFields": [
-        "official precinct/local reporting-unit President rows from NYSBOE or county boards",
-        "official same-grain precinct/local U.S. Senate comparison rows from NYSBOE or county boards",
-        "state-native turnout/registration denominator artifact to replace EAC fallback",
+        "official precinct/local reporting-unit President rows from NYSBOE or county boards for counties still outside local review coverage",
+        "official same-grain precinct/local U.S. Senate comparison rows from NYSBOE or county boards for counties still outside local review coverage",
+        "state-native ballots-cast or voter-history artifact to pair with NYSBOE enrollment denominators before replacing EAC fallback",
         "official CVR availability inventory",
         "official audit/recount/correction/incident/litigation record package",
-        "precinct boundary geometry"
+        "precinct or election-district boundary geometry and result-label crosswalk"
       ],
-      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv review rows, EAC turnout fallback, official PDF historical baseline, and county equipment context; official precinct/subcounty parser still needs a source package",
+      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv partial review rows, EAC turnout fallback, official PDF historical baseline, county equipment context, and NY coverage inventory; official full-state precinct/election-district parser still needs a complete source package and crosswalk",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "Current certified results and historical baselines are official county-level rows. Local review rows are supplemental OpenElections county-board source normalizations and legacy NYC rows, not a complete official NYSBOE precinct package. EAC turnout fallback and Verified Voting equipment context remain advisory metadata.",
-      "nextAction": "Request or locate official NYSBOE/county precinct-level President and U.S. Senate rows plus state-native turnout denominators, CVR availability, audit/recount/correction/incident records, and precinct geometry."
+      "nextAction": "Use data/ny-2024-data-coverage-inventory.json to request or locate official NYSBOE/county election-district President and U.S. Senate rows, ballots-cast/voter-history rows paired with enrollment denominators, CVR availability, audit/recount/correction/incident records, and precinct/election-district geometry or crosswalks."
     },
     {
       "state": "OH",

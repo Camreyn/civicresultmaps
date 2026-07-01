@@ -1,0 +1,265 @@
+{
+  "state": "NY",
+  "stateName": "New York",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "purpose": "State-scoped coverage inventory for New York 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "status": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented",
+  "authorityPriority": "Official New York State Board of Elections, county boards of elections, official GIS/Census, EAC, and official court/board records first; OpenElections and Verified Voting remain supplemental context only.",
+  "loadedArtifacts": [
+    {
+      "id": "ny-2024-official-county-results",
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://results.elections.ny.gov/document/476",
+      "localPath": "data/ny-2024-presidential-general.pdf; data/ny-2024-general-president.csv; data/ny-2024-general-senate.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "countyPresidentCsv and countyComparisonCsv via etl/state-configs/ny.json",
+      "expectedCounts": {
+        "countyRows": 62,
+        "stateTotal": 8381429,
+        "trump": 3579519,
+        "harris": 4619543,
+        "other": 182367
+      },
+      "caveats": [
+        "These county-certified rows remain the map authority.",
+        "County rows are not a precinct or election-district package."
+      ],
+      "confidence": "loaded_official_county_results"
+    },
+    {
+      "id": "ny-2024-local-review-openelections",
+      "sourceAuthority": "OpenElections source collection from New York county boards of elections",
+      "sourceUrl": "https://github.com/openelections/openelections-sources-ny/tree/master/2024/general",
+      "localPath": "data/ny-2024-local-review.csv; data/ny-2024-local-review-sources.json",
+      "electionYear": 2024,
+      "reportingGrain": "election_district_or_county_board_local_unit",
+      "parserNormalizationPath": "scripts/normalize-ny-local-review.mjs to localComparisonCsv via etl/state-configs/ny.json reviewCharts.format=localComparisonCsv",
+      "expectedCounts": {
+        "reviewRows": 9753,
+        "manifestFiles": 46,
+        "coveredCountyEquivalents": 49,
+        "missingCountyEquivalents": 13
+      },
+      "coveredScope": "Machine-readable CSV/XLSX/HTML files, selected reviewed text-layer PDFs, Suffolk text export, and legacy NYC rows.",
+      "excludedOrNotYetReviewedCounties": [
+        "Herkimer County",
+        "Jefferson County",
+        "Monroe County",
+        "Nassau County",
+        "Ontario County",
+        "Orange County",
+        "Orleans County",
+        "Oswego County",
+        "Rockland County",
+        "Schuyler County",
+        "Steuben County",
+        "Wyoming County",
+        "Yates County"
+      ],
+      "caveats": [
+        "OpenElections is supplemental and source-linked, not the official NYSBOE statewide local-results package.",
+        "Monroe County appears in the manifest with zero parsed rows and remains excluded from loaded review coverage.",
+        "Image-only, president-only, unsupported, or unreviewed county source files remain out of the normalized review CSV until extraction is reviewed and reconciled to county certified totals."
+      ],
+      "confidence": "partial_supplemental_review_rows"
+    },
+    {
+      "id": "ny-2024-eac-turnout",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localPath": "data/eac-2024-state-turnout/ny-2024-eac-turnout.csv; data/eac-2024-state-turnout/ny-2024-eac-registered-voter-denominator.json",
+      "electionYear": 2024,
+      "reportingGrain": "county_jurisdiction",
+      "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/ny.json turnout.format=eacTurnoutCsv",
+      "expectedCounts": {
+        "rows": 62,
+        "ballotsCast": 8389626,
+        "registeredVoters": 13579416
+      },
+      "caveats": [
+        "EAC rows are official national fallback turnout context.",
+        "They should be replaced only after a state-native New York turnout or voter-participation artifact is collected and reconciled."
+      ],
+      "confidence": "loaded_fallback_turnout"
+    },
+    {
+      "id": "ny-2012-2016-2020-official-historical-baselines",
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/election-results",
+      "localPath": "data/ny-2012-general.pdf; data/ny-2016-general.pdf; data/ny-2020-general.pdf; data/ny-historical-presidential-baseline.csv",
+      "electionYear": "2012,2016,2020",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/collect-ny-historical-baseline.mjs to historicalPresidentialCsv via etl/state-configs/ny.json",
+      "expectedCounts": {
+        "rows": 186,
+        "years": [
+          2012,
+          2016,
+          2020
+        ]
+      },
+      "caveats": [
+        "Historical rows are contextual county baselines only, not 2024 certified data.",
+        "The script validates statewide totals from official NYSBOE PDFs."
+      ],
+      "confidence": "loaded_official_historical_context"
+    },
+    {
+      "id": "ny-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2736%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localPath": "data/ny-counties.geojson",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "censusTigerwebCountyGeojson via etl/state-configs/ny.json source ny-county-geometry",
+      "expectedCounts": {
+        "features": 62
+      },
+      "caveats": [
+        "County geometry supports current county result map joins.",
+        "Precinct or election-district boundary geometry is not included."
+      ],
+      "confidence": "loaded_county_geometry"
+    },
+    {
+      "id": "ny-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36",
+      "localPath": "data/verifiedvoting-ny-2024-equipment.json; data/ny-2024-equipment-context.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "scripts/normalize-verifiedvoting-equipment.mjs; surfaced through data/admin-source-packages.json and API equipment context paths",
+      "expectedCounts": {
+        "jurisdictions": 62
+      },
+      "caveats": [
+        "Secondary jurisdiction-level election-administration context only.",
+        "Do not infer every precinct or ballot mode used one identical setup; do not use this as vote, turnout, audit, or incident evidence."
+      ],
+      "confidence": "loaded_context_only"
+    }
+  ],
+  "officialSourceSearchPath": [
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/enrollment-county",
+      "checkedFor": [
+        "state-native county registered-voter denominator",
+        "November 2024 registration timing"
+      ],
+      "result": "The NYSBOE Enrollment by County page lists 2024 county enrollment reports, including Voters Registered by County as of 11/01/2024.",
+      "blocker": "Enrollment reports are denominator leads only. They do not provide ballots-cast/voter-participation rows by themselves, so the active ETL remains EAC fallback until a turnout or voter-history artifact is collected and reconciled."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/enrollment-election-district",
+      "checkedFor": [
+        "election-district registered-voter denominators",
+        "local reporting-unit join leads"
+      ],
+      "result": "The NYSBOE Enrollment by Election District page publishes county-by-county election-district enrollment reports by year.",
+      "blocker": "Election-district enrollment reports are not ballots-cast rows and may not share exact labels with county result exports; a parser and crosswalk are needed before using them for same-grain turnout context."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://flateau.elections.ny.gov/",
+      "checkedFor": [
+        "statewide official election-district results",
+        "maps or district configuration documentation",
+        "poll-site and reporting-unit downloads"
+      ],
+      "result": "The Flateau/VEDA site is the official future statewide publication path for election results, poll sites, district maps, downloads, and compliance reports.",
+      "blocker": "As checked on 2026-07-01, the dashboard showed no election data available. The statute-backed collection path applies to elections on or after April 1, 2026, so it is a future source path rather than a 2024 replacement package."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/flateau-database",
+      "checkedFor": [
+        "official source mandate for local result rows",
+        "district maps or configuration documentation",
+        "voter history and poll-site data publication path"
+      ],
+      "result": "The NYSBOE Flateau page says election authorities transmit election-district results, contemporaneous registration lists, voter history files, maps or district-configuration documentation, poll-site lists, and adopted districting plans for qualifying elections.",
+      "blocker": "The mandate is not a collected 2024 artifact. Use this path for future statewide official local rows and for request language when asking county boards for 2024 equivalents."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "checkedFor": [
+        "county board contact path",
+        "county-level records request routing"
+      ],
+      "result": "The NYSBOE public reporting system includes a County Board Roster with county filter, summary PDF, and CSV download controls.",
+      "blocker": "Roster data is a request/contact path, not a normalized result, turnout, CVR, audit, or geometry artifact."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/election-security",
+      "checkedFor": [
+        "post-election audit procedure",
+        "audit report custody"
+      ],
+      "result": "The NYSBOE Election Security page documents the post-election audit process under Election Law 9-211, including the three-percent voting-machine/system audit and filing of comparison reports with the State Board.",
+      "blocker": "No 2024 county audit comparison reports are loaded in this repository. Request county or State Board audit selection and comparison reports before normalizing audit rows."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/freedom-information-law-foil-requests",
+      "checkedFor": [
+        "FOIL request path",
+        "CVR, incident, correction, recount, litigation, and voter-file request routing"
+      ],
+      "result": "The NYSBOE FOIL page identifies GovQA as the online request channel and explains that other records are available by request unless exempt.",
+      "blocker": "CVR availability, incident/correction/recount/litigation records, and some voter-registration data may be custodian-specific or legally restricted; no normalized row package is loaded."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/voting-technology",
+      "checkedFor": [
+        "official voting system context",
+        "equipment assignment cross-checks"
+      ],
+      "result": "The NYSBOE Voting Technology page publishes official context for voting systems and county technology pages for Clear Ballot, Liberty Vote/ImageCast, ES&S, and Hart Verity.",
+      "blocker": "Voting-system context is not a result, turnout, CVR, audit, or incident row source. County-level assignment history still needs source-native records if replacing supplemental equipment context."
+    }
+  ],
+  "requestPath": {
+    "neededArtifacts": [
+      "official 2024 general election-district or precinct-level President rows for excluded counties and, ideally, all counties",
+      "official same-grain U.S. Senate rows with county and election-district/reporting-unit identifiers",
+      "official state-native ballots-cast or voter-history turnout rows paired with county or election-district registered-voter denominator fields and timing",
+      "map-ready election-district or precinct boundary geometry, or a publishable reporting-unit crosswalk matching local result labels",
+      "post-election audit selection and comparison reports filed with the State Board or retained by county boards",
+      "CVR availability statements or request responses, including ballot-secrecy and vendor-format caveats",
+      "official incident, correction, recount, and litigation records for 2024 contests"
+    ],
+    "preferredAuthorities": [
+      "New York State Board of Elections",
+      "New York county boards of elections",
+      "New York State Board of Elections Flateau/VEDA program",
+      "official county or state GIS offices",
+      "official New York court or board docket sources for litigation/recount records"
+    ],
+    "requestFields": [
+      "election date and contest names",
+      "county and election-district/reporting-unit identifier",
+      "candidate and party columns for President and U.S. Senate",
+      "ballots cast or voter participation count",
+      "registered-voter denominator and denominator timing",
+      "geometry or crosswalk identifier matching result rows",
+      "audit selection unit, machine/system identifier, hand-count and machine-count fields where available",
+      "CVR format, redaction/privacy rules, and tabulator/vendor export notes where available",
+      "incident/correction/recount/litigation docket, document date, jurisdiction, affected contest, and source URL"
+    ],
+    "caveat": "All future request-produced artifacts must be source-linked, scripted, and reconciled to official county-certified totals before they change public review or turnout coverage."
+  },
+  "displayCaveats": [
+    "County-certified NYSBOE President rows remain the map authority.",
+    "Local advisory review rows are partial supplemental source normalizations and do not cover image-only, president-only, unsupported, or unreviewed counties.",
+    "EAC turnout rows are fallback context until a New York-native turnout/voter-history package is collected and reconciled.",
+    "Historical baselines are official county context for 2012, 2016, and 2020 only.",
+    "Administration and equipment context is source-linked metadata, not proof of fraud or misconduct."
+  ]
+}

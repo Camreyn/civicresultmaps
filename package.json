@@ -10,7 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:api && npm run test:etl",
-    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/ne-canvass-voting-statistics.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs && node tests/api/swing-state-parity.test.mjs && node tests/api/electronic-integrity.test.mjs",
+    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/ne-canvass-voting-statistics.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs && node tests/api/swing-state-parity.test.mjs && node tests/api/mo-source-coverage.test.mjs && node tests/api/electronic-integrity.test.mjs",
     "test:etl": "python -m unittest discover -s tests/python",
     "db:generate": "drizzle-kit generate",
     "db:push": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",
@@ -128,6 +128,7 @@
     "etl:import:mo": "npm run etl:prepare:mo && python -m civic_etl.cli import --config etl/state-configs/mo.json --out .etl/staging",
     "etl:collect:sc:turnout": "node scripts/collect-sc-vrems-turnout.mjs",
     "etl:collect:va:enr": "node scripts/collect-va-enr-sources.mjs",
+    "etl:collect:ms:active-voters": "node scripts/collect-ms-active-voter-count.mjs",
     "etl:reconcile:ne:turnout": "node scripts/normalize-ne-canvass-voting-statistics.mjs"
   },
   "dependencies": {

@@ -627,6 +627,11 @@ class PipelineTests(unittest.TestCase):
         artifact = build_staging_artifact(config, report)
 
         self.assertTrue(report.passed)
+        self.assertTrue(any("ms-2024-november-active-voter-count" in warning for warning in report.warnings))
+        active_voter_source = next(source for source in artifact["sources"] if source["id"] == "ms-2024-november-active-voter-count")
+        self.assertEqual(active_voter_source["status"], "candidate")
+        self.assertEqual(active_voter_source["parser"], "mississippiActiveVoterCountPdfToCsv")
+        self.assertTrue(active_voter_source["metadata"]["artifacts"][0]["exists"])
         self.assertEqual(artifact["native"]["parser"], "nativeMississippiElectionRecapCsv")
         self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 82)
         self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 1225238)

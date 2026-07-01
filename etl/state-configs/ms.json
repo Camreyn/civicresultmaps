@@ -17,6 +17,17 @@
       "status": "loaded"
     },
     {
+      "id": "ms-2024-november-active-voter-count",
+      "category": "Official November 2024 active-voter denominator lead",
+      "url": "https://www.sos.ms.gov/sites/default/files/active-voter-count-reports/2024November%20Voter%20Count%20Red.pdf",
+      "localFile": "data/ms-2024-november-active-voter-count.csv",
+      "parser": "mississippiActiveVoterCountPdfToCsv",
+      "authority": "Mississippi Secretary of State",
+      "timestampBasis": "Official Mississippi SOS November 2024 Active Voter Count PDF linked from the SOS Active Voter Count Reports page; normalized by scripts/collect-ms-active-voter-count.mjs.",
+      "confidence": "Official county active-voter denominator lead with 82 county rows and 1,980,751 active voters. This source has no ballots-cast rows and is not loaded as turnout.",
+      "status": "candidate"
+    },
+    {
       "id": "ms-2024-election-recap-sheets",
       "category": "Official 2024 general election statewide recap CSV",
       "url": "https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv",
@@ -78,7 +89,7 @@
   "expected": {
     "jurisdictions": 82,
     "resultRows": 82,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 82,
     "stateTotal": 1225238,
     "trump": 746305,
