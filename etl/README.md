@@ -12,6 +12,7 @@ Michigan reads the committed MVIC exports, the official registration PDF extract
 - `data/mi-2024-registered-voter-count.pdf`
 - `data/mi-2024-registered-voter-count.json`
 - `data/mi-counties.geojson`
+- `data/mi-historical-presidential-baseline.csv`
 
 The JSON denominator file is derived from the official PDF with:
 
@@ -29,6 +30,7 @@ The parser validates:
 - 4,428 precinct-level review rows
 - 4,416 joined President-versus-U.S. Senate comparison rows
 - 83 county turnout rows using November active registered voters
+- 249 contextual county historical baseline rows for 2012, 2016, and 2020
 
 Run native staging:
 
