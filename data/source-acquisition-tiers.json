@@ -510,7 +510,7 @@
       "stateName": "Indiana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_equipment",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county_plus_supplemental_precinct",
       "exportFormats": [
@@ -526,7 +526,10 @@
         "https://www.in.gov/sos/elections/election-commission/election-results/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://doi.org/10.7910/DVN/NYTPDU",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18"
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/18",
+        "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
+        "https://www.in.gov/sos/elections/indiana-recount-commission/",
+        "https://indianavoters.in.gov/ENRHistorical/ElectionResults?year=2012"
       ],
       "exampleUrls": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
@@ -539,7 +542,10 @@
         "supplemental precinct President-versus-U.S.-Senate review rows",
         "EAC county turnout fallback retained as benchmark",
         "county election equipment context",
-        "official 2016 and 2020 county historical presidential baselines"
+        "official 2016 and 2020 county historical presidential baselines",
+        "official VSTOP post-election risk-limiting audit source path documented",
+        "official Recount Commission petition/order/minute source path documented",
+        "current official ENRHistorical 2012 result page identified but not script-replayable from this environment"
       ],
       "missingFields": [
         "official precinct/subcounty President rows",
@@ -547,13 +553,16 @@
         "precinct turnout and registered-voter denominator rows",
         "precinct boundary geometry",
         "official 2012 county historical presidential baseline",
-        "audit, recount, CVR availability, incident, and correction records"
+        "normalized official VSTOP audit selection/outcome rows",
+        "normalized official recount/contest/correction records",
+        "official CVR availability or request-produced CVR records",
+        "official incident and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson package loaded; official 2016/2020 historicalPresidentialCsv loaded from ENR archives; supplemental MIT/OpenElections precinct review rows loaded; official precinct/subcounty rows remain blocked",
+      "parserStatus": "indianaEnrCountyJson package loaded; official 2016/2020 historicalPresidentialCsv loaded from ENR archives; supplemental MIT/OpenElections precinct review rows loaded; official VSTOP audit and Recount Commission source paths are documented but not normalized; official precinct/subcounty rows and script-replayable 2012 baseline remain blocked",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2016 and 2020 only; 2012 remains source-cited but unnormalized pending a script-readable official artifact.",
-      "nextAction": "Request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, plus a script-readable official 2012 county presidential baseline artifact."
+      "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2016 and 2020 only; the current official ENRHistorical 2012 page is source-cited but Cloudflare/session protected from repeatable scripted collection in this environment, so 2012 remains unnormalized pending an official downloadable artifact or request-produced table.",
+      "nextAction": "Request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, a script-readable official 2012 county presidential baseline artifact, and VSTOP/Recount Commission/CVR/incident records suitable for normalization."
     },
     {
       "state": "KS",
