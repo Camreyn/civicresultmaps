@@ -16,7 +16,7 @@
       "data/mo-historical-presidential-baseline.csv"
     ],
     "scopeNote": "Official county/reporting-jurisdiction President, U.S. Senate, turnout, and historical baseline rows are loaded. The SOS results page identifies precinct-level general-election result files as purchasable from the Elections Division, so precinct-level Missouri review rows remain blocked until that file is obtained.",
-    "requestNeed": "Purchase or request 2024 general election precinct-level result files for President and U.S. Senate, plus any reporting-unit definitions needed to distinguish Kansas City and county jurisdictions.",
+    "requestNeed": "Purchase or request 2024 general election precinct-level result files for President and U.S. Senate, plus any reporting-unit definitions needed to distinguish Kansas City and county jurisdictions. See data/mo-2024-source-request-tracker.json for the request packet fields.",
     "checkedPageEvidence": {
       "checkedAt": "2026-07-01",
       "officialStatement": "The Missouri SOS results page states that precinct-level election results are available for general November elections from 1996 to 2024 and directs purchasers/questions to the Elections Division.",
@@ -84,7 +84,7 @@
       "scopeNote": "Loaded map geometry supports county joins only. Kansas City is a separate SOS reporting jurisdiction and does not have a separate Census county polygon."
     },
     "scopeNote": "No official statewide precinct-boundary geometry or precinct-to-county/reporting-jurisdiction crosswalk was identified in this pass. Missouri precinct review rows should not be mapped or joined below county/reporting-jurisdiction grain until the purchasable precinct file is paired with an official boundary file or reporting-unit crosswalk.",
-    "requestNeed": "Request 2024 precinct boundary GIS, precinct identifiers, split precinct definitions, and crosswalk fields that join the purchasable precinct result file to county/Kansas City/St. Louis City reporting jurisdictions."
+    "requestNeed": "Request 2024 precinct boundary GIS, precinct identifiers, split precinct definitions, and crosswalk fields that join the purchasable precinct result file to county/Kansas City/St. Louis City reporting jurisdictions. See data/mo-2024-source-request-tracker.json for the request packet fields."
   },
   "displayApiCaveats": {
     "status": "documented_county_reporting_jurisdiction_only",
@@ -92,5 +92,6 @@
     "mapLevel": "county_with_kansas_city_reporting_jurisdiction_caveat",
     "advisoryUse": "Current Missouri advisory rows compare official President and U.S. Senate rows at county/reporting-jurisdiction grain only. They are screening inputs, not findings, and not precinct-level scatter plots.",
     "productionPromotion": "No production promotion is authorized from this worker pass. Regenerate staging and run native:report-indicators before any later promotion."
-  }
+  },
+  "requestTrackerArtifact": "data/mo-2024-source-request-tracker.json"
 }

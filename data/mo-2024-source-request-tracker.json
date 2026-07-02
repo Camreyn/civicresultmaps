@@ -1,0 +1,123 @@
+{
+  "state": "MO",
+  "stateName": "Missouri",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "authority": "Missouri Secretary of State and local election authorities",
+  "purpose": "Missouri 2024 request tracker for source families that are not normalized into the current county/reporting-jurisdiction ETL package.",
+  "currentLoadedScope": {
+    "results": "Official county/reporting-jurisdiction President rows are loaded from the Missouri Secretary of State 2024 General Election results-by-county PDF.",
+    "comparison": "Official county/reporting-jurisdiction U.S. Senate rows are loaded from the same source PDF.",
+    "turnout": "Official Secretary of State registered-voter turnout rows are loaded at county/reporting-jurisdiction grain.",
+    "historical": "Official 2012, 2016, and 2020 presidential county/reporting-jurisdiction baseline rows are loaded from Missouri Secretary of State PDFs.",
+    "map": "Loaded geometry is Census county geometry only; Kansas City is a separate reporting jurisdiction in source data and does not have a separate Census county polygon."
+  },
+  "requests": [
+    {
+      "id": "mo-2024-precinct-results-file",
+      "status": "blocked_purchase_required",
+      "sourceAuthority": "Missouri Secretary of State Elections Division",
+      "sourceUrl": "https://www.sos.mo.gov/elections/results",
+      "sourceEvidence": "The Missouri SOS results page states that precinct-level election results are available for general November elections from 1996 to 2024 and directs purchases/questions to the Elections Division.",
+      "localArtifactStatus": "not_collected",
+      "neededArtifacts": [
+        "2024 general election precinct-level President rows",
+        "2024 general election precinct-level U.S. Senate rows",
+        "Candidate, party, contest, jurisdiction, precinct, and vote fields",
+        "Reporting-unit definitions needed to distinguish county jurisdictions, St. Louis City, and Kansas City"
+      ],
+      "requestPath": "Contact the Missouri SOS Elections Division through the email link on the official results page.",
+      "parserNeeded": "precinctComparisonCsv or Missouri-specific precinct data parser after the file format is known.",
+      "caveat": "Do not describe Missouri review coverage as precinct-level until this file is obtained, parsed, reconciled, and paired with geometry or a reporting-unit crosswalk."
+    },
+    {
+      "id": "mo-2024-precinct-geometry-crosswalk",
+      "status": "request_required",
+      "sourceAuthority": "Missouri Secretary of State and local election authorities",
+      "sourceUrl": "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
+      "sourceEvidence": "The Missouri local election authority page distinguishes Jackson County outside Kansas City from Kansas City within Jackson County, matching the separate reporting-jurisdiction caveat in the result PDFs.",
+      "localArtifactStatus": "not_collected",
+      "neededArtifacts": [
+        "2024 precinct boundary GIS or official reporting-unit geography",
+        "Precinct identifiers matching the purchasable precinct result file",
+        "Split-precinct definitions and county/Kansas City/St. Louis City crosswalk fields"
+      ],
+      "requestPath": "Request statewide crosswalks from the Secretary of State if maintained; otherwise request jurisdiction-specific files from local election authorities.",
+      "parserNeeded": "precinctGeometryCrosswalkParser after source format is known.",
+      "caveat": "County map geometry remains valid for county joins only; no subcounty Missouri map overlay should be enabled from the current county geometry."
+    },
+    {
+      "id": "mo-2024-post-election-verification",
+      "status": "request_required",
+      "sourceAuthority": "Missouri Secretary of State and local election authorities",
+      "sourceUrl": "https://www.sos.mo.gov/elections/security",
+      "sourceEvidence": "The Missouri SOS election-security page states that Missouri has 116 election jurisdictions, each with its own voting system, and that election results are audited by local election officials before certification.",
+      "localArtifactStatus": "not_collected",
+      "neededArtifacts": [
+        "2024 post-election verification certificates",
+        "Selected precincts and contests",
+        "Machine totals, hand totals, discrepancies, explanations, and final outcomes"
+      ],
+      "requestPath": "Collect public statewide audit summaries if published; otherwise request certificates and outcome records from the Secretary of State or each local election authority.",
+      "parserNeeded": "auditSelectionOutcomeParser after records are collected.",
+      "caveat": "The current inventory documents the source path only; no 2024 Missouri audit selection or outcome rows are loaded."
+    },
+    {
+      "id": "mo-2024-cvr-availability",
+      "status": "request_required",
+      "sourceAuthority": "Missouri Secretary of State and local election authorities",
+      "sourceUrl": "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
+      "sourceEvidence": "Local election authorities are the practical public-records path for county-specific ballot-system records, while the current inventory keeps CVR availability separate from the purchasable precinct result file.",
+      "localArtifactStatus": "not_collected",
+      "neededArtifacts": [
+        "County-by-county CVR existence and releasability status",
+        "Custodian, request path, format, redaction limits, and ballot-mode fields",
+        "Any public CVR export or denial/availability response"
+      ],
+      "requestPath": "Request or confirm CVR availability with local election authorities and the Secretary of State as applicable.",
+      "parserNeeded": "cvrAvailabilityInventoryCsv after county responses are collected.",
+      "caveat": "No Missouri CVR dataset or county CVR availability table is loaded."
+    },
+    {
+      "id": "mo-2024-incidents-corrections-recounts-litigation",
+      "status": "inventory_request_required",
+      "sourceAuthority": "Missouri Secretary of State, courts, and local election authorities",
+      "sourceUrl": "https://www.sos.mo.gov/elections/elections_integrity",
+      "relatedSourceUrls": [
+        "https://www.sos.mo.gov/elections/results",
+        "https://www.sos.mo.gov/CMSImages/ElectionGoVoteMissouri/CurrentElectionLawBook.pdf"
+      ],
+      "sourceEvidence": "The Missouri SOS Elections Integrity page identifies complaint paths and HAVA determinations; the SOS results page is the official recount-results location checked for 2024 general-election links.",
+      "localArtifactStatus": "not_collected",
+      "neededArtifacts": [
+        "Official 2024 amended canvasses or correction notices",
+        "Recount petitions and outcomes",
+        "Complaint or HAVA determinations relevant to election administration",
+        "Court dockets, orders, and local incident reports where public"
+      ],
+      "requestPath": "Inventory published SOS/court/local records first, then request missing records from the relevant custodian.",
+      "parserNeeded": "administrationEventInventoryCsv after source records are collected.",
+      "caveat": "No normalized Missouri incident, correction, recount, or litigation rows are loaded."
+    },
+    {
+      "id": "mo-2024-kansas-city-display-validation",
+      "status": "documented_display_caveat",
+      "sourceAuthority": "Missouri Secretary of State",
+      "sourceUrl": "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
+      "sourceEvidence": "The local election authority page separates Jackson County outside Kansas City from Kansas City within Jackson County.",
+      "localArtifactStatus": "covered_by_existing_county_package",
+      "neededArtifacts": [
+        "Keep Kansas City as a reporting-jurisdiction caveat in review, turnout, and map displays",
+        "Do not expect a separate Kansas City polygon from Census county geometry"
+      ],
+      "requestPath": "No new request is required for current county-level display; a precinct/crosswalk request is required before subcounty display.",
+      "parserNeeded": "none for current county/reporting-jurisdiction package.",
+      "caveat": "Kansas City source rows should be treated as a separate reporting jurisdiction, not a separate county geometry feature."
+    }
+  ],
+  "validationExpectations": [
+    "Missouri staging should continue to emit 116 result rows, 116 review rows, 116 turnout rows, and 348 historical baseline rows before any production promotion.",
+    "native:report-indicators must be rerun on regenerated staging before promotion; advisory indicators are review signals only, not findings.",
+    "Any future precinct upgrade must reconcile precinct President totals to certified county/reporting-jurisdiction totals and document Kansas City/St. Louis City handling."
+  ]
+}

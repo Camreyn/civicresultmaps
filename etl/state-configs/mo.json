@@ -147,6 +147,17 @@
       "timestampBasis": "Source inventory checked on 2026-07-01 against Missouri SOS results, election security, qualified systems, Elections Integrity/HAVA, local election authority, and election law book pages.",
       "confidence": "Inventory source paths only. Equipment context is loaded separately from Verified Voting; audit, CVR, incident/correction, recount, and litigation rows are not normalized or loaded.",
       "status": "candidate"
+    },
+    {
+      "id": "mo-2024-source-request-tracker",
+      "category": "Missouri 2024 precinct and administration request tracker",
+      "url": "https://www.sos.mo.gov/elections/results",
+      "localFile": "data/mo-2024-source-request-tracker.json",
+      "parser": "sourceRequestTrackerJson",
+      "authority": "Missouri Secretary of State and local election authorities",
+      "timestampBasis": "Request tracker checked on 2026-07-01 against Missouri SOS results, local election authority, election security, Elections Integrity, and election law source paths.",
+      "confidence": "Request/provenance tracker only. It documents the official purchasable precinct-results path, precinct geometry/crosswalk needs, Kansas City reporting-jurisdiction caveat, and missing audit/CVR/incident/correction/recount/litigation rows; it does not load vote, turnout, audit, CVR, or incident rows.",
+      "status": "candidate"
     }
   ],
   "certifiedResults": {
@@ -185,7 +196,7 @@
   "expected": {
     "jurisdictions": 116,
     "resultRows": 116,
-    "sources": 13,
+    "sources": 14,
     "geometryFeatures": 115,
     "stateTotal": 2995327,
     "trump": 1751986,
