@@ -374,21 +374,21 @@
       "year": 2024,
       "priority": 13,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "county",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/ca-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "denominatorTiming": "sos15DayReportOfRegistration",
+      "sourceTitle": "California SOS voter participation statistics by county",
+      "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+      "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 58,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official California SOS Statement of Vote voter participation rows are validated in ETL. Registered voters are 15-day Report of Registration totals.",
+      "nextAction": "Keep the 15-day registration and Same Day Voter Registration caveat visible; collect precinct/local turnout only if matching subcounty result rows are added.",
       "coverage": {
         "jurisdictionRows": 58,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ca-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 25720597,
-        "ballotsCast": 16164330,
+        "registeredVoterDenominatorFile": "data/ca-2024-voter-participation-stats-by-county.pdf",
+        "registeredVoters": 22595659,
+        "ballotsCast": 16140044,
         "warningRows": 0
       }
     },
@@ -1635,6 +1635,36 @@
       "caveats": [
         "Detailed town/ward ballots-cast rows sum to 831,468 while the workbook county summary totals 831,467 after a source correction note.",
         "Town/ward geometry is not part of this package."
+      ]
+    },
+    {
+      "state": "CA",
+      "name": "California",
+      "authority": "California Secretary of State",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "California SOS 2024 General Election voter participation statistics by county",
+        "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+        "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "California SOS 15-day Report of Registration field in voter participation table",
+        "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+        "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+        "parser": "scripts/normalize-ca-turnout.mjs",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "sos15DayReportOfRegistration"
+      },
+      "expected": {
+        "turnoutRows": 58,
+        "registeredVoters": 22595659,
+        "ballotsCast": 16140044
+      },
+      "caveats": [
+        "Turnout is county-level, not precinct-level.",
+        "Registered-voter totals are based on the 15-day Report of Registration and do not include Same Day Voter Registration after the 15-day close.",
+        "The SOS participation PDF total voters are election-level total voters, not presidential contest votes."
       ]
     }
   ],

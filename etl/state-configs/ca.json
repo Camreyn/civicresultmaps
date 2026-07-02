@@ -17,6 +17,17 @@
       "status": "loaded"
     },
     {
+      "id": "ca-2024-general-voter-participation-sov",
+      "category": "Official voter participation and registration county turnout rows",
+      "url": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+      "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "California Secretary of State",
+      "timestampBasis": "Official November 5, 2024 General Election Statement of Vote voter participation statistics by county PDF.",
+      "confidence": "Official California Secretary of State county participation table normalized by scripts/normalize-ca-turnout.mjs from the saved PDF artifact data/ca-2024-voter-participation-stats-by-county.pdf.",
+      "status": "loaded"
+    },
+    {
       "id": "ca-2024-general-president-sov",
       "category": "Official presidential county results",
       "url": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/16-president.xlsx",
@@ -62,23 +73,23 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "ca-2024-eac-turnout",
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "ca-2024-general-voter-participation-sov",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "California turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "registrationDenominatorTiming": "sos15DayReportOfRegistration",
+    "sourceLevel": "county",
+    "notes": "California turnout rows use the official SOS Statement of Vote voter participation statistics by county. Registered-voter totals are based on the 15-day Report of Registration and do not include voters registered after the 15-day close; Same Day Voter Registration may occur from 14 days before Election Day through Election Day.",
     "warningRequired": false,
     "expected": {
       "rowCount": 58,
-      "ballotsCast": 16164330,
-      "registeredVoters": 25720597
+      "ballotsCast": 16140044,
+      "registeredVoters": 22595659
     }
   },
   "expected": {
     "jurisdictions": 58,
     "resultRows": 58,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 58,
     "stateTotal": 15865475,
     "trump": 6081697,
