@@ -6,6 +6,10 @@ from pathlib import Path
 class NewHampshireCoverageInventoryTest(unittest.TestCase):
     def setUp(self):
         self.inventory = json.loads(Path("data/nh-2024-admin-source-inventory.json").read_text(encoding="utf-8-sig"))
+        matrix_text = Path("data/nh-2024-source-request-matrix.tsv").read_text(encoding="utf-8-sig")
+        lines = matrix_text.strip().splitlines()
+        header = lines[0].split("\t")
+        self.request_rows = {dict(zip(header, line.split("\t")))["request_id"]: dict(zip(header, line.split("\t"))) for line in lines[1:]}
 
     def test_loaded_package_counts_and_ballots_cast_caveat_are_preserved(self):
         summary = self.inventory["loadedPackageSummary"]
@@ -33,6 +37,8 @@ class NewHampshireCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(unresolved[2020]["status"], "needs_targeted_archive_or_records_request")
         self.assertEqual(unresolved[2012]["status"], "needs_targeted_archive_or_records_request")
         self.assertIn("No historical baseline rows are loaded", historical["caveat"])
+        self.assertEqual(self.inventory["requestMatrixArtifact"], "data/nh-2024-source-request-matrix.tsv")
+        self.assertIn("nh-2016-historical-workbooks", historical["requestMatrixRows"])
 
     def test_geometry_admin_and_display_paths_remain_inventory_only(self):
         geometry = self.inventory["geometryAndCrosswalk"]
@@ -46,6 +52,15 @@ class NewHampshireCoverageInventoryTest(unittest.TestCase):
         self.assertGreaterEqual(len(recounts["archivedRecountArtifactsIdentified"]), 7)
         self.assertEqual(audit_cvr["status"], "needs_source_inventory")
         self.assertFalse(display["productionChecked"])
+
+    def test_source_request_matrix_tracks_follow_up_artifacts_without_loading_rows(self):
+        self.assertEqual(self.request_rows["nh-2016-historical-workbooks"]["status"], "confirmed_archive_lead_download_blocked")
+        self.assertIn("CDX metadata confirmed", self.request_rows["nh-2016-historical-workbooks"]["confidence_notes"])
+        self.assertEqual(self.request_rows["nh-2020-historical-request"]["status"], "needs_targeted_archive_or_records_request")
+        self.assertEqual(self.request_rows["nh-2012-historical-request"]["status"], "needs_targeted_archive_or_records_request")
+        self.assertEqual(self.request_rows["nh-town-ward-geometry"]["reporting_grain"], "town_ward")
+        self.assertEqual(self.request_rows["nh-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
+        self.assertIn("not describe", self.request_rows["nh-admin-audit-cvr-records"]["caveats"])
 
 
 if __name__ == "__main__":

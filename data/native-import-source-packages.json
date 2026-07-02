@@ -1341,6 +1341,7 @@
       "name": "New Hampshire",
       "priority": 9,
       "currentStatus": "official_town_ward_review_turnout_package_collected_historical_admin_inventory_expanded",
+      "requestMatrixArtifact": "data/nh-2024-source-request-matrix.tsv",
       "officialSourcePages": [
         "https://www.sos.nh.gov/2024-general-election-results",
         "https://web.archive.org/web/20260130123951id_/https://www.sos.nh.gov/2024-general-election-results",
@@ -1359,11 +1360,12 @@
         "downloaded official 2016 President, Governor, and U.S. House workbook artifacts plus a historical normalizer before loading 2016 baseline rows",
         "targeted official archive or records-request path for 2020 and 2012 President-versus-U.S. House/Governor baseline artifacts",
         "town/ward boundary geometry or official reporting-unit crosswalk if map overlays below county level are required",
-        "normalized post-election audit, recount, CVR availability, incident/correction, and litigation artifacts"
+        "normalized post-election audit, recount, CVR availability, incident/correction, and litigation artifacts",
+        "data/nh-2024-source-request-matrix.tsv as the current official-source request queue for 2016, 2020, 2012, town/ward geometry, and administration-context gaps"
       ],
       "preferredComparisonContest": "U.S. House, loaded from official Congressional District 1 and 2 town/ward workbooks; keep district-based comparison caveat visible.",
       "parserNeeded": "newHampshireTownWardCsv loaded for 10 county result rows, 304 town/ward President-versus-U.S.-House review rows, and 304 state-native town/ward turnout rows from official ballots-cast and names-on-checklist workbooks. A historical sibling normalizer is needed for the identified 2016 official archive workbook leads before historical baseline rows can be loaded.",
-      "blocker": "New Hampshire now has official town/ward President-versus-U.S. House review rows and state-native town/ward turnout denominators from archived Secretary of State workbooks. The July 1, 2026 inventory adds official 2016 archive leads for President, Governor, and U.S. House baseline feasibility, but no historical rows are loaded. The live SOS page still returns access denied from this environment, 2020 and 2012 remain targeted archive/records-request items, and town/ward geometry plus normalized audit/recount/CVR/incident/correction/litigation records remain uncollected."
+      "blocker": "New Hampshire now has official town/ward President-versus-U.S. House review rows and state-native town/ward turnout denominators from archived Secretary of State workbooks. The July 1, 2026 inventory adds official 2016 archive leads for President, Governor, and U.S. House baseline feasibility, and Wave 10 adds data/nh-2024-source-request-matrix.tsv with exact follow-up request rows after binary downloads failed from this worker environment; no historical rows are loaded. The live SOS page still returns access denied from this environment, 2020 and 2012 remain targeted archive/records-request items, and town/ward geometry plus normalized audit/recount/CVR/incident/correction/litigation records remain uncollected."
     },
     {
       "state": "NY",

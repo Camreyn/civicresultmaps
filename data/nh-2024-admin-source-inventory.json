@@ -6,6 +6,7 @@
   "authority": "New Hampshire Secretary of State and official public records/GIS source paths",
   "artifactRole": "source inventory only",
   "localArtifact": "data/nh-2024-admin-source-inventory.json",
+  "requestMatrixArtifact": "data/nh-2024-source-request-matrix.tsv",
   "reportingGrain": "town_ward",
   "parserOrNormalizationPath": "scripts/normalize-nh-general-workbooks.mjs for loaded 2024 result, review, and turnout rows; no admin-row parser is loaded from this inventory.",
   "loadedPackageSummary": {
@@ -119,7 +120,12 @@
         "caveat": "No official 2012 workbook candidates were confirmed in this pass."
       }
     ],
-    "caveat": "No historical baseline rows are loaded. The 2016 archive lead is a source-acquisition path only until official artifacts are downloaded, parsed, and reconciled."
+    "requestMatrixRows": [
+      "nh-2016-historical-workbooks",
+      "nh-2020-historical-request",
+      "nh-2012-historical-request"
+    ],
+    "caveat": "No historical baseline rows are loaded. The 2016 archive lead is a source-acquisition path only until official artifacts are downloaded, parsed, and reconciled. Binary download attempts for the 2016 archive artifacts were blocked from this worker environment even though CDX metadata confirmed the official captures."
   },
   "geometryAndCrosswalk": {
     "status": "county_geometry_loaded_town_ward_geometry_blocked",
@@ -144,6 +150,9 @@
         "use": "Request 2024 general-election town/ward reporting-unit boundaries or an official crosswalk matching SOS workbook labels."
       }
     ],
+    "requestMatrixRows": [
+      "nh-town-ward-geometry"
+    ],
     "caveat": "Town/ward geometry is not included and should not be inferred from result workbook names alone. A town-only Census layer would still leave city wards unresolved."
   },
   "recountsCorrectionsIncidentsLitigation": {
@@ -159,6 +168,9 @@
       "2024-ge-recount-results-sheet-election-results-strafford-dist-4-tot.xlsx",
       "2024-ge-recount-results-sheet-election-results-sullivan-dist-5-tot.xlsx"
     ],
+    "requestMatrixRows": [
+      "nh-admin-audit-cvr-records"
+    ],
     "parserNeeded": "A recount-sheet normalizer should be added only after the official XLSX recount artifacts are downloaded and their contest/district scope is reviewed.",
     "caveat": "Archived official recount result sheets were identified for legislative districts, but no normalized recount, incident, correction, or litigation row package is loaded in this PR."
   },
@@ -169,6 +181,9 @@
       "New Hampshire Secretary of State",
       "New Hampshire Attorney General election-law/civil-bureau public records path if litigation or complaint records are required",
       "City and town clerks for ward-specific CVR, recount, correction, or incident records when state-level publication is absent"
+    ],
+    "requestMatrixRows": [
+      "nh-admin-audit-cvr-records"
     ],
     "caveat": "No CVR dataset, post-election audit result table, or per-unit discrepancy artifact is loaded. Treat this as a source-request queue, not evidence of an administration issue."
   },

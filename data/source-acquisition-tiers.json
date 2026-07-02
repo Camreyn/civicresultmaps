@@ -1165,7 +1165,8 @@
         "XLSX",
         "normalized CSV",
         "archived official 2016 XLS/XLSX baseline leads",
-        "admin inventory JSON"
+        "admin inventory JSON",
+        "source request matrix TSV"
       ],
       "sourceUrls": [
         "https://www.sos.nh.gov/2024-general-election-results"
@@ -1187,7 +1188,8 @@
         "county geometry",
         "county equipment context",
         "official 2016 archive leads for President, Governor, and U.S. House historical baseline feasibility",
-        "NH administration/source inventory with recount, geometry, audit, CVR, incident, correction, and litigation request paths"
+        "NH administration/source inventory with recount, geometry, audit, CVR, incident, correction, and litigation request paths",
+        "NH source request matrix with exact follow-up rows for 2016/2020/2012 historical baselines, town/ward geometry, and administration-context records"
       ],
       "missingFields": [
         "loaded 2012/2016/2020 historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
@@ -1195,10 +1197,10 @@
         "normalized post-election audit rows",
         "normalized recount, CVR availability, incident/correction, and litigation rows"
       ],
-      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs; data/nh-2024-admin-source-inventory.json now records official 2016 historical-baseline archive leads and remaining admin/geometry request paths",
+      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs; data/nh-2024-admin-source-inventory.json records official 2016 historical-baseline archive leads and remaining admin/geometry request paths; data/nh-2024-source-request-matrix.tsv records exact official-source follow-up rows",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_district_comparison_caveat",
-      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals. The 2016 historical archive lead is not loaded until artifacts are downloaded, parsed, and reconciled; 2020 and 2012 remain targeted archive/records-request items.",
+      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals. The 2016 historical archive lead is not loaded until artifacts are downloaded, parsed, and reconciled; Wave 10 CDX checks confirmed the official captures but binary downloads failed from the worker environment. 2020 and 2012 remain targeted archive/records-request items tracked in data/nh-2024-source-request-matrix.tsv.",
       "nextAction": "Download and parse the official 2016 archived President, Governor, and U.S. House XLS/XLSX leads; continue targeted archive/records requests for 2020 and 2012; request town/ward geometry or a reporting-unit crosswalk; normalize official audit/recount/CVR/incident/correction/litigation records if obtained."
     },
     {
