@@ -48,6 +48,28 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Idaho county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "id-2024-equipment-context",
+      "category": "County equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/16",
+      "localFile": "data/id-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContext",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verifier county equipment context artifact retained for 2024 Idaho administration metadata.",
+      "confidence": "Context only. County-level equipment rows are not vote, turnout, audit, CVR, or incident records and do not prove precinct-level uniformity.",
+      "status": "candidate"
+    },
+    {
+      "id": "id-2024-data-coverage-inventory",
+      "category": "Idaho source coverage and remaining-gap inventory",
+      "url": "https://sos.idaho.gov/elections-division/election-results/",
+      "localFile": "data/id-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Idaho Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting Verifier",
+      "timestampBasis": "Wave 12 Idaho coverage inventory created July 2, 2026 from committed official artifacts, official source pages, and source-package registries.",
+      "confidence": "Inventory only. Documents loaded official county result/review artifacts, EAC fallback turnout, county geometry, equipment context, and remaining historical, audit, CVR, incident, correction, recount, litigation, turnout, and precinct-geometry gaps.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -67,7 +89,7 @@
   "expected": {
     "jurisdictions": 44,
     "resultRows": 44,
-    "sources": 4,
+    "sources": 6,
     "geometryFeatures": 44,
     "stateTotal": 904967,
     "trump": 605246,
