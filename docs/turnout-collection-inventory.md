@@ -148,6 +148,10 @@ Kentucky currently uses official EAC 2024 V2 county/jurisdiction fallback turnou
 
 New York still uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ny-2024-eac-turnout.csv`, totaling 62 rows, 8,389,626 ballots cast, and 13,579,416 registered voters. A July 1, 2026 official-source pass documented NYSBOE state-native denominator leads: the Enrollment by County page includes `Voters Registered by County as of 11/01/2024`, and the Enrollment by Election District page publishes county-by-county election-district enrollment reports. These are denominator leads only, not ballots-cast or voter-history turnout replacements. Keep NY in the native-turnout-needed path until a state-native ballots-cast/voter-history artifact is collected and reconciled with county or election-district enrollment denominators. See `data/ny-2024-data-coverage-inventory.json` for source URLs, request fields, and caveats.
 
+## New York Wave 13 Check
+
+The July 2, 2026 NY check did not identify a state-native ballots-cast or voter-history artifact that can replace EAC fallback turnout. The NYSBOE county enrollment report and election-district enrollment pages remain denominator leads only, and VEDA/Flateau still has no 2024 replacement data. Keep NY in the native-turnout-needed path.
+
 ## California Update
 
 California now uses official Secretary of State 2024 General Election voter participation rows at data/ca-2024-voter-participation-stats-by-county.csv, normalized from data/ca-2024-voter-participation-stats-by-county.pdf by scripts/normalize-ca-turnout.mjs. The rows include 58 counties, 16,140,044 total voters, and 22,595,659 registered voters. The registered-voter denominator is the SOS 15-day Report of Registration total, so it does not include voters who registered or updated registration through Same Day Voter Registration after the 15-day close. Current CA turnout is county-level and should stay caveated if future precinct/local review rows are added.

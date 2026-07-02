@@ -2070,6 +2070,11 @@
       "name": "New York",
       "priority": 10,
       "currentStatus": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented",
+      "completionDecision": {
+        "checkedAt": "2026-07-02",
+        "decision": "remain_in_source_discovery_queue",
+        "reason": "NY should remain in sourceDiscoveryQueue rather than completedNativeStates because local review rows are partial supplemental OpenElections/legacy NYC coverage, 13 county equivalents remain outside normalized review coverage, active turnout is still EAC fallback, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation rows are not loaded."
+      },
       "officialSourcePages": [
         "https://elections.ny.gov/election-results",
         "https://results.elections.ny.gov/",

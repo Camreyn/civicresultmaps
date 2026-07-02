@@ -80,11 +80,16 @@ test("review indicator reads require enabled review graph capability", () => {
 test("new york coverage inventory preserves supplemental review caveats", () => {
   const config = JSON.parse(readFileSync("etl/state-configs/ny.json", "utf8"));
   const inventory = JSON.parse(readFileSync("data/ny-2024-data-coverage-inventory.json", "utf8"));
+  const nativePackages = JSON.parse(readFileSync("data/native-import-source-packages.json", "utf8"));
   const localReviewManifest = JSON.parse(readFileSync("data/ny-2024-local-review-sources.json", "utf8"));
   const localReview = inventory.loadedArtifacts.find((artifact) => artifact.id === "ny-2024-local-review-openelections");
+  const discoveryNy = nativePackages.sourceDiscoveryQueue.find((entry) => entry.state === "NY");
   const monroeSource = localReviewManifest.files.find((file) => file.file === "Monroe.xlsx");
   const rocklandSource = localReviewManifest.excludedFiles.find((file) => file.file === "Rockland (president only).xlsx");
 
+  assert.equal(inventory.completionDecision.decision, "remain_in_source_discovery_queue");
+  assert.equal(discoveryNy.completionDecision.decision, "remain_in_source_discovery_queue");
+  assert.equal(nativePackages.completedNativeStates.includes("NY"), false);
   assert.match(config.reviewCharts.warning, /county-certified result totals remain the map authority/);
   assert.equal(localReview.expectedCounts.reviewRows, 9753);
   assert.equal(localReview.expectedCounts.missingCountyEquivalents, 13);
@@ -97,4 +102,6 @@ test("new york coverage inventory preserves supplemental review caveats", () => 
   assert.ok(localReview.excludedOrNotYetReviewedCounties.includes("Rockland County"));
   assert.ok(localReview.excludedOrNotYetReviewedCounties.includes("Monroe County"));
   assert.match(inventory.displayCaveats.join(" "), /EAC turnout rows are fallback context/);
+  assert.match(inventory.completionDecision.reason, /turnout is not state-native/);
+  assert.match(discoveryNy.completionDecision.reason, /13 county equivalents/);
 });
