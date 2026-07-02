@@ -122,14 +122,14 @@
   },
   "expected": {
     "jurisdictions": 29,
-    "resultRows": 0,
+    "resultRows": 29,
     "sources": 9,
     "geometryFeatures": 29,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "stateTotal": 1488010,
+    "trump": 883818,
+    "harris": 562566,
+    "other": 41626,
+    "reviewRows": 29,
     "turnoutRows": 29,
     "historicalBaselineRows": 87
   },
@@ -148,9 +148,9 @@
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": true
   },
@@ -160,14 +160,13 @@
     "otherColumns": [
       "other"
     ],
-    "caveat": "The official Utah canvass PDF reports 1,488,494 total presidential contest votes statewide. The text-layer named candidate county columns normalized here total 1,488,010 votes, leaving a 484-vote statewide residual that is documented but not distributed to counties. Native result import is pending a shared build_native_payload UT countyPresidentCsv dispatcher."
+    "caveat": "The official Utah canvass PDF reports 1,488,494 total presidential contest votes statewide. The text-layer named candidate county columns normalized here total 1,488,010 votes, leaving a 484-vote statewide residual that is documented but not distributed to counties."
   },
   "reviewCharts": {
     "format": "countyComparisonCsv",
     "sourceId": "ut-2024-general-attorney-general-county",
     "comparisonContest": "Attorney General",
     "coverageMode": "presidentVsAttorneyGeneral",
-    "warning": "Utah review rows are county-level President-versus-Attorney-General comparisons from the official statewide canvass PDF. They support county-level directional screening only; they are not precinct-level scatter plots, and Attorney General is not a federal Senate comparison contest. Native review import is pending the same shared dispatcher."
-  },
-  "turnoutOnly": true
+    "warning": "Utah review rows are county-level President-versus-Attorney-General comparisons from the official statewide canvass PDF. They support county-level directional screening only; they are not precinct-level scatter plots, and Attorney General is not a federal Senate comparison contest."
+  }
 }
