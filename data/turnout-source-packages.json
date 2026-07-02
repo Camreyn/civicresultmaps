@@ -1214,22 +1214,22 @@
       "year": 2024,
       "priority": 45,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
-      "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/ut-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "sourceLevel": "county",
+      "denominatorType": "activeVoters",
+      "denominatorTiming": "countyStandardizedCanvass",
+      "sourceTitle": "Utah aggregated county standardized canvass statistics 2023-2025 workbook",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+      "localFile": "data/ut-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 29,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official Utah county standardized canvass statistics are normalized and active for ETL turnout. EAC fallback rows are retained as a benchmark only.",
+      "nextAction": "Collect precinct/local turnout denominators only if subcounty result rows are later loaded; keep total-ballots-counted versus presidential-contest-votes caveat visible.",
       "coverage": {
         "jurisdictionRows": 29,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ut-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 2039862,
-        "ballotsCast": 1466797,
-        "warningRows": 0
+        "registeredVoters": 1793317,
+        "ballotsCast": 1529139,
+        "warningRows": 0,
+        "eacBenchmarkFile": "data/eac-2024-state-turnout/ut-2024-eac-turnout.csv"
       }
     },
     {
@@ -1699,6 +1699,34 @@
         "Turnout is county-level, not precinct-level.",
         "Registered-voter totals are based on the 15-day Report of Registration and do not include Same Day Voter Registration after the 15-day close.",
         "The SOS participation PDF total voters are election-level total voters, not presidential contest votes."
+      ]
+    },
+    {
+      "state": "UT",
+      "name": "Utah",
+      "authority": "Utah Lieutenant Governor Elections Office",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "Utah aggregated county standardized canvass statistics 2023-2025 workbook",
+        "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+        "localFile": "data/ut-2024-general-turnout.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Utah county standardized canvass Active voters",
+        "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+        "localFile": "data/ut-2024-general-turnout.csv",
+        "parser": "normalizedTurnoutCsv",
+        "denominatorType": "activeVoters"
+      },
+      "expected": {
+        "turnoutRows": 29,
+        "ballotsCast": 1529139,
+        "registeredVoters": 1793317
+      },
+      "caveats": [
+        "Total ballots counted is election-level turnout across the ballot, not presidential contest votes.",
+        "The denominator is the Active voters column from Utah county standardized canvass statistics."
       ]
     }
   ],

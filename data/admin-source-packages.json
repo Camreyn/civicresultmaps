@@ -1569,16 +1569,22 @@
         "expectedJurisdictions": 29
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Utah 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "source_paths_documented_not_normalized",
+        "sourceUrl": "https://vote.utah.gov/2024-election-information/",
+        "localArtifact": "data/ut-2024-data-coverage-inventory.json",
+        "why": "The Utah coverage inventory documents 2024 election information and county canvass paths, but no normalized post-election audit selection/outcome rows are loaded."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Utah 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "request_path_documented_not_normalized",
+        "sourceUrl": "https://vote.utah.gov/obtain-voter-registration-or-election-data/",
+        "localArtifact": "data/ut-2024-data-coverage-inventory.json",
+        "why": "No official Utah CVR availability response or CVR artifact was collected; the request/data path is documented for follow-up."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Utah 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "source_paths_documented_not_normalized",
+        "sourceUrl": "https://vote.utah.gov/2024-election-information/",
+        "localArtifact": "data/ut-2024-data-coverage-inventory.json",
+        "why": "The CD2 recount report is retained as context, but no normalized presidential incident, correction, litigation, recount, L&A, tabulator-log, or custody rows are loaded."
       }
     },
     {

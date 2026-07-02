@@ -1,0 +1,149 @@
+{
+  "state": "UT",
+  "stateName": "Utah",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "authority": "Utah Lieutenant Governor Elections Office; U.S. Census Bureau; U.S. Election Assistance Commission",
+  "status": "official_county_results_review_turnout_geometry_loaded_with_pdf_text_residual_caveat",
+  "loadedArtifacts": [
+    {
+      "id": "ut-2024-general-statewide-canvass-pdf",
+      "sourceTitle": "Utah 2024 November General Election Statewide Canvass",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "localFile": "data/ut-2024-general-election-statewide-canvass.pdf",
+      "reportingGrain": "county",
+      "parser": "scripts/normalize-ut-official-results.mjs",
+      "expectedRows": 29,
+      "caveat": "The PDF text layer exposes named presidential candidate columns totaling 1,488,010 votes, while the PDF reports 1,488,494 total presidential contest votes. The 484-vote statewide residual remains documented and is not distributed to counties."
+    },
+    {
+      "id": "ut-2024-general-president-county",
+      "sourceTitle": "Utah official 2024 General Election county President rows",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "localFile": "data/ut-2024-general-president.csv",
+      "reportingGrain": "county",
+      "parser": "countyPresidentCsv",
+      "expectedRows": 29,
+      "trump": 883818,
+      "harris": 562566,
+      "otherNamedCandidateColumns": 41626,
+      "normalizedTotal": 1488010,
+      "officialContestTotal": 1488494,
+      "residualUndistributed": 484
+    },
+    {
+      "id": "ut-2024-general-attorney-general-county",
+      "sourceTitle": "Utah official 2024 General Election county Attorney General rows",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "localFile": "data/ut-2024-general-attorney-general.csv",
+      "reportingGrain": "county",
+      "parser": "countyComparisonCsv",
+      "comparisonContest": "Attorney General",
+      "expectedRows": 29,
+      "comparisonRep": 838445,
+      "comparisonDem": 401234,
+      "comparisonOther": 209816
+    },
+    {
+      "id": "ut-2024-general-turnout-county",
+      "sourceTitle": "Utah aggregated county standardized canvass statistics 2023-2025, G24 sheet",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+      "localFile": "data/ut-2024-general-turnout.csv",
+      "sourceWorkbook": "data/ut-2024-master-aggregated-numbers-2023-2025.xlsx",
+      "reportingGrain": "county",
+      "parser": "normalizedTurnoutCsv",
+      "expectedRows": 29,
+      "ballotsCast": 1529139,
+      "activeVoters": 1793317,
+      "caveat": "Total ballots counted is election-level turnout across the ballot, not presidential contest votes. The denominator column is Active voters from county standardized canvass statistics."
+    },
+    {
+      "id": "ut-county-geometry",
+      "sourceTitle": "U.S. Census TIGERweb county geography",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2749%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ut-counties.geojson",
+      "reportingGrain": "county",
+      "parser": "censusTigerwebCountyGeojson",
+      "expectedRows": 29
+    },
+    {
+      "id": "ut-2024-cd2-recount-report",
+      "sourceTitle": "Utah 2024 Congressional District 2 Recount Report",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2024/08/CD2-Recount-Signed.pdf",
+      "localFile": "data/ut-2024-cd2-recount-report.pdf",
+      "reportingGrain": "district",
+      "parser": "officialRecountPdf",
+      "caveat": "Context only; not row-normalized into presidential audit/recount findings."
+    },
+    {
+      "id": "ut-historical-presidential-wikipedia-county",
+      "sourceTitle": "Wikipedia county presidential tables with Utah election-result source footnotes",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Utah",
+      "localFile": "data/ut-historical-presidential-baseline.csv",
+      "reportingGrain": "county",
+      "parser": "historicalPresidentialCsv",
+      "expectedRows": 87,
+      "years": [
+        2012,
+        2016,
+        2020
+      ],
+      "caveat": "Secondary contextual historical baseline only; replace with official Utah historical Excel/PDF normalization when feasible."
+    }
+  ],
+  "sourceFindings": {
+    "officialResultExports": {
+      "status": "official_pdf_text_layer_normalized",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "notes": "County President and Attorney General rows are available in the certified statewide canvass PDF text layer. No statewide precinct/local reporting-unit export was collected in this pass."
+    },
+    "turnoutRegistration": {
+      "status": "state_native_county_loaded",
+      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+      "notes": "The G24 sheet provides county total ballots counted and Active voters. EAC fallback rows remain retained as a benchmark but are no longer the active UT turnout source."
+    },
+    "historicalBaselines": {
+      "status": "secondary_loaded_official_replacement_leads_identified",
+      "sourceUrl": "https://vote.utah.gov/historical-election-results/",
+      "notes": "The Utah historical-results page links official 2020 and 2016 Excel/PDF artifacts and 2012 General Election source pages. A future pass should normalize those official artifacts to replace the secondary baseline."
+    },
+    "precinctGeometry": {
+      "status": "county_geometry_loaded_precinct_missing",
+      "notes": "County geometry is loaded for map joins. No official statewide precinct boundary geometry or county-to-precinct crosswalk is loaded."
+    },
+    "auditCvrIncidentsCorrectionsLitigation": {
+      "status": "request_paths_documented_not_normalized",
+      "sourceUrls": [
+        "https://vote.utah.gov/2024-election-information/",
+        "https://vote.utah.gov/county-canvass-certifications-and-results/",
+        "https://vote.utah.gov/obtain-voter-registration-or-election-data/"
+      ],
+      "notes": "The 2024 Election Information page links a CD2 recount report and county canvass certification paths. No normalized Utah post-election audit, CVR availability, incident, correction, litigation, L&A, tabulator-log, or custody rows are loaded."
+    },
+    "equipmentContext": {
+      "status": "supplemental_loaded",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/49",
+      "localFile": "data/ut-2024-equipment-context.csv",
+      "caveat": "Verified Voting equipment context is supplemental jurisdiction metadata only."
+    }
+  },
+  "displayPathChecked": {
+    "config": "etl/state-configs/ut.json",
+    "apiRoutes": [
+      "src/app/api/results/route.ts",
+      "src/app/api/sources/route.ts",
+      "src/app/api/coverage/route.ts"
+    ],
+    "uiPaths": [
+      "src/app/workspace-tabs.tsx",
+      "src/app/readiness/page.tsx"
+    ],
+    "validation": "Native staging currently exercises the turnout and historical API/display data contract. The collected county President and Attorney General review artifacts are source-ready, but native result/review import is pending a coordinated shared UT countyPresidentCsv dispatcher; production DB/API was not checked or promoted from this worker branch."
+  },
+  "remainingRisks": [
+    "Resolve the 484-vote statewide presidential residual between visible PDF candidate columns and the PDF contest total before treating UT normalized county presidential totals as a perfect certified-total replacement.",
+    "Collect official precinct/local reporting-unit President plus same-grain comparison rows if subcounty advisory charts are required.",
+    "Normalize official 2012, 2016, and 2020 Utah historical artifacts from vote.utah.gov to replace secondary historical context rows.",
+    "Collect official post-election audit selections/outcomes, CVR availability, incident/correction records, litigation records, L&A/tabulator-log/custody records, and precinct geometry/crosswalks if published or request-produced."
+  ]
+}
