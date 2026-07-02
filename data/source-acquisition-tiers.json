@@ -561,11 +561,13 @@
         "official turnout PDF normalized CSV",
         "supplemental MIT/OpenElections CSV",
         "EAC fallback turnout CSV retained as benchmark",
-        "Verified Voting equipment CSV"
+        "Verified Voting equipment CSV",
+        "official request matrix TSV"
       ],
       "sourceUrls": [
         "https://enr.indianavoters.in.gov/",
         "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
+        "https://www.in.gov/sos/elections/voter-information/register-to-vote/voter-registration-and-turnout-statistics/",
         "https://www.in.gov/sos/elections/election-commission/election-results/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://doi.org/10.7910/DVN/NYTPDU",
@@ -588,7 +590,8 @@
         "official 2016 and 2020 county historical presidential baselines",
         "official VSTOP post-election risk-limiting audit source path documented",
         "official Recount Commission petition/order/minute source path documented",
-        "current official ENRHistorical 2012 result page identified but not script-replayable from this environment"
+        "current official ENRHistorical 2012 result page identified but not script-replayable from this environment",
+        "Indiana official-source request matrix maintained at data/in-2024-source-request-matrix.tsv"
       ],
       "missingFields": [
         "official precinct/subcounty President rows",
@@ -601,11 +604,11 @@
         "official CVR availability or request-produced CVR records",
         "official incident and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson package loaded; official 2016/2020 historicalPresidentialCsv loaded from ENR archives; supplemental MIT/OpenElections precinct review rows loaded; official VSTOP audit and Recount Commission source paths are documented but not normalized; official precinct/subcounty rows and script-replayable 2012 baseline remain blocked",
+      "parserStatus": "indianaEnrCountyJson package loaded; official 2016/2020 historicalPresidentialCsv loaded from ENR archives; supplemental MIT/OpenElections precinct review rows loaded; official VSTOP audit and Recount Commission source paths are documented but not normalized; data/in-2024-source-request-matrix.tsv records official precinct/subcounty, 2012 baseline, geometry, turnout, audit, CVR, and incident follow-up asks; official precinct/subcounty rows and script-replayable 2012 baseline remain blocked",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
       "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2016 and 2020 only; the current official ENRHistorical 2012 page is source-cited but Cloudflare/session protected from repeatable scripted collection in this environment, so 2012 remains unnormalized pending an official downloadable artifact or request-produced table.",
-      "nextAction": "Request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, a script-readable official 2012 county presidential baseline artifact, and VSTOP/Recount Commission/CVR/incident records suitable for normalization."
+      "nextAction": "Use data/in-2024-source-request-matrix.tsv to request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, a script-readable official 2012 county presidential baseline artifact, precinct geometry/turnout if needed, and VSTOP/Recount Commission/CVR/incident records suitable for normalization."
     },
     {
       "state": "KS",
