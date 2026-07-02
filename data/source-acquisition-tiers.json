@@ -1043,11 +1043,11 @@
         "state-native ballots-cast turnout rows to pair with the collected November 2024 active-voter denominator lead",
         "2020/2016/2012 source-cited historical baseline artifacts from the SOS archive iframe/direct file/request path"
       ],
-      "parserStatus": "mississippiElectionRecapCsv loaded for county review; scripts/collect-ms-active-voter-count.mjs normalizes the official November 2024 Active Voter Count denominator lead; historical baselines remain blocked pending official SOS county artifacts from the archive iframe/direct file/request path",
+      "parserStatus": "mississippiElectionRecapCsv loaded for county review; scripts/collect-ms-active-voter-count.mjs normalizes the official November 2024 Active Voter Count denominator lead; data/ms-2024-source-request-matrix.tsv tracks OCR, turnout, historical, geometry, and administration-context follow-up asks; historical baselines remain blocked pending official SOS county artifacts from the archive iframe/direct file/request path",
       "manualReviewBurden": "low",
       "confidence": "loaded",
       "caveats": "County-level review is useful but not a precinct-level scatter plot. The collected SOS Active Voter Count PDF is a denominator lead only and does not replace ballots-cast turnout rows by itself.",
-      "nextAction": "Keep loaded county package; pair the collected November 2024 active-voter denominator lead with official Mississippi ballots-cast/voter-participation rows before replacing EAC turnout, and collect official Mississippi SOS 2020, 2016, and 2012 county presidential artifacts before enabling historicalBaseline."
+      "nextAction": "Keep loaded county package; use data/ms-2024-source-request-matrix.tsv to pair the collected November 2024 active-voter denominator lead with official Mississippi ballots-cast/voter-participation rows before replacing EAC turnout, and collect official Mississippi SOS 2020, 2016, and 2012 county presidential artifacts before enabling historicalBaseline."
     },
     {
       "state": "MS",
