@@ -20,13 +20,15 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertIn("Certified county map/result totals", " ".join(artifacts["in-2024-official-enr-president"]["caveats"]))
         self.assertIn("supplemental", " ".join(artifacts["in-2024-mit-precinct-president-senate"]["caveats"]).lower())
 
-    def test_2012_historical_gap_is_official_endpoint_not_loaded_rows(self):
+    def test_2012_historical_baseline_is_loaded_from_official_endpoint(self):
         lead = next(entry for entry in self.inventory["historicalBaselineSourceLeads"] if entry["year"] == 2012)
-        self.assertEqual(lead["status"], "official_endpoint_identified_not_script_replayable")
+        self.assertEqual(lead["status"], "loaded_official_county_baseline")
         self.assertIn("ENRHistorical", lead["sourceUrl"])
-        gap = next(entry for entry in self.inventory["gaps"] if entry["artifact"] == "2012_historical_presidential_baseline")
-        self.assertEqual(gap["status"], "official_endpoint_identified_not_script_replayable")
-        self.assertIn("stable official export", gap["remainingRisk"])
+        artifacts = {entry["id"]: entry for entry in self.inventory["loadedArtifacts"]}
+        historical = artifacts["in-historical-presidential-official-enr"]
+        self.assertEqual(historical["expectedCounts"]["rows"], 276)
+        self.assertIn(2012, historical["expectedCounts"]["years"])
+        self.assertFalse(any(entry["artifact"] == "2012_historical_presidential_baseline" for entry in self.inventory["gaps"]))
 
     def test_admin_source_paths_are_documented_but_not_normalized(self):
         self.assertEqual(self.admin["status"], "partial")
@@ -42,7 +44,7 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         artifacts = {row["artifact"]: row for row in self.request_rows}
         self.assertEqual(len(self.request_rows), 8)
         self.assertEqual(artifacts["official_precinct_or_local_reporting_unit_president"]["priority"], "high")
-        self.assertEqual(artifacts["official_2012_county_presidential_baseline"]["local_artifact_status"], "no_stable_local_artifact")
+        self.assertEqual(artifacts["official_2012_county_presidential_baseline"]["local_artifact_status"], "loaded_official_endpoint_json")
         self.assertIn("not proof", artifacts["vstop_audit_selection_outcome"]["caveat"])
         self.assertIn("misconduct", artifacts["recount_incident_correction_records"]["caveat"])
 
