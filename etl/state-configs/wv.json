@@ -129,7 +129,8 @@
     "harris": 214309,
     "other": 14525,
     "reviewRows": 1648,
-    "turnoutRows": 1649
+    "turnoutRows": 1649,
+    "historicalBaselineRows": 165
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -137,7 +138,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "westVirginiaClarityCountyDetailXmlDirectory",
@@ -153,5 +154,18 @@
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
     "warning": "West Virginia review rows are precinct-level President-versus-U.S. Senate comparisons from official Secretary of State county detail XML report ZIPs. They are advisory review inputs, not confirmed findings."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "wv-historical-presidential-baseline",
+    "warning": "West Virginia historical baseline rows are county-level presidential context for 2012, 2016, and 2020 from official West Virginia Secretary of State sources. The 2012 and 2016 legacy results app states that write-in candidate information is not included, so use these as contextual baseline rows only, not as write-in-inclusive certified totals.",
+    "expected": {
+      "rowCount": 165,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }

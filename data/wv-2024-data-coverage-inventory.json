@@ -210,14 +210,14 @@
     },
     {
       "topic": "historicalBaselines",
-      "status": "normalized_artifact_collected_importer_dispatch_blocked",
+      "status": "loaded_generic_historical_importer",
       "sourceAuthority": "West Virginia Secretary of State",
       "sourceUrl": "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
       "localArtifactPath": "data/wv-historical-presidential-baseline.csv",
       "reportingGrain": "county",
-      "parserOrNormalizationPath": "scripts/collect-wv-historical-baseline.mjs generated historicalPresidentialCsv-compatible rows; WV native dispatch update is required before rows appear in staging/API",
+      "parserOrNormalizationPath": "scripts/collect-wv-historical-baseline.mjs generated historicalPresidentialCsv-compatible rows loaded by the generic native historical importer",
       "evidence": "The SOS historical results page links the official 2020 General Election Clarity archive and the official 2008-2017 results app. This pass collected official SOS county presidential rows for 2012, 2016, and 2020 and normalized 165 county baseline rows.",
-      "caveats": "Historical rows are contextual baselines only. The 2012 and 2016 SOS legacy CSVs state that results do not include write-in candidate information, and 2012 does not match write-in-inclusive statewide totals. WV native staging does not emit these rows until the shared native importer dispatch is updated.",
+      "caveats": "Historical rows are contextual baselines only. The 2012 and 2016 SOS legacy CSVs state that results do not include write-in candidate information, and 2012 does not match write-in-inclusive statewide totals.",
       "expectedRows": 165,
       "targetYears": [
         2012,
@@ -242,7 +242,7 @@
     "No official statewide precinct boundary geometry or precinct-to-result crosswalk is loaded, so current public map joins remain county-level even though WV has precinct review and turnout rows.",
     "Post-election hand-count audit policy is documented, but 2024 county selection/outcome artifacts are not normalized.",
     "CVR availability, recount outcomes, canvass corrections, complaint dispositions, incident records, and litigation records remain request-path items.",
-    "Historical baseline source artifacts and normalized CSV are collected for 2012, 2016, and 2020, but WV native staging/API emission is blocked until the shared native importer dispatch is updated.",
+    "Historical baseline source artifacts and normalized CSV are collected for 2012, 2016, and 2020 and load through the generic native historical importer, with write-in caveats retained for 2012 and 2016.",
     "Current advisory indicators are data/reconciliation signals only and are not evidence of fraud or misconduct."
   ]
 }
