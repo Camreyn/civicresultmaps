@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-06-22",
+  "checkedAt": "2026-07-02",
   "purpose": "Native importer handoff package for the next states after Ohio and Wisconsin.",
   "notes": [
     "These packages point to official source artifacts already present in this repository.",
@@ -36,7 +36,8 @@
     "WI",
     "WV",
     "CA",
-    "MA"
+    "MA",
+    "OK"
   ],
   "blockedStates": [],
   "states": [
@@ -1221,6 +1222,88 @@
         "Historical baselines are county-level context only; the 2020 PD43+ county rows sum one non-D/R vote above the statewide summary line and the collector preserves official displayed county rows.",
         "County geometry is loaded, but no official precinct/ward/municipal geometry or reporting-unit crosswalk is loaded.",
         "The coverage inventory records audit/CVR/log/L&A/custody/incident/recount/litigation request paths only; normalized administration rows are not loaded."
+      ]
+    },
+    {
+      "state": "OK",
+      "name": "Oklahoma",
+      "priority": 12,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_admin_inventory",
+      "authority": "Oklahoma State Election Board; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context",
+      "configFile": "etl/state-configs/ok.json",
+      "legacyReferenceBundle": "data/ok-2024-official-results",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Oklahoma State Election Board official county-level CSV ZIP export",
+          "sourceUrl": "https://results.okelections.gov/OKERS/enrapi/GetExtract/CLCSV/20241105",
+          "localFile": "data/ok-2024-official-results/ok-2024-county-level-results.zip",
+          "parserHint": "nativeOklahomaOfficialCsvZip reads the official county-level ZIP for U.S. President race 10001 and reconciles totals against the official race-level CSV export."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Oklahoma State Election Board official precinct-level CSV ZIP export",
+          "sourceUrl": "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105",
+          "localFile": "data/ok-2024-official-results/ok-2024-precinct-level-results.zip",
+          "level": "precinct",
+          "comparisonContest": "U.S. House",
+          "parserHint": "Pair President race 10001 precinct rows with precinct U.S. House rows where both Democratic and Republican candidates are present; retain nonzero presidential precincts without comparable House rows as vote-share-only review rows."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2740%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ok-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "raceLevelReconciliation": {
+          "sourceTitle": "Oklahoma State Election Board official race-level CSV export",
+          "sourceUrl": "https://results.okelections.gov/OKERS/enrapi/GetExtract/CSV/20241105",
+          "localFile": "data/ok-2024-official-results/ok-2024-race-level-results.csv",
+          "parserHint": "Reconciles presidential statewide totals against county aggregation."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Oklahoma 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://oklahoma.gov/elections/elections-results/election-results/2024-election-results/november-general-election.html",
+          "localFile": "data/ok-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded official exports, EAC fallback turnout, county geometry, equipment context, historical-source leads, official audit archive path, records-request path, and display caveats. Inventory only; no normalized audit/CVR/incident/recount/litigation rows are loaded."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Oklahoma 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/40",
+          "localFile": "data/ok-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 77,
+        "geometryFeatures": 77,
+        "stateTotal": 1566173,
+        "trump": 1036213,
+        "harris": 499599,
+        "other": 30361,
+        "localReviewRows": 1977,
+        "turnoutRows": 77
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_precinct_with_vote_share_only_rows",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "adminInventoryStatus": "equipment_context_loaded_audit_archive_and_request_paths_documented_not_row_level_loaded"
+      },
+      "caveats": [
+        "Review rows use U.S. House by district rather than a single statewide comparison contest, and 460 nonzero presidential precinct rows are vote-share-only because comparable major-party House rows are absent.",
+        "Turnout rows use EAC 2024 V2 county/jurisdiction fallback data until Oklahoma-native turnout or voter-history denominator rows are collected and reconciled.",
+        "County geometry is loaded; official precinct boundary geometry or a precinct-to-result crosswalk is not loaded.",
+        "Official 2012, 2016, and 2020 historical result pages are identified, but historical baseline artifacts and a normalizer are not loaded.",
+        "The official 2024 post-election audit archive and records-request path are documented, but normalized audit, CVR availability, recount, incident, correction, and litigation rows are not loaded."
       ]
     }
   ],

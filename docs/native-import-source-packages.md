@@ -263,6 +263,20 @@ Expected validation: 14 county result rows, 14 county geometry features, 2,382 c
 
 Remaining gaps: state-native local turnout denominators, official precinct/ward/municipal geometry or reporting-unit crosswalk, detailed audit workpapers, CVR availability, ballot images, tabulator/EMS logs, logic-and-accuracy records, custody records, incident/correction records, recount records, and litigation records. Current advisory rows are public-interest screening inputs only, not findings.
 
+## Oklahoma Wave 12 Update
+
+- Config: `etl/state-configs/ok.json`
+- Authority: Oklahoma State Election Board; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- County results source: `data/ok-2024-official-results/ok-2024-county-level-results.zip`, from the official OK Election Results county-level CSV ZIP export
+- Race-level reconciliation source: `data/ok-2024-official-results/ok-2024-race-level-results.csv`, from the official race-level CSV export
+- Local review source: `data/ok-2024-official-results/ok-2024-precinct-level-results.zip`, from the official precinct-level CSV ZIP export
+- Comparison contest: U.S. House by district; same-precinct rows are comparable only where both Democratic and Republican House candidate votes are present, with vote-share-only rows retained for non-comparable precincts
+- Turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ok-2024-eac-turnout.csv`; Oklahoma-native turnout/voter-history denominator rows remain a source gap
+- County boundary: `data/ok-counties.geojson`
+- Coverage/admin inventory: `data/ok-2024-data-coverage-inventory.json` documents official historical result pages for 2012/2016/2020, the official 2024 post-election audit archive, precinct GIS source lead, records-request path, equipment context, and remaining CVR/recount/incident/correction/litigation gaps
+
+Expected validation: 77 county result rows, 77 county geometry features, 1,566,173 presidential votes, 1,036,213 Trump votes, 499,599 Harris votes, 30,361 other votes, 1,977 precinct review rows, and 77 EAC fallback turnout rows. Remaining gaps are Oklahoma-native turnout or voter-history rows, precinct boundary geometry/crosswalks, loaded 2012/2016/2020 historical baseline rows, normalized row-level audit outcomes, CVR availability, recount, incident, correction, and litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+
 ## Native ETL Acceptance Criteria
 
 For each state, the native importer should fail before promotion if:

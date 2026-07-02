@@ -1481,30 +1481,51 @@
       "stateName": "Oklahoma",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_geometry_admin_context",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official race-level CSV",
+        "official county-level CSV ZIP",
+        "official precinct-level CSV ZIP",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON",
+        "Verified Voting equipment context CSV"
       ],
       "sourceUrls": [
-        "https://oklahoma.gov/elections/elections-results.html"
+        "https://oklahoma.gov/elections/elections-results/election-results/2024-election-results/november-general-election.html",
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/CSV/20241105",
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/CLCSV/20241105",
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://oklahoma.gov/elections/security-integrity/post-election-audits/post-election-audit-archives/2024-post-election-audits.html",
+        "https://oklahoma.gov/elections/candidates/district-and-precinct-maps.html",
+        "https://oklahoma.gov/elections/about-us/information-and-records-requests.html"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official precinct presidential rows",
+        "official precinct U.S. House comparison rows where both major-party House candidates are present",
+        "official EAC fallback turnout rows",
+        "county geometry",
+        "county equipment context from Verified Voting",
+        "official post-election audit archive source path"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator rows",
+        "precinct boundary geometry or precinct-to-county crosswalk",
+        "loaded official 2012/2016/2020 historical baseline rows",
+        "normalized post-election audit selection/outcome rows",
+        "normalized CVR availability, recount, incident, correction, and litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Oklahoma result exports and local reporting-unit availability."
+      "parserStatus": "nativeOklahomaOfficialCsvZip loads race-level, county-level, and precinct-level official OK exports; EAC fallback turnout and county geometry are loaded; data/ok-2024-data-coverage-inventory.json documents remaining source gaps.",
+      "manualReviewBurden": "low",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Oklahoma has official export endpoints for race, county, and precinct results, so acquisition is Tier 1 for result/review data. Review rows use U.S. House by district and retain vote-share-only rows when a precinct lacks both major-party House candidates. Turnout remains EAC fallback, county geometry is loaded only at county grain, and normalized historical, audit, CVR, recount, incident, correction, and litigation rows are not loaded.",
+      "nextAction": "Collect state-native turnout or voter-history rows, official precinct geometry/crosswalks, historical 2012/2016/2020 result exports, and row-level audit/CVR/recount/incident/correction/litigation artifacts or request responses."
     },
     {
       "state": "OR",
