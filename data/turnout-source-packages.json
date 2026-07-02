@@ -454,8 +454,8 @@
       "localFile": "data/eac-2024-state-turnout/de-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 3,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; a Delaware Department of Elections 2024 age-group/party report is now documented as a state-native registered/voted lead but is not loaded.",
+      "nextAction": "Normalize and reconcile the official Delaware AGP report before replacing EAC fallback: observed statewide AGP totals are 788,864 registered and 518,086 voted versus active EAC fallback 788,441 registered and 514,367 ballots cast. Keep the EAC fallback visibly caveated until denominator timing and voted/ballots-cast semantics are reviewed.",
       "coverage": {
         "jurisdictionRows": 3,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/de-2024-eac-registered-voter-denominator.json",

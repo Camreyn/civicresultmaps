@@ -16,6 +16,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "de-2024-data-coverage-inventory",
+      "category": "Delaware data coverage and administration source inventory",
+      "url": "https://elections.delaware.gov/elections/election_archive.html",
+      "localFile": "data/de-2024-data-coverage-inventory.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Delaware Department of Elections",
+      "timestampBasis": "Wave 14 official-source coverage inventory checked July 2, 2026.",
+      "confidence": "Documents official Delaware 2024 result report and Power BI source leads, state-native turnout/registration leads, FirstMap election-district geometry leads, historical archive leads, FOIA request paths, and remaining audit/CVR/recount/incident/correction/litigation gaps. Inventory only; no normalized result, review, or administration rows are loaded.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 3,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,

@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-06-22",
+  "checkedAt": "2026-07-02",
   "description": "Source acquisition tier registry for planning result, review, turnout, and method collection work. This classifies acquisition difficulty and scripting ROI; it does not replace loaded result or review data.",
   "tierDefinitions": [
     {
@@ -340,30 +340,50 @@
       "stateName": "Delaware",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_turnout_geometry_admin_context",
+      "tier": "tier_5_digital_inconsistent",
+      "reportingGrain": "county_or_election_district",
       "exportFormats": [
-        "eac fallback turnout"
-      ],
-      "sourceUrls": [
-        "https://elections.delaware.gov/results/"
-      ],
-      "exampleUrls": [],
-      "availableFields": [
-        "county presidential totals",
+        "official HTML report",
+        "official Power BI report",
+        "official TXT turnout/registration report",
+        "official CSV registration reports",
+        "FirstMap GIS leads",
         "EAC fallback turnout"
       ],
-      "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+      "sourceUrls": [
+        "https://elections.delaware.gov/elections/election_archive.html",
+        "https://elections.delaware.gov/reports/GE2024.html",
+        "https://app.powerbigov.us/view?r=eyJrIjoiYmIwM2I3OWUtYjQxNC00YzYxLWEzY2MtY2MwMTIwMjg4NWFhIiwidCI6IjhjMDllNTY5LTUxYzUtNGRlZS1hYmIyLThiOTljMzJhNDM5NiJ9",
+        "https://elections.delaware.gov/voter/registrationtotals/reports/agprpt_2024.txt",
+        "https://elections.delaware.gov/maps/",
+        "https://elections.delaware.gov/public/foia/foia.html"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
+      "exampleUrls": [
+        "https://elections.delaware.gov/voter/registrationtotals/pdfs/vrt_PP20241101.csv",
+        "https://de-firstmap-delaware.hub.arcgis.com/maps/delaware::election-districts-1"
+      ],
+      "availableFields": [
+        "official 2024 General Election report and Power BI source leads",
+        "official write-in votes PDF",
+        "official election-district and county/state age-group registered/voted report",
+        "official monthly county registration CSVs",
+        "official election-district geometry leads",
+        "county equipment context from Verified Voting"
+      ],
+      "missingFields": [
+        "stable machine-readable 2024 President result export",
+        "same-grain comparison contest export",
+        "loaded state-native turnout replacement",
+        "election-district result-to-geometry crosswalk",
+        "normalized 2012/2016/2020 historical baselines",
+        "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
+      ],
+      "parserStatus": "EAC turnout config exists; data/de-2024-data-coverage-inventory.json and data/de-2024-source-request-matrix.tsv document official DOE report/Power BI, AGP turnout, registration CSV, FirstMap geometry, historical archive, and FOIA source leads; no native result or review parser is loaded",
+      "manualReviewBurden": "medium",
       "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Delaware result exports and local reporting-unit availability."
+      "caveats": "The official 2024 result route is digital but not confirmed as a stable bulk export from scripted inspection; older Delaware raw text archive patterns returned 404 for analogous 2024 paths. Current ETL remains EAC-turnout-only until official President plus same-grain comparison rows and state-native turnout semantics are normalized.",
+      "nextAction": "Use data/de-2024-source-request-matrix.tsv to collect/export official 2024 President and U.S. Senate rows, reconcile the DOE AGP registered/voted report against EAC fallback, and collect FirstMap geometry/crosswalk plus audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "FL",

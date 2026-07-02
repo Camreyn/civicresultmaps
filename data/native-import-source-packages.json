@@ -2300,6 +2300,59 @@
           "parserHint": "Context only; do not use for votes or turnout."
         }
       }
+    },
+    {
+      "state": "DE",
+      "name": "Delaware",
+      "priority": 13,
+      "currentStatus": "official_report_powerbi_turnout_geometry_admin_source_leads_documented_eac_turnout_only",
+      "officialSourcePages": [
+        "https://elections.delaware.gov/elections/election_archive.html",
+        "https://elections.delaware.gov/reports/GE2024.html",
+        "https://app.powerbigov.us/view?r=eyJrIjoiYmIwM2I3OWUtYjQxNC00YzYxLWEzY2MtY2MwMTIwMjg4NWFhIiwidCI6IjhjMDllNTY5LTUxYzUtNGRlZS1hYmIyLThiOTljMzJhNDM5NiJ9",
+        "https://elections.delaware.gov/elections/resultsarchive/elect24/elect24_general/GE2024_Official_WriteInVotes_Statewide.pdf",
+        "https://elections.delaware.gov/voter/registrationtotals/reports/agprpt_2024.txt",
+        "https://elections.delaware.gov/voter/registrationtotals/pdfs/vrt_PP20241101.csv",
+        "https://elections.delaware.gov/maps/",
+        "https://de-firstmap-delaware.hub.arcgis.com/maps/delaware::election-districts-1",
+        "https://elections.delaware.gov/public/foia/foia.html",
+        "https://elections.delaware.gov/voter/technology.html"
+      ],
+      "requiredArtifacts": [
+        "official machine-readable 2024 General Election President rows from the Delaware DOE report or Power BI export",
+        "official same-grain U.S. Senate rows, with U.S. House or Governor only as fallback comparison contests if Senate cannot be exported",
+        "state-native turnout and registration denominator rows normalized from the DOE AGP registered/voted report, with reconciliation to EAC fallback",
+        "official FirstMap election-district geometry or FeatureServer output plus result-label crosswalk",
+        "official 2020, 2016, and 2012 historical presidential baseline artifacts normalized from DOE archive reports/raw text",
+        "official post-election audit, recount, CVR availability, incident, correction, litigation, and certification records or FOIA-produced artifacts",
+        "data/de-2024-data-coverage-inventory.json and data/de-2024-source-request-matrix.tsv as the current source-search handoff"
+      ],
+      "preferredComparisonContest": "U.S. Senate if available at the same reporting grain as President; U.S. House or Governor can be documented fallback comparison contests with caveats.",
+      "parserNeeded": "Delaware remains EAC-turnout-only. A new DOE report/Power BI export parser is needed for President and same-grain comparison rows. A fixed-width AGP turnout normalizer is needed before replacing EAC fallback. A FirstMap geometry/crosswalk collector is needed before subcounty map overlays. Historical and administration-context parsers are not loaded.",
+      "blocker": "The official DOE 2024 General Election archive exposes a Results Report, Full Report Power BI link, and official write-in PDF, but no stable 2024 raw text/CSV result endpoint was confirmed in this pass; older Delaware raw text path patterns returned 404 for analogous 2024 paths. The active Delaware config therefore remains EAC-turnout-only with zero result and review rows. The DOE AGP report is a promising state-native registered/voted lead, but its statewide totals differ from EAC fallback and need reconciliation before replacement.",
+      "requestMatrixArtifact": "data/de-2024-source-request-matrix.tsv",
+      "availableArtifacts": {
+        "coverageInventory": {
+          "sourceTitle": "Delaware 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://elections.delaware.gov/elections/election_archive.html",
+          "localFile": "data/de-2024-data-coverage-inventory.json",
+          "parserHint": "Inventory only; documents official result, turnout, geometry, historical, equipment, and FOIA request paths without loading result/review/admin rows."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 Delaware jurisdiction turnout fallback plus DOE AGP state-native lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/de-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "parserHint": "Current active parser remains eacTurnoutCsv; data/de-2024-data-coverage-inventory.json documents DOE AGP registered/voted rows as a state-native lead."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Delaware 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/10",
+          "localFile": "data/de-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      }
     }
   ]
 }
