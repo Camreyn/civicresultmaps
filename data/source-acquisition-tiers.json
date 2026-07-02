@@ -745,20 +745,25 @@
       "stateName": "Massachusetts",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
+      "dataFamily": "results_review_turnout_historical_geometry_admin_context",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "city_town_ward_precinct",
       "exportFormats": [
         "official PD43+ CSV download",
-        "EAC fallback turnout",
         "official PD43+ county-filtered HTML totals",
-        "Wikipedia historical county table"
+        "official PD43+ historical county HTML tables",
+        "official statewide turnout statistics page",
+        "EAC fallback turnout"
       ],
       "sourceUrls": [
         "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
         "https://electionstats.state.ma.us/elections/view/165300/",
         "https://electionstats.state.ma.us/elections/download/165304/precincts_include:1/",
-        "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Massachusetts",
+        "https://electionstats.state.ma.us/elections/view/112698/",
+        "https://electionstats.state.ma.us/elections/view/130243/",
+        "https://electionstats.state.ma.us/elections/view/140751/",
+        "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
+        "https://www.sec.state.ma.us/divisions/elections/recent-updates/2024-post-election-audits.htm",
         "https://www.eac.gov/research-and-data/studies-and-reports"
       ],
       "exampleUrls": [
@@ -766,21 +771,27 @@
         "https://electionstats.state.ma.us/elections/view/165304/"
       ],
       "availableFields": [
+        "official county President rows",
         "municipality President rows",
         "ward/precinct President rows",
         "ward/precinct U.S. Senate comparison rows",
-        "EAC fallback turnout",
-        "official county President totals",
-        "county historical presidential baseline"
+        "EAC jurisdiction turnout fallback with official statewide turnout cross-check",
+        "official 2012/2016/2020 PD43+ county historical presidential baselines",
+        "county geometry",
+        "county equipment context",
+        "official post-election audit source page and request paths"
       ],
       "missingFields": [
-        "state-native turnout denominator"
+        "state-native local turnout denominator rows",
+        "precinct/ward/municipal geometry or reporting-unit crosswalk",
+        "normalized detailed audit workpapers and discrepancy rows",
+        "normalized CVR availability, ballot-image availability, tabulator-log, logic-and-accuracy, custody, incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "massachusettsPd43PrecinctCsv loaded for county certified results, municipal review rows, President-vs-U.S. Senate review rows, and historical county baselines",
+      "parserStatus": "massachusettsPd43PrecinctCsv loaded for county certified results and city/town/ward/precinct President-vs-U.S. Senate review rows; historicalPresidentialCsv now generated from official PD43+ 2012/2016/2020 county pages; data/ma-2024-data-coverage-inventory.json documents turnout, geometry, audit, CVR, and incident gaps",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "PD43+ bulk CSV rows are municipality-centric and do not include county, so county certified result rows are collected from official PD43+ county-filtered County Totals pages. Turnout denominators still use EAC fallback rows.",
-      "nextAction": "Find a Massachusetts state-native turnout denominator export or official city/town registration denominator to replace EAC fallback turnout."
+      "caveats": "PD43+ bulk CSV rows are municipality-centric and do not include county, so county certified result rows are collected from official PD43+ county-filtered County Totals pages. Turnout remains EAC jurisdiction fallback, with only a statewide Massachusetts turnout-statistics cross-check. Historical rows are contextual county baselines; the 2020 PD43+ county rows sum one non-D/R vote above the statewide summary line. Administration inventory records request paths only and does not load CVR, ballot-image, tabulator-log, L&A, custody, incident, correction, recount, or litigation rows.",
+      "nextAction": "Collect a Massachusetts state-native local turnout denominator export, official precinct/ward/municipal geometry or reporting-unit crosswalk, and detailed audit/CVR/log/L&A/custody/incident/recount/litigation artifacts or request responses."
     },
     {
       "state": "MD",

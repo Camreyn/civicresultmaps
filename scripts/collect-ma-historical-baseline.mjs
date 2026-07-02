@@ -1,32 +1,40 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
-const years = [2012, 2016, 2020];
+const elections = [
+  {
+    year: 2012,
+    electionId: "112698",
+    expected: { dem: 1921290, rep: 1188314, other: 58163, total: 3167767 },
+  },
+  {
+    year: 2016,
+    electionId: "130243",
+    expected: { dem: 1995196, rep: 1090893, other: 238957, total: 3325046 },
+  },
+  {
+    year: 2020,
+    electionId: "140751",
+    expected: { dem: 2382202, rep: 1167202, other: 81999, total: 3631403 },
+  },
+];
 const state = "MA";
-const sourceId = "ma-historical-presidential-wikipedia-county";
+const sourceId = "ma-historical-presidential-pd43-county";
 const output = "data/ma-historical-presidential-baseline.csv";
 
-function stripTemplates(value) {
-  let output = value;
-  for (let index = 0; index < 12; index += 1) output = output.replace(/\{\{[^{}]*\}\}/g, "");
-  return output;
-}
-
 function clean(value) {
-  return stripTemplates(String(value ?? ""))
-    .replace(/<ref[^>]*>.*?<\/ref>/gs, "")
-    .replace(/<ref[^/]*\/>/g, "")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\[\[[^\]|]*\|([^\]]+)\]\]/g, "$1")
-    .replace(/\[\[([^\]]+)\]\]/g, "$1")
-    .replace(/'''/g, "")
-    .replace(/''/g, "")
+  return String(value ?? "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&raquo;/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
 
 function numberFromCell(value) {
-  const normalized = clean(value).replace(/[\u2212\u2013\u2014]/g, "-").replace(/[^0-9.-]/g, "");
+  const normalized = clean(value).replace(/[^0-9.-]/g, "");
   return normalized ? Number(normalized) : null;
 }
 
@@ -35,47 +43,38 @@ function csvCell(value) {
   return /[",\n\r]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
 }
 
-function countyTable(wikitext) {
-  const starts = [...wikitext.matchAll(/\{\|[^\n]*wikitable[^\n]*/g)].map((match) => match.index);
-  for (const start of starts) {
-    const end = wikitext.indexOf("|}", start);
-    const table = wikitext.slice(start, end + 2);
-    if (/County/i.test(table) && /Total votes cast|Total\b/i.test(table) && /(Obama|Biden|Clinton)/i.test(table) && /(Romney|Trump)/i.test(table)) return table;
-  }
-  throw new Error("County presidential table not found.");
-}
-
-function parseCountyRows(table, year) {
+function parseCountyRows(html, election) {
   const rows = [];
-  for (const chunk of table.split(/^\|-/m).slice(1)) {
-    const lines = chunk.split("\n").filter((line) => line.trim().startsWith("|") && !line.trim().startsWith("|+"));
-    const cells = [];
-    for (let line of lines) {
-      line = line.trim();
-      if (line.startsWith("|")) line = line.slice(1);
-      for (let part of line.split(/\|\|/)) {
-        part = part.trim().replace(/^([^|]*\|)/, "");
-        cells.push(part);
-      }
-    }
-    if (cells.length < 10) continue;
-    const county = clean(cells[0]).replace(/ County,? Massachusetts$/i, "").replace(/ County$/i, "");
-    if (!county || county === "County" || county === "Total") continue;
+  for (const match of html.matchAll(/<tr\b[^>]*class="[^"]*\bm_item\b[^"]*"[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const rowHtml = match[1];
+    const countyMatch = rowHtml.match(/<a\b[^>]*class="label"[^>]*>([\s\S]*?)<\/a>/i);
+    const county = clean(countyMatch?.[1] ?? "");
+    if (!county || county === "Totals") continue;
+
+    const cells = [...rowHtml.matchAll(/<td\b[^>]*>([\s\S]*?)<\/td>/gi)].map((cellMatch) => cellMatch[1]);
+    if (cells.length < 6) continue;
     const demVotes = numberFromCell(cells[1]);
-    const repVotes = numberFromCell(cells[3]);
-    const otherVotes = numberFromCell(cells[5]);
-    const totalVotes = numberFromCell(cells[9]) ?? demVotes + repVotes + otherVotes;
-    if (![demVotes, repVotes, otherVotes, totalVotes].every(Number.isFinite)) continue;
+    const repVotes = numberFromCell(cells[2]);
+    const blanks = numberFromCell(cells.at(-2));
+    const totalVotesCast = numberFromCell(cells.at(-1));
+    if (![demVotes, repVotes, blanks, totalVotesCast].every(Number.isFinite)) continue;
+    const totalVotes = totalVotesCast - blanks;
+    const otherVotes = totalVotes - demVotes - repVotes;
+    if (![otherVotes, totalVotes].every(Number.isFinite) || otherVotes < 0 || totalVotes <= 0) {
+      throw new Error(election.year + " " + county + " County has invalid official PD43+ county totals");
+    }
+
+    const sourceUrl = "https://electionstats.state.ma.us/elections/view/" + election.electionId + "/";
     rows.push({
       state,
-      election_year: year,
-      jurisdiction_name: county + ' County',
-      county: county + ' County',
-      local_unit: county + ' County',
+      election_year: election.year,
+      jurisdiction_name: county + " County",
+      county: county + " County",
+      local_unit: county + " County",
       source_id: sourceId,
       source_level: "county",
-      row_method: "wikipediaCountyPresidentialTable",
-      source_url: 'https://en.wikipedia.org/wiki/' + year + '_United_States_presidential_election_in_Massachusetts',
+      row_method: "pd43OfficialCountyTable",
+      source_url: sourceUrl,
       dem_votes: demVotes,
       rep_votes: repVotes,
       other_votes: otherVotes,
@@ -85,19 +84,29 @@ function parseCountyRows(table, year) {
   return rows;
 }
 
-async function fetchRows(year) {
-  const page = year + '_United_States_presidential_election_in_Massachusetts';
-  const url = 'https://en.wikipedia.org/w/api.php?action=parse&page=' + page + '&prop=wikitext&format=json&formatversion=2';
+async function fetchRows(election) {
+  const url = "https://electionstats.state.ma.us/elections/view/" + election.electionId + "/";
   const response = await fetch(url, { headers: { "User-Agent": "CivicResultMaps data normalization" } });
-  if (!response.ok) throw new Error(url + ' failed: ' + response.status + ' ' + response.statusText);
-  const payload = await response.json();
-  return parseCountyRows(countyTable(payload.parse.wikitext), year);
+  if (!response.ok) throw new Error(url + " failed: " + response.status + " " + response.statusText);
+  return parseCountyRows(await response.text(), election);
 }
 
-const rows = (await Promise.all(years.map(fetchRows))).flat();
-for (const year of years) {
-  const yearRows = rows.filter((row) => row.election_year === year);
-  if (yearRows.length !== 14) throw new Error(year + ' expected 14 county rows, got ' + yearRows.length);
+const rows = (await Promise.all(elections.map(fetchRows))).flat();
+for (const election of elections) {
+  const yearRows = rows.filter((row) => row.election_year === election.year);
+  if (yearRows.length !== 14) throw new Error(election.year + " expected 14 county rows, got " + yearRows.length);
+  const totals = yearRows.reduce(
+    (acc, row) => ({
+      dem: acc.dem + row.dem_votes,
+      rep: acc.rep + row.rep_votes,
+      other: acc.other + row.other_votes,
+      total: acc.total + row.total_votes,
+    }),
+    { dem: 0, rep: 0, other: 0, total: 0 },
+  );
+  for (const [key, value] of Object.entries(election.expected)) {
+    if (totals[key] !== value) throw new Error(election.year + " expected statewide " + key + " " + value + ", got " + totals[key]);
+  }
 }
 
 const headers = [
@@ -118,4 +127,4 @@ const headers = [
 const csv = [headers.join(","), ...rows.map((row) => headers.map((header) => csvCell(row[header])).join(","))].join("\n") + "\n";
 await mkdir("data", { recursive: true });
 await writeFile(output, csv, "utf8");
-console.log(JSON.stringify({ rows: rows.length, years, output }, null, 2));
+console.log(JSON.stringify({ rows: rows.length, years: elections.map((election) => election.year), sourceId, output }, null, 2));

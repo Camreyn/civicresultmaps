@@ -35,7 +35,8 @@
     "WA",
     "WI",
     "WV",
-    "CA"
+    "CA",
+    "MA"
   ],
   "blockedStates": [],
   "states": [
@@ -1143,6 +1144,84 @@
         "County map geometry is loaded; precinct boundary geometry is not part of this package.",
         "Administration context is inventoried, but normalized audit/CVR/incident/correction/recount/litigation rows are not loaded."
       ]
+    },
+    {
+      "state": "MA",
+      "name": "Massachusetts",
+      "priority": 11,
+      "nativeReadiness": "complete_county_map_city_town_ward_precinct_review_eac_turnout_official_historical_admin_inventory",
+      "authority": "Massachusetts Secretary of the Commonwealth; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
+      "configFile": "etl/state-configs/ma.json",
+      "legacyReferenceBundle": "data/ma-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Massachusetts PD43+ official 2024 President county-filtered result pages",
+          "sourceUrl": "https://electionstats.state.ma.us/elections/view/165300/",
+          "localFile": "data/ma-2024-president-county-results.csv",
+          "parserHint": "Run npm run etl:collect:ma:county to refresh official PD43+ County Totals rows for the 14 counties; county rows reconcile to 3,512,930 presidential votes."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Massachusetts PD43+ official 2024 President and U.S. Senate precinct downloads",
+          "sourceUrl": "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
+          "localFile": "data/ma-2024-president-precinct-results.csv; data/ma-2024-us-senate-precinct-results.csv",
+          "level": "city_town_ward_precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Use City/Town, Ward, and Pct to pair President rows with U.S. Senate rows; group review rows by municipality because the PD43+ bulk export lacks county."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback with Massachusetts statewide turnout-statistics cross-check",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ma-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters; Massachusetts statewide turnout page confirms 5,142,343 registered voters and 3,512,930 total votes cast",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer",
+          "localFile": "data/ma-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Massachusetts PD43+ official 2012, 2016, and 2020 President county result pages",
+          "sourceUrl": "https://electionstats.state.ma.us/elections/view/140751/",
+          "localFile": "data/ma-historical-presidential-baseline.csv",
+          "parserHint": "Run npm run etl:collect:ma:historical to regenerate 42 official PD43+ county baseline rows."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Massachusetts 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://electionstats.state.ma.us/elections/view/165300/",
+          "localFile": "data/ma-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded artifacts, official statewide turnout cross-check, geometry limits, audit/CVR/request paths, and display caveats."
+        }
+      },
+      "expected": {
+        "countyRows": 14,
+        "geometryFeatures": 14,
+        "stateTotal": 3512930,
+        "trump": 1251303,
+        "harris": 2126518,
+        "other": 135109,
+        "localReviewRows": 2382,
+        "turnoutRows": 351,
+        "historicalBaselineRows": 42
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_city_town_ward_precinct_pd43",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_official_statewide_crosscheck",
+        "historicalBaselineMode": "official_pd43_county_context",
+        "adminInventoryStatus": "source_paths_documented_not_row_level_loaded"
+      },
+      "caveats": [
+        "PD43+ precinct rows are municipality-centric and do not include county, so review rows group by city/town while county certified rows come from PD43+ county-filtered pages.",
+        "Turnout remains EAC jurisdiction fallback; the official Massachusetts turnout statistics page is a statewide cross-check, not a local replacement package.",
+        "Historical baselines are county-level context only; the 2020 PD43+ county rows sum one non-D/R vote above the statewide summary line and the collector preserves official displayed county rows.",
+        "County geometry is loaded, but no official precinct/ward/municipal geometry or reporting-unit crosswalk is loaded.",
+        "The coverage inventory records audit/CVR/log/L&A/custody/incident/recount/litigation request paths only; normalized administration rows are not loaded."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [
@@ -1180,12 +1259,11 @@
         "official 2016 and 2020 county historical presidential baselines are loaded from ENR archive JSON",
         "official VSTOP audit selection/outcome rows if published or request-produced",
         "official CVR availability/exportability records or request-produced county CVR records",
-        "official Recount Commission/county incident, correction, recount, and litigation records",
-        "data/in-2024-source-request-matrix.tsv as the current Indiana official-source request queue"
+        "official Recount Commission/county incident, correction, recount, and litigation records"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. data/in-2024-source-request-matrix.tsv records the current artifact-specific request fields. Future parsers are needed only if an official precinct/subcounty result export, stable 2012 official county table/export, VSTOP audit rows, CVR availability records, or incident/correction/recount rows are obtained.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, official 2016/2020 county historical baselines are normalized, and VSTOP/Recount Commission/admin source paths plus data/in-2024-source-request-matrix.tsv are documented. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, a repeatably script-readable 2012 county presidential baseline, and normalized audit/CVR/incident/correction records remain preferred/request-path items.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. Future parsers are needed only if an official precinct/subcounty result export, stable 2012 official county table/export, VSTOP audit rows, CVR availability records, or incident/correction/recount rows are obtained.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, official 2016/2020 county historical baselines are normalized, and VSTOP/Recount Commission/admin source paths are documented. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows, a repeatably script-readable 2012 county presidential baseline, and normalized audit/CVR/incident/correction records remain preferred/request-path items.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"

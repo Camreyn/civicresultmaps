@@ -8,7 +8,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 - States checked: 50
 - Turnout loaded in database or validated native staging: 15
-- Loaded through official EAC fallback while state-native denominator remains missing: 3
+- Loaded through official EAC fallback while state-native denominator remains missing: 4
 - Need native turnout package or state-native replacement: 36
 
 ## Loaded Turnout
@@ -37,6 +37,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | --- | --- | --- |
 | AR Arkansas | Native TotalResults presidential and review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Arkansas turnout or voter-participation rows with registered-voter denominator timing at county, precinct, or TotalResults reporting-unit grain. |
 | KS Kansas | Native presidential and precinct review ETL is loaded from official Kansas Secretary of State workbooks, and official EAC 2024 EAVS V2 county/jurisdiction turnout rows are configured as fallback context. | Official Kansas ballots-cast or voter-participation rows with registered-voter denominator timing. Prefer precinct or county rows that can be reconciled to the SOS result workbooks; keep EAC fallback caveats visible until then. |
+| MA Massachusetts | Native PD43+ President/Senate review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured and validated as fallback context. The official Massachusetts turnout statistics page confirms the same 2024 statewide registered-voter and total-votes-cast figures. | Official Massachusetts local turnout or voter-participation denominator rows at city/town, ward, precinct, or another documented reporting grain. |
 | WI Wisconsin | Native presidential and review ETL is loaded, and official EAC 2024 EAVS V2 local-jurisdiction turnout rows are configured and loaded as fallback context. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county- or municipality-level is usable only with caveats. |
 
 ## States Needing Native Turnout Packages Or State-Native Replacements
@@ -143,3 +144,7 @@ New York still uses official EAC 2024 V2 county/jurisdiction fallback turnout ro
 ## California Update
 
 California now uses official Secretary of State 2024 General Election voter participation rows at data/ca-2024-voter-participation-stats-by-county.csv, normalized from data/ca-2024-voter-participation-stats-by-county.pdf by scripts/normalize-ca-turnout.mjs. The rows include 58 counties, 16,140,044 total voters, and 22,595,659 registered voters. The registered-voter denominator is the SOS 15-day Report of Registration total, so it does not include voters who registered or updated registration through Same Day Voter Registration after the 15-day close. Current CA turnout is county-level and should stay caveated if future precinct/local review rows are added.
+
+## Massachusetts Update
+
+Massachusetts currently uses official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ma-2024-eac-turnout.csv`, totaling 351 jurisdiction rows, 3,512,930 ballots cast, and 5,142,343 registered voters. Wave 11 confirmed the official Massachusetts Secretary turnout statistics page reports the same 2024 statewide registered-voter and total-votes-cast figures, so the statewide denominator is cross-checked. The state page is not a local turnout replacement because it does not provide the city/town, ward, or precinct rows needed to replace the active EAC fallback package. See `data/ma-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
