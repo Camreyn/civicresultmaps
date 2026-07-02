@@ -1155,8 +1155,9 @@ export async function importLegacyState(input: LegacyImportInput) {
     storedReviewRows += 1;
   }
 
+  const turnoutRows = Array.isArray(appData.turnoutData) ? appData.turnoutData : [];
   let storedTurnoutRows = 0;
-  for (const [index, row] of (appData.turnoutData ?? []).entries()) {
+  for (const [index, row] of turnoutRows.entries()) {
     if (!row.county || !Number.isFinite(row.ballotsCast)) {
       continue;
     }

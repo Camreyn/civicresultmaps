@@ -812,7 +812,7 @@ export async function promoteNativeStagingArtifact(path: string) {
     returning id
   `;
 
-  const shouldReplaceResultRows = native.resultRows.length > 0 || !artifact.capabilities.certifiedResults;
+  const shouldReplaceResultRows = native.resultRows.length > 0;
   if (shouldReplaceResultRows) {
     await sql`
       delete from result_rows
@@ -822,8 +822,7 @@ export async function promoteNativeStagingArtifact(path: string) {
   }
   const shouldReplaceReviewRows =
     native.reviewRows.length > 0 ||
-    (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics) ||
-    !artifact.capabilities.reviewGraphs;
+    (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics);
   if (shouldReplaceReviewRows) {
     await sql`
       delete from review_rows
@@ -836,7 +835,8 @@ export async function promoteNativeStagingArtifact(path: string) {
         and election_year = ${electionYear}
     `;
   }
-  if (native.turnoutRows.length > 0) {
+  const shouldReplaceTurnoutRows = native.turnoutRows.length > 0;
+  if (shouldReplaceTurnoutRows) {
     await sql`
       delete from turnout_rows
       where state_code = ${stateCode}
@@ -844,7 +844,7 @@ export async function promoteNativeStagingArtifact(path: string) {
     `;
   }
   const historicalRows = native.historicalRows ?? [];
-  const shouldReplaceHistoricalRows = historicalRows.length > 0 || !artifact.capabilities.historicalBaseline;
+  const shouldReplaceHistoricalRows = historicalRows.length > 0;
   if (shouldReplaceHistoricalRows) {
     await sql`
       delete from historical_result_rows
@@ -1132,13 +1132,32 @@ export async function promoteNativeStagingArtifact(path: string) {
       'Native official-source ETL promotion.'
     )
     on conflict (state_code, election_year) do update set
-      certified_results = excluded.certified_results,
-      map = excluded.map,
-      review_graphs = excluded.review_graphs,
-      turnout = excluded.turnout,
-      historical_baseline = excluded.historical_baseline,
+      certified_results = case
+        when ${shouldReplaceResultRows} then excluded.certified_results
+        else capability_flags.certified_results
+      end,
+      map = case
+        when ${shouldReplaceResultRows} then excluded.map
+        else capability_flags.map
+      end,
+      review_graphs = case
+        when ${shouldReplaceReviewRows} then excluded.review_graphs
+        else capability_flags.review_graphs
+      end,
+      turnout = case
+        when ${shouldReplaceTurnoutRows} then excluded.turnout
+        else capability_flags.turnout
+      end,
+      historical_baseline = case
+        when ${shouldReplaceHistoricalRows} then excluded.historical_baseline
+        else capability_flags.historical_baseline
+      end,
       source_planner = excluded.source_planner,
-      notes = excluded.notes
+      notes = case
+        when ${shouldReplaceResultRows || shouldReplaceReviewRows || shouldReplaceHistoricalRows} then excluded.notes
+        when capability_flags.notes is null or capability_flags.notes = '' then excluded.notes
+        else capability_flags.notes
+      end
   `;
 
   await sql`
