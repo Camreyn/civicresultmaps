@@ -2,7 +2,7 @@
   "state": "NH",
   "stateName": "New Hampshire",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-07-02",
   "authority": "New Hampshire Secretary of State and official public records/GIS source paths",
   "artifactRole": "source inventory only",
   "localArtifact": "data/nh-2024-admin-source-inventory.json",
@@ -70,7 +70,7 @@
   "historicalBaselineFeasibility": {
     "status": "candidate_2016_official_archive_lead",
     "target": "President-versus-U.S. House and President-versus-Governor split-ticket baselines for 2012, 2016, and 2020, preferably at town/ward grain and county context if town/ward matching is blocked.",
-    "archiveCdxCheckedAt": "2026-07-01",
+    "archiveCdxCheckedAt": "2026-07-02",
     "availableOfficialArchiveLeads": [
       {
         "year": 2016,
@@ -92,7 +92,104 @@
           "2016-ge-congressional-district-2.xlsx"
         ],
         "parserNeeded": "Extend scripts/normalize-nh-general-workbooks.mjs or add a sibling historical normalizer after downloading the archived official 2016 XLS/XLSX artifacts.",
-        "confidence": "official_archive_lead"
+        "confidence": "official_archive_lead",
+        "cdxCaptureEvidence": [
+          {
+            "filename": "2016-ge-president-summary-and-belknap.xls",
+            "timestamp": "20240720085645",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 6642,
+            "digest": "6K65QADCEWYORM36MBMCWRNVMT45SASL"
+          },
+          {
+            "filename": "2016-ge-president-carroll.xls",
+            "timestamp": "20240720085657",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 5951,
+            "digest": "JZIL24PAQPR6RHYWGXE2VPXVFOVKHVQR"
+          },
+          {
+            "filename": "2016-ge-president-cheshire.xls",
+            "timestamp": "20240720085703",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 6271,
+            "digest": "4W77JKFEXCYNKC5UGUHBK7Q44JAIXCPA"
+          },
+          {
+            "filename": "2016-ge-president-coos.xls",
+            "timestamp": "20240720085707",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 6648,
+            "digest": "JRKE67XRRIQWZVVOFK7RN5RSQHBHZESM"
+          },
+          {
+            "filename": "2016-ge-president-grafton.xls",
+            "timestamp": "20240720085717",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 6696,
+            "digest": "FLRUBPSYF56KEX6NUGAVVTBZPJRK6ZZQ"
+          },
+          {
+            "filename": "2016-ge-president-hillsborough.xls",
+            "timestamp": "20240720085721",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 7067,
+            "digest": "DWBLS3GEKNWXJQTS7HF3GMHCZ3W32VF5"
+          },
+          {
+            "filename": "2016-ge-president-merrimack.xls",
+            "timestamp": "20240720085726",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 6666,
+            "digest": "CWZ6W4RKTJGTJ6DILP6T6GNC6IMPJUXQ"
+          },
+          {
+            "filename": "2016-ge-president-rockingham.xls",
+            "timestamp": "20240720085729",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 6757,
+            "digest": "KG6G2XPXBYFWVTISPL22HYZ53IPE4EFW"
+          },
+          {
+            "filename": "2016-ge-president-strafford-and-sullivan.xls",
+            "timestamp": "20240720085733",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 7043,
+            "digest": "SPTQOVWZPCB62NRBEXRSGXYNPB4IZ5HV"
+          },
+          {
+            "filename": "2016-ge-governor.xls",
+            "timestamp": "20240720085749",
+            "mimetype": "application/vnd.ms-excel",
+            "length": 15893,
+            "digest": "2GM765N4TNOBXF25XZ737RGBSPIUQCQR"
+          },
+          {
+            "filename": "2016-ge-congressional-district-1.xlsx",
+            "timestamp": "20240720085753",
+            "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "length": 17974,
+            "digest": "TSJM5M22UQ57Z2ZVOZFEZSCOW6FJ2GXM"
+          },
+          {
+            "filename": "2016-ge-congressional-district-2.xlsx",
+            "timestamp": "20240720085755",
+            "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "length": 18057,
+            "digest": "MT2E6U4VA3B26YHRP6GMAL5OZQE3J43X"
+          }
+        ],
+        "directDownloadAttempt": {
+          "checkedAt": "2026-07-02",
+          "urlPattern": "https://web.archive.org/web/{timestamp}id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/{filename}",
+          "attemptedArtifacts": 12,
+          "result": "blocked_from_worker_environment",
+          "observedErrors": [
+            "The underlying connection was closed: An unexpected error occurred on a receive.",
+            "Unable to connect to the remote server"
+          ],
+          "artifactFilesCreated": 0
+        }
       }
     ],
     "blockedOrUnresolvedLeads": [
@@ -125,7 +222,7 @@
       "nh-2020-historical-request",
       "nh-2012-historical-request"
     ],
-    "caveat": "No historical baseline rows are loaded. The 2016 archive lead is a source-acquisition path only until official artifacts are downloaded, parsed, and reconciled. Binary download attempts for the 2016 archive artifacts were blocked from this worker environment even though CDX metadata confirmed the official captures."
+    "caveat": "No historical baseline rows are loaded. The 2016 archive lead is a source-acquisition path only until official artifacts are downloaded, parsed, and reconciled. July 2, 2026 CDX checks confirmed exact official XLS/XLSX captures for nine President county workbooks, Governor, and U.S. House Districts 1 and 2, but direct binary downloads failed from this worker environment and created no local files."
   },
   "geometryAndCrosswalk": {
     "status": "county_geometry_loaded_town_ward_geometry_blocked",
