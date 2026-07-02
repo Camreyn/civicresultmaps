@@ -4,6 +4,7 @@
   "stateName": "Mississippi",
   "electionYear": 2024,
   "checkedAt": "2026-07-01",
+  "requestMatrixArtifact": "data/ms-2024-source-request-matrix.tsv",
   "purpose": "Wave 10 Mississippi source-coverage inventory for loaded official county result/review rows, EAC fallback turnout, state-native active-voter denominator leads, OCR-gated county PDF precinct-review feasibility, historical-baseline blockers, county geometry, and administration-context gaps. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "firstReads": {
     "developerIndex": "docs/developer/index.md was not present in the worktree; absence recorded per wave instructions.",
@@ -180,6 +181,16 @@
     }
   ],
   "requestPath": {
+    "sourceMatrixArtifact": "data/ms-2024-source-request-matrix.tsv",
+    "sourceMatrixRows": [
+      "ms-precinct-president-senate-ocr-review",
+      "ms-state-native-ballots-cast-turnout",
+      "ms-2020-historical-county-president",
+      "ms-2016-historical-county-president",
+      "ms-2012-historical-county-president",
+      "ms-precinct-geometry-crosswalk",
+      "ms-admin-audit-cvr-incident-records"
+    ],
     "neededArtifacts": [
       "official Mississippi ballots-cast or voter-participation rows that can be paired with the November 2024 active-voter denominator lead",
       "reviewed structured precinct-level President and U.S. Senate rows from the county recapitulation PDFs, reconciled to official recap totals",

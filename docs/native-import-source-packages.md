@@ -395,6 +395,23 @@ Expected validation: 159 county result rows, 159 county geometry features, 2,684
 
 Expected validation: 120 county result rows, 120 county geometry features, 3,067 precinct review rows, 120 EAC fallback turnout rows, 360 official county historical baseline rows, and a 120-row candidate county turnout/registration reconciliation report. Remaining gaps: county-clerk official turnout documentation and replacement-semantics review before promoting State Board turnout over EAC fallback, a precinct-level turnout/registration crosswalk if using State Board precinct PDFs, map-ready precinct boundary geometry or a reporting-unit crosswalk, and normalized audit/recount/CVR/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
 
+
+## Mississippi Wave 13 Update
+
+- Config: `etl/state-configs/ms.json`
+- Authority: Mississippi Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting context
+- County results source: `data/ms-2024-election-recap-sheets.csv`, downloaded from the official Mississippi SOS 2024 General Election statewide recap CSV
+- Local review source: the same recap CSV, currently at county grain only
+- Comparison contest: U.S. Senate, same county recap CSV rows
+- Turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ms-2024-eac-turnout.csv`
+- Denominator lead: official November 2024 Active Voter Count PDF and normalized CSV at `data/ms-2024-november-active-voter-count.pdf` and `data/ms-2024-november-active-voter-count.csv`; denominator lead only, not loaded as turnout
+- County boundary: `data/ms-counties.geojson`
+- Coverage inventory: `data/ms-2024-data-coverage-inventory.json`
+- Source request matrix: `data/ms-2024-source-request-matrix.tsv`
+- Equipment context: `data/ms-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation remains 82 county result rows, 82 county review rows, 82 EAC fallback turnout rows, 82 county geometry features, 1,225,238 presidential votes, 746,305 Trump votes, 465,357 Harris votes, and 13,576 other presidential votes. The reviewed OCR path remains blocked for statewide local review: the current matrix records 11 import-ready counties, 61 review-required counties, and 10 missing-OCR counties before any precinct promotion. Remaining gaps are fully reviewed precinct President-versus-U.S.-Senate rows, state-native ballots-cast or voter-participation rows paired with the active-voter denominator lead, precinct geometry or a crosswalk, official 2012/2016/2020 historical baselines, and normalized audit/CVR/incident/correction/recount/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
+
 ## New York Wave 8 Update
 
 - Config: `etl/state-configs/ny.json`
