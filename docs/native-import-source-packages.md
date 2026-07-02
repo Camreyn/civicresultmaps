@@ -410,6 +410,10 @@ Expected validation: 120 county result rows, 120 county geometry features, 3,067
 
 Expected validation: 62 county result rows, 62 county geometry features, 9,753 supplemental local review rows, 62 EAC fallback turnout rows, and 186 official county historical baseline rows. Remaining risks: Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized local review coverage; Monroe appears in the local-review manifest with zero parsed rows. County-certified NYSBOE rows remain the map authority. Remaining source needs are official full-state election-district President and U.S. Senate rows, state-native ballots-cast/voter-history rows paired with enrollment denominators, precinct/election-district geometry or crosswalks, and normalized audit/CVR/incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
 
+## New York Wave 13 Check
+
+Wave 13 keeps NY in `sourceDiscoveryQueue` rather than `completedNativeStates`. The native staging artifact validates and produces 9,753 supplemental local review rows, but the coverage remains partial: 49 county equivalents are covered and 13 remain excluded or not yet reviewed, active turnout is still EAC fallback, and VEDA/Flateau is still a future official publication path rather than a 2024 replacement package. The completion decision is recorded in `data/ny-2024-data-coverage-inventory.json` and `data/native-import-source-packages.json`.
+
 ## California Wave 11 Update
 
 - Config: etl/state-configs/ca.json

@@ -2,9 +2,35 @@
   "state": "NY",
   "stateName": "New York",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-07-02",
   "purpose": "State-scoped coverage inventory for New York 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "status": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented",
+  "completionDecision": {
+    "checkedAt": "2026-07-02",
+    "decision": "remain_in_source_discovery_queue",
+    "reason": "New York has official county-certified President and U.S. Senate rows, county geometry, EAC fallback turnout, official county historical baselines, and partial supplemental local review rows, but it is not completed native coverage because the local review package is still partial, turnout is not state-native, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation records are not loaded.",
+    "reviewCoverage": {
+      "reviewRows": 9753,
+      "coveredCountyEquivalents": 49,
+      "missingCountyEquivalents": 13,
+      "excludedOrNotYetReviewedCounties": [
+        "Herkimer County",
+        "Jefferson County",
+        "Monroe County",
+        "Nassau County",
+        "Ontario County",
+        "Orange County",
+        "Orleans County",
+        "Oswego County",
+        "Rockland County",
+        "Schuyler County",
+        "Steuben County",
+        "Wyoming County",
+        "Yates County"
+      ]
+    },
+    "promotionCaveat": "Do not move NY to completedNativeStates until either statewide official same-grain local review coverage is collected or the coordinator intentionally accepts partial supplemental review coverage with visible caveats."
+  },
   "authorityPriority": "Official New York State Board of Elections, county boards of elections, official GIS/Census, EAC, and official court/board records first; OpenElections and Verified Voting remain supplemental context only.",
   "loadedArtifacts": [
     {
@@ -174,8 +200,8 @@
         "maps or district configuration documentation",
         "poll-site and reporting-unit downloads"
       ],
-      "result": "The Flateau/VEDA site is the official future statewide publication path for election results, poll sites, district maps, downloads, and compliance reports.",
-      "blocker": "As checked on 2026-07-01, the dashboard showed no election data available. The statute-backed collection path applies to elections on or after April 1, 2026, so it is a future source path rather than a 2024 replacement package."
+      "result": "The Flateau/VEDA site is the official future statewide publication path for election results, poll sites, district maps, downloads, and compliance reports. As checked again on 2026-07-02, the dashboard showed 0 total elections for 2026 and no election data available.",
+      "blocker": "The statute-backed collection path applies to elections on or after April 1, 2026, so it is a future source path rather than a 2024 replacement package."
     },
     {
       "sourceAuthority": "New York State Board of Elections",
