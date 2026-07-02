@@ -735,30 +735,45 @@
       "stateName": "Louisiana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "parish",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
+      "reportingGrain": "precinct_vote_mode_and_parish",
       "exportFormats": [
-        "eac fallback turnout"
+        "Louisiana SOS static precinct CSV endpoints",
+        "Louisiana SOS human-readable XLSX workbook",
+        "EAC fallback turnout CSV",
+        "Census TIGERweb GeoJSON"
       ],
       "sourceUrls": [
-        "https://voterportal.sos.la.gov/static/"
+        "https://voterportal.sos.la.gov/static/",
+        "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential",
+        "https://s3-us-west-2.amazonaws.com/mediaresults.sos.la.gov/HumanReadableElectionResults/20241105/Election+Results+(11-05-2024).xlsx",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential"
+      ],
       "availableFields": [
-        "parish presidential totals",
-        "EAC fallback turnout"
+        "official parish presidential totals",
+        "official precinct and vote-mode President rows",
+        "official precinct and vote-mode U.S. House comparison rows where same-grain keys align",
+        "EAC fallback turnout rows",
+        "parish geometry",
+        "parish equipment context from Verified Voting Verifier",
+        "data/la-2024-data-coverage-inventory.json coverage inventory"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator rows",
+        "precinct boundary geometry or precinct-to-parish crosswalks",
+        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Louisiana uses parishes rather than counties.",
-      "nextAction": "Classify official Louisiana result exports and precinct/parish comparison availability."
+      "parserStatus": "louisianaSosPrecinctCsvDirectory loaded for official parish President result rows and precinct/vote-mode President-versus-U.S.-House review rows; EAC fallback turnout, Census parish geometry, admin equipment context, and data/la-2024-data-coverage-inventory.json are documented",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Louisiana uses parishes rather than counties. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context, not same-office statewide comparison rows. EAC turnout remains a fallback until state-native denominator artifacts are collected.",
+      "nextAction": "Collect state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baseline artifacts, and normalized audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "MA",
