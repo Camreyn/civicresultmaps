@@ -37,6 +37,35 @@
       ]
     },
     {
+      "id": "ar-historical-presidential-baseline",
+      "category": "historical_county_presidential_baseline_source_artifact",
+      "sourceTitle": "Arkansas county presidential historical baseline package",
+      "sourceAuthority": "Arkansas Secretary of State; secondary 2012 county table fallback",
+      "sourceUrl": "https://enr-results-api.totalresults.com/Election/GetElectionList?cid=arkansas",
+      "localArtifact": "data/ar-historical-presidential-baseline.csv",
+      "parser": "scripts/collect-ar-historical-baseline.mjs generates historicalPresidentialCsv rows; native AR staging ingestion needs a shared importer dispatch hook",
+      "reportingGrain": "county",
+      "expectedCounts": {
+        "historicalRows": 225,
+        "years": [
+          2012,
+          2016,
+          2020
+        ],
+        "countyRowsPerYear": 75,
+        "totalVotes": 3419213,
+        "demVotes": 1198835,
+        "repVotes": 2093263,
+        "otherVotes": 127115
+      },
+      "caveats": [
+        "2016 and 2020 rows are official Arkansas Secretary of State TotalResults API county rows from election IDs 1836 and 1841.",
+        "The official TotalResults election list includes 2012 General election ID 1832, but GetElectionInfo and contest-list calls returned an empty non-official payload from this environment.",
+        "2012 rows therefore use a secondary county table as contextual baseline rows only; replace them if a script-readable official 2012 county artifact is collected.",
+        "The AR TotalResults native importer branch does not currently attach generic historicalPresidentialCsv rows without a shared-engine dispatch update, which this worker is reporting as a shared-helper conflict rather than including in the state PR."
+      ]
+    },
+    {
       "id": "ar-2024-eac-turnout",
       "category": "turnout_fallback",
       "sourceTitle": "U.S. EAC 2024 EAVS V2 Arkansas jurisdiction turnout fallback",
@@ -98,12 +127,12 @@
       "sourceAuthority": "Arkansas Secretary of State",
       "sourceUrl": "https://www.sos.arkansas.gov/elections/results",
       "neededArtifacts": [
-        "official 2012, 2016, and 2020 county presidential baseline artifacts or TotalResults archive captures",
+        "official 2012 county presidential baseline artifact or script-readable TotalResults archive payload to replace the secondary 2012 fallback rows",
         "state-native 2024 turnout and registration denominator artifact if published separately",
         "official precinct/reporting-unit crosswalk or geometry if available"
       ],
-      "status": "source_lead_not_loaded",
-      "blocker": "No official historical baseline files, state-native turnout denominator rows, or precinct/reporting-unit geometry artifacts were collected into this worker branch."
+      "status": "historical_source_artifact_collected_native_ingestion_blocked_by_shared_helper",
+      "blocker": "The official TotalResults API provided script-readable official 2016 and 2020 General county presidential rows. The listed 2012 General election ID 1832 returned no script-readable official contest payload in this pass, so 2012 remains a caveated secondary contextual baseline. Native staging ingestion of the configured historicalPresidentialCsv source requires a shared importer dispatch change for Arkansas TotalResults and is reported as a shared-helper conflict."
     }
   ],
   "administrationContextGaps": [
@@ -152,14 +181,16 @@
     }
   ],
   "displayApiCaveats": {
-    "dataAndSources": "The Data & Sources tab should show the TotalResults, EAC turnout fallback, Census geometry, and equipment context records with their caveats.",
+    "dataAndSources": "The Data & Sources tab should show the TotalResults, historical baseline, EAC turnout fallback, Census geometry, and equipment context records with their caveats.",
     "reviewCenter": "Review rows are county-scoped reporting-unit IDs and President-versus-U.S.-House comparisons; treat advisory indicators as source-review prompts only.",
-    "exportsApi": "Public reads flow through /api/results, /api/review-rows, /api/turnout, /api/sources, /api/coverage, /api/equipment, and /api/admin-sources once staging is promoted by a coordinator."
+    "exportsApi": "Public reads flow through /api/results, /api/review-rows, /api/turnout, /api/sources, /api/coverage, /api/equipment, and /api/admin-sources once staging is promoted by a coordinator.",
+    "historicalBaselines": "Historical baseline source rows are collected at county level. 2016 and 2020 use official TotalResults API rows; 2012 uses a secondary county table because the official 2012 archive endpoint was not script-readable. Native display is pending a shared importer dispatch hook for AR TotalResults historical rows."
   },
   "nextActions": [
     "Collect or request Arkansas-native turnout and registration denominator rows before replacing EAC fallback turnout.",
     "Identify official precinct or TotalResults reporting-unit crosswalk/geometry before claiming subcounty map coverage.",
-    "Collect official 2012, 2016, and 2020 historical presidential baseline artifacts before enabling historical baseline rows.",
+    "Resolve the shared native importer dispatch conflict so AR TotalResults staging can attach configured historicalPresidentialCsv rows, or add a generalized historical-row hook for all native parsers.",
+    "Replace the caveated 2012 secondary historical baseline rows if a script-readable official Arkansas 2012 county presidential artifact is collected.",
     "Collect or request official audit, recount, CVR availability, incident, correction, and litigation artifacts before loading administration rows beyond equipment context."
   ]
 }

@@ -28,6 +28,17 @@
       "status": "loaded"
     },
     {
+      "id": "ar-historical-presidential-baseline",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://enr-results-api.totalresults.com/Election/GetElectionList?cid=arkansas",
+      "localFile": "data/ar-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Arkansas Secretary of State; secondary 2012 county table fallback",
+      "timestampBasis": "2016 and 2020 rows use official Arkansas Secretary of State TotalResults API election IDs 1836 and 1841, collected by scripts/collect-ar-historical-baseline.mjs. The 2012 TotalResults election-list entry exists as ID 1832, but the official API returned an empty non-official contest payload in this environment, so 2012 rows use a secondary county table with caveats.",
+      "confidence": "Mixed historical context package collected and configured for the generic historicalPresidentialCsv contract, but not enabled in native Arkansas staging until the shared native importer dispatch opts the Arkansas TotalResults parser into generic historical rows. 2016 and 2020 county baseline rows are official TotalResults API rows; 2012 rows are secondary contextual county rows because the official TotalResults 2012 archive endpoint was not script-readable.",
+      "status": "loaded"
+    },
+    {
       "id": "ar-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2705%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -56,7 +67,7 @@
   "expected": {
     "jurisdictions": 75,
     "resultRows": 75,
-    "sources": 3,
+    "sources": 4,
     "geometryFeatures": 75,
     "stateTotal": 1182676,
     "trump": 759241,
@@ -99,5 +110,18 @@
     "comparisonContest": "United States House",
     "coverageMode": "presidentVsUSHouse",
     "warning": "Arkansas review rows use official TotalResults county-scoped federal reporting-unit IDs for President-versus-U.S. House comparisons. The API exposes stable local result IDs but not human-readable precinct names; review rows are advisory screening inputs, not confirmed findings."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ar-historical-presidential-baseline",
+    "warning": "Arkansas historical baseline rows are county-level presidential context for 2012, 2016, and 2020. Rows for 2016 and 2020 are official Arkansas Secretary of State TotalResults API rows; 2012 uses a secondary county table because the official 2012 TotalResults archive entry returned no script-readable contest data in this pass. Use as contextual baseline rows only.",
+    "expected": {
+      "rowCount": 225,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
