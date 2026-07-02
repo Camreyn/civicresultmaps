@@ -397,3 +397,18 @@ Expected validation: 62 county result rows, 62 county geometry features, 9,753 s
 Expected validation: 58 county result rows, 58 county geometry features, 58 county review rows, 58 county turnout rows, 174 historical baseline rows, 15,865,475 presidential votes, 9,276,179 Harris votes, 6,081,697 Trump votes, and 507,599 other presidential votes.
 
 Caveats: review rows are county-level President-versus-U.S.-Senate full-term comparisons, not precinct or city/local scatter plots. The SOS turnout denominator is the 15-day Report of Registration and excludes later Same Day Voter Registration updates. County geometry is loaded; precinct geometry and normalized audit/CVR/incident/correction/recount/litigation rows are not loaded. Current advisory rows are public-interest screening inputs only, not findings.
+
+## Oregon Wave 12 Update
+
+- Config: `etl/state-configs/or.json`
+- Authority: Oregon Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- County results source: `data/or-2024-general-president.csv`, normalized from the official Oregon Secretary of State 2024 November General Election Official Results PDF at `data/or-2024-general-official-results.pdf`
+- Local review source: `data/or-2024-general-attorney-general.csv`, normalized from the same official abstract PDF
+- Comparison contest: Attorney General, same county grain as President, with county-level directional-screening caveats
+- Turnout source: EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/or-2024-eac-turnout.csv`; the official Oregon 2024 voter registration statistics PDF is documented as a state-native source lead but is not yet normalized or reconciled
+- County boundary: `data/or-counties.geojson`
+- Precinct source package: `data/or-2024-precinct-data/manifest.json`, collected from the official ORMS 2024 precinct-level result search; current review rows remain county-level because many county precinct artifacts are PDF/image-heavy and need county-specific extraction review or request-produced machine-readable files
+- Coverage/admin inventory: `data/or-2024-data-coverage-inventory.json`
+- Equipment context: `data/or-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation: 36 county result rows, 36 county geometry features, 2,244,493 presidential votes, 919,480 Trump votes, 1,240,600 Harris votes, 84,413 other presidential votes, 36 county review rows, and 36 EAC fallback turnout rows. Remaining gaps are normalized precinct President plus same-grain comparison rows, Oregon-native turnout denominators, precinct geometry/crosswalks, official 2012/2016/2020 historical baseline rows, and normalized audit/CVR/incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.

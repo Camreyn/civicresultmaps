@@ -148,3 +148,7 @@ California now uses official Secretary of State 2024 General Election voter part
 ## Massachusetts Update
 
 Massachusetts currently uses official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ma-2024-eac-turnout.csv`, totaling 351 jurisdiction rows, 3,512,930 ballots cast, and 5,142,343 registered voters. Wave 11 confirmed the official Massachusetts Secretary turnout statistics page reports the same 2024 statewide registered-voter and total-votes-cast figures, so the statewide denominator is cross-checked. The state page is not a local turnout replacement because it does not provide the city/town, ward, or precinct rows needed to replace the active EAC fallback package. See `data/ma-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
+
+## Oregon Update
+
+Oregon currently uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/or-2024-eac-turnout.csv`, totaling 36 jurisdiction rows, 2,269,608 ballots cast, and 3,060,374 registered voters. Wave 12 confirmed an official Oregon Secretary of State 2024 General Election voter registration and turnout statistics PDF lead at `https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735459`, linked from the Oregon election history page. Keep EAC fallback active until that state-native PDF is collected, parsed, and reconciled against the loaded rows. See `data/or-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.

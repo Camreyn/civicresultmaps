@@ -1511,30 +1511,52 @@
       "stateName": "Oregon",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official abstract PDF",
+        "normalized county CSV",
+        "ORMS county precinct PDF/CSV package",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON"
       ],
       "sourceUrls": [
-        "https://sos.oregon.gov/elections/Pages/electionhistory.aspx"
+        "https://sos.oregon.gov/elections/Pages/electionhistory.aspx",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Record?q=recNotes%3A2024+General+Election+Precinct+Level+Results&sortBy=recTypedTitle",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735459",
+        "https://sos.oregon.gov/elections/Pages/voting-systems.aspx",
+        "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "https://oregonsos.govqa.us/WEBAPP/_rs/"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735450",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873777",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873690"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official county Attorney General comparison rows",
+        "official EAC fallback turnout rows",
+        "Census county geometry",
+        "county equipment context from Verified Voting",
+        "official ORMS precinct result package collected for provenance",
+        "official 2012/2016/2020 historical result PDF leads"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "normalized precinct President and same-grain comparison rows",
+        "state-native turnout denominator rows from the official Oregon turnout statistics PDF",
+        "precinct boundary geometry or reporting-unit crosswalks",
+        "normalized official 2012/2016/2020 historical baseline rows",
+        "normalized post-election audit, CVR availability, incident, correction, recount, litigation, tabulator-log, logic-and-accuracy, custody, and ballot-image records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Oregon result exports and local reporting-unit availability."
+      "parserStatus": "native county President-versus-Attorney-General package loaded from official Oregon abstract PDF; ORMS precinct package collected but not normalized; data/or-2024-data-coverage-inventory.json documents official turnout, historical, audit/CVR, request, and display-path gaps",
+      "manualReviewBurden": "high",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Current Oregon review rows are county-level advisory inputs, not precinct scatter plots. The official ORMS precinct package includes many image/PDF artifacts requiring county-aware extraction or request-produced machine-readable files. Turnout remains EAC fallback until the official Oregon voter registration and turnout statistics PDF is normalized and reconciled. Historical and administration-context rows are source leads only.",
+      "nextAction": "Normalize the 2024 official turnout statistics PDF, then build or request machine-readable precinct President plus same-grain comparison rows and official 2012/2016/2020 historical baseline rows."
     },
     {
       "state": "PA",
