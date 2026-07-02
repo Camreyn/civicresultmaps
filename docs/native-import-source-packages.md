@@ -542,3 +542,17 @@ No native result or advisory review parser is loaded. The 2024 report is officia
 - Administration context: `data/ct-2024-equipment-context.csv` is loaded from Verified Voting at historical county grain; UConn VoTeR 2024 post-election audit report is identified as a source lead, but audit/CVR/recount/incident/correction/litigation rows are not normalized
 
 CT remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. The source inventory and request matrix are `data/ct-2024-data-coverage-inventory.json` and `data/ct-2024-source-request-matrix.tsv`. Current CT advisory output should be read as fallback turnout coverage only until official EMS/SOV reconciliation, town geometry, and parser work are complete. This is source-coverage context only, not evidence of fraud or misconduct.
+
+## Hawaii Wave 14 Source Discovery
+
+- Config: `etl/state-configs/hi.json`
+- Authority: Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- Official result leads collected: `data/hi-2024-general-summary.txt` and `data/hi-2024-general-precinct-detail.txt`, downloaded from Hawaii Office of Elections certified 2024 General Election text exports
+- Preferred comparison contest: U.S. Senate, same precinct/split text export as President, with a quick-pass caveat that U.S. Senate rows cover 496 of 497 precinct/split IDs
+- Turnout source: active ETL remains EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/hi-2024-eac-turnout.csv`; the Hawaii Office of Elections registration and turnout statistics page is documented as a state-native replacement lead
+- County boundary: `data/hi-counties.geojson`
+- Coverage inventory: `data/hi-2024-data-coverage-inventory.json`
+- Source request matrix: `data/hi-2024-source-request-matrix.tsv`
+- Equipment context: `data/hi-2024-equipment-context.csv` from Verified Voting, context only
+
+HI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. Remaining work is a Hawaii text parser for summary/precinct detail files, turnout-page normalization and reconciliation, precinct geometry/crosswalk collection, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation rows. Current HI advisory indicators are not calculated from review rows because no HI review rows are loaded.
