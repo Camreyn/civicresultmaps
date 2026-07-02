@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "state": "OK",
+  "stateName": "Oklahoma",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "status": "official_results_precinct_review_eac_turnout_county_geometry_equipment_context_audit_paths_documented",
+  "purpose": "State-scoped Oklahoma 2024 source coverage inventory for result, review, turnout, map, historical, and election-administration context. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "officialSourcePages": [
+    "https://oklahoma.gov/elections/elections-results/election-results/2024-election-results/november-general-election.html",
+    "https://results.okelections.gov/OKERS/enrapi/GetExtract/CSV/20241105",
+    "https://results.okelections.gov/OKERS/enrapi/GetExtract/CLCSV/20241105",
+    "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105",
+    "https://oklahoma.gov/elections/elections-results/election-results/2020-election-results/2020-november-general-election.html",
+    "https://oklahoma.gov/elections/elections-results/election-results/2016-election-results/2016-november-general-election.html",
+    "https://oklahoma.gov/elections/elections-results/election-results/2012-election-results/general-election-november-6-2012.html",
+    "https://oklahoma.gov/elections/voter-registration/voter-registration-statistics.html",
+    "https://oklahoma.gov/elections/candidates/district-and-precinct-maps.html",
+    "https://oklahoma.gov/elections/security-integrity/post-election-audits/post-election-audit-archives/2024-post-election-audits.html",
+    "https://oklahoma.gov/elections/about-us/information-and-records-requests.html"
+  ],
+  "loadedArtifacts": [
+    {
+      "id": "ok-2024-race-level-results",
+      "sourceAuthority": "Oklahoma State Election Board",
+      "sourceTitle": "Oklahoma State Election Board official 2024 race-level CSV export",
+      "sourceUrl": "https://results.okelections.gov/OKERS/enrapi/GetExtract/CSV/20241105",
+      "localArtifact": "data/ok-2024-official-results/ok-2024-race-level-results.csv",
+      "electionYear": 2024,
+      "reportingGrain": "race_statewide",
+      "parserNormalizationPath": "oklahomaRaceLevelCsv via civic_etl/native.py _oklahoma_rows and etl/state-configs/ok.json certifiedResults.raceLevelSourceId",
+      "expectedCounts": {
+        "stateTotal": 1566173,
+        "trump": 1036213,
+        "harris": 499599,
+        "other": 30361
+      },
+      "confidence": "loaded_official_reconciliation_source",
+      "caveats": [
+        "Used to reconcile the county-level presidential export total before staging.",
+        "County result rows remain the map and certified-results display grain."
+      ]
+    },
+    {
+      "id": "ok-2024-county-level-results",
+      "sourceAuthority": "Oklahoma State Election Board",
+      "sourceTitle": "Oklahoma State Election Board official 2024 county-level CSV ZIP export",
+      "sourceUrl": "https://results.okelections.gov/OKERS/enrapi/GetExtract/CLCSV/20241105",
+      "localArtifact": "data/ok-2024-official-results/ok-2024-county-level-results.zip",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "oklahomaCountyLevelCsvZip via civic_etl/native.py _oklahoma_rows and etl/state-configs/ok.json certifiedResults",
+      "expectedCounts": {
+        "countyRows": 77,
+        "stateTotal": 1566173,
+        "trump": 1036213,
+        "harris": 499599,
+        "other": 30361
+      },
+      "confidence": "loaded_official_results",
+      "caveats": [
+        "County rows are the certified presidential result rows used for current public map joins."
+      ]
+    },
+    {
+      "id": "ok-2024-precinct-level-results",
+      "sourceAuthority": "Oklahoma State Election Board",
+      "sourceTitle": "Oklahoma State Election Board official 2024 precinct-level CSV ZIP export",
+      "sourceUrl": "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105",
+      "localArtifact": "data/ok-2024-official-results/ok-2024-precinct-level-results.zip",
+      "electionYear": 2024,
+      "reportingGrain": "precinct",
+      "parserNormalizationPath": "oklahomaPrecinctLevelCsvZip via civic_etl/native.py _oklahoma_rows and etl/state-configs/ok.json reviewCharts",
+      "expectedCounts": {
+        "reviewRows": 1977,
+        "comparableHouseRows": 1517,
+        "voteShareOnlyRows": 460,
+        "zeroTotalPresidentialPrecinctsOmitted": 9
+      },
+      "confidence": "loaded_official_precinct_review",
+      "caveats": [
+        "The comparison contest is U.S. House by district, not a single statewide race.",
+        "Only precincts with both Democratic and Republican U.S. House candidate votes are comparable down-ballot rows; other nonzero presidential precincts remain vote-share-only rows.",
+        "Precinct boundary geometry is not loaded, so subcounty review rows are graph/table inputs rather than map polygons."
+      ]
+    },
+    {
+      "id": "ok-2024-eac-turnout",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceTitle": "U.S. EAC 2024 EAVS V2 Oklahoma jurisdiction turnout fallback",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifact": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
+      "electionYear": 2024,
+      "reportingGrain": "jurisdiction_county",
+      "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/ok.json turnout",
+      "expectedCounts": {
+        "turnoutRows": 77,
+        "ballotsCast": 1573274,
+        "registeredVoters": 2442211
+      },
+      "confidence": "loaded_official_fallback",
+      "caveats": [
+        "Fallback turnout rows are official EAC context, not Oklahoma-native turnout or voter-history rows.",
+        "They do not share the same precinct grain as the OK review rows."
+      ]
+    },
+    {
+      "id": "ok-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceTitle": "U.S. Census TIGERweb Oklahoma county geography",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2740%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifact": "data/ok-counties.geojson",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserNormalizationPath": "censusTigerwebCountyGeojson via map geometry validators and public map joins",
+      "expectedCounts": {
+        "geometryFeatures": 77
+      },
+      "confidence": "loaded_official_geometry",
+      "caveats": [
+        "County geometry supports county result maps only; precinct boundary geometry is not loaded."
+      ]
+    },
+    {
+      "id": "ok-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceTitle": "Verified Voting Verifier Oklahoma 2024 equipment context",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/40",
+      "localArtifact": "data/verifiedvoting-ok-2024-equipment.json; data/ok-2024-equipment-context.csv",
+      "electionYear": 2024,
+      "reportingGrain": "county_context",
+      "parserNormalizationPath": "verifiedVotingEquipment via data/admin-source-packages.json and equipment context scripts",
+      "expectedCounts": {
+        "equipmentRows": 77
+      },
+      "confidence": "loaded_context_only",
+      "caveats": [
+        "Equipment context is supplemental administration metadata only, not a vote, turnout, audit, incident, or precinct-uniformity source.",
+        "County rows can summarize mixed standard, accessible, absentee, tabulation, or poll-book configurations."
+      ]
+    }
+  ],
+  "officialSourceFindings": {
+    "resultExports": {
+      "status": "loaded_official_exports",
+      "sourceUrl": "https://oklahoma.gov/elections/elections-results/election-results/2024-election-results/november-general-election.html",
+      "finding": "The official 2024 November General Election page links to the OK Election Results page and states that county, race, and precinct-level downloads are available from the export tab. The direct race, county, and precinct export endpoints are loaded in etl/state-configs/ok.json."
+    },
+    "historicalBaselines": {
+      "status": "official_source_pages_identified_not_loaded",
+      "sourceUrls": [
+        "https://oklahoma.gov/elections/elections-results/election-results/2020-election-results/2020-november-general-election.html",
+        "https://oklahoma.gov/elections/elections-results/election-results/2016-election-results/2016-november-general-election.html",
+        "https://oklahoma.gov/elections/elections-results/election-results/2012-election-results/general-election-november-6-2012.html"
+      ],
+      "targetYears": [
+        2012,
+        2016,
+        2020
+      ],
+      "blocker": "Official historical result pages identify the November general-election result portals and downloadable export workflow, but no 2012, 2016, or 2020 Oklahoma historical baseline artifacts are committed or normalized in this branch.",
+      "requestNeed": "Collect race/county export artifacts for 2012, 2016, and 2020 and add a reproducible historical normalizer before enabling Oklahoma historical baseline rows."
+    },
+    "stateNativeTurnout": {
+      "status": "not_loaded_eac_fallback_active",
+      "sourceUrl": "https://oklahoma.gov/elections/voter-registration/voter-registration-statistics.html",
+      "currentArtifact": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
+      "blocker": "The Oklahoma voter-registration statistics page provides registration-report leads and an interactive statistics export path, but no collected ballots-cast plus registered-voter denominator artifact suitable to replace EAC fallback turnout is loaded.",
+      "requestNeed": "Official county or precinct voter participation/voter-history rows with registered-voter denominator timing, join keys, expected row count, and statewide ballots-cast reconciliation."
+    },
+    "precinctGeometry": {
+      "status": "official_source_lead_not_loaded",
+      "sourceUrl": "https://oklahoma.gov/elections/candidates/district-and-precinct-maps.html",
+      "loadedGeometry": "data/ok-counties.geojson",
+      "blocker": "The Oklahoma State Election Board points district and precinct GIS downloads to the OU Center for Spatial Analysis data warehouse, but no precinct shapefile/GeoJSON or precinct-to-result crosswalk is committed.",
+      "requestNeed": "Collect and validate official precinct geometry or a precinct crosswalk before claiming subcounty map overlays."
+    },
+    "postElectionAudit": {
+      "status": "official_archive_path_identified_not_normalized",
+      "sourceUrl": "https://oklahoma.gov/elections/security-integrity/post-election-audits/post-election-audit-archives/2024-post-election-audits.html",
+      "finding": "The official archive records the November 5, 2024 General Election post-election audit window and links report/findings plus county/race audit lists.",
+      "blocker": "No row-level audit selection, contest, discrepancy, county/race, or finding artifacts are committed or normalized in this branch."
+    },
+    "recordsRequests": {
+      "status": "official_request_path_documented",
+      "sourceUrl": "https://oklahoma.gov/elections/about-us/information-and-records-requests.html",
+      "requestNeed": "Use the State Election Board records request path for records not already published, and county election boards when the record custodian is local."
+    },
+    "cvrRecountsIncidentsCorrectionsLitigation": {
+      "status": "not_loaded",
+      "requestNeed": "Official CVR availability records, recount records, incident/correction notices, and litigation/election-contest records must be collected or requested before normalized rows can be loaded."
+    }
+  },
+  "displayApiPathsChecked": [
+    "src/app/results-explorer.tsx",
+    "src/app/api/results/route.ts",
+    "src/app/api/review-rows/route.ts",
+    "src/app/api/turnout/route.ts",
+    "src/app/api/sources/route.ts",
+    "src/app/api/coverage/route.ts",
+    "src/app/api/native-source-packages/route.ts",
+    "src/app/api/turnout-sources/route.ts",
+    "src/app/api/admin-sources/route.ts"
+  ],
+  "remainingGaps": [
+    "state-native turnout or voter-history rows with registered-voter denominator timing",
+    "official precinct boundary geometry or precinct-to-result crosswalk",
+    "official 2012, 2016, and 2020 historical baseline artifacts and normalizer",
+    "normalized post-election audit selection/outcome rows from the official archive documents",
+    "CVR availability, recount, incident, correction, and litigation records"
+  ],
+  "advisoryUseCaveat": "Oklahoma advisory indicators are source/data reconciliation signals only. They are not proof of fraud or misconduct and require source, demographic, contest, turnout, equipment, audit, and custody context before interpretation."
+}

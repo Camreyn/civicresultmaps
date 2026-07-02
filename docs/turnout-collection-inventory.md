@@ -8,7 +8,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 - States checked: 50
 - Turnout loaded in database or validated native staging: 15
-- Loaded through official EAC fallback while state-native denominator remains missing: 4
+- Loaded through official EAC fallback while state-native denominator remains missing: 5
 - Need native turnout package or state-native replacement: 36
 
 ## Loaded Turnout
@@ -38,6 +38,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | AR Arkansas | Native TotalResults presidential and review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Arkansas turnout or voter-participation rows with registered-voter denominator timing at county, precinct, or TotalResults reporting-unit grain. |
 | KS Kansas | Native presidential and precinct review ETL is loaded from official Kansas Secretary of State workbooks, and official EAC 2024 EAVS V2 county/jurisdiction turnout rows are configured as fallback context. | Official Kansas ballots-cast or voter-participation rows with registered-voter denominator timing. Prefer precinct or county rows that can be reconciled to the SOS result workbooks; keep EAC fallback caveats visible until then. |
 | MA Massachusetts | Native PD43+ President/Senate review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured and validated as fallback context. The official Massachusetts turnout statistics page confirms the same 2024 statewide registered-voter and total-votes-cast figures. | Official Massachusetts local turnout or voter-participation denominator rows at city/town, ward, precinct, or another documented reporting grain. |
+| OK Oklahoma | Native Oklahoma result and precinct review ETL is loaded from official Oklahoma State Election Board race, county, and precinct CSV exports, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Oklahoma ballots-cast or voter-history rows with registered-voter denominator timing. Prefer county or precinct rows that can be reconciled to the official OK result exports; keep EAC fallback caveats visible until then. |
 | WI Wisconsin | Native presidential and review ETL is loaded, and official EAC 2024 EAVS V2 local-jurisdiction turnout rows are configured and loaded as fallback context. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county- or municipality-level is usable only with caveats. |
 
 ## States Needing Native Turnout Packages Or State-Native Replacements
