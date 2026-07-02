@@ -1,0 +1,150 @@
+﻿{
+  "state": "CA",
+  "stateName": "California",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "purpose": "California 2024 data coverage and administration-context source inventory for Civic Result Maps. This inventory documents source paths and caveats; it does not load row-level audit, CVR, incident, correction, recount, litigation, custody, or tabulator-log records.",
+  "officialSourcePages": [
+    "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results/general-election-nov-5-2024/statement-vote",
+    "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results",
+    "https://www.sos.ca.gov/elections/election-cybersecurity",
+    "https://www.sos.ca.gov/elections/recounts",
+    "https://www.sos.ca.gov/administration/public-records-act-requests",
+    "https://www.sos.ca.gov/elections/ovsta/voting-technology-vendors"
+  ],
+  "loadedArtifacts": [
+    {
+      "id": "ca-2024-general-president-sov",
+      "topic": "certifiedCountyResults",
+      "sourceTitle": "California SOS 2024 General Election Statement of Vote President by County XLSX",
+      "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/16-president.xlsx",
+      "localArtifact": "data/ca-2024-general-president.csv",
+      "sourceArtifact": "data/ca-2024-president-county.xlsx",
+      "parser": "scripts/normalize-ca-sov-workbooks.mjs",
+      "reportingGrain": "county",
+      "expectedRows": 58,
+      "status": "loaded"
+    },
+    {
+      "id": "ca-2024-general-us-senate-full-term-sov",
+      "topic": "sameGrainComparisonContest",
+      "sourceTitle": "California SOS 2024 General Election Statement of Vote U.S. Senator full-term by County XLSX",
+      "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/19-uss-ft.xlsx",
+      "localArtifact": "data/ca-2024-general-us-senate-full-term.csv",
+      "sourceArtifact": "data/ca-2024-us-senate-full-term-county.xlsx",
+      "parser": "scripts/normalize-ca-sov-workbooks.mjs",
+      "reportingGrain": "county",
+      "expectedRows": 58,
+      "status": "loaded"
+    },
+    {
+      "id": "ca-2024-general-voter-participation-sov",
+      "topic": "turnoutAndRegistrationDenominator",
+      "sourceTitle": "California SOS 2024 General Election voter participation statistics by county PDF",
+      "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+      "localArtifact": "data/ca-2024-voter-participation-stats-by-county.csv",
+      "sourceArtifact": "data/ca-2024-voter-participation-stats-by-county.pdf",
+      "parser": "scripts/normalize-ca-turnout.mjs",
+      "reportingGrain": "county",
+      "expectedRows": 58,
+      "registeredVoters": 22595659,
+      "ballotsCast": 16140044,
+      "status": "loaded",
+      "caveat": "Registered Voters totals are based on the 15-day Report of Registration and do not include voters registered after the 15-day close; Same Day Voter Registration may occur later through Election Day."
+    },
+    {
+      "id": "ca-historical-presidential-sov-county",
+      "topic": "historicalCountyBaselines",
+      "sourceTitle": "California SOS official Statement of Vote President by County workbooks for 2012, 2016, and 2020",
+      "sourceUrl": "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results",
+      "localArtifact": "data/ca-historical-presidential-baseline.csv",
+      "sourceArtifacts": [
+        "data/ca-2012-president-county.xls",
+        "data/ca-2016-president-county.xls",
+        "data/ca-2020-president-county.xlsx"
+      ],
+      "parser": "scripts/normalize-ca-sov-workbooks.mjs",
+      "reportingGrain": "county",
+      "expectedRows": 174,
+      "years": [2012, 2016, 2020],
+      "status": "loaded"
+    },
+    {
+      "id": "ca-county-geometry",
+      "topic": "countyGeometry",
+      "sourceTitle": "U.S. Census TIGERweb county geography",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2706%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifact": "data/ca-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "reportingGrain": "county",
+      "expectedFeatures": 58,
+      "status": "loaded"
+    },
+    {
+      "id": "ca-2024-equipment-context",
+      "topic": "equipmentContext",
+      "sourceTitle": "Verified Voting Verifier California 2024 county equipment context",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/6",
+      "localArtifact": "data/ca-2024-equipment-context.csv",
+      "sourceArtifact": "data/verifiedvoting-ca-2024-equipment.json",
+      "parser": "verifiedVotingEquipment",
+      "reportingGrain": "county",
+      "expectedRows": 58,
+      "status": "loaded",
+      "caveat": "Equipment rows are jurisdiction-level administration context only; they are not vote, turnout, audit, incident, or proof-of-uniformity rows."
+    }
+  ],
+  "sourceFindings": [
+    {
+      "topic": "stateNativeTurnoutReplacement",
+      "status": "loaded",
+      "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+      "localArtifact": "data/ca-2024-voter-participation-stats-by-county.csv",
+      "finding": "The SOS Statement of Vote voter participation table replaces the prior EAC fallback for active CA turnout rows at county grain."
+    },
+    {
+      "topic": "postElectionAudit",
+      "status": "official_source_identified_not_normalized",
+      "sourceUrl": "https://www.sos.ca.gov/elections/election-cybersecurity",
+      "finding": "California SOS election-security guidance states that election officials conduct a manual audit of a random 1% of ballots. County-specific 2024 audit selections, samples, discrepancy records, and outcomes are not normalized in this pass.",
+      "neededArtifact": "Official county or SOS 2024 post-election audit selection and outcome records."
+    },
+    {
+      "topic": "recountAndElectionContestPaths",
+      "status": "request_or_follow_up_required",
+      "sourceUrl": "https://www.sos.ca.gov/elections/recounts",
+      "finding": "The SOS recount page provides recount guidance and historical recount links, but no normalized 2024 President or U.S. Senate recount rows are loaded.",
+      "neededArtifact": "Official SOS, court, or county recount/election-contest records if any relevant 2024 rows exist."
+    },
+    {
+      "topic": "cvrAvailability",
+      "status": "needs_records_request_or_county_collection",
+      "sourceUrl": "https://www.sos.ca.gov/administration/public-records-act-requests",
+      "finding": "No statewide 2024 California CVR package or county-by-county CVR availability statement is loaded. Use SOS or county public-records channels and ballot-secrecy/redaction review before normalization."
+    },
+    {
+      "topic": "incidentCorrectionLitigationCustodyLogs",
+      "status": "needs_records_request_or_county_collection",
+      "sourceUrl": "https://www.sos.ca.gov/administration/public-records-act-requests",
+      "finding": "No normalized 2024 incident, correction, litigation, custody, L&A, or tabulator-log rows are loaded. Official SOS, court, and county records remain required before adding row-level administration context."
+    },
+    {
+      "topic": "votingSystemsByCounty",
+      "status": "official_source_identified_not_normalized",
+      "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/13-vot-sys-by-counties.pdf",
+      "finding": "The 2024 Statement of Vote includes an official voting-systems-by-county PDF lead. Current normalized equipment context remains the existing Verified Voting county package until the SOS PDF is normalized and reconciled."
+    },
+    {
+      "topic": "precinctOrLocalReviewRows",
+      "status": "not_loaded",
+      "sourceUrl": "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results/general-election-nov-5-2024/statement-vote",
+      "finding": "Current CA review rows are county-level President-versus-U.S. Senate full-term comparisons. Precinct, city, or other local reporting-unit President plus same-grain comparison rows were not loaded in this pass."
+    }
+  ],
+  "displayCaveats": [
+    "County-level CA review rows are advisory comparison context, not precinct scatter plots or findings.",
+    "The active CA turnout package uses SOS total voters and 15-day registered-voter denominators; presidential contest votes reconcile separately to the President by County workbook.",
+    "County geometry is loaded for map joins; precinct boundary geometry is not loaded.",
+    "Audit, CVR, incident, correction, recount, litigation, custody, and tabulator-log paths are source leads only until official row-level artifacts are collected and normalized."
+  ]
+}

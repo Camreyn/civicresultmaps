@@ -364,3 +364,20 @@ Expected validation: 120 county result rows, 120 county geometry features, 3,067
 - Equipment context: `data/ny-2024-equipment-context.csv` from Verified Voting, context only
 
 Expected validation: 62 county result rows, 62 county geometry features, 9,753 supplemental local review rows, 62 EAC fallback turnout rows, and 186 official county historical baseline rows. Remaining risks: Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized local review coverage; Monroe appears in the local-review manifest with zero parsed rows. County-certified NYSBOE rows remain the map authority. Remaining source needs are official full-state election-district President and U.S. Senate rows, state-native ballots-cast/voter-history rows paired with enrollment denominators, precinct/election-district geometry or crosswalks, and normalized audit/CVR/incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+
+## California Wave 11 Update
+
+- Config: etl/state-configs/ca.json
+- Authority: California Secretary of State; U.S. Census Bureau; Verified Voting equipment context
+- County results source: data/ca-2024-general-president.csv, normalized from the official SOS Statement of Vote President by County XLSX
+- Local review source: data/ca-2024-general-us-senate-full-term.csv
+- Comparison contest: U.S. Senate full term, county rows only
+- Turnout source: data/ca-2024-voter-participation-stats-by-county.csv, normalized from the official SOS voter participation statistics PDF
+- Turnout denominator: 15-day Report of Registration registered voters; expected 58 rows, 16,140,044 total voters, and 22,595,659 registered voters
+- Historical baseline source: data/ca-historical-presidential-baseline.csv, generated from official 2012, 2016, and 2020 SOS Statement of Vote President by County workbooks
+- County boundary: data/ca-counties.geojson
+- Coverage/admin inventory: data/ca-2024-data-coverage-inventory.json documents the loaded artifacts, official voting-systems-by-county lead, 1% manual audit source lead, recount/PRA paths, and remaining CVR/incident/correction/litigation gaps
+
+Expected validation: 58 county result rows, 58 county geometry features, 58 county review rows, 58 county turnout rows, 174 historical baseline rows, 15,865,475 presidential votes, 9,276,179 Harris votes, 6,081,697 Trump votes, and 507,599 other presidential votes.
+
+Caveats: review rows are county-level President-versus-U.S.-Senate full-term comparisons, not precinct or city/local scatter plots. The SOS turnout denominator is the 15-day Report of Registration and excludes later Same Day Voter Registration updates. County geometry is loaded; precinct geometry and normalized audit/CVR/incident/correction/recount/litigation rows are not loaded. Current advisory rows are public-interest screening inputs only, not findings.

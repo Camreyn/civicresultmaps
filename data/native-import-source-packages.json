@@ -34,7 +34,8 @@
     "VA",
     "WA",
     "WI",
-    "WV"
+    "WV",
+    "CA"
   ],
   "blockedStates": [],
   "states": [
@@ -1065,6 +1066,82 @@
         "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a Kansas-native turnout/registration artifact is collected and reconciled.",
         "County boundary geometry is loaded for map joins; official precinct boundary geometry is not included.",
         "data/ks-2024-data-coverage-inventory.json documents equipment context plus remaining historical, audit, CVR, incident/correction, recount, litigation, turnout, and precinct-geometry gaps."
+      ]
+    },
+    {
+      "state": "CA",
+      "name": "California",
+      "priority": 13,
+      "nativeReadiness": "complete_county_map_county_review_state_native_turnout_historical_admin_inventory",
+      "authority": "California Secretary of State; U.S. Census Bureau; Verified Voting equipment context",
+      "configFile": "etl/state-configs/ca.json",
+      "legacyReferenceBundle": "data/ca-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "California SOS 2024 General Election Statement of Vote President by County XLSX",
+          "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/16-president.xlsx",
+          "localFile": "data/ca-2024-general-president.csv",
+          "parserHint": "Run npm run etl:prepare:ca to normalize data/ca-2024-president-county.xlsx into 58 county President rows."
+        },
+        "localReviewRows": {
+          "sourceTitle": "California SOS 2024 General Election Statement of Vote U.S. Senator full-term by County XLSX",
+          "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/19-uss-ft.xlsx",
+          "localFile": "data/ca-2024-general-us-senate-full-term.csv",
+          "level": "county",
+          "comparisonContest": "U.S. Senate full term",
+          "parserHint": "Run npm run etl:prepare:ca to normalize data/ca-2024-us-senate-full-term-county.xlsx into 58 county comparison rows."
+        },
+        "turnout": {
+          "sourceTitle": "California SOS 2024 General Election voter participation statistics by county PDF",
+          "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+          "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+          "level": "county",
+          "denominator": "15-day Report of Registration registered voters",
+          "ballotsCast": "Total Voters"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2706%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ca-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "California SOS official historical Statement of Vote President by County workbooks",
+          "sourceUrl": "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results",
+          "localFile": "data/ca-historical-presidential-baseline.csv",
+          "parserHint": "scripts/normalize-ca-sov-workbooks.mjs normalizes 2012, 2016, and 2020 county presidential workbook rows."
+        },
+        "coverageInventory": {
+          "sourceTitle": "California 2024 data coverage and administration source inventory",
+          "localFile": "data/ca-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded CA result/review/turnout/historical/equipment artifacts and remaining official request/source paths."
+        }
+      },
+      "expected": {
+        "countyRows": 58,
+        "geometryFeatures": 58,
+        "stateTotal": 15865475,
+        "trump": 6081697,
+        "harris": 9276179,
+        "other": 507599,
+        "localReviewRows": 58,
+        "turnoutRows": 58,
+        "historicalBaselineRows": 174
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_county_statement_of_vote",
+        "turnoutMode": "sos_county_voter_participation_15_day_registration",
+        "historicalBaselineMode": "official_sos_county_statement_of_vote_workbooks",
+        "adminInventoryStatus": "source_paths_documented_not_row_level_loaded"
+      },
+      "caveats": [
+        "Review rows are county-level President-versus-U.S.-Senate full-term comparisons, not precinct or city/local scatter plots.",
+        "Registered-voter turnout denominators are 15-day Report of Registration totals and do not include Same Day Voter Registration after the 15-day close.",
+        "County map geometry is loaded; precinct boundary geometry is not part of this package.",
+        "Administration context is inventoried, but normalized audit/CVR/incident/correction/recount/litigation rows are not loaded."
       ]
     }
   ],

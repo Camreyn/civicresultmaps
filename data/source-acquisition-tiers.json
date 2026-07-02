@@ -211,30 +211,50 @@
       "stateName": "California",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_historical_geometry_admin_context",
+      "tier": "tier_1_official_export_database",
       "reportingGrain": "county",
       "exportFormats": [
-        "eac fallback turnout"
+        "XLSX Statement of Vote workbooks",
+        "PDF participation and registration tables",
+        "GeoJSON county geometry",
+        "EAC fallback benchmark CSV"
       ],
       "sourceUrls": [
-        "https://elections.cdn.sos.ca.gov/sov/"
+        "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results/general-election-nov-5-2024/statement-vote",
+        "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+        "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2706%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+        "https://www.sos.ca.gov/elections/election-cybersecurity",
+        "https://www.sos.ca.gov/elections/recounts",
+        "https://www.sos.ca.gov/administration/public-records-act-requests"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/16-president.xlsx",
+        "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/19-uss-ft.xlsx"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official county U.S. Senate full-term comparison rows",
+        "official county voter participation and 15-day registered-voter denominator rows",
+        "Census county geometry",
+        "official 2012/2016/2020 county presidential historical baseline workbooks",
+        "official Statement of Vote voting-systems-by-county PDF lead and Verified Voting county equipment context",
+        "official election-security 1% manual audit description",
+        "SOS recount and Public Records Act request paths for remaining administration context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "precinct or city/local reporting-unit President rows",
+        "same-grain subcounty comparison contest rows",
+        "precinct boundary geometry or official county-local crosswalk",
+        "normalized post-election audit selection/outcome rows",
+        "normalized CVR availability, incident, correction, recount, litigation, custody, and tabulator-log records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official California Statement of Vote exports and local reporting-unit availability."
+      "parserStatus": "native county package loaded from official California SOS Statement of Vote President and U.S. Senate XLSX workbooks; official SOS county voter-participation PDF normalized by scripts/normalize-ca-turnout.mjs; historical 2012/2016/2020 county baselines normalized from official SOS workbooks",
+      "manualReviewBurden": "low",
+      "confidence": "loaded",
+      "caveats": "Current CA review rows are county-level President-versus-U.S. Senate full-term comparisons, not precinct or city/local scatter plots. Turnout uses SOS voter participation rows; registered voters are 15-day Report of Registration totals and do not include Same Day Voter Registration after the 15-day close. Normalized audit/CVR/incident/correction/recount/litigation rows are not loaded.",
+      "nextAction": "Use data/ca-2024-data-coverage-inventory.json as the current CA source-search record; next steps are precinct/local reporting-unit result exports, precinct geometry/crosswalks, and normalized audit/CVR/recount/incident/correction/litigation records from SOS or county sources."
     },
     {
       "state": "CO",

@@ -189,16 +189,30 @@
         "expectedJurisdictions": 58
       },
       "audit": {
-        "status": "needs_data",
-        "why": "California 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_audit_source_lead",
+        "sourceDocumentId": "ca-sos-election-security-1-percent-manual-audit",
+        "sourceUrl": "https://www.sos.ca.gov/elections/election-cybersecurity",
+        "localArtifact": "data/ca-2024-data-coverage-inventory.json",
+        "why": "California SOS election-security guidance states that election officials conduct a manual audit of a random 1% of ballots. Row-level 2024 county audit selections and outcomes are not normalized.",
+        "caveat": "Source lead only; no county audit selection, sample, discrepancy, or outcome rows are loaded."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "California 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "reportingLevel": "county_or_sos_records_request",
+        "sourceDocumentId": "ca-sos-public-records-act-election-records",
+        "sourceUrl": "https://www.sos.ca.gov/administration/public-records-act-requests",
+        "localArtifact": "data/ca-2024-data-coverage-inventory.json",
+        "why": "No statewide 2024 California CVR package or county-by-county CVR availability statement is loaded. Use SOS or county public-records paths and ballot-secrecy/redaction caveats before normalization."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "California 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "recount_pra_and_county_records_paths",
+        "sourceDocumentId": "ca-sos-recount-and-public-records-paths",
+        "sourceUrl": "https://www.sos.ca.gov/elections/recounts",
+        "localArtifact": "data/ca-2024-data-coverage-inventory.json",
+        "why": "California SOS recount information and PRA request paths are documented as source leads, but no normalized 2024 incident, correction, recount, litigation, custody, or tabulator-log rows are loaded.",
+        "caveat": "Use official SOS, court, and county records before adding row-level administration context."
       }
     },
     {

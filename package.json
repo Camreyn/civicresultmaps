@@ -122,7 +122,7 @@
     "etl:collect:in:historical": "node scripts/collect-in-historical-baseline.mjs",
     "etl:validate:in": "python -m civic_etl.cli validate --config etl/state-configs/in.json",
     "etl:import:in": "python -m civic_etl.cli import --config etl/state-configs/in.json --out .etl/staging",
-    "etl:prepare:ca": "node scripts/normalize-ca-sov-workbooks.mjs",
+    "etl:prepare:ca": "node scripts/normalize-ca-sov-workbooks.mjs && node scripts/normalize-ca-turnout.mjs",
     "etl:validate:ca": "npm run etl:prepare:ca && python -m civic_etl.cli validate --config etl/state-configs/ca.json",
     "etl:import:ca": "npm run etl:prepare:ca && python -m civic_etl.cli import --config etl/state-configs/ca.json --out .etl/staging",
     "etl:collect:fl": "node scripts/collect-fl-results-extract.mjs",
