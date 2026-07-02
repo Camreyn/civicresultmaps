@@ -1339,16 +1339,24 @@
         "expectedJurisdictions": 36
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Oregon 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "source_path_needed",
+        "sourceUrl": "https://sos.oregon.gov/elections/Pages/electionhistory.aspx",
+        "requestUrl": "https://oregonsos.govqa.us/WEBAPP/_rs/",
+        "reportingLevel": "county",
+        "why": "Wave 12 confirmed Oregon election-history and public-records paths, but no 2024 General Election hand-count/post-election audit selection or outcome artifact is normalized yet. County election offices are the follow-up path if state-level audit records are not published."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Oregon 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "request_path_documented_not_loaded",
+        "sourceUrl": "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "requestUrl": "https://oregonsos.govqa.us/WEBAPP/_rs/",
+        "reportingLevel": "county",
+        "why": "Oregon county election offices and the Secretary of State public-records portal are documented request paths for CVR availability, cast-vote exports, ballot images, tabulator logs, logic-and-accuracy records, and custody records; no normalized CVR or electronic-evidence rows are loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Oregon 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "request_path_documented_not_loaded",
+        "sourceUrl": "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "requestUrl": "https://oregonsos.govqa.us/WEBAPP/_rs/",
+        "why": "Oregon incident, correction, recount, litigation, and county certification correspondence records are documented as county/SOS request items; no normalized 2024 rows are loaded."
       }
     },
     {

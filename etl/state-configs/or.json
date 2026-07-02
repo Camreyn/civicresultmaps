@@ -1,4 +1,4 @@
-﻿{
+{
   "code": "OR",
   "name": "Oregon",
   "authority": "Oregon Secretary of State",
@@ -70,6 +70,17 @@
       "timestampBasis": "Oregon Records Management Solution county precinct-level result records collected June 29, 2026.",
       "confidence": "Official county precinct-level artifacts are collected for provenance and later OCR-backed normalization. Current review rows use official county abstract totals because many ORMS precinct PDFs are image-only.",
       "status": "loaded"
+    },
+    {
+      "id": "or-2024-data-coverage-inventory",
+      "category": "Oregon data coverage and administration source inventory",
+      "url": "https://sos.oregon.gov/elections/Pages/electionhistory.aspx",
+      "localFile": "data/or-2024-data-coverage-inventory.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Oregon Secretary of State",
+      "timestampBasis": "Wave 12 official-source coverage inventory checked July 2, 2026.",
+      "confidence": "Documents loaded Oregon artifacts, official historical and turnout source leads, public-records and county-office request paths, and remaining audit/CVR/incident/correction/recount/litigation gaps. Inventory only; no normalized administration rows are loaded.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -89,7 +100,7 @@
   "expected": {
     "jurisdictions": 36,
     "resultRows": 36,
-    "sources": 6,
+    "sources": 7,
     "geometryFeatures": 36,
     "stateTotal": 2244493,
     "trump": 919480,

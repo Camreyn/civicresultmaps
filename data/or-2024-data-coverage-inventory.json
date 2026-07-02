@@ -1,0 +1,155 @@
+{
+  "state": "OR",
+  "stateName": "Oregon",
+  "checkedAt": "2026-07-02",
+  "authority": "Oregon Secretary of State",
+  "productionChecked": false,
+  "displayPathChecked": "The public app loads Oregon through src/app/page.tsx using listResults, listSources, getCoverageSummary, listIndicators, listReviewRows, listTurnoutRows, listHistoricalResultRows, listEquipmentRows, listAdminSourceStatuses, listElectronicIntegrityArtifacts, and listElectronicIntegrityRequests from src/lib/api. The /api/native-source-packages and /api/source-acquisition-tiers routes expose the updated registry artifacts.",
+  "loadedArtifacts": {
+    "presidentialCountyResults": {
+      "status": "loaded",
+      "sourceTitle": "2024 November General Election Official Results PDF",
+      "sourceUrl": "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+      "localFile": "data/or-2024-general-president.csv",
+      "sourceArtifact": "data/or-2024-general-official-results.pdf",
+      "reportingGrain": "county",
+      "parser": "scripts/normalize-or-official-results.mjs plus native countyPresidentCsv",
+      "expectedRows": 36,
+      "expectedStateTotal": 2244493,
+      "caveat": "County certified rows are the current map authority; this is not precinct-level review coverage."
+    },
+    "comparisonContest": {
+      "status": "loaded",
+      "sourceTitle": "2024 November General Election Official Results PDF, Attorney General contest",
+      "sourceUrl": "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+      "localFile": "data/or-2024-general-attorney-general.csv",
+      "reportingGrain": "county",
+      "parser": "scripts/normalize-or-official-results.mjs plus native countyComparisonCsv",
+      "comparisonContest": "Attorney General",
+      "expectedRows": 36,
+      "caveat": "Attorney General is a same-grain statewide comparison race for county directional screening only; it is not evidence of causation or misconduct."
+    },
+    "turnout": {
+      "status": "loaded_eac_fallback_state_native_source_lead_confirmed",
+      "sourceTitle": "EAC 2024 EAVS V2 jurisdiction turnout fallback and Oregon official voter registration statistics lead",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "officialOregonLeadUrl": "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735459",
+      "localFile": "data/eac-2024-state-turnout/or-2024-eac-turnout.csv",
+      "reportingGrain": "jurisdiction",
+      "parser": "eacTurnoutCsv",
+      "expectedRows": 36,
+      "expectedBallotsCast": 2269608,
+      "expectedRegisteredVoters": 3060374,
+      "caveat": "The active ETL still uses EAC fallback rows. The Oregon 2024 official voter registration statistics PDF is an official replacement lead but has not been collected, parsed, or reconciled to replace EAC turnout rows."
+    },
+    "countyGeometry": {
+      "status": "loaded",
+      "sourceTitle": "U.S. Census TIGERweb county geography",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2741%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/or-counties.geojson",
+      "reportingGrain": "county",
+      "parser": "censusTigerwebCountyGeojson",
+      "expectedFeatures": 36,
+      "caveat": "County map joins are covered; precinct boundary geometry or a precinct-to-county crosswalk is not loaded."
+    },
+    "precinctResults": {
+      "status": "collected_not_normalized",
+      "sourceTitle": "2024 General Election Precinct Level Results ORMS records",
+      "sourceUrl": "https://records.sos.state.or.us/ORSOSWebDrawer/Record?q=recNotes%3A2024+General+Election+Precinct+Level+Results&sortBy=recTypedTitle",
+      "localFile": "data/or-2024-precinct-data/manifest.json",
+      "reportingGrain": "county_precinct_documents",
+      "parser": "scripts/collect-or-precinct-data.mjs",
+      "expectedRecords": 36,
+      "caveat": "The ORMS search reports 36 records, including one CSV and many county PDFs. These artifacts are provenance and future normalization inputs; current advisory rows remain county-level because many precinct files are image/PDF documents requiring county-specific extraction review."
+    },
+    "equipmentContext": {
+      "status": "loaded_supplemental_context",
+      "sourceTitle": "Verified Voting Verifier Oregon 2024 equipment context plus Oregon tally-system source lead",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/41",
+      "officialOregonLeadUrl": "https://sos.oregon.gov/elections/Pages/voting-systems.aspx",
+      "localFile": "data/or-2024-equipment-context.csv",
+      "reportingGrain": "county",
+      "parser": "verifiedVotingEquipment",
+      "expectedRows": 36,
+      "caveat": "Equipment context is jurisdiction-level metadata only. Oregon's voting-systems page links tally systems by county, but that source is not normalized into the equipment registry in this pass."
+    }
+  },
+  "sourceFindings": [
+    {
+      "topic": "historicalBaselines",
+      "status": "official_source_leads_confirmed_not_loaded",
+      "targetYears": [
+        2012,
+        2016,
+        2020
+      ],
+      "relatedSourceUrls": [
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735450",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873777",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873690"
+      ],
+      "neededArtifact": "Download and retain official Oregon result PDFs for 2020, 2016, and 2012, then add an Oregon historical abstract normalizer that emits data/or-historical-presidential-baseline.csv with county rows.",
+      "caveat": "The official historical result PDFs are confirmed source leads from the Oregon election history page, but no normalized historical baseline rows are loaded."
+    },
+    {
+      "topic": "stateNativeTurnout",
+      "status": "official_source_lead_confirmed_not_loaded",
+      "relatedSourceUrls": [
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735459",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873778",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873691"
+      ],
+      "neededArtifact": "Collect the 2024 official voter registration and turnout statistics PDF, normalize county ballots-cast and registration denominator fields, and reconcile against the active EAC fallback rows before switching the ETL source.",
+      "caveat": "EAC fallback remains active until the state-native Oregon turnout semantics and denominator timing are reviewed."
+    },
+    {
+      "topic": "precinctReviewRows",
+      "status": "source_package_collected_parser_needed",
+      "relatedSourceUrls": [
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Record?q=recNotes%3A2024+General+Election+Precinct+Level+Results&sortBy=recTypedTitle",
+        "https://sos.oregon.gov/elections/Pages/countyofficials.aspx"
+      ],
+      "neededArtifact": "Build county-aware parsers or OCR review artifacts for ORMS precinct PDFs/CSV, then pair President with a same-grain statewide or district comparison contest where available.",
+      "caveat": "County offices are the upstream providers for precinct data, so county follow-up may be needed for machine-readable CVR, cast-vote, or precinct exports."
+    },
+    {
+      "topic": "postElectionAudit",
+      "status": "source_path_needed",
+      "relatedSourceUrls": [
+        "https://sos.oregon.gov/elections/Pages/electionhistory.aspx",
+        "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "https://oregonsos.govqa.us/WEBAPP/_rs/"
+      ],
+      "neededArtifact": "Find or request 2024 General Election hand-count/post-election audit selection and outcome records at state or county level.",
+      "caveat": "The election-history page includes historical hand-count result links for 2020 and 2022, but this pass did not identify a normalized 2024 audit outcome artifact."
+    },
+    {
+      "topic": "cvrAvailabilityAndRequestPaths",
+      "status": "request_path_documented_not_loaded",
+      "relatedSourceUrls": [
+        "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "https://oregonsos.govqa.us/WEBAPP/_rs/"
+      ],
+      "neededArtifact": "Request county CVR availability, cast-vote exports, ballot image availability, tabulator logs, logic-and-accuracy records, and custody records where public.",
+      "caveat": "No normalized Oregon CVR or electronic-evidence rows are loaded."
+    },
+    {
+      "topic": "incidentCorrectionRecountLitigation",
+      "status": "request_path_documented_not_loaded",
+      "relatedSourceUrls": [
+        "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "https://oregonsos.govqa.us/WEBAPP/_rs/"
+      ],
+      "neededArtifact": "Collect official recount, correction, incident, litigation, and county certification correspondence records, if any are published or request-produced.",
+      "caveat": "No normalized Oregon incident, correction, recount, or litigation rows are loaded."
+    }
+  ],
+  "remainingRisks": [
+    "Current Oregon advisory rows are county-level President-versus-Attorney-General comparisons, not precinct scatter plots.",
+    "The ORMS precinct package is collected but not normalized; image/PDF documents require county-aware extraction or request-produced machine-readable files.",
+    "Turnout remains EAC fallback until the official Oregon voter registration and turnout statistics PDF is collected, normalized, and reconciled.",
+    "Official 2012, 2016, and 2020 historical result PDFs are source leads only; no historical baseline rows are loaded.",
+    "Audit, CVR availability, incident, correction, recount, litigation, tabulator-log, logic-and-accuracy, custody, and ballot-image records are documented as source/request gaps only.",
+    "Advisory indicators are source-review signals and not evidence of fraud or misconduct."
+  ]
+}
