@@ -490,30 +490,50 @@
       "stateName": "Idaho",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official Vote Idaho XML endpoints",
+        "official Vote Idaho map HTML widgets",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON",
+        "Verified Voting equipment CSV"
       ],
       "sourceUrls": [
-        "https://sos.idaho.gov/elections-division/election-results/"
+        "https://sos.idaho.gov/elections-division/election-results/",
+        "https://archive.voteidaho.gov/results/2024/general/xml.html",
+        "https://archive.voteidaho.gov/results/2024/general/presidential.html",
+        "https://archive.voteidaho.gov/results/2024/general/congressional.html",
+        "https://archive.voteidaho.gov/results/2024/general/turnout.html",
+        "https://canvass.sos.idaho.gov/",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/16"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://archive.voteidaho.gov/results/2024/general/xml.html"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official county U.S. House comparison rows",
+        "EAC fallback turnout rows",
+        "county geometry",
+        "county equipment context",
+        "official 2012, 2016, and 2020 historical source leads"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "precinct/local reporting-unit President rows",
+        "same-grain precinct/local comparison contest rows",
+        "state-native turnout denominator",
+        "precinct boundary geometry or reporting-unit crosswalk",
+        "loaded official 2012/2016/2020 historical baseline rows",
+        "normalized official audit, CVR, incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Idaho result exports and local reporting-unit availability."
+      "parserStatus": "nativeIdahoCountyPresidentCsv loaded from data/id-2024-general-president.csv and data/id-2024-general-us-house.csv; data/id-2024-data-coverage-inventory.json documents remaining official-source leads and gaps",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Current Idaho review rows are county-level President-versus-U.S.-House comparisons, not precinct scatter plots. U.S. House is district-based, EAC turnout is fallback rather than Idaho-native, and no normalized historical baseline, audit, CVR, incident, correction, recount, litigation, or precinct-geometry rows are loaded.",
+      "nextAction": "Use data/id-2024-data-coverage-inventory.json as the current ID source-search record; next steps are state-native turnout, precinct/local result exports, precinct geometry/crosswalks, historical baseline normalization, and official audit/CVR/incident/correction/recount/litigation source collection."
     },
     {
       "state": "IL",

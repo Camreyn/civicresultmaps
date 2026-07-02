@@ -232,6 +232,21 @@ Expected validation: 17 county result rows, 17 county geometry features, 1,484,8
 
 Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 184 historical baseline rows for 2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
 
+
+## Idaho Wave 12 Update
+
+- Config: `etl/state-configs/id.json`
+- Authority: Idaho Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting context
+- County results source: `data/id-2024-general-president.csv`, normalized from official Vote Idaho 2024 General Election county XML endpoints with documented official county-table fallback handling for stale endpoints
+- Local review source: `data/id-2024-general-us-house.csv`
+- Comparison contest: U.S. House by congressional district, aggregated to county rows, with district-based advisory caveats
+- Turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/id-2024-eac-turnout.csv`
+- County boundary: `data/id-counties.geojson`
+- Equipment context: `data/id-2024-equipment-context.csv` from Verified Voting, context only
+- Coverage inventory: `data/id-2024-data-coverage-inventory.json`
+
+Expected validation: 44 county result rows, 44 county geometry features, 904,967 presidential votes, 605,246 Trump votes, 274,972 Harris votes, 24,749 other votes, 44 county review rows, and 44 EAC fallback turnout rows. Remaining gaps are state-native turnout denominators, precinct/local reporting-unit President and comparison rows, precinct geometry/crosswalks, official 2012/2016/2020 historical baseline normalization, normalized post-election audit rows, CVR availability records, and official incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+
 ## Kansas Wave 11 Update
 
 - Config: `etl/state-configs/ks.json`

@@ -8,7 +8,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 - States checked: 50
 - Turnout loaded in database or validated native staging: 15
-- Loaded through official EAC fallback while state-native denominator remains missing: 4
+- Loaded through official EAC fallback while state-native denominator remains missing: 5
 - Need native turnout package or state-native replacement: 36
 
 ## Loaded Turnout
@@ -36,6 +36,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | State | Current status | Needed |
 | --- | --- | --- |
 | AR Arkansas | Native TotalResults presidential and review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Arkansas turnout or voter-participation rows with registered-voter denominator timing at county, precinct, or TotalResults reporting-unit grain. |
+| ID Idaho | Native county presidential and U.S. House review ETL is loaded from official Vote Idaho artifacts, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Idaho turnout or voter-participation rows with registered-voter denominator timing at county, precinct, or Vote Idaho reporting-unit grain. |
 | KS Kansas | Native presidential and precinct review ETL is loaded from official Kansas Secretary of State workbooks, and official EAC 2024 EAVS V2 county/jurisdiction turnout rows are configured as fallback context. | Official Kansas ballots-cast or voter-participation rows with registered-voter denominator timing. Prefer precinct or county rows that can be reconciled to the SOS result workbooks; keep EAC fallback caveats visible until then. |
 | MA Massachusetts | Native PD43+ President/Senate review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured and validated as fallback context. The official Massachusetts turnout statistics page confirms the same 2024 statewide registered-voter and total-votes-cast figures. | Official Massachusetts local turnout or voter-participation denominator rows at city/town, ward, precinct, or another documented reporting grain. |
 | WI Wisconsin | Native presidential and review ETL is loaded, and official EAC 2024 EAVS V2 local-jurisdiction turnout rows are configured and loaded as fallback context. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county- or municipality-level is usable only with caveats. |
@@ -86,6 +87,10 @@ Iowa now uses state-native official precinct turnout rows from Iowa Secretary of
 ## Arkansas Update
 
 Arkansas currently uses official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ar-2024-eac-turnout.csv`, totaling 73 jurisdiction rows, 1,122,278 ballots cast, and 1,750,202 registered voters in the AR config expectations. The Arkansas Secretary of State TotalResults election-info JSON includes a statewide turnout summary, but this pass did not collect a county, precinct, or reporting-unit turnout denominator artifact that can replace EAC fallback rows. Keep Arkansas in the native-turnout-needed path until an official Arkansas turnout or voter-participation artifact with denominator timing and join keys is collected and reconciled. See `data/ar-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
+
+## Idaho Update
+
+Idaho currently uses official EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/id-2024-eac-turnout.csv`, totaling 44 jurisdiction rows, 917,469 ballots cast, and 1,178,750 registered voters. The official Vote Idaho 2024 General Election turnout page is documented as a state-native source lead, but no Idaho-native local turnout denominator artifact has been normalized into the active turnout contract. Keep Idaho in the native-turnout-needed path until an official Idaho turnout or voter-participation artifact with denominator timing and join keys is collected and reconciled. See `data/id-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
 
 ## Wisconsin-Specific Request
 
