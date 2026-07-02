@@ -232,6 +232,22 @@ Expected validation: 17 county result rows, 17 county geometry features, 1,484,8
 
 Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 184 historical baseline rows for 2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
 
+## Kansas Wave 11 Update
+
+- Config: `etl/state-configs/ks.json`
+- Authority: Kansas Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau
+- County results source: `data/ks-2024-presidential-results.xlsx`, from the official Kansas SOS 2024 Presidential Election Results workbook
+- Local review source: `data/ks-2024-general-us-house-precinct.xlsx`, from the official Kansas SOS U.S. House precinct workbook
+- Comparison contest: U.S. House by congressional district, paired to official presidential precinct rows, with district-based and vote-share-only caveats
+- Turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ks-2024-eac-turnout.csv`
+- County boundary: `data/ks-counties.geojson`
+- Equipment context: `data/ks-2024-equipment-context.csv` from Verified Voting, context only
+- Coverage inventory: `data/ks-2024-data-coverage-inventory.json`
+
+Expected validation: 105 county result rows, 105 county geometry features, 1,327,591 presidential votes, 758,802 Trump votes, 544,853 Harris votes, 23,936 other votes, 3,739 precinct review rows, and 105 EAC fallback turnout rows.
+
+Remaining gaps: Kansas-native turnout/registration denominators, official precinct boundary geometry or a precinct crosswalk, official 2012/2016/2020 county historical presidential baselines, normalized post-election audit rows, CVR availability records, and official incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+
 ## Native ETL Acceptance Criteria
 
 For each state, the native importer should fail before promotion if:

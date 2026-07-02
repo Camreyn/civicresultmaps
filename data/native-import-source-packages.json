@@ -15,6 +15,7 @@
     "GA",
     "IA",
     "IL",
+    "KS",
     "KY",
     "MD",
     "MI",
@@ -1002,6 +1003,69 @@
         "Historical rows are context only; the 2020 media export reports the original November general-election export total and should not be mixed with recount tables without reconciliation."
       ],
       "legacyReferenceBundle": "data/ga-app-data.js"
+    },
+    {
+      "state": "KS",
+      "name": "Kansas",
+      "priority": 26,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_equipment_admin_inventory",
+      "authority": "Kansas Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/ks.json",
+      "legacyReferenceBundle": "data/ks-2024-presidential-results.xlsx",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Kansas SOS official 2024 Presidential Election Results workbook",
+          "sourceUrl": "https://sos.ks.gov/elections/24elec/2024-Presidential-Results.xlsx",
+          "localFile": "data/ks-2024-presidential-results.xlsx",
+          "parserHint": "kansasPresidentialResultsXlsx parses sheet 2024 Presidential Results; aggregate County rows by Party and Votes for certified county map totals."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Kansas SOS official 2024 General Election U.S. House precinct workbook",
+          "sourceUrl": "https://sos.ks.gov/elections/24elec/2024-General-Election-United-States-House-of-Representatives-Precinct-Results.xlsx",
+          "localFile": "data/ks-2024-general-us-house-precinct.xlsx",
+          "level": "precinct",
+          "comparisonContest": "U.S. House",
+          "parserHint": "Pair official presidential precinct rows with U.S. House precinct rows by county and precinct; Johnson, Sedgwick, Shawnee, and Wyandotte are read from separate wide-format county tabs."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 Kansas jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ks-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2720%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ks-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 105,
+        "geometryFeatures": 105,
+        "stateTotal": 1327591,
+        "trump": 758802,
+        "harris": 544853,
+        "other": 23936,
+        "localReviewRows": 3739,
+        "turnoutRows": 105
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_precinct_workbooks_with_vote_share_only_rows",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback"
+      },
+      "caveats": [
+        "U.S. House is district-based rather than a single statewide comparison contest, so review rows are advisory screening inputs only.",
+        "Three nonzero presidential local rows do not have a matching House comparison row and are retained as vote-share-only rows.",
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a Kansas-native turnout/registration artifact is collected and reconciled.",
+        "County boundary geometry is loaded for map joins; official precinct boundary geometry is not included.",
+        "data/ks-2024-data-coverage-inventory.json documents equipment context plus remaining historical, audit, CVR, incident/correction, recount, litigation, turnout, and precinct-geometry gaps."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [

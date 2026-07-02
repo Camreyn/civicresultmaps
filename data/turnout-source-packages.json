@@ -1551,6 +1551,36 @@
       ]
     },
     {
+      "state": "KS",
+      "name": "Kansas",
+      "authority": "U.S. Election Assistance Commission; Kansas Secretary of State result/review rows provide election context",
+      "sourceLevel": "jurisdiction",
+      "turnoutSource": {
+        "sourceTitle": "U.S. EAC 2024 EAVS V2 Kansas jurisdiction turnout fallback",
+        "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+        "localFile": "data/eac-2024-state-turnout/ks-2024-eac-turnout.csv",
+        "parser": "eacTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "U.S. EAC 2024 EAVS V2 Kansas registered-voter denominator",
+        "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+        "localFile": "data/eac-2024-state-turnout/ks-2024-eac-registered-voter-denominator.json",
+        "parser": "eacA1aRegisteredVoterDenominator",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "eacReported"
+      },
+      "expected": {
+        "turnoutRows": 105,
+        "registeredVoters": 2031119,
+        "ballotsCast": 1342102
+      },
+      "caveats": [
+        "EAC fallback turnout is official denominator context, not a Kansas-native turnout replacement.",
+        "Collect and reconcile a Kansas SOS or county ballots-cast plus registered-voter artifact before replacing the active turnout source.",
+        "The active Kansas review rows use official SOS President-versus-U.S.-House precinct workbooks; turnout remains county/jurisdiction fallback."
+      ]
+    },
+    {
       "state": "WI",
       "name": "Wisconsin",
       "authority": "U.S. Election Assistance Commission; Wisconsin Elections Commission ward results provide result/review rows",
