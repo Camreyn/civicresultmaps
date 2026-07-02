@@ -1424,6 +1424,26 @@ const stateDataNoteOverrides: Record<string, StateDataNoteOverride[]> = {
       why: "Historical baseline charts stay disabled until official SOS county presidential artifacts are collected from archive iframe targets, direct recap files, or the SOS request path and parsed with provenance.",
     },
   ],
+  NE: [
+    {
+      key: "review",
+      evidence: "Nebraska review rows use official county-level President-versus-U.S. Senate two-year special election canvass rows.",
+      status: "partial",
+      why: "The current Nebraska review screen is county context only. The source inventory did not identify a public statewide precinct/subcounty President plus U.S. Senate export or matching reporting-unit geometry/crosswalk.",
+    },
+    {
+      key: "turnout",
+      evidence: "EAC 2024 V2 county fallback rows are loaded; the Nebraska canvass voting-statistics reconciliation reports 965,236 Total Voting versus 965,145 EAC ballots cast.",
+      status: "partial",
+      why: "The generated Nebraska reconciliation shows a 91-vote canvass-minus-EAC difference across 34 county rows with no registered-voter denominator delta, so EAC fallback remains active until replacement semantics are reviewed.",
+    },
+    {
+      key: "equipment",
+      evidence: "Nebraska equipment context is loaded from supplemental Verified Voting rows while official equipment records remain a request-path item.",
+      status: "partial",
+      why: "Use the equipment rows as jurisdiction-level administration context only; request official Nebraska SOS or county equipment records before treating them as source-native equipment provenance.",
+    },
+  ],
   NC: [
     {
       key: "map",
