@@ -17,10 +17,10 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /review_rows/);
   assert.match(importer, /turnout_rows/);
   assert.match(importer, /shouldReplaceResultRows/);
-  assert.match(importer, /!artifact\.capabilities\.certifiedResults/);
+  assert.doesNotMatch(importer, /\|\| !artifact\.capabilities\.certifiedResults/);
   assert.match(importer, /shouldReplaceReviewRows/);
   assert.match(importer, /"nativeReviewRows" in native\.metrics/);
-  assert.match(importer, /!artifact\.capabilities\.reviewGraphs/);
+  assert.doesNotMatch(importer, /!artifact\.capabilities\.reviewGraphs/);
   assert.match(importer, /delete from analysis_indicators/);
   assert.match(importer, /analysisIndicatorsForNativeRows/);
   assert.match(importer, /reviewScopesForNativeRows/);
@@ -49,10 +49,21 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.match(importer, /storedIndicatorRows/);
   assert.match(policy, /downBallotAverageThresholdPct: 2/);
   assert.match(policy, /voteShareCorrelationThreshold: 0\.35/);
-  assert.match(importer, /certified_results = excluded\.certified_results/);
-  assert.match(importer, /if \(native\.turnoutRows\.length > 0\)/);
+  assert.match(importer, /certified_results = case/);
+  assert.match(importer, /else capability_flags\.certified_results/);
+  assert.match(importer, /review_graphs = case/);
+  assert.match(importer, /else capability_flags\.review_graphs/);
+  assert.match(importer, /const shouldReplaceTurnoutRows = native\.turnoutRows\.length > 0/);
+  assert.match(importer, /if \(shouldReplaceTurnoutRows\)/);
   assert.doesNotMatch(importer, /parseLegacyBundle/);
   assert.match(script, /promoteNativeStagingArtifact/);
+});
+
+test("legacy importer tolerates non-array legacy turnout payloads", () => {
+  const importer = readFileSync("src/db/legacy-import.ts", "utf8");
+
+  assert.match(importer, /const turnoutRows = Array\.isArray\(appData\.turnoutData\) \? appData\.turnoutData : \[\]/);
+  assert.match(importer, /for \(const \[index, row\] of turnoutRows\.entries\(\)\)/);
 });
 
 test("native staging indicator report uses the shared review policy", () => {
