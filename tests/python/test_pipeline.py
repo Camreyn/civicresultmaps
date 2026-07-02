@@ -1304,6 +1304,111 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(ada_review["comparisonRepVotes"], 142602)
         self.assertEqual(ada_review["comparisonOtherVotes"], 12767)
 
+    def test_native_payload_appends_generic_historical_csv_rows(self):
+        tmp = self.fixture_dir("generic-historical-wrapper")
+        result_path = tmp / "id-results.csv"
+        historical_path = tmp / "id-historical.csv"
+        config_path = tmp / "id.json"
+        result_path.write_text(
+            "\n".join(
+                [
+                    "state,election_year,jurisdiction_name,trump,harris,other",
+                    "ID,2024,Ada,30,20,5",
+                    "ID,2024,Boise,30,15,0",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        historical_path.write_text(
+            "\n".join(
+                [
+                    "state,election_year,jurisdiction_name,source_id,source_level,row_method,dem_votes,rep_votes,other_votes,total_votes,source_url",
+                    "ID,2020,Ada,id-historical,county,fixture,100,120,5,225,https://example.test/id",
+                    "ID,2020,Boise,id-historical,county,fixture,80,90,3,173,https://example.test/id",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        config_path.write_text(
+            json.dumps(
+                {
+                    "code": "ID",
+                    "name": "Idaho",
+                    "authority": "Idaho Secretary of State",
+                    "electionYear": 2024,
+                    "office": "President",
+                    "sources": [
+                        {
+                            "id": "id-results",
+                            "category": "Fixture results",
+                            "url": "https://example.test/id-results",
+                            "localFile": result_path.as_posix(),
+                            "parser": "countyPresidentCsv",
+                            "authority": "Fixture",
+                            "timestampBasis": "Fixture",
+                            "confidence": "Fixture",
+                            "status": "loaded",
+                        },
+                        {
+                            "id": "id-historical",
+                            "category": "Fixture historical baseline",
+                            "url": "https://example.test/id-historical",
+                            "localFile": historical_path.as_posix(),
+                            "parser": "historicalPresidentialCsv",
+                            "authority": "Fixture",
+                            "timestampBasis": "Fixture",
+                            "confidence": "Fixture",
+                            "status": "loaded",
+                        },
+                    ],
+                    "expected": {
+                        "jurisdictions": 2,
+                        "resultRows": 2,
+                        "sources": 2,
+                        "stateTotal": 100,
+                        "trump": 60,
+                        "harris": 35,
+                        "other": 5,
+                        "reviewRows": 0,
+                        "turnoutRows": 0,
+                        "historicalBaselineRows": 2,
+                    },
+                    "capabilities": {
+                        "sourcePlanner": True,
+                        "certifiedResults": True,
+                        "map": False,
+                        "reviewGraphs": False,
+                        "turnout": False,
+                        "historicalBaseline": True,
+                    },
+                    "certifiedResults": {
+                        "format": "countyPresidentCsv",
+                        "sourceId": "id-results",
+                        "otherColumns": ["other"],
+                    },
+                    "historicalBaselines": {
+                        "format": "historicalPresidentialCsv",
+                        "sourceId": "id-historical",
+                        "expected": {"rowCount": 2, "years": [2020]},
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        config = load_config(config_path)
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+        native = artifact["native"]
+
+        self.assertTrue(report.passed)
+        self.assertEqual(native["parser"], "nativeIdahoCountyPresidentCsv")
+        self.assertEqual(native["metrics"]["nativeHistoricalRows"], 2)
+        self.assertEqual(native["metrics"]["nativeHistoricalYears"], [2020])
+        self.assertEqual(len(native["historicalRows"]), 2)
+        self.assertEqual(native["historicalRows"][0]["jurisdictionName"], "Ada County")
     def test_normalized_turnout_only_staging_parses_csv_contract(self):
         tmp = self.fixture_dir("normalized-turnout")
         csv_path = tmp / "az-turnout.csv"

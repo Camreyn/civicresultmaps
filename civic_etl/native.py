@@ -5872,6 +5872,9 @@ def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
         "nativeReviewRows": config.expected.review_rows,
         "nativeTurnoutRows": config.expected.turnout_rows,
     }
+    expected_historical_rows = int_text(config.raw.get("expected", {}).get("historicalBaselineRows"))
+    if expected_historical_rows and "nativeHistoricalRows" in metrics:
+        checks["nativeHistoricalRows"] = expected_historical_rows
     mismatches = {
         key: {"actual": metrics.get(key), "expected": expected}
         for key, expected in checks.items()
@@ -5881,7 +5884,26 @@ def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
         raise ValueError(f"native {config.code} validation failed: {mismatches}")
 
 
-def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
+def _with_historical_baselines(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    section = config.raw.get("historicalBaselines", {})
+    if section.get("format") != "historicalPresidentialCsv":
+        return payload
+    if "historicalRows" in payload:
+        return payload
+
+    historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+    return {
+        **payload,
+        "historicalRows": historical_rows,
+        "metrics": {**payload.get("metrics", {}), **historical_metrics},
+    }
+
+
+def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     turnout_format = config.raw.get("turnout", {}).get("format")
     if config.raw.get("turnoutOnly") and turnout_format in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
         sources = _source_map(config)
@@ -6421,3 +6443,14 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         "turnoutRows": turnout_rows,
         "metrics": metrics,
     }
+
+
+def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
+    payload = _build_native_payload(config)
+    if payload is None:
+        return None
+
+    sources = _source_map(config)
+    payload = _with_historical_baselines(config, sources, payload)
+    _assert_native_expected(config, payload.get("metrics", {}))
+    return payload
