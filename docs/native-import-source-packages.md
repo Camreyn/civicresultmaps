@@ -583,3 +583,16 @@ ND remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`
 - Geometry/admin context: data/nj-counties.geojson and data/nj-2024-equipment-context.csv are present; municipal geometry/crosswalks, audit PDFs, CVR availability, recount, incident, correction, and litigation rows remain source/request items
 
 NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Remaining work is collecting the official PDF package, implementing a New Jersey DOE text-PDF parser, reconciling statewide President/Senate/turnout totals, normalizing municipality names and non-geographic rows such as Federal Overseas and Hand Counts, adding municipal geometry/crosswalks, collecting official 2012/2016/2020 historical baselines, and normalizing audit/CVR/recount/incident/correction/litigation records. Current NJ advisory indicators are not calculated from review rows because no NJ result or review rows are loaded.
+
+## New Mexico Wave 15 Source Discovery
+
+- Config: `etl/state-configs/nm.json`
+- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/nm-2024-eac-turnout.csv`
+- Coverage inventory: `data/nm-2024-data-coverage-inventory.json`
+- Source request matrix: `data/nm-2024-source-request-matrix.tsv`
+- Official result lead: New Mexico Secretary of State 2024 General Election Official Results dashboard and Media/Results CSV exports for election 2882
+- Preferred comparison contest: U.S. Senate, from the same official SOS results system after confirming same-grain CSV precinct keys
+- Turnout lead: SOS voter-turnout details report precinct ballots cast and eligible voters; EAC fallback remains active until denominator semantics and a 367-ballot SOS-versus-EAC difference are reviewed
+- Geometry/admin context: `data/nm-counties.geojson` and `data/nm-2024-equipment-context.csv` are present; SOS/RGIS precinct geometry, historical archives, risk-limiting audit, CVR availability, incident, correction, recount, litigation, custody, and tabulator-log artifacts remain source leads or request paths
+
+NM remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native New Mexico result or advisory review parser is loaded in this pass; current advisory indicators are not calculated from review rows because no NM review rows are loaded. This is source-coverage context only, not evidence of fraud or misconduct.

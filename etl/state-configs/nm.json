@@ -16,6 +16,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "nm-2024-data-coverage-inventory",
+      "category": "New Mexico 2024 official source coverage inventory and request matrix",
+      "url": "https://electionresults.sos.nm.gov/Default.aspx?eid=2882",
+      "localFile": "data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "New Mexico Secretary of State; county clerks; U.S. Census Bureau; Verified Voting",
+      "timestampBasis": "Wave 15 official-source coverage inventory checked July 2, 2026; official results page last updated May 30, 2025 10:44 AM MT.",
+      "confidence": "Inventory only. Official New Mexico SOS 2024 results dashboard and CSV media export path are identified for President, U.S. Senate comparison, and state-native turnout leads, but active NM ETL remains EAC turnout-only until artifacts, parser, and denominator review are added.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -24,7 +35,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "New Mexico turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "New Mexico turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. Wave 15 confirmed the official New Mexico SOS turnout details lead, but it is not active until eligible-voter denominator semantics and the 367-ballot SOS-versus-EAC ballots-cast difference are reviewed.",
     "warningRequired": false,
     "expected": {
       "rowCount": 33,
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 33,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,

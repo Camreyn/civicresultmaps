@@ -1013,14 +1013,18 @@
       "localFile": "data/eac-2024-state-turnout/nm-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 33,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. Wave 15 identified New Mexico SOS turnout details as a state-native lead, but EAC remains active until eligible-voter denominator semantics and the 367-ballot official-minus-EAC difference are reviewed.",
+      "nextAction": "Collect or export New Mexico SOS 2024 voter-turnout details, normalize precinct/county ballots-cast and eligible-voter rows, and reconcile against EAC fallback before replacing active turnout.",
       "coverage": {
         "jurisdictionRows": 33,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nm-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 1415984,
         "ballotsCast": 927923,
-        "warningRows": 0
+        "warningRows": 0,
+        "stateNativeSourceUrl": "https://electionresults.sos.nm.gov/VoterTurnoutDetails.aspx?eid=2882",
+        "stateNativeBallotsCast": 928290,
+        "stateNativeEligibleVoters": 1343825,
+        "stateNativeBallotsCastDelta": 367
       }
     },
     {
