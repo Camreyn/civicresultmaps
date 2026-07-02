@@ -70,6 +70,17 @@
       "timestampBasis": "Wave 12 Idaho coverage inventory created July 2, 2026 from committed official artifacts, official source pages, and source-package registries.",
       "confidence": "Inventory only. Documents loaded official county result/review artifacts, EAC fallback turnout, county geometry, equipment context, and remaining historical, audit, CVR, incident, correction, recount, litigation, turnout, and precinct-geometry gaps.",
       "status": "candidate"
+    },
+    {
+      "id": "id-historical-presidential-baseline",
+      "category": "Official 2012/2016 historical county presidential baseline rows with 2020 blocker documented",
+      "url": "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html",
+      "localFile": "data/id-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Idaho Secretary of State",
+      "timestampBasis": "Official Idaho Secretary of State 2012 and 2016 county presidential archive pages normalized by scripts/collect-id-historical-baseline.py on July 2, 2026. The 2020 county baseline is not loaded because official county abstracts are partly PDF-only in this environment and the secondary county table failed official statewide reconciliation.",
+      "confidence": "Collected official 2012/2016 county historical presidential baselines for context only; not_active_in_staging until the shared native importer enables historicalPresidentialCsv for the Idaho countyPresidentCsv branch. The 2020 historical baseline remains blocked pending a script-readable official county artifact or reviewed PDF/OCR extraction; do not substitute the mismatched secondary county table.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -89,7 +100,7 @@
   "expected": {
     "jurisdictions": 44,
     "resultRows": 44,
-    "sources": 6,
+    "sources": 7,
     "geometryFeatures": 44,
     "stateTotal": 904967,
     "trump": 605246,
