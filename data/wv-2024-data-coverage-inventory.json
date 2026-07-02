@@ -3,9 +3,9 @@
   "state": "WV",
   "stateName": "West Virginia",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-07-02",
   "purpose": "Wave 9 West Virginia source-coverage inventory for loaded official result, review, turnout, map, equipment, historical-source, and administration-context paths. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_precinct_review_turnout_county_map_loaded_admin_context_inventory_expanded",
+  "status": "official_precinct_review_turnout_county_map_historical_artifact_collected_importer_dispatch_blocked",
   "firstReads": {
     "developerIndex": "docs/developer/index.md was not present in the worktree.",
     "requiredFilesRead": [
@@ -81,6 +81,45 @@
         "jurisdictions": 55
       },
       "confidenceNotes": "Jurisdiction-level election-administration context only. Do not infer every precinct or ballot mode used one identical setup; do not use this as vote, turnout, audit, incident, or cause evidence."
+    },
+    {
+      "id": "wv-historical-presidential-baseline",
+      "sourceAuthority": "West Virginia Secretary of State",
+      "sourceUrl": "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+      "localArtifactPath": "data/wv-historical-presidential-baseline.csv",
+      "electionYear": "2012, 2016, 2020",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "scripts/collect-wv-historical-baseline.mjs generated data/wv-historical-presidential-baseline.csv; native importer dispatch is blocked by shared-helper edit restriction",
+      "expectedRowsOrTotals": {
+        "historicalRows": 165,
+        "years": [
+          2012,
+          2016,
+          2020
+        ],
+        "countyRowsPerYear": 55,
+        "totals": {
+          "2012": {
+            "demVotes": 238269,
+            "repVotes": 417655,
+            "otherVotes": 14514,
+            "totalVotes": 670438
+          },
+          "2016": {
+            "demVotes": 188794,
+            "repVotes": 489371,
+            "otherVotes": 34886,
+            "totalVotes": 713051
+          },
+          "2020": {
+            "demVotes": 235984,
+            "repVotes": 545382,
+            "otherVotes": 13286,
+            "totalVotes": 794652
+          }
+        }
+      },
+      "confidenceNotes": "Official SOS county-level historical presidential rows are normalized and ready for the generic historicalPresidentialCsv importer, but WV native dispatch does not currently call that shared historical loader. The 2012 and 2016 legacy results app states that write-in candidate information is not included; retain that caveat on historical charts."
     }
   ],
   "sourceFindings": [
@@ -171,14 +210,20 @@
     },
     {
       "topic": "historicalBaselines",
-      "status": "official_source_leads_confirmed_not_loaded",
+      "status": "normalized_artifact_collected_importer_dispatch_blocked",
       "sourceAuthority": "West Virginia Secretary of State",
       "sourceUrl": "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
-      "localArtifactPath": "not collected",
+      "localArtifactPath": "data/wv-historical-presidential-baseline.csv",
       "reportingGrain": "county",
-      "parserOrNormalizationPath": "not implemented",
-      "evidence": "The SOS historical results page links the 2020 General Election Clarity archive and an official 2008-2017 historical results app, while 2024 uses the loaded Clarity path.",
-      "caveats": "No 2012, 2016, or 2020 West Virginia county historical baseline rows are loaded. A future normalizer should collect official SOS archives and reconcile county presidential totals before enabling historicalBaseline for WV."
+      "parserOrNormalizationPath": "scripts/collect-wv-historical-baseline.mjs generated historicalPresidentialCsv-compatible rows; WV native dispatch update is required before rows appear in staging/API",
+      "evidence": "The SOS historical results page links the official 2020 General Election Clarity archive and the official 2008-2017 results app. This pass collected official SOS county presidential rows for 2012, 2016, and 2020 and normalized 165 county baseline rows.",
+      "caveats": "Historical rows are contextual baselines only. The 2012 and 2016 SOS legacy CSVs state that results do not include write-in candidate information, and 2012 does not match write-in-inclusive statewide totals. WV native staging does not emit these rows until the shared native importer dispatch is updated.",
+      "expectedRows": 165,
+      "targetYears": [
+        2012,
+        2016,
+        2020
+      ]
     }
   ],
   "websiteApiDisplayPathChecked": [
@@ -188,14 +233,16 @@
     "/api/turnout?state=WV&year=2024&limit=500",
     "/api/admin-sources?state=WV&year=2024",
     "/api/equipment?state=WV&year=2024",
-    "src/app/workspace-tabs.tsx Data & Sources, Turnout, Administration, and Review Export panels"
+    "src/app/workspace-tabs.tsx Data & Sources, Turnout, Administration, and Review Export panels",
+    "/api/historical-baselines?state=WV&limit=500&includeMetrics=true",
+    "src/app/workspace-tabs.tsx Historical Baselines panel"
   ],
   "productionChecked": false,
   "remainingRisks": [
     "No official statewide precinct boundary geometry or precinct-to-result crosswalk is loaded, so current public map joins remain county-level even though WV has precinct review and turnout rows.",
     "Post-election hand-count audit policy is documented, but 2024 county selection/outcome artifacts are not normalized.",
     "CVR availability, recount outcomes, canvass corrections, complaint dispositions, incident records, and litigation records remain request-path items.",
-    "Historical baseline source leads are official, but no 2012, 2016, or 2020 WV historical baseline rows are loaded yet.",
+    "Historical baseline source artifacts and normalized CSV are collected for 2012, 2016, and 2020, but WV native staging/API emission is blocked until the shared native importer dispatch is updated.",
     "Current advisory indicators are data/reconciliation signals only and are not evidence of fraud or misconduct."
   ]
 }
