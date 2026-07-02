@@ -1008,16 +1008,35 @@
         "expectedJurisdictions": 53
       },
       "audit": {
-        "status": "needs_data",
-        "why": "North Dakota 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_county_policy_and_report_lead",
+        "sourceDocumentId": "nd-sos-post-election-audits",
+        "sourceUrl": "https://www.sos.nd.gov/elections/election-security/post-election-audits",
+        "localArtifact": "data/nd-2024-data-coverage-inventory.json",
+        "why": "North Dakota SOS describes post-election audits in all 53 counties and says a statewide post-election audit report is published within 60 days after the election. The report and county supporting rows are not collected or normalized.",
+        "caveat": "Policy/source lead only; no 2024 audit selection, sample, discrepancy, or outcome rows are loaded."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "North Dakota 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "county_request_path",
+        "sourceDocumentId": "nd-sos-county-auditor-request-paths",
+        "sourceUrl": "https://www.sos.nd.gov/elections/voter/current-officials/county-election-officials",
+        "localArtifact": "data/nd-2024-data-coverage-inventory.json",
+        "why": "No statewide North Dakota CVR availability table or CVR export is loaded. County auditor and SOS contact paths are documented for CVR availability/exportability follow-up, subject to lawful releasability and ballot-secrecy review.",
+        "caveat": "Request-path inventory only; no CVR dataset or county CVR availability row is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "North Dakota 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "recount_page_and_request_paths",
+        "sourceDocumentId": "nd-sos-2024-recount-page-and-request-paths",
+        "sourceUrl": "https://results.sos.nd.gov/ResultsSW.aspx?type=RECOUNT",
+        "relatedSourceUrls": [
+          "https://www.sos.nd.gov/elections/voter/current-officials/county-election-officials",
+          "https://www.sos.nd.gov/contact"
+        ],
+        "localArtifact": "data/nd-2024-data-coverage-inventory.json",
+        "why": "The official 2024 recount page lists recount-contest rows, including a Walsh County Commissioner automatic recount, but no presidential or U.S. Senate recount was identified. No normalized incident, correction, litigation, or certification-correspondence rows are loaded.",
+        "caveat": "Source/request inventory only; absence of normalized incident or recount rows is not evidence of misconduct."
       }
     },
     {

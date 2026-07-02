@@ -556,3 +556,17 @@ CT remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`
 - Equipment context: `data/hi-2024-equipment-context.csv` from Verified Voting, context only
 
 HI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. Remaining work is a Hawaii text parser for summary/precinct detail files, turnout-page normalization and reconciliation, precinct geometry/crosswalk collection, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation rows. Current HI advisory indicators are not calculated from review rows because no HI review rows are loaded.
+
+## North Dakota Wave 15 Source Discovery
+
+- Config: `etl/state-configs/nd.json`
+- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/nd-2024-eac-turnout.csv`
+- Coverage inventory: `data/nd-2024-data-coverage-inventory.json`
+- Source request matrix: `data/nd-2024-source-request-matrix.tsv`
+- Official result lead: North Dakota Secretary of State 2024 General Election dashboard and CSV/Excel/XML export form at `https://results.sos.nd.gov/ResultsExport.aspx`
+- Preferred comparison contest: U.S. Senate if exported at the same grain as President; U.S. House or Governor are fallback statewide contests with caveats
+- Turnout lead: official SOS dashboard reports 371,975 voter turnout and 594,140 eligible voters; active EAC fallback remains 53 rows, 371,974 ballots cast, and 0 registered voters because ND has no voter registration
+- Historical leads: official SOS 2020 dashboard/PDF plus 2016 and 2012 dashboard/PDF archive links are identified but not normalized
+- Geometry/admin context: county geometry lead is Census TIGERweb; official precinct polling-place/crosswalk source, post-election audit report, recount page, county auditor request paths, CVR availability, incident/correction/litigation rows, and official equipment context remain source/request items
+
+ND remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native result or advisory review rows are loaded. Current ND advisory indicators should remain zero until official President plus same-grain comparison rows are collected, parsed, and reviewed. This is source-coverage context only, not evidence of fraud or misconduct.
