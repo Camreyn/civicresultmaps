@@ -4,7 +4,7 @@
   "electionYear": 2024,
   "checkedAt": "2026-07-02",
   "authority": "Utah Lieutenant Governor Elections Office; U.S. Census Bureau; U.S. Election Assistance Commission",
-  "status": "official_county_results_review_turnout_geometry_loaded_with_pdf_text_residual_caveat",
+  "status": "official_county_results_api_review_turnout_geometry_loaded",
   "loadedArtifacts": [
     {
       "id": "ut-2024-general-statewide-canvass-pdf",
@@ -14,22 +14,36 @@
       "reportingGrain": "county",
       "parser": "scripts/normalize-ut-official-results.mjs",
       "expectedRows": 29,
-      "caveat": "The PDF text layer exposes named presidential candidate columns totaling 1,488,010 votes, while the PDF reports 1,488,494 total presidential contest votes. The 484-vote statewide residual remains documented and is not distributed to counties."
+      "caveat": "The PDF text layer exposes visible presidential candidate columns totaling 1,488,010 votes. The official electionresults.utah.gov U.S. President API artifact resolves the statewide contest total by supplying county qualified write-in rows for the full 1,488,494 votes."
+    },
+    {
+      "id": "ut-2024-general-president-official-api",
+      "sourceTitle": "Utah official 2024 General Election U.S. President API county breakdown",
+      "sourceUrl": "https://electionresults.utah.gov/results/public/api/elections/utah/general11052024/ballot-items/88e40000-968a-0c37-b0b0-08dce9374078",
+      "localFile": "data/ut-2024-general-president-official-api.json",
+      "reportingGrain": "county",
+      "parser": "scripts/normalize-ut-official-results.mjs",
+      "expectedRows": 29,
+      "officialContestTotal": 1488494,
+      "trump": 883818,
+      "harris": 562566,
+      "otherIncludingWriteIns": 42110,
+      "caveat": "Official machine-readable ballot-item detail API artifact used to distribute all non-Trump/non-Harris candidate and qualified write-in rows by county."
     },
     {
       "id": "ut-2024-general-president-county",
       "sourceTitle": "Utah official 2024 General Election county President rows",
-      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "sourceUrl": "https://electionresults.utah.gov/results/public/api/elections/utah/general11052024/ballot-items/88e40000-968a-0c37-b0b0-08dce9374078",
       "localFile": "data/ut-2024-general-president.csv",
       "reportingGrain": "county",
       "parser": "countyPresidentCsv",
       "expectedRows": 29,
       "trump": 883818,
       "harris": 562566,
-      "otherNamedCandidateColumns": 41626,
-      "normalizedTotal": 1488010,
+      "normalizedTotal": 1488494,
       "officialContestTotal": 1488494,
-      "residualUndistributed": 484
+      "otherIncludingWriteIns": 42110,
+      "caveat": "Generated from the official electionresults.utah.gov President API artifact; Other includes all non-Trump/non-Harris candidate and qualified write-in rows."
     },
     {
       "id": "ut-2024-general-attorney-general-county",
@@ -93,9 +107,9 @@
   ],
   "sourceFindings": {
     "officialResultExports": {
-      "status": "official_pdf_text_layer_normalized",
-      "sourceUrl": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
-      "notes": "County President and Attorney General rows are available in the certified statewide canvass PDF text layer. No statewide precinct/local reporting-unit export was collected in this pass."
+      "status": "official_api_and_pdf_normalized",
+      "sourceUrl": "https://electionresults.utah.gov/results/public/api/elections/utah/general11052024/ballot-items/88e40000-968a-0c37-b0b0-08dce9374078",
+      "notes": "The official electionresults.utah.gov U.S. President ballot-item detail API provides 29 county President rows totaling 1,488,494 votes, including qualified write-ins. The certified statewide canvass PDF remains the source artifact for Attorney General rows and a statewide certified-total cross-check. No statewide precinct/local reporting-unit export was collected in this pass."
     },
     "turnoutRegistration": {
       "status": "state_native_county_loaded",
@@ -141,7 +155,6 @@
     "validation": "Native staging now exercises Utah county President result rows, county President-versus-Attorney-General review rows, state-native turnout rows, county geometry provenance, and historical API/display data contracts. Production API/DB verification is performed after promotion."
   },
   "remainingRisks": [
-    "Resolve the 484-vote statewide presidential residual between visible PDF candidate columns and the PDF contest total before treating UT normalized county presidential totals as a perfect certified-total replacement.",
     "Collect official precinct/local reporting-unit President plus same-grain comparison rows if subcounty advisory charts are required.",
     "Normalize official 2012, 2016, and 2020 Utah historical artifacts from vote.utah.gov to replace secondary historical context rows.",
     "Collect official post-election audit selections/outcomes, CVR availability, incident/correction records, litigation records, L&A/tabulator-log/custody records, and precinct geometry/crosswalks if published or request-produced."

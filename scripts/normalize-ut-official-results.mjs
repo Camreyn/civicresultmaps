@@ -7,6 +7,7 @@ const require = createRequire(import.meta.url);
 const XLSX = require("xlsx");
 
 const canvassPdf = "data/ut-2024-general-election-statewide-canvass.pdf";
+const presidentApiJson = "data/ut-2024-general-president-official-api.json";
 const turnoutWorkbook = "data/ut-2024-master-aggregated-numbers-2023-2025.xlsx";
 const presidentOut = "data/ut-2024-general-president.csv";
 const attorneyGeneralOut = "data/ut-2024-general-attorney-general.csv";
@@ -167,10 +168,63 @@ function buildTurnoutRows() {
   });
 }
 
+function languageText(value) {
+  if (!Array.isArray(value) || !value.length) return "";
+  return String(value.find((entry) => entry.languageId === "en")?.text ?? value[0]?.text ?? "").trim();
+}
+
+function buildPresidentRowsFromOfficialApi() {
+  const payload = JSON.parse(fs.readFileSync(presidentApiJson, "utf8"));
+  const rowsByCounty = new Map();
+  const breakdownResults = payload.breakdownResults ?? [];
+
+  assertEqual("Official President API breakdown rows", breakdownResults.length, 29);
+
+  for (const row of breakdownResults) {
+    const county = languageText(row.locality?.name);
+    if (!county) throw new Error("Official Utah President API row is missing a county name");
+    if (rowsByCounty.has(county)) throw new Error(`Official Utah President API has duplicate county row for ${county}`);
+    const options = row.ballotOptions ?? [];
+    const trump = Number(options.find((option) => option.nativeId === "5")?.voteCount ?? 0);
+    const harris = Number(options.find((option) => option.nativeId === "4")?.voteCount ?? 0);
+    const other = options
+      .filter((option) => option.nativeId !== "4" && option.nativeId !== "5")
+      .reduce((sum, option) => sum + Number(option.voteCount ?? 0), 0);
+    assertEqual(`Official President API ${county} row total`, trump + harris + other, Number(row.voteTotal));
+    rowsByCounty.set(county, {
+      state: "UT",
+      election_year: 2024,
+      jurisdiction_name: county,
+      harris,
+      trump,
+      other,
+    });
+  }
+
+  const rows = counties.map((county) => {
+    const row = rowsByCounty.get(county);
+    if (!row) throw new Error(`Official Utah President API is missing ${county}`);
+    return row;
+  });
+
+  assertEqual("Official President API county rows", rows.length, 29);
+  assertEqual("Official President API contest total", Number(payload.voteTotal), 1488494);
+  assertEqual("Official President API Trump votes", rows.reduce((sum, row) => sum + row.trump, 0), 883818);
+  assertEqual("Official President API Harris votes", rows.reduce((sum, row) => sum + row.harris, 0), 562566);
+  assertEqual("Official President API other votes", rows.reduce((sum, row) => sum + row.other, 0), 42110);
+  assertEqual(
+    "Official President API row total",
+    rows.reduce((sum, row) => sum + row.trump + row.harris + row.other, 0),
+    1488494,
+  );
+
+  return rows;
+}
+
 const text = await extractPdfText(canvassPdf);
 
 const president = parsePdfCountyRows(text, "U.S. President and Vice President", "Total Votes Cast 2,199", 10);
-const presidentRows = counties.map((county) => {
+const presidentPdfRows = counties.map((county) => {
   const values = president.get(county);
   const other = values[0] + values[1] + values[2] + values[3] + values[5] + values[7] + values[8] + values[9];
   return {
@@ -183,10 +237,16 @@ const presidentRows = counties.map((county) => {
   };
 });
 
-assertEqual("President county rows", presidentRows.length, 29);
-assertEqual("President Trump votes", presidentRows.reduce((sum, row) => sum + row.trump, 0), 883818);
-assertEqual("President Harris votes", presidentRows.reduce((sum, row) => sum + row.harris, 0), 562566);
-assertEqual("President other named-candidate votes", presidentRows.reduce((sum, row) => sum + row.other, 0), 41626);
+assertEqual("President PDF county rows", presidentPdfRows.length, 29);
+assertEqual("President PDF Trump votes", presidentPdfRows.reduce((sum, row) => sum + row.trump, 0), 883818);
+assertEqual("President PDF Harris votes", presidentPdfRows.reduce((sum, row) => sum + row.harris, 0), 562566);
+assertEqual(
+  "President PDF visible non-Trump/non-Harris votes",
+  presidentPdfRows.reduce((sum, row) => sum + row.other, 0),
+  41626,
+);
+
+const presidentRows = buildPresidentRowsFromOfficialApi();
 
 const attorneyGeneral = parseSequentialCountyRows(text, "Attorney General", "MICHELLE QUIST\n(UUP)", "Single County Races", 5);
 const attorneyGeneralRows = counties.map((county) => {
