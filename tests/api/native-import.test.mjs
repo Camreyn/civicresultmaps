@@ -80,11 +80,20 @@ test("review indicator reads require enabled review graph capability", () => {
 test("new york coverage inventory preserves supplemental review caveats", () => {
   const config = JSON.parse(readFileSync("etl/state-configs/ny.json", "utf8"));
   const inventory = JSON.parse(readFileSync("data/ny-2024-data-coverage-inventory.json", "utf8"));
+  const localReviewManifest = JSON.parse(readFileSync("data/ny-2024-local-review-sources.json", "utf8"));
   const localReview = inventory.loadedArtifacts.find((artifact) => artifact.id === "ny-2024-local-review-openelections");
+  const monroeSource = localReviewManifest.files.find((file) => file.file === "Monroe.xlsx");
+  const rocklandSource = localReviewManifest.excludedFiles.find((file) => file.file === "Rockland (president only).xlsx");
 
   assert.match(config.reviewCharts.warning, /county-certified result totals remain the map authority/);
   assert.equal(localReview.expectedCounts.reviewRows, 9753);
   assert.equal(localReview.expectedCounts.missingCountyEquivalents, 13);
+  assert.equal(localReview.expectedCounts.zeroRowManifestFiles, 1);
+  assert.equal(localReview.expectedCounts.excludedManifestFiles, 12);
+  assert.equal(monroeSource.status, "excluded_zero_rows");
+  assert.match(monroeSource.reason, /no U.S. Senate section/);
+  assert.equal(rocklandSource.status, "excluded_not_loaded");
+  assert.match(rocklandSource.reason, /President-only workbook/);
   assert.ok(localReview.excludedOrNotYetReviewedCounties.includes("Rockland County"));
   assert.ok(localReview.excludedOrNotYetReviewedCounties.includes("Monroe County"));
   assert.match(inventory.displayCaveats.join(" "), /EAC turnout rows are fallback context/);

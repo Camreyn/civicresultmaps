@@ -1425,7 +1425,7 @@
           "localFile": "data/ny-2024-local-review.csv; data/ny-2024-local-review-sources.json",
           "level": "election_district_or_local_unit_partial",
           "comparisonContest": "U.S. Senate",
-          "parserHint": "scripts/normalize-ny-local-review.mjs normalizes machine-readable files, selected text-layer PDFs, Suffolk text rows, and legacy NYC rows; image-only, president-only, unsupported, or unreviewed counties stay excluded until reviewed."
+          "parserHint": "scripts/normalize-ny-local-review.mjs normalizes machine-readable files, selected reviewed text-layer PDFs, Suffolk text rows, and legacy NYC rows; data/ny-2024-local-review-sources.json records loaded, zero-row, and excluded source-file statuses, while image-only, president-only, unsupported, or unreviewed counties stay excluded until reviewed."
         },
         "turnout": {
           "sourceTitle": "EAC fallback plus NYSBOE enrollment denominator leads",

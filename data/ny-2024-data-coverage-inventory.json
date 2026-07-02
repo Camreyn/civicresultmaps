@@ -40,7 +40,10 @@
         "reviewRows": 9753,
         "manifestFiles": 46,
         "coveredCountyEquivalents": 49,
-        "missingCountyEquivalents": 13
+        "missingCountyEquivalents": 13,
+        "loadedManifestFiles": 45,
+        "zeroRowManifestFiles": 1,
+        "excludedManifestFiles": 12
       },
       "coveredScope": "Machine-readable CSV/XLSX/HTML files, selected reviewed text-layer PDFs, Suffolk text export, and legacy NYC rows.",
       "excludedOrNotYetReviewedCounties": [
@@ -61,7 +64,8 @@
       "caveats": [
         "OpenElections is supplemental and source-linked, not the official NYSBOE statewide local-results package.",
         "Monroe County appears in the manifest with zero parsed rows and remains excluded from loaded review coverage.",
-        "Image-only, president-only, unsupported, or unreviewed county source files remain out of the normalized review CSV until extraction is reviewed and reconciled to county certified totals."
+        "Image-only, president-only, unsupported, or unreviewed county source files remain out of the normalized review CSV until extraction is reviewed and reconciled to county certified totals.",
+        "The local-review manifest now records loaded, zero-row, and excluded source-file statuses so unnormalized county files remain reviewable without being silently treated as coverage."
       ],
       "confidence": "partial_supplemental_review_rows"
     },

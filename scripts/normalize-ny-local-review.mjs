@@ -16,6 +16,19 @@ const legacyNyUrl = "https://raw.githubusercontent.com/Camreyn/wisconsin-2024-el
 const skipped = new Set(["Rockland (president only).xlsx", "Suffolk key.pdf"]);
 const supportedPdfFiles = new Set(["Albany.pdf", "Allegany.pdf", "Broome.pdf", "Cattaraugus.pdf", "Chemung.pdf", "Chenango.pdf", "Columbia.pdf", "Cortland.pdf", "Dutchess.pdf", "Essex.pdf", "Fulton.pdf", "Genesee.pdf", "Lewis.pdf", "Oneida.pdf", "Onondaga.pdf", "Putnam.pdf", "Seneca.pdf", "St Lawrence.pdf", "Tioga.pdf", "Tompkins.pdf", "Ulster.pdf", "Warren.pdf", "Washington.pdf", "Westchester.pdf"]);
 const supportedExtensions = new Set([".csv", ".xlsx", ".html", ".pdf", ".txt"]);
+const skippedReasons = new Map([
+  [
+    "Rockland (president only).xlsx",
+    "President-only workbook; no same-grain U.S. Senate comparison rows are present for local review.",
+  ],
+  ["Suffolk key.pdf", "Support/key document rather than local President and U.S. Senate result rows."],
+]);
+const zeroRowReasons = new Map([
+  [
+    "Monroe.xlsx",
+    "Workbook contains President detail rows only; no U.S. Senate section was found for same-grain comparison rows.",
+  ],
+]);
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -1625,7 +1638,16 @@ async function pdfRows(filePath, county) {
 function countyName(fileName) {
   const base = fileName.replace(/\.[^.]+$/i, "").replace(/\s+\(.+\)$/i, "");
   if (base === "St Lawrence") return "St. Lawrence County";
+  if (base === "Suffolk key") return "Suffolk County";
   return `${base} County`;
+}
+
+function exclusionReason(file) {
+  const ext = path.extname(file.name).toLowerCase();
+  if (skippedReasons.has(file.name)) return skippedReasons.get(file.name);
+  if (!supportedExtensions.has(ext)) return `Unsupported source extension ${ext || "(none)"} for scripted local review normalization.`;
+  if (ext === ".pdf" && !supportedPdfFiles.has(file.name)) return "PDF text extraction has not been reviewed and reconciled for this county source.";
+  return "";
 }
 
 async function main() {
@@ -1636,6 +1658,15 @@ async function main() {
     if (!supportedExtensions.has(ext) || skipped.has(file.name)) return false;
     return ext !== ".pdf" || supportedPdfFiles.has(file.name);
   });
+  const excludedFiles = listing
+    .filter((file) => !selected.some((selectedFile) => selectedFile.name === file.name))
+    .map((file) => ({
+      county: countyName(file.name),
+      file: file.name,
+      url: file.html_url,
+      status: "excluded_not_loaded",
+      reason: exclusionReason(file),
+    }));
   const normalizedRows = [];
   const manifest = [];
 
@@ -1648,7 +1679,14 @@ async function main() {
     const ext = path.extname(file.name).toLowerCase();
     const rows = ext === ".html" ? htmlRows(filePath, county) : (ext === ".txt" ? textRows(filePath, county) : (ext === ".pdf" ? await pdfRows(filePath, county) : workbookRows(filePath, county)));
     normalizedRows.push(...rows);
-    manifest.push({ county, file: file.name, url: file.html_url, rows: rows.length });
+    manifest.push({
+      county,
+      file: file.name,
+      url: file.html_url,
+      rows: rows.length,
+      status: rows.length ? "loaded" : "excluded_zero_rows",
+      reason: rows.length ? undefined : (zeroRowReasons.get(file.name) ?? "No same-grain President and U.S. Senate comparison rows were normalized from this source."),
+    });
     console.log(`${county}: ${rows.length}`);
   }
   const legacyText = await get(legacyNyUrl);
@@ -1668,7 +1706,13 @@ async function main() {
     rep_dropoff: row.repDropoff,
   }));
   normalizedRows.push(...legacyRows);
-  manifest.push({ county: "Bronx/Kings/New York/Queens/Richmond Counties", file: "ny-app-data.js", url: legacyNyUrl, rows: legacyRows.length });
+  manifest.push({
+    county: "Bronx/Kings/New York/Queens/Richmond Counties",
+    file: "ny-app-data.js",
+    url: legacyNyUrl,
+    rows: legacyRows.length,
+    status: "loaded",
+  });
 
   normalizedRows.sort((a, b) => a.county.localeCompare(b.county) || a.local_unit.localeCompare(b.local_unit));
   const header = ["state", "election_year", "county", "local_unit", "pres_harris", "pres_trump", "pres_other", "pres_total", "comparison_dem", "comparison_rep", "comparison_other", "dem_dropoff", "rep_dropoff"];
@@ -1689,7 +1733,13 @@ async function main() {
   fs.writeFileSync(outputPath, `${csv}\n`);
   fs.writeFileSync(
     manifestPath,
-    `${JSON.stringify({ generatedAt: new Date().toISOString(), sourceRepository: "openelections/openelections-sources-ny", sourcePath: "2024/general", files: manifest }, null, 2)}\n`,
+    `${JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      sourceRepository: "openelections/openelections-sources-ny",
+      sourcePath: "2024/general",
+      files: manifest,
+      excludedFiles,
+    }, null, 2)}\n`,
   );
   console.log(`Wrote ${normalizedRows.length} rows to ${path.relative(repoRoot, outputPath)}`);
 }
