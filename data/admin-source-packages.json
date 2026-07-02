@@ -1484,16 +1484,34 @@
         "expectedJurisdictions": 5
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Rhode Island 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_request_path",
+        "sourceDocumentId": "ri-boe-risk-limiting-audit-center",
+        "sourceUrl": "https://elections.ri.gov/elections/risk-limiting-audit-center",
+        "localArtifact": "data/ri-2024-data-coverage-inventory.json",
+        "why": "The RI coverage inventory and data/ri-2024-source-request-matrix.tsv document Board of Elections audit source/request paths, but no 2024 audit selection or outcome rows are normalized.",
+        "caveat": "Candidate source inventory only; no audit result rows are loaded and this is not evidence of fraud or misconduct."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Rhode Island 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "public_records_request_path",
+        "sourceDocumentId": "ri-boe-public-records-cvr-request-path",
+        "sourceUrl": "https://elections.ri.gov/about/public-records",
+        "localArtifact": "data/ri-2024-data-coverage-inventory.json",
+        "why": "No Rhode Island CVR availability table or CVR export is loaded. The coverage inventory records BOE public-records paths for CVR/exportability follow-up before any row-level context is added.",
+        "caveat": "Request-path inventory only; no CVR dataset or county/local CVR availability table is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Rhode Island 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_request_path",
+        "sourceDocumentId": "ri-boe-recount-public-records-paths",
+        "sourceUrl": "https://elections.ri.gov/elections/recounts",
+        "relatedSourceUrls": [
+          "https://elections.ri.gov/about/public-records"
+        ],
+        "localArtifact": "data/ri-2024-data-coverage-inventory.json",
+        "why": "Rhode Island recount, correction, incident, litigation, and certification records remain source/request paths only in data/ri-2024-data-coverage-inventory.json and data/ri-2024-source-request-matrix.tsv.",
+        "caveat": "Candidate source inventory only; no incident, correction, recount, complaint-disposition, or litigation dataset is loaded."
       }
     },
     {

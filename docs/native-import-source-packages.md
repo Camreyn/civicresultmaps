@@ -609,3 +609,16 @@ NM remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`
 - Current queue decision: ME stays in `sourceDiscoveryQueue` and out of `completedNativeStates` until the official workbooks are collected, parsed, reconciled, and review rows can be generated. The current advisory indicator calculation is expected to produce zero ME indicators because no ME review rows or same-grain comparison rows are loaded.
 
 Current handoff artifacts: `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv`.
+
+## Rhode Island Wave 15 Source Discovery
+
+- Config: `etl/state-configs/ri.json`
+- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/ri-2024-eac-turnout.csv`
+- Coverage inventory: `data/ri-2024-data-coverage-inventory.json`
+- Source request matrix: `data/ri-2024-source-request-matrix.tsv`
+- Official result lead: Rhode Island Board of Elections RI.gov 2024 General Election data page, including short-format ZIP, long-format ZIP, statewide JSON, and 39 city/town JSON files
+- Preferred comparison contest: U.S. Senate, because it is a statewide contest in the same BOE source family as President
+- Turnout status: EAC fallback remains active until Rhode Island-native ballots-cast and registered-voter denominator fields are confirmed, parsed, and reconciled
+- Geometry/admin context: county equipment context is present from Verified Voting; result-ready city/town or precinct/district geometry, audit, CVR availability, recount, incident, correction, and litigation rows remain source/request items
+
+RI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. The official result source path is machine-readable and parser-ready, but no official Rhode Island result or advisory review rows are loaded in this pass. Remaining work is collecting the official BOE ZIP/JSON artifacts into `data/`, implementing a BOE parser, reconciling posted totals of 513,386 President votes and 491,948 U.S. Senate votes, collecting state-native turnout denominators, geometry/crosswalks, historical baselines for 2020/2016/2012, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory rows are absent for Rhode Island; future rows must remain public-interest review signals only, not findings of fraud or misconduct.

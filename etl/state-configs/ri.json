@@ -16,6 +16,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "ri-2024-data-coverage-inventory",
+      "category": "Rhode Island data coverage and administration source inventory",
+      "url": "https://www.ri.gov/election/results/2024/general_election/data/",
+      "localFile": "data/ri-2024-data-coverage-inventory.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Rhode Island Board of Elections",
+      "timestampBasis": "Wave 15 official-source coverage inventory checked July 2, 2026.",
+      "confidence": "Documents official Rhode Island 2024 result ZIP/JSON source leads, U.S. Senate same-grain comparison lead, EAC fallback turnout caveat, geometry/crosswalk needs, historical source leads, and remaining audit/CVR/recount/incident/correction/litigation gaps. Inventory only; no normalized result, review, or administration rows are loaded.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 39,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,
