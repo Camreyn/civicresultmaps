@@ -413,6 +413,7 @@ test("native source package handoff is validated in CI", () => {
   const msActiveVoterScript = readFileSync("scripts/collect-ms-active-voter-count.mjs", "utf8");
   const msActiveVoterRows = readFileSync("data/ms-2024-november-active-voter-count.csv", "utf8");
   const msCoverageDoc = readFileSync("docs/ms-2024-data-coverage.md", "utf8");
+  const msCoverageInventory = readFileSync("data/ms-2024-data-coverage-inventory.json", "utf8");
   assert.match(packageScripts["etl:extract:ms:ocr-text-rows"], /extract-ms-recap-ocr-text-rows/);
   assert.match(packageScripts["etl:extract:ms:pdf-text-layer"], /extract-ms-pdf-text-layer/);
   assert.match(packageScripts["etl:promote:ms:ocr-recovery"], /promote-ms-ocr-recovery-text/);
@@ -466,6 +467,12 @@ test("native source package handoff is validated in CI", () => {
   assert.match(msCoverageDoc, /Active Voter Count Reports page is an official denominator lead/);
   assert.match(msCoverageDoc, /1,980,751 active voters/);
   assert.match(msCoverageDoc, /do not by themselves provide ballots-cast rows/);
+  assert.match(msCoverageDoc, /ms-2024-data-coverage-inventory\.json/);
+  assert.match(msCoverageInventory, /precinctReviewOcrGate/);
+  assert.match(msCoverageInventory, /denominator_lead_collected_ballots_cast_missing/);
+  assert.match(msCoverageInventory, /historicalBaselines/);
+  assert.match(msCoverageInventory, /docs\/developer\/index\.md was not present/);
+  assert.match(msCoverageInventory, /Current advisory indicators are source\/data reconciliation signals only/);
   assert.match(msReconciler, /precinctExtractedTotal/);
   assert.match(msReconciler, /detected_total_column_cells/);
   assert.match(msReconciler, /--corrections/);

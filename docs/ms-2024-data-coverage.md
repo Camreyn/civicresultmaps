@@ -2,7 +2,7 @@
 
 Checked at: 2026-07-01
 
-This note is an internal source and review-path inventory for Mississippi. It does not replace the ETL config, source registries, or reviewed staging artifacts.
+This note is an internal source and review-path inventory for Mississippi. It does not replace the ETL config, source registries, or reviewed staging artifacts. The machine-readable coverage inventory for this pass is `data/ms-2024-data-coverage-inventory.json`.
 
 ## Loaded Official Coverage
 
