@@ -46,6 +46,25 @@ test("public API route contracts exist", () => {
   assert.match(api, /Vercel-CDN-Cache-Control/);
 });
 
+
+test("public year-filtered APIs default missing year to 2024", () => {
+  const routes = [
+    "src/app/api/results/route.ts",
+    "src/app/api/sources/route.ts",
+    "src/app/api/coverage/route.ts",
+    "src/app/api/indicators/route.ts",
+    "src/app/api/review-rows/route.ts",
+    "src/app/api/turnout/route.ts",
+    "src/app/api/vote-methods/route.ts",
+  ];
+
+  for (const route of routes) {
+    const content = readFileSync(route, "utf8");
+    assert.match(content, /yearQuery\.parse\(params\.get\("year"\) \?\? "2024"\)/);
+    assert.doesNotMatch(content, /yearQuery\.parse\(params\.get\("year"\) \?\? ""\)/);
+  }
+});
+
 test("map joins support repository GeoJSON county name variants", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   assert.match(explorer, /county_name/);
