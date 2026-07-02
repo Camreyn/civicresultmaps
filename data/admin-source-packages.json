@@ -266,15 +266,15 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "Connecticut 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Wave 14 identified the UConn VoTeR 2024 post-election audit report lead linked from Connecticut SOTS, but audit selection/outcome rows are not normalized. See data/ct-2024-data-coverage-inventory.json and data/ct-2024-source-request-matrix.tsv."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Connecticut 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Wave 14 did not confirm a statewide CT CVR export or CVR availability artifact. Use EMS report-download review and SOTS/municipal records-request paths before normalizing CVR context."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "Connecticut 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Wave 14 did not normalize Connecticut 2024 incident, correction, recount, or litigation rows; this remains a source-coverage/request-path gap only."
       }
     },
     {

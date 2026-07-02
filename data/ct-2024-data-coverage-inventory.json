@@ -1,0 +1,260 @@
+{
+  "state": "CT",
+  "stateName": "Connecticut",
+  "checkedAt": "2026-07-02",
+  "productionChecked": false,
+  "reportingGrain": "town",
+  "requestMatrixArtifact": "data/ct-2024-source-request-matrix.tsv",
+  "repoDrift": [
+    "docs/developer/index.md is referenced by AGENTS.md but is missing on the current main/worktree; this is recorded as non-blocking repo drift."
+  ],
+  "currentConfigStatus": {
+    "config": "etl/state-configs/ct.json",
+    "turnoutOnly": true,
+    "activeAuthority": "U.S. Election Assistance Commission fallback turnout",
+    "resultRows": 0,
+    "reviewRows": 0,
+    "turnoutRows": 169,
+    "ballotsCast": 1820891,
+    "registeredVoters": 2520650,
+    "caveat": "The active CT ETL config does not load native President, comparison, review, town geometry, historical, or administration rows."
+  },
+  "officialSourcePages": [
+    {
+      "title": "Connecticut Secretary of the State Election Results",
+      "url": "https://portal.ct.gov/sots/election-services/election-results/election-results",
+      "notes": "Official SOTS page links the current Elections Management System public reporting app, the historical election-results archive, and Statement of Vote PDFs."
+    },
+    {
+      "title": "Connecticut Elections Management System public reporting app",
+      "url": "https://ctemspublic.tgstg.net/",
+      "notes": "Official public reporting app exposes versioned static JSON for 2024 town results, statewide totals, turnout, districts, reporting status, and reports."
+    },
+    {
+      "title": "2024 Connecticut Statement of Vote PDF",
+      "url": "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
+      "notes": "Official biennial Statement of Vote for the November 5, 2024 general election; includes President, U.S. Senate, and turnout/registration tables."
+    },
+    {
+      "title": "General Elections Statement of Vote archive",
+      "url": "https://portal.ct.gov/sots/election-services/statement-of-vote-pdfs/general-elections-statement-of-vote-1922?archived=true",
+      "notes": "Official SOTS archive includes 2012, 2016, 2020, and 2024 Statement of Vote PDFs."
+    },
+    {
+      "title": "Connecticut Election History",
+      "url": "https://electionhistory.ct.gov/",
+      "notes": "Official historical election database compiled from official source documents."
+    },
+    {
+      "title": "Connecticut SOTS Statistics and Data",
+      "url": "https://portal.ct.gov/sots/election-services/statistics-and-data/statistics-and-data",
+      "notes": "Official registration and enrollment statistics page; includes October 31, 2024 registration/enrollment report lead."
+    },
+    {
+      "title": "UConn VoTeR Connecticut post-election audit reports",
+      "url": "https://voter.engr.uconn.edu/audits-2/",
+      "notes": "Post-election audit reports linked from the Connecticut SOTS election-information page; the 2024 presidential audit report is a lead for administration-context normalization."
+    },
+    {
+      "title": "U.S. Census TIGERweb Current WMS county subdivisions",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer",
+      "notes": "Official Census geometry service; county-subdivision layer is the preferred lead for Connecticut town/MCD map joins."
+    }
+  ],
+  "emsPublicReporting": {
+    "status": "official_static_json_available_parser_not_loaded",
+    "electionId": "91",
+    "electionName": "11/05/2024 -- Presidential Election 2024",
+    "version": "80741",
+    "jsonBaseUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741",
+    "scriptAccessNote": "The app and Version endpoint are available over HTTPS. Larger JSON files succeeded from this worker over HTTP after HTTPS receive errors; use HTTPS canonical URLs in registries and only retry HTTP in collection tooling if needed.",
+    "availableJsonFiles": [
+      "Lookupdata.json",
+      "stateVotes_Electiondata.json",
+      "election_Electiondata.json",
+      "voterTurnout_Electiondata.json",
+      "townVotes_Electiondata.json",
+      "townStatus_Electiondata.json",
+      "reports_Electiondata.json",
+      "districts_Electiondata.json",
+      "officePrecincts_Electiondata.json",
+      "ballotQuestion_Electiondata.json",
+      "candidateGrouping_Electiondata.json"
+    ],
+    "expectedCounts": {
+      "towns": 169,
+      "pollingPlaces": 759,
+      "countiesInApp": 8,
+      "candidates": 884
+    },
+    "reportingStatistics": {
+      "registeredVotersReported": 2348545,
+      "votersCheckedReported": 1788981,
+      "turnoutPercentReported": 76.17,
+      "townsReporting": "169 of 169",
+      "pollingPlacesReporting": "759 of 759 (100%)"
+    },
+    "presidentOffice": {
+      "officeId": "16518",
+      "officeName": "Presidential Electors for",
+      "statewideTotalVotes": 1759010,
+      "candidateTotals": [
+        {
+          "candidate": "Kamala D. Harris and Tim Walz",
+          "candidateId": "35838",
+          "votes": 992053
+        },
+        {
+          "candidate": "Donald J. Trump and JD Vance",
+          "candidateId": "35839",
+          "votes": 736918
+        },
+        {
+          "candidate": "All other presidential lines and write-ins",
+          "votes": 30039
+        }
+      ]
+    },
+    "comparisonOffice": {
+      "officeId": "16524",
+      "officeName": "United States Senator",
+      "sameGrainAsPresident": true,
+      "statewideTotalVotes": 1708259,
+      "candidateTotals": [
+        {
+          "candidate": "Christopher S. Murphy",
+          "partyOrLine": "Democratic",
+          "candidateId": "35495",
+          "votes": 953646
+        },
+        {
+          "candidate": "Matthew M. Corey",
+          "partyOrLine": "Republican",
+          "candidateId": "35830",
+          "votes": 678256
+        },
+        {
+          "candidate": "Christopher S. Murphy",
+          "partyOrLine": "Working Families",
+          "candidateId": "35860",
+          "votes": 47049
+        },
+        {
+          "candidate": "Justin C. Paglino",
+          "partyOrLine": "Green",
+          "candidateId": "36064",
+          "votes": 14422
+        },
+        {
+          "candidate": "Robert F. Hyde",
+          "partyOrLine": "Cheaper Gas Groceries",
+          "candidateId": "35859",
+          "votes": 14879
+        },
+        {
+          "candidate": "John Flynn",
+          "partyOrLine": "Write-in",
+          "candidateId": "36142",
+          "votes": 7
+        }
+      ],
+      "caveat": "Connecticut has cross-endorsed ballot lines. A future parser should decide whether comparison rows stay ballot-line-level or fuse candidates by person before advisory calculations."
+    },
+    "reconciliationCaveat": "The EMS townVotes rows sum to the EMS stateVotes presidential total of 1,759,010. The official 2024 Statement of Vote PDF text/county/congressional summaries reviewed in this pass show different presidential totals. Reconcile this official-source discrepancy before loading native CT result/review rows."
+  },
+  "sourceFindings": [
+    {
+      "topic": "certifiedPresidentResults",
+      "status": "official_ems_json_and_sov_pdf_identified_not_loaded",
+      "reportingGrain": "town",
+      "sourceAuthority": "Connecticut Secretary of the State",
+      "expectedRowsOrTotals": "169 town President rows from EMS townVotes; EMS statewide presidential total 1,759,010.",
+      "blocker": "Resolve EMS static JSON totals against the official 2024 Statement of Vote PDF totals before ingesting."
+    },
+    {
+      "topic": "sameGrainComparisonContest",
+      "status": "official_town_us_senate_available_not_loaded",
+      "reportingGrain": "town",
+      "comparisonContest": "United States Senator",
+      "expectedRowsOrTotals": "169 town U.S. Senate comparison rows from the same CT EMS townVotes artifact; EMS statewide U.S. Senate total 1,708,259.",
+      "blocker": "Comparison parser and ballot-line fusion policy are not implemented."
+    },
+    {
+      "topic": "stateNativeTurnout",
+      "status": "official_town_turnout_registration_lead_not_loaded",
+      "reportingGrain": "town",
+      "sourceAuthority": "Connecticut Secretary of the State EMS and Statement of Vote",
+      "expectedRowsOrTotals": "169 town turnout rows plus statewide EMS fields RV 2,348,545 and BC/VV 1,788,981.",
+      "blocker": "EMS turnout fields and SOV turnout/registration tables need semantic review and reconciliation before replacing EAC fallback."
+    },
+    {
+      "topic": "precinctWardAvailability",
+      "status": "precinct_labels_available_vote_rows_not_confirmed",
+      "reportingGrain": "town_with_polling_place_labels",
+      "expectedRowsOrTotals": "759 polling-place labels and precinct reporting-completeness rows are present in EMS Lookupdata/officePrecincts.",
+      "blocker": "Static JSON townVotes was confirmed at town grain; precinct/ward candidate vote exports or CVR availability still need report-download review or records requests."
+    },
+    {
+      "topic": "geometryAndCrosswalk",
+      "status": "county_geometry_loaded_town_geometry_lead_precinct_geometry_missing",
+      "reportingGrain": "town",
+      "loadedArtifacts": [
+        "data/ct-counties.geojson"
+      ],
+      "sourceLead": "Census TIGERweb Current WMS county-subdivision layer with STATE='09'",
+      "blocker": "Town/MCD geometry and EMS town crosswalk are not collected; precinct/ward geometry is not loaded."
+    },
+    {
+      "topic": "historicalBaselines",
+      "status": "official_2020_2016_2012_source_leads_not_loaded",
+      "targetYears": [
+        2012,
+        2016,
+        2020
+      ],
+      "sourceLead": "SOTS Statement of Vote archive and Connecticut Election History; EMS election IDs 54 for 2020 and 1 for 2016 were also identified.",
+      "blocker": "Historical town baseline parser is not implemented."
+    },
+    {
+      "topic": "postElectionAudit",
+      "status": "official_linked_uconn_report_lead_not_loaded",
+      "sourceLead": "UConn VoTeR post-election audit reports linked from the SOTS election-information page.",
+      "blocker": "Audit selection/outcome rows are not normalized."
+    },
+    {
+      "topic": "cvrAvailabilityAndRequestPaths",
+      "status": "request_path_needed_not_loaded",
+      "blocker": "No statewide CVR export or official CVR availability record was normalized in this pass; use SOTS and municipal records-request paths if precinct/ward or CVR-level evidence is needed."
+    },
+    {
+      "topic": "recountsCorrectionsIncidentsLitigation",
+      "status": "request_path_needed_not_loaded",
+      "blocker": "No recount, correction, incident, or litigation artifact rows are loaded. This is a source-coverage gap only, not evidence of misconduct."
+    },
+    {
+      "topic": "equipmentContext",
+      "status": "county_equipment_context_loaded",
+      "sourceAuthority": "Verified Voting Verifier",
+      "localArtifact": "data/ct-2024-equipment-context.csv",
+      "expectedRowsOrTotals": "8 historical county context rows",
+      "caveat": "Equipment context is supplemental administration metadata and is not a vote, turnout, audit, or incident source."
+    }
+  ],
+  "mapJoinImplications": [
+    "Connecticut 2024 result availability is town-centric. County joins are context only because the active county geometry summarizes eight historical county areas rather than the town reporting units used by EMS.",
+    "Town/MCD geometry from Census TIGERweb is the preferred next map join target for native CT result/review/turnout rows.",
+    "Ward/precinct maps should not be implied from the current data. EMS exposes 759 polling-place labels and reporting status, but candidate vote rows below town grain were not confirmed in static JSON."
+  ],
+  "websiteAndApiDisplayPath": {
+    "currentConfig": "turnout_only_eac_fallback",
+    "productionChecked": false,
+    "displayCaveat": "Current CT website/API output should be treated as fallback turnout context only until native CT result, same-grain review, turnout, geometry, and provenance artifacts are collected and loaded."
+  },
+  "remainingRisks": [
+    "EMS and Statement of Vote presidential totals must be reconciled before native CT result/review import.",
+    "State-native turnout semantics and EAC-vs-EMS denominator differences need review before replacing fallback rows.",
+    "Town geometry/crosswalk and precinct/ward geometry are not loaded.",
+    "Audit/CVR/recount/incident/correction/litigation rows remain unnormalized.",
+    "All advisory language must remain source-gap and reconciliation language only; this inventory does not make or support fraud or misconduct claims."
+  ]
+}

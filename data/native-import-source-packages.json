@@ -1671,6 +1671,40 @@
       }
     },
     {
+      "state": "CT",
+      "name": "Connecticut",
+      "priority": 1,
+      "currentStatus": "official_ems_town_results_turnout_leads_identified_parser_not_loaded",
+      "requestMatrixArtifact": "data/ct-2024-source-request-matrix.tsv",
+      "officialSourcePages": [
+        "https://ctemspublic.tgstg.net/",
+        "https://ctemspublic.tgstg.net/ng-app/data/Elections.json",
+        "https://ctemspublic.tgstg.net/ng-app/data/election/91/Version.json",
+        "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
+        "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/voterTurnout_Electiondata.json",
+        "https://portal.ct.gov/sots/election-services/election-results/election-results",
+        "https://portal.ct.gov/sots/election-services/statement-of-vote-pdfs/general-elections-statement-of-vote-1922?archived=true",
+        "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
+        "https://electionhistory.ct.gov/",
+        "https://portal.ct.gov/sots/election-services/statistics-and-data/statistics-and-data",
+        "https://voter.engr.uconn.edu/audits-2/",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer"
+      ],
+      "requiredArtifacts": [
+        "official CT EMS static JSON artifacts for election 91/version 80741, including Lookupdata, stateVotes, townVotes, voterTurnout, reports, and officePrecincts files",
+        "official 2024 Statement of Vote PDF retained or extracted as a reconciliation source before loading native CT result rows",
+        "normalized town President rows and same-grain U.S. Senate comparison rows after EMS/SOV reconciliation",
+        "state-native town turnout rows after EMS voterTurnout and Statement of Vote turnout/registration semantics are reviewed against EAC fallback",
+        "Census TIGERweb town/MCD geometry and EMS town-name crosswalk for map joins",
+        "precinct/ward candidate vote export, CVR availability record, or official records-request response if sub-town review is required",
+        "official 2012, 2016, and 2020 town historical presidential baseline artifacts from Statement of Vote, Election History, or EMS archives",
+        "normalized post-election audit, CVR availability, recount, correction, incident, and litigation context rows if published or request-produced"
+      ],
+      "preferredComparisonContest": "U.S. Senate, available at the same EMS town grain as President; keep Connecticut cross-endorsed ballot-line fusion caveats visible.",
+      "parserNeeded": "A Connecticut EMS static JSON parser should join Lookupdata candidate/office metadata with townVotes_Electiondata.json for office 16518 President and office 16524 U.S. Senator; normalize stateVotes/townVotes totals; and reconcile with the 2024 Statement of Vote PDF before loading. A turnout parser should review voterTurnout_Electiondata.json EV/VV/ABR/ABC/EBR/EBC/EDR/EDC semantics before replacing EAC fallback.",
+      "blocker": "Current CT config remains turnout-only EAC fallback. Official EMS exposes 169 town President and U.S. Senate rows, town turnout fields, and 759 polling-place labels, but no parser/local artifacts are loaded. EMS town totals produce 1,759,010 presidential votes, while the 2024 Statement of Vote PDF text summaries reviewed in Wave 14 show different presidential totals; reconcile that official-source discrepancy before promotion. Town geometry and precinct/ward vote rows/CVR availability remain uncollected."
+    },
+    {
       "state": "IN",
       "name": "Indiana",
       "priority": 1,
@@ -2228,6 +2262,62 @@
       }
     },
     {
+      "state": "CO",
+      "name": "Colorado",
+      "priority": 11,
+      "currentStatus": "official_clarity_county_results_turnout_leads_confirmed_inventory_only_eac_turnout_active",
+      "officialSourcePages": [
+        "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
+        "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
+        "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+        "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
+        "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
+        "https://www.sos.state.co.us/pubs/info_center/recordsRequests.html"
+      ],
+      "requiredArtifacts": [
+        "official Colorado Clarity detailxml.zip or source manifest plus a Colorado parser for county President rows",
+        "county CU Regent at-large same-grain comparison rows if county-level review is accepted, or official precinct/local President plus comparison rows for subcounty advisory coverage",
+        "reviewed state-native turnout denominator semantics before replacing EAC fallback turnout",
+        "official 2020, 2016, and 2012 Colorado SOS Abstract of Votes Cast county presidential artifacts plus parser",
+        "precinct boundary geometry or reporting-unit crosswalks if subcounty review rows are collected",
+        "official risk-limiting audit selections/outcomes, CVR availability, recount/correction/incident/litigation, custody, ballot-manifest, tabulator-log, and EMS-log source artifacts suitable for normalized administration context"
+      ],
+      "preferredComparisonContest": "CU Regent at-large for county-level same-grain review because Colorado had no 2024 U.S. Senate race; request precinct/local same-grain comparison rows before subcounty advisory coverage.",
+      "parserNeeded": "Future coloradoClarityDetailXml parser should read official CO/122598/367167 detailxml.zip for 64 county President rows, 64 county CU Regent at-large comparison rows, and reviewed county turnout rows. Active CO config remains turnoutOnly EAC fallback, so no native result or review rows are loaded in this pass.",
+      "blocker": "Official Colorado Clarity endpoint is confirmed and source-counted, but the statewide detail XML inspected here exposes county candidate totals and precinct participation counts rather than per-precinct candidate result rows. EAC fallback turnout stays active until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed. Historical baselines, precinct geometry/crosswalks, audit/CVR/recount/incident/correction/litigation rows, and source-request artifacts remain unnormalized.",
+      "requestMatrixArtifact": "data/co-2024-source-request-matrix.tsv",
+      "availableArtifacts": {
+        "coverageInventory": {
+          "sourceTitle": "Colorado 2024 source coverage inventory",
+          "localFile": "data/co-2024-data-coverage-inventory.json",
+          "parserHint": "Inventory only; documents official Clarity endpoint, EAC fallback turnout, county geometry/equipment context, historical/audit/CVR/request paths, and caveats without loading result or review rows."
+        },
+        "sourceRequestMatrix": {
+          "sourceTitle": "Colorado 2024 source request matrix",
+          "localFile": "data/co-2024-source-request-matrix.tsv",
+          "parserHint": "Context-only request queue for parser work, subcounty review rows, turnout denominator review, historical baselines, precinct geometry, and administration artifacts."
+        },
+        "currentTurnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
+          "parserHint": "Current active CO turnout config remains eacTurnoutCsv with 64 jurisdiction rows."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/co-counties.geojson",
+          "parserHint": "County joins only; precinct geometry is not loaded."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Colorado 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
+          "localFile": "data/co-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      }
+    },
+    {
       "state": "WV",
       "name": "West Virginia",
       "priority": 12,
@@ -2350,62 +2440,6 @@
           "sourceTitle": "Verified Voting Verifier Delaware 2024 equipment context",
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/10",
           "localFile": "data/de-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "CO",
-      "name": "Colorado",
-      "priority": 11,
-      "currentStatus": "official_clarity_county_results_turnout_leads_confirmed_inventory_only_eac_turnout_active",
-      "officialSourcePages": [
-        "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
-        "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
-        "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
-        "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
-        "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
-        "https://www.sos.state.co.us/pubs/info_center/recordsRequests.html"
-      ],
-      "requiredArtifacts": [
-        "official Colorado Clarity detailxml.zip or source manifest plus a Colorado parser for county President rows",
-        "county CU Regent at-large same-grain comparison rows if county-level review is accepted, or official precinct/local President plus comparison rows for subcounty advisory coverage",
-        "reviewed state-native turnout denominator semantics before replacing EAC fallback turnout",
-        "official 2020, 2016, and 2012 Colorado SOS Abstract of Votes Cast county presidential artifacts plus parser",
-        "precinct boundary geometry or reporting-unit crosswalks if subcounty review rows are collected",
-        "official risk-limiting audit selections/outcomes, CVR availability, recount/correction/incident/litigation, custody, ballot-manifest, tabulator-log, and EMS-log source artifacts suitable for normalized administration context"
-      ],
-      "preferredComparisonContest": "CU Regent at-large for county-level same-grain review because Colorado had no 2024 U.S. Senate race; request precinct/local same-grain comparison rows before subcounty advisory coverage.",
-      "parserNeeded": "Future coloradoClarityDetailXml parser should read official CO/122598/367167 detailxml.zip for 64 county President rows, 64 county CU Regent at-large comparison rows, and reviewed county turnout rows. Active CO config remains turnoutOnly EAC fallback, so no native result or review rows are loaded in this pass.",
-      "blocker": "Official Colorado Clarity endpoint is confirmed and source-counted, but the statewide detail XML inspected here exposes county candidate totals and precinct participation counts rather than per-precinct candidate result rows. EAC fallback turnout stays active until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed. Historical baselines, precinct geometry/crosswalks, audit/CVR/recount/incident/correction/litigation rows, and source-request artifacts remain unnormalized.",
-      "requestMatrixArtifact": "data/co-2024-source-request-matrix.tsv",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "Colorado 2024 source coverage inventory",
-          "localFile": "data/co-2024-data-coverage-inventory.json",
-          "parserHint": "Inventory only; documents official Clarity endpoint, EAC fallback turnout, county geometry/equipment context, historical/audit/CVR/request paths, and caveats without loading result or review rows."
-        },
-        "sourceRequestMatrix": {
-          "sourceTitle": "Colorado 2024 source request matrix",
-          "localFile": "data/co-2024-source-request-matrix.tsv",
-          "parserHint": "Context-only request queue for parser work, subcounty review rows, turnout denominator review, historical baselines, precinct geometry, and administration artifacts."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
-          "parserHint": "Current active CO turnout config remains eacTurnoutCsv with 64 jurisdiction rows."
-        },
-        "countyBoundary": {
-          "sourceTitle": "U.S. Census TIGERweb county geography",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/co-counties.geojson",
-          "parserHint": "County joins only; precinct geometry is not loaded."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier Colorado 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
-          "localFile": "data/co-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
         }
       }

@@ -331,30 +331,55 @@
       "stateName": "Connecticut",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_historical_geometry_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "town",
       "exportFormats": [
-        "eac fallback turnout"
+        "official EMS static JSON",
+        "official Statement of Vote PDF",
+        "official EAC fallback turnout CSV",
+        "Census TIGERweb county-subdivision geometry lead"
       ],
       "sourceUrls": [
-        "https://portal.ct.gov/sots/election-services/election-results"
+        "https://ctemspublic.tgstg.net/",
+        "https://ctemspublic.tgstg.net/ng-app/data/Elections.json",
+        "https://portal.ct.gov/sots/election-services/election-results/election-results",
+        "https://portal.ct.gov/sots/election-services/statement-of-vote-pdfs/general-elections-statement-of-vote-1922?archived=true",
+        "https://electionhistory.ct.gov/",
+        "https://portal.ct.gov/sots/election-services/statistics-and-data/statistics-and-data",
+        "https://voter.engr.uconn.edu/audits-2/",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://ctemspublic.tgstg.net/ng-app/data/election/91/Version.json",
+        "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
+        "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/voterTurnout_Electiondata.json",
+        "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e"
+      ],
       "availableFields": [
-        "town/county-style totals",
-        "EAC fallback turnout"
+        "official town President rows in EMS static JSON",
+        "official town U.S. Senate rows in the same EMS static JSON",
+        "official town turnout, registered-voter, absentee, early-voting, and election-day-registration fields in EMS turnout JSON",
+        "official polling-place labels and reporting-completeness fields for 759 polling places",
+        "official Statement of Vote and Election History leads for 2012, 2016, and 2020 historical baselines",
+        "county geometry and Verified Voting equipment context already loaded",
+        "Census TIGERweb county-subdivision geometry lead for town/MCD joins",
+        "UConn VoTeR 2024 post-election audit report lead linked from Connecticut SOTS"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "normalized native CT result and review rows",
+        "reconciled EMS-versus-Statement-of-Vote presidential totals",
+        "normalized state-native turnout rows to replace EAC fallback",
+        "confirmed precinct/ward candidate vote rows or CVR availability",
+        "town/MCD geometry and EMS town crosswalk",
+        "precinct/ward geometry or reporting-place crosswalk",
+        "normalized audit, CVR, recount, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
+      "parserStatus": "data/ct-2024-data-coverage-inventory.json and data/ct-2024-source-request-matrix.tsv document the official EMS JSON, Statement of Vote, turnout, historical, geometry, and audit leads; CT ETL remains turnout-only EAC fallback until a Connecticut EMS town parser and reconciliation check are implemented",
+      "manualReviewBurden": "medium",
       "confidence": "candidate",
-      "caveats": "Connecticut geography is town-centric; classify before assuming county joins.",
-      "nextAction": "Classify official Connecticut result exports and comparison-contest availability."
+      "caveats": "Connecticut geography and reporting are town-centric. County joins are context only with the current county geometry. EMS townVotes rows sum to EMS stateVotes presidential total 1,759,010, while the official 2024 Statement of Vote PDF summaries reviewed in Wave 14 show different presidential totals; reconcile that source discrepancy before loading native CT result/review rows. Current CT config remains EAC fallback turnout only.",
+      "nextAction": "Implement a Connecticut EMS town parser only after reconciling EMS and Statement of Vote totals; collect town/MCD geometry and crosswalks, review EMS report-download paths for precinct/ward rows or CVR availability, and normalize audit/CVR/recount/incident/correction/litigation source records if published or request-produced."
     },
     {
       "state": "DE",
