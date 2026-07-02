@@ -68,7 +68,7 @@
     "caveat": "The normalized rows retain detailed town/ward values and keep the one-vote ballots-cast summary/detail reconciliation caveat."
   },
   "historicalBaselineFeasibility": {
-    "status": "candidate_2016_official_archive_lead",
+    "status": "candidate_2016_official_package_collected_normalized_importer_blocked",
     "target": "President-versus-U.S. House and President-versus-Governor split-ticket baselines for 2012, 2016, and 2020, preferably at town/ward grain and county context if town/ward matching is blocked.",
     "archiveCdxCheckedAt": "2026-07-02",
     "availableOfficialArchiveLeads": [
@@ -91,7 +91,7 @@
           "2016-ge-congressional-district-1.xlsx",
           "2016-ge-congressional-district-2.xlsx"
         ],
-        "parserNeeded": "Extend scripts/normalize-nh-general-workbooks.mjs or add a sibling historical normalizer after downloading the archived official 2016 XLS/XLSX artifacts.",
+        "parserNeeded": "scripts/normalize-nh-historical-baseline.mjs now generates county presidential 2016 historical candidate rows. Loading those rows into NH native staging requires a shared civic_etl/native.py dispatcher change or a generalized historical ingestion path.",
         "confidence": "official_archive_lead",
         "cdxCaptureEvidence": [
           {
@@ -182,14 +182,28 @@
         "directDownloadAttempt": {
           "checkedAt": "2026-07-02",
           "urlPattern": "https://web.archive.org/web/{timestamp}id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/{filename}",
-          "attemptedArtifacts": 12,
-          "result": "blocked_from_worker_environment",
-          "observedErrors": [
-            "The underlying connection was closed: An unexpected error occurred on a receive.",
-            "Unable to connect to the remote server"
-          ],
-          "artifactFilesCreated": 0
-        }
+          "attemptedArtifacts": 13,
+          "result": "succeeded_for_2016_workbook_package",
+          "artifactFilesCreated": 13,
+          "caveat": "Earlier worker attempts observed transient Internet Archive connection errors. This pass succeeded after retry and retained source artifacts in data/."
+        },
+        "status": "official_2016_artifacts_collected_normalized_importer_blocked",
+        "localArtifacts": [
+          "data/nh-2016-ge-president-summary-and-belknap.xls",
+          "data/nh-2016-ge-president-carroll.xls",
+          "data/nh-2016-ge-president-cheshire.xls",
+          "data/nh-2016-ge-president-coos.xls",
+          "data/nh-2016-ge-president-grafton.xls",
+          "data/nh-2016-ge-president-hillsborough.xls",
+          "data/nh-2016-ge-president-merrimack.xls",
+          "data/nh-2016-ge-president-rockingham.xls",
+          "data/nh-2016-ge-president-strafford-and-sullivan.xls",
+          "data/nh-2016-ge-presidential-write-ins-summary.xls",
+          "data/nh-2016-ge-governor.xls",
+          "data/nh-2016-ge-congressional-district-1.xlsx",
+          "data/nh-2016-ge-congressional-district-2.xlsx",
+          "data/nh-historical-presidential-baseline.csv"
+        ]
       }
     ],
     "blockedOrUnresolvedLeads": [
@@ -222,7 +236,18 @@
       "nh-2020-historical-request",
       "nh-2012-historical-request"
     ],
-    "caveat": "No historical baseline rows are loaded. The 2016 archive lead is a source-acquisition path only until official artifacts are downloaded, parsed, and reconciled. July 2, 2026 CDX checks confirmed exact official XLS/XLSX captures for nine President county workbooks, Governor, and U.S. House Districts 1 and 2, but direct binary downloads failed from this worker environment and created no local files."
+    "caveat": "Official 2016 county presidential baseline artifacts are collected and normalized as candidate context. They are not active historical staging rows because adding NH historicalPresidentialCsv ingestion requires a shared native dispatcher change. Official 2020 and 2012 script-readable workbook sets remain unconfirmed and are tracked as source requests.",
+    "normalizedCandidateArtifact": {
+      "localArtifact": "data/nh-historical-presidential-baseline.csv",
+      "parserOrNormalizationPath": "scripts/normalize-nh-historical-baseline.mjs",
+      "reportingGrain": "county",
+      "rowCount": 10,
+      "years": [
+        2016
+      ],
+      "status": "candidate_context_not_active_staging",
+      "caveat": "The official 2016 county presidential baseline CSV is reproducibly generated from archived New Hampshire Secretary of State workbooks and includes official county write-in totals, but active NH native staging does not ingest historicalPresidentialCsv without a shared civic_etl/native.py dispatcher change."
+    }
   },
   "geometryAndCrosswalk": {
     "status": "county_geometry_loaded_town_ward_geometry_blocked",
@@ -289,7 +314,8 @@
     "displaySurfaces": [
       "county map joins use data/nh-counties.geojson",
       "review graphs use 304 town/ward President-versus-U.S.-House rows",
-      "turnout context uses 304 town/ward ballots-cast/names-on-checklist rows"
+      "turnout context uses 304 town/ward ballots-cast/names-on-checklist rows",
+      "2016 county historical candidate CSV is present for future historical display once the shared native importer supports NH historicalPresidentialCsv ingestion"
     ],
     "productionChecked": false,
     "caveat": "Production promotion and production API checks were not authorized for this worker pass."
