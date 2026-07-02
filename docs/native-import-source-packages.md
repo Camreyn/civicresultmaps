@@ -28,6 +28,22 @@ These states have county geometry, official presidential result artifacts, local
 
 Expected validation: 75 county result rows, 75 county geometry features, 1,182,676 presidential votes, 759,241 Trump votes, 396,905 Harris votes, 26,530 other votes, 2,779 reporting-unit review rows, and 73 EAC fallback turnout rows. Remaining gaps are state-native turnout denominators, human-readable precinct/reporting-unit names or geometry, official 2012/2016/2020 historical baseline artifacts, and normalized official audit/recount/CVR/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
 
+## Colorado Wave 14 Update
+
+- Config: `etl/state-configs/co.json`
+- Authority: Colorado Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- Current active turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/co-2024-eac-turnout.csv`
+- Coverage inventory: `data/co-2024-data-coverage-inventory.json`
+- Source request matrix: `data/co-2024-source-request-matrix.tsv`
+- Official result lead: Colorado SOS Clarity 2024 General Election detail XML at `https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip`
+- Preferred county comparison lead: CU Regent at-large, because Colorado had no 2024 U.S. Senate race
+- County boundary: `data/co-counties.geojson`
+- Equipment context: `data/co-2024-equipment-context.csv` from Verified Voting, context only
+
+Wave 14 confirmed that the official Clarity detail XML endpoint exposes 64 county Presidential Electors rows with 1,728,159 Harris votes, 1,377,441 Trump votes, 87,145 other votes, and 3,192,745 presidential votes total. The same XML exposes 64 county CU Regent at-large comparison rows and county turnout rows reporting 3,241,120 ballotsCast and 4,058,938 totalVoters. No native result/review parser is loaded in this pass, and the current CO config remains EAC turnout-only with 64 fallback turnout rows, 3,240,754 ballots cast, and 4,583,280 registered voters.
+
+Remaining gaps are a Colorado Clarity parser and committed official result artifact or manifest, denominator review before replacing EAC turnout, official precinct/local result rows or CVR-derived aggregates for subcounty advisory coverage, precinct geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized risk-limiting audit, CVR availability, recount, correction, incident, litigation, custody, ballot-manifest, tabulator-log, and EMS-log records. Current source records are coverage and request provenance only, not advisory findings.
+
 ## Minnesota
 
 - Config: `etl/state-configs/mn.json`

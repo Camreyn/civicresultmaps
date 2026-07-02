@@ -1,0 +1,197 @@
+{
+  "state": "CO",
+  "stateName": "Colorado",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "status": "official_clarity_endpoint_confirmed_inventory_only",
+  "productionChecked": false,
+  "repoDrift": [
+    {
+      "path": "docs/developer/index.md",
+      "status": "missing_on_current_main",
+      "note": "AGENTS.md names this as a required first read, but the file is absent in this worktree. This is recorded as repo drift and did not block the Colorado source inventory."
+    }
+  ],
+  "displayPathChecked": "The current Colorado ETL remains turnout-only. Public app/API display would flow through src/app/page.tsx and src/lib/api after production promotion, while /api/native-source-packages and /api/source-acquisition-tiers expose the updated planning registries. Production promotion and production API checks were not run from this worker branch.",
+  "officialSourcePages": [
+    "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
+    "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
+    "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+    "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
+    "https://www.sos.state.co.us/pubs/elections/VotingSystems/",
+    "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
+    "https://www.sos.state.co.us/pubs/info_center/recordsRequests.html"
+  ],
+  "confirmedArtifacts": [
+    {
+      "id": "co-2024-clarity-detailxml-endpoint",
+      "sourceAuthority": "Colorado Secretary of State",
+      "sourceTitle": "Colorado 2024 General Election Clarity detail XML ZIP",
+      "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+      "localPath": "not committed; inspected in .etl/co-clarity-inspect only",
+      "status": "official_endpoint_confirmed_not_loaded",
+      "parserNormalizationPath": "future coloradoClarityDetailXml parser needed before native result, review, or state-native turnout rows are loaded",
+      "contentType": "application/zip",
+      "zipBytes": 57106,
+      "zipSha256": "9192e20abd974825ec49b387d5a2c242534090fe56fd0226d99f136d32acea7c",
+      "detailXmlBytes": 787575,
+      "detailXmlSha256": "3bfbe9dccf24338c46a90b0e3a82da8d7867d8fe913200020d61cfc04878c850",
+      "timestampBasis": "detail.xml Timestamp 11/25/2025 1:45:46 PM MST; ElectionName 2024 General; ElectionDate 11/5/2024.",
+      "reportingGrain": "county candidate totals with precinct participation counts; no per-precinct candidate result rows were observed in the statewide detail.xml inspected from this endpoint",
+      "expectedRowsOrTotals": {
+        "counties": 64,
+        "presidentialContestKey": "10",
+        "presidentialContestName": "Presidential Electors",
+        "presidentialCountyCandidateRows": 512,
+        "presidentialPrecinctsParticipating": 3202,
+        "presidentialPrecinctsReported": 3202,
+        "harrisVotes": 1728159,
+        "trumpVotes": 1377441,
+        "otherVotes": 87145,
+        "presidentialTotalVotes": 3192745,
+        "turnoutTotalVoters": 4058938,
+        "turnoutBallotsCast": 3241120
+      },
+      "caveats": [
+        "Endpoint is official and machine-readable, but no CO parser is loaded in this pass.",
+        "The statewide detail XML exposes county candidate totals and precinct participation counts, not per-precinct candidate totals.",
+        "Do not replace the current EAC turnout rows until Colorado totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed."
+      ]
+    },
+    {
+      "id": "co-2024-regent-at-large-comparison-lead",
+      "sourceAuthority": "Colorado Secretary of State",
+      "sourceTitle": "Colorado 2024 General Election Clarity statewide CU Regent at-large contest",
+      "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+      "localPath": "not committed; inspected in .etl/co-clarity-inspect only",
+      "status": "same_grain_county_comparison_lead_not_loaded",
+      "parserNormalizationPath": "future coloradoClarityDetailXml parser should pair county President rows with Regent of the University of Colorado - At Large rows if county-level review is accepted",
+      "reportingGrain": "county",
+      "expectedRowsOrTotals": {
+        "contestKey": "400",
+        "contestName": "Regent of the University of Colorado - At Large",
+        "countyCandidateRows": 256,
+        "precinctsParticipating": 3201,
+        "precinctsReported": 3201,
+        "democraticCandidate": "Elliott Hood",
+        "democraticVotes": 1478661,
+        "republicanCandidate": "Eric Rinard",
+        "republicanVotes": 1363271,
+        "otherVotes": 88844,
+        "contestTotalVotes": 2930776
+      },
+      "caveats": [
+        "Colorado had no 2024 U.S. Senate race; CU Regent at-large is a statewide same-grain county comparison lead.",
+        "County-level comparison rows are useful for source-review context, but they are not precinct scatter-plot coverage."
+      ]
+    },
+    {
+      "id": "co-2024-eac-turnout-fallback",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceTitle": "EAC 2024 EAVS V2 Colorado jurisdiction turnout fallback",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localPath": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
+      "status": "loaded_active_turnout_config",
+      "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/co.json",
+      "reportingGrain": "county/jurisdiction",
+      "expectedRowsOrTotals": {
+        "turnoutRows": 64,
+        "ballotsCast": 3240754,
+        "registeredVoters": 4583280
+      },
+      "caveats": [
+        "Current CO config is turnout-only and continues to load this EAC fallback package.",
+        "The official Colorado Clarity XML reports 3,241,120 ballotsCast and 4,058,938 totalVoters; replacement requires denominator review before changing active turnout semantics."
+      ]
+    },
+    {
+      "id": "co-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceTitle": "Colorado county geometry",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localPath": "data/co-counties.geojson",
+      "status": "local_artifact_present",
+      "parserNormalizationPath": "county map joins only",
+      "reportingGrain": "county",
+      "expectedRowsOrTotals": {
+        "geometryFeatures": 64
+      },
+      "caveats": [
+        "County geometry supports county map joins only; precinct or local reporting-unit geometry/crosswalks are not loaded."
+      ]
+    },
+    {
+      "id": "co-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceTitle": "Colorado 2024 county equipment context",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
+      "localPath": "data/verifiedvoting-co-2024-equipment.json; data/co-2024-equipment-context.csv; data/verifiedvoting-co-2024-equipment-areas.geojson",
+      "status": "local_artifacts_present_context_only",
+      "parserNormalizationPath": "verifiedVotingEquipment context registry",
+      "reportingGrain": "county",
+      "expectedRowsOrTotals": {
+        "jurisdictions": 64
+      },
+      "caveats": [
+        "Equipment rows are administration context only; they are not vote, turnout, audit, incident, or proof-of-uniform-precinct-equipment rows."
+      ]
+    }
+  ],
+  "sourceFindings": [
+    {
+      "topic": "certifiedPresidentialResults",
+      "status": "official_machine_readable_county_endpoint_confirmed_not_loaded",
+      "bestSourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+      "finding": "The official Clarity detail XML endpoint exposes 64 county Presidential Electors candidate totals and statewide candidate totals that reconcile to 3,192,745 presidential votes.",
+      "blocker": "No Colorado Clarity XML parser is loaded, and the statewide XML did not expose per-precinct candidate result rows."
+    },
+    {
+      "topic": "sameGrainComparisonContest",
+      "status": "official_county_same_grain_lead_confirmed_not_loaded",
+      "bestSourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+      "finding": "Colorado had no 2024 U.S. Senate race. The official statewide CU Regent at-large contest is available at county grain and is the preferred same-grain county comparison lead identified in this pass.",
+      "blocker": "No parser-backed county review package was added; subcounty review remains blocked by missing per-precinct candidate rows."
+    },
+    {
+      "topic": "stateNativeTurnout",
+      "status": "official_turnout_lead_confirmed_not_replacing_eac",
+      "bestSourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+      "finding": "The official Clarity XML reports 64 county turnout rows, 3,241,120 ballotsCast, and 4,058,938 totalVoters.",
+      "blocker": "The active EAC fallback reports 3,240,754 ballots cast and 4,583,280 registered voters. Review Colorado totalVoters denominator semantics and the 366-ballot ballots-cast difference before replacing EAC fallback."
+    },
+    {
+      "topic": "historicalBaselines",
+      "status": "official_abstract_source_path_identified_not_loaded",
+      "bestSourceUrl": "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
+      "finding": "Colorado SOS Abstract of Votes Cast is the official historical lead for 2020, 2016, and 2012 county presidential baselines.",
+      "blocker": "The SOS abstract directory returned access errors to this scripted worker, and exact downloadable historical artifacts were not collected or parsed."
+    },
+    {
+      "topic": "geometryAndCrosswalks",
+      "status": "county_geometry_loaded_precinct_geometry_missing",
+      "bestSourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "finding": "County geometry is present in data/co-counties.geojson.",
+      "blocker": "No official statewide precinct boundary geometry, precinct result crosswalk, or Clarity precinct-name crosswalk is loaded."
+    },
+    {
+      "topic": "auditRecountCvrIncidentLitigationContext",
+      "status": "request_paths_documented_not_loaded",
+      "bestSourceUrl": "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
+      "finding": "Colorado is a risk-limiting-audit state and county/SOS request paths exist for audit, CVR availability, recount, correction, incident, and litigation records.",
+      "blocker": "No normalized 2024 audit selection/outcome, CVR availability, recount, incident, correction, litigation, custody, tabulator-log, or ballot-manifest rows are loaded."
+    }
+  ],
+  "requestMatrixArtifact": "data/co-2024-source-request-matrix.tsv",
+  "recommendedNextSteps": [
+    "Collect and commit the official Colorado Clarity detailxml.zip or a source manifest, then implement a Colorado-specific parser for county President, CU Regent at-large comparison, and reviewed state-native turnout rows.",
+    "If advisory accuracy below county level is required, request official county detail reports, precinct-level SOV exports, CVR-derived precinct aggregates, or a precinct/result crosswalk from Colorado SOS or county election offices.",
+    "Resolve whether Clarity totalVoters is the correct registered-voter denominator for the public turnout contract before replacing EAC fallback rows.",
+    "Collect official 2020, 2016, and 2012 Colorado SOS Abstract of Votes Cast county presidential artifacts before enabling historicalBaseline for CO.",
+    "Collect or request official 2024 risk-limiting audit selection/outcome files, CVR availability statements, recount/correction/incident/litigation records, ballot manifests, and custody/log artifacts before adding normalized administration rows."
+  ],
+  "remainingRisks": [
+    "Colorado remains turnout-only in active ETL; no native result, review, map, historical, audit, CVR, incident, correction, recount, or litigation rows are loaded by this pass.",
+    "County-level President-versus-Regent review would be a coarse source-review screen, not precinct scatter-plot coverage.",
+    "The current evidence records source availability and data gaps only. It is not evidence of fraud or misconduct."
+  ]
+}
