@@ -75,3 +75,29 @@ test("Nevada public data note reflects Humboldt and the 14 remaining jurisdictio
   assert.match(tabs, /Clark County, Washoe County, and Humboldt County official CVR precinct/);
   assert.match(tabs, /the other 14 Nevada jurisdictions remain county-only/);
 });
+
+test("Nevada Wave 13 source checks preserve high-ROI county blockers", () => {
+  assert.equal(inventory.checkedAt, "2026-07-02");
+  assert.match(inventory.status, /wave13_source_checks_refreshed/);
+
+  const checks = new Map(inventory.sourceChecks.map((entry) => [entry.sourceAuthority, entry]));
+  for (const authority of [
+    "Nye County Clerk",
+    "Lyon County Clerk/Treasurer",
+    "Churchill County Clerk/Treasurer",
+    "Carson City Clerk-Recorder",
+  ]) {
+    const check = checks.get(authority);
+    assert.equal(check?.checkedAt, "2026-07-02");
+    assert.match(check?.finding ?? "", /No official|did not surface|no parser-ready/i);
+  }
+
+  const refreshedRows = matrix.filter((row) => row.source_check_status.includes("wave13_confirmed"));
+  assert.deepEqual(
+    refreshedRows.map((row) => row.jurisdiction),
+    ["Carson City", "Churchill County", "Douglas County", "Lyon County", "Nye County"],
+  );
+  for (const row of refreshedRows) {
+    assert.match(row.notes, /Wave 13 recheck on July 2, 2026/);
+  }
+});

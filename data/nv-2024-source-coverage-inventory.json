@@ -2,9 +2,9 @@
   "state": "NV",
   "stateName": "Nevada",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-07-02",
   "purpose": "State-scoped coverage inventory for Nevada 2024 result, review, turnout, CVR, audit, L&A, tabulator-log, custody, equipment, and incident/correction source paths. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "partial_clark_washoe_humboldt_precinct_review_loaded",
+  "status": "partial_clark_washoe_humboldt_precinct_review_loaded_wave13_source_checks_refreshed",
   "authorityPriority": "Official state and county election sources first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -187,8 +187,8 @@
       "sourceAuthority": "Douglas County Clerk-Treasurer",
       "sourceUrl": "https://cltr.douglascountynv.gov/elections/results-and-resources",
       "status": "needs_follow_up",
-      "checkedAt": "2026-07-01",
-      "finding": "Official result/resource page was reachable, but no parser-ready 2024 President plus U.S. Senate local export was confirmed in this pass."
+      "checkedAt": "2026-07-02",
+      "finding": "Official Results and Resources page was reachable. The visible page text describes previous election results and links the Nevada Secretary of State, but no parser-ready 2024 President plus U.S. Senate local export, SOV workbook, CVR export, or downloadable result file was confirmed in the page text or visible links."
     },
     {
       "sourceAuthority": "Nevada Secretary of State turnout and registration pages",
@@ -201,6 +201,34 @@
       "status": "blocked_live_access",
       "checkedAt": "2026-07-01",
       "finding": "Live pages returned Incapsula challenge pages, zero-length content, or transport errors from scripted access; no state-native turnout denominator artifact was collected."
+    },
+    {
+      "sourceAuthority": "Nye County Clerk",
+      "sourceUrl": "https://www.nyecountynv.gov/267/Elections",
+      "status": "reachable_no_parser_ready_export_found",
+      "checkedAt": "2026-07-02",
+      "finding": "Official county elections page returned HTTP 200 from direct scripted access. Search and page-link checks did not surface a parser-ready 2024 General President plus U.S. Senate local export, SOV workbook, or CVR export."
+    },
+    {
+      "sourceAuthority": "Lyon County Clerk/Treasurer",
+      "sourceUrl": "https://www.lyon-county.org/55/Elections",
+      "status": "reachable_no_parser_ready_export_found",
+      "checkedAt": "2026-07-02",
+      "finding": "Official county elections page returned HTTP 200 from direct scripted access. Search and page-link checks did not surface a parser-ready 2024 General President plus U.S. Senate local export, SOV workbook, or CVR export."
+    },
+    {
+      "sourceAuthority": "Churchill County Clerk/Treasurer",
+      "sourceUrl": "https://www.churchillcountynv.gov/134/Elections",
+      "status": "reachable_no_parser_ready_export_found",
+      "checkedAt": "2026-07-02",
+      "finding": "Official county elections page returned HTTP 200 from direct scripted access. Search and page-link checks did not surface a parser-ready 2024 General President plus U.S. Senate local export, SOV workbook, or CVR export."
+    },
+    {
+      "sourceAuthority": "Carson City Clerk-Recorder",
+      "sourceUrl": "https://www.carson.org/government/departments-a-f/clerk-recorder/elections",
+      "status": "blocked_dns_or_site_resolution",
+      "checkedAt": "2026-07-02",
+      "finding": "Direct scripted access failed with DNS resolution error for www.carson.org. No official 2024 General local President plus U.S. Senate export or CVR was collected from this environment."
     }
   ],
   "administrationContext": {
