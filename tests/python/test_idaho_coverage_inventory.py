@@ -18,6 +18,10 @@ class IdahoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(sources["id-2024-general-official-xml-index"]["authority"], "Idaho Secretary of State")
         self.assertEqual(sources["id-2024-general-official-congressional-map"]["parser"], "countyComparisonCsv")
         self.assertEqual(sources["id-2024-data-coverage-inventory"]["localFile"], "data/id-2024-data-coverage-inventory.json")
+        self.assertEqual(sources["id-historical-presidential-baseline"]["parser"], "historicalPresidentialCsv")
+        self.assertIn("not_active_in_staging", sources["id-historical-presidential-baseline"]["confidence"])
+        self.assertNotIn("historicalBaselineRows", config["expected"])
+        self.assertFalse(config["capabilities"]["historicalBaseline"])
         self.assertEqual(sources["id-2024-equipment-context"]["status"], "candidate")
         self.assertIn("district-based", config["reviewCharts"]["warning"])
 
@@ -33,9 +37,13 @@ class IdahoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(artifacts["id-2024-eac-turnout"]["expectedCounts"]["registeredVoters"], 1178750)
         self.assertEqual(artifacts["id-county-geometry"]["expectedCounts"]["geometryFeatures"], 44)
         self.assertEqual(artifacts["id-2024-equipment-context"]["confidence"], "loaded_context_only")
+        self.assertEqual(artifacts["id-historical-presidential-baseline"]["expectedCounts"]["historicalRows"], 88)
 
         self.assertEqual(findings["stateNativeTurnout"]["status"], "not_loaded_eac_fallback_active")
+        self.assertEqual(findings["historicalBaselines"]["status"], "collected_2012_2016_not_active_2020_blocked")
+        self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2012, 2016])
         self.assertEqual(findings["historicalBaselines"]["targetYears"], [2012, 2016, 2020])
+        self.assertIn("shared importer/helper change", findings["historicalBaselines"]["caveat"])
         self.assertEqual(findings["postElectionAudit"]["status"], "not_inventoried_or_normalized")
         self.assertEqual(findings["cvrAvailability"]["status"], "not_loaded")
         self.assertIn("not claims of fraud or misconduct", inventory["displayApiCaveats"]["advisoryUse"])
@@ -70,3 +78,5 @@ class IdahoCoverageInventoryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+

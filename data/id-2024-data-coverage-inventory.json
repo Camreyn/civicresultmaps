@@ -3,8 +3,8 @@
   "state": "ID",
   "stateName": "Idaho",
   "electionYear": 2024,
-  "status": "official_county_results_review_eac_turnout_county_geometry_equipment_context_loaded",
-  "summary": "Idaho has official Vote Idaho 2024 county presidential result rows, official Vote Idaho county U.S. House comparison rows, EAC 2024 V2 county turnout fallback rows, Census county geometry, and county equipment context. The loaded review package is county-level only. State-native turnout, precinct/local reporting-unit rows, precinct geometry, 2012/2016/2020 historical baseline rows, and normalized audit/CVR/incident/correction/recount/litigation records remain uncollected.",
+  "status": "official_county_results_review_eac_turnout_county_geometry_equipment_context_historical_artifact_collected",
+  "summary": "Idaho has official Vote Idaho 2024 county presidential result rows, official Vote Idaho county U.S. House comparison rows, EAC 2024 V2 county turnout fallback rows, Census county geometry, county equipment context, and a collected official Idaho SOS 2012/2016 county historical presidential baseline CSV. The active staging importer does not yet emit Idaho historical rows because enabling the existing historicalPresidentialCsv path for the Idaho native branch would require a shared helper/importer change. State-native turnout, precinct/local reporting-unit rows, precinct geometry, active historical baseline display rows, 2020 historical baseline rows, and normalized audit/CVR/incident/correction/recount/litigation records remain uncollected or blocked.",
   "officialSourcePages": [
     "https://sos.idaho.gov/elections-division/election-results/",
     "https://archive.voteidaho.gov/results/2024/general/xml.html",
@@ -24,7 +24,13 @@
       "localArtifact": "data/id-2024-general-president.csv",
       "reportingGrain": "county",
       "parserNormalizationPath": "idahoOfficialCountyXml via scripts/normalize_id_official_results.py and etl/state-configs/id.json certifiedResults",
-      "expectedCounts": { "countyRows": 44, "stateTotal": 904967, "trump": 605246, "harris": 274972, "other": 24749 },
+      "expectedCounts": {
+        "countyRows": 44,
+        "stateTotal": 904967,
+        "trump": 605246,
+        "harris": 274972,
+        "other": 24749
+      },
       "confidence": "loaded_official_with_county_table_fallback",
       "caveats": [
         "The Vote Idaho archive marks the 2024 General Election results official and reports 44 of 44 counties fully reported.",
@@ -39,7 +45,9 @@
       "localArtifact": "data/id-2024-general-us-house.csv",
       "reportingGrain": "county",
       "parserNormalizationPath": "countyComparisonCsv via scripts/normalize_id_official_congressional_results.py and etl/state-configs/id.json reviewCharts",
-      "expectedCounts": { "reviewRows": 44 },
+      "expectedCounts": {
+        "reviewRows": 44
+      },
       "confidence": "loaded_official",
       "caveats": [
         "U.S. House is district-based, not a single statewide comparison contest.",
@@ -54,7 +62,11 @@
       "localArtifact": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv",
       "reportingGrain": "jurisdiction_county",
       "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/id.json turnout",
-      "expectedCounts": { "turnoutRows": 44, "ballotsCast": 917469, "registeredVoters": 1178750 },
+      "expectedCounts": {
+        "turnoutRows": 44,
+        "ballotsCast": 917469,
+        "registeredVoters": 1178750
+      },
       "confidence": "loaded_official_fallback",
       "caveats": [
         "Prefer an Idaho-native turnout or voter-participation artifact if one is collected and reconciled.",
@@ -68,9 +80,13 @@
       "localArtifact": "data/id-counties.geojson",
       "reportingGrain": "county",
       "parserNormalizationPath": "censusTigerwebCountyGeojson via etl/state-configs/id.json",
-      "expectedCounts": { "geometryFeatures": 44 },
+      "expectedCounts": {
+        "geometryFeatures": 44
+      },
       "confidence": "loaded_official",
-      "caveats": ["County geometry supports county map joins only; precinct boundary geometry is not loaded."]
+      "caveats": [
+        "County geometry supports county map joins only; precinct boundary geometry is not loaded."
+      ]
     },
     {
       "id": "id-2024-equipment-context",
@@ -79,32 +95,138 @@
       "localArtifact": "data/verifiedvoting-id-2024-equipment.json; data/id-2024-equipment-context.csv; data/verifiedvoting-id-2024-equipment-areas.geojson",
       "reportingGrain": "county_context",
       "parserNormalizationPath": "verifiedVotingEquipment via admin-source package registry",
-      "expectedCounts": { "equipmentRows": 44 },
+      "expectedCounts": {
+        "equipmentRows": 44
+      },
       "confidence": "loaded_context_only",
-      "caveats": ["Equipment context is not a vote, turnout, audit, CVR, incident, correction, recount, or litigation source and does not prove every precinct in a county used one identical configuration."]
+      "caveats": [
+        "Equipment context is not a vote, turnout, audit, CVR, incident, correction, recount, or litigation source and does not prove every precinct in a county used one identical configuration."
+      ]
+    },
+    {
+      "id": "id-historical-presidential-baseline",
+      "sourceTitle": "Idaho Secretary of State official 2012/2016 General Election county presidential archive tables",
+      "sourceUrl": "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html",
+      "localArtifact": "data/id-historical-presidential-baseline.csv",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "Collected by scripts/collect-id-historical-baseline.py as historicalPresidentialCsv-compatible CSV; not active in ID staging until the shared native importer enables historicalPresidentialCsv for Idaho countyPresidentCsv branches.",
+      "expectedCounts": {
+        "historicalRows": 88,
+        "years": [
+          2012,
+          2016
+        ]
+      },
+      "confidence": "collected_official_partial_not_active_in_staging",
+      "caveats": [
+        "Rows are contextual county historical baselines only, not 2024 certified data.",
+        "The 2020 county historical baseline is not loaded because the official county abstract ZIP contains PDF-only counties that were not text-extractable in this worker environment.",
+        "A secondary 2020 county table was inspected but rejected because it did not reconcile to official Idaho SOS statewide presidential totals.",
+        "Active Idaho staging does not emit these historical rows without a shared importer/helper change, so public historical display remains disabled in this worker PR."
+      ]
     }
   ],
   "sourceFindings": {
-    "stateNativeTurnout": { "status": "not_loaded_eac_fallback_active", "sourceUrl": "https://archive.voteidaho.gov/results/2024/general/turnout.html", "currentArtifact": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv", "requestNeed": "Official Idaho ballots-cast or voter-participation rows with registered-voter denominator, denominator timing, county or precinct grain, and statewide totals suitable for reconciliation before replacing EAC fallback." },
-    "precinctOrLocalReviewRows": { "status": "not_loaded", "loadedReviewGrain": "county", "requestNeed": "Official precinct or local reporting-unit President rows plus same-grain U.S. House or another statewide comparison contest before upgrading advisory coverage below county level." },
-    "precinctBoundaryGeometry": { "status": "not_loaded", "loadedGeometry": { "localArtifact": "data/id-counties.geojson", "reportingGrain": "county" }, "requestNeed": "Official statewide precinct boundary geometry or a precinct-to-county/reporting-unit crosswalk if subcounty map overlays are required." },
-    "historicalBaselines": { "status": "official_source_leads_confirmed_not_loaded", "sourceUrls": ["https://canvass.sos.idaho.gov/", "https://sos.idaho.gov/elections-division/2020-results-county/", "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html", "https://archive.sos.idaho.gov/ELECT/results/2012/General/cnty_USPres.htm"], "targetYears": [2012, 2016, 2020], "caveat": "No 2012, 2016, or 2020 Idaho historical presidential baseline rows are loaded in this pass. The SOS Canvass database and official historical pages identify source paths, but a repeatable historical normalizer and committed source artifacts are still needed before enabling historical baseline rows." },
-    "postElectionAudit": { "status": "not_inventoried_or_normalized", "requestNeed": "Official 2024 Idaho post-election audit selection and outcome artifacts, if published or obtainable, with county/reporting-unit grain and discrepancy fields." },
-    "cvrAvailability": { "status": "not_loaded", "requestNeed": "Official county or SOS CVR availability records, public-records request responses, or documented nonavailability notes before claiming CVR coverage." },
-    "incidentsCorrectionsRecountsLitigation": { "status": "not_loaded", "requestNeed": "Official incident, correction, recount, election-contest, or litigation records for the 2024 general election, normalized only after authoritative source collection." }
+    "stateNativeTurnout": {
+      "status": "not_loaded_eac_fallback_active",
+      "sourceUrl": "https://archive.voteidaho.gov/results/2024/general/turnout.html",
+      "currentArtifact": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv",
+      "requestNeed": "Official Idaho ballots-cast or voter-participation rows with registered-voter denominator, denominator timing, county or precinct grain, and statewide totals suitable for reconciliation before replacing EAC fallback."
+    },
+    "precinctOrLocalReviewRows": {
+      "status": "not_loaded",
+      "loadedReviewGrain": "county",
+      "requestNeed": "Official precinct or local reporting-unit President rows plus same-grain U.S. House or another statewide comparison contest before upgrading advisory coverage below county level."
+    },
+    "precinctBoundaryGeometry": {
+      "status": "not_loaded",
+      "loadedGeometry": {
+        "localArtifact": "data/id-counties.geojson",
+        "reportingGrain": "county"
+      },
+      "requestNeed": "Official statewide precinct boundary geometry or a precinct-to-county/reporting-unit crosswalk if subcounty map overlays are required."
+    },
+    "historicalBaselines": {
+      "status": "collected_2012_2016_not_active_2020_blocked",
+      "sourceUrls": [
+        "https://archive.sos.idaho.gov/ELECT/results/2012/General/cnty_USPres.htm",
+        "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html",
+        "https://sos.idaho.gov/elections-division/2020-results-statewide/",
+        "https://sos.idaho.gov/ELECT/results/2020/General/2020_General_Abstracts.zip",
+        "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Idaho"
+      ],
+      "loadedYears": [
+        2012,
+        2016
+      ],
+      "targetYears": [
+        2012,
+        2016,
+        2020
+      ],
+      "loadedArtifact": "data/id-historical-presidential-baseline.csv",
+      "caveat": "Official 2012 and 2016 county presidential archive tables are collected into data/id-historical-presidential-baseline.csv. Active Idaho staging remains historical-disabled because enabling the CSV for the existing Idaho native branch requires a shared importer/helper change. The 2020 official statewide page is loaded as a cross-check and the official county abstract ZIP is retained, but 2020 county rows remain blocked because six official county abstracts are PDF-only without text extraction in this environment; a secondary county table was rejected because its statewide total did not reconcile to the official SOS statewide presidential total."
+    },
+    "postElectionAudit": {
+      "status": "not_inventoried_or_normalized",
+      "requestNeed": "Official 2024 Idaho post-election audit selection and outcome artifacts, if published or obtainable, with county/reporting-unit grain and discrepancy fields."
+    },
+    "cvrAvailability": {
+      "status": "not_loaded",
+      "requestNeed": "Official county or SOS CVR availability records, public-records request responses, or documented nonavailability notes before claiming CVR coverage."
+    },
+    "incidentsCorrectionsRecountsLitigation": {
+      "status": "not_loaded",
+      "requestNeed": "Official incident, correction, recount, election-contest, or litigation records for the 2024 general election, normalized only after authoritative source collection."
+    }
   },
   "displayApiCaveats": {
-    "publicSourceRoutesChecked": ["/api/sources?state=ID&year=2024", "/api/coverage?state=ID&year=2024", "/api/native-source-packages?state=ID&year=2024", "/api/turnout-sources?state=ID&year=2024", "/api/admin-sources?state=ID&year=2024"],
+    "publicSourceRoutesChecked": [
+      "/api/sources?state=ID&year=2024",
+      "/api/coverage?state=ID&year=2024",
+      "/api/native-source-packages?state=ID&year=2024",
+      "/api/turnout-sources?state=ID&year=2024",
+      "/api/admin-sources?state=ID&year=2024"
+    ],
     "advisoryUse": "Idaho advisory indicators use county-level official President-versus-U.S.-House review rows. U.S. House is district-based, and the review rows are screening/context signals only, not claims of fraud or misconduct.",
-    "productionPromotion": "Not authorized from worker branch; no native:promote or native:counts run."
+    "productionPromotion": "Not authorized from worker branch; no native:promote or native:counts run.",
+    "historicalUse": "Collected 2012/2016 historical CSV is not active in Idaho staging or public historical display until the shared native importer path is updated outside this state-scoped worker PR."
   },
   "gaps": [
-    { "artifact": "state_native_turnout_denominator", "status": "not_loaded_eac_fallback_active", "remainingRisk": "EAC fallback turnout is official but not Idaho-native and may not match Vote Idaho turnout semantics." },
-    { "artifact": "precinct_or_local_review_rows", "status": "not_loaded", "remainingRisk": "Current advisory coverage is county-level only." },
-    { "artifact": "precinct_boundary_geometry", "status": "not_loaded", "remainingRisk": "Public map joins remain county geometry only." },
-    { "artifact": "historical_presidential_baselines_2012_2016_2020", "status": "official_source_leads_confirmed_not_loaded", "remainingRisk": "Historical context remains disabled until official artifacts are collected and normalized." },
-    { "artifact": "post_election_audit_rows", "status": "not_loaded", "remainingRisk": "No normalized audit selection/outcome rows are available." },
-    { "artifact": "cvr_availability_rows", "status": "not_loaded", "remainingRisk": "No CVR availability table or CVR dataset is available." },
-    { "artifact": "incident_correction_recount_litigation_rows", "status": "not_loaded", "remainingRisk": "Official records remain request/source-collection items." }
+    {
+      "artifact": "state_native_turnout_denominator",
+      "status": "not_loaded_eac_fallback_active",
+      "remainingRisk": "EAC fallback turnout is official but not Idaho-native and may not match Vote Idaho turnout semantics."
+    },
+    {
+      "artifact": "precinct_or_local_review_rows",
+      "status": "not_loaded",
+      "remainingRisk": "Current advisory coverage is county-level only."
+    },
+    {
+      "artifact": "precinct_boundary_geometry",
+      "status": "not_loaded",
+      "remainingRisk": "Public map joins remain county geometry only."
+    },
+    {
+      "artifact": "post_election_audit_rows",
+      "status": "not_loaded",
+      "remainingRisk": "No normalized audit selection/outcome rows are available."
+    },
+    {
+      "artifact": "cvr_availability_rows",
+      "status": "not_loaded",
+      "remainingRisk": "No CVR availability table or CVR dataset is available."
+    },
+    {
+      "artifact": "incident_correction_recount_litigation_rows",
+      "status": "not_loaded",
+      "remainingRisk": "Official records remain request/source-collection items."
+    },
+    {
+      "artifact": "active_historical_baselines_and_2020_county_rows",
+      "status": "shared_helper_needed_and_2020_blocked",
+      "remainingRisk": "Historical CSV collection has official 2012/2016 county rows only, but active staging/display remains disabled pending a shared importer/helper change. 2020 needs script-readable official county rows or reviewed PDF/OCR extraction before loading."
+    }
   ]
 }
