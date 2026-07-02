@@ -1188,16 +1188,47 @@
         "expectedJurisdictions": 33
       },
       "audit": {
-        "status": "needs_data",
-        "why": "New Mexico 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_policy_and_request_path",
+        "sourceDocumentId": "nm-sos-election-security-risk-limiting-audit-lead",
+        "sourceUrl": "https://www.sos.nm.gov/voting-and-elections/how-we-secure-your-vote/",
+        "relatedSourceUrls": [
+          "https://www.sos.nm.gov/sos-archive/election-audits/",
+          "https://www.sos.nm.gov/legislation-and-lobbying/legal-resources/ipra-request-information/"
+        ],
+        "localArtifact": "data/nm-2024-data-coverage-inventory.json",
+        "why": "New Mexico SOS election-security materials document post-election canvass/audit practice and risk-limiting audits, but 2024 audit selections, samples, discrepancies, and outcome rows are not normalized.",
+        "caveat": "Source lead and request path only; no 2024 post-election audit result rows are loaded for New Mexico."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "New Mexico 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "request_path",
+        "sourceDocumentId": "nm-sos-voter-data-and-ipra-paths",
+        "sourceUrl": "https://www.sos.nm.gov/voting-and-elections/data-and-maps/voter-data-information/",
+        "relatedSourceUrls": [
+          "https://www.sos.nm.gov/legislation-and-lobbying/legal-resources/ipra-request-information/"
+        ],
+        "localArtifact": "data/nm-2024-data-coverage-inventory.json",
+        "why": "The SOS voter-data and IPRA pages are documented as request paths for voter-history, CVR availability, ballot-level exports, or related records. No New Mexico CVR availability table or CVR dataset is loaded.",
+        "caveat": "Request-path inventory only; no CVR dataset, ballot-image record, or county CVR availability table is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "New Mexico 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "results_recount_and_ipra_request_path",
+        "sourceDocumentId": "nm-sos-2024-results-recount-ipra-paths",
+        "sourceUrl": "https://electionresults.sos.nm.gov/ResultsSW.aspx?eid=2882&type=RECOUNT",
+        "relatedSourceUrls": [
+          "https://www.sos.nm.gov/legislation-and-lobbying/legal-resources/ipra-request-information/"
+        ],
+        "localArtifact": "data/nm-2024-data-coverage-inventory.json",
+        "why": "The 2024 General results system reports no possible recounts for the current page, and the SOS IPRA path is documented for incident, correction, recount, litigation, custody, tabulator-log, or related records. No row-level records are normalized.",
+        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, complaint-disposition, or litigation dataset."
+      },
+      "inventory": {
+        "status": "candidate",
+        "localArtifact": "data/nm-2024-data-coverage-inventory.json",
+        "requestMatrixArtifact": "data/nm-2024-source-request-matrix.tsv",
+        "caveat": "Inventory only; not a normalized audit, CVR, incident, correction, recount, litigation, custody, or tabulator-log package."
       }
     },
     {

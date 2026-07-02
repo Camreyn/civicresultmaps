@@ -1489,30 +1489,51 @@
       "stateName": "New Mexico",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_historical_geometry_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
+      "reportingGrain": "precinct_county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official election results dashboard",
+        "CSV media/results exports",
+        "turnout details table/export",
+        "GIS clearinghouse shapefiles",
+        "EAC fallback turnout CSV"
       ],
       "sourceUrls": [
-        "https://www.sos.nm.gov/voting-and-elections/election-results/"
+        "https://www.sos.nm.gov/sos-archive/election-results-archive/2024-election-results/",
+        "https://electionresults.sos.nm.gov/Default.aspx?eid=2882",
+        "https://electionresults.sos.nm.gov/ResultsMedia.aspx?eid=2882",
+        "https://electionresults.sos.nm.gov/VoterTurnoutDetails.aspx?eid=2882",
+        "https://www.sos.nm.gov/sos-archive/maps-archive/gis-voting-district-data-archive/"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://electionresults.sos.nm.gov/resultsSW.aspx?eid=2882&map=CTY&type=FED",
+        "https://electionresults.sos.nm.gov/resultsSW.aspx?eid=2882&map=CTY&type=SW"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official statewide President totals and county drilldowns",
+        "official U.S. Senate same-grain comparison lead",
+        "official CSV media/results export path",
+        "official precinct turnout details with ballots cast and eligible voters",
+        "county geometry and official GIS clearinghouse leads",
+        "county equipment context from Verified Voting Verifier",
+        "official 2020, 2016, and 2012 historical result source leads",
+        "official election audit, recount, voter-data, and IPRA request paths"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "committed official New Mexico result CSV artifacts",
+        "parser-backed certified result rows",
+        "parser-backed President-versus-U.S.-Senate review rows",
+        "state-native turnout rows reconciled with denominator timing",
+        "precinct boundary geometry or result-key crosswalk",
+        "normalized official historical baseline rows",
+        "normalized audit, CVR availability, recount, incident, correction, litigation, custody, and tabulator-log rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official New Mexico result exports and local reporting-unit availability."
+      "parserStatus": "data/nm-2024-data-coverage-inventory.json and data/nm-2024-source-request-matrix.tsv document the official New Mexico SOS results dashboard, media/results CSV export path, U.S. Senate comparison lead, state-native turnout details lead, GIS clearinghouse, historical archives, and admin request paths; active etl/state-configs/nm.json remains EAC turnout-only with no result or review parser loaded",
+      "manualReviewBurden": "medium",
+      "confidence": "candidate_parser_ready",
+      "caveats": "The official SOS dashboard confirms statewide totals and CSV export paths, but no New Mexico result/review CSV artifact is committed and no parser is loaded. The SOS turnout page reports eligible voters, while the active EAC fallback uses registered voters, so turnout replacement needs denominator review.",
+      "nextAction": "Collect the official 2024 SOS media/results CSV exports for President and U.S. Senate, implement a New Mexico results parser, reconcile turnout details against EAC fallback, and collect precinct geometry/crosswalk plus historical/admin artifacts before adding NM to completed native states."
     },
     {
       "state": "NV",
