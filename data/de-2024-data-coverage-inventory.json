@@ -1,0 +1,157 @@
+﻿{
+  "state": "DE",
+  "stateName": "Delaware",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "checkedBy": "Wave 14 Delaware state-data worker",
+  "productionChecked": false,
+  "repoDrift": [
+    {
+      "path": "docs/developer/index.md",
+      "status": "missing_on_current_main",
+      "note": "AGENTS.md lists this as a first read, but the file is absent in this worktree; treated as repo drift rather than a blocker."
+    }
+  ],
+  "currentEtLStatus": {
+    "configFile": "etl/state-configs/de.json",
+    "turnoutOnly": true,
+    "activeParser": "eacTurnoutCsv",
+    "activeLocalArtifact": "data/eac-2024-state-turnout/de-2024-eac-turnout.csv",
+    "expectedRows": {
+      "resultRows": 0,
+      "reviewRows": 0,
+      "turnoutRows": 3,
+      "eacBallotsCast": 514367,
+      "eacRegisteredVoters": 788441
+    },
+    "advisoryStatus": "No Delaware result or review rows are loaded, so advisory indicators should remain zero until official same-grain President and comparison rows are normalized."
+  },
+  "officialSourceFindings": {
+    "certifiedResults": {
+      "status": "official_digital_report_identified_parser_needed",
+      "sourceAuthority": "Delaware Department of Elections",
+      "sourceUrls": [
+        "https://elections.delaware.gov/elections/election_archive.html",
+        "https://elections.delaware.gov/reports/GE2024.html",
+        "https://app.powerbigov.us/view?r=eyJrIjoiYmIwM2I3OWUtYjQxNC00YzYxLWEzY2MtY2MwMTIwMjg4NWFhIiwidCI6IjhjMDllNTY5LTUxYzUtNGRlZS1hYmIyLThiOTljMzJhNDM5NiJ9",
+        "https://elections.delaware.gov/elections/resultsarchive/elect24/elect24_general/GE2024_Official_WriteInVotes_Statewide.pdf"
+      ],
+      "reportingGrain": "county_or_election_district_from_report_surface_unconfirmed_for_parser",
+      "availableEvidence": [
+        "The official archive lists the November 5, 2024 General Election Results Report, Full Report Power BI link, and official write-in votes PDF.",
+        "The public GE2024.html route is official but returned only shell HTML from scripted inspection in this environment.",
+        "Guessed 2024 raw text paths matching older Delaware archive patterns returned 404 for election.txt, stwres.txt, stwoff_kns.txt, stwoff_kwns.txt, and stwgrid.txt."
+      ],
+      "parserNeeded": "Power BI/export or report-table collector that can preserve certified county and, if available, election-district President rows.",
+      "caveat": "Do not load secondary county totals while the official 2024 DOE report and Power BI paths remain the authoritative source leads."
+    },
+    "sameGrainComparisonContest": {
+      "status": "official_report_lead_identified_parser_needed",
+      "preferredContest": "U.S. Senate, with U.S. House or Governor as fallback same-grain statewide comparisons if Senate rows are not exportable.",
+      "sourceUrls": [
+        "https://elections.delaware.gov/reports/GE2024.html",
+        "https://app.powerbigov.us/view?r=eyJrIjoiYmIwM2I3OWUtYjQxNC00YzYxLWEzY2MtY2MwMTIwMjg4NWFhIiwidCI6IjhjMDllNTY5LTUxYzUtNGRlZS1hYmIyLThiOTljMzJhNDM5NiJ9"
+      ],
+      "missing": [
+        "machine-readable same-grain President and U.S. Senate rows",
+        "documented export path or public-records response for election-district rows"
+      ],
+      "caveat": "County-level comparison rows alone would be directional screening context; election-district rows are preferred for maximum advisory accuracy."
+    },
+    "stateNativeTurnout": {
+      "status": "official_state_native_turnout_lead_identified_not_loaded",
+      "sourceAuthority": "Delaware Department of Elections",
+      "sourceUrls": [
+        "https://elections.delaware.gov/candidates/regtotals.html",
+        "https://elections.delaware.gov/voter/registrationtotals/regtotals2024.html",
+        "https://elections.delaware.gov/voter/registrationtotals/reports/agprpt_2024.txt",
+        "https://elections.delaware.gov/voter/registrationtotals/pdfs/vrt_PP20241101.csv"
+      ],
+      "reportingGrain": "election_district_with_county_and_state_summary_rows",
+      "observedOfficialTotals": {
+        "ageGroupPartyReportRegisteredVoters": 788864,
+        "ageGroupPartyReportVoted": 518086,
+        "november1PartyCsvRegisteredVoters": 790955,
+        "eacFallbackRegisteredVoters": 788441,
+        "eacFallbackBallotsCast": 514367,
+        "ageGroupPartyMinusEacRegisteredVoters": 423,
+        "ageGroupPartyVotedMinusEacBallotsCast": 3719
+      },
+      "parserNeeded": "Fixed-width/text normalizer for AGP i. Total rows and county/state summary sections, plus reconciliation to EAC fallback and certified result totals before replacing active turnout.",
+      "caveat": "The DOE age-group report includes registered and voted counts, but semantics and timing differ from the active EAC jurisdiction fallback. Keep EAC active until the parser and reconciliation rules are reviewed."
+    },
+    "geometryAndCrosswalk": {
+      "status": "official_election_district_geometry_lead_identified_not_loaded",
+      "sourceAuthority": "Delaware Department of Elections; Delaware FirstMap",
+      "sourceUrls": [
+        "https://elections.delaware.gov/maps/",
+        "https://de-firstmap-delaware.hub.arcgis.com/pages/data",
+        "https://de-firstmap-delaware.hub.arcgis.com/maps/delaware::election-districts-1",
+        "https://elections.delaware.gov/maps/pdfs/DEDistrictStructure_2022_2032_v4.xlsx"
+      ],
+      "needed": [
+        "downloadable election-district geometry or FeatureServer layer URL",
+        "crosswalk from DOE election-district labels to 2024 result/turnout reporting units",
+        "county geometry remains sufficient only for current EAC turnout-only staging"
+      ]
+    },
+    "historicalBaselines": {
+      "status": "official_archive_leads_identified_not_loaded",
+      "targetYears": [2020, 2016, 2012],
+      "sourceUrls": [
+        "https://elections.delaware.gov/reports/GE2020.html",
+        "https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/election.txt",
+        "https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwres.txt",
+        "https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwoff_kns.txt",
+        "https://elections.delaware.gov/elections/resultsarchive/elect12/elect12_general/data/election.txt",
+        "https://elections.delaware.gov/elections/resultsarchive/elect12/elect12_general/data/stwres.txt",
+        "https://elections.delaware.gov/elections/resultsarchive/elect12/elect12_general/data/stwoff_kns.txt"
+      ],
+      "parserNeeded": "Historical Delaware archive text parser for 2016 and 2012 plus a 2020 report/Power BI collector or request-produced export.",
+      "caveat": "Historical baseline rows are not loaded; official archive leads should be normalized before secondary sources are considered."
+    },
+    "auditRecountCvrIncidentCorrectionLitigation": {
+      "status": "request_paths_documented_not_loaded",
+      "sourceUrls": [
+        "https://elections.delaware.gov/public/foia/foia.html",
+        "https://elections.delaware.gov/elections/election_archive.html"
+      ],
+      "confirmedContext": [
+        "The archive exposes a 2022 Representative District 21 recount order, confirming that recount artifacts can appear in the DOE archive when published.",
+        "No 2024 general recount order, post-election audit outcome, CVR availability file, incident log, correction log, or litigation package was identified in public DOE archive links during this pass."
+      ],
+      "nextAction": "Use DOE FOIA/request channels for 2024 post-election audit materials, recount/correction/incident records, CVR availability/exportability, and any litigation/certification correspondence."
+    },
+    "equipmentContext": {
+      "status": "supplemental_context_loaded",
+      "sourceUrls": [
+        "https://elections.delaware.gov/voter/technology.html",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/10"
+      ],
+      "localArtifacts": [
+        "data/verifiedvoting-de-2024-equipment.json",
+        "data/de-2024-equipment-context.csv"
+      ],
+      "caveat": "Equipment context is source-linked administration metadata only; it is not vote, turnout, audit, incident, or proof-of-uniform-precinct evidence."
+    }
+  },
+  "sourceAcquisitionDecision": {
+    "tier": "tier_5_digital_inconsistent",
+    "reason": "Official 2024 results are published through DOE report and Power BI surfaces, while older archive raw text paths exist for 2016/2012 but analogous 2024 raw paths returned 404. The state has official digital leads, but a stable bulk result export or parser contract was not confirmed.",
+    "manualReviewBurden": "medium"
+  },
+  "websiteAndApiDisplayPath": {
+    "currentPath": "Current Delaware staging/API path is turnout-only EAC fallback via etl/state-configs/de.json.",
+    "productionChecked": false,
+    "notCheckedReason": "Production promotion and production API verification were not authorized for this worker branch."
+  },
+  "requestMatrixArtifact": "data/de-2024-source-request-matrix.tsv",
+  "remainingRisks": [
+    "No native Delaware certified President result rows are loaded yet.",
+    "No same-grain President-versus-comparison review rows are loaded, so advisory indicators should be zero.",
+    "State-native DOE turnout/voted counts differ from EAC fallback totals and need parser/reconciliation review before replacement.",
+    "Election-district geometry and result-row crosswalks are source leads only.",
+    "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
+    "All advisory language must remain source-review context, not evidence of fraud or misconduct."
+  ]
+}
