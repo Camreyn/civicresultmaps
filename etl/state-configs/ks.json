@@ -72,6 +72,72 @@
       "status": "candidate"
     },
     {
+      "id": "ks-2012-general-election-results",
+      "category": "Official historical certified vote totals PDF",
+      "url": "https://sos.ks.gov/elections/12elec/2012_General_Election_Results.pdf",
+      "localFile": "data/ks-2012-general-election-results.pdf",
+      "parser": "officialCanvassPdfReference",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2012 General Election results PDF downloaded July 2, 2026.",
+      "confidence": "Official statewide certified vote-total PDF retained as 2012 presidential provenance. The PDF did not expose script-readable county presidential rows in this pass; 2012 county baseline rows are secondary contextual rows with an explicit reconciliation caveat.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-2016-general-election-president-precinct",
+      "category": "Official historical presidential precinct result rows",
+      "url": "https://sos.ks.gov/elections/16elec/2016_General_Election_President_Precinct_Level_Results.xlsx",
+      "localFile": "data/ks-2016-general-election-president-precinct-level-results.xlsx",
+      "parser": "kansasHistoricalPresidentPrecinctXlsxSource",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2016 General Election President precinct workbook downloaded July 2, 2026.",
+      "confidence": "Official workbook supplies 101 county aggregates. Johnson, Sedgwick, Shawnee, and Wyandotte are absent from this workbook and are filled from secondary contextual county rows, with statewide reconciliation to the official 2016 PDF.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-2016-general-election-official-results",
+      "category": "Official historical certified vote totals PDF",
+      "url": "https://sos.ks.gov/elections/16elec/2016_General_Election_Official_Results.pdf",
+      "localFile": "data/ks-2016-general-election-official-results.pdf",
+      "parser": "officialCanvassPdfReference",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2016 General Election official results PDF downloaded July 2, 2026.",
+      "confidence": "Official statewide certified vote-total PDF retained as reconciliation provenance for 2016 historical baseline rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-2020-general-election-president-precinct",
+      "category": "Official historical presidential precinct result rows",
+      "url": "https://sos.ks.gov/elections/20elec/2020_General_Election_President_results_by_precinct.xlsx",
+      "localFile": "data/ks-2020-general-election-president-results-by-precinct.xlsx",
+      "parser": "kansasHistoricalPresidentPrecinctXlsxSource",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2020 General Election President precinct workbook downloaded July 2, 2026.",
+      "confidence": "Official workbook supplies 101 long-form county aggregates plus Johnson, Sedgwick, Shawnee, and Wyandotte wide county tabs. 2020 rows are normalized to the certified candidate set in the official vote-total PDF.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-2020-general-official-vote-totals",
+      "category": "Official historical certified vote totals PDF",
+      "url": "https://sos.ks.gov/elections/20elec/2020_General_Official_Vote_Totals.pdf",
+      "localFile": "data/ks-2020-general-official-vote-totals.pdf",
+      "parser": "officialCanvassPdfReference",
+      "authority": "Kansas Secretary of State",
+      "timestampBasis": "Official Kansas Secretary of State 2020 General Election official vote totals PDF downloaded July 2, 2026.",
+      "confidence": "Official statewide certified vote-total PDF retained as reconciliation provenance for 2020 historical baseline rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "ks-historical-presidential-baseline",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://sos.ks.gov/elections/election-results.html",
+      "localFile": "data/ks-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Kansas Secretary of State; secondary county tables where official county rows were not script-readable or absent",
+      "timestampBasis": "Normalized by scripts/collect-ks-historical-baseline.mjs from Kansas SOS 2016 and 2020 official presidential workbooks, Kansas SOS 2012/2016/2020 official statewide PDFs, and secondary county tables for 2012 plus four missing 2016 counties.",
+      "confidence": "Contextual county historical baseline. 2020 rows are official Kansas SOS county aggregates. 2016 rows are mostly official with four secondary county rows that reconcile to the SOS statewide PDF. 2012 rows are secondary county context and do not reconcile to the SOS statewide PDF; keep caveat visible.",
+      "status": "loaded"
+    },
+    {
       "id": "ks-2024-data-coverage-inventory",
       "category": "Kansas source coverage and remaining-gap inventory",
       "url": "https://sos.ks.gov/elections/elections-statistics.html",
@@ -100,14 +166,15 @@
   "expected": {
     "jurisdictions": 105,
     "resultRows": 105,
-    "sources": 7,
+    "sources": 13,
     "geometryFeatures": 105,
     "stateTotal": 1327591,
     "trump": 758802,
     "harris": 544853,
     "other": 23936,
     "reviewRows": 3739,
-    "turnoutRows": 105
+    "turnoutRows": 105,
+    "historicalBaselineRows": 315
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -115,7 +182,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "kansasPresidentialResultsXlsx",
@@ -135,5 +202,18 @@
     "comparisonContest": "United States House of Representatives",
     "coverageMode": "presidentVsUSHouse",
     "warning": "Kansas review rows use official Kansas Secretary of State precinct presidential rows and President-versus-U.S.-House same-row comparisons. The U.S. House workbook stores Johnson, Sedgwick, Shawnee, and Wyandotte in separate wide-format tabs; three nonzero presidential local rows do not have a matching House comparison and are kept as vote-share-only rows. U.S. House is district-based, so these are advisory screening inputs, not confirmed findings."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ks-historical-presidential-baseline",
+    "warning": "Kansas historical baseline rows are county-level context for 2012, 2016, and 2020. 2020 rows are normalized from official Kansas Secretary of State presidential workbooks and certified PDF totals. 2016 rows use the official SOS presidential workbook for 101 counties plus secondary contextual county rows for Johnson, Sedgwick, Shawnee, and Wyandotte because those counties are absent from the workbook; statewide totals reconcile to the official 2016 PDF. The official 2012 SOS PDF did not expose county presidential rows in this pass, so 2012 county rows use secondary contextual tables and do not reconcile to the SOS statewide certified total. Use all historical rows as contextual baselines only, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 315,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    }
   }
 }
