@@ -148,3 +148,7 @@ California now uses official Secretary of State 2024 General Election voter part
 ## Massachusetts Update
 
 Massachusetts currently uses official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ma-2024-eac-turnout.csv`, totaling 351 jurisdiction rows, 3,512,930 ballots cast, and 5,142,343 registered voters. Wave 11 confirmed the official Massachusetts Secretary turnout statistics page reports the same 2024 statewide registered-voter and total-votes-cast figures, so the statewide denominator is cross-checked. The state page is not a local turnout replacement because it does not provide the city/town, ward, or precinct rows needed to replace the active EAC fallback package. See `data/ma-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
+
+## Louisiana Update
+
+Louisiana currently uses official EAC 2024 V2 parish/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/la-2024-eac-turnout.csv`, totaling 64 rows, 2,021,588 ballots cast, and 3,046,376 registered voters. Native Louisiana result and review rows are loaded from official Louisiana Secretary of State precinct CSV artifacts, but no Louisiana-native ballots-cast plus registered-voter denominator package was loaded in this pass. Keep EAC fallback active until a Secretary of State or parish denominator artifact is collected, normalized, and reconciled. See `data/la-2024-data-coverage-inventory.json` for the current source and caveat record.

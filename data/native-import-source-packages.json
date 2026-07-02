@@ -17,6 +17,7 @@
     "IL",
     "KS",
     "KY",
+    "LA",
     "MD",
     "MI",
     "MN",
@@ -1221,6 +1222,83 @@
         "Historical baselines are county-level context only; the 2020 PD43+ county rows sum one non-D/R vote above the statewide summary line and the collector preserves official displayed county rows.",
         "County geometry is loaded, but no official precinct/ward/municipal geometry or reporting-unit crosswalk is loaded.",
         "The coverage inventory records audit/CVR/log/L&A/custody/incident/recount/litigation request paths only; normalized administration rows are not loaded."
+      ]
+    },
+    {
+      "state": "LA",
+      "name": "Louisiana",
+      "priority": 15,
+      "nativeReadiness": "complete_parish_map_precinct_review_eac_turnout_admin_context_inventory",
+      "authority": "Louisiana Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
+      "configFile": "etl/state-configs/la.json",
+      "legacyReferenceBundle": "data/la-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Louisiana Secretary of State official 2024 general election precinct CSV results",
+          "sourceUrl": "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential",
+          "localFile": "data/la-2024-general-election-results",
+          "parserHint": "louisianaSosPrecinctCsvDirectory aggregates official precinct/vote-mode President CSV rows to 64 parish result rows and reconciles to 2,006,975 presidential votes."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Louisiana Secretary of State official 2024 general election precinct CSV results, U.S. House contests",
+          "sourceUrl": "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential",
+          "localFile": "data/la-2024-general-election-results",
+          "level": "precinct_vote_mode",
+          "comparisonContest": "U.S. House",
+          "parserHint": "louisianaSosPrecinctCsvDirectory pairs President rows with U.S. House rows where parish, ward, precinct, and vote-mode keys align; district/candidate effects are caveated in reviewCharts."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/la-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb parish geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/la-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Louisiana 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://voterportal.sos.la.gov/static/",
+          "localFile": "data/la-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded SOS/EAC/Census/equipment artifacts and remaining official-source request paths; no normalized administration rows are loaded beyond equipment context."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Louisiana 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/22",
+          "localFile": "data/la-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 64,
+        "geometryFeatures": 64,
+        "stateTotal": 2006975,
+        "trump": 1208505,
+        "harris": 766870,
+        "other": 31600,
+        "localReviewRows": 3885,
+        "turnoutRows": 64
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_precinct_vote_mode",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      },
+      "caveats": [
+        "Louisiana uses parishes rather than counties; package fields named countyRows/countyBoundary represent parish rows and parish geometry for validator compatibility.",
+        "U.S. House is district-based and candidate-specific, so review rows are advisory source-review context rather than same-office statewide comparison rows.",
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a state-native Louisiana turnout and registration denominator artifact is collected.",
+        "Parish geometry is loaded; precinct boundary geometry or precinct-to-parish crosswalks are not loaded.",
+        "Equipment context is loaded from Verified Voting as supplemental administration metadata; normalized official audit/recount/CVR/incident/correction/litigation rows are not loaded.",
+        "Official 2012, 2016, and 2020 historical baseline rows are not loaded; data/la-2024-data-coverage-inventory.json records the remaining official-source need."
       ]
     }
   ],

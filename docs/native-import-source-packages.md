@@ -397,3 +397,19 @@ Expected validation: 62 county result rows, 62 county geometry features, 9,753 s
 Expected validation: 58 county result rows, 58 county geometry features, 58 county review rows, 58 county turnout rows, 174 historical baseline rows, 15,865,475 presidential votes, 9,276,179 Harris votes, 6,081,697 Trump votes, and 507,599 other presidential votes.
 
 Caveats: review rows are county-level President-versus-U.S.-Senate full-term comparisons, not precinct or city/local scatter plots. The SOS turnout denominator is the 15-day Report of Registration and excludes later Same Day Voter Registration updates. County geometry is loaded; precinct geometry and normalized audit/CVR/incident/correction/recount/litigation rows are not loaded. Current advisory rows are public-interest screening inputs only, not findings.
+
+## Louisiana Wave 12 Update
+
+- Config: `etl/state-configs/la.json`
+- Authority: Louisiana Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- Parish results source: `data/la-2024-general-election-results`, parsed from official Louisiana SOS static precinct CSV rows
+- Local review source: `data/la-2024-general-election-results`
+- Comparison contest: U.S. House by district, matched at parish/ward/precinct/vote-mode keys where available
+- Turnout source: EAC 2024 parish/jurisdiction fallback rows at `data/eac-2024-state-turnout/la-2024-eac-turnout.csv`
+- Parish boundary: `data/la-counties.geojson`
+- Coverage/admin inventory: `data/la-2024-data-coverage-inventory.json`
+- Equipment context: `data/la-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation: 64 parish result rows, 64 parish geometry features, 3,885 precinct/vote-mode review rows, 64 EAC fallback turnout rows, 2,006,975 presidential votes, 1,208,505 Trump votes, 766,870 Harris votes, and 31,600 other presidential votes.
+
+Caveats: Louisiana uses parishes rather than counties, and current map joins are parish-level. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context rather than same-office statewide comparison rows. State-native turnout, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized official audit/CVR/incident/correction/recount/litigation rows remain source-collection gaps. Current advisory rows are public-interest screening inputs only, not findings.
