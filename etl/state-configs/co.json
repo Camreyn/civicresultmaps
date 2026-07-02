@@ -16,6 +16,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "co-2024-data-coverage-inventory",
+      "category": "Colorado 2024 official source coverage inventory and request matrix",
+      "url": "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
+      "localFile": "data/co-2024-data-coverage-inventory.json; data/co-2024-source-request-matrix.tsv",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Colorado Secretary of State; Colorado county election offices; U.S. Census Bureau; Verified Voting",
+      "timestampBasis": "Wave 14 source coverage inventory checked July 2, 2026; official Clarity detail.xml timestamp 11/25/2025 1:45:46 PM MST.",
+      "confidence": "Inventory only. Official Colorado Clarity detailxml.zip endpoint is confirmed for county President, county CU Regent at-large comparison, and county turnout leads, but active CO ETL remains EAC turnout-only until a parser and denominator review are added.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -24,7 +35,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Colorado turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Colorado turnout rows still use EAC 2024 V2 county/jurisdiction fallback rows. Wave 14 confirmed the official Colorado Clarity detail XML turnout lead, but it is not active until totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
     "warningRequired": false,
     "expected": {
       "rowCount": 64,
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 64,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,

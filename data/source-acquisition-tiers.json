@@ -280,30 +280,51 @@
       "stateName": "Colorado",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_geometry_equipment_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official Clarity detail XML ZIP endpoint",
+        "official SOS Abstract of Votes Cast source path",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON",
+        "Verified Voting equipment context"
       ],
       "sourceUrls": [
-        "https://www.sos.state.co.us/pubs/elections/Results/Abstract/"
+        "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
+        "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
+        "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+        "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
+        "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
+        "https://www.sos.state.co.us/pubs/info_center/recordsRequests.html"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals from Clarity detail XML endpoint",
+        "same-grain county CU Regent at-large comparison lead from the same endpoint",
+        "official county turnout lead from Clarity ElectionVoterTurnout rows",
+        "EAC fallback turnout rows currently loaded in active ETL",
+        "county geometry",
+        "county equipment context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "parser-backed native CO result/review/turnout package",
+        "precinct or local reporting-unit President rows",
+        "same-grain precinct or local comparison contest rows",
+        "precinct boundary geometry or reporting-unit crosswalk",
+        "official 2012/2016/2020 historical baselines normalized into ETL",
+        "normalized official audit, recount, CVR availability, incident, correction, litigation, custody, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Colorado abstract/result exports and local reporting-unit availability."
+      "parserStatus": "data/co-2024-data-coverage-inventory.json documents the official Colorado Clarity detailxml.zip endpoint and request matrix; active etl/state-configs/co.json remains EAC turnout-only with no result or review parser loaded",
+      "manualReviewBurden": "medium",
+      "confidence": "candidate_confirmed_endpoint",
+      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Colorado had no 2024 U.S. Senate race; the preferred same-grain comparison lead is county-level CU Regent at-large. Do not replace EAC fallback turnout until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
+      "nextAction": "Use data/co-2024-data-coverage-inventory.json and data/co-2024-source-request-matrix.tsv to collect/parser-load official county President, county Regent at-large comparison, reviewed state-native turnout, official historical baselines, precinct/local rows or CVR aggregates, precinct geometry/crosswalks, and audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "CT",
