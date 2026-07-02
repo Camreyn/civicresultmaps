@@ -570,3 +570,16 @@ HI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`
 - Geometry/admin context: county geometry lead is Census TIGERweb; official precinct polling-place/crosswalk source, post-election audit report, recount page, county auditor request paths, CVR availability, incident/correction/litigation rows, and official equipment context remain source/request items
 
 ND remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native result or advisory review rows are loaded. Current ND advisory indicators should remain zero until official President plus same-grain comparison rows are collected, parsed, and reviewed. This is source-coverage context only, not evidence of fraud or misconduct.
+
+## New Jersey Wave 15 Source Discovery
+
+- Config: etl/state-configs/nj.json
+- Current active package: turnout-only EAC fallback rows at data/eac-2024-state-turnout/nj-2024-eac-turnout.csv
+- Coverage inventory: data/nj-2024-data-coverage-inventory.json
+- Source request matrix: data/nj-2024-source-request-matrix.tsv
+- Official result lead: New Jersey Department of State 2024 Election Information page with statewide certified President PDF and 21 county municipal President PDFs
+- Preferred comparison contest: U.S. Senate from the same official county municipal PDF pattern
+- Turnout leads: official statewide 2024 voter-turnout PDF plus 21 county municipal registered-voters/ballots-cast PDFs; EAC fallback remains active until denominator timing and the 52,335 registered-voter difference are reconciled
+- Geometry/admin context: data/nj-counties.geojson and data/nj-2024-equipment-context.csv are present; municipal geometry/crosswalks, audit PDFs, CVR availability, recount, incident, correction, and litigation rows remain source/request items
+
+NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Remaining work is collecting the official PDF package, implementing a New Jersey DOE text-PDF parser, reconciling statewide President/Senate/turnout totals, normalizing municipality names and non-geographic rows such as Federal Overseas and Hand Counts, adding municipal geometry/crosswalks, collecting official 2012/2016/2020 historical baselines, and normalizing audit/CVR/recount/incident/correction/litigation records. Current NJ advisory indicators are not calculated from review rows because no NJ result or review rows are loaded.
