@@ -499,30 +499,47 @@
       "stateName": "Hawaii",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_geometry_admin_context",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct_split",
       "exportFormats": [
-        "eac fallback turnout"
+        "official certified text export",
+        "official certified PDF reports",
+        "EAC fallback turnout CSV",
+        "GeoJSON county geometry"
       ],
       "sourceUrls": [
-        "https://elections.hawaii.gov/election-results/"
+        "https://elections.hawaii.gov/election-results/",
+        "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
+        "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
+        "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+        "https://elections.hawaii.gov/resources/maps/geographic-information-systems-gis-files/"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
+        "https://files.hawaii.gov/elections/files/results/2024/General/media.txt"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official statewide certified presidential totals",
+        "official precinct/split President rows",
+        "official precinct/split U.S. Senate comparison rows for 496 of 497 precinct/split IDs in quick source inspection",
+        "official precinct/split registered-voter and ballots fields in precinct detail text",
+        "state-native turnout and registration table lead",
+        "county geometry",
+        "supplemental county equipment context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "loaded HI native President and review parser",
+        "reconciled state-native turnout replacement for active EAC fallback",
+        "official 2024 precinct boundary geometry or precinct_splitId crosswalk",
+        "loaded official 2012/2016/2020 historical baselines",
+        "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
+      "parserStatus": "Official Hawaii Office of Elections summary.txt and media.txt artifacts collected at data/hi-2024-general-summary.txt and data/hi-2024-general-precinct-detail.txt; data/hi-2024-data-coverage-inventory.json documents parser/request gaps; active ETL remains turnout-only EAC fallback.",
+      "manualReviewBurden": "medium",
       "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Hawaii result exports and local reporting-unit availability."
+      "caveats": "The official text exports are machine-readable UTF-16 files but include embedded newlines in quoted candidate names and require a dedicated parser. Quick source inspection found U.S. Senate rows for 496 of 497 precinct/split IDs, so same-grain review coverage needs a missing-comparison-unit caveat. Turnout remains EAC fallback until the state-native turnout table is normalized and reconciled. No advisory review rows are loaded for HI in this pass.",
+      "nextAction": "Implement a Hawaii Office of Elections text parser for summary.txt/media.txt, reconcile the state-native turnout table against EAC fallback and Kalawao handling, then collect precinct geometry/crosswalks and official historical/admin context rows."
     },
     {
       "state": "IA",

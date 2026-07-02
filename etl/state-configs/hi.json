@@ -1,7 +1,7 @@
 {
   "code": "HI",
   "name": "Hawaii",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "U.S. Election Assistance Commission; Hawaii Office of Elections",
   "electionYear": 2024,
   "office": "President",
   "turnoutOnly": true,
@@ -16,6 +16,61 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "hi-2024-general-summary",
+      "category": "Official certified statewide result text export",
+      "url": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
+      "localFile": "data/hi-2024-general-summary.txt",
+      "parser": "hawaiiSummaryTextCandidate",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Certified 2024 General Election text export linked from Hawaii Office of Elections results page, last updated November 27, 2024 10:15 am.",
+      "confidence": "Official statewide summary text includes President, U.S. Senate, U.S. House, state, county, and question totals. Candidate source only until a Hawaii text parser is implemented.",
+      "status": "candidate"
+    },
+    {
+      "id": "hi-2024-general-precinct-detail",
+      "category": "Official certified statewide precinct detail text export",
+      "url": "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
+      "localFile": "data/hi-2024-general-precinct-detail.txt",
+      "parser": "hawaiiPrecinctDetailTextCandidate",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Certified 2024 General Election precinct detail text export linked from Hawaii Office of Elections results page, last updated November 27, 2024 10:15 am.",
+      "confidence": "Official precinct/split text includes Reg_voters, Ballots, President rows, and same-grain U.S. Senate rows for 496 of 497 precinct/split IDs. Candidate source only until a Hawaii text parser and one-missing-Senate-unit caveat are implemented.",
+      "status": "candidate"
+    },
+    {
+      "id": "hi-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2715%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/hi-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is available for Hawaii county map joins; precinct geometry/crosswalks are not loaded.",
+      "status": "candidate"
+    },
+    {
+      "id": "hi-2024-equipment-context",
+      "category": "Election equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/15",
+      "localFile": "data/hi-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContextCsv",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verified Voting Verifier 2024 Hawaii county/context rows collected as supplemental administration metadata.",
+      "confidence": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment.",
+      "status": "candidate"
+    },
+    {
+      "id": "hi-2024-data-coverage-inventory",
+      "category": "Hawaii data coverage and administration source inventory",
+      "url": "https://elections.hawaii.gov/election-results/",
+      "localFile": "data/hi-2024-data-coverage-inventory.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Wave 14 official-source coverage inventory checked July 2, 2026.",
+      "confidence": "Documents official Hawaii source leads, downloaded text exports, turnout replacement candidate, geometry leads, recount/provisional/security context, and remaining parser/request gaps. Inventory only; no normalized administration rows are loaded.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -35,7 +90,7 @@
   "expected": {
     "jurisdictions": 5,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 6,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,
