@@ -546,7 +546,7 @@
         "status": "candidate",
         "sourceAuthority": "Indiana Recount Commission / Indiana Election Division / county election offices",
         "sourceUrl": "https://www.in.gov/sos/elections/indiana-recount-commission/",
-        "why": "Official Recount Commission orders, petitions, and minutes are documented as source paths, but 2024 recount, contest, incident, correction, and litigation rows are not normalized for Indiana yet.",
+        "why": "Official Recount Commission orders, district petition materials, and 2024 minutes are documented as source paths, but 2024 recount, contest, incident, correction, and litigation rows are not normalized for Indiana yet. See data/in-2024-source-request-matrix.tsv for the exact request fields.",
         "neededFields": [
           "filing or order date",
           "contest and jurisdiction",

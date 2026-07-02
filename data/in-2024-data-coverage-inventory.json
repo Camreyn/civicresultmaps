@@ -6,6 +6,7 @@
   "purpose": "State-scoped coverage inventory for Indiana 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "status": "official_county_results_turnout_2016_2020_historical_loaded_supplemental_precinct_review_admin_paths_documented",
   "authorityPriority": "Official Indiana Election Division, Indiana Election Commission/Recount Commission, county election offices, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
+  "requestMatrixArtifact": "data/in-2024-source-request-matrix.tsv",
   "loadedArtifacts": [
     {
       "id": "in-2024-official-enr-president",
@@ -256,6 +257,17 @@
     },
     {
       "sourceAuthority": "Indiana Secretary of State Election Division",
+      "sourceUrl": "https://www.in.gov/sos/elections/voter-information/register-to-vote/voter-registration-and-turnout-statistics/",
+      "checkedFor": [
+        "official turnout and registration report archive",
+        "historical registration/turnout report links",
+        "precinct denominator source leads"
+      ],
+      "result": "Official voter registration and turnout statistics page links the 2024 General Election Registration and Turnout Data report that is normalized into data/in-2024-general-turnout.csv, plus historical registration/turnout reports including 2012, 2016, and 2020.",
+      "blocker": "No precinct-level turnout denominator artifact was confirmed from this landing page; the active turnout package remains county-level."
+    },
+    {
+      "sourceAuthority": "Indiana Secretary of State Election Division",
       "sourceUrl": "https://www.in.gov/sos/elections/statistics-and-maps/",
       "checkedFor": [
         "statewide statistics",
@@ -273,8 +285,8 @@
         "recount commission records",
         "2024 recount context path"
       ],
-      "result": "Official page identifies the Recount Commission, meeting/minute links, and guidelines.",
-      "blocker": "No normalized 2024 recount/correction dataset was added; use this as a source path for a dedicated administration-context pass."
+      "result": "Official page identifies the Recount Commission, guidelines, order links, current district petition materials, and 2024 meeting-minute links.",
+      "blocker": "No normalized 2024 recount, contest, incident, correction, or litigation dataset was added; use this as a source path for a dedicated administration-context pass."
     },
     {
       "sourceAuthority": "Indiana Election Division",
@@ -369,7 +381,8 @@
       "whether rows are certified/final and how they reconcile to county ENR totals",
       "precinct split or ballot-style identifiers if precinct labels are reused"
     ],
-    "publicContactPath": "Indiana Election Division contact path shown on the Election Division page: elections@iec.in.gov / 317-232-3939."
+    "publicContactPath": "Indiana Election Division contact path shown on the Election Division page: elections@iec.in.gov / 317-232-3939.",
+    "requestMatrixArtifact": "data/in-2024-source-request-matrix.tsv"
   },
   "gaps": [
     {
@@ -405,6 +418,7 @@
     "Official county result and county turnout artifacts are suitable for county-level public-interest review with visible caveats.",
     "No official statewide precinct/subcounty President and same-grain U.S. Senate result export was confirmed in this pass.",
     "Next source step is a targeted Indiana Election Division request, followed by county-by-county collection only if the state confirms no statewide export exists.",
+    "The request matrix at data/in-2024-source-request-matrix.tsv now records artifact-specific asks for official precinct rows, 2012 baseline, geometry, turnout denominators, VSTOP audit rows, CVR availability, and Recount Commission records.",
     "Official 2016 and 2020 county presidential historical baseline rows are now normalized from Indiana ENR archives; 2012 remains a documented official-source request gap.",
     "Official VSTOP audit and Recount Commission source paths are documented for Indiana, but no normalized audit/recount/CVR/incident/correction rows are loaded.",
     "The current official 2012 ENRHistorical page is identified, but collection remains blocked until a stable official export/table or request-produced county artifact is available."
