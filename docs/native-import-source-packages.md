@@ -55,6 +55,7 @@ Remaining gaps are a Colorado Clarity parser and committed official result artif
 - Turnout source: `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx`
 - Turnout denominator: `REG7AM + EDR`
 - County boundary: `data/mn-counties.geojson`
+- Historical baseline status: not loaded in native ETL; production may still expose pre-native historical rows until official 2012/2016/2020 Minnesota source artifacts are normalized.
 
 Expected validation:
 
@@ -68,8 +69,9 @@ Expected validation:
 | State total | 3,253,920 |
 | Local review rows | 4,075 |
 | Turnout rows | 4,103 |
+| Native historical baseline rows | 0 |
 
-Caveat: precinct boundary GeoJSON is not included. County map joins are ready.
+Caveat: precinct boundary GeoJSON is not included. County map joins are ready. Native Minnesota historical baseline rows are not enabled until official historical source artifacts are collected, parsed, and reconciled.
 
 ## Michigan
 

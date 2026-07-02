@@ -204,6 +204,8 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 4075)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 4075)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 4103)
+        self.assertFalse(artifact["capabilities"]["historicalBaseline"])
+        self.assertEqual(len(artifact["native"].get("historicalRows", [])), 0)
         self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
 
     def test_pennsylvania_native_staging_parses_bulk_files(self):
