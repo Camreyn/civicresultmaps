@@ -138,7 +138,7 @@
       "src/app/workspace-tabs.tsx",
       "src/app/readiness/page.tsx"
     ],
-    "validation": "Native staging currently exercises the turnout and historical API/display data contract. The collected county President and Attorney General review artifacts are source-ready, but native result/review import is pending a coordinated shared UT countyPresidentCsv dispatcher; production DB/API was not checked or promoted from this worker branch."
+    "validation": "Native staging now exercises Utah county President result rows, county President-versus-Attorney-General review rows, state-native turnout rows, county geometry provenance, and historical API/display data contracts. Production API/DB verification is performed after promotion."
   },
   "remainingRisks": [
     "Resolve the 484-vote statewide presidential residual between visible PDF candidate columns and the PDF contest total before treating UT normalized county presidential totals as a perfect certified-total replacement.",

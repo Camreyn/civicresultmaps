@@ -1847,14 +1847,14 @@
       "stateName": "Utah",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_geometry_admin_context",
+      "dataFamily": "results_review_turnout_historical",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
       "exportFormats": [
-        "official canvass PDF",
-        "official aggregated canvass XLSX",
+        "official canvass PDF text layer",
         "normalized CSV",
-        "GeoJSON"
+        "official standardized canvass workbook",
+        "county GeoJSON"
       ],
       "sourceUrls": [
         "https://vote.utah.gov/election-results/",
@@ -1867,26 +1867,24 @@
         "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx"
       ],
       "availableFields": [
-        "official county presidential named-candidate columns",
-        "official county Attorney General comparison rows",
-        "official county total ballots counted and active-voter denominator rows",
+        "county presidential totals",
+        "county Attorney General comparison rows",
+        "state-native county turnout and active-voter denominator",
         "county geometry",
-        "county equipment context from Verified Voting Verifier",
-        "CD2 recount report link retained as context"
+        "secondary 2012/2016/2020 historical baseline rows"
       ],
       "missingFields": [
         "484-vote statewide presidential residual distributed by county from an official machine-readable source",
-        "precinct/local reporting-unit President rows",
-        "same-grain subcounty comparison contest rows",
-        "precinct boundary geometry or reporting-unit crosswalk",
+        "precinct/local reporting-unit rows",
+        "precinct boundary geometry or crosswalks",
         "official normalized 2012/2016/2020 historical baselines",
-        "normalized audit, CVR availability, incident, correction, litigation, L&A, tabulator-log, and custody rows"
+        "normalized audit/CVR/incident/correction/recount/litigation rows"
       ],
-      "parserStatus": "county President, Attorney General comparison, and turnout rows normalized by scripts/normalize-ut-official-results.mjs; turnout imports through the existing turnout-only path; result/review native loading is pending a shared UT countyPresidentCsv dispatcher.",
+      "parserStatus": "county President, Attorney General comparison, turnout, and historical rows load through the generic countyPresidentCsv dispatcher and scripts/normalize-ut-official-results.mjs artifacts.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "The official canvass PDF text layer exposes named presidential candidate columns totaling 1,488,010 votes, while the PDF contest total is 1,488,494. The 484-vote residual is documented but not distributed to counties. Review rows are county-level President-versus-Attorney-General comparisons, not precinct scatter plots.",
-      "nextAction": "Add the small shared native dispatcher for UT countyPresidentCsv/countyComparisonCsv after coordination, resolve the 484-vote presidential residual from an official machine-readable source, then collect precinct/local reporting-unit rows, precinct geometry/crosswalks, official historical baselines, and normalized audit/CVR/incident/correction/litigation records."
+      "nextAction": "Resolve the 484-vote presidential residual from an official machine-readable source, then collect precinct/local reporting-unit rows, precinct geometry/crosswalks, official historical baselines, and normalized audit/CVR/incident/correction/litigation records."
     },
     {
       "state": "VA",
