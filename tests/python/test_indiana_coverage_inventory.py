@@ -1,3 +1,4 @@
+import csv
 import json
 import unittest
 from pathlib import Path
@@ -8,6 +9,8 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.inventory = json.loads(Path("data/in-2024-data-coverage-inventory.json").read_text(encoding="utf-8-sig"))
         admin = json.loads(Path("data/admin-source-packages.json").read_text(encoding="utf-8-sig"))
         self.admin = next(entry for entry in admin["stateYearStatuses"] if entry["state"] == "IN")
+        with Path("data/in-2024-source-request-matrix.tsv").open(encoding="utf-8-sig", newline="") as handle:
+            self.request_rows = list(csv.DictReader(handle, delimiter="\t"))
 
     def test_loaded_artifacts_keep_official_and_supplemental_sources_distinct(self):
         artifacts = {entry["id"]: entry for entry in self.inventory["loadedArtifacts"]}
@@ -32,6 +35,16 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(self.admin["cvr"]["status"], "needs_data")
         self.assertEqual(self.admin["incidents"]["status"], "candidate")
         self.assertIn("indiana-recount-commission", self.admin["incidents"]["sourceUrl"])
+        self.assertIn("source-request-matrix", self.admin["incidents"]["why"])
+
+    def test_request_matrix_tracks_remaining_official_source_asks(self):
+        self.assertEqual(self.inventory["requestMatrixArtifact"], "data/in-2024-source-request-matrix.tsv")
+        artifacts = {row["artifact"]: row for row in self.request_rows}
+        self.assertEqual(len(self.request_rows), 8)
+        self.assertEqual(artifacts["official_precinct_or_local_reporting_unit_president"]["priority"], "high")
+        self.assertEqual(artifacts["official_2012_county_presidential_baseline"]["local_artifact_status"], "no_stable_local_artifact")
+        self.assertIn("not proof", artifacts["vstop_audit_selection_outcome"]["caveat"])
+        self.assertIn("misconduct", artifacts["recount_incident_correction_records"]["caveat"])
 
 
 if __name__ == "__main__":

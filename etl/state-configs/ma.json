@@ -50,14 +50,25 @@
       "status": "loaded"
     },
     {
-      "id": "ma-historical-presidential-wikipedia-county",
-      "category": "Historical county presidential baseline rows",
-      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Massachusetts",
+      "id": "ma-historical-presidential-pd43-county",
+      "category": "Official PD43+ historical county presidential baseline rows",
+      "url": "https://electionstats.state.ma.us/elections/view/140751/",
       "localFile": "data/ma-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
-      "authority": "Wikipedia county presidential tables with Massachusetts election-result source footnotes",
-      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 29, 2026.",
-      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Massachusetts election-result sources where available.",
+      "authority": "Massachusetts Secretary of the Commonwealth, PD43+",
+      "timestampBasis": "Official PD43+ 2012, 2016, and 2020 President General Election county result pages; normalized July 2, 2026.",
+      "confidence": "Official Massachusetts PD43+ county rows used for contextual historical baselines. The collector preserves county rows as displayed and records per-year PD43+ source URLs in the CSV.",
+      "status": "loaded"
+    },
+    {
+      "id": "ma-2024-data-coverage-inventory",
+      "category": "Massachusetts 2024 data coverage and administration source inventory",
+      "url": "https://electionstats.state.ma.us/elections/view/165300/",
+      "localFile": "data/ma-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Massachusetts Secretary of the Commonwealth; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
+      "timestampBasis": "Wave 11 Massachusetts source-coverage inventory checked July 2, 2026.",
+      "confidence": "Inventory only. Documents loaded artifacts, official statewide turnout cross-check, request paths, caveats, and remaining gaps; it does not add vote, turnout, audit, CVR, or incident rows.",
       "status": "loaded"
     }
   ],
@@ -67,7 +78,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Massachusetts turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout denominator artifact is collected.",
+    "notes": "Massachusetts turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. The official Massachusetts turnout statistics page confirms the same 2024 statewide registered-voter and total-votes-cast figures, but no state-native local turnout denominator artifact is loaded.",
     "warningRequired": false,
     "expected": {
       "rowCount": 351,
@@ -78,7 +89,7 @@
   "expected": {
     "jurisdictions": 14,
     "resultRows": 14,
-    "sources": 5,
+    "sources": 6,
     "stateTotal": 3512930,
     "trump": 1251303,
     "harris": 2126518,
@@ -108,8 +119,8 @@
   },
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
-    "sourceId": "ma-historical-presidential-wikipedia-county",
-    "warning": "Massachusetts historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "sourceId": "ma-historical-presidential-pd43-county",
+    "warning": "Massachusetts historical baseline rows are official PD43+ county-level presidential results for 2012, 2016, and 2020. Use them as contextual baseline rows, not as 2024 certified data; the 2020 county rows preserve the official displayed county-row sum, which is one non-D/R vote above the statewide summary line.",
     "expected": {
       "rowCount": 42,
       "years": [

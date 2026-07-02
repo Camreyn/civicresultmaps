@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "state": "AR",
+  "stateName": "Arkansas",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "scope": "Wave 11 Arkansas source coverage inventory for Civic Result Maps native ETL.",
+  "caveat": "This inventory documents source coverage and gaps only. Advisory indicators are review prompts, not proof of fraud, tampering, or misconduct.",
+  "loadedArtifacts": [
+    {
+      "id": "ar-2024-official-totalresults-federal",
+      "category": "certified_results_and_review_rows",
+      "sourceTitle": "Arkansas Secretary of State TotalResults public API, 2024 General federal contests",
+      "sourceAuthority": "Arkansas Secretary of State",
+      "sourceUrl": "https://enr.totalresults.com/arkansas/",
+      "localArtifact": "data/ar-2024-official-results",
+      "electionId": "1846",
+      "electionDate": "2024-11-05",
+      "officialStatus": "official",
+      "parser": "arkansasTotalResultsFederalJson",
+      "reportingGrain": "county results plus county-scoped reporting-unit review rows",
+      "expectedCounts": {
+        "countyResultRows": 75,
+        "reviewRows": 2779,
+        "comparisonRows": 2778,
+        "missingComparisonRows": 1,
+        "stateTotal": 1182676,
+        "trump": 759241,
+        "harris": 396905,
+        "other": 26530
+      },
+      "caveats": [
+        "County result rows are the certified map authority for President.",
+        "Review rows use stable TotalResults reporting-unit IDs because the county-scoped API does not expose human-readable precinct names.",
+        "The comparison contest is U.S. House by district, not one statewide same-office race, so down-ballot screens are directional review context.",
+        "One presidential reporting-unit row has no same-row U.S. House comparison coverage in the loaded source package."
+      ]
+    },
+    {
+      "id": "ar-2024-eac-turnout",
+      "category": "turnout_fallback",
+      "sourceTitle": "U.S. EAC 2024 EAVS V2 Arkansas jurisdiction turnout fallback",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifact": "data/eac-2024-state-turnout/ar-2024-eac-turnout.csv",
+      "parser": "eacTurnoutCsv",
+      "reportingGrain": "jurisdiction",
+      "expectedCounts": {
+        "turnoutRows": 73,
+        "ballotsCast": 1122278,
+        "registeredVoters": 1750202
+      },
+      "caveats": [
+        "Fallback turnout rows are official EAC context, not Arkansas-native denominator rows.",
+        "They do not share the same reporting-unit grain as the TotalResults review rows.",
+        "The TotalResults election-info JSON includes a statewide turnout summary, but not a loaded county or reporting-unit turnout replacement."
+      ]
+    },
+    {
+      "id": "ar-county-geometry",
+      "category": "county_geometry",
+      "sourceTitle": "U.S. Census TIGERweb county geography",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2705%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifact": "data/ar-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "reportingGrain": "county",
+      "expectedCounts": {
+        "geometryFeatures": 75
+      },
+      "caveats": [
+        "County geometry supports county map joins only; precinct or TotalResults reporting-unit boundaries are not loaded."
+      ]
+    },
+    {
+      "id": "verified-voting-verifier-ar-2024-equipment",
+      "category": "equipment_context",
+      "sourceTitle": "Verified Voting Verifier Arkansas 2024 equipment context",
+      "sourceAuthority": "Verified Voting",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/5",
+      "localArtifact": "data/verifiedvoting-ar-2024-equipment.json; data/ar-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipment",
+      "reportingGrain": "county context",
+      "expectedCounts": {
+        "equipmentRows": 75
+      },
+      "caveats": [
+        "Supplemental election-administration context only; do not use it as a vote, turnout, audit, incident, or precinct-uniformity source.",
+        "County rows can summarize mixed standard, accessible, absentee, tabulation, or poll-book configurations."
+      ]
+    }
+  ],
+  "officialSourceLeads": [
+    {
+      "id": "ar-sos-results-page",
+      "category": "historical_and_results_source_path",
+      "sourceTitle": "Arkansas Secretary of State election results page",
+      "sourceAuthority": "Arkansas Secretary of State",
+      "sourceUrl": "https://www.sos.arkansas.gov/elections/results",
+      "neededArtifacts": [
+        "official 2012, 2016, and 2020 county presidential baseline artifacts or TotalResults archive captures",
+        "state-native 2024 turnout and registration denominator artifact if published separately",
+        "official precinct/reporting-unit crosswalk or geometry if available"
+      ],
+      "status": "source_lead_not_loaded",
+      "blocker": "No official historical baseline files, state-native turnout denominator rows, or precinct/reporting-unit geometry artifacts were collected into this worker branch."
+    }
+  ],
+  "administrationContextGaps": [
+    {
+      "id": "ar-2024-audit-records",
+      "category": "post_election_audit",
+      "status": "needs_official_artifact_or_request",
+      "currentRegistry": "data/admin-source-packages.json marks Arkansas audit as needs_data.",
+      "neededFields": [
+        "audit selection units",
+        "contest scope",
+        "discrepancy or hand-count outcomes",
+        "source URL",
+        "local artifact",
+        "parser path"
+      ]
+    },
+    {
+      "id": "ar-2024-cvr-availability",
+      "category": "cast_vote_records",
+      "status": "needs_official_artifact_or_request",
+      "currentRegistry": "data/admin-source-packages.json marks Arkansas CVR as needs_data.",
+      "neededFields": [
+        "county availability",
+        "legal/public-records status",
+        "request path",
+        "source URL",
+        "local artifact",
+        "parser path"
+      ]
+    },
+    {
+      "id": "ar-2024-incidents-corrections-recounts-litigation",
+      "category": "incident_correction_recount_litigation",
+      "status": "needs_official_artifact_or_request",
+      "currentRegistry": "data/admin-source-packages.json marks Arkansas incident, correction, and litigation context as needs_data.",
+      "neededFields": [
+        "record type",
+        "affected jurisdiction",
+        "contest scope",
+        "disposition or correction status",
+        "source URL",
+        "local artifact",
+        "parser path"
+      ]
+    }
+  ],
+  "displayApiCaveats": {
+    "dataAndSources": "The Data & Sources tab should show the TotalResults, EAC turnout fallback, Census geometry, and equipment context records with their caveats.",
+    "reviewCenter": "Review rows are county-scoped reporting-unit IDs and President-versus-U.S.-House comparisons; treat advisory indicators as source-review prompts only.",
+    "exportsApi": "Public reads flow through /api/results, /api/review-rows, /api/turnout, /api/sources, /api/coverage, /api/equipment, and /api/admin-sources once staging is promoted by a coordinator."
+  },
+  "nextActions": [
+    "Collect or request Arkansas-native turnout and registration denominator rows before replacing EAC fallback turnout.",
+    "Identify official precinct or TotalResults reporting-unit crosswalk/geometry before claiming subcounty map coverage.",
+    "Collect official 2012, 2016, and 2020 historical presidential baseline artifacts before enabling historical baseline rows.",
+    "Collect or request official audit, recount, CVR availability, incident, correction, and litigation artifacts before loading administration rows beyond equipment context."
+  ]
+}

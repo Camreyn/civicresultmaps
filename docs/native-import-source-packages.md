@@ -14,6 +14,20 @@ Already-completed native states not repeated in this package: Ohio and Wisconsin
 
 These states have county geometry, official presidential result artifacts, local review rows, same-grain comparison contest data, turnout sources, and expected validation totals already represented in `data/state-configs/`.
 
+## Arkansas Wave 11 Update
+
+- Config: `etl/state-configs/ar.json`
+- Authority: Arkansas Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau
+- County results source: `data/ar-2024-official-results`, collected from the Arkansas Secretary of State TotalResults public API for the 2024 General Election federal contests
+- Local review source: `data/ar-2024-official-results/federal-county-results`
+- Comparison contest: U.S. House by district, same county-scoped TotalResults reporting-unit IDs, with district-based comparison caveats
+- Turnout source: EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/ar-2024-eac-turnout.csv`
+- County boundary: `data/ar-counties.geojson`
+- Coverage inventory: `data/ar-2024-data-coverage-inventory.json`
+- Equipment context: `data/ar-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation: 75 county result rows, 75 county geometry features, 1,182,676 presidential votes, 759,241 Trump votes, 396,905 Harris votes, 26,530 other votes, 2,779 reporting-unit review rows, and 73 EAC fallback turnout rows. Remaining gaps are state-native turnout denominators, human-readable precinct/reporting-unit names or geometry, official 2012/2016/2020 historical baseline artifacts, and normalized official audit/recount/CVR/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
+
 ## Minnesota
 
 - Config: `etl/state-configs/mn.json`
@@ -214,9 +228,40 @@ Expected validation: 17 county result rows, 17 county geometry features, 1,484,8
 - Local review: `data/in-2024-mit-local-review.csv` remains supplemental MIT/OpenElections President-versus-U.S.-Senate precinct context, not certified replacement totals.
 - Turnout: official Indiana Election Division county turnout and registration rows remain loaded at `data/in-2024-general-turnout.csv`.
 - Historical baseline: official 2016 and 2020 county presidential rows remain loaded from ENR archive JSON; the current official 2012 ENRHistorical endpoint is now documented but not repeatably script-readable from this environment, so 2012 remains a request/downloadable-artifact gap.
-- Administration context: VSTOP post-election risk-limiting audit, Election Administrator Portal, and Recount Commission source paths are documented in `data/in-2024-data-coverage-inventory.json` and `data/admin-source-packages.json`; no normalized audit, CVR, incident, correction, recount, or litigation rows are loaded.
+- Administration context: VSTOP post-election risk-limiting audit, Election Administrator Portal, and Recount Commission source paths are documented in `data/in-2024-data-coverage-inventory.json`, `data/admin-source-packages.json`, and the Wave 11 request matrix at `data/in-2024-source-request-matrix.tsv`; no normalized audit, CVR, incident, correction, recount, or litigation rows are loaded.
 
 Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 184 historical baseline rows for 2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
+
+## Kansas Wave 11 Update
+
+- Config: `etl/state-configs/ks.json`
+- Authority: Kansas Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau
+- County results source: `data/ks-2024-presidential-results.xlsx`, from the official Kansas SOS 2024 Presidential Election Results workbook
+- Local review source: `data/ks-2024-general-us-house-precinct.xlsx`, from the official Kansas SOS U.S. House precinct workbook
+- Comparison contest: U.S. House by congressional district, paired to official presidential precinct rows, with district-based and vote-share-only caveats
+- Turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ks-2024-eac-turnout.csv`
+- County boundary: `data/ks-counties.geojson`
+- Equipment context: `data/ks-2024-equipment-context.csv` from Verified Voting, context only
+- Coverage inventory: `data/ks-2024-data-coverage-inventory.json`
+
+Expected validation: 105 county result rows, 105 county geometry features, 1,327,591 presidential votes, 758,802 Trump votes, 544,853 Harris votes, 23,936 other votes, 3,739 precinct review rows, and 105 EAC fallback turnout rows.
+
+Remaining gaps: Kansas-native turnout/registration denominators, official precinct boundary geometry or a precinct crosswalk, official 2012/2016/2020 county historical presidential baselines, normalized post-election audit rows, CVR availability records, and official incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+## Massachusetts Wave 11 Update
+
+- Config: `etl/state-configs/ma.json`
+- Authority: Massachusetts Secretary of the Commonwealth; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting
+- County results source: `data/ma-2024-president-county-results.csv`, generated from official PD43+ 2024 President county-filtered County Totals pages
+- Local review source: `data/ma-2024-president-precinct-results.csv` and `data/ma-2024-us-senate-precinct-results.csv`
+- Comparison contest: U.S. Senate, paired by PD43+ City/Town, Ward, and Pct
+- Turnout source: EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/ma-2024-eac-turnout.csv`; the official Massachusetts turnout statistics page confirms the same 2024 statewide registered-voter and total-votes-cast figures but is not a local replacement package
+- Historical baseline source: `data/ma-historical-presidential-baseline.csv`, generated by `npm run etl:collect:ma:historical` from official PD43+ 2012, 2016, and 2020 President county result pages
+- County boundary: `data/ma-counties.geojson`
+- Coverage/admin inventory: `data/ma-2024-data-coverage-inventory.json`
+
+Expected validation: 14 county result rows, 14 county geometry features, 2,382 city/town/ward/precinct review rows, 351 EAC fallback turnout rows, 42 official PD43+ historical baseline rows, and 3,512,930 presidential votes.
+
+Remaining gaps: state-native local turnout denominators, official precinct/ward/municipal geometry or reporting-unit crosswalk, detailed audit workpapers, CVR availability, ballot images, tabulator/EMS logs, logic-and-accuracy records, custody records, incident/correction records, recount records, and litigation records. Current advisory rows are public-interest screening inputs only, not findings.
 
 ## Native ETL Acceptance Criteria
 
@@ -285,6 +330,7 @@ Expected validation: 10 county rows, 304 town/ward review rows, 304 turnout rows
 - County boundary: `data/in-counties.geojson`
 - Historical baseline source: `data/in-historical-presidential-baseline.csv`, generated by `scripts/collect-in-historical-baseline.mjs` from official Indiana ENR 2016 and 2020 county presidential category JSON
 - Coverage inventory: `data/in-2024-data-coverage-inventory.json`
+- Request matrix: `data/in-2024-source-request-matrix.tsv`, recording official follow-up asks for precinct/subcounty President and U.S. Senate rows, precinct geometry, precinct turnout denominators, 2012 historical baseline, VSTOP audit rows, CVR availability, and recount/incident/correction records
 
 Expected validation: 92 county rows, 92 county geometry features, 2,936,677 presidential votes, 1,720,347 Trump votes, 1,163,603 Harris votes, 52,727 other votes, 5,253 supplemental local review rows, 92 county turnout rows totaling 2,976,599 voters voting and 4,837,802 registered voters, and 184 official county historical baseline rows for 2016 and 2020.
 
@@ -334,3 +380,20 @@ Expected validation: 120 county result rows, 120 county geometry features, 3,067
 - Equipment context: `data/ny-2024-equipment-context.csv` from Verified Voting, context only
 
 Expected validation: 62 county result rows, 62 county geometry features, 9,753 supplemental local review rows, 62 EAC fallback turnout rows, and 186 official county historical baseline rows. Remaining risks: Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized local review coverage; Monroe appears in the local-review manifest with zero parsed rows. County-certified NYSBOE rows remain the map authority. Remaining source needs are official full-state election-district President and U.S. Senate rows, state-native ballots-cast/voter-history rows paired with enrollment denominators, precinct/election-district geometry or crosswalks, and normalized audit/CVR/incident/correction/recount/litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+
+## California Wave 11 Update
+
+- Config: etl/state-configs/ca.json
+- Authority: California Secretary of State; U.S. Census Bureau; Verified Voting equipment context
+- County results source: data/ca-2024-general-president.csv, normalized from the official SOS Statement of Vote President by County XLSX
+- Local review source: data/ca-2024-general-us-senate-full-term.csv
+- Comparison contest: U.S. Senate full term, county rows only
+- Turnout source: data/ca-2024-voter-participation-stats-by-county.csv, normalized from the official SOS voter participation statistics PDF
+- Turnout denominator: 15-day Report of Registration registered voters; expected 58 rows, 16,140,044 total voters, and 22,595,659 registered voters
+- Historical baseline source: data/ca-historical-presidential-baseline.csv, generated from official 2012, 2016, and 2020 SOS Statement of Vote President by County workbooks
+- County boundary: data/ca-counties.geojson
+- Coverage/admin inventory: data/ca-2024-data-coverage-inventory.json documents the loaded artifacts, official voting-systems-by-county lead, 1% manual audit source lead, recount/PRA paths, and remaining CVR/incident/correction/litigation gaps
+
+Expected validation: 58 county result rows, 58 county geometry features, 58 county review rows, 58 county turnout rows, 174 historical baseline rows, 15,865,475 presidential votes, 9,276,179 Harris votes, 6,081,697 Trump votes, and 507,599 other presidential votes.
+
+Caveats: review rows are county-level President-versus-U.S.-Senate full-term comparisons, not precinct or city/local scatter plots. The SOS turnout denominator is the 15-day Report of Registration and excludes later Same Day Voter Registration updates. County geometry is loaded; precinct geometry and normalized audit/CVR/incident/correction/recount/litigation rows are not loaded. Current advisory rows are public-interest screening inputs only, not findings.

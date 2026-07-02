@@ -374,21 +374,21 @@
       "year": 2024,
       "priority": 13,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "county",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/ca-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "denominatorTiming": "sos15DayReportOfRegistration",
+      "sourceTitle": "California SOS voter participation statistics by county",
+      "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+      "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 58,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official California SOS Statement of Vote voter participation rows are validated in ETL. Registered voters are 15-day Report of Registration totals.",
+      "nextAction": "Keep the 15-day registration and Same Day Voter Registration caveat visible; collect precinct/local turnout only if matching subcounty result rows are added.",
       "coverage": {
         "jurisdictionRows": 58,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ca-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 25720597,
-        "ballotsCast": 16164330,
+        "registeredVoterDenominatorFile": "data/ca-2024-voter-participation-stats-by-county.pdf",
+        "registeredVoters": 22595659,
+        "ballotsCast": 16140044,
         "warningRows": 0
       }
     },
@@ -744,14 +744,18 @@
       "localFile": "data/eac-2024-state-turnout/ma-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 351,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. The Massachusetts turnout statistics page confirms the same statewide registered-voter and total-votes-cast figures, but no local state-native turnout denominator artifact is loaded.",
+      "nextAction": "Find official Massachusetts city/town/ward/precinct turnout or voter-participation denominator rows; keep the EAC jurisdiction fallback visibly caveated until then.",
       "coverage": {
         "jurisdictionRows": 351,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ma-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 5142343,
         "ballotsCast": 3512930,
-        "warningRows": 0
+        "warningRows": 0,
+        "statewideOfficialTurnoutSourceUrl": "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
+        "statewideOfficialRegisteredVoters": 5142343,
+        "statewideOfficialBallotsCast": 3512930,
+        "statewideOfficialCrosscheck": "matches EAC statewide registered-voter and ballots-cast totals; no local state-native replacement rows loaded"
       }
     },
     {
@@ -1551,6 +1555,36 @@
       ]
     },
     {
+      "state": "KS",
+      "name": "Kansas",
+      "authority": "U.S. Election Assistance Commission; Kansas Secretary of State result/review rows provide election context",
+      "sourceLevel": "jurisdiction",
+      "turnoutSource": {
+        "sourceTitle": "U.S. EAC 2024 EAVS V2 Kansas jurisdiction turnout fallback",
+        "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+        "localFile": "data/eac-2024-state-turnout/ks-2024-eac-turnout.csv",
+        "parser": "eacTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "U.S. EAC 2024 EAVS V2 Kansas registered-voter denominator",
+        "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+        "localFile": "data/eac-2024-state-turnout/ks-2024-eac-registered-voter-denominator.json",
+        "parser": "eacA1aRegisteredVoterDenominator",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "eacReported"
+      },
+      "expected": {
+        "turnoutRows": 105,
+        "registeredVoters": 2031119,
+        "ballotsCast": 1342102
+      },
+      "caveats": [
+        "EAC fallback turnout is official denominator context, not a Kansas-native turnout replacement.",
+        "Collect and reconcile a Kansas SOS or county ballots-cast plus registered-voter artifact before replacing the active turnout source.",
+        "The active Kansas review rows use official SOS President-versus-U.S.-House precinct workbooks; turnout remains county/jurisdiction fallback."
+      ]
+    },
+    {
       "state": "WI",
       "name": "Wisconsin",
       "authority": "U.S. Election Assistance Commission; Wisconsin Elections Commission ward results provide result/review rows",
@@ -1635,6 +1669,36 @@
       "caveats": [
         "Detailed town/ward ballots-cast rows sum to 831,468 while the workbook county summary totals 831,467 after a source correction note.",
         "Town/ward geometry is not part of this package."
+      ]
+    },
+    {
+      "state": "CA",
+      "name": "California",
+      "authority": "California Secretary of State",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "California SOS 2024 General Election voter participation statistics by county",
+        "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+        "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "California SOS 15-day Report of Registration field in voter participation table",
+        "sourceUrl": "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/03-voter-participation-stats-by-county.pdf",
+        "localFile": "data/ca-2024-voter-participation-stats-by-county.csv",
+        "parser": "scripts/normalize-ca-turnout.mjs",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "sos15DayReportOfRegistration"
+      },
+      "expected": {
+        "turnoutRows": 58,
+        "registeredVoters": 22595659,
+        "ballotsCast": 16140044
+      },
+      "caveats": [
+        "Turnout is county-level, not precinct-level.",
+        "Registered-voter totals are based on the 15-day Report of Registration and do not include Same Day Voter Registration after the 15-day close.",
+        "The SOS participation PDF total voters are election-level total voters, not presidential contest votes."
       ]
     }
   ],

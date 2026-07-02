@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "state": "MA",
+  "stateName": "Massachusetts",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "status": "official_pd43_results_review_historical_loaded_eac_turnout_fallback_admin_paths_documented",
+  "summary": "Massachusetts has official PD43+ county-certified presidential rows, city/town/ward/precinct President-versus-U.S. Senate review rows, official PD43+ county historical presidential baselines for 2012/2016/2020, county geometry, EAC jurisdiction turnout fallback, statewide official turnout-statistics cross-checks, Verified Voting county equipment context, and official/request-path administration context. No production promotion is implied by this inventory.",
+  "officialSourcePages": [
+    "https://electionstats.state.ma.us/elections/view/165300/",
+    "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
+    "https://electionstats.state.ma.us/elections/download/165304/precincts_include:1/",
+    "https://electionstats.state.ma.us/elections/view/112698/",
+    "https://electionstats.state.ma.us/elections/view/130243/",
+    "https://electionstats.state.ma.us/elections/view/140751/",
+    "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
+    "https://www.sec.state.ma.us/divisions/elections/recent-updates/2024-post-election-audits.htm",
+    "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-registration-statistics.htm"
+  ],
+  "loadedArtifacts": {
+    "presidentialCountyResults": {
+      "status": "loaded",
+      "authority": "Massachusetts Secretary of the Commonwealth, PD43+",
+      "sourceUrl": "https://electionstats.state.ma.us/elections/view/165300/",
+      "localArtifact": "data/ma-2024-president-county-results.csv",
+      "parser": "massachusettsPd43CountyTotalsCsv",
+      "reportingGrain": "county_from_pd43_county_pages",
+      "expectedRows": 14,
+      "expectedStateTotal": 3512930,
+      "caveat": "County rows come from official county-filtered PD43+ County Totals pages because the bulk precinct CSV does not carry county in the row schema."
+    },
+    "localReviewRows": {
+      "status": "loaded",
+      "authority": "Massachusetts Secretary of the Commonwealth, PD43+",
+      "sourceUrls": [
+        "https://electionstats.state.ma.us/elections/download/165300/precincts_include:1/",
+        "https://electionstats.state.ma.us/elections/download/165304/precincts_include:1/"
+      ],
+      "localArtifacts": [
+        "data/ma-2024-president-precinct-results.csv",
+        "data/ma-2024-us-senate-precinct-results.csv"
+      ],
+      "parser": "massachusettsPd43PrecinctCsv",
+      "comparisonContest": "United States Senator",
+      "reportingGrain": "city_town_ward_precinct",
+      "expectedRows": 2382,
+      "caveat": "PD43+ review grouping is municipality-centric, not county-centric. President-versus-Senate rows are advisory screening context and cannot distinguish ordinary split-ticket voting from source, machine, or custody issues without additional evidence."
+    },
+    "turnout": {
+      "status": "loaded_fallback_with_statewide_official_crosscheck",
+      "activeSourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "activeLocalArtifact": "data/eac-2024-state-turnout/ma-2024-eac-turnout.csv",
+      "activeParser": "eacTurnoutCsv",
+      "activeReportingGrain": "jurisdiction",
+      "expectedRows": 351,
+      "eacBallotsCast": 3512930,
+      "eacRegisteredVoters": 5142343,
+      "statewideOfficialTurnoutSourceUrl": "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
+      "statewideOfficialBallotsCast": 3512930,
+      "statewideOfficialRegisteredVoters": 5142343,
+      "caveat": "The Massachusetts turnout statistics page confirms statewide 2024 registered voters and total votes cast, but this pass did not identify an official city/town/ward/precinct turnout export to replace the active EAC jurisdiction fallback rows."
+    },
+    "historicalBaselines": {
+      "status": "loaded_official_pd43_county_context",
+      "authority": "Massachusetts Secretary of the Commonwealth, PD43+",
+      "sourceUrls": [
+        "https://electionstats.state.ma.us/elections/view/112698/",
+        "https://electionstats.state.ma.us/elections/view/130243/",
+        "https://electionstats.state.ma.us/elections/view/140751/"
+      ],
+      "localArtifact": "data/ma-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "collector": "scripts/collect-ma-historical-baseline.mjs",
+      "expectedRows": 42,
+      "years": [
+        2012,
+        2016,
+        2020
+      ],
+      "caveat": "Rows are county-level contextual baseline rows. The 2020 PD43+ county rows sum one vote higher in non-D/R candidate votes than the statewide summary line; the collector preserves the official displayed county rows and validates that caveat."
+    },
+    "geometry": {
+      "status": "county_loaded_precinct_or_municipal_geometry_missing",
+      "localArtifact": "data/ma-counties.geojson",
+      "reportingGrain": "county",
+      "expectedFeatures": 14,
+      "caveat": "County geometry supports county result maps. No official statewide precinct, ward, or municipal reporting-unit geometry/crosswalk is loaded for subcounty review overlays."
+    },
+    "equipmentContext": {
+      "status": "loaded_context_only",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/25",
+      "localArtifact": "data/ma-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipment",
+      "caveat": "Equipment rows are county-level context only and are not vote, turnout, audit, or proof of precinct-uniform equipment use."
+    }
+  },
+  "administrationContext": {
+    "audit": {
+      "status": "partial_source_page_identified",
+      "sourceUrl": "https://www.sec.state.ma.us/divisions/elections/recent-updates/2024-post-election-audits.htm",
+      "caveat": "Official statewide post-election audit context is identified, but detailed municipal, precinct, batch, contest, discrepancy, and workpaper rows are not normalized."
+    },
+    "cvr": {
+      "status": "request_required",
+      "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, or local election commissions depending on record custody.",
+      "caveat": "No CVR dataset or county/municipal CVR availability table is loaded."
+    },
+    "ballotImages": {
+      "status": "request_required",
+      "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division, city/town clerks, local election commissions, or vendor-hosted election-system exports depending on retention and custody.",
+      "caveat": "No ballot-image artifact is loaded."
+    },
+    "logsLogicAccuracyCustody": {
+      "status": "request_required",
+      "requestPath": "Secretary, city/town clerks, local election commissions, or voting-system vendors depending on record custody.",
+      "caveat": "Tabulator/EMS logs, logic-and-accuracy records, and chain-of-custody records are request-path items only."
+    },
+    "incidentsCorrectionsRecountsLitigation": {
+      "status": "needs_source_inventory",
+      "requestPath": "Massachusetts Secretary of the Commonwealth Elections Division and municipal custodians.",
+      "caveat": "No normalized 2024 incident, correction, recount, or litigation rows are loaded."
+    }
+  },
+  "displayApiPathsChecked": [
+    "src/app/page.tsx",
+    "src/app/workspace-tabs.tsx",
+    "src/app/results-explorer.tsx",
+    "src/app/readiness/page.tsx",
+    "src/app/api/results/route.ts",
+    "src/app/api/sources/route.ts",
+    "src/app/api/coverage/route.ts",
+    "src/app/api/native-source-packages/route.ts"
+  ],
+  "remainingGaps": [
+    "official state-native local turnout or voter-participation denominator rows to replace EAC jurisdiction fallback",
+    "official precinct/ward/municipal geometry or reporting-unit crosswalk for subcounty review overlays",
+    "normalized detailed audit workpapers and discrepancy rows",
+    "CVR availability, ballot-image availability, tabulator/EMS logs, logic-and-accuracy, custody, incident, correction, recount, and litigation artifacts"
+  ],
+  "advisoryUseCaveat": "Massachusetts advisory indicators are source/data reconciliation signals only. They are not proof of fraud or misconduct and require source, demographic, contest, turnout, equipment, audit, and custody context before interpretation."
+}

@@ -1,0 +1,187 @@
+{
+  "checkedAt": "2026-07-02",
+  "state": "KS",
+  "stateName": "Kansas",
+  "electionYear": 2024,
+  "status": "official_results_review_eac_turnout_county_geometry_equipment_context_loaded",
+  "summary": "Kansas has official Secretary of State 2024 presidential county result rows, official SOS precinct President-versus-U.S.-House review rows, official certified vote-total PDF provenance, EAC 2024 V2 county turnout fallback rows, Census county geometry, and county equipment context. State-native turnout, precinct geometry, historical baseline rows, and normalized audit/CVR/incident/recount/litigation records remain uncollected.",
+  "loadedArtifacts": [
+    {
+      "id": "ks-2024-presidential-results",
+      "sourceTitle": "Kansas Secretary of State 2024 Presidential Election Results workbook",
+      "sourceUrl": "https://sos.ks.gov/elections/24elec/2024-Presidential-Results.xlsx",
+      "localArtifact": "data/ks-2024-presidential-results.xlsx",
+      "reportingGrain": "county_result_from_precinct_workbook",
+      "parserNormalizationPath": "kansasPresidentialResultsXlsx via etl/state-configs/ks.json certifiedResults",
+      "expectedCounts": {
+        "countyRows": 105,
+        "stateTotal": 1327591,
+        "trump": 758802,
+        "harris": 544853,
+        "other": 23936
+      },
+      "confidence": "loaded_official",
+      "caveats": [
+        "County result rows aggregate the official SOS presidential workbook for map and certified-result display.",
+        "The workbook also supplies the presidential side of local review rows."
+      ]
+    },
+    {
+      "id": "ks-2024-general-us-house-precinct",
+      "sourceTitle": "Kansas Secretary of State 2024 General Election U.S. House precinct workbook",
+      "sourceUrl": "https://sos.ks.gov/elections/24elec/2024-General-Election-United-States-House-of-Representatives-Precinct-Results.xlsx",
+      "localArtifact": "data/ks-2024-general-us-house-precinct.xlsx",
+      "reportingGrain": "precinct",
+      "parserNormalizationPath": "kansasUsHousePrecinctXlsx via etl/state-configs/ks.json reviewCharts",
+      "expectedCounts": {
+        "reviewRows": 3739
+      },
+      "confidence": "loaded_official",
+      "caveats": [
+        "U.S. House is district-based, not a single statewide comparison contest.",
+        "Johnson, Sedgwick, Shawnee, and Wyandotte comparison rows are parsed from separate wide-format county tabs.",
+        "Three nonzero presidential local rows lack a matching U.S. House comparison and remain vote-share-only review rows."
+      ]
+    },
+    {
+      "id": "ks-2024-general-official-vote-totals",
+      "sourceTitle": "Kansas Secretary of State 2024 General Election Official Vote Totals PDF",
+      "sourceUrl": "https://sos.ks.gov/elections/24elec/2024-General-Election-Official-Vote-Totals.pdf",
+      "localArtifact": "data/ks-2024-general-official-vote-totals.pdf",
+      "reportingGrain": "state_certified_canvass_reference",
+      "parserNormalizationPath": "officialCanvassPdfReference provenance only",
+      "confidence": "loaded_official_reference",
+      "caveats": [
+        "Retained for certified-total provenance and manual reconciliation context; machine rows are parsed from the official XLSX workbooks."
+      ]
+    },
+    {
+      "id": "ks-2024-eac-turnout",
+      "sourceTitle": "U.S. EAC 2024 EAVS V2 Kansas county turnout fallback",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifact": "data/eac-2024-state-turnout/ks-2024-eac-turnout.csv",
+      "reportingGrain": "jurisdiction_county",
+      "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/ks.json turnout",
+      "expectedCounts": {
+        "turnoutRows": 105,
+        "ballotsCast": 1342102,
+        "registeredVoters": 2031119
+      },
+      "confidence": "loaded_official_fallback",
+      "caveats": [
+        "Prefer a Kansas-native turnout or voter-participation artifact if one is collected and reconciled; current rows are EAC fallback denominator context."
+      ]
+    },
+    {
+      "id": "ks-county-geometry",
+      "sourceTitle": "U.S. Census TIGERweb Kansas county geography",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2720%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifact": "data/ks-counties.geojson",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "censusTigerwebCountyGeojson via etl/state-configs/ks.json",
+      "expectedCounts": {
+        "geometryFeatures": 105
+      },
+      "confidence": "loaded_official",
+      "caveats": [
+        "County geometry supports county map joins only; precinct boundary geometry is not loaded."
+      ]
+    },
+    {
+      "id": "ks-2024-equipment-context",
+      "sourceTitle": "Verified Voting Verifier Kansas 2024 equipment context",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/20",
+      "localArtifact": "data/verifiedvoting-ks-2024-equipment.json; data/ks-2024-equipment-context.csv; data/verifiedvoting-ks-2024-equipment-areas.geojson",
+      "reportingGrain": "county_context",
+      "parserNormalizationPath": "verifiedVotingEquipment via admin-source package registry",
+      "expectedCounts": {
+        "equipmentRows": 105
+      },
+      "confidence": "loaded_context_only",
+      "caveats": [
+        "Equipment context is not a vote, turnout, audit, CVR, incident, correction, recount, or litigation source and does not prove every precinct in a county used one identical configuration."
+      ]
+    }
+  ],
+  "sourceFindings": {
+    "stateNativeTurnout": {
+      "status": "not_loaded_eac_fallback_active",
+      "sourceUrl": "https://sos.ks.gov/elections/elections-statistics.html",
+      "currentArtifact": "data/eac-2024-state-turnout/ks-2024-eac-turnout.csv",
+      "requestNeed": "Official Kansas ballots-cast or voter-participation rows with registered-voter denominator, denominator timing, county or precinct grain, and statewide totals suitable for reconciliation before replacing EAC fallback."
+    },
+    "precinctBoundaryGeometry": {
+      "status": "not_loaded",
+      "loadedGeometry": {
+        "localArtifact": "data/ks-counties.geojson",
+        "reportingGrain": "county"
+      },
+      "requestNeed": "Official statewide precinct boundary geometry or a precinct-to-county/reporting-unit crosswalk if subcounty map overlays are required."
+    },
+    "historicalBaselines": {
+      "status": "official_source_path_documented_not_loaded",
+      "sourceUrl": "https://sos.ks.gov/elections/elections-statistics.html",
+      "targetYears": [
+        2012,
+        2016,
+        2020
+      ],
+      "caveat": "No 2012, 2016, or 2020 Kansas historical presidential baseline rows are loaded in this pass. Collect official SOS county workbooks/PDFs or request-produced tables before enabling historical baseline rows."
+    },
+    "postElectionAudit": {
+      "status": "not_inventoried_or_normalized",
+      "requestNeed": "Official 2024 Kansas post-election audit selection and outcome artifacts, if published or obtainable, with county/reporting-unit grain and discrepancy fields."
+    },
+    "cvrAvailability": {
+      "status": "not_loaded",
+      "requestNeed": "Official county or SOS CVR availability records, public-records request responses, or documented nonavailability notes before claiming CVR coverage."
+    },
+    "incidentsCorrectionsRecountsLitigation": {
+      "status": "not_loaded",
+      "requestNeed": "Official incident, correction, recount, election-contest, or litigation records for the 2024 general election, normalized only after authoritative source collection."
+    }
+  },
+  "displayApiCaveats": {
+    "publicSourceRoutesChecked": [
+      "/api/sources?state=KS&year=2024",
+      "/api/coverage?state=KS&year=2024",
+      "/api/native-source-packages?state=KS&year=2024",
+      "/api/turnout-sources?state=KS&year=2024",
+      "/api/admin-sources?state=KS&year=2024"
+    ],
+    "advisoryUse": "Kansas advisory indicators use official precinct President-versus-U.S.-House review rows where a same-row House comparison exists. U.S. House is district-based, and vote-share-only rows are retained when comparison rows are absent. Indicators are screening/context signals only, not claims of fraud or misconduct.",
+    "productionPromotion": "Not authorized from worker branch; no native:promote or native:counts run."
+  },
+  "gaps": [
+    {
+      "artifact": "state_native_turnout_denominator",
+      "status": "not_loaded_eac_fallback_active",
+      "remainingRisk": "EAC fallback turnout is official but not Kansas-native and may not match SOS reporting semantics."
+    },
+    {
+      "artifact": "precinct_boundary_geometry",
+      "status": "not_loaded",
+      "remainingRisk": "Public map joins remain county geometry only."
+    },
+    {
+      "artifact": "historical_presidential_baselines_2012_2016_2020",
+      "status": "official_source_path_documented_not_loaded",
+      "remainingRisk": "Historical context remains disabled until official artifacts are collected and normalized."
+    },
+    {
+      "artifact": "post_election_audit_rows",
+      "status": "not_loaded",
+      "remainingRisk": "No normalized audit selection/outcome rows are available."
+    },
+    {
+      "artifact": "cvr_availability_rows",
+      "status": "not_loaded",
+      "remainingRisk": "No CVR availability table or CVR dataset is available."
+    },
+    {
+      "artifact": "incident_correction_recount_litigation_rows",
+      "status": "not_loaded",
+      "remainingRisk": "Official records remain request/source-collection items."
+    }
+  ]
+}

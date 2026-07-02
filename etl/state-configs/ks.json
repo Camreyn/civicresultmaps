@@ -59,6 +59,28 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Kansas county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "ks-2024-equipment-context",
+      "category": "County equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/20",
+      "localFile": "data/ks-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContext",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verifier county equipment context artifact retained for 2024 Kansas administration metadata.",
+      "confidence": "Context only. County-level equipment rows are not vote, turnout, audit, CVR, or incident records and do not prove precinct-level uniformity.",
+      "status": "candidate"
+    },
+    {
+      "id": "ks-2024-data-coverage-inventory",
+      "category": "Kansas source coverage and remaining-gap inventory",
+      "url": "https://sos.ks.gov/elections/elections-statistics.html",
+      "localFile": "data/ks-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Kansas Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting Verifier",
+      "timestampBasis": "Wave 11 Kansas coverage inventory created July 2, 2026 from committed official artifacts and source-package registries.",
+      "confidence": "Inventory only. Documents loaded official artifacts, EAC fallback turnout, county geometry, equipment context, and remaining historical, audit, CVR, incident, correction, recount, litigation, and precinct-geometry gaps.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -78,7 +100,7 @@
   "expected": {
     "jurisdictions": 105,
     "resultRows": 105,
-    "sources": 5,
+    "sources": 7,
     "geometryFeatures": 105,
     "stateTotal": 1327591,
     "trump": 758802,
