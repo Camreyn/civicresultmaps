@@ -744,14 +744,18 @@
       "localFile": "data/eac-2024-state-turnout/ma-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 351,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. The Massachusetts turnout statistics page confirms the same statewide registered-voter and total-votes-cast figures, but no local state-native turnout denominator artifact is loaded.",
+      "nextAction": "Find official Massachusetts city/town/ward/precinct turnout or voter-participation denominator rows; keep the EAC jurisdiction fallback visibly caveated until then.",
       "coverage": {
         "jurisdictionRows": 351,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ma-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 5142343,
         "ballotsCast": 3512930,
-        "warningRows": 0
+        "warningRows": 0,
+        "statewideOfficialTurnoutSourceUrl": "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
+        "statewideOfficialRegisteredVoters": 5142343,
+        "statewideOfficialBallotsCast": 3512930,
+        "statewideOfficialCrosscheck": "matches EAC statewide registered-voter and ballots-cast totals; no local state-native replacement rows loaded"
       }
     },
     {
