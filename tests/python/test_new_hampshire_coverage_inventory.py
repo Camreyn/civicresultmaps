@@ -29,7 +29,7 @@ class NewHampshireCoverageInventoryTest(unittest.TestCase):
         lead = historical["availableOfficialArchiveLeads"][0]
         unresolved = {item["year"]: item for item in historical["blockedOrUnresolvedLeads"]}
 
-        self.assertEqual(historical["status"], "candidate_2016_official_archive_lead")
+        self.assertEqual(historical["status"], "candidate_2016_official_package_collected_normalized_importer_blocked")
         self.assertEqual(lead["year"], 2016)
         self.assertIn("2016-ge-president-summary-and-belknap.xls", lead["artifactCandidates"])
         self.assertIn("2016-ge-governor.xls", lead["artifactCandidates"])
@@ -38,12 +38,12 @@ class NewHampshireCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(lead["cdxCaptureEvidence"][0]["timestamp"], "20240720085645")
         self.assertEqual(lead["cdxCaptureEvidence"][0]["mimetype"], "application/vnd.ms-excel")
         self.assertEqual(lead["cdxCaptureEvidence"][-1]["filename"], "2016-ge-congressional-district-2.xlsx")
-        self.assertEqual(lead["directDownloadAttempt"]["attemptedArtifacts"], 12)
-        self.assertEqual(lead["directDownloadAttempt"]["artifactFilesCreated"], 0)
-        self.assertIn("Unable to connect", " ".join(lead["directDownloadAttempt"]["observedErrors"]))
+        self.assertEqual(lead["directDownloadAttempt"]["attemptedArtifacts"], 13)
+        self.assertEqual(lead["directDownloadAttempt"]["artifactFilesCreated"], 13)
+        self.assertEqual(lead["directDownloadAttempt"]["result"], "succeeded_for_2016_workbook_package")
         self.assertEqual(unresolved[2020]["status"], "needs_targeted_archive_or_records_request")
         self.assertEqual(unresolved[2012]["status"], "needs_targeted_archive_or_records_request")
-        self.assertIn("No historical baseline rows are loaded", historical["caveat"])
+        self.assertIn("Official 2016 county presidential baseline artifacts are collected", historical["caveat"])
         self.assertEqual(self.inventory["requestMatrixArtifact"], "data/nh-2024-source-request-matrix.tsv")
         self.assertIn("nh-2016-historical-workbooks", historical["requestMatrixRows"])
 
@@ -61,9 +61,9 @@ class NewHampshireCoverageInventoryTest(unittest.TestCase):
         self.assertFalse(display["productionChecked"])
 
     def test_source_request_matrix_tracks_follow_up_artifacts_without_loading_rows(self):
-        self.assertEqual(self.request_rows["nh-2016-historical-workbooks"]["status"], "confirmed_archive_lead_binary_download_blocked")
-        self.assertIn("exact timestamps", self.request_rows["nh-2016-historical-workbooks"]["expected_rows_or_totals"])
-        self.assertIn("sandbox escalation", self.request_rows["nh-2016-historical-workbooks"]["confidence_notes"])
+        self.assertEqual(self.request_rows["nh-2016-historical-workbooks"]["status"], "official_2016_artifacts_collected_normalized_importer_blocked")
+        self.assertIn("10 official 2016 county presidential baseline rows", self.request_rows["nh-2016-historical-workbooks"]["expected_rows_or_totals"])
+        self.assertIn("Official archived 2016 President county XLS files", self.request_rows["nh-2016-historical-workbooks"]["confidence_notes"])
         self.assertEqual(self.request_rows["nh-2020-historical-request"]["status"], "needs_targeted_archive_or_records_request")
         self.assertEqual(self.request_rows["nh-2012-historical-request"]["status"], "needs_targeted_archive_or_records_request")
         self.assertEqual(self.request_rows["nh-town-ward-geometry"]["reporting_grain"], "town_ward")
