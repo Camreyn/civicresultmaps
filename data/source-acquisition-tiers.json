@@ -123,30 +123,43 @@
       "stateName": "Arkansas",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
+      "reportingGrain": "reporting_unit",
       "exportFormats": [
-        "eac fallback turnout"
+        "TotalResults JSON API",
+        "EAC fallback turnout CSV",
+        "Census TIGERweb GeoJSON"
       ],
       "sourceUrls": [
-        "https://www.sos.arkansas.gov/elections/results"
+        "https://enr.totalresults.com/arkansas/",
+        "https://www.sos.arkansas.gov/elections/results",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2705%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://enr.totalresults.com/arkansas/"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official county-scoped reporting-unit President rows",
+        "official county-scoped reporting-unit U.S. House comparison rows",
+        "EAC fallback turnout rows",
+        "county geometry",
+        "county equipment context from Verified Voting Verifier"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "human-readable precinct names for TotalResults reporting-unit IDs",
+        "state-native county or precinct turnout denominator rows",
+        "precinct boundary geometry or reporting-unit crosswalks",
+        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Arkansas result exports and identify whether precinct comparison rows are available."
+      "parserStatus": "arkansasTotalResultsFederalJson loaded for official county President rows and county-scoped reporting-unit President-versus-U.S.-House review rows; EAC fallback turnout and Census county geometry are loaded; admin registry has equipment context only",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "The TotalResults county-scoped federal buckets expose stable reporting-unit IDs but not human-readable precinct names. U.S. House is district-based and candidate-specific, so advisory screens are directional source-review context, not candidate-benefit findings. Turnout remains EAC fallback, and no normalized Arkansas audit/recount/CVR/incident/correction rows or official historical baselines are loaded.",
+      "nextAction": "Use data/ar-2024-data-coverage-inventory.json as the current AR source-search record; next steps are state-native turnout denominators, official precinct/reporting-unit crosswalk or geometry, normalized official historical baselines, and audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "AZ",

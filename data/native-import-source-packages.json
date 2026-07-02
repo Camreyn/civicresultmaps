@@ -9,6 +9,7 @@
     "County-only presidential/result tables are not sufficient for comparable advisory flag generation; each review-capable state needs President plus a same-row comparison contest at precinct, ward, town, or equivalent local reporting-unit level."
   ],
   "completedNativeStates": [
+    "AR",
     "AZ",
     "FL",
     "GA",
@@ -36,6 +37,83 @@
   ],
   "blockedStates": [],
   "states": [
+    {
+      "state": "AR",
+      "name": "Arkansas",
+      "priority": 13,
+      "nativeReadiness": "complete_county_map_reporting_unit_review_eac_turnout_admin_context_inventory",
+      "authority": "Arkansas Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/ar.json",
+      "legacyReferenceBundle": "data/ar-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Arkansas Secretary of State TotalResults official federal JSON package",
+          "sourceUrl": "https://enr.totalresults.com/arkansas/",
+          "localFile": "data/ar-2024-official-results",
+          "parserHint": "arkansasTotalResultsFederalJson reads election-info.json, federal-results.json, and manifest.json; aggregate U.S. President contest 366 county locations using Trump choice 789, Harris choice 791, and all other choices as Other."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Arkansas Secretary of State TotalResults county-scoped federal JSON package",
+          "sourceUrl": "https://enr.totalresults.com/arkansas/",
+          "localFile": "data/ar-2024-official-results",
+          "level": "reporting_unit",
+          "comparisonContest": "U.S. House",
+          "parserHint": "For each manifest federal-county-results file, pair President contest 366 reporting-unit IDs with U.S. House contest IDs 161, 227, 237, and 645; TotalResults exposes stable local IDs but not human-readable precinct names."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ar-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2705%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ar-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Arkansas 2024 data coverage and administration source inventory",
+          "localFile": "data/ar-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded TotalResults/EAC/Census/equipment artifacts and remaining official-source request paths; no normalized administration rows are loaded beyond equipment context."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Arkansas 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/5",
+          "localFile": "data/ar-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 75,
+        "geometryFeatures": 75,
+        "stateTotal": 1182676,
+        "trump": 759241,
+        "harris": 396905,
+        "other": 26530,
+        "localReviewRows": 2779,
+        "turnoutRows": 73
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_reporting_unit_ids",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      },
+      "caveats": [
+        "TotalResults county-scoped federal buckets expose reporting-unit IDs but not human-readable precinct names; review charts should label them as reporting units.",
+        "U.S. House is district-based and candidate-specific, so advisory screens are directional source-review context rather than candidate-benefit findings.",
+        "One presidential reporting-unit row has no same-row U.S. House comparison coverage in the current official package.",
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a state-native Arkansas turnout and registration denominator artifact is collected.",
+        "County geometry is loaded; precinct or reporting-unit boundary geometry/crosswalks are not loaded.",
+        "Equipment context is loaded from Verified Voting as supplemental administration metadata; normalized official audit/recount/CVR/incident/correction/litigation rows are not loaded.",
+        "Official 2012, 2016, and 2020 historical baseline rows are not loaded; use the Secretary of State results page or TotalResults archive paths as the next official source lead."
+      ]
+    },
     {
       "state": "MN",
       "name": "Minnesota",

@@ -14,6 +14,20 @@ Already-completed native states not repeated in this package: Ohio and Wisconsin
 
 These states have county geometry, official presidential result artifacts, local review rows, same-grain comparison contest data, turnout sources, and expected validation totals already represented in `data/state-configs/`.
 
+## Arkansas Wave 11 Update
+
+- Config: `etl/state-configs/ar.json`
+- Authority: Arkansas Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau
+- County results source: `data/ar-2024-official-results`, collected from the Arkansas Secretary of State TotalResults public API for the 2024 General Election federal contests
+- Local review source: `data/ar-2024-official-results/federal-county-results`
+- Comparison contest: U.S. House by district, same county-scoped TotalResults reporting-unit IDs, with district-based comparison caveats
+- Turnout source: EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/ar-2024-eac-turnout.csv`
+- County boundary: `data/ar-counties.geojson`
+- Coverage inventory: `data/ar-2024-data-coverage-inventory.json`
+- Equipment context: `data/ar-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation: 75 county result rows, 75 county geometry features, 1,182,676 presidential votes, 759,241 Trump votes, 396,905 Harris votes, 26,530 other votes, 2,779 reporting-unit review rows, and 73 EAC fallback turnout rows. Remaining gaps are state-native turnout denominators, human-readable precinct/reporting-unit names or geometry, official 2012/2016/2020 historical baseline artifacts, and normalized official audit/recount/CVR/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
+
 ## Minnesota
 
 - Config: `etl/state-configs/mn.json`

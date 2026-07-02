@@ -8,7 +8,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 - States checked: 50
 - Turnout loaded in database or validated native staging: 12
-- Loaded through official EAC fallback while state-native ward denominator remains missing: 1
+- Loaded through official EAC fallback while state-native denominator remains missing: 2
 - Need native turnout package: 37
 
 ## Loaded Turnout
@@ -33,6 +33,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 | State | Current status | Needed |
 | --- | --- | --- |
+| AR Arkansas | Native TotalResults presidential and review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Arkansas turnout or voter-participation rows with registered-voter denominator timing at county, precinct, or TotalResults reporting-unit grain. |
 | WI Wisconsin | Native presidential and review ETL is loaded, and official EAC 2024 EAVS V2 local-jurisdiction turnout rows are configured and loaded as fallback context. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county- or municipality-level is usable only with caveats. |
 
 ## States Needing Native Turnout Packages Or State-Native Replacements
@@ -77,6 +78,10 @@ North Carolina still uses EAC 2024 V2 county/jurisdiction fallback turnout rows 
 ## Iowa Update
 
 Iowa now uses state-native official precinct turnout rows from Iowa Secretary of State Clarity county detail XML reports at `data/ia-2024-county-detailxml-reports`. The parser reads each county `VoterTurnout` precinct `ballotsCast` and `totalVoters` field, with 1,651 turnout rows, 1,672,068 ballots cast, and 1,893,715 registered-voter denominator total. The same detail XML reports include President and U.S. House `VoteType` candidate splits such as Election Day and Absentee, but those fields are not yet normalized into the public vote-method API/UI contract. Wave 9 also documented official SOS county precinct shapefile ZIP leads and the 2024 General Election County Precinct Audits image source; both remain source leads rather than loaded turnout inputs. Remaining turnout-adjacent gaps are collected/crosswalked official precinct boundary geometry and a dedicated Iowa Clarity vote-method normalizer if method display rows are added.
+
+## Arkansas Update
+
+Arkansas currently uses official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ar-2024-eac-turnout.csv`, totaling 73 jurisdiction rows, 1,122,278 ballots cast, and 1,750,202 registered voters in the AR config expectations. The Arkansas Secretary of State TotalResults election-info JSON includes a statewide turnout summary, but this pass did not collect a county, precinct, or reporting-unit turnout denominator artifact that can replace EAC fallback rows. Keep Arkansas in the native-turnout-needed path until an official Arkansas turnout or voter-participation artifact with denominator timing and join keys is collected and reconciled. See `data/ar-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
 
 ## Wisconsin-Specific Request
 
