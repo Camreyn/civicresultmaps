@@ -748,16 +748,22 @@
         "expectedJurisdictions": 16
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Maine 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceInventory": "data/me-2024-data-coverage-inventory.json",
+        "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
+        "why": "Maine post-election audit, recount, correction, and litigation source paths are documented as Wave 15 follow-up leads, but no row-level 2024 audit selection or outcome artifacts are normalized yet."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Maine 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceInventory": "data/me-2024-data-coverage-inventory.json",
+        "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
+        "why": "Wave 15 documented the distinction between Maine Central Voter Registration System request forms and official CD2 cast vote record exports; no statewide ballot-level CVR availability or normalized CVR record package is loaded."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Maine 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceInventory": "data/me-2024-data-coverage-inventory.json",
+        "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
+        "why": "Maine incident, correction, recount, and litigation source paths are inventoried for records-request or official-source follow-up, but normalized row-level administration records are not loaded."
       }
     },
     {

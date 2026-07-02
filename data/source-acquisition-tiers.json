@@ -977,30 +977,50 @@
       "stateName": "Maine",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "municipality",
+      "dataFamily": "results_review_turnout_historical_geometry_admin_context",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "municipality_county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official Excel workbooks",
+        "official RCV/CVR Excel exports",
+        "EAC fallback turnout CSV",
+        "registered/enrolled voter text files",
+        "county GeoJSON"
       ],
       "sourceUrls": [
-        "https://www.maine.gov/sos/cec/elec/results/index.html"
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
+        "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
+        "https://www.maine.gov/sos/elections-voting/election-results-data/previous-election-results",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx"
+      ],
       "availableFields": [
-        "municipal/county-style totals",
-        "EAC fallback turnout"
+        "official county/town presidential Excel rows",
+        "official county/town U.S. Senate comparison Excel rows",
+        "official presidential congressional-district Excel rows for split-electoral-vote context",
+        "official CD2 ranked-choice summary, first-choice, and cast-vote-record Excel source leads",
+        "EAC fallback turnout rows",
+        "state-native registered/enrolled voter denominator leads",
+        "county geometry",
+        "county equipment context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "loaded Maine native result and review rows",
+        "Maine SOS Excel parser and reconciliation report",
+        "state-native ballots-cast or voter-participation rows paired with registration denominators",
+        "municipality/town geometry or official reporting-unit crosswalk",
+        "normalized official 2012/2016/2020 historical baseline rows",
+        "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Maine includes non-geographic/UOCAVA handling in map joins.",
-      "nextAction": "Classify official Maine exports and local comparison-contest availability."
+      "parserStatus": "data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv document official Maine SOS 2024 Excel result, U.S. Senate comparison, RCV/CVR, registration denominator, historical, geometry, equipment, and admin source leads; active etl/state-configs/me.json remains EAC turnout-only with no result or review rows loaded",
+      "manualReviewBurden": "low",
+      "confidence": "candidate_parser_ready",
+      "caveats": "Maine SOS publishes official Excel workbooks for President by County/Town and U.S. Senate, but they are not collected or parsed in this pass. UOCAVA/non-geographic rows, municipality label joins, and CD2 ranked-choice/CVR semantics need reconciliation before advisory rows are loaded. Turnout remains EAC fallback until state-native registration and ballots-cast semantics are reviewed.",
+      "nextAction": "Collect the official Maine SOS 2024 President and U.S. Senate Excel workbooks into data/, implement a Maine Excel parser with UOCAVA/non-geographic row handling, reconcile state totals, then add municipality/county crosswalks, state-native turnout review, historical baselines, and administration source rows."
     },
     {
       "state": "MI",
