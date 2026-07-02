@@ -74,7 +74,8 @@
     "harris": 396905,
     "other": 26530,
     "reviewRows": 2779,
-    "turnoutRows": 73
+    "turnoutRows": 73,
+    "historicalBaselineRows": 225
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -82,7 +83,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "arkansasTotalResultsFederalJson",

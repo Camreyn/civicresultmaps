@@ -16,7 +16,8 @@ class ArkansasHistoricalSourceArtifactTests(unittest.TestCase):
         self.assertTrue(report.passed)
         self.assertEqual(raw_config["historicalBaselines"]["sourceId"], "ar-historical-presidential-baseline")
         self.assertEqual(raw_config["historicalBaselines"]["expected"]["rowCount"], 225)
-        self.assertFalse(raw_config["capabilities"]["historicalBaseline"])
+        self.assertEqual(raw_config["expected"]["historicalBaselineRows"], 225)
+        self.assertTrue(raw_config["capabilities"]["historicalBaseline"])
         self.assertEqual(len(rows), 225)
         self.assertEqual(sorted({int(row["election_year"]) for row in rows}), [2012, 2016, 2020])
 
