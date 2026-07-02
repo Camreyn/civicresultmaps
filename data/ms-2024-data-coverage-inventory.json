@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "state": "MS",
+  "stateName": "Mississippi",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-01",
+  "purpose": "Wave 10 Mississippi source-coverage inventory for loaded official county result/review rows, EAC fallback turnout, state-native active-voter denominator leads, OCR-gated county PDF precinct-review feasibility, historical-baseline blockers, county geometry, and administration-context gaps. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "firstReads": {
+    "developerIndex": "docs/developer/index.md was not present in the worktree; absence recorded per wave instructions.",
+    "requiredFilesRead": [
+      "AGENTS.md",
+      "docs/developer/index.md (missing in worktree; absence recorded)",
+      "README.md",
+      "etl/state-configs/ms.json",
+      "data/source-acquisition-tiers.json",
+      "data/native-import-source-packages.json",
+      "docs/turnout-collection-inventory.md",
+      "docs/native-import-source-packages.md",
+      "scripts/collect-ms-county-result-pdfs.mjs",
+      "scripts/collect-ms-active-voter-count.mjs",
+      "scripts/verify-ms-ocr-pipeline.mjs",
+      "tests/api/api-contract.test.mjs",
+      "src/db/native-import.ts"
+    ]
+  },
+  "loadedArtifacts": [
+    {
+      "id": "ms-2024-election-recap-sheets",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://www.sos.ms.gov/elections/electionresults/2024ElectionRecapSheets.csv",
+      "localArtifactPath": "data/ms-2024-election-recap-sheets.csv",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "civic_etl.native nativeMississippiElectionRecapCsv via etl/state-configs/ms.json certifiedResults.format=mississippiElectionRecapCsv and reviewCharts.format=mississippiElectionRecapCsvCountyComparison",
+      "expectedRowsOrTotals": {
+        "countyResultRows": 82,
+        "countyReviewRows": 82,
+        "stateTotalVotes": 1225238,
+        "trumpVotes": 746305,
+        "harrisVotes": 465357,
+        "otherVotes": 13576,
+        "comparisonContest": "United States Senate"
+      },
+      "confidenceNotes": "Official state-hosted recap CSV is the loaded certified county result and county President-versus-U.S. Senate review source. Rows are county-level advisory inputs, not precinct-level scatterplot rows."
+    },
+    {
+      "id": "ms-2024-official-statewide-results-pdf",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://www.sos.ms.gov/elections/electionresults/2024%20Official%20Statewide%20Results.pdf",
+      "localArtifactPath": "data/ms-2024-official-statewide-results.pdf",
+      "reportingGrain": "statewide_and_county_reference",
+      "parserOrNormalizationPath": "referencePdf retained by etl/state-configs/ms.json",
+      "expectedRowsOrTotals": {
+        "referenceOnly": true
+      },
+      "confidenceNotes": "Official statewide results PDF is retained for provenance next to the parsed recap CSV."
+    },
+    {
+      "id": "ms-2024-eac-turnout",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifactPath": "data/eac-2024-state-turnout/ms-2024-eac-turnout.csv",
+      "reportingGrain": "county_jurisdiction",
+      "parserOrNormalizationPath": "eacTurnoutCsv via etl/state-configs/ms.json turnout.format=eacTurnoutCsv",
+      "expectedRowsOrTotals": {
+        "turnoutRows": 82,
+        "ballotsCast": 1225176,
+        "registeredVoters": 2131726
+      },
+      "confidenceNotes": "Official EAC 2024 V2 fallback turnout rows remain the active Mississippi turnout source until a Mississippi-native ballots-cast or voter-participation package is collected and reconciled."
+    },
+    {
+      "id": "ms-2024-november-active-voter-count",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://www.sos.ms.gov/sites/default/files/active-voter-count-reports/2024November%20Voter%20Count%20Red.pdf",
+      "relatedSourceUrl": "https://www.sos.ms.gov/elections-voting/active-voter-count-reports",
+      "localArtifactPath": "data/ms-2024-november-active-voter-count.pdf; data/ms-2024-november-active-voter-count.csv",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "scripts/collect-ms-active-voter-count.mjs; candidate source in etl/state-configs/ms.json",
+      "expectedRowsOrTotals": {
+        "countyRows": 82,
+        "activeVoters": 1980751,
+        "cvapEstimate": 2238135
+      },
+      "confidenceNotes": "Official Mississippi SOS November 2024 active-voter denominator lead. It is not loaded as turnout because it has no ballots-cast field and needs denominator timing/reconciliation against an official ballots-cast or voter-participation artifact."
+    },
+    {
+      "id": "ms-2024-county-results-pdfs",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_county.aspx",
+      "localArtifactPath": "data/ms-2024-county-results-pdfs; data/ms-2024-county-results-ocr-text; data/ms-2024-ocr-reviewed-corrections.csv",
+      "reportingGrain": "precinct_review_candidate_source",
+      "parserOrNormalizationPath": "scripts/verify-ms-ocr-pipeline.mjs coordinating scripts/ocr-ms-county-result-pdfs.mjs, scripts/extract-ms-recap-ocr-text-rows.mjs, scripts/reconcile-ms-ocr-grid-cells.mjs, scripts/create-ms-ocr-correction-template.mjs, and scripts/combine-ms-ocr-review-artifacts.mjs",
+      "expectedRowsOrTotals": {
+        "countyPdfs": 84,
+        "officialCounties": 82,
+        "updatedCountyFilesRetained": [
+          "Coahoma",
+          "Pike"
+        ],
+        "reviewedVerificationDate": "2026-06-30",
+        "importReadyCounties": 11,
+        "reviewRequiredCounties": 61,
+        "missingOcrCounties": 10
+      },
+      "confidenceNotes": "Official county recapitulation PDFs are retained and have an OCR/reconciliation path, but the precinct output is review-gated. Do not import precinct rows until OCR/manual review reconciles all county candidate totals to the official recap CSV."
+    },
+    {
+      "id": "ms-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2728%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifactPath": "data/ms-counties.geojson",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "censusTigerwebCountyGeojson via etl/state-configs/ms.json source ms-county-geometry",
+      "expectedRowsOrTotals": {
+        "geometryFeatures": 82
+      },
+      "confidenceNotes": "County geometry supports current county map joins. Precinct boundary geometry is not included."
+    },
+    {
+      "id": "ms-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/28",
+      "localArtifactPath": "data/verifiedvoting-ms-2024-equipment.json; data/ms-2024-equipment-context.csv",
+      "reportingGrain": "county administration context",
+      "parserOrNormalizationPath": "scripts/collect-equipment-sources.mjs and scripts/normalize-verifiedvoting-equipment.mjs via data/admin-source-packages.json",
+      "expectedRowsOrTotals": {
+        "equipmentContextRows": 82
+      },
+      "confidenceNotes": "Secondary jurisdiction-level election-administration context only. Do not use as vote, turnout, audit, incident, or proof of precinct-uniform equipment."
+    }
+  ],
+  "sourceFindings": [
+    {
+      "topic": "precinctReviewOcrGate",
+      "status": "partial_review_gated_not_importable",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://sos.ms.gov/elections/electionresults_aspx/elections_results_2024_county.aspx",
+      "localArtifactPath": "data/ms-2024-county-results-pdfs; data/ms-2024-county-results-ocr-text; data/ms-2024-ocr-reviewed-corrections.csv",
+      "reportingGrain": "precinct_candidate_rows_inside_county_recap_pdfs",
+      "parserOrNormalizationPath": "npm run etl:verify:ms:ocr:reviewed",
+      "evidence": "The reviewed partial OCR path reported 11 import-ready counties, 61 review-required counties, and 10 missing-OCR counties on 2026-06-30.",
+      "caveats": "Import-ready partial counties are not enough for statewide precinct advisory coverage. Correction additions can represent reviewed cells that were not present in the checked-in OCR text. Promote only a fully reviewed structured precinct artifact after all county totals reconcile to the official statewide recap CSV."
+    },
+    {
+      "topic": "stateNativeTurnoutReplacement",
+      "status": "denominator_lead_collected_ballots_cast_missing",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://www.sos.ms.gov/elections-voting/active-voter-count-reports",
+      "localArtifactPath": "data/ms-2024-november-active-voter-count.pdf; data/ms-2024-november-active-voter-count.csv",
+      "reportingGrain": "county_active_voter_denominator",
+      "parserOrNormalizationPath": "scripts/collect-ms-active-voter-count.mjs",
+      "evidence": "The November 2024 active-voter count normalizes to 82 county rows, 1,980,751 active voters, and a 2,238,135 CVAP estimate.",
+      "caveats": "The SOS active-voter report is a denominator lead only. It does not provide ballots-cast, election-level voter participation, or a replacement turnout percentage by itself."
+    },
+    {
+      "topic": "historicalBaselines",
+      "status": "official_source_leads_identified_artifacts_not_collected",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://www.sos.ms.gov/elections-voting/election-results",
+      "relatedSourceUrls": [
+        "https://www.sos.ms.gov/elections-voting/election-results/2020/2020-general-election",
+        "https://www.sos.ms.gov/elections-voting/election-results/2016/2016-general-election",
+        "https://www.sos.ms.gov/elections-voting/election-results/2012/2012-election-results"
+      ],
+      "localArtifactPath": "not collected",
+      "reportingGrain": "county_presidential_historical_target",
+      "parserOrNormalizationPath": "not implemented",
+      "evidence": "The official SOS election-results index confirms archive pages for 2020, 2016, and 2012. Existing checked repo artifacts do not include source-cited county presidential historical files for those years.",
+      "caveats": "The archive pages render result tables through iframe/current-site targets in the checked source pass, and stable direct county presidential artifact URLs were not exposed to text fetch. Do not enable historicalBaseline for Mississippi until official artifacts are collected, source-cited, and parsed reproducibly."
+    },
+    {
+      "topic": "adminAuditCvrIncidentCorrectionLitigation",
+      "status": "needs_data",
+      "sourceAuthority": "Mississippi Secretary of State and Mississippi county election officials",
+      "sourceUrl": "https://www.sos.ms.gov/elections-voting",
+      "localArtifactPath": "not collected",
+      "reportingGrain": "audit, recount, CVR availability, incident, correction, litigation, tabulator/EMS log, logic-and-accuracy, and custody context",
+      "parserOrNormalizationPath": "not implemented",
+      "caveats": "No normalized official 2024 audit, CVR availability, incident, correction, recount, litigation, tabulator/EMS log, logic-and-accuracy, or custody rows are loaded. Future rows must stay source-linked and descriptive, not claims of fraud or misconduct."
+    }
+  ],
+  "requestPath": {
+    "neededArtifacts": [
+      "official Mississippi ballots-cast or voter-participation rows that can be paired with the November 2024 active-voter denominator lead",
+      "reviewed structured precinct-level President and U.S. Senate rows from the county recapitulation PDFs, reconciled to official recap totals",
+      "official 2020, 2016, and 2012 county presidential historical artifacts from SOS archive iframe targets, direct recap files, or SOS request path",
+      "precinct boundary geometry or a reporting-unit crosswalk if subcounty overlays are required",
+      "post-election audit selection/outcome records, CVR availability statements, incident/correction/recount/litigation records, tabulator/EMS logs, logic-and-accuracy records, and custody records where public or lawfully releasable"
+    ],
+    "preferredAuthorities": [
+      "Mississippi Secretary of State Elections Division",
+      "Mississippi county election officials",
+      "official Mississippi or county GIS offices",
+      "U.S. Census Bureau for county geometry",
+      "U.S. Election Assistance Commission for fallback turnout context"
+    ],
+    "requestFields": [
+      "election date and contest names",
+      "county and precinct/reporting-unit identifier",
+      "candidate and party columns for President and U.S. Senate",
+      "ballots cast or voter participation count",
+      "active/registered-voter denominator and denominator timing",
+      "geometry or crosswalk identifier matching result rows",
+      "audit selection unit, tabulator/system identifier, hand-count and machine-count fields where available",
+      "CVR format, ballot secrecy limitations, tabulator/vendor export notes, incident/correction/recount/litigation identifiers, and source URL"
+    ],
+    "caveat": "All future request-produced artifacts must be source-linked, scripted, and reconciled to official county-certified totals before they change public review or turnout coverage."
+  },
+  "websiteApiDisplayPathChecked": [
+    "/api/sources?state=MS&year=2024",
+    "/api/coverage?state=MS&year=2024",
+    "/api/review-rows?state=MS&year=2024&limit=500&includeMetrics=true",
+    "/api/turnout?state=MS&year=2024&limit=500",
+    "/api/native-source-packages?state=MS",
+    "/api/admin-sources?state=MS&year=2024",
+    "src/app/workspace-tabs.tsx Data Notes, Turnout, History, Administration, Review Export, and Export/API panels",
+    "src/db/native-import.ts analysis indicator calculation path"
+  ],
+  "remainingRisks": [
+    "Mississippi review rows are currently county-level President-versus-U.S. Senate rows, not precinct-level scatterplot rows.",
+    "The county PDF OCR path remains review-gated: 11 import-ready counties, 61 review-required counties, and 10 missing-OCR counties were recorded on 2026-06-30.",
+    "EAC 2024 V2 rows remain the active turnout source because the official Mississippi active-voter report is a denominator lead without ballots-cast rows.",
+    "No official 2012, 2016, or 2020 Mississippi county presidential historical baseline artifact is committed or parsed.",
+    "No precinct boundary geometry, normalized official audit outcomes, CVR availability, incident/correction, recount, litigation, tabulator/EMS log, logic-and-accuracy, or custody artifacts are loaded.",
+    "Current advisory indicators are source/data reconciliation signals only; they are not proof of fraud or misconduct."
+  ]
+}
