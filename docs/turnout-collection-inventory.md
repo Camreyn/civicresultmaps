@@ -7,9 +7,9 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 ## Summary
 
 - States checked: 50
-- Turnout loaded in database or validated native staging: 12
-- Loaded through official EAC fallback while state-native ward denominator remains missing: 1
-- Need native turnout package: 37
+- Turnout loaded in database or validated native staging: 14
+- Loaded through official EAC fallback while state-native denominator remains missing: 2
+- Need native turnout package: 36
 
 ## Loaded Turnout
 
@@ -18,6 +18,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | AZ Arizona | 15 | county | totalEligibleRegistration | `data/az-2024-general-canvass-president.csv` |
 | IN Indiana | 92 | county | registeredVoters | `data/in-2024-general-turnout.csv` |
 | IA Iowa | 1,651 | precinct | registeredVoters | `data/ia-2024-county-detailxml-reports` |
+| KS Kansas | 105 | jurisdiction | registeredVoters | `data/eac-2024-state-turnout/ks-2024-eac-turnout.csv` |
 | MI Michigan | 83 | county | novemberActiveRegisteredVoters | `data/mi-2024-voter-turnout.txt` |
 | MN Minnesota | 4,103 | precinct | registeredVotersPlusElectionDayRegistrations | `data/mn-2024-general-federal-state-results-by-precinct-official.xlsx` |
 | MO Missouri | 116 | jurisdiction | registeredVoters | `data/mo-2024-general-turnout.csv` |
@@ -33,13 +34,14 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 
 | State | Current status | Needed |
 | --- | --- | --- |
+| KS Kansas | Native presidential and precinct review ETL is loaded from official Kansas Secretary of State workbooks, and official EAC 2024 EAVS V2 county/jurisdiction turnout rows are configured as fallback context. | Official Kansas ballots-cast or voter-participation rows with registered-voter denominator timing. Prefer precinct or county rows that can be reconciled to the SOS result workbooks; keep EAC fallback caveats visible until then. |
 | WI Wisconsin | Native presidential and review ETL is loaded, and official EAC 2024 EAVS V2 local-jurisdiction turnout rows are configured and loaded as fallback context. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county- or municipality-level is usable only with caveats. |
 
 ## States Needing Native Turnout Packages Or State-Native Replacements
 
 These states still need a state-native turnout package or review of whether fallback turnout coverage is sufficient for the current caveats.
 
-`AK`, `AL`, `AR`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `ID`, `IL`, `KS`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `UT`, `VT`, `WA`, `WY`
+`AK`, `AL`, `AR`, `CA`, `CO`, `CT`, `DE`, `FL`, `GA`, `HI`, `ID`, `IL`, `KY`, `LA`, `MA`, `MD`, `ME`, `MS`, `MT`, `NC`, `ND`, `NE`, `NJ`, `NM`, `NV`, `NY`, `OK`, `OR`, `RI`, `SD`, `TN`, `TX`, `UT`, `VT`, `WA`, `WY`
 
 ## Standard Request For Each Missing State
 
@@ -118,6 +120,10 @@ Nevada still uses EAC 2024 V2 county/jurisdiction fallback turnout rows in `data
 ## Georgia Update
 
 Georgia still uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ga-2024-eac-turnout.csv`, totaling 159 rows, 5,297,500 ballots cast, and 8,234,335 registered voters. The 2024 Georgia SOS media export is loaded for county results and precinct President-versus-U.S.-House review rows, and official 2012/2016/2020 SOS media exports are now normalized for county historical baselines, but no Georgia-native ballots-cast plus registered-voter denominator package was loaded in this pass. Keep Georgia in the native-turnout-needed list until a state or county denominator artifact is collected and reconciled.
+
+## Kansas Update
+
+Kansas currently uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ks-2024-eac-turnout.csv`, totaling 105 jurisdiction rows, 1,342,102 ballots cast, and 2,031,119 registered voters. Native Kansas result and review rows are loaded from official Kansas Secretary of State presidential and U.S. House precinct workbooks, but no Kansas-native turnout or voter-participation denominator artifact is loaded. Keep EAC fallback active until a Kansas SOS or county ballots-cast plus registered-voter source is collected and reconciled. See `data/ks-2024-data-coverage-inventory.json` for the current source and caveat record.
 
 ## Kentucky Update
 

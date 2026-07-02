@@ -579,30 +579,50 @@
       "stateName": "Kansas",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_equipment_admin_inventory",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "XLSX",
+        "PDF",
+        "GeoJSON",
+        "EAC fallback CSV",
+        "equipment context CSV"
       ],
       "sourceUrls": [
-        "https://sos.ks.gov/elections/elections-statistics.html"
+        "https://sos.ks.gov/elections/elections-statistics.html",
+        "https://sos.ks.gov/elections/24elec/2024-Presidential-Results.xlsx",
+        "https://sos.ks.gov/elections/24elec/2024-General-Election-United-States-House-of-Representatives-Precinct-Results.xlsx",
+        "https://sos.ks.gov/elections/24elec/2024-General-Election-Official-Vote-Totals.pdf",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/20"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://sos.ks.gov/elections/24elec/2024-Presidential-Results.xlsx",
+        "https://sos.ks.gov/elections/24elec/2024-General-Election-United-States-House-of-Representatives-Precinct-Results.xlsx"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals from SOS presidential workbook",
+        "official precinct presidential rows from SOS presidential workbook",
+        "official precinct U.S. House comparison rows from SOS workbook",
+        "official certified vote-total PDF provenance",
+        "EAC fallback county turnout and registered-voter denominator rows",
+        "Census county geometry",
+        "county equipment context from Verified Voting Verifier"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator and ballots-cast rows",
+        "precinct boundary geometry or precinct crosswalk",
+        "official 2012, 2016, and 2020 historical presidential baseline rows",
+        "normalized post-election audit selection/outcome rows",
+        "official CVR availability or request-produced CVR records",
+        "official incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Kansas result exports and local reporting-unit availability."
+      "parserStatus": "nativeKansasPresidentialHouseXlsx package loaded from official Kansas SOS presidential and U.S. House workbooks; EAC fallback turnout and Census county geometry loaded; data/ks-2024-data-coverage-inventory.json documents remaining official-source gaps",
+      "manualReviewBurden": "low",
+      "confidence": "loaded",
+      "caveats": "U.S. House is district-based, so precinct review rows are advisory screening context. Three nonzero presidential local rows lack matching House comparison rows and are kept as vote-share-only rows. Turnout remains EAC fallback until Kansas-native turnout/registration rows are collected and reconciled. County geometry is loaded; precinct geometry, historical baselines, and normalized audit/CVR/incident/recount/litigation rows are not loaded.",
+      "nextAction": "Use data/ks-2024-data-coverage-inventory.json as the current KS source-search record; next steps are Kansas-native turnout denominators, precinct geometry/crosswalks, official historical baselines, and official audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "KY",
