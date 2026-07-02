@@ -4,7 +4,7 @@ import { apiEnvelope, listReviewRows, publicDataCacheHeaders, stateQuery, yearQu
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const state = stateQuery.parse(params.get("state") ?? "");
-  const year = yearQuery.parse(params.get("year") ?? "");
+  const year = yearQuery.parse(params.get("year") ?? "2024");
   const limit = Number(params.get("limit") ?? 500);
   const includeMetrics = params.get("includeMetrics") === "true";
 
