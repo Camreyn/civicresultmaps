@@ -753,7 +753,7 @@
         "The SOS results page says precinct-level general election data files are available for purchase from the Elections Division, so subcounty advisory rows remain blocked until that file is obtained.",
         "Kansas City is reported separately from counties in the SOS PDFs and does not have a separate county polygon in the loaded Census county geometry.",
         "Historical 2012/2016/2020 presidential baselines are loaded from official SOS PDFs; the 2016 PDF does not expose county-level write-in detail, so other/total values use visible-column sums.",
-        "Administration-source inventory is recorded in data/mo-2024-admin-source-inventory.json, but normalized audit, CVR availability, incident/correction, recount, and litigation rows are not loaded."
+        "Administration-source inventory is recorded in data/mo-2024-admin-source-inventory.json, and data/mo-2024-source-request-tracker.json records the precinct-file, geometry/crosswalk, Kansas City display, audit, CVR, incident/correction, recount, and litigation request fields. Normalized audit, CVR availability, incident/correction, recount, and litigation rows are not loaded."
       ]
     },
     {
@@ -1234,11 +1234,12 @@
       "requiredArtifacts": [
         "official purchasable precinct-level data file if subcounty advisory flags are required",
         "official precinct boundary geometry if subcounty map overlays are required",
-        "normalized post-election audit selection/outcome artifacts, CVR availability rows, incident/correction rows, recount records, and litigation records for administration context"
+        "normalized post-election audit selection/outcome artifacts, CVR availability rows, incident/correction rows, recount records, and litigation records for administration context",
+        "data/mo-2024-source-request-tracker.json request tracker maintained until precinct/admin records are collected"
       ],
       "preferredComparisonContest": "U.S. Senate",
       "parserNeeded": "countyPresidentCsv loaded for Missouri official county/reporting-jurisdiction package; normalizedTurnoutCsv and historicalPresidentialCsv are generated from official Missouri SOS PDFs by scripts/normalize-mo-sos-pdfs.mjs; data/mo-2024-admin-source-inventory.json records official administration-source paths; precinct data must be purchased from Missouri SOS for subcounty rows",
-      "blocker": "Missouri has official county/reporting-jurisdiction President-versus-U.S. Senate review rows, state-native 2024 registered-voter turnout denominators, 2012/2016/2020 official historical presidential baselines, and an official administration-source inventory for audit/CVR/incident/recount/litigation/equipment context. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained. Normalized audit outcomes, county CVR availability, incident/correction, recount, and litigation rows are still not loaded."
+      "blocker": "Missouri has official county/reporting-jurisdiction President-versus-U.S. Senate review rows, state-native 2024 registered-voter turnout denominators, 2012/2016/2020 official historical presidential baselines, an official administration-source inventory for audit/CVR/incident/recount/litigation/equipment context, and a request tracker at data/mo-2024-source-request-tracker.json. The SOS page says precinct-level general election data files are available for purchase by contacting the Elections Division, so precinct-level advisory flags remain blocked until that file is obtained and paired with geometry or a reporting-unit crosswalk. Normalized audit outcomes, county CVR availability, incident/correction, recount, and litigation rows are still not loaded."
     },
     {
       "state": "NE",
