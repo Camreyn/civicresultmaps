@@ -1340,15 +1340,23 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "Oregon 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://sos.oregon.gov/elections/Pages/electionhistory.aspx",
+        "requestUrl": "https://oregonsos.govqa.us/WEBAPP/_rs/",
+        "reportingLevel": "county",
+        "why": "Wave 12 confirmed Oregon election-history and public-records paths, but no 2024 General Election hand-count/post-election audit selection or outcome artifact is normalized yet. County election offices are the follow-up path if state-level audit records are not published."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Oregon 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "requestUrl": "https://oregonsos.govqa.us/WEBAPP/_rs/",
+        "reportingLevel": "county",
+        "why": "Oregon county election offices and the Secretary of State public-records portal are documented request paths for CVR availability, cast-vote exports, ballot images, tabulator logs, logic-and-accuracy records, and custody records; no normalized CVR or electronic-evidence rows are loaded."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "Oregon 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "requestUrl": "https://oregonsos.govqa.us/WEBAPP/_rs/",
+        "why": "Oregon incident, correction, recount, litigation, and county certification correspondence records are documented as county/SOS request items; no normalized 2024 rows are loaded."
       }
     },
     {
@@ -1570,15 +1578,21 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "Utah 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://vote.utah.gov/2024-election-information/",
+        "localArtifact": "data/ut-2024-data-coverage-inventory.json",
+        "why": "The Utah coverage inventory documents 2024 election information and county canvass paths, but no normalized post-election audit selection/outcome rows are loaded."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Utah 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://vote.utah.gov/obtain-voter-registration-or-election-data/",
+        "localArtifact": "data/ut-2024-data-coverage-inventory.json",
+        "why": "No official Utah CVR availability response or CVR artifact was collected; the request/data path is documented for follow-up."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "Utah 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "sourceUrl": "https://vote.utah.gov/2024-election-information/",
+        "localArtifact": "data/ut-2024-data-coverage-inventory.json",
+        "why": "The CD2 recount report is retained as context, but no normalized presidential incident, correction, litigation, recount, L&A, tabulator-log, or custody rows are loaded."
       }
     },
     {

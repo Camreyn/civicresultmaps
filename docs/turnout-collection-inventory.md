@@ -7,7 +7,7 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 ## Summary
 
 - States checked: 50
-- Turnout loaded in database or validated native staging: 15
+- Turnout loaded in database or validated native staging: 16
 - Loaded through official EAC fallback while state-native denominator remains missing: 4
 - Need native turnout package or state-native replacement: 36
 
@@ -36,8 +36,10 @@ This is an internal collection inventory. It is not rendered in the Civic Result
 | State | Current status | Needed |
 | --- | --- | --- |
 | AR Arkansas | Native TotalResults presidential and review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Arkansas turnout or voter-participation rows with registered-voter denominator timing at county, precinct, or TotalResults reporting-unit grain. |
+| ID Idaho | Native county presidential and U.S. House review ETL is loaded from official Vote Idaho artifacts, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Idaho turnout or voter-participation rows with registered-voter denominator timing at county, precinct, or Vote Idaho reporting-unit grain. |
 | KS Kansas | Native presidential and precinct review ETL is loaded from official Kansas Secretary of State workbooks, and official EAC 2024 EAVS V2 county/jurisdiction turnout rows are configured as fallback context. | Official Kansas ballots-cast or voter-participation rows with registered-voter denominator timing. Prefer precinct or county rows that can be reconciled to the SOS result workbooks; keep EAC fallback caveats visible until then. |
 | MA Massachusetts | Native PD43+ President/Senate review ETL is loaded, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured and validated as fallback context. The official Massachusetts turnout statistics page confirms the same 2024 statewide registered-voter and total-votes-cast figures. | Official Massachusetts local turnout or voter-participation denominator rows at city/town, ward, precinct, or another documented reporting grain. |
+| OK Oklahoma | Native Oklahoma result and precinct review ETL is loaded from official Oklahoma State Election Board race, county, and precinct CSV exports, and official EAC 2024 EAVS V2 jurisdiction turnout rows are configured as fallback context. | Official Oklahoma ballots-cast or voter-history rows with registered-voter denominator timing. Prefer county or precinct rows that can be reconciled to the official OK result exports; keep EAC fallback caveats visible until then. |
 | WI Wisconsin | Native presidential and review ETL is loaded, and official EAC 2024 EAVS V2 local-jurisdiction turnout rows are configured and loaded as fallback context. | Official Wisconsin registered-voter denominator data. Prefer ward-level data that can join to the WEC ward workbook; county- or municipality-level is usable only with caveats. |
 
 ## States Needing Native Turnout Packages Or State-Native Replacements
@@ -86,6 +88,10 @@ Iowa now uses state-native official precinct turnout rows from Iowa Secretary of
 ## Arkansas Update
 
 Arkansas currently uses official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ar-2024-eac-turnout.csv`, totaling 73 jurisdiction rows, 1,122,278 ballots cast, and 1,750,202 registered voters in the AR config expectations. The Arkansas Secretary of State TotalResults election-info JSON includes a statewide turnout summary, but this pass did not collect a county, precinct, or reporting-unit turnout denominator artifact that can replace EAC fallback rows. Keep Arkansas in the native-turnout-needed path until an official Arkansas turnout or voter-participation artifact with denominator timing and join keys is collected and reconciled. See `data/ar-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
+
+## Idaho Update
+
+Idaho currently uses official EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/id-2024-eac-turnout.csv`, totaling 44 jurisdiction rows, 917,469 ballots cast, and 1,178,750 registered voters. The official Vote Idaho 2024 General Election turnout page is documented as a state-native source lead, but no Idaho-native local turnout denominator artifact has been normalized into the active turnout contract. Keep Idaho in the native-turnout-needed path until an official Idaho turnout or voter-participation artifact with denominator timing and join keys is collected and reconciled. See `data/id-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
 
 ## Wisconsin-Specific Request
 
@@ -148,3 +154,15 @@ California now uses official Secretary of State 2024 General Election voter part
 ## Massachusetts Update
 
 Massachusetts currently uses official EAC 2024 V2 jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/ma-2024-eac-turnout.csv`, totaling 351 jurisdiction rows, 3,512,930 ballots cast, and 5,142,343 registered voters. Wave 11 confirmed the official Massachusetts Secretary turnout statistics page reports the same 2024 statewide registered-voter and total-votes-cast figures, so the statewide denominator is cross-checked. The state page is not a local turnout replacement because it does not provide the city/town, ward, or precinct rows needed to replace the active EAC fallback package. See `data/ma-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
+
+## Oregon Update
+
+Oregon currently uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/or-2024-eac-turnout.csv`, totaling 36 jurisdiction rows, 2,269,608 ballots cast, and 3,060,374 registered voters. Wave 12 confirmed an official Oregon Secretary of State 2024 General Election voter registration and turnout statistics PDF lead at `https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735459`, linked from the Oregon election history page. Keep EAC fallback active until that state-native PDF is collected, parsed, and reconciled against the loaded rows. See `data/or-2024-data-coverage-inventory.json` for source URLs, caveats, and request fields.
+
+## Utah Update
+
+Utah now uses official county standardized canvass turnout rows at `data/ut-2024-general-turnout.csv`, generated by `node scripts/normalize-ut-official-results.mjs` from sheet `G24` of the Utah aggregated county canvass statistics workbook at `data/ut-2024-master-aggregated-numbers-2023-2025.xlsx`. The rows include 29 counties, 1,529,139 total ballots counted, and 1,793,317 active voters. Total ballots counted is election-level turnout across the ballot, not presidential contest votes. EAC rows remain retained as a benchmark only. Remaining turnout-adjacent gaps are precinct/local denominators if subcounty result rows are later collected, plus official precinct geometry/crosswalks.
+
+## Louisiana Update
+
+Louisiana currently uses official EAC 2024 V2 parish/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/la-2024-eac-turnout.csv`, totaling 64 rows, 2,021,588 ballots cast, and 3,046,376 registered voters. Native Louisiana result and review rows are loaded from official Louisiana Secretary of State precinct CSV artifacts, but no Louisiana-native ballots-cast plus registered-voter denominator package was loaded in this pass. Keep EAC fallback active until a Secretary of State or parish denominator artifact is collected, normalized, and reconciled. See `data/la-2024-data-coverage-inventory.json` for the current source and caveat record.

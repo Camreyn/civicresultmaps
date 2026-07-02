@@ -490,30 +490,50 @@
       "stateName": "Idaho",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official Vote Idaho XML endpoints",
+        "official Vote Idaho map HTML widgets",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON",
+        "Verified Voting equipment CSV"
       ],
       "sourceUrls": [
-        "https://sos.idaho.gov/elections-division/election-results/"
+        "https://sos.idaho.gov/elections-division/election-results/",
+        "https://archive.voteidaho.gov/results/2024/general/xml.html",
+        "https://archive.voteidaho.gov/results/2024/general/presidential.html",
+        "https://archive.voteidaho.gov/results/2024/general/congressional.html",
+        "https://archive.voteidaho.gov/results/2024/general/turnout.html",
+        "https://canvass.sos.idaho.gov/",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/16"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://archive.voteidaho.gov/results/2024/general/xml.html"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official county U.S. House comparison rows",
+        "EAC fallback turnout rows",
+        "county geometry",
+        "county equipment context",
+        "official 2012, 2016, and 2020 historical source leads"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "precinct/local reporting-unit President rows",
+        "same-grain precinct/local comparison contest rows",
+        "state-native turnout denominator",
+        "precinct boundary geometry or reporting-unit crosswalk",
+        "loaded official 2012/2016/2020 historical baseline rows",
+        "normalized official audit, CVR, incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Idaho result exports and local reporting-unit availability."
+      "parserStatus": "nativeIdahoCountyPresidentCsv loaded from data/id-2024-general-president.csv and data/id-2024-general-us-house.csv; data/id-2024-data-coverage-inventory.json documents remaining official-source leads and gaps",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Current Idaho review rows are county-level President-versus-U.S.-House comparisons, not precinct scatter plots. U.S. House is district-based, EAC turnout is fallback rather than Idaho-native, and no normalized historical baseline, audit, CVR, incident, correction, recount, litigation, or precinct-geometry rows are loaded.",
+      "nextAction": "Use data/id-2024-data-coverage-inventory.json as the current ID source-search record; next steps are state-native turnout, precinct/local result exports, precinct geometry/crosswalks, historical baseline normalization, and official audit/CVR/incident/correction/recount/litigation source collection."
     },
     {
       "state": "IL",
@@ -715,30 +735,45 @@
       "stateName": "Louisiana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "parish",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
+      "reportingGrain": "precinct_vote_mode_and_parish",
       "exportFormats": [
-        "eac fallback turnout"
+        "Louisiana SOS static precinct CSV endpoints",
+        "Louisiana SOS human-readable XLSX workbook",
+        "EAC fallback turnout CSV",
+        "Census TIGERweb GeoJSON"
       ],
       "sourceUrls": [
-        "https://voterportal.sos.la.gov/static/"
+        "https://voterportal.sos.la.gov/static/",
+        "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential",
+        "https://s3-us-west-2.amazonaws.com/mediaresults.sos.la.gov/HumanReadableElectionResults/20241105/Election+Results+(11-05-2024).xlsx",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential"
+      ],
       "availableFields": [
-        "parish presidential totals",
-        "EAC fallback turnout"
+        "official parish presidential totals",
+        "official precinct and vote-mode President rows",
+        "official precinct and vote-mode U.S. House comparison rows where same-grain keys align",
+        "EAC fallback turnout rows",
+        "parish geometry",
+        "parish equipment context from Verified Voting Verifier",
+        "data/la-2024-data-coverage-inventory.json coverage inventory"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator rows",
+        "precinct boundary geometry or precinct-to-parish crosswalks",
+        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Louisiana uses parishes rather than counties.",
-      "nextAction": "Classify official Louisiana result exports and precinct/parish comparison availability."
+      "parserStatus": "louisianaSosPrecinctCsvDirectory loaded for official parish President result rows and precinct/vote-mode President-versus-U.S.-House review rows; EAC fallback turnout, Census parish geometry, admin equipment context, and data/la-2024-data-coverage-inventory.json are documented",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Louisiana uses parishes rather than counties. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context, not same-office statewide comparison rows. EAC turnout remains a fallback until state-native denominator artifacts are collected.",
+      "nextAction": "Collect state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baseline artifacts, and normalized audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "MA",
@@ -1481,60 +1516,103 @@
       "stateName": "Oklahoma",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_geometry_admin_context",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official race-level CSV",
+        "official county-level CSV ZIP",
+        "official precinct-level CSV ZIP",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON",
+        "Verified Voting equipment context CSV"
       ],
       "sourceUrls": [
-        "https://oklahoma.gov/elections/elections-results.html"
+        "https://oklahoma.gov/elections/elections-results/election-results/2024-election-results/november-general-election.html",
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/CSV/20241105",
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/CLCSV/20241105",
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://oklahoma.gov/elections/security-integrity/post-election-audits/post-election-audit-archives/2024-post-election-audits.html",
+        "https://oklahoma.gov/elections/candidates/district-and-precinct-maps.html",
+        "https://oklahoma.gov/elections/about-us/information-and-records-requests.html"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official precinct presidential rows",
+        "official precinct U.S. House comparison rows where both major-party House candidates are present",
+        "official EAC fallback turnout rows",
+        "county geometry",
+        "county equipment context from Verified Voting",
+        "official post-election audit archive source path"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator rows",
+        "precinct boundary geometry or precinct-to-county crosswalk",
+        "loaded official 2012/2016/2020 historical baseline rows",
+        "normalized post-election audit selection/outcome rows",
+        "normalized CVR availability, recount, incident, correction, and litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Oklahoma result exports and local reporting-unit availability."
+      "parserStatus": "nativeOklahomaOfficialCsvZip loads race-level, county-level, and precinct-level official OK exports; EAC fallback turnout and county geometry are loaded; data/ok-2024-data-coverage-inventory.json documents remaining source gaps.",
+      "manualReviewBurden": "low",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Oklahoma has official export endpoints for race, county, and precinct results, so acquisition is Tier 1 for result/review data. Review rows use U.S. House by district and retain vote-share-only rows when a precinct lacks both major-party House candidates. Turnout remains EAC fallback, county geometry is loaded only at county grain, and normalized historical, audit, CVR, recount, incident, correction, and litigation rows are not loaded.",
+      "nextAction": "Collect state-native turnout or voter-history rows, official precinct geometry/crosswalks, historical 2012/2016/2020 result exports, and row-level audit/CVR/recount/incident/correction/litigation artifacts or request responses."
     },
     {
       "state": "OR",
       "stateName": "Oregon",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official abstract PDF",
+        "normalized county CSV",
+        "ORMS county precinct PDF/CSV package",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON"
       ],
       "sourceUrls": [
-        "https://sos.oregon.gov/elections/Pages/electionhistory.aspx"
+        "https://sos.oregon.gov/elections/Pages/electionhistory.aspx",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Record?q=recNotes%3A2024+General+Election+Precinct+Level+Results&sortBy=recTypedTitle",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735459",
+        "https://sos.oregon.gov/elections/Pages/voting-systems.aspx",
+        "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
+        "https://oregonsos.govqa.us/WEBAPP/_rs/"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735450",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873777",
+        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873690"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official county Attorney General comparison rows",
+        "official EAC fallback turnout rows",
+        "Census county geometry",
+        "county equipment context from Verified Voting",
+        "official ORMS precinct result package collected for provenance",
+        "official 2012/2016/2020 historical result PDF leads"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "normalized precinct President and same-grain comparison rows",
+        "state-native turnout denominator rows from the official Oregon turnout statistics PDF",
+        "precinct boundary geometry or reporting-unit crosswalks",
+        "normalized official 2012/2016/2020 historical baseline rows",
+        "normalized post-election audit, CVR availability, incident, correction, recount, litigation, tabulator-log, logic-and-accuracy, custody, and ballot-image records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Oregon result exports and local reporting-unit availability."
+      "parserStatus": "native county President-versus-Attorney-General package loaded from official Oregon abstract PDF; ORMS precinct package collected but not normalized; data/or-2024-data-coverage-inventory.json documents official turnout, historical, audit/CVR, request, and display-path gaps",
+      "manualReviewBurden": "high",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Current Oregon review rows are county-level advisory inputs, not precinct scatter plots. The official ORMS precinct package includes many image/PDF artifacts requiring county-aware extraction or request-produced machine-readable files. Turnout remains EAC fallback until the official Oregon voter registration and turnout statistics PDF is normalized and reconciled. Historical and administration-context rows are source leads only.",
+      "nextAction": "Normalize the 2024 official turnout statistics PDF, then build or request machine-readable precinct President plus same-grain comparison rows and official 2012/2016/2020 historical baseline rows."
     },
     {
       "state": "PA",
@@ -1769,30 +1847,46 @@
       "stateName": "Utah",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
+      "dataFamily": "results_review_turnout_geometry_admin_context",
+      "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "county",
       "exportFormats": [
-        "eac fallback turnout"
+        "official canvass PDF",
+        "official aggregated canvass XLSX",
+        "normalized CSV",
+        "GeoJSON"
       ],
       "sourceUrls": [
-        "https://vote.utah.gov/election-results/"
+        "https://vote.utah.gov/election-results/",
+        "https://vote.utah.gov/2024-election-information/",
+        "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+        "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+        "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential named-candidate columns",
+        "official county Attorney General comparison rows",
+        "official county total ballots counted and active-voter denominator rows",
+        "county geometry",
+        "county equipment context from Verified Voting Verifier",
+        "CD2 recount report link retained as context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "484-vote statewide presidential residual distributed by county from an official machine-readable source",
+        "precinct/local reporting-unit President rows",
+        "same-grain subcounty comparison contest rows",
+        "precinct boundary geometry or reporting-unit crosswalk",
+        "official normalized 2012/2016/2020 historical baselines",
+        "normalized audit, CVR availability, incident, correction, litigation, L&A, tabulator-log, and custody rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Utah result exports and local reporting-unit availability."
+      "parserStatus": "county President, Attorney General comparison, and turnout rows normalized by scripts/normalize-ut-official-results.mjs; turnout imports through the existing turnout-only path; result/review native loading is pending a shared UT countyPresidentCsv dispatcher.",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "The official canvass PDF text layer exposes named presidential candidate columns totaling 1,488,010 votes, while the PDF contest total is 1,488,494. The 484-vote residual is documented but not distributed to counties. Review rows are county-level President-versus-Attorney-General comparisons, not precinct scatter plots.",
+      "nextAction": "Add the small shared native dispatcher for UT countyPresidentCsv/countyComparisonCsv after coordination, resolve the 484-vote presidential residual from an official machine-readable source, then collect precinct/local reporting-unit rows, precinct geometry/crosswalks, official historical baselines, and normalized audit/CVR/incident/correction/litigation records."
     },
     {
       "state": "VA",

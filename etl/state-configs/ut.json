@@ -1,20 +1,96 @@
 {
   "code": "UT",
   "name": "Utah",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Utah Lieutenant Governor Elections Office",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ut-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC fallback turnout benchmark rows",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/ut-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows retained as a benchmark; the active Utah turnout parser now uses state-native county standardized canvass statistics.",
+      "status": "superseded"
+    },
+    {
+      "id": "ut-2024-general-statewide-canvass-pdf",
+      "category": "Official 2024 General Election statewide canvass PDF",
+      "url": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "localFile": "data/ut-2024-general-election-statewide-canvass.pdf",
+      "parser": "officialCanvassPdf",
+      "authority": "Utah Lieutenant Governor Elections Office",
+      "timestampBasis": "Official 2024 November General Election statewide canvass linked from vote.utah.gov.",
+      "confidence": "Official certified statewide canvass PDF retained as the source artifact for normalized county President and Attorney General CSV extracts. The PDF text layer exposes named presidential candidate columns totaling 1,488,010 votes, while the PDF contest total is 1,488,494; the 484-vote residual remains a documented extraction caveat.",
+      "status": "loaded"
+    },
+    {
+      "id": "ut-2024-general-president-county",
+      "category": "Official presidential county results",
+      "url": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "localFile": "data/ut-2024-general-president.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "Utah Lieutenant Governor Elections Office",
+      "timestampBasis": "Generated from the official statewide canvass PDF by scripts/normalize-ut-official-results.mjs.",
+      "confidence": "County President rows are normalized from official PDF text-layer candidate columns. Other includes named non-Trump/non-Harris candidate columns visible in the PDF text layer; the 484-vote statewide residual between named columns and the PDF contest total is not distributed to counties.",
+      "status": "loaded"
+    },
+    {
+      "id": "ut-2024-general-attorney-general-county",
+      "category": "Official Attorney General county comparison rows",
+      "url": "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
+      "localFile": "data/ut-2024-general-attorney-general.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Utah Lieutenant Governor Elections Office",
+      "timestampBasis": "Generated from the official statewide canvass PDF by scripts/normalize-ut-official-results.mjs.",
+      "confidence": "Official county Attorney General rows provide the same county grain comparison contest for advisory review. Attorney General is not a federal U.S. Senate comparison contest.",
+      "status": "loaded"
+    },
+    {
+      "id": "ut-2024-aggregated-county-canvass-statistics",
+      "category": "Official aggregated county standardized canvass statistics workbook",
+      "url": "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+      "localFile": "data/ut-2024-master-aggregated-numbers-2023-2025.xlsx",
+      "parser": "utahAggregatedCanvassWorkbook",
+      "authority": "Utah Lieutenant Governor Elections Office",
+      "timestampBasis": "Aggregated Canvass Statistics 2023-Present workbook linked from vote.utah.gov and read from sheet G24.",
+      "confidence": "Official county standardized canvass statistics workbook retained as source artifact for Utah state-native turnout rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "ut-2024-general-turnout-county",
+      "category": "Official county turnout and active-voter denominator rows",
+      "url": "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+      "localFile": "data/ut-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "Utah Lieutenant Governor Elections Office",
+      "timestampBasis": "Generated from sheet G24 of the official aggregated county standardized canvass workbook by scripts/normalize-ut-official-results.mjs.",
+      "confidence": "Rows use total ballots counted and active voters from Utah county standardized canvass statistics. Total ballots counted is election-level turnout, not presidential contest votes.",
+      "status": "loaded"
+    },
+    {
+      "id": "ut-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2749%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ut-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Utah county map joins; precinct boundary geometry is not included.",
+      "status": "loaded"
+    },
+    {
+      "id": "ut-2024-cd2-recount-report",
+      "category": "Official Congressional District 2 recount report",
+      "url": "https://vote.utah.gov/wp-content/uploads/2024/08/CD2-Recount-Signed.pdf",
+      "localFile": "data/ut-2024-cd2-recount-report.pdf",
+      "parser": "officialRecountPdf",
+      "authority": "Utah Lieutenant Governor Elections Office",
+      "timestampBasis": "2024 Congressional District 2 recount report linked from vote.utah.gov 2024 Election Information.",
+      "confidence": "Administration context only; not normalized into row-level recount findings for the 2024 presidential advisory workflow.",
       "status": "loaded"
     },
     {
@@ -25,39 +101,42 @@
       "parser": "historicalPresidentialCsv",
       "authority": "Wikipedia county presidential tables with Utah election-result source footnotes",
       "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 30, 2026.",
-      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Utah election result sources where available.",
+      "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL; replace with official Utah historical Excel/PDF normalization when feasible.",
       "status": "loaded"
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "ut-2024-eac-turnout",
-    "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Utah turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
-    "warningRequired": true,
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "ut-2024-general-turnout-county",
+    "denominatorType": "activeVoters",
+    "registrationDenominatorTiming": "countyStandardizedCanvass",
+    "sourceLevel": "county",
+    "notes": "Utah turnout rows use official county standardized canvass statistics from the G24 sheet of the Aggregated Canvass Statistics 2023-Present workbook. Ballots cast are total ballots counted across the election, not presidential contest votes.",
+    "warningRequired": false,
     "expected": {
       "rowCount": 29,
-      "ballotsCast": 1466896,
-      "registeredVoters": 2039862
-    }
+      "ballotsCast": 1529139,
+      "registeredVoters": 1793317
+    },
+    "benchmarkSourceId": "ut-2024-eac-turnout"
   },
   "expected": {
     "jurisdictions": 29,
     "resultRows": 0,
-    "sources": 2,
+    "sources": 9,
+    "geometryFeatures": 29,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,
     "other": 0,
     "reviewRows": 0,
-    "turnoutRows": 29
+    "turnoutRows": 29,
+    "historicalBaselineRows": 87
   },
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
     "sourceId": "ut-historical-presidential-wikipedia-county",
-    "warning": "Utah historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data.",
+    "warning": "Utah historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data; official Utah historical Excel/PDF artifacts are identified as replacement leads.",
     "expected": {
       "rowCount": 87,
       "years": [
@@ -74,5 +153,21 @@
     "reviewGraphs": false,
     "turnout": true,
     "historicalBaseline": true
-  }
+  },
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "ut-2024-general-president-county",
+    "otherColumns": [
+      "other"
+    ],
+    "caveat": "The official Utah canvass PDF reports 1,488,494 total presidential contest votes statewide. The text-layer named candidate county columns normalized here total 1,488,010 votes, leaving a 484-vote statewide residual that is documented but not distributed to counties. Native result import is pending a shared build_native_payload UT countyPresidentCsv dispatcher."
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "ut-2024-general-attorney-general-county",
+    "comparisonContest": "Attorney General",
+    "coverageMode": "presidentVsAttorneyGeneral",
+    "warning": "Utah review rows are county-level President-versus-Attorney-General comparisons from the official statewide canvass PDF. They support county-level directional screening only; they are not precinct-level scatter plots, and Attorney General is not a federal Senate comparison contest. Native review import is pending the same shared dispatcher."
+  },
+  "turnoutOnly": true
 }
