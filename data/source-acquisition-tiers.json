@@ -93,30 +93,49 @@
       "stateName": "Alabama",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_historical_geometry_admin_context",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct_absentee_provisional_columns",
       "exportFormats": [
-        "eac fallback turnout"
+        "official precinct XLS ZIP",
+        "official turnout PDF",
+        "official voter registration XLSX",
+        "EAC fallback turnout CSV",
+        "county GeoJSON"
       ],
       "sourceUrls": [
-        "https://www.sos.alabama.gov/alabama-votes/voter/election-data"
+        "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/2024GeneralElectionTotalBallotsCast.pdf",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/ALVR-2024.xlsx",
+        "https://www.sos.alabama.gov/public-records-request"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official precinct/reporting-mode presidential rows from county XLS workbooks",
+        "official precinct/reporting-mode U.S. House comparison rows from the same XLS workbooks",
+        "official state-native total-ballots and registration source leads",
+        "EAC fallback turnout rows",
+        "county geometry",
+        "county equipment context from Verified Voting Verifier",
+        "official 2012/2016/2020 historical precinct/archive source leads",
+        "SOS public-records and county-official request paths for administration context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "loaded Alabama native result and review rows",
+        "district-aware precinct XLS matrix parser",
+        "state-native turnout rows reconciled with denominator timing",
+        "precinct boundary geometry or official precinct-header crosswalk",
+        "normalized official historical baseline rows",
+        "normalized audit, CVR availability, recount, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Alabama result exports and identify whether precinct comparison rows are available."
+      "parserStatus": "EAC turnout config remains active; data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv document the official Alabama SOS precinct XLS ZIP, turnout/registration leads, historical source leads, county geometry, equipment context, and admin request paths without loading review rows",
+      "manualReviewBurden": "medium",
+      "confidence": "candidate_parser_ready",
+      "caveats": "The official 2024 precinct ZIP is a matrix of 67 county XLS files with contests in rows and precinct/absentee/provisional modes in columns. U.S. House is district-based and split counties include blank out-of-district cells, so a district-aware parser and reconciliation pass are required before advisory review rows are loaded. Active turnout remains EAC fallback until Alabama-native turnout and registration sources are parsed and denominator timing is reviewed.",
+      "nextAction": "Use data/al-2024-source-request-matrix.tsv to collect the official Alabama SOS precinct ZIP and turnout/registration artifacts, then implement an Alabama SOS XLS matrix parser and state-native turnout reconciliation before adding AL to completed native states."
     },
     {
       "state": "AR",
