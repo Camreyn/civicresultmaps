@@ -2514,6 +2514,61 @@
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
         }
       }
+    },
+    {
+      "state": "ND",
+      "name": "North Dakota",
+      "priority": 16,
+      "currentStatus": "official_dashboard_export_identified_turnout_only_eac_active",
+      "requestMatrixArtifact": "data/nd-2024-source-request-matrix.tsv",
+      "officialSourcePages": [
+        "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+        "https://results.sos.nd.gov/ResultsExport.aspx",
+        "https://results.sos.nd.gov/VoterTurnoutDetails.aspx",
+        "https://www.sos.nd.gov/elections/voter/voting-north-dakota",
+        "https://www.sos.nd.gov/elections/election-security/post-election-audits",
+        "https://www.sos.nd.gov/elections/election-security/voting-equipment",
+        "https://results.sos.nd.gov/ResultsSW.aspx?type=RECOUNT",
+        "https://vip.sos.nd.gov/PortalListDetails.aspx?ptlPKID=4&ptlhPKID=63"
+      ],
+      "requiredArtifacts": [
+        "official North Dakota SOS CSV/Excel/XML export or committed source artifact for 2024 President rows",
+        "official same-grain U.S. Senate comparison rows from the same export surface, with U.S. House or Governor only as fallback comparison contests",
+        "state-native turnout and eligible-voter denominator rows normalized from SOS dashboard/export and reconciled to EAC fallback",
+        "county geometry and, if subcounty advisory coverage is pursued, official precinct geometry or a precinct-code crosswalk",
+        "official 2020, 2016, and 2012 historical presidential baseline artifacts from SOS dashboards/PDF archive",
+        "official 2024 post-election audit report, recount records, CVR availability, incident/correction/litigation records, and equipment context caveats"
+      ],
+      "preferredComparisonContest": "U.S. Senate if exported at the same grain as President; U.S. House or Governor are fallback statewide comparisons only with caveats.",
+      "parserNeeded": "North Dakota remains EAC-turnout-only. A new SOS results export collector/parser is needed for President and same-grain U.S. Senate rows. A turnout normalizer must use eligible-voter semantics because North Dakota does not require voter registration; active EAC rows currently report 53 turnout rows, 371,974 ballots cast, and 0 registered voters.",
+      "blocker": "Official 2024 results are available through the North Dakota SOS dashboard and export form, but no official result export artifact is committed and no native President or review rows are loaded. The official dashboard reports 371,975 voter turnout and 594,140 eligible voters, which must be reconciled against active EAC fallback before replacing turnout. Historical baselines, geometry/crosswalks, audit/CVR/recount/incident/correction/litigation rows remain unnormalized.",
+      "availableArtifacts": {
+        "coverageInventory": {
+          "sourceTitle": "North Dakota 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+          "localFile": "data/nd-2024-data-coverage-inventory.json",
+          "parserHint": "Inventory only; documents official result/export, turnout denominator, geometry, historical, equipment, audit, recount, and records-request paths without loading result/review/admin rows."
+        },
+        "sourceRequestMatrix": {
+          "sourceTitle": "North Dakota 2024 source request matrix",
+          "localFile": "data/nd-2024-source-request-matrix.tsv",
+          "parserHint": "Context-only request queue for result exports, same-grain comparison rows, eligible-voter turnout reconciliation, geometry/crosswalks, historical baselines, and administration artifacts."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 North Dakota jurisdiction turnout fallback plus SOS eligible-voter lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv; data/nd-2024-data-coverage-inventory.json",
+          "level": "jurisdiction_fallback_and_state_native_eligible_voter_lead",
+          "denominator": "EAC registered voters is zero because North Dakota has no voter registration; official SOS eligible-voter denominator lead reports 594,140 eligible voters statewide.",
+          "parserHint": "Current ETL uses eacTurnoutCsv. A future ND turnout normalizer should collect official dashboard/export eligible-voter fields and reconcile the one-ballot SOS/EAC turnout difference."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier North Dakota 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/38",
+          "localFile": "data/nd-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or precinct-uniformity proof."
+        }
+      }
     }
   ]
 }

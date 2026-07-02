@@ -1269,30 +1269,51 @@
       "stateName": "North Dakota",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_historical_geometry_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
+      "reportingGrain": "county_or_precinct_export_pending",
       "exportFormats": [
-        "eac fallback turnout"
+        "official ASP.NET results dashboard",
+        "CSV/Excel/XML export form",
+        "HTML precinct turnout table",
+        "official archived canvass PDFs"
       ],
       "sourceUrls": [
-        "https://vip.sos.nd.gov/PortalListDetails.aspx?ptlhPKID=53&ptlPKID=7"
+        "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+        "https://results.sos.nd.gov/ResultsExport.aspx",
+        "https://results.sos.nd.gov/VoterTurnoutDetails.aspx",
+        "https://www.sos.nd.gov/elections/voter/voting-north-dakota",
+        "https://www.sos.nd.gov/elections/election-security/post-election-audits"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+        "https://results.sos.nd.gov/ResultsSW.aspx?type=RECOUNT"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official statewide President totals",
+        "official statewide U.S. Senate, U.S. House, and Governor comparison leads",
+        "official CSV/Excel/XML export form for result collection",
+        "official precinct ballots-cast turnout table",
+        "official eligible-voter turnout denominator summary",
+        "official 2020, 2016, and 2012 historical archive leads",
+        "county equipment context from Verified Voting and official SOS equipment description",
+        "official post-election audit policy and recount page source paths"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "committed official result export artifact",
+        "loaded certified President result rows",
+        "loaded same-grain President-versus-U.S.-Senate review rows",
+        "state-native eligible-voter denominator parser and reconciliation to EAC fallback",
+        "county geometry artifact for ND map joins",
+        "precinct boundary geometry or result-to-precinct crosswalk",
+        "normalized historical baseline rows",
+        "normalized audit, CVR availability, incident, correction, recount, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official North Dakota result exports and local reporting-unit availability."
+      "parserStatus": "EAC turnout config remains active; data/nd-2024-data-coverage-inventory.json and data/nd-2024-source-request-matrix.tsv document the official SOS dashboard/export, eligible-voter turnout caveat, historical archive, geometry, equipment, audit, recount, and records-request paths without loading result or review rows",
+      "manualReviewBurden": "medium",
+      "confidence": "candidate_parser_ready",
+      "caveats": "North Dakota does not require voter registration, so registered-voter denominator fields are not native turnout denominators. The official dashboard reports 371,975 voter turnout and 594,140 eligible voters, while active EAC fallback has 371,974 ballots cast and 0 registered voters; review source semantics before replacing turnout. The official export form is ASP.NET/viewstate based and needs a collector before rows are loaded.",
+      "nextAction": "Use data/nd-2024-source-request-matrix.tsv to collect official President and U.S. Senate export rows, reconcile eligible-voter turnout against EAC fallback, add county/precinct geometry or crosswalks, and collect audit/CVR/recount/incident/correction/litigation artifacts before adding ND to completed native states."
     },
     {
       "state": "NE",

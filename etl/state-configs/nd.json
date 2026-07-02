@@ -16,6 +16,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "nd-2024-data-coverage-inventory",
+      "category": "North Dakota 2024 official source coverage inventory and request matrix",
+      "url": "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+      "localFile": "data/nd-2024-data-coverage-inventory.json; data/nd-2024-source-request-matrix.tsv",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "North Dakota Secretary of State; North Dakota county auditors; U.S. Census Bureau; Verified Voting",
+      "timestampBasis": "Wave 15 source coverage inventory checked July 2, 2026; official results dashboard last updated April 21, 2026 at 1:33:23 PM.",
+      "confidence": "Inventory only. Official North Dakota SOS dashboard and CSV/Excel/XML export form are identified for President, U.S. Senate, turnout, recount, and historical leads, but active ND ETL remains EAC turnout-only until exports are collected and parsed.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -24,7 +35,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "North Dakota turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "North Dakota turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native eligible-voter turnout artifact is collected and reconciled. North Dakota does not require voter registration; the official SOS dashboard reports eligible voters instead of a registered-voter denominator.",
     "warningRequired": true,
     "expected": {
       "rowCount": 53,
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 53,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,

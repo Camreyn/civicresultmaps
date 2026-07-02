@@ -896,21 +896,24 @@
       "priority": 32,
       "status": "loaded",
       "sourceLevel": "jurisdiction",
-      "denominatorType": "registeredVoters",
+      "denominatorType": "registeredVotersZeroNoRegistrationFallback",
       "denominatorTiming": "eacReported",
       "sourceTitle": "EAC fallback turnout rows",
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 53,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL, but North Dakota does not require voter registration and EAC registered voters are zero. The official SOS dashboard reports eligible voters as the relevant state-native denominator lead.",
+      "nextAction": "Collect and normalize North Dakota SOS eligible-voter turnout rows from the official results/turnout dashboard or export, then reconcile 371,975 SOS voter turnout and 594,140 eligible voters against active EAC fallback 371,974 ballots cast and 0 registered voters before replacing or relabeling the active turnout package.",
       "coverage": {
         "jurisdictionRows": 53,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nd-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 0,
         "ballotsCast": 371974,
-        "warningRows": 53
+        "warningRows": 53,
+        "coverageInventory": "data/nd-2024-data-coverage-inventory.json",
+        "stateNativeEligibleVotersLead": 594140,
+        "stateNativeVoterTurnoutLead": 371975
       }
     },
     {
