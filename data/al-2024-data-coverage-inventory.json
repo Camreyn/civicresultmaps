@@ -1,0 +1,174 @@
+{
+  "state": "AL",
+  "stateName": "Alabama",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "scope": "official source coverage inventory only; no Alabama result, review, turnout, historical, audit, CVR, incident, correction, recount, or litigation rows are promoted by this file",
+  "requiredFirstReads": {
+    "completed": [
+      "AGENTS.md",
+      "README.md",
+      "etl/state-configs/al.json",
+      "data/source-acquisition-tiers.json",
+      "data/native-import-source-packages.json",
+      "docs/turnout-collection-inventory.md",
+      "docs/native-import-source-packages.md"
+    ],
+    "repoDrift": [
+      "docs/developer/index.md is referenced by AGENTS.md but is missing in this worktree."
+    ]
+  },
+  "sourcePage": {
+    "authority": "Alabama Secretary of State",
+    "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
+    "status": "official_source_page_confirmed",
+    "notes": "The Alabama SOS election data page links 2024 precinct result, turnout, registration, participation, and historical election-data artifacts."
+  },
+  "requestMatrixArtifact": "data/al-2024-source-request-matrix.tsv",
+  "loadedArtifacts": [
+    {
+      "id": "al-2024-eac-turnout",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifact": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv",
+      "electionYear": 2024,
+      "reportingGrain": "jurisdiction",
+      "parserOrNormalizationPath": "eacTurnoutCsv via etl/state-configs/al.json",
+      "expectedCounts": {
+        "turnoutRows": 67,
+        "ballotsCast": 2272911,
+        "registeredVoters": 3868040
+      },
+      "confidence": "loaded_official_fallback",
+      "caveats": "Active Alabama turnout remains EAC fallback until Alabama-native ballots-cast and registration denominator rows are collected, parsed, and reconciled."
+    },
+    {
+      "id": "al-county-geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2701%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifact": "data/al-counties.geojson",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "county map geometry",
+      "expectedCounts": {
+        "geometryFeatures": 67
+      },
+      "confidence": "loaded_official_geometry",
+      "caveats": "County geometry supports county map joins only; precinct boundaries/crosswalks are not loaded."
+    },
+    {
+      "id": "al-2024-equipment-context",
+      "sourceAuthority": "Verified Voting Verifier",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/1",
+      "localArtifact": "data/al-2024-equipment-context.csv",
+      "rawArtifact": "data/verifiedvoting-al-2024-equipment.json",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "verifiedVotingEquipment",
+      "expectedCounts": {
+        "equipmentJurisdictions": 67
+      },
+      "confidence": "loaded_context_only",
+      "caveats": "Supplemental equipment context only; not a vote, turnout, audit, incident, or proof-of-precinct-uniformity source."
+    }
+  ],
+  "sourceFindings": {
+    "official2024PrecinctResults": {
+      "status": "official_machine_readable_source_identified_not_loaded",
+      "authority": "Alabama Secretary of State",
+      "sourceUrl": "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
+      "temporaryInspection": {
+        "downloadedTo": "C:/tmp/al-2024-general-precinct-results.zip",
+        "sha256": "4ECCA55FC235018AEB2385DEBD375E6FA7AAA553C5BD67786ADD08D850EFCC96",
+        "zipBytes": 985426,
+        "countyXlsFiles": 67,
+        "worksheetName": "Precinct Results",
+        "matrixColumnsAfterContestPartyCandidate": 2085,
+        "nonZeroRegisteredVoterColumns": 1153,
+        "presidentCandidateRows": 402,
+        "usHouseCandidateRows": 189
+      },
+      "expectedCounts": {
+        "presidentTotal": 2265090,
+        "trump": 1462616,
+        "harris": 772412,
+        "other": 30062,
+        "usHouseTotal": 2048663
+      },
+      "parserNeeded": "A future Alabama SOS precinct XLS matrix parser should unzip 67 county XLS files, pivot precinct/absentee/provisional columns, aggregate President rows for certified result totals, and pair U.S. House rows at the same county/precinct/reporting-mode key only where district cells are present.",
+      "caveats": "U.S. House is district-based and no 2024 Alabama U.S. Senate contest exists. Jefferson and other split-district counties contain blank cells for out-of-district precinct/contest combinations, so parser work needs district-aware validation before review rows are loaded."
+    },
+    "stateNativeTurnout": {
+      "status": "state_native_leads_identified_eac_fallback_active",
+      "authority": "Alabama Secretary of State",
+      "sourceUrls": [
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/2024GeneralElectionTotalBallotsCast.pdf",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/ALVR-2024.xlsx",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/Comprehensive%20Voter%20Turnout%201986-2024.pdf"
+      ],
+      "activeFallback": {
+        "localArtifact": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv",
+        "turnoutRows": 67,
+        "ballotsCast": 2272911,
+        "registeredVoters": 3868040
+      },
+      "parserNeeded": "Collect and normalize the SOS total ballots cast PDF and ALVR workbook; review denominator timing before replacing EAC fallback."
+    },
+    "historicalBaselines": {
+      "status": "official_historical_source_leads_identified_not_loaded",
+      "targetYears": [
+        2012,
+        2016,
+        2020
+      ],
+      "sourceUrls": [
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2020-12/2020%20General%20Precinct%20Results.zip",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2017-06/2016-General-PrecinctLevel.zip",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2017-06/2012General-PrecinctLevel.zip",
+        "https://www.sos.alabama.gov/sites/default/files/election-data/2017-06/eapresidentgeneral1976-2012_0.xls"
+      ],
+      "parserNeeded": "Historical Alabama SOS precinct/archive normalizer that aggregates official 2012, 2016, and 2020 county presidential baselines and records year-specific format caveats."
+    },
+    "geometryAndCrosswalks": {
+      "status": "county_geometry_loaded_precinct_geometry_missing",
+      "countyGeometry": "data/al-counties.geojson",
+      "countyGeometryFeatures": 67,
+      "officialCountyLookup": "https://www.sos.alabama.gov/city-county-lookup",
+      "missing": [
+        "statewide precinct boundary geometry",
+        "official precinct/reporting-mode crosswalk to the 2024 XLS headers"
+      ]
+    },
+    "postElectionAudit": {
+      "status": "not_loaded_request_path_identified",
+      "requestPath": "https://www.sos.alabama.gov/public-records-request",
+      "contactPath": "https://www.sos.alabama.gov/contact",
+      "caveats": "No Alabama 2024 post-election audit selection/outcome rows are normalized. Request any public audit materials from the SOS or relevant county custodians before adding row-level context."
+    },
+    "cvrAvailability": {
+      "status": "not_loaded_request_path_identified",
+      "requestPath": "https://www.sos.alabama.gov/public-records-request",
+      "countyOfficialLookup": "https://www.sos.alabama.gov/city-county-lookup",
+      "caveats": "No statewide CVR availability or county CVR response package is loaded; ballot secrecy, redaction, vendor format, and county custody need review before normalization."
+    },
+    "incidentsCorrectionsRecountsLitigation": {
+      "status": "not_loaded_request_path_identified",
+      "requestPath": "https://www.sos.alabama.gov/public-records-request",
+      "contactPath": "https://www.sos.alabama.gov/contact",
+      "caveats": "No normalized Alabama 2024 incident, correction, recount, or litigation rows are loaded."
+    }
+  },
+  "displayApiCaveats": {
+    "currentAlabamaNativeStatus": "turnout_only_eac_fallback",
+    "reviewCenter": "No Alabama review rows are loaded in the current ETL. The official SOS precinct ZIP is parser-ready source evidence but requires a district-aware XLS matrix parser before advisory calculations.",
+    "turnout": "Active turnout remains EAC fallback. State-native SOS total-ballots and registration sources are leads, not replacement rows, until parsed and reconciled.",
+    "advisoryUse": "Any future advisory indicators are public-interest review signals only, not claims of fraud or misconduct."
+  },
+  "nextActions": [
+    "Collect the official 2024 Alabama precinct ZIP into data/ and implement an Alabama SOS precinct XLS matrix parser with President and U.S. House reconciliation.",
+    "Collect and normalize Alabama SOS total-ballots-cast and ALVR files; decide whether EAC fallback should remain active after denominator timing review.",
+    "Collect official 2012, 2016, and 2020 historical source artifacts and normalize county presidential baselines.",
+    "Request or locate official precinct boundary geometry/crosswalks for subcounty maps.",
+    "Use SOS and county public-records paths for audit, CVR availability, incident, correction, recount, and litigation artifacts before adding administration rows."
+  ]
+}

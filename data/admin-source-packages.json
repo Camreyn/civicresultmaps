@@ -82,15 +82,15 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "Alabama 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Alabama 2024 post-election audit rows are not normalized. data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv identify SOS public-records, elections-division contact, and county-official request paths for any audit selections/outcomes before row-level context is added."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Alabama 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Alabama 2024 CVR availability or county CVR production rows are not normalized. data/al-2024-source-request-matrix.tsv records the SOS public-records and county-official request paths; review ballot-secrecy, redaction, vendor-format, and county-custody caveats before loading any CVR context."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "Alabama 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Alabama 2024 incident, correction, recount, and litigation rows are not normalized. data/al-2024-data-coverage-inventory.json records official SOS/contact/request paths for future source collection; absence of normalized rows is not evidence of misconduct."
       }
     },
     {

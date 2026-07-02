@@ -334,8 +334,8 @@
       "localFile": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 67,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database. Alabama SOS 2024 General Total Ballots Cast, ALVR-2024 registration, and Comprehensive Voter Turnout artifacts are now documented as state-native leads, but they are not parsed or reconciled into the active turnout contract.",
+      "nextAction": "Collect and normalize Alabama SOS total-ballots-cast and ALVR artifacts, review denominator timing, and reconcile them against the official precinct XLS ballots-cast rows and EAC fallback before replacing the active fallback package; see data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv.",
       "coverage": {
         "jurisdictionRows": 67,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/al-2024-eac-registered-voter-denominator.json",
