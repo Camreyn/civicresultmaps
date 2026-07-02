@@ -446,7 +446,7 @@ Expected validation: 36 county result rows, 36 county geometry features, 2,244,4
 
 - Config: `etl/state-configs/ut.json`
 - Authority: Utah Lieutenant Governor Elections Office; U.S. Census Bureau; U.S. Election Assistance Commission
-- County results source: `data/ut-2024-general-president.csv`, generated from the official 2024 General Election Statewide Canvass PDF at `data/ut-2024-general-election-statewide-canvass.pdf`
+- County results source: `data/ut-2024-general-president.csv`, generated from the official electionresults.utah.gov U.S. President API artifact at `data/ut-2024-general-president-official-api.json`; the certified statewide canvass PDF remains retained at `data/ut-2024-general-election-statewide-canvass.pdf` as a cross-check
 - Local review source: `data/ut-2024-general-attorney-general.csv`
 - Comparison contest: Attorney General, county rows only
 - Turnout source: `data/ut-2024-general-turnout.csv`, generated from the official aggregated county standardized canvass statistics workbook `data/ut-2024-master-aggregated-numbers-2023-2025.xlsx`
@@ -455,7 +455,7 @@ Expected validation: 36 county result rows, 36 county geometry features, 2,244,4
 - Coverage inventory: `data/ut-2024-data-coverage-inventory.json`
 - Recount context: `data/ut-2024-cd2-recount-report.pdf` retained as context only
 
-Source-artifact validation: 29 county President rows, 29 county geometry features, 29 county Attorney General review rows, 29 county turnout rows, 87 secondary historical baseline rows, 883,818 Trump votes, 562,566 Harris votes, and 41,626 named-candidate Other votes are documented in the Utah package. Active native staging now imports Utah result, review, turnout, and historical rows through the generic countyPresidentCsv dispatcher. Caveat: the official Utah canvass PDF reports 1,488,494 total presidential contest votes, while the PDF text-layer named candidate county columns normalized here total 1,488,010 votes; the 484-vote residual is documented in the coverage inventory and not distributed to counties. Remaining gaps are an official machine-readable residual-by-county source, official 2012/2016/2020 historical baseline normalization, precinct/local reporting-unit rows, precinct geometry/crosswalks, and normalized audit/CVR/incident/correction/recount/litigation records.
+Source-artifact validation: 29 county President rows, 29 county geometry features, 29 county Attorney General review rows, 29 county turnout rows, 87 secondary historical baseline rows, 883,818 Trump votes, 562,566 Harris votes, and 42,110 Other votes are documented in the Utah package. Active native staging imports Utah result, review, turnout, and historical rows through the generic countyPresidentCsv dispatcher. The official electionresults.utah.gov President API resolves the 1,488,494-vote statewide contest total at county grain, including qualified write-ins; the certified canvass PDF remains retained as a cross-check and Attorney General source. Remaining gaps are official 2012/2016/2020 historical baseline normalization, precinct/local reporting-unit rows, precinct geometry/crosswalks, and normalized audit/CVR/incident/correction/recount/litigation records.
 
 ## Louisiana Wave 12 Update
 

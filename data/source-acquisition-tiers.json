@@ -1848,9 +1848,10 @@
       "jurisdictionName": "Statewide",
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical",
-      "tier": "tier_6_official_pdf_hostile",
+      "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "county",
       "exportFormats": [
+        "official electionresults API JSON",
         "official canvass PDF text layer",
         "normalized CSV",
         "official standardized canvass workbook",
@@ -1860,31 +1861,32 @@
         "https://vote.utah.gov/election-results/",
         "https://vote.utah.gov/2024-election-information/",
         "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
-        "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx"
+        "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+        "https://electionresults.utah.gov/results/public/api/elections/utah/general11052024/ballot-items/88e40000-968a-0c37-b0b0-08dce9374078"
       ],
       "exampleUrls": [
         "https://vote.utah.gov/wp-content/uploads/2025/02/2024-General-Election-Statewide-Canvass-2.pdf",
-        "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx"
+        "https://vote.utah.gov/wp-content/uploads/2025/12/Master-Aggregated-Numbers-2023-2025.xlsx",
+        "https://electionresults.utah.gov/results/public/api/elections/utah/general11052024/ballot-items/88e40000-968a-0c37-b0b0-08dce9374078"
       ],
       "availableFields": [
-        "county presidential totals",
+        "official county presidential API rows including qualified write-ins",
         "county Attorney General comparison rows",
         "state-native county turnout and active-voter denominator",
         "county geometry",
         "secondary 2012/2016/2020 historical baseline rows"
       ],
       "missingFields": [
-        "484-vote statewide presidential residual distributed by county from an official machine-readable source",
         "precinct/local reporting-unit rows",
         "precinct boundary geometry or crosswalks",
         "official normalized 2012/2016/2020 historical baselines",
         "normalized audit/CVR/incident/correction/recount/litigation rows"
       ],
-      "parserStatus": "county President, Attorney General comparison, turnout, and historical rows load through the generic countyPresidentCsv dispatcher and scripts/normalize-ut-official-results.mjs artifacts.",
+      "parserStatus": "county President rows load from the official electionresults.utah.gov API; Attorney General comparison, turnout, and historical rows load through scripts/normalize-ut-official-results.mjs artifacts and the generic countyPresidentCsv dispatcher.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The official canvass PDF text layer exposes named presidential candidate columns totaling 1,488,010 votes, while the PDF contest total is 1,488,494. The 484-vote residual is documented but not distributed to counties. Review rows are county-level President-versus-Attorney-General comparisons, not precinct scatter plots.",
-      "nextAction": "Resolve the 484-vote presidential residual from an official machine-readable source, then collect precinct/local reporting-unit rows, precinct geometry/crosswalks, official historical baselines, and normalized audit/CVR/incident/correction/litigation records."
+      "caveats": "The official electionresults API resolves the 1,488,494-vote presidential contest total at county grain, including qualified write-ins. Review rows are county-level President-versus-Attorney-General comparisons, not precinct scatter plots. Official precinct/local rows, precinct geometry, official historical baselines, and normalized audit/CVR/incident/correction/recount/litigation rows remain unloaded.",
+      "nextAction": "Collect precinct/local reporting-unit rows, precinct geometry/crosswalks, official historical baselines, and normalized audit/CVR/incident/correction/litigation records."
     },
     {
       "state": "VA",

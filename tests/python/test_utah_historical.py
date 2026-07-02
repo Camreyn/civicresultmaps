@@ -16,10 +16,10 @@ class UtahPipelineTests(unittest.TestCase):
         self.assertEqual(native["parser"], "nativeCountyPresidentCsv")
         self.assertEqual(len(native["resultRows"]), 29)
         self.assertEqual(len(native["reviewRows"]), 29)
-        self.assertEqual(native["metrics"]["nativeResultTotalVotes"], 1488010)
+        self.assertEqual(native["metrics"]["nativeResultTotalVotes"], 1488494)
         self.assertEqual(native["metrics"]["nativeTrumpVotes"], 883818)
         self.assertEqual(native["metrics"]["nativeHarrisVotes"], 562566)
-        self.assertEqual(native["metrics"]["nativeOtherVotes"], 41626)
+        self.assertEqual(native["metrics"]["nativeOtherVotes"], 42110)
         self.assertEqual(native["metrics"]["nativeComparisonRows"], 29)
         self.assertEqual(native["metrics"]["nativeComparisonContest"], "Attorney General")
         self.assertEqual(native["metrics"]["nativeTurnoutRows"], 29)
@@ -37,6 +37,7 @@ class UtahPipelineTests(unittest.TestCase):
 
         source_ids = {source["id"] for source in artifact["sources"]}
         self.assertIn("ut-2024-general-president-county", source_ids)
+        self.assertIn("ut-2024-general-president-official-api", source_ids)
         self.assertIn("ut-2024-general-attorney-general-county", source_ids)
         self.assertIn("ut-2024-general-turnout-county", source_ids)
         self.assertIn("ut-historical-presidential-wikipedia-county", source_ids)
@@ -46,7 +47,7 @@ class UtahPipelineTests(unittest.TestCase):
         self.assertEqual(len(president_rows), 29)
         self.assertEqual(sum(int(row["trump"]) for row in president_rows), 883818)
         self.assertEqual(sum(int(row["harris"]) for row in president_rows), 562566)
-        self.assertEqual(sum(int(row["other"]) for row in president_rows), 41626)
+        self.assertEqual(sum(int(row["other"]) for row in president_rows), 42110)
 
         historical = config.raw["historicalBaselines"]
         self.assertEqual(historical["expected"]["rowCount"], 87)
