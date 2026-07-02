@@ -1138,16 +1138,35 @@
         "expectedJurisdictions": 21
       },
       "audit": {
-        "status": "needs_data",
-        "why": "New Jersey 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "county",
+        "sourceDocumentId": "nj-doe-2024-post-election-audit-pdfs",
+        "sourceUrl": "https://www.nj.gov/state/elections/election-information-2024.shtml",
+        "localArtifact": "data/nj-2024-data-coverage-inventory.json",
+        "why": "New Jersey DOE 2024 Election Information links post-election audit PDFs for all 21 counties. The Wave 15 coverage inventory records the official audit source path, but the PDFs are not collected or normalized into audit rows.",
+        "caveat": "Candidate source inventory only; no county audit outcome rows are loaded and audit context is not proof of fraud or misconduct."
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "New Jersey 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "county_request_path",
+        "sourceDocumentId": "nj-doe-county-officials-cvr-request-paths",
+        "sourceUrl": "https://www.nj.gov/state/elections/vote-county-election-officials.shtml",
+        "localArtifact": "data/nj-2024-data-coverage-inventory.json",
+        "why": "No statewide New Jersey 2024 CVR export or CVR availability table is loaded. The coverage inventory documents DOE and county-official request paths for CVR availability/exportability follow-up.",
+        "caveat": "Request-path inventory only; county custody, lawful releasability, ballot secrecy, redaction, and vendor-format constraints must be reviewed before any CVR context is normalized."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "New Jersey 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "reportingLevel": "statewide_and_county_request_path",
+        "sourceDocumentId": "nj-doe-safe-secure-and-county-officials-request-paths",
+        "sourceUrl": "https://www.nj.gov/state/elections/safe-secure-elections.shtml",
+        "relatedSourceUrls": [
+          "https://www.nj.gov/state/elections/election-information-2024.shtml",
+          "https://www.nj.gov/state/elections/vote-county-election-officials.shtml"
+        ],
+        "localArtifact": "data/nj-2024-data-coverage-inventory.json",
+        "why": "No normalized New Jersey 2024 incident, correction, recount, or litigation rows are loaded. The coverage inventory records the official 2024 election page, Safe Secure Elections context, and county-official request paths for follow-up.",
+        "caveat": "Candidate source inventory only; not a loaded incident, correction, recount, or litigation dataset."
       }
     },
     {

@@ -2463,6 +2463,66 @@
       }
     },
     {
+      "state": "NJ",
+      "name": "New Jersey",
+      "priority": 13,
+      "currentStatus": "official_text_pdf_result_review_turnout_admin_source_leads_documented_eac_turnout_only",
+      "requestMatrixArtifact": "data/nj-2024-source-request-matrix.tsv",
+      "officialSourcePages": [
+        "https://www.nj.gov/state/elections/election-information-2024.shtml",
+        "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-president.pdf",
+        "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-us-senate.pdf",
+        "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
+        "https://www.nj.gov/state/elections/resources-voting-equipment-inventory.shtml",
+        "https://www.nj.gov/state/elections/vote-county-election-officials.shtml"
+      ],
+      "requiredArtifacts": [
+        "official New Jersey DOE statewide certified President PDF plus 21 county municipal President PDFs",
+        "official statewide U.S. Senate PDF plus 21 county municipal U.S. Senate PDFs at the same grain as President",
+        "state-native turnout and registered-voter denominator PDFs normalized and reconciled with EAC fallback before replacement",
+        "municipal boundary geometry or official GIS export plus a DOE municipality-name crosswalk",
+        "official 2020, 2016, and 2012 historical presidential baseline artifacts from DOE archive pages",
+        "official county post-election audit PDFs and request-produced CVR/recount/incident/correction/litigation records where available",
+        "data/nj-2024-data-coverage-inventory.json and data/nj-2024-source-request-matrix.tsv as the current source-search handoff"
+      ],
+      "preferredComparisonContest": "U.S. Senate from the official county municipal result PDFs; use county statewide PDFs only as certified cross-checks.",
+      "parserNeeded": "New Jersey remains EAC-turnout-only. A new DOE text-PDF parser is needed to collect and normalize statewide certified county President totals, 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, and turnout PDFs. The parser must reconcile statewide totals, normalize municipality labels, and preserve non-geographic Federal Overseas and Hand Counts caveats before review rows are enabled.",
+      "blocker": "The official New Jersey 2024 page confirms authoritative source leads, but no official result/review PDF artifacts or parser are committed in this pass. Active NJ ETL therefore remains EAC turnout-only with zero result and review rows. The official NJ turnout PDF agrees with EAC fallback ballots cast but reports 52,335 more registered voters, so denominator timing and replacement semantics need review before EAC fallback is replaced. Municipal geometry/crosswalks, historical baselines, audit PDFs, CVR availability, incident/correction/recount/litigation records, and parser-backed provenance remain unnormalized.",
+      "availableArtifacts": {
+        "coverageInventory": {
+          "sourceTitle": "New Jersey 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://www.nj.gov/state/elections/election-information-2024.shtml",
+          "localFile": "data/nj-2024-data-coverage-inventory.json",
+          "parserHint": "Inventory only; documents official PDF result/review/turnout source leads, municipal geometry lead, historical archive leads, audit PDFs, equipment context, and caveats without loading result or review rows."
+        },
+        "sourceRequestMatrix": {
+          "sourceTitle": "New Jersey 2024 source request matrix",
+          "localFile": "data/nj-2024-source-request-matrix.tsv",
+          "parserHint": "Context-only request queue for PDF collection, parser work, municipal geometry/crosswalks, historical baselines, and administration artifacts."
+        },
+        "currentTurnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/nj-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "parserHint": "Current active NJ parser remains eacTurnoutCsv with 21 jurisdiction rows."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2734%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/nj-counties.geojson",
+          "parserHint": "County map joins only; municipal geometry is not loaded."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier New Jersey 2024 equipment context plus NJ DOE equipment inventory lead",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/34",
+          "localFile": "data/nj-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      }
+    },
+    {
       "state": "DE",
       "name": "Delaware",
       "priority": 13,

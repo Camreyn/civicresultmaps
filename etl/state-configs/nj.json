@@ -1,7 +1,7 @@
 {
   "code": "NJ",
   "name": "New Jersey",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "U.S. Election Assistance Commission; New Jersey Department of State, Division of Elections",
   "electionYear": 2024,
   "office": "President",
   "turnoutOnly": true,
@@ -16,6 +16,17 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "nj-2024-data-coverage-inventory",
+      "category": "New Jersey data coverage and administration source inventory",
+      "url": "https://www.nj.gov/state/elections/election-information-2024.shtml",
+      "localFile": "data/nj-2024-data-coverage-inventory.json",
+      "parser": "coverageInventoryJson",
+      "authority": "New Jersey Department of State, Division of Elections",
+      "timestampBasis": "Wave 15 official-source coverage inventory checked July 2, 2026.",
+      "confidence": "Documents official New Jersey 2024 statewide and county result PDF leads, same-grain U.S. Senate comparison leads, state-native turnout PDFs, municipal geometry leads, audit PDF links, equipment context, historical archive leads, and remaining parser/request gaps. Inventory only; no normalized result, review, or administration rows are loaded.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -35,7 +46,7 @@
   "expected": {
     "jurisdictions": 21,
     "resultRows": 0,
-    "sources": 1,
+    "sources": 2,
     "stateTotal": 0,
     "trump": 0,
     "harris": 0,

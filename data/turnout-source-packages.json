@@ -989,8 +989,8 @@
       "localFile": "data/eac-2024-state-turnout/nj-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 21,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. Wave 15 identified official New Jersey DOE statewide and county municipal turnout PDFs, but active rows remain EAC fallback until denominator timing and PDF parser reconciliation are reviewed.",
+      "nextAction": "Use data/nj-2024-data-coverage-inventory.json and data/nj-2024-source-request-matrix.tsv to collect and normalize the NJ DOE turnout PDFs; keep EAC fallback visible until the 52,335 registered-voter difference versus the DOE statewide PDF is resolved.",
       "coverage": {
         "jurisdictionRows": 21,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nj-2024-eac-registered-voter-denominator.json",
