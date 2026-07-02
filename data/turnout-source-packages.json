@@ -1128,7 +1128,7 @@
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 39,
       "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "nextAction": "Use data/ri-2024-data-coverage-inventory.json and data/ri-2024-source-request-matrix.tsv to confirm whether BOE data description or a separate official Rhode Island artifact contains ballots-cast plus registered-voter denominator fields; keep EAC fallback active until denominator timing and semantics are reviewed.",
       "coverage": {
         "jurisdictionRows": 39,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ri-2024-eac-registered-voter-denominator.json",

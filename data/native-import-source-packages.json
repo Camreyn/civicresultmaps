@@ -1617,6 +1617,62 @@
   ],
   "sourceDiscoveryQueue": [
     {
+      "state": "RI",
+      "name": "Rhode Island",
+      "priority": 14,
+      "currentStatus": "official_result_zip_json_and_us_senate_leads_documented_eac_turnout_only_active",
+      "requestMatrixArtifact": "data/ri-2024-source-request-matrix.tsv",
+      "officialSourcePages": [
+        "https://www.ri.gov/election/results/2024/general_election/",
+        "https://www.ri.gov/election/results/2024/general_election/data/",
+        "https://www.ri.gov/election/results/2024/general_election/races/1.html",
+        "https://www.ri.gov/election/results/2024/general_election/races/2.html",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/44"
+      ],
+      "requiredArtifacts": [
+        "official RI BOE long-format 2024 General Election ZIP collected into data/",
+        "official statewide and city/town JSON artifacts or manifest collected into data/",
+        "Rhode Island BOE parser for certified President rows and same-grain U.S. Senate review rows",
+        "state-native turnout and registration denominator artifact or documented source-side blocker before replacing EAC fallback",
+        "official city/town, precinct, or district geometry plus result-label crosswalk",
+        "official 2020, 2016, and 2012 historical presidential baseline artifacts normalized from RI.gov archive routes",
+        "normalized audit, recount, CVR availability, incident, correction, and litigation rows if published or request-produced",
+        "data/ri-2024-data-coverage-inventory.json and data/ri-2024-source-request-matrix.tsv as the current source-search handoff"
+      ],
+      "preferredComparisonContest": "U.S. Senate from the official 2024 General Election ZIP/JSON source family; U.S. House is district-based fallback context only.",
+      "parserNeeded": "Rhode Island remains EAC-turnout-only. A RI BOE ZIP/JSON parser should read the official long-format result ZIP and/or statewide/city-town JSON, load certified President rows, pair same-grain U.S. Senate rows for review, and reconcile posted statewide totals of 513,386 President votes and 491,948 Senate votes before any advisory rows are enabled.",
+      "blocker": "RI should remain in sourceDiscoveryQueue and out of completedNativeStates because no official Rhode Island result or review rows are loaded. The official RI.gov Board of Elections results app exposes machine-readable ZIP and JSON leads, but the source artifacts are not committed, parser/reconciliation work is not implemented, turnout remains EAC fallback, geometry/crosswalks are missing, historical baselines are not normalized, and audit/CVR/recount/incident/correction/litigation rows are source paths only.",
+      "availableArtifacts": {
+        "coverageInventory": {
+          "sourceTitle": "Rhode Island 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://www.ri.gov/election/results/2024/general_election/data/",
+          "localFile": "data/ri-2024-data-coverage-inventory.json",
+          "parserHint": "Inventory only; documents official BOE result ZIP/JSON leads, U.S. Senate comparison lead, EAC fallback turnout, geometry and historical leads, equipment context, and admin request paths without loading result/review rows."
+        },
+        "sourceRequestMatrix": {
+          "sourceTitle": "Rhode Island 2024 source request matrix",
+          "sourceUrl": "https://www.ri.gov/election/results/2024/general_election/data/",
+          "localFile": "data/ri-2024-source-request-matrix.tsv",
+          "parserHint": "Context-only request queue for parser work, turnout replacement, historical baselines, geometry/crosswalks, and administration artifacts."
+        },
+        "currentTurnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "parserHint": "Current active RI parser remains eacTurnoutCsv with 39 jurisdiction rows."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Rhode Island 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/44",
+          "localFile": "data/ri-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      }
+    },
+    {
       "state": "AL",
       "name": "Alabama",
       "priority": 0,
