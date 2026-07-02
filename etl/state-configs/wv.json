@@ -39,6 +39,50 @@
       "status": "loaded"
     },
     {
+      "id": "wv-2012-official-state-county-results",
+      "category": "Official 2012 historical state and county result CSV",
+      "url": "https://apps.sos.wv.gov/elections/results/readfile.aspx?eid=13&format=csv&type=StateCountyTotals",
+      "localFile": "data/wv-2012-official-state-county-results.csv",
+      "parser": "westVirginiaLegacyResultsCenterStateCountyCsv",
+      "authority": "West Virginia Secretary of State",
+      "timestampBasis": "West Virginia Secretary of State Election Results Center CSV for the November 6, 2012 General Election, election id 13.",
+      "confidence": "OfficialResults=Yes county rows from the West Virginia Secretary of State legacy results app. The legacy app states results do not include write-in candidate information, so 2012 historical rows are contextual county candidate baselines rather than a complete write-in-inclusive certified total.",
+      "status": "loaded"
+    },
+    {
+      "id": "wv-2016-official-state-county-results",
+      "category": "Official 2016 historical state and county result CSV",
+      "url": "https://apps.sos.wv.gov/elections/results/readfile.aspx?eid=23&format=csv&type=StateCountyTotals",
+      "localFile": "data/wv-2016-official-state-county-results.csv",
+      "parser": "westVirginiaLegacyResultsCenterStateCountyCsv",
+      "authority": "West Virginia Secretary of State",
+      "timestampBasis": "West Virginia Secretary of State Election Results Center CSV for the November 8, 2016 General Election, election id 23.",
+      "confidence": "OfficialResults=Yes county rows from the West Virginia Secretary of State legacy results app. The legacy app states results do not include write-in candidate information.",
+      "status": "loaded"
+    },
+    {
+      "id": "wv-2020-official-clarity-results",
+      "category": "Official 2020 historical Clarity JSON results",
+      "url": "https://results.enr.clarityelections.com/WV/106210/272340/json/details.json",
+      "localFile": "data/wv-2020-official-results/details.json",
+      "parser": "westVirginiaClarityDetailsJsonHistoricalSource",
+      "authority": "West Virginia Secretary of State",
+      "timestampBasis": "West Virginia official Clarity archive for the November 3, 2020 General Election, election id 106210, version 272340.",
+      "confidence": "Official West Virginia Secretary of State hosted Clarity JSON package. County presidential rows are normalized into contextual historical baseline rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "wv-historical-presidential-baseline",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://sos.wv.gov/elections/Pages/HistElecResults.aspx",
+      "localFile": "data/wv-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "West Virginia Secretary of State",
+      "timestampBasis": "County presidential rows normalized by scripts/collect-wv-historical-baseline.mjs from official West Virginia Secretary of State results app CSVs for 2012 and 2016 and the official Clarity archive for 2020.",
+      "confidence": "Official county-level historical presidential baselines used for context only. Individual rows carry the per-year SOS source URL; 2012 and 2016 legacy CSVs omit write-in candidate information per the SOS app disclaimer.",
+      "status": "loaded"
+    },
+    {
       "id": "wv-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2754%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -78,7 +122,7 @@
   "expected": {
     "jurisdictions": 55,
     "resultRows": 55,
-    "sources": 5,
+    "sources": 9,
     "geometryFeatures": 55,
     "stateTotal": 762390,
     "trump": 533556,

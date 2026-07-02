@@ -21,6 +21,8 @@ class WestVirginiaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 1649)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutBallotsCast"], 770587)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRegisteredVoters"], 1187991)
+        self.assertEqual(artifact["native"]["metrics"].get("nativeHistoricalRows", 0), 0)
+        self.assertFalse(artifact["capabilities"]["historicalBaseline"])
 
         sources = {source["id"]: source for source in artifact["sources"]}
         inventory_source = sources["wv-2024-data-coverage-inventory"]
@@ -29,14 +31,17 @@ class WestVirginiaCoverageInventoryTests(unittest.TestCase):
 
     def test_inventory_records_geometry_audit_cvr_and_historical_gaps(self):
         self.assertEqual(self.inventory["state"], "WV")
-        self.assertEqual(self.inventory["checkedAt"], "2026-07-01")
+        self.assertEqual(self.inventory["checkedAt"], "2026-07-02")
 
         findings = {item["topic"]: item for item in self.inventory["sourceFindings"]}
         self.assertEqual(findings["precinctBoundaryGeometry"]["status"], "needs_data")
         self.assertIn("Voter%20Data%20Request.pdf", findings["precinctBoundaryGeometry"]["relatedSourceUrls"][1])
         self.assertEqual(findings["postElectionAudit"]["status"], "policy_documented_outcomes_need_data")
         self.assertEqual(findings["cvrAvailabilityAndRequestPaths"]["status"], "request_path_documented_not_loaded")
-        self.assertEqual(findings["historicalBaselines"]["status"], "official_source_leads_confirmed_not_loaded")
+        self.assertEqual(findings["historicalBaselines"]["status"], "normalized_artifact_collected_importer_dispatch_blocked")
+        self.assertEqual(findings["historicalBaselines"]["expectedRows"], 165)
+        self.assertIn("write-in candidate information", findings["historicalBaselines"]["caveats"])
+        self.assertIn("shared native importer dispatch", findings["historicalBaselines"]["caveats"])
         self.assertFalse(self.inventory["productionChecked"])
         self.assertTrue(any("not evidence of fraud or misconduct" in risk for risk in self.inventory["remainingRisks"]))
 
