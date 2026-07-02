@@ -2574,6 +2574,56 @@
       }
     },
     {
+      "state": "ME",
+      "name": "Maine",
+      "priority": 13,
+      "currentStatus": "official_excel_source_leads_documented_eac_turnout_only",
+      "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
+      "officialSourcePages": [
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20by%20Congressional%20District%202024.xlsx",
+        "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
+        "https://www.maine.gov/sos/elections-voting/election-results-data/previous-election-results",
+        "https://www.maine.gov/sos/elections-voting/voter-data",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23"
+      ],
+      "requiredArtifacts": [
+        "official Maine SOS 2024 U.S. President by County/Town Excel workbook collected into data/",
+        "official Maine SOS 2024 United States Senator Excel workbook collected into data/ for same-grain comparison rows",
+        "Maine SOS Excel parser with UOCAVA/non-geographic row handling and certified-total reconciliation",
+        "state-native registered/enrolled denominator parser plus ballots-cast/voter-participation reconciliation before replacing EAC turnout",
+        "municipality/town geometry or reporting-unit crosswalk if subcounty overlays are required",
+        "official 2020, 2016, and 2012 historical presidential baseline workbooks normalized from SOS archives",
+        "normalized audit/recount/CVR availability/incident/correction/litigation rows if published or request-produced",
+        "data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv as the current source-search handoff"
+      ],
+      "preferredComparisonContest": "U.S. Senate from the official Maine SOS United States Senator Excel workbook, expected to pair with President by County/Town after workbook collection and row reconciliation.",
+      "parserNeeded": "Maine remains EAC-turnout-only. A new Maine SOS Excel parser is needed for President and same-grain U.S. Senate rows, plus explicit UOCAVA/non-geographic row handling. A registered/enrolled denominator parser and turnout reconciliation are needed before replacing EAC fallback. Historical and administration-context parsers are not loaded.",
+      "blocker": "The official Maine SOS 2024 results page exposes machine-readable Excel workbooks for President by County/Town, President by Congressional District, U.S. Senate, and CD2 ranked-choice/CVR exports, but no official Maine result or advisory review rows are loaded yet. Active ME config remains EAC turnout-only with 497 fallback turnout rows. Remaining source needs are collected Excel artifacts, parser/reconciliation work, state-native turnout replacement review, municipality/town geometry or crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records.",
+      "availableArtifacts": {
+        "coverageInventory": {
+          "localFile": "data/me-2024-data-coverage-inventory.json",
+          "checkedAt": "2026-07-02",
+          "repoDrift": "docs/developer/index.md is missing in this worktree."
+        },
+        "currentTurnout": {
+          "sourceTitle": "EAC fallback turnout rows",
+          "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+          "parser": "eacTurnoutCsv",
+          "turnoutRows": 497,
+          "status": "loaded_fallback_not_state_native"
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier 2024 equipment context",
+          "localFile": "data/verifiedvoting-me-2024-equipment.json",
+          "normalizedArtifact": "data/me-2024-equipment-context.csv",
+          "status": "loaded_supplemental_context"
+        }
+      }
+    },
+    {
       "state": "NJ",
       "name": "New Jersey",
       "priority": 13,

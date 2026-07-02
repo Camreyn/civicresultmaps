@@ -1,0 +1,175 @@
+{
+  "state": "ME",
+  "stateName": "Maine",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-02",
+  "checkedBy": "Wave 15 Maine state-data worker",
+  "productionChecked": false,
+  "repoDrift": [
+    {
+      "path": "docs/developer/index.md",
+      "status": "missing_on_current_main",
+      "note": "AGENTS.md lists this as a first read, but the file is absent in this worktree; treated as repo drift rather than a blocker."
+    }
+  ],
+  "currentEtLStatus": {
+    "configFile": "etl/state-configs/me.json",
+    "turnoutOnly": true,
+    "activeParser": "eacTurnoutCsv",
+    "activeLocalArtifact": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+    "expectedRows": {
+      "resultRows": 0,
+      "reviewRows": 0,
+      "turnoutRows": 497,
+      "eacBallotsCast": 842447,
+      "eacRegisteredVoters": 1223468
+    },
+    "advisoryStatus": "No Maine result or review rows are loaded, so advisory indicators should remain zero until official same-grain President and comparison rows are normalized."
+  },
+  "officialSourceFindings": {
+    "certifiedResults": {
+      "status": "official_excel_identified_parser_needed",
+      "sourceAuthority": "Maine Secretary of State",
+      "sourceUrls": [
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20by%20Congressional%20District%202024.xlsx"
+      ],
+      "reportingGrain": "county_town_and_congressional_district",
+      "availableEvidence": [
+        "The official 2024 results page lists U.S. President by County/Town (Excel).",
+        "The same page lists U.S. President by Congressional District (Excel), useful for Maine's split electoral-vote context.",
+        "No Maine native result or review parser is loaded in etl/state-configs/me.json."
+      ],
+      "parserNeeded": "Maine SOS Excel parser that preserves county/town rows, reconciles certified totals, and explicitly handles UOCAVA/non-geographic rows before loading result rows.",
+      "caveat": "Keep the official Excel files as source leads until collected and parsed; do not replace certified totals with secondary summaries."
+    },
+    "sameGrainComparisonContest": {
+      "status": "official_excel_identified_parser_needed",
+      "preferredContest": "U.S. Senate",
+      "sourceUrls": [
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx"
+      ],
+      "missing": [
+        "collected local President workbook artifact",
+        "collected same-grain U.S. Senate workbook artifact",
+        "parser-backed reconciliation of town/county labels and UOCAVA/non-geographic rows",
+        "review rows loaded into native staging"
+      ],
+      "caveat": "U.S. Senate appears to be the best statewide comparison contest, but row pairing and non-geographic rows must be reviewed before advisory screening."
+    },
+    "rankedChoiceAndCastVoteRecords": {
+      "status": "official_cd2_rcv_cvr_leads_identified_not_loaded",
+      "sourceUrls": [
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/Nov24-20RCV-20CG2-20Summary-20Report.pdf",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/Nov24-20CG2-201st-20Choices.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov24%20CVR%20Export%2020241115%20-%201.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov24%20CVR%20Export%2020241115%20-%202.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov24%20CVR%20Export%2020241115%20-%203.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Nov24%20CVR%20Export%2020241115%20-%204.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/UOCAVA-205-2020241115-20Final.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/CD-202-20Aux-20Master-206-2020242215-20Final.xlsx"
+      ],
+      "reportingGrain": "cd2_ranked_choice_ballot_record_exports",
+      "parserNeeded": "Separate RCV/CVR package parser for Representative to Congress District 2 source-review context.",
+      "caveat": "These CD2 ballot-ranking exports do not substitute for statewide President-versus-U.S.-Senate review rows."
+    },
+    "stateNativeTurnout": {
+      "status": "official_registration_denominator_lead_identified_not_loaded",
+      "sourceAuthority": "Maine Secretary of State",
+      "sourceUrls": [
+        "https://www.maine.gov/sos/elections-voting/voter-data",
+        "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
+        "https://www.maine.gov/sos/elections-voting/voter-data/previous-absentee-data"
+      ],
+      "reportingGrain": "county_municipality_voting_district_party_for_registration; absentee_request_files_available_separately",
+      "activeEacFallback": {
+        "rows": 497,
+        "ballotsCast": 842447,
+        "registeredVoters": 1223468
+      },
+      "parserNeeded": "Registered/enrolled active and inactive text parser plus reconciliation against EAC fallback; a ballots-cast or voter-participation source must be paired before replacing turnout.",
+      "caveat": "The 11/5/2024 registered/enrolled active and inactive files are denominator leads, not complete turnout replacements by themselves."
+    },
+    "geometryAndCrosswalk": {
+      "status": "county_geometry_present_municipality_crosswalk_needed",
+      "sourceAuthority": "U.S. Census Bureau; Maine Secretary of State",
+      "sourceUrls": [
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2723%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+        "https://www.maine.gov/sos/elections-voting/electoral-districts"
+      ],
+      "localArtifacts": [
+        "data/me-counties.geojson"
+      ],
+      "needed": [
+        "municipality/town or voting-district geometry if subcounty map overlays are required",
+        "crosswalk from SOS workbook municipality labels to map geometry labels",
+        "explicit treatment for UOCAVA and other non-geographic rows"
+      ]
+    },
+    "historicalBaselines": {
+      "status": "official_archive_leads_identified_not_loaded",
+      "targetYears": [
+        2020,
+        2016,
+        2012
+      ],
+      "sourceUrls": [
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2020",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/presandvisecnty1120.xlsx",
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2016-2017",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/president.xlsx",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012presmuni%282%29.xls",
+        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012prescounty%281%29.xls"
+      ],
+      "parserNeeded": "Historical Maine SOS Excel parser for 2020, 2016, and 2012 presidential workbooks.",
+      "caveat": "Historical baseline rows are not loaded; official archive workbooks should be normalized before secondary county tables are considered."
+    },
+    "auditRecountCvrIncidentCorrectionLitigation": {
+      "status": "source_paths_documented_rows_not_loaded",
+      "sourceUrls": [
+        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
+        "https://www.maine.gov/sos/elections-voting/voter-data",
+        "https://www.maine.gov/sos/about-us/contact-us-form"
+      ],
+      "confirmedContext": [
+        "The 2024 results page publishes CD2 ranked-choice summary and cast-vote-record Excel exports.",
+        "The voter-data page documents Central Voter Registration System data request forms; this is voter-file CVR terminology and should not be confused with cast vote records.",
+        "No normalized 2024 audit selection/outcome, recount disposition, incident, correction, or litigation rows are loaded."
+      ],
+      "nextAction": "Use official SOS publications and records-request channels to scope post-election audit materials, CD2 recount/RCV supporting records, CVR availability/exportability, incident/correction records, and litigation records before normalization."
+    },
+    "equipmentContext": {
+      "status": "supplemental_context_loaded",
+      "sourceUrls": [
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23"
+      ],
+      "localArtifacts": [
+        "data/verifiedvoting-me-2024-equipment.json",
+        "data/me-2024-equipment-context.csv"
+      ],
+      "caveat": "Equipment context is source-linked administration metadata only; it is not vote, turnout, audit, incident, or proof-of-uniform-precinct evidence."
+    }
+  },
+  "sourceAcquisitionDecision": {
+    "tier": "tier_1_official_export_database",
+    "reason": "Maine SOS publishes official 2024 certified result workbooks as Excel files, including President by County/Town and United States Senator, plus CD2 ranked-choice/CVR Excel exports. Parser work and reconciliation remain before native result/review rows are loaded.",
+    "manualReviewBurden": "low"
+  },
+  "websiteAndApiDisplayPath": {
+    "currentPath": "Current Maine staging/API path is turnout-only EAC fallback via etl/state-configs/me.json.",
+    "sourceRegistryPath": "/api/native-source-packages and /api/source-acquisition-tiers expose the updated planning registries after deployment.",
+    "productionChecked": false,
+    "notCheckedReason": "Production promotion and production API verification were not authorized for this worker branch."
+  },
+  "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
+  "remainingRisks": [
+    "No native Maine certified President result rows are loaded yet.",
+    "No same-grain President-versus-U.S.-Senate review rows are loaded, so advisory indicators should be zero.",
+    "State-native registered/enrolled files are denominator leads only; turnout remains EAC fallback until replacement semantics are reviewed.",
+    "Municipality/town geometry or a reporting-unit crosswalk is not loaded.",
+    "No normalized 2024 audit, recount, CVR availability, incident, correction, or litigation rows are loaded.",
+    "All advisory language must remain source-review context, not evidence of fraud or misconduct."
+  ]
+}

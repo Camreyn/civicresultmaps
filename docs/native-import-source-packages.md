@@ -596,3 +596,16 @@ NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Re
 - Geometry/admin context: `data/nm-counties.geojson` and `data/nm-2024-equipment-context.csv` are present; SOS/RGIS precinct geometry, historical archives, risk-limiting audit, CVR availability, incident, correction, recount, litigation, custody, and tabulator-log artifacts remain source leads or request paths
 
 NM remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native New Mexico result or advisory review parser is loaded in this pass; current advisory indicators are not calculated from review rows because no NM review rows are loaded. This is source-coverage context only, not evidence of fraud or misconduct.
+
+## Maine Wave 15 Source Discovery
+
+- Active config: `etl/state-configs/me.json` remains EAC turnout-only, with 497 fallback jurisdiction turnout rows and no native certified result or advisory review rows loaded.
+- Repo drift: `docs/developer/index.md` is missing in this worktree as of the July 2, 2026 first-read check.
+- Official 2024 result leads: the Maine Secretary of State 2024 results page links machine-readable Excel workbooks for U.S. President by County/Town, U.S. President by Congressional District, United States Senator, and congressional contests. The preferred same-grain comparison lead is the U.S. Senate workbook after President and Senate rows are collected and reconciled.
+- RCV/CVR lead: Representative to Congress District 2 has an official certified RCV summary PDF, first-choice workbook, and official Excel cast-vote-record/export files. These are contest-specific auditability/context sources, not a statewide President-versus-Senate substitute.
+- Turnout denominator lead: Maine SOS previous enrollment files for the November 5, 2024 General/Referendum Election provide active/inactive registered and enrolled voter denominator leads. They should not replace EAC turnout until official ballots-cast or voter-participation rows at compatible grain are collected and reconciled.
+- Geometry/admin context: county geometry and Verified Voting equipment context are present. Municipality/town geometry or a reporting-unit crosswalk, plus normalized audit/recount/CVR availability/incident/correction/litigation rows, remain source-discovery work.
+- Historical leads: official Maine SOS archive pages expose 2020, 2016, and 2012 presidential workbooks, with 2012 also providing municipal/county U.S. Senate workbook leads.
+- Current queue decision: ME stays in `sourceDiscoveryQueue` and out of `completedNativeStates` until the official workbooks are collected, parsed, reconciled, and review rows can be generated. The current advisory indicator calculation is expected to produce zero ME indicators because no ME review rows or same-grain comparison rows are loaded.
+
+Current handoff artifacts: `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv`.
