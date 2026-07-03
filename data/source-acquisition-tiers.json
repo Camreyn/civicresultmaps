@@ -1950,30 +1950,46 @@
       "stateName": "Tennessee",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_geometry_equipment_admin_context",
+      "tier": "tier_6_official_pdf_hostile",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official text-layer PDF",
+        "normalized CSV",
+        "EAC fallback turnout CSV",
+        "county GeoJSON"
       ],
       "sourceUrls": [
-        "https://sos.tn.gov/elections/results"
+        "https://sos.tn.gov/elections/results",
+        "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyCounty.pdf",
+        "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyOffice.pdf",
+        "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2747%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/47"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "official county presidential totals",
+        "official precinct President rows",
+        "official precinct U.S. Senate comparison rows",
+        "EAC fallback turnout rows",
+        "county geometry",
+        "county equipment context from Verified Voting Verifier"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native turnout denominator rows",
+        "precinct boundary geometry or reporting-unit crosswalk",
+        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "normalized official audit, recount, CVR availability, incident, correction, and litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Tennessee result exports and local reporting-unit availability."
+      "parserStatus": "scripts/normalize-tn-sos-results.mjs normalizes the official SOS precinct PDF to 95 county President rows and 1,859 nonzero precinct President-versus-U.S.-Senate review rows; EAC fallback turnout, county geometry, and equipment context are loaded",
+      "manualReviewBurden": "medium",
+      "confidence": "loaded_with_caveat",
+      "caveats": "The official source is a text-layer PDF rather than a structured export; the normalizer reconciles parsed precinct totals to official statewide totals before writing CSV artifacts. Turnout remains EAC fallback, county geometry is loaded, precinct geometry/crosswalks are not loaded, and no normalized historical baseline or administration-context rows are loaded beyond equipment metadata.",
+      "nextAction": "Collect state-native turnout denominators, official precinct geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "TX",
@@ -2267,30 +2283,44 @@
       "stateName": "Wyoming",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_historical_geometry_equipment_admin_context",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official SOS XLSX ZIP",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON",
+        "supplemental equipment context"
       ],
       "sourceUrls": [
-        "https://sos.wyo.gov/Elections/Docs/Results/"
+        "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx",
+        "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+        "https://sos.wyo.gov/Elections/ElectionResults.aspx",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "certified county presidential totals",
+        "precinct-by-precinct President rows",
+        "same-row U.S. Senate comparison contest",
+        "EAC fallback turnout and registered-voter denominator rows",
+        "county geometry",
+        "official 2012/2016/2020 county historical baselines",
+        "supplemental equipment context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native registered-voter denominator",
+        "precinct boundary geometry or crosswalks",
+        "normalized audit/CVR/recount/incident/correction/litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Wyoming result exports and local reporting-unit availability."
+      "parserStatus": "nativeWyomingSosGeneralZip parses official 2024 SOS ZIP plus official 2012/2016/2020 historical ZIPs; turnout remains EAC fallback.",
+      "manualReviewBurden": "low_for_results_medium_for_remaining_context",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Official result and review rows are loaded. EAC fallback turnout denominator remains active; precinct geometry and post-election context records remain request-tracked.",
+      "nextAction": "Collect state-native registered-voter denominator, precinct geometry/crosswalks, and official audit/CVR/recount/incident/correction/litigation context where available."
     }
   ]
 }

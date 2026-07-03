@@ -10,7 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:api && npm run test:etl",
-    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/ak-source-coverage.test.mjs && node tests/api/ar-source-coverage.test.mjs && node tests/api/ne-canvass-voting-statistics.test.mjs && node tests/api/ne-source-coverage.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs && node tests/api/swing-state-parity.test.mjs && node tests/api/mo-source-coverage.test.mjs && node tests/api/nv-source-coverage.test.mjs && node tests/api/electronic-integrity.test.mjs && node tests/api/ok-source-coverage.test.mjs",
+    "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/ak-source-coverage.test.mjs && node tests/api/ar-source-coverage.test.mjs && node tests/api/ne-canvass-voting-statistics.test.mjs && node tests/api/ne-source-coverage.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs && node tests/api/swing-state-parity.test.mjs && node tests/api/mo-source-coverage.test.mjs && node tests/api/nv-source-coverage.test.mjs && node tests/api/electronic-integrity.test.mjs && node tests/api/ok-source-coverage.test.mjs && node tests/api/tn-source-coverage.test.mjs",
     "test:etl": "python -m unittest discover -s tests/python",
     "db:generate": "drizzle-kit generate",
     "db:push": "node --env-file=.env.local ./node_modules/drizzle-kit/bin.cjs push",
@@ -151,7 +151,10 @@
     "etl:import:nd": "npm run etl:collect:nd && python -m civic_etl.cli import --config etl/state-configs/nd.json --out .etl/staging",
     "etl:prepare:nj": "node scripts/normalize-nj-doe-pdfs.mjs",
     "etl:validate:nj": "npm run etl:prepare:nj && python -m civic_etl.cli validate --config etl/state-configs/nj.json",
-    "etl:import:nj": "npm run etl:prepare:nj && python -m civic_etl.cli import --config etl/state-configs/nj.json --out .etl/staging"
+    "etl:import:nj": "npm run etl:prepare:nj && python -m civic_etl.cli import --config etl/state-configs/nj.json --out .etl/staging",
+    "etl:prepare:tn": "node scripts/normalize-tn-sos-results.mjs",
+    "etl:validate:tn": "npm run etl:prepare:tn && python -m civic_etl.cli validate --config etl/state-configs/tn.json",
+    "etl:import:tn": "npm run etl:prepare:tn && python -m civic_etl.cli import --config etl/state-configs/tn.json --out .etl/staging"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
@@ -178,3 +181,4 @@
     "xlsx": "^0.18.5"
   }
 }
+

@@ -670,3 +670,26 @@ Expected validation: 3 county result rows, 3 county geometry features, 511,697 p
 - Equipment context: `data/ak-2024-equipment-context.csv` from Verified Voting, context only
 
 AK remains in `sourceDiscoveryQueue`, not `completedNativeStates`, because the current package is statewide-only. Remaining gaps are official House-district or precinct President plus same-grain U.S. House rows, lower-grain state-native turnout denominators, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
+## Wyoming Wave 20 Native Coverage
+
+Wyoming now has an official SOS native package for 2024 certified President county totals and precinct-by-precinct President vs U.S. Senate review rows. The parser reads `data/wy-2024-general-results.zip` directly and produces 23 county result rows, 431 nonzero precinct review rows, 23 EAC fallback turnout rows, and 69 county historical baseline rows from official 2012/2016/2020 SOS ZIPs.
+
+Remaining Wyoming caveats: EAC fallback registered-voter denominator remains active; precinct boundary geometry is not loaded; audit, CVR, recount, incident, correction, and litigation context records remain request-tracked. Advisory indicators are screening signals only and are not evidence of fraud or misconduct.
+## Tennessee Wave 20 Native Activation
+
+- Config: `etl/state-configs/tn.json`
+- Authority: Tennessee Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- Current active package: official Tennessee SOS 2024 General Election PDF artifacts normalized into 95 county President rows and 1,859 nonzero precinct President-versus-U.S.-Senate review rows
+- Collector/normalizer: `scripts/normalize-tn-sos-results.mjs`
+- Official result sources: `data/tn-2024-general-by-county.pdf`, `data/tn-2024-general-by-office.pdf`, and `data/tn-2024-general-by-precinct.pdf`
+- Normalized artifacts: `data/tn-2024-general-president-county.csv`, `data/tn-2024-general-president-senate-precinct-review.csv`, and `data/tn-2024-result-review-reconciliation-summary.json`
+- Turnout source: active ETL remains EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/tn-2024-eac-turnout.csv`
+- County boundary: `data/tn-counties.geojson`; precinct geometry/crosswalks are not loaded
+- Coverage inventory: `data/tn-2024-data-coverage-inventory.json`
+- Equipment context: `data/tn-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation: 95 county result rows, 95 county geometry features, 3,063,942 presidential votes, 1,966,865 Trump votes, 1,056,265 Harris votes, 40,812 Other votes, 1,859 precinct review rows, and 95 EAC fallback turnout rows. The official PDF source is text-layer PDF, not a structured export; the normalizer handles the PDF text placement of the seventh presidential candidate column and reconciles parsed precinct totals to official statewide President and U.S. Senate totals before writing CSV artifacts. Current advisory rows are public-interest screening inputs only, not findings.
+
+Remaining gaps are Tennessee-native turnout/registration denominators, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR availability/incident/correction/litigation records.
+
+
