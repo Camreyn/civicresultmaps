@@ -2792,11 +2792,12 @@
         "detailed official VSTOP audit-unit workpapers beyond the loaded 2024 General Election audit summary, if published or request-produced",
         "official CVR availability/exportability records or request-produced county CVR records",
         "official Recount Commission/county incident, correction, recount, and litigation records",
-        "official VSTOP 2024 General Election audit summary rows are loaded for seven audited counties as context only"
+        "official VSTOP 2024 General Election audit summary rows are loaded for seven audited counties as context only",
+        "data/in-2024-county-request-routing.csv and data/in-2024-county-request-routing-summary.json as the current county custodian follow-up tracker"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2012/2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows; scripts/normalize-in-audit-summary.mjs loads official VSTOP 2024 audit summary context. Future parsers are needed only if an official precinct/subcounty result export, detailed audit workpapers, CVR availability records, or incident/correction/recount rows are obtained.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, official 2012/2016/2020 county historical baselines are normalized, and the official VSTOP 2024 General Election audit summary is loaded for seven audited counties as context. The new ENR public-data inventory confirms the public app path fetches OffCatC office-category JSON and turnout-statistics downloads, but no President or U.S. Senate precinct/subcounty candidate export; collected JurR county jurisdiction JSON files contain zero candidate containers. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Indiana remains out of completedNativeStates until official same-grain precinct/subcounty President and U.S. Senate rows are collected or the methodology explicitly accepts supplemental review rows as complete. Normalized detailed audit/CVR/incident/correction records remain preferred/request-path administration items.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2012/2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows; scripts/normalize-in-audit-summary.mjs loads official VSTOP 2024 audit summary context. scripts/build-in-request-routing.mjs now generates county custodian request routing from official JurR metadata plus the official precinct/split-count PDF. Future parsers are needed only if an official precinct/subcounty result export, detailed audit workpapers, CVR availability records, or incident/correction/recount rows are obtained.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, official 2012/2016/2020 county historical baselines are normalized, and the official VSTOP 2024 General Election audit summary is loaded for seven audited counties as context. The new ENR public-data inventory confirms the public app path fetches OffCatC office-category JSON and turnout-statistics downloads, but no President or U.S. Senate precinct/subcounty candidate export; collected JurR county jurisdiction JSON files contain zero candidate containers. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Indiana remains out of completedNativeStates until official same-grain precinct/subcounty President and U.S. Senate rows are collected or the methodology explicitly accepts supplemental review rows as complete. Normalized detailed audit/CVR/incident/correction records remain preferred/request-path administration items. Wave 23 did not identify a public official replacement export, but added machine-readable county custodian routing covering all 92 counties and official precinct/split counts for follow-up after the statewide request.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"
@@ -2842,7 +2843,7 @@
         },
         "coverageInventory": {
           "sourceTitle": "Indiana 2024 data coverage inventory",
-          "localFile": "data/in-2024-data-coverage-inventory.json; data/in-2024-official-enr-public-data-inventory.json; data/source-records-request-packets/in-2024-precinct-results-request.md",
+          "localFile": "data/in-2024-data-coverage-inventory.json; data/in-2024-official-enr-public-data-inventory.json; data/source-records-request-packets/in-2024-precinct-results-request.md; data/in-2024-county-request-routing.csv; data/in-2024-county-request-routing-summary.json; data/in-statewide-precinct-counts-2023.pdf",
           "parserHint": "Source-search inventories only; not vote parsers. The ENR public-data inventory records the official app data path and confirms no public same-grain subcounty President/Senate export in retained ENR JSON."
         },
         "historicalBaseline": {
@@ -2856,6 +2857,12 @@
           "sourceUrl": "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf",
           "localFile": "data/in-2024-general-post-election-audit-summary-report.pdf; data/in-2024-general-post-election-audit-summary.csv; data/in-2024-general-post-election-audit-summary.json",
           "parserHint": "scripts/normalize-in-audit-summary.mjs extracts seven county audit-summary context rows. Context only; not a certified-result replacement and not proof of fraud or misconduct."
+        },
+        "requestRouting": {
+          "sourceTitle": "Indiana county custodian request routing tracker",
+          "sourceUrl": "https://www.in.gov/sos/elections/files/StatewideCountsofPrecincts-and-PrecinctSplits.9.21.23new.pdf",
+          "localFile": "data/in-2024-county-request-routing.csv; data/in-2024-county-request-routing-summary.json; data/in-statewide-precinct-counts-2023.pdf; data/in-2024-enr-jurisdiction-reports",
+          "parserHint": "scripts/build-in-request-routing.mjs pairs official ENR JurR office/contact fields with official county precinct/split counts. Tracker only; not candidate result rows."
         }
       }
     },
