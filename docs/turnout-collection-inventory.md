@@ -1,4 +1,4 @@
-# Turnout Collection Inventory
+﻿# Turnout Collection Inventory
 
 Generated from repo configs and current source-package pass on 2026-06-30.
 
@@ -178,15 +178,13 @@ Louisiana currently uses official EAC 2024 V2 parish/jurisdiction fallback turno
 
 ## Alabama Update
 
-Alabama still uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/al-2024-eac-turnout.csv`, totaling 67 jurisdiction rows, 2,272,911 ballots cast, and 3,868,040 registered voters in the AL config expectations. Wave 14 confirmed Alabama Secretary of State state-native turnout and denominator leads on the Elections Data page: `2024GeneralElectionTotalBallotsCast.pdf`, `ALVR-2024.xlsx`, and `Comprehensive Voter Turnout 1986-2024.pdf`. These are source leads only until collected, parsed, reconciled to the official precinct XLS ballots-cast rows, and reviewed for registration denominator timing. Keep EAC fallback active until then. See `data/al-2024-data-coverage-inventory.json` and `data/al-2024-source-request-matrix.tsv` for source URLs, caveats, and request fields.
-
+Alabama now has official SOS 2024 result/review native ETL active, but turnout remains on official EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/al-2024-eac-turnout.csv`, totaling 67 jurisdiction rows, 2,272,911 ballots cast, and 3,868,040 registered voters. This pass collected the Alabama SOS Total Ballots Cast PDF at `data/al-2024-general-total-ballots-cast.pdf`, the ALVR-2024 registration workbook at `data/al-2024-registered-voters.xlsx`, and the Comprehensive Voter Turnout PDF at `data/al-comprehensive-voter-turnout-1986-2024.pdf`. `scripts/normalize-al-sos-results.mjs` also writes `data/al-2024-turnout-denominator-lead.csv` with 67 county rows pairing 2,272,731 precinct-ZIP ballots cast with 3,880,115 November ALVR active voters. Keep EAC fallback active until the 180-ballot precinct-ZIP-versus-EAC/SOS ballots-cast difference and ALVR denominator timing are reviewed.
 ## Delaware Wave 14 Update
 
 Delaware still uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/de-2024-eac-turnout.csv`, totaling 3 jurisdiction rows, 514,367 ballots cast, and 788,441 registered voters. Wave 14 confirmed a state-native Delaware Department of Elections turnout lead at `https://elections.delaware.gov/voter/registrationtotals/reports/agprpt_2024.txt`: the 2024 age-group/party report includes election-district rows plus county/state summary rows and reports 788,864 registered voters and 518,086 voted statewide. The official November 1 party-registration CSV sums to 790,955 registered voters. Keep EAC fallback active until a DOE AGP parser and reconciliation report reviews denominator timing and voted-versus-ballots-cast semantics. Follow-up fields are tracked in `data/de-2024-source-request-matrix.tsv`.
 ## Connecticut Update
 
-Connecticut currently uses official EAC 2024 V2 town/jurisdiction fallback rows at `data/eac-2024-state-turnout/ct-2024-eac-turnout.csv`, totaling 169 rows, 1,820,891 ballots cast, and 2,520,650 registered voters in the active CT config. Wave 14 identified an official state-native turnout lead in the Connecticut Elections Management System public reporting app for election ID 91/version 80741: `voterTurnout_Electiondata.json` reports 169 towns, 2,348,545 registered voters, 1,788,981 voters checked, and vote-mode fields including EV, VV, ABR, ABC, EBR, EBC, EDR, and EDC. The 2024 Statement of Vote PDF also includes turnout and registration tables. Keep EAC fallback active until EMS field semantics and Statement-of-Vote/EAC reconciliation are reviewed and a parser is implemented.
-
+Connecticut now uses official Connecticut Secretary of the State EMS town turnout rows in native staging from `data/ct-2024-ems-election-91-version-80741/voterTurnout_Electiondata.json`, collected for election ID 91/version 80741. The parser emits 169 town rows with EMS EV registered/elector denominator total 2,348,545 and VV voters-checked total 1,788,981. All rows are warning-required until EMS EV/VV/ABR/ABC/EBR/EBC/EDR/EDC field semantics and Statement-of-Vote/EAC differences are reviewed. The former EAC fallback rows at `data/eac-2024-state-turnout/ct-2024-eac-turnout.csv` remain retained as an official benchmark, not the active CT staging turnout source.
 ## Hawaii Update
 
 Hawaii currently uses official EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/hi-2024-eac-turnout.csv`, totaling 5 jurisdiction rows and 522,236 ballots cast in the active HI config. Wave 14 confirmed a state-native turnout lead on the Hawaii Office of Elections Registration and Turnout Statistics page: the 2024 General Election table reports 860,868 registered voters and 522,236 turnout statewide, plus county rows for Hawaii, Maui, Kauai, and Honolulu. Keep EAC fallback active until that table is normalized, county totals and Kalawao handling are reconciled, and denominator timing is documented. See `data/hi-2024-data-coverage-inventory.json` and `data/hi-2024-source-request-matrix.tsv` for source URLs, caveats, and parser fields.
@@ -203,12 +201,12 @@ New Jersey currently uses official EAC 2024 V2 county/jurisdiction fallback rows
 
 New Mexico currently uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/nm-2024-eac-turnout.csv`, totaling 33 jurisdiction rows, 927,923 ballots cast, and 1,415,984 registered voters in the active NM config. Wave 15 identified a state-native New Mexico Secretary of State turnout lead in the 2024 General Election results system: `https://electionresults.sos.nm.gov/VoterTurnoutDetails.aspx?eid=2882` reports 928,290 ballots cast and 1,343,825 eligible voters, with precinct-level turnout detail. Keep EAC fallback active until eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC ballots-cast difference are reviewed. Follow-up fields are tracked in `data/nm-2024-source-request-matrix.tsv`.
 
-## Maine Wave 15 Turnout Update
+## Maine Wave 17 Turnout Update
 
 - Active source: Maine remains on the EAC 2024 fallback turnout package in `etl/state-configs/me.json`, with 497 jurisdiction rows and the EAC caveat preserved.
-- State-native lead: the Maine Secretary of State previous enrollment data page posts active and inactive registered/enrolled voter files for the November 5, 2024 General/Referendum Election, with county, municipality, voting-district, and party detail.
+- State-native lead collected: the Maine Secretary of State active and inactive registered/enrolled files for the November 5, 2024 General/Referendum Election are now retained at `data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt` and `data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt`.
 - Replacement condition: these registered/enrolled files are denominator leads only. Do not replace EAC turnout until official Maine ballots-cast or voter-participation rows at compatible grain are collected, parsed, and reconciled against certified totals.
-- Handoff: use `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv` for the source request matrix, caveats, and parser path.
+- Handoff: use `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv` for caveats and remaining request fields.
 
 ## Rhode Island Wave 17 Update
 

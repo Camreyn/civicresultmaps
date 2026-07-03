@@ -139,6 +139,9 @@
     "etl:collect:va:enr": "node scripts/collect-va-enr-sources.mjs",
     "etl:collect:ms:active-voters": "node scripts/collect-ms-active-voter-count.mjs",
     "etl:reconcile:ne:turnout": "node scripts/normalize-ne-canvass-voting-statistics.mjs",
+    "etl:prepare:al": "node scripts/normalize-al-sos-results.mjs",
+    "etl:validate:al": "npm run etl:prepare:al && python -m civic_etl.cli validate --config etl/state-configs/al.json",
+    "etl:import:al": "npm run etl:prepare:al && python -m civic_etl.cli import --config etl/state-configs/al.json --out .etl/staging",
     "etl:prepare:ri": "node scripts/normalize-ri-boe-results.mjs",
     "etl:validate:ri": "npm run etl:prepare:ri && python -m civic_etl.cli validate --config etl/state-configs/ri.json",
     "etl:import:ri": "npm run etl:prepare:ri && python -m civic_etl.cli import --config etl/state-configs/ri.json --out .etl/staging"

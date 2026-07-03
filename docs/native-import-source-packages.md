@@ -1,4 +1,4 @@
-# Native Import Source Packages
+﻿# Native Import Source Packages
 
 Checked at: 2026-06-15
 
@@ -512,39 +512,43 @@ Expected validation: 64 parish result rows, 64 parish geometry features, 3,885 p
 
 Caveats: Louisiana uses parishes rather than counties, and current map joins are parish-level. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context rather than same-office statewide comparison rows. State-native turnout, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized official audit/CVR/incident/correction/recount/litigation rows remain source-collection gaps. Current advisory rows are public-interest screening inputs only, not findings.
 
-## Alabama Wave 14 Source-Coverage Update
+## Alabama Wave 17 Native ETL Activation
 
 - Config: `etl/state-configs/al.json`
-- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/al-2024-eac-turnout.csv`
+- Authority: Alabama Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau
+- County result source: official Alabama SOS 2024 General Precinct Level Results ZIP at `data/al-2024-general-precinct-level-results.zip`, normalized by `scripts/normalize-al-sos-results.mjs` into `data/al-2024-general-president.csv`
+- Local review source: `data/al-2024-local-review.csv`, generated from the same SOS ZIP
+- Comparison contest: U.S. House by district, because Alabama had no 2024 U.S. Senate race; review rows are paired at county XLS precinct/reporting-mode column grain only where House cells have explicit nonzero coverage
+- Turnout source: active ETL remains EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/al-2024-eac-turnout.csv`
+- Turnout leads: `data/al-2024-general-total-ballots-cast.pdf`, `data/al-2024-registered-voters.xlsx`, `data/al-comprehensive-voter-turnout-1986-2024.pdf`, and generated lead `data/al-2024-turnout-denominator-lead.csv`
+- Historical baseline source: official SOS 2012 county presidential workbook plus 2016/2020 precinct ZIPs normalized into `data/al-historical-presidential-baseline.csv`
+- County boundary: `data/al-counties.geojson`
+- Equipment context: `data/al-2024-equipment-context.csv` from Verified Voting, context only
 - Coverage inventory: `data/al-2024-data-coverage-inventory.json`
-- Source request matrix: `data/al-2024-source-request-matrix.tsv`
-- Official result lead: Alabama Secretary of State 2024 General Precinct Level Results ZIP, 67 county XLS files with contests in rows and precinct/absentee/provisional modes in columns
-- Preferred comparison contest: U.S. House by district, because Alabama had no 2024 U.S. Senate race; split-district counties need district-aware blank-cell handling before review rows are loaded
-- Turnout leads: Alabama SOS 2024 General Total Ballots Cast PDF, ALVR-2024 registration workbook, and Comprehensive Voter Turnout PDF; EAC fallback remains active until denominator timing and reconciliation are reviewed
-- Historical leads: official Alabama SOS 2012, 2016, and 2020 precinct/archive artifacts are identified but not normalized
-- Geometry/admin context: `data/al-counties.geojson` and `data/al-2024-equipment-context.csv` are present; precinct geometry/crosswalks, audit, CVR availability, recount, incident, correction, and litigation rows remain request/source-lead items
+- Request matrix: `data/al-2024-source-request-matrix.tsv`
 
-Do not add AL to `completedNativeStates` yet. Wave 14 temporarily inspected the official 2024 precinct ZIP and recorded a SHA-256 plus parser metrics in the inventory, but no official Alabama result or review rows are loaded. The next implementation step is to collect the ZIP into `data/`, write an Alabama SOS precinct XLS matrix parser, reconcile President totals to 2,265,090 votes, and pair U.S. House rows only where district coverage is explicit. Current advisory rows are absent for Alabama; future advisory rows must remain public-interest review signals only, not findings of fraud or misconduct.
+Expected validation: 67 county result rows, 67 county geometry features, 2,265,090 presidential votes, 1,462,616 Trump votes, 772,412 Harris votes, 30,062 other votes, 2,083 local President-versus-U.S.-House review rows, 67 EAC fallback turnout rows, and 201 official historical baseline rows.
 
+Caveats: U.S. House is district-based and should be treated as directional public-interest review context, not a candidate-benefit finding. Active turnout remains EAC fallback because the generated precinct-ZIP ballots-cast lead totals 2,272,731, which is 180 lower than the active EAC/SOS fallback ballots-cast total of 2,272,911, and ALVR active-voter denominator timing needs review. County geometry is loaded, but precinct geometry/crosswalks are not. No normalized audit, CVR availability, recount, incident, correction, or litigation rows are loaded.
 ## Delaware Wave 14 Check
 
 Delaware remains in source discovery rather than `completedNativeStates`. The active native config is still turnout-only EAC fallback: 3 jurisdiction rows, 514,367 ballots cast, 788,441 registered voters, and zero result/review rows. Wave 14 added `data/de-2024-data-coverage-inventory.json` and `data/de-2024-source-request-matrix.tsv` to document official Delaware Department of Elections source leads: the 2024 General Election Results Report, Full Report Power BI page, official write-in PDF, the DOE AGP registered/voted report, November 1 registration CSV, FirstMap election-district geometry lead, historical archive paths for 2020/2016/2012, FOIA request path, and equipment context.
 
 No native result or advisory review parser is loaded. The 2024 report is official, but scripted inspection did not confirm a stable raw text/CSV result endpoint; older-style 2024 raw path guesses returned 404. The DOE AGP turnout report is script-readable and reports 788,864 registered voters and 518,086 voted statewide, versus active EAC fallback 788,441 registered voters and 514,367 ballots cast, so it needs a parser and reconciliation review before replacing EAC fallback. Remaining source needs are official machine-readable President plus same-grain U.S. Senate rows, election-district geometry/crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Advisory rows are source-review context only, not findings of fraud or misconduct.
 
-## Connecticut Wave 14 Source Discovery
+## Connecticut Wave 17 Native Activation
 
 - Config: `etl/state-configs/ct.json`
 - Authority: Connecticut Secretary of the State; U.S. Election Assistance Commission; U.S. Census Bureau; UConn VoTeR audit reports; Verified Voting equipment context
-- Current active package: turnout-only EAC fallback at `data/eac-2024-state-turnout/ct-2024-eac-turnout.csv`, with 169 turnout rows, 1,820,891 ballots cast, and 2,520,650 registered voters
-- Official result lead: CT Elections Management System public reporting app, election ID 91/version 80741, with static JSON for 169 town President rows and 169 same-grain U.S. Senate comparison rows
-- Official turnout lead: EMS `voterTurnout_Electiondata.json` and the 2024 Statement of Vote turnout/registration tables; EMS reports 2,348,545 registered voters, 1,788,981 voters checked, and 76.17% turnout, but this has not replaced EAC fallback
-- Certified cross-check lead: 2024 Statement of Vote PDF from Connecticut SOTS; Wave 14 found a reconciliation blocker because EMS town/state presidential totals differ from the PDF text/county/congressional summaries reviewed in this pass
-- Geometry: current repo has `data/ct-counties.geojson` only; CT reporting is town-centric, so Census TIGERweb town/MCD geometry and an EMS town crosswalk are needed before native map joins
-- Administration context: `data/ct-2024-equipment-context.csv` is loaded from Verified Voting at historical county grain; UConn VoTeR 2024 post-election audit report is identified as a source lead, but audit/CVR/recount/incident/correction/litigation rows are not normalized
+- Current active package: official EMS election 91/version 80741 static JSON at `data/ct-2024-ems-election-91-version-80741`, with 169 town President result rows, 169 same-grain U.S. Senate review rows, and 169 warning-required EMS town turnout rows
+- President source: CT EMS `townVotes_Electiondata.json` office 16518, with 992,053 Harris votes, 736,918 Trump votes, 30,039 other votes, and 1,759,010 total EMS presidential votes
+- Comparison source: CT EMS `townVotes_Electiondata.json` office 16524 U.S. Senator, with Christopher S. Murphy Democratic plus Working Families lines fused by person for 1,000,695 Democratic comparison votes, Matthew M. Corey Republican line at 678,256 comparison votes, and 29,308 other votes
+- Turnout source: CT EMS `voterTurnout_Electiondata.json`, with EMS EV registered/elector denominator total 2,348,545 and VV voters-checked total 1,788,981; all turnout rows are warning-required pending EMS/SOV/EAC semantics review
+- Certified cross-check source: 2024 Statement of Vote PDF at `data/ct-2024-statement-of-vote.pdf`; reconcile the known EMS-versus-SOV presidential total discrepancy before production promotion or certified-total language
+- Geometry: Census TIGERweb county-subdivision layer 22 is collected at `data/ct-town-mcds.geojson`; raw response has 174 features, so filter five COUSUB=00000 placeholders and QA EMS town-name joins before map promotion
+- Administration context: `data/ct-2024-equipment-context.csv` remains supplemental Verified Voting context only; UConn VoTeR post-election audit, CVR availability, recount, incident, correction, and litigation rows are not normalized
 
-CT remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. The source inventory and request matrix are `data/ct-2024-data-coverage-inventory.json` and `data/ct-2024-source-request-matrix.tsv`. Current CT advisory output should be read as fallback turnout coverage only until official EMS/SOV reconciliation, town geometry, and parser work are complete. This is source-coverage context only, not evidence of fraud or misconduct.
-
+CT is now listed in `completedNativeStates` for native staging coverage, with caveats. The source inventory and request matrix are `data/ct-2024-data-coverage-inventory.json` and `data/ct-2024-source-request-matrix.tsv`. Current CT advisory output is town-level public-interest screening context only; it is not precinct/ward evidence and is not evidence of fraud or misconduct.
 ## Hawaii Wave 14 Source Discovery
 
 - Config: `etl/state-configs/hi.json`
@@ -599,18 +603,19 @@ NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Re
 
 NM remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native New Mexico result or advisory review parser is loaded in this pass; current advisory indicators are not calculated from review rows because no NM review rows are loaded. This is source-coverage context only, not evidence of fraud or misconduct.
 
-## Maine Wave 15 Source Discovery
+## Maine Wave 17 Native Activation
 
-- Active config: `etl/state-configs/me.json` remains EAC turnout-only, with 497 fallback jurisdiction turnout rows and no native certified result or advisory review rows loaded.
-- Repo drift: `docs/developer/index.md` is missing in this worktree as of the July 2, 2026 first-read check.
-- Official 2024 result leads: the Maine Secretary of State 2024 results page links machine-readable Excel workbooks for U.S. President by County/Town, U.S. President by Congressional District, United States Senator, and congressional contests. The preferred same-grain comparison lead is the U.S. Senate workbook after President and Senate rows are collected and reconciled.
-- RCV/CVR lead: Representative to Congress District 2 has an official certified RCV summary PDF, first-choice workbook, and official Excel cast-vote-record/export files. These are contest-specific auditability/context sources, not a statewide President-versus-Senate substitute.
-- Turnout denominator lead: Maine SOS previous enrollment files for the November 5, 2024 General/Referendum Election provide active/inactive registered and enrolled voter denominator leads. They should not replace EAC turnout until official ballots-cast or voter-participation rows at compatible grain are collected and reconciled.
-- Geometry/admin context: county geometry and Verified Voting equipment context are present. Municipality/town geometry or a reporting-unit crosswalk, plus normalized audit/recount/CVR availability/incident/correction/litigation rows, remain source-discovery work.
-- Historical leads: official Maine SOS archive pages expose 2020, 2016, and 2012 presidential workbooks, with 2012 also providing municipal/county U.S. Senate workbook leads.
-- Current queue decision: ME stays in `sourceDiscoveryQueue` and out of `completedNativeStates` until the official workbooks are collected, parsed, reconciled, and review rows can be generated. The current advisory indicator calculation is expected to produce zero ME indicators because no ME review rows or same-grain comparison rows are loaded.
+- Config: `etl/state-configs/me.json`
+- Authority: Maine Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- County/non-geographic result source: `data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx`, collected from the official Maine SOS corrected final President by County/Town workbook
+- Local review source: `data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx`
+- Comparison contest: U.S. Senate, same official county/town source family, with 509 same-grain town comparisons and 3 vote-share-only town rows where Senate grain differs
+- Turnout source: EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/me-2024-eac-turnout.csv`; Maine SOS active/inactive registered-enrolled files are collected in `data/me-official-sources/` as denominator leads but are not turnout replacements
+- Historical baseline source: official Maine SOS 2016 and 2020 President workbooks loaded for 34 county/non-geographic rows; official 2012 county and municipal XLS files are collected but blocked pending legacy `.xls` support or conversion
+- County boundary: `data/me-counties.geojson`; State UOCAVA is non-geographic and is excluded from county map joins
+- Coverage/admin inventory: `data/me-2024-data-coverage-inventory.json`
 
-Current handoff artifacts: `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv`.
+Expected validation: 17 certified result rows including State UOCAVA, 16 county geometry features, 831,375 candidate votes, 435,652 Harris votes, 377,977 Trump votes, 17,746 Other votes, 512 town review rows, 509 matched U.S. Senate comparison rows, 497 EAC fallback turnout rows, and 34 historical baseline rows. Remaining gaps are Maine-native ballots-cast or voter-participation rows, municipality/town geometry or a reporting-unit crosswalk, legacy `.xls` parsing/conversion for 2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
 
 ## Rhode Island Wave 17 Native Activation
 

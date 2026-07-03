@@ -114,28 +114,24 @@
         "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip"
       ],
       "availableFields": [
-        "official precinct/reporting-mode presidential rows from county XLS workbooks",
-        "official precinct/reporting-mode U.S. House comparison rows from the same XLS workbooks",
-        "official state-native total-ballots and registration source leads",
-        "EAC fallback turnout rows",
+        "official county presidential rows from the 2024 SOS precinct XLS ZIP",
+        "official precinct/reporting-mode President-versus-U.S. House review rows where House coverage is explicit",
+        "official 2012/2016/2020 county historical baseline rows",
+        "EAC fallback turnout rows plus Alabama SOS turnout/registration denominator leads",
         "county geometry",
         "county equipment context from Verified Voting Verifier",
-        "official 2012/2016/2020 historical precinct/archive source leads",
         "SOS public-records and county-official request paths for administration context"
       ],
       "missingFields": [
-        "loaded Alabama native result and review rows",
-        "district-aware precinct XLS matrix parser",
         "state-native turnout rows reconciled with denominator timing",
         "precinct boundary geometry or official precinct-header crosswalk",
-        "normalized official historical baseline rows",
         "normalized audit, CVR availability, recount, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config remains active; data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv document the official Alabama SOS precinct XLS ZIP, turnout/registration leads, historical source leads, county geometry, equipment context, and admin request paths without loading review rows",
+      "parserStatus": "native county President rows, precinct/reporting-mode U.S. House review rows, EAC fallback turnout, county geometry, and official historical baseline rows are active through etl/state-configs/al.json; scripts/normalize-al-sos-results.mjs regenerates AL CSVs from official SOS artifacts",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_parser_ready",
-      "caveats": "The official 2024 precinct ZIP is a matrix of 67 county XLS files with contests in rows and precinct/absentee/provisional modes in columns. U.S. House is district-based and split counties include blank out-of-district cells, so a district-aware parser and reconciliation pass are required before advisory review rows are loaded. Active turnout remains EAC fallback until Alabama-native turnout and registration sources are parsed and denominator timing is reviewed.",
-      "nextAction": "Use data/al-2024-source-request-matrix.tsv to collect the official Alabama SOS precinct ZIP and turnout/registration artifacts, then implement an Alabama SOS XLS matrix parser and state-native turnout reconciliation before adding AL to completed native states."
+      "confidence": "loaded_with_caveat",
+      "caveats": "The official 2024 precinct ZIP is loaded through generated CSVs from 67 county XLS files. U.S. House is district-based and no 2024 Alabama U.S. Senate race existed, so review rows are directional source-review signals only. Active turnout remains EAC fallback until SOS Total Ballots Cast PDF and ALVR denominator timing are reconciled; the generated precinct-ZIP ballots-cast lead is 180 lower than active EAC/SOS fallback ballots cast. County geometry is loaded, but precinct geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows remain missing.",
+      "nextAction": "Review state-native turnout replacement semantics, especially the 180-ballot precinct-ZIP versus EAC/SOS fallback ballots-cast difference and ALVR denominator timing; then collect official precinct geometry/crosswalks and administration-context records."
     },
     {
       "state": "AR",
@@ -337,8 +333,9 @@
       "exportFormats": [
         "official EMS static JSON",
         "official Statement of Vote PDF",
-        "official EAC fallback turnout CSV",
-        "Census TIGERweb county-subdivision geometry lead"
+        "official EMS town turnout JSON",
+        "Census TIGERweb county-subdivision GeoJSON",
+        "EAC fallback turnout CSV benchmark"
       ],
       "sourceUrls": [
         "https://ctemspublic.tgstg.net/",
@@ -357,29 +354,27 @@
         "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e"
       ],
       "availableFields": [
-        "official town President rows in EMS static JSON",
-        "official town U.S. Senate rows in the same EMS static JSON",
-        "official town turnout, registered-voter, absentee, early-voting, and election-day-registration fields in EMS turnout JSON",
+        "official town President rows in EMS static JSON loaded into staging",
+        "official town U.S. Senate rows in the same EMS static JSON loaded into staging with cross-endorsed Murphy lines fused",
+        "official EMS town turnout rows loaded into staging as warning-required state-native turnout context",
+        "official Statement of Vote PDF collected as reconciliation source",
         "official polling-place labels and reporting-completeness fields for 759 polling places",
         "official Statement of Vote and Election History leads for 2012, 2016, and 2020 historical baselines",
-        "county geometry and Verified Voting equipment context already loaded",
-        "Census TIGERweb county-subdivision geometry lead for town/MCD joins",
+        "county geometry, town/MCD geometry lead, and Verified Voting equipment context",
         "UConn VoTeR 2024 post-election audit report lead linked from Connecticut SOTS"
       ],
       "missingFields": [
-        "normalized native CT result and review rows",
-        "reconciled EMS-versus-Statement-of-Vote presidential totals",
-        "normalized state-native turnout rows to replace EAC fallback",
+        "reconciled EMS-versus-Statement-of-Vote presidential totals before production promotion",
         "confirmed precinct/ward candidate vote rows or CVR availability",
-        "town/MCD geometry and EMS town crosswalk",
-        "precinct/ward geometry or reporting-place crosswalk",
+        "EMS town/MCD geometry crosswalk QA and precinct/ward geometry if sub-town rows are collected",
+        "official 2012/2016/2020 historical baselines normalized into ETL",
         "normalized audit, CVR, recount, incident, correction, and litigation rows"
       ],
-      "parserStatus": "data/ct-2024-data-coverage-inventory.json and data/ct-2024-source-request-matrix.tsv document the official EMS JSON, Statement of Vote, turnout, historical, geometry, and audit leads; CT ETL remains turnout-only EAC fallback until a Connecticut EMS town parser and reconciliation check are implemented",
+      "parserStatus": "native Connecticut EMS town parser loaded for 169 town President rows, 169 same-grain U.S. Senate review rows, and 169 warning-required EMS turnout rows; data/ct-2024-data-coverage-inventory.json and data/ct-2024-source-request-matrix.tsv document the SOV reconciliation, geometry, historical, and admin caveats",
       "manualReviewBurden": "medium",
-      "confidence": "candidate",
-      "caveats": "Connecticut geography and reporting are town-centric. County joins are context only with the current county geometry. EMS townVotes rows sum to EMS stateVotes presidential total 1,759,010, while the official 2024 Statement of Vote PDF summaries reviewed in Wave 14 show different presidential totals; reconcile that source discrepancy before loading native CT result/review rows. Current CT config remains EAC fallback turnout only.",
-      "nextAction": "Implement a Connecticut EMS town parser only after reconciling EMS and Statement of Vote totals; collect town/MCD geometry and crosswalks, review EMS report-download paths for precinct/ward rows or CVR availability, and normalize audit/CVR/recount/incident/correction/litigation source records if published or request-produced."
+      "confidence": "loaded_with_caveat",
+      "caveats": "Connecticut geography and reporting are town-centric. EMS townVotes rows sum to EMS stateVotes presidential total 1,759,010, while the official 2024 Statement of Vote PDF remains a required reconciliation source before production promotion or certified-total language. EMS turnout EV/VV rows are loaded as warning-required until EMS/SOV/EAC field semantics are reviewed. Current advisory rows are town-level public-interest screening inputs only, not precinct/ward findings.",
+      "nextAction": "Run Statement-of-Vote reconciliation, QA the EMS town-name to Census MCD geometry crosswalk, review EMS report-download paths for precinct/ward rows or CVR availability, normalize official historical baselines, and collect audit/CVR/recount/incident/correction/litigation records if published or request-produced."
     },
     {
       "state": "DE",
@@ -1001,28 +996,26 @@
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx"
       ],
       "availableFields": [
-        "official county/town presidential Excel rows",
-        "official county/town U.S. Senate comparison Excel rows",
-        "official presidential congressional-district Excel rows for split-electoral-vote context",
-        "official CD2 ranked-choice summary, first-choice, and cast-vote-record Excel source leads",
-        "EAC fallback turnout rows",
-        "state-native registered/enrolled voter denominator leads",
+        "official county/town presidential Excel rows loaded",
+        "official county/town U.S. Senate comparison Excel rows loaded",
+        "official presidential congressional-district Excel artifact retained for split-electoral-vote context",
+        "official EAC fallback turnout rows loaded",
+        "official Maine SOS active/inactive registered-enrolled denominator leads collected",
         "county geometry",
-        "county equipment context"
+        "county equipment context",
+        "official 2016 and 2020 county historical baselines loaded"
       ],
       "missingFields": [
-        "loaded Maine native result and review rows",
-        "Maine SOS Excel parser and reconciliation report",
         "state-native ballots-cast or voter-participation rows paired with registration denominators",
         "municipality/town geometry or official reporting-unit crosswalk",
-        "normalized official 2012/2016/2020 historical baseline rows",
+        "normalized official 2012 historical baseline rows from legacy XLS artifacts",
         "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv document official Maine SOS 2024 Excel result, U.S. Senate comparison, RCV/CVR, registration denominator, historical, geometry, equipment, and admin source leads; active etl/state-configs/me.json remains EAC turnout-only with no result or review rows loaded",
+      "parserStatus": "nativeMaineSosCountyTownXlsx loads official Maine SOS President county/town rows, U.S. Senate town comparison rows, EAC fallback turnout, and official 2016/2020 historical rows; data/me-2024-data-coverage-inventory.json documents remaining turnout, geometry, 2012 XLS, and admin gaps",
       "manualReviewBurden": "low",
-      "confidence": "candidate_parser_ready",
-      "caveats": "Maine SOS publishes official Excel workbooks for President by County/Town and U.S. Senate, but they are not collected or parsed in this pass. UOCAVA/non-geographic rows, municipality label joins, and CD2 ranked-choice/CVR semantics need reconciliation before advisory rows are loaded. Turnout remains EAC fallback until state-native registration and ballots-cast semantics are reviewed.",
-      "nextAction": "Collect the official Maine SOS 2024 President and U.S. Senate Excel workbooks into data/, implement a Maine Excel parser with UOCAVA/non-geographic row handling, reconcile state totals, then add municipality/county crosswalks, state-native turnout review, historical baselines, and administration source rows."
+      "confidence": "loaded_with_caveat",
+      "caveats": "State UOCAVA is loaded as a non-geographic certified result row and excluded from town review joins. Three town rows are vote-share-only because the Senate workbook grain differs. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review context only. Turnout remains EAC fallback until state-native ballots-cast semantics are reviewed.",
+      "nextAction": "Collect compatible Maine-native ballots-cast/voter-participation rows, municipality/town geometry or a crosswalk, legacy .xls parsing/conversion for 2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "MI",
