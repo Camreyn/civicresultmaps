@@ -10,14 +10,14 @@
   ],
   "currentConfigStatus": {
     "config": "etl/state-configs/ct.json",
-    "turnoutOnly": true,
-    "activeAuthority": "U.S. Election Assistance Commission fallback turnout",
-    "resultRows": 0,
-    "reviewRows": 0,
+    "turnoutOnly": false,
+    "activeAuthority": "Connecticut Secretary of the State EMS static JSON, with EAC fallback retained as a benchmark",
+    "resultRows": 169,
+    "reviewRows": 169,
     "turnoutRows": 169,
-    "ballotsCast": 1820891,
-    "registeredVoters": 2520650,
-    "caveat": "The active CT ETL config does not load native President, comparison, review, town geometry, historical, or administration rows."
+    "ballotsCast": 1788981,
+    "registeredVoters": 2348545,
+    "caveat": "The active CT staging config now loads official EMS town President, U.S. Senate review, and turnout rows. EMS town/state totals are internally consistent but still require Statement-of-Vote reconciliation before production-level certified-total claims."
   },
   "officialSourcePages": [
     {
@@ -62,12 +62,12 @@
     }
   ],
   "emsPublicReporting": {
-    "status": "official_static_json_available_parser_not_loaded",
+    "status": "official_static_json_collected_parser_loaded_with_reconciliation_caveat",
     "electionId": "91",
     "electionName": "11/05/2024 -- Presidential Election 2024",
     "version": "80741",
     "jsonBaseUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741",
-    "scriptAccessNote": "The app and Version endpoint are available over HTTPS. Larger JSON files succeeded from this worker over HTTP after HTTPS receive errors; use HTTPS canonical URLs in registries and only retry HTTP in collection tooling if needed.",
+    "scriptAccessNote": "The canonical source URLs are HTTPS. This worker collected the larger JSON artifacts through the same official host over HTTP after HTTPS receive errors, retaining HTTPS URLs in config and registries.",
     "availableJsonFiles": [
       "Lookupdata.json",
       "stateVotes_Electiondata.json",
@@ -158,34 +158,38 @@
           "votes": 7
         }
       ],
-      "caveat": "Connecticut has cross-endorsed ballot lines. A future parser should decide whether comparison rows stay ballot-line-level or fuse candidates by person before advisory calculations."
+      "caveat": "Connecticut has cross-endorsed ballot lines. The Wave 17 native parser fuses Christopher S. Murphy Democratic and Working Families ballot lines by person for comparison-row calculations."
     },
-    "reconciliationCaveat": "The EMS townVotes rows sum to the EMS stateVotes presidential total of 1,759,010. The official 2024 Statement of Vote PDF text/county/congressional summaries reviewed in this pass show different presidential totals. Reconcile this official-source discrepancy before loading native CT result/review rows."
+    "reconciliationCaveat": "The EMS townVotes rows sum to the EMS stateVotes presidential total of 1,759,010. The official 2024 Statement of Vote PDF remains collected as a reconciliation source because earlier PDF text/county/congressional summaries reviewed in Wave 14 showed different presidential totals. Reconcile before production promotion or certified-total language.",
+    "localArtifact": "data/ct-2024-ems-election-91-version-80741"
   },
   "sourceFindings": [
     {
       "topic": "certifiedPresidentResults",
-      "status": "official_ems_json_and_sov_pdf_identified_not_loaded",
+      "status": "official_ems_json_loaded_with_sov_reconciliation_caveat",
       "reportingGrain": "town",
       "sourceAuthority": "Connecticut Secretary of the State",
       "expectedRowsOrTotals": "169 town President rows from EMS townVotes; EMS statewide presidential total 1,759,010.",
-      "blocker": "Resolve EMS static JSON totals against the official 2024 Statement of Vote PDF totals before ingesting."
+      "blocker": "Statement-of-Vote PDF reconciliation is still required before production promotion or certified-total claims.",
+      "localArtifact": "data/ct-2024-ems-election-91-version-80741"
     },
     {
       "topic": "sameGrainComparisonContest",
-      "status": "official_town_us_senate_available_not_loaded",
+      "status": "official_town_us_senate_loaded_with_cross_endorsement_caveat",
       "reportingGrain": "town",
       "comparisonContest": "United States Senator",
-      "expectedRowsOrTotals": "169 town U.S. Senate comparison rows from the same CT EMS townVotes artifact; EMS statewide U.S. Senate total 1,708,259.",
-      "blocker": "Comparison parser and ballot-line fusion policy are not implemented."
+      "expectedRowsOrTotals": "169 town U.S. Senate comparison rows from the same CT EMS townVotes artifact; parser fuses Murphy Democratic and Working Families lines; EMS statewide U.S. Senate total 1,708,259.",
+      "blocker": "No parser blocker remains for town comparison rows; cross-endorsed ballot-line fusion caveat must remain visible.",
+      "localArtifact": "data/ct-2024-ems-election-91-version-80741"
     },
     {
       "topic": "stateNativeTurnout",
-      "status": "official_town_turnout_registration_lead_not_loaded",
+      "status": "official_town_turnout_loaded_warning_required",
       "reportingGrain": "town",
       "sourceAuthority": "Connecticut Secretary of the State EMS and Statement of Vote",
-      "expectedRowsOrTotals": "169 town turnout rows plus statewide EMS fields RV 2,348,545 and BC/VV 1,788,981.",
-      "blocker": "EMS turnout fields and SOV turnout/registration tables need semantic review and reconciliation before replacing EAC fallback."
+      "expectedRowsOrTotals": "169 town turnout rows; EMS statewide EV/registered voters 2,348,545 and VV/voters checked 1,788,981.",
+      "blocker": "Rows remain warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed.",
+      "localArtifact": "data/ct-2024-ems-election-91-version-80741"
     },
     {
       "topic": "precinctWardAvailability",
@@ -196,13 +200,14 @@
     },
     {
       "topic": "geometryAndCrosswalk",
-      "status": "county_geometry_loaded_town_geometry_lead_precinct_geometry_missing",
+      "status": "town_mcd_geometry_collected_crosswalk_needs_qa",
       "reportingGrain": "town",
       "loadedArtifacts": [
-        "data/ct-counties.geojson"
+        "data/ct-counties.geojson",
+        "data/ct-town-mcds.geojson"
       ],
-      "sourceLead": "Census TIGERweb Current WMS county-subdivision layer with STATE='09'",
-      "blocker": "Town/MCD geometry and EMS town crosswalk are not collected; precinct/ward geometry is not loaded."
+      "sourceLead": "Census TIGERweb Current WMS county-subdivision layer 22 with STATE='09'",
+      "blocker": "Raw Census layer has 169 town/MCD features plus five COUSUB=00000 placeholders; EMS town-name crosswalk QA is needed before map promotion."
     },
     {
       "topic": "historicalBaselines",
@@ -241,19 +246,21 @@
     }
   ],
   "mapJoinImplications": [
-    "Connecticut 2024 result availability is town-centric. County joins are context only because the active county geometry summarizes eight historical county areas rather than the town reporting units used by EMS.",
-    "Town/MCD geometry from Census TIGERweb is the preferred next map join target for native CT result/review/turnout rows.",
+    "Connecticut 2024 result availability is town-centric. County joins are context only because the active result/review rows use EMS town reporting units.",
+    "Census TIGERweb town/MCD geometry is collected at data/ct-town-mcds.geojson; filter five COUSUB=00000 placeholder features and QA EMS town-name joins before map promotion.",
     "Ward/precinct maps should not be implied from the current data. EMS exposes 759 polling-place labels and reporting status, but candidate vote rows below town grain were not confirmed in static JSON."
   ],
   "websiteAndApiDisplayPath": {
-    "currentConfig": "turnout_only_eac_fallback",
+    "currentConfig": "native_ems_town_result_review_turnout_staging",
     "productionChecked": false,
-    "displayCaveat": "Current CT website/API output should be treated as fallback turnout context only until native CT result, same-grain review, turnout, geometry, and provenance artifacts are collected and loaded."
+    "displayCaveat": "Current CT staging output has town-level EMS result, review, and turnout rows. Production/API display was not checked or promoted; keep SOV reconciliation, turnout semantics, town-geometry crosswalk, and sub-town availability caveats visible."
   },
   "remainingRisks": [
-    "EMS and Statement of Vote presidential totals must be reconciled before native CT result/review import.",
-    "State-native turnout semantics and EAC-vs-EMS denominator differences need review before replacing fallback rows.",
-    "Town geometry/crosswalk and precinct/ward geometry are not loaded.",
+    "EMS and Statement of Vote presidential totals must be reconciled before production promotion or certified-total language.",
+    "State-native turnout rows are loaded from EMS EV/VV fields but remain warning-required pending EMS/SOV/EAC denominator and ballots-cast semantics review.",
+    "Town/MCD geometry is collected but needs placeholder filtering and EMS town-name crosswalk QA before production map joins.",
+    "Precinct/ward candidate vote rows or CVR availability remain unconfirmed; current review rows are town-level only.",
+    "Official 2012, 2016, and 2020 historical town baselines are source leads only and are not loaded.",
     "Audit/CVR/recount/incident/correction/litigation rows remain unnormalized.",
     "All advisory language must remain source-gap and reconciliation language only; this inventory does not make or support fraud or misconduct claims."
   ]

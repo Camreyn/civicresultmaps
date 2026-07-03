@@ -333,8 +333,9 @@
       "exportFormats": [
         "official EMS static JSON",
         "official Statement of Vote PDF",
-        "official EAC fallback turnout CSV",
-        "Census TIGERweb county-subdivision geometry lead"
+        "official EMS town turnout JSON",
+        "Census TIGERweb county-subdivision GeoJSON",
+        "EAC fallback turnout CSV benchmark"
       ],
       "sourceUrls": [
         "https://ctemspublic.tgstg.net/",
@@ -353,29 +354,27 @@
         "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e"
       ],
       "availableFields": [
-        "official town President rows in EMS static JSON",
-        "official town U.S. Senate rows in the same EMS static JSON",
-        "official town turnout, registered-voter, absentee, early-voting, and election-day-registration fields in EMS turnout JSON",
+        "official town President rows in EMS static JSON loaded into staging",
+        "official town U.S. Senate rows in the same EMS static JSON loaded into staging with cross-endorsed Murphy lines fused",
+        "official EMS town turnout rows loaded into staging as warning-required state-native turnout context",
+        "official Statement of Vote PDF collected as reconciliation source",
         "official polling-place labels and reporting-completeness fields for 759 polling places",
         "official Statement of Vote and Election History leads for 2012, 2016, and 2020 historical baselines",
-        "county geometry and Verified Voting equipment context already loaded",
-        "Census TIGERweb county-subdivision geometry lead for town/MCD joins",
+        "county geometry, town/MCD geometry lead, and Verified Voting equipment context",
         "UConn VoTeR 2024 post-election audit report lead linked from Connecticut SOTS"
       ],
       "missingFields": [
-        "normalized native CT result and review rows",
-        "reconciled EMS-versus-Statement-of-Vote presidential totals",
-        "normalized state-native turnout rows to replace EAC fallback",
+        "reconciled EMS-versus-Statement-of-Vote presidential totals before production promotion",
         "confirmed precinct/ward candidate vote rows or CVR availability",
-        "town/MCD geometry and EMS town crosswalk",
-        "precinct/ward geometry or reporting-place crosswalk",
+        "EMS town/MCD geometry crosswalk QA and precinct/ward geometry if sub-town rows are collected",
+        "official 2012/2016/2020 historical baselines normalized into ETL",
         "normalized audit, CVR, recount, incident, correction, and litigation rows"
       ],
-      "parserStatus": "data/ct-2024-data-coverage-inventory.json and data/ct-2024-source-request-matrix.tsv document the official EMS JSON, Statement of Vote, turnout, historical, geometry, and audit leads; CT ETL remains turnout-only EAC fallback until a Connecticut EMS town parser and reconciliation check are implemented",
+      "parserStatus": "native Connecticut EMS town parser loaded for 169 town President rows, 169 same-grain U.S. Senate review rows, and 169 warning-required EMS turnout rows; data/ct-2024-data-coverage-inventory.json and data/ct-2024-source-request-matrix.tsv document the SOV reconciliation, geometry, historical, and admin caveats",
       "manualReviewBurden": "medium",
-      "confidence": "candidate",
-      "caveats": "Connecticut geography and reporting are town-centric. County joins are context only with the current county geometry. EMS townVotes rows sum to EMS stateVotes presidential total 1,759,010, while the official 2024 Statement of Vote PDF summaries reviewed in Wave 14 show different presidential totals; reconcile that source discrepancy before loading native CT result/review rows. Current CT config remains EAC fallback turnout only.",
-      "nextAction": "Implement a Connecticut EMS town parser only after reconciling EMS and Statement of Vote totals; collect town/MCD geometry and crosswalks, review EMS report-download paths for precinct/ward rows or CVR availability, and normalize audit/CVR/recount/incident/correction/litigation source records if published or request-produced."
+      "confidence": "loaded_with_caveat",
+      "caveats": "Connecticut geography and reporting are town-centric. EMS townVotes rows sum to EMS stateVotes presidential total 1,759,010, while the official 2024 Statement of Vote PDF remains a required reconciliation source before production promotion or certified-total language. EMS turnout EV/VV rows are loaded as warning-required until EMS/SOV/EAC field semantics are reviewed. Current advisory rows are town-level public-interest screening inputs only, not precinct/ward findings.",
+      "nextAction": "Run Statement-of-Vote reconciliation, QA the EMS town-name to Census MCD geometry crosswalk, review EMS report-download paths for precinct/ward rows or CVR availability, normalize official historical baselines, and collect audit/CVR/recount/incident/correction/litigation records if published or request-produced."
     },
     {
       "state": "DE",

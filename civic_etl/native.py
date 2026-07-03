@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import csv
 import xml.etree.ElementTree as ET
@@ -1712,6 +1712,166 @@ def _county_president_csv_rows(
         **turnout_metrics,
     }
     return result_rows, review_rows, turnout_rows, metrics
+
+
+def _connecticut_ems_vote_totals(rows: list[dict[str, Any]], candidate_ids: list[str]) -> int:
+    selected = {str(candidate_id) for candidate_id in candidate_ids}
+    total = 0
+    for row in rows:
+        for candidate_id, payload in row.items():
+            if str(candidate_id) in selected:
+                total += int_text(payload.get("V"))
+    return total
+
+
+def _connecticut_ems_contest_total(rows: list[dict[str, Any]]) -> int:
+    return sum(int_text(payload.get("V")) for row in rows for payload in row.values())
+
+
+def _connecticut_ems_town_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    turnout_section = config.raw.get("turnout", {})
+    source = sources[section["sourceId"]]
+    source_dir = _artifact_path(source)
+    if not source_dir.is_dir():
+        raise ValueError(f"Connecticut EMS source must be a directory: {source.local_file}")
+
+    lookup = json.loads((source_dir / "Lookupdata.json").read_text(encoding="utf-8-sig"))
+    town_votes = json.loads((source_dir / "townVotes_Electiondata.json").read_text(encoding="utf-8-sig"))
+    turnout = json.loads((source_dir / "voterTurnout_Electiondata.json").read_text(encoding="utf-8-sig"))
+
+    town_ids = {str(town_id): str(name).strip() for town_id, name in lookup.get("townIds", {}).items()}
+    counties = {str(county_id): f"{name} County" for county_id, name in lookup.get("counties", {}).items()}
+    county_by_town = {
+        str(row.get("TownID")): counties.get(str(row.get("CountyID")), "")
+        for row in lookup.get("countyTowns", [])
+    }
+    president_office = str(section.get("presidentOfficeId", "16518"))
+    comparison_office = str(review_section.get("comparisonOfficeId", "16524"))
+    harris_ids = [str(value) for value in section.get("harrisCandidateIds", [])]
+    trump_ids = [str(value) for value in section.get("trumpCandidateIds", [])]
+    comparison_dem_ids = [str(value) for value in review_section.get("comparisonDemCandidateIds", [])]
+    comparison_rep_ids = [str(value) for value in review_section.get("comparisonRepCandidateIds", [])]
+
+    result_rows: list[dict[str, Any]] = []
+    review_rows: list[dict[str, Any]] = []
+    turnout_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+
+    for town_id in sorted(town_ids, key=lambda value: int_text(value)):
+        town_name = town_ids[town_id]
+        county = county_by_town.get(town_id)
+        if not town_name or not county:
+            raise ValueError(f"Connecticut EMS town {town_id} is missing town or county metadata")
+
+        contests = town_votes.get(town_id, {})
+        president_rows = contests.get(president_office, [])
+        comparison_contest_rows = contests.get(comparison_office, [])
+        harris = _connecticut_ems_vote_totals(president_rows, harris_ids)
+        trump = _connecticut_ems_vote_totals(president_rows, trump_ids)
+        total = _connecticut_ems_contest_total(president_rows)
+        other = total - harris - trump
+        if other < 0:
+            raise ValueError(f"Connecticut EMS town {town_name} has invalid presidential totals")
+
+        result_rows.append(
+            {
+                "jurisdictionName": town_name,
+                "jurisdictionCode": f"CT-TOWN-{int_text(town_id):03d}",
+                "level": "town",
+                "county": county,
+                "votes": {
+                    "Trump": trump,
+                    "Harris": harris,
+                    "Other": other,
+                },
+                "totalVotes": total,
+                "margin": trump - harris,
+                "marginPct": pct(trump - harris, total),
+                "sourceId": source.id,
+            }
+        )
+
+        comparison_dem = _connecticut_ems_vote_totals(comparison_contest_rows, comparison_dem_ids)
+        comparison_rep = _connecticut_ems_vote_totals(comparison_contest_rows, comparison_rep_ids)
+        comparison_total = _connecticut_ems_contest_total(comparison_contest_rows)
+        comparison_other = comparison_total - comparison_dem - comparison_rep
+        has_comparison = bool(comparison_total)
+        if has_comparison:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": town_name,
+                "totalVotes": total,
+                "harris": harris,
+                "trump": trump,
+                "harrisShare": pct(harris, total),
+                "trumpShare": pct(trump, total),
+                "demDropoff": pct(harris - comparison_dem, total) if has_comparison else 0,
+                "repDropoff": pct(trump - comparison_rep, total) if has_comparison else 0,
+                "coverageMode": review_section.get("coverageMode", "presidentVsSenate")
+                if has_comparison
+                else "voteShareOnly",
+                "comparisonContest": review_section.get("comparisonContest", ""),
+                "comparisonDemVotes": comparison_dem,
+                "comparisonRepVotes": comparison_rep,
+                "comparisonOtherVotes": comparison_other,
+                "comparisonDemCandidatePresent": comparison_dem > 0,
+                "comparisonRepCandidatePresent": comparison_rep > 0,
+                "sourceId": source.id,
+            }
+        )
+
+        turnout_record = turnout.get(town_id)
+        if not turnout_record:
+            raise ValueError(f"Connecticut EMS town {town_name} is missing turnout metadata")
+        registered_voters = int_text(turnout_record.get("EV"))
+        voters_checked = int_text(turnout_record.get("VV"))
+        turnout_rows.append(
+            {
+                "county": county,
+                "localUnit": town_name,
+                "level": turnout_section.get("sourceLevel", "town"),
+                "ballotsCast": voters_checked,
+                "registeredVoters": registered_voters,
+                "turnoutPct": pct(voters_checked, registered_voters),
+                "denominatorType": turnout_section.get("denominatorType", "registeredVoters"),
+                "registrationDenominatorTiming": turnout_section.get(
+                    "registrationDenominatorTiming",
+                    "emsReported",
+                ),
+                "warningRequired": bool(turnout_section.get("warningRequired", True)),
+                "sourceId": source.id,
+            }
+        )
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": review_section.get("comparisonContest", ""),
+        "nativeComparisonDemVotes": sum(row["comparisonDemVotes"] for row in review_rows),
+        "nativeComparisonRepVotes": sum(row["comparisonRepVotes"] for row in review_rows),
+        "nativeComparisonOtherVotes": sum(row["comparisonOtherVotes"] for row in review_rows),
+        "nativeTurnoutRows": len(turnout_rows),
+        "nativeRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
+        "nativeTurnoutParser": turnout_section.get("format", "connecticutEmsTownJson"),
+        "nativeTurnoutWarningRows": sum(1 for row in turnout_rows if row["warningRequired"]),
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+
 MARYLAND_VOTE_COLUMNS = [
     "Early Votes",
     "Election Night Votes",
@@ -6207,6 +6367,17 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "metrics": metrics,
         }
 
+    if config.code == "CT" and config.raw.get("certifiedResults", {}).get("format") == "connecticutEmsTownJson":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _connecticut_ems_town_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeConnecticutEmsTownJson",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
     if config.code == "SC" and config.raw.get("certifiedResults", {}).get("format") == "southCarolinaElectionHistoryCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _south_carolina_election_history_rows(config, sources)

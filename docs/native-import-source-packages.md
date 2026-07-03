@@ -1,4 +1,4 @@
-# Native Import Source Packages
+﻿# Native Import Source Packages
 
 Checked at: 2026-06-15
 
@@ -536,19 +536,19 @@ Delaware remains in source discovery rather than `completedNativeStates`. The ac
 
 No native result or advisory review parser is loaded. The 2024 report is official, but scripted inspection did not confirm a stable raw text/CSV result endpoint; older-style 2024 raw path guesses returned 404. The DOE AGP turnout report is script-readable and reports 788,864 registered voters and 518,086 voted statewide, versus active EAC fallback 788,441 registered voters and 514,367 ballots cast, so it needs a parser and reconciliation review before replacing EAC fallback. Remaining source needs are official machine-readable President plus same-grain U.S. Senate rows, election-district geometry/crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Advisory rows are source-review context only, not findings of fraud or misconduct.
 
-## Connecticut Wave 14 Source Discovery
+## Connecticut Wave 17 Native Activation
 
 - Config: `etl/state-configs/ct.json`
 - Authority: Connecticut Secretary of the State; U.S. Election Assistance Commission; U.S. Census Bureau; UConn VoTeR audit reports; Verified Voting equipment context
-- Current active package: turnout-only EAC fallback at `data/eac-2024-state-turnout/ct-2024-eac-turnout.csv`, with 169 turnout rows, 1,820,891 ballots cast, and 2,520,650 registered voters
-- Official result lead: CT Elections Management System public reporting app, election ID 91/version 80741, with static JSON for 169 town President rows and 169 same-grain U.S. Senate comparison rows
-- Official turnout lead: EMS `voterTurnout_Electiondata.json` and the 2024 Statement of Vote turnout/registration tables; EMS reports 2,348,545 registered voters, 1,788,981 voters checked, and 76.17% turnout, but this has not replaced EAC fallback
-- Certified cross-check lead: 2024 Statement of Vote PDF from Connecticut SOTS; Wave 14 found a reconciliation blocker because EMS town/state presidential totals differ from the PDF text/county/congressional summaries reviewed in this pass
-- Geometry: current repo has `data/ct-counties.geojson` only; CT reporting is town-centric, so Census TIGERweb town/MCD geometry and an EMS town crosswalk are needed before native map joins
-- Administration context: `data/ct-2024-equipment-context.csv` is loaded from Verified Voting at historical county grain; UConn VoTeR 2024 post-election audit report is identified as a source lead, but audit/CVR/recount/incident/correction/litigation rows are not normalized
+- Current active package: official EMS election 91/version 80741 static JSON at `data/ct-2024-ems-election-91-version-80741`, with 169 town President result rows, 169 same-grain U.S. Senate review rows, and 169 warning-required EMS town turnout rows
+- President source: CT EMS `townVotes_Electiondata.json` office 16518, with 992,053 Harris votes, 736,918 Trump votes, 30,039 other votes, and 1,759,010 total EMS presidential votes
+- Comparison source: CT EMS `townVotes_Electiondata.json` office 16524 U.S. Senator, with Christopher S. Murphy Democratic plus Working Families lines fused by person for 1,000,695 Democratic comparison votes, Matthew M. Corey Republican line at 678,256 comparison votes, and 29,308 other votes
+- Turnout source: CT EMS `voterTurnout_Electiondata.json`, with EMS EV registered/elector denominator total 2,348,545 and VV voters-checked total 1,788,981; all turnout rows are warning-required pending EMS/SOV/EAC semantics review
+- Certified cross-check source: 2024 Statement of Vote PDF at `data/ct-2024-statement-of-vote.pdf`; reconcile the known EMS-versus-SOV presidential total discrepancy before production promotion or certified-total language
+- Geometry: Census TIGERweb county-subdivision layer 22 is collected at `data/ct-town-mcds.geojson`; raw response has 174 features, so filter five COUSUB=00000 placeholders and QA EMS town-name joins before map promotion
+- Administration context: `data/ct-2024-equipment-context.csv` remains supplemental Verified Voting context only; UConn VoTeR post-election audit, CVR availability, recount, incident, correction, and litigation rows are not normalized
 
-CT remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. The source inventory and request matrix are `data/ct-2024-data-coverage-inventory.json` and `data/ct-2024-source-request-matrix.tsv`. Current CT advisory output should be read as fallback turnout coverage only until official EMS/SOV reconciliation, town geometry, and parser work are complete. This is source-coverage context only, not evidence of fraud or misconduct.
-
+CT is now listed in `completedNativeStates` for native staging coverage, with caveats. The source inventory and request matrix are `data/ct-2024-data-coverage-inventory.json` and `data/ct-2024-source-request-matrix.tsv`. Current CT advisory output is town-level public-interest screening context only; it is not precinct/ward evidence and is not evidence of fraud or misconduct.
 ## Hawaii Wave 14 Source Discovery
 
 - Config: `etl/state-configs/hi.json`
