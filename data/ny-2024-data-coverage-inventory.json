@@ -30,9 +30,40 @@
       ]
     },
     "promotionCaveat": "Do not move NY to completedNativeStates until either statewide official same-grain local review coverage is collected or the coordinator intentionally accepts partial supplemental review coverage with visible caveats.",
-    "wave19Decision": "Wave 19 keeps NY in sourceDiscoveryQueue. The current staging artifact is useful for county-certified maps and partial local advisory review, but completedNativeStates would overstate official local review, turnout, and geometry coverage."
+    "wave19Decision": "Wave 19 keeps NY in sourceDiscoveryQueue. The current staging artifact is useful for county-certified maps and partial local advisory review, but completedNativeStates would overstate official local review, turnout, and geometry coverage.",
+    "wave21Decision": "Wave 21 rechecked NYSBOE and Flateau/VEDA source surfaces on 2026-07-03. VEDA is live but has no election data/exportable 2024 replacement rows, and NYSBOE county/election-district enrollment reports remain denominator leads only. The final blocker is therefore specific: obtain official same-grain President plus U.S. Senate local rows for the 13 excluded county equivalents, a ballots-cast or voter-history artifact, and geometry/crosswalks before completed native coverage."
   },
   "authorityPriority": "Official New York State Board of Elections, county boards of elections, official GIS/Census, EAC, and official court/board records first; OpenElections and Verified Voting remain supplemental context only.",
+  "officialBlockerEvidence": [
+    {
+      "checkedAt": "2026-07-03",
+      "sourceAuthority": "New York State Board of Elections Flateau/VEDA program",
+      "sourceUrl": "https://flateau.elections.ny.gov/",
+      "observed": "The VEDA dashboard reported 0 total elections for 2026 and no election data available.",
+      "blocker": "No 2024 election-district result, voter-statistics, poll-site, district-map, or download export was available to replace the current 2024 local review or turnout fallback package."
+    },
+    {
+      "checkedAt": "2026-07-03",
+      "sourceAuthority": "New York State Board of Elections Flateau/VEDA program",
+      "sourceUrl": "https://flateau.elections.ny.gov/downloads",
+      "observed": "The downloads page lists Election Results, Poll Site Data, Voter Statistics, and Invalid Affidavits categories with CSV/JSON format controls.",
+      "blocker": "Those categories identify the future official export contract, but the page did not expose a selected 2024 election export during this check."
+    },
+    {
+      "checkedAt": "2026-07-03",
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/enrollment-county",
+      "observed": "The Enrollment by County page lists Voters Registered by County as of 11/01/2024.",
+      "blocker": "This is a registered-voter denominator lead, not a ballots-cast or voter-history turnout replacement by itself."
+    },
+    {
+      "checkedAt": "2026-07-03",
+      "sourceAuthority": "New York State Board of Elections",
+      "sourceUrl": "https://elections.ny.gov/enrollment-election-district?f%5B0%5D=filter_term%3A571",
+      "observed": "The 2024 filtered Enrollment by Election District page reported 124 county files, including 11/01/2024 county election-district enrollment reports.",
+      "blocker": "Election-district enrollment files are denominator/crosswalk leads only; they still need same-grain ballots-cast or voter-history rows and result-label reconciliation."
+    }
+  ],
   "loadedArtifacts": [
     {
       "id": "ny-2024-official-county-results",
@@ -180,7 +211,7 @@
         "state-native county registered-voter denominator",
         "November 2024 registration timing"
       ],
-      "result": "The NYSBOE Enrollment by County page lists 2024 county enrollment reports, including Voters Registered by County as of 11/01/2024.",
+      "result": "The NYSBOE Enrollment by County page lists 2024 county enrollment reports, including Voters Registered by County as of 11/01/2024; this was rechecked on 2026-07-03.",
       "blocker": "Enrollment reports are denominator leads only. They do not provide ballots-cast/voter-participation rows by themselves, so the active ETL remains EAC fallback until a turnout or voter-history artifact is collected and reconciled."
     },
     {
@@ -190,7 +221,7 @@
         "election-district registered-voter denominators",
         "local reporting-unit join leads"
       ],
-      "result": "The NYSBOE Enrollment by Election District page publishes county-by-county election-district enrollment reports by year.",
+      "result": "The NYSBOE Enrollment by Election District page publishes county-by-county election-district enrollment reports by year; the 2024 filter showed 124 results during the 2026-07-03 check.",
       "blocker": "Election-district enrollment reports are not ballots-cast rows and may not share exact labels with county result exports; a parser and crosswalk are needed before using them for same-grain turnout context."
     },
     {
@@ -201,7 +232,7 @@
         "maps or district configuration documentation",
         "poll-site and reporting-unit downloads"
       ],
-      "result": "The Flateau/VEDA site is the official future statewide publication path for election results, poll sites, district maps, downloads, and compliance reports. As checked again on 2026-07-02, the dashboard showed 0 total elections for 2026 and no election data available.",
+      "result": "The Flateau/VEDA site is the official future statewide publication path for election results, poll sites, district maps, downloads, voter-statistics exports, and compliance reports. As checked again on 2026-07-03, the dashboard showed 0 total elections for 2026 and no election data available; the downloads page exposed future CSV/JSON categories but no 2024 selected-election export.",
       "blocker": "The statute-backed collection path applies to elections on or after April 1, 2026, so it is a future source path rather than a 2024 replacement package."
     },
     {

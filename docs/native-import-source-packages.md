@@ -456,6 +456,12 @@ Wave 13 keeps NY in `sourceDiscoveryQueue` rather than `completedNativeStates`. 
 
 Wave 19 keeps NY in `sourceDiscoveryQueue` rather than `completedNativeStates`. The state has official NYSBOE county President and U.S. Senate rows, official 2012/2016/2020 county historical baselines, county geometry, EAC fallback turnout, and 9,753 supplemental local review rows. The completion blocker remains coverage scope: Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates are still outside normalized local review coverage; active turnout is still EAC fallback; and precinct/election-district geometry plus audit/CVR/incident/correction/recount/litigation rows are not loaded. Wave 19 added `data/ny-2024-source-request-matrix.tsv` as the current official-source request queue for the missing local review, turnout/voter-history, geometry/crosswalk, and administration-context artifacts. Current advisory rows are public-interest source-review inputs only, not findings.
 
+## New York Wave 21 Blocker Evidence
+
+Wave 21 rechecked the official NYSBOE and Flateau/VEDA surfaces on 2026-07-03. VEDA is live, and its downloads page identifies future Election Results, Poll Site Data, Voter Statistics, and Invalid Affidavits CSV/JSON export categories, but the dashboard still reports 0 total elections for 2026 and no election data available. The NYSBOE enrollment pages remain useful denominator leads: county enrollment includes Voters Registered by County as of 11/01/2024, and the 2024 election-district enrollment filter reports 124 county files. These enrollment reports do not provide ballots-cast or voter-history rows by themselves.
+
+The final NY blocker is therefore specific and verifiable: obtain official same-grain President plus U.S. Senate local rows for Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates; collect a state-native ballots-cast or voter-history artifact; and add election-district geometry or a result-label crosswalk before NY can leave source discovery. Current advisory rows remain partial supplemental source-review inputs only, not findings.
+
 ## California Wave 11 Update
 
 - Config: etl/state-configs/ca.json

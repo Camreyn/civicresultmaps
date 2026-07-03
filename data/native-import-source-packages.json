@@ -3203,11 +3203,11 @@
       "state": "NY",
       "name": "New York",
       "priority": 10,
-      "currentStatus": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented_request_matrix_updated",
+      "currentStatus": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented_request_matrix_sharpened_wave21",
       "completionDecision": {
         "checkedAt": "2026-07-03",
         "decision": "remain_in_source_discovery_queue",
-        "reason": "NY should remain in sourceDiscoveryQueue rather than completedNativeStates because local review rows are partial supplemental OpenElections/legacy NYC coverage, 13 county equivalents remain outside normalized review coverage, active turnout is still EAC fallback, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation rows are not loaded. Wave 19 added data/ny-2024-source-request-matrix.tsv to keep those request targets explicit."
+        "reason": "NY should remain in sourceDiscoveryQueue rather than completedNativeStates because local review rows are partial supplemental OpenElections/legacy NYC coverage, 13 county equivalents remain outside normalized review coverage, active turnout is still EAC fallback, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation rows are not loaded. Wave 19 added data/ny-2024-source-request-matrix.tsv to keep those request targets explicit, and Wave 21 added verified Flateau/VEDA export-readiness evidence showing the official future path is not a 2024 replacement package."
       },
       "officialSourcePages": [
         "https://elections.ny.gov/election-results",
@@ -3222,6 +3222,8 @@
         "https://elections.ny.gov/enrollment-election-district",
         "https://elections.ny.gov/flateau-database",
         "https://flateau.elections.ny.gov/",
+        "https://flateau.elections.ny.gov/results",
+        "https://flateau.elections.ny.gov/downloads",
         "https://elections.ny.gov/election-security",
         "https://elections.ny.gov/freedom-information-law-foil-requests",
         "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
@@ -3239,11 +3241,11 @@
         "county geometry for map joins",
         "Verified Voting county equipment context for advisory administration metadata",
         "NYSBOE audit, FOIL, county-board roster, Flateau/VEDA, and voting-technology paths documented in data/ny-2024-data-coverage-inventory.json",
-        "data/ny-2024-source-request-matrix.tsv as the current official-source request queue for missing county local review, turnout, geometry, and administration-context gaps"
+        "data/ny-2024-source-request-matrix.tsv as the current official-source request queue for missing county local review, turnout, geometry, administration-context gaps, and future VEDA export readiness"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for New York official county package; localComparisonCsv loaded for partial supplemental local review rows; historicalPresidentialCsv loaded from official NYSBOE PDFs; eacTurnoutCsv remains active. data/ny-2024-source-request-matrix.tsv now tracks the missing official election-district/local result, turnout/voter-history, geometry/crosswalk, and administration-context source requests. A complete official election-district parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed before full same-grain NY local coverage can replace the current caveats.",
-      "blocker": "County-level President and U.S. Senate rows and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. Partial local review rows cover 49 county equivalents through OpenElections/legacy NYC sources, while Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized review coverage. EAC turnout remains fallback because NYSBOE enrollment reports are denominator leads, not ballots-cast rows. CVR availability, audit comparison reports, incident/correction/recount/litigation records, and precinct/election-district geometry still need source collection or request-produced artifacts.",
+      "parserNeeded": "countyPresidentCsv loaded for New York official county package; localComparisonCsv loaded for partial supplemental local review rows; historicalPresidentialCsv loaded from official NYSBOE PDFs; eacTurnoutCsv remains active. data/ny-2024-source-request-matrix.tsv now tracks the missing official election-district/local result, turnout/voter-history, geometry/crosswalk, administration-context source requests, and the VEDA export-readiness monitor. A complete official election-district parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed before full same-grain NY local coverage can replace the current caveats.",
+      "blocker": "County-level President and U.S. Senate rows and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. Partial local review rows cover 49 county equivalents through OpenElections/legacy NYC sources, while Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized review coverage. EAC turnout remains fallback because NYSBOE enrollment reports are denominator leads, not ballots-cast rows. Wave 21 verified that VEDA/Flateau is live but exposes no 2024 election data/exportable replacement rows; its results and downloads surfaces should be monitored for post-April 1, 2026 elections or any later historical 2024 export. CVR availability, audit comparison reports, incident/correction/recount/litigation records, and precinct/election-district geometry still need source collection or request-produced artifacts.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "New York State Board of Elections official 2024 general election results PDF",
@@ -3291,7 +3293,7 @@
           "sourceTitle": "New York 2024 data coverage and administration source inventory",
           "sourceUrl": "https://elections.ny.gov/flateau-database",
           "localFile": "data/ny-2024-data-coverage-inventory.json; data/ny-2024-source-request-matrix.tsv",
-          "parserHint": "Documents excluded local review counties, state-native turnout denominator leads, Flateau/VEDA future local data path, county-board request paths, audit/CVR/incident/recount/litigation blockers, display caveats, and the Wave 19 request matrix."
+          "parserHint": "Documents excluded local review counties, state-native turnout denominator leads, Flateau/VEDA future local data path and Wave 21 export-readiness blocker, county-board request paths, audit/CVR/incident/recount/litigation blockers, display caveats, and the Wave 21 request matrix."
         },
         "equipmentContext": {
           "sourceTitle": "Verified Voting Verifier New York 2024 equipment context",
