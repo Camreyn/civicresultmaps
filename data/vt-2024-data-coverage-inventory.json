@@ -1,0 +1,133 @@
+{
+  "state": "VT",
+  "stateName": "Vermont",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-03",
+  "productionChecked": false,
+  "repoDrift": [
+    {
+      "path": "docs/developer/index.md",
+      "status": "missing_in_worktree",
+      "note": "Required first-read path was not present in this worktree; AGENTS.md fallback instructions were read."
+    }
+  ],
+  "currentEtLStatus": {
+    "config": "etl/state-configs/vt.json",
+    "turnoutOnly": true,
+    "activeAuthority": "U.S. Election Assistance Commission",
+    "expectedRows": {
+      "resultRows": 0,
+      "reviewRows": 0,
+      "turnoutRows": 247
+    },
+    "capabilities": {
+      "certifiedResults": false,
+      "reviewGraphs": false,
+      "map": false,
+      "turnout": true,
+      "historicalBaseline": false
+    }
+  },
+  "officialSourceFindings": {
+    "certifiedResults": {
+      "status": "official_canvass_pdf_identified_parser_not_active",
+      "authority": "Vermont Secretary of State",
+      "sourceUrl": "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_official_report_canvassing_committee_united_states_vermont_statewide_offices.pdf",
+      "reportingGrain": "statewide_office_canvass_with_town_or_district_detail_to_confirm",
+      "notes": "The SOS results page labels this as the 2024 General Election Canvass Report. It is the certified-result source lead, but no parser was activated in this pass."
+    },
+    "sameGrainComparisonContest": {
+      "status": "official_us_senate_json_and_canvass_leads_identified_not_loaded",
+      "preferredContest": "U.S. Senate",
+      "sourceUrl": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
+      "reportingGrainObserved": "district_or_town_reporting_rows",
+      "notes": "The official static app federal JSON includes US PRESIDENT AND VICE PRESIDENT and US SENATOR reporting rows, but simple aggregation over the 284 federal rows does not reconcile to the SOS turnout total because the file mixes town and district reporting rows. A parser must model the row grain and reconcile against the certified canvass before enabling review rows."
+    },
+    "stateNativeTurnout": {
+      "status": "official_turnout_pdf_and_json_identified_not_loaded",
+      "sourceUrls": [
+        "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_voter_turnout.pdf",
+        "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-turnout-20260611153112.json"
+      ],
+      "observedOfficialJsonTotals": {
+        "townRows": 247,
+        "registeredVoters": 517051,
+        "votersCast": 372885,
+        "earlyAbsenteeBallots": 234848
+      },
+      "activeFallbackTotals": {
+        "jurisdictionRows": 247,
+        "registeredVoters": 500986,
+        "ballotsCast": 361604
+      },
+      "notes": "The state-native turnout JSON/PDF totals differ from the active EAC fallback. Keep EAC active until the SOS turnout denominator timing and row semantics are reviewed and normalized."
+    },
+    "geometryAndCrosswalk": {
+      "status": "county_geometry_loaded_town_reporting_crosswalk_missing",
+      "loadedArtifact": "data/vt-counties.geojson",
+      "neededArtifacts": [
+        "town or reporting-district geometry",
+        "crosswalk from SOS town/district labels to map areas",
+        "county rollup rules if county display is used"
+      ]
+    },
+    "auditRecountCvrIncidentCorrectionEquipment": {
+      "status": "equipment_loaded_audit_recount_leads_identified_cvr_incident_correction_rows_missing",
+      "loadedEquipmentArtifacts": [
+        "data/verifiedvoting-vt-2024-equipment.json",
+        "data/vt-2024-equipment-context.csv"
+      ],
+      "officialLeads": [
+        "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
+        "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_recount_results.xlsx"
+      ],
+      "notes": "The SOS results page identifies 2024 audit results and recount results for House District Bennington-1 and House District Windsor-3. No normalized audit, CVR availability, incident, correction, or litigation rows are loaded."
+    },
+    "historicalBaselines": {
+      "status": "official_archive_leads_identified_not_collected",
+      "targetYears": [
+        2020,
+        2016,
+        2012
+      ],
+      "sourceUrls": [
+        "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
+        "https://electionarchive.vermont.gov/"
+      ],
+      "notes": "The SOS results page and electionarchive.vermont.gov are official archive leads. Baseline artifacts were not collected or normalized in this pass."
+    }
+  },
+  "officialEndpointChecks": [
+    {
+      "source": "Vermont static election index",
+      "url": "https://static.electionresults.vermont.gov/elections/elections.json",
+      "result": "2024 GENERAL ELECTION found",
+      "electionGuid": "67a35c79-05a2-4ae3-a77d-97812256188b",
+      "isOfficial": true,
+      "isStateWideElection": true,
+      "isGeneralElection": true
+    },
+    {
+      "source": "Vermont static 2024 general manifest",
+      "url": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b.json",
+      "result": "manifest downloaded in scratch during source discovery",
+      "componentPathsIdentified": [
+        "elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
+        "elections/67a35c79-05a2-4ae3-a77d-97812256188b-s-20260611153112.json",
+        "elections/67a35c79-05a2-4ae3-a77d-97812256188b-turnout-20260611153112.json"
+      ]
+    }
+  ],
+  "displayPathStatus": {
+    "staging": "Existing VT config can produce a turnout-only staging artifact with zero result and review rows.",
+    "apiWebsite": "No production promotion was performed. Production reflection was not checked.",
+    "capabilityDecision": "Do not enable certifiedResults, reviewGraphs, map, or historicalBaseline until the official SOS JSON/canvass rows are reconciled and imported."
+  },
+  "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv",
+  "remainingRisks": [
+    "The official static app is promising but requires row-grain de-duplication and certified canvass reconciliation before it can be a native review importer.",
+    "The active turnout denominator remains EAC fallback even though a state-native SOS turnout JSON/PDF lead exists and reports different totals.",
+    "Town/reporting-district geometry and a county/town crosswalk are not loaded, so map and local review display remain disabled.",
+    "Audit, recount, CVR availability, incident, correction, and litigation records are not normalized; these gaps are source-coverage limitations only and are not evidence of fraud or misconduct."
+  ]
+}

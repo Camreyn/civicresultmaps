@@ -1308,8 +1308,8 @@
       "localFile": "data/eac-2024-state-turnout/vt-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 247,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active VT ETL turnout source. Wave 20 identified Vermont SOS 2024 turnout PDF/static JSON leads, but those totals are not loaded until denominator timing and ballots-cast semantics are reconciled.",
+      "nextAction": "Normalize and reconcile the Vermont SOS 2024 General Election Voter Turnout PDF/static JSON captured in data/vt-2024-source-request-matrix.tsv before replacing the EAC fallback.",
       "coverage": {
         "jurisdictionRows": 247,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/vt-2024-eac-registered-voter-denominator.json",
