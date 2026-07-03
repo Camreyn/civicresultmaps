@@ -1278,6 +1278,35 @@ class PipelineTests(unittest.TestCase):
             3,
         )
 
+    def test_alabama_official_sos_normalized_csvs_build_native_rows(self):
+        config = load_config("etl/state-configs/al.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+        native = artifact["native"]
+
+        self.assertTrue(report.passed)
+        self.assertEqual(native["parser"], "nativeCountyPresidentCsv")
+        self.assertEqual(len(native["resultRows"]), 67)
+        self.assertEqual(len(native["reviewRows"]), 2083)
+        self.assertEqual(len(native["turnoutRows"]), 67)
+        self.assertEqual(len(native["historicalRows"]), 201)
+        self.assertEqual(native["metrics"]["nativeResultTotalVotes"], 2265090)
+        self.assertEqual(native["metrics"]["nativeTrumpVotes"], 1462616)
+        self.assertEqual(native["metrics"]["nativeHarrisVotes"], 772412)
+        self.assertEqual(native["metrics"]["nativeOtherVotes"], 30062)
+        self.assertEqual(native["metrics"]["nativeComparisonRows"], 2083)
+        self.assertEqual(native["metrics"]["nativeComparisonContest"], "U.S. House")
+        autauga = next(row for row in native["resultRows"] if row["jurisdictionName"] == "Autauga County")
+        self.assertEqual(autauga["votes"], {"Trump": 20484, "Harris": 7439, "Other": 358})
+        review = next(
+            row
+            for row in native["reviewRows"]
+            if row["county"] == "Autauga County" and row["localUnit"] == "10 JONES COMM_ CTR_"
+        )
+        self.assertEqual(review["coverageMode"], "presidentVsUSHouse")
+        self.assertEqual(review["comparisonDemVotes"], 111)
+        self.assertEqual(review["comparisonRepVotes"], 255)
+        self.assertIn("district-based", native["metrics"]["nativeReviewWarning"])
     def test_idaho_county_president_csv_builds_results_with_county_review_rows(self):
         config = load_config("etl/state-configs/id.json")
         report = validate_config(config)

@@ -114,28 +114,24 @@
         "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip"
       ],
       "availableFields": [
-        "official precinct/reporting-mode presidential rows from county XLS workbooks",
-        "official precinct/reporting-mode U.S. House comparison rows from the same XLS workbooks",
-        "official state-native total-ballots and registration source leads",
-        "EAC fallback turnout rows",
+        "official county presidential rows from the 2024 SOS precinct XLS ZIP",
+        "official precinct/reporting-mode President-versus-U.S. House review rows where House coverage is explicit",
+        "official 2012/2016/2020 county historical baseline rows",
+        "EAC fallback turnout rows plus Alabama SOS turnout/registration denominator leads",
         "county geometry",
         "county equipment context from Verified Voting Verifier",
-        "official 2012/2016/2020 historical precinct/archive source leads",
         "SOS public-records and county-official request paths for administration context"
       ],
       "missingFields": [
-        "loaded Alabama native result and review rows",
-        "district-aware precinct XLS matrix parser",
         "state-native turnout rows reconciled with denominator timing",
         "precinct boundary geometry or official precinct-header crosswalk",
-        "normalized official historical baseline rows",
         "normalized audit, CVR availability, recount, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config remains active; data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv document the official Alabama SOS precinct XLS ZIP, turnout/registration leads, historical source leads, county geometry, equipment context, and admin request paths without loading review rows",
+      "parserStatus": "native county President rows, precinct/reporting-mode U.S. House review rows, EAC fallback turnout, county geometry, and official historical baseline rows are active through etl/state-configs/al.json; scripts/normalize-al-sos-results.mjs regenerates AL CSVs from official SOS artifacts",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_parser_ready",
-      "caveats": "The official 2024 precinct ZIP is a matrix of 67 county XLS files with contests in rows and precinct/absentee/provisional modes in columns. U.S. House is district-based and split counties include blank out-of-district cells, so a district-aware parser and reconciliation pass are required before advisory review rows are loaded. Active turnout remains EAC fallback until Alabama-native turnout and registration sources are parsed and denominator timing is reviewed.",
-      "nextAction": "Use data/al-2024-source-request-matrix.tsv to collect the official Alabama SOS precinct ZIP and turnout/registration artifacts, then implement an Alabama SOS XLS matrix parser and state-native turnout reconciliation before adding AL to completed native states."
+      "confidence": "loaded_with_caveat",
+      "caveats": "The official 2024 precinct ZIP is loaded through generated CSVs from 67 county XLS files. U.S. House is district-based and no 2024 Alabama U.S. Senate race existed, so review rows are directional source-review signals only. Active turnout remains EAC fallback until SOS Total Ballots Cast PDF and ALVR denominator timing are reconciled; the generated precinct-ZIP ballots-cast lead is 180 lower than active EAC/SOS fallback ballots cast. County geometry is loaded, but precinct geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows remain missing.",
+      "nextAction": "Review state-native turnout replacement semantics, especially the 180-ballot precinct-ZIP versus EAC/SOS fallback ballots-cast difference and ALVR denominator timing; then collect official precinct geometry/crosswalks and administration-context records."
     },
     {
       "state": "AR",
