@@ -1,0 +1,31 @@
+{
+  "state": "TN",
+  "electionYear": 2024,
+  "sourceUrl": "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf",
+  "checkedAt": "2026-07-03",
+  "countyRows": 95,
+  "precinctReviewRows": 1859,
+  "presidentTotals": {
+    "trump": 1966865,
+    "harris": 1056265,
+    "other": 40812,
+    "total": 3063942
+  },
+  "senateTotals": {
+    "blackburn": 1918743,
+    "johnson": 1027461,
+    "other": 61404,
+    "total": 3007608
+  },
+  "precinctKeyReconciliation": {
+    "presidentRows": 1862,
+    "senateRows": 1862,
+    "missingPresidentRows": 0,
+    "missingSenateRows": 0
+  },
+  "caveats": [
+    "Rows are extracted from the official Tennessee Secretary of State text-layer precinct PDF.",
+    "The presidential PDF layout places the seventh candidate column after the precinct name in many text-extracted rows; the normalizer reconciles parsed precinct totals to the official statewide totals before writing CSV artifacts.",
+    "Review rows are precinct-level President-versus-U.S.-Senate comparisons for public-interest screening only, not findings of fraud or misconduct."
+  ]
+}
