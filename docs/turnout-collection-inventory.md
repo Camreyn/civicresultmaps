@@ -222,3 +222,7 @@ Delaware still uses official EAC 2024 V2 county/jurisdiction fallback turnout ro
 ## Wyoming Wave 20 Update
 
 Wyoming now has official SOS 2024 certified results and precinct review rows loaded, and the SOS total-ballots-cast workbook cross-checks the EAC ballots-cast total at 271,123. The active turnout denominator remains the EAC fallback because a state-native registered-voter denominator artifact and denominator timing have not been collected.
+## Tennessee Wave 20 Update
+
+Tennessee now has official 2024 SOS President county rows and same-key precinct President-versus-U.S.-Senate review rows loaded through `scripts/normalize-tn-sos-results.mjs`, but active turnout still uses official EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/tn-2024-eac-turnout.csv`: 95 rows, 3,090,161 ballots cast, and 4,825,601 registered voters. The official SOS result PDFs do not replace turnout because they are contest-result canvass reports, not registered-voter denominator artifacts. Keep EAC fallback active until a Tennessee-native ballots-cast or voter-participation artifact with registered-voter denominator timing is collected and reconciled. See `data/tn-2024-data-coverage-inventory.json` for source URLs, caveats, and parser fields.
+
