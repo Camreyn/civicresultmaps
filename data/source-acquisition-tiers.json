@@ -2185,27 +2185,25 @@
         "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_voter_turnout.pdf"
       ],
       "availableFields": [
-        "official static election manifest for 2024 general election",
-        "US PRESIDENT AND VICE PRESIDENT rows in official federal JSON",
-        "US SENATOR rows in the same official federal JSON",
+        "official county presidential rows aggregated from SOS static JSON and reconciled to certified canvass totals",
+        "official town/reporting-district President rows",
+        "official same-grain U.S. Senate comparison rows",
         "official turnout JSON/PDF lead",
-        "certified canvass PDF lead",
+        "certified canvass PDF retained as source-of-record reconciliation artifact",
         "county geometry",
         "equipment context"
       ],
       "missingFields": [
-        "reconciled certified President importer",
-        "same-grain review rows",
-        "state-native turnout importer",
-        "town/reporting-district geometry and crosswalk",
+        "state-native turnout importer replacing EAC fallback",
+        "town/reporting-district geometry and crosswalk for subcounty maps",
         "2020/2016/2012 historical baseline rows",
         "normalized audit, recount, CVR, incident, correction, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config remains active. Wave 20 identified official SOS static JSON and certified canvass/turnout PDFs, but data/vt-2024-data-coverage-inventory.json keeps the result/review parser gated because the federal JSON row grain needs de-duplication and certified-canvass reconciliation.",
+      "parserStatus": "nativeVermontStaticElectionJson loads 14 county President rows and 283 town/reporting-district President-versus-U.S.-Senate review rows from official SOS static JSON after excluding the duplicated STATE WIDE summary row and reconciling to certified canvass totals; active turnout remains EAC fallback.",
       "manualReviewBurden": "medium",
-      "confidence": "classified_candidate",
-      "caveats": "Vermont official result rows are town/reporting-district centric. Simple aggregation over the 284 federal JSON reporting rows does not reconcile to the SOS turnout total, so certifiedResults and reviewGraphs remain disabled until a Vermont parser models split-town/district grain and reconciles to the certified canvass. Current active turnout remains EAC fallback.",
-      "nextAction": "Use data/vt-2024-source-request-matrix.tsv to collect/cross-check the certified canvass PDF, official static JSON rows, state-native turnout PDF/JSON, town geometry/crosswalk, historical baselines, and administration-context records before enabling native VT results."
+      "confidence": "loaded_with_caveat",
+      "caveats": "County result and town/reporting-district review rows are active and source-reconciled. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Active turnout remains EAC fallback because SOS JSON, SOS canvass cover-page, and EAC registered-voter totals differ. Town/reporting-district geometry, historical baselines, and normalized administration-context rows remain missing.",
+      "nextAction": "Resolve SOS turnout denominator timing before replacing EAC fallback; collect town/reporting-district geometry, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation context."
     },
     {
       "state": "WA",

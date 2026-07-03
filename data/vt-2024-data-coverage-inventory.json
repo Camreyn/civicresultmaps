@@ -13,35 +13,59 @@
   ],
   "currentEtLStatus": {
     "config": "etl/state-configs/vt.json",
-    "turnoutOnly": true,
-    "activeAuthority": "U.S. Election Assistance Commission",
+    "turnoutOnly": false,
+    "activeAuthority": "Vermont Secretary of State; U.S. Election Assistance Commission",
     "expectedRows": {
-      "resultRows": 0,
-      "reviewRows": 0,
+      "resultRows": 14,
+      "reviewRows": 283,
       "turnoutRows": 247
     },
     "capabilities": {
-      "certifiedResults": false,
-      "reviewGraphs": false,
-      "map": false,
+      "certifiedResults": true,
+      "reviewGraphs": true,
+      "map": true,
       "turnout": true,
       "historicalBaseline": false
     }
   },
   "officialSourceFindings": {
     "certifiedResults": {
-      "status": "official_canvass_pdf_identified_parser_not_active",
+      "status": "loaded_reconciled_static_json",
       "authority": "Vermont Secretary of State",
       "sourceUrl": "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_official_report_canvassing_committee_united_states_vermont_statewide_offices.pdf",
-      "reportingGrain": "statewide_office_canvass_with_town_or_district_detail_to_confirm",
-      "notes": "The SOS results page labels this as the 2024 General Election Canvass Report. It is the certified-result source lead, but no parser was activated in this pass."
+      "localArtifacts": [
+        "data/vt-2024-official-sources/2024-general-certified-canvass.pdf",
+        "data/vt-2024-official-sources/2024-general-federal.json",
+        "data/vt-2024-official-sources/2024-general-manifest.json"
+      ],
+      "reportingGrain": "county certified result rows aggregated from 283 town/reporting-district JSON rows",
+      "reconciliation": {
+        "excludedRows": "one federal JSON STATE WIDE summary row per loaded contest",
+        "presidentCandidateVotes": 369422,
+        "presidentTotalVotesCounted": 372885,
+        "harris": 235791,
+        "trump": 119395,
+        "otherCandidateAndWriteInVotes": 14236,
+        "blankVotes": 3195,
+        "overvotes": 268
+      },
+      "notes": "The native parser excludes the duplicated STATE WIDE summary row and asserts the remaining official static JSON rows against the certified canvass statewide totals before staging."
     },
     "sameGrainComparisonContest": {
-      "status": "official_us_senate_json_and_canvass_leads_identified_not_loaded",
+      "status": "loaded_reconciled_static_json",
       "preferredContest": "U.S. Senate",
       "sourceUrl": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
-      "reportingGrainObserved": "district_or_town_reporting_rows",
-      "notes": "The official static app federal JSON includes US PRESIDENT AND VICE PRESIDENT and US SENATOR reporting rows, but simple aggregation over the 284 federal rows does not reconcile to the SOS turnout total because the file mixes town and district reporting rows. A parser must model the row grain and reconcile against the certified canvass before enabling review rows."
+      "localArtifact": "data/vt-2024-official-sources/2024-general-federal.json",
+      "reportingGrainObserved": "283 town/reporting-district rows after excluding the STATE WIDE summary row",
+      "reconciliation": {
+        "senateTotalVotesCounted": 372885,
+        "sanders": 229429,
+        "malloy": 116512,
+        "otherCandidateAndWriteInVotes": 17312,
+        "blankVotes": 9336,
+        "overvotes": 296
+      },
+      "notes": "President and U.S. Senate rows share the same manifest-backed townId, repDistrict, and senateDistrict keys after excluding the duplicated STATE WIDE summary row. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only."
     },
     "stateNativeTurnout": {
       "status": "official_turnout_pdf_and_json_identified_not_loaded",
@@ -60,15 +84,19 @@
         "registeredVoters": 500986,
         "ballotsCast": 361604
       },
-      "notes": "The state-native turnout JSON/PDF totals differ from the active EAC fallback. Keep EAC active until the SOS turnout denominator timing and row semantics are reviewed and normalized."
+      "notes": "The state-native turnout JSON/PDF remains a replacement lead only: SOS JSON reports 517,051 registered voters and 372,885 voters cast, the canvass cover page reports 522,600 registered voters, and active EAC fallback reports 500,986 registered voters and 361,604 ballots cast.",
+      "observedCanvassRegisteredVoters": 522600,
+      "localArtifacts": [
+        "data/vt-2024-official-sources/2024-general-turnout.json",
+        "data/vt-2024-official-sources/2024-general-voter-turnout.pdf"
+      ]
     },
     "geometryAndCrosswalk": {
-      "status": "county_geometry_loaded_town_reporting_crosswalk_missing",
+      "status": "county_geometry_loaded_town_reporting_geometry_missing",
       "loadedArtifact": "data/vt-counties.geojson",
       "neededArtifacts": [
-        "town or reporting-district geometry",
-        "crosswalk from SOS town/district labels to map areas",
-        "county rollup rules if county display is used"
+        "town or reporting-district geometry for subcounty overlays",
+        "crosswalk from SOS town/district labels to map areas if town/reporting-district maps are added"
       ]
     },
     "auditRecountCvrIncidentCorrectionEquipment": {
@@ -110,7 +138,7 @@
     {
       "source": "Vermont static 2024 general manifest",
       "url": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b.json",
-      "result": "manifest downloaded in scratch during source discovery",
+      "result": "manifest persisted under data/vt-2024-official-sources and used by native parser",
       "componentPathsIdentified": [
         "elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
         "elections/67a35c79-05a2-4ae3-a77d-97812256188b-s-20260611153112.json",
@@ -119,15 +147,15 @@
     }
   ],
   "displayPathStatus": {
-    "staging": "Existing VT config can produce a turnout-only staging artifact with zero result and review rows.",
+    "staging": "VT staging now emits 14 county President result rows, 283 town/reporting-district President-versus-U.S.-Senate review rows, and 247 EAC fallback turnout rows.",
     "apiWebsite": "No production promotion was performed. Production reflection was not checked.",
-    "capabilityDecision": "Do not enable certifiedResults, reviewGraphs, map, or historicalBaseline until the official SOS JSON/canvass rows are reconciled and imported."
+    "capabilityDecision": "certifiedResults, reviewGraphs, and county map are enabled from official SOS static JSON; historicalBaseline remains disabled and state-native turnout replacement remains blocked on denominator review."
   },
   "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv",
   "remainingRisks": [
-    "The official static app is promising but requires row-grain de-duplication and certified canvass reconciliation before it can be a native review importer.",
-    "The active turnout denominator remains EAC fallback even though a state-native SOS turnout JSON/PDF lead exists and reports different totals.",
-    "Town/reporting-district geometry and a county/town crosswalk are not loaded, so map and local review display remain disabled.",
+    "State-native turnout replacement remains blocked because SOS JSON registered voters, certified canvass registered voters, and EAC fallback registered voters differ.",
+    "Town/reporting-district geometry is not loaded, so subcounty map overlays remain unavailable even though county result map rows are active.",
+    "Official 2020/2016/2012 historical baselines are not normalized.",
     "Audit, recount, CVR availability, incident, correction, and litigation records are not normalized; these gaps are source-coverage limitations only and are not evidence of fraud or misconduct."
   ]
 }

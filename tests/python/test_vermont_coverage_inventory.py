@@ -13,65 +13,89 @@ class VermontCoverageInventoryTest(unittest.TestCase):
             self.request_rows = list(csv.DictReader(handle, delimiter="\t"))
         self.requests = {row["request_id"]: row for row in self.request_rows}
 
-    def test_active_vermont_config_remains_turnout_only(self):
+    def test_active_vermont_config_loads_reconciled_static_json(self):
         config = load_config("etl/state-configs/vt.json")
         report = validate_config(config)
         artifact = build_staging_artifact(config, report)
+        native = artifact["native"]
+        metrics = native["metrics"]
 
         self.assertTrue(report.passed)
-        self.assertTrue(config.raw.get("turnoutOnly"))
-        self.assertEqual(len(artifact["native"]["resultRows"]), 0)
-        self.assertEqual(len(artifact["native"]["reviewRows"]), 0)
-        self.assertEqual(len(artifact["native"]["turnoutRows"]), 247)
-        self.assertFalse(config.raw["capabilities"]["certifiedResults"])
-        self.assertFalse(config.raw["capabilities"]["reviewGraphs"])
+        self.assertFalse(config.raw.get("turnoutOnly", False))
+        self.assertEqual(native["parser"], "nativeVermontStaticElectionJson")
+        self.assertEqual(len(native["resultRows"]), 14)
+        self.assertEqual(len(native["reviewRows"]), 283)
+        self.assertEqual(len(native["turnoutRows"]), 247)
+        self.assertTrue(config.raw["capabilities"]["certifiedResults"])
+        self.assertTrue(config.raw["capabilities"]["reviewGraphs"])
+        self.assertTrue(config.raw["capabilities"]["map"])
         self.assertTrue(config.raw["capabilities"]["turnout"])
+        self.assertFalse(config.raw["capabilities"]["historicalBaseline"])
 
-    def test_inventory_records_official_source_leads_and_parser_blocker(self):
+        self.assertEqual(metrics["nativeHarrisVotes"], 235791)
+        self.assertEqual(metrics["nativeTrumpVotes"], 119395)
+        self.assertEqual(metrics["nativeOtherVotes"], 14236)
+        self.assertEqual(metrics["nativeResultTotalVotes"], 369422)
+        self.assertEqual(metrics["nativeCanvassPresidentTotalVotesCounted"], 372885)
+        self.assertEqual(metrics["nativeCanvassPresidentBlankVotes"], 3195)
+        self.assertEqual(metrics["nativeCanvassPresidentOvervotes"], 268)
+        self.assertEqual(metrics["nativeComparisonDemVotes"], 229429)
+        self.assertEqual(metrics["nativeComparisonRepVotes"], 116512)
+        self.assertEqual(metrics["nativeCanvassSenateTotalVotesCounted"], 372885)
+        self.assertEqual(metrics["nativeExcludedStatewideSummaryRows"], 2)
+        self.assertEqual(metrics["nativeTurnoutParser"], "eacTurnoutCsv")
+        self.assertEqual(metrics["nativeTurnoutWarningRows"], 247)
+
+    def test_inventory_records_resolved_result_blocker_and_remaining_turnout_gap(self):
         self.assertEqual(self.inventory["state"], "VT")
         self.assertEqual(self.inventory["checkedAt"], "2026-07-03")
         self.assertFalse(self.inventory["productionChecked"])
-        self.assertTrue(self.inventory["currentEtLStatus"]["turnoutOnly"])
-        self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["reviewRows"], 0)
+        self.assertFalse(self.inventory["currentEtLStatus"]["turnoutOnly"])
+        self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["resultRows"], 14)
+        self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["reviewRows"], 283)
         self.assertEqual(self.inventory["repoDrift"][0]["path"], "docs/developer/index.md")
 
         findings = self.inventory["officialSourceFindings"]
-        self.assertEqual(findings["certifiedResults"]["status"], "official_canvass_pdf_identified_parser_not_active")
-        self.assertEqual(findings["sameGrainComparisonContest"]["preferredContest"], "U.S. Senate")
-        self.assertIn("row grain", findings["sameGrainComparisonContest"]["notes"])
+        self.assertEqual(findings["certifiedResults"]["status"], "loaded_reconciled_static_json")
+        self.assertEqual(findings["sameGrainComparisonContest"]["status"], "loaded_reconciled_static_json")
+        self.assertIn("STATE WIDE", findings["sameGrainComparisonContest"]["notes"])
+        self.assertEqual(findings["stateNativeTurnout"]["status"], "official_turnout_pdf_and_json_identified_not_loaded")
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialJsonTotals"]["townRows"], 247)
-        self.assertEqual(findings["stateNativeTurnout"]["observedOfficialJsonTotals"]["votersCast"], 372885)
+        self.assertEqual(findings["stateNativeTurnout"]["observedOfficialJsonTotals"]["registeredVoters"], 517051)
+        self.assertEqual(findings["stateNativeTurnout"]["observedCanvassRegisteredVoters"], 522600)
         self.assertEqual(findings["stateNativeTurnout"]["activeFallbackTotals"]["ballotsCast"], 361604)
-        self.assertEqual(findings["geometryAndCrosswalk"]["status"], "county_geometry_loaded_town_reporting_crosswalk_missing")
+        self.assertEqual(findings["geometryAndCrosswalk"]["status"], "county_geometry_loaded_town_reporting_geometry_missing")
 
-    def test_registries_keep_vermont_in_source_discovery(self):
+    def test_registries_mark_vermont_native_results_loaded(self):
         native = json.loads(Path("data/native-import-source-packages.json").read_text(encoding="utf-8-sig"))
         tiers = json.loads(Path("data/source-acquisition-tiers.json").read_text(encoding="utf-8-sig"))
         turnout = json.loads(Path("data/turnout-source-packages.json").read_text(encoding="utf-8-sig"))
         admin = json.loads(Path("data/admin-source-packages.json").read_text(encoding="utf-8-sig"))
 
-        discovery = next(row for row in native["sourceDiscoveryQueue"] if row["state"] == "VT")
+        package = next(row for row in native["states"] if row["state"] == "VT")
         tier = next(row for row in tiers["states"] if row["state"] == "VT")
         turnout_status = next(row for row in turnout["stateYearStatuses"] if row["state"] == "VT" and row["year"] == 2024)
         admin_status = next(row for row in admin["stateYearStatuses"] if row["state"] == "VT" and row["electionYear"] == 2024)
 
-        self.assertNotIn("VT", native["completedNativeStates"])
-        self.assertEqual(discovery["completionDecision"]["decision"], "remain_in_source_discovery_queue")
-        self.assertIn("split-town/district", discovery["blocker"])
-        self.assertEqual(tier["confidence"], "classified_candidate")
+        self.assertIn("VT", native["completedNativeStates"])
+        self.assertFalse(any(row["state"] == "VT" for row in native.get("sourceDiscoveryQueue", [])))
+        self.assertEqual(package["nativeReadiness"], "complete_county_map_town_district_review_eac_turnout")
+        self.assertEqual(package["expected"]["localReviewRows"], 283)
+        self.assertEqual(tier["confidence"], "loaded_with_caveat")
         self.assertIn("official SOS static JSON", tier["exportFormats"])
         self.assertIn("Vermont SOS 2024 General Election Voter Turnout", turnout_status["nextAction"])
         self.assertEqual(admin_status["audit"]["status"], "candidate")
         self.assertEqual(admin_status["incidents"]["requestMatrixArtifact"], "data/vt-2024-source-request-matrix.tsv")
 
-    def test_request_matrix_tracks_remaining_vermont_asks(self):
+    def test_request_matrix_tracks_resolved_and_remaining_vermont_asks(self):
         self.assertEqual(self.inventory["requestMatrixArtifact"], "data/vt-2024-source-request-matrix.tsv")
         self.assertEqual(len(self.request_rows), 7)
-        self.assertEqual(self.requests["vt-2024-certified-president-canvass"]["status"], "official_pdf_identified_parser_not_active")
-        self.assertEqual(self.requests["vt-2024-same-grain-us-senate"]["status"], "official_json_identified_not_loaded")
-        self.assertIn("284 federal reporting rows", self.requests["vt-2024-same-grain-us-senate"]["expected_rows_or_totals"])
+        self.assertEqual(self.requests["vt-2024-certified-president-canvass"]["status"], "loaded_reconciled_static_json")
+        self.assertIn("372885", self.requests["vt-2024-certified-president-canvass"]["expected_rows_or_totals"])
+        self.assertEqual(self.requests["vt-2024-same-grain-us-senate"]["status"], "loaded_reconciled_static_json")
+        self.assertIn("283 town/reporting-district rows", self.requests["vt-2024-same-grain-us-senate"]["expected_rows_or_totals"])
         self.assertEqual(self.requests["vt-2024-state-native-turnout"]["status"], "official_pdf_json_identified_not_loaded")
-        self.assertIn("361604 ballots cast", self.requests["vt-2024-state-native-turnout"]["confidence_notes"])
+        self.assertIn("522600", self.requests["vt-2024-state-native-turnout"]["confidence_notes"])
         self.assertIn("evidence of fraud or misconduct", self.requests["vt-2024-audit-recount-cvr-incident-records"]["caveats"])
 
 

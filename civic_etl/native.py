@@ -7257,6 +7257,227 @@ def _maine_sos_xlsx_rows(
     }
     return result_rows, sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])), turnout_rows, historical_rows, metrics
 
+
+def _vermont_title(value: Any) -> str:
+    text = str(value or "").strip()
+    return text.title() if text.isupper() else text
+
+
+def _vermont_candidate_values(row: dict[str, Any], dem_name: str, rep_name: str) -> dict[str, int]:
+    dem = 0
+    rep = 0
+    other = 0
+    for candidate in [*row.get("rc", []), *row.get("wc", [])]:
+        name = " ".join(str(candidate.get("cn", "")).upper().split())
+        votes = int_text(candidate.get("vc"))
+        if name == dem_name:
+            dem += votes
+        elif name == rep_name:
+            rep += votes
+        else:
+            other += votes
+    return {"dem": dem, "rep": rep, "other": other, "total": dem + rep + other}
+
+
+def _vermont_static_json_rows(
+    config: EtlConfig, sources: dict[str, SourceConfig]
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    result_section = config.raw.get("certifiedResults", {})
+    review_section = config.raw.get("reviewCharts", {})
+    federal_source = sources[result_section["sourceId"]]
+    manifest_source = sources[result_section["manifestSourceId"]]
+
+    federal = json.loads(_artifact_path(federal_source).read_text(encoding="utf-8-sig"))
+    manifest = json.loads(_artifact_path(manifest_source).read_text(encoding="utf-8-sig"))
+
+    district_by_key: dict[tuple[int, str, str], dict[str, Any]] = {}
+    for district in manifest.get("townDistricts", []):
+        key = (
+            int_text(district.get("townId")),
+            str(district.get("repDistrict") or ""),
+            str(district.get("senateDistrict") or ""),
+        )
+        if key in district_by_key:
+            raise ValueError(f"duplicate Vermont town-district key in manifest: {key}")
+        district_by_key[key] = district
+
+    offices = (federal.get("d") or [{}])[0].get("o", [])
+    office_by_name = {str(office.get("on") or "").upper(): office for office in offices}
+    president = office_by_name.get("US PRESIDENT AND VICE PRESIDENT")
+    senate = office_by_name.get("US SENATOR")
+    if not president or not senate:
+        raise ValueError("Vermont static federal JSON missing President or U.S. Senate office")
+
+    def keyed_rows(office: dict[str, Any]) -> dict[tuple[int, str, str], dict[str, Any]]:
+        rows: dict[tuple[int, str, str], dict[str, Any]] = {}
+        for row in office.get("cs", []):
+            if int_text(row.get("tid")) == 0 or str(row.get("tn") or "").upper() == "STATE WIDE":
+                continue
+            key = (int_text(row.get("tid")), str(row.get("repd") or ""), str(row.get("send") or ""))
+            if key not in district_by_key:
+                raise ValueError(f"Vermont row does not match manifest townDistricts: {key}")
+            if key in rows:
+                raise ValueError(f"duplicate Vermont federal JSON row key: {key}")
+            rows[key] = row
+        return rows
+
+    president_by_key = keyed_rows(president)
+    senate_by_key = keyed_rows(senate)
+    if set(president_by_key) != set(senate_by_key):
+        raise ValueError("Vermont President and U.S. Senate row grain does not match")
+
+    expected_grain = int_text(result_section.get("expectedTownDistrictRows"))
+    if expected_grain and len(president_by_key) != expected_grain:
+        raise ValueError(f"Vermont row grain mismatch: {len(president_by_key)} != {expected_grain}")
+
+    duplicate_town_counts: dict[int, int] = {}
+    duplicate_town_district_counts: dict[tuple[int, str], int] = {}
+    for key in president_by_key:
+        tid, rep_district, _senate_district = key
+        duplicate_town_counts[tid] = duplicate_town_counts.get(tid, 0) + 1
+        town_district_key = (tid, rep_district)
+        duplicate_town_district_counts[town_district_key] = duplicate_town_district_counts.get(town_district_key, 0) + 1
+
+    county_totals: dict[str, dict[str, int]] = {}
+    review_rows: list[dict[str, Any]] = []
+    president_total_votes_counted = 0
+    president_blank_votes = 0
+    president_overvotes = 0
+    senate_total_votes_counted = 0
+    senate_blank_votes = 0
+    senate_overvotes = 0
+
+    sort_keys = sorted(
+        president_by_key,
+        key=lambda item: (
+            district_by_key[item]["countyName"],
+            president_by_key[item]["tn"],
+            president_by_key[item]["repd"],
+            president_by_key[item]["send"],
+        ),
+    )
+    for key in sort_keys:
+        president_row = president_by_key[key]
+        senate_row = senate_by_key[key]
+        district = district_by_key[key]
+        county = f"{_vermont_title(district.get('countyName'))} County"
+        town = _vermont_title(president_row.get("tn"))
+        rep_district = str(president_row.get("repd") or "").strip()
+        senate_district = str(president_row.get("send") or "").strip().strip("_").replace("_", "")
+        if duplicate_town_counts[key[0]] <= 1:
+            local_unit = town
+        elif duplicate_town_district_counts[(key[0], rep_district)] <= 1:
+            local_unit = f"{town} - {rep_district}"
+        else:
+            local_unit = f"{town} - {rep_district} / {senate_district}"
+
+        president_values = _vermont_candidate_values(
+            president_row,
+            "KAMALA D. HARRIS AND TIM WALZ",
+            "DONALD J. TRUMP AND JD VANCE",
+        )
+        senate_values = _vermont_candidate_values(
+            senate_row,
+            "BERNIE SANDERS",
+            "GERALD MALLOY",
+        )
+        bucket = county_totals.setdefault(county, {"harris": 0, "trump": 0, "other": 0})
+        bucket["harris"] += president_values["dem"]
+        bucket["trump"] += president_values["rep"]
+        bucket["other"] += president_values["other"]
+        president_total_votes_counted += int_text(president_row.get("sc"))
+        president_blank_votes += int_text(president_row.get("bv"))
+        president_overvotes += int_text(president_row.get("sv"))
+        senate_total_votes_counted += int_text(senate_row.get("sc"))
+        senate_blank_votes += int_text(senate_row.get("bv"))
+        senate_overvotes += int_text(senate_row.get("sv"))
+
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": local_unit,
+                "totalVotes": president_values["total"],
+                "harris": president_values["dem"],
+                "trump": president_values["rep"],
+                "harrisShare": pct(president_values["dem"], president_values["total"]),
+                "trumpShare": pct(president_values["rep"], president_values["total"]),
+                "demDropoff": pct(president_values["dem"] - senate_values["dem"], president_values["total"]),
+                "repDropoff": pct(president_values["rep"] - senate_values["rep"], president_values["total"]),
+                "coverageMode": "presidentVsSenateTownDistrict",
+                "comparisonContest": review_section.get("comparisonContest", "United States Senator"),
+                "comparisonDemVotes": senate_values["dem"],
+                "comparisonRepVotes": senate_values["rep"],
+                "comparisonOtherVotes": senate_values["other"],
+                "sourceId": federal_source.id,
+            }
+        )
+
+    result_rows: list[dict[str, Any]] = []
+    for county, values in sorted(county_totals.items()):
+        total = values["harris"] + values["trump"] + values["other"]
+        result_rows.append(
+            {
+                "jurisdictionName": county,
+                "jurisdictionCode": f"VT-{county.removesuffix(' County').upper().replace(' ', '-')}",
+                "level": "county",
+                "votes": {"Trump": values["trump"], "Harris": values["harris"], "Other": values["other"]},
+                "totalVotes": total,
+                "margin": values["trump"] - values["harris"],
+                "marginPct": pct(values["trump"] - values["harris"], total),
+                "sourceId": federal_source.id,
+            }
+        )
+
+    turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in review_rows),
+        "nativeComparisonRows": len(review_rows),
+        "nativeComparisonContest": review_section.get("comparisonContest", "United States Senator"),
+        "nativeComparisonDemVotes": sum(row["comparisonDemVotes"] for row in review_rows),
+        "nativeComparisonRepVotes": sum(row["comparisonRepVotes"] for row in review_rows),
+        "nativeComparisonOtherVotes": sum(row["comparisonOtherVotes"] for row in review_rows),
+        "nativeCanvassPresidentTotalVotesCounted": president_total_votes_counted,
+        "nativeCanvassPresidentBlankVotes": president_blank_votes,
+        "nativeCanvassPresidentOvervotes": president_overvotes,
+        "nativeCanvassSenateTotalVotesCounted": senate_total_votes_counted,
+        "nativeCanvassSenateBlankVotes": senate_blank_votes,
+        "nativeCanvassSenateOvervotes": senate_overvotes,
+        "nativeExcludedStatewideSummaryRows": sum(
+            1
+            for office in (president, senate)
+            for row in office.get("cs", [])
+            if int_text(row.get("tid")) == 0 or str(row.get("tn") or "").upper() == "STATE WIDE"
+        ),
+        **turnout_metrics,
+    }
+
+    expected = result_section.get("expectedCanvass", {})
+    expected_checks = {
+        "nativeCanvassPresidentTotalVotesCounted": expected.get("presidentTotalVotesCounted"),
+        "nativeCanvassPresidentBlankVotes": expected.get("presidentBlankVotes"),
+        "nativeCanvassPresidentOvervotes": expected.get("presidentOvervotes"),
+        "nativeCanvassSenateTotalVotesCounted": expected.get("senateTotalVotesCounted"),
+        "nativeCanvassSenateBlankVotes": expected.get("senateBlankVotes"),
+        "nativeCanvassSenateOvervotes": expected.get("senateOvervotes"),
+        "nativeComparisonDemVotes": expected.get("senateSanders"),
+        "nativeComparisonRepVotes": expected.get("senateMalloy"),
+    }
+    mismatches = {
+        key: {"actual": metrics[key], "expected": int_text(expected_value)}
+        for key, expected_value in expected_checks.items()
+        if expected_value is not None and metrics[key] != int_text(expected_value)
+    }
+    if mismatches:
+        raise ValueError(f"Vermont certified-canvass reconciliation failed: {mismatches}")
+
+    return result_rows, review_rows, turnout_rows, metrics
+
 def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     checks = {
         "nativeResultRows": config.expected.result_rows,
@@ -7312,6 +7533,18 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "reviewRows": [],
             "turnoutRows": turnout_rows,
             "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "VT" and config.raw.get("certifiedResults", {}).get("format") == "vermontStaticElectionJson":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _vermont_static_json_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeVermontStaticElectionJson",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
             "metrics": metrics,
         }
 
