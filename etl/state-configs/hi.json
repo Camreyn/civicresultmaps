@@ -1,10 +1,9 @@
 {
   "code": "HI",
   "name": "Hawaii",
-  "authority": "U.S. Election Assistance Commission; Hawaii Office of Elections",
+  "authority": "Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "hi-2024-eac-turnout",
@@ -14,7 +13,7 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows. Prefer Hawaii Office of Elections denominator artifacts when available; keep fallback and Kalawao caveats visible in the app.",
       "status": "loaded"
     },
     {
@@ -22,22 +21,22 @@
       "category": "Official certified statewide result text export",
       "url": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
       "localFile": "data/hi-2024-general-summary.txt",
-      "parser": "hawaiiSummaryTextCandidate",
+      "parser": "hawaiiOfficeText",
       "authority": "Hawaii Office of Elections",
       "timestampBasis": "Certified 2024 General Election text export linked from Hawaii Office of Elections results page, last updated November 27, 2024 10:15 am.",
-      "confidence": "Official statewide summary text includes President, U.S. Senate, U.S. House, state, county, and question totals. Candidate source only until a Hawaii text parser is implemented.",
-      "status": "candidate"
+      "confidence": "Official statewide summary text cross-check for certified President totals: 516,701 total votes, 313,044 Harris, 193,661 Trump, and 9,996 Other.",
+      "status": "loaded"
     },
     {
       "id": "hi-2024-general-precinct-detail",
       "category": "Official certified statewide precinct detail text export",
       "url": "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
       "localFile": "data/hi-2024-general-precinct-detail.txt",
-      "parser": "hawaiiPrecinctDetailTextCandidate",
+      "parser": "hawaiiOfficeText",
       "authority": "Hawaii Office of Elections",
       "timestampBasis": "Certified 2024 General Election precinct detail text export linked from Hawaii Office of Elections results page, last updated November 27, 2024 10:15 am.",
-      "confidence": "Official precinct/split text includes Reg_voters, Ballots, President rows, and same-grain U.S. Senate rows for 496 of 497 precinct/split IDs. Candidate source only until a Hawaii text parser and one-missing-Senate-unit caveat are implemented.",
-      "status": "candidate"
+      "confidence": "Official precinct/split text includes Reg_voters, Ballots, President rows, and same-grain U.S. Senate rows. The parser decodes UTF-16, skips the Format#1 banner, uses embedded-newline-safe CSV handling, aggregates county results from numbered precinct/split rows, and excludes three zero-vote non-geographic President keys.",
+      "status": "loaded"
     },
     {
       "id": "hi-county-geometry",
@@ -47,8 +46,8 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is available for Hawaii county map joins; precinct geometry/crosswalks are not loaded.",
-      "status": "candidate"
+      "confidence": "County geometry is available for Hawaii county map joins. Kalawao has county geometry and an EAC warning turnout row, but the official Hawaii result detail reports county election rows for Hawaii, Honolulu, Kauai, and Maui only; precinct geometry/crosswalks are not loaded.",
+      "status": "loaded"
     },
     {
       "id": "hi-2024-equipment-context",
@@ -68,18 +67,39 @@
       "localFile": "data/hi-2024-data-coverage-inventory.json",
       "parser": "coverageInventoryJson",
       "authority": "Hawaii Office of Elections",
-      "timestampBasis": "Wave 14 official-source coverage inventory checked July 2, 2026.",
-      "confidence": "Documents official Hawaii source leads, downloaded text exports, turnout replacement candidate, geometry leads, recount/provisional/security context, and remaining parser/request gaps. Inventory only; no normalized administration rows are loaded.",
+      "timestampBasis": "Wave 19 official-source coverage inventory checked July 3, 2026.",
+      "confidence": "Documents official Hawaii source leads, loaded text artifacts, turnout replacement candidate, GIS/crosswalk needs, recount/provisional/security context, historical-source paths, and remaining caveats. Inventory only; no normalized administration rows are loaded.",
       "status": "candidate"
     }
   ],
+  "certifiedResults": {
+    "format": "hawaiiOfficeText",
+    "sourceId": "hi-2024-general-summary",
+    "detailSourceId": "hi-2024-general-precinct-detail",
+    "presidentContestId": "283",
+    "reportingGrain": "county_from_precinct_split",
+    "countyCrosswalk": "2024 Hawaii numbered precinct names map House districts 01-08 to Hawaii County, 09-14 to Maui County, 15-17 to Kauai County, and 18-51 to Honolulu County. Kalawao is not a separate result county in the official detail export."
+  },
+  "reviewCharts": {
+    "format": "hawaiiOfficeText",
+    "sourceId": "hi-2024-general-precinct-detail",
+    "comparisonContest": "U.S. Senate",
+    "comparisonContestId": "100",
+    "coverageMode": "presidentVsSenatePrecinctSplit",
+    "sourceCoverage": "official_hawaii_office_precinct_split_text_numbered_units",
+    "warning": "Hawaii review rows are same-grain President-versus-U.S.-Senate precinct/split rows from the official Office of Elections media.txt export. The parser excludes three zero-vote non-geographic President keys (PRES, OS I, OS II) from advisory rows; numbered precinct/split review rows aggregate to the certified statewide presidential total. County labels are derived from the official numbered precinct district ranges and should be treated as a reproducible crosswalk, not precinct-boundary geometry. Advisory rows are public-interest source-review signals only, not findings of fraud or misconduct."
+  },
+  "comparisonContest": {
+    "label": "U.S. Senate",
+    "sourceId": "hi-2024-general-precinct-detail"
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "hi-2024-eac-turnout",
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Hawaii turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Hawaii turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until the Hawaii Office of Elections registration/turnout table is normalized and reconciled. The state-native table reports 522,236 statewide turnout and 860,868 registered voters, but county registered-voter distribution and Kalawao handling need review before replacing EAC fallback.",
     "warningRequired": true,
     "expected": {
       "rowCount": 5,
@@ -89,20 +109,21 @@
   },
   "expected": {
     "jurisdictions": 5,
-    "resultRows": 0,
+    "resultRows": 4,
     "sources": 6,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
-    "turnoutRows": 5
+    "stateTotal": 516701,
+    "trump": 193661,
+    "harris": 313044,
+    "other": 9996,
+    "reviewRows": 467,
+    "turnoutRows": 5,
+    "historicalBaselineRows": 0
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

@@ -2,9 +2,9 @@
   "state": "HI",
   "stateName": "Hawaii",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
-  "checkedBy": "Wave 14 Hawaii state-data worker",
-  "scope": "Source coverage classification and official-source request package only; active HI ETL remains turnout-only EAC fallback.",
+  "checkedAt": "2026-07-03",
+  "checkedBy": "Wave 19 Hawaii native data coverage worker",
+  "scope": "Official Hawaii 2024 result/review text parser activated for native staging; active turnout remains EAC fallback and production promotion was not performed.",
   "repoDrift": [
     "AGENTS.md references docs/developer/index.md, but that file is missing in this worktree/current main. This was recorded as repo drift and did not block the source-coverage pass."
   ],
@@ -31,7 +31,7 @@
       "localArtifactPath": "data/hi-2024-general-summary.txt",
       "electionYear": 2024,
       "reportingGrain": "statewide contest/candidate summary",
-      "parserOrNormalizationPath": "hawaiiSummaryTextCandidate parser needed; decode official UTF-16 text, skip Format#1 banner, and parse CSV with embedded newlines in quoted candidate names.",
+      "parserOrNormalizationPath": "nativeHawaiiOfficeText in civic_etl/native.py; decodes official UTF-16 summary text, skips Format#1 banner, and parses embedded-newline-safe CSV for certified statewide President totals.",
       "expectedRowCountsOrTotals": {
         "summaryRows": 182,
         "presidentContestId": "283",
@@ -47,7 +47,7 @@
         "senateCandidateRows": 4,
         "senateTotalVotes": 501763
       },
-      "caveatsAndConfidenceNotes": "Official source artifact collected, but not wired into native HI certified results. Use as the statewide certified-results source once a Hawaii text parser is implemented and reviewed."
+      "caveatsAndConfidenceNotes": "Official statewide certified-results cross-check for the active Hawaii native parser. County result rows are aggregated from the official precinct detail export and reconcile to these statewide totals."
     },
     {
       "id": "hi-2024-general-precinct-detail",
@@ -57,7 +57,7 @@
       "localArtifactPath": "data/hi-2024-general-precinct-detail.txt",
       "electionYear": 2024,
       "reportingGrain": "precinct_split",
-      "parserOrNormalizationPath": "hawaiiPrecinctDetailText parser needed; decode official UTF-16 text, skip Format#1 banner, and parse CSV with embedded newlines in quoted candidate names.",
+      "parserOrNormalizationPath": "nativeHawaiiOfficeText in civic_etl/native.py; decodes official UTF-16 precinct detail text, skips Format#1 banner, parses embedded-newline-safe CSV, derives county labels from official numbered precinct district ranges, and pairs President contest 283 with U.S. Senate contest 100 by precinct_splitId.",
       "expectedRowCountsOrTotals": {
         "totalRows": 17944,
         "uniquePrecinctSplitIds": 497,
@@ -66,9 +66,14 @@
         "presidentTotalVotes": 516701,
         "senateRows": 1984,
         "senatePrecinctSplitIds": 496,
-        "senateTotalVotes": 501763
+        "senateTotalVotes": 501763,
+        "loadedCountyResultRows": 4,
+        "loadedReviewRows": 467,
+        "zeroVoteNumberedPresidentKeysSkipped": 27,
+        "nonGeographicPresidentKeysExcluded": 3,
+        "nonGeographicSenateKeysExcluded": 2
       },
-      "caveatsAndConfidenceNotes": "Official source artifact collected and suitable for a future same-grain President-versus-U.S.-Senate parser. Quick source inspection found U.S. Senate rows for 496 of 497 precinct/split IDs; the parser must preserve that missing comparison-unit caveat before enabling advisory review rows."
+      "caveatsAndConfidenceNotes": "Official source artifact is now wired into native staging. Review rows exclude zero-vote numbered keys and zero-vote non-geographic keys; the retained 467 review rows still aggregate to the certified statewide presidential total. County labels are a reproducible district-range crosswalk, not precinct geometry."
     }
   ],
   "existingLocalContextArtifacts": [
@@ -112,22 +117,38 @@
   ],
   "sourceFindings": {
     "certifiedPresidentResults": {
-      "status": "official_machine_readable_collected_not_loaded",
+      "status": "official_text_loaded_native_staging",
       "preferredSourceId": "hi-2024-general-summary",
-      "reportingGrain": "statewide summary with precinct detail source available",
-      "notes": "The official summary text resolves 516,701 presidential votes: Harris 313,044; Trump 193,661; other candidates 9,996."
+      "reportingGrain": "four county result rows aggregated from official numbered precinct/split detail rows with statewide summary cross-check",
+      "observedNativeTotals": {
+        "countyResultRows": 4,
+        "presidentialTotalVotes": 516701,
+        "harris": 313044,
+        "trump": 193661,
+        "other": 9996,
+        "certifiedVoteGap": 0
+      },
+      "notes": "The active native parser cross-checks the official summary text and emits county rows for Hawaii, Honolulu, Kauai, and Maui. Kalawao has county geometry and EAC turnout context but no separate Hawaii Office result county row."
     },
     "sameGrainComparisonContest": {
-      "status": "official_machine_readable_collected_not_loaded",
+      "status": "official_precinct_split_review_loaded_native_staging",
       "preferredContest": "U.S. Senate",
       "preferredSourceId": "hi-2024-general-precinct-detail",
-      "notes": "The official precinct detail text includes President and U.S. Senate rows at precinct_split grain. U.S. Senate appears for 496 of 497 precinct_split IDs in the quick source pass, so importer work must document the missing comparison unit."
+      "observedNativeTotals": {
+        "loadedReviewRows": 467,
+        "comparisonRows": 467,
+        "reviewPresidentialVotes": 516701,
+        "zeroVoteNumberedPresidentKeysSkipped": 27,
+        "nonGeographicPresidentKeysExcluded": 3,
+        "nonGeographicSenateKeysExcluded": 2
+      },
+      "notes": "The official precinct detail text includes President and U.S. Senate rows at precinct_split grain. The parser keeps nonzero numbered precinct/split rows only for advisory review; excluded zero-vote keys are documented in staging metrics."
     },
     "turnoutAndRegistrationDenominators": {
       "status": "state_native_lead_identified_eac_fallback_active",
       "activeSourceId": "hi-2024-eac-turnout",
       "stateNativeLead": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
-      "notes": "The state turnout page reports 2024 General statewide 860,868 registered voters and 522,236 turnout, plus county rows. It is not yet normalized into the active ETL contract."
+      "notes": "Active staging keeps 5 EAC fallback jurisdiction rows totaling 522,236 ballots cast and 861,333 registered voters. The Hawaii Office table reports 522,236 statewide turnout and 860,868 registered voters, but county registered-voter distribution and Kalawao handling require reconciliation before replacement."
     },
     "geometryAndCrosswalks": {
       "status": "county_geometry_loaded_precinct_geometry_lead_identified",
@@ -142,7 +163,7 @@
         2016,
         2012
       ],
-      "notes": "The Hawaii results page lists official certified General Election reports and text files for 2020, 2016, and 2012. No historical baseline rows are loaded for HI."
+      "notes": "The Hawaii results page lists official certified General Election reports/text files for 2020, 2016, and 2012. This pass did not collect or normalize those historical artifacts; add a reproducible historical parser before enabling HI historicalBaseline."
     },
     "auditRecountCvrIncidentCorrectionLitigation": {
       "status": "source_paths_documented_not_normalized",
@@ -159,9 +180,15 @@
   },
   "requestMatrixArtifact": "data/hi-2024-source-request-matrix.tsv",
   "displayApiCaveats": {
-    "activeConfig": "HI remains turnout-only in etl/state-configs/hi.json. The official result text exports are candidate inputs until a parser is implemented.",
+    "activeConfig": "HI native staging now loads official 2024 President county result rows and same-grain U.S. Senate precinct/split review rows from etl/state-configs/hi.json. Active turnout remains EAC fallback; historical/admin rows remain source paths only.",
     "advisoryUse": "Any future advisory indicators are source-review signals only, not claims of fraud or misconduct.",
-    "productionPromotion": "No production promotion was performed in this wave."
-  }
+    "productionPromotion": "No production promotion was performed in Wave 19; current production/API counts were not checked."
+  },
+  "productionChecked": false,
+  "remainingRisks": [
+    "Advisory rows are public-interest source-review signals only, not claims of fraud or misconduct.",
+    "County labels for review rows come from a district-range crosswalk, not loaded precinct geometry; collect official precinct geometry/crosswalks before subcounty map overlays.",
+    "Active turnout remains EAC fallback until the Hawaii Office turnout table, county registered-voter distribution, and Kalawao handling are reconciled.",
+    "Official 2012/2016/2020 historical baselines and normalized audit/CVR/recount/incident/correction/litigation rows are still missing."
+  ]
 }
-

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import io
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 import json
@@ -1653,6 +1654,231 @@ def _mississippi_election_recap_rows(
     return result_rows, review_rows, turnout_rows, metrics
 
 
+HAWAII_COUNTY_CODES = {
+    "Hawaii County": "001",
+    "Honolulu County": "003",
+    "Kauai County": "007",
+    "Maui County": "009",
+}
+
+
+def _hawaii_text_rows(source: SourceConfig) -> list[dict[str, str]]:
+    text = _artifact_path(source).read_text(encoding="utf-16")
+    first_line, _, csv_text = text.partition("\n")
+    if first_line.strip("\ufeff\r\n") != "Format#1":
+        raise ValueError(f"Hawaii Office text export {source.id} is missing Format#1 banner")
+
+    reader = csv.DictReader(io.StringIO(csv_text))
+    rows: list[dict[str, str]] = []
+    for row in reader:
+        normalized: dict[str, str] = {}
+        for key, value in row.items():
+            if key is None:
+                continue
+            clean_key = str(key).strip().lstrip("#").strip('"')
+            normalized[clean_key] = value or ""
+        rows.append(normalized)
+    return rows
+
+
+def _hawaii_precinct_county(precinct_name: str) -> str | None:
+    if not re.match(r"^\d{2}-\d{2}$", str(precinct_name or "")):
+        return None
+
+    district = int(str(precinct_name).split("-", 1)[0])
+    if 1 <= district <= 8:
+        return "Hawaii County"
+    if 9 <= district <= 14:
+        return "Maui County"
+    if 15 <= district <= 17:
+        return "Kauai County"
+    if 18 <= district <= 51:
+        return "Honolulu County"
+    return None
+
+
+def _hawaii_local_unit(row: dict[str, str]) -> str:
+    precinct = str(row.get("Precinct_Name") or "").strip()
+    split = str(row.get("Split_Name") or "").strip()
+    split_id = str(row.get("precinct_splitId") or "").strip()
+    label = f"{precinct} {split}".strip()
+    return f"{label} [{split_id}]" if split_id else label
+
+
+def _hawaii_president_bucket(candidate: str) -> str:
+    value = " ".join(str(candidate or "").upper().split())
+    if "HARRIS" in value:
+        return "harris"
+    if "TRUMP" in value:
+        return "trump"
+    return "other"
+
+
+def _hawaii_senate_bucket(candidate: str) -> str:
+    value = " ".join(str(candidate or "").upper().split())
+    if "HIRONO" in value:
+        return "dem"
+    if "MCDERMOTT" in value:
+        return "rep"
+    return "other"
+
+
+def _hawaii_office_text_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    result_section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    summary_source = sources[result_section["sourceId"]]
+    precinct_source = sources[result_section["detailSourceId"]]
+    president_contest = str(result_section.get("presidentContestId", "283"))
+    senate_contest = str(review_section.get("comparisonContestId", "100"))
+
+    summary_rows = _hawaii_text_rows(summary_source)
+    precinct_rows = _hawaii_text_rows(precinct_source)
+
+    summary_president = [row for row in summary_rows if str(row.get("Contest ID")) == president_contest]
+    summary_total = sum(int_text(row.get("Total Votes")) for row in summary_president)
+    summary_values = {"harris": 0, "other": 0, "trump": 0}
+    for row in summary_president:
+        summary_values[_hawaii_president_bucket(row.get("Candidate Name", ""))] += int_text(row.get("Total Votes"))
+
+    counties: dict[str, dict[str, int]] = {
+        name: {"harris": 0, "other": 0, "total": 0, "trump": 0}
+        for name in HAWAII_COUNTY_CODES
+    }
+    president_by_key: dict[str, dict[str, Any]] = {}
+    senate_by_key: dict[str, dict[str, int]] = {}
+    non_geographic_president_keys: set[str] = set()
+    non_geographic_senate_keys: set[str] = set()
+
+    for row in precinct_rows:
+        contest_id = str(row.get("Contest_id") or "")
+        if contest_id not in {president_contest, senate_contest}:
+            continue
+
+        key = str(row.get("precinct_splitId") or "").strip()
+        precinct_name = str(row.get("Precinct_Name") or "").strip()
+        county = _hawaii_precinct_county(precinct_name)
+        votes = int_text(row.get("Mail votes")) + int_text(row.get("In-Person votes"))
+        if not county:
+            if contest_id == president_contest:
+                non_geographic_president_keys.add(key)
+            else:
+                non_geographic_senate_keys.add(key)
+            continue
+
+        if contest_id == president_contest:
+            bucket = _hawaii_president_bucket(row.get("Candidate_name", ""))
+            county_values = counties[county]
+            county_values[bucket] += votes
+            county_values["total"] += votes
+
+            precinct_values = president_by_key.setdefault(
+                key,
+                {
+                    "county": county,
+                    "localUnit": _hawaii_local_unit(row),
+                    "harris": 0,
+                    "other": 0,
+                    "total": 0,
+                    "trump": 0,
+                },
+            )
+            precinct_values[bucket] += votes
+            precinct_values["total"] += votes
+        else:
+            bucket = _hawaii_senate_bucket(row.get("Candidate_name", ""))
+            comparison_values = senate_by_key.setdefault(
+                key,
+                {"dem": 0, "other": 0, "rep": 0, "total": 0},
+            )
+            comparison_values[bucket] += votes
+            comparison_values["total"] += votes
+
+    result_rows = [
+        {
+            "jurisdictionName": county,
+            "jurisdictionCode": HAWAII_COUNTY_CODES[county],
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": precinct_source.id,
+        }
+        for county, values in sorted(counties.items())
+        if values["total"]
+    ]
+
+    review_rows: list[dict[str, Any]] = []
+    missing_comparison_rows = 0
+    for key, values in president_by_key.items():
+        total = values["total"]
+        if not total:
+            continue
+        senate = senate_by_key.get(key)
+        if not senate or not senate["total"]:
+            missing_comparison_rows += 1
+            senate = {"dem": 0, "other": 0, "rep": 0, "total": 0}
+        has_comparison = bool(senate["total"])
+        review_rows.append(
+            {
+                "county": values["county"],
+                "localUnit": values["localUnit"],
+                "totalVotes": total,
+                "harris": values["harris"],
+                "trump": values["trump"],
+                "harrisShare": pct(values["harris"], total),
+                "trumpShare": pct(values["trump"], total),
+                "demDropoff": pct(values["harris"] - senate["dem"], total) if has_comparison else 0,
+                "repDropoff": pct(values["trump"] - senate["rep"], total) if has_comparison else 0,
+                "coverageMode": review_section.get("coverageMode", "presidentVsSenate") if has_comparison else "voteShareOnly",
+                "comparisonContest": review_section.get("comparisonContest", "U.S. Senate") if has_comparison else "",
+                "comparisonDemVotes": senate["dem"],
+                "comparisonRepVotes": senate["rep"],
+                "comparisonOtherVotes": senate["other"],
+                "sourceId": precinct_source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": sum(1 for row in review_rows if row.get("comparisonContest")),
+        "nativeComparisonContest": review_section.get("comparisonContest", "U.S. Senate"),
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in review_rows),
+        "nativeReviewCertifiedVoteGap": summary_total - sum(row["totalVotes"] for row in review_rows),
+        "nativeHawaiiSummaryTotalVotes": summary_total,
+        "nativeHawaiiSummaryTrumpVotes": summary_values["trump"],
+        "nativeHawaiiSummaryHarrisVotes": summary_values["harris"],
+        "nativeHawaiiSummaryOtherVotes": summary_values["other"],
+        "nativeHawaiiNonGeographicPresidentKeysExcluded": len(non_geographic_president_keys),
+        "nativeHawaiiNonGeographicSenateKeysExcluded": len(non_geographic_senate_keys),
+        "nativeHawaiiZeroVoteNumberedPresidentKeysSkipped": sum(1 for values in president_by_key.values() if not values["total"]),
+        "nativeHawaiiMissingComparisonRows": missing_comparison_rows,
+        **turnout_metrics,
+    }
+    return (
+        result_rows,
+        sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])),
+        turnout_rows,
+        metrics,
+    )
 
 def _county_president_csv_rows(
     config: EtlConfig,
@@ -7084,6 +7310,17 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "metrics": metrics,
         }
 
+    if config.code == "HI" and config.raw.get("certifiedResults", {}).get("format") == "hawaiiOfficeText":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _hawaii_office_text_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeHawaiiOfficeText",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
     if config.code == "NM" and config.raw.get("certifiedResults", {}).get("format") == "newMexicoSosMapDataJson":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, historical_rows, metrics = _new_mexico_sos_mapdata_rows(config, sources)
