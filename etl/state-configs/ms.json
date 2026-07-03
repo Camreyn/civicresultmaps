@@ -61,6 +61,17 @@
       "status": "loaded"
     },
     {
+      "id": "ms-historical-presidential-baseline",
+      "category": "Official 2012/2016/2020 county presidential historical baselines",
+      "url": "https://www.sos.ms.gov/elections-voting/election-results",
+      "localFile": "data/ms-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Mississippi Secretary of State",
+      "timestampBasis": "Official Mississippi SOS archive iframe targets and direct historical files collected by scripts/collect-ms-historical-baseline.mjs: 2012 certified President/Vice President PDF, 2016 statewide recap PDF, and 2020 statewide recap CSV.",
+      "confidence": "Official SOS county presidential baseline rows for 2012, 2016, and 2020. The normalizer stores source PDFs/CSV under data/ms-historical-official-results and reconciles row counts and statewide totals before writing the CSV.",
+      "status": "loaded"
+    },
+    {
       "id": "ms-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2728%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -89,14 +100,15 @@
   "expected": {
     "jurisdictions": 82,
     "resultRows": 82,
-    "sources": 6,
+    "sources": 7,
     "geometryFeatures": 82,
     "stateTotal": 1225238,
     "trump": 746305,
     "harris": 465357,
     "other": 13576,
     "reviewRows": 82,
-    "turnoutRows": 82
+    "turnoutRows": 82,
+    "historicalBaselineRows": 246
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -104,7 +116,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "mississippiElectionRecapCsv",
@@ -124,5 +136,18 @@
     "comparisonContest": "United States Senate",
     "coverageMode": "presidentVsSenate",
     "warning": "Mississippi review rows are county-level President-versus-U.S. Senate comparisons from the official statewide recap CSV. They are useful for county review, but they are not precinct-level vote-share scatter plots."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ms-historical-presidential-baseline",
+    "expected": {
+      "rowCount": 246,
+      "years": [
+        2012,
+        2016,
+        2020
+      ]
+    },
+    "warning": "Mississippi historical baselines are official county-level presidential context from SOS archive artifacts; they are not precinct review rows."
   }
 }

@@ -22,18 +22,23 @@ class MississippiCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(self.requests["ms-state-native-ballots-cast-turnout"]["status"], "denominator_lead_collected_ballots_cast_missing")
         self.assertIn("Keep EAC fallback turnout active", self.requests["ms-state-native-ballots-cast-turnout"]["caveats"])
 
-    def test_historical_and_geometry_rows_remain_source_requests_only(self):
+    def test_historical_rows_are_loaded_and_geometry_remains_request_only(self):
+        historical_artifact = next(
+            artifact for artifact in self.inventory["loadedArtifacts"] if artifact["id"] == "ms-historical-presidential-baseline"
+        )
+        self.assertEqual(historical_artifact["expectedRowsOrTotals"]["countyRows"], 246)
+        self.assertIn("scripts/collect-ms-historical-baseline.mjs", historical_artifact["parserOrNormalizationPath"])
+
         for request_id in [
             "ms-2020-historical-county-president",
             "ms-2016-historical-county-president",
             "ms-2012-historical-county-president",
         ]:
-            self.assertEqual(self.requests[request_id]["status"], "official_archive_lead_identified_artifact_not_collected")
-            self.assertIn("future Mississippi historical", self.requests[request_id]["parser_or_normalization_path"])
+            self.assertEqual(self.requests[request_id]["status"], "loaded_official_historical_baseline")
+            self.assertIn("collect-ms-historical-baseline", self.requests[request_id]["parser_or_normalization_path"])
 
         self.assertEqual(self.requests["ms-precinct-geometry-crosswalk"]["status"], "needs_official_geometry_or_crosswalk")
         self.assertIn("county map joins", self.requests["ms-precinct-geometry-crosswalk"]["caveats"])
-
     def test_admin_rows_stay_request_provenance_not_findings(self):
         admin_request = self.requests["ms-admin-audit-cvr-incident-records"]
         self.assertEqual(admin_request["status"], "needs_records_request_and_scope_review")

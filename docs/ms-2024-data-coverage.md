@@ -1,6 +1,6 @@
 # Mississippi 2024 Data Coverage
 
-Checked at: 2026-07-01
+Checked at: 2026-07-03
 
 This note is an internal source and review-path inventory for Mississippi. It does not replace the ETL config, source registries, or reviewed staging artifacts. The machine-readable coverage inventory for this pass is `data/ms-2024-data-coverage-inventory.json`, with artifact-specific follow-up asks in `data/ms-2024-source-request-matrix.tsv`.
 
@@ -10,6 +10,7 @@ This note is an internal source and review-path inventory for Mississippi. It do
 - Same-grain comparison contest: loaded from the same SOS recap CSV using county-level U.S. Senate rows.
 - Statewide reference PDF: retained at `data/ms-2024-official-statewide-results.pdf` for provenance next to the parsed CSV.
 - County geometry: loaded from Census TIGERweb county GeoJSON at `data/ms-counties.geojson`.
+- Historical baselines: loaded from official SOS 2012/2016/2020 archive artifacts into `data/ms-historical-presidential-baseline.csv` by `npm run etl:collect:ms:historical`.
 - Turnout denominator: loaded from EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ms-2024-eac-turnout.csv`; this remains the active turnout source. The official Mississippi SOS November 2024 Active Voter Count denominator lead is collected at `data/ms-2024-november-active-voter-count.pdf` and normalized to `data/ms-2024-november-active-voter-count.csv` by `npm run etl:collect:ms:active-voters`, but it is candidate context only until paired with official ballots-cast or voter-participation rows.
 - Equipment context: loaded separately in `data/admin-source-packages.json` from Verified Voting Verifier county-level context, normalized to `data/ms-2024-equipment-context.csv`. This is administration context only, not a turnout or vote-result source.
 
@@ -29,15 +30,19 @@ Remaining precinct-review blocker: complete OCR or manual review for the other c
 
 ## Historical Baselines
 
-2020, 2016, and 2012 historical baselines were not added in this pass. No source-cited official historical Mississippi county presidential artifacts are present in the repo. The live Mississippi SOS election-results index confirms archive pages for the target elections:
+2020, 2016, and 2012 county presidential historical baselines are now loaded from official Mississippi SOS archive artifacts and normalized by:
 
-- 2020 General Election: `https://www.sos.ms.gov/elections-voting/election-results/2020/2020-general-election`
-- 2016 General Election: `https://www.sos.ms.gov/elections-voting/election-results/2016/2016-general-election`
-- 2012 Election Results: `https://www.sos.ms.gov/elections-voting/election-results/2012/2012-election-results`
+```powershell
+npm run etl:collect:ms:historical
+```
 
-Those archive pages render the result tables through an iframe in the current site. The text fetch used in this pass did not expose stable direct county presidential artifact URLs, so no historical parser or CSV was added. That documents an acquisition blocker from this environment; it is not evidence that the Secretary of State does not publish or retain the historical files.
+The normalizer retains the official source artifacts under `data/ms-historical-official-results/` and writes `data/ms-historical-presidential-baseline.csv` with 246 county rows:
 
-Next action: collect official Mississippi SOS historical county presidential artifacts for 2020, 2016, and 2012 from the archive iframe targets, from any linked official recap files, or by request to the SOS Elections Division/Public Records Request path. For each artifact, record source URL, local path, reporting grain, parser path, expected county count, candidate totals, caveats, and confidence before enabling `historicalBaseline` for Mississippi. The historical rows in `data/ms-2024-source-request-matrix.tsv` track these official-artifact asks without loading baseline rows.
+- 2020 General Election: official SOS statewide recapitulation CSV, 82 county rows, 1,313,759 total votes.
+- 2016: official SOS statewide recap PDF text layer, 82 county rows, 1,209,357 total votes.
+- 2012: official SOS certified President and Vice President PDF text layer, 82 county rows, 1,285,584 total votes.
+
+These historical rows are county-level context only. They do not add precinct-level historical coverage and do not resolve the remaining 2024 county PDF OCR review gate.
 
 ## Turnout Denominator Follow-Up
 
@@ -52,4 +57,4 @@ These reports are not a drop-in replacement for the current EAC turnout rows bec
 - Precinct boundary geometry if subcounty map overlays are required.
 - Post-election audit, CVR availability, incident/correction/litigation, tabulator/EMS log, logic-and-accuracy, and custody records. These are tracked as `needs_data` administration context, not as findings.
 
-See `data/ms-2024-source-request-matrix.tsv` for the current bounded request queue covering OCR review, state-native turnout replacement, historical baselines, precinct geometry/crosswalks, and administration-context records.
+See `data/ms-2024-source-request-matrix.tsv` for the current bounded request queue covering OCR review, state-native turnout replacement, loaded historical-baseline provenance, precinct geometry/crosswalks, and administration-context records.
