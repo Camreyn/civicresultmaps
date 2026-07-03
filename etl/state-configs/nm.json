@@ -1,11 +1,76 @@
 {
   "code": "NM",
   "name": "New Mexico",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "New Mexico Secretary of State; U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
+    {
+      "id": "nm-2024-president-county-mapdata",
+      "category": "Official New Mexico SOS 2024 President county mapdata API",
+      "url": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=CTY&raceID=10079&osn=102&county=0&party=0&electionID=2882",
+      "localFile": "data/nm-2024-president-county-mapdata.json",
+      "parser": "newMexicoSosMapDataJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official 2024 General Election results dashboard for election 2882 reports last updated May 30, 2025 10:44 AM MT.",
+      "confidence": "Official SOS county-level API response for President and Vice President. Small suppressed candidate counts marked '*' are inferred from SOS candidate percentages; inferred county totals reconcile to the official certified President total.",
+      "status": "loaded"
+    },
+    {
+      "id": "nm-2024-president-precinct-mapdata",
+      "category": "Official New Mexico SOS 2024 President precinct mapdata API",
+      "url": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=PREC&raceID=10079&osn=102&county=0&party=0&electionID=2882",
+      "localFile": "data/nm-2024-president-precinct-mapdata.json",
+      "parser": "newMexicoSosMapDataJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official 2024 General Election results dashboard for election 2882 reports last updated May 30, 2025 10:44 AM MT.",
+      "confidence": "Official SOS precinct API response for President and Vice President. Duplicate county/precinct/candidate rows are de-duplicated; suppressed small counts are inferred from SOS percentages. The precinct review total is 7 votes below the certified county total after de-duplication and masked-count inference.",
+      "status": "loaded"
+    },
+    {
+      "id": "nm-2024-senate-county-mapdata",
+      "category": "Official New Mexico SOS 2024 U.S. Senate county mapdata cross-check",
+      "url": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=SW&category=CTY&raceID=9792&osn=180&county=0&party=0&electionID=2882",
+      "localFile": "data/nm-2024-senate-county-mapdata.json",
+      "parser": "newMexicoSosMapDataJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official 2024 General Election results dashboard for election 2882 reports last updated May 30, 2025 10:44 AM MT.",
+      "confidence": "Official SOS county-level API response for U.S. Senate used to cross-check the same-grain comparison contest total.",
+      "status": "loaded"
+    },
+    {
+      "id": "nm-2024-senate-precinct-mapdata",
+      "category": "Official New Mexico SOS 2024 U.S. Senate precinct mapdata comparison API",
+      "url": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=SW&category=PREC&raceID=9792&osn=180&county=0&party=0&electionID=2882",
+      "localFile": "data/nm-2024-senate-precinct-mapdata.json",
+      "parser": "newMexicoSosMapDataJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official 2024 General Election results dashboard for election 2882 reports last updated May 30, 2025 10:44 AM MT.",
+      "confidence": "Official SOS precinct API response for U.S. Senate comparison rows. Duplicate county/precinct/candidate rows are de-duplicated; suppressed small counts are inferred from SOS percentages. The precinct comparison total is 7 votes below the county-level Senate total.",
+      "status": "loaded"
+    },
+    {
+      "id": "nm-2020-president-county-mapdata",
+      "category": "Official New Mexico SOS 2020 President county historical mapdata API",
+      "url": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=CTY&raceID=6878&osn=102&county=0&party=0&electionID=2782",
+      "localFile": "data/nm-2020-president-county-mapdata.json",
+      "parser": "newMexicoSosMapDataJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official archived 2020 General Election results dashboard for election 2782.",
+      "confidence": "Official SOS archived county-level President API response used for historical baseline rows. Suppressed small counts are inferred from SOS percentages when present.",
+      "status": "loaded"
+    },
+    {
+      "id": "nm-2016-president-county-mapdata",
+      "category": "Official New Mexico SOS 2016 President county historical mapdata API",
+      "url": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=CTY&raceID=4067&osn=100&county=0&party=0&electionID=84",
+      "localFile": "data/nm-2016-president-county-mapdata.json",
+      "parser": "newMexicoSosMapDataJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official archived 2016 General Election results dashboard for election 84.",
+      "confidence": "Official SOS archived county-level President API response used for historical baseline rows. Suppressed small counts are inferred from SOS percentages when present.",
+      "status": "loaded"
+    },
     {
       "id": "nm-2024-eac-turnout",
       "category": "EAC fallback turnout rows",
@@ -14,7 +79,7 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows. The official SOS turnout detail page is identified but not active until eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC ballots-cast difference are reconciled.",
       "status": "loaded"
     },
     {
@@ -24,18 +89,72 @@
       "localFile": "data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
       "parser": "sourceCoverageInventoryJson",
       "authority": "New Mexico Secretary of State; county clerks; U.S. Census Bureau; Verified Voting",
-      "timestampBasis": "Wave 15 official-source coverage inventory checked July 2, 2026; official results page last updated May 30, 2025 10:44 AM MT.",
-      "confidence": "Inventory only. Official New Mexico SOS 2024 results dashboard and CSV media export path are identified for President, U.S. Senate comparison, and state-native turnout leads, but active NM ETL remains EAC turnout-only until artifacts, parser, and denominator review are added.",
+      "timestampBasis": "Wave 18 official-source coverage inventory checked July 3, 2026; official results page last updated May 30, 2025 10:44 AM MT.",
+      "confidence": "Inventory source records official SOS result/review API artifacts, turnout-detail lead, county geometry lead, audit/recount/CVR availability notes, equipment context, and remaining caveats.",
+      "status": "candidate"
+    },
+    {
+      "id": "nm-county-geometry-lead",
+      "category": "New Mexico county geometry lead",
+      "url": "https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html",
+      "localFile": "data/nm-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Wave 18 inventory lead checked July 3, 2026.",
+      "confidence": "County geometry remains a documented lead for map joins; no New Mexico-specific geometry artifact is promoted by this branch.",
+      "status": "candidate"
+    },
+    {
+      "id": "nm-2024-equipment-context-lead",
+      "category": "New Mexico voting equipment context lead",
+      "url": "https://verifiedvoting.org/verifier/",
+      "localFile": "data/nm-2024-data-coverage-inventory.json",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Verified Voting",
+      "timestampBasis": "Wave 18 inventory lead checked July 3, 2026.",
+      "confidence": "Supplemental equipment context only; not a replacement for official certified totals or normalized administration rows.",
       "status": "candidate"
     }
   ],
+  "certifiedResults": {
+    "format": "newMexicoSosMapDataJson",
+    "sourceId": "nm-2024-president-county-mapdata",
+    "contest": "President and Vice President of the United States",
+    "sourceLevel": "county",
+    "maskedCountMethod": "Infer SOS-suppressed '*' candidate counts from candidate percentages and inferred reporting-unit totals. County totals reconcile to the official certified President total."
+  },
+  "reviewCharts": {
+    "format": "newMexicoSosMapDataJson",
+    "presidentSourceId": "nm-2024-president-precinct-mapdata",
+    "comparisonSourceId": "nm-2024-senate-precinct-mapdata",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "warning": "Official SOS precinct mapdata masks many small candidate counts with '*'. The parser infers masked counts from SOS percentages and de-duplicates repeated county/precinct/candidate rows. After that, 2,169 President precinct keys produce 2,165 nonzero review rows; four zero-vote precinct keys are skipped. President and U.S. Senate precinct totals are each 7 votes below the corresponding county-level certified totals, so review rows are advisory screening context only and not evidence of fraud or misconduct."
+  },
+  "historicalBaselines": {
+    "format": "newMexicoSosMapDataJson",
+    "sources": [
+      {
+        "year": 2020,
+        "sourceId": "nm-2020-president-county-mapdata"
+      },
+      {
+        "year": 2016,
+        "sourceId": "nm-2016-president-county-mapdata"
+      }
+    ],
+    "expected": {
+      "rowCount": 66
+    },
+    "warning": "Official SOS API county historical baselines are loaded for 2020 and 2016. The 2012 archive routes to the legacy election statistics hub and remains unnormalized."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "nm-2024-eac-turnout",
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "New Mexico turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. Wave 15 confirmed the official New Mexico SOS turnout details lead, but it is not active until eligible-voter denominator semantics and the 367-ballot SOS-versus-EAC ballots-cast difference are reviewed.",
+    "notes": "New Mexico turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. Wave 18 confirmed the official New Mexico SOS turnout details lead reports 928,290 ballots cast and 1,343,825 eligible voters, but it is not active until eligible-voter denominator semantics and the 367-ballot SOS-versus-EAC ballots-cast difference are reviewed.",
     "warningRequired": false,
     "expected": {
       "rowCount": 33,
@@ -45,21 +164,22 @@
   },
   "expected": {
     "jurisdictions": 33,
-    "resultRows": 0,
-    "sources": 2,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
-    "turnoutRows": 33
+    "resultRows": 33,
+    "sources": 10,
+    "stateTotal": 923403,
+    "trump": 423391,
+    "harris": 478802,
+    "other": 21210,
+    "reviewRows": 2165,
+    "turnoutRows": 33,
+    "historicalBaselineRows": 66
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   }
 }

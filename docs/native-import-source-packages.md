@@ -590,19 +590,18 @@ ND remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`
 
 NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Remaining work is collecting the official PDF package, implementing a New Jersey DOE text-PDF parser, reconciling statewide President/Senate/turnout totals, normalizing municipality names and non-geographic rows such as Federal Overseas and Hand Counts, adding municipal geometry/crosswalks, collecting official 2012/2016/2020 historical baselines, and normalizing audit/CVR/recount/incident/correction/litigation records. Current NJ advisory indicators are not calculated from review rows because no NJ result or review rows are loaded.
 
-## New Mexico Wave 15 Source Discovery
+## New Mexico Wave 18 Native Activation
 
-- Config: `etl/state-configs/nm.json`
-- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/nm-2024-eac-turnout.csv`
-- Coverage inventory: `data/nm-2024-data-coverage-inventory.json`
-- Source request matrix: `data/nm-2024-source-request-matrix.tsv`
-- Official result lead: New Mexico Secretary of State 2024 General Election Official Results dashboard and Media/Results CSV exports for election 2882
-- Preferred comparison contest: U.S. Senate, from the same official SOS results system after confirming same-grain CSV precinct keys
-- Turnout lead: SOS voter-turnout details report precinct ballots cast and eligible voters; EAC fallback remains active until denominator semantics and a 367-ballot SOS-versus-EAC difference are reviewed
-- Geometry/admin context: `data/nm-counties.geojson` and `data/nm-2024-equipment-context.csv` are present; SOS/RGIS precinct geometry, historical archives, risk-limiting audit, CVR availability, incident, correction, recount, litigation, custody, and tabulator-log artifacts remain source leads or request paths
+Wave 18 adds New Mexico to `completedNativeStates` for staging coverage with caveats. The active NM config now loads official New Mexico Secretary of State `GetMapDataArchive` JSON artifacts for 2024 President county results, 2024 President precinct review rows, 2024 U.S. Senate same-grain precinct comparison rows, and official 2020/2016 county historical baselines. Active turnout remains the EAC 2024 V2 jurisdiction fallback until the SOS eligible-voter denominator and the 367-ballot SOS-minus-EAC ballots-cast difference are reviewed.
 
-NM remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native New Mexico result or advisory review parser is loaded in this pass; current advisory indicators are not calculated from review rows because no NM review rows are loaded. This is source-coverage context only, not evidence of fraud or misconduct.
+Loaded staging output from `etl/state-configs/nm.json`:
 
+- 33 county President result rows totaling 923,403 votes: Harris 478,802, Trump 423,391, Other 21,210
+- 2,169 President precinct keys, with 2,165 nonzero President-versus-U.S. Senate review rows after four zero-vote precinct keys are skipped
+- 33 EAC turnout fallback rows: 927,923 ballots cast and 1,415,984 registered voters
+- 66 official SOS historical baseline rows for 2020 and 2016; 2012 remains blocked on the legacy election statistics hub/PDF path
+
+The official SOS mapdata API masks many small candidate counts with `*`. The NM native parser infers those masked counts from SOS percentages and inferred reporting-unit totals, then de-duplicates repeated county/precinct/candidate rows. After inference and de-duplication, President and U.S. Senate precinct totals are each 7 votes below the corresponding county-level official totals; county certified rows remain authoritative. Current advisory rows are public-interest screening context only and are not evidence of fraud or misconduct. Remaining gaps are state-native turnout replacement, precinct geometry/crosswalk, 2012 historical baseline rows, normalized audit/CVR/recount/incident/correction/litigation records, and production display QA after any explicit promotion.
 ## Maine Wave 17 Native Activation
 
 - Config: `etl/state-configs/me.json`
