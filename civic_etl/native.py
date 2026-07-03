@@ -91,6 +91,9 @@ def _missouri_jurisdiction_name(raw: Any) -> str:
     return _county_name(value)
 
 
+def _rhode_island_jurisdiction_name(raw: Any) -> str:
+    return str(raw or "").strip()
+
 def _illinois_jurisdiction_name(raw: Any) -> str:
     value = str(raw or "").strip()
     if not value:
@@ -2128,7 +2131,13 @@ def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig
             state = str(row.get("state") or "").strip().upper()
             if state != config.code:
                 raise ValueError(f"Historical baseline row {index} has wrong state: {row.get('state')!r}")
-            county = _nevada_jurisdiction_name(row.get("jurisdiction_name")) if config.code == "NV" else _county_name(row.get("jurisdiction_name"))
+            county = (
+                _nevada_jurisdiction_name(row.get("jurisdiction_name"))
+                if config.code == "NV"
+                else _rhode_island_jurisdiction_name(row.get("jurisdiction_name"))
+                if config.code == "RI"
+                else _county_name(row.get("jurisdiction_name"))
+            )
             if not county:
                 raise ValueError(f"Historical baseline row {index} is missing jurisdiction_name")
             rows.append(
@@ -6322,6 +6331,26 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "turnoutRows": turnout_rows,
             "metrics": metrics,
         }
+    if config.code == "RI" and config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(
+            config,
+            sources,
+            missing_label="Rhode Island BOE official results",
+            county_normalizer=_rhode_island_jurisdiction_name,
+        )
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeRhodeIslandBoeCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
+
     if config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(
