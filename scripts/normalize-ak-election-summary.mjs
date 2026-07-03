@@ -76,7 +76,7 @@ function buildRows(text) {
     election_year: 2024,
     jurisdiction_code: "AK-STATE",
     jurisdiction_name: "Alaska",
-    level: "statewide",
+    level: "state",
     trump,
     harris,
     other: presidentOther,
