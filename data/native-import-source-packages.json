@@ -13,6 +13,7 @@
     "AR",
     "AZ",
     "CA",
+    "CO",
     "CT",
     "DE",
     "FL",
@@ -32,8 +33,10 @@
     "MS",
     "MT",
     "NC",
+    "ND",
     "NE",
     "NH",
+    "NJ",
     "NM",
     "NV",
     "OH",
@@ -1008,6 +1011,81 @@
       ]
     },
     {
+      "state": "ND",
+      "name": "North Dakota",
+      "priority": 16,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_admin_context_inventory",
+      "authority": "North Dakota Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/nd.json",
+      "legacyReferenceBundle": "data/nd-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "North Dakota SOS official ResultsAjax President county JSON",
+          "sourceUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19893&osn=100&county=0&party=0",
+          "localFile": "data/nd-2024-sos-president-county.csv; data/nd-2024-sos-results-manifest.json",
+          "parserHint": "Run npm run etl:collect:nd. scripts/collect-nd-sos-results.mjs fetches official ResultsAjax JSON and writes county President rows for countyPresidentCsv."
+        },
+        "localReviewRows": {
+          "sourceTitle": "North Dakota SOS official ResultsAjax President and U.S. Senate precinct JSON",
+          "sourceUrl": "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+          "localFile": "data/nd-2024-sos-president-senate-precinct-review.csv; data/nd-2024-sos-results-manifest.json",
+          "level": "county_scoped_precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Generated from same-key official President raceID 19893 and U.S. Senate raceID 19847 county-scoped precinct JSON rows. Two zero-vote precinct keys are excluded and documented in the manifest."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 North Dakota jurisdiction turnout fallback plus SOS eligible-voter lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv; data/nd-2024-data-coverage-inventory.json",
+          "level": "jurisdiction_fallback_and_state_native_eligible_voter_lead",
+          "denominator": "EAC registered voters is zero because North Dakota has no voter registration; official SOS eligible-voter denominator lead reports 594,140 eligible voters statewide.",
+          "parserHint": "Current ETL uses eacTurnoutCsv. A future turnout normalizer should collect official dashboard/export eligible-voter fields and reconcile the one-ballot SOS/EAC turnout difference."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2738%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/nd-counties.geojson",
+          "parserHint": "County map joins only; precinct geometry/crosswalks are not loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "North Dakota 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+          "localFile": "data/nd-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded official SOS endpoint artifacts and remaining turnout denominator, geometry, historical, audit, CVR, recount, incident, correction, and litigation gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier North Dakota 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/38",
+          "localFile": "data/nd-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or precinct-uniformity proof."
+        }
+      },
+      "expected": {
+        "countyRows": 53,
+        "geometryFeatures": 53,
+        "stateTotal": 368155,
+        "trump": 246505,
+        "harris": 112327,
+        "other": 9323,
+        "localReviewRows": 383,
+        "turnoutRows": 53
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_county_scoped_precinct_rows",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_native_eligible_voter_lead",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      },
+      "caveats": [
+        "Review rows are official same-key county-scoped precinct President-versus-U.S.-Senate rows from the SOS ResultsAjax dashboard endpoint; they are advisory source-review context only, not findings.",
+        "Two zero-vote precinct keys are excluded from review rows and documented in data/nd-2024-sos-results-manifest.json.",
+        "Active turnout remains EAC fallback because North Dakota has no voter registration and the SOS eligible-voter denominator lead needs normalization and one-ballot SOS/EAC turnout reconciliation before replacement.",
+        "County geometry is loaded; precinct boundary geometry/crosswalks are not loaded.",
+        "No normalized historical baseline, audit, CVR availability, recount, incident, correction, or litigation rows are loaded."
+      ]
+    },
+    {
       "state": "NE",
       "name": "Nebraska",
       "priority": 11,
@@ -1790,6 +1868,82 @@
       "legacyReferenceBundle": "data/me-2024-data-coverage-inventory.json"
     },
     {
+      "state": "CO",
+      "name": "Colorado",
+      "priority": 11,
+      "nativeReadiness": "complete_county_map_county_review_eac_turnout_with_clarity_gap_caveat",
+      "authority": "Colorado Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
+      "configFile": "etl/state-configs/co.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Colorado Secretary of State 2024 General Clarity detail XML ZIP",
+          "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+          "localFile": "data/co-2024-clarity-detailxml.zip",
+          "parserHint": "coloradoClarityDetailXml reads Presidential Electors Choice county rows and aggregates DEM as Harris, REP as Trump, and other listed candidates as Other. Loaded county candidate rows total 3,190,873 votes, 1,872 below the prior Abstract/certified-total lead."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Colorado Secretary of State 2024 General Clarity CU Regent at-large contest",
+          "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+          "localFile": "data/co-2024-clarity-detailxml.zip",
+          "level": "county",
+          "comparisonContest": "Regent of the University of Colorado - At Large",
+          "parserHint": "coloradoClarityDetailXml pairs county Presidential Electors rows with same-grain CU Regent at-large rows because Colorado had no 2024 U.S. Senate race."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback plus Colorado SOS Clarity turnout lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv; data/co-2024-clarity-detailxml.zip",
+          "level": "jurisdiction_fallback_with_county_state_native_lead",
+          "denominator": "Active ETL uses EAC registered voters. Clarity ElectionVoterTurnout totalVoters remains a denominator lead pending semantics review.",
+          "parserHint": "Current active turnout rows use eacTurnoutCsv: 64 rows, 3,240,754 ballots cast, and 4,583,280 registered voters. Clarity reports 64 county rows, 3,241,120 ballotsCast, and 4,058,938 totalVoters but is not the active turnout replacement."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/co-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Colorado 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
+          "localFile": "data/co-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded Clarity county result/review source, EAC fallback turnout, county geometry/equipment context, historical-source blockers, and remaining administration gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Colorado 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
+          "localFile": "data/co-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 64,
+        "geometryFeatures": 64,
+        "stateTotal": 3190873,
+        "trump": 1377441,
+        "harris": 1728159,
+        "other": 85273,
+        "localReviewRows": 64,
+        "turnoutRows": 64
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "county_president_vs_cu_regent_at_large",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_clarity_turnout_lead_retained",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      },
+      "caveats": [
+        "Loaded Clarity presidential county candidate rows total 3,190,873 votes, 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source.",
+        "Review rows are county-level President-versus-CU-Regent-at-large comparisons, not precinct scatter plots.",
+        "Active turnout remains EAC fallback because Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference still need review.",
+        "County geometry is loaded; precinct boundaries/crosswalks are not loaded.",
+        "No official 2012/2016/2020 historical baselines or normalized Colorado audit, CVR availability, recount, incident, correction, or litigation rows are loaded."
+      ],
+      "legacyReferenceBundle": "data/co-2024-clarity-detailxml.zip"
+    },
+    {
       "state": "CT",
       "name": "Connecticut",
       "priority": 15,
@@ -2019,6 +2173,84 @@
       "legacyReferenceBundle": "data/de-2024-general-election-results-report.html"
     },
     {
+      "state": "NJ",
+      "name": "New Jersey",
+      "priority": 13,
+      "nativeReadiness": "complete_county_map_county_review_state_turnout_source_inventory",
+      "authority": "New Jersey Department of State, Division of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/nj.json",
+      "legacyReferenceBundle": "data/nj-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "New Jersey DOE official 2024 General Election President statewide PDF",
+          "sourceUrl": "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-president.pdf",
+          "localFile": "data/nj-2024-official-general-results-president.pdf; data/nj-2024-general-president-county.csv",
+          "parserHint": "Run npm run etl:prepare:nj. scripts/normalize-nj-doe-pdfs.mjs extracts 21 county President rows from the official DOE statewide PDF and reconciles to 4,272,725 votes."
+        },
+        "localReviewRows": {
+          "sourceTitle": "New Jersey DOE official 2024 General Election U.S. Senate statewide PDF",
+          "sourceUrl": "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-us-senate.pdf",
+          "localFile": "data/nj-2024-official-general-results-us-senate.pdf; data/nj-2024-general-senate-county.csv",
+          "level": "county",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Generated from the official statewide U.S. Senate PDF. Rows are county-level President-versus-U.S.-Senate comparison inputs, not municipal or precinct scatter plots."
+        },
+        "turnout": {
+          "sourceTitle": "New Jersey DOE official 2024 General Election voter turnout PDF",
+          "sourceUrl": "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
+          "localFile": "data/nj-2024-official-general-voter-turnout.pdf; data/nj-2024-official-turnout-county.csv; data/nj-2024-turnout-reconciliation-summary.json",
+          "level": "county",
+          "denominator": "DOE official county registered-voter denominator; EAC fallback retained as benchmark only",
+          "ballotsCast": "DOE official county ballots cast",
+          "parserHint": "scripts/normalize-nj-doe-pdfs.mjs normalizes 21 county rows and writes the DOE-versus-EAC reconciliation summary."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2734%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/nj-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY",
+          "parserHint": "County map joins only; municipal geometry/crosswalks are not loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "New Jersey 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://www.nj.gov/state/elections/election-information-2024.shtml",
+          "localFile": "data/nj-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded county-level DOE PDF artifacts and remaining municipal, historical, geometry, audit, CVR, recount, incident, correction, and litigation gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier New Jersey 2024 equipment context plus NJ DOE equipment inventory lead",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/34",
+          "localFile": "data/nj-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 21,
+        "geometryFeatures": 21,
+        "stateTotal": 4272725,
+        "trump": 1968215,
+        "harris": 2220713,
+        "other": 83797,
+        "localReviewRows": 21,
+        "turnoutRows": 21
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_county_pdf_rows",
+        "turnoutMode": "official_doe_county_turnout_with_eac_benchmark_reconciliation",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      },
+      "caveats": [
+        "Review rows are county-level President-versus-U.S.-Senate comparisons from official statewide DOE PDFs, not municipal or precinct scatter plots.",
+        "Active turnout uses the official DOE county turnout PDF. The retained reconciliation summary records 4,321,921 ballots cast in both DOE and EAC sources, and 6,682,699 DOE registered voters versus 6,630,364 EAC registered voters.",
+        "County geometry is loaded; municipal geometry/crosswalks are not loaded.",
+        "No normalized New Jersey municipal review rows, historical baseline rows, audit outcomes, CVR availability, recount, incident, correction, or litigation rows are loaded."
+      ],
+      "nextAction": "Collect and normalize municipal President/Senate/turnout PDFs, municipal geometry/crosswalks, official historical baselines, and official audit/CVR/recount/incident/correction/litigation artifacts."
+    },
+    {
       "state": "NM",
       "name": "New Mexico",
       "priority": 12,
@@ -2102,7 +2334,7 @@
       "state": "IN",
       "name": "Indiana",
       "priority": 1,
-      "currentStatus": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_admin_paths_documented_official_precinct_rows_missing",
+      "currentStatus": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_vstop_audit_summary_loaded_official_precinct_rows_missing",
       "officialSourcePages": [
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
         "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
@@ -2129,13 +2361,14 @@
         "supplemental MIT/OpenElections President and U.S. Senate local review rows are loaded for advisory flag calculation",
         "Verified Voting county equipment context is loaded as secondary administration context only",
         "official 2016 and 2020 county historical presidential baselines are loaded from ENR archive JSON",
-        "official VSTOP audit selection/outcome rows if published or request-produced",
+        "detailed official VSTOP audit-unit workpapers beyond the loaded 2024 General Election audit summary, if published or request-produced",
         "official CVR availability/exportability records or request-produced county CVR records",
-        "official Recount Commission/county incident, correction, recount, and litigation records"
+        "official Recount Commission/county incident, correction, recount, and litigation records",
+        "official VSTOP 2024 General Election audit summary rows are loaded for seven audited counties as context only"
       ],
       "preferredComparisonContest": "U.S. Senate; official ENR supports certified county totals, and MIT/OpenElections supplemental rows support local President-vs-U.S.-Senate advisory review.",
-      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2012/2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows. Future parsers are needed only if an official precinct/subcounty result export, VSTOP audit rows, CVR availability records, or incident/correction/recount rows are obtained.",
-      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, official 2012/2016/2020 county historical baselines are normalized, and VSTOP/Recount Commission/admin source paths are documented. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows and normalized audit/CVR/incident/correction records remain preferred/request-path items.",
+      "parserNeeded": "indianaEnrCountyJson package loaded for official county results; normalizedTurnoutCsv loaded for official county turnout; historicalPresidentialCsv loaded for official 2012/2016/2020 county baselines; indianaEnrJurisdictionDirectoryInventory collected; localComparisonCsv loaded for MIT/OpenElections supplemental precinct President and U.S. Senate rows; scripts/normalize-in-audit-summary.mjs loads official VSTOP 2024 audit summary context. Future parsers are needed only if an official precinct/subcounty result export, detailed audit workpapers, CVR availability records, or incident/correction/recount rows are obtained.",
+      "blocker": "Official Indiana ENR county category JSON is collected and parsed for certified 2024 county totals, official county turnout is loaded, official 2012/2016/2020 county historical baselines are normalized, and the official VSTOP 2024 General Election audit summary is loaded for seven audited counties as context. Official JurR county jurisdiction JSON files are inventoried but do not contain President or U.S. Senate candidate result rows. Advisory flags still use MIT/OpenElections supplemental local rows, with caveats that MIT flags Indiana Senate/Governor overreporting in some counties and non-unique precinct labels. Official precinct-level candidate rows and normalized detailed audit/CVR/incident/correction records remain preferred/request-path items.",
       "supplementalSourcePages": [
         "https://doi.org/10.7910/DVN/NYTPDU",
         "https://github.com/openelections/openelections-data-in/tree/master/2024/counties"
@@ -2189,6 +2422,12 @@
           "sourceUrl": "https://indianavoters.in.gov/ENRHistorical/ElectionResults?year=2012",
           "localFile": "data/in-2012-official-president-county.json; data/in-2016-official-president-county.json; data/in-2020-official-president-county.json; data/in-historical-presidential-baseline.csv",
           "parserHint": "Run node scripts/collect-in-historical-baseline.mjs to regenerate 276 official county presidential baseline rows for 2012, 2016, and 2020."
+        },
+        "auditContext": {
+          "sourceTitle": "Indiana VSTOP 2024 General Election Post-Election Audit Summary Report",
+          "sourceUrl": "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf",
+          "localFile": "data/in-2024-general-post-election-audit-summary-report.pdf; data/in-2024-general-post-election-audit-summary.csv; data/in-2024-general-post-election-audit-summary.json",
+          "parserHint": "scripts/normalize-in-audit-summary.mjs extracts seven county audit-summary context rows. Context only; not a certified-result replacement and not proof of fraud or misconduct."
         }
       }
     },
@@ -2656,62 +2895,6 @@
       }
     },
     {
-      "state": "CO",
-      "name": "Colorado",
-      "priority": 11,
-      "currentStatus": "official_clarity_county_results_turnout_leads_confirmed_inventory_only_eac_turnout_active",
-      "officialSourcePages": [
-        "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
-        "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
-        "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
-        "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
-        "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
-        "https://www.sos.state.co.us/pubs/info_center/recordsRequests.html"
-      ],
-      "requiredArtifacts": [
-        "official Colorado Clarity detailxml.zip or source manifest plus a Colorado parser for county President rows",
-        "county CU Regent at-large same-grain comparison rows if county-level review is accepted, or official precinct/local President plus comparison rows for subcounty advisory coverage",
-        "reviewed state-native turnout denominator semantics before replacing EAC fallback turnout",
-        "official 2020, 2016, and 2012 Colorado SOS Abstract of Votes Cast county presidential artifacts plus parser",
-        "precinct boundary geometry or reporting-unit crosswalks if subcounty review rows are collected",
-        "official risk-limiting audit selections/outcomes, CVR availability, recount/correction/incident/litigation, custody, ballot-manifest, tabulator-log, and EMS-log source artifacts suitable for normalized administration context"
-      ],
-      "preferredComparisonContest": "CU Regent at-large for county-level same-grain review because Colorado had no 2024 U.S. Senate race; request precinct/local same-grain comparison rows before subcounty advisory coverage.",
-      "parserNeeded": "Future coloradoClarityDetailXml parser should read official CO/122598/367167 detailxml.zip for 64 county President rows, 64 county CU Regent at-large comparison rows, and reviewed county turnout rows. Active CO config remains turnoutOnly EAC fallback, so no native result or review rows are loaded in this pass.",
-      "blocker": "Official Colorado Clarity endpoint is confirmed and source-counted, but the statewide detail XML inspected here exposes county candidate totals and precinct participation counts rather than per-precinct candidate result rows. EAC fallback turnout stays active until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed. Historical baselines, precinct geometry/crosswalks, audit/CVR/recount/incident/correction/litigation rows, and source-request artifacts remain unnormalized.",
-      "requestMatrixArtifact": "data/co-2024-source-request-matrix.tsv",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "Colorado 2024 source coverage inventory",
-          "localFile": "data/co-2024-data-coverage-inventory.json",
-          "parserHint": "Inventory only; documents official Clarity endpoint, EAC fallback turnout, county geometry/equipment context, historical/audit/CVR/request paths, and caveats without loading result or review rows."
-        },
-        "sourceRequestMatrix": {
-          "sourceTitle": "Colorado 2024 source request matrix",
-          "localFile": "data/co-2024-source-request-matrix.tsv",
-          "parserHint": "Context-only request queue for parser work, subcounty review rows, turnout denominator review, historical baselines, precinct geometry, and administration artifacts."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
-          "parserHint": "Current active CO turnout config remains eacTurnoutCsv with 64 jurisdiction rows."
-        },
-        "countyBoundary": {
-          "sourceTitle": "U.S. Census TIGERweb county geography",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/co-counties.geojson",
-          "parserHint": "County joins only; precinct geometry is not loaded."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier Colorado 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
-          "localFile": "data/co-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
       "state": "HI",
       "name": "Hawaii",
       "priority": 11,
@@ -2853,121 +3036,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/54",
           "localFile": "data/wv-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes or turnout."
-        }
-      }
-    },
-    {
-      "state": "NJ",
-      "name": "New Jersey",
-      "priority": 13,
-      "currentStatus": "official_text_pdf_result_review_turnout_admin_source_leads_documented_eac_turnout_only",
-      "requestMatrixArtifact": "data/nj-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.nj.gov/state/elections/election-information-2024.shtml",
-        "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-president.pdf",
-        "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-us-senate.pdf",
-        "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
-        "https://www.nj.gov/state/elections/resources-voting-equipment-inventory.shtml",
-        "https://www.nj.gov/state/elections/vote-county-election-officials.shtml"
-      ],
-      "requiredArtifacts": [
-        "official New Jersey DOE statewide certified President PDF plus 21 county municipal President PDFs",
-        "official statewide U.S. Senate PDF plus 21 county municipal U.S. Senate PDFs at the same grain as President",
-        "state-native turnout and registered-voter denominator PDFs normalized and reconciled with EAC fallback before replacement",
-        "municipal boundary geometry or official GIS export plus a DOE municipality-name crosswalk",
-        "official 2020, 2016, and 2012 historical presidential baseline artifacts from DOE archive pages",
-        "official county post-election audit PDFs and request-produced CVR/recount/incident/correction/litigation records where available",
-        "data/nj-2024-data-coverage-inventory.json and data/nj-2024-source-request-matrix.tsv as the current source-search handoff"
-      ],
-      "preferredComparisonContest": "U.S. Senate from the official county municipal result PDFs; use county statewide PDFs only as certified cross-checks.",
-      "parserNeeded": "New Jersey remains EAC-turnout-only. A new DOE text-PDF parser is needed to collect and normalize statewide certified county President totals, 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, and turnout PDFs. The parser must reconcile statewide totals, normalize municipality labels, and preserve non-geographic Federal Overseas and Hand Counts caveats before review rows are enabled.",
-      "blocker": "The official New Jersey 2024 page confirms authoritative source leads, but no official result/review PDF artifacts or parser are committed in this pass. Active NJ ETL therefore remains EAC turnout-only with zero result and review rows. The official NJ turnout PDF agrees with EAC fallback ballots cast but reports 52,335 more registered voters, so denominator timing and replacement semantics need review before EAC fallback is replaced. Municipal geometry/crosswalks, historical baselines, audit PDFs, CVR availability, incident/correction/recount/litigation records, and parser-backed provenance remain unnormalized.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "New Jersey 2024 data coverage and administration source inventory",
-          "sourceUrl": "https://www.nj.gov/state/elections/election-information-2024.shtml",
-          "localFile": "data/nj-2024-data-coverage-inventory.json",
-          "parserHint": "Inventory only; documents official PDF result/review/turnout source leads, municipal geometry lead, historical archive leads, audit PDFs, equipment context, and caveats without loading result or review rows."
-        },
-        "sourceRequestMatrix": {
-          "sourceTitle": "New Jersey 2024 source request matrix",
-          "localFile": "data/nj-2024-source-request-matrix.tsv",
-          "parserHint": "Context-only request queue for PDF collection, parser work, municipal geometry/crosswalks, historical baselines, and administration artifacts."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/nj-2024-eac-turnout.csv",
-          "level": "jurisdiction",
-          "denominator": "EAC A1a Total Reg registered voters",
-          "parserHint": "Current active NJ parser remains eacTurnoutCsv with 21 jurisdiction rows."
-        },
-        "countyBoundary": {
-          "sourceTitle": "U.S. Census TIGERweb county geography",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2734%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/nj-counties.geojson",
-          "parserHint": "County map joins only; municipal geometry is not loaded."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier New Jersey 2024 equipment context plus NJ DOE equipment inventory lead",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/34",
-          "localFile": "data/nj-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "ND",
-      "name": "North Dakota",
-      "priority": 16,
-      "currentStatus": "official_dashboard_export_identified_turnout_only_eac_active",
-      "requestMatrixArtifact": "data/nd-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-        "https://results.sos.nd.gov/ResultsExport.aspx",
-        "https://results.sos.nd.gov/VoterTurnoutDetails.aspx",
-        "https://www.sos.nd.gov/elections/voter/voting-north-dakota",
-        "https://www.sos.nd.gov/elections/election-security/post-election-audits",
-        "https://www.sos.nd.gov/elections/election-security/voting-equipment",
-        "https://results.sos.nd.gov/ResultsSW.aspx?type=RECOUNT",
-        "https://vip.sos.nd.gov/PortalListDetails.aspx?ptlPKID=4&ptlhPKID=63"
-      ],
-      "requiredArtifacts": [
-        "official North Dakota SOS CSV/Excel/XML export or committed source artifact for 2024 President rows",
-        "official same-grain U.S. Senate comparison rows from the same export surface, with U.S. House or Governor only as fallback comparison contests",
-        "state-native turnout and eligible-voter denominator rows normalized from SOS dashboard/export and reconciled to EAC fallback",
-        "county geometry and, if subcounty advisory coverage is pursued, official precinct geometry or a precinct-code crosswalk",
-        "official 2020, 2016, and 2012 historical presidential baseline artifacts from SOS dashboards/PDF archive",
-        "official 2024 post-election audit report, recount records, CVR availability, incident/correction/litigation records, and equipment context caveats"
-      ],
-      "preferredComparisonContest": "U.S. Senate if exported at the same grain as President; U.S. House or Governor are fallback statewide comparisons only with caveats.",
-      "parserNeeded": "North Dakota remains EAC-turnout-only. A new SOS results export collector/parser is needed for President and same-grain U.S. Senate rows. A turnout normalizer must use eligible-voter semantics because North Dakota does not require voter registration; active EAC rows currently report 53 turnout rows, 371,974 ballots cast, and 0 registered voters.",
-      "blocker": "Official 2024 results are available through the North Dakota SOS dashboard and export form, but no official result export artifact is committed and no native President or review rows are loaded. The official dashboard reports 371,975 voter turnout and 594,140 eligible voters, which must be reconciled against active EAC fallback before replacing turnout. Historical baselines, geometry/crosswalks, audit/CVR/recount/incident/correction/litigation rows remain unnormalized.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "North Dakota 2024 data coverage and administration source inventory",
-          "sourceUrl": "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-          "localFile": "data/nd-2024-data-coverage-inventory.json",
-          "parserHint": "Inventory only; documents official result/export, turnout denominator, geometry, historical, equipment, audit, recount, and records-request paths without loading result/review/admin rows."
-        },
-        "sourceRequestMatrix": {
-          "sourceTitle": "North Dakota 2024 source request matrix",
-          "localFile": "data/nd-2024-source-request-matrix.tsv",
-          "parserHint": "Context-only request queue for result exports, same-grain comparison rows, eligible-voter turnout reconciliation, geometry/crosswalks, historical baselines, and administration artifacts."
-        },
-        "turnout": {
-          "sourceTitle": "EAC 2024 North Dakota jurisdiction turnout fallback plus SOS eligible-voter lead",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv; data/nd-2024-data-coverage-inventory.json",
-          "level": "jurisdiction_fallback_and_state_native_eligible_voter_lead",
-          "denominator": "EAC registered voters is zero because North Dakota has no voter registration; official SOS eligible-voter denominator lead reports 594,140 eligible voters statewide.",
-          "parserHint": "Current ETL uses eacTurnoutCsv. A future ND turnout normalizer should collect official dashboard/export eligible-voter fields and reconcile the one-ballot SOS/EAC turnout difference."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier North Dakota 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/38",
-          "localFile": "data/nd-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or precinct-uniformity proof."
         }
       }
     }

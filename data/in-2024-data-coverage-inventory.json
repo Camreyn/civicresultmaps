@@ -2,9 +2,9 @@
   "state": "IN",
   "stateName": "Indiana",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-03",
   "purpose": "State-scoped coverage inventory for Indiana 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_admin_paths_documented",
+  "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_vstop_audit_summary_loaded",
   "authorityPriority": "Official Indiana Election Division, Indiana Election Commission/Recount Commission, county election offices, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
   "requestMatrixArtifact": "data/in-2024-source-request-matrix.tsv",
   "loadedArtifacts": [
@@ -154,6 +154,29 @@
         "Does not replace official Indiana result, turnout, audit, recount, CVR, incident, correction, or custody records."
       ],
       "confidence": "loaded_context_only"
+    },
+    {
+      "id": "in-2024-vstop-general-audit-summary",
+      "sourceAuthority": "Indiana Secretary of State Election Division / VSTOP",
+      "sourceUrl": "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf",
+      "localPath": "data/in-2024-general-post-election-audit-summary-report.pdf; data/in-2024-general-post-election-audit-summary.csv; data/in-2024-general-post-election-audit-summary.json",
+      "electionYear": 2024,
+      "reportingGrain": "county_audit_summary",
+      "parserNormalizationPath": "scripts/normalize-in-audit-summary.mjs to data/in-2024-general-post-election-audit-summary.csv and summary JSON",
+      "expectedCounts": {
+        "rows": 7,
+        "ballotPollingCounties": 4,
+        "ballotComparisonCounties": 3,
+        "presidentContestAuditCounties": 3,
+        "senateContestAuditCounties": 1,
+        "houseContestAuditCounties": 1
+      },
+      "caveats": [
+        "Official VSTOP audit summary context only; rows cover seven voluntarily audited counties and selected contests.",
+        "These rows do not replace certified ENR totals and are not proof of fraud or misconduct.",
+        "Detailed audit-unit workpapers, CVR exports, recount records, incident logs, and correction records remain separate request items."
+      ],
+      "confidence": "loaded_official_context_partial"
     },
     {
       "id": "in-historical-presidential-official-enr",
@@ -327,14 +350,14 @@
     },
     {
       "sourceAuthority": "Indiana Secretary of State Election Division / VSTOP",
-      "sourceUrl": "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
+      "sourceUrl": "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports/",
       "checkedFor": [
         "post-election risk-limiting audit reports",
         "audit selection/outcome source path",
         "normalized audit-unit rows"
       ],
-      "result": "Official VSTOP RLA report page is documented as the audit source path for a future administration-context pass.",
-      "blocker": "No 2024 county/audit-unit selection, sample, discrepancy, or outcome rows are normalized into the Indiana package yet."
+      "result": "Official VSTOP page links the 2024 General Election Post-Election Audit Summary Report. The report is retained locally and normalized into seven county audit-summary context rows.",
+      "blocker": "The summary is county-level administration context. Detailed audit-unit workpapers, CVR exports, recount records, incident logs, and correction records are not normalized into the Indiana package."
     },
     {
       "sourceAuthority": "Indiana Election Administrator Portal",
@@ -407,11 +430,11 @@
       "remainingRisk": "The current map remains county-level."
     },
     {
-      "artifact": "audit_recount_cvr_incident_correction_records",
-      "status": "source_paths_documented_not_normalized",
-      "neededFor": "Independent reconciliation and administrative context for explaining advisory rows.",
+      "artifact": "audit_unit_cvr_recount_incident_correction_records",
+      "status": "vstop_audit_summary_loaded_detail_records_missing",
+      "neededFor": "Independent reconciliation and administrative context beyond the loaded VSTOP county audit-summary rows.",
       "preferredAuthority": "Indiana Election Division, Indiana Recount Commission, VSTOP/RLA reports, and county election offices.",
-      "remainingRisk": "VSTOP and Recount Commission source paths are documented, but loaded artifacts do not independently recompute county totals from CVRs or explain local administration events."
+      "remainingRisk": "The VSTOP 2024 summary provides official context for seven audited counties, but loaded artifacts do not independently recompute county totals from CVRs or normalize detailed audit-unit, recount, incident, or correction records."
     }
   ],
   "confidenceNotes": [
@@ -420,6 +443,6 @@
     "Next source step is a targeted Indiana Election Division request, followed by county-by-county collection only if the state confirms no statewide export exists.",
     "The request matrix at data/in-2024-source-request-matrix.tsv now records artifact-specific asks for official precinct rows, 2012 baseline, geometry, turnout denominators, VSTOP audit rows, CVR availability, and Recount Commission records.",
     "Official 2012, 2016, and 2020 county presidential historical baseline rows are now normalized from Indiana Election Division sources.",
-    "Official VSTOP audit and Recount Commission source paths are documented for Indiana, but no normalized audit/recount/CVR/incident/correction rows are loaded."
+    "Official VSTOP 2024 General Election audit summary rows are loaded for seven audited counties as context only; detailed audit-unit workpapers, recount/CVR/incident/correction rows remain unnormalized."
   ]
 }

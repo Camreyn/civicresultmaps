@@ -9,21 +9,34 @@ class ColoradoCoverageInventoryTests(unittest.TestCase):
     def load_json(self, path):
         return json.loads(Path(path).read_text(encoding="utf-8-sig"))
 
-    def test_colorado_config_remains_turnout_only_with_inventory_provenance(self):
+    def test_colorado_config_loads_clarity_county_results_with_eac_turnout(self):
         config = load_config("etl/state-configs/co.json")
         report = validate_config(config)
         artifact = build_staging_artifact(config, report)
+        native = artifact["native"]
 
         self.assertTrue(report.passed)
         self.assertEqual(config.expected.sources, len(config.sources))
-        self.assertEqual(config.expected.result_rows, 0)
-        self.assertEqual(config.expected.review_rows, 0)
-        self.assertEqual(artifact["native"]["parser"], "nativeEacTurnoutCsv")
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 64)
-        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 3240754)
-        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 4583280)
+        self.assertEqual(config.expected.result_rows, 64)
+        self.assertEqual(config.expected.review_rows, 64)
+        self.assertEqual(native["parser"], "nativeColoradoClarityDetailXml")
+        self.assertEqual(native["metrics"]["nativeResultTotalVotes"], 3190873)
+        self.assertEqual(native["metrics"]["nativeHarrisVotes"], 1728159)
+        self.assertEqual(native["metrics"]["nativeTrumpVotes"], 1377441)
+        self.assertEqual(native["metrics"]["nativeOtherVotes"], 85273)
+        self.assertEqual(native["metrics"]["nativeColoradoCertifiedVoteGap"], 1872)
+        self.assertEqual(native["metrics"]["nativeComparisonRows"], 64)
+        self.assertEqual(native["metrics"]["nativeComparisonContest"], "Regent of the University of Colorado - At Large")
+        self.assertEqual(native["metrics"]["nativeTurnoutRows"], 64)
+        self.assertEqual(native["metrics"]["nativeBallotsCast"], 3240754)
+        self.assertEqual(native["metrics"]["nativeRegisteredVoters"], 4583280)
+        self.assertEqual(native["metrics"]["nativeColoradoClarityTurnoutRows"], 64)
+        self.assertEqual(native["metrics"]["nativeColoradoClarityBallotsCastLead"], 3241120)
+        self.assertEqual(native["metrics"]["nativeColoradoClarityTotalVotersLead"], 4058938)
+        self.assertTrue(any(row["coverageMode"] == "presidentVsRegent" for row in native["reviewRows"]))
 
         sources = {source["id"]: source for source in artifact["sources"]}
+        self.assertEqual(sources["co-2024-clarity-detailxml"]["status"], "loaded")
         inventory_source = sources["co-2024-data-coverage-inventory"]
         self.assertEqual(inventory_source["status"], "candidate")
         self.assertTrue(all(item["exists"] for item in inventory_source["metadata"]["artifacts"]))
@@ -33,23 +46,24 @@ class ColoradoCoverageInventoryTests(unittest.TestCase):
         confirmed = {artifact["id"]: artifact for artifact in inventory["confirmedArtifacts"]}
         findings = {finding["topic"]: finding for finding in inventory["sourceFindings"]}
 
-        self.assertEqual(inventory["status"], "official_clarity_endpoint_confirmed_inventory_only")
-        self.assertEqual(confirmed["co-2024-clarity-detailxml-endpoint"]["expectedRowsOrTotals"]["presidentialTotalVotes"], 3192745)
+        self.assertEqual(inventory["status"], "official_clarity_county_native_loaded")
+        self.assertEqual(confirmed["co-2024-clarity-detailxml-endpoint"]["expectedRowsOrTotals"]["presidentialLoadedCountyVotes"], 3190873)
+        self.assertEqual(confirmed["co-2024-clarity-detailxml-endpoint"]["expectedRowsOrTotals"]["knownWriteInOrAbstractGap"], 1872)
         self.assertEqual(confirmed["co-2024-regent-at-large-comparison-lead"]["expectedRowsOrTotals"]["contestTotalVotes"], 2930776)
-        self.assertEqual(findings["sameGrainComparisonContest"]["status"], "official_county_same_grain_lead_confirmed_not_loaded")
+        self.assertEqual(findings["sameGrainComparisonContest"]["status"], "official_county_same_grain_loaded")
         self.assertEqual(findings["stateNativeTurnout"]["status"], "official_turnout_lead_confirmed_not_replacing_eac")
 
         tiers = self.load_json("data/source-acquisition-tiers.json")
         co_tier = next(row for row in tiers["states"] if row["state"] == "CO" and row["scope"] == "statewide")
         self.assertEqual(co_tier["tier"], "tier_2_official_dashboard_endpoint")
         self.assertIn("official Clarity detail XML ZIP endpoint", co_tier["exportFormats"])
-        self.assertIn("same-grain county CU Regent at-large comparison lead from the same endpoint", co_tier["availableFields"])
+        self.assertIn("loaded county CU Regent at-large comparison rows from the same endpoint", co_tier["availableFields"])
 
         native_packages = self.load_json("data/native-import-source-packages.json")
-        self.assertNotIn("CO", native_packages["completedNativeStates"])
-        co_queue = next(row for row in native_packages["sourceDiscoveryQueue"] if row["state"] == "CO")
-        self.assertEqual(co_queue["requestMatrixArtifact"], "data/co-2024-source-request-matrix.tsv")
-        self.assertIn("Regent", co_queue["preferredComparisonContest"])
+        self.assertIn("CO", native_packages["completedNativeStates"])
+        co_package = next(row for row in native_packages["states"] if row["state"] == "CO")
+        self.assertEqual(co_package["expected"]["localReviewRows"], 64)
+        self.assertIn("Regent", co_package["artifacts"]["localReviewRows"]["comparisonContest"])
 
 
 if __name__ == "__main__":

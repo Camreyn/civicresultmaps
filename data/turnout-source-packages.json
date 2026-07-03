@@ -406,8 +406,8 @@
       "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 64,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active CO ETL package. Wave 14 confirmed an official Colorado Clarity county turnout lead, but it is not a replacement until totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
-      "nextAction": "Review the official Colorado Clarity detail XML turnout rows and totalVoters denominator timing, reconcile against EAC fallback counts, and only then decide whether to normalize a state-native county turnout replacement.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active CO ETL package. Wave 18 committed the official Colorado Clarity detail XML ZIP for county result/review rows and retained its county turnout rows as a replacement lead only, pending totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference review.",
+      "nextAction": "Review the committed Colorado Clarity detail XML turnout rows and totalVoters denominator timing, reconcile against EAC fallback counts, and only then decide whether to normalize a state-native county turnout replacement.",
       "coverage": {
         "jurisdictionRows": 64,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/co-2024-eac-registered-voter-denominator.json",
@@ -420,8 +420,9 @@
           "reportingLevel": "county",
           "ballotsCast": 3241120,
           "totalVoters": 4058938,
-          "status": "confirmed_not_loaded",
-          "caveat": "totalVoters denominator semantics and 366-ballot difference versus EAC fallback ballotsCast require review before replacement."
+          "status": "committed_lead_not_active_turnout",
+          "caveat": "totalVoters denominator semantics and 366-ballot difference versus EAC fallback ballotsCast require review before replacement.",
+          "localFile": "data/co-2024-clarity-detailxml.zip"
         }
       }
     },
@@ -919,8 +920,8 @@
       "localFile": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 53,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL, but North Dakota does not require voter registration and EAC registered voters are zero. The official SOS dashboard reports eligible voters as the relevant state-native denominator lead.",
-      "nextAction": "Collect and normalize North Dakota SOS eligible-voter turnout rows from the official results/turnout dashboard or export, then reconcile 371,975 SOS voter turnout and 594,140 eligible voters against active EAC fallback 371,974 ballots cast and 0 registered voters before replacing or relabeling the active turnout package.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and remain active. North Dakota now has native SOS President and same-grain U.S. Senate review rows loaded, but turnout still uses EAC fallback because North Dakota does not require voter registration and the SOS eligible-voter denominator lead needs reconciliation.",
+      "nextAction": "Normalize North Dakota SOS eligible-voter turnout rows from the official results/turnout dashboard or export, then reconcile 371,975 SOS voter turnout and 594,140 eligible voters against active EAC fallback 371,974 ballots cast and 0 registered voters before replacing or relabeling the active turnout package.",
       "coverage": {
         "jurisdictionRows": 53,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nd-2024-eac-registered-voter-denominator.json",
@@ -997,22 +998,26 @@
       "year": 2024,
       "priority": 35,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "county",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/nj-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "denominatorTiming": "doeOfficialGeneralTurnout",
+      "sourceTitle": "New Jersey DOE 2024 General Election voter turnout",
+      "sourceUrl": "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
+      "localFile": "data/nj-2024-official-turnout-county.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 21,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. Wave 15 identified official New Jersey DOE statewide and county municipal turnout PDFs, but active rows remain EAC fallback until denominator timing and PDF parser reconciliation are reviewed.",
-      "nextAction": "Use data/nj-2024-data-coverage-inventory.json and data/nj-2024-source-request-matrix.tsv to collect and normalize the NJ DOE turnout PDFs; keep EAC fallback visible until the 52,335 registered-voter difference versus the DOE statewide PDF is resolved.",
+      "statusNote": "Wave 18 normalized official New Jersey DOE county turnout rows from the statewide 2024 General Election voter-turnout PDF. EAC fallback remains retained as a benchmark source only.",
+      "nextAction": "Use data/nj-2024-turnout-reconciliation-summary.json for DOE-versus-EAC review, then collect and normalize the 21 county municipal registered-voters/ballots-cast PDFs if municipal turnout joins are needed.",
       "coverage": {
         "jurisdictionRows": 21,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nj-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 6630364,
+        "registeredVoterDenominatorFile": "data/nj-2024-turnout-reconciliation-summary.json",
+        "registeredVoters": 6682699,
         "ballotsCast": 4321921,
-        "warningRows": 0
+        "warningRows": 0,
+        "eacBenchmarkRegisteredVoters": 6630364,
+        "eacBenchmarkBallotsCast": 4321921,
+        "registeredVoterDeltaDoeMinusEac": 52335,
+        "ballotsCastDeltaDoeMinusEac": 0
       }
     },
     {

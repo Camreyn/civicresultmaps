@@ -4,7 +4,7 @@
   "authority": "U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
+  "turnoutOnly": false,
   "sources": [
     {
       "id": "co-2024-eac-turnout",
@@ -18,6 +18,39 @@
       "status": "loaded"
     },
     {
+      "id": "co-2024-clarity-detailxml",
+      "category": "Official 2024 General Election Clarity detail XML ZIP",
+      "url": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+      "localFile": "data/co-2024-clarity-detailxml.zip",
+      "parser": "coloradoClarityDetailXml",
+      "authority": "Colorado Secretary of State",
+      "timestampBasis": "Official Clarity detail.xml timestamp 11/25/2025 1:45:46 PM MST for the 2024 General Election.",
+      "confidence": "Official machine-readable Clarity ZIP loaded for county Presidential Electors result rows and county CU Regent at-large comparison rows. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. ElectionVoterTurnout rows remain a turnout replacement lead only until totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
+      "status": "loaded"
+    },
+    {
+      "id": "co-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/co-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for Colorado county map joins; precinct boundary geometry is not included in this package.",
+      "status": "loaded"
+    },
+    {
+      "id": "co-2024-equipment-context",
+      "category": "Colorado 2024 county equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
+      "localFile": "data/co-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContext",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verified Voting Verifier 2024 county equipment context collected before Wave 18.",
+      "confidence": "Supplemental administration context only. Do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment.",
+      "status": "loaded"
+    },
+    {
       "id": "co-2024-data-coverage-inventory",
       "category": "Colorado 2024 official source coverage inventory and request matrix",
       "url": "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
@@ -25,7 +58,7 @@
       "parser": "sourceCoverageInventoryJson",
       "authority": "Colorado Secretary of State; Colorado county election offices; U.S. Census Bureau; Verified Voting",
       "timestampBasis": "Wave 14 source coverage inventory checked July 2, 2026; official Clarity detail.xml timestamp 11/25/2025 1:45:46 PM MST.",
-      "confidence": "Inventory only. Official Colorado Clarity detailxml.zip endpoint is confirmed for county President, county CU Regent at-large comparison, and county turnout leads, but active CO ETL remains EAC turnout-only until a parser and denominator review are added.",
+      "confidence": "Inventory documents the official Colorado Clarity ZIP now loaded for county result/review rows, EAC fallback turnout, county geometry/equipment context, and remaining historical, precinct, audit, CVR, recount, incident, correction, and litigation gaps.",
       "status": "candidate"
     }
   ],
@@ -45,21 +78,38 @@
   },
   "expected": {
     "jurisdictions": 64,
-    "resultRows": 0,
-    "sources": 2,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 64,
+    "sources": 5,
+    "geometryFeatures": 64,
+    "stateTotal": 3190873,
+    "trump": 1377441,
+    "harris": 1728159,
+    "other": 85273,
+    "reviewRows": 64,
     "turnoutRows": 64
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "coloradoClarityDetailXml",
+    "sourceId": "co-2024-clarity-detailxml",
+    "presidentContestRegex": "^Presidential Electors$",
+    "comparisonContestRegex": "^Regent of the University of Colorado - At Large$",
+    "comparisonContestLabel": "Regent of the University of Colorado - At Large",
+    "comparisonCoverageMode": "presidentVsRegent",
+    "certifiedTotalVotes": 3192745
+  },
+  "reviewCharts": {
+    "format": "coloradoClarityDetailXml",
+    "sourceId": "co-2024-clarity-detailxml",
+    "comparisonContest": "Regent of the University of Colorado - At Large",
+    "coverageMode": "presidentVsRegent",
+    "warning": "Colorado review rows are county-level President-versus-CU-Regent-at-large comparisons from the official Secretary of State Clarity detail XML ZIP. The loaded presidential candidate rows are 1,872 votes below the prior Abstract/certified-total lead, so use these as official county source-review inputs rather than a write-in-inclusive certified total. They are not precinct scatter-plot coverage and not confirmed findings."
   }
 }

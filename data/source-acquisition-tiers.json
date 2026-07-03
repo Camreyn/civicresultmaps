@@ -301,26 +301,26 @@
         "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip"
       ],
       "availableFields": [
-        "official county presidential totals from Clarity detail XML endpoint",
-        "same-grain county CU Regent at-large comparison lead from the same endpoint",
-        "official county turnout lead from Clarity ElectionVoterTurnout rows",
-        "EAC fallback turnout rows currently loaded in active ETL",
+        "official county presidential candidate rows from the committed Clarity detail XML endpoint",
+        "loaded county CU Regent at-large comparison rows from the same endpoint",
+        "official county turnout lead from Clarity ElectionVoterTurnout rows retained for denominator review",
+        "EAC fallback turnout rows currently loaded in active turnout ETL",
         "county geometry",
         "county equipment context"
       ],
       "missingFields": [
-        "parser-backed native CO result/review/turnout package",
+        "write-in-inclusive county allocation for the 1,872-vote Clarity-versus-Abstract presidential gap",
         "precinct or local reporting-unit President rows",
         "same-grain precinct or local comparison contest rows",
         "precinct boundary geometry or reporting-unit crosswalk",
         "official 2012/2016/2020 historical baselines normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, litigation, custody, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "data/co-2024-data-coverage-inventory.json documents the official Colorado Clarity detailxml.zip endpoint and request matrix; active etl/state-configs/co.json remains EAC turnout-only with no result or review parser loaded",
+      "parserStatus": "coloradoClarityDetailXml loaded for 64 county President rows and 64 county President-versus-CU-Regent review rows; active turnout remains EAC fallback while Clarity totalVoters denominator semantics and the 366-ballot ballots-cast difference are reviewed",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_confirmed_endpoint",
-      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Colorado had no 2024 U.S. Senate race; the preferred same-grain comparison lead is county-level CU Regent at-large. Do not replace EAC fallback turnout until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
-      "nextAction": "Use data/co-2024-data-coverage-inventory.json and data/co-2024-source-request-matrix.tsv to collect/parser-load official county President, county Regent at-large comparison, reviewed state-native turnout, official historical baselines, precinct/local rows or CVR aggregates, precinct geometry/crosswalks, and audit/CVR/recount/incident/correction/litigation artifacts."
+      "confidence": "loaded_with_caveat",
+      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. Colorado had no 2024 U.S. Senate race; the same-grain comparison is county-level CU Regent at-large. Do not replace EAC fallback turnout until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
+      "nextAction": "Collect an official write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, then pursue precinct/local result rows, precinct geometry/crosswalks, state-native turnout semantics, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "CT",
@@ -706,23 +706,24 @@
         "official 2012, 2016, and 2020 county historical presidential baselines",
         "official VSTOP post-election risk-limiting audit source path documented",
         "official Recount Commission petition/order/minute source path documented",
-        "Indiana official-source request matrix maintained at data/in-2024-source-request-matrix.tsv"
+        "Indiana official-source request matrix maintained at data/in-2024-source-request-matrix.tsv",
+        "official VSTOP 2024 General Election audit summary rows for seven counties"
       ],
       "missingFields": [
         "official precinct/subcounty President rows",
         "official same-grain precinct/subcounty U.S. Senate comparison rows",
         "precinct turnout and registered-voter denominator rows",
         "precinct boundary geometry",
-        "normalized official VSTOP audit selection/outcome rows",
+        "detailed official VSTOP audit-unit selection/workpaper rows beyond the summary report",
         "normalized official recount/contest/correction records",
         "official CVR availability or request-produced CVR records",
         "official incident and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson package loaded; official 2012/2016/2020 historicalPresidentialCsv loaded from ENRHistorical/AJAX and ENR archive sources; supplemental MIT/OpenElections precinct review rows loaded; official VSTOP audit and Recount Commission source paths are documented but not normalized; data/in-2024-source-request-matrix.tsv records official precinct/subcounty, geometry, turnout, audit, CVR, and incident follow-up asks; official precinct/subcounty rows remain blocked.",
+      "parserStatus": "indianaEnrCountyJson package loaded; official 2012/2016/2020 historicalPresidentialCsv loaded from ENRHistorical/AJAX and ENR archive sources; supplemental MIT/OpenElections precinct review rows loaded; scripts/normalize-in-audit-summary.mjs loads official VSTOP 2024 county audit-summary context rows; data/in-2024-source-request-matrix.tsv records official precinct/subcounty, geometry, turnout, audit-detail, CVR, and incident follow-up asks; official precinct/subcounty rows remain blocked.",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
       "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2012, 2016, and 2020; 2012 is collected from the current Indiana Voters ENRHistorical table endpoint, while 2016 and 2020 use ENR archive JSON.",
-      "nextAction": "Use data/in-2024-source-request-matrix.tsv to request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, precinct geometry/turnout if needed, and VSTOP/Recount Commission/CVR/incident records suitable for normalization."
+      "nextAction": "Use data/in-2024-source-request-matrix.tsv to request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, precinct geometry/turnout if needed, detailed VSTOP audit workpapers, Recount Commission/CVR/incident records suitable for normalization."
     },
     {
       "state": "KS",
@@ -1284,8 +1285,9 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_geometry_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
-      "reportingGrain": "county_or_precinct_export_pending",
+      "reportingGrain": "county_results_precinct_review",
       "exportFormats": [
+        "official ResultsAjax JSON endpoint",
         "official ASP.NET results dashboard",
         "CSV/Excel/XML export form",
         "HTML precinct turnout table",
@@ -1293,40 +1295,37 @@
       ],
       "sourceUrls": [
         "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-        "https://results.sos.nd.gov/ResultsExport.aspx",
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19893&osn=100&county=0&party=0",
         "https://results.sos.nd.gov/VoterTurnoutDetails.aspx",
         "https://www.sos.nd.gov/elections/voter/voting-north-dakota",
         "https://www.sos.nd.gov/elections/election-security/post-election-audits"
       ],
       "exampleUrls": [
-        "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-        "https://results.sos.nd.gov/ResultsSW.aspx?type=RECOUNT"
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19893&osn=100&county=0&party=0",
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=01&party=0"
       ],
       "availableFields": [
-        "official statewide President totals",
-        "official statewide U.S. Senate, U.S. House, and Governor comparison leads",
-        "official CSV/Excel/XML export form for result collection",
-        "official precinct ballots-cast turnout table",
-        "official eligible-voter turnout denominator summary",
+        "official county President totals from SOS ResultsAjax JSON",
+        "official same-key precinct President rows from SOS ResultsAjax JSON",
+        "official same-key precinct U.S. Senate comparison rows from SOS ResultsAjax JSON",
+        "official precinct ballots-cast turnout table lead",
+        "official eligible-voter turnout denominator summary lead",
+        "county geometry",
         "official 2020, 2016, and 2012 historical archive leads",
         "county equipment context from Verified Voting and official SOS equipment description",
         "official post-election audit policy and recount page source paths"
       ],
       "missingFields": [
-        "committed official result export artifact",
-        "loaded certified President result rows",
-        "loaded same-grain President-versus-U.S.-Senate review rows",
         "state-native eligible-voter denominator parser and reconciliation to EAC fallback",
-        "county geometry artifact for ND map joins",
         "precinct boundary geometry or result-to-precinct crosswalk",
         "normalized historical baseline rows",
         "normalized audit, CVR availability, incident, correction, recount, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config remains active; data/nd-2024-data-coverage-inventory.json and data/nd-2024-source-request-matrix.tsv document the official SOS dashboard/export, eligible-voter turnout caveat, historical archive, geometry, equipment, audit, recount, and records-request paths without loading result or review rows",
+      "parserStatus": "scripts/collect-nd-sos-results.mjs collects official SOS ResultsAjax JSON rows and writes countyPresidentCsv plus localComparisonCsv artifacts; active ND ETL now loads 53 county result rows, 383 same-key precinct President-versus-U.S.-Senate review rows, EAC fallback turnout, and county geometry",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_parser_ready",
-      "caveats": "North Dakota does not require voter registration, so registered-voter denominator fields are not native turnout denominators. The official dashboard reports 371,975 voter turnout and 594,140 eligible voters, while active EAC fallback has 371,974 ballots cast and 0 registered voters; review source semantics before replacing turnout. The official export form is ASP.NET/viewstate based and needs a collector before rows are loaded.",
-      "nextAction": "Use data/nd-2024-source-request-matrix.tsv to collect official President and U.S. Senate export rows, reconcile eligible-voter turnout against EAC fallback, add county/precinct geometry or crosswalks, and collect audit/CVR/recount/incident/correction/litigation artifacts before adding ND to completed native states."
+      "confidence": "loaded_with_caveat",
+      "caveats": "North Dakota does not require voter registration, so registered-voter denominator fields are not native turnout denominators. Active turnout remains EAC fallback with 371,974 ballots cast and 0 registered voters until the official SOS eligible-voter turnout lead of 371,975 voter turnout and 594,140 eligible voters is normalized and reconciled. Review rows are advisory source-review context only; precinct geometry/crosswalks, historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain missing.",
+      "nextAction": "Reconcile and normalize SOS eligible-voter turnout, collect precinct geometry/crosswalks and official 2012/2016/2020 historical baselines, then collect audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "NE",
@@ -1445,17 +1444,18 @@
       "stateName": "New Jersey",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_geometry_admin_context",
+      "dataFamily": "results_review_turnout_geometry_equipment_admin_context",
       "tier": "tier_6_official_pdf_hostile",
-      "reportingGrain": "municipality_with_county_certified_crosscheck",
+      "reportingGrain": "county_loaded_municipal_followup",
       "exportFormats": [
         "official statewide certified PDF",
+        "normalized official county CSVs",
         "official county municipal result PDFs",
         "official turnout PDFs",
         "official county audit PDFs",
-        "EAC fallback turnout CSV",
         "county GeoJSON",
-        "municipal GIS source lead"
+        "municipal GIS source lead",
+        "EAC fallback benchmark CSV"
       ],
       "sourceUrls": [
         "https://www.nj.gov/state/elections/election-information-2024.shtml",
@@ -1470,32 +1470,29 @@
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-result-ballotscast-atlantic.pdf"
       ],
       "availableFields": [
-        "official certified county presidential totals",
-        "official county-by-county municipal President rows",
-        "official certified county U.S. Senate comparison totals",
-        "official county-by-county municipal U.S. Senate comparison rows",
-        "official statewide county turnout and registered-voter denominator PDF",
-        "official county municipal registered-voters and ballots-cast PDFs",
+        "official certified county presidential totals from the DOE statewide PDF",
+        "official certified county U.S. Senate comparison totals from the DOE statewide PDF",
+        "official county turnout and registered-voter denominator rows from the DOE statewide turnout PDF",
+        "EAC fallback turnout retained as a benchmark reconciliation source",
         "county geometry",
         "county equipment context from Verified Voting and NJ DOE equipment inventory source lead",
+        "official county-by-county municipal President rows identified as follow-up source leads",
+        "official county-by-county municipal U.S. Senate comparison rows identified as follow-up source leads",
         "official 2012/2016/2020 historical archive source leads",
         "official 2024 county post-election audit PDF links and county-official request paths"
       ],
       "missingFields": [
-        "committed official NJ result, comparison, turnout, and audit PDF artifacts",
-        "New Jersey DOE text-PDF parser and reconciliation report",
-        "loaded native certified result rows",
         "loaded municipal President-versus-U.S.-Senate review rows",
-        "state-native turnout rows replacing EAC fallback after denominator review",
         "municipal boundary geometry and DOE-label crosswalk",
         "normalized official historical baseline rows",
+        "normalized county post-election audit outcome rows",
         "normalized CVR availability, incident, correction, recount, litigation, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "EAC turnout config remains active; data/nj-2024-data-coverage-inventory.json and data/nj-2024-source-request-matrix.tsv document the official New Jersey DOE statewide/county PDF package, municipal President and U.S. Senate source leads, state-native turnout PDFs, historical/archive leads, audit PDFs, equipment context, and request paths without loading result or review rows",
+      "parserStatus": "scripts/normalize-nj-doe-pdfs.mjs loads official DOE statewide text-layer PDFs into 21 county President rows, 21 county U.S. Senate comparison rows, and 21 county turnout rows; municipal PDFs, historical baselines, audit PDFs, and administration records remain source/request follow-up items",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_parser_ready",
-      "caveats": "New Jersey official sources are authoritative and text-layer, but they are spread across many PDFs. A parser must collect the 21 county President PDFs, 21 county U.S. Senate PDFs, turnout PDFs, and audit PDFs; reconcile statewide certified totals; normalize municipality names; and decide how to handle Federal Overseas and Hand Counts rows before advisory review rows are loaded. Active turnout remains EAC fallback until the 52,335 registered-voter difference versus the NJ DOE statewide turnout PDF is reviewed.",
-      "nextAction": "Collect the official New Jersey DOE PDF package listed in data/nj-2024-source-request-matrix.tsv, implement a text-PDF parser and municipal crosswalk, reconcile President/Senate/turnout totals, and keep NJ out of completed native states until result/review rows are loaded."
+      "confidence": "loaded_county_with_municipal_followup",
+      "caveats": "Current NJ review rows are county-level President-versus-U.S.-Senate comparisons from official statewide DOE PDFs, not municipal or precinct scatter plots. DOE county turnout replaces the EAC fallback in staging, while data/nj-2024-turnout-reconciliation-summary.json records the 52,335 DOE-minus-EAC registered-voter denominator difference and zero ballots-cast difference. Municipal PDFs, municipal geometry/crosswalks, historical baselines, and normalized audit/CVR/incident/correction/recount/litigation rows remain unnormalized.",
+      "nextAction": "Collect and parse the 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, municipal registered-voters/ballots-cast PDFs, municipal geometry/crosswalks, official 2012/2016/2020 historical baselines, and county audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "NM",

@@ -9,95 +9,67 @@ from civic_etl.pipeline import build_staging_artifact, load_config, validate_con
 class NorthDakotaCoverageInventoryTests(unittest.TestCase):
     def setUp(self):
         self.inventory = json.loads(Path("data/nd-2024-data-coverage-inventory.json").read_text(encoding="utf-8-sig"))
-        with Path("data/nd-2024-source-request-matrix.tsv").open(encoding="utf-8-sig", newline="") as handle:
-            self.request_rows = list(csv.DictReader(handle, delimiter="\t"))
-        self.requests = {row["request_id"]: row for row in self.request_rows}
+        with Path("data/nd-2024-source-request-matrix.tsv").open("r", encoding="utf-8-sig", newline="") as handle:
+            self.request_rows = {row["request_id"]: row for row in csv.DictReader(handle, delimiter="\t")}
 
-    def load_json(self, path):
-        return json.loads(Path(path).read_text(encoding="utf-8-sig"))
-
-    def test_nd_config_remains_turnout_only_with_inventory_provenance(self):
+    def test_active_north_dakota_config_loads_sos_results_review_and_eac_turnout(self):
         config = load_config("etl/state-configs/nd.json")
         report = validate_config(config)
         artifact = build_staging_artifact(config, report)
+        metrics = artifact["native"]["metrics"]
 
         self.assertTrue(report.passed)
-        self.assertEqual(config.expected.sources, len(config.sources))
-        self.assertEqual(config.expected.result_rows, 0)
-        self.assertEqual(config.expected.review_rows, 0)
-        self.assertEqual(artifact["native"]["parser"], "nativeEacTurnoutCsv")
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 53)
-        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 371974)
-        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 0)
+        self.assertFalse(config.raw.get("turnoutOnly", False))
+        self.assertEqual(artifact["native"]["parser"], "nativeCountyPresidentCsv")
+        self.assertEqual(len(artifact["native"]["resultRows"]), 53)
+        self.assertEqual(len(artifact["native"]["reviewRows"]), 383)
+        self.assertEqual(len(artifact["native"]["turnoutRows"]), 53)
+        self.assertEqual(metrics["nativeResultTotalVotes"], 368155)
+        self.assertEqual(metrics["nativeTrumpVotes"], 246505)
+        self.assertEqual(metrics["nativeHarrisVotes"], 112327)
+        self.assertEqual(metrics["nativeOtherVotes"], 9323)
+        self.assertEqual(metrics["nativeComparisonRows"], 383)
+        self.assertEqual(metrics["nativeComparisonContest"], "U.S. Senate")
+        self.assertEqual(metrics["nativeBallotsCast"], 371974)
+        self.assertEqual(metrics["nativeRegisteredVoters"], 0)
+        self.assertEqual(metrics["nativeTurnoutWarningRows"], 53)
 
-        sources = {source["id"]: source for source in artifact["sources"]}
-        inventory_source = sources["nd-2024-data-coverage-inventory"]
-        self.assertEqual(inventory_source["status"], "candidate")
-        self.assertTrue(all(item["exists"] for item in inventory_source["metadata"]["artifacts"]))
+    def test_inventory_records_loaded_results_and_remaining_turnout_caveat(self):
+        self.assertEqual(self.inventory["state"], "ND")
+        self.assertEqual(self.inventory["checkedAt"], "2026-07-03")
+        self.assertFalse(self.inventory["productionChecked"])
 
-    def test_inventory_records_official_results_and_denominator_caveat(self):
         findings = self.inventory["officialSourceFindings"]
-
-        self.assertEqual(self.inventory["status"], "official_results_dashboard_and_exports_identified_inventory_only")
-        self.assertEqual(
-            findings["certifiedResults"]["status"],
-            "official_dashboard_export_identified_parser_needed",
-        )
+        self.assertEqual(findings["certifiedResults"]["status"], "official_resultsajax_endpoint_loaded")
         self.assertEqual(findings["certifiedResults"]["observedOfficialTotals"]["presidentialTotalVotes"], 368155)
-        self.assertEqual(findings["certifiedResults"]["observedOfficialTotals"]["trumpVotes"], 246505)
-        self.assertEqual(findings["certifiedResults"]["observedOfficialTotals"]["harrisVotes"], 112327)
-        self.assertEqual(findings["certifiedResults"]["observedOfficialTotals"]["otherVotes"], 9323)
-        self.assertEqual(findings["sameGrainComparisonContest"]["observedOfficialTotals"]["usSenateTotalVotes"], 364327)
-        self.assertEqual(findings["stateNativeTurnoutAndDenominator"]["observedOfficialTotals"]["officialDashboardEligibleVoters"], 594140)
-        self.assertIn("does not require voter registration", findings["stateNativeTurnoutAndDenominator"]["caveat"])
-        self.assertIn("not evidence of fraud or misconduct", " ".join(self.inventory["remainingRisks"]))
+        self.assertEqual(findings["sameGrainComparisonContest"]["status"], "official_resultsajax_us_senate_precinct_review_loaded")
+        self.assertEqual(findings["sameGrainComparisonContest"]["observedOfficialTotals"]["loadedReviewRows"], 383)
+        self.assertEqual(findings["sameGrainComparisonContest"]["observedOfficialTotals"]["zeroVotePrecinctKeysExcluded"], 2)
+        self.assertEqual(findings["stateNativeTurnoutAndDenominator"]["observedOfficialTotals"]["officialMinusEacBallotsCast"], 1)
+        self.assertEqual(findings["geometryAndCrosswalk"]["status"], "county_geometry_loaded_precinct_crosswalk_needed")
+        self.assertIn("not evidence of fraud or misconduct", self.inventory["remainingRisks"][-1])
 
-    def test_request_matrix_tracks_follow_up_artifacts(self):
-        self.assertEqual(self.inventory["requestMatrixArtifact"], "data/nd-2024-source-request-matrix.tsv")
-        self.assertEqual(len(self.request_rows), 8)
-        self.assertEqual(
-            self.requests["nd-2024-certified-results-export"]["status"],
-            "official_export_form_identified_parser_needed",
-        )
-        self.assertIn("same exported grain", self.requests["nd-2024-comparison-results-export"]["needed_artifact"])
-        self.assertEqual(
-            self.requests["nd-2024-eligible-voter-turnout"]["status"],
-            "state_native_eligible_voter_lead_not_loaded",
-        )
-        self.assertIn("does not require voter registration", self.requests["nd-2024-eligible-voter-turnout"]["caveats"])
-        self.assertEqual(
-            self.requests["nd-2024-recount-cvr-incident-records"]["status"],
-            "needs_records_request_and_scope_review",
-        )
-
-    def test_nd_registries_are_source_discovery_not_complete_native(self):
-        tiers = self.load_json("data/source-acquisition-tiers.json")
-        native_packages = self.load_json("data/native-import-source-packages.json")
-        turnout_packages = self.load_json("data/turnout-source-packages.json")
-        admin_packages = self.load_json("data/admin-source-packages.json")
+    def test_registries_and_request_matrix_mark_nd_loaded_with_turnout_followup(self):
+        tiers = json.loads(Path("data/source-acquisition-tiers.json").read_text(encoding="utf-8-sig"))
+        native = json.loads(Path("data/native-import-source-packages.json").read_text(encoding="utf-8-sig"))
+        turnout = json.loads(Path("data/turnout-source-packages.json").read_text(encoding="utf-8-sig"))
 
         tier = next(row for row in tiers["states"] if row["state"] == "ND" and row["scope"] == "statewide")
-        self.assertEqual(tier["tier"], "tier_2_official_dashboard_endpoint")
-        self.assertEqual(tier["confidence"], "candidate_parser_ready")
-        self.assertIn("CSV/Excel/XML export form", tier["exportFormats"])
-        self.assertIn("data/nd-2024-data-coverage-inventory.json", tier["parserStatus"])
+        native_package = next(row for row in native["states"] if row["state"] == "ND")
+        turnout_status = next(row for row in turnout["stateYearStatuses"] if row["state"] == "ND" and row["year"] == 2024)
 
-        self.assertNotIn("ND", native_packages["completedNativeStates"])
-        native_nd = next(row for row in native_packages["sourceDiscoveryQueue"] if row["state"] == "ND")
-        self.assertEqual(native_nd["requestMatrixArtifact"], "data/nd-2024-source-request-matrix.tsv")
-        self.assertIn("does not require voter registration", native_nd["parserNeeded"])
+        self.assertEqual(tier["confidence"], "loaded_with_caveat")
+        self.assertIn("official ResultsAjax JSON endpoint", tier["exportFormats"])
+        self.assertIn("ND", native["completedNativeStates"])
+        self.assertFalse(any(row["state"] == "ND" for row in native["sourceDiscoveryQueue"]))
+        self.assertEqual(native_package["expected"]["localReviewRows"], 383)
+        self.assertEqual(native_package["artifacts"]["localReviewRows"]["comparisonContest"], "U.S. Senate")
+        self.assertIn("eligible-voter denominator lead needs reconciliation", turnout_status["statusNote"])
 
-        turnout_nd = next(row for row in turnout_packages["stateYearStatuses"] if row["state"] == "ND" and row["year"] == 2024)
-        self.assertEqual(turnout_nd["coverage"]["jurisdictionRows"], 53)
-        self.assertEqual(turnout_nd["coverage"]["registeredVoters"], 0)
-        self.assertEqual(turnout_nd["coverage"]["stateNativeEligibleVotersLead"], 594140)
-        self.assertIn("data/nd-2024-data-coverage-inventory.json", turnout_nd["coverage"]["coverageInventory"])
-
-        admin_nd = next(row for row in admin_packages["stateYearStatuses"] if row["state"] == "ND" and row["electionYear"] == 2024)
-        self.assertEqual(admin_nd["equipment"]["expectedJurisdictions"], 53)
-        self.assertEqual(admin_nd["audit"]["status"], "candidate")
-        self.assertIn("post-election audits in all 53 counties", admin_nd["audit"]["why"])
-        self.assertEqual(admin_nd["cvr"]["status"], "candidate")
+        self.assertEqual(self.request_rows["nd-2024-certified-results-export"]["status"], "loaded_official_resultsajax_endpoint")
+        self.assertEqual(self.request_rows["nd-2024-comparison-results-export"]["status"], "loaded_official_resultsajax_endpoint")
+        self.assertEqual(self.request_rows["nd-2024-county-geometry"]["status"], "loaded")
+        self.assertEqual(self.request_rows["nd-2024-eligible-voter-turnout"]["status"], "state_native_eligible_voter_lead_not_loaded")
 
 
 if __name__ == "__main__":

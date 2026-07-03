@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import csv
 import xml.etree.ElementTree as ET
@@ -2894,6 +2894,118 @@ def _wv_clarity_county_detailxml_rows(config: EtlConfig, sources: dict[str, Sour
         "nativeMissingComparisonCounties": missing_comparison_counties,
     }
     return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])), sorted(turnout_rows, key=lambda item: (item["county"], item["localUnit"])), metrics
+
+def _colorado_clarity_detailxml_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    source_path = _artifact_path(source)
+    if not source_path.is_file():
+        raise ValueError(f"Colorado Clarity detail XML source must be a ZIP file: {source_path}")
+
+    with zipfile.ZipFile(source_path) as archive:
+        with archive.open(section.get("detailXmlMember", "detail.xml")) as detail_file:
+            root = ET.parse(detail_file).getroot()
+
+    president_pattern = re.compile(section.get("presidentContestRegex", r"^Presidential Electors$"), re.IGNORECASE)
+    comparison_pattern = re.compile(section.get("comparisonContestRegex", r"^Regent of the University of Colorado - At Large$"), re.IGNORECASE)
+    contests = root.findall("Contest")
+    president = next((contest for contest in contests if president_pattern.search(contest.attrib.get("text", ""))), None)
+    comparison = next((contest for contest in contests if comparison_pattern.search(contest.attrib.get("text", ""))), None)
+    if president is None:
+        raise ValueError(f"Colorado Clarity report missing presidential contest: {source_path}")
+    if comparison is None:
+        raise ValueError(f"Colorado Clarity report missing comparison contest: {source_path}")
+
+    def county_votes(contest: ET.Element) -> dict[str, dict[str, int]]:
+        rows: dict[str, dict[str, int]] = {}
+        for choice in contest.findall("Choice"):
+            bucket = _party_bucket(choice.attrib.get("party"), choice.attrib.get("text"))
+            if bucket is None:
+                continue
+            for county_node in choice.findall(".//County"):
+                county = _county_name(county_node.attrib.get("name"))
+                if not county:
+                    continue
+                values = rows.setdefault(county, {"dem": 0, "rep": 0, "other": 0})
+                values[bucket] += int_text(county_node.attrib.get("votes"))
+        return rows
+
+    president_by_county = county_votes(president)
+    comparison_by_county = county_votes(comparison)
+
+    result_rows: list[dict[str, Any]] = []
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    for county in sorted(president_by_county):
+        values = president_by_county[county]
+        total = values["dem"] + values["rep"] + values["other"]
+        if not total:
+            continue
+        result_rows.append(
+            {
+                "jurisdictionName": county,
+                "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                "level": "county",
+                "votes": {
+                    "Trump": values["rep"],
+                    "Harris": values["dem"],
+                    "Other": values["other"],
+                },
+                "totalVotes": total,
+                "margin": values["rep"] - values["dem"],
+                "marginPct": pct(values["rep"] - values["dem"], total),
+                "sourceId": source.id,
+            }
+        )
+
+        comparison_values = comparison_by_county.get(county, {"dem": 0, "rep": 0, "other": 0})
+        comparison_total = comparison_values["dem"] + comparison_values["rep"] + comparison_values["other"]
+        has_comparison = comparison_total > 0
+        if has_comparison:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": "County total",
+                "totalVotes": total,
+                "harris": values["dem"],
+                "trump": values["rep"],
+                "harrisShare": pct(values["dem"], total),
+                "trumpShare": pct(values["rep"], total),
+                "demDropoff": pct(values["dem"] - comparison_values["dem"], total) if has_comparison else 0,
+                "repDropoff": pct(values["rep"] - comparison_values["rep"], total) if has_comparison else 0,
+                "comparisonDemVotes": comparison_values["dem"],
+                "comparisonRepVotes": comparison_values["rep"],
+                "comparisonOtherVotes": comparison_values["other"],
+                "coverageMode": section.get("comparisonCoverageMode", "presidentVsRegent") if has_comparison else "voteShareOnly",
+                "sourceId": source.id,
+            }
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    clarity_turnout = root.find("ElectionVoterTurnout")
+    clarity_county_turnout_rows = clarity_turnout.findall("./Counties/County") if clarity_turnout is not None else []
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": config.raw.get("reviewCharts", {}).get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": section.get("comparisonContestLabel", "Regent of the University of Colorado - At Large"),
+        "nativeColoradoCertifiedVoteGap": int_text(section.get("certifiedTotalVotes")) - sum(row["totalVotes"] for row in result_rows),
+        "nativeColoradoClarityTurnoutRows": len(clarity_county_turnout_rows),
+        "nativeColoradoClarityBallotsCastLead": int_text(clarity_turnout.attrib.get("ballotsCast")) if clarity_turnout is not None else 0,
+        "nativeColoradoClarityTotalVotersLead": int_text(clarity_turnout.attrib.get("totalVoters")) if clarity_turnout is not None else 0,
+        **turnout_metrics,
+    }
+    return result_rows, sorted(review_rows, key=lambda item: item["county"]), turnout_rows, metrics
 
 def _indiana_enr_county_json_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
@@ -7088,6 +7200,17 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeIllinoisElectionResultsByOfficeCsvDirectory",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+    if config.code == "CO" and config.raw.get("certifiedResults", {}).get("format") == "coloradoClarityDetailXml":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _colorado_clarity_detailxml_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeColoradoClarityDetailXml",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,

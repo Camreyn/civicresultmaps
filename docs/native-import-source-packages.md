@@ -28,21 +28,21 @@ These states have county geometry, official presidential result artifacts, local
 
 Expected validation: 75 county result rows, 75 county geometry features, 1,182,676 presidential votes, 759,241 Trump votes, 396,905 Harris votes, 26,530 other votes, 2,779 reporting-unit review rows, and 73 EAC fallback turnout rows. Remaining gaps are state-native turnout denominators, human-readable precinct/reporting-unit names or geometry, official 2012/2016/2020 historical baseline artifacts, and normalized official audit/recount/CVR/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
 
-## Colorado Wave 14 Update
+## Colorado Wave 18 Native Activation
 
 - Config: `etl/state-configs/co.json`
 - Authority: Colorado Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
-- Current active turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/co-2024-eac-turnout.csv`
+- County result source: committed official Colorado SOS Clarity 2024 General Election detail XML ZIP at `data/co-2024-clarity-detailxml.zip`
+- Local review source: the same Clarity ZIP, pairing county Presidential Electors rows with county CU Regent at-large rows because Colorado had no 2024 U.S. Senate race
+- Current active turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/co-2024-eac-turnout.csv`; Clarity `ElectionVoterTurnout` remains a state-native lead only
 - Coverage inventory: `data/co-2024-data-coverage-inventory.json`
 - Source request matrix: `data/co-2024-source-request-matrix.tsv`
-- Official result lead: Colorado SOS Clarity 2024 General Election detail XML at `https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip`
-- Preferred county comparison lead: CU Regent at-large, because Colorado had no 2024 U.S. Senate race
 - County boundary: `data/co-counties.geojson`
 - Equipment context: `data/co-2024-equipment-context.csv` from Verified Voting, context only
 
-Wave 14 confirmed that the official Clarity detail XML endpoint exposes 64 county Presidential Electors rows with 1,728,159 Harris votes, 1,377,441 Trump votes, 87,145 other votes, and 3,192,745 presidential votes total. The same XML exposes 64 county CU Regent at-large comparison rows and county turnout rows reporting 3,241,120 ballotsCast and 4,058,938 totalVoters. No native result/review parser is loaded in this pass, and the current CO config remains EAC turnout-only with 64 fallback turnout rows, 3,240,754 ballots cast, and 4,583,280 registered voters.
+Wave 18 loads 64 county Presidential Electors rows from the official Clarity detail XML with 1,728,159 Harris votes, 1,377,441 Trump votes, 85,273 loaded other-candidate votes, and 3,190,873 loaded county presidential votes. The prior Abstract/certified-total lead is 3,192,745 votes, leaving a 1,872-vote unallocated gap that should not be assigned to counties without an official source. The same XML loads 64 county CU Regent at-large comparison rows. Active turnout remains EAC fallback with 64 rows, 3,240,754 ballots cast, and 4,583,280 registered voters; the Clarity turnout lead reports 3,241,120 ballotsCast and 4,058,938 totalVoters.
 
-Remaining gaps are a Colorado Clarity parser and committed official result artifact or manifest, denominator review before replacing EAC turnout, official precinct/local result rows or CVR-derived aggregates for subcounty advisory coverage, precinct geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized risk-limiting audit, CVR availability, recount, correction, incident, litigation, custody, ballot-manifest, tabulator-log, and EMS-log records. Current source records are coverage and request provenance only, not advisory findings.
+Remaining gaps are a write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, denominator review before replacing EAC turnout, official precinct/local result rows or CVR-derived aggregates for subcounty advisory coverage, precinct geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized risk-limiting audit, CVR availability, recount, correction, incident, litigation, custody, ballot-manifest, tabulator-log, and EMS-log records. Current advisory rows are county-level source-review inputs only, not findings.
 
 ## Minnesota
 
@@ -246,9 +246,9 @@ Expected validation: 17 county result rows, 17 county geometry features, 1,484,8
 - Local review: `data/in-2024-mit-local-review.csv` remains supplemental MIT/OpenElections President-versus-U.S.-Senate precinct context, not certified replacement totals.
 - Turnout: official Indiana Election Division county turnout and registration rows remain loaded at `data/in-2024-general-turnout.csv`.
 - Historical baseline: official 2012, 2016, and 2020 county presidential rows are loaded. Wave 13 collects 2012 from the current Indiana Voters ENRHistorical table endpoint and keeps the raw rows at `data/in-2012-official-president-county.json`; 2016 and 2020 remain loaded from ENR archive JSON.
-- Administration context: VSTOP post-election risk-limiting audit, Election Administrator Portal, and Recount Commission source paths are documented in `data/in-2024-data-coverage-inventory.json`, `data/admin-source-packages.json`, and the Wave 11 request matrix at `data/in-2024-source-request-matrix.tsv`; no normalized audit, CVR, incident, correction, recount, or litigation rows are loaded.
+- Administration context: the official VSTOP 2024 General Election Post-Election Audit Summary Report is retained at `data/in-2024-general-post-election-audit-summary-report.pdf` and normalized by `scripts/normalize-in-audit-summary.mjs` into seven county audit-summary context rows. Election Administrator Portal, Recount Commission, CVR, incident, correction, recount, and detailed audit-unit workpaper paths remain documented request items.
 
-Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 276 official historical baseline rows for 2012/2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
+Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, 276 official historical baseline rows for 2012/2016/2020, and 7 VSTOP audit-summary context rows. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
 
 
 ## Idaho Wave 12 Update
@@ -563,32 +563,35 @@ CT is now listed in `completedNativeStates` for native staging coverage, with ca
 
 HI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. Remaining work is a Hawaii text parser for summary/precinct detail files, turnout-page normalization and reconciliation, precinct geometry/crosswalk collection, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation rows. Current HI advisory indicators are not calculated from review rows because no HI review rows are loaded.
 
-## North Dakota Wave 15 Source Discovery
+## North Dakota Wave 18 Native Activation
 
 - Config: `etl/state-configs/nd.json`
-- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/nd-2024-eac-turnout.csv`
-- Coverage inventory: `data/nd-2024-data-coverage-inventory.json`
-- Source request matrix: `data/nd-2024-source-request-matrix.tsv`
-- Official result lead: North Dakota Secretary of State 2024 General Election dashboard and CSV/Excel/XML export form at `https://results.sos.nd.gov/ResultsExport.aspx`
-- Preferred comparison contest: U.S. Senate if exported at the same grain as President; U.S. House or Governor are fallback statewide contests with caveats
-- Turnout lead: official SOS dashboard reports 371,975 voter turnout and 594,140 eligible voters; active EAC fallback remains 53 rows, 371,974 ballots cast, and 0 registered voters because ND has no voter registration
-- Historical leads: official SOS 2020 dashboard/PDF plus 2016 and 2012 dashboard/PDF archive links are identified but not normalized
-- Geometry/admin context: county geometry lead is Census TIGERweb; official precinct polling-place/crosswalk source, post-election audit report, recount page, county auditor request paths, CVR availability, incident/correction/litigation rows, and official equipment context remain source/request items
+- Current active package: official North Dakota SOS ResultsAjax county President rows, same-key county-scoped precinct President-versus-U.S.-Senate review rows, EAC fallback turnout rows, and county geometry
+- Collector: `scripts/collect-nd-sos-results.mjs`
+- County result source: `data/nd-2024-sos-president-county.csv`, generated from the official SOS ResultsAjax President race ID 19893 endpoint
+- Local review source: `data/nd-2024-sos-president-senate-precinct-review.csv`, generated from official President race ID 19893 and U.S. Senate race ID 19847 county-scoped precinct endpoints
+- Manifest/reconciliation: `data/nd-2024-sos-results-manifest.json` records endpoints, row counts, official totals, and two zero-vote precinct keys excluded from review rows
+- Turnout source: active ETL remains EAC 2024 fallback at `data/eac-2024-state-turnout/nd-2024-eac-turnout.csv`; the official SOS eligible-voter lead still needs normalization and reconciliation
+- County boundary: `data/nd-counties.geojson`
+- Coverage inventory: `data/nd-2024-data-coverage-inventory.json`; source request matrix: `data/nd-2024-source-request-matrix.tsv`
 
-ND remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native result or advisory review rows are loaded. Current ND advisory indicators should remain zero until official President plus same-grain comparison rows are collected, parsed, and reviewed. This is source-coverage context only, not evidence of fraud or misconduct.
+Expected validation: 53 county result rows, 53 county geometry features, 368,155 presidential votes, 246,505 Trump votes, 112,327 Harris votes, 9,323 Other votes, 383 same-key precinct review rows, and 53 EAC fallback turnout rows. The U.S. Senate comparison totals reconcile to 364,327 votes: 241,569 Republican, 121,602 Democratic-NPL, and 1,156 write-in votes.
 
-## New Jersey Wave 15 Source Discovery
+Caveats: review rows are advisory source-review inputs only, not findings. Two zero-vote precinct keys are excluded from review rows and documented in the manifest. North Dakota does not require voter registration, so active turnout remains EAC fallback with zero registered voters until the SOS eligible-voter denominator lead of 371,975 voter turnout and 594,140 eligible voters is normalized and the one-ballot SOS/EAC turnout difference is reviewed. Precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain missing.
 
-- Config: etl/state-configs/nj.json
-- Current active package: turnout-only EAC fallback rows at data/eac-2024-state-turnout/nj-2024-eac-turnout.csv
-- Coverage inventory: data/nj-2024-data-coverage-inventory.json
-- Source request matrix: data/nj-2024-source-request-matrix.tsv
-- Official result lead: New Jersey Department of State 2024 Election Information page with statewide certified President PDF and 21 county municipal President PDFs
-- Preferred comparison contest: U.S. Senate from the same official county municipal PDF pattern
-- Turnout leads: official statewide 2024 voter-turnout PDF plus 21 county municipal registered-voters/ballots-cast PDFs; EAC fallback remains active until denominator timing and the 52,335 registered-voter difference are reconciled
-- Geometry/admin context: data/nj-counties.geojson and data/nj-2024-equipment-context.csv are present; municipal geometry/crosswalks, audit PDFs, CVR availability, recount, incident, correction, and litigation rows remain source/request items
+## New Jersey Wave 18 Native Activation
 
-NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Remaining work is collecting the official PDF package, implementing a New Jersey DOE text-PDF parser, reconciling statewide President/Senate/turnout totals, normalizing municipality names and non-geographic rows such as Federal Overseas and Hand Counts, adding municipal geometry/crosswalks, collecting official 2012/2016/2020 historical baselines, and normalizing audit/CVR/recount/incident/correction/litigation records. Current NJ advisory indicators are not calculated from review rows because no NJ result or review rows are loaded.
+- Config: `etl/state-configs/nj.json`
+- Authority: New Jersey Department of State, Division of Elections; U.S. Election Assistance Commission; U.S. Census Bureau
+- Current active package: official DOE statewide text-layer PDFs normalized into 21 county President result rows, 21 county President-versus-U.S.-Senate review rows, and 21 official DOE county turnout rows
+- President source: `data/nj-2024-official-general-results-president.pdf`, normalized into `data/nj-2024-general-president-county.csv` by `scripts/normalize-nj-doe-pdfs.mjs`; totals reconcile to 2,220,713 Harris, 1,968,215 Trump, 83,797 Other, and 4,272,725 total votes
+- Comparison source: `data/nj-2024-official-general-results-us-senate.pdf`, normalized into `data/nj-2024-general-senate-county.csv`; U.S. Senate totals reconcile to 2,161,491 Kim, 1,773,589 Bashaw, 96,715 Other, and 4,031,795 total votes
+- Turnout source: `data/nj-2024-official-general-voter-turnout.pdf`, normalized into `data/nj-2024-official-turnout-county.csv`; `data/nj-2024-turnout-reconciliation-summary.json` records 4,321,921 DOE ballots cast, 6,682,699 DOE registered voters, a zero DOE-minus-EAC ballots-cast delta, and a 52,335 DOE-minus-EAC registered-voter delta
+- County boundary: `data/nj-counties.geojson`; municipal geometry/crosswalks are not loaded
+- Coverage inventory: `data/nj-2024-data-coverage-inventory.json`; source request matrix: `data/nj-2024-source-request-matrix.tsv`
+- Equipment context: `data/nj-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected validation: 21 county result rows, 21 county geometry features, 4,272,725 presidential votes, 1,968,215 Trump votes, 2,220,713 Harris votes, 83,797 Other votes, 21 county U.S. Senate comparison review rows, and 21 official DOE turnout rows. Caveats: review rows are county-level public-interest source-review inputs, not municipal or precinct scatter plots and not findings of fraud or misconduct. Remaining gaps are the 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, municipal turnout PDFs, municipal boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, county audit PDF normalization, and CVR/recount/incident/correction/litigation records.
 
 ## New Mexico Wave 18 Native Activation
 

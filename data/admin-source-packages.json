@@ -537,17 +537,22 @@
         "expectedJurisdictions": 92
       },
       "audit": {
-        "status": "candidate",
+        "status": "partial",
         "sourceAuthority": "Indiana Secretary of State Election Division / VSTOP",
-        "sourceUrl": "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports",
-        "why": "Official VSTOP post-election risk-limiting audit report path is documented for Indiana, but 2024 county/audit-unit selection and outcome rows are not normalized into CivicResultMaps yet.",
+        "sourceUrl": "https://www.in.gov/sos/elections/vstop/vstop-post-election-risk-limiting-audit-reports/",
+        "reportUrl": "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf",
+        "localArtifact": "data/in-2024-general-post-election-audit-summary-report.pdf",
+        "normalizedArtifact": "data/in-2024-general-post-election-audit-summary.csv",
+        "summaryArtifact": "data/in-2024-general-post-election-audit-summary.json",
+        "parser": "scripts/normalize-in-audit-summary.mjs",
+        "reportingLevel": "county_audit_summary",
+        "expectedRows": 7,
+        "why": "Official VSTOP 2024 General Election audit summary rows are normalized for seven voluntarily audited counties. Detailed audit-unit workpapers, CVR exports, incident/correction logs, and recount records remain request items.",
         "neededFields": [
-          "audit date and election",
-          "county or audit unit",
-          "contest audited",
-          "ballots or batches sampled",
-          "discrepancy/outcome fields",
-          "official report URL"
+          "audit-unit selection details",
+          "audit workpaper or batch/ballot-level records where public",
+          "CVR export availability or limitations",
+          "incident, correction, recount, and amended-canvass links if applicable"
         ]
       },
       "cvr": {
