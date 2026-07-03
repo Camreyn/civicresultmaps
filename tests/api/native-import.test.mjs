@@ -93,6 +93,7 @@ test("new york coverage inventory preserves supplemental review caveats", () => 
   const inventory = JSON.parse(readFileSync("data/ny-2024-data-coverage-inventory.json", "utf8"));
   const nativePackages = JSON.parse(readFileSync("data/native-import-source-packages.json", "utf8"));
   const localReviewManifest = JSON.parse(readFileSync("data/ny-2024-local-review-sources.json", "utf8"));
+  const requestPackets = JSON.parse(readFileSync("data/ny-2024-missing-county-request-packets.json", "utf8"));
   const localReview = inventory.loadedArtifacts.find((artifact) => artifact.id === "ny-2024-local-review-openelections");
   const discoveryNy = nativePackages.sourceDiscoveryQueue.find((entry) => entry.state === "NY");
   const monroeSource = localReviewManifest.files.find((file) => file.file === "Monroe.xlsx");
@@ -104,6 +105,13 @@ test("new york coverage inventory preserves supplemental review caveats", () => 
   assert.match(config.reviewCharts.warning, /county-certified result totals remain the map authority/);
   assert.equal(localReview.expectedCounts.reviewRows, 9753);
   assert.equal(localReview.expectedCounts.missingCountyEquivalents, 13);
+  assert.equal(inventory.completionDecision.reviewCoverage.requestPacketCount, 13);
+  assert.equal(inventory.requestPath.countyRequestPackets, "data/ny-2024-missing-county-request-packets.json");
+  assert.equal(discoveryNy.requestPacketArtifact, "data/ny-2024-missing-county-request-packets.json");
+  assert.equal(requestPackets.packets.length, 13);
+  assert.deepEqual(new Set(requestPackets.packets.map((packet) => packet.county)), new Set(inventory.completionDecision.reviewCoverage.excludedOrNotYetReviewedCounties));
+  assert.equal(requestPackets.packets.find((packet) => packet.county === "Nassau County").currentReviewStatus, "no_manifest_source_file");
+  assert.equal(requestPackets.packets.find((packet) => packet.county === "Rockland County").currentSourceLead.status, "president_only_no_same_grain_us_senate_rows");
   assert.equal(localReview.expectedCounts.zeroRowManifestFiles, 1);
   assert.equal(localReview.expectedCounts.excludedManifestFiles, 12);
   assert.equal(monroeSource.status, "excluded_zero_rows");

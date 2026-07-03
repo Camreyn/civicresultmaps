@@ -27,11 +27,14 @@
         "Steuben County",
         "Wyoming County",
         "Yates County"
-      ]
+      ],
+      "requestPacketCount": 13,
+      "requestPacketArtifact": "data/ny-2024-missing-county-request-packets.json"
     },
     "promotionCaveat": "Do not move NY to completedNativeStates until either statewide official same-grain local review coverage is collected or the coordinator intentionally accepts partial supplemental review coverage with visible caveats.",
     "wave19Decision": "Wave 19 keeps NY in sourceDiscoveryQueue. The current staging artifact is useful for county-certified maps and partial local advisory review, but completedNativeStates would overstate official local review, turnout, and geometry coverage.",
-    "wave21Decision": "Wave 21 rechecked NYSBOE and Flateau/VEDA source surfaces on 2026-07-03. VEDA is live but has no election data/exportable 2024 replacement rows, and NYSBOE county/election-district enrollment reports remain denominator leads only. The final blocker is therefore specific: obtain official same-grain President plus U.S. Senate local rows for the 13 excluded county equivalents, a ballots-cast or voter-history artifact, and geometry/crosswalks before completed native coverage."
+    "wave21Decision": "Wave 21 rechecked NYSBOE and Flateau/VEDA source surfaces on 2026-07-03. VEDA is live but has no election data/exportable 2024 replacement rows, and NYSBOE county/election-district enrollment reports remain denominator leads only. The final blocker is therefore specific: obtain official same-grain President plus U.S. Senate local rows for the 13 excluded county equivalents, a ballots-cast or voter-history artifact, and geometry/crosswalks before completed native coverage.",
+    "wave22Decision": "Wave 22 found no new official 2024 statewide/local replacement export and added data/ny-2024-missing-county-request-packets.json plus county-specific request-matrix rows so each missing county equivalent has an operational request packet for same-grain President and U.S. Senate rows, turnout/voter-history fields, and ED geometry/crosswalks."
   },
   "authorityPriority": "Official New York State Board of Elections, county boards of elections, official GIS/Census, EAC, and official court/board records first; OpenElections and Verified Voting remain supplemental context only.",
   "officialBlockerEvidence": [
@@ -295,7 +298,8 @@
       "map-ready election-district or precinct boundary geometry, or a publishable reporting-unit crosswalk matching local result labels",
       "post-election audit selection and comparison reports filed with the State Board or retained by county boards",
       "CVR availability statements or request responses, including ballot-secrecy and vendor-format caveats",
-      "official incident, correction, recount, and litigation records for 2024 contests"
+      "official incident, correction, recount, and litigation records for 2024 contests",
+      "county-specific request packet responses for the 13 missing county equivalents listed in data/ny-2024-missing-county-request-packets.json"
     ],
     "preferredAuthorities": [
       "New York State Board of Elections",
@@ -316,14 +320,16 @@
       "incident/correction/recount/litigation docket, document date, jurisdiction, affected contest, and source URL"
     ],
     "caveat": "All future request-produced artifacts must be source-linked, scripted, and reconciled to official county-certified totals before they change public review or turnout coverage.",
-    "sourceRequestMatrix": "data/ny-2024-source-request-matrix.tsv"
+    "sourceRequestMatrix": "data/ny-2024-source-request-matrix.tsv",
+    "countyRequestPackets": "data/ny-2024-missing-county-request-packets.json"
   },
   "displayCaveats": [
     "County-certified NYSBOE President rows remain the map authority.",
     "Local advisory review rows are partial supplemental source normalizations and do not cover image-only, president-only, unsupported, or unreviewed counties.",
     "EAC turnout rows are fallback context until a New York-native turnout/voter-history package is collected and reconciled.",
     "Historical baselines are official county context for 2012, 2016, and 2020 only.",
-    "Administration and equipment context is source-linked metadata, not proof of fraud or misconduct."
+    "Administration and equipment context is source-linked metadata, not proof of fraud or misconduct.",
+    "Wave 22 request packets are operational source-request records only; they do not add loaded rows or change public review coverage."
   ],
   "repoDrift": [
     "docs/developer/index.md was missing in the Wave 19 NY worktree during the required first-read pass."
