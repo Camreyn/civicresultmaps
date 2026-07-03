@@ -2660,26 +2660,30 @@
       "state": "AK",
       "name": "Alaska",
       "priority": 20,
-      "currentStatus": "official_statewide_result_review_loaded_lower_grain_sources_blocked",
+      "currentStatus": "official_statewide_result_precinct_review_loaded_write_in_geometry_turnout_gaps_remaining",
       "officialSourcePages": [
         "https://www.elections.alaska.gov/election-results/",
         "https://www.elections.alaska.gov/election-results/e/?id=24genr",
         "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
         "https://www.eac.gov/research-and-data/studies-and-reports",
-        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2/query?where=STATE%3D%2702%27&outFields=GEOID,STATE,SLDL,NAME,BASENAME&returnGeometry=true&outSR=4326&f=geojson"
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2/query?where=STATE%3D%2702%27&outFields=GEOID,STATE,SLDL,NAME,BASENAME&returnGeometry=true&outSR=4326&f=geojson",
+        "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+        "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
+        "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf"
       ],
       "requiredArtifacts": [
         "official 2024 Election Summary Report PDF",
         "normalized statewide President CSV generated from the official summary PDF",
-        "normalized statewide U.S. Representative first-choice comparison CSV generated from the same official summary PDF",
+        "official ENRbyPrecinct.csv retained from the 2024 General All Details page",
+        "normalized 523-row precinct/reporting-unit President versus U.S. House named-candidate first-choice review CSV generated from ENRbyPrecinct.csv",
         "EAC fallback turnout rows, matching the official summary Times Cast statewide totals",
-        "State House District geometry retained as a future join lead",
-        "data/ak-2024-data-coverage-inventory.json and data/ak-2024-source-request-matrix.tsv documenting lower-grain blockers and request fields",
-        "official results page/SOVC source-discovery evidence artifact documenting the 2024 General All Details follow-up path"
+        "State House District geometry retained as a future join lead only",
+        "data/ak-2024-data-coverage-inventory.json and data/ak-2024-source-request-matrix.tsv documenting the remaining U.S. House write-in allocation, geometry/crosswalk, turnout, historical, and administration-context request fields",
+        "official results page evidence artifact documenting concrete ENR, SOVC, CVR, and RCV source URLs"
       ],
-      "preferredComparisonContest": "U.S. Representative first-choice votes; statewide row is loaded from the official summary report. District/precinct President plus same-grain U.S. House rows remain the preferred advisory artifact.",
-      "parserNeeded": "scripts/normalize-ak-election-summary.mjs generates statewide President and U.S. House comparison CSVs from data/ak-2024-general-election-summary-report.pdf. civic_etl/native.py uses the generic countyPresidentCsv path with an AK identity jurisdiction normalizer so the statewide row remains Alaska rather than Alaska County.",
-      "blocker": "AK remains in sourceDiscoveryQueue rather than completedNativeStates because the current native package is statewide only: one President row, one U.S. House comparison review row, and one EAC turnout row. Wave 21 confirms the Alaska Election Results page links the 2024 General Election to an All Details route and describes Statement of Votes Cast PDFs as district/precinct reports for contests that did not require ranked-choice tabulation, but no retained official lower-grain President plus same-grain U.S. Representative first-choice artifact is loaded. Direct /results/24GENR/ directory access returned 403 Forbidden from this worker environment. House District geometry exists but cannot join the statewide result row. State-native lower-grain turnout, 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain uncollected.",
+      "preferredComparisonContest": "U.S. Representative first-choice votes; official ENRbyPrecinct.csv now provides same-grain President plus U.S. House named-candidate rows for 523 precinct/reporting units, with a 750-vote U.S. House write-in caveat.",
+      "parserNeeded": "scripts/normalize-ak-election-summary.mjs generates statewide President CSVs from data/ak-2024-general-election-summary-report.pdf. scripts/normalize-ak-enr-by-precinct.mjs reads official data/ak-2024-general-enr-by-precinct.csv and writes data/ak-2024-general-precinct-president-us-house-review.csv for localComparisonCsv review rows. civic_etl/native.py uses countyPresidentCsv for the statewide certified row and localComparisonCsv for 523 AK review rows.",
+      "blocker": "Wave 22 materially advanced AK by locating, downloading, and normalizing the official Alaska Division of Elections ENRbyPrecinct.csv from the 2024 General All Details page. AK now stages one certified statewide President row, 523 official precinct/reporting-unit President-versus-U.S.-House named-candidate first-choice review rows, and one EAC turnout row. Remaining blockers are narrower: ENRbyPrecinct.csv does not itemize 750 statewide U.S. House write-in votes by reporting unit; rows include absentee/early/question/remote reporting units and cannot be joined to polygons without a reviewed geometry/crosswalk; active turnout remains EAC fallback until ENR Reg_voters/total_ballots denominator semantics are reviewed; official historical baselines and normalized audit/CVR/recount/incident/correction/litigation rows remain uncollected.",
       "availableArtifacts": {
         "presidentialStatewideResults": {
           "sourceTitle": "State of Alaska 2024 General Election Election Summary Report, official results",
@@ -2725,10 +2729,27 @@
           "sourceTitle": "Alaska Division of Elections official results page and 2024 General All Details/SOVC source-discovery evidence",
           "sourceUrl": "https://www.elections.alaska.gov/election-results/",
           "localFile": "data/ak-2024-official-results-page-evidence.json",
-          "parserHint": "Evidence artifact only; use it to request/collect official 2024 General SOVC district-precinct files and verify same-grain U.S. Representative first-choice availability before enabling lower-grain AK review rows."
+          "parserHint": "Evidence artifact now records concrete official ENRbyPrecinct.csv, House District SOVC PDF, CVR ZIP, and RCV report URLs; remaining request packet is U.S. House write-in allocation/confirmation, reporting-unit geometry/crosswalk, turnout denominator semantics, historical baselines, and administration context."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Alaska Division of Elections official 2024 General ENRbyPrecinct.csv",
+          "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+          "localFile": "data/ak-2024-general-enr-by-precinct.csv; data/ak-2024-general-precinct-president-us-house-review.csv",
+          "level": "precinct_or_reporting_unit",
+          "comparisonContest": "U.S. Representative first-choice named-candidate rows",
+          "parserHint": "Run node scripts/normalize-ak-enr-by-precinct.mjs. The normalized localComparisonCsv emits 523 review rows and reconciles presidential totals exactly to the summary PDF. U.S. House DEM and REP named-candidate totals reconcile, but comparison_other excludes 750 statewide write-ins not itemized in ENRbyPrecinct.csv."
         }
       },
-      "requestMatrixArtifact": "data/ak-2024-source-request-matrix.tsv"
+      "requestMatrixArtifact": "data/ak-2024-source-request-matrix.tsv",
+      "expected": {
+        "resultRows": 1,
+        "stateTotal": 338177,
+        "trump": 184458,
+        "harris": 140026,
+        "other": 13693,
+        "localReviewRows": 523,
+        "turnoutRows": 1
+      }
     },
     {
       "state": "IN",
