@@ -1445,17 +1445,18 @@
       "stateName": "New Jersey",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_geometry_admin_context",
+      "dataFamily": "results_review_turnout_geometry_equipment_admin_context",
       "tier": "tier_6_official_pdf_hostile",
-      "reportingGrain": "municipality_with_county_certified_crosscheck",
+      "reportingGrain": "county_loaded_municipal_followup",
       "exportFormats": [
         "official statewide certified PDF",
+        "normalized official county CSVs",
         "official county municipal result PDFs",
         "official turnout PDFs",
         "official county audit PDFs",
-        "EAC fallback turnout CSV",
         "county GeoJSON",
-        "municipal GIS source lead"
+        "municipal GIS source lead",
+        "EAC fallback benchmark CSV"
       ],
       "sourceUrls": [
         "https://www.nj.gov/state/elections/election-information-2024.shtml",
@@ -1470,32 +1471,29 @@
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-result-ballotscast-atlantic.pdf"
       ],
       "availableFields": [
-        "official certified county presidential totals",
-        "official county-by-county municipal President rows",
-        "official certified county U.S. Senate comparison totals",
-        "official county-by-county municipal U.S. Senate comparison rows",
-        "official statewide county turnout and registered-voter denominator PDF",
-        "official county municipal registered-voters and ballots-cast PDFs",
+        "official certified county presidential totals from the DOE statewide PDF",
+        "official certified county U.S. Senate comparison totals from the DOE statewide PDF",
+        "official county turnout and registered-voter denominator rows from the DOE statewide turnout PDF",
+        "EAC fallback turnout retained as a benchmark reconciliation source",
         "county geometry",
         "county equipment context from Verified Voting and NJ DOE equipment inventory source lead",
+        "official county-by-county municipal President rows identified as follow-up source leads",
+        "official county-by-county municipal U.S. Senate comparison rows identified as follow-up source leads",
         "official 2012/2016/2020 historical archive source leads",
         "official 2024 county post-election audit PDF links and county-official request paths"
       ],
       "missingFields": [
-        "committed official NJ result, comparison, turnout, and audit PDF artifacts",
-        "New Jersey DOE text-PDF parser and reconciliation report",
-        "loaded native certified result rows",
         "loaded municipal President-versus-U.S.-Senate review rows",
-        "state-native turnout rows replacing EAC fallback after denominator review",
         "municipal boundary geometry and DOE-label crosswalk",
         "normalized official historical baseline rows",
+        "normalized county post-election audit outcome rows",
         "normalized CVR availability, incident, correction, recount, litigation, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "EAC turnout config remains active; data/nj-2024-data-coverage-inventory.json and data/nj-2024-source-request-matrix.tsv document the official New Jersey DOE statewide/county PDF package, municipal President and U.S. Senate source leads, state-native turnout PDFs, historical/archive leads, audit PDFs, equipment context, and request paths without loading result or review rows",
+      "parserStatus": "scripts/normalize-nj-doe-pdfs.mjs loads official DOE statewide text-layer PDFs into 21 county President rows, 21 county U.S. Senate comparison rows, and 21 county turnout rows; municipal PDFs, historical baselines, audit PDFs, and administration records remain source/request follow-up items",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_parser_ready",
-      "caveats": "New Jersey official sources are authoritative and text-layer, but they are spread across many PDFs. A parser must collect the 21 county President PDFs, 21 county U.S. Senate PDFs, turnout PDFs, and audit PDFs; reconcile statewide certified totals; normalize municipality names; and decide how to handle Federal Overseas and Hand Counts rows before advisory review rows are loaded. Active turnout remains EAC fallback until the 52,335 registered-voter difference versus the NJ DOE statewide turnout PDF is reviewed.",
-      "nextAction": "Collect the official New Jersey DOE PDF package listed in data/nj-2024-source-request-matrix.tsv, implement a text-PDF parser and municipal crosswalk, reconcile President/Senate/turnout totals, and keep NJ out of completed native states until result/review rows are loaded."
+      "confidence": "loaded_county_with_municipal_followup",
+      "caveats": "Current NJ review rows are county-level President-versus-U.S.-Senate comparisons from official statewide DOE PDFs, not municipal or precinct scatter plots. DOE county turnout replaces the EAC fallback in staging, while data/nj-2024-turnout-reconciliation-summary.json records the 52,335 DOE-minus-EAC registered-voter denominator difference and zero ballots-cast difference. Municipal PDFs, municipal geometry/crosswalks, historical baselines, and normalized audit/CVR/incident/correction/recount/litigation rows remain unnormalized.",
+      "nextAction": "Collect and parse the 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, municipal registered-voters/ballots-cast PDFs, municipal geometry/crosswalks, official 2012/2016/2020 historical baselines, and county audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "NM",

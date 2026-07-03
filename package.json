@@ -144,7 +144,10 @@
     "etl:import:al": "npm run etl:prepare:al && python -m civic_etl.cli import --config etl/state-configs/al.json --out .etl/staging",
     "etl:prepare:ri": "node scripts/normalize-ri-boe-results.mjs",
     "etl:validate:ri": "npm run etl:prepare:ri && python -m civic_etl.cli validate --config etl/state-configs/ri.json",
-    "etl:import:ri": "npm run etl:prepare:ri && python -m civic_etl.cli import --config etl/state-configs/ri.json --out .etl/staging"
+    "etl:import:ri": "npm run etl:prepare:ri && python -m civic_etl.cli import --config etl/state-configs/ri.json --out .etl/staging",
+    "etl:prepare:nj": "node scripts/normalize-nj-doe-pdfs.mjs",
+    "etl:validate:nj": "npm run etl:prepare:nj && python -m civic_etl.cli validate --config etl/state-configs/nj.json",
+    "etl:import:nj": "npm run etl:prepare:nj && python -m civic_etl.cli import --config etl/state-configs/nj.json --out .etl/staging"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

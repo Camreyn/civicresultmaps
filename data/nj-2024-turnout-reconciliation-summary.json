@@ -1,0 +1,24 @@
+{
+  "state": "NJ",
+  "electionYear": 2024,
+  "sourceAuthority": "New Jersey Department of State, Division of Elections",
+  "sourceUrl": "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
+  "localArtifact": "data/nj-2024-official-turnout-county.csv",
+  "parser": "scripts/normalize-nj-doe-pdfs.mjs",
+  "reportingGrain": "county",
+  "officialDoeTotals": {
+    "registeredVoters": 6682699,
+    "ballotsCast": 4321921,
+    "ballotsRejected": 26600,
+    "electionDistricts": 6402
+  },
+  "eacFallbackTotals": {
+    "registeredVoters": 6630364,
+    "ballotsCast": 4321921
+  },
+  "deltasDoeMinusEac": {
+    "registeredVoters": 52335,
+    "ballotsCast": 0
+  },
+  "caveat": "The official DOE county turnout PDF matches EAC fallback ballots cast but reports 52,335 more registered voters. Active NJ staging uses the DOE denominator with this reconciliation retained for review."
+}
