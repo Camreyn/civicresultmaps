@@ -1,10 +1,9 @@
 {
   "code": "ME",
   "name": "Maine",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Maine Secretary of State; U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "me-2024-eac-turnout",
@@ -14,8 +13,129 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows retained until Maine-native ballots-cast or voter-participation denominator semantics are reviewed.",
       "status": "loaded"
+    },
+    {
+      "id": "me-2024-president-county-town",
+      "category": "Official 2024 presidential county/town result rows",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+      "localFile": "data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx",
+      "parser": "maineSosCountyTownXlsx",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Official Maine SOS corrected final workbook dated December 5, 2024; collected July 2, 2026.",
+      "confidence": "Official certified President by county/town Excel workbook. County totals plus State UOCAVA reconcile to 831,375 candidate votes and 842,447 total ballots cast including blanks.",
+      "status": "loaded"
+    },
+    {
+      "id": "me-2024-us-senator-county-town",
+      "category": "Official 2024 U.S. Senate county/town comparison rows",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
+      "localFile": "data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx",
+      "parser": "maineSosCountyTownXlsx",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Official Maine SOS corrected final workbook dated December 5, 2024; collected July 2, 2026.",
+      "confidence": "Official same-source U.S. Senate comparison workbook. Most town labels pair to President after documented abbreviation normalization; true grain mismatches remain vote-share-only rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "me-2024-president-congressional-district",
+      "category": "Official 2024 presidential congressional-district context",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20by%20Congressional%20District%202024.xlsx",
+      "localFile": "data/me-official-sources/me-2024-president-by-congressional-district.xlsx",
+      "parser": "officialContextXlsxReference",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Official Maine SOS 2024 President by Congressional District workbook collected July 2, 2026.",
+      "confidence": "Context for Maine's split electoral-vote reporting. Not used as the President-versus-Senate review input because the county/town workbook provides the native review grain.",
+      "status": "loaded"
+    },
+    {
+      "id": "me-2024-registered-enrolled-active",
+      "category": "Official 2024 registered/enrolled active voter denominator lead",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Reg%20%26%20Enr%20as%20of%2011-5-24%20txt%20%28A%29.txt",
+      "localFile": "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
+      "parser": "maineRegisteredEnrolledTextReference",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Maine SOS previous enrollment data as of November 5, 2024; collected July 2, 2026.",
+      "confidence": "State-native active registered/enrolled denominator lead only. Not a turnout replacement without compatible official ballots-cast or voter-participation rows.",
+      "status": "candidate"
+    },
+    {
+      "id": "me-2024-registered-enrolled-inactive",
+      "category": "Official 2024 registered/enrolled inactive voter denominator lead",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/Reg%20%26%20Enr%20as%20of%2011-5-24%20txt%20%28I%29.txt",
+      "localFile": "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt",
+      "parser": "maineRegisteredEnrolledTextReference",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Maine SOS previous enrollment data as of November 5, 2024; collected July 2, 2026.",
+      "confidence": "State-native inactive registered/enrolled denominator lead only. Not a turnout replacement without compatible official ballots-cast or voter-participation rows.",
+      "status": "candidate"
+    },
+    {
+      "id": "me-2020-president-county-town",
+      "category": "Official 2020 historical presidential county/town rows",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/presandvisecnty1120.xlsx",
+      "localFile": "data/me-official-sources/me-2020-president-county-town.xlsx",
+      "parser": "maineSosHistoricalPresidentXlsx",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Official Maine SOS 2020 President by County/Town workbook collected July 2, 2026.",
+      "confidence": "Parsed for county plus State UOCAVA historical context rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "me-2016-president",
+      "category": "Official 2016 historical presidential rows",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/content/assets/president.xlsx",
+      "localFile": "data/me-official-sources/me-2016-president.xlsx",
+      "parser": "maineSosHistoricalPresidentXlsx",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Official Maine SOS 2016 President workbook collected July 2, 2026.",
+      "confidence": "Parsed for county plus State UOCAVA historical context rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "me-2012-president-county",
+      "category": "Official 2012 historical presidential county rows",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012prescounty%281%29.xls",
+      "localFile": "data/me-official-sources/me-2012-president-county.xls",
+      "parser": "officialXlsReference",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Official Maine SOS 2012 President county totals XLS collected July 2, 2026.",
+      "confidence": "Official artifact retained as provenance; not parsed because the current repo XLSX reader does not support legacy .xls files.",
+      "status": "candidate"
+    },
+    {
+      "id": "me-2012-president-municipal",
+      "category": "Official 2012 historical presidential municipal rows",
+      "url": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012presmuni%282%29.xls",
+      "localFile": "data/me-official-sources/me-2012-president-municipal.xls",
+      "parser": "officialXlsReference",
+      "authority": "Maine Secretary of State",
+      "timestampBasis": "Official Maine SOS 2012 President municipal totals XLS collected July 2, 2026.",
+      "confidence": "Official artifact retained as provenance; not parsed because the current repo XLSX reader does not support legacy .xls files.",
+      "status": "candidate"
+    },
+    {
+      "id": "me-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2723%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/me-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry supports county result map joins. Municipality/town geometry or reporting-unit crosswalk remains unloaded.",
+      "status": "loaded"
+    },
+    {
+      "id": "me-2024-equipment-context",
+      "category": "County equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23",
+      "localFile": "data/me-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContext",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verifier county equipment context artifact retained for 2024 Maine administration metadata.",
+      "confidence": "Context only. Equipment rows are not vote, turnout, audit, CVR, incident, or proof-of-uniform-precinct evidence.",
+      "status": "candidate"
     },
     {
       "id": "me-2024-data-coverage-inventory",
@@ -24,8 +144,8 @@
       "localFile": "data/me-2024-data-coverage-inventory.json",
       "parser": "coverageInventoryJson",
       "authority": "Maine Secretary of State",
-      "timestampBasis": "Wave 15 official-source coverage inventory checked July 2, 2026.",
-      "confidence": "Documents official Maine 2024 Excel result and RCV/CVR source leads, state-native registered/enrolled denominator leads, county/equipment context, historical archive leads, and remaining audit/CVR/recount/incident/correction/litigation gaps. Inventory only; no normalized Maine result, review, turnout replacement, or administration rows are loaded.",
+      "timestampBasis": "Wave 17 official-source coverage inventory checked July 2, 2026.",
+      "confidence": "Documents loaded Maine 2024 Excel result/review artifacts and remaining state-native turnout, municipality geometry, 2012 .xls parsing, and administration-context gaps.",
       "status": "candidate"
     }
   ],
@@ -35,7 +155,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Maine turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Maine turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. SOS active/inactive registered/enrolled files are retained as denominator leads only until compatible official ballots-cast or voter-participation rows are collected and reconciled.",
     "warningRequired": true,
     "expected": {
       "rowCount": 497,
@@ -45,21 +165,60 @@
   },
   "expected": {
     "jurisdictions": 497,
-    "resultRows": 0,
-    "sources": 2,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
-    "turnoutRows": 497
+    "resultRows": 17,
+    "sources": 13,
+    "geometryFeatures": 16,
+    "stateTotal": 831375,
+    "trump": 377977,
+    "harris": 435652,
+    "other": 17746,
+    "reviewRows": 512,
+    "turnoutRows": 497,
+    "historicalBaselineRows": 34
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "certifiedResults": {
+    "format": "maineSosCountyTownXlsx",
+    "sourceId": "me-2024-president-county-town",
+    "sheetName": "President & VP",
+    "uocavaHandling": "State UOCAVA is loaded as a non-geographic certified result row and excluded from municipality review-row joins. Blank ballots are excluded from candidate vote totals but retained in source caveats."
+  },
+  "reviewCharts": {
+    "format": "maineSosCountyTownXlsx",
+    "sourceId": "me-2024-us-senator-county-town",
+    "sheetName": "UNITED STATES SENATOR",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenateTown",
+    "warning": "Maine review rows pair official SOS town-level President rows with the official U.S. Senate workbook after conservative municipality-label normalization. U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff fields are directional source-review inputs only. State UOCAVA is loaded in certified result totals as non-geographic and excluded from town review rows; a few true grain mismatches remain vote-share-only."
+  },
+  "historicalBaselines": {
+    "format": "maineSosHistoricalPresidentXlsx",
+    "workbooks": [
+      {
+        "year": 2020,
+        "sourceId": "me-2020-president-county-town",
+        "sheetName": "Statewide"
+      },
+      {
+        "year": 2016,
+        "sourceId": "me-2016-president",
+        "sheetName": "Sheet1"
+      }
+    ],
+    "warning": "Maine historical baseline rows are official SOS county plus State UOCAVA context for 2016 and 2020. Official 2012 county and municipal XLS artifacts are collected but not parsed because the current repo reader supports .xlsx, not legacy .xls. Use historical rows as contextual baselines only, not 2024 certified data.",
+    "expected": {
+      "rowCount": 34,
+      "years": [
+        2016,
+        2020
+      ]
+    }
   }
 }

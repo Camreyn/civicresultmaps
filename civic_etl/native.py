@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import csv
 import xml.etree.ElementTree as ET
@@ -90,6 +90,9 @@ def _missouri_jurisdiction_name(raw: Any) -> str:
         return "St. Louis City"
     return _county_name(value)
 
+
+def _rhode_island_jurisdiction_name(raw: Any) -> str:
+    return str(raw or "").strip()
 
 def _illinois_jurisdiction_name(raw: Any) -> str:
     value = str(raw or "").strip()
@@ -1712,6 +1715,166 @@ def _county_president_csv_rows(
         **turnout_metrics,
     }
     return result_rows, review_rows, turnout_rows, metrics
+
+
+def _connecticut_ems_vote_totals(rows: list[dict[str, Any]], candidate_ids: list[str]) -> int:
+    selected = {str(candidate_id) for candidate_id in candidate_ids}
+    total = 0
+    for row in rows:
+        for candidate_id, payload in row.items():
+            if str(candidate_id) in selected:
+                total += int_text(payload.get("V"))
+    return total
+
+
+def _connecticut_ems_contest_total(rows: list[dict[str, Any]]) -> int:
+    return sum(int_text(payload.get("V")) for row in rows for payload in row.values())
+
+
+def _connecticut_ems_town_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    turnout_section = config.raw.get("turnout", {})
+    source = sources[section["sourceId"]]
+    source_dir = _artifact_path(source)
+    if not source_dir.is_dir():
+        raise ValueError(f"Connecticut EMS source must be a directory: {source.local_file}")
+
+    lookup = json.loads((source_dir / "Lookupdata.json").read_text(encoding="utf-8-sig"))
+    town_votes = json.loads((source_dir / "townVotes_Electiondata.json").read_text(encoding="utf-8-sig"))
+    turnout = json.loads((source_dir / "voterTurnout_Electiondata.json").read_text(encoding="utf-8-sig"))
+
+    town_ids = {str(town_id): str(name).strip() for town_id, name in lookup.get("townIds", {}).items()}
+    counties = {str(county_id): f"{name} County" for county_id, name in lookup.get("counties", {}).items()}
+    county_by_town = {
+        str(row.get("TownID")): counties.get(str(row.get("CountyID")), "")
+        for row in lookup.get("countyTowns", [])
+    }
+    president_office = str(section.get("presidentOfficeId", "16518"))
+    comparison_office = str(review_section.get("comparisonOfficeId", "16524"))
+    harris_ids = [str(value) for value in section.get("harrisCandidateIds", [])]
+    trump_ids = [str(value) for value in section.get("trumpCandidateIds", [])]
+    comparison_dem_ids = [str(value) for value in review_section.get("comparisonDemCandidateIds", [])]
+    comparison_rep_ids = [str(value) for value in review_section.get("comparisonRepCandidateIds", [])]
+
+    result_rows: list[dict[str, Any]] = []
+    review_rows: list[dict[str, Any]] = []
+    turnout_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+
+    for town_id in sorted(town_ids, key=lambda value: int_text(value)):
+        town_name = town_ids[town_id]
+        county = county_by_town.get(town_id)
+        if not town_name or not county:
+            raise ValueError(f"Connecticut EMS town {town_id} is missing town or county metadata")
+
+        contests = town_votes.get(town_id, {})
+        president_rows = contests.get(president_office, [])
+        comparison_contest_rows = contests.get(comparison_office, [])
+        harris = _connecticut_ems_vote_totals(president_rows, harris_ids)
+        trump = _connecticut_ems_vote_totals(president_rows, trump_ids)
+        total = _connecticut_ems_contest_total(president_rows)
+        other = total - harris - trump
+        if other < 0:
+            raise ValueError(f"Connecticut EMS town {town_name} has invalid presidential totals")
+
+        result_rows.append(
+            {
+                "jurisdictionName": town_name,
+                "jurisdictionCode": f"CT-TOWN-{int_text(town_id):03d}",
+                "level": "town",
+                "county": county,
+                "votes": {
+                    "Trump": trump,
+                    "Harris": harris,
+                    "Other": other,
+                },
+                "totalVotes": total,
+                "margin": trump - harris,
+                "marginPct": pct(trump - harris, total),
+                "sourceId": source.id,
+            }
+        )
+
+        comparison_dem = _connecticut_ems_vote_totals(comparison_contest_rows, comparison_dem_ids)
+        comparison_rep = _connecticut_ems_vote_totals(comparison_contest_rows, comparison_rep_ids)
+        comparison_total = _connecticut_ems_contest_total(comparison_contest_rows)
+        comparison_other = comparison_total - comparison_dem - comparison_rep
+        has_comparison = bool(comparison_total)
+        if has_comparison:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": town_name,
+                "totalVotes": total,
+                "harris": harris,
+                "trump": trump,
+                "harrisShare": pct(harris, total),
+                "trumpShare": pct(trump, total),
+                "demDropoff": pct(harris - comparison_dem, total) if has_comparison else 0,
+                "repDropoff": pct(trump - comparison_rep, total) if has_comparison else 0,
+                "coverageMode": review_section.get("coverageMode", "presidentVsSenate")
+                if has_comparison
+                else "voteShareOnly",
+                "comparisonContest": review_section.get("comparisonContest", ""),
+                "comparisonDemVotes": comparison_dem,
+                "comparisonRepVotes": comparison_rep,
+                "comparisonOtherVotes": comparison_other,
+                "comparisonDemCandidatePresent": comparison_dem > 0,
+                "comparisonRepCandidatePresent": comparison_rep > 0,
+                "sourceId": source.id,
+            }
+        )
+
+        turnout_record = turnout.get(town_id)
+        if not turnout_record:
+            raise ValueError(f"Connecticut EMS town {town_name} is missing turnout metadata")
+        registered_voters = int_text(turnout_record.get("EV"))
+        voters_checked = int_text(turnout_record.get("VV"))
+        turnout_rows.append(
+            {
+                "county": county,
+                "localUnit": town_name,
+                "level": turnout_section.get("sourceLevel", "town"),
+                "ballotsCast": voters_checked,
+                "registeredVoters": registered_voters,
+                "turnoutPct": pct(voters_checked, registered_voters),
+                "denominatorType": turnout_section.get("denominatorType", "registeredVoters"),
+                "registrationDenominatorTiming": turnout_section.get(
+                    "registrationDenominatorTiming",
+                    "emsReported",
+                ),
+                "warningRequired": bool(turnout_section.get("warningRequired", True)),
+                "sourceId": source.id,
+            }
+        )
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": review_section.get("comparisonContest", ""),
+        "nativeComparisonDemVotes": sum(row["comparisonDemVotes"] for row in review_rows),
+        "nativeComparisonRepVotes": sum(row["comparisonRepVotes"] for row in review_rows),
+        "nativeComparisonOtherVotes": sum(row["comparisonOtherVotes"] for row in review_rows),
+        "nativeTurnoutRows": len(turnout_rows),
+        "nativeRegisteredVoters": sum(row["registeredVoters"] for row in turnout_rows),
+        "nativeBallotsCast": sum(row["ballotsCast"] for row in turnout_rows),
+        "nativeTurnoutParser": turnout_section.get("format", "connecticutEmsTownJson"),
+        "nativeTurnoutWarningRows": sum(1 for row in turnout_rows if row["warningRequired"]),
+    }
+    return result_rows, review_rows, turnout_rows, metrics
+
+
 MARYLAND_VOTE_COLUMNS = [
     "Early Votes",
     "Election Night Votes",
@@ -2128,7 +2291,13 @@ def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig
             state = str(row.get("state") or "").strip().upper()
             if state != config.code:
                 raise ValueError(f"Historical baseline row {index} has wrong state: {row.get('state')!r}")
-            county = _nevada_jurisdiction_name(row.get("jurisdiction_name")) if config.code == "NV" else _county_name(row.get("jurisdiction_name"))
+            county = (
+                _nevada_jurisdiction_name(row.get("jurisdiction_name"))
+                if config.code == "NV"
+                else _rhode_island_jurisdiction_name(row.get("jurisdiction_name"))
+                if config.code == "RI"
+                else _county_name(row.get("jurisdiction_name"))
+            )
             if not county:
                 raise ValueError(f"Historical baseline row {index} is missing jurisdiction_name")
             rows.append(
@@ -6114,6 +6283,293 @@ def _massachusetts_pd43_rows(
     return result_rows, review_rows, turnout_rows, metrics
 
 
+
+MAINE_COUNTY_CODES = {
+    "AND": "Androscoggin County",
+    "ARO": "Aroostook County",
+    "CUM": "Cumberland County",
+    "FRA": "Franklin County",
+    "HAN": "Hancock County",
+    "KEN": "Kennebec County",
+    "KNO": "Knox County",
+    "LIN": "Lincoln County",
+    "OXF": "Oxford County",
+    "PEN": "Penobscot County",
+    "PIS": "Piscataquis County",
+    "SAG": "Sagadahoc County",
+    "SOM": "Somerset County",
+    "WAL": "Waldo County",
+    "WAS": "Washington County",
+    "YOR": "York County",
+}
+
+
+def _maine_county_name(code: Any) -> str:
+    value = str(code or "").strip().upper()
+    if not value:
+        return ""
+    return MAINE_COUNTY_CODES.get(value, _county_name(value))
+
+
+def _maine_local_key(value: Any) -> str:
+    text = " ".join(str(value or "").strip().lower().replace("&", "and").split())
+    text = text.replace("'", "")
+    text = re.sub(r"\bst\.\s*", "st ", text)
+    text = re.sub(r"\bsaint\b", "st", text)
+    text = re.sub(r"\bplantation\b", "plt", text)
+    text = re.sub(r"\btownship\b", "twp", text)
+    text = re.sub(r"\btwps\b", "twp", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    if "/" in text and text.endswith(" twp"):
+        text = text.removesuffix(" twp")
+    return text
+
+
+def _maine_row_is_total(label: str) -> bool:
+    lower = label.lower()
+    return " total" in lower or lower.startswith("total:")
+
+
+def _maine_presidential_values(row: list[Any]) -> dict[str, int]:
+    harris = int_text(row[2] if len(row) > 2 else 0)
+    trump = int_text(row[5] if len(row) > 5 else 0)
+    other = sum(int_text(row[index] if len(row) > index else 0) for index in (3, 4, 6, 7))
+    return {"harris": harris, "trump": trump, "other": other, "total": harris + trump + other}
+
+
+def _maine_senate_values(row: list[Any]) -> dict[str, int]:
+    dem = int_text(row[3] if len(row) > 3 else 0)
+    rep = int_text(row[5] if len(row) > 5 else 0)
+    other = int_text(row[2] if len(row) > 2 else 0) + int_text(row[4] if len(row) > 4 else 0)
+    return {"dem": dem, "rep": rep, "other": other, "total": dem + rep + other}
+
+
+def _maine_2024_rows_by_kind(source: SourceConfig, sheet_name: str) -> list[tuple[str, str, str, list[Any]]]:
+    rows = read_xlsx_sheet(_artifact_path(source), sheet_name)
+    parsed: list[tuple[str, str, str, list[Any]]] = []
+    county_code = ""
+    for row in rows[3:]:
+        if not row:
+            continue
+        raw_code = str(row[0] if len(row) > 0 else "").strip()
+        label = str(row[1] if len(row) > 1 else "").strip()
+        if raw_code:
+            county_code = raw_code
+        if not label:
+            continue
+        lower = label.lower()
+        if "statewide" in lower:
+            kind = "statewide"
+        elif "uocava" in lower:
+            kind = "uocava"
+        elif _maine_row_is_total(label):
+            kind = "county_total"
+        else:
+            kind = "town"
+        parsed.append((kind, county_code, label, row))
+    return parsed
+
+
+def _maine_historical_values(row: list[Any], year: int) -> dict[str, int]:
+    if year == 2020:
+        dem = int_text(row[2] if len(row) > 2 else 0)
+        rep = int_text(row[6] if len(row) > 6 else 0)
+        other = sum(int_text(row[index] if len(row) > index else 0) for index in (3, 4, 5, 7))
+    elif year == 2016:
+        dem = int_text(row[2] if len(row) > 2 else 0)
+        rep = int_text(row[5] if len(row) > 5 else 0)
+        other = sum(int_text(row[index] if len(row) > index else 0) for index in (3, 4, 6, 7, 8, 9))
+    else:
+        raise ValueError(f"unsupported Maine historical year: {year}")
+    return {"dem": dem, "rep": rep, "other": other, "total": dem + rep + other}
+
+
+def _maine_historical_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("historicalBaselines", {})
+    if section.get("format") != "maineSosHistoricalPresidentXlsx":
+        return [], {"nativeHistoricalRows": 0}
+
+    historical_rows: list[dict[str, Any]] = []
+    for source_config in section.get("workbooks", []):
+        year = int_text(source_config.get("year"))
+        source = sources[source_config["sourceId"]]
+        sheet_name = source_config["sheetName"]
+        rows = read_xlsx_sheet(_artifact_path(source), sheet_name)
+        county_code = ""
+        emitted_counties: set[str] = set()
+        town_totals: dict[str, dict[str, int]] = {}
+        start_index = 2 if year == 2016 else 3
+        for row in rows[start_index:]:
+            if not row:
+                continue
+            raw_code = str(row[0] if len(row) > 0 else "").strip()
+            label = str(row[1] if len(row) > 1 else "").strip()
+            if raw_code:
+                county_code = raw_code
+            if not label:
+                continue
+            lower = label.lower()
+            if "statewide" in lower or "grand totals" in lower:
+                continue
+            is_uocava = "uocava" in lower
+            values = _maine_historical_values(row, year)
+            if not is_uocava and not _maine_row_is_total(label):
+                county_total = town_totals.setdefault(county_code, {"dem": 0, "rep": 0, "other": 0, "total": 0})
+                for key in county_total:
+                    county_total[key] += values[key]
+                continue
+            jurisdiction = "State UOCAVA" if is_uocava else _maine_county_name(county_code)
+            if not jurisdiction or not values["total"]:
+                continue
+            if not is_uocava:
+                emitted_counties.add(county_code)
+            historical_rows.append(
+                {
+                    "electionYear": year,
+                    "sourceId": source.id,
+                    "sourceLevel": "non_geographic" if is_uocava else "county",
+                    "rowMethod": "maineSosHistoricalPresidentXlsx",
+                    "jurisdictionName": jurisdiction,
+                    "localUnit": jurisdiction,
+                    "demVotes": values["dem"],
+                    "repVotes": values["rep"],
+                    "otherVotes": values["other"],
+                    "totalVotes": values["total"],
+                    "sourceUrl": source.url,
+                    "sourceDocumentId": source.id,
+                }
+            )
+        for missing_code, values in sorted(town_totals.items()):
+            if missing_code in emitted_counties or not values["total"]:
+                continue
+            jurisdiction = _maine_county_name(missing_code)
+            historical_rows.append(
+                {
+                    "electionYear": year,
+                    "sourceId": source.id,
+                    "sourceLevel": "county",
+                    "rowMethod": "maineSosHistoricalPresidentXlsxAggregatedCounty",
+                    "jurisdictionName": jurisdiction,
+                    "localUnit": jurisdiction,
+                    "demVotes": values["dem"],
+                    "repVotes": values["rep"],
+                    "otherVotes": values["other"],
+                    "totalVotes": values["total"],
+                    "sourceUrl": source.url,
+                    "sourceDocumentId": source.id,
+                }
+            )
+
+    expected_rows = int_text(section.get("expected", {}).get("rowCount"))
+    if expected_rows and len(historical_rows) != expected_rows:
+        raise ValueError(f"Maine historical baseline expected {expected_rows} rows, got {len(historical_rows)}")
+    years = sorted({row["electionYear"] for row in historical_rows})
+    return historical_rows, {
+        "nativeHistoricalRows": len(historical_rows),
+        "nativeHistoricalYears": years,
+        "nativeHistoricalWarning": section.get("warning", ""),
+    }
+
+
+def _maine_sos_xlsx_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    certified_section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    president_source = sources[certified_section["sourceId"]]
+    senate_source = sources[review_section["sourceId"]]
+
+    president_rows = _maine_2024_rows_by_kind(
+        president_source,
+        certified_section.get("sheetName", "President & VP"),
+    )
+    senate_rows = _maine_2024_rows_by_kind(
+        senate_source,
+        review_section.get("sheetName", "UNITED STATES SENATOR"),
+    )
+
+    result_rows: list[dict[str, Any]] = []
+    for kind, county_code, _label, row in president_rows:
+        if kind not in {"county_total", "uocava"}:
+            continue
+        values = _maine_presidential_values(row)
+        jurisdiction = "State UOCAVA" if kind == "uocava" else _maine_county_name(county_code)
+        result_rows.append(
+            {
+                "jurisdictionName": jurisdiction,
+                "jurisdictionCode": jurisdiction.upper().replace(" COUNTY", "").replace(" ", "-"),
+                "level": "non_geographic" if kind == "uocava" else "county",
+                "votes": {
+                    "Trump": values["trump"],
+                    "Harris": values["harris"],
+                    "Other": values["other"],
+                },
+                "totalVotes": values["total"],
+                "margin": values["trump"] - values["harris"],
+                "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+                "sourceId": president_source.id,
+            }
+        )
+
+    senate_by_key: dict[tuple[str, str], dict[str, int]] = {}
+    for kind, county_code, label, row in senate_rows:
+        if kind != "town":
+            continue
+        senate_by_key[(county_code, _maine_local_key(label))] = _maine_senate_values(row)
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    for kind, county_code, label, row in president_rows:
+        if kind != "town":
+            continue
+        values = _maine_presidential_values(row)
+        if not values["total"]:
+            continue
+        senate = senate_by_key.get((county_code, _maine_local_key(label)))
+        if senate:
+            comparison_rows += 1
+        county = _maine_county_name(county_code)
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": label,
+                "totalVotes": values["total"],
+                "harris": values["harris"],
+                "trump": values["trump"],
+                "harrisShare": pct(values["harris"], values["total"]),
+                "trumpShare": pct(values["trump"], values["total"]),
+                "demDropoff": pct(values["harris"] - senate["dem"], values["total"]) if senate else 0,
+                "repDropoff": pct(values["trump"] - senate["rep"], values["total"]) if senate else 0,
+                "coverageMode": "presidentVsSenate" if senate else "voteShareOnly",
+                "comparisonContest": review_section.get("comparisonContest", "United States Senator") if senate else "",
+                "comparisonDemVotes": senate["dem"] if senate else 0,
+                "comparisonRepVotes": senate["rep"] if senate else 0,
+                "comparisonOtherVotes": senate["other"] if senate else 0,
+                "sourceId": senate_source.id if senate else president_source.id,
+            }
+        )
+
+    turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+    historical_rows, historical_metrics = _maine_historical_rows(config, sources)
+    certified_total = sum(row["totalVotes"] for row in result_rows)
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": certified_total,
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": review_section.get("comparisonContest", "United States Senator"),
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in review_rows),
+        "nativeReviewCertifiedVoteGap": certified_total - sum(row["totalVotes"] for row in review_rows),
+        **turnout_metrics,
+        **historical_metrics,
+    }
+    return result_rows, sorted(review_rows, key=lambda item: (item["county"], item["localUnit"])), turnout_rows, historical_rows, metrics
+
 def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     checks = {
         "nativeResultRows": config.expected.result_rows,
@@ -6172,6 +6628,17 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "metrics": metrics,
         }
 
+    if config.code == "CT" and config.raw.get("certifiedResults", {}).get("format") == "connecticutEmsTownJson":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _connecticut_ems_town_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeConnecticutEmsTownJson",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
     if config.code == "SC" and config.raw.get("certifiedResults", {}).get("format") == "southCarolinaElectionHistoryCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _south_carolina_election_history_rows(config, sources)
@@ -6316,6 +6783,19 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "ME" and config.raw.get("certifiedResults", {}).get("format") == "maineSosCountyTownXlsx":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, historical_rows, metrics = _maine_sos_xlsx_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeMaineSosCountyTownXlsx",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
             "metrics": metrics,
         }
 
@@ -6574,6 +7054,26 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "turnoutRows": turnout_rows,
             "metrics": metrics,
         }
+    if config.code == "RI" and config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(
+            config,
+            sources,
+            missing_label="Rhode Island BOE official results",
+            county_normalizer=_rhode_island_jurisdiction_name,
+        )
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeRhodeIslandBoeCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
+
     if config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(

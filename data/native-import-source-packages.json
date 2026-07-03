@@ -9,9 +9,11 @@
     "County-only presidential/result tables are not sufficient for comparable advisory flag generation; each review-capable state needs President plus a same-row comparison contest at precinct, ward, town, or equivalent local reporting-unit level."
   ],
   "completedNativeStates": [
+    "AL",
     "AR",
     "AZ",
     "CA",
+    "CT",
     "DE",
     "FL",
     "GA",
@@ -23,6 +25,7 @@
     "LA",
     "MA",
     "MD",
+    "ME",
     "MI",
     "MN",
     "MO",
@@ -36,6 +39,7 @@
     "OK",
     "OR",
     "PA",
+    "RI",
     "SC",
     "TX",
     "UT",
@@ -46,6 +50,88 @@
   ],
   "blockedStates": [],
   "states": [
+    {
+      "state": "AL",
+      "name": "Alabama",
+      "priority": 0,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_historical_context",
+      "authority": "Alabama Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/al.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Alabama Secretary of State 2024 General Precinct Level Results ZIP",
+          "sourceUrl": "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
+          "localFile": "data/al-2024-general-precinct-level-results.zip; data/al-2024-general-president.csv",
+          "parserHint": "Run npm run etl:prepare:al. scripts/normalize-al-sos-results.mjs unzips 67 county XLS matrices and writes county President rows to data/al-2024-general-president.csv."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Alabama Secretary of State 2024 General Precinct Level Results ZIP",
+          "sourceUrl": "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
+          "localFile": "data/al-2024-local-review.csv",
+          "level": "precinct_reporting_mode_column",
+          "comparisonContest": "U.S. House",
+          "parserHint": "Generated from the same official ZIP. President and U.S. House rows are paired for county XLS columns with explicit nonzero House coverage; U.S. House is district-based and no 2024 AL U.S. Senate race existed."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback plus Alabama SOS turnout/registration leads",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv; data/al-2024-general-total-ballots-cast.pdf; data/al-2024-registered-voters.xlsx; data/al-2024-turnout-denominator-lead.csv",
+          "level": "jurisdiction_fallback_active_county_lead_collected",
+          "denominator": "Active ETL uses EAC registered voters. The ALVR November active-voter workbook is retained as a state-native denominator lead only.",
+          "parserHint": "Current ETL uses eacTurnoutCsv. The generated turnout lead pairs precinct-ZIP ballots-cast rows with November ALVR active voters but is not active until SOS PDF/ALVR denominator timing is reconciled."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Alabama Secretary of State official 2012/2016/2020 presidential artifacts",
+          "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
+          "localFile": "data/al-president-general-1976-2012.xls; data/al-2016-general-precinct-level.zip; data/al-2020-general-precinct-results.zip; data/al-historical-presidential-baseline.csv",
+          "parserHint": "scripts/normalize-al-sos-results.mjs writes 201 county historical presidential rows from official SOS artifacts."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2701%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/al-counties.geojson",
+          "parserHint": "County map joins only; precinct geometry/crosswalks are not loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Alabama 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
+          "localFile": "data/al-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded official artifacts and remaining turnout replacement, precinct geometry, audit, CVR, recount, incident, correction, and litigation gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Alabama 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/1",
+          "localFile": "data/al-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 67,
+        "geometryFeatures": 67,
+        "stateTotal": 2265090,
+        "trump": 1462616,
+        "harris": 772412,
+        "other": 30062,
+        "localReviewRows": 2083,
+        "turnoutRows": 67,
+        "historicalBaselineRows": 201
+      },
+      "caveats": [
+        "Review rows are official President-versus-U.S.-House pairs, but U.S. House is district-based and should be treated as directional source-review context, not candidate-benefit findings.",
+        "Active turnout remains EAC fallback: 67 jurisdiction rows, 2,272,911 ballots cast, and 3,868,040 registered voters. The generated Alabama turnout lead is not active because the precinct-ZIP ballots-cast sum is 2,272,731, 180 lower than the active EAC/SOS fallback total, and ALVR denominator timing needs review.",
+        "County geometry is loaded; precinct boundaries/crosswalks are not loaded.",
+        "No normalized Alabama audit, CVR availability, recount, incident, correction, or litigation rows are loaded."
+      ],
+      "legacyReferenceBundle": "data/al-app-data.js",
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_precinct_reporting_mode_columns",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_native_leads_collected",
+        "historicalMode": "official_sos_county_baseline_context_2012_2016_2020",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      }
+    },
     {
       "state": "AR",
       "name": "Arkansas",
@@ -1625,6 +1711,244 @@
       ]
     },
     {
+      "state": "ME",
+      "name": "Maine",
+      "priority": 13,
+      "nativeReadiness": "complete_county_map_town_review_eac_turnout_partial_historical",
+      "authority": "Maine Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context",
+      "configFile": "etl/state-configs/me.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Maine SOS 2024 President and Vice President by County/Town corrected final workbook",
+          "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+          "localFile": "data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx",
+          "parserHint": "maineSosCountyTownXlsx reads sheet President & VP; use county total rows plus State UOCAVA as non-geographic certified result row; candidate totals exclude blanks."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Maine SOS 2024 United States Senator corrected final workbook",
+          "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
+          "localFile": "data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx",
+          "level": "town",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Pair town rows by county code and normalized municipality label; leave Medway/Twps, Day Block Twp, and Wesley as vote-share-only because Senate grain differs."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Maine SOS official 2016 and 2020 President workbooks; 2012 XLS retained as blocked provenance",
+          "localFile": "data/me-official-sources/me-2016-president.xlsx; data/me-official-sources/me-2020-president-county-town.xlsx; data/me-official-sources/me-2012-president-county.xls; data/me-official-sources/me-2012-president-municipal.xls",
+          "parserHint": "maineSosHistoricalPresidentXlsx loads 34 county/non-geographic rows for 2016 and 2020. 2012 requires legacy XLS support or conversion."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "localFile": "data/me-counties.geojson",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2723%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Maine 2024 data coverage and administration source inventory",
+          "localFile": "data/me-2024-data-coverage-inventory.json"
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Maine 2024 equipment context",
+          "localFile": "data/me-2024-equipment-context.csv"
+        }
+      },
+      "expected": {
+        "countyRows": 17,
+        "geometryFeatures": 16,
+        "stateTotal": 831375,
+        "trump": 377977,
+        "harris": 435652,
+        "other": 17746,
+        "localReviewRows": 512,
+        "comparisonRows": 509,
+        "turnoutRows": 497,
+        "historicalBaselineRows": 34
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_town_with_uocava_excluded",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalBaselineMode": "official_2016_2020_sos_workbooks_2012_xls_blocked"
+      },
+      "caveats": [
+        "State UOCAVA is a non-geographic certified result row; it is not mapped and is excluded from town review joins.",
+        "Medway/Twps, Day Block Twp, and Wesley are vote-share-only rows because the Senate workbook combines or labels those units at a different grain.",
+        "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff metrics are directional source-review inputs only.",
+        "Turnout remains EAC fallback until Maine-native ballots-cast or voter-participation rows are collected and reconciled with SOS registration/enrollment files.",
+        "2012 official historical XLS artifacts are collected but not loaded until legacy XLS support or conversion is added.",
+        "Municipality geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows remain unloaded."
+      ],
+      "legacyReferenceBundle": "data/me-2024-data-coverage-inventory.json"
+    },
+    {
+      "state": "CT",
+      "name": "Connecticut",
+      "priority": 15,
+      "nativeReadiness": "complete_town_ems_result_review_warning_turnout_geometry_lead_sov_reconciliation_caveat",
+      "authority": "Connecticut Secretary of the State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context",
+      "configFile": "etl/state-configs/ct.json",
+      "artifacts": {
+        "localReviewRows": {
+          "sourceTitle": "Connecticut Secretary of the State EMS election 91/version 80741 townVotes static JSON",
+          "sourceUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
+          "localFile": "data/ct-2024-ems-election-91-version-80741",
+          "level": "town",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Pair office 16518 President with office 16524 U.S. Senator at EMS town grain; fuse Christopher S. Murphy Democratic candidate 35495 and Working Families candidate 35860 by person; Republican Corey candidate 35830."
+        },
+        "turnout": {
+          "sourceTitle": "Connecticut Secretary of the State EMS voterTurnout static JSON",
+          "sourceUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/voterTurnout_Electiondata.json",
+          "localFile": "data/ct-2024-ems-election-91-version-80741",
+          "level": "town",
+          "denominator": "EMS EV registered/elector field",
+          "ballotsCast": "EMS VV voters checked field; warning-required pending EMS/SOV/EAC semantics review"
+        },
+        "statementOfVoteCrossCheck": {
+          "sourceTitle": "2024 Connecticut Statement of Vote PDF",
+          "sourceUrl": "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
+          "localFile": "data/ct-2024-statement-of-vote.pdf",
+          "parserHint": "Required reconciliation source before production promotion or certified-total language."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Connecticut 2024 data coverage and administration source inventory",
+          "localFile": "data/ct-2024-data-coverage-inventory.json",
+          "parserHint": "Documents EMS/SOV reconciliation caveat, town geometry/crosswalk QA, historical source leads, and remaining admin request paths."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Connecticut 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/9",
+          "localFile": "data/ct-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        },
+        "presidentialCountyResults": {
+          "sourceTitle": "Connecticut Secretary of the State EMS election 91/version 80741 townVotes static JSON",
+          "sourceUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
+          "localFile": "data/ct-2024-ems-election-91-version-80741",
+          "parserHint": "Despite the legacy key name, this is a town-level Connecticut EMS package. connecticutEmsTownJson reads Lookupdata.json and townVotes_Electiondata.json office 16518; Harris candidate 35838, Trump candidate 35839, all other presidential candidates as Other."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb Current county-subdivision layer 22",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/22/query?where=STATE%3D%2709%27&outFields=GEOID,STATE,COUNTY,COUSUB,NAME,BASENAME,COUSUBNS&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ct-town-mcds.geojson",
+          "nameProperty": "BASENAME",
+          "codeProperty": "COUSUB",
+          "parserHint": "Despite the legacy key name, this is town/MCD geometry. Raw layer has 174 features; filter five COUSUB=00000 placeholder rows and QA EMS town-name joins before map promotion."
+        }
+      },
+      "expected": {
+        "townRows": 169,
+        "stateTotal": 1759010,
+        "trump": 736918,
+        "harris": 992053,
+        "other": 30039,
+        "localReviewRows": 169,
+        "turnoutRows": 169,
+        "turnoutBallotsCast": 1788981,
+        "turnoutRegisteredVoters": 2348545,
+        "countyRows": 169,
+        "geometryFeatures": 169
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_town_rows_cross_endorsed_lines_fused",
+        "turnoutMode": "ems_town_ev_vv_warning_required",
+        "geometryStatus": "town_mcd_raw_collected_crosswalk_qa_needed"
+      },
+      "caveats": [
+        "EMS townVotes rows reconcile to EMS stateVotes, but the official Statement of Vote PDF remains a required reconciliation source before production promotion or certified-total language.",
+        "U.S. Senate comparison rows fuse Christopher S. Murphy Democratic and Working Families ballot lines by person; keep cross-endorsement caveats visible.",
+        "EMS turnout uses EV and VV fields and all rows are warning-required pending EMS/SOV/EAC denominator and ballots-cast semantics review.",
+        "Town/MCD geometry is collected from Census TIGERweb, but five placeholder features must be filtered and EMS town-name joins QAed before map promotion.",
+        "Precinct/ward candidate vote rows, CVR availability, official historical baselines, and normalized audit/recount/CVR/incident/correction/litigation rows remain source-collection gaps."
+      ],
+      "legacyReferenceBundle": "data/ct-2024-data-coverage-inventory.json"
+    },
+    {
+      "state": "RI",
+      "name": "Rhode Island",
+      "priority": 14,
+      "nativeReadiness": "loaded_city_town_review_eac_turnout_partial_historical",
+      "authority": "Rhode Island Board of Elections; U.S. Election Assistance Commission",
+      "configFile": "etl/state-configs/ri.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Rhode Island BOE 2024 General Election long-format ZIP plus statewide JSON",
+          "sourceUrl": "https://www.ri.gov/election/results/2024/general_election/data/",
+          "localFile": "data/ri-2024-general-president-city-town.csv",
+          "parserHint": "Generated by scripts/normalize-ri-boe-results.mjs; 41 rows include 39 cities/towns, Federal Precincts, and a posted-total reconciliation delta."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Rhode Island BOE 2024 General Election long-format ZIP President and U.S. Senate rows",
+          "sourceUrl": "https://www.ri.gov/election/results/2024/general_election/data/rigen2024l.zip",
+          "localFile": "data/ri-2024-general-president-senate-review.csv",
+          "level": "reporting_unit",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "444 nonzero same-key President-versus-U.S.-Senate review rows; zero-vote Limited rows and presidential-only rows are excluded from review pairing."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 Rhode Island jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb Rhode Island county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2744%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ri-counties.geojson",
+          "parserHint": "County geometry exists, but RI map capability remains disabled because loaded result rows are city/town/federal/reconciliation rows without result-ready geometry."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Official RI.gov 2012 and 2016 historical presidential baseline rows",
+          "sourceUrl": "https://www.ri.gov/election/results/",
+          "localFile": "data/ri-historical-presidential-baseline.csv",
+          "parserHint": "80 rows for 2012 and 2016; 2020 archive artifacts are collected but not loaded because the vote-group layout needs a follow-up parser."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Rhode Island 2024 data coverage and administration source inventory",
+          "localFile": "data/ri-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded BOE artifacts, ZIP-vs-posted deltas, EAC turnout fallback, partial historical baselines, geometry/admin blockers, and request paths."
+        }
+      },
+      "expected": {
+        "countyRows": 41,
+        "geometryFeatures": 5,
+        "stateTotal": 513386,
+        "trump": 214406,
+        "harris": 285156,
+        "other": 13824,
+        "localReviewRows": 444,
+        "turnoutRows": 39,
+        "historicalBaselineRows": 80
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_same_key_rows_with_zip_delta_caveat",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalBaselineMode": "official_2012_2016_city_town_federal_rows_2020_blocked"
+      },
+      "caveats": [
+        "The raw technical ZIP is 32 President votes and 29 U.S. Senate votes below posted statewide JSON; the normalized President package includes a non-geographic reconciliation delta.",
+        "Review rows are advisory source-review context only and exclude zero-vote Limited rows, presidential-only rows, and posted-total deltas.",
+        "Turnout remains EAC fallback until state-native denominator rows are collected and reconciled.",
+        "Map capability remains disabled until result-ready city/town or precinct geometry/crosswalks are loaded.",
+        "2020 historical archive artifacts are collected but not loaded until the alternate vote-group layout is decoded and reconciled.",
+        "Normalized audit/recount/CVR/incident/correction/litigation rows are not loaded."
+      ],
+      "legacyReferenceBundle": "data/ri-2024-data-coverage-inventory.json"
+    },
+    {
       "state": "DE",
       "name": "Delaware",
       "priority": 13,
@@ -1695,150 +2019,6 @@
     }
   ],
   "sourceDiscoveryQueue": [
-    {
-      "state": "RI",
-      "name": "Rhode Island",
-      "priority": 14,
-      "currentStatus": "official_result_zip_json_and_us_senate_leads_documented_eac_turnout_only_active",
-      "requestMatrixArtifact": "data/ri-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.ri.gov/election/results/2024/general_election/",
-        "https://www.ri.gov/election/results/2024/general_election/data/",
-        "https://www.ri.gov/election/results/2024/general_election/races/1.html",
-        "https://www.ri.gov/election/results/2024/general_election/races/2.html",
-        "https://www.eac.gov/research-and-data/studies-and-reports",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/44"
-      ],
-      "requiredArtifacts": [
-        "official RI BOE long-format 2024 General Election ZIP collected into data/",
-        "official statewide and city/town JSON artifacts or manifest collected into data/",
-        "Rhode Island BOE parser for certified President rows and same-grain U.S. Senate review rows",
-        "state-native turnout and registration denominator artifact or documented source-side blocker before replacing EAC fallback",
-        "official city/town, precinct, or district geometry plus result-label crosswalk",
-        "official 2020, 2016, and 2012 historical presidential baseline artifacts normalized from RI.gov archive routes",
-        "normalized audit, recount, CVR availability, incident, correction, and litigation rows if published or request-produced",
-        "data/ri-2024-data-coverage-inventory.json and data/ri-2024-source-request-matrix.tsv as the current source-search handoff"
-      ],
-      "preferredComparisonContest": "U.S. Senate from the official 2024 General Election ZIP/JSON source family; U.S. House is district-based fallback context only.",
-      "parserNeeded": "Rhode Island remains EAC-turnout-only. A RI BOE ZIP/JSON parser should read the official long-format result ZIP and/or statewide/city-town JSON, load certified President rows, pair same-grain U.S. Senate rows for review, and reconcile posted statewide totals of 513,386 President votes and 491,948 Senate votes before any advisory rows are enabled.",
-      "blocker": "RI should remain in sourceDiscoveryQueue and out of completedNativeStates because no official Rhode Island result or review rows are loaded. The official RI.gov Board of Elections results app exposes machine-readable ZIP and JSON leads, but the source artifacts are not committed, parser/reconciliation work is not implemented, turnout remains EAC fallback, geometry/crosswalks are missing, historical baselines are not normalized, and audit/CVR/recount/incident/correction/litigation rows are source paths only.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "Rhode Island 2024 data coverage and administration source inventory",
-          "sourceUrl": "https://www.ri.gov/election/results/2024/general_election/data/",
-          "localFile": "data/ri-2024-data-coverage-inventory.json",
-          "parserHint": "Inventory only; documents official BOE result ZIP/JSON leads, U.S. Senate comparison lead, EAC fallback turnout, geometry and historical leads, equipment context, and admin request paths without loading result/review rows."
-        },
-        "sourceRequestMatrix": {
-          "sourceTitle": "Rhode Island 2024 source request matrix",
-          "sourceUrl": "https://www.ri.gov/election/results/2024/general_election/data/",
-          "localFile": "data/ri-2024-source-request-matrix.tsv",
-          "parserHint": "Context-only request queue for parser work, turnout replacement, historical baselines, geometry/crosswalks, and administration artifacts."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv",
-          "level": "jurisdiction",
-          "denominator": "EAC A1a Total Reg registered voters",
-          "parserHint": "Current active RI parser remains eacTurnoutCsv with 39 jurisdiction rows."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier Rhode Island 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/44",
-          "localFile": "data/ri-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "AL",
-      "name": "Alabama",
-      "priority": 0,
-      "currentStatus": "official_precinct_xls_zip_and_turnout_registration_historical_admin_source_leads_documented_eac_turnout_only_active",
-      "requestMatrixArtifact": "data/al-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
-        "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
-        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/2024GeneralElectionTotalBallotsCast.pdf",
-        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/ALVR-2024.xlsx",
-        "https://www.sos.alabama.gov/public-records-request",
-        "https://www.sos.alabama.gov/city-county-lookup"
-      ],
-      "requiredArtifacts": [
-        "official 2024 precinct XLS ZIP collected into data/ before enabling native President/review rows",
-        "district-aware Alabama SOS precinct XLS matrix parser for President plus U.S. House rows",
-        "state-native total-ballots and registration artifacts parsed and reconciled before replacing EAC fallback turnout",
-        "official precinct boundary geometry or crosswalk for subcounty maps",
-        "official 2012/2016/2020 Alabama historical baseline artifacts and parser",
-        "normalized audit, CVR availability, recount, incident, correction, and litigation artifacts if published or request-produced"
-      ],
-      "preferredComparisonContest": "U.S. House by district, because Alabama had no 2024 U.S. Senate race; keep district-based comparison caveats visible.",
-      "parserNeeded": "A future Alabama SOS precinct XLS matrix parser should unzip 67 county XLS files, pivot contest rows by precinct/absentee/provisional columns, aggregate President totals, and pair U.S. House rows only where district cells are present. Current etl/state-configs/al.json remains turnout-only EAC fallback.",
-      "blocker": "Wave 14 identified an official Alabama SOS 2024 precinct-results ZIP and inspected it temporarily: 67 county XLS files, worksheet Precinct Results, 2,085 precinct/absentee/provisional columns, President total 2,265,090 with Trump 1,462,616, Harris 772,412, and Other 30,062. No native Alabama result or review rows were loaded because the matrix needs a district-aware parser for split U.S. House rows. State-native turnout/registration, historical baselines, precinct geometry/crosswalks, and administration-context records remain source leads or request paths documented in data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "Alabama 2024 data coverage and source request inventory",
-          "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
-          "localFile": "data/al-2024-data-coverage-inventory.json",
-          "parserHint": "Source inventory only; no Alabama native result/review rows are loaded."
-        },
-        "turnout": {
-          "sourceTitle": "EAC fallback plus Alabama SOS turnout/registration leads",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv; data/al-2024-data-coverage-inventory.json",
-          "level": "jurisdiction_fallback",
-          "denominator": "EAC registered voters for loaded rows; Alabama SOS total-ballots and ALVR files are state-native leads only",
-          "parserHint": "Current ETL uses eacTurnoutCsv. A future normalizer should collect SOS turnout/registration artifacts and reconcile denominator timing before replacement."
-        },
-        "countyBoundary": {
-          "sourceTitle": "U.S. Census TIGERweb county geography",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2701%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/al-counties.geojson",
-          "parserHint": "County map joins only; precinct geometry/crosswalks are not loaded."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier Alabama 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/1",
-          "localFile": "data/verifiedvoting-al-2024-equipment.json; data/al-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "CT",
-      "name": "Connecticut",
-      "priority": 1,
-      "currentStatus": "official_ems_town_results_turnout_leads_identified_parser_not_loaded",
-      "requestMatrixArtifact": "data/ct-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://ctemspublic.tgstg.net/",
-        "https://ctemspublic.tgstg.net/ng-app/data/Elections.json",
-        "https://ctemspublic.tgstg.net/ng-app/data/election/91/Version.json",
-        "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
-        "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/voterTurnout_Electiondata.json",
-        "https://portal.ct.gov/sots/election-services/election-results/election-results",
-        "https://portal.ct.gov/sots/election-services/statement-of-vote-pdfs/general-elections-statement-of-vote-1922?archived=true",
-        "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
-        "https://electionhistory.ct.gov/",
-        "https://portal.ct.gov/sots/election-services/statistics-and-data/statistics-and-data",
-        "https://voter.engr.uconn.edu/audits-2/",
-        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer"
-      ],
-      "requiredArtifacts": [
-        "official CT EMS static JSON artifacts for election 91/version 80741, including Lookupdata, stateVotes, townVotes, voterTurnout, reports, and officePrecincts files",
-        "official 2024 Statement of Vote PDF retained or extracted as a reconciliation source before loading native CT result rows",
-        "normalized town President rows and same-grain U.S. Senate comparison rows after EMS/SOV reconciliation",
-        "state-native town turnout rows after EMS voterTurnout and Statement of Vote turnout/registration semantics are reviewed against EAC fallback",
-        "Census TIGERweb town/MCD geometry and EMS town-name crosswalk for map joins",
-        "precinct/ward candidate vote export, CVR availability record, or official records-request response if sub-town review is required",
-        "official 2012, 2016, and 2020 town historical presidential baseline artifacts from Statement of Vote, Election History, or EMS archives",
-        "normalized post-election audit, CVR availability, recount, correction, incident, and litigation context rows if published or request-produced"
-      ],
-      "preferredComparisonContest": "U.S. Senate, available at the same EMS town grain as President; keep Connecticut cross-endorsed ballot-line fusion caveats visible.",
-      "parserNeeded": "A Connecticut EMS static JSON parser should join Lookupdata candidate/office metadata with townVotes_Electiondata.json for office 16518 President and office 16524 U.S. Senator; normalize stateVotes/townVotes totals; and reconcile with the 2024 Statement of Vote PDF before loading. A turnout parser should review voterTurnout_Electiondata.json EV/VV/ABR/ABC/EBR/EBC/EDR/EDC semantics before replacing EAC fallback.",
-      "blocker": "Current CT config remains turnout-only EAC fallback. Official EMS exposes 169 town President and U.S. Senate rows, town turnout fields, and 759 polling-place labels, but no parser/local artifacts are loaded. EMS town totals produce 1,759,010 presidential votes, while the 2024 Statement of Vote PDF text summaries reviewed in Wave 14 show different presidential totals; reconcile that official-source discrepancy before promotion. Town geometry and precinct/ward vote rows/CVR availability remain uncollected."
-    },
     {
       "state": "IN",
       "name": "Indiana",
@@ -2652,56 +2832,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/54",
           "localFile": "data/wv-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes or turnout."
-        }
-      }
-    },
-    {
-      "state": "ME",
-      "name": "Maine",
-      "priority": 13,
-      "currentStatus": "official_excel_source_leads_documented_eac_turnout_only",
-      "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20by%20Congressional%20District%202024.xlsx",
-        "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
-        "https://www.maine.gov/sos/elections-voting/election-results-data/previous-election-results",
-        "https://www.maine.gov/sos/elections-voting/voter-data",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23"
-      ],
-      "requiredArtifacts": [
-        "official Maine SOS 2024 U.S. President by County/Town Excel workbook collected into data/",
-        "official Maine SOS 2024 United States Senator Excel workbook collected into data/ for same-grain comparison rows",
-        "Maine SOS Excel parser with UOCAVA/non-geographic row handling and certified-total reconciliation",
-        "state-native registered/enrolled denominator parser plus ballots-cast/voter-participation reconciliation before replacing EAC turnout",
-        "municipality/town geometry or reporting-unit crosswalk if subcounty overlays are required",
-        "official 2020, 2016, and 2012 historical presidential baseline workbooks normalized from SOS archives",
-        "normalized audit/recount/CVR availability/incident/correction/litigation rows if published or request-produced",
-        "data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv as the current source-search handoff"
-      ],
-      "preferredComparisonContest": "U.S. Senate from the official Maine SOS United States Senator Excel workbook, expected to pair with President by County/Town after workbook collection and row reconciliation.",
-      "parserNeeded": "Maine remains EAC-turnout-only. A new Maine SOS Excel parser is needed for President and same-grain U.S. Senate rows, plus explicit UOCAVA/non-geographic row handling. A registered/enrolled denominator parser and turnout reconciliation are needed before replacing EAC fallback. Historical and administration-context parsers are not loaded.",
-      "blocker": "The official Maine SOS 2024 results page exposes machine-readable Excel workbooks for President by County/Town, President by Congressional District, U.S. Senate, and CD2 ranked-choice/CVR exports, but no official Maine result or advisory review rows are loaded yet. Active ME config remains EAC turnout-only with 497 fallback turnout rows. Remaining source needs are collected Excel artifacts, parser/reconciliation work, state-native turnout replacement review, municipality/town geometry or crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "localFile": "data/me-2024-data-coverage-inventory.json",
-          "checkedAt": "2026-07-02",
-          "repoDrift": "docs/developer/index.md is missing in this worktree."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC fallback turnout rows",
-          "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
-          "parser": "eacTurnoutCsv",
-          "turnoutRows": 497,
-          "status": "loaded_fallback_not_state_native"
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier 2024 equipment context",
-          "localFile": "data/verifiedvoting-me-2024-equipment.json",
-          "normalizedArtifact": "data/me-2024-equipment-context.csv",
-          "status": "loaded_supplemental_context"
         }
       }
     },

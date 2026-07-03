@@ -13,17 +13,30 @@ def load_json(relative_path: str):
 
 
 class MaineCoverageInventoryTest(unittest.TestCase):
-    def test_maine_config_remains_turnout_only_with_coverage_inventory_source(self):
+    def test_maine_config_loads_native_president_senate_rows_with_caveats(self):
         config = load_config(ROOT / "etl/state-configs/me.json")
         report = validate_config(config)
         self.assertTrue(report.passed, report.errors)
 
         artifact = build_staging_artifact(config, report)
-        self.assertIs(config.raw.get("turnoutOnly"), True)
+        self.assertFalse(config.raw.get("turnoutOnly", False))
         self.assertEqual(config.raw["expected"]["sources"], len(config.sources))
-        self.assertEqual(len(artifact["native"]["resultRows"]), 0)
-        self.assertEqual(len(artifact["native"]["reviewRows"]), 0)
+        self.assertEqual(artifact["native"]["parser"], "nativeMaineSosCountyTownXlsx")
+        self.assertEqual(len(artifact["native"]["resultRows"]), 17)
+        self.assertEqual(len(artifact["native"]["reviewRows"]), 512)
+        self.assertEqual(len(artifact["native"]["turnoutRows"]), 497)
+        self.assertEqual(len(artifact["native"].get("historicalRows", [])), 34)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 509)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewCertifiedVoteGap"], 6569)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 497)
+        self.assertIn("State UOCAVA", {row["jurisdictionName"] for row in artifact["native"]["resultRows"]})
+
+        vote_share_only = {(row["county"], row["localUnit"]) for row in artifact["native"]["reviewRows"] if row["coverageMode"] == "voteShareOnly"}
+        self.assertEqual(vote_share_only, {
+            ("Penobscot County", "Medway/Twps"),
+            ("Washington County", "Day Block Twp"),
+            ("Washington County", "Wesley"),
+        })
 
         coverage_sources = [source for source in config.raw["sources"] if source["id"] == "me-2024-data-coverage-inventory"]
         self.assertTrue(coverage_sources)
@@ -37,12 +50,12 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(inventory["checkedAt"], "2026-07-02")
         self.assertIs(inventory["productionChecked"], False)
         self.assertEqual(inventory["repoDrift"][0]["path"], "docs/developer/index.md")
-        self.assertEqual(inventory["officialSourceFindings"]["certifiedResults"]["status"], "official_excel_identified_parser_needed")
+        self.assertEqual(inventory["officialSourceFindings"]["certifiedResults"]["status"], "official_excel_loaded")
         self.assertEqual(inventory["officialSourceFindings"]["sameGrainComparisonContest"]["preferredContest"], "U.S. Senate")
         self.assertEqual(inventory["officialSourceFindings"]["rankedChoiceAndCastVoteRecords"]["status"], "official_cd2_rcv_cvr_leads_identified_not_loaded")
-        self.assertEqual(inventory["officialSourceFindings"]["stateNativeTurnout"]["status"], "official_registration_denominator_lead_identified_not_loaded")
+        self.assertEqual(inventory["officialSourceFindings"]["stateNativeTurnout"]["status"], "official_registration_denominator_artifacts_collected_not_loaded")
         self.assertEqual(inventory["officialSourceFindings"]["auditRecountCvrIncidentCorrectionLitigation"]["status"], "source_paths_documented_rows_not_loaded")
-        self.assertEqual(inventory["officialSourceFindings"]["historicalBaselines"]["targetYears"], [2020, 2016, 2012])
+        self.assertEqual(inventory["officialSourceFindings"]["historicalBaselines"]["status"], "official_2016_2020_loaded_2012_xls_blocked")
         self.assertEqual(inventory["sourceAcquisitionDecision"]["tier"], "tier_1_official_export_database")
         self.assertTrue(any("not evidence of fraud or misconduct" in risk for risk in inventory["remainingRisks"]))
 
@@ -51,20 +64,21 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         me_tier = next(row for row in source_tiers["states"] if row["state"] == "ME")
         self.assertEqual(me_tier["tier"], "tier_1_official_export_database")
         self.assertIn("official Excel workbooks", me_tier["exportFormats"])
-        self.assertIn("data/me-2024-data-coverage-inventory.json", me_tier["parserStatus"])
+        self.assertIn("nativeMaineSosCountyTownXlsx", me_tier["parserStatus"])
 
         native_packages = load_json("data/native-import-source-packages.json")
-        self.assertNotIn("ME", native_packages["completedNativeStates"])
-        me_queue = next(row for row in native_packages["sourceDiscoveryQueue"] if row["state"] == "ME")
-        self.assertEqual(me_queue["requestMatrixArtifact"], "data/me-2024-source-request-matrix.tsv")
-        self.assertIn("U.S. Senate", me_queue["preferredComparisonContest"])
+        self.assertIn("ME", native_packages["completedNativeStates"])
+        self.assertNotIn("ME", {row["state"] for row in native_packages["sourceDiscoveryQueue"]})
+        me_package = next(row for row in native_packages["states"] if row["state"] == "ME")
+        self.assertEqual(me_package["expected"]["localReviewRows"], 512)
+        self.assertEqual(me_package["expected"]["comparisonRows"], 509)
 
         turnout_packages = load_json("data/turnout-source-packages.json")
         me_turnout = next(row for row in turnout_packages["stateYearStatuses"] if row["state"] == "ME")
         self.assertEqual(me_turnout["status"], "loaded")
         self.assertEqual(me_turnout["expectedTurnoutRows"], 497)
         self.assertIn("data/me-2024-data-coverage-inventory.json", me_turnout["nextAction"])
-        self.assertEqual(me_turnout["stateNativeLeads"][0]["artifactStatus"], "not_collected_inventory_only")
+        self.assertEqual(me_turnout["stateNativeLeads"][0]["artifactStatus"], "collected_denominator_leads_not_loaded")
 
         admin_packages = load_json("data/admin-source-packages.json")
         me_admin = next(row for row in admin_packages["stateYearStatuses"] if row["state"] == "ME")

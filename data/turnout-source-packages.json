@@ -334,8 +334,8 @@
       "localFile": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 67,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database. Alabama SOS 2024 General Total Ballots Cast, ALVR-2024 registration, and Comprehensive Voter Turnout artifacts are now documented as state-native leads, but they are not parsed or reconciled into the active turnout contract.",
-      "nextAction": "Collect and normalize Alabama SOS total-ballots-cast and ALVR artifacts, review denominator timing, and reconcile them against the official precinct XLS ballots-cast rows and EAC fallback before replacing the active fallback package; see data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active in ETL. This pass collected Alabama SOS Total Ballots Cast PDF, ALVR-2024 registration workbook, Comprehensive Voter Turnout PDF, and generated data/al-2024-turnout-denominator-lead.csv, but did not replace active turnout because the precinct-ZIP ballots-cast lead totals 2,272,731, 180 lower than active EAC/SOS fallback ballots cast, and ALVR denominator timing needs review.",
+      "nextAction": "Reconcile Alabama SOS Total Ballots Cast PDF, official precinct-ZIP ballots-cast rows, and ALVR active-voter denominator timing before replacing EAC fallback; see data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv.",
       "coverage": {
         "jurisdictionRows": 67,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/al-2024-eac-registered-voter-denominator.json",
@@ -431,22 +431,22 @@
       "year": 2024,
       "priority": 15,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "town",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/ct-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "denominatorTiming": "emsReported",
+      "sourceTitle": "Connecticut Secretary of the State EMS voterTurnout static JSON",
+      "sourceUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/voterTurnout_Electiondata.json",
+      "localFile": "data/ct-2024-ems-election-91-version-80741",
+      "parser": "connecticutEmsTownJson",
       "expectedTurnoutRows": 169,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EMS town turnout rows are loaded in native staging with warning-required semantics. EAC fallback remains retained as a benchmark, not the active CT staging turnout source.",
+      "nextAction": "Review EMS EV/VV/ABR/ABC/EBR/EBC/EDR/EDC semantics against the Statement of Vote turnout/registration tables and EAC fallback before production promotion.",
       "coverage": {
         "jurisdictionRows": 169,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ct-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 2520650,
-        "ballotsCast": 1820891,
-        "warningRows": 0
+        "registeredVoterDenominatorFile": "data/ct-2024-ems-election-91-version-80741/voterTurnout_Electiondata.json",
+        "registeredVoters": 2348545,
+        "ballotsCast": 1788981,
+        "warningRows": 169
       }
     },
     {
@@ -808,8 +808,8 @@
       "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 497,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active ME turnout source. Wave 15 documented Maine SOS registered/enrolled active and inactive files as state-native denominator leads, but no replacement turnout package is loaded.",
-      "nextAction": "Use data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv to collect the Maine SOS registered/enrolled files and pair them with official ballots-cast or voter-participation rows before replacing the EAC fallback.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active ME turnout source. Wave 17 collected Maine SOS active and inactive registered/enrolled files as state-native denominator leads, but no replacement ballots-cast or voter-participation package is loaded.",
+      "nextAction": "Use data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv to pair the collected Maine SOS registered/enrolled files in data/me-official-sources with official ballots-cast or voter-participation rows before replacing the EAC fallback.",
       "coverage": {
         "jurisdictionRows": 497,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/me-2024-eac-registered-voter-denominator.json",
@@ -822,8 +822,12 @@
           "sourceTitle": "Maine SOS previous enrollment data for the November 5, 2024 General/Referendum Election",
           "sourceUrl": "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
           "reportingGrain": "county_municipality_voting_district_party",
-          "artifactStatus": "not_collected_inventory_only",
-          "caveat": "Registered/enrolled active and inactive files are denominator leads only; do not replace EAC turnout until compatible ballots-cast or voter-participation rows are collected and reconciled."
+          "artifactStatus": "collected_denominator_leads_not_loaded",
+          "caveat": "Registered/enrolled active and inactive files are denominator leads only; do not replace EAC turnout until compatible ballots-cast or voter-participation rows are collected and reconciled.",
+          "localArtifacts": [
+            "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
+            "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt"
+          ]
         }
       ]
     },
