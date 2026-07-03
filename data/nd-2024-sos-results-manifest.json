@@ -1,0 +1,321 @@
+{
+  "state": "ND",
+  "electionYear": 2024,
+  "sourceAuthority": "North Dakota Secretary of State",
+  "collectedAt": "2026-07-03",
+  "dashboardUrl": "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
+  "turnoutUrl": "https://results.sos.nd.gov/VoterTurnoutDetails.aspx",
+  "serviceUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData",
+  "contests": {
+    "president": {
+      "raceID": "19893",
+      "officeSeqNo": "100",
+      "label": "President & Vice-President of the United States",
+      "countyUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19893&osn=100&county=0&party=0",
+      "expectedTotals": {
+        "harris": 112327,
+        "trump": 246505,
+        "other": 9323,
+        "total": 368155
+      }
+    },
+    "usSenate": {
+      "raceID": "19847",
+      "officeSeqNo": "110",
+      "label": "United States Senator",
+      "countyUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19847&osn=110&county=0&party=0",
+      "expectedTotals": {
+        "dem": 121602,
+        "rep": 241569,
+        "other": 1156,
+        "total": 364327
+      }
+    }
+  },
+  "precinctEndpoints": [
+    {
+      "countyID": "01",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=01&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=01&party=0"
+    },
+    {
+      "countyID": "02",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=02&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=02&party=0"
+    },
+    {
+      "countyID": "03",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=03&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=03&party=0"
+    },
+    {
+      "countyID": "04",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=04&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=04&party=0"
+    },
+    {
+      "countyID": "05",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=05&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=05&party=0"
+    },
+    {
+      "countyID": "06",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=06&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=06&party=0"
+    },
+    {
+      "countyID": "07",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=07&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=07&party=0"
+    },
+    {
+      "countyID": "08",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=08&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=08&party=0"
+    },
+    {
+      "countyID": "09",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=09&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=09&party=0"
+    },
+    {
+      "countyID": "10",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=10&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=10&party=0"
+    },
+    {
+      "countyID": "11",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=11&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=11&party=0"
+    },
+    {
+      "countyID": "12",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=12&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=12&party=0"
+    },
+    {
+      "countyID": "13",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=13&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=13&party=0"
+    },
+    {
+      "countyID": "14",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=14&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=14&party=0"
+    },
+    {
+      "countyID": "15",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=15&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=15&party=0"
+    },
+    {
+      "countyID": "16",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=16&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=16&party=0"
+    },
+    {
+      "countyID": "17",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=17&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=17&party=0"
+    },
+    {
+      "countyID": "18",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=18&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=18&party=0"
+    },
+    {
+      "countyID": "19",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=19&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=19&party=0"
+    },
+    {
+      "countyID": "20",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=20&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=20&party=0"
+    },
+    {
+      "countyID": "21",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=21&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=21&party=0"
+    },
+    {
+      "countyID": "22",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=22&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=22&party=0"
+    },
+    {
+      "countyID": "23",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=23&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=23&party=0"
+    },
+    {
+      "countyID": "24",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=24&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=24&party=0"
+    },
+    {
+      "countyID": "25",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=25&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=25&party=0"
+    },
+    {
+      "countyID": "26",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=26&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=26&party=0"
+    },
+    {
+      "countyID": "27",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=27&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=27&party=0"
+    },
+    {
+      "countyID": "28",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=28&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=28&party=0"
+    },
+    {
+      "countyID": "29",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=29&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=29&party=0"
+    },
+    {
+      "countyID": "30",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=30&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=30&party=0"
+    },
+    {
+      "countyID": "31",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=31&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=31&party=0"
+    },
+    {
+      "countyID": "32",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=32&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=32&party=0"
+    },
+    {
+      "countyID": "33",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=33&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=33&party=0"
+    },
+    {
+      "countyID": "34",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=34&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=34&party=0"
+    },
+    {
+      "countyID": "35",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=35&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=35&party=0"
+    },
+    {
+      "countyID": "36",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=36&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=36&party=0"
+    },
+    {
+      "countyID": "37",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=37&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=37&party=0"
+    },
+    {
+      "countyID": "38",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=38&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=38&party=0"
+    },
+    {
+      "countyID": "39",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=39&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=39&party=0"
+    },
+    {
+      "countyID": "40",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=40&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=40&party=0"
+    },
+    {
+      "countyID": "41",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=41&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=41&party=0"
+    },
+    {
+      "countyID": "42",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=42&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=42&party=0"
+    },
+    {
+      "countyID": "43",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=43&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=43&party=0"
+    },
+    {
+      "countyID": "44",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=44&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=44&party=0"
+    },
+    {
+      "countyID": "45",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=45&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=45&party=0"
+    },
+    {
+      "countyID": "46",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=46&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=46&party=0"
+    },
+    {
+      "countyID": "47",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=47&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=47&party=0"
+    },
+    {
+      "countyID": "48",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=48&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=48&party=0"
+    },
+    {
+      "countyID": "49",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=49&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=49&party=0"
+    },
+    {
+      "countyID": "50",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=50&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=50&party=0"
+    },
+    {
+      "countyID": "51",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=51&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=51&party=0"
+    },
+    {
+      "countyID": "52",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=52&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=52&party=0"
+    },
+    {
+      "countyID": "53",
+      "presidentUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=53&party=0",
+      "senateUrl": "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=53&party=0"
+    }
+  ],
+  "rowCounts": {
+    "presidentCountyRawRows": 212,
+    "senateCountyRawRows": 159,
+    "counties": 53,
+    "presidentPrecinctRawRows": 1540,
+    "senatePrecinctRawRows": 1155,
+    "precinctKeys": 385,
+    "reviewRows": 383,
+    "zeroVotePrecincts": 2
+  },
+  "zeroVotePrecincts": [
+    "53|Williams|140|530140",
+    "53|Williams|151|530151"
+  ],
+  "caveats": [
+    "Rows are from the official North Dakota Secretary of State ResultsAjax GetMapData JSON endpoint behind the 2024 results dashboard.",
+    "Review rows pair President and U.S. Senate at the same county-scoped precinct key and exclude two zero-vote precinct keys.",
+    "Turnout remains EAC fallback until SOS eligible-voter denominator fields are normalized and the one-ballot dashboard/EAC difference is reviewed."
+  ]
+}

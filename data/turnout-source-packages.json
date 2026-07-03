@@ -919,8 +919,8 @@
       "localFile": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 53,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL, but North Dakota does not require voter registration and EAC registered voters are zero. The official SOS dashboard reports eligible voters as the relevant state-native denominator lead.",
-      "nextAction": "Collect and normalize North Dakota SOS eligible-voter turnout rows from the official results/turnout dashboard or export, then reconcile 371,975 SOS voter turnout and 594,140 eligible voters against active EAC fallback 371,974 ballots cast and 0 registered voters before replacing or relabeling the active turnout package.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and remain active. North Dakota now has native SOS President and same-grain U.S. Senate review rows loaded, but turnout still uses EAC fallback because North Dakota does not require voter registration and the SOS eligible-voter denominator lead needs reconciliation.",
+      "nextAction": "Normalize North Dakota SOS eligible-voter turnout rows from the official results/turnout dashboard or export, then reconcile 371,975 SOS voter turnout and 594,140 eligible voters against active EAC fallback 371,974 ballots cast and 0 registered voters before replacing or relabeling the active turnout package.",
       "coverage": {
         "jurisdictionRows": 53,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nd-2024-eac-registered-voter-denominator.json",
