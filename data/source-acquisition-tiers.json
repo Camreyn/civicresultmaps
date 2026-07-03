@@ -701,6 +701,7 @@
         "EAC fallback turnout CSV retained as benchmark",
         "Verified Voting equipment CSV",
         "official request matrix TSV",
+        "official records-request packet",
         "official ENRHistorical AJAX table JSON"
       ],
       "sourceUrls": [
@@ -730,12 +731,13 @@
         "official VSTOP post-election risk-limiting audit source path documented",
         "official Recount Commission petition/order/minute source path documented",
         "Indiana official-source request matrix maintained at data/in-2024-source-request-matrix.tsv",
+        "Indiana records-request packet maintained at data/source-records-request-packets/in-2024-precinct-results-request.md",
         "official VSTOP 2024 General Election audit summary rows for seven counties",
         "official ENR public app/data-path scan confirming no retained same-grain subcounty President/Senate export"
       ],
       "missingFields": [
-        "official precinct/subcounty President rows",
-        "official same-grain precinct/subcounty U.S. Senate comparison rows",
+        "official precinct/precinct-split/subcounty President rows",
+        "official same-grain precinct/precinct-split/subcounty U.S. Senate comparison rows",
         "precinct turnout and registered-voter denominator rows",
         "precinct boundary geometry",
         "detailed official VSTOP audit-unit selection/workpaper rows beyond the summary report",
@@ -747,7 +749,7 @@
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "Archived ENR category files contain 92 county/locality RegionSummary rows for 2024, not precinct rows; data/in-2024-official-enr-public-data-inventory.json also records that the public app download route exports turnout statistics only and no retained ENR JSON artifact exposes same-grain subcounty President/Senate candidate rows. The current subcounty review rows are supplemental MIT/OpenElections context with upstream caveats, so Indiana should remain in source discovery until official same-grain precinct/subcounty President and U.S. Senate rows are obtained or the completion methodology changes. Historical baselines are official county context for 2012, 2016, and 2020; 2012 is collected from the current Indiana Voters ENRHistorical table endpoint, while 2016 and 2020 use ENR archive JSON.",
-      "nextAction": "Use data/in-2024-source-request-matrix.tsv to request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, precinct geometry/turnout if needed, detailed VSTOP audit workpapers, Recount Commission/CVR/incident records suitable for normalization."
+      "nextAction": "Use data/in-2024-source-request-matrix.tsv and data/source-records-request-packets/in-2024-precinct-results-request.md to request official same-grain precinct/precinct-split 2024 President and U.S. Senate rows, precinct geometry/turnout if needed, detailed VSTOP audit workpapers, Recount Commission/CVR/incident records suitable for normalization."
     },
     {
       "state": "KS",

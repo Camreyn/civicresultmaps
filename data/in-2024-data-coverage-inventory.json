@@ -342,10 +342,11 @@
         "statewide statistics",
         "county count",
         "voter statistics links",
+        "precinct count and precinct-split count",
         "maps"
       ],
-      "result": "Official page lists Indiana voter maps/statistics, 92 counties, voter registration statistics links, precinct count links, and district map links.",
-      "blocker": "This page does not expose precinct boundary geometry or precinct candidate result rows."
+      "result": "Official page lists Indiana voter maps/statistics, 92 counties, voter registration statistics links, precinct count links, district map links, and a statewide county precinct-count PDF reporting 5,147 precincts, 1,342 precinct splits, and 1,092 precincts with splits as of September 20, 2023.",
+      "blocker": "This page confirms precinct/split counting terminology for the request packet, but it does not expose precinct boundary geometry or precinct candidate result rows."
     },
     {
       "sourceAuthority": "Indiana Recount Commission",
@@ -434,7 +435,7 @@
     }
   ],
   "requestPath": {
-    "neededArtifact": "Official precinct-level or county-subdivision candidate result rows for President and U.S. Senate at the same reporting-unit grain.",
+    "neededArtifact": "Official precinct-level, precinct-split-level, or county-subdivision candidate result rows for President and U.S. Senate at the same reporting-unit grain.",
     "preferredAuthorities": [
       "Indiana Election Division",
       "Indiana Election Commission",
@@ -443,15 +444,17 @@
     "requestFields": [
       "election date and contest names",
       "reporting unit identifier and name",
+      "precinct split identifier where applicable",
       "county/FIPS or county name",
       "candidate name and party",
       "votes by candidate",
       "vote mode fields if available",
       "whether rows are certified/final and how they reconcile to county ENR totals",
-      "precinct split or ballot-style identifiers if precinct labels are reused"
+      "whether rows are precincts, precinct splits, vote-center/reporting units, absentee/early/provisional rows, or summaries"
     ],
     "publicContactPath": "Indiana Election Division contact path shown on the Election Division page: elections@iec.in.gov / 317-232-3939.",
-    "requestMatrixArtifact": "data/in-2024-source-request-matrix.tsv"
+    "requestMatrixArtifact": "data/in-2024-source-request-matrix.tsv",
+    "requestPacketArtifact": "data/source-records-request-packets/in-2024-precinct-results-request.md"
   },
   "displayCaveats": [
     "Indiana county map/result totals are official Indiana Election Division ENR county rows.",
@@ -462,10 +465,10 @@
   "gaps": [
     {
       "artifact": "official_precinct_or_local_reporting_unit_results",
-      "status": "not_found_publicly_in_enr_app_or_retained_json",
+      "status": "request_packet_ready_public_enr_app_or_retained_json_rows_not_found",
       "neededFor": "Same-grain President-versus-U.S. Senate review rows below county level.",
       "preferredAuthority": "Indiana Election Division statewide export, or all 92 county election offices if no statewide export exists.",
-      "remainingRisk": "Supplemental MIT/OpenElections review rows can calculate advisory screens, but the official ENR public app scan now shows President/Senate category JSON at county grain and JurR files with zero candidate containers; an official export or request response is needed before removing the supplemental-source caveat."
+      "remainingRisk": "Supplemental MIT/OpenElections review rows can calculate advisory screens, but the official ENR public app scan shows President/Senate category JSON at county grain and JurR files with zero candidate containers. The concrete request packet at data/source-records-request-packets/in-2024-precinct-results-request.md should be sent before removing the supplemental-source caveat."
     },
     {
       "artifact": "precinct_boundary_geometry",
@@ -486,9 +489,10 @@
     "Official county result and county turnout artifacts are suitable for county-level public-interest review with visible caveats.",
     "No official statewide precinct/subcounty President and same-grain U.S. Senate result export was confirmed in this pass.",
     "The generated data/in-2024-official-enr-public-data-inventory.json records the current public ENR app data-path evidence: President and U.S. Senate category files are county/locality-grain, JurR files contain zero candidate containers, and the visible download route is turnout statistics only.",
-    "Next source step is a targeted Indiana Election Division request, followed by county-by-county collection only if the state confirms no statewide export exists.",
-    "The request matrix at data/in-2024-source-request-matrix.tsv now records artifact-specific asks for official precinct rows, 2012 baseline, geometry, turnout denominators, VSTOP audit rows, CVR availability, and Recount Commission records.",
+    "Next source step is sending data/source-records-request-packets/in-2024-precinct-results-request.md to the Indiana Election Division contact path, followed by county-by-county collection only if the state confirms no statewide export exists.",
+    "The request matrix at data/in-2024-source-request-matrix.tsv and request packet at data/source-records-request-packets/in-2024-precinct-results-request.md now record artifact-specific asks for official precinct/precinct-split rows, 2012 baseline, geometry, turnout denominators, VSTOP audit rows, CVR availability, and Recount Commission records.",
     "Official 2012, 2016, and 2020 county presidential historical baseline rows are now normalized from Indiana Election Division sources.",
     "Official VSTOP 2024 General Election audit summary rows are loaded for seven audited counties as context only; detailed audit-unit workpapers, recount/CVR/incident/correction rows remain unnormalized."
-  ]
+  ],
+  "requestPacketArtifact": "data/source-records-request-packets/in-2024-precinct-results-request.md"
 }

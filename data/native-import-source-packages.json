@@ -2781,6 +2781,7 @@
       "requiredArtifacts": [
         "official precinct-level or county-subdivision result rows for President, if Indiana publishes or provides them",
         "official same-grain U.S. Senate rows for advisory comparison if President rows are available below county",
+        "data/source-records-request-packets/in-2024-precinct-results-request.md as the current Indiana Election Division/county custodian request packet, including precinct-split fields",
         "precinct or lower-level turnout and registered-voter denominator rows if same-grain turnout screening is required",
         "precinct or local reporting-unit boundary geometry, if subcounty map overlays are required",
         "audit, recount, CVR availability, incident, correction, and certification records for 2024 administration context",
@@ -2841,7 +2842,7 @@
         },
         "coverageInventory": {
           "sourceTitle": "Indiana 2024 data coverage inventory",
-          "localFile": "data/in-2024-data-coverage-inventory.json; data/in-2024-official-enr-public-data-inventory.json",
+          "localFile": "data/in-2024-data-coverage-inventory.json; data/in-2024-official-enr-public-data-inventory.json; data/source-records-request-packets/in-2024-precinct-results-request.md",
           "parserHint": "Source-search inventories only; not vote parsers. The ENR public-data inventory records the official app data path and confirms no public same-grain subcounty President/Senate export in retained ENR JSON."
         },
         "historicalBaseline": {

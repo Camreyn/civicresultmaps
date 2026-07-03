@@ -10,6 +10,7 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.enr_inventory = json.loads(Path("data/in-2024-official-enr-public-data-inventory.json").read_text(encoding="utf-8-sig"))
         admin = json.loads(Path("data/admin-source-packages.json").read_text(encoding="utf-8-sig"))
         self.admin = next(entry for entry in admin["stateYearStatuses"] if entry["state"] == "IN")
+        self.request_packet = Path("data/source-records-request-packets/in-2024-precinct-results-request.md")
         with Path("data/in-2024-source-request-matrix.tsv").open(encoding="utf-8-sig", newline="") as handle:
             self.request_rows = list(csv.DictReader(handle, delimiter="\t"))
 
@@ -75,13 +76,28 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
 
     def test_request_matrix_tracks_remaining_official_source_asks(self):
         self.assertEqual(self.inventory["requestMatrixArtifact"], "data/in-2024-source-request-matrix.tsv")
+        self.assertEqual(
+            self.inventory["requestPacketArtifact"],
+            "data/source-records-request-packets/in-2024-precinct-results-request.md",
+        )
         artifacts = {row["artifact"]: row for row in self.request_rows}
         self.assertEqual(len(self.request_rows), 8)
         self.assertEqual(artifacts["official_precinct_or_local_reporting_unit_president"]["priority"], "high")
+        self.assertIn("request_packet_ready", artifacts["official_precinct_or_local_reporting_unit_president"]["local_artifact_status"])
+        self.assertIn("precinct split identifier", artifacts["official_precinct_or_local_reporting_unit_us_senate"]["needed_fields"])
         self.assertEqual(artifacts["official_2012_county_presidential_baseline"]["local_artifact_status"], "loaded_official_endpoint_json")
         self.assertEqual(artifacts["vstop_audit_selection_outcome"]["local_artifact_status"], "loaded_official_summary_pdf_normalized")
         self.assertIn("not proof", artifacts["vstop_audit_selection_outcome"]["caveat"])
         self.assertIn("misconduct", artifacts["recount_incident_correction_records"]["caveat"])
+
+    def test_request_packet_records_precinct_split_ask(self):
+        self.assertTrue(self.request_packet.exists())
+        packet = self.request_packet.read_text(encoding="utf-8-sig")
+        self.assertIn("5,147 precincts", packet)
+        self.assertIn("1,342 precinct splits", packet)
+        self.assertIn("precinct split code", packet)
+        self.assertIn("elections@iec.in.gov", packet)
+        self.assertIn("not asking for conclusions about misconduct", packet)
 
 
 if __name__ == "__main__":
