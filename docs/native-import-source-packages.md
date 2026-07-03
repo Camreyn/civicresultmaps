@@ -655,3 +655,18 @@ Remaining gaps are state-native turnout/registration denominators, result-ready 
 - Coverage inventory: `data/de-2024-data-coverage-inventory.json`; source request matrix: `data/de-2024-source-request-matrix.tsv`.
 
 Expected validation: 3 county result rows, 3 county geometry features, 511,697 presidential votes, 214,351 Trump votes, 289,758 Harris votes, 7,588 Other votes, 529 election-district review rows, and 3 EAC fallback turnout rows. Remaining gaps are active state-native turnout replacement semantics, FirstMap election-district geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
+
+## Alaska Wave 20 Statewide Native Activation
+
+- Config: `etl/state-configs/ak.json`
+- Authority: Alaska Division of Elections; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- Current active package: official statewide President row and statewide U.S. Representative first-choice comparison row parsed from `data/ak-2024-general-election-summary-report.pdf`, plus EAC fallback statewide turnout
+- Normalizer: `scripts/normalize-ak-election-summary.mjs`
+- President source: `data/ak-2024-general-president-statewide.csv`, generated from the official Alaska Election Summary Report with 338,177 presidential votes: 184,458 Trump, 140,026 Harris, and 13,693 Other
+- Comparison source: `data/ak-2024-general-us-house-statewide.csv`, generated from official U.S. Representative first-choice totals; DEM comparison votes group Peltola and Hafner, REP comparison votes use Begich, and Other groups Howe plus write-in
+- Turnout source: active ETL remains EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/ak-2024-eac-turnout.csv`; the official summary report Times Cast row matches the same statewide 340,981 ballots cast and 611,078 registered voters
+- Geometry lead: `data/ak-house-districts.geojson` is present, but current AK result rows are statewide only and do not join House District geometry
+- Coverage inventory: `data/ak-2024-data-coverage-inventory.json`; source request matrix: `data/ak-2024-source-request-matrix.tsv`
+- Equipment context: `data/ak-2024-equipment-context.csv` from Verified Voting, context only
+
+AK remains in `sourceDiscoveryQueue`, not `completedNativeStates`, because the current package is statewide-only. Remaining gaps are official House-district or precinct President plus same-grain U.S. House rows, lower-grain state-native turnout denominators, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.

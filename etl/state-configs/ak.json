@@ -1,10 +1,9 @@
 {
   "code": "AK",
   "name": "Alaska",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Alaska Division of Elections; U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "ak-2024-eac-turnout",
@@ -14,40 +13,122 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows. The statewide ballots-cast and registered-voter totals match the Alaska Division of Elections summary report Times Cast row, but no lower-grain state-native turnout denominator package is loaded.",
+      "status": "loaded"
+    },
+    {
+      "id": "ak-2024-general-election-summary-report",
+      "category": "Official 2024 General Election Summary Report PDF",
+      "url": "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
+      "localFile": "data/ak-2024-general-election-summary-report.pdf",
+      "parser": "scripts/normalize-ak-election-summary.mjs",
+      "authority": "Alaska Division of Elections",
+      "timestampBasis": "Official results PDF dated November 30, 2024 for the November 5, 2024 General Election.",
+      "confidence": "Official statewide federal contest and turnout summary source retained as the source artifact for the normalized AK statewide CSVs.",
+      "status": "loaded"
+    },
+    {
+      "id": "ak-2024-general-president-statewide",
+      "category": "Official statewide presidential results",
+      "url": "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
+      "localFile": "data/ak-2024-general-president-statewide.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "Alaska Division of Elections",
+      "timestampBasis": "Generated from the official Alaska 2024 General Election Summary Report PDF by scripts/normalize-ak-election-summary.mjs.",
+      "confidence": "Official statewide President row only. House-district and precinct President rows remain uncollected.",
+      "status": "loaded"
+    },
+    {
+      "id": "ak-2024-general-us-house-statewide",
+      "category": "Official statewide U.S. Representative first-choice comparison rows",
+      "url": "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
+      "localFile": "data/ak-2024-general-us-house-statewide.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Alaska Division of Elections",
+      "timestampBasis": "Generated from the official Alaska 2024 General Election Summary Report PDF by scripts/normalize-ak-election-summary.mjs.",
+      "confidence": "Official statewide U.S. Representative first-choice totals grouped by major-party comparison buckets. This is statewide context only; Alaska used ranked-choice voting and lower-grain comparison rows remain uncollected.",
+      "status": "loaded"
+    },
+    {
+      "id": "ak-house-district-geometry",
+      "category": "State House district boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2/query?where=STATE%3D%2702%27&outFields=GEOID,STATE,SLDL,NAME,BASENAME&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ak-house-districts.geojson",
+      "parser": "censusTigerwebStateHouseDistrictGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb state legislative lower chamber geography service artifact.",
+      "confidence": "House District geometry is available for future AK district result joins, but the current staged result row is statewide and does not join this geometry.",
+      "status": "loaded"
+    },
+    {
+      "id": "ak-2024-data-coverage-inventory",
+      "category": "Alaska 2024 data coverage and administration source inventory",
+      "url": "https://www.elections.alaska.gov/election-results/",
+      "localFile": "data/ak-2024-data-coverage-inventory.json; data/ak-2024-source-request-matrix.tsv",
+      "parser": "coverageInventoryJson",
+      "authority": "Alaska Division of Elections",
+      "timestampBasis": "Wave 20 official-source coverage inventory checked July 3, 2026.",
+      "confidence": "Documents loaded statewide summary artifacts and remaining district/precinct result, state-native turnout, historical baseline, audit, CVR, recount, incident, correction, litigation, and request-path gaps. Inventory only; no normalized administration rows are loaded.",
+      "status": "loaded"
+    },
+    {
+      "id": "ak-2024-equipment-context",
+      "category": "Verified Voting equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/2",
+      "localFile": "data/ak-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipment",
+      "authority": "Verified Voting",
+      "timestampBasis": "Verified Voting Verifier 2024 equipment context collected in the administration source registry.",
+      "confidence": "Supplemental jurisdiction-level equipment context only; not a vote, turnout, audit, incident, or proof-of-uniformity source.",
       "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "ak-2024-general-president-statewide",
+    "otherColumns": [
+      "other"
+    ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "ak-2024-general-us-house-statewide",
+    "comparisonContest": "U.S. Representative first-choice votes",
+    "coverageMode": "presidentVsUSHouse",
+    "warning": "Alaska review coverage is a single statewide President-versus-U.S.-House first-choice comparison row from the official summary report. It is not a House-district, precinct, or borough/census-area scatter plot. Alaska used ranked-choice voting for U.S. House, so this row is source-review context only."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "ak-2024-eac-turnout",
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Alaska turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Alaska turnout rows use EAC 2024 V2 jurisdiction fallback rows. The statewide EAC ballots-cast and registered-voter totals match the official Alaska summary report Times Cast row, but no lower-grain state-native turnout denominator package is loaded.",
     "warningRequired": false,
     "expected": {
       "rowCount": 1,
       "ballotsCast": 340981,
       "registeredVoters": 611078
-    }
+    },
+    "stateNativeSummarySourceId": "ak-2024-general-election-summary-report"
   },
   "expected": {
     "jurisdictions": 1,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 1,
+    "sources": 7,
+    "geometryFeatures": 40,
+    "stateTotal": 338177,
+    "trump": 184458,
+    "harris": 140026,
+    "other": 13693,
+    "reviewRows": 1,
     "turnoutRows": 1
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }

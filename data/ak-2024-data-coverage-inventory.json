@@ -1,0 +1,77 @@
+{
+  "state": "AK",
+  "stateName": "Alaska",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-03",
+  "authority": "Alaska Division of Elections; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
+  "completionDecision": {
+    "decision": "remain_in_source_discovery_queue",
+    "reason": "AK now has official statewide President and same-grain statewide U.S. House rows parsed from the Alaska Division of Elections summary report, but no official machine-readable House-district or precinct-level President plus comparison rows were confirmed in this pass. The staged review row is statewide only, so district/precinct advisory coverage, map joins, state-native turnout replacement, historical baselines, and normalized administration-context rows remain source-coverage gaps."
+  },
+  "loadedArtifacts": [
+    {
+      "id": "ak-2024-general-election-summary-report",
+      "sourceTitle": "State of Alaska 2024 General Election Election Summary Report, official results",
+      "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
+      "localArtifact": "data/ak-2024-general-election-summary-report.pdf",
+      "parser": "scripts/normalize-ak-election-summary.mjs",
+      "reportingGrain": "statewide",
+      "expectedCounts": {
+        "presidentRows": 1,
+        "presidentTotalVotes": 338177,
+        "trump": 184458,
+        "harris": 140026,
+        "other": 13693,
+        "comparisonRows": 1,
+        "comparisonContest": "U.S. Representative first-choice votes",
+        "comparisonDem": 156245,
+        "comparisonRep": 159550,
+        "comparisonOther": 13760,
+        "ballotsCast": 340981,
+        "registeredVoters": 611078
+      },
+      "caveat": "The official summary report exposes statewide federal contest totals and Times Cast turnout, but this pass did not confirm a script-readable official House-district or precinct President plus U.S. House result export. U.S. House is a ranked-choice statewide contest; the comparison row uses first-choice candidate totals by party and is statewide review context only."
+    },
+    {
+      "id": "ak-2024-eac-turnout",
+      "sourceTitle": "U.S. EAC Election Administration and Voting Survey 2024 V2 turnout fallback",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifact": "data/eac-2024-state-turnout/ak-2024-eac-turnout.csv",
+      "parser": "eacTurnoutCsv",
+      "reportingGrain": "jurisdiction",
+      "expectedCounts": {
+        "turnoutRows": 1,
+        "ballotsCast": 340981,
+        "registeredVoters": 611078
+      },
+      "caveat": "EAC fallback turnout matches the Alaska summary report statewide Times Cast and registered-voter figures, but no lower-grain state-native turnout denominator package is loaded."
+    }
+  ],
+  "sourceNeeds": [
+    {
+      "id": "ak-house-district-or-precinct-results",
+      "neededArtifact": "Official House-district, precinct, or equivalent local reporting-unit rows for President and a same-grain comparison contest, preferably U.S. Representative first-choice votes.",
+      "blocker": "The accessible official Election Summary Report PDF contains statewide federal rows only; directory listing and guessed companion Statement of Votes Cast filenames were blocked or unresolved from this worker environment."
+    },
+    {
+      "id": "ak-state-native-turnout-local-denominator",
+      "neededArtifact": "Official Alaska turnout and registration denominator rows at House-district, precinct, or another documented reporting grain with denominator timing.",
+      "blocker": "Only statewide Times Cast/registered-voter values were confirmed in the official summary report; active ETL keeps EAC fallback turnout rows."
+    },
+    {
+      "id": "ak-historical-baselines",
+      "neededArtifact": "Official 2012, 2016, and 2020 Alaska presidential baseline rows at statewide and preferably House-district/local grain.",
+      "blocker": "Historical official source paths were not normalized in this pass; do not substitute secondary borough estimates for official Alaska Division of Elections rows."
+    },
+    {
+      "id": "ak-admin-context",
+      "neededArtifact": "Official post-election audit, CVR availability, recount, incident, correction, litigation, and public-records request artifacts.",
+      "blocker": "Verified Voting equipment context is loaded, but Alaska audit/CVR/incident/correction/litigation records are not normalized."
+    }
+  ],
+  "displayCaveats": [
+    "Current AK certified result and review rows are statewide only; the existing House District geometry cannot be joined to the staged result row.",
+    "The statewide U.S. House comparison row is a ranked-choice first-choice contest summary, not a precinct or district scatter plot.",
+    "Advisory indicators are source-review signals only and are not findings of fraud or misconduct."
+  ]
+}
