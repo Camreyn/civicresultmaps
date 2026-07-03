@@ -1,0 +1,227 @@
+{
+  "state": "NY",
+  "stateName": "New York",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-03",
+  "purpose": "Operational county-by-county request packets for the New York county equivalents still outside normalized 2024 local President-versus-U.S.-Senate review coverage. These packets are request/source tracking only; they do not load rows, promote production, or allege fraud or misconduct.",
+  "officialRouting": {
+    "countyBoardRosterUrl": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+    "flateauDownloadsUrl": "https://flateau.elections.ny.gov/downloads",
+    "enrollmentCountyUrl": "https://elections.ny.gov/enrollment-county",
+    "enrollmentElectionDistrictUrl": "https://elections.ny.gov/enrollment-election-district?f%5B0%5D=filter_term%3A571",
+    "nysboeFoilUrl": "https://elections.ny.gov/freedom-information-law-foil-requests"
+  },
+  "requestFields": [
+    "official 2024 General Election local/election-district President rows",
+    "official same-grain 2024 General Election United States Senator rows",
+    "candidate, party, vote, total, blank, void, overvote, and undervote fields where available",
+    "county, town/city, ward, precinct, election district, poll site, and reporting-unit identifiers needed for joins",
+    "ballots-cast, voter-history, or voter-participation rows at county or election-district grain",
+    "registered-voter denominator and denominator timing, especially 11/01/2024 or election-day close-of-books context",
+    "map-ready precinct/election-district geometry or an official crosswalk matching result labels",
+    "post-election audit selection and comparison reports, CVR availability statements, recount, correction, incident, and litigation records where public"
+  ],
+  "normalizationRules": [
+    "Do not load packet-produced rows until the source authority, URL, local artifact path, reporting grain, parser path, expected row count, totals, caveats, and confidence notes are recorded.",
+    "Reconcile parsed President and U.S. Senate local rows to the official county totals in data/ny-2024-general-president.csv and data/ny-2024-general-senate.csv before changing data/ny-2024-local-review.csv.",
+    "Treat NYSBOE enrollment reports as denominator leads only until paired with ballots-cast, voter-history, or voter-participation rows.",
+    "Treat Flateau/VEDA as a future official statewide export path unless NYSBOE publishes qualifying historical 2024 exports."
+  ],
+  "packets": [
+    {
+      "packetId": "ny-2024-local-herkimer",
+      "county": "Herkimer County",
+      "countyBoardRosterSearchCounty": "Herkimer",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Herkimer.pdf",
+        "artifact": "Herkimer.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official 2024 General Election election-district or equivalent local result rows for President and United States Senator, plus ballots-cast/voter-history fields and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-jefferson",
+      "county": "Jefferson County",
+      "countyBoardRosterSearchCounty": "Jefferson",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Jefferson%20(unofficial).pdf",
+        "artifact": "Jefferson (unofficial).pdf",
+        "status": "unreviewed_unofficial_pdf_not_loaded"
+      },
+      "primaryRequest": "Request certified or final official same-grain President and United States Senator local rows to replace the unreviewed unofficial PDF lead, plus turnout/voter-history and geometry/crosswalk fields.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-monroe",
+      "county": "Monroe County",
+      "countyBoardRosterSearchCounty": "Monroe",
+      "currentReviewStatus": "excluded_zero_rows",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Monroe.xlsx",
+        "artifact": "Monroe.xlsx",
+        "status": "president_detail_only_no_us_senate_section"
+      },
+      "primaryRequest": "Request the matching United States Senator local workbook/export at the same election-district grain as the President workbook, or a combined official local canvass export with both contests.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-nassau",
+      "county": "Nassau County",
+      "countyBoardRosterSearchCounty": "Nassau",
+      "currentReviewStatus": "no_manifest_source_file",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/tree/master/2024/general",
+        "artifact": null,
+        "status": "no_nassau_2024_general_source_file_in_current_manifest"
+      },
+      "primaryRequest": "Request official Nassau 2024 General Election local/election-district President and United States Senator rows directly from the county board, plus turnout/voter-history and geometry/crosswalk fields.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-ontario",
+      "county": "Ontario County",
+      "countyBoardRosterSearchCounty": "Ontario",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Ontario.pdf",
+        "artifact": "Ontario.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-orange",
+      "county": "Orange County",
+      "countyBoardRosterSearchCounty": "Orange",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Orange.pdf",
+        "artifact": "Orange.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-orleans",
+      "county": "Orleans County",
+      "countyBoardRosterSearchCounty": "Orleans",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Orleans.pdf",
+        "artifact": "Orleans.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-oswego",
+      "county": "Oswego County",
+      "countyBoardRosterSearchCounty": "Oswego",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Oswego.pdf",
+        "artifact": "Oswego.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-rockland",
+      "county": "Rockland County",
+      "countyBoardRosterSearchCounty": "Rockland",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Rockland%20(president%20only).xlsx",
+        "artifact": "Rockland (president only).xlsx",
+        "status": "president_only_no_same_grain_us_senate_rows"
+      },
+      "primaryRequest": "Request the matching United States Senator local workbook/export at the same grain as the President workbook, or a combined official local canvass export with both contests.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-schuyler",
+      "county": "Schuyler County",
+      "countyBoardRosterSearchCounty": "Schuyler",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Schuyler.pdf",
+        "artifact": "Schuyler.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-steuben",
+      "county": "Steuben County",
+      "countyBoardRosterSearchCounty": "Steuben",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Steuben.pdf",
+        "artifact": "Steuben.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-wyoming",
+      "county": "Wyoming County",
+      "countyBoardRosterSearchCounty": "Wyoming",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Wyoming.pdf",
+        "artifact": "Wyoming.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "ny-2024-local-yates",
+      "county": "Yates County",
+      "countyBoardRosterSearchCounty": "Yates",
+      "currentReviewStatus": "excluded_not_loaded",
+      "currentSourceLead": {
+        "authority": "OpenElections source collection from New York county boards of elections",
+        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Yates.pdf",
+        "artifact": "Yates.pdf",
+        "status": "unreviewed_pdf_text_extraction_not_loaded"
+      },
+      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "parserOrNormalizationPath": "future NY official ED/local result parser",
+      "status": "packet_ready_no_loaded_rows"
+    }
+  ]
+}

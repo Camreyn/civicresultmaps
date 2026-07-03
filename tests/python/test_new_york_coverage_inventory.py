@@ -42,6 +42,8 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         tiers = self.load_json("data/source-acquisition-tiers.json")
         manifest = self.load_json("data/ny-2024-local-review-sources.json")
         request_rows = self.load_request_rows()
+        packets = self.load_json("data/ny-2024-missing-county-request-packets.json")
+        packet_counties = {packet["county"] for packet in packets["packets"]}
 
         queue_entry = next(row for row in native["sourceDiscoveryQueue"] if row["state"] == "NY")
         tier = next(row for row in tiers["states"] if row["state"] == "NY" and row["scope"] == "statewide")
@@ -55,7 +57,9 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertFalse(inventory["productionChecked"])
         self.assertIn("docs/developer/index.md", inventory["repoDrift"][0])
         self.assertEqual(inventory["sourceRequestMatrix"], "data/ny-2024-source-request-matrix.tsv")
+        self.assertEqual(inventory["requestPath"]["countyRequestPackets"], "data/ny-2024-missing-county-request-packets.json")
         self.assertEqual(queue_entry["requestMatrixArtifact"], "data/ny-2024-source-request-matrix.tsv")
+        self.assertEqual(queue_entry["requestPacketArtifact"], "data/ny-2024-missing-county-request-packets.json")
         self.assertIn("source request matrix", tier["parserStatus"])
         self.assertIn("13 county equivalents", tier["caveats"])
         self.assertIn("future official export paths", tier["parserStatus"])
@@ -64,6 +68,14 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(coverage["reviewRows"], 9753)
         self.assertEqual(coverage["coveredCountyEquivalents"], 49)
         self.assertEqual(coverage["missingCountyEquivalents"], 13)
+        self.assertEqual(coverage["requestPacketCount"], 13)
+        self.assertEqual(coverage["requestPacketArtifact"], "data/ny-2024-missing-county-request-packets.json")
+        self.assertEqual(len(packets["packets"]), 13)
+        self.assertEqual(packet_counties, set(coverage["excludedOrNotYetReviewedCounties"]))
+        self.assertTrue(all(packet["status"] == "packet_ready_no_loaded_rows" for packet in packets["packets"]))
+        self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Nassau County")["currentReviewStatus"], "no_manifest_source_file")
+        self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Monroe County")["currentSourceLead"]["status"], "president_detail_only_no_us_senate_section")
+        self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Rockland County")["currentSourceLead"]["status"], "president_only_no_same_grain_us_senate_rows")
         self.assertEqual(monroe["status"], "excluded_zero_rows")
         self.assertIn("Monroe County", coverage["excludedOrNotYetReviewedCounties"])
         self.assertIn("Rockland County", coverage["excludedOrNotYetReviewedCounties"])
@@ -75,6 +87,9 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(request_rows["ny-2024-state-native-turnout"]["status"], "state_native_source_lead_not_loaded")
         self.assertEqual(request_rows["ny-2026-flateau-veda-export-readiness"]["status"], "future_official_path_empty_for_2024")
         self.assertEqual(request_rows["ny-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
+        packet_request_ids = {packet["packetId"] for packet in packets["packets"]}
+        self.assertTrue(packet_request_ids.issubset(request_rows.keys()))
+        self.assertTrue(all(request_rows[request_id]["status"] == "packet_ready_no_loaded_rows" for request_id in packet_request_ids))
 
         blocker_sources = {row["sourceUrl"]: row for row in inventory["officialBlockerEvidence"]}
         self.assertEqual(blocker_sources["https://flateau.elections.ny.gov/"]["observed"], "The VEDA dashboard reported 0 total elections for 2026 and no election data available.")

@@ -1624,7 +1624,8 @@
         "NYSBOE enrollment report leads",
         "NYSBOE Flateau/VEDA future local-data path",
         "VEDA future results/download export readiness check",
-        "source request matrix TSV"
+        "source request matrix TSV",
+        "missing county request packet JSON"
       ],
       "sourceUrls": [
         "https://elections.ny.gov/election-results",
@@ -1655,7 +1656,8 @@
         "Verified Voting county equipment context",
         "NYSBOE 11/01/2024 county enrollment report lead and election-district enrollment report lead",
         "NYSBOE post-election audit, FOIL, county-board roster, and Flateau/VEDA request/publication paths documented in data/ny-2024-data-coverage-inventory.json",
-        "Wave 21 source request matrix for missing local review, turnout, geometry, administration-context artifacts, and VEDA export readiness"
+        "Wave 21 source request matrix for missing local review, turnout, geometry, administration-context artifacts, and VEDA export readiness",
+        "Wave 22 missing-county request packet JSON for the 13 excluded county equivalents"
       ],
       "missingFields": [
         "official precinct/local reporting-unit President rows from NYSBOE or county boards for counties still outside local review coverage",
@@ -1665,11 +1667,11 @@
         "official audit/recount/correction/incident/litigation record package",
         "precinct or election-district boundary geometry and result-label crosswalk"
       ],
-      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv partial review rows, EAC turnout fallback, official PDF historical baseline, county equipment context, NY coverage inventory, and Wave 21 source request matrix; official full-state precinct/election-district parser still needs a complete source package and crosswalk. VEDA/Flateau results and downloads are classified as future official export paths, currently empty for 2024 replacement purposes.",
+      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv partial review rows, EAC turnout fallback, official PDF historical baseline, county equipment context, NY coverage inventory, and Wave 21 source request matrix; official full-state precinct/election-district parser still needs a complete source package and crosswalk. VEDA/Flateau results and downloads are classified as future official export paths, currently empty for 2024 replacement purposes. Wave 22 adds a county-by-county request packet artifact for the remaining missing local-review counties; no new rows are loaded by that packet.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "Current certified results and historical baselines are official county-level rows. Local review rows are supplemental OpenElections county-board source normalizations and legacy NYC rows, not a complete official NYSBOE precinct package; 13 county equivalents remain outside normalized review coverage. EAC turnout fallback and Verified Voting equipment context remain advisory metadata.",
-      "nextAction": "Use data/ny-2024-data-coverage-inventory.json and data/ny-2024-source-request-matrix.tsv to request or locate official NYSBOE/county election-district President and U.S. Senate rows, ballots-cast/voter-history rows paired with enrollment denominators, CVR availability, audit/recount/correction/incident records, and precinct/election-district geometry or crosswalks; monitor VEDA results/download exports for post-April 1, 2026 elections or any later historical 2024 export."
+      "nextAction": "Use data/ny-2024-data-coverage-inventory.json and data/ny-2024-source-request-matrix.tsv to request or locate official NYSBOE/county election-district President and U.S. Senate rows, ballots-cast/voter-history rows paired with enrollment denominators, CVR availability, audit/recount/correction/incident records, and precinct/election-district geometry or crosswalks; monitor VEDA results/download exports for post-April 1, 2026 elections or any later historical 2024 export. Use data/ny-2024-missing-county-request-packets.json for county-specific request scope and current source-lead status."
     },
     {
       "state": "OH",
