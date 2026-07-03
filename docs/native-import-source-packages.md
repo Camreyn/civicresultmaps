@@ -673,7 +673,7 @@ VT remains in sourceDiscoveryQueue rather than completedNativeStates. The active
 
 Expected staging validation: 66 county result rows, 66 county review rows, 66 EAC fallback turnout rows, 198 contextual historical baseline rows, and 66 county geometry features. President totals reconcile to 428,922 votes: 272,081 Trump, 146,859 Harris, and 9,982 Other. U.S. House comparison totals reconcile to 421,448 votes: 303,630 Republican and 117,818 Democratic.
 
-Caveats: the 2024 President and U.S. House rows are secondary staging rows, not retained official SOS artifacts. The official SD SOS 2024 General Election Canvass and Certificate PDF/static export or `electionresults.sd.gov` archive ElectionID remains a P0 request item. Review rows are county-level President-versus-at-large-U.S.-House comparisons, not precinct scatter plots. EAC turnout remains active until state-native turnout/registration denominator rows are collected and reconciled. No normalized audit, CVR availability, recount, incident, correction, or litigation rows are loaded.
+Caveats: the 2024 President and U.S. House rows are secondary staging rows, not retained official SOS artifacts. The official SD SOS 2024 General Election Canvass and Certificate PDF/static export or `electionresults.sd.gov` archive ElectionID/race IDs remain a P0 request item. Wave 21 confirmed the live results app currently defaults to the 2026 Primary Election, ResultsExport uses ASP.NET postbacks for current-election exports, the WSDL archive methods require an ElectionID, and a bounded GetCandidates probe for General ElectionID values 1-800 returned no 2024 federal candidate markers. Review rows are county-level President-versus-at-large-U.S.-House comparisons, not precinct scatter plots. EAC turnout remains active until state-native turnout/registration denominator rows are collected and reconciled. No normalized audit, CVR availability, recount, incident, correction, or litigation rows are loaded.
 ## Alaska Wave 20 Statewide Native Activation
 
 - Config: `etl/state-configs/ak.json`
@@ -709,7 +709,3 @@ Remaining Wyoming caveats: EAC fallback registered-voter denominator remains act
 Expected validation: 95 county result rows, 95 county geometry features, 3,063,942 presidential votes, 1,966,865 Trump votes, 1,056,265 Harris votes, 40,812 Other votes, 1,859 precinct review rows, and 95 EAC fallback turnout rows. The official PDF source is text-layer PDF, not a structured export; the normalizer handles the PDF text placement of the seventh presidential candidate column and reconciles parsed precinct totals to official statewide President and U.S. Senate totals before writing CSV artifacts. Current advisory rows are public-interest screening inputs only, not findings.
 
 Remaining gaps are Tennessee-native turnout/registration denominators, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR availability/incident/correction/litigation records.
-
-
-
-

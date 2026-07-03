@@ -1,4 +1,4 @@
-﻿{
+{
   "state": "SD",
   "stateName": "South Dakota",
   "checkedAt": "2026-07-03",
@@ -111,14 +111,35 @@
       "https://electionresults.sd.gov/Default.aspx",
       "https://electionresults.sd.gov/ResultsMedia.aspx",
       "https://electionresults.sd.gov/ResultsExport.aspx?",
-      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc?singleWsdl"
+      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc?singleWsdl",
+      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=0",
+      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetMapData?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0",
+      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetVoterTurnoutData"
     ],
     "observedOfficialCapabilities": [
-      "The live SD results app exposes current election CSV/media/export pages and ResultsAjax service methods.",
+      "The live SD results app exposes current election CSV/media/export pages and ResultsAjax service methods, but those public pages currently default to the 2026 Primary Election, not the 2024 General Election.",
+      "The ResultsExport page exposes Statewide, Legislative, and county export controls as ASP.NET postback targets for the current election; the page source did not expose a stable static 2024 General export URL.",
       "The WSDL exposes GetMapDataArchive, GetVoterTurnoutArchive, and GetProvisionalDataArchive methods that require an integer ElectionID.",
-      "The public pages inspected in this pass defaulted to the 2026 Primary Election; no scriptable 2024 General Election archive ElectionID or static canvass PDF URL was confirmed."
+      "The current-election GetCandidates and GetMapData endpoints responded, confirming the service family is reachable. The current live race IDs belong to 2026 contests and are not usable as 2024 General Election certified artifacts.",
+      "No scriptable 2024 General Election archive ElectionID or static canvass PDF URL was confirmed."
     ],
-    "blocker": "Obtain the official SD SOS canvass PDF/static export, specifically the official 2024 General Election Canvass and Certificate PDF/static export URL or the electionresults.sd.gov archive ElectionID for November 5, 2024, before promoting SD to completed official-native coverage."
+    "blocker": "Obtain the official SD SOS canvass PDF/static export, specifically the official 2024 General Election Canvass and Certificate PDF/static export URL or the electionresults.sd.gov archive ElectionID/race IDs for November 5, 2024, before promoting SD to completed official-native coverage. If the archive ID cannot be found publicly, request the export or ElectionID directly from the South Dakota Secretary of State.",
+    "archiveProbe": {
+      "checkedAt": "2026-07-03",
+      "method": "Queried GetCandidates with ElectionType=General and ElectionID values 1 through 800.",
+      "endpointPattern": "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID={ElectionID}",
+      "candidateMarkers": [
+        "Trump",
+        "Harris",
+        "Oliver",
+        "Stein",
+        "Kennedy",
+        "Dusty Johnson",
+        "Sheryl Johnson",
+        "United States President"
+      ],
+      "result": "No probed ElectionID returned the 2024 General Election federal candidate markers. This does not prove the archive ID is unavailable; it documents that the visible service did not expose the needed 2024 ID in the bounded probe."
+    }
   },
   "displayCaveats": [
     "County result and review rows are caveated secondary staging coverage until the official SD SOS canvass/export is retained.",
@@ -129,4 +150,3 @@
   ],
   "requestMatrixArtifact": "data/sd-2024-source-request-matrix.tsv"
 }
-
