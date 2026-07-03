@@ -1,0 +1,143 @@
+{
+  "state": "IN",
+  "stateName": "Indiana",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-03",
+  "purpose": "State-scoped inspection of the official Indiana ENR public JSON family retained in this repository. This artifact sharpens the current blocker for official same-grain precinct/subcounty President and U.S. Senate rows.",
+  "officialArchivePage": "https://enr.indianavoters.in.gov/archive/2024General/index.html",
+  "localArtifactsInspected": {
+    "officialResultsDirectory": "data/in-2024-official-results",
+    "jurisdictionReportsDirectory": "data/in-2024-enr-jurisdiction-reports"
+  },
+  "settings": {
+    "currentElection": "11/05/2024",
+    "versionType": "A",
+    "versionCode": "20241213_160047",
+    "jsonContainer": "site",
+    "defaultMapName": "mapDataIndianaCounties2013",
+    "stateFp": "18"
+  },
+  "appDataPathProbe": {
+    "scriptEvidence": [
+      {
+        "url": "https://enr.indianavoters.in.gov/archive/2024General/Scripts/EnrAngular/Services/jsonDataFetcher.js",
+        "observation": "The ENR app builds data JSON paths as data/<fileName>_<version>.json after settings.json reports VersionType A."
+      },
+      {
+        "url": "https://enr.indianavoters.in.gov/archive/2024General/Scripts/EnrAngular/Initialization/enrMainController.js?version=1.0",
+        "observation": "Startup fetches statewideElectionsC_A/statewideTickerC_A and then office category files named OffCatC_<OFFICECATEGORYID>_A.json from the office list."
+      },
+      {
+        "url": "https://enr.indianavoters.in.gov/archive/2024General/Scripts/EnrAngular/Directives/enrDownloadResults.js",
+        "observation": "The visible download-results directive fetches statewideTurnout_A.json and exports voter statistics only, not candidate result rows."
+      }
+    ],
+    "conclusion": "The public app path identifies office-category, ticker/settings, turnout, map, and referendum JurR files. It does not identify a public President or U.S. Senate precinct/subcounty candidate-result export."
+  },
+  "statewideOfficeList": {
+    "officeCategoryCount": 24,
+    "federalOfficeCategoryIds": [
+      {
+        "officeCategoryId": "1019",
+        "officeCategoryName": "Presidential Electors for US President & VP",
+        "heading": "Federal",
+        "mapCode": ""
+      },
+      {
+        "officeCategoryId": "1006",
+        "officeCategoryName": "US Senator",
+        "heading": "Federal",
+        "mapCode": ""
+      },
+      {
+        "officeCategoryId": "1005",
+        "officeCategoryName": "US Representative",
+        "heading": "Federal",
+        "mapCode": "mapDataIndianaUsHouse2022"
+      }
+    ]
+  },
+  "retainedOfficeCategoryFiles": [
+    {
+      "fileName": "OffCatC_1006_A.json",
+      "officeCategoryId": "1006",
+      "officeCategoryName": "US Senator",
+      "writeTime": "2024-12-19T18:29:45.527",
+      "regionCount": 92,
+      "regionMapJurisdictionTypes": {
+        "Locality": 92
+      },
+      "regionVoteTotal": 2829897,
+      "raceRows": 92,
+      "raceJurisdictionTypes": {
+        "District": 92
+      },
+      "candidateContainerCount": 368,
+      "localCandidateFieldNames": [],
+      "notes": "OfficeCategory files expose statewide/district summaries plus county/locality race rows. For President and U.S. Senate, the relevant official rows are county/locality rows, not precinct or lower reporting-unit candidate rows."
+    },
+    {
+      "fileName": "OffCatC_1007_A.json",
+      "officeCategoryId": "1007",
+      "officeCategoryName": "Governor & Lt. Governor",
+      "writeTime": "2024-12-19T18:29:50.42",
+      "regionCount": 92,
+      "regionMapJurisdictionTypes": {
+        "Locality": 92
+      },
+      "regionVoteTotal": 2879655,
+      "raceRows": 92,
+      "raceJurisdictionTypes": {
+        "District": 92
+      },
+      "candidateContainerCount": 368,
+      "localCandidateFieldNames": [],
+      "notes": "OfficeCategory files expose statewide/district summaries plus county/locality race rows. For President and U.S. Senate, the relevant official rows are county/locality rows, not precinct or lower reporting-unit candidate rows."
+    },
+    {
+      "fileName": "OffCatC_1019_A.json",
+      "officeCategoryId": "1019",
+      "officeCategoryName": "Presidential Electors for US President & VP",
+      "writeTime": "2024-12-19T18:29:32.937",
+      "regionCount": 92,
+      "regionMapJurisdictionTypes": {
+        "Locality": 92
+      },
+      "regionVoteTotal": 2936677,
+      "raceRows": 92,
+      "raceJurisdictionTypes": {
+        "Shared": 92
+      },
+      "candidateContainerCount": 368,
+      "localCandidateFieldNames": [],
+      "notes": "OfficeCategory files expose statewide/district summaries plus county/locality race rows. For President and U.S. Senate, the relevant official rows are county/locality rows, not precinct or lower reporting-unit candidate rows."
+    }
+  ],
+  "federalTickerTotals": [
+    {
+      "officeId": "1324",
+      "officeTitle": "US President & Vice President",
+      "totalVotes": 2936677
+    },
+    {
+      "officeId": "1409",
+      "officeTitle": "United States Senator from Indiana, Class 1",
+      "totalVotes": 2829897
+    }
+  ],
+  "jurisdictionReportInventory": {
+    "fileCount": 92,
+    "manifestCountyCount": 92,
+    "manifestCandidateRaceContainerCount": 0,
+    "rescannedCandidateContainerCount": 0,
+    "localOrCandidateFieldNames": [],
+    "conclusion": "The collected JurR files contain county jurisdiction/contact and reporting-region/referendum structures. They contain zero candidate containers on both the retained manifest and this rescan."
+  },
+  "conclusion": {
+    "officialPresidentRowsAvailable": "county",
+    "officialSenateRowsAvailable": "county",
+    "officialSameGrainSubcountyPresidentSenateRowsAvailable": false,
+    "blocker": "The retained official ENR public JSON family supports county certified President and U.S. Senate rows, plus county turnout/statistics and referendum inventory. It does not expose same-grain precinct/subcounty President and U.S. Senate candidate rows needed to replace the supplemental MIT/OpenElections local review artifact.",
+    "nextOfficialSourceStep": "Request a statewide precinct/subcounty President and U.S. Senate export from the Indiana Election Division, then fall back to county election offices only if the state confirms no statewide export exists."
+  }
+}

@@ -70,6 +70,28 @@
       "confidence": "loaded_inventory_only"
     },
     {
+      "id": "in-2024-official-enr-public-data-inventory",
+      "sourceAuthority": "Indiana Election Division",
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2024General/index.html",
+      "localPath": "data/in-2024-official-enr-public-data-inventory.json",
+      "electionYear": 2024,
+      "reportingGrain": "public_enr_json_inventory",
+      "parserNormalizationPath": "scripts/inspect-in-enr-public-data.mjs scans retained official ENR JSON artifacts and app data-path scripts",
+      "expectedCounts": {
+        "retainedOfficeCategoryFiles": 3,
+        "presidentRegions": 92,
+        "senateRegions": 92,
+        "jurisdictionReports": 92,
+        "jurisdictionCandidateContainers": 0,
+        "publicSameGrainSubcountyPresidentSenateRows": 0
+      },
+      "caveats": [
+        "Evidence artifact only; it does not replace certified county result rows or supplemental local review rows.",
+        "The public ENR app path identifies office-category, ticker/settings, turnout, map, and referendum JurR files, but no public precinct/subcounty President or U.S. Senate candidate-result export."
+      ],
+      "confidence": "loaded_official_public_endpoint_inventory"
+    },
+    {
       "id": "in-2024-general-turnout",
       "sourceAuthority": "Indiana Election Division",
       "sourceUrl": "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
@@ -270,6 +292,18 @@
       "blocker": "Official precinct/subcounty candidate rows remain unavailable from this collected ENR JSON family."
     },
     {
+      "sourceAuthority": "Indiana Election Division / Quest ENR public app",
+      "sourceUrl": "https://enr.indianavoters.in.gov/archive/2024General/index.html",
+      "checkedFor": [
+        "ENR public data path naming convention",
+        "downloadable candidate result export route",
+        "hidden precinct/subcounty President or U.S. Senate JSON route"
+      ],
+      "result": "scripts/inspect-in-enr-public-data.mjs records the Angular data path: settings.json reports version A; startup fetches statewideElectionsC_A/statewideTickerC_A and OffCatC_<OFFICECATEGORYID>_A.json files; the visible download-results directive fetches statewideTurnout_A.json and exports voter statistics only.",
+      "blocker": "No public ENR app script or retained official JSON artifact identifies a President or U.S. Senate precinct/subcounty candidate-result export. The retained President and U.S. Senate files each expose 92 county/locality regions, and the 92 JurR files rescan to zero candidate containers.",
+      "evidenceArtifact": "data/in-2024-official-enr-public-data-inventory.json"
+    },
+    {
       "sourceAuthority": "Indiana Secretary of State Election Division",
       "sourceUrl": "https://www.in.gov/sos/elections/election-commission/election-results/",
       "checkedFor": [
@@ -428,10 +462,10 @@
   "gaps": [
     {
       "artifact": "official_precinct_or_local_reporting_unit_results",
-      "status": "not_found_publicly",
+      "status": "not_found_publicly_in_enr_app_or_retained_json",
       "neededFor": "Same-grain President-versus-U.S. Senate review rows below county level.",
       "preferredAuthority": "Indiana Election Division statewide export, or all 92 county election offices if no statewide export exists.",
-      "remainingRisk": "Supplemental MIT/OpenElections review rows can calculate advisory screens, but official source-side precinct rows are needed to remove the supplemental-source caveat."
+      "remainingRisk": "Supplemental MIT/OpenElections review rows can calculate advisory screens, but the official ENR public app scan now shows President/Senate category JSON at county grain and JurR files with zero candidate containers; an official export or request response is needed before removing the supplemental-source caveat."
     },
     {
       "artifact": "precinct_boundary_geometry",
@@ -451,6 +485,7 @@
   "confidenceNotes": [
     "Official county result and county turnout artifacts are suitable for county-level public-interest review with visible caveats.",
     "No official statewide precinct/subcounty President and same-grain U.S. Senate result export was confirmed in this pass.",
+    "The generated data/in-2024-official-enr-public-data-inventory.json records the current public ENR app data-path evidence: President and U.S. Senate category files are county/locality-grain, JurR files contain zero candidate containers, and the visible download route is turnout statistics only.",
     "Next source step is a targeted Indiana Election Division request, followed by county-by-county collection only if the state confirms no statewide export exists.",
     "The request matrix at data/in-2024-source-request-matrix.tsv now records artifact-specific asks for official precinct rows, 2012 baseline, geometry, turnout denominators, VSTOP audit rows, CVR availability, and Recount Commission records.",
     "Official 2012, 2016, and 2020 county presidential historical baseline rows are now normalized from Indiana Election Division sources.",
