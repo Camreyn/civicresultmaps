@@ -24,7 +24,7 @@
       "data/eac-2024-state-turnout/ri-2024-eac-turnout.csv"
     ],
     "expectedRows": {
-      "resultRows": 41,
+      "resultRows": 7,
       "reviewRows": 444,
       "turnoutRows": 39,
       "historicalBaselineRows": 80,
@@ -50,7 +50,7 @@
         "data/ri-2024-general-election-statewide.json",
         "data/ri-2024-general-president-city-town.csv"
       ],
-      "reportingGrain": "city_town_plus_federal_precincts_and_non_geographic_reconciliation_delta",
+      "reportingGrain": "five_county_map_rows_plus_federal_precincts_and_non_geographic_reconciliation_delta",
       "observedOfficialTotals": {
         "harris": 285156,
         "trump": 214406,
@@ -75,7 +75,7 @@
         }
       },
       "parser": "scripts/normalize-ri-boe-results.mjs plus nativeRhodeIslandBoeCsv",
-      "caveat": "The raw technical ZIP is below posted statewide JSON by 32 President votes, so normalized certified rows include an explicit non-geographic reconciliation delta rather than silently changing precinct rows."
+      "caveat": "The raw technical ZIP is below posted statewide JSON by 32 President votes, so normalized certified rows include an explicit non-geographic reconciliation delta rather than silently changing precinct rows. The native importer aggregates official city/town rows to five county rows for the production result map; Federal Precincts and the reconciliation delta remain non-geographic and are not mapped."
     },
     "sameGrainComparisonContest": {
       "status": "loaded_with_zip_delta_caveat",
@@ -122,7 +122,7 @@
       "caveat": "The RI BOE result ZIP/JSON files are result sources, not a complete turnout denominator replacement unless registration-denominator fields are confirmed in the data description or a separate official artifact."
     },
     "geometryAndCrosswalk": {
-      "status": "county_equipment_geometry_available_precinct_or_city_town_crosswalk_needed",
+      "status": "county_result_map_available_precinct_or_city_town_crosswalk_needed",
       "sourceAuthority": "Rhode Island Board of Elections; Rhode Island Geographic Information System; U.S. Census Bureau",
       "sourceUrls": [
         "https://www.ri.gov/election/results/2024/general_election/data/",
@@ -136,9 +136,9 @@
       "needed": [
         "official precinct, district, or city/town boundary geometry matching 2024 result labels",
         "crosswalk from BOE result rows to Census county, city/town, and any precinct/district geometries",
-        "confirmation of how federal-only, mail, early-vote, and polling-place rows should be joined or excluded for map overlays"
+        "confirmation of how federal-only, mail, early-vote, and polling-place rows should be joined or excluded for city/town or precinct map overlays"
       ],
-      "caveat": "Current RI map capability remains disabled because loaded result rows are city/town/federal/reconciliation rows and no result-ready city/town or precinct geometry is loaded."
+      "caveat": "Current RI county map capability is enabled by aggregating official city/town rows to county totals. Federal Precincts and the posted-total reconciliation delta are retained as non-geographic rows and excluded from map joins; city/town and precinct overlays still need result-ready geometry or crosswalks."
     },
     "historicalBaselines": {
       "status": "partial_official_archive_rows_loaded",
@@ -204,7 +204,7 @@
     "2024 certified President totals require a transparent posted-total reconciliation delta because the raw ZIP is 32 votes below posted statewide JSON.",
     "The U.S. Senate raw ZIP rows are 29 votes below posted statewide JSON, and review rows exclude zero-vote Limited rows plus presidential-only rows.",
     "EAC fallback turnout is active; no Rhode Island-native registered-voter denominator replacement is normalized.",
-    "City/town, precinct, district, mail, early-vote, and polling-place labels need geometry/crosswalk review before map overlays are enabled.",
+    "County map rows are generated from official city/town totals; city/town, precinct, district, mail, early-vote, and polling-place labels still need geometry/crosswalk review before finer map overlays are enabled.",
     "2020 official historical archive artifacts are collected but not loaded until the alternate vote-group layout is decoded and reconciled.",
     "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
     "All advisory indicator rows are source-review calculations, not findings of fraud or misconduct."

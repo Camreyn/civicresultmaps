@@ -21,7 +21,7 @@ function readLocalStateConfig(state) {
   return JSON.parse(stripBom(fs.readFileSync(configPath, "utf8")));
 }
 
-function resultlessMapSkipReason(state, config) {
+function resultlessMapSkipReason(state, config, productionCoverage) {
   if (!config) {
     return null;
   }
@@ -36,6 +36,11 @@ function resultlessMapSkipReason(state, config) {
 
   if (Number(config.expected?.resultRows ?? NaN) === 0) {
     return `${state} config expects zero 2024 result rows.`;
+  }
+
+  const productionCapabilities = productionCoverage?.data?.capabilities ?? productionCoverage?.capabilities ?? null;
+  if (config.capabilities?.map === true && productionCapabilities?.map === false) {
+    return `${state} local config enables result maps, but production coverage still reports map disabled pending data promotion.`;
   }
 
   return null;
@@ -91,7 +96,7 @@ function isAllowedMissingBoundary(state, name) {
 
 function isNonGeographicResultRow(state, name) {
   const normalized = normalizeName(name);
-  return (state === "ME" && normalized === "STATEUOCAVA") || (state === "MO" && normalized === "KANSASCITY") || (state === "RI" && normalized === "FEDERALPRECINCTS");
+  return (state === "ME" && normalized === "STATEUOCAVA") || (state === "MO" && normalized === "KANSASCITY") || (state === "RI" && ["FEDERALPRECINCTS", "STATEWIDERECONCILIATIONDELTA"].includes(normalized));
 }
 
 async function fetchJson(url) {
@@ -107,11 +112,12 @@ const report = [];
 for (const state of states) {
   try {
     const config = readLocalStateConfig(state);
-    const [results, geojson] = await Promise.all([
+    const [results, geojson, productionCoverage] = await Promise.all([
       fetchJson(`${appBaseUrl}/api/results?state=${state}&year=2024&level=county`),
       fetchJson(`${geoBaseUrl}/${geoJsonPath(state)}`),
+      fetchJson(`${appBaseUrl}/api/coverage?state=${state}&year=2024`).catch(() => null),
     ]);
-    const skipReason = resultlessMapSkipReason(state, config);
+    const skipReason = resultlessMapSkipReason(state, config, productionCoverage);
     if ((results.data?.length ?? 0) === 0 && skipReason) {
       report.push({
         state,
@@ -177,4 +183,3 @@ console.log(JSON.stringify({ checkedStates: report.length, skippedStates: skippe
 if (failures.length > 0) {
   process.exitCode = 1;
 }
-

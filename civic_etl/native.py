@@ -94,6 +94,52 @@ def _missouri_jurisdiction_name(raw: Any) -> str:
 def _rhode_island_jurisdiction_name(raw: Any) -> str:
     return str(raw or "").strip()
 
+RHODE_ISLAND_CITY_TOWN_COUNTIES = {
+    "Barrington": "Bristol County",
+    "Bristol": "Bristol County",
+    "Warren": "Bristol County",
+    "Coventry": "Kent County",
+    "East Greenwich": "Kent County",
+    "Warwick": "Kent County",
+    "West Greenwich": "Kent County",
+    "West Warwick": "Kent County",
+    "Jamestown": "Newport County",
+    "Little Compton": "Newport County",
+    "Middletown": "Newport County",
+    "Newport": "Newport County",
+    "Portsmouth": "Newport County",
+    "Tiverton": "Newport County",
+    "Burrillville": "Providence County",
+    "Central Falls": "Providence County",
+    "Cranston": "Providence County",
+    "Cumberland": "Providence County",
+    "East Providence": "Providence County",
+    "Foster": "Providence County",
+    "Glocester": "Providence County",
+    "Johnston": "Providence County",
+    "Lincoln": "Providence County",
+    "North Providence": "Providence County",
+    "North Smithfield": "Providence County",
+    "Pawtucket": "Providence County",
+    "Providence": "Providence County",
+    "Scituate": "Providence County",
+    "Smithfield": "Providence County",
+    "Woonsocket": "Providence County",
+    "Charlestown": "Washington County",
+    "Exeter": "Washington County",
+    "Hopkinton": "Washington County",
+    "Narragansett": "Washington County",
+    "New Shoreham": "Washington County",
+    "North Kingstown": "Washington County",
+    "Richmond": "Washington County",
+    "South Kingstown": "Washington County",
+    "Westerly": "Washington County",
+}
+
+
+def _rhode_island_county_name(raw: Any) -> str:
+    name = _rhode_island_jurisdiction_name(raw)
+    return RHODE_ISLAND_CITY_TOWN_COUNTIES.get(name, name)
 def _illinois_jurisdiction_name(raw: Any) -> str:
     value = str(raw or "").strip()
     if not value:
@@ -1716,6 +1762,67 @@ def _county_president_csv_rows(
     }
     return result_rows, review_rows, turnout_rows, metrics
 
+
+def _rhode_island_county_president_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    raw_result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(
+        config,
+        sources,
+        missing_label="Rhode Island BOE official results",
+        county_normalizer=_rhode_island_county_name,
+    )
+    county_totals: dict[str, dict[str, Any]] = {}
+    non_geographic_rows: list[dict[str, Any]] = []
+
+    for row in raw_result_rows:
+        level = str(row.get("level") or "county").strip()
+        if level != "city_town":
+            non_geographic_rows.append(row)
+            continue
+
+        county = str(row.get("jurisdictionName") or "").strip()
+        if county not in set(RHODE_ISLAND_CITY_TOWN_COUNTIES.values()):
+            raise ValueError(f"Rhode Island BOE city/town row did not map to a county: {row.get('jurisdictionName')!r}")
+        values = county_totals.setdefault(
+            county,
+            {"trump": 0, "harris": 0, "other": 0, "total": 0, "sourceId": row.get("sourceId")},
+        )
+        values["trump"] += int_text(row.get("votes", {}).get("Trump"))
+        values["harris"] += int_text(row.get("votes", {}).get("Harris"))
+        values["other"] += int_text(row.get("votes", {}).get("Other"))
+        values["total"] += int_text(row.get("totalVotes"))
+
+    county_rows = [
+        {
+            "jurisdictionName": county,
+            "jurisdictionCode": county.upper().replace(" COUNTY", "").replace(" ", "_"),
+            "level": "county",
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": values["sourceId"],
+        }
+        for county, values in sorted(county_totals.items())
+    ]
+    result_rows = county_rows + sorted(non_geographic_rows, key=lambda item: item["jurisdictionName"])
+    metrics = {
+        **metrics,
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeMapResultRows": len(county_rows),
+        "nativeNonGeographicResultRows": len(non_geographic_rows),
+    }
+    return result_rows, review_rows, turnout_rows, metrics
 
 def _connecticut_ems_vote_totals(rows: list[dict[str, Any]], candidate_ids: list[str]) -> int:
     selected = {str(candidate_id) for candidate_id in candidate_ids}
@@ -7428,11 +7535,9 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         }
     if config.code == "RI" and config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
         sources = _source_map(config)
-        result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(
+        result_rows, review_rows, turnout_rows, metrics = _rhode_island_county_president_rows(
             config,
             sources,
-            missing_label="Rhode Island BOE official results",
-            county_normalizer=_rhode_island_jurisdiction_name,
         )
         historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
         metrics = {**metrics, **historical_metrics}
