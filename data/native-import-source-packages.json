@@ -3382,11 +3382,11 @@
       "state": "SD",
       "name": "South Dakota",
       "priority": 20,
-      "currentStatus": "secondary_county_staging_rows_added_official_canvass_export_still_required",
+      "currentStatus": "secondary_county_staging_rows_with_official_archive_evidence_certified_canvass_still_required",
       "completionDecision": {
         "checkedAt": "2026-07-03",
         "decision": "remain_in_source_discovery_queue",
-        "reason": "SD should remain outside completedNativeStates because the loaded President and U.S. House county rows are generated from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. The official SOS canvass PDF/static export or electionresults.sd.gov archive ElectionID, state-native turnout replacement, precinct/local rows, precinct geometry, and normalized administration-context records remain uncollected."
+        "reason": "SD should remain outside completedNativeStates because the active President and U.S. House county rows are still generated from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. Wave 22 retained official SD SOS archive evidence for 2024 General ElectionID 684, but those map-data totals are 194 President votes and 184 U.S. House votes below the current certified-style staging totals. The official certified canvass/static export or a reconciling official archive payload, state-native turnout replacement review, precinct/local rows, precinct geometry, and normalized administration-context records remain unresolved."
       },
       "officialSourcePages": [
         "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
@@ -3394,10 +3394,14 @@
         "https://electionresults.sd.gov/ResultsMedia.aspx",
         "https://electionresults.sd.gov/ResultsExport.aspx?",
         "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc?singleWsdl",
-        "https://vip.sdsos.gov/CountyAuditors.aspx"
+        "https://vip.sdsos.gov/CountyAuditors.aspx",
+        "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=684",
+        "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
+        "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
+        "https://web.archive.org/web/20241105222716/https://electionresults.sd.gov/"
       ],
       "requiredArtifacts": [
-        "official SD SOS 2024 General Election Canvass and Certificate PDF/static export or electionresults.sd.gov archive ElectionID/race IDs for November 5, 2024",
+        "official SD SOS certified 2024 General Election Canvass and Certificate PDF/static export or an ElectionID 684 official archive/export payload that reconciles to certified county totals",
         "state-native county or precinct turnout and registered-voter denominator rows",
         "precinct/local President plus same-grain comparison rows if subcounty advisory coverage is pursued",
         "precinct boundary geometry or official reporting-unit crosswalk",
@@ -3406,8 +3410,8 @@
         "data/sd-2024-source-request-matrix.tsv as the current official-source request queue"
       ],
       "preferredComparisonContest": "United States Representative; current staging pairs county President with at-large U.S. House rows, with county-level and secondary-source caveats.",
-      "parserNeeded": "scripts/collect-sd-2024-county-results.mjs currently regenerates secondary county President and U.S. House CSVs for countyPresidentCsv/countyComparisonCsv. Replace or supplement it with an official SD SOS canvass/export collector once the official static artifact or archive ElectionID is identified.",
-      "blocker": "The live SD results app exposed current-election CSV/media/export pages and ResultsAjax archive method names, but the public pages currently default to the 2026 Primary Election and ResultsExport exposes ASP.NET postback controls rather than a stable 2024 static export URL. The WSDL confirms GetMapDataArchive, GetVoterTurnoutArchive, and GetProvisionalDataArchive require an integer ElectionID. A bounded GetCandidates archive probe for ElectionType=General and ElectionID values 1 through 800 found no 2024 federal candidate markers, so the 2024 General Election archive ElectionID/race IDs or canvass PDF/export still need to be requested or otherwise identified. Current rows reconcile to statewide totals but remain secondary staging coverage until the official artifact is retained.",
+      "parserNeeded": "scripts/collect-sd-2024-county-results.mjs currently regenerates secondary county President and U.S. House CSVs for countyPresidentCsv/countyComparisonCsv. scripts/collect-sd-official-archive-evidence.mjs now retains official ElectionID 684 evidence, but an official canvass/export normalizer is still needed before replacing secondary staging rows.",
+      "blocker": "Wave 22 identified official SD SOS archive ElectionID 684 through the older ResultsAjax service and retained candidate, map-data, and turnout evidence. GetMapDataArchive with RaceID=0 exposes President map RaceID 12665 and U.S. House map RaceID 11954, but the archive map totals are 428,728 President votes and 421,264 U.S. House votes, below the current certified-style staging totals by 194 and 184 votes. The live SD results app still defaults to the 2026 Primary Election, ResultsExport exposes ASP.NET postback controls rather than a stable 2024 export URL, and the certified canvass PDF/static export remains missing. Current rows remain secondary staging coverage until a certified/reconciling official artifact is retained.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "Wikipedia 2024 South Dakota presidential county table citing SD SOS canvass",
@@ -3424,12 +3428,12 @@
           "parserHint": "Generated by scripts/collect-sd-2024-county-results.mjs as countyComparisonCsv staging context."
         },
         "turnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/sd-2024-eac-turnout.csv",
-          "level": "jurisdiction",
-          "denominator": "EAC A1a Total Reg registered voters",
-          "ballotsCast": "EAC normalized ballots cast"
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback plus SD SOS archive turnout lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports; https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
+          "localFile": "data/eac-2024-state-turnout/sd-2024-eac-turnout.csv; data/sd-2024-official-results-archive-evidence.json",
+          "level": "jurisdiction_fallback_active_county_archive_lead_collected",
+          "denominator": "Active ETL uses EAC A1a Total Reg registered voters. The ElectionID 684 archive turnout Voters field is retained as a state-native denominator lead only.",
+          "ballotsCast": "Active ETL uses EAC normalized ballots cast. The ElectionID 684 archive calcVoterTurnout field totals 436,478 ballots cast and is not active until replacement semantics are reviewed."
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
@@ -3444,6 +3448,12 @@
           "sourceTitle": "Verified Voting Verifier South Dakota 2024 equipment context",
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/46",
           "localFile": "data/sd-2024-equipment-context.csv"
+        },
+        "officialArchiveEvidence": {
+          "sourceTitle": "South Dakota Secretary of State 2024 General Election archive evidence",
+          "sourceUrl": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
+          "localFile": "data/sd-2024-official-results-archive-evidence.json",
+          "parserHint": "Generated by scripts/collect-sd-official-archive-evidence.mjs; identifies ElectionID 684, candidate-list IDs 19833/19835, map RaceIDs 12665/11954, and 66 turnout rows. Retain as official-source evidence only until reconciliation is resolved."
         }
       },
       "expected": {

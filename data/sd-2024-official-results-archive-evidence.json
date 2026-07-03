@@ -1,0 +1,164 @@
+{
+  "sourceAuthority": "South Dakota Secretary of State",
+  "sourceUrls": {
+    "archivedGeneralShell": "https://web.archive.org/web/20241105222716/https://electionresults.sd.gov/",
+    "candidates": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=684",
+    "statewideCountyMapData": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
+    "countyTurnout": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684"
+  },
+  "localArtifactPath": "data/sd-2024-official-results-archive-evidence.json",
+  "electionYear": 2024,
+  "electionType": "General",
+  "electionDate": "2024-11-05",
+  "reportingGrain": "county",
+  "parserOrNormalizationPath": "scripts/collect-sd-official-archive-evidence.mjs",
+  "checkedAt": "2026-07-03",
+  "archiveEvidence": {
+    "serviceRoot": "https://sdresws.azurewebsites.net/ResultsAjax.svc",
+    "electionID": 684,
+    "candidateListRaceIDs": {
+      "presidentialElectors": 19833,
+      "usRepresentative": 19835
+    },
+    "mapDataRaceIDs": {
+      "presidentialElectors": [
+        12665
+      ],
+      "usRepresentative": [
+        11954
+      ]
+    }
+  },
+  "federalCandidates": [
+    {
+      "candidateListRaceID": 19833,
+      "office": "Presidential Electors",
+      "party": "Democratic",
+      "label": "Kamala D. Harris and Tim Walz  Presidential Electors",
+      "candidateName": "Kamala D. Harris and Tim Walz "
+    },
+    {
+      "candidateListRaceID": 19833,
+      "office": "Presidential Electors",
+      "party": "Independent",
+      "label": "Robert F. Kennedy, Jr. and Nicole Shanahan  Presidential Electors",
+      "candidateName": "Robert F. Kennedy, Jr. and Nicole Shanahan "
+    },
+    {
+      "candidateListRaceID": 19833,
+      "office": "Presidential Electors",
+      "party": "Libertarian",
+      "label": "Chase Oliver and Mike ter Maat  Presidential Electors",
+      "candidateName": "Chase Oliver and Mike ter Maat "
+    },
+    {
+      "candidateListRaceID": 19833,
+      "office": "Presidential Electors",
+      "party": "Republican",
+      "label": "Donald J. Trump and JD Vance  Presidential Electors",
+      "candidateName": "Donald J. Trump and JD Vance "
+    },
+    {
+      "candidateListRaceID": 19835,
+      "office": "United States Representative",
+      "party": "Democratic",
+      "label": "Sheryl  Johnson  United States Representative",
+      "candidateName": "Sheryl  Johnson "
+    },
+    {
+      "candidateListRaceID": 19835,
+      "office": "United States Representative",
+      "party": "Republican",
+      "label": "Dusty  Johnson  United States Representative",
+      "candidateName": "Dusty  Johnson "
+    }
+  ],
+  "officialArchiveSummaries": {
+    "allStatewideCountyMapRows": 594,
+    "presidentialElectors": {
+      "raceName": "Presidential Electors",
+      "rowCount": 264,
+      "countyCount": 66,
+      "raceIDs": [
+        12665
+      ],
+      "totalVotes": 428728,
+      "candidateTotals": [
+        {
+          "candidate": "Donald J. Trump and JD Vance",
+          "party": "Republican",
+          "votes": 271938
+        },
+        {
+          "candidate": "Kamala D. Harris and Tim Walz",
+          "party": "Democratic",
+          "votes": 146811
+        },
+        {
+          "candidate": "Robert F. Kennedy, Jr. and Nicole Shanahan",
+          "party": "Independent",
+          "votes": 7202
+        },
+        {
+          "candidate": "Chase Oliver and Mike ter Maat",
+          "party": "Libertarian",
+          "votes": 2777
+        }
+      ]
+    },
+    "usRepresentative": {
+      "raceName": "United States Representative",
+      "rowCount": 132,
+      "countyCount": 66,
+      "raceIDs": [
+        11954
+      ],
+      "totalVotes": 421264,
+      "candidateTotals": [
+        {
+          "candidate": "Dusty  Johnson",
+          "party": "Republican",
+          "votes": 303479
+        },
+        {
+          "candidate": "Sheryl  Johnson",
+          "party": "Democratic",
+          "votes": 117785
+        }
+      ]
+    },
+    "turnoutLead": {
+      "rowCount": 66,
+      "countyCount": 66,
+      "registeredVoters": 625192,
+      "ballotsCast": 436478,
+      "precinctsReporting": 691,
+      "totalPrecincts": 691
+    }
+  },
+  "expectedCertifiedTotals": {
+    "presidentialElectors": {
+      "totalVotes": 428922,
+      "DonaldTrump": 272081,
+      "KamalaHarris": 146859,
+      "other": 9982
+    },
+    "usRepresentative": {
+      "totalVotes": 421448,
+      "republican": 303630,
+      "democratic": 117818,
+      "other": 0
+    }
+  },
+  "reconciliation": {
+    "status": "does_not_reconcile_to_current_certified-style_staging_totals",
+    "presidentialCertifiedMinusArchive": 194,
+    "usHouseCertifiedMinusArchive": 184
+  },
+  "caveats": [
+    "The official archive ElectionID and service family are identified, but the map-data candidate totals do not reconcile to the current certified-style staging totals.",
+    "The retained archive payload appears to be an ENR/map-data source rather than the official canvass PDF/static export or write-in-inclusive certified county table.",
+    "Current active SD result and review rows remain caveated secondary staging rows until an official canvass/export artifact or reconciling official archive payload is collected and parsed.",
+    "The official turnout archive is a state-native lead only; keep EAC fallback active until denominator timing and replacement semantics are reviewed."
+  ]
+}
