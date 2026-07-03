@@ -579,18 +579,19 @@ Expected validation: 53 county result rows, 53 county geometry features, 368,155
 
 Caveats: review rows are advisory source-review inputs only, not findings. Two zero-vote precinct keys are excluded from review rows and documented in the manifest. North Dakota does not require voter registration, so active turnout remains EAC fallback with zero registered voters until the SOS eligible-voter denominator lead of 371,975 voter turnout and 594,140 eligible voters is normalized and the one-ballot SOS/EAC turnout difference is reviewed. Precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain missing.
 
-## New Jersey Wave 15 Source Discovery
+## New Jersey Wave 18 Native Activation
 
-- Config: etl/state-configs/nj.json
-- Current active package: turnout-only EAC fallback rows at data/eac-2024-state-turnout/nj-2024-eac-turnout.csv
-- Coverage inventory: data/nj-2024-data-coverage-inventory.json
-- Source request matrix: data/nj-2024-source-request-matrix.tsv
-- Official result lead: New Jersey Department of State 2024 Election Information page with statewide certified President PDF and 21 county municipal President PDFs
-- Preferred comparison contest: U.S. Senate from the same official county municipal PDF pattern
-- Turnout leads: official statewide 2024 voter-turnout PDF plus 21 county municipal registered-voters/ballots-cast PDFs; EAC fallback remains active until denominator timing and the 52,335 registered-voter difference are reconciled
-- Geometry/admin context: data/nj-counties.geojson and data/nj-2024-equipment-context.csv are present; municipal geometry/crosswalks, audit PDFs, CVR availability, recount, incident, correction, and litigation rows remain source/request items
+- Config: `etl/state-configs/nj.json`
+- Authority: New Jersey Department of State, Division of Elections; U.S. Election Assistance Commission; U.S. Census Bureau
+- Current active package: official DOE statewide text-layer PDFs normalized into 21 county President result rows, 21 county President-versus-U.S.-Senate review rows, and 21 official DOE county turnout rows
+- President source: `data/nj-2024-official-general-results-president.pdf`, normalized into `data/nj-2024-general-president-county.csv` by `scripts/normalize-nj-doe-pdfs.mjs`; totals reconcile to 2,220,713 Harris, 1,968,215 Trump, 83,797 Other, and 4,272,725 total votes
+- Comparison source: `data/nj-2024-official-general-results-us-senate.pdf`, normalized into `data/nj-2024-general-senate-county.csv`; U.S. Senate totals reconcile to 2,161,491 Kim, 1,773,589 Bashaw, 96,715 Other, and 4,031,795 total votes
+- Turnout source: `data/nj-2024-official-general-voter-turnout.pdf`, normalized into `data/nj-2024-official-turnout-county.csv`; `data/nj-2024-turnout-reconciliation-summary.json` records 4,321,921 DOE ballots cast, 6,682,699 DOE registered voters, a zero DOE-minus-EAC ballots-cast delta, and a 52,335 DOE-minus-EAC registered-voter delta
+- County boundary: `data/nj-counties.geojson`; municipal geometry/crosswalks are not loaded
+- Coverage inventory: `data/nj-2024-data-coverage-inventory.json`; source request matrix: `data/nj-2024-source-request-matrix.tsv`
+- Equipment context: `data/nj-2024-equipment-context.csv` from Verified Voting, context only
 
-NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Remaining work is collecting the official PDF package, implementing a New Jersey DOE text-PDF parser, reconciling statewide President/Senate/turnout totals, normalizing municipality names and non-geographic rows such as Federal Overseas and Hand Counts, adding municipal geometry/crosswalks, collecting official 2012/2016/2020 historical baselines, and normalizing audit/CVR/recount/incident/correction/litigation records. Current NJ advisory indicators are not calculated from review rows because no NJ result or review rows are loaded.
+Expected validation: 21 county result rows, 21 county geometry features, 4,272,725 presidential votes, 1,968,215 Trump votes, 2,220,713 Harris votes, 83,797 Other votes, 21 county U.S. Senate comparison review rows, and 21 official DOE turnout rows. Caveats: review rows are county-level public-interest source-review inputs, not municipal or precinct scatter plots and not findings of fraud or misconduct. Remaining gaps are the 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, municipal turnout PDFs, municipal boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, county audit PDF normalization, and CVR/recount/incident/correction/litigation records.
 
 ## New Mexico Wave 15 Source Discovery
 

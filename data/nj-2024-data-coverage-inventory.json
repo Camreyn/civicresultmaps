@@ -2,9 +2,9 @@
   "state": "NJ",
   "stateName": "New Jersey",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
-  "checkedBy": "Wave 15 New Jersey state-data worker",
-  "scope": "Source coverage classification and official-source request package only; active NJ ETL remains turnout-only EAC fallback.",
+  "checkedAt": "2026-07-03",
+  "checkedBy": "Wave 18 New Jersey state-data worker",
+  "scope": "Loaded official county-level DOE President, U.S. Senate, and turnout rows from statewide PDFs; municipal, historical, geometry, audit, CVR, incident, correction, recount, litigation, and request-path gaps remain documented.",
   "productionChecked": false,
   "repoDrift": [
     {
@@ -15,17 +15,23 @@
   ],
   "currentEtLStatus": {
     "configFile": "etl/state-configs/nj.json",
-    "turnoutOnly": true,
-    "activeParser": "eacTurnoutCsv",
-    "activeLocalArtifact": "data/eac-2024-state-turnout/nj-2024-eac-turnout.csv",
+    "turnoutOnly": false,
+    "activeParser": "countyPresidentCsv+countyComparisonCsv+normalizedTurnoutCsv",
+    "activeLocalArtifact": "data/nj-2024-general-president-county.csv; data/nj-2024-general-senate-county.csv; data/nj-2024-official-turnout-county.csv",
     "expectedRows": {
-      "resultRows": 0,
-      "reviewRows": 0,
+      "resultRows": 21,
+      "reviewRows": 21,
       "turnoutRows": 21,
+      "stateTotal": 4272725,
+      "harris": 2220713,
+      "trump": 1968215,
+      "other": 83797,
+      "doeBallotsCast": 4321921,
+      "doeRegisteredVoters": 6682699,
       "eacBallotsCast": 4321921,
       "eacRegisteredVoters": 6630364
     },
-    "advisoryStatus": "No New Jersey result or review rows are loaded, so advisory indicators should remain zero until official same-grain President and comparison rows are normalized."
+    "advisoryStatus": "County-level New Jersey President-versus-U.S.-Senate review rows are loaded for public-interest source review. They are not municipal or precinct scatter plots and are not evidence of fraud or misconduct."
   },
   "officialSourcePages": [
     "https://www.nj.gov/state/elections/election-information-2024.shtml",
@@ -38,30 +44,34 @@
   ],
   "officialSourceFindings": {
     "certifiedPresidentResults": {
-      "status": "official_text_pdf_package_identified_parser_needed",
+      "status": "loaded_official_statewide_pdf_county_rows",
       "sourceAuthority": "New Jersey Department of State, Division of Elections",
       "sourceUrls": [
         "https://www.nj.gov/state/elections/election-information-2024.shtml",
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-president.pdf"
       ],
-      "reportingGrain": "county statewide PDF, with 21 county municipal PDFs linked from the same official page",
+      "reportingGrain": "county statewide PDF loaded; 21 county municipal PDFs remain source leads for a finer-grain follow-up",
       "observedOfficialTotals": {
         "harris": 2220713,
         "trump": 1968215,
         "other": 83797,
         "stateTotal": 4272725
       },
-      "parserNeeded": "New Jersey DOE text-PDF normalizer for statewide certified county totals and county-by-county municipal President PDFs.",
-      "caveat": "Do not load secondary county totals while official DOE statewide and county PDFs are the authoritative source leads."
+      "parserNeeded": "County rows are loaded by scripts/normalize-nj-doe-pdfs.mjs. A municipal DOE text-PDF normalizer remains needed for the 21 county municipal President PDFs.",
+      "caveat": "Loaded rows are county-level certified totals from the official DOE statewide PDF. Municipal rows and non-geographic Federal Overseas/Hand Counts handling remain follow-up work.",
+      "localArtifacts": [
+        "data/nj-2024-official-general-results-president.pdf",
+        "data/nj-2024-general-president-county.csv"
+      ]
     },
     "sameGrainComparisonContest": {
-      "status": "official_text_pdf_package_identified_parser_needed",
+      "status": "loaded_official_statewide_pdf_county_rows",
       "preferredContest": "U.S. Senate",
       "sourceUrls": [
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-us-senate.pdf",
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-us-senate-atlantic.pdf"
       ],
-      "reportingGrain": "county statewide PDF, with 21 county municipal PDFs matching the President county-PDF pattern",
+      "reportingGrain": "county statewide PDF loaded; 21 county municipal U.S. Senate PDFs remain source leads for a finer-grain follow-up",
       "observedOfficialTotals": {
         "kim": 2161491,
         "bashaw": 1773589,
@@ -69,20 +79,23 @@
         "stateTotal": 4031795
       },
       "missing": [
-        "committed local PDF artifacts under data/",
-        "reviewed parser that pairs municipal President and U.S. Senate rows",
+        "municipal President-versus-U.S.-Senate parser and reviewed row joins",
         "decision on whether non-geographic Federal Overseas and Hand Counts rows should be kept as review rows or county-only reconciliation context"
       ],
-      "caveat": "Municipal comparison rows are preferable for maximum advisory accuracy, but non-geographic rows and municipality-name normalization must be reviewed before enabling advisory charts."
+      "caveat": "County comparison rows are loaded and advisory-capable at county grain. Municipal comparison rows remain preferable for subcounty review once label normalization and non-geographic rows are reviewed.",
+      "localArtifacts": [
+        "data/nj-2024-official-general-results-us-senate.pdf",
+        "data/nj-2024-general-senate-county.csv"
+      ]
     },
     "stateNativeTurnout": {
-      "status": "official_state_native_turnout_lead_identified_not_loaded",
+      "status": "loaded_official_statewide_pdf_county_rows",
       "sourceAuthority": "New Jersey Department of State, Division of Elections",
       "sourceUrls": [
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-result-ballotscast-atlantic.pdf"
       ],
-      "reportingGrain": "county statewide PDF plus 21 county municipal registered-voters and ballots-cast PDFs",
+      "reportingGrain": "county statewide PDF loaded; 21 county municipal registered-voters and ballots-cast PDFs remain source leads for municipal turnout joins",
       "observedOfficialTotals": {
         "stateOfficialRegisteredVoters": 6682699,
         "stateOfficialBallotsCast": 4321921,
@@ -93,8 +106,13 @@
         "officialMinusEacRegisteredVoters": 52335,
         "officialMinusEacBallotsCast": 0
       },
-      "parserNeeded": "Text-PDF normalizer for the statewide turnout PDF and the 21 county municipal registered-voters/ballots-cast PDFs, followed by EAC reconciliation before replacing active fallback rows.",
-      "caveat": "The state PDF and EAC fallback agree on ballots cast but differ on registered voters; keep EAC active until denominator timing and municipal-row joins are reviewed."
+      "parserNeeded": "County rows are loaded by scripts/normalize-nj-doe-pdfs.mjs. Municipal turnout PDFs still need a parser and crosswalk before municipal-level turnout joins.",
+      "caveat": "Active NJ staging uses the official DOE county registered-voter denominator. The reconciliation summary keeps the EAC benchmark visible: ballots cast match exactly, and DOE reports 52,335 more registered voters than EAC fallback.",
+      "localArtifacts": [
+        "data/nj-2024-official-general-voter-turnout.pdf",
+        "data/nj-2024-official-turnout-county.csv",
+        "data/nj-2024-turnout-reconciliation-summary.json"
+      ]
     },
     "geometryAndCrosswalk": {
       "status": "county_geometry_loaded_municipal_geometry_lead_identified_not_loaded",
@@ -157,20 +175,21 @@
   },
   "sourceAcquisitionDecision": {
     "tier": "tier_6_official_pdf_hostile",
-    "reason": "New Jersey publishes official 2024 results as text-layer PDFs: statewide certified county result PDFs, 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, statewide turnout PDF, 21 county municipal registered-voters/ballots-cast PDFs, and 21 post-election audit PDFs. The sources are official and internally patterned, but require PDF extraction, county-file collection, municipal label normalization, and non-geographic-row handling before rows can be loaded.",
-    "manualReviewBurden": "medium"
+    "reason": "New Jersey publishes official 2024 results as text-layer PDFs. Wave 18 loaded the statewide President, U.S. Senate, and turnout PDFs at county grain through scripts/normalize-nj-doe-pdfs.mjs. The broader source family remains tier 6 because municipal result PDFs, turnout PDFs, audit PDFs, historical baselines, and non-geographic-row handling still require PDF extraction and review.",
+    "manualReviewBurden": "medium",
+    "confidence": "loaded_county_with_municipal_followup"
   },
   "websiteAndApiDisplayPath": {
-    "currentPath": "Current New Jersey staging/API path is turnout-only EAC fallback via etl/state-configs/nj.json. Source and readiness views can surface this coverage inventory through the config source and source-discovery registries.",
+    "currentPath": "Current New Jersey staging/API path is official county-level DOE President results, U.S. Senate review rows, DOE turnout rows, county geometry, source records, and equipment context via etl/state-configs/nj.json. The UI will present review rows as county-level advisory source-review inputs.",
     "productionChecked": false,
     "notCheckedReason": "Production promotion and production API verification were not authorized for this worker branch."
   },
   "requestMatrixArtifact": "data/nj-2024-source-request-matrix.tsv",
   "remainingRisks": [
-    "No native New Jersey certified President result rows are loaded yet.",
-    "No same-grain President-versus-U.S.-Senate review rows are loaded, so advisory indicators should be zero.",
-    "State-native registered-voter totals differ from EAC fallback by 52,335 voters and need denominator-timing review before replacement.",
-    "Municipal geometry/crosswalks and non-geographic result-row handling are not loaded.",
+    "Current New Jersey advisory review rows are county-level only, not municipal or precinct scatter plots.",
+    "Municipal President and U.S. Senate PDFs, municipal turnout PDFs, municipal geometry/crosswalks, and non-geographic Federal Overseas/Hand Counts handling remain unnormalized.",
+    "State-native DOE turnout is loaded at county grain; the retained reconciliation summary records a 52,335 registered-voter difference versus EAC fallback and zero ballots-cast difference.",
+    "No normalized official 2012/2016/2020 historical baseline rows are loaded.",
     "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
     "All advisory language must remain source-review context, not evidence of fraud or misconduct."
   ]
