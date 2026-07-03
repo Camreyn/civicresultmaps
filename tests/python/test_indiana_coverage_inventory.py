@@ -17,6 +17,10 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(artifacts["in-2024-official-enr-president"]["reportingGrain"], "county")
         self.assertEqual(artifacts["in-2024-general-turnout"]["expectedCounts"]["rows"], 92)
         self.assertEqual(artifacts["in-2024-mit-precinct-president-senate"]["confidence"], "loaded_secondary_supplemental")
+        audit = artifacts["in-2024-vstop-general-audit-summary"]
+        self.assertEqual(audit["expectedCounts"]["rows"], 7)
+        self.assertEqual(audit["expectedCounts"]["ballotComparisonCounties"], 3)
+        self.assertIn("not proof", " ".join(audit["caveats"]))
         self.assertIn("Certified county map/result totals", " ".join(artifacts["in-2024-official-enr-president"]["caveats"]))
         self.assertIn("supplemental", " ".join(artifacts["in-2024-mit-precinct-president-senate"]["caveats"]).lower())
 
@@ -32,8 +36,11 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
 
     def test_admin_source_paths_are_documented_but_not_normalized(self):
         self.assertEqual(self.admin["status"], "partial")
-        self.assertEqual(self.admin["audit"]["status"], "candidate")
+        self.assertEqual(self.admin["audit"]["status"], "partial")
         self.assertIn("vstop-post-election-risk-limiting-audit-reports", self.admin["audit"]["sourceUrl"])
+        self.assertEqual(self.admin["audit"]["expectedRows"], 7)
+        self.assertTrue(Path(self.admin["audit"]["normalizedArtifact"]).exists())
+        self.assertIn("Detailed audit-unit", self.admin["audit"]["why"])
         self.assertEqual(self.admin["cvr"]["status"], "needs_data")
         self.assertEqual(self.admin["incidents"]["status"], "candidate")
         self.assertIn("indiana-recount-commission", self.admin["incidents"]["sourceUrl"])
@@ -45,6 +52,7 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(len(self.request_rows), 8)
         self.assertEqual(artifacts["official_precinct_or_local_reporting_unit_president"]["priority"], "high")
         self.assertEqual(artifacts["official_2012_county_presidential_baseline"]["local_artifact_status"], "loaded_official_endpoint_json")
+        self.assertEqual(artifacts["vstop_audit_selection_outcome"]["local_artifact_status"], "loaded_official_summary_pdf_normalized")
         self.assertIn("not proof", artifacts["vstop_audit_selection_outcome"]["caveat"])
         self.assertIn("misconduct", artifacts["recount_incident_correction_records"]["caveat"])
 
