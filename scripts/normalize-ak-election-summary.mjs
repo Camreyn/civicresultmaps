@@ -15,6 +15,7 @@ const paths = {
   houseCsv: path.join(repoRoot, "data", "ak-2024-general-us-house-statewide.csv"),
   inventoryJson: path.join(repoRoot, "data", "ak-2024-data-coverage-inventory.json"),
   requestMatrix: path.join(repoRoot, "data", "ak-2024-source-request-matrix.tsv"),
+  officialResultsPageEvidence: path.join(repoRoot, "data", "ak-2024-official-results-page-evidence.json"),
 };
 
 function intValue(value) {
@@ -133,7 +134,7 @@ function writeInventory(summary) {
     completionDecision: {
       decision: "remain_in_source_discovery_queue",
       reason:
-        "AK now has official statewide President and same-grain statewide U.S. House rows parsed from the Alaska Division of Elections summary report, but no official machine-readable House-district or precinct-level President plus comparison rows were confirmed in this pass. The staged review row is statewide only, so district/precinct advisory coverage, map joins, state-native turnout replacement, historical baselines, and normalized administration-context rows remain source-coverage gaps.",
+        "AK has official statewide President and same-grain statewide U.S. House rows parsed from the Alaska Division of Elections summary report. Wave 21 confirmed the official results page links the 2024 General Election to an All Details route and describes Statement of Votes Cast PDFs as district/precinct reports for contests that did not require ranked-choice tabulation, but no retained official lower-grain federal artifact with same-grain President plus U.S. Representative first-choice rows is loaded. The staged review row is statewide only, so district/precinct advisory coverage, map joins, state-native turnout replacement, historical baselines, and normalized administration-context rows remain source-coverage gaps.",
     },
     loadedArtifacts: [
       {
@@ -175,6 +176,19 @@ function writeInventory(summary) {
         caveat:
           "EAC fallback turnout matches the Alaska summary report statewide Times Cast and registered-voter figures, but no lower-grain state-native turnout denominator package is loaded.",
       },
+      {
+        id: "ak-2024-official-results-page-evidence",
+        sourceTitle: "Alaska Division of Elections official results page and 2024 General All Details/SOVC source-discovery evidence",
+        sourceUrl: "https://www.elections.alaska.gov/election-results/",
+        localArtifact: "data/ak-2024-official-results-page-evidence.json",
+        parser: "coverageInventoryJson",
+        reportingGrain: "source_discovery",
+        expectedCounts: {
+          loadedLowerGrainFederalRows: 0,
+        },
+        caveat:
+          "The official results page confirms a 2024 General All Details route and describes Statements of Votes Cast as district/precinct reports, but the lower-grain SOVC/source files were not retained in this repo and U.S. Representative first-choice same-grain availability remains unconfirmed.",
+      },
     ],
     sourceNeeds: [
       {
@@ -182,7 +196,7 @@ function writeInventory(summary) {
         neededArtifact:
           "Official House-district, precinct, or equivalent local reporting-unit rows for President and a same-grain comparison contest, preferably U.S. Representative first-choice votes.",
         blocker:
-          "The accessible official Election Summary Report PDF contains statewide federal rows only; directory listing and guessed companion Statement of Votes Cast filenames were blocked or unresolved from this worker environment.",
+          "The official results page confirms a 2024 General All Details route and a Statement of Votes Cast follow-up path for district/precinct reports, but the retained official artifact is still the statewide Election Summary Report. Direct results/24GENR directory listing returned 403 Forbidden in this worker environment, and no official lower-grain President plus same-grain U.S. Representative first-choice artifact is loaded.",
       },
       {
         id: "ak-state-native-turnout-local-denominator",
@@ -206,6 +220,7 @@ function writeInventory(summary) {
       },
     ],
     displayCaveats: [
+      "Official Alaska result-page evidence now narrows the next request to the 2024 General All Details/SOVC district-precinct files, with explicit verification of whether U.S. Representative first-choice rows are available at the same grain as President.",
       "Current AK certified result and review rows are statewide only; the existing House District geometry cannot be joined to the staged result row.",
       "The statewide U.S. House comparison row is a ranked-choice first-choice contest summary, not a precinct or district scatter plot.",
       "Advisory indicators are source-review signals only and are not findings of fraud or misconduct.",
@@ -229,19 +244,19 @@ function writeRequestMatrix() {
       "ak-district-precinct-results",
       "AK",
       "high",
-      "Official House-district or precinct President plus U.S. House first-choice rows",
-      "https://www.elections.alaska.gov/election-results/",
+      "Official 2024 General All Details/SOVC House-district or precinct President plus U.S. House first-choice rows",
+      "https://www.elections.alaska.gov/election-results/e/?id=24genr",
       "not_collected",
-      "Election Summary Report is loaded, but no script-readable official district/precinct federal results artifact was confirmed.",
+      "Election Summary Report is loaded, and the official All Details/SOVC route is documented, but no retained official district/precinct federal results artifact with same-grain U.S. Representative first-choice rows is loaded.",
     ],
     [
       "ak-local-turnout-denominator",
       "AK",
       "high",
       "Official local turnout/registration denominator rows with denominator timing",
-      "https://www.elections.alaska.gov/election-results/",
+      "https://www.elections.alaska.gov/election-results/e/?id=24genr",
       "not_collected",
-      "Only statewide Times Cast and registered voters were confirmed from the official summary report; EAC fallback remains active.",
+      "Only statewide Times Cast and registered voters were confirmed from the official summary report; collect lower-grain turnout or registration rows from the All Details/SOVC path or records request before replacing EAC fallback.",
     ],
     [
       "ak-historical-baselines",
@@ -265,6 +280,44 @@ function writeRequestMatrix() {
   fs.writeFileSync(paths.requestMatrix, `${rows.map((row) => row.join("\t")).join("\n")}\n`, "utf8");
 }
 
+function writeOfficialResultsPageEvidence() {
+  const evidence = {
+    state: "AK",
+    stateName: "Alaska",
+    electionYear: 2024,
+    checkedAt: "2026-07-03",
+    sourceAuthority: "Alaska Division of Elections",
+    sourceUrls: [
+      "https://www.elections.alaska.gov/election-results/",
+      "https://www.elections.alaska.gov/election-results/e/?id=24genr",
+      sourceUrl,
+    ],
+    localArtifact: "data/ak-2024-official-results-page-evidence.json",
+    reportingGrain: "source_discovery",
+    parserOrNormalizationPath: "coverageInventoryJson",
+    observations: [
+      "The Alaska Division of Elections Election Results page says election-night results are posted until certification and directs users to Search Official Election Results for certified results.",
+      "The official results page lists the 2024 General Election dated November 5, 2024 and links it to /election-results/e/?id=24genr.",
+      "The election detail template describes Statements of Votes Cast PDFs as district and precinct reports for contests that did not require ranked-choice tabulation. This is a follow-up path for lower-grain President/local rows, but it is not proof that same-grain U.S. Representative first-choice rows are available.",
+      "Direct access to https://www.elections.alaska.gov/results/24GENR/ returned 403 Forbidden in this worker environment, so companion files could not be enumerated by directory listing.",
+      "The retained official Election Summary Report PDF remains the only loaded Alaska 2024 federal result source artifact in the repo and supports only statewide President and statewide U.S. Representative first-choice comparison rows.",
+    ],
+    expectedCounts: {
+      loadedPresidentRows: 1,
+      loadedReviewRows: 1,
+      loadedTurnoutRows: 1,
+      loadedLowerGrainFederalRows: 0,
+    },
+    caveats: [
+      "Do not load secondary House-district tables as official Alaska Division of Elections rows without retaining the underlying official district or precinct SOVC/source artifact.",
+      "Alaska U.S. Representative used ranked-choice voting in 2024, so any future lower-grain comparison package must document whether it contains first-choice rows and whether those rows are same-grain with President.",
+      "This evidence artifact documents source-discovery state only; it is not a parser input for vote totals, turnout denominators, or advisory indicators.",
+    ],
+    confidence: "official_page_checked_lower_grain_artifact_not_collected",
+  };
+  fs.writeFileSync(paths.officialResultsPageEvidence, JSON.stringify(evidence, null, 2) + "\n", "utf8");
+}
+
 async function main() {
   const text = await extractText(paths.sourcePdf);
   const { actual, houseRow, presidentRow } = buildRows(text);
@@ -277,6 +330,7 @@ async function main() {
   ]);
   writeInventory(actual);
   writeRequestMatrix();
+  writeOfficialResultsPageEvidence();
 
   console.log(
     JSON.stringify(
