@@ -54,6 +54,7 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(inventory["completionDecision"]["decision"], "remain_in_source_discovery_queue")
         self.assertIn("Wave 19", inventory["completionDecision"]["wave19Decision"])
         self.assertIn("Wave 21", inventory["completionDecision"]["wave21Decision"])
+        self.assertIn("Wave 23", inventory["completionDecision"]["wave23Decision"])
         self.assertFalse(inventory["productionChecked"])
         self.assertIn("docs/developer/index.md", inventory["repoDrift"][0])
         self.assertEqual(inventory["sourceRequestMatrix"], "data/ny-2024-source-request-matrix.tsv")
@@ -63,6 +64,7 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertIn("source request matrix", tier["parserStatus"])
         self.assertIn("13 county equivalents", tier["caveats"])
         self.assertIn("future official export paths", tier["parserStatus"])
+        self.assertIn("Monroe", tier["parserStatus"])
 
         coverage = inventory["completionDecision"]["reviewCoverage"]
         self.assertEqual(coverage["reviewRows"], 9753)
@@ -72,9 +74,13 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(coverage["requestPacketArtifact"], "data/ny-2024-missing-county-request-packets.json")
         self.assertEqual(len(packets["packets"]), 13)
         self.assertEqual(packet_counties, set(coverage["excludedOrNotYetReviewedCounties"]))
-        self.assertTrue(all(packet["status"] == "packet_ready_no_loaded_rows" for packet in packets["packets"]))
+        self.assertEqual(sum(packet["status"] == "packet_ready_no_loaded_rows" for packet in packets["packets"]), 12)
+        self.assertEqual(sum(packet["status"] == "official_artifacts_found_not_loaded_reconciliation_needed" for packet in packets["packets"]), 1)
         self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Nassau County")["currentReviewStatus"], "no_manifest_source_file")
-        self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Monroe County")["currentSourceLead"]["status"], "president_detail_only_no_us_senate_section")
+        monroe_packet = next(packet for packet in packets["packets"] if packet["county"] == "Monroe County")
+        self.assertEqual(monroe_packet["currentSourceLead"]["status"], "official_canvass_book_detail_found_not_loaded")
+        self.assertEqual(monroe_packet["currentSourceLead"]["priorSupplementalLead"]["status"], "president_detail_only_no_us_senate_section")
+        self.assertIn("data/ny-2024-monroe-canvass-book.pdf", monroe_packet["followThroughArtifacts"][0]["localPath"])
         self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Rockland County")["currentSourceLead"]["status"], "president_only_no_same_grain_us_senate_rows")
         self.assertEqual(monroe["status"], "excluded_zero_rows")
         self.assertIn("Monroe County", coverage["excludedOrNotYetReviewedCounties"])
@@ -89,7 +95,8 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(request_rows["ny-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
         packet_request_ids = {packet["packetId"] for packet in packets["packets"]}
         self.assertTrue(packet_request_ids.issubset(request_rows.keys()))
-        self.assertTrue(all(request_rows[request_id]["status"] == "packet_ready_no_loaded_rows" for request_id in packet_request_ids))
+        self.assertEqual(request_rows["ny-2024-local-monroe"]["status"], "official_artifacts_found_not_loaded_reconciliation_needed")
+        self.assertTrue(all(request_rows[request_id]["status"] == "packet_ready_no_loaded_rows" for request_id in packet_request_ids if request_id != "ny-2024-local-monroe"))
 
         blocker_sources = {row["sourceUrl"]: row for row in inventory["officialBlockerEvidence"]}
         self.assertEqual(blocker_sources["https://flateau.elections.ny.gov/"]["observed"], "The VEDA dashboard reported 0 total elections for 2026 and no election data available.")

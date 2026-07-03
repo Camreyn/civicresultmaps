@@ -64,14 +64,42 @@
       "countyBoardRosterSearchCounty": "Monroe",
       "currentReviewStatus": "excluded_zero_rows",
       "currentSourceLead": {
-        "authority": "OpenElections source collection from New York county boards of elections",
-        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Monroe.xlsx",
-        "artifact": "Monroe.xlsx",
-        "status": "president_detail_only_no_us_senate_section"
+        "authority": "Monroe County Board of Elections",
+        "url": "https://www.monroecounty.gov/files/boe/Election%20Results/Election%20Canvass%20Books/2024%20Cavnass%20Book.pdf",
+        "artifact": "data/ny-2024-monroe-canvass-book.pdf",
+        "status": "official_canvass_book_detail_found_not_loaded",
+        "priorSupplementalLead": {
+          "authority": "OpenElections source collection from New York county boards of elections",
+          "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Monroe.xlsx",
+          "artifact": "Monroe.xlsx",
+          "status": "president_detail_only_no_us_senate_section"
+        }
       },
-      "primaryRequest": "Request the matching United States Senator local workbook/export at the same election-district grain as the President workbook, or a combined official local canvass export with both contests.",
+      "primaryRequest": "Request a final or amended Monroe local/election-district detail canvass export for President and United States Senator that reconciles to the November 26, 2024 county certification, or a county explanation of the canvass-book detail versus certification differences before loading rows.",
       "parserOrNormalizationPath": "future NY official ED/local result parser",
-      "status": "packet_ready_no_loaded_rows"
+      "status": "official_artifacts_found_not_loaded_reconciliation_needed",
+      "followThroughArtifacts": [
+        {
+          "sourceAuthority": "Monroe County Board of Elections",
+          "sourceUrl": "https://www.monroecounty.gov/elections-results",
+          "localPath": "data/ny-2024-monroe-canvass-book.pdf",
+          "electionYear": 2024,
+          "reportingGrain": "legislative_district_or_town_by_election_district_detail",
+          "parserOrNormalizationPath": "not loaded; candidate for a future Monroe official detail parser after final-total reconciliation",
+          "expectedRowsOrTotals": "The canvass book table of contents lists 2024 General Election President detail beginning at page 124 and United States Senator detail beginning at page 144.",
+          "caveat": "The retained canvass book detail source was not loaded because its President detail totals do not reconcile to the official November 26, 2024 Monroe County General Election certification or the NYSBOE county totals already loaded in data/ny-2024-general-president.csv."
+        },
+        {
+          "sourceAuthority": "Monroe County Board of Elections",
+          "sourceUrl": "https://www.monroecounty.gov/files/boe/Election%20Results/Election%20Certifications/2024%20General%20Certification%202024-11-26.pdf",
+          "localPath": "data/ny-2024-monroe-general-certification.pdf",
+          "electionYear": 2024,
+          "reportingGrain": "county_certification_totals",
+          "parserOrNormalizationPath": "used as reconciliation evidence only; countyCertified totals continue to load from NYSBOE official archive document 476",
+          "expectedRowsOrTotals": "Certification reports Harris 214,757, Trump 145,940, and other/blank/void 7,646 for President; Gillibrand 213,432, Sapraicone 140,764, Diane Sare 1,661, and blank/void/write-in 12,484 for United States Senator.",
+          "caveat": "County certification totals corroborate the active NYSBOE county rows but do not provide same-grain local review rows."
+        }
+      ]
     },
     {
       "packetId": "ny-2024-local-nassau",
