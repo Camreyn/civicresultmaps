@@ -2,11 +2,13 @@
   "sourceAuthority": "South Dakota Secretary of State",
   "sourceUrls": {
     "archivedGeneralShell": "https://web.archive.org/web/20241105222716/https://electionresults.sd.gov/",
+    "statewideExportShell": "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
     "candidates": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=684",
     "statewideCountyMapData": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
     "countyTurnout": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684"
   },
   "localArtifactPath": "data/sd-2024-official-results-archive-evidence.json",
+  "retainedOfficialExportArtifactPath": "data/sd-2024-general-statewide-results.xlsx",
   "electionYear": 2024,
   "electionType": "General",
   "electionDate": "2024-11-05",
@@ -134,6 +136,97 @@
       "ballotsCast": 436478,
       "precinctsReporting": 691,
       "totalPrecincts": 691
+    },
+    "statewideExport": {
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "contentDisposition": "attachment;filename=\"Statewide Results.xlsx\"",
+      "localArtifactPath": "data/sd-2024-general-statewide-results.xlsx",
+      "workbookSheets": [
+        "12665Presidential Electors",
+        "11954United States Representat",
+        "12277Public Utilities Commissi",
+        "187Constitutional Amendment E",
+        "188Constitutional Amendment F",
+        "190Constitutional Amendment G",
+        "191Constitutional Amendment H",
+        "189Initiated Measure 28 An In",
+        "192Initiated Measure 29 An In",
+        "194Referred Law 21 A Referred"
+      ],
+      "presidentialElectors": {
+        "sheetName": "12665Presidential Electors",
+        "title": "2024 Unofficial General Election Results",
+        "stateLabel": "State of South Dakota",
+        "precinctStatus": "Precincts 691 of 691 Reporting (Precincts Partially Reported: 0/691)",
+        "downloadedAtLabel": "Downloaded at 7/3/2026 6:05:07 PM",
+        "rowCount": 66,
+        "countyCount": 66,
+        "sourceHeaders": [
+          "Presidential Electors",
+          "County",
+          "Kamala D. Harris and Tim Walz",
+          "Donald J. Trump and JD Vance",
+          "Donald J. Trump and JD Vance 1",
+          "Robert F. Kennedy, Jr. and Nicole Shanahan"
+        ],
+        "totalVotes": 428728,
+        "candidateTotals": [
+          {
+            "candidate": "Kamala D. Harris and Tim Walz",
+            "party": "Democratic",
+            "sourceHeader": "Kamala D. Harris and Tim Walz",
+            "votes": 146811
+          },
+          {
+            "candidate": "Chase Oliver and Mike ter Maat",
+            "party": "Libertarian",
+            "sourceHeader": "Donald J. Trump and JD Vance",
+            "votes": 2777
+          },
+          {
+            "candidate": "Donald J. Trump and JD Vance",
+            "party": "Republican",
+            "sourceHeader": "Donald J. Trump and JD Vance 1",
+            "votes": 271938
+          },
+          {
+            "candidate": "Robert F. Kennedy, Jr. and Nicole Shanahan",
+            "party": "Independent",
+            "sourceHeader": "Robert F. Kennedy, Jr. and Nicole Shanahan",
+            "votes": 7202
+          }
+        ]
+      },
+      "usRepresentative": {
+        "sheetName": "11954United States Representat",
+        "title": "2024 Unofficial General Election Results",
+        "stateLabel": "State of South Dakota",
+        "precinctStatus": "Precincts 691 of 691 Reporting (Precincts Partially Reported: 0/691)",
+        "downloadedAtLabel": "Downloaded at 7/3/2026 6:05:07 PM",
+        "rowCount": 66,
+        "countyCount": 66,
+        "sourceHeaders": [
+          "United States Representative",
+          "County",
+          "Sheryl  Johnson",
+          "Dusty  Johnson"
+        ],
+        "totalVotes": 421264,
+        "candidateTotals": [
+          {
+            "candidate": "Sheryl Johnson",
+            "party": "Democratic",
+            "sourceHeader": "Sheryl  Johnson",
+            "votes": 117785
+          },
+          {
+            "candidate": "Dusty Johnson",
+            "party": "Republican",
+            "sourceHeader": "Dusty  Johnson",
+            "votes": 303479
+          }
+        ]
+      }
     }
   },
   "expectedCertifiedTotals": {
@@ -151,13 +244,15 @@
     }
   },
   "reconciliation": {
-    "status": "does_not_reconcile_to_current_certified-style_staging_totals",
+    "status": "official_archive_and_statewide_export_do_not_reconcile_to_current_certified-style_staging_totals",
     "presidentialCertifiedMinusArchive": 194,
-    "usHouseCertifiedMinusArchive": 184
+    "usHouseCertifiedMinusArchive": 184,
+    "presidentialCertifiedMinusStatewideExport": 194,
+    "usHouseCertifiedMinusStatewideExport": 184
   },
   "caveats": [
-    "The official archive ElectionID and service family are identified, but the map-data candidate totals do not reconcile to the current certified-style staging totals.",
-    "The retained archive payload appears to be an ENR/map-data source rather than the official canvass PDF/static export or write-in-inclusive certified county table.",
+    "The official archive ElectionID and service family are identified, and the official ElectionID 684 statewide XLSX export is retained locally, but both official app artifacts are labeled unofficial or map/export evidence and do not reconcile to the current certified-style staging totals.",
+    "The retained archive payload and statewide export appear to be ENR/app results rather than the official canvass PDF/static export or write-in-inclusive certified county table.",
     "Current active SD result and review rows remain caveated secondary staging rows until an official canvass/export artifact or reconciling official archive payload is collected and parsed.",
     "The official turnout archive is a state-native lead only; keep EAC fallback active until denominator timing and replacement semantics are reviewed."
   ]
