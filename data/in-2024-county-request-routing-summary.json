@@ -1,0 +1,34 @@
+{
+  "state": "IN",
+  "electionYear": 2024,
+  "generatedAt": "2026-07-03",
+  "purpose": "Machine-readable county custodian routing and request tracking scaffold for Indiana official 2024 precinct/subcounty President and U.S. Senate follow-through.",
+  "sourceAuthorities": [
+    "Indiana Election Division ENR JurR county jurisdiction JSON captures",
+    "Indiana Election Division statewide county precinct/split count PDF"
+  ],
+  "localArtifacts": {
+    "routingCsv": "data/in-2024-county-request-routing.csv",
+    "routingSummary": "data/in-2024-county-request-routing-summary.json",
+    "jurisdictionReports": "data/in-2024-enr-jurisdiction-reports",
+    "precinctCountPdf": "data/in-statewide-precinct-counts-2023.pdf"
+  },
+  "sourceUrls": {
+    "precinctCountPdf": "https://www.in.gov/sos/elections/files/StatewideCountsofPrecincts-and-PrecinctSplits.9.21.23new.pdf",
+    "jurisdictionReportsCdx": "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/site/data/JurR_*_B.json&from=20241101&to=20250131&output=json"
+  },
+  "totals": {
+    "counties": 92,
+    "precincts": 5147,
+    "precinctSplits": 1342,
+    "precinctsWithSplits": 1092,
+    "highPriorityCounties": 20,
+    "splitCounties": 85
+  },
+  "routingPolicy": [
+    "Ask the Indiana Election Division for a statewide machine-readable export first.",
+    "Use county rows only as custodian follow-up if the state confirms no statewide export exists.",
+    "Treat counties with at least 100 precincts or at least 30 precinct splits as high-volume/split follow-up priorities."
+  ],
+  "caveat": "This is an operational request tracker only. It does not contain candidate result rows and does not replace official ENR county results or supplemental review caveats."
+}

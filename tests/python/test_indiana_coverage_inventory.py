@@ -8,11 +8,14 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
     def setUp(self):
         self.inventory = json.loads(Path("data/in-2024-data-coverage-inventory.json").read_text(encoding="utf-8-sig"))
         self.enr_inventory = json.loads(Path("data/in-2024-official-enr-public-data-inventory.json").read_text(encoding="utf-8-sig"))
+        self.routing_summary = json.loads(Path("data/in-2024-county-request-routing-summary.json").read_text(encoding="utf-8-sig"))
         admin = json.loads(Path("data/admin-source-packages.json").read_text(encoding="utf-8-sig"))
         self.admin = next(entry for entry in admin["stateYearStatuses"] if entry["state"] == "IN")
         self.request_packet = Path("data/source-records-request-packets/in-2024-precinct-results-request.md")
         with Path("data/in-2024-source-request-matrix.tsv").open(encoding="utf-8-sig", newline="") as handle:
             self.request_rows = list(csv.DictReader(handle, delimiter="\t"))
+        with Path("data/in-2024-county-request-routing.csv").open(encoding="utf-8-sig", newline="") as handle:
+            self.routing_rows = list(csv.DictReader(handle))
 
     def test_loaded_artifacts_keep_official_and_supplemental_sources_distinct(self):
         artifacts = {entry["id"]: entry for entry in self.inventory["loadedArtifacts"]}
@@ -23,6 +26,10 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(audit["expectedCounts"]["rows"], 7)
         self.assertEqual(audit["expectedCounts"]["ballotComparisonCounties"], 3)
         self.assertIn("not proof", " ".join(audit["caveats"]))
+        routing = artifacts["in-2024-county-request-routing"]
+        self.assertEqual(routing["expectedCounts"]["counties"], 92)
+        self.assertEqual(routing["expectedCounts"]["precincts"], 5147)
+        self.assertEqual(routing["expectedCounts"]["precinctSplits"], 1342)
         self.assertIn("Certified county map/result totals", " ".join(artifacts["in-2024-official-enr-president"]["caveats"]))
         self.assertIn("supplemental", " ".join(artifacts["in-2024-mit-precinct-president-senate"]["caveats"]).lower())
 
@@ -58,8 +65,10 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertIn("official same-grain precinct/subcounty", self.inventory["completionDecision"]["reason"])
         self.assertIn("in-2024-official-enr-public-data-inventory", discovery["completionDecision"]["reason"])
         self.assertIn("MIT/OpenElections", discovery["completionDecision"]["reason"])
+        self.assertIn("requestRouting", discovery["availableArtifacts"])
         self.assertEqual(source_tier["confidence"], "loaded_with_caveat")
         self.assertIn("supplemental MIT/OpenElections", source_tier["caveats"])
+        self.assertIn("county custodian follow-up", source_tier["parserStatus"])
         self.assertTrue(any("supplemental MIT/OpenElections" in caveat for caveat in self.inventory["displayCaveats"]))
 
     def test_admin_source_paths_are_documented_but_not_normalized(self):
@@ -81,13 +90,15 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
             "data/source-records-request-packets/in-2024-precinct-results-request.md",
         )
         artifacts = {row["artifact"]: row for row in self.request_rows}
-        self.assertEqual(len(self.request_rows), 8)
+        self.assertEqual(len(self.request_rows), 9)
         self.assertEqual(artifacts["official_precinct_or_local_reporting_unit_president"]["priority"], "high")
         self.assertIn("request_packet_ready", artifacts["official_precinct_or_local_reporting_unit_president"]["local_artifact_status"])
         self.assertIn("precinct split identifier", artifacts["official_precinct_or_local_reporting_unit_us_senate"]["needed_fields"])
         self.assertEqual(artifacts["official_2012_county_presidential_baseline"]["local_artifact_status"], "loaded_official_endpoint_json")
         self.assertEqual(artifacts["vstop_audit_selection_outcome"]["local_artifact_status"], "loaded_official_summary_pdf_normalized")
         self.assertIn("not proof", artifacts["vstop_audit_selection_outcome"]["caveat"])
+        self.assertEqual(artifacts["county_custodian_request_routing"]["local_artifact_status"], "loaded_machine_readable_tracking:data/in-2024-county-request-routing.csv")
+        self.assertIn("92 official custodians", artifacts["county_custodian_request_routing"]["blocker"])
         self.assertIn("misconduct", artifacts["recount_incident_correction_records"]["caveat"])
 
     def test_request_packet_records_precinct_split_ask(self):
@@ -96,8 +107,24 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertIn("5,147 precincts", packet)
         self.assertIn("1,342 precinct splits", packet)
         self.assertIn("precinct split code", packet)
+        self.assertIn("data/in-2024-county-request-routing.csv", packet)
         self.assertIn("elections@iec.in.gov", packet)
         self.assertIn("not asking for conclusions about misconduct", packet)
+
+    def test_county_request_routing_tracker_is_machine_readable(self):
+        self.assertEqual(self.inventory["requestRoutingArtifact"], "data/in-2024-county-request-routing.csv")
+        self.assertEqual(self.routing_summary["totals"]["counties"], 92)
+        self.assertEqual(self.routing_summary["totals"]["precincts"], 5147)
+        self.assertEqual(self.routing_summary["totals"]["precinctSplits"], 1342)
+        self.assertEqual(self.routing_summary["totals"]["precinctsWithSplits"], 1092)
+        self.assertEqual(len(self.routing_rows), 92)
+        marion = next(row for row in self.routing_rows if row["county"] == "Marion County")
+        self.assertEqual(marion["routing_priority"], "high_volume_or_split")
+        self.assertEqual(marion["precinct_count"], "621")
+        self.assertEqual(marion["precinct_split_count"], "78")
+        self.assertIn("Marion County Election Board", marion["office_name"])
+        self.assertIn("county_followup_if_state_confirms_no_statewide_export", marion["county_followup_status"])
+        self.assertIn("no President or U.S. Senate candidate result rows", marion["notes"])
 
 
 if __name__ == "__main__":

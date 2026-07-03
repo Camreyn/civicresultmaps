@@ -12,6 +12,10 @@ This request seeks machine-readable official source records for the November 5, 
 
 Primary contact path currently listed by the Election Division: elections@iec.in.gov / 317-232-3939.
 
+## Machine-Readable Routing Tracker
+
+Wave 23 adds `data/in-2024-county-request-routing.csv` and `data/in-2024-county-request-routing-summary.json` as the operational follow-up tracker. The tracker pairs official ENR `JurR_*_B.json` county office/contact metadata with the official Indiana precinct/split-count PDF retained at `data/in-statewide-precinct-counts-2023.pdf`. It covers 92 counties, 5,147 precincts, 1,342 precinct splits, and 1,092 precincts with splits. Use the statewide Election Division request first, then use county rows only if the state confirms no statewide same-grain export exists.
+
 ## Records Request Text
 
 Please provide, or identify the custodian for, the following machine-readable records for the November 5, 2024 Indiana General Election. We are seeking official source records suitable for public-interest source reconciliation. We are not asking for conclusions about misconduct.
