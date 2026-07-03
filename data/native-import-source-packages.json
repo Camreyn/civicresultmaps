@@ -3397,7 +3397,7 @@
         "https://vip.sdsos.gov/CountyAuditors.aspx"
       ],
       "requiredArtifacts": [
-        "official SD SOS 2024 General Election Canvass and Certificate PDF/static export or electionresults.sd.gov archive ElectionID for November 5, 2024",
+        "official SD SOS 2024 General Election Canvass and Certificate PDF/static export or electionresults.sd.gov archive ElectionID/race IDs for November 5, 2024",
         "state-native county or precinct turnout and registered-voter denominator rows",
         "precinct/local President plus same-grain comparison rows if subcounty advisory coverage is pursued",
         "precinct boundary geometry or official reporting-unit crosswalk",
@@ -3407,7 +3407,7 @@
       ],
       "preferredComparisonContest": "United States Representative; current staging pairs county President with at-large U.S. House rows, with county-level and secondary-source caveats.",
       "parserNeeded": "scripts/collect-sd-2024-county-results.mjs currently regenerates secondary county President and U.S. House CSVs for countyPresidentCsv/countyComparisonCsv. Replace or supplement it with an official SD SOS canvass/export collector once the official static artifact or archive ElectionID is identified.",
-      "blocker": "The live SD results app exposed current-election CSV/media/export pages and ResultsAjax archive method names, but this worker did not identify a scriptable 2024 General Election archive ElectionID or static canvass PDF URL. Current rows reconcile to statewide totals but remain secondary staging coverage until the official artifact is retained.",
+      "blocker": "The live SD results app exposed current-election CSV/media/export pages and ResultsAjax archive method names, but the public pages currently default to the 2026 Primary Election and ResultsExport exposes ASP.NET postback controls rather than a stable 2024 static export URL. The WSDL confirms GetMapDataArchive, GetVoterTurnoutArchive, and GetProvisionalDataArchive require an integer ElectionID. A bounded GetCandidates archive probe for ElectionType=General and ElectionID values 1 through 800 found no 2024 federal candidate markers, so the 2024 General Election archive ElectionID/race IDs or canvass PDF/export still need to be requested or otherwise identified. Current rows reconcile to statewide totals but remain secondary staging coverage until the official artifact is retained.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "Wikipedia 2024 South Dakota presidential county table citing SD SOS canvass",

@@ -1,4 +1,4 @@
-﻿import csv
+import csv
 import json
 import unittest
 from pathlib import Path
@@ -42,6 +42,11 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(self.inventory["currentConfigStatus"]["reviewRows"], 66)
         self.assertEqual(self.inventory["currentConfigStatus"]["turnoutRows"], 66)
         self.assertIn("official SD SOS canvass PDF/static export", self.inventory["officialSourceProbe"]["blocker"])
+        self.assertIn("ElectionID/race IDs", self.inventory["officialSourceProbe"]["blocker"])
+        self.assertIn("2026 Primary Election", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
+        self.assertEqual(self.inventory["officialSourceProbe"]["archiveProbe"]["checkedAt"], "2026-07-03")
+        self.assertIn("1 through 800", self.inventory["officialSourceProbe"]["archiveProbe"]["method"])
+        self.assertIn("No probed ElectionID", self.inventory["officialSourceProbe"]["archiveProbe"]["result"])
         self.assertIn("secondary staging coverage", " ".join(self.inventory["displayCaveats"]))
         self.assertIn("not precinct-level scatter plots", " ".join(self.inventory["displayCaveats"]))
 
@@ -58,6 +63,8 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(discovery["expected"]["localReviewRows"], 66)
         self.assertEqual(self.request_rows["sd-official-2024-canvass"]["priority"], "P0")
         self.assertIn("official 2024 General Election Canvass", self.request_rows["sd-official-2024-canvass"]["sourceNeed"])
+        self.assertIn("ElectionID/race IDs", self.request_rows["sd-official-2024-canvass"]["neededArtifact"])
+        self.assertIn("1-800", self.request_rows["sd-official-2024-canvass"]["caveat"])
         self.assertEqual(self.request_rows["sd-state-native-turnout"]["priority"], "P1")
 
 
