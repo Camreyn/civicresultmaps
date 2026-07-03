@@ -1,53 +1,144 @@
-{
+﻿{
   "code": "CT",
   "name": "Connecticut",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Connecticut Secretary of the State; U.S. Election Assistance Commission; U.S. Census Bureau",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
+      "id": "ct-2024-ems-election-91-version-80741",
+      "category": "Official Connecticut EMS static JSON town result and turnout package",
+      "url": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
+      "localFile": "data/ct-2024-ems-election-91-version-80741",
+      "parser": "connecticutEmsTownJson",
+      "authority": "Connecticut Secretary of the State",
+      "timestampBasis": "Connecticut Elections Management System election 91 version 80741 for the November 5, 2024 Presidential Election; version metadata retained in the local artifact directory.",
+      "confidence": "Official EMS town-level static JSON. Loads 169 town President rows, same-grain U.S. Senate comparison rows, and EMS town turnout rows for staging only. The 2024 Statement of Vote PDF remains a required reconciliation cross-check before any production-level certified-total claim.",
+      "status": "loaded"
+    },
+    {
+      "id": "ct-2024-statement-of-vote-pdf",
+      "category": "Official 2024 Connecticut Statement of Vote reconciliation source",
+      "url": "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
+      "localFile": "data/ct-2024-statement-of-vote.pdf",
+      "parser": "statementOfVotePdfCrossCheck",
+      "authority": "Connecticut Secretary of the State",
+      "timestampBasis": "Official 2024 Statement of Vote PDF downloaded during Wave 17 CT source collection.",
+      "confidence": "Certified publication retained for reconciliation. EMS town totals are internally consistent but must be reconciled against this PDF before promotion-level certified-total language.",
+      "status": "candidate"
+    },
+    {
+      "id": "ct-town-mcd-geometry",
+      "category": "Town/county-subdivision geometry lead",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/22/query?where=STATE%3D%2709%27&outFields=GEOID,STATE,COUNTY,COUSUB,NAME,BASENAME,COUSUBNS&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ct-town-mcds.geojson",
+      "parser": "censusTigerwebCountySubdivisionGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb Current county-subdivision layer 22 collected during Wave 17 CT source collection.",
+      "confidence": "Official town/MCD geometry lead for future town map joins. The raw layer includes 169 Connecticut town/MCD features plus five COUSUB=00000 placeholder features for county subdivisions not defined; map activation still needs EMS town-name crosswalk QA.",
+      "status": "candidate"
+    },
+    {
       "id": "ct-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC fallback turnout benchmark rows",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/ct-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
-      "status": "loaded"
+      "confidence": "Retained as official fallback benchmark only. Active CT staging turnout now uses EMS town rows and remains warning-required pending EMS/SOV/EAC semantics review.",
+      "status": "superseded"
+    },
+    {
+      "id": "ct-2024-data-coverage-inventory",
+      "category": "Connecticut data coverage and administration source inventory",
+      "url": "https://ctemspublic.tgstg.net/",
+      "localFile": "data/ct-2024-data-coverage-inventory.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Connecticut Secretary of the State; UConn VoTeR; U.S. Census Bureau; Verified Voting",
+      "timestampBasis": "Wave 17 official-source coverage inventory updated July 2, 2026.",
+      "confidence": "Documents EMS/SOV reconciliation caveat, town geometry lead, historical/audit/admin source paths, and remaining request needs. Inventory only; normalized audit/CVR/recount/incident/correction/litigation rows are not loaded.",
+      "status": "candidate"
+    },
+    {
+      "id": "ct-2024-equipment-context",
+      "category": "Election equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/9",
+      "localFile": "data/ct-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContextCsv",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verified Voting Verifier 2024 Connecticut context rows collected as supplemental administration metadata.",
+      "confidence": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment.",
+      "status": "candidate"
     }
   ],
-  "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "ct-2024-eac-turnout",
-    "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Connecticut turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
-    "warningRequired": false,
+  "certifiedResults": {
+    "format": "connecticutEmsTownJson",
+    "sourceId": "ct-2024-ems-election-91-version-80741",
+    "presidentOfficeId": "16518",
+    "harrisCandidateIds": ["35838"],
+    "trumpCandidateIds": ["35839"],
+    "otherCandidateIds": ["35853", "35848", "35858", "36136", "36137", "36138", "36139", "36135", "36140", "36141"],
     "expected": {
       "rowCount": 169,
-      "ballotsCast": 1820891,
-      "registeredVoters": 2520650
+      "stateTotal": 1759010,
+      "harris": 992053,
+      "trump": 736918,
+      "other": 30039
+    },
+    "caveat": "EMS town totals reconcile to EMS stateVotes for President but remain pending reconciliation with the official 2024 Statement of Vote PDF before production-level certified-total claims."
+  },
+  "reviewCharts": {
+    "format": "connecticutEmsTownJson",
+    "sourceId": "ct-2024-ems-election-91-version-80741",
+    "comparisonOfficeId": "16524",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "comparisonDemCandidateIds": ["35495", "35860"],
+    "comparisonRepCandidateIds": ["35830"],
+    "comparisonOtherCandidateIds": ["36064", "35859", "36142"],
+    "warning": "Connecticut U.S. Senate comparison rows fuse Christopher S. Murphy Democratic and Working Families ballot lines by person. Review rows are town-level public-interest screening inputs only, not precinct-level findings."
+  },
+  "turnout": {
+    "format": "connecticutEmsTownJson",
+    "sourceId": "ct-2024-ems-election-91-version-80741",
+    "denominatorType": "registeredVoters",
+    "registrationDenominatorTiming": "emsReported",
+    "sourceLevel": "town",
+    "notes": "Connecticut EMS turnout rows use EV as registered/elector denominator and VV as voters checked. All rows are warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed.",
+    "warningRequired": true,
+    "expected": {
+      "rowCount": 169,
+      "ballotsCast": 1788981,
+      "registeredVoters": 2348545
     }
+  },
+  "geometry": {
+    "format": "censusTigerwebCountySubdivisionGeojson",
+    "sourceId": "ct-town-mcd-geometry",
+    "expected": {
+      "townFeatures": 169,
+      "rawFeatures": 174,
+      "placeholderFeatures": 5
+    },
+    "notes": "Use non-placeholder Connecticut town/MCD features for future town joins; keep county geometry as historical-county context only."
   },
   "expected": {
     "jurisdictions": 169,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 169,
+    "sources": 6,
+    "stateTotal": 1759010,
+    "trump": 736918,
+    "harris": 992053,
+    "other": 30039,
+    "reviewRows": 169,
     "turnoutRows": 169
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
+    "certifiedResults": true,
     "map": false,
-    "reviewGraphs": false,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
   }
