@@ -328,9 +328,7 @@ async function main() {
   writeCsv(paths.houseCsv, ["state", "election_year", "jurisdiction_name", "local_unit", "comparison_dem", "comparison_rep", "comparison_other"], [
     houseRow,
   ]);
-  writeInventory(actual);
-  writeRequestMatrix();
-  writeOfficialResultsPageEvidence();
+  // Coverage inventory and request evidence include Wave 22 ENR precinct rows; do not overwrite them from the statewide summary-only normalizer.
 
   console.log(
     JSON.stringify(

@@ -7,28 +7,33 @@
   "sourceUrls": [
     "https://www.elections.alaska.gov/election-results/",
     "https://www.elections.alaska.gov/election-results/e/?id=24genr",
-    "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf"
+    "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
+    "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+    "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
+    "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf"
   ],
   "localArtifact": "data/ak-2024-official-results-page-evidence.json",
-  "reportingGrain": "source_discovery",
-  "parserOrNormalizationPath": "coverageInventoryJson",
+  "reportingGrain": "source_discovery_and_loaded_precinct_review",
+  "parserOrNormalizationPath": "scripts/normalize-ak-enr-by-precinct.mjs; coverageInventoryJson",
   "observations": [
-    "The Alaska Division of Elections Election Results page says election-night results are posted until certification and directs users to Search Official Election Results for certified results.",
-    "The official results page lists the 2024 General Election dated November 5, 2024 and links it to /election-results/e/?id=24genr.",
-    "The election detail template describes Statements of Votes Cast PDFs as district and precinct reports for contests that did not require ranked-choice tabulation. This is a follow-up path for lower-grain President/local rows, but it is not proof that same-grain U.S. Representative first-choice rows are available.",
-    "Direct access to https://www.elections.alaska.gov/results/24GENR/ returned 403 Forbidden in this worker environment, so companion files could not be enumerated by directory listing.",
-    "The retained official Election Summary Report PDF remains the only loaded Alaska 2024 federal result source artifact in the repo and supports only statewide President and statewide U.S. Representative first-choice comparison rows."
+    "The Alaska Division of Elections 2024 General All Details page links the official Summary PDF, ENRbyPrecinct.csv, Combined Ballot Count Report, CVR export ZIP, House District Statements of Votes Cast PDFs HD1.pdf through HD40.pdf plus HD99.pdf, and ranked-choice reports including RCV-USRep.pdf.",
+    "The official ENRbyPrecinct.csv was downloaded and retained at data/ak-2024-general-enr-by-precinct.csv.",
+    "The ENR precinct CSV contains U.S. President / Vice President and U.S. Representative rows at the same precinct/reporting-unit grain.",
+    "Normalized review rows reconcile exactly to the certified statewide presidential totals: 338,177 total votes, 184,458 Trump, 140,026 Harris, and 13,693 Other.",
+    "U.S. House named-candidate first-choice rows reconcile to 156,245 DEM votes and 159,550 REP votes, but comparison_other is 13,010 because the ENR precinct CSV does not itemize 750 statewide U.S. House write-in votes included in the summary PDF.",
+    "Direct directory listing is no longer needed for this blocker because the All Details page exposes concrete official artifact URLs."
   ],
   "expectedCounts": {
     "loadedPresidentRows": 1,
-    "loadedReviewRows": 1,
+    "loadedReviewRows": 523,
     "loadedTurnoutRows": 1,
-    "loadedLowerGrainFederalRows": 0
+    "loadedLowerGrainFederalRows": 523,
+    "usHouseWriteInGapVersusSummary": 750
   },
   "caveats": [
-    "Do not load secondary House-district tables as official Alaska Division of Elections rows without retaining the underlying official district or precinct SOVC/source artifact.",
-    "Alaska U.S. Representative used ranked-choice voting in 2024, so any future lower-grain comparison package must document whether it contains first-choice rows and whether those rows are same-grain with President.",
-    "This evidence artifact documents source-discovery state only; it is not a parser input for vote totals, turnout denominators, or advisory indicators."
+    "Do not treat the 523 review rows as precinct polygons; they include absentee, early, question, remote, and HD99-style reporting units.",
+    "Alaska U.S. Representative used ranked-choice voting in 2024, so these rows are first-choice named-candidate review rows only.",
+    "The official ENR precinct CSV does not itemize U.S. House write-ins by precinct/reporting unit. Request write-in allocation or source confirmation before representing comparison_other as write-in-complete."
   ],
-  "confidence": "official_page_checked_lower_grain_artifact_not_collected"
+  "confidence": "official_precinct_review_artifact_loaded_with_us_house_write_in_caveat"
 }
