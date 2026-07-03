@@ -78,8 +78,8 @@
       "localFile": "data/nv-2024-source-coverage-inventory.json",
       "parser": "coverageInventoryJson",
       "authority": "CivicResultMaps official-source inventory using Nevada Secretary of State and county election sources",
-      "timestampBasis": "State-scoped source coverage pass completed July 1, 2026.",
-      "confidence": "Inventory artifact documents Humboldt CVR collection, remaining local-result gaps, blocked NVSOS/Silver State live access, state-native turnout blockers, and audit/CVR/L&A/tabulator-log/custody/incident source needs. It is context only and not a vote-result parser.",
+      "timestampBasis": "State-scoped source coverage pass refreshed July 3, 2026.",
+      "confidence": "Inventory artifact documents Humboldt CVR collection, remaining local-result gaps, blocked NVSOS/Silver State live access, state-native turnout blockers, Wave 23 official contact/custodian request paths, and audit/CVR/L&A/tabulator-log/custody/incident source needs. It is context only and not a vote-result parser.",
       "status": "loaded"
     },
     {
@@ -89,8 +89,8 @@
       "localFile": "data/nv-2024-county-source-request-matrix.tsv",
       "parser": "countySourceRequestMatrixTsv",
       "authority": "CivicResultMaps official-source inventory using Nevada Secretary of State and county election sources",
-      "timestampBasis": "State-scoped source request matrix generated from the July 1, 2026 Nevada source coverage pass.",
-      "confidence": "Context-only request matrix for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt. It documents official county pages, source-check statuses, and requested result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation artifacts; it is not a vote-result parser.",
+      "timestampBasis": "State-scoped source request matrix refreshed July 3, 2026 with Wave 23 official contact/custodian paths.",
+      "confidence": "Context-only request matrix for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt. It documents official county pages, source-check statuses, contact/custodian paths, expected result/turnout/geometry/admin fields, and requested result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation artifacts; it is not a vote-result parser.",
       "status": "loaded"
     },
     {
