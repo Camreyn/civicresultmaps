@@ -250,6 +250,8 @@ Expected validation: 17 county result rows, 17 county geometry features, 1,484,8
 
 Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, 276 official historical baseline rows for 2012/2016/2020, and 7 VSTOP audit-summary context rows. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
 
+Completion decision, checked 2026-07-03: keep Indiana in `sourceDiscoveryQueue` and out of `completedNativeStates`. The loaded county, turnout, historical, and VSTOP summary artifacts are useful and source-backed, but the local review/advisory rows still rely on supplemental MIT/OpenElections precinct context. Official same-grain precinct/subcounty President and U.S. Senate rows remain the blocker before the supplemental-source caveat can be removed.
+
 
 ## Idaho Wave 12 Update
 
