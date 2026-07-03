@@ -1235,11 +1235,14 @@ export async function getCoverageSummary(input: {
     return getCoverage(input.state, input.year);
   }
 
-  const [stateList, results, sources] = await Promise.all([
+  const [stateList, countyResults, cityResults, cityTownResults, sources] = await Promise.all([
     listStates(),
     listResults({ state: input.state, year: input.year, level: "county" }),
+    listResults({ state: input.state, year: input.year, level: "city" }),
+    listResults({ state: input.state, year: input.year, level: "city_town" }),
     listSources(input),
   ]);
+  const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults;
   const state = stateList.find((entry) => entry.code === input.state);
 
   if (!state) {
