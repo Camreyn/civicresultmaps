@@ -34,6 +34,21 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertIn(2012, historical["expectedCounts"]["years"])
         self.assertFalse(any(entry["artifact"] == "2012_historical_presidential_baseline" for entry in self.inventory["gaps"]))
 
+    def test_completion_decision_keeps_official_precinct_blocker_visible(self):
+        native_packages = json.loads(Path("data/native-import-source-packages.json").read_text(encoding="utf-8-sig"))
+        discovery = next(entry for entry in native_packages["sourceDiscoveryQueue"] if entry["state"] == "IN")
+        source_tiers = json.loads(Path("data/source-acquisition-tiers.json").read_text(encoding="utf-8-sig"))
+        source_tier = next(entry for entry in source_tiers["states"] if entry["state"] == "IN")
+
+        self.assertEqual(self.inventory["completionDecision"]["decision"], "remain_in_source_discovery_queue")
+        self.assertEqual(discovery["completionDecision"]["decision"], "remain_in_source_discovery_queue")
+        self.assertNotIn("IN", native_packages["completedNativeStates"])
+        self.assertIn("official same-grain precinct/subcounty", self.inventory["completionDecision"]["reason"])
+        self.assertIn("MIT/OpenElections", discovery["completionDecision"]["reason"])
+        self.assertEqual(source_tier["confidence"], "loaded_with_caveat")
+        self.assertIn("supplemental MIT/OpenElections", source_tier["caveats"])
+        self.assertTrue(any("supplemental MIT/OpenElections" in caveat for caveat in self.inventory["displayCaveats"]))
+
     def test_admin_source_paths_are_documented_but_not_normalized(self):
         self.assertEqual(self.admin["status"], "partial")
         self.assertEqual(self.admin["audit"]["status"], "partial")
