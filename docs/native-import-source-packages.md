@@ -617,15 +617,18 @@ NM remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`
 
 Expected validation: 17 certified result rows including State UOCAVA, 16 county geometry features, 831,375 candidate votes, 435,652 Harris votes, 377,977 Trump votes, 17,746 Other votes, 512 town review rows, 509 matched U.S. Senate comparison rows, 497 EAC fallback turnout rows, and 34 historical baseline rows. Remaining gaps are Maine-native ballots-cast or voter-participation rows, municipality/town geometry or a reporting-unit crosswalk, legacy `.xls` parsing/conversion for 2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
 
-## Rhode Island Wave 15 Source Discovery
+## Rhode Island Wave 17 Native Activation
 
 - Config: `etl/state-configs/ri.json`
-- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/ri-2024-eac-turnout.csv`
-- Coverage inventory: `data/ri-2024-data-coverage-inventory.json`
-- Source request matrix: `data/ri-2024-source-request-matrix.tsv`
-- Official result lead: Rhode Island Board of Elections RI.gov 2024 General Election data page, including short-format ZIP, long-format ZIP, statewide JSON, and 39 city/town JSON files
-- Preferred comparison contest: U.S. Senate, because it is a statewide contest in the same BOE source family as President
-- Turnout status: EAC fallback remains active until Rhode Island-native ballots-cast and registered-voter denominator fields are confirmed, parsed, and reconciled
-- Geometry/admin context: county equipment context is present from Verified Voting; result-ready city/town or precinct/district geometry, audit, CVR availability, recount, incident, correction, and litigation rows remain source/request items
+- Authority: Rhode Island Board of Elections; U.S. Election Assistance Commission
+- Current active package: native President city/town/federal/reconciliation rows, same-key President-versus-U.S.-Senate review rows, EAC fallback turnout, and partial official historical baselines
+- Official result artifacts collected: `data/ri-2024-general-election-long-format.zip`, `data/ri-2024-general-election-short-format.zip`, `data/ri-2024-general-election-statewide.json`, and `data/ri-boe-results-data-description.pdf`
+- Normalized artifacts: `data/ri-2024-general-president-city-town.csv`, `data/ri-2024-general-president-senate-review.csv`, and `data/ri-historical-presidential-baseline.csv`
+- Parser path: `scripts/normalize-ri-boe-results.mjs` plus `nativeRhodeIslandBoeCsv`
+- Comparison contest: U.S. Senate, paired at same BOE reporting-unit key where nonzero President rows exist
+- Turnout source: active ETL remains EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/ri-2024-eac-turnout.csv`
+- Historical baselines: official 2012 and 2016 RI.gov archive rows are loaded; 2020 artifacts are collected but blocked by an alternate vote-group layout that did not reconcile in this pass
 
-RI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. The official result source path is machine-readable and parser-ready, but no official Rhode Island result or advisory review rows are loaded in this pass. Remaining work is collecting the official BOE ZIP/JSON artifacts into `data/`, implementing a BOE parser, reconciling posted totals of 513,386 President votes and 491,948 U.S. Senate votes, collecting state-native turnout denominators, geometry/crosswalks, historical baselines for 2020/2016/2012, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory rows are absent for Rhode Island; future rows must remain public-interest review signals only, not findings of fraud or misconduct.
+Expected validation: 41 President result rows, 444 review rows, 39 EAC fallback turnout rows, 80 historical baseline rows, and posted statewide President totals of 513,386 votes: 285,156 Harris, 214,406 Trump, and 13,824 Other. The official long-format ZIP is 32 President votes and 29 U.S. Senate votes below the posted statewide JSON, so the normalized President package includes a non-geographic reconciliation delta and review rows exclude posted-total deltas, zero-vote Limited rows, and presidential-only rows.
+
+Remaining gaps are state-native turnout/registration denominators, result-ready city/town or precinct geometry/crosswalks, decoded 2020 historical baseline rows, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory rows are source-review calculations only, not findings.
