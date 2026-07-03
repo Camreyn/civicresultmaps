@@ -203,12 +203,12 @@ New Jersey currently uses official EAC 2024 V2 county/jurisdiction fallback rows
 
 New Mexico currently uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/nm-2024-eac-turnout.csv`, totaling 33 jurisdiction rows, 927,923 ballots cast, and 1,415,984 registered voters in the active NM config. Wave 15 identified a state-native New Mexico Secretary of State turnout lead in the 2024 General Election results system: `https://electionresults.sos.nm.gov/VoterTurnoutDetails.aspx?eid=2882` reports 928,290 ballots cast and 1,343,825 eligible voters, with precinct-level turnout detail. Keep EAC fallback active until eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC ballots-cast difference are reviewed. Follow-up fields are tracked in `data/nm-2024-source-request-matrix.tsv`.
 
-## Maine Wave 15 Turnout Update
+## Maine Wave 17 Turnout Update
 
 - Active source: Maine remains on the EAC 2024 fallback turnout package in `etl/state-configs/me.json`, with 497 jurisdiction rows and the EAC caveat preserved.
-- State-native lead: the Maine Secretary of State previous enrollment data page posts active and inactive registered/enrolled voter files for the November 5, 2024 General/Referendum Election, with county, municipality, voting-district, and party detail.
+- State-native lead collected: the Maine Secretary of State active and inactive registered/enrolled files for the November 5, 2024 General/Referendum Election are now retained at `data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt` and `data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt`.
 - Replacement condition: these registered/enrolled files are denominator leads only. Do not replace EAC turnout until official Maine ballots-cast or voter-participation rows at compatible grain are collected, parsed, and reconciled against certified totals.
-- Handoff: use `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv` for the source request matrix, caveats, and parser path.
+- Handoff: use `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv` for caveats and remaining request fields.
 
 ## Rhode Island Wave 15 Update
 

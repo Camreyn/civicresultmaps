@@ -1001,28 +1001,26 @@
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx"
       ],
       "availableFields": [
-        "official county/town presidential Excel rows",
-        "official county/town U.S. Senate comparison Excel rows",
-        "official presidential congressional-district Excel rows for split-electoral-vote context",
-        "official CD2 ranked-choice summary, first-choice, and cast-vote-record Excel source leads",
-        "EAC fallback turnout rows",
-        "state-native registered/enrolled voter denominator leads",
+        "official county/town presidential Excel rows loaded",
+        "official county/town U.S. Senate comparison Excel rows loaded",
+        "official presidential congressional-district Excel artifact retained for split-electoral-vote context",
+        "official EAC fallback turnout rows loaded",
+        "official Maine SOS active/inactive registered-enrolled denominator leads collected",
         "county geometry",
-        "county equipment context"
+        "county equipment context",
+        "official 2016 and 2020 county historical baselines loaded"
       ],
       "missingFields": [
-        "loaded Maine native result and review rows",
-        "Maine SOS Excel parser and reconciliation report",
         "state-native ballots-cast or voter-participation rows paired with registration denominators",
         "municipality/town geometry or official reporting-unit crosswalk",
-        "normalized official 2012/2016/2020 historical baseline rows",
+        "normalized official 2012 historical baseline rows from legacy XLS artifacts",
         "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv document official Maine SOS 2024 Excel result, U.S. Senate comparison, RCV/CVR, registration denominator, historical, geometry, equipment, and admin source leads; active etl/state-configs/me.json remains EAC turnout-only with no result or review rows loaded",
+      "parserStatus": "nativeMaineSosCountyTownXlsx loads official Maine SOS President county/town rows, U.S. Senate town comparison rows, EAC fallback turnout, and official 2016/2020 historical rows; data/me-2024-data-coverage-inventory.json documents remaining turnout, geometry, 2012 XLS, and admin gaps",
       "manualReviewBurden": "low",
-      "confidence": "candidate_parser_ready",
-      "caveats": "Maine SOS publishes official Excel workbooks for President by County/Town and U.S. Senate, but they are not collected or parsed in this pass. UOCAVA/non-geographic rows, municipality label joins, and CD2 ranked-choice/CVR semantics need reconciliation before advisory rows are loaded. Turnout remains EAC fallback until state-native registration and ballots-cast semantics are reviewed.",
-      "nextAction": "Collect the official Maine SOS 2024 President and U.S. Senate Excel workbooks into data/, implement a Maine Excel parser with UOCAVA/non-geographic row handling, reconcile state totals, then add municipality/county crosswalks, state-native turnout review, historical baselines, and administration source rows."
+      "confidence": "loaded_with_caveat",
+      "caveats": "State UOCAVA is loaded as a non-geographic certified result row and excluded from town review joins. Three town rows are vote-share-only because the Senate workbook grain differs. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review context only. Turnout remains EAC fallback until state-native ballots-cast semantics are reviewed.",
+      "nextAction": "Collect compatible Maine-native ballots-cast/voter-participation rows, municipality/town geometry or a crosswalk, legacy .xls parsing/conversion for 2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "MI",

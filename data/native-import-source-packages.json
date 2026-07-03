@@ -41,7 +41,8 @@
     "VA",
     "WA",
     "WI",
-    "WV"
+    "WV",
+    "ME"
   ],
   "blockedStates": [],
   "states": [
@@ -1622,6 +1623,84 @@
         "Equipment context is loaded from Verified Voting as supplemental administration metadata; normalized official audit/recount/CVR/incident/correction/litigation rows are not loaded.",
         "Official 2012, 2016, and 2020 historical baseline rows are not loaded; data/la-2024-data-coverage-inventory.json records the remaining official-source need."
       ]
+    },
+    {
+      "state": "ME",
+      "name": "Maine",
+      "priority": 13,
+      "nativeReadiness": "complete_county_map_town_review_eac_turnout_partial_historical",
+      "authority": "Maine Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context",
+      "configFile": "etl/state-configs/me.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Maine SOS 2024 President and Vice President by County/Town corrected final workbook",
+          "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+          "localFile": "data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx",
+          "parserHint": "maineSosCountyTownXlsx reads sheet President & VP; use county total rows plus State UOCAVA as non-geographic certified result row; candidate totals exclude blanks."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Maine SOS 2024 United States Senator corrected final workbook",
+          "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
+          "localFile": "data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx",
+          "level": "town",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Pair town rows by county code and normalized municipality label; leave Medway/Twps, Day Block Twp, and Wesley as vote-share-only because Senate grain differs."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Maine SOS official 2016 and 2020 President workbooks; 2012 XLS retained as blocked provenance",
+          "localFile": "data/me-official-sources/me-2016-president.xlsx; data/me-official-sources/me-2020-president-county-town.xlsx; data/me-official-sources/me-2012-president-county.xls; data/me-official-sources/me-2012-president-municipal.xls",
+          "parserHint": "maineSosHistoricalPresidentXlsx loads 34 county/non-geographic rows for 2016 and 2020. 2012 requires legacy XLS support or conversion."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "localFile": "data/me-counties.geojson",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2723%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Maine 2024 data coverage and administration source inventory",
+          "localFile": "data/me-2024-data-coverage-inventory.json"
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Maine 2024 equipment context",
+          "localFile": "data/me-2024-equipment-context.csv"
+        }
+      },
+      "expected": {
+        "countyRows": 17,
+        "geometryFeatures": 16,
+        "stateTotal": 831375,
+        "trump": 377977,
+        "harris": 435652,
+        "other": 17746,
+        "localReviewRows": 512,
+        "comparisonRows": 509,
+        "turnoutRows": 497,
+        "historicalBaselineRows": 34
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_town_with_uocava_excluded",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalBaselineMode": "official_2016_2020_sos_workbooks_2012_xls_blocked"
+      },
+      "caveats": [
+        "State UOCAVA is a non-geographic certified result row; it is not mapped and is excluded from town review joins.",
+        "Medway/Twps, Day Block Twp, and Wesley are vote-share-only rows because the Senate workbook combines or labels those units at a different grain.",
+        "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff metrics are directional source-review inputs only.",
+        "Turnout remains EAC fallback until Maine-native ballots-cast or voter-participation rows are collected and reconciled with SOS registration/enrollment files.",
+        "2012 official historical XLS artifacts are collected but not loaded until legacy XLS support or conversion is added.",
+        "Municipality geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows remain unloaded."
+      ],
+      "legacyReferenceBundle": "data/me-2024-data-coverage-inventory.json"
     }
   ],
   "sourceDiscoveryQueue": [
@@ -2635,56 +2714,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/10",
           "localFile": "data/de-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "ME",
-      "name": "Maine",
-      "priority": 13,
-      "currentStatus": "official_excel_source_leads_documented_eac_turnout_only",
-      "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20by%20Congressional%20District%202024.xlsx",
-        "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
-        "https://www.maine.gov/sos/elections-voting/election-results-data/previous-election-results",
-        "https://www.maine.gov/sos/elections-voting/voter-data",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23"
-      ],
-      "requiredArtifacts": [
-        "official Maine SOS 2024 U.S. President by County/Town Excel workbook collected into data/",
-        "official Maine SOS 2024 United States Senator Excel workbook collected into data/ for same-grain comparison rows",
-        "Maine SOS Excel parser with UOCAVA/non-geographic row handling and certified-total reconciliation",
-        "state-native registered/enrolled denominator parser plus ballots-cast/voter-participation reconciliation before replacing EAC turnout",
-        "municipality/town geometry or reporting-unit crosswalk if subcounty overlays are required",
-        "official 2020, 2016, and 2012 historical presidential baseline workbooks normalized from SOS archives",
-        "normalized audit/recount/CVR availability/incident/correction/litigation rows if published or request-produced",
-        "data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv as the current source-search handoff"
-      ],
-      "preferredComparisonContest": "U.S. Senate from the official Maine SOS United States Senator Excel workbook, expected to pair with President by County/Town after workbook collection and row reconciliation.",
-      "parserNeeded": "Maine remains EAC-turnout-only. A new Maine SOS Excel parser is needed for President and same-grain U.S. Senate rows, plus explicit UOCAVA/non-geographic row handling. A registered/enrolled denominator parser and turnout reconciliation are needed before replacing EAC fallback. Historical and administration-context parsers are not loaded.",
-      "blocker": "The official Maine SOS 2024 results page exposes machine-readable Excel workbooks for President by County/Town, President by Congressional District, U.S. Senate, and CD2 ranked-choice/CVR exports, but no official Maine result or advisory review rows are loaded yet. Active ME config remains EAC turnout-only with 497 fallback turnout rows. Remaining source needs are collected Excel artifacts, parser/reconciliation work, state-native turnout replacement review, municipality/town geometry or crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "localFile": "data/me-2024-data-coverage-inventory.json",
-          "checkedAt": "2026-07-02",
-          "repoDrift": "docs/developer/index.md is missing in this worktree."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC fallback turnout rows",
-          "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
-          "parser": "eacTurnoutCsv",
-          "turnoutRows": 497,
-          "status": "loaded_fallback_not_state_native"
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier 2024 equipment context",
-          "localFile": "data/verifiedvoting-me-2024-equipment.json",
-          "normalizedArtifact": "data/me-2024-equipment-context.csv",
-          "status": "loaded_supplemental_context"
         }
       }
     },
