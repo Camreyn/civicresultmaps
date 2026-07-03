@@ -656,6 +656,9 @@ Remaining gaps are state-native turnout/registration denominators, result-ready 
 
 Expected validation: 3 county result rows, 3 county geometry features, 511,697 presidential votes, 214,351 Trump votes, 289,758 Harris votes, 7,588 Other votes, 529 election-district review rows, and 3 EAC fallback turnout rows. Remaining gaps are active state-native turnout replacement semantics, FirstMap election-district geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
 
+### Vermont Wave 20 Source Discovery (2026-07-03)
+
+VT remains in sourceDiscoveryQueue rather than completedNativeStates. The active config is still EAC turnout-only: 247 turnout rows, 0 result rows, and 0 review rows. Wave 20 identified official Vermont Secretary of State 2024 source paths: the certified canvass PDF, voter-turnout PDF, recount XLSX, official static election manifest, federal President/U.S. Senate JSON, turnout JSON, and election archive leads. The static election index marks the 2024 GENERAL ELECTION official, but the federal JSON uses 284 town/reporting-district rows and requires split-town/district grain modeling plus certified-canvass reconciliation before VT can emit native President results or President-vs-U.S.-Senate review rows. The source inventory and request queue are data/vt-2024-data-coverage-inventory.json and data/vt-2024-source-request-matrix.tsv. Current VT advisory output remains zero because there are no native review rows; this is a source-coverage and parser-readiness caveat only, not a finding.
 ## South Dakota Wave 20 Caveated Staging
 
 - Config: `etl/state-configs/sd.json`
@@ -706,6 +709,7 @@ Remaining Wyoming caveats: EAC fallback registered-voter denominator remains act
 Expected validation: 95 county result rows, 95 county geometry features, 3,063,942 presidential votes, 1,966,865 Trump votes, 1,056,265 Harris votes, 40,812 Other votes, 1,859 precinct review rows, and 95 EAC fallback turnout rows. The official PDF source is text-layer PDF, not a structured export; the normalizer handles the PDF text placement of the seventh presidential candidate column and reconciles parsed precinct totals to official statewide President and U.S. Senate totals before writing CSV artifacts. Current advisory rows are public-interest screening inputs only, not findings.
 
 Remaining gaps are Tennessee-native turnout/registration denominators, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR availability/incident/correction/litigation records.
+
 
 
 

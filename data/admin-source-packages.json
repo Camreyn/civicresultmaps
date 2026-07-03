@@ -1749,16 +1749,23 @@
         "expectedJurisdictions": 14
       },
       "audit": {
-        "status": "needs_data",
-        "why": "Vermont 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceUrl": "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
+        "sourceInventory": "data/vt-2024-data-coverage-inventory.json",
+        "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv",
+        "why": "Vermont SOS 2024 audit-result leads were identified on the official results page, but audit rows are not normalized."
       },
       "cvr": {
         "status": "needs_data",
-        "why": "Vermont 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv",
+        "why": "Vermont 2024 CVR availability/export artifacts were not located or normalized in this pass."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Vermont 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "sourceUrl": "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_recount_results.xlsx",
+        "sourceInventory": "data/vt-2024-data-coverage-inventory.json",
+        "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv",
+        "why": "The Vermont SOS recount XLSX lead is identified for House District Bennington-1 and House District Windsor-3, but recount, correction, incident, and litigation context rows are not normalized."
       }
     },
     {

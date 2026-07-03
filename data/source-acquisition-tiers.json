@@ -2162,30 +2162,50 @@
       "stateName": "Vermont",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "town",
+      "dataFamily": "results_turnout_geometry_equipment_admin_context",
+      "tier": "tier_2_official_dashboard_endpoint",
+      "reportingGrain": "town_or_reporting_district",
       "exportFormats": [
-        "eac fallback turnout"
-      ],
-      "sourceUrls": [
-        "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/"
-      ],
-      "exampleUrls": [],
-      "availableFields": [
-        "town/county-style totals",
+        "official SOS static JSON",
+        "official SOS canvass PDF",
+        "official SOS turnout PDF",
+        "official recount XLSX",
         "EAC fallback turnout"
       ],
-      "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+      "sourceUrls": [
+        "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
+        "https://static.electionresults.vermont.gov/elections/elections.json",
+        "https://electionarchive.vermont.gov/"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Vermont geography is town-centric; classify before assuming county joins.",
-      "nextAction": "Classify official Vermont exports and comparison-contest availability."
+      "exampleUrls": [
+        "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b.json",
+        "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
+        "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-turnout-20260611153112.json",
+        "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_official_report_canvassing_committee_united_states_vermont_statewide_offices.pdf",
+        "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_voter_turnout.pdf"
+      ],
+      "availableFields": [
+        "official static election manifest for 2024 general election",
+        "US PRESIDENT AND VICE PRESIDENT rows in official federal JSON",
+        "US SENATOR rows in the same official federal JSON",
+        "official turnout JSON/PDF lead",
+        "certified canvass PDF lead",
+        "county geometry",
+        "equipment context"
+      ],
+      "missingFields": [
+        "reconciled certified President importer",
+        "same-grain review rows",
+        "state-native turnout importer",
+        "town/reporting-district geometry and crosswalk",
+        "2020/2016/2012 historical baseline rows",
+        "normalized audit, recount, CVR, incident, correction, and litigation rows"
+      ],
+      "parserStatus": "EAC turnout config remains active. Wave 20 identified official SOS static JSON and certified canvass/turnout PDFs, but data/vt-2024-data-coverage-inventory.json keeps the result/review parser gated because the federal JSON row grain needs de-duplication and certified-canvass reconciliation.",
+      "manualReviewBurden": "medium",
+      "confidence": "classified_candidate",
+      "caveats": "Vermont official result rows are town/reporting-district centric. Simple aggregation over the 284 federal JSON reporting rows does not reconcile to the SOS turnout total, so certifiedResults and reviewGraphs remain disabled until a Vermont parser models split-town/district grain and reconciles to the certified canvass. Current active turnout remains EAC fallback.",
+      "nextAction": "Use data/vt-2024-source-request-matrix.tsv to collect/cross-check the certified canvass PDF, official static JSON rows, state-native turnout PDF/JSON, town geometry/crosswalk, historical baselines, and administration-context records before enabling native VT results."
     },
     {
       "state": "WA",

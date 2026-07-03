@@ -3286,6 +3286,75 @@
       }
     },
     {
+      "state": "VT",
+      "name": "Vermont",
+      "priority": 13,
+      "currentStatus": "turnout_only_eac_active_official_sos_static_json_pdf_leads_identified_parser_reconciliation_needed",
+      "completionDecision": {
+        "checkedAt": "2026-07-03",
+        "decision": "remain_in_source_discovery_queue",
+        "reason": "Vermont should remain in sourceDiscoveryQueue rather than completedNativeStates because the active config is still EAC turnout-only with zero result/review rows. Wave 20 identified official Vermont Secretary of State certified canvass, turnout PDF, and static election JSON leads for 2024 President and U.S. Senate, but the federal JSON row grain needs split-town/district de-duplication and certified-canvass reconciliation before native review rows can be enabled."
+      },
+      "officialSourcePages": [
+        "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
+        "https://static.electionresults.vermont.gov/elections/elections.json",
+        "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b.json",
+        "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
+        "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-turnout-20260611153112.json",
+        "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_official_report_canvassing_committee_united_states_vermont_statewide_offices.pdf",
+        "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_voter_turnout.pdf",
+        "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_recount_results.xlsx",
+        "https://electionarchive.vermont.gov/"
+      ],
+      "requiredArtifacts": [
+        "official certified 2024 President rows from the Vermont SOS canvass PDF or reconciled official static JSON",
+        "official same-grain U.S. Senate rows from the same source family after row-grain de-duplication",
+        "state-native turnout and registration rows from the SOS turnout PDF/static JSON with denominator timing documented",
+        "town/reporting-district geometry and crosswalk for SOS town/district labels",
+        "official 2020, 2016, and 2012 presidential historical baselines at a compatible grain",
+        "official audit result PDFs, recount XLSX normalization, CVR availability records, and incident/correction/litigation context rows",
+        "data/vt-2024-data-coverage-inventory.json and data/vt-2024-source-request-matrix.tsv tracking the current source request queue"
+      ],
+      "preferredComparisonContest": "U.S. Senate; it appears in the same official federal static JSON as President, but review rows stay disabled until split-town/district rows reconcile to the certified canvass.",
+      "parserNeeded": "Current ETL uses eacTurnoutCsv only. A future Vermont static election JSON/canvass parser should read the official election manifest and federal/turnout component JSON, model town versus reporting-district rows, reconcile President and U.S. Senate totals to the certified canvass PDF, and only then emit result/review rows. A separate turnout parser should reconcile SOS turnout JSON/PDF totals against the active EAC fallback before replacing turnout.",
+      "blocker": "Official 2024 source paths are identified, including the SOS canvass PDF, SOS turnout PDF, official static election JSON manifest, federal President/U.S. Senate JSON, and turnout JSON. The blocker is not source absence; it is parser/reconciliation safety. Simple aggregation over the 284 federal JSON reporting rows does not reconcile to the SOS turnout total, so VT remains turnout-only until a parser models split-town/district grain and confirms certified totals. No production promotion was performed.",
+      "availableArtifacts": {
+        "turnout": {
+          "sourceTitle": "EAC fallback turnout rows",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/vt-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC registered voters",
+          "parserHint": "Current active parser is eacTurnoutCsv in etl/state-configs/vt.json."
+        },
+        "officialStaticJsonLead": {
+          "sourceTitle": "Vermont SOS official 2024 general static election JSON",
+          "sourceUrl": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b.json",
+          "localFile": "not_collected_persistently; scratch only in Wave 20",
+          "level": "town_or_reporting_district",
+          "parserHint": "Future parser should follow component paths for federal and turnout JSON, then reconcile with certified canvass PDF before import."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Vermont 2024 data coverage and source request inventory",
+          "sourceUrl": "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
+          "localFile": "data/vt-2024-data-coverage-inventory.json; data/vt-2024-source-request-matrix.tsv",
+          "parserHint": "Inventory/request matrix only; not a vote parser."
+        },
+        "countyBoundary": {
+          "sourceTitle": "Vermont county boundary geometry",
+          "localFile": "data/vt-counties.geojson",
+          "parserHint": "County geometry only; town/reporting-district crosswalk is missing."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Vermont 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/50",
+          "localFile": "data/verifiedvoting-vt-2024-equipment.json; data/vt-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof every precinct used one configuration."
+        }
+      },
+      "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv"
+    },
+    {
       "state": "SD",
       "name": "South Dakota",
       "priority": 20,
@@ -3368,3 +3437,4 @@
     }
   ]
 }
+
