@@ -701,7 +701,7 @@ Caveats: the 2024 President and U.S. House rows are secondary staging rows, not 
 - Coverage inventory: `data/ak-2024-data-coverage-inventory.json`; source request matrix: `data/ak-2024-source-request-matrix.tsv`
 - Equipment context: `data/ak-2024-equipment-context.csv` from Verified Voting, context only
 
-AK remains in `sourceDiscoveryQueue`, not `completedNativeStates`, because the current package is statewide-only. Remaining gaps are official House-district or precinct President plus same-grain U.S. House rows, lower-grain state-native turnout denominators, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
+AK remains in `sourceDiscoveryQueue`, not `completedNativeStates`, because the current package is statewide-only. Wave 21 added `data/ak-2024-official-results-page-evidence.json`, which documents the official 2024 General All Details/SOVC follow-up path and the 403 directory-listing blocker, but no official lower-grain President plus same-grain U.S. House first-choice artifact is loaded. Remaining gaps are official House-district or precinct President plus same-grain U.S. House rows, lower-grain state-native turnout denominators, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
 ## Wyoming Wave 20 Native Coverage
 
 Wyoming now has an official SOS native package for 2024 certified President county totals and precinct-by-precinct President vs U.S. Senate review rows. The parser reads `data/wy-2024-general-results.zip` directly and produces 23 county result rows, 431 nonzero precinct review rows, 23 EAC fallback turnout rows, and 69 county historical baseline rows from official 2012/2016/2020 SOS ZIPs.
@@ -723,7 +723,3 @@ Remaining Wyoming caveats: EAC fallback registered-voter denominator remains act
 Expected validation: 95 county result rows, 95 county geometry features, 3,063,942 presidential votes, 1,966,865 Trump votes, 1,056,265 Harris votes, 40,812 Other votes, 1,859 precinct review rows, and 95 EAC fallback turnout rows. The official PDF source is text-layer PDF, not a structured export; the normalizer handles the PDF text placement of the seventh presidential candidate column and reconciles parsed precinct totals to official statewide President and U.S. Senate totals before writing CSV artifacts. Current advisory rows are public-interest screening inputs only, not findings.
 
 Remaining gaps are Tennessee-native turnout/registration denominators, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR availability/incident/correction/litigation records.
-
-
-
-

@@ -1,0 +1,34 @@
+{
+  "state": "AK",
+  "stateName": "Alaska",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-03",
+  "sourceAuthority": "Alaska Division of Elections",
+  "sourceUrls": [
+    "https://www.elections.alaska.gov/election-results/",
+    "https://www.elections.alaska.gov/election-results/e/?id=24genr",
+    "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf"
+  ],
+  "localArtifact": "data/ak-2024-official-results-page-evidence.json",
+  "reportingGrain": "source_discovery",
+  "parserOrNormalizationPath": "coverageInventoryJson",
+  "observations": [
+    "The Alaska Division of Elections Election Results page says election-night results are posted until certification and directs users to Search Official Election Results for certified results.",
+    "The official results page lists the 2024 General Election dated November 5, 2024 and links it to /election-results/e/?id=24genr.",
+    "The election detail template describes Statements of Votes Cast PDFs as district and precinct reports for contests that did not require ranked-choice tabulation. This is a follow-up path for lower-grain President/local rows, but it is not proof that same-grain U.S. Representative first-choice rows are available.",
+    "Direct access to https://www.elections.alaska.gov/results/24GENR/ returned 403 Forbidden in this worker environment, so companion files could not be enumerated by directory listing.",
+    "The retained official Election Summary Report PDF remains the only loaded Alaska 2024 federal result source artifact in the repo and supports only statewide President and statewide U.S. Representative first-choice comparison rows."
+  ],
+  "expectedCounts": {
+    "loadedPresidentRows": 1,
+    "loadedReviewRows": 1,
+    "loadedTurnoutRows": 1,
+    "loadedLowerGrainFederalRows": 0
+  },
+  "caveats": [
+    "Do not load secondary House-district tables as official Alaska Division of Elections rows without retaining the underlying official district or precinct SOVC/source artifact.",
+    "Alaska U.S. Representative used ranked-choice voting in 2024, so any future lower-grain comparison package must document whether it contains first-choice rows and whether those rows are same-grain with President.",
+    "This evidence artifact documents source-discovery state only; it is not a parser input for vote totals, turnout denominators, or advisory indicators."
+  ],
+  "confidence": "official_page_checked_lower_grain_artifact_not_collected"
+}
