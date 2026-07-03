@@ -1380,8 +1380,8 @@
       "localFile": "data/eac-2024-state-turnout/wy-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 23,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL. The Wyoming SOS total-ballots-cast workbook cross-checks the EAC ballots-cast total at 271,123, but a state-native registered-voter denominator replacement has not been loaded.",
+      "nextAction": "Collect official Wyoming county registered-voter denominator and timing; keep the EAC fallback visibly caveated until then.",
       "coverage": {
         "jurisdictionRows": 23,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/wy-2024-eac-registered-voter-denominator.json",

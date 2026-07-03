@@ -655,3 +655,9 @@ Remaining gaps are state-native turnout/registration denominators, result-ready 
 - Coverage inventory: `data/de-2024-data-coverage-inventory.json`; source request matrix: `data/de-2024-source-request-matrix.tsv`.
 
 Expected validation: 3 county result rows, 3 county geometry features, 511,697 presidential votes, 214,351 Trump votes, 289,758 Harris votes, 7,588 Other votes, 529 election-district review rows, and 3 EAC fallback turnout rows. Remaining gaps are active state-native turnout replacement semantics, FirstMap election-district geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
+
+## Wyoming Wave 20 Native Coverage
+
+Wyoming now has an official SOS native package for 2024 certified President county totals and precinct-by-precinct President vs U.S. Senate review rows. The parser reads `data/wy-2024-general-results.zip` directly and produces 23 county result rows, 431 nonzero precinct review rows, 23 EAC fallback turnout rows, and 69 county historical baseline rows from official 2012/2016/2020 SOS ZIPs.
+
+Remaining Wyoming caveats: EAC fallback registered-voter denominator remains active; precinct boundary geometry is not loaded; audit, CVR, recount, incident, correction, and litigation context records remain request-tracked. Advisory indicators are screening signals only and are not evidence of fraud or misconduct.

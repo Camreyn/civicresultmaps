@@ -2255,30 +2255,44 @@
       "stateName": "Wyoming",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
-      "tier": "unknown",
-      "reportingGrain": "county",
+      "dataFamily": "results_review_turnout_historical_geometry_equipment_admin_context",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "precinct",
       "exportFormats": [
-        "eac fallback turnout"
+        "official SOS XLSX ZIP",
+        "EAC fallback turnout CSV",
+        "Census county GeoJSON",
+        "supplemental equipment context"
       ],
       "sourceUrls": [
-        "https://sos.wyo.gov/Elections/Docs/Results/"
+        "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx",
+        "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+        "https://sos.wyo.gov/Elections/ElectionResults.aspx",
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx"
+      ],
       "availableFields": [
-        "county presidential totals",
-        "EAC fallback turnout"
+        "certified county presidential totals",
+        "precinct-by-precinct President rows",
+        "same-row U.S. Senate comparison contest",
+        "EAC fallback turnout and registered-voter denominator rows",
+        "county geometry",
+        "official 2012/2016/2020 county historical baselines",
+        "supplemental equipment context"
       ],
       "missingFields": [
-        "local review rows",
-        "same-grain comparison contest",
-        "state-native turnout denominator"
+        "state-native registered-voter denominator",
+        "precinct boundary geometry or crosswalks",
+        "normalized audit/CVR/recount/incident/correction/litigation records"
       ],
-      "parserStatus": "EAC turnout config exists; local review source not classified",
-      "manualReviewBurden": "unknown",
-      "confidence": "candidate",
-      "caveats": "Statewide acquisition path still needs classification.",
-      "nextAction": "Classify official Wyoming result exports and local reporting-unit availability."
+      "parserStatus": "nativeWyomingSosGeneralZip parses official 2024 SOS ZIP plus official 2012/2016/2020 historical ZIPs; turnout remains EAC fallback.",
+      "manualReviewBurden": "low_for_results_medium_for_remaining_context",
+      "confidence": "loaded_with_caveat",
+      "caveats": "Official result and review rows are loaded. EAC fallback turnout denominator remains active; precinct geometry and post-election context records remain request-tracked.",
+      "nextAction": "Collect state-native registered-voter denominator, precinct geometry/crosswalks, and official audit/CVR/recount/incident/correction/litigation context where available."
     }
   ]
 }

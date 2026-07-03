@@ -51,7 +51,8 @@
     "VA",
     "WA",
     "WI",
-    "WV"
+    "WV",
+    "WY"
   ],
   "blockedStates": [],
   "states": [
@@ -2409,6 +2410,89 @@
         "Precinct geometry/crosswalk, 2012 historical baseline, and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded."
       ],
       "legacyReferenceBundle": "data/nm-2024-data-coverage-inventory.json"
+    },
+    {
+      "state": "WY",
+      "name": "Wyoming",
+      "priority": 20,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_historical_context_with_denominator_followup",
+      "authority": "Wyoming Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/wy.json",
+      "legacyReferenceBundle": "data/wy-2024-data-coverage-inventory.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Wyoming Secretary of State 2024 General Election Results ZIP",
+          "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+          "localFile": "data/wy-2024-general-results.zip",
+          "parserHint": "nativeWyomingSosGeneralZip reads 2024 General Results Summaries - OFFICIAL.xlsx / Statewide Candidates."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Wyoming Secretary of State 2024 County General Precinct-by-Precinct Workbook",
+          "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+          "localFile": "data/wy-2024-general-results.zip",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "nativeWyomingSosGeneralZip pairs President and United States Senator columns from 2024 County General PbP - OFFICIAL.xlsx; zero presidential rows are excluded."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback turnout rows with Wyoming SOS total-ballots-cast cross-check",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/wy-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC reported registered voters remain active. SOS TBC workbook confirms 271,123 ballots cast but does not replace the denominator.",
+          "parserHint": "Current ETL uses eacTurnoutCsv."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Wyoming Secretary of State official 2012/2016/2020 General Results ZIPs",
+          "sourceUrl": "https://sos.wyo.gov/Elections/ElectionResults.aspx",
+          "localFile": "data/wy-2012-general-results.zip; data/wy-2016-general-results.zip; data/wy-2020-general-results.zip",
+          "level": "county",
+          "parserHint": "nativeWyomingSosGeneralZip reads 2016/2020 statewide candidates summaries and aggregates 2012 county PbP workbooks."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census Bureau TIGER/Line Wyoming county geometry",
+          "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip",
+          "localFile": "data/wy-counties.geojson",
+          "level": "county",
+          "parserHint": "Existing county geometry supports WY county map display; no precinct polygons loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Wyoming Wave 20 data coverage inventory and source request matrix",
+          "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx",
+          "localFile": "data/wy-2024-data-coverage-inventory.json; data/wy-2024-source-request-matrix.tsv",
+          "parserHint": "Documents loaded official artifacts and remaining official-source requests."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Wyoming 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/",
+          "localFile": "data/wy-2024-equipment-context.csv; data/verifiedvoting-wy-2024-equipment.json",
+          "level": "county",
+          "parserHint": "Supplemental context only; official results remain SOS artifacts."
+        }
+      },
+      "expected": {
+        "countyRows": 23,
+        "geometryFeatures": 23,
+        "stateTotal": 269048,
+        "trump": 192633,
+        "harris": 69527,
+        "other": 6888,
+        "localReviewRows": 431,
+        "turnoutRows": 23,
+        "historicalBaselineRows": 69
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "stateConfigUpdated": true,
+        "nativeImportReady": true,
+        "productionPromoted": false
+      },
+      "caveats": [
+        "EAC fallback registered-voter denominator remains active until a state-native denominator artifact is collected and reconciled.",
+        "Precinct boundary geometry is not loaded; review rows are localUnit rows, not precinct polygons.",
+        "Audit, CVR, recount, incident, correction, and litigation records remain request-tracked only.",
+        "Advisory indicators are not evidence of fraud or misconduct."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [

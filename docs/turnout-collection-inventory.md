@@ -218,3 +218,7 @@ Rhode Island now has native President and same-key U.S. Senate review rows from 
 ## Delaware Wave 17 Turnout Reconciliation
 
 Delaware still uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/de-2024-eac-turnout.csv`, totaling 3 jurisdiction rows, 514,367 ballots cast, and 788,441 registered voters. Wave 17 collected the official DOE AGP registered/voted report at `data/de-2024-agp-registered-voted-report.txt` and November 1 registration CSV at `data/de-2024-november-1-party-registration.csv`, then generated `data/de-2024-agp-turnout-reconciliation.csv` and summary JSON with `scripts/normalize-de-agp-turnout.mjs`. The reconciliation totals are 537 AGP election-district rows, 788,864 registered voters, and 518,086 voted statewide; the November 1 registration CSV sums to 790,955 registered voters. Keep EAC fallback active until AGP denominator timing and voted-versus-ballots-cast semantics are reviewed.
+
+## Wyoming Wave 20 Update
+
+Wyoming now has official SOS 2024 certified results and precinct review rows loaded, and the SOS total-ballots-cast workbook cross-checks the EAC ballots-cast total at 271,123. The active turnout denominator remains the EAC fallback because a state-native registered-voter denominator artifact and denominator timing have not been collected.
