@@ -246,9 +246,9 @@ Expected validation: 17 county result rows, 17 county geometry features, 1,484,8
 - Local review: `data/in-2024-mit-local-review.csv` remains supplemental MIT/OpenElections President-versus-U.S.-Senate precinct context, not certified replacement totals.
 - Turnout: official Indiana Election Division county turnout and registration rows remain loaded at `data/in-2024-general-turnout.csv`.
 - Historical baseline: official 2012, 2016, and 2020 county presidential rows are loaded. Wave 13 collects 2012 from the current Indiana Voters ENRHistorical table endpoint and keeps the raw rows at `data/in-2012-official-president-county.json`; 2016 and 2020 remain loaded from ENR archive JSON.
-- Administration context: VSTOP post-election risk-limiting audit, Election Administrator Portal, and Recount Commission source paths are documented in `data/in-2024-data-coverage-inventory.json`, `data/admin-source-packages.json`, and the Wave 11 request matrix at `data/in-2024-source-request-matrix.tsv`; no normalized audit, CVR, incident, correction, recount, or litigation rows are loaded.
+- Administration context: the official VSTOP 2024 General Election Post-Election Audit Summary Report is retained at `data/in-2024-general-post-election-audit-summary-report.pdf` and normalized by `scripts/normalize-in-audit-summary.mjs` into seven county audit-summary context rows. Election Administrator Portal, Recount Commission, CVR, incident, correction, recount, and detailed audit-unit workpaper paths remain documented request items.
 
-Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 276 official historical baseline rows for 2012/2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
+Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, 276 official historical baseline rows for 2012/2016/2020, and 7 VSTOP audit-summary context rows. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
 
 
 ## Idaho Wave 12 Update

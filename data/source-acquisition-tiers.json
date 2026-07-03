@@ -706,23 +706,24 @@
         "official 2012, 2016, and 2020 county historical presidential baselines",
         "official VSTOP post-election risk-limiting audit source path documented",
         "official Recount Commission petition/order/minute source path documented",
-        "Indiana official-source request matrix maintained at data/in-2024-source-request-matrix.tsv"
+        "Indiana official-source request matrix maintained at data/in-2024-source-request-matrix.tsv",
+        "official VSTOP 2024 General Election audit summary rows for seven counties"
       ],
       "missingFields": [
         "official precinct/subcounty President rows",
         "official same-grain precinct/subcounty U.S. Senate comparison rows",
         "precinct turnout and registered-voter denominator rows",
         "precinct boundary geometry",
-        "normalized official VSTOP audit selection/outcome rows",
+        "detailed official VSTOP audit-unit selection/workpaper rows beyond the summary report",
         "normalized official recount/contest/correction records",
         "official CVR availability or request-produced CVR records",
         "official incident and correction records"
       ],
-      "parserStatus": "indianaEnrCountyJson package loaded; official 2012/2016/2020 historicalPresidentialCsv loaded from ENRHistorical/AJAX and ENR archive sources; supplemental MIT/OpenElections precinct review rows loaded; official VSTOP audit and Recount Commission source paths are documented but not normalized; data/in-2024-source-request-matrix.tsv records official precinct/subcounty, geometry, turnout, audit, CVR, and incident follow-up asks; official precinct/subcounty rows remain blocked.",
+      "parserStatus": "indianaEnrCountyJson package loaded; official 2012/2016/2020 historicalPresidentialCsv loaded from ENRHistorical/AJAX and ENR archive sources; supplemental MIT/OpenElections precinct review rows loaded; scripts/normalize-in-audit-summary.mjs loads official VSTOP 2024 county audit-summary context rows; data/in-2024-source-request-matrix.tsv records official precinct/subcounty, geometry, turnout, audit-detail, CVR, and incident follow-up asks; official precinct/subcounty rows remain blocked.",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
       "caveats": "Archived ENR category files contain 92 county RegionSummary rows for 2024, not precinct rows. Historical baselines are official county context for 2012, 2016, and 2020; 2012 is collected from the current Indiana Voters ENRHistorical table endpoint, while 2016 and 2020 use ENR archive JSON.",
-      "nextAction": "Use data/in-2024-source-request-matrix.tsv to request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, precinct geometry/turnout if needed, and VSTOP/Recount Commission/CVR/incident records suitable for normalization."
+      "nextAction": "Use data/in-2024-source-request-matrix.tsv to request official same-grain precinct/subcounty 2024 President and U.S. Senate rows, precinct geometry/turnout if needed, detailed VSTOP audit workpapers, Recount Commission/CVR/incident records suitable for normalization."
     },
     {
       "state": "KS",
