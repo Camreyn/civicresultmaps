@@ -1,0 +1,26 @@
+{
+  "sourceId": "in-2024-vstop-general-audit-summary",
+  "sourceUrl": "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf",
+  "sourceFile": "data/in-2024-general-post-election-audit-summary-report.pdf",
+  "normalizedCsv": "data/in-2024-general-post-election-audit-summary.csv",
+  "rowCount": 7,
+  "counties": [
+    "Switzerland County",
+    "Dearborn County",
+    "Delaware County",
+    "St. Joseph County",
+    "Hendricks County",
+    "Fountain County",
+    "DeKalb County"
+  ],
+  "auditTypeCounts": {
+    "Ballot Polling": 4,
+    "Ballot Comparison": 3
+  },
+  "federalContestCoverage": {
+    "presidentCountyCount": 3,
+    "senateCountyCount": 1,
+    "houseCountyCount": 1
+  },
+  "caveat": "Official VSTOP audit summary context only; these rows do not replace certified ENR totals and are not proof of fraud or misconduct."
+}

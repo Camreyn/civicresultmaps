@@ -246,9 +246,9 @@ Expected validation: 17 county result rows, 17 county geometry features, 1,484,8
 - Local review: `data/in-2024-mit-local-review.csv` remains supplemental MIT/OpenElections President-versus-U.S.-Senate precinct context, not certified replacement totals.
 - Turnout: official Indiana Election Division county turnout and registration rows remain loaded at `data/in-2024-general-turnout.csv`.
 - Historical baseline: official 2012, 2016, and 2020 county presidential rows are loaded. Wave 13 collects 2012 from the current Indiana Voters ENRHistorical table endpoint and keeps the raw rows at `data/in-2012-official-president-county.json`; 2016 and 2020 remain loaded from ENR archive JSON.
-- Administration context: VSTOP post-election risk-limiting audit, Election Administrator Portal, and Recount Commission source paths are documented in `data/in-2024-data-coverage-inventory.json`, `data/admin-source-packages.json`, and the Wave 11 request matrix at `data/in-2024-source-request-matrix.tsv`; no normalized audit, CVR, incident, correction, recount, or litigation rows are loaded.
+- Administration context: the official VSTOP 2024 General Election Post-Election Audit Summary Report is retained at `data/in-2024-general-post-election-audit-summary-report.pdf` and normalized by `scripts/normalize-in-audit-summary.mjs` into seven county audit-summary context rows. Election Administrator Portal, Recount Commission, CVR, incident, correction, recount, and detailed audit-unit workpaper paths remain documented request items.
 
-Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, and 276 official historical baseline rows for 2012/2016/2020. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
+Expected validation remains: 92 county result rows, 92 county geometry features, 2,936,677 presidential votes, 5,253 supplemental local review rows, 92 turnout rows, 276 official historical baseline rows for 2012/2016/2020, and 7 VSTOP audit-summary context rows. Advisory indicators are source/data reconciliation signals only; they are not claims of misconduct.
 
 
 ## Idaho Wave 12 Update
@@ -563,19 +563,21 @@ CT is now listed in `completedNativeStates` for native staging coverage, with ca
 
 HI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. Remaining work is a Hawaii text parser for summary/precinct detail files, turnout-page normalization and reconciliation, precinct geometry/crosswalk collection, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation rows. Current HI advisory indicators are not calculated from review rows because no HI review rows are loaded.
 
-## North Dakota Wave 15 Source Discovery
+## North Dakota Wave 18 Native Activation
 
 - Config: `etl/state-configs/nd.json`
-- Current active package: turnout-only EAC fallback rows at `data/eac-2024-state-turnout/nd-2024-eac-turnout.csv`
-- Coverage inventory: `data/nd-2024-data-coverage-inventory.json`
-- Source request matrix: `data/nd-2024-source-request-matrix.tsv`
-- Official result lead: North Dakota Secretary of State 2024 General Election dashboard and CSV/Excel/XML export form at `https://results.sos.nd.gov/ResultsExport.aspx`
-- Preferred comparison contest: U.S. Senate if exported at the same grain as President; U.S. House or Governor are fallback statewide contests with caveats
-- Turnout lead: official SOS dashboard reports 371,975 voter turnout and 594,140 eligible voters; active EAC fallback remains 53 rows, 371,974 ballots cast, and 0 registered voters because ND has no voter registration
-- Historical leads: official SOS 2020 dashboard/PDF plus 2016 and 2012 dashboard/PDF archive links are identified but not normalized
-- Geometry/admin context: county geometry lead is Census TIGERweb; official precinct polling-place/crosswalk source, post-election audit report, recount page, county auditor request paths, CVR availability, incident/correction/litigation rows, and official equipment context remain source/request items
+- Current active package: official North Dakota SOS ResultsAjax county President rows, same-key county-scoped precinct President-versus-U.S.-Senate review rows, EAC fallback turnout rows, and county geometry
+- Collector: `scripts/collect-nd-sos-results.mjs`
+- County result source: `data/nd-2024-sos-president-county.csv`, generated from the official SOS ResultsAjax President race ID 19893 endpoint
+- Local review source: `data/nd-2024-sos-president-senate-precinct-review.csv`, generated from official President race ID 19893 and U.S. Senate race ID 19847 county-scoped precinct endpoints
+- Manifest/reconciliation: `data/nd-2024-sos-results-manifest.json` records endpoints, row counts, official totals, and two zero-vote precinct keys excluded from review rows
+- Turnout source: active ETL remains EAC 2024 fallback at `data/eac-2024-state-turnout/nd-2024-eac-turnout.csv`; the official SOS eligible-voter lead still needs normalization and reconciliation
+- County boundary: `data/nd-counties.geojson`
+- Coverage inventory: `data/nd-2024-data-coverage-inventory.json`; source request matrix: `data/nd-2024-source-request-matrix.tsv`
 
-ND remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native result or advisory review rows are loaded. Current ND advisory indicators should remain zero until official President plus same-grain comparison rows are collected, parsed, and reviewed. This is source-coverage context only, not evidence of fraud or misconduct.
+Expected validation: 53 county result rows, 53 county geometry features, 368,155 presidential votes, 246,505 Trump votes, 112,327 Harris votes, 9,323 Other votes, 383 same-key precinct review rows, and 53 EAC fallback turnout rows. The U.S. Senate comparison totals reconcile to 364,327 votes: 241,569 Republican, 121,602 Democratic-NPL, and 1,156 write-in votes.
+
+Caveats: review rows are advisory source-review inputs only, not findings. Two zero-vote precinct keys are excluded from review rows and documented in the manifest. North Dakota does not require voter registration, so active turnout remains EAC fallback with zero registered voters until the SOS eligible-voter denominator lead of 371,975 voter turnout and 594,140 eligible voters is normalized and the one-ballot SOS/EAC turnout difference is reviewed. Precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain missing.
 
 ## New Jersey Wave 18 Native Activation
 
