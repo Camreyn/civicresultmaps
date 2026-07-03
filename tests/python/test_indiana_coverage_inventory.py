@@ -7,6 +7,7 @@ from pathlib import Path
 class IndianaCoverageInventoryTest(unittest.TestCase):
     def setUp(self):
         self.inventory = json.loads(Path("data/in-2024-data-coverage-inventory.json").read_text(encoding="utf-8-sig"))
+        self.enr_inventory = json.loads(Path("data/in-2024-official-enr-public-data-inventory.json").read_text(encoding="utf-8-sig"))
         admin = json.loads(Path("data/admin-source-packages.json").read_text(encoding="utf-8-sig"))
         self.admin = next(entry for entry in admin["stateYearStatuses"] if entry["state"] == "IN")
         with Path("data/in-2024-source-request-matrix.tsv").open(encoding="utf-8-sig", newline="") as handle:
@@ -23,6 +24,16 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertIn("not proof", " ".join(audit["caveats"]))
         self.assertIn("Certified county map/result totals", " ".join(artifacts["in-2024-official-enr-president"]["caveats"]))
         self.assertIn("supplemental", " ".join(artifacts["in-2024-mit-precinct-president-senate"]["caveats"]).lower())
+
+    def test_official_enr_public_data_inventory_confirms_local_blocker(self):
+        self.assertFalse(self.enr_inventory["conclusion"]["officialSameGrainSubcountyPresidentSenateRowsAvailable"])
+        self.assertIn("voter statistics only", self.enr_inventory["appDataPathProbe"]["scriptEvidence"][2]["observation"])
+        retained = {entry["officeCategoryId"]: entry for entry in self.enr_inventory["retainedOfficeCategoryFiles"]}
+        self.assertEqual(retained["1019"]["regionCount"], 92)
+        self.assertEqual(retained["1006"]["regionCount"], 92)
+        self.assertEqual(retained["1019"]["localCandidateFieldNames"], [])
+        self.assertEqual(self.enr_inventory["jurisdictionReportInventory"]["rescannedCandidateContainerCount"], 0)
+        self.assertIn("supplemental MIT/OpenElections", self.enr_inventory["conclusion"]["blocker"])
 
     def test_2012_historical_baseline_is_loaded_from_official_endpoint(self):
         lead = next(entry for entry in self.inventory["historicalBaselineSourceLeads"] if entry["year"] == 2012)
@@ -44,6 +55,7 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(discovery["completionDecision"]["decision"], "remain_in_source_discovery_queue")
         self.assertNotIn("IN", native_packages["completedNativeStates"])
         self.assertIn("official same-grain precinct/subcounty", self.inventory["completionDecision"]["reason"])
+        self.assertIn("in-2024-official-enr-public-data-inventory", discovery["completionDecision"]["reason"])
         self.assertIn("MIT/OpenElections", discovery["completionDecision"]["reason"])
         self.assertEqual(source_tier["confidence"], "loaded_with_caveat")
         self.assertIn("supplemental MIT/OpenElections", source_tier["caveats"])
