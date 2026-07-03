@@ -1606,7 +1606,8 @@
         "EAC fallback turnout CSV",
         "Verified Voting equipment context",
         "NYSBOE enrollment report leads",
-        "NYSBOE Flateau/VEDA future local-data path"
+        "NYSBOE Flateau/VEDA future local-data path",
+        "source request matrix TSV"
       ],
       "sourceUrls": [
         "https://elections.ny.gov/election-results",
@@ -1634,7 +1635,8 @@
         "2012/2016/2020 county presidential historical baselines from official NYSBOE PDFs",
         "Verified Voting county equipment context",
         "NYSBOE 11/01/2024 county enrollment report lead and election-district enrollment report lead",
-        "NYSBOE post-election audit, FOIL, county-board roster, and Flateau/VEDA request/publication paths documented in data/ny-2024-data-coverage-inventory.json"
+        "NYSBOE post-election audit, FOIL, county-board roster, and Flateau/VEDA request/publication paths documented in data/ny-2024-data-coverage-inventory.json",
+        "Wave 19 source request matrix for missing local review, turnout, geometry, and administration-context artifacts"
       ],
       "missingFields": [
         "official precinct/local reporting-unit President rows from NYSBOE or county boards for counties still outside local review coverage",
@@ -1644,11 +1646,11 @@
         "official audit/recount/correction/incident/litigation record package",
         "precinct or election-district boundary geometry and result-label crosswalk"
       ],
-      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv partial review rows, EAC turnout fallback, official PDF historical baseline, county equipment context, and NY coverage inventory; official full-state precinct/election-district parser still needs a complete source package and crosswalk",
+      "parserStatus": "countyPresidentCsv loaded with localComparisonCsv partial review rows, EAC turnout fallback, official PDF historical baseline, county equipment context, NY coverage inventory, and source request matrix; official full-state precinct/election-district parser still needs a complete source package and crosswalk",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Current certified results and historical baselines are official county-level rows. Local review rows are supplemental OpenElections county-board source normalizations and legacy NYC rows, not a complete official NYSBOE precinct package. EAC turnout fallback and Verified Voting equipment context remain advisory metadata.",
-      "nextAction": "Use data/ny-2024-data-coverage-inventory.json to request or locate official NYSBOE/county election-district President and U.S. Senate rows, ballots-cast/voter-history rows paired with enrollment denominators, CVR availability, audit/recount/correction/incident records, and precinct/election-district geometry or crosswalks."
+      "caveats": "Current certified results and historical baselines are official county-level rows. Local review rows are supplemental OpenElections county-board source normalizations and legacy NYC rows, not a complete official NYSBOE precinct package; 13 county equivalents remain outside normalized review coverage. EAC turnout fallback and Verified Voting equipment context remain advisory metadata.",
+      "nextAction": "Use data/ny-2024-data-coverage-inventory.json and data/ny-2024-source-request-matrix.tsv to request or locate official NYSBOE/county election-district President and U.S. Senate rows, ballots-cast/voter-history rows paired with enrollment denominators, CVR availability, audit/recount/correction/incident records, and precinct/election-district geometry or crosswalks."
     },
     {
       "state": "OH",
