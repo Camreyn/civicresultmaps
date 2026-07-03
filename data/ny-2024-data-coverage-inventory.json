@@ -2,11 +2,11 @@
   "state": "NY",
   "stateName": "New York",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-03",
   "purpose": "State-scoped coverage inventory for New York 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "status": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented",
   "completionDecision": {
-    "checkedAt": "2026-07-02",
+    "checkedAt": "2026-07-03",
     "decision": "remain_in_source_discovery_queue",
     "reason": "New York has official county-certified President and U.S. Senate rows, county geometry, EAC fallback turnout, official county historical baselines, and partial supplemental local review rows, but it is not completed native coverage because the local review package is still partial, turnout is not state-native, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation records are not loaded.",
     "reviewCoverage": {
@@ -29,7 +29,8 @@
         "Yates County"
       ]
     },
-    "promotionCaveat": "Do not move NY to completedNativeStates until either statewide official same-grain local review coverage is collected or the coordinator intentionally accepts partial supplemental review coverage with visible caveats."
+    "promotionCaveat": "Do not move NY to completedNativeStates until either statewide official same-grain local review coverage is collected or the coordinator intentionally accepts partial supplemental review coverage with visible caveats.",
+    "wave19Decision": "Wave 19 keeps NY in sourceDiscoveryQueue. The current staging artifact is useful for county-certified maps and partial local advisory review, but completedNativeStates would overstate official local review, turnout, and geometry coverage."
   },
   "authorityPriority": "Official New York State Board of Elections, county boards of elections, official GIS/Census, EAC, and official court/board records first; OpenElections and Verified Voting remain supplemental context only.",
   "loadedArtifacts": [
@@ -283,7 +284,8 @@
       "CVR format, redaction/privacy rules, and tabulator/vendor export notes where available",
       "incident/correction/recount/litigation docket, document date, jurisdiction, affected contest, and source URL"
     ],
-    "caveat": "All future request-produced artifacts must be source-linked, scripted, and reconciled to official county-certified totals before they change public review or turnout coverage."
+    "caveat": "All future request-produced artifacts must be source-linked, scripted, and reconciled to official county-certified totals before they change public review or turnout coverage.",
+    "sourceRequestMatrix": "data/ny-2024-source-request-matrix.tsv"
   },
   "displayCaveats": [
     "County-certified NYSBOE President rows remain the map authority.",
@@ -291,5 +293,10 @@
     "EAC turnout rows are fallback context until a New York-native turnout/voter-history package is collected and reconciled.",
     "Historical baselines are official county context for 2012, 2016, and 2020 only.",
     "Administration and equipment context is source-linked metadata, not proof of fraud or misconduct."
-  ]
+  ],
+  "repoDrift": [
+    "docs/developer/index.md was missing in the Wave 19 NY worktree during the required first-read pass."
+  ],
+  "productionChecked": false,
+  "sourceRequestMatrix": "data/ny-2024-source-request-matrix.tsv"
 }

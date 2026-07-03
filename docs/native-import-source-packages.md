@@ -451,6 +451,11 @@ Expected validation: 62 county result rows, 62 county geometry features, 9,753 s
 
 Wave 13 keeps NY in `sourceDiscoveryQueue` rather than `completedNativeStates`. The native staging artifact validates and produces 9,753 supplemental local review rows, but the coverage remains partial: 49 county equivalents are covered and 13 remain excluded or not yet reviewed, active turnout is still EAC fallback, and VEDA/Flateau is still a future official publication path rather than a 2024 replacement package. The completion decision is recorded in `data/ny-2024-data-coverage-inventory.json` and `data/native-import-source-packages.json`.
 
+
+## New York Wave 19 Decision
+
+Wave 19 keeps NY in `sourceDiscoveryQueue` rather than `completedNativeStates`. The state has official NYSBOE county President and U.S. Senate rows, official 2012/2016/2020 county historical baselines, county geometry, EAC fallback turnout, and 9,753 supplemental local review rows. The completion blocker remains coverage scope: Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates are still outside normalized local review coverage; active turnout is still EAC fallback; and precinct/election-district geometry plus audit/CVR/incident/correction/recount/litigation rows are not loaded. Wave 19 added `data/ny-2024-source-request-matrix.tsv` as the current official-source request queue for the missing local review, turnout/voter-history, geometry/crosswalk, and administration-context artifacts. Current advisory rows are public-interest source-review inputs only, not findings.
+
 ## California Wave 11 Update
 
 - Config: etl/state-configs/ca.json
