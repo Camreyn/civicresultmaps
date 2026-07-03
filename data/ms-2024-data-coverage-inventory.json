@@ -3,9 +3,9 @@
   "state": "MS",
   "stateName": "Mississippi",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-07-03",
   "requestMatrixArtifact": "data/ms-2024-source-request-matrix.tsv",
-  "purpose": "Wave 10 Mississippi source-coverage inventory for loaded official county result/review rows, EAC fallback turnout, state-native active-voter denominator leads, OCR-gated county PDF precinct-review feasibility, historical-baseline blockers, county geometry, and administration-context gaps. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "purpose": "Wave 10 Mississippi source-coverage inventory for loaded official county result/review rows, EAC fallback turnout, state-native active-voter denominator leads, OCR-gated county PDF precinct-review feasibility, loaded official historical baselines, county geometry, and administration-context gaps. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "firstReads": {
     "developerIndex": "docs/developer/index.md was not present in the worktree; absence recorded per wave instructions.",
     "requiredFilesRead": [
@@ -21,7 +21,8 @@
       "scripts/collect-ms-active-voter-count.mjs",
       "scripts/verify-ms-ocr-pipeline.mjs",
       "tests/api/api-contract.test.mjs",
-      "src/db/native-import.ts"
+      "src/db/native-import.ts",
+      "scripts/collect-ms-historical-baseline.mjs"
     ]
   },
   "loadedArtifacts": [
@@ -106,6 +107,48 @@
       "confidenceNotes": "Official county recapitulation PDFs are retained and have an OCR/reconciliation path, but the precinct output is review-gated. Do not import precinct rows until OCR/manual review reconciles all county candidate totals to the official recap CSV."
     },
     {
+      "id": "ms-historical-presidential-baseline",
+      "sourceAuthority": "Mississippi Secretary of State",
+      "sourceUrl": "https://www.sos.ms.gov/elections-voting/election-results",
+      "relatedSourceUrls": [
+        "https://www.sos.ms.gov/elections/electionresults/2020%20General%20Election%20Official%20Statewide%20Recapitulation%20(CSV).csv",
+        "https://www.sos.ms.gov/elections/electionresults/2016%20GE%20Statewide%20Recap%20Report.pdf",
+        "https://sos.ms.gov/elections/electionresults/2012General/certified%20results/President%20and%20Vice%20President.pdf"
+      ],
+      "localArtifactPath": "data/ms-historical-presidential-baseline.csv; data/ms-historical-official-results/2020-general-official-statewide-recap.csv; data/ms-historical-official-results/2016-ge-statewide-recap-report.pdf; data/ms-historical-official-results/2012-president-and-vice-president-certified.pdf",
+      "reportingGrain": "county_presidential_historical_context",
+      "parserOrNormalizationPath": "scripts/collect-ms-historical-baseline.mjs; historicalPresidentialCsv via etl/state-configs/ms.json historicalBaselines.format",
+      "expectedRowsOrTotals": {
+        "countyRows": 246,
+        "years": [
+          2012,
+          2016,
+          2020
+        ],
+        "totals": {
+          "2012": {
+            "demVotes": 562949,
+            "repVotes": 710746,
+            "otherVotes": 11889,
+            "totalVotes": 1285584
+          },
+          "2016": {
+            "demVotes": 485131,
+            "repVotes": 700714,
+            "otherVotes": 23512,
+            "totalVotes": 1209357
+          },
+          "2020": {
+            "demVotes": 539398,
+            "repVotes": 756764,
+            "otherVotes": 17597,
+            "totalVotes": 1313759
+          }
+        }
+      },
+      "confidenceNotes": "Official SOS historical county presidential context is now loaded for 2012, 2016, and 2020. The collector downloads/retains source artifacts and asserts row counts plus statewide totals before writing the normalized CSV."
+    },
+    {
       "id": "ms-county-geometry",
       "sourceAuthority": "U.S. Census Bureau",
       "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2728%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -155,19 +198,19 @@
     },
     {
       "topic": "historicalBaselines",
-      "status": "official_source_leads_identified_artifacts_not_collected",
+      "status": "loaded_official_historical_baseline",
       "sourceAuthority": "Mississippi Secretary of State",
       "sourceUrl": "https://www.sos.ms.gov/elections-voting/election-results",
       "relatedSourceUrls": [
-        "https://www.sos.ms.gov/elections-voting/election-results/2020/2020-general-election",
-        "https://www.sos.ms.gov/elections-voting/election-results/2016/2016-general-election",
-        "https://www.sos.ms.gov/elections-voting/election-results/2012/2012-election-results"
+        "https://www.sos.ms.gov/elections/electionresults/2020%20General%20Election%20Official%20Statewide%20Recapitulation%20(CSV).csv",
+        "https://www.sos.ms.gov/elections/electionresults/2016%20GE%20Statewide%20Recap%20Report.pdf",
+        "https://sos.ms.gov/elections/electionresults/2012General/certified%20results/President%20and%20Vice%20President.pdf"
       ],
-      "localArtifactPath": "not collected",
-      "reportingGrain": "county_presidential_historical_target",
-      "parserOrNormalizationPath": "not implemented",
-      "evidence": "The official SOS election-results index confirms archive pages for 2020, 2016, and 2012. Existing checked repo artifacts do not include source-cited county presidential historical files for those years.",
-      "caveats": "The archive pages render result tables through iframe/current-site targets in the checked source pass, and stable direct county presidential artifact URLs were not exposed to text fetch. Do not enable historicalBaseline for Mississippi until official artifacts are collected, source-cited, and parsed reproducibly."
+      "localArtifactPath": "data/ms-historical-presidential-baseline.csv; data/ms-historical-official-results/2020-general-official-statewide-recap.csv; data/ms-historical-official-results/2016-ge-statewide-recap-report.pdf; data/ms-historical-official-results/2012-president-and-vice-president-certified.pdf",
+      "reportingGrain": "county_presidential_historical_context",
+      "parserOrNormalizationPath": "scripts/collect-ms-historical-baseline.mjs; historicalPresidentialCsv via etl/state-configs/ms.json historicalBaselines.format",
+      "evidence": "The official SOS iframe targets exposed direct historical artifacts: 2020 statewide recap CSV, 2016 statewide recap PDF, and 2012 certified President/Vice President PDF. scripts/collect-ms-historical-baseline.mjs normalizes 246 county rows and reconciles expected statewide totals.",
+      "caveats": "Historical baselines are county-level context only, not precinct review rows. They do not resolve the remaining 2024 precinct OCR, turnout replacement, geometry, or administration-context gaps."
     },
     {
       "topic": "adminAuditCvrIncidentCorrectionLitigation",
@@ -194,9 +237,9 @@
     "neededArtifacts": [
       "official Mississippi ballots-cast or voter-participation rows that can be paired with the November 2024 active-voter denominator lead",
       "reviewed structured precinct-level President and U.S. Senate rows from the county recapitulation PDFs, reconciled to official recap totals",
-      "official 2020, 2016, and 2012 county presidential historical artifacts from SOS archive iframe targets, direct recap files, or SOS request path",
       "precinct boundary geometry or a reporting-unit crosswalk if subcounty overlays are required",
-      "post-election audit selection/outcome records, CVR availability statements, incident/correction/recount/litigation records, tabulator/EMS logs, logic-and-accuracy records, and custody records where public or lawfully releasable"
+      "post-election audit selection/outcome records, CVR availability statements, incident/correction/recount/litigation records, tabulator/EMS logs, logic-and-accuracy records, and custody records where public or lawfully releasable",
+      "future replacement historical artifacts only if the SOS publishes a more structured export than the retained official 2012/2016 PDF and 2020 CSV sources"
     ],
     "preferredAuthorities": [
       "Mississippi Secretary of State Elections Division",
@@ -231,7 +274,7 @@
     "Mississippi review rows are currently county-level President-versus-U.S. Senate rows, not precinct-level scatterplot rows.",
     "The county PDF OCR path remains review-gated: 11 import-ready counties, 61 review-required counties, and 10 missing-OCR counties were recorded on 2026-06-30.",
     "EAC 2024 V2 rows remain the active turnout source because the official Mississippi active-voter report is a denominator lead without ballots-cast rows.",
-    "No official 2012, 2016, or 2020 Mississippi county presidential historical baseline artifact is committed or parsed.",
+    "Official 2012, 2016, and 2020 historical baselines are loaded at county grain only; they do not add precinct-level historical or review coverage.",
     "No precinct boundary geometry, normalized official audit outcomes, CVR availability, incident/correction, recount, litigation, tabulator/EMS log, logic-and-accuracy, or custody artifacts are loaded.",
     "Current advisory indicators are source/data reconciliation signals only; they are not proof of fraud or misconduct."
   ]

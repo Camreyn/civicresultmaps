@@ -154,7 +154,8 @@
     "etl:import:nj": "npm run etl:prepare:nj && python -m civic_etl.cli import --config etl/state-configs/nj.json --out .etl/staging",
     "etl:prepare:tn": "node scripts/normalize-tn-sos-results.mjs",
     "etl:validate:tn": "npm run etl:prepare:tn && python -m civic_etl.cli validate --config etl/state-configs/tn.json",
-    "etl:import:tn": "npm run etl:prepare:tn && python -m civic_etl.cli import --config etl/state-configs/tn.json --out .etl/staging"
+    "etl:import:tn": "npm run etl:prepare:tn && python -m civic_etl.cli import --config etl/state-configs/tn.json --out .etl/staging",
+    "etl:collect:ms:historical": "node scripts/collect-ms-historical-baseline.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
@@ -181,4 +182,3 @@
     "xlsx": "^0.18.5"
   }
 }
-
