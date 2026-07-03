@@ -1,10 +1,9 @@
 {
   "code": "VT",
   "name": "Vermont",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Vermont Secretary of State; U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "vt-2024-eac-turnout",
@@ -14,8 +13,96 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows. Vermont SOS turnout JSON/PDF leads are retained separately because the SOS registered-voter denominator and EAC fallback totals still require replacement review.",
       "status": "loaded"
+    },
+    {
+      "id": "vt-2024-static-election-index",
+      "category": "Official Vermont static election index",
+      "url": "https://static.electionresults.vermont.gov/elections/elections.json",
+      "localFile": "data/vt-2024-official-sources/elections.json",
+      "parser": "vermontStaticElectionIndexReference",
+      "authority": "Vermont Secretary of State",
+      "timestampBasis": "Official static election index collected July 3, 2026; 2024 General Election GUID 67a35c79-05a2-4ae3-a77d-97812256188b marked official.",
+      "confidence": "Reference manifest source for the official Vermont 2024 General Election static result package.",
+      "status": "loaded"
+    },
+    {
+      "id": "vt-2024-static-general-manifest",
+      "category": "Official Vermont 2024 General Election static manifest",
+      "url": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b.json",
+      "localFile": "data/vt-2024-official-sources/2024-general-manifest.json",
+      "parser": "vermontStaticElectionJson",
+      "authority": "Vermont Secretary of State",
+      "timestampBasis": "Official static 2024 General Election manifest collected July 3, 2026.",
+      "confidence": "Provides the townDistricts crosswalk used to join federal JSON result rows to counties and to distinguish split-town reporting districts.",
+      "status": "loaded"
+    },
+    {
+      "id": "vt-2024-static-general-federal",
+      "category": "Official Vermont 2024 federal result JSON",
+      "url": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-f-20260611153112.json",
+      "localFile": "data/vt-2024-official-sources/2024-general-federal.json",
+      "parser": "vermontStaticElectionJson",
+      "authority": "Vermont Secretary of State",
+      "timestampBasis": "Official static federal component collected July 3, 2026; component timestamp suffix 20260611153112.",
+      "confidence": "Parser excludes the single STATE WIDE summary row and validates 283 town/reporting-district rows against the certified canvass statewide President and U.S. Senate totals.",
+      "status": "loaded"
+    },
+    {
+      "id": "vt-2024-certified-canvass-pdf",
+      "category": "Official certified statewide canvass PDF",
+      "url": "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_official_report_canvassing_committee_united_states_vermont_statewide_offices.pdf",
+      "localFile": "data/vt-2024-official-sources/2024-general-certified-canvass.pdf",
+      "parser": "officialCanvassPdfReference",
+      "authority": "Vermont Secretary of State",
+      "timestampBasis": "Official report of the canvassing committee for the November 5, 2024 General Election; collected July 3, 2026.",
+      "confidence": "Source of record for statewide reconciliation totals. The native parser asserts the static JSON President and U.S. Senate totals against this canvass.",
+      "status": "loaded"
+    },
+    {
+      "id": "vt-2024-static-turnout-json",
+      "category": "Official Vermont 2024 turnout JSON lead",
+      "url": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-turnout-20260611153112.json",
+      "localFile": "data/vt-2024-official-sources/2024-general-turnout.json",
+      "parser": "vermontTurnoutJsonReference",
+      "authority": "Vermont Secretary of State",
+      "timestampBasis": "Official static turnout component collected July 3, 2026; component timestamp suffix 20260611153112.",
+      "confidence": "State-native turnout lead only. It reports 247 town rows, 372,885 voters cast, and 517,051 registered voters, while the certified canvass cover page reports 522,600 registered voters.",
+      "status": "candidate"
+    },
+    {
+      "id": "vt-2024-turnout-pdf",
+      "category": "Official Vermont 2024 voter turnout PDF lead",
+      "url": "https://outside.vermont.gov/dept/sos/Elections_Division/election_info_resources/elections_results_data/2024_general_election_voter_turnout.pdf",
+      "localFile": "data/vt-2024-official-sources/2024-general-voter-turnout.pdf",
+      "parser": "officialTurnoutPdfReference",
+      "authority": "Vermont Secretary of State",
+      "timestampBasis": "Official 2024 General Election Voter Turnout PDF collected July 3, 2026.",
+      "confidence": "State-native turnout denominator lead retained for future replacement review; not active until denominator timing and registered-voter totals reconcile.",
+      "status": "candidate"
+    },
+    {
+      "id": "vt-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2750%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/vt-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry supports county result map joins. Town/reporting-district geometry and crosswalks remain unloaded.",
+      "status": "loaded"
+    },
+    {
+      "id": "vt-2024-equipment-context",
+      "category": "County equipment context",
+      "url": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/50",
+      "localFile": "data/vt-2024-equipment-context.csv",
+      "parser": "verifiedVotingEquipmentContext",
+      "authority": "Verified Voting Verifier",
+      "timestampBasis": "Verifier county equipment context artifact retained for 2024 Vermont administration metadata.",
+      "confidence": "Context only. Equipment rows are not vote, turnout, audit, CVR, incident, or proof-of-uniform-precinct evidence.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -24,8 +111,8 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Vermont turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
-    "warningRequired": false,
+    "notes": "Vermont turnout rows remain on EAC 2024 V2 county/jurisdiction fallback rows. Official SOS turnout JSON/PDF leads are retained, but not active, because SOS JSON registered voters (517,051), canvass cover-page registered voters (522,600), and EAC fallback registered voters (500,986) require denominator-timing review.",
+    "warningRequired": true,
     "expected": {
       "rowCount": 247,
       "ballotsCast": 361604,
@@ -33,22 +120,48 @@
     }
   },
   "expected": {
-    "jurisdictions": 247,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "jurisdictions": 14,
+    "resultRows": 14,
+    "sources": 9,
+    "geometryFeatures": 14,
+    "stateTotal": 369422,
+    "trump": 119395,
+    "harris": 235791,
+    "other": 14236,
+    "reviewRows": 283,
     "turnoutRows": 247
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": false
+  },
+  "certifiedResults": {
+    "format": "vermontStaticElectionJson",
+    "sourceId": "vt-2024-static-general-federal",
+    "manifestSourceId": "vt-2024-static-general-manifest",
+    "expectedTownDistrictRows": 283,
+    "statewideSummaryRowHandling": "Exclude the federal JSON row with tid 0 / tn STATE WIDE before aggregating town/reporting-district rows; it duplicates the statewide totals.",
+    "expectedCanvass": {
+      "presidentTotalVotesCounted": 372885,
+      "presidentBlankVotes": 3195,
+      "presidentOvervotes": 268,
+      "senateTotalVotesCounted": 372885,
+      "senateBlankVotes": 9336,
+      "senateOvervotes": 296,
+      "senateSanders": 229429,
+      "senateMalloy": 116512
+    }
+  },
+  "reviewCharts": {
+    "format": "vermontStaticElectionJson",
+    "sourceId": "vt-2024-static-general-federal",
+    "manifestSourceId": "vt-2024-static-general-manifest",
+    "comparisonContest": "United States Senator",
+    "coverageMode": "presidentVsSenateTownDistrict",
+    "warning": "Vermont review rows pair official static JSON President rows with same-grain U.S. Senate rows after excluding the duplicated STATE WIDE summary row. U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff fields are directional source-review inputs only. Town/reporting-district geometry is not loaded; county map rows are aggregated from the manifest county crosswalk."
   }
 }

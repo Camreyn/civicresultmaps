@@ -656,9 +656,23 @@ Remaining gaps are state-native turnout/registration denominators, result-ready 
 
 Expected validation: 3 county result rows, 3 county geometry features, 511,697 presidential votes, 214,351 Trump votes, 289,758 Harris votes, 7,588 Other votes, 529 election-district review rows, and 3 EAC fallback turnout rows. Remaining gaps are active state-native turnout replacement semantics, FirstMap election-district geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
 
-### Vermont Wave 20 Source Discovery (2026-07-03)
+### Vermont Wave 21 Native Activation (2026-07-03)
 
-VT remains in sourceDiscoveryQueue rather than completedNativeStates. The active config is still EAC turnout-only: 247 turnout rows, 0 result rows, and 0 review rows. Wave 20 identified official Vermont Secretary of State 2024 source paths: the certified canvass PDF, voter-turnout PDF, recount XLSX, official static election manifest, federal President/U.S. Senate JSON, turnout JSON, and election archive leads. The static election index marks the 2024 GENERAL ELECTION official, but the federal JSON uses 284 town/reporting-district rows and requires split-town/district grain modeling plus certified-canvass reconciliation before VT can emit native President results or President-vs-U.S.-Senate review rows. The source inventory and request queue are data/vt-2024-data-coverage-inventory.json and data/vt-2024-source-request-matrix.tsv. Current VT advisory output remains zero because there are no native review rows; this is a source-coverage and parser-readiness caveat only, not a finding.
+- Config: `etl/state-configs/vt.json`
+- Authority: Vermont Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau
+- Current active package: official Vermont SOS static federal JSON normalized into 14 county President result rows and 283 town/reporting-district President-versus-U.S.-Senate review rows
+- Official result sources: `data/vt-2024-official-sources/2024-general-federal.json`, `data/vt-2024-official-sources/2024-general-manifest.json`, and the certified canvass PDF at `data/vt-2024-official-sources/2024-general-certified-canvass.pdf`
+- Parser: `nativeVermontStaticElectionJson`
+- Comparison contest: U.S. Senate, same manifest-backed town/reporting-district grain
+- Turnout source: active ETL remains EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/vt-2024-eac-turnout.csv`; official SOS turnout JSON/PDF leads are retained under `data/vt-2024-official-sources/`
+- County boundary: `data/vt-counties.geojson`; town/reporting-district geometry is not loaded
+- Coverage inventory: `data/vt-2024-data-coverage-inventory.json`; request matrix: `data/vt-2024-source-request-matrix.tsv`
+- Equipment context: `data/vt-2024-equipment-context.csv` from Verified Voting, context only
+
+Expected staging validation: 14 county result rows, 14 county geometry features, 369,422 presidential candidate/write-in votes, 235,791 Harris votes, 119,395 Trump votes, 14,236 Other votes, 283 town/reporting-district review rows, and 247 EAC fallback turnout rows. The parser excludes the duplicated `STATE WIDE` summary row in the official federal JSON and asserts the remaining President and U.S. Senate rows against the certified canvass totals: 372,885 total votes counted for each contest, 3,195 President blank votes, 268 President overvotes, 9,336 Senate blank votes, and 296 Senate overvotes.
+
+Remaining caveats: active turnout remains EAC fallback because SOS JSON registered voters (517,051), the certified canvass cover-page registered-voter total (522,600), and EAC fallback registered voters (500,986) differ and need denominator-timing review. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Town/reporting-district geometry, official 2020/2016/2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation context rows remain missing. Advisory rows are public-interest screening inputs only, not findings.
+
 ## South Dakota Wave 20 Caveated Staging
 
 - Config: `etl/state-configs/sd.json`

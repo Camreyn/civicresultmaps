@@ -1308,14 +1308,25 @@
       "localFile": "data/eac-2024-state-turnout/vt-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 247,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active VT ETL turnout source. Wave 20 identified Vermont SOS 2024 turnout PDF/static JSON leads, but those totals are not loaded until denominator timing and ballots-cast semantics are reconciled.",
-      "nextAction": "Normalize and reconcile the Vermont SOS 2024 General Election Voter Turnout PDF/static JSON captured in data/vt-2024-source-request-matrix.tsv before replacing the EAC fallback.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active VT ETL turnout source. Official Vermont SOS turnout JSON/PDF artifacts are now persisted, but not loaded as turnout because SOS JSON registered voters (517,051), SOS canvass cover-page registered voters (522,600), and EAC fallback registered voters (500,986) require denominator-timing review.",
+      "nextAction": "Normalize and reconcile the Vermont SOS 2024 General Election Voter Turnout PDF/static JSON in data/vt-2024-official-sources before replacing the EAC fallback.",
       "coverage": {
         "jurisdictionRows": 247,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/vt-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 500986,
         "ballotsCast": 361604,
-        "warningRows": 0
+        "warningRows": 247,
+        "stateNativeLead": {
+          "sourceTitle": "Vermont SOS 2024 General Election Voter Turnout JSON/PDF",
+          "sourceUrl": "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b-turnout-20260611153112.json",
+          "localFile": "data/vt-2024-official-sources/2024-general-turnout.json; data/vt-2024-official-sources/2024-general-voter-turnout.pdf",
+          "reportingLevel": "town",
+          "registeredVotersJson": 517051,
+          "registeredVotersCanvassCover": 522600,
+          "votersCast": 372885,
+          "status": "committed_lead_not_active_turnout",
+          "caveat": "Registered-voter denominator timing and EAC fallback replacement semantics require review before active turnout changes."
+        }
       }
     },
     {
