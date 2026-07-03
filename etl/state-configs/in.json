@@ -136,6 +136,17 @@
       "timestampBasis": "Verified Voting Verifier 2024 Indiana jurisdiction equipment context normalized for CivicResultMaps.",
       "confidence": "County-level election-administration context only. This secondary source does not replace official Indiana result, turnout, audit, recount, CVR, or incident/correction records and does not prove or disprove advisory flags.",
       "status": "loaded"
+    },
+    {
+      "id": "in-2024-vstop-general-audit-summary",
+      "category": "Official 2024 general election post-election audit summary context",
+      "url": "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf",
+      "localFile": "data/in-2024-general-post-election-audit-summary-report.pdf; data/in-2024-general-post-election-audit-summary.csv; data/in-2024-general-post-election-audit-summary.json",
+      "parser": "indianaVstopAuditSummaryCsv",
+      "authority": "Indiana Secretary of State Election Division / VSTOP",
+      "timestampBasis": "Official VSTOP 2024 General Election Post-Election Audit Summary Report linked from the Indiana VSTOP post-election audit reports page.",
+      "confidence": "Official audit context for seven voluntarily audited counties, normalized by scripts/normalize-in-audit-summary.mjs. Context only; these rows do not replace certified ENR totals and are not proof of fraud or misconduct.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -155,7 +166,7 @@
   "expected": {
     "jurisdictions": 92,
     "resultRows": 92,
-    "sources": 12,
+    "sources": 13,
     "geometryFeatures": 92,
     "stateTotal": 2936677,
     "trump": 1720347,
@@ -189,8 +200,8 @@
   },
   "coverageInventory": {
     "localFile": "data/in-2024-data-coverage-inventory.json",
-    "checkedAt": "2026-07-01",
-    "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review",
+    "checkedAt": "2026-07-03",
+    "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_vstop_audit_summary_loaded",
     "officialSourceSearchPath": [
       "https://enr.indianavoters.in.gov/archive/2024General/index.html",
       "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
@@ -198,20 +209,22 @@
       "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/site/data/JurR_*_B.json&from=20241101&to=20250131&output=json",
       "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
       "https://www.in.gov/sos/elections/election-commission/election-results/",
-      "https://www.in.gov/sos/elections/statistics-and-maps/"
+      "https://www.in.gov/sos/elections/statistics-and-maps/",
+      "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf"
     ],
     "caveats": [
       "Official Indiana ENR category JSON currently supports county certified President and U.S. Senate rows, not precinct/subcounty candidate rows.",
       "Official JurR county JSON inventory files preserve county jurisdiction/contact and reporting-region structures but do not contain President or U.S. Senate candidate result rows.",
       "Local review rows remain supplemental MIT/OpenElections advisory inputs until official same-grain precinct/subcounty President and U.S. Senate rows are obtained.",
       "Official Indiana turnout is loaded at county grain; precinct turnout denominators and precinct boundary geometry remain uncollected.",
-      "Indiana historical baseline rows are loaded for official 2012, 2016, and 2020 county presidential sources; use them as contextual baselines, not 2024 certified data."
+      "Indiana historical baseline rows are loaded for official 2012, 2016, and 2020 county presidential sources; use them as contextual baselines, not 2024 certified data.",
+      "Official VSTOP 2024 General Election audit summary rows are loaded as administration context only for seven voluntarily audited counties; they do not replace certified ENR totals or prove/disprove advisory indicators."
     ],
     "remainingGaps": [
       "official precinct/subcounty President rows",
       "official same-grain precinct/subcounty U.S. Senate comparison rows",
       "precinct/local reporting-unit boundary geometry",
-      "official audit/recount/CVR availability/incident/correction records normalized for Indiana"
+      "detailed audit-unit workpapers, recount/CVR availability, incident, and correction records normalized for Indiana"
     ]
   },
   "historicalBaselines": {
