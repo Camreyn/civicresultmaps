@@ -46,12 +46,14 @@
     "PA",
     "RI",
     "SC",
+    "TN",
     "TX",
     "UT",
     "VA",
     "WA",
     "WI",
-    "WV"
+    "WV",
+    "WY"
   ],
   "blockedStates": [],
   "states": [
@@ -476,6 +478,83 @@
         "Precinct boundary GeoJSON is not present in this package.",
         "Turnout rows use EAC 2024 V2 jurisdiction fallback data until an equal-or-finer Washington state source is collected."
       ]
+    },
+    {
+      "state": "TN",
+      "name": "Tennessee",
+      "priority": 20,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_admin_context_inventory",
+      "authority": "Tennessee Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting Verifier",
+      "configFile": "etl/state-configs/tn.json",
+      "legacyReferenceBundle": "data/tn-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Tennessee Secretary of State 2024 General Election Results by Precinct PDF",
+          "sourceUrl": "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf",
+          "localFile": "data/tn-2024-general-by-precinct.pdf; data/tn-2024-general-president-county.csv",
+          "parserHint": "Run npm run etl:prepare:tn. scripts/normalize-tn-sos-results.mjs extracts official county totals from the SOS precinct PDF and writes county President rows."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Tennessee Secretary of State 2024 General Election Results by Precinct PDF",
+          "sourceUrl": "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf",
+          "localFile": "data/tn-2024-general-president-senate-precinct-review.csv",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Generated from the same official precinct PDF. The parser pairs President and U.S. Senate rows by county and precinct label and reconciles 1,862 same-key source rows with no missing comparison keys; three zero-vote rows are omitted from loaded review rows."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/tn-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast",
+          "parserHint": "Active ETL remains eacTurnoutCsv until a Tennessee-native turnout or voter-participation denominator artifact is collected and reconciled."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2747%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/tn-counties.geojson",
+          "parserHint": "County map joins only; precinct geometry/crosswalks are not loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Tennessee 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://sos.tn.gov/elections/results",
+          "localFile": "data/tn-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded official result/review artifacts and remaining state-native turnout, precinct geometry, historical baseline, audit, CVR, recount, incident, correction, and litigation gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Tennessee 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/47",
+          "localFile": "data/tn-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 95,
+        "geometryFeatures": 95,
+        "stateTotal": 3063942,
+        "trump": 1966865,
+        "harris": 1056265,
+        "other": 40812,
+        "localReviewRows": 1859,
+        "turnoutRows": 95
+      },
+      "caveats": [
+        "The official source is a text-layer PDF rather than a structured export; scripts/normalize-tn-sos-results.mjs reconciles parsed precinct totals to official statewide President and U.S. Senate totals before writing CSV artifacts.",
+        "Review rows are precinct-level President-versus-U.S.-Senate comparisons for advisory source-review screening only, not findings of fraud or misconduct.",
+        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a Tennessee-native turnout and registration denominator artifact is collected and reconciled.",
+        "County geometry is loaded; precinct boundary geometry/crosswalks are not loaded.",
+        "Official 2012, 2016, and 2020 historical baseline rows and normalized audit/recount/CVR/incident/correction/litigation records are not loaded."
+      ],
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_precinct_pdf_rows",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalMode": "not_loaded_official_source_paths_needed",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      }
     },
     {
       "state": "TX",
@@ -2409,6 +2488,89 @@
         "Precinct geometry/crosswalk, 2012 historical baseline, and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded."
       ],
       "legacyReferenceBundle": "data/nm-2024-data-coverage-inventory.json"
+    },
+    {
+      "state": "WY",
+      "name": "Wyoming",
+      "priority": 20,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_historical_context_with_denominator_followup",
+      "authority": "Wyoming Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/wy.json",
+      "legacyReferenceBundle": "data/wy-2024-data-coverage-inventory.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Wyoming Secretary of State 2024 General Election Results ZIP",
+          "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+          "localFile": "data/wy-2024-general-results.zip",
+          "parserHint": "nativeWyomingSosGeneralZip reads 2024 General Results Summaries - OFFICIAL.xlsx / Statewide Candidates."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Wyoming Secretary of State 2024 County General Precinct-by-Precinct Workbook",
+          "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+          "localFile": "data/wy-2024-general-results.zip",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "nativeWyomingSosGeneralZip pairs President and United States Senator columns from 2024 County General PbP - OFFICIAL.xlsx; zero presidential rows are excluded."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback turnout rows with Wyoming SOS total-ballots-cast cross-check",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/wy-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC reported registered voters remain active. SOS TBC workbook confirms 271,123 ballots cast but does not replace the denominator.",
+          "parserHint": "Current ETL uses eacTurnoutCsv."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Wyoming Secretary of State official 2012/2016/2020 General Results ZIPs",
+          "sourceUrl": "https://sos.wyo.gov/Elections/ElectionResults.aspx",
+          "localFile": "data/wy-2012-general-results.zip; data/wy-2016-general-results.zip; data/wy-2020-general-results.zip",
+          "level": "county",
+          "parserHint": "nativeWyomingSosGeneralZip reads 2016/2020 statewide candidates summaries and aggregates 2012 county PbP workbooks."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census Bureau TIGER/Line Wyoming county geometry",
+          "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip",
+          "localFile": "data/wy-counties.geojson",
+          "level": "county",
+          "parserHint": "Existing county geometry supports WY county map display; no precinct polygons loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Wyoming Wave 20 data coverage inventory and source request matrix",
+          "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx",
+          "localFile": "data/wy-2024-data-coverage-inventory.json; data/wy-2024-source-request-matrix.tsv",
+          "parserHint": "Documents loaded official artifacts and remaining official-source requests."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Wyoming 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/",
+          "localFile": "data/wy-2024-equipment-context.csv; data/verifiedvoting-wy-2024-equipment.json",
+          "level": "county",
+          "parserHint": "Supplemental context only; official results remain SOS artifacts."
+        }
+      },
+      "expected": {
+        "countyRows": 23,
+        "geometryFeatures": 23,
+        "stateTotal": 269048,
+        "trump": 192633,
+        "harris": 69527,
+        "other": 6888,
+        "localReviewRows": 431,
+        "turnoutRows": 23,
+        "historicalBaselineRows": 69
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "stateConfigUpdated": true,
+        "nativeImportReady": true,
+        "productionPromoted": false
+      },
+      "caveats": [
+        "EAC fallback registered-voter denominator remains active until a state-native denominator artifact is collected and reconciled.",
+        "Precinct boundary geometry is not loaded; review rows are localUnit rows, not precinct polygons.",
+        "Audit, CVR, recount, incident, correction, and litigation records remain request-tracked only.",
+        "Advisory indicators are not evidence of fraud or misconduct."
+      ]
     }
   ],
   "sourceDiscoveryQueue": [

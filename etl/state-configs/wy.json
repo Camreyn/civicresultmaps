@@ -1,11 +1,54 @@
 {
   "code": "WY",
   "name": "Wyoming",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "Wyoming Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
+    {
+      "id": "wy-2024-general-results-zip",
+      "category": "Certified 2024 general election results and precinct review rows",
+      "url": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+      "localFile": "data/wy-2024-general-results.zip",
+      "parser": "wyomingSosGeneralZip",
+      "authority": "Wyoming Secretary of State",
+      "timestampBasis": "Official 2024 General Election Results ZIP linked from the Wyoming Secretary of State 2024 General Election Results page.",
+      "confidence": "Official certified county summary and precinct-by-precinct XLSX workbooks inside the SOS ZIP.",
+      "status": "loaded"
+    },
+    {
+      "id": "wy-2020-general-results-zip",
+      "category": "Official 2020 historical presidential baseline",
+      "url": "https://sos.wyo.gov/Elections/Docs/2020/Results/General/2020_Wyoming_General_Results.zip",
+      "localFile": "data/wy-2020-general-results.zip",
+      "parser": "wyomingSosHistoricalZip",
+      "authority": "Wyoming Secretary of State",
+      "timestampBasis": "Official 2020 General Election Results ZIP linked from the SOS 2020 General Election Results page.",
+      "confidence": "Official statewide candidates summary XLSX inside the SOS ZIP.",
+      "status": "loaded"
+    },
+    {
+      "id": "wy-2016-general-results-zip",
+      "category": "Official 2016 historical presidential baseline",
+      "url": "https://sos.wyo.gov/Elections/Docs/2016/Results/General/2016_Wyoming_General_Election_Results.zip",
+      "localFile": "data/wy-2016-general-results.zip",
+      "parser": "wyomingSosHistoricalZip",
+      "authority": "Wyoming Secretary of State",
+      "timestampBasis": "Official 2016 General Election Results ZIP linked from the SOS 2016 General Election Results page.",
+      "confidence": "Official statewide candidates summary XLSX inside the SOS ZIP.",
+      "status": "loaded"
+    },
+    {
+      "id": "wy-2012-general-results-zip",
+      "category": "Official 2012 historical presidential baseline",
+      "url": "https://sos.wyo.gov/Elections/Docs/2012/Results/General/2012_Wyoming_General_Results.zip",
+      "localFile": "data/wy-2012-general-results.zip",
+      "parser": "wyomingSosHistoricalZip",
+      "authority": "Wyoming Secretary of State",
+      "timestampBasis": "Official 2012 General Election Results ZIP linked from the SOS 2012 General Election Results page.",
+      "confidence": "Official county precinct-by-precinct XLSX workbooks inside the SOS ZIP; the ZIP does not include the statewide candidates summary workbook.",
+      "status": "loaded"
+    },
     {
       "id": "wy-2024-eac-turnout",
       "category": "EAC fallback turnout rows",
@@ -14,17 +57,55 @@
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC fallback turnout rows. The Wyoming SOS total-ballots-cast summary is retained as a cross-check, but no state-native registered-voter denominator replacement has been loaded.",
+      "status": "loaded"
+    },
+    {
+      "id": "wy-county-boundary",
+      "category": "County geometry for result joins",
+      "url": "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip",
+      "localFile": "data/wy-counties.geojson",
+      "parser": "countyGeoJson",
+      "authority": "U.S. Census Bureau TIGER/Line",
+      "timestampBasis": "2024 TIGER/Line county boundary file filtered to Wyoming counties.",
+      "confidence": "County geometry supports county map display; precinct boundary geometry is not loaded.",
+      "status": "loaded"
+    },
+    {
+      "id": "wy-2024-data-coverage-inventory",
+      "category": "Source coverage inventory and request matrix",
+      "url": "https://sos.wyo.gov/Elections/Docs/2024/2024GeneralResults.aspx",
+      "localFile": "data/wy-2024-data-coverage-inventory.json; data/wy-2024-source-request-matrix.tsv",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "Wyoming Secretary of State; project inventory",
+      "timestampBasis": "Wave 20 source coverage review on 2026-07-03.",
+      "confidence": "Documents loaded official artifacts and remaining official-source requests for advisory accuracy.",
       "status": "loaded"
     }
   ],
+  "certifiedResults": {
+    "format": "wyomingSosGeneralZip",
+    "sourceId": "wy-2024-general-results-zip",
+    "summaryEntry": "2024 General Results Summaries - OFFICIAL.xlsx",
+    "summarySheet": "Statewide Candidates"
+  },
+  "reviewCharts": {
+    "format": "wyomingSosGeneralZip",
+    "sourceId": "wy-2024-general-results-zip",
+    "precinctEntry": "2024 County General PbP - OFFICIAL.xlsx",
+    "comparisonContest": "U.S. Senate",
+    "comparisonSourceLabel": "United States Senator",
+    "coverageMode": "presidentVsSenate",
+    "sourceCoverage": "official_sos_precinct_pbp_workbook",
+    "warning": "Official Wyoming precinct-by-precinct rows pair President with U.S. Senate for same-row advisory review. County geometry only; precinct boundaries, state-native registration denominator, audit, CVR, recount, incident, correction, and litigation rows are not normalized. Advisory indicators are not evidence of fraud or misconduct."
+  },
   "turnout": {
     "format": "eacTurnoutCsv",
     "sourceId": "wy-2024-eac-turnout",
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Wyoming turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Wyoming turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. The SOS statewide total-ballots-cast workbook reports 271,123 ballots cast and matches the EAC fallback total; no state-native registered-voter denominator replacement is loaded.",
     "warningRequired": false,
     "expected": {
       "rowCount": 23,
@@ -32,23 +113,36 @@
       "registeredVoters": 296960
     }
   },
+  "historicalBaselines": {
+    "format": "wyomingSosGeneralZip",
+    "sourceIds": [
+      "wy-2020-general-results-zip",
+      "wy-2016-general-results-zip",
+      "wy-2012-general-results-zip"
+    ],
+    "expected": {
+      "rowCount": 69
+    },
+    "warning": "Official Wyoming SOS historical baselines are county-level presidential rows. 2012 is aggregated from official county precinct-by-precinct workbooks because the ZIP lacks a statewide candidates summary workbook."
+  },
   "expected": {
     "jurisdictions": 23,
-    "resultRows": 0,
-    "sources": 1,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
-    "turnoutRows": 23
+    "resultRows": 23,
+    "sources": 7,
+    "stateTotal": 269048,
+    "trump": 192633,
+    "harris": 69527,
+    "other": 6888,
+    "reviewRows": 431,
+    "turnoutRows": 23,
+    "historicalBaselineRows": 69
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   }
 }

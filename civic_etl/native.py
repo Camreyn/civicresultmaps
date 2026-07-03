@@ -12,6 +12,7 @@ from typing import Any, Callable
 
 from .models import EtlConfig, SourceConfig
 from .xlsx import read_xlsx_sheet
+from .wyoming import build_wyoming_sos_general_zip_rows
 
 
 def int_text(value: Any) -> int:
@@ -7305,6 +7306,21 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "parser": f"native{turnout_format[0].upper()}{turnout_format[1:]}",
             "resultRows": [],
             "reviewRows": [],
+            "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "WY" and config.raw.get("certifiedResults", {}).get("format") == "wyomingSosGeneralZip":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, historical_rows, metrics = build_wyoming_sos_general_zip_rows(
+            config, sources, _normalized_turnout_rows
+        )
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeWyomingSosGeneralZip",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
             "historicalRows": historical_rows,
             "metrics": metrics,

@@ -1,0 +1,140 @@
+{
+  "state": "WY",
+  "name": "Wyoming",
+  "checkedAt": "2026-07-03",
+  "productionChecked": false,
+  "loadedArtifacts": [
+    {
+      "artifact": "2024 certified results ZIP",
+      "sourceAuthority": "Wyoming Secretary of State",
+      "sourceUrl": "https://sos.wyo.gov/Elections/Docs/2024/Results/General/2024_Wyoming_General_Results.zip",
+      "localArtifactPath": "data/wy-2024-general-results.zip",
+      "reportingGrain": "county summary and precinct-by-precinct",
+      "parserOrNormalizationPath": "civic_etl.wyoming.build_wyoming_sos_general_zip_rows",
+      "expectedRowsOrTotals": "23 county President rows; 431 nonzero precinct review rows; President total 269,048",
+      "caveatsAndConfidence": "Official SOS ZIP. Precinct review uses same-row President vs U.S. Senate; precinct geometry is not loaded."
+    },
+    {
+      "artifact": "EAC fallback turnout",
+      "sourceAuthority": "U.S. Election Assistance Commission",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localArtifactPath": "data/eac-2024-state-turnout/wy-2024-eac-turnout.csv",
+      "reportingGrain": "county/jurisdiction",
+      "parserOrNormalizationPath": "civic_etl.native._normalized_turnout_rows",
+      "expectedRowsOrTotals": "23 turnout rows; 271,123 ballots cast; 296,960 registered voters",
+      "caveatsAndConfidence": "Fallback denominator remains active. SOS total-ballots-cast workbook matches EAC ballots cast but does not replace the registered-voter denominator."
+    },
+    {
+      "artifact": "County geometry",
+      "sourceAuthority": "U.S. Census Bureau",
+      "sourceUrl": "https://www2.census.gov/geo/tiger/TIGER2024/COUNTY/tl_2024_us_county.zip",
+      "localArtifactPath": "data/wy-counties.geojson",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "map geometry coverage",
+      "expectedRowsOrTotals": "23 county features",
+      "caveatsAndConfidence": "County map display only; precinct geometry remains a follow-up."
+    },
+    {
+      "artifact": "2012/2016/2020 historical baselines",
+      "sourceAuthority": "Wyoming Secretary of State",
+      "sourceUrl": "https://sos.wyo.gov/Elections/ElectionResults.aspx",
+      "localArtifactPath": "data/wy-2012-general-results.zip; data/wy-2016-general-results.zip; data/wy-2020-general-results.zip",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "civic_etl.wyoming._historical_rows",
+      "expectedRowsOrTotals": "69 county historical baseline rows",
+      "caveatsAndConfidence": "Official SOS ZIPs. 2012 aggregated from county precinct-by-precinct workbooks."
+    },
+    {
+      "artifact": "Equipment context",
+      "sourceAuthority": "Verified Voting supplemental context",
+      "sourceUrl": "https://verifiedvoting.org/verifier/",
+      "localArtifactPath": "data/wy-2024-equipment-context.csv; data/verifiedvoting-wy-2024-equipment.json",
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "admin-source package context",
+      "expectedRowsOrTotals": "23 county equipment-context rows",
+      "caveatsAndConfidence": "Supplemental equipment context only, not a replacement for official results."
+    }
+  ],
+  "officialSourceFindings": {
+    "certifiedResults": {
+      "status": "official_sos_zip_loaded",
+      "observedOfficialTotals": {
+        "countyRows": 23,
+        "presidentialTotalVotes": 269048,
+        "trump": 192633,
+        "harris": 69527,
+        "other": 6888
+      }
+    },
+    "sameGrainComparisonContest": {
+      "status": "official_sos_precinct_pbp_us_senate_loaded",
+      "observedOfficialTotals": {
+        "loadedReviewRows": 431,
+        "zeroVotePrecinctRowsExcluded": 5,
+        "reviewPresidentialVotes": 269048,
+        "comparisonContest": "U.S. Senate"
+      }
+    },
+    "stateNativeTurnoutAndDenominator": {
+      "status": "eac_fallback_active_sos_ballots_cast_crosscheck_only",
+      "observedOfficialTotals": {
+        "sosTotalBallotsCast": 271123,
+        "eacBallotsCast": 271123,
+        "officialMinusEacBallotsCast": 0,
+        "eacRegisteredVoters": 296960
+      }
+    },
+    "geometryAndCrosswalk": {
+      "status": "county_geometry_loaded_precinct_crosswalk_needed",
+      "observedOfficialTotals": {
+        "countyFeatures": 23
+      }
+    },
+    "historicalBaselines": {
+      "status": "official_sos_2012_2016_2020_zips_loaded",
+      "observedOfficialTotals": {
+        "historicalBaselineRows": 69,
+        "years": [2012, 2016, 2020]
+      }
+    },
+    "postElectionAudit": {
+      "status": "needed_data",
+      "requestPath": "Wyoming Secretary of State and county election offices"
+    },
+    "cvrAvailability": {
+      "status": "needed_data",
+      "requestPath": "Wyoming Secretary of State and county election offices"
+    },
+    "recountRecords": {
+      "status": "needed_data",
+      "requestPath": "Wyoming Secretary of State and county election offices"
+    },
+    "incidentCorrectionLitigation": {
+      "status": "needed_data",
+      "requestPath": "Wyoming Secretary of State, county election offices, official court records"
+    },
+    "equipmentContext": {
+      "status": "supplemental_verifiedvoting_loaded_official_equipment_records_needed",
+      "observedOfficialTotals": {
+        "countyRows": 23
+      }
+    }
+  },
+  "websiteApiDisplayPath": {
+    "resultMap": "WY is present in src/lib/map-geometry-coverage.json baseResultGeometryStates and wy.json now enables map/certifiedResults.",
+    "reviewGraphs": "wy.json enables reviewGraphs with official precinct President-vs-U.S. Senate review rows.",
+    "turnout": "EAC fallback turnout rows remain active and caveated."
+  },
+  "displayCaveats": [
+    "Advisory indicators are screening signals only and are not evidence of fraud or misconduct.",
+    "WY review rows use official precinct-by-precinct President and U.S. Senate totals, but the site has county geometry only.",
+    "EAC fallback registered-voter denominator remains active until a state-native denominator artifact is collected and reconciled."
+  ],
+  "remainingRisks": [
+    "State-native registered-voter denominator has not been loaded; turnout uses EAC fallback rows.",
+    "Precinct boundary geometry and precinct-to-county crosswalks are not loaded, so precinct review rows are charted as local units rather than mapped precinct polygons.",
+    "Audit, CVR, recount, incident, correction, and litigation records remain request-tracked only.",
+    "Equipment context is supplemental and should not be treated as an official certified result source.",
+    "These data gaps and advisory outputs are not evidence of fraud or misconduct."
+  ]
+}
