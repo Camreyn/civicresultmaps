@@ -9,6 +9,7 @@
     "County-only presidential/result tables are not sufficient for comparable advisory flag generation; each review-capable state needs President plus a same-row comparison contest at precinct, ward, town, or equivalent local reporting-unit level."
   ],
   "completedNativeStates": [
+    "AL",
     "AR",
     "AZ",
     "CA",
@@ -23,6 +24,7 @@
     "LA",
     "MA",
     "MD",
+    "ME",
     "MI",
     "MN",
     "MO",
@@ -46,6 +48,88 @@
   ],
   "blockedStates": [],
   "states": [
+    {
+      "state": "AL",
+      "name": "Alabama",
+      "priority": 0,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_historical_context",
+      "authority": "Alabama Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/al.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Alabama Secretary of State 2024 General Precinct Level Results ZIP",
+          "sourceUrl": "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
+          "localFile": "data/al-2024-general-precinct-level-results.zip; data/al-2024-general-president.csv",
+          "parserHint": "Run npm run etl:prepare:al. scripts/normalize-al-sos-results.mjs unzips 67 county XLS matrices and writes county President rows to data/al-2024-general-president.csv."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Alabama Secretary of State 2024 General Precinct Level Results ZIP",
+          "sourceUrl": "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
+          "localFile": "data/al-2024-local-review.csv",
+          "level": "precinct_reporting_mode_column",
+          "comparisonContest": "U.S. House",
+          "parserHint": "Generated from the same official ZIP. President and U.S. House rows are paired for county XLS columns with explicit nonzero House coverage; U.S. House is district-based and no 2024 AL U.S. Senate race existed."
+        },
+        "turnout": {
+          "sourceTitle": "EAC fallback plus Alabama SOS turnout/registration leads",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv; data/al-2024-general-total-ballots-cast.pdf; data/al-2024-registered-voters.xlsx; data/al-2024-turnout-denominator-lead.csv",
+          "level": "jurisdiction_fallback_active_county_lead_collected",
+          "denominator": "Active ETL uses EAC registered voters. The ALVR November active-voter workbook is retained as a state-native denominator lead only.",
+          "parserHint": "Current ETL uses eacTurnoutCsv. The generated turnout lead pairs precinct-ZIP ballots-cast rows with November ALVR active voters but is not active until SOS PDF/ALVR denominator timing is reconciled."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Alabama Secretary of State official 2012/2016/2020 presidential artifacts",
+          "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
+          "localFile": "data/al-president-general-1976-2012.xls; data/al-2016-general-precinct-level.zip; data/al-2020-general-precinct-results.zip; data/al-historical-presidential-baseline.csv",
+          "parserHint": "scripts/normalize-al-sos-results.mjs writes 201 county historical presidential rows from official SOS artifacts."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2701%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/al-counties.geojson",
+          "parserHint": "County map joins only; precinct geometry/crosswalks are not loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Alabama 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
+          "localFile": "data/al-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded official artifacts and remaining turnout replacement, precinct geometry, audit, CVR, recount, incident, correction, and litigation gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Alabama 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/1",
+          "localFile": "data/al-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 67,
+        "geometryFeatures": 67,
+        "stateTotal": 2265090,
+        "trump": 1462616,
+        "harris": 772412,
+        "other": 30062,
+        "localReviewRows": 2083,
+        "turnoutRows": 67,
+        "historicalBaselineRows": 201
+      },
+      "caveats": [
+        "Review rows are official President-versus-U.S.-House pairs, but U.S. House is district-based and should be treated as directional source-review context, not candidate-benefit findings.",
+        "Active turnout remains EAC fallback: 67 jurisdiction rows, 2,272,911 ballots cast, and 3,868,040 registered voters. The generated Alabama turnout lead is not active because the precinct-ZIP ballots-cast sum is 2,272,731, 180 lower than the active EAC/SOS fallback total, and ALVR denominator timing needs review.",
+        "County geometry is loaded; precinct boundaries/crosswalks are not loaded.",
+        "No normalized Alabama audit, CVR availability, recount, incident, correction, or litigation rows are loaded."
+      ],
+      "legacyReferenceBundle": "data/al-app-data.js",
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_house_precinct_reporting_mode_columns",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_native_leads_collected",
+        "historicalMode": "official_sos_county_baseline_context_2012_2016_2020",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      }
+    },
     {
       "state": "AR",
       "name": "Arkansas",
@@ -1625,6 +1709,84 @@
       ]
     },
     {
+      "state": "ME",
+      "name": "Maine",
+      "priority": 13,
+      "nativeReadiness": "complete_county_map_town_review_eac_turnout_partial_historical",
+      "authority": "Maine Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context",
+      "configFile": "etl/state-configs/me.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Maine SOS 2024 President and Vice President by County/Town corrected final workbook",
+          "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
+          "localFile": "data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx",
+          "parserHint": "maineSosCountyTownXlsx reads sheet President & VP; use county total rows plus State UOCAVA as non-geographic certified result row; candidate totals exclude blanks."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Maine SOS 2024 United States Senator corrected final workbook",
+          "sourceUrl": "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
+          "localFile": "data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx",
+          "level": "town",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Pair town rows by county code and normalized municipality label; leave Medway/Twps, Day Block Twp, and Wesley as vote-share-only because Senate grain differs."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Maine SOS official 2016 and 2020 President workbooks; 2012 XLS retained as blocked provenance",
+          "localFile": "data/me-official-sources/me-2016-president.xlsx; data/me-official-sources/me-2020-president-county-town.xlsx; data/me-official-sources/me-2012-president-county.xls; data/me-official-sources/me-2012-president-municipal.xls",
+          "parserHint": "maineSosHistoricalPresidentXlsx loads 34 county/non-geographic rows for 2016 and 2020. 2012 requires legacy XLS support or conversion."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "localFile": "data/me-counties.geojson",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2723%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Maine 2024 data coverage and administration source inventory",
+          "localFile": "data/me-2024-data-coverage-inventory.json"
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Maine 2024 equipment context",
+          "localFile": "data/me-2024-equipment-context.csv"
+        }
+      },
+      "expected": {
+        "countyRows": 17,
+        "geometryFeatures": 16,
+        "stateTotal": 831375,
+        "trump": 377977,
+        "harris": 435652,
+        "other": 17746,
+        "localReviewRows": 512,
+        "comparisonRows": 509,
+        "turnoutRows": 497,
+        "historicalBaselineRows": 34
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_senate_town_with_uocava_excluded",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalBaselineMode": "official_2016_2020_sos_workbooks_2012_xls_blocked"
+      },
+      "caveats": [
+        "State UOCAVA is a non-geographic certified result row; it is not mapped and is excluded from town review joins.",
+        "Medway/Twps, Day Block Twp, and Wesley are vote-share-only rows because the Senate workbook combines or labels those units at a different grain.",
+        "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff metrics are directional source-review inputs only.",
+        "Turnout remains EAC fallback until Maine-native ballots-cast or voter-participation rows are collected and reconciled with SOS registration/enrollment files.",
+        "2012 official historical XLS artifacts are collected but not loaded until legacy XLS support or conversion is added.",
+        "Municipality geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows remain unloaded."
+      ],
+      "legacyReferenceBundle": "data/me-2024-data-coverage-inventory.json"
+    },
+    {
       "state": "CT",
       "name": "Connecticut",
       "priority": 15,
@@ -1764,60 +1926,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/44",
           "localFile": "data/ri-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "AL",
-      "name": "Alabama",
-      "priority": 0,
-      "currentStatus": "official_precinct_xls_zip_and_turnout_registration_historical_admin_source_leads_documented_eac_turnout_only_active",
-      "requestMatrixArtifact": "data/al-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
-        "https://www.sos.alabama.gov/sites/default/files/election-data/2024-12/2024-General%20Precinct%20Level%20Results.zip",
-        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/2024GeneralElectionTotalBallotsCast.pdf",
-        "https://www.sos.alabama.gov/sites/default/files/election-data/2025-01/ALVR-2024.xlsx",
-        "https://www.sos.alabama.gov/public-records-request",
-        "https://www.sos.alabama.gov/city-county-lookup"
-      ],
-      "requiredArtifacts": [
-        "official 2024 precinct XLS ZIP collected into data/ before enabling native President/review rows",
-        "district-aware Alabama SOS precinct XLS matrix parser for President plus U.S. House rows",
-        "state-native total-ballots and registration artifacts parsed and reconciled before replacing EAC fallback turnout",
-        "official precinct boundary geometry or crosswalk for subcounty maps",
-        "official 2012/2016/2020 Alabama historical baseline artifacts and parser",
-        "normalized audit, CVR availability, recount, incident, correction, and litigation artifacts if published or request-produced"
-      ],
-      "preferredComparisonContest": "U.S. House by district, because Alabama had no 2024 U.S. Senate race; keep district-based comparison caveats visible.",
-      "parserNeeded": "A future Alabama SOS precinct XLS matrix parser should unzip 67 county XLS files, pivot contest rows by precinct/absentee/provisional columns, aggregate President totals, and pair U.S. House rows only where district cells are present. Current etl/state-configs/al.json remains turnout-only EAC fallback.",
-      "blocker": "Wave 14 identified an official Alabama SOS 2024 precinct-results ZIP and inspected it temporarily: 67 county XLS files, worksheet Precinct Results, 2,085 precinct/absentee/provisional columns, President total 2,265,090 with Trump 1,462,616, Harris 772,412, and Other 30,062. No native Alabama result or review rows were loaded because the matrix needs a district-aware parser for split U.S. House rows. State-native turnout/registration, historical baselines, precinct geometry/crosswalks, and administration-context records remain source leads or request paths documented in data/al-2024-data-coverage-inventory.json and data/al-2024-source-request-matrix.tsv.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "Alabama 2024 data coverage and source request inventory",
-          "sourceUrl": "https://www.sos.alabama.gov/alabama-votes/voter/election-data",
-          "localFile": "data/al-2024-data-coverage-inventory.json",
-          "parserHint": "Source inventory only; no Alabama native result/review rows are loaded."
-        },
-        "turnout": {
-          "sourceTitle": "EAC fallback plus Alabama SOS turnout/registration leads",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/al-2024-eac-turnout.csv; data/al-2024-data-coverage-inventory.json",
-          "level": "jurisdiction_fallback",
-          "denominator": "EAC registered voters for loaded rows; Alabama SOS total-ballots and ALVR files are state-native leads only",
-          "parserHint": "Current ETL uses eacTurnoutCsv. A future normalizer should collect SOS turnout/registration artifacts and reconcile denominator timing before replacement."
-        },
-        "countyBoundary": {
-          "sourceTitle": "U.S. Census TIGERweb county geography",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2701%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/al-counties.geojson",
-          "parserHint": "County map joins only; precinct geometry/crosswalks are not loaded."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier Alabama 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/1",
-          "localFile": "data/verifiedvoting-al-2024-equipment.json; data/al-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
         }
       }
     },
@@ -2687,56 +2795,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/10",
           "localFile": "data/de-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "ME",
-      "name": "Maine",
-      "priority": 13,
-      "currentStatus": "official_excel_source_leads_documented_eac_turnout_only",
-      "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx",
-        "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20by%20Congressional%20District%202024.xlsx",
-        "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
-        "https://www.maine.gov/sos/elections-voting/election-results-data/previous-election-results",
-        "https://www.maine.gov/sos/elections-voting/voter-data",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23"
-      ],
-      "requiredArtifacts": [
-        "official Maine SOS 2024 U.S. President by County/Town Excel workbook collected into data/",
-        "official Maine SOS 2024 United States Senator Excel workbook collected into data/ for same-grain comparison rows",
-        "Maine SOS Excel parser with UOCAVA/non-geographic row handling and certified-total reconciliation",
-        "state-native registered/enrolled denominator parser plus ballots-cast/voter-participation reconciliation before replacing EAC turnout",
-        "municipality/town geometry or reporting-unit crosswalk if subcounty overlays are required",
-        "official 2020, 2016, and 2012 historical presidential baseline workbooks normalized from SOS archives",
-        "normalized audit/recount/CVR availability/incident/correction/litigation rows if published or request-produced",
-        "data/me-2024-data-coverage-inventory.json and data/me-2024-source-request-matrix.tsv as the current source-search handoff"
-      ],
-      "preferredComparisonContest": "U.S. Senate from the official Maine SOS United States Senator Excel workbook, expected to pair with President by County/Town after workbook collection and row reconciliation.",
-      "parserNeeded": "Maine remains EAC-turnout-only. A new Maine SOS Excel parser is needed for President and same-grain U.S. Senate rows, plus explicit UOCAVA/non-geographic row handling. A registered/enrolled denominator parser and turnout reconciliation are needed before replacing EAC fallback. Historical and administration-context parsers are not loaded.",
-      "blocker": "The official Maine SOS 2024 results page exposes machine-readable Excel workbooks for President by County/Town, President by Congressional District, U.S. Senate, and CD2 ranked-choice/CVR exports, but no official Maine result or advisory review rows are loaded yet. Active ME config remains EAC turnout-only with 497 fallback turnout rows. Remaining source needs are collected Excel artifacts, parser/reconciliation work, state-native turnout replacement review, municipality/town geometry or crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "localFile": "data/me-2024-data-coverage-inventory.json",
-          "checkedAt": "2026-07-02",
-          "repoDrift": "docs/developer/index.md is missing in this worktree."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC fallback turnout rows",
-          "localFile": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
-          "parser": "eacTurnoutCsv",
-          "turnoutRows": 497,
-          "status": "loaded_fallback_not_state_native"
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier 2024 equipment context",
-          "localFile": "data/verifiedvoting-me-2024-equipment.json",
-          "normalizedArtifact": "data/me-2024-equipment-context.csv",
-          "status": "loaded_supplemental_context"
         }
       }
     },

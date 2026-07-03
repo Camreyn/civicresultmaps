@@ -3,7 +3,7 @@
   "stateName": "Maine",
   "electionYear": 2024,
   "checkedAt": "2026-07-02",
-  "checkedBy": "Wave 15 Maine state-data worker",
+  "checkedBy": "Wave 17 Maine state-data worker",
   "productionChecked": false,
   "repoDrift": [
     {
@@ -14,21 +14,31 @@
   ],
   "currentEtLStatus": {
     "configFile": "etl/state-configs/me.json",
-    "turnoutOnly": true,
-    "activeParser": "eacTurnoutCsv",
-    "activeLocalArtifact": "data/eac-2024-state-turnout/me-2024-eac-turnout.csv",
+    "turnoutOnly": false,
+    "activeParser": "maineSosCountyTownXlsx",
+    "activeLocalArtifacts": [
+      "data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx",
+      "data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx",
+      "data/eac-2024-state-turnout/me-2024-eac-turnout.csv"
+    ],
     "expectedRows": {
-      "resultRows": 0,
-      "reviewRows": 0,
+      "resultRows": 17,
+      "reviewRows": 512,
+      "comparisonRows": 509,
       "turnoutRows": 497,
-      "eacBallotsCast": 842447,
-      "eacRegisteredVoters": 1223468
+      "historicalBaselineRows": 34,
+      "candidateVoteTotal": 831375,
+      "harris": 435652,
+      "trump": 377977,
+      "other": 17746,
+      "stateUocavaCandidateVotes": 6569,
+      "reviewCertifiedVoteGap": 6569
     },
-    "advisoryStatus": "No Maine result or review rows are loaded, so advisory indicators should remain zero until official same-grain President and comparison rows are normalized."
+    "advisoryStatus": "Maine now loads official SOS certified President rows and town-level President-versus-U.S.-Senate review rows. Advisory indicators are source-review signals only, not findings of fraud or misconduct."
   },
   "officialSourceFindings": {
     "certifiedResults": {
-      "status": "official_excel_identified_parser_needed",
+      "status": "official_excel_loaded",
       "sourceAuthority": "Maine Secretary of State",
       "sourceUrls": [
         "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
@@ -41,23 +51,27 @@
         "The same page lists U.S. President by Congressional District (Excel), useful for Maine's split electoral-vote context.",
         "No Maine native result or review parser is loaded in etl/state-configs/me.json."
       ],
-      "parserNeeded": "Maine SOS Excel parser that preserves county/town rows, reconciles certified totals, and explicitly handles UOCAVA/non-geographic rows before loading result rows.",
-      "caveat": "Keep the official Excel files as source leads until collected and parsed; do not replace certified totals with secondary summaries."
+      "parserNeeded": "Loaded by nativeMaineSosCountyTownXlsx from the official President by County/Town workbook. County totals plus State UOCAVA reconcile to 831,375 candidate votes; blank ballots remain source caveat context and are not candidate votes.",
+      "caveat": "State UOCAVA is loaded as a non-geographic certified result row and excluded from town review joins; county geometry can map county rows only.",
+      "localArtifacts": [
+        "data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx",
+        "data/me-official-sources/me-2024-president-by-congressional-district.xlsx"
+      ]
     },
     "sameGrainComparisonContest": {
-      "status": "official_excel_identified_parser_needed",
+      "status": "official_excel_loaded",
       "preferredContest": "U.S. Senate",
       "sourceUrls": [
         "https://www.maine.gov/sos/elections-voting/election-results-data/election-results-2024",
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/US%20Senator%20FINAL-Corrected%2020241205.xlsx"
       ],
       "missing": [
-        "collected local President workbook artifact",
-        "collected same-grain U.S. Senate workbook artifact",
-        "parser-backed reconciliation of town/county labels and UOCAVA/non-geographic rows",
-        "review rows loaded into native staging"
+        "municipality/town geometry or official reporting-unit crosswalk for subcounty overlays",
+        "state-native turnout replacement semantics",
+        "manual review of the three vote-share-only grain mismatches: Medway/Twps, Day Block Twp, and Wesley"
       ],
-      "caveat": "U.S. Senate appears to be the best statewide comparison contest, but row pairing and non-geographic rows must be reviewed before advisory screening."
+      "caveat": "U.S. Senate is loaded as the same-source comparison contest, but it includes a major independent candidate. Democratic/Republican dropoff metrics are directional source-review inputs. Medway/Twps, Day Block Twp, and Wesley remain vote-share-only because the Senate workbook combines or labels those units at a different grain.",
+      "localArtifact": "data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx"
     },
     "rankedChoiceAndCastVoteRecords": {
       "status": "official_cd2_rcv_cvr_leads_identified_not_loaded",
@@ -76,7 +90,7 @@
       "caveat": "These CD2 ballot-ranking exports do not substitute for statewide President-versus-U.S.-Senate review rows."
     },
     "stateNativeTurnout": {
-      "status": "official_registration_denominator_lead_identified_not_loaded",
+      "status": "official_registration_denominator_artifacts_collected_not_loaded",
       "sourceAuthority": "Maine Secretary of State",
       "sourceUrls": [
         "https://www.maine.gov/sos/elections-voting/voter-data",
@@ -89,8 +103,12 @@
         "ballotsCast": 842447,
         "registeredVoters": 1223468
       },
-      "parserNeeded": "Registered/enrolled active and inactive text parser plus reconciliation against EAC fallback; a ballots-cast or voter-participation source must be paired before replacing turnout.",
-      "caveat": "The 11/5/2024 registered/enrolled active and inactive files are denominator leads, not complete turnout replacements by themselves."
+      "parserNeeded": "Active/inactive registered-enrolled text files are collected as denominator leads, but turnout remains EAC fallback until compatible official ballots-cast or voter-participation rows are collected and reconciled.",
+      "caveat": "The 11/5/2024 registered/enrolled active and inactive files are denominator leads, not complete turnout replacements by themselves.",
+      "localArtifacts": [
+        "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
+        "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt"
+      ]
     },
     "geometryAndCrosswalk": {
       "status": "county_geometry_present_municipality_crosswalk_needed",
@@ -109,7 +127,7 @@
       ]
     },
     "historicalBaselines": {
-      "status": "official_archive_leads_identified_not_loaded",
+      "status": "official_2016_2020_loaded_2012_xls_blocked",
       "targetYears": [
         2020,
         2016,
@@ -123,8 +141,14 @@
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012presmuni%282%29.xls",
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/2012prescounty%281%29.xls"
       ],
-      "parserNeeded": "Historical Maine SOS Excel parser for 2020, 2016, and 2012 presidential workbooks.",
-      "caveat": "Historical baseline rows are not loaded; official archive workbooks should be normalized before secondary county tables are considered."
+      "parserNeeded": "2016 and 2020 county plus State UOCAVA rows load through maineSosHistoricalPresidentXlsx. The official 2012 XLS artifacts are collected but need legacy .xls support or conversion before loading.",
+      "caveat": "Historical rows are contextual baselines only. 2012 remains blocked by legacy .xls parsing support.",
+      "localArtifacts": [
+        "data/me-official-sources/me-2020-president-county-town.xlsx",
+        "data/me-official-sources/me-2016-president.xlsx",
+        "data/me-official-sources/me-2012-president-county.xls",
+        "data/me-official-sources/me-2012-president-municipal.xls"
+      ]
     },
     "auditRecountCvrIncidentCorrectionLitigation": {
       "status": "source_paths_documented_rows_not_loaded",
@@ -158,17 +182,19 @@
     "manualReviewBurden": "low"
   },
   "websiteAndApiDisplayPath": {
-    "currentPath": "Current Maine staging/API path is turnout-only EAC fallback via etl/state-configs/me.json.",
+    "currentPath": "Maine staging/API path now includes native certified result rows, town review rows, EAC fallback turnout rows, and 2016/2020 historical rows from etl/state-configs/me.json.",
     "sourceRegistryPath": "/api/native-source-packages and /api/source-acquisition-tiers expose the updated planning registries after deployment.",
     "productionChecked": false,
     "notCheckedReason": "Production promotion and production API verification were not authorized for this worker branch."
   },
   "requestMatrixArtifact": "data/me-2024-source-request-matrix.tsv",
   "remainingRisks": [
-    "No native Maine certified President result rows are loaded yet.",
-    "No same-grain President-versus-U.S.-Senate review rows are loaded, so advisory indicators should be zero.",
-    "State-native registered/enrolled files are denominator leads only; turnout remains EAC fallback until replacement semantics are reviewed.",
+    "State UOCAVA is non-geographic: it is included in certified totals but not mapped or used in town review joins.",
+    "Three President town rows remain vote-share-only because the Senate workbook grain differs: Medway/Twps, Day Block Twp, and Wesley.",
+    "U.S. Senate includes a major independent candidate, so Democratic/Republican dropoff fields are directional source-review inputs only.",
+    "Turnout remains EAC fallback; collected Maine SOS active/inactive registered-enrolled files are denominator leads only until compatible ballots-cast or voter-participation rows are collected.",
     "Municipality/town geometry or a reporting-unit crosswalk is not loaded.",
+    "2012 official historical artifacts are collected but not parsed because they are legacy .xls files.",
     "No normalized 2024 audit, recount, CVR availability, incident, correction, or litigation rows are loaded.",
     "All advisory language must remain source-review context, not evidence of fraud or misconduct."
   ]
