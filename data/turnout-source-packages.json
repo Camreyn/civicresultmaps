@@ -406,8 +406,8 @@
       "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 64,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active CO ETL package. Wave 14 confirmed an official Colorado Clarity county turnout lead, but it is not a replacement until totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
-      "nextAction": "Review the official Colorado Clarity detail XML turnout rows and totalVoters denominator timing, reconcile against EAC fallback counts, and only then decide whether to normalize a state-native county turnout replacement.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active CO ETL package. Wave 18 committed the official Colorado Clarity detail XML ZIP for county result/review rows and retained its county turnout rows as a replacement lead only, pending totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference review.",
+      "nextAction": "Review the committed Colorado Clarity detail XML turnout rows and totalVoters denominator timing, reconcile against EAC fallback counts, and only then decide whether to normalize a state-native county turnout replacement.",
       "coverage": {
         "jurisdictionRows": 64,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/co-2024-eac-registered-voter-denominator.json",
@@ -420,8 +420,9 @@
           "reportingLevel": "county",
           "ballotsCast": 3241120,
           "totalVoters": 4058938,
-          "status": "confirmed_not_loaded",
-          "caveat": "totalVoters denominator semantics and 366-ballot difference versus EAC fallback ballotsCast require review before replacement."
+          "status": "committed_lead_not_active_turnout",
+          "caveat": "totalVoters denominator semantics and 366-ballot difference versus EAC fallback ballotsCast require review before replacement.",
+          "localFile": "data/co-2024-clarity-detailxml.zip"
         }
       }
     },
