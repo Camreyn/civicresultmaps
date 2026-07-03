@@ -1612,7 +1612,7 @@
         "official 2012/2016/2020 historical baseline replacement for secondary context rows",
         "post-election audit, L&A, tabulator-log, custody, incident/correction, recount, litigation, and remaining CVR availability artifacts"
       ],
-      "parserStatus": "native partial subcounty review package loaded; request-matrix artifact documents remaining jurisdiction collection targets",
+      "parserStatus": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; data/nv-2024-county-source-request-matrix.tsv tracks the remaining 14 jurisdiction request paths with Wave 23 official contact/custodian and expected-field detail; active turnout remains EAC fallback",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
       "caveats": "Clark County, Washoe County, and Humboldt County CVR precinct rows are loaded for local review; other Nevada jurisdictions remain county-only. Live NVSOS/Silver State hosts can block scripted access; archived artifacts are retained. The July 1, 2026 NV source inventory and request matrix record county-by-county request paths for the remaining 14 jurisdictions plus state-native turnout, precinct geometry, historical-baseline replacement, and audit/CVR/L&A/tabulator-log/custody/incident evidence needs.",

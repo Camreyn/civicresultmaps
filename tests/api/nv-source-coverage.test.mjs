@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 
 function test(name, fn) {
   fn();
-  console.log(`ok - ${name}`);
+  console.log("ok - " + name);
 }
 
 function readJson(path) {
@@ -37,6 +37,16 @@ const expectedRemaining = [
   "White Pine County",
 ];
 
+const wave23Jurisdictions = [
+  "Douglas County",
+  "Elko County",
+  "Eureka County",
+  "Lander County",
+  "Mineral County",
+  "Storey County",
+  "White Pine County",
+];
+
 test("Nevada remaining jurisdiction matrix covers the 14 non-CVR jurisdictions", () => {
   assert.equal(matrix.length, 14);
   assert.deepEqual(matrix.map((row) => row.jurisdiction), expectedRemaining);
@@ -50,7 +60,20 @@ test("Nevada remaining jurisdiction matrix covers the 14 non-CVR jurisdictions",
     assert.match(row.needed_geometry_artifacts, /crosswalks/);
     assert.match(row.needed_admin_artifacts, /CVR availability/);
     assert.match(row.needed_admin_artifacts, /tabulator\/EMS logs/);
-    assert.match(row.request_path, /Request from/);
+    assert.match(row.request_path, /Request/);
+  }
+});
+
+test("Nevada remaining jurisdiction matrix records contact, custodian, and expected request fields", () => {
+  for (const row of matrix) {
+    assert.ok(row.official_contact_path?.length > 20, row.jurisdiction + " missing official contact path");
+    assert.ok(row.custodian?.length > 5, row.jurisdiction + " missing custodian");
+    assert.match(row.expected_result_fields, /precinct_or_local_unit/);
+    assert.match(row.expected_result_fields, /contest_name/);
+    assert.match(row.expected_turnout_fields, /denominator_timing/);
+    assert.match(row.expected_geometry_fields, /geometry_file_or_crosswalk/);
+    assert.match(row.expected_admin_fields, /CVR_availability/);
+    assert.match(row.expected_admin_fields, /tabulator_or_EMS_logs/);
   }
 });
 
@@ -59,11 +82,12 @@ test("Nevada config and source inventory expose the request matrix as provenance
   assert.equal(config.expected.sources, config.sources.length);
   assert.equal(source?.localFile, "data/nv-2024-county-source-request-matrix.tsv");
   assert.equal(source?.parser, "countySourceRequestMatrixTsv");
-  assert.match(source?.confidence ?? "", /14 Nevada jurisdictions outside Clark, Washoe, and Humboldt/);
+  assert.match(source?.confidence ?? "", /contact\/custodian paths/);
 
   assert.equal(inventory.remainingLocalReviewGaps.missingJurisdictionCount, 14);
   assert.equal(inventory.remainingLocalReviewGaps.sourceMatrixArtifact, "data/nv-2024-county-source-request-matrix.tsv");
   assert.equal(inventory.remainingLocalReviewGaps.sourceMatrixRows, 14);
+  assert.equal(inventory.remainingLocalReviewGaps.sourceMatrixColumns, 18);
   assert.equal(inventory.administrationContext.cvr.sourceMatrixArtifact, "data/nv-2024-county-source-request-matrix.tsv");
   assert.equal(inventory.turnoutDenominatorStatus.sourceMatrixArtifact, "data/nv-2024-county-source-request-matrix.tsv");
   assert.equal(inventory.geometryStatus.subcountyGeometry.sourceMatrixArtifact, "data/nv-2024-county-source-request-matrix.tsv");
@@ -76,28 +100,30 @@ test("Nevada public data note reflects Humboldt and the 14 remaining jurisdictio
   assert.match(tabs, /the other 14 Nevada jurisdictions remain county-only/);
 });
 
-test("Nevada Wave 13 source checks preserve high-ROI county blockers", () => {
-  assert.equal(inventory.checkedAt, "2026-07-02");
-  assert.match(inventory.status, /wave13_source_checks_refreshed/);
+test("Nevada Wave 23 source checks preserve and sharpen remaining-county blockers", () => {
+  assert.equal(inventory.checkedAt, "2026-07-03");
+  assert.match(inventory.status, /wave23_request_paths_refined/);
 
   const checks = new Map(inventory.sourceChecks.map((entry) => [entry.sourceAuthority, entry]));
   for (const authority of [
-    "Nye County Clerk",
-    "Lyon County Clerk/Treasurer",
-    "Churchill County Clerk/Treasurer",
-    "Carson City Clerk-Recorder",
+    "Douglas County Clerk-Treasurer",
+    "Elko County Clerk",
+    "Eureka County Clerk Recorder",
+    "Lander County Clerk",
+    "Mineral County Clerk-Treasurer",
+    "Storey County public-records request path",
+    "White Pine County public-records request form",
   ]) {
     const check = checks.get(authority);
-    assert.equal(check?.checkedAt, "2026-07-02");
-    assert.match(check?.finding ?? "", /No official|did not surface|no parser-ready/i);
+    assert.equal(check?.checkedAt, "2026-07-03");
+    assert.match(check?.status ?? "", /wave23/);
+    assert.match(check?.finding ?? "", /no .*parser-ready/i);
   }
 
-  const refreshedRows = matrix.filter((row) => row.source_check_status.includes("wave13_confirmed"));
-  assert.deepEqual(
-    refreshedRows.map((row) => row.jurisdiction),
-    ["Carson City", "Churchill County", "Douglas County", "Lyon County", "Nye County"],
-  );
+  const refreshedRows = matrix.filter((row) => row.source_check_status.includes("wave23"));
+  assert.deepEqual(refreshedRows.map((row) => row.jurisdiction), wave23Jurisdictions);
   for (const row of refreshedRows) {
-    assert.match(row.notes, /Wave 13 recheck on July 2, 2026/);
+    assert.match(row.notes, /Wave 23 recheck on July 3, 2026/);
+    assert.ok(row.official_contact_path.includes("http") || row.official_contact_path.includes("Nevada SOS"));
   }
 });
