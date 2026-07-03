@@ -1,0 +1,28 @@
+{
+  "state": "DE",
+  "electionYear": 2024,
+  "sourceAuthority": "Delaware Department of Elections; U.S. Election Assistance Commission",
+  "generatedAt": "2026-07-02T00:00:00.000Z",
+  "inputArtifacts": [
+    "data/de-2024-agp-registered-voted-report.txt",
+    "data/eac-2024-state-turnout/de-2024-eac-turnout.csv",
+    "data/de-2024-november-1-party-registration.csv"
+  ],
+  "outputArtifact": "data/de-2024-agp-turnout-reconciliation.csv",
+  "totals": {
+    "agp_election_district_rows": 537,
+    "agp_registered_voters": 788864,
+    "agp_voted": 518086,
+    "eac_registered_voters": 788441,
+    "eac_ballots_cast": 514367,
+    "november_1_registered_voters": 790955,
+    "agp_minus_eac_registered_voters": 423,
+    "agp_voted_minus_eac_ballots_cast": 3719,
+    "november_1_minus_agp_registered_voters": 2091
+  },
+  "activeTurnoutDecision": "keep_eac_fallback_active_pending_agp_semantics_review",
+  "caveats": [
+    "The DOE AGP report provides registered and voted rows by election district plus summaries, but this normalizer uses only election-district i. Total rows to avoid double-counting summary sections.",
+    "AGP statewide voted is 3,719 above EAC ballots cast; registered-voter totals also differ by timing/source, so AGP is not activated as turnout replacement in etl/state-configs/de.json."
+  ]
+}

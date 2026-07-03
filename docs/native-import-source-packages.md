@@ -1,4 +1,4 @@
-﻿# Native Import Source Packages
+# Native Import Source Packages
 
 Checked at: 2026-06-15
 
@@ -632,3 +632,16 @@ Expected validation: 17 certified result rows including State UOCAVA, 16 county 
 Expected validation: 41 President result rows, 444 review rows, 39 EAC fallback turnout rows, 80 historical baseline rows, and posted statewide President totals of 513,386 votes: 285,156 Harris, 214,406 Trump, and 13,824 Other. The official long-format ZIP is 32 President votes and 29 U.S. Senate votes below the posted statewide JSON, so the normalized President package includes a non-geographic reconciliation delta and review rows exclude posted-total deltas, zero-vote Limited rows, and presidential-only rows.
 
 Remaining gaps are state-native turnout/registration denominators, result-ready city/town or precinct geometry/crosswalks, decoded 2020 historical baseline rows, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory rows are source-review calculations only, not findings.
+
+## Delaware Wave 17 Native Activation
+
+- Config: `etl/state-configs/de.json`
+- Authority: Delaware Department of Elections; U.S. Election Assistance Commission; U.S. Census Bureau
+- County results source: `data/de-2024-general-election-results-report.html`, downloaded from the official DOE 2024 General Election Results Report; `data/de-2024-general-election-results-report.csv` is retained as an official statewide cross-check.
+- Local review source: the same official DOE report HTML, using positive-vote election-district President rows paired with same-grain U.S. Senate rows.
+- Comparison contest: U.S. Senate, same election-district grain for 529 positive-vote President districts. Four zero-vote President district tables are excluded from review rows.
+- Turnout source: EAC 2024 county/jurisdiction fallback rows remain active at `data/eac-2024-state-turnout/de-2024-eac-turnout.csv`; `scripts/normalize-de-agp-turnout.mjs` generates `data/de-2024-agp-turnout-reconciliation.csv` and summary JSON from DOE AGP/registration leads for replacement review only.
+- County boundary: `data/de-counties.geojson`.
+- Coverage inventory: `data/de-2024-data-coverage-inventory.json`; source request matrix: `data/de-2024-source-request-matrix.tsv`.
+
+Expected validation: 3 county result rows, 3 county geometry features, 511,697 presidential votes, 214,351 Trump votes, 289,758 Harris votes, 7,588 Other votes, 529 election-district review rows, and 3 EAC fallback turnout rows. Remaining gaps are active state-native turnout replacement semantics, FirstMap election-district geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.

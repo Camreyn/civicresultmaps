@@ -1,4 +1,4 @@
-﻿# Turnout Collection Inventory
+# Turnout Collection Inventory
 
 Generated from repo configs and current source-package pass on 2026-06-30.
 
@@ -211,3 +211,7 @@ New Mexico currently uses official EAC 2024 V2 county/jurisdiction fallback turn
 ## Rhode Island Wave 17 Update
 
 Rhode Island now has native President and same-key U.S. Senate review rows from official BOE artifacts, but turnout still uses official EAC 2024 V2 city/town jurisdiction fallback rows at `data/eac-2024-state-turnout/ri-2024-eac-turnout.csv`, totaling 39 rows, 522,164 ballots cast, and 792,075 registered voters. The BOE result ZIP/JSON files are result sources, not a complete registered-voter denominator replacement. Keep EAC fallback active until a Rhode Island-native ballots-cast plus registered-voter denominator artifact is collected, parsed, and reconciled. Follow-up fields are tracked in `data/ri-2024-data-coverage-inventory.json` and `data/ri-2024-source-request-matrix.tsv`.
+
+## Delaware Wave 17 Turnout Reconciliation
+
+Delaware still uses official EAC 2024 V2 county/jurisdiction fallback turnout rows at `data/eac-2024-state-turnout/de-2024-eac-turnout.csv`, totaling 3 jurisdiction rows, 514,367 ballots cast, and 788,441 registered voters. Wave 17 collected the official DOE AGP registered/voted report at `data/de-2024-agp-registered-voted-report.txt` and November 1 registration CSV at `data/de-2024-november-1-party-registration.csv`, then generated `data/de-2024-agp-turnout-reconciliation.csv` and summary JSON with `scripts/normalize-de-agp-turnout.mjs`. The reconciliation totals are 537 AGP election-district rows, 788,864 registered voters, and 518,086 voted statewide; the November 1 registration CSV sums to 790,955 registered voters. Keep EAC fallback active until AGP denominator timing and voted-versus-ballots-cast semantics are reviewed.

@@ -381,16 +381,15 @@
       "stateName": "Delaware",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout_geometry_admin_context",
+      "dataFamily": "results_review_turnout_geometry_admin_context",
       "tier": "tier_5_digital_inconsistent",
-      "reportingGrain": "county_or_election_district",
+      "reportingGrain": "county_and_election_district",
       "exportFormats": [
-        "official HTML report",
-        "official Power BI report",
-        "official TXT turnout/registration report",
-        "official CSV registration reports",
-        "FirstMap GIS leads",
-        "EAC fallback turnout"
+        "official HTML report tables",
+        "official statewide CSV export",
+        "official AGP fixed-width text",
+        "EAC fallback turnout CSV",
+        "county GeoJSON"
       ],
       "sourceUrls": [
         "https://elections.delaware.gov/elections/election_archive.html",
@@ -405,26 +404,25 @@
         "https://de-firstmap-delaware.hub.arcgis.com/maps/delaware::election-districts-1"
       ],
       "availableFields": [
-        "official 2024 General Election report and Power BI source leads",
-        "official write-in votes PDF",
-        "official election-district and county/state age-group registered/voted report",
-        "official monthly county registration CSVs",
-        "official election-district geometry leads",
-        "county equipment context from Verified Voting"
+        "official county presidential totals",
+        "official election-district President rows",
+        "official election-district U.S. Senate comparison rows",
+        "EAC fallback turnout rows",
+        "DOE AGP state-native registered/voted reconciliation lead",
+        "county geometry",
+        "supplemental county equipment context"
       ],
       "missingFields": [
-        "stable machine-readable 2024 President result export",
-        "same-grain comparison contest export",
-        "loaded state-native turnout replacement",
-        "election-district result-to-geometry crosswalk",
-        "normalized 2012/2016/2020 historical baselines",
-        "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
+        "active state-native turnout replacement",
+        "election-district boundary geometry and result-label crosswalk",
+        "official 2012/2016/2020 historical baseline rows",
+        "normalized audit, recount, CVR availability, incident, correction, litigation, custody, and tabulator-log rows"
       ],
-      "parserStatus": "EAC turnout config exists; data/de-2024-data-coverage-inventory.json and data/de-2024-source-request-matrix.tsv document official DOE report/Power BI, AGP turnout, registration CSV, FirstMap geometry, historical archive, and FOIA source leads; no native result or review parser is loaded",
+      "parserStatus": "delawareOfficialReportHtml loaded for official county President rows and election-district President-versus-U.S.-Senate review rows; EAC fallback turnout remains active with AGP reconciliation artifact retained",
       "manualReviewBurden": "medium",
-      "confidence": "candidate",
-      "caveats": "The official 2024 result route is digital but not confirmed as a stable bulk export from scripted inspection; older Delaware raw text archive patterns returned 404 for analogous 2024 paths. Current ETL remains EAC-turnout-only until official President plus same-grain comparison rows and state-native turnout semantics are normalized.",
-      "nextAction": "Use data/de-2024-source-request-matrix.tsv to collect/export official 2024 President and U.S. Senate rows, reconcile the DOE AGP registered/voted report against EAC fallback, and collect FirstMap geometry/crosswalk plus audit/CVR/recount/incident/correction/litigation records."
+      "confidence": "loaded_with_caveat",
+      "caveats": "The DOE report CSV is statewide only, so local review rows parse from official HTML report tables. Active turnout remains EAC fallback because DOE AGP voted and registered totals differ from EAC fallback semantics. Election-district geometry/crosswalks and official historical/admin-context rows remain unloaded.",
+      "nextAction": "Review AGP voted-versus-ballots-cast semantics before any turnout replacement, then collect FirstMap election-district geometry/crosswalks and official historical/admin artifacts."
     },
     {
       "state": "FL",

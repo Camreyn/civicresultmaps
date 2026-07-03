@@ -3335,6 +3335,258 @@ class _HtmlTableParser(HTMLParser):
             self._in_row = False
 
 
+class _DelawareReportParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.tables: list[dict[str, Any]] = []
+        self.section = ""
+        self.contest = ""
+        self.unit = ""
+        self._heading: tuple[str, str] | None = None
+        self._heading_text: list[str] = []
+        self._table: list[list[str]] = []
+        self._row: list[str] = []
+        self._cell: list[str] = []
+        self._in_row = False
+        self._in_cell = False
+        self._in_table = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        tag = tag.lower()
+        attr_map = {name: value or "" for name, value in attrs}
+        if tag in {"h2", "h3", "h4"}:
+            self._heading = (tag, attr_map.get("class", ""))
+            self._heading_text = []
+        elif tag == "table":
+            self._in_table = True
+            self._table = []
+        elif tag == "tr" and self._in_table:
+            self._in_row = True
+            self._row = []
+        elif tag in {"td", "th"} and self._in_row:
+            self._in_cell = True
+            self._cell = []
+
+    def handle_data(self, data: str) -> None:
+        if self._heading:
+            self._heading_text.append(data)
+        if self._in_cell:
+            self._cell.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        tag = tag.lower()
+        if self._heading and tag == self._heading[0]:
+            heading_tag, class_name = self._heading
+            text = " ".join("".join(self._heading_text).split())
+            if heading_tag == "h2":
+                self.section = text
+                self.contest = ""
+                self.unit = ""
+            elif "contest-title" in class_name:
+                self.contest = text
+                self.unit = ""
+            elif heading_tag == "h4":
+                self.unit = text
+            self._heading = None
+        elif tag in {"td", "th"} and self._in_cell:
+            self._row.append(" ".join("".join(self._cell).split()))
+            self._in_cell = False
+        elif tag == "tr" and self._in_row:
+            if self._row:
+                self._table.append(self._row)
+            self._in_row = False
+        elif tag == "table" and self._in_table:
+            if self._table:
+                self.tables.append(
+                    {
+                        "section": self.section,
+                        "contest": self.contest,
+                        "unit": self.unit,
+                        "rows": self._table,
+                    }
+                )
+            self._in_table = False
+
+
+DELAWARE_COUNTY_COLUMNS = {
+    "New Castle": "New Castle County",
+    "Kent": "Kent County",
+    "Sussex": "Sussex County",
+}
+
+
+def _delaware_report_tables(source: SourceConfig) -> list[dict[str, Any]]:
+    parser = _DelawareReportParser()
+    parser.feed(_artifact_path(source).read_text(encoding="utf-8-sig"))
+    return parser.tables
+
+
+def _delaware_party_bucket(party: Any) -> str:
+    normalized = " ".join(str(party or "").lower().split())
+    if "democratic" in normalized or normalized == "democrat":
+        return "dem"
+    if "republican" in normalized:
+        return "rep"
+    return "other"
+
+
+def _delaware_table_totals(rows: list[list[str]], column: str = "Total Votes") -> dict[str, int]:
+    if not rows:
+        return {"dem": 0, "rep": 0, "other": 0, "total": 0}
+    columns = _column_index(rows[0])
+    if column not in columns:
+        raise ValueError(f"Delaware report table missing {column!r} column")
+
+    totals = {"dem": 0, "rep": 0, "other": 0, "total": 0}
+    party_index = columns.get("Party", 1)
+    for row in rows[1:]:
+        if len(row) <= columns[column]:
+            continue
+        votes = int_text(row[columns[column]])
+        bucket = _delaware_party_bucket(row[party_index] if len(row) > party_index else "")
+        totals[bucket] += votes
+        totals["total"] += votes
+    return totals
+
+
+def _delaware_election_district_counties(source: SourceConfig) -> dict[str, str]:
+    current_county = ""
+    district_counties: dict[str, str] = {}
+    for raw_line in _artifact_path(source).read_text(encoding="utf-8-sig").splitlines():
+        line = " ".join(raw_line.strip().split())
+        if line in {"KENT COUNTY", "NEW CASTLE COUNTY", "SUSSEX COUNTY"}:
+            current_county = line.title()
+            continue
+        if line.startswith("Representative District "):
+            continue
+        match = re.fullmatch(r"Election District (\d{2}-\d{2})", line)
+        if match and current_county:
+            district_counties[f"Election District {match.group(1)}"] = current_county
+    return district_counties
+
+
+def _delaware_official_report_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw["certifiedResults"]
+    source = sources[section["sourceId"]]
+    tables = _delaware_report_tables(source)
+
+    county_table = next(
+        (
+            table
+            for table in tables
+            if table["section"] == "By County"
+            and table["contest"] == section.get("contest", "President and Vice President")
+        ),
+        None,
+    )
+    if not county_table:
+        raise ValueError("Delaware report is missing By County President table")
+
+    result_rows: list[dict[str, Any]] = []
+    for column, county in DELAWARE_COUNTY_COLUMNS.items():
+        totals = _delaware_table_totals(county_table["rows"], column)
+        result_rows.append(
+            {
+                "jurisdictionName": county,
+                "jurisdictionCode": county.upper().replace(" COUNTY", ""),
+                "level": "county",
+                "votes": {
+                    "Trump": totals["rep"],
+                    "Harris": totals["dem"],
+                    "Other": totals["other"],
+                },
+                "totalVotes": totals["total"],
+                "margin": totals["rep"] - totals["dem"],
+                "marginPct": pct(totals["rep"] - totals["dem"], totals["total"]),
+                "sourceId": source.id,
+            }
+        )
+
+    review_section = config.raw.get("reviewCharts", {})
+    comparison_section = config.raw.get("comparisonContest", {})
+    county_map_source_id = review_section.get("countyMapSourceId")
+    district_counties = (
+        _delaware_election_district_counties(sources[county_map_source_id])
+        if county_map_source_id
+        else {}
+    )
+    president_by_district = {
+        table["unit"]: _delaware_table_totals(table["rows"])
+        for table in tables
+        if table["section"] == review_section.get("section", "By Election District")
+        and table["contest"] == review_section.get("contest", "President and Vice President")
+    }
+    comparison_by_district = {
+        table["unit"]: _delaware_table_totals(table["rows"])
+        for table in tables
+        if table["section"] == review_section.get("section", "By Election District")
+        and table["contest"] == comparison_section.get("contest", "U.S. Senator")
+    }
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    missing_county_units: list[str] = []
+    for unit in sorted(president_by_district):
+        president = president_by_district[unit]
+        if not president["total"]:
+            continue
+        county = district_counties.get(unit)
+        if not county:
+            missing_county_units.append(unit)
+            county = "Unknown County"
+        comparison = comparison_by_district.get(unit)
+        has_comparison = bool(comparison and comparison["total"])
+        if has_comparison:
+            comparison_rows += 1
+        review_rows.append(
+            {
+                "county": county,
+                "localUnit": unit,
+                "totalVotes": president["total"],
+                "harris": president["dem"],
+                "trump": president["rep"],
+                "harrisShare": pct(president["dem"], president["total"]),
+                "trumpShare": pct(president["rep"], president["total"]),
+                "demDropoff": pct(president["dem"] - comparison["dem"], president["total"]) if has_comparison else 0,
+                "repDropoff": pct(president["rep"] - comparison["rep"], president["total"]) if has_comparison else 0,
+                "coverageMode": review_section.get("comparisonCoverageMode", "presidentVsSenate") if has_comparison else "voteShareOnly",
+                "comparisonContest": comparison_section.get("label", "U.S. Senator") if has_comparison else "",
+                "comparisonDemVotes": comparison["dem"] if has_comparison else 0,
+                "comparisonRepVotes": comparison["rep"] if has_comparison else 0,
+                "comparisonOtherVotes": comparison["other"] if has_comparison else 0,
+                "sourceId": source.id,
+            }
+        )
+
+    if missing_county_units:
+        raise ValueError(
+            "Delaware AGP county crosswalk is missing election districts: "
+            + ", ".join(missing_county_units[:10])
+        )
+
+    turnout_rows: list[dict[str, Any]] = []
+    turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
+    if config.raw.get("turnout", {}).get("format") in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
+        turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": comparison_section.get("label", "U.S. Senator"),
+        **turnout_metrics,
+    }
+    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), review_rows, turnout_rows, metrics
+
+
 
 def _florida_extract_totals(source: SourceConfig) -> dict[str, Any]:
     with _artifact_path(source).open("r", encoding="latin-1", newline="") as handle:
@@ -6920,6 +7172,18 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeWashingtonCsvExports",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "DE" and config.raw.get("certifiedResults", {}).get("format") == "delawareOfficialReportHtml":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _delaware_official_report_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeDelawareOfficialReportHtml",
             "resultRows": result_rows,
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
