@@ -603,18 +603,19 @@ NJ remains in sourceDiscoveryQueue and is not added to completedNativeStates. Re
 
 NM remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. No native New Mexico result or advisory review parser is loaded in this pass; current advisory indicators are not calculated from review rows because no NM review rows are loaded. This is source-coverage context only, not evidence of fraud or misconduct.
 
-## Maine Wave 15 Source Discovery
+## Maine Wave 17 Native Activation
 
-- Active config: `etl/state-configs/me.json` remains EAC turnout-only, with 497 fallback jurisdiction turnout rows and no native certified result or advisory review rows loaded.
-- Repo drift: `docs/developer/index.md` is missing in this worktree as of the July 2, 2026 first-read check.
-- Official 2024 result leads: the Maine Secretary of State 2024 results page links machine-readable Excel workbooks for U.S. President by County/Town, U.S. President by Congressional District, United States Senator, and congressional contests. The preferred same-grain comparison lead is the U.S. Senate workbook after President and Senate rows are collected and reconciled.
-- RCV/CVR lead: Representative to Congress District 2 has an official certified RCV summary PDF, first-choice workbook, and official Excel cast-vote-record/export files. These are contest-specific auditability/context sources, not a statewide President-versus-Senate substitute.
-- Turnout denominator lead: Maine SOS previous enrollment files for the November 5, 2024 General/Referendum Election provide active/inactive registered and enrolled voter denominator leads. They should not replace EAC turnout until official ballots-cast or voter-participation rows at compatible grain are collected and reconciled.
-- Geometry/admin context: county geometry and Verified Voting equipment context are present. Municipality/town geometry or a reporting-unit crosswalk, plus normalized audit/recount/CVR availability/incident/correction/litigation rows, remain source-discovery work.
-- Historical leads: official Maine SOS archive pages expose 2020, 2016, and 2012 presidential workbooks, with 2012 also providing municipal/county U.S. Senate workbook leads.
-- Current queue decision: ME stays in `sourceDiscoveryQueue` and out of `completedNativeStates` until the official workbooks are collected, parsed, reconciled, and review rows can be generated. The current advisory indicator calculation is expected to produce zero ME indicators because no ME review rows or same-grain comparison rows are loaded.
+- Config: `etl/state-configs/me.json`
+- Authority: Maine Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
+- County/non-geographic result source: `data/me-official-sources/me-2024-president-county-town-final-corrected-20241205.xlsx`, collected from the official Maine SOS corrected final President by County/Town workbook
+- Local review source: `data/me-official-sources/me-2024-us-senator-county-town-final-corrected-20241205.xlsx`
+- Comparison contest: U.S. Senate, same official county/town source family, with 509 same-grain town comparisons and 3 vote-share-only town rows where Senate grain differs
+- Turnout source: EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/me-2024-eac-turnout.csv`; Maine SOS active/inactive registered-enrolled files are collected in `data/me-official-sources/` as denominator leads but are not turnout replacements
+- Historical baseline source: official Maine SOS 2016 and 2020 President workbooks loaded for 34 county/non-geographic rows; official 2012 county and municipal XLS files are collected but blocked pending legacy `.xls` support or conversion
+- County boundary: `data/me-counties.geojson`; State UOCAVA is non-geographic and is excluded from county map joins
+- Coverage/admin inventory: `data/me-2024-data-coverage-inventory.json`
 
-Current handoff artifacts: `data/me-2024-data-coverage-inventory.json` and `data/me-2024-source-request-matrix.tsv`.
+Expected validation: 17 certified result rows including State UOCAVA, 16 county geometry features, 831,375 candidate votes, 435,652 Harris votes, 377,977 Trump votes, 17,746 Other votes, 512 town review rows, 509 matched U.S. Senate comparison rows, 497 EAC fallback turnout rows, and 34 historical baseline rows. Remaining gaps are Maine-native ballots-cast or voter-participation rows, municipality/town geometry or a reporting-unit crosswalk, legacy `.xls` parsing/conversion for 2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory review rows are public-interest screening inputs only, not findings.
 
 ## Rhode Island Wave 15 Source Discovery
 
