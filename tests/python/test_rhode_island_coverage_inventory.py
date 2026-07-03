@@ -27,9 +27,30 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         self.assertFalse(config.raw.get("turnoutOnly", False))
         self.assertEqual(config.expected.sources, len(config.sources))
         self.assertEqual(artifact["native"]["parser"], "nativeRhodeIslandBoeCsv")
-        self.assertEqual(len(artifact["native"]["resultRows"]), 41)
+        result_rows = artifact["native"]["resultRows"]
+        county_rows = [row for row in result_rows if row["level"] == "county"]
+        non_geographic_rows = [row for row in result_rows if row["level"] != "county"]
+        self.assertEqual(len(result_rows), 7)
+        self.assertEqual(len(county_rows), 5)
+        self.assertEqual(len(non_geographic_rows), 2)
+        self.assertEqual({row["jurisdictionName"] for row in county_rows}, {
+            "Bristol County",
+            "Kent County",
+            "Newport County",
+            "Providence County",
+            "Washington County",
+        })
+        self.assertEqual({row["jurisdictionName"] for row in non_geographic_rows}, {
+            "Federal Precincts",
+            "Statewide Reconciliation Delta",
+        })
+        self.assertEqual(sum(row["totalVotes"] for row in county_rows), 511784)
         self.assertEqual(len(artifact["native"]["reviewRows"]), 444)
         self.assertEqual(len(artifact["native"]["historicalRows"]), 80)
+        self.assertTrue(artifact["capabilities"]["map"])
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 7)
+        self.assertEqual(artifact["native"]["metrics"]["nativeMapResultRows"], 5)
+        self.assertEqual(artifact["native"]["metrics"]["nativeNonGeographicResultRows"], 2)
         self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 513386)
         self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 285156)
         self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 214406)

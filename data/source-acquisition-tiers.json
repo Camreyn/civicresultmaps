@@ -1827,7 +1827,7 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_geometry_admin_context",
       "tier": "tier_1_official_export_database",
-      "reportingGrain": "city_town_federal_reconciliation_and_reporting_unit_review",
+      "reportingGrain": "county_aggregated_city_town_federal_reconciliation_and_reporting_unit_review",
       "exportFormats": [
         "official long-format ZIP",
         "official short-format ZIP",
@@ -1846,7 +1846,7 @@
         "https://rigov.s3.amazonaws.com/election/results/2024/general_election/statewide.json"
       ],
       "availableFields": [
-        "official city/town and federal-precinct presidential rows with posted-total reconciliation delta",
+        "official city/town presidential rows aggregated to county result-map rows, plus federal-precinct and posted-total reconciliation rows",
         "official same-key President-versus-U.S. Senate review rows from the BOE long-format ZIP",
         "EAC fallback turnout rows",
         "official 2012 and 2016 city/town/federal historical baselines",
@@ -1854,14 +1854,14 @@
       ],
       "missingFields": [
         "state-native turnout and registration denominator rows",
-        "result-ready city/town or precinct geometry/crosswalk",
+        "result-ready city/town or precinct geometry/crosswalk for finer overlays",
         "decoded and reconciled 2020 historical baseline rows",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
       "parserStatus": "nativeRhodeIslandBoeCsv loaded from data/ri-2024-general-election-long-format.zip and data/ri-2024-general-election-statewide.json; data/ri-2024-data-coverage-inventory.json documents ZIP-vs-posted deltas, EAC turnout fallback, partial historical baselines, and remaining blockers",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The 2024 raw technical ZIP is 32 President votes and 29 U.S. Senate votes below posted statewide JSON, so certified President rows include a non-geographic reconciliation delta and review rows exclude posted-total deltas, zero-vote Limited rows, and presidential-only rows. Turnout remains EAC fallback. Map capability remains disabled until result-ready geometry/crosswalks are loaded.",
+      "caveats": "The 2024 raw technical ZIP is 32 President votes and 29 U.S. Senate votes below posted statewide JSON, so certified President rows include a non-geographic reconciliation delta and review rows exclude posted-total deltas, zero-vote Limited rows, and presidential-only rows. Turnout remains EAC fallback. County map capability is enabled through official city/town-to-county aggregation; finer overlays still need result-ready city/town or precinct geometry/crosswalks.",
       "nextAction": "Decode/reconcile the 2020 archive vote-group layout, collect state-native turnout denominators, collect city/town or precinct geometry/crosswalks, and normalize audit/CVR/recount/incident/correction/litigation records."
     },
     {
