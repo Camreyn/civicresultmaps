@@ -549,20 +549,21 @@ No native result or advisory review parser is loaded. The 2024 report is officia
 - Administration context: `data/ct-2024-equipment-context.csv` remains supplemental Verified Voting context only; UConn VoTeR post-election audit, CVR availability, recount, incident, correction, and litigation rows are not normalized
 
 CT is now listed in `completedNativeStates` for native staging coverage, with caveats. The source inventory and request matrix are `data/ct-2024-data-coverage-inventory.json` and `data/ct-2024-source-request-matrix.tsv`. Current CT advisory output is town-level public-interest screening context only; it is not precinct/ward evidence and is not evidence of fraud or misconduct.
-## Hawaii Wave 14 Source Discovery
+## Hawaii Wave 19 Native Activation
 
 - Config: `etl/state-configs/hi.json`
 - Authority: Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
-- Official result leads collected: `data/hi-2024-general-summary.txt` and `data/hi-2024-general-precinct-detail.txt`, downloaded from Hawaii Office of Elections certified 2024 General Election text exports
-- Preferred comparison contest: U.S. Senate, same precinct/split text export as President, with a quick-pass caveat that U.S. Senate rows cover 496 of 497 precinct/split IDs
-- Turnout source: active ETL remains EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/hi-2024-eac-turnout.csv`; the Hawaii Office of Elections registration and turnout statistics page is documented as a state-native replacement lead
-- County boundary: `data/hi-counties.geojson`
+- Result/review parser: `nativeHawaiiOfficeText` in `civic_etl/native.py`
+- Official result sources: `data/hi-2024-general-summary.txt` and `data/hi-2024-general-precinct-detail.txt`, downloaded from Hawaii Office of Elections certified 2024 General Election text exports
+- County result rows: 4 county rows aggregated from official numbered precinct/split rows, totaling 516,701 presidential votes: 313,044 Harris, 193,661 Trump, and 9,996 Other. Kalawao has county geometry and EAC turnout context but no separate Hawaii Office result county row.
+- Local review rows: 467 nonzero numbered precinct/split President-versus-U.S.-Senate rows. The parser excludes 27 zero-vote numbered President keys and three zero-vote non-geographic President keys (`PRES`, `OS I`, `OS II`); retained review rows still aggregate to the certified statewide presidential total.
+- Turnout source: active ETL remains EAC 2024 jurisdiction fallback rows at `data/eac-2024-state-turnout/hi-2024-eac-turnout.csv`; the Hawaii Office of Elections registration and turnout statistics page is documented as a state-native replacement lead pending county registered-voter distribution and Kalawao reconciliation.
+- County boundary: `data/hi-counties.geojson`; precinct geometry/crosswalks are not loaded.
 - Coverage inventory: `data/hi-2024-data-coverage-inventory.json`
 - Source request matrix: `data/hi-2024-source-request-matrix.tsv`
 - Equipment context: `data/hi-2024-equipment-context.csv` from Verified Voting, context only
 
-HI remains in `sourceDiscoveryQueue` and is not added to `completedNativeStates`. Remaining work is a Hawaii text parser for summary/precinct detail files, turnout-page normalization and reconciliation, precinct geometry/crosswalk collection, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation rows. Current HI advisory indicators are not calculated from review rows because no HI review rows are loaded.
-
+HI is now listed in `completedNativeStates` for native staging coverage with caveats. Remaining work is turnout-page normalization and reconciliation, precinct geometry/crosswalk collection, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation rows. Current advisory review rows are source-review signals only, not findings of fraud or misconduct.
 ## North Dakota Wave 18 Native Activation
 
 - Config: `etl/state-configs/nd.json`

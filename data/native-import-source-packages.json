@@ -18,6 +18,7 @@
     "DE",
     "FL",
     "GA",
+    "HI",
     "IA",
     "ID",
     "IL",
@@ -2251,6 +2252,87 @@
       "nextAction": "Collect and normalize municipal President/Senate/turnout PDFs, municipal geometry/crosswalks, official historical baselines, and official audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
+      "state": "HI",
+      "name": "Hawaii",
+      "priority": 11,
+      "nativeReadiness": "complete_county_result_precinct_split_review_eac_turnout_with_caveats",
+      "authority": "Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/hi.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Hawaii Office of Elections 2024 General Election text exports",
+          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
+          "localFile": "data/hi-2024-general-summary.txt; data/hi-2024-general-precinct-detail.txt",
+          "parserHint": "nativeHawaiiOfficeText decodes UTF-16 exports, skips the Format#1 banner, cross-checks certified statewide President totals from summary.txt, and aggregates county rows from numbered precinct/split rows in media.txt."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Hawaii Office of Elections 2024 General Election precinct detail text export",
+          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
+          "localFile": "data/hi-2024-general-precinct-detail.txt",
+          "level": "precinct_split",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Pairs President contest 283 and U.S. Senate contest 100 by precinct_splitId for 467 nonzero numbered precinct/split review rows. Excludes 27 zero-vote numbered President keys and three zero-vote non-geographic President keys from advisory rows."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 Hawaii county/jurisdiction fallback plus Hawaii Office turnout-table lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv; data/hi-2024-data-coverage-inventory.json",
+          "level": "jurisdiction_fallback_active_county_state_native_lead",
+          "denominator": "Active ETL uses EAC registered voters. Hawaii Office of Elections turnout table reports 522,236 statewide turnout and 860,868 registered voters as a candidate replacement.",
+          "parserHint": "Current ETL uses eacTurnoutCsv. Normalize and reconcile the state table, county registered-voter distribution, and Kalawao handling before replacing fallback rows."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2715%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/hi-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY",
+          "parserHint": "County geometry supports four loaded result counties plus Kalawao geometry. Precinct boundary geometry and precinct_splitId crosswalks are not loaded."
+        },
+        "coverageInventory": {
+          "sourceTitle": "Hawaii 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://elections.hawaii.gov/election-results/",
+          "localFile": "data/hi-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded text exports, EAC turnout fallback, state-native turnout lead, GIS/crosswalk needs, official historical-source paths, and audit/CVR/recount/incident/correction/litigation caveats."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Hawaii 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/15",
+          "localFile": "data/hi-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or precinct-uniformity proof."
+        }
+      },
+      "expected": {
+        "countyRows": 4,
+        "geometryFeatures": 5,
+        "stateTotal": 516701,
+        "trump": 193661,
+        "harris": 313044,
+        "other": 9996,
+        "localReviewRows": 467,
+        "turnoutRows": 5,
+        "historicalBaselineRows": 0
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_precinct_split_nonzero_numbered_units",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_native_lead",
+        "historicalBaselineMode": "official_source_paths_identified_not_loaded",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      },
+      "caveats": [
+        "The county result rows are aggregated from official numbered precinct/split rows using documented 2024 district ranges: 01-08 Hawaii, 09-14 Maui, 15-17 Kauai, and 18-51 Honolulu. Kalawao has no separate Office of Elections result county row.",
+        "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys; the 467 retained review rows still aggregate to the certified statewide presidential total.",
+        "Active turnout remains EAC fallback, including a warning-required Kalawao row with placeholder values, until the Hawaii Office turnout table is normalized and reconciled.",
+        "County geometry is loaded; precinct boundaries/crosswalks are not loaded.",
+        "Official 2012/2016/2020 historical baselines and normalized audit, CVR availability, recount, incident, correction, and litigation rows remain missing.",
+        "Advisory review rows are public-interest source-review inputs only, not findings of fraud or misconduct."
+      ],
+      "legacyReferenceBundle": "data/hi-2024-data-coverage-inventory.json",
+      "nextAction": "Normalize state-native turnout, collect precinct geometry/crosswalks, add official historical baseline rows, and normalize or request audit/CVR/recount/incident/correction/litigation context."
+    },
+    {
       "state": "NM",
       "name": "New Mexico",
       "priority": 12,
@@ -2891,77 +2973,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36",
           "localFile": "data/verifiedvoting-ny-2024-equipment.json; data/ny-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "HI",
-      "name": "Hawaii",
-      "priority": 11,
-      "currentStatus": "official_machine_readable_collected_not_loaded_turnout_only_eac_active",
-      "requestMatrixArtifact": "data/hi-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://elections.hawaii.gov/election-results/",
-        "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
-        "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
-        "https://files.hawaii.gov/elections/files/results/2024/General/hi_sov.pdf",
-        "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
-        "https://elections.hawaii.gov/resources/maps/geographic-information-systems-gis-files/",
-        "https://elections.hawaii.gov/voting/election-security/",
-        "https://elections.hawaii.gov/2024-general-election-provisional-ballot-dispositions/",
-        "https://elections.hawaii.gov/resources/absentee-voting-report/"
-      ],
-      "requiredArtifacts": [
-        "Hawaii Office of Elections summary.txt parser for certified statewide President totals",
-        "Hawaii Office of Elections media.txt parser for precinct/split President-versus-U.S.-Senate review rows with the 496-of-497 Senate comparison-unit caveat preserved",
-        "state-native turnout table normalizer and reconciliation against EAC fallback/Kalawao handling before replacing active turnout rows",
-        "official precinct boundary geometry or precinct_splitId crosswalk if subcounty map overlays are required",
-        "official 2012, 2016, and 2020 historical baseline artifacts normalized from Hawaii Office of Elections results pages",
-        "normalized audit/recount/CVR availability/incident/correction/litigation rows if published or request-produced"
-      ],
-      "preferredComparisonContest": "U.S. Senate from the official precinct detail text export; quick source inspection found same-grain rows for 496 of 497 precinct/split IDs.",
-      "parserNeeded": "A Hawaii Office of Elections text parser is needed for summary.txt and media.txt. The source files are collected at data/hi-2024-general-summary.txt and data/hi-2024-general-precinct-detail.txt and must be decoded as UTF-16 and parsed with embedded-newline-safe CSV handling after skipping the Format#1 banner. Active HI ETL still uses eacTurnoutCsv only.",
-      "blocker": "HI should remain in sourceDiscoveryQueue and out of completedNativeStates because the official result/review text exports are collected but not parsed into native certified result or advisory review rows. Turnout remains EAC fallback despite a state-native turnout table lead, precinct geometry/crosswalks are not loaded, historical baselines are not normalized, and audit/CVR/incident/correction/litigation rows are source paths only.",
-      "availableArtifacts": {
-        "presidentialResultsLead": {
-          "sourceTitle": "Hawaii Office of Elections 2024 General Election statewide summary text export",
-          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
-          "localFile": "data/hi-2024-general-summary.txt",
-          "parserHint": "Decode UTF-16; skip Format#1 banner; parse CSV with embedded newlines in quoted candidate names; President contest 283 totals 516,701 votes."
-        },
-        "localReviewRowsLead": {
-          "sourceTitle": "Hawaii Office of Elections 2024 General Election statewide precinct detail text export",
-          "sourceUrl": "https://files.hawaii.gov/elections/files/results/2024/General/media.txt",
-          "localFile": "data/hi-2024-general-precinct-detail.txt",
-          "level": "precinct_split",
-          "comparisonContest": "U.S. Senate",
-          "parserHint": "Decode UTF-16; pair President contest 283 and U.S. Senate contest 100 by precinct_splitId; preserve the quick-pass finding that Senate rows cover 496 of 497 precinct/split IDs."
-        },
-        "turnout": {
-          "sourceTitle": "EAC fallback plus Hawaii Office of Elections state-native turnout table lead",
-          "sourceUrl": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
-          "localFile": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv; data/hi-2024-data-coverage-inventory.json",
-          "level": "jurisdiction_fallback_and_county_state_native_lead",
-          "denominator": "EAC registered voters for active rows; Hawaii Office of Elections page reports 2024 General registered-voter and turnout rows as a candidate replacement",
-          "parserHint": "Current ETL uses eacTurnoutCsv. A future Hawaii turnout normalizer should scrape or manually normalize the official page and reconcile county totals and Kalawao handling."
-        },
-        "countyBoundary": {
-          "sourceTitle": "U.S. Census TIGERweb county geography",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2715%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/hi-counties.geojson",
-          "parserHint": "County map joins only; precinct boundaries are not included."
-        },
-        "coverageInventory": {
-          "sourceTitle": "Hawaii 2024 data coverage and administration source inventory",
-          "sourceUrl": "https://elections.hawaii.gov/election-results/",
-          "localFile": "data/hi-2024-data-coverage-inventory.json",
-          "parserHint": "Documents official source leads, collected text artifacts, turnout replacement lead, GIS/crosswalk needs, recount/provisional/security source paths, and display caveats."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier Hawaii 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/15",
-          "localFile": "data/hi-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or precinct-uniformity proof."
         }
       }
     },

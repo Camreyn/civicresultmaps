@@ -3,6 +3,8 @@ import json
 import unittest
 from pathlib import Path
 
+from civic_etl.pipeline import build_staging_artifact, load_config, validate_config
+
 
 class HawaiiCoverageInventoryTests(unittest.TestCase):
     def load_json(self, path):
@@ -14,24 +16,35 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(lines[0].strip(), "Format#1")
         return list(csv.DictReader(lines[1:]))
 
-    def test_hawaii_config_tracks_candidate_official_sources_without_enabling_review(self):
-        config = self.load_json("etl/state-configs/hi.json")
-        sources = {source["id"]: source for source in config["sources"]}
+    def test_hawaii_config_loads_official_text_results_and_review_rows(self):
+        config = load_config("etl/state-configs/hi.json")
+        report = validate_config(config)
+        artifact = build_staging_artifact(config, report)
+        native = artifact["native"]
+        metrics = native["metrics"]
+        sources = {source["id"]: source for source in artifact["sources"]}
 
-        self.assertTrue(config["turnoutOnly"])
-        self.assertEqual(config["expected"]["sources"], len(config["sources"]))
-        self.assertEqual(config["expected"]["resultRows"], 0)
-        self.assertEqual(config["expected"]["reviewRows"], 0)
-        self.assertEqual(config["expected"]["turnoutRows"], 5)
-        self.assertEqual(sources["hi-2024-general-summary"]["status"], "candidate")
-        self.assertEqual(
-            sources["hi-2024-general-precinct-detail"]["authority"],
-            "Hawaii Office of Elections",
-        )
-        self.assertEqual(
-            sources["hi-2024-data-coverage-inventory"]["localFile"],
-            "data/hi-2024-data-coverage-inventory.json",
-        )
+        self.assertTrue(report.passed)
+        self.assertFalse(config.raw.get("turnoutOnly", False))
+        self.assertEqual(config.expected.sources, len(config.sources))
+        self.assertEqual(native["parser"], "nativeHawaiiOfficeText")
+        self.assertEqual(len(native["resultRows"]), 4)
+        self.assertEqual(len(native["reviewRows"]), 467)
+        self.assertEqual(len(native["turnoutRows"]), 5)
+        self.assertEqual(metrics["nativeResultTotalVotes"], 516701)
+        self.assertEqual(metrics["nativeHarrisVotes"], 313044)
+        self.assertEqual(metrics["nativeTrumpVotes"], 193661)
+        self.assertEqual(metrics["nativeOtherVotes"], 9996)
+        self.assertEqual(metrics["nativeReviewCertifiedVoteGap"], 0)
+        self.assertEqual(metrics["nativeReviewPresidentialVotes"], 516701)
+        self.assertEqual(metrics["nativeComparisonRows"], 467)
+        self.assertEqual(metrics["nativeHawaiiNonGeographicPresidentKeysExcluded"], 3)
+        self.assertEqual(metrics["nativeHawaiiNonGeographicSenateKeysExcluded"], 2)
+        self.assertEqual(metrics["nativeHawaiiZeroVoteNumberedPresidentKeysSkipped"], 27)
+        self.assertEqual(metrics["nativeHawaiiMissingComparisonRows"], 0)
+        self.assertEqual(sources["hi-2024-general-summary"]["status"], "loaded")
+        self.assertEqual(sources["hi-2024-general-precinct-detail"]["status"], "loaded")
+        self.assertEqual(sources["hi-2024-data-coverage-inventory"]["status"], "candidate")
 
     def test_hawaii_official_text_exports_have_expected_federal_totals(self):
         summary = self.load_hi_csv("data/hi-2024-general-summary.txt")
@@ -41,12 +54,19 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         senate_summary = [row for row in summary if row["#Contest ID"] == "100"]
         president_precinct = [row for row in precinct if row["Contest_id"] == "283"]
         senate_precinct = [row for row in precinct if row["Contest_id"] == "100"]
+        numbered_president_ids = {
+            row["precinct_splitId"]
+            for row in president_precinct
+            if row['#"Precinct_Name"'][:2].isdigit()
+            and sum(int(candidate["Mail votes"]) + int(candidate["In-Person votes"]) for candidate in president_precinct if candidate["precinct_splitId"] == row["precinct_splitId"]) > 0
+        }
 
         self.assertEqual(sum(int(row["Total Votes"]) for row in president_summary), 516701)
         self.assertEqual(sum(int(row["Total Votes"]) for row in senate_summary), 501763)
         self.assertEqual(int(president_summary[0]["Registered Voters"]), 860868)
         self.assertEqual(len({row["precinct_splitId"] for row in president_precinct}), 497)
         self.assertEqual(len({row["precinct_splitId"] for row in senate_precinct}), 496)
+        self.assertEqual(len(numbered_president_ids), 467)
         self.assertEqual(
             sum(
                 int(row["Mail votes"]) + int(row["In-Person votes"])
@@ -62,7 +82,7 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
             501763,
         )
 
-    def test_hawaii_registries_are_aligned_for_source_discovery(self):
+    def test_hawaii_registries_are_aligned_for_loaded_native_coverage(self):
         inventory = self.load_json("data/hi-2024-data-coverage-inventory.json")
         tiers = self.load_json("data/source-acquisition-tiers.json")
         native_packages = self.load_json("data/native-import-source-packages.json")
@@ -72,18 +92,15 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
             for row in tiers["states"]
             if row["state"] == "HI" and row["scope"] == "statewide"
         )
-        queue_entry = next(
-            row for row in native_packages["sourceDiscoveryQueue"] if row["state"] == "HI"
-        )
+        native_hi = next(row for row in native_packages["states"] if row["state"] == "HI")
 
         self.assertEqual(tier["tier"], "tier_1_official_export_database")
-        self.assertIn("official precinct/split President rows", tier["availableFields"])
-        self.assertIn("data/hi-2024-data-coverage-inventory.json", tier["parserStatus"])
-        self.assertNotIn("HI", native_packages["completedNativeStates"])
-        self.assertIn(
-            "official_machine_readable_collected_not_loaded",
-            queue_entry["currentStatus"],
-        )
+        self.assertEqual(tier["confidence"], "loaded_with_caveat")
+        self.assertTrue(any("official precinct/split President rows" in value for value in tier["availableFields"]))
+        self.assertIn("nativeHawaiiOfficeText", tier["parserStatus"])
+        self.assertIn("HI", native_packages["completedNativeStates"])
+        self.assertFalse(any(row["state"] == "HI" for row in native_packages.get("sourceDiscoveryQueue", [])))
+        self.assertEqual(native_hi["expected"]["localReviewRows"], 467)
         self.assertEqual(
             inventory["sourceFindings"]["sameGrainComparisonContest"]["preferredContest"],
             "U.S. Senate",
@@ -96,4 +113,3 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
