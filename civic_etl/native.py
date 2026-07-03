@@ -6583,6 +6583,243 @@ def _maine_historical_rows(config: EtlConfig, sources: dict[str, SourceConfig]) 
     }
 
 
+def _new_mexico_load_mapdata(source: SourceConfig) -> list[dict[str, Any]]:
+    data = json.loads(_artifact_path(source).read_text(encoding="utf-8-sig"))
+    if not isinstance(data, list):
+        raise ValueError(f"New Mexico SOS mapdata source {source.id} is not a JSON list")
+    return [row for row in data if isinstance(row, dict)]
+
+
+def _new_mexico_group_key(row: dict[str, Any], level: str) -> tuple[str, ...]:
+    county_id = str(row.get("CountyID") or "").strip()
+    if level == "county":
+        return (county_id,)
+    return (county_id, str(row.get("StatePrecinctID") or "").strip())
+
+
+def _new_mexico_unique_rows(rows: list[dict[str, Any]], level: str) -> tuple[list[dict[str, Any]], int]:
+    seen: set[tuple[str, ...]] = set()
+    output: list[dict[str, Any]] = []
+    for row in rows:
+        candidate_id = str(row.get("CandidateID") or "").strip()
+        key = (*_new_mexico_group_key(row, level), candidate_id)
+        if key in seen:
+            continue
+        seen.add(key)
+        output.append(row)
+    return output, len(rows) - len(output)
+
+
+def _new_mexico_count_from_percent(row: dict[str, Any], total_votes: int) -> int:
+    raw_votes = str(row.get("calcCandidateVotes") or "").strip()
+    if raw_votes != "*":
+        return int_text(raw_votes)
+    percentage = float(row.get("calcCandidatePercentage") or 0)
+    return round(percentage * total_votes)
+
+
+def _new_mexico_values_by_key(
+    source: SourceConfig,
+    level: str,
+) -> tuple[dict[tuple[str, ...], dict[str, Any]], dict[str, int]]:
+    rows, duplicate_rows = _new_mexico_unique_rows(_new_mexico_load_mapdata(source), level)
+    grouped: dict[tuple[str, ...], list[dict[str, Any]]] = {}
+    for row in rows:
+        key = _new_mexico_group_key(row, level)
+        if not all(key):
+            continue
+        grouped.setdefault(key, []).append(row)
+
+    output: dict[tuple[str, ...], dict[str, Any]] = {}
+    masked_rows = 0
+    inferred_rows = 0
+    for key, group_rows in grouped.items():
+        estimates: list[int] = []
+        for row in group_rows:
+            votes_raw = str(row.get("calcCandidateVotes") or "").strip()
+            percentage = float(row.get("calcCandidatePercentage") or 0)
+            if votes_raw == "*":
+                masked_rows += 1
+                continue
+            votes = int_text(votes_raw)
+            if votes > 0 and percentage > 0:
+                estimates.append(round(votes / percentage))
+        total_votes = sorted(estimates)[len(estimates) // 2] if estimates else sum(
+            int_text(row.get("calcCandidateVotes")) for row in group_rows
+        )
+
+        values = {"dem": 0, "rep": 0, "other": 0}
+        for row in group_rows:
+            if str(row.get("calcCandidateVotes") or "").strip() == "*":
+                inferred_rows += 1
+            votes = _new_mexico_count_from_percent(row, total_votes)
+            bucket = _party_bucket(row.get("PartyCode"), row.get("calcCandidate"))
+            if bucket:
+                values[bucket] += votes
+
+        county = _county_name(group_rows[0].get("CountyName"))
+        precinct_name = str(group_rows[0].get("PrecinctName") or "").strip()
+        precinct_id = str(group_rows[0].get("StatePrecinctID") or "").strip()
+        output[key] = {
+            **values,
+            "total": values["dem"] + values["rep"] + values["other"],
+            "county": county,
+            "countyId": key[0],
+            "precinctId": precinct_id,
+            "precinctName": precinct_name,
+        }
+
+    metrics = {
+        "rowCount": len(output),
+        "totalVotes": sum(row["total"] for row in output.values()),
+        "maskedRows": masked_rows,
+        "inferredRows": inferred_rows,
+        "duplicateRowsDropped": duplicate_rows,
+    }
+    return output, metrics
+
+
+def _new_mexico_historical_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("historicalBaselines", {})
+    if section.get("format") != "newMexicoSosMapDataJson":
+        return [], {"nativeHistoricalRows": 0}
+
+    historical_rows: list[dict[str, Any]] = []
+    masked_rows = 0
+    for item in section.get("sources", []):
+        year = int_text(item.get("year"))
+        source = sources[item["sourceId"]]
+        counties, source_metrics = _new_mexico_values_by_key(source, "county")
+        masked_rows += source_metrics["maskedRows"]
+        for values in counties.values():
+            total = values["total"]
+            if not total:
+                continue
+            historical_rows.append(
+                {
+                    "electionYear": year,
+                    "sourceId": source.id,
+                    "sourceLevel": "county",
+                    "rowMethod": "newMexicoSosMapDataJson",
+                    "jurisdictionName": values["county"],
+                    "localUnit": values["county"],
+                    "demVotes": values["dem"],
+                    "repVotes": values["rep"],
+                    "otherVotes": values["other"],
+                    "totalVotes": total,
+                    "sourceUrl": source.url,
+                    "sourceDocumentId": source.id,
+                }
+            )
+
+    expected_rows = int_text(section.get("expected", {}).get("rowCount"))
+    if expected_rows and len(historical_rows) != expected_rows:
+        raise ValueError(f"New Mexico historical baseline expected {expected_rows} rows, got {len(historical_rows)}")
+    years = sorted({row["electionYear"] for row in historical_rows})
+    return sorted(historical_rows, key=lambda row: (row["electionYear"], row["jurisdictionName"])), {
+        "nativeHistoricalRows": len(historical_rows),
+        "nativeHistoricalYears": years,
+        "nativeHistoricalMaskedRows": masked_rows,
+        "nativeHistoricalWarning": section.get("warning", ""),
+    }
+
+
+def _new_mexico_sos_mapdata_rows(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    certified_section = config.raw["certifiedResults"]
+    review_section = config.raw.get("reviewCharts", {})
+    president_county_source = sources[certified_section["sourceId"]]
+    president_precinct_source = sources[review_section["presidentSourceId"]]
+    senate_precinct_source = sources[review_section["comparisonSourceId"]]
+
+    county_results, county_metrics = _new_mexico_values_by_key(president_county_source, "county")
+    president_precincts, president_precinct_metrics = _new_mexico_values_by_key(president_precinct_source, "precinct")
+    senate_precincts, senate_precinct_metrics = _new_mexico_values_by_key(senate_precinct_source, "precinct")
+
+    result_rows: list[dict[str, Any]] = []
+    for values in county_results.values():
+        total = values["total"]
+        if not total:
+            continue
+        jurisdiction = values["county"]
+        result_rows.append(
+            {
+                "jurisdictionName": jurisdiction,
+                "jurisdictionCode": jurisdiction.upper().replace(" COUNTY", ""),
+                "level": "county",
+                "votes": {
+                    "Trump": values["rep"],
+                    "Harris": values["dem"],
+                    "Other": values["other"],
+                },
+                "totalVotes": total,
+                "margin": values["rep"] - values["dem"],
+                "marginPct": pct(values["rep"] - values["dem"], total),
+                "sourceId": president_county_source.id,
+            }
+        )
+
+    review_rows: list[dict[str, Any]] = []
+    comparison_rows = 0
+    zero_vote_units_skipped = 0
+    for key, values in sorted(president_precincts.items(), key=lambda item: (item[1]["county"], item[1]["precinctId"])):
+        total = values["total"]
+        if not total:
+            zero_vote_units_skipped += 1
+            continue
+        senate = senate_precincts.get(key)
+        if senate:
+            comparison_rows += 1
+        local_unit = values["precinctName"] or values["precinctId"]
+        review_rows.append(
+            {
+                "county": values["county"],
+                "localUnit": local_unit,
+                "totalVotes": total,
+                "harris": values["dem"],
+                "trump": values["rep"],
+                "harrisShare": pct(values["dem"], total),
+                "trumpShare": pct(values["rep"], total),
+                "demDropoff": pct(values["dem"] - senate["dem"], total) if senate else 0,
+                "repDropoff": pct(values["rep"] - senate["rep"], total) if senate else 0,
+                "coverageMode": "presidentVsSenate" if senate else "voteShareOnly",
+                "comparisonContest": review_section.get("comparisonContest", "United States Senator") if senate else "",
+                "comparisonDemVotes": senate["dem"] if senate else 0,
+                "comparisonRepVotes": senate["rep"] if senate else 0,
+                "comparisonOtherVotes": senate["other"] if senate else 0,
+                "sourceId": senate_precinct_source.id if senate else president_precinct_source.id,
+            }
+        )
+
+    turnout_rows, turnout_metrics = _normalized_turnout_rows(config, sources)
+    historical_rows, historical_metrics = _new_mexico_historical_rows(config, sources)
+    certified_total = sum(row["totalVotes"] for row in result_rows)
+    metrics = {
+        "nativeResultRows": len(result_rows),
+        "nativeResultTotalVotes": certified_total,
+        "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
+        "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
+        "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativeReviewRows": len(review_rows),
+        "nativeReviewZeroVoteUnitsSkipped": zero_vote_units_skipped,
+        "nativePresidentPrecinctKeys": president_precinct_metrics["rowCount"],
+        "nativeReviewWarning": review_section.get("warning", ""),
+        "nativeComparisonRows": comparison_rows,
+        "nativeComparisonContest": review_section.get("comparisonContest", "United States Senator"),
+        "nativeReviewPresidentialVotes": sum(row["totalVotes"] for row in review_rows),
+        "nativeReviewCertifiedVoteGap": certified_total - sum(row["totalVotes"] for row in review_rows),
+        "nativeComparisonVotes": sum(senate["total"] for senate in senate_precincts.values()),
+        "nativeMaskedCountyRows": county_metrics["maskedRows"],
+        "nativeMaskedReviewRows": president_precinct_metrics["maskedRows"] + senate_precinct_metrics["maskedRows"],
+        "nativePresidentPrecinctDuplicatesDropped": president_precinct_metrics["duplicateRowsDropped"],
+        "nativeComparisonPrecinctDuplicatesDropped": senate_precinct_metrics["duplicateRowsDropped"],
+        **turnout_metrics,
+        **historical_metrics,
+    }
+    return sorted(result_rows, key=lambda row: row["jurisdictionName"]), review_rows, turnout_rows, historical_rows, metrics
+
 def _maine_sos_xlsx_rows(
     config: EtlConfig,
     sources: dict[str, SourceConfig],
@@ -6740,6 +6977,18 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "metrics": metrics,
         }
 
+    if config.code == "NM" and config.raw.get("certifiedResults", {}).get("format") == "newMexicoSosMapDataJson":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, historical_rows, metrics = _new_mexico_sos_mapdata_rows(config, sources)
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeNewMexicoSosMapDataJson",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
+            "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
     if config.code == "CT" and config.raw.get("certifiedResults", {}).get("format") == "connecticutEmsTownJson":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _connecticut_ems_town_rows(config, sources)

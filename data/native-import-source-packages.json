@@ -13,8 +13,8 @@
     "AR",
     "AZ",
     "CA",
-    "CT",
     "CO",
+    "CT",
     "DE",
     "FL",
     "GA",
@@ -37,6 +37,7 @@
     "NE",
     "NH",
     "NJ",
+    "NM",
     "NV",
     "OH",
     "OK",
@@ -2248,6 +2249,84 @@
         "No normalized New Jersey municipal review rows, historical baseline rows, audit outcomes, CVR availability, recount, incident, correction, or litigation rows are loaded."
       ],
       "nextAction": "Collect and normalize municipal President/Senate/turnout PDFs, municipal geometry/crosswalks, official historical baselines, and official audit/CVR/recount/incident/correction/litigation artifacts."
+    },
+    {
+      "state": "NM",
+      "name": "New Mexico",
+      "priority": 12,
+      "nativeReadiness": "complete_county_result_precinct_review_eac_turnout_2016_2020_historical_with_caveats",
+      "authority": "New Mexico Secretary of State; U.S. Election Assistance Commission",
+      "configFile": "etl/state-configs/nm.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "New Mexico SOS 2024 President county mapdata API",
+          "sourceUrl": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=CTY&raceID=10079&osn=102&county=0&party=0&electionID=2882",
+          "localFile": "data/nm-2024-president-county-mapdata.json",
+          "parserHint": "nativeNewMexicoSosMapDataJson reads the official SOS county mapdata response, infers suppressed '*' counts from SOS percentages, and emits 33 county President result rows that reconcile to 923,403 votes."
+        },
+        "localReviewRows": {
+          "sourceTitle": "New Mexico SOS 2024 President and U.S. Senate precinct mapdata APIs",
+          "sourceUrl": "https://electionresults.sos.nm.gov/Default.aspx?eid=2882",
+          "localFile": "data/nm-2024-president-precinct-mapdata.json; data/nm-2024-senate-precinct-mapdata.json",
+          "level": "precinct",
+          "comparisonContest": "United States Senator",
+          "parserHint": "Pairs President and U.S. Senate rows by county and StatePrecinctID after dropping duplicate county/precinct/candidate rows. The SOS API masks many small counts; parser infers masked counts from percentages. Four zero-vote President precinct keys are skipped, leaving 2,165 nonzero review rows."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 New Mexico jurisdiction turnout fallback plus SOS turnout lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/nm-2024-eac-turnout.csv; data/nm-2024-data-coverage-inventory.json",
+          "level": "jurisdiction_fallback_active_precinct_state_native_lead",
+          "denominator": "Active ETL uses EAC registered voters. SOS results system reports eligible voters as a candidate replacement denominator.",
+          "parserHint": "Current ETL uses eacTurnoutCsv. SOS turnout details remain a lead until eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC difference are reviewed."
+        },
+        "historicalBaseline": {
+          "sourceTitle": "New Mexico SOS 2020 and 2016 President county mapdata APIs",
+          "sourceUrl": "https://www.sos.nm.gov/sos-archive/election-results-archive/",
+          "localFile": "data/nm-2020-president-county-mapdata.json; data/nm-2016-president-county-mapdata.json",
+          "parserHint": "Official SOS county mapdata API artifacts produce 66 historical baseline rows for 2020 and 2016. The 2012 archive routes to the legacy election statistics hub/PDF path and remains unnormalized."
+        },
+        "coverageInventory": {
+          "sourceTitle": "New Mexico 2024 data coverage and administration source inventory",
+          "localFile": "data/nm-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded SOS API artifacts, EAC turnout fallback, 2012 historical blocker, geometry/admin leads, and remaining caveats."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb New Mexico county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2735%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/nm-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY",
+          "parserHint": "County geometry is present for county-level map joins. Precinct/voting-district geometry and result-key crosswalks remain unloaded."
+        }
+      },
+      "expected": {
+        "countyRows": 33,
+        "stateTotal": 923403,
+        "trump": 423391,
+        "harris": 478802,
+        "other": 21210,
+        "localReviewRows": 2165,
+        "presidentPrecinctKeys": 2169,
+        "turnoutRows": 33,
+        "historicalBaselineRows": 66,
+        "geometryFeatures": 33
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_precinct_rows_with_masked_count_inference",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "historicalBaselineMode": "official_2020_2016_county_mapdata_2012_blocked"
+      },
+      "caveats": [
+        "Official SOS mapdata masks small candidate counts with '*'; the parser infers those counts from SOS percentages and inferred reporting-unit totals.",
+        "After inference and de-duplication, President and U.S. Senate precinct totals are each 7 votes below the corresponding county-level official totals; county certified rows remain authoritative.",
+        "Review rows are advisory public-interest screening context only and are not evidence of fraud or misconduct.",
+        "Active turnout remains EAC fallback until SOS eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC ballots-cast difference are reviewed.",
+        "Precinct geometry/crosswalk, 2012 historical baseline, and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded."
+      ],
+      "legacyReferenceBundle": "data/nm-2024-data-coverage-inventory.json"
     }
   ],
   "sourceDiscoveryQueue": [
@@ -2883,64 +2962,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/15",
           "localFile": "data/hi-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or precinct-uniformity proof."
-        }
-      }
-    },
-    {
-      "state": "NM",
-      "name": "New Mexico",
-      "priority": 12,
-      "currentStatus": "official_sos_results_dashboard_csv_turnout_geometry_admin_source_leads_documented_eac_turnout_only",
-      "requestMatrixArtifact": "data/nm-2024-source-request-matrix.tsv",
-      "officialSourcePages": [
-        "https://www.sos.nm.gov/sos-archive/election-results-archive/2024-election-results/",
-        "https://electionresults.sos.nm.gov/Default.aspx?eid=2882",
-        "https://electionresults.sos.nm.gov/ResultsMedia.aspx?eid=2882",
-        "https://electionresults.sos.nm.gov/resultsSW.aspx?eid=2882&map=CTY&type=FED",
-        "https://electionresults.sos.nm.gov/resultsSW.aspx?eid=2882&map=CTY&type=SW",
-        "https://electionresults.sos.nm.gov/VoterTurnoutDetails.aspx?eid=2882",
-        "https://www.sos.nm.gov/sos-archive/maps-archive/gis-voting-district-data-archive/",
-        "https://www.sos.nm.gov/voting-and-elections/how-we-secure-your-vote/",
-        "https://www.sos.nm.gov/legislation-and-lobbying/legal-resources/ipra-request-information/"
-      ],
-      "requiredArtifacts": [
-        "official New Mexico SOS 2024 General Election media/results CSV export collected into data/ before enabling certified President rows",
-        "New Mexico SOS CSV parser for President plus same-grain U.S. Senate review rows",
-        "state-native turnout details export or scrape normalized and reconciled before replacing EAC fallback turnout",
-        "official precinct or voting-district geometry plus result precinct-key crosswalk for subcounty maps",
-        "official 2020, 2016, and 2012 New Mexico historical baseline artifacts and parser",
-        "normalized audit, CVR availability, recount, incident, correction, litigation, custody, and tabulator-log artifacts if published or request-produced",
-        "data/nm-2024-data-coverage-inventory.json and data/nm-2024-source-request-matrix.tsv as the current source-search handoff"
-      ],
-      "preferredComparisonContest": "U.S. Senate from the official SOS 2024 Statewide Offices results; confirm the CSV export exposes the same precinct keys as President before loading advisory review rows.",
-      "parserNeeded": "A future New Mexico SOS results CSV parser should read official media/results exports for election 2882, aggregate President to 33 counties and statewide totals, and pair President with U.S. Senate rows at matching county/precinct keys. Active NM ETL still uses eacTurnoutCsv only.",
-      "blocker": "NM should remain in sourceDiscoveryQueue and out of completedNativeStates because official result/review exports are identified but not collected into data/ or parsed. Turnout remains EAC fallback despite an SOS turnout-details lead; precinct geometry/crosswalks, historical baselines, and audit/CVR/incident/correction/litigation rows are not normalized.",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "New Mexico 2024 data coverage and administration source inventory",
-          "sourceUrl": "https://www.sos.nm.gov/sos-archive/election-results-archive/2024-election-results/",
-          "localFile": "data/nm-2024-data-coverage-inventory.json",
-          "parserHint": "Inventory only; documents official result, comparison, turnout, geometry, historical, equipment, audit, recount, voter-data, and IPRA source leads without loading result/review/admin rows."
-        },
-        "turnout": {
-          "sourceTitle": "EAC fallback plus New Mexico SOS turnout details lead",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/nm-2024-eac-turnout.csv; data/nm-2024-data-coverage-inventory.json",
-          "level": "jurisdiction_fallback_and_precinct_state_native_lead",
-          "denominator": "EAC registered voters for active rows; SOS results system reports eligible voters as a candidate replacement denominator",
-          "parserHint": "Current ETL uses eacTurnoutCsv. A future normalizer should reconcile SOS turnout details to EAC fallback and review eligible-voter denominator semantics before replacement."
-        },
-        "countyBoundary": {
-          "sourceTitle": "New Mexico county geometry",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2735%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/nm-counties.geojson",
-          "parserHint": "County map joins only; precinct geometry/crosswalks are not loaded."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier New Mexico 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/35",
-          "localFile": "data/verifiedvoting-nm-2024-equipment.json; data/nm-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
         }
       }
     },
