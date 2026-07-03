@@ -10,7 +10,7 @@
     "historicalBaselineRows": 198,
     "geometryFeatures": 66,
     "completionDecision": "remain_in_source_discovery_queue",
-    "reason": "South Dakota now has reproducible county-level staging rows for President and at-large U.S. House, but those rows are generated from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. The official SOS canvass PDF/static export or archive election ID still needs to be retained before SD is listed as completed native coverage."
+    "reason": "South Dakota now has reproducible county-level staging rows for President and at-large U.S. House, plus retained official SD SOS archive evidence identifying 2024 General ElectionID 684. The official archive map-data totals are 194 President votes and 184 U.S. House votes below the current certified-style staging totals, so the official SOS canvass PDF/static export or another reconciling official archive payload still needs to be retained before SD is listed as completed native coverage."
   },
   "loadedArtifacts": [
     {
@@ -47,6 +47,35 @@
         "other": 0
       },
       "caveat": "At-large U.S. House rows are county-level comparison context, not precinct scatter-plot coverage."
+    },
+    {
+      "id": "sd-2024-official-results-archive-evidence",
+      "sourceTitle": "South Dakota Secretary of State 2024 General Election archive evidence",
+      "sourceUrl": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
+      "localFile": "data/sd-2024-official-results-archive-evidence.json",
+      "parser": "scripts/collect-sd-official-archive-evidence.mjs",
+      "authority": "South Dakota Secretary of State official electionresults.sd.gov archive service",
+      "reportingGrain": "county",
+      "archiveEvidence": {
+        "electionID": 684,
+        "presidentialMapDataRaceID": 12665,
+        "usHouseMapDataRaceID": 11954,
+        "presidentialCandidateListRaceID": 19833,
+        "usHouseCandidateListRaceID": 19835
+      },
+      "expectedCounts": {
+        "statewideCountyMapRows": 594,
+        "presidentRows": 264,
+        "presidentCounties": 66,
+        "presidentTotalVotes": 428728,
+        "usHouseRows": 132,
+        "usHouseCounties": 66,
+        "usHouseTotalVotes": 421264,
+        "turnoutRows": 66,
+        "turnoutBallotsCast": 436478,
+        "turnoutRegisteredVoters": 625192
+      },
+      "caveat": "Official archive lead only. Map-data totals do not reconcile to the current certified-style staging totals, so active result/review rows remain caveated secondary staging until a certified canvass/export or reconciling official payload is retained."
     },
     {
       "id": "sd-2024-eac-turnout",
@@ -114,37 +143,44 @@
       "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc?singleWsdl",
       "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=0",
       "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetMapData?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0",
-      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetVoterTurnoutData"
+      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetVoterTurnoutData",
+      "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=684",
+      "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
+      "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
+      "https://web.archive.org/web/20241105222716/https://electionresults.sd.gov/"
     ],
     "observedOfficialCapabilities": [
       "The live SD results app exposes current election CSV/media/export pages and ResultsAjax service methods, but those public pages currently default to the 2026 Primary Election, not the 2024 General Election.",
       "The ResultsExport page exposes Statewide, Legislative, and county export controls as ASP.NET postback targets for the current election; the page source did not expose a stable static 2024 General export URL.",
       "The WSDL exposes GetMapDataArchive, GetVoterTurnoutArchive, and GetProvisionalDataArchive methods that require an integer ElectionID.",
-      "The current-election GetCandidates and GetMapData endpoints responded, confirming the service family is reachable. The current live race IDs belong to 2026 contests and are not usable as 2024 General Election certified artifacts.",
-      "No scriptable 2024 General Election archive ElectionID or static canvass PDF URL was confirmed."
+      "A Wayback capture of the official results root from 2024-11-05 confirms the archived shell was the 2024 General Election and referenced the older SD results service root.",
+      "The older official SD results service identifies ElectionID 684 as the 2024 General Election candidate archive: GetCandidates returns Trump, Harris, Oliver, Kennedy, Dusty Johnson, and Sheryl Johnson federal markers.",
+      "GetMapDataArchive with ElectionID 684, Type=SWR, Category=CTY, and RaceID=0 returns county map-data rows for 2024 federal races, including President map RaceID 12665 and U.S. House map RaceID 11954.",
+      "GetVoterTurnoutArchive with ElectionID 684 returns 66 county turnout rows and is retained as a state-native turnout lead, but it is not active until denominator timing and replacement semantics are reviewed.",
+      "The official archive map-data totals do not reconcile to the current certified-style staging totals, so the official canvass PDF/static export or another reconciling official archive export remains the blocker."
     ],
-    "blocker": "Obtain the official SD SOS canvass PDF/static export, specifically the official 2024 General Election Canvass and Certificate PDF/static export URL or the electionresults.sd.gov archive ElectionID/race IDs for November 5, 2024, before promoting SD to completed official-native coverage. If the archive ID cannot be found publicly, request the export or ElectionID directly from the South Dakota Secretary of State.",
+    "blocker": "Use the identified official SD SOS archive ElectionID 684 as the concrete follow-up path, but obtain the official 2024 General Election Canvass and Certificate PDF/static export or another official archive/export payload that reconciles to certified county President and U.S. House totals before promoting SD to completed official-native coverage. The retained ElectionID 684 map-data totals are 428,728 President votes and 421,264 U.S. House votes, which are 194 and 184 votes below the current certified-style staging totals.",
     "archiveProbe": {
       "checkedAt": "2026-07-03",
-      "method": "Queried GetCandidates with ElectionType=General and ElectionID values 1 through 800.",
-      "endpointPattern": "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID={ElectionID}",
+      "method": "Queried the archived official SD ResultsAjax service and retained candidate, statewide county map-data, and turnout archive evidence for 2024 General ElectionID 684.",
+      "endpointPattern": "https://sdresws.azurewebsites.net/ResultsAjax.svc/{GetCandidates|GetMapDataArchive|GetVoterTurnoutArchive}?ElectionID=684",
       "candidateMarkers": [
         "Trump",
         "Harris",
         "Oliver",
-        "Stein",
         "Kennedy",
         "Dusty Johnson",
         "Sheryl Johnson",
-        "United States President"
+        "Presidential Electors",
+        "United States Representative"
       ],
-      "result": "No probed ElectionID returned the 2024 General Election federal candidate markers. This does not prove the archive ID is unavailable; it documents that the visible service did not expose the needed 2024 ID in the bounded probe."
+      "result": "ElectionID 684 returned 2024 General Election federal candidate markers and county map-data rows. President map RaceID 12665 totals 428,728 votes across 264 candidate-county rows; U.S. House map RaceID 11954 totals 421,264 votes across 132 candidate-county rows; turnout returns 66 county rows. Because these map totals do not reconcile to current certified-style staging totals, SD remains in source discovery until an official certified canvass/export or reconciling official payload is retained."
     }
   },
   "displayCaveats": [
-    "County result and review rows are caveated secondary staging coverage until the official SD SOS canvass/export is retained.",
+    "County result and review rows remain caveated secondary staging coverage until the official SD SOS canvass/export or a reconciling official archive payload is retained.",
     "Review rows are county-level President-versus-at-large-U.S.-House comparisons, not precinct-level scatter plots.",
-    "Turnout uses EAC jurisdiction fallback rows until state-native South Dakota turnout/registration denominator rows are collected.",
+    "Turnout uses EAC jurisdiction fallback rows. The official ElectionID 684 turnout archive is retained as a state-native lead only until denominator timing and replacement semantics are reviewed.",
     "Historical baselines are contextual secondary county tables for 2012, 2016, and 2020.",
     "County geometry is loaded; precinct geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded."
   ],
