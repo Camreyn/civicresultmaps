@@ -28,7 +28,7 @@ export type ResultRow = {
   state: string;
   year: number;
   office: string;
-  level: "county" | "state" | "district" | "precinct" | "city" | "rest_of_county";
+  level: "county" | "state" | "district" | "precinct" | "city" | "city_town" | "rest_of_county";
   jurisdictionCode: string;
   jurisdictionName: string;
   votes: Record<string, number>;
@@ -118,7 +118,7 @@ export type AnalysisIndicator = {
   electionYear: number;
   jurisdictionCode: string;
   jurisdictionName: string;
-  level: "county" | "state" | "district" | "precinct" | "city" | "rest_of_county";
+  level: "county" | "state" | "district" | "precinct" | "city" | "city_town" | "rest_of_county";
   type: string;
   severity: number;
   label: string;
