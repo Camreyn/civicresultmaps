@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import io
 import re
 import zipfile
 from pathlib import Path
@@ -96,3 +97,44 @@ def read_xlsx_sheet(path: str | Path, sheet_name: str) -> list[list[str | int | 
         rows.append(values)
 
     return rows
+
+
+
+def _read_xlsx_sheet_from_archive(archive: zipfile.ZipFile, sheet_name: str) -> list[list[str | int | float]]:
+    strings = _shared_strings(archive)
+    worksheet = ElementTree.fromstring(archive.read(_sheet_path(archive, sheet_name)))
+
+    rows: list[list[str | int | float]] = []
+    for row in worksheet.findall("main:sheetData/main:row", NS):
+        values: list[str | int | float] = []
+        for cell in row.findall("main:c", NS):
+            ref = cell.attrib.get("r", "")
+            column = _column_index(ref) if ref else len(values)
+            while len(values) <= column:
+                values.append("")
+
+            cell_type = cell.attrib.get("t")
+            if cell_type == "s":
+                raw = _text(cell.find("main:v", NS))
+                values[column] = strings[int(raw)] if raw else ""
+            elif cell_type == "inlineStr":
+                values[column] = _text(cell.find("main:is", NS))
+            else:
+                values[column] = _coerce(_text(cell.find("main:v", NS)))
+
+        while values and values[-1] == "":
+            values.pop()
+        rows.append(values)
+
+    return rows
+
+
+def read_xlsx_sheet_bytes(data: bytes, sheet_name: str) -> list[list[str | int | float]]:
+    with zipfile.ZipFile(io.BytesIO(data)) as archive:
+        return _read_xlsx_sheet_from_archive(archive, sheet_name)
+
+
+def xlsx_sheet_names_bytes(data: bytes) -> list[str]:
+    with zipfile.ZipFile(io.BytesIO(data)) as archive:
+        workbook = ElementTree.fromstring(archive.read("xl/workbook.xml"))
+    return [sheet.attrib.get("name", "") for sheet in workbook.findall("main:sheets/main:sheet", NS)]

@@ -656,6 +656,11 @@ Remaining gaps are state-native turnout/registration denominators, result-ready 
 
 Expected validation: 3 county result rows, 3 county geometry features, 511,697 presidential votes, 214,351 Trump votes, 289,758 Harris votes, 7,588 Other votes, 529 election-district review rows, and 3 EAC fallback turnout rows. Remaining gaps are active state-native turnout replacement semantics, FirstMap election-district geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are public-interest source-review inputs only, not findings.
 
+## Wyoming Wave 20 Native Coverage
+
+Wyoming now has an official SOS native package for 2024 certified President county totals and precinct-by-precinct President vs U.S. Senate review rows. The parser reads `data/wy-2024-general-results.zip` directly and produces 23 county result rows, 431 nonzero precinct review rows, 23 EAC fallback turnout rows, and 69 county historical baseline rows from official 2012/2016/2020 SOS ZIPs.
+
+Remaining Wyoming caveats: EAC fallback registered-voter denominator remains active; precinct boundary geometry is not loaded; audit, CVR, recount, incident, correction, and litigation context records remain request-tracked. Advisory indicators are screening signals only and are not evidence of fraud or misconduct.
 ## Tennessee Wave 20 Native Activation
 
 - Config: `etl/state-configs/tn.json`
@@ -672,3 +677,4 @@ Expected validation: 3 county result rows, 3 county geometry features, 511,697 p
 Expected validation: 95 county result rows, 95 county geometry features, 3,063,942 presidential votes, 1,966,865 Trump votes, 1,056,265 Harris votes, 40,812 Other votes, 1,859 precinct review rows, and 95 EAC fallback turnout rows. The official PDF source is text-layer PDF, not a structured export; the normalizer handles the PDF text placement of the seventh presidential candidate column and reconciles parsed precinct totals to official statewide President and U.S. Senate totals before writing CSV artifacts. Current advisory rows are public-interest screening inputs only, not findings.
 
 Remaining gaps are Tennessee-native turnout/registration denominators, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/recount/CVR availability/incident/correction/litigation records.
+
