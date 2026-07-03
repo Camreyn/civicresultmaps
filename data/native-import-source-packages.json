@@ -14,6 +14,7 @@
     "AZ",
     "CA",
     "CT",
+    "CO",
     "DE",
     "FL",
     "GA",
@@ -1866,6 +1867,82 @@
       "legacyReferenceBundle": "data/me-2024-data-coverage-inventory.json"
     },
     {
+      "state": "CO",
+      "name": "Colorado",
+      "priority": 11,
+      "nativeReadiness": "complete_county_map_county_review_eac_turnout_with_clarity_gap_caveat",
+      "authority": "Colorado Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
+      "configFile": "etl/state-configs/co.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Colorado Secretary of State 2024 General Clarity detail XML ZIP",
+          "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+          "localFile": "data/co-2024-clarity-detailxml.zip",
+          "parserHint": "coloradoClarityDetailXml reads Presidential Electors Choice county rows and aggregates DEM as Harris, REP as Trump, and other listed candidates as Other. Loaded county candidate rows total 3,190,873 votes, 1,872 below the prior Abstract/certified-total lead."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Colorado Secretary of State 2024 General Clarity CU Regent at-large contest",
+          "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+          "localFile": "data/co-2024-clarity-detailxml.zip",
+          "level": "county",
+          "comparisonContest": "Regent of the University of Colorado - At Large",
+          "parserHint": "coloradoClarityDetailXml pairs county Presidential Electors rows with same-grain CU Regent at-large rows because Colorado had no 2024 U.S. Senate race."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback plus Colorado SOS Clarity turnout lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv; data/co-2024-clarity-detailxml.zip",
+          "level": "jurisdiction_fallback_with_county_state_native_lead",
+          "denominator": "Active ETL uses EAC registered voters. Clarity ElectionVoterTurnout totalVoters remains a denominator lead pending semantics review.",
+          "parserHint": "Current active turnout rows use eacTurnoutCsv: 64 rows, 3,240,754 ballots cast, and 4,583,280 registered voters. Clarity reports 64 county rows, 3,241,120 ballotsCast, and 4,058,938 totalVoters but is not the active turnout replacement."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/co-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        },
+        "coverageInventory": {
+          "sourceTitle": "Colorado 2024 data coverage and administration source inventory",
+          "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
+          "localFile": "data/co-2024-data-coverage-inventory.json",
+          "parserHint": "Documents loaded Clarity county result/review source, EAC fallback turnout, county geometry/equipment context, historical-source blockers, and remaining administration gaps."
+        },
+        "equipmentContext": {
+          "sourceTitle": "Verified Voting Verifier Colorado 2024 equipment context",
+          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
+          "localFile": "data/co-2024-equipment-context.csv",
+          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
+        }
+      },
+      "expected": {
+        "countyRows": 64,
+        "geometryFeatures": 64,
+        "stateTotal": 3190873,
+        "trump": 1377441,
+        "harris": 1728159,
+        "other": 85273,
+        "localReviewRows": 64,
+        "turnoutRows": 64
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "county_president_vs_cu_regent_at_large",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_clarity_turnout_lead_retained",
+        "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
+      },
+      "caveats": [
+        "Loaded Clarity presidential county candidate rows total 3,190,873 votes, 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source.",
+        "Review rows are county-level President-versus-CU-Regent-at-large comparisons, not precinct scatter plots.",
+        "Active turnout remains EAC fallback because Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference still need review.",
+        "County geometry is loaded; precinct boundaries/crosswalks are not loaded.",
+        "No official 2012/2016/2020 historical baselines or normalized Colorado audit, CVR availability, recount, incident, correction, or litigation rows are loaded."
+      ],
+      "legacyReferenceBundle": "data/co-2024-clarity-detailxml.zip"
+    },
+    {
       "state": "CT",
       "name": "Connecticut",
       "priority": 15,
@@ -2735,62 +2812,6 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/36",
           "localFile": "data/verifiedvoting-ny-2024-equipment.json; data/ny-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
-        }
-      }
-    },
-    {
-      "state": "CO",
-      "name": "Colorado",
-      "priority": 11,
-      "currentStatus": "official_clarity_county_results_turnout_leads_confirmed_inventory_only_eac_turnout_active",
-      "officialSourcePages": [
-        "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
-        "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
-        "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
-        "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
-        "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
-        "https://www.sos.state.co.us/pubs/info_center/recordsRequests.html"
-      ],
-      "requiredArtifacts": [
-        "official Colorado Clarity detailxml.zip or source manifest plus a Colorado parser for county President rows",
-        "county CU Regent at-large same-grain comparison rows if county-level review is accepted, or official precinct/local President plus comparison rows for subcounty advisory coverage",
-        "reviewed state-native turnout denominator semantics before replacing EAC fallback turnout",
-        "official 2020, 2016, and 2012 Colorado SOS Abstract of Votes Cast county presidential artifacts plus parser",
-        "precinct boundary geometry or reporting-unit crosswalks if subcounty review rows are collected",
-        "official risk-limiting audit selections/outcomes, CVR availability, recount/correction/incident/litigation, custody, ballot-manifest, tabulator-log, and EMS-log source artifacts suitable for normalized administration context"
-      ],
-      "preferredComparisonContest": "CU Regent at-large for county-level same-grain review because Colorado had no 2024 U.S. Senate race; request precinct/local same-grain comparison rows before subcounty advisory coverage.",
-      "parserNeeded": "Future coloradoClarityDetailXml parser should read official CO/122598/367167 detailxml.zip for 64 county President rows, 64 county CU Regent at-large comparison rows, and reviewed county turnout rows. Active CO config remains turnoutOnly EAC fallback, so no native result or review rows are loaded in this pass.",
-      "blocker": "Official Colorado Clarity endpoint is confirmed and source-counted, but the statewide detail XML inspected here exposes county candidate totals and precinct participation counts rather than per-precinct candidate result rows. EAC fallback turnout stays active until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed. Historical baselines, precinct geometry/crosswalks, audit/CVR/recount/incident/correction/litigation rows, and source-request artifacts remain unnormalized.",
-      "requestMatrixArtifact": "data/co-2024-source-request-matrix.tsv",
-      "availableArtifacts": {
-        "coverageInventory": {
-          "sourceTitle": "Colorado 2024 source coverage inventory",
-          "localFile": "data/co-2024-data-coverage-inventory.json",
-          "parserHint": "Inventory only; documents official Clarity endpoint, EAC fallback turnout, county geometry/equipment context, historical/audit/CVR/request paths, and caveats without loading result or review rows."
-        },
-        "sourceRequestMatrix": {
-          "sourceTitle": "Colorado 2024 source request matrix",
-          "localFile": "data/co-2024-source-request-matrix.tsv",
-          "parserHint": "Context-only request queue for parser work, subcounty review rows, turnout denominator review, historical baselines, precinct geometry, and administration artifacts."
-        },
-        "currentTurnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
-          "parserHint": "Current active CO turnout config remains eacTurnoutCsv with 64 jurisdiction rows."
-        },
-        "countyBoundary": {
-          "sourceTitle": "U.S. Census TIGERweb county geography",
-          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-          "localFile": "data/co-counties.geojson",
-          "parserHint": "County joins only; precinct geometry is not loaded."
-        },
-        "equipmentContext": {
-          "sourceTitle": "Verified Voting Verifier Colorado 2024 equipment context",
-          "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/8",
-          "localFile": "data/co-2024-equipment-context.csv",
-          "parserHint": "Context only; do not use for votes, turnout, audit conclusions, incidents, or proof of precinct-uniform equipment."
         }
       }
     },

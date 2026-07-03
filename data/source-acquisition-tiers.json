@@ -301,26 +301,26 @@
         "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip"
       ],
       "availableFields": [
-        "official county presidential totals from Clarity detail XML endpoint",
-        "same-grain county CU Regent at-large comparison lead from the same endpoint",
-        "official county turnout lead from Clarity ElectionVoterTurnout rows",
-        "EAC fallback turnout rows currently loaded in active ETL",
+        "official county presidential candidate rows from the committed Clarity detail XML endpoint",
+        "loaded county CU Regent at-large comparison rows from the same endpoint",
+        "official county turnout lead from Clarity ElectionVoterTurnout rows retained for denominator review",
+        "EAC fallback turnout rows currently loaded in active turnout ETL",
         "county geometry",
         "county equipment context"
       ],
       "missingFields": [
-        "parser-backed native CO result/review/turnout package",
+        "write-in-inclusive county allocation for the 1,872-vote Clarity-versus-Abstract presidential gap",
         "precinct or local reporting-unit President rows",
         "same-grain precinct or local comparison contest rows",
         "precinct boundary geometry or reporting-unit crosswalk",
         "official 2012/2016/2020 historical baselines normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, litigation, custody, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "data/co-2024-data-coverage-inventory.json documents the official Colorado Clarity detailxml.zip endpoint and request matrix; active etl/state-configs/co.json remains EAC turnout-only with no result or review parser loaded",
+      "parserStatus": "coloradoClarityDetailXml loaded for 64 county President rows and 64 county President-versus-CU-Regent review rows; active turnout remains EAC fallback while Clarity totalVoters denominator semantics and the 366-ballot ballots-cast difference are reviewed",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_confirmed_endpoint",
-      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Colorado had no 2024 U.S. Senate race; the preferred same-grain comparison lead is county-level CU Regent at-large. Do not replace EAC fallback turnout until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
-      "nextAction": "Use data/co-2024-data-coverage-inventory.json and data/co-2024-source-request-matrix.tsv to collect/parser-load official county President, county Regent at-large comparison, reviewed state-native turnout, official historical baselines, precinct/local rows or CVR aggregates, precinct geometry/crosswalks, and audit/CVR/recount/incident/correction/litigation artifacts."
+      "confidence": "loaded_with_caveat",
+      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. Colorado had no 2024 U.S. Senate race; the same-grain comparison is county-level CU Regent at-large. Do not replace EAC fallback turnout until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
+      "nextAction": "Collect an official write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, then pursue precinct/local result rows, precinct geometry/crosswalks, state-native turnout semantics, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "CT",
