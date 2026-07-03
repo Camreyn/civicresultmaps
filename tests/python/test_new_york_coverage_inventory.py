@@ -51,12 +51,14 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertNotIn("NY", native["completedNativeStates"])
         self.assertEqual(inventory["completionDecision"]["decision"], "remain_in_source_discovery_queue")
         self.assertIn("Wave 19", inventory["completionDecision"]["wave19Decision"])
+        self.assertIn("Wave 21", inventory["completionDecision"]["wave21Decision"])
         self.assertFalse(inventory["productionChecked"])
         self.assertIn("docs/developer/index.md", inventory["repoDrift"][0])
         self.assertEqual(inventory["sourceRequestMatrix"], "data/ny-2024-source-request-matrix.tsv")
         self.assertEqual(queue_entry["requestMatrixArtifact"], "data/ny-2024-source-request-matrix.tsv")
         self.assertIn("source request matrix", tier["parserStatus"])
         self.assertIn("13 county equivalents", tier["caveats"])
+        self.assertIn("future official export paths", tier["parserStatus"])
 
         coverage = inventory["completionDecision"]["reviewCoverage"]
         self.assertEqual(coverage["reviewRows"], 9753)
@@ -71,7 +73,14 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(request_rows["ny-2024-supplemental-local-review"]["status"], "partial_loaded_with_missing_counties")
         self.assertEqual(request_rows["ny-2024-excluded-local-review-counties"]["status"], "needs_official_source_or_reviewed_extraction")
         self.assertEqual(request_rows["ny-2024-state-native-turnout"]["status"], "state_native_source_lead_not_loaded")
+        self.assertEqual(request_rows["ny-2026-flateau-veda-export-readiness"]["status"], "future_official_path_empty_for_2024")
         self.assertEqual(request_rows["ny-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
+
+        blocker_sources = {row["sourceUrl"]: row for row in inventory["officialBlockerEvidence"]}
+        self.assertEqual(blocker_sources["https://flateau.elections.ny.gov/"]["observed"], "The VEDA dashboard reported 0 total elections for 2026 and no election data available.")
+        self.assertIn("Election Results", blocker_sources["https://flateau.elections.ny.gov/downloads"]["observed"])
+        self.assertIn("11/01/2024", blocker_sources["https://elections.ny.gov/enrollment-county"]["observed"])
+        self.assertIn("124 county files", blocker_sources["https://elections.ny.gov/enrollment-election-district?f%5B0%5D=filter_term%3A571"]["observed"])
 
     def test_local_review_csv_does_not_silently_cover_excluded_counties(self):
         rows = list(csv.DictReader(Path("data/ny-2024-local-review.csv").read_text(encoding="utf-8-sig").splitlines()))

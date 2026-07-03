@@ -114,5 +114,7 @@ test("new york coverage inventory preserves supplemental review caveats", () => 
   assert.ok(localReview.excludedOrNotYetReviewedCounties.includes("Monroe County"));
   assert.match(inventory.displayCaveats.join(" "), /EAC turnout rows are fallback context/);
   assert.match(inventory.completionDecision.reason, /turnout is not state-native/);
+  assert.match(inventory.completionDecision.wave21Decision, /VEDA is live but has no election data/);
+  assert.ok(inventory.officialBlockerEvidence.some((entry) => entry.sourceUrl === "https://flateau.elections.ny.gov/downloads" && /Voter Statistics/.test(entry.observed)));
   assert.match(discoveryNy.completionDecision.reason, /13 county equivalents/);
 });
