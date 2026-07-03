@@ -111,6 +111,10 @@ test("new york coverage inventory preserves supplemental review caveats", () => 
   assert.equal(requestPackets.packets.length, 13);
   assert.deepEqual(new Set(requestPackets.packets.map((packet) => packet.county)), new Set(inventory.completionDecision.reviewCoverage.excludedOrNotYetReviewedCounties));
   assert.equal(requestPackets.packets.find((packet) => packet.county === "Nassau County").currentReviewStatus, "no_manifest_source_file");
+  const monroePacket = requestPackets.packets.find((packet) => packet.county === "Monroe County");
+  assert.equal(monroePacket.currentSourceLead.status, "official_canvass_book_detail_found_not_loaded");
+  assert.equal(monroePacket.status, "official_artifacts_found_not_loaded_reconciliation_needed");
+  assert.match(monroePacket.followThroughArtifacts[0].caveat, /do not reconcile/);
   assert.equal(requestPackets.packets.find((packet) => packet.county === "Rockland County").currentSourceLead.status, "president_only_no_same_grain_us_senate_rows");
   assert.equal(localReview.expectedCounts.zeroRowManifestFiles, 1);
   assert.equal(localReview.expectedCounts.excludedManifestFiles, 12);
@@ -123,6 +127,8 @@ test("new york coverage inventory preserves supplemental review caveats", () => 
   assert.match(inventory.displayCaveats.join(" "), /EAC turnout rows are fallback context/);
   assert.match(inventory.completionDecision.reason, /turnout is not state-native/);
   assert.match(inventory.completionDecision.wave21Decision, /VEDA is live but has no election data/);
+  assert.match(inventory.completionDecision.wave23Decision, /Monroe County/);
+  assert.match(inventory.packetFollowThrough[0].confidence, /reconciliation_needed/);
   assert.ok(inventory.officialBlockerEvidence.some((entry) => entry.sourceUrl === "https://flateau.elections.ny.gov/downloads" && /Voter Statistics/.test(entry.observed)));
   assert.match(discoveryNy.completionDecision.reason, /13 county equivalents/);
 });
