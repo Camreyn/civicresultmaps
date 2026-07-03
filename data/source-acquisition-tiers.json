@@ -1285,8 +1285,9 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_geometry_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
-      "reportingGrain": "county_or_precinct_export_pending",
+      "reportingGrain": "county_results_precinct_review",
       "exportFormats": [
+        "official ResultsAjax JSON endpoint",
         "official ASP.NET results dashboard",
         "CSV/Excel/XML export form",
         "HTML precinct turnout table",
@@ -1294,40 +1295,37 @@
       ],
       "sourceUrls": [
         "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-        "https://results.sos.nd.gov/ResultsExport.aspx",
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19893&osn=100&county=0&party=0",
         "https://results.sos.nd.gov/VoterTurnoutDetails.aspx",
         "https://www.sos.nd.gov/elections/voter/voting-north-dakota",
         "https://www.sos.nd.gov/elections/election-security/post-election-audits"
       ],
       "exampleUrls": [
-        "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-        "https://results.sos.nd.gov/ResultsSW.aspx?type=RECOUNT"
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19893&osn=100&county=0&party=0",
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19893&osn=100&county=01&party=0"
       ],
       "availableFields": [
-        "official statewide President totals",
-        "official statewide U.S. Senate, U.S. House, and Governor comparison leads",
-        "official CSV/Excel/XML export form for result collection",
-        "official precinct ballots-cast turnout table",
-        "official eligible-voter turnout denominator summary",
+        "official county President totals from SOS ResultsAjax JSON",
+        "official same-key precinct President rows from SOS ResultsAjax JSON",
+        "official same-key precinct U.S. Senate comparison rows from SOS ResultsAjax JSON",
+        "official precinct ballots-cast turnout table lead",
+        "official eligible-voter turnout denominator summary lead",
+        "county geometry",
         "official 2020, 2016, and 2012 historical archive leads",
         "county equipment context from Verified Voting and official SOS equipment description",
         "official post-election audit policy and recount page source paths"
       ],
       "missingFields": [
-        "committed official result export artifact",
-        "loaded certified President result rows",
-        "loaded same-grain President-versus-U.S.-Senate review rows",
         "state-native eligible-voter denominator parser and reconciliation to EAC fallback",
-        "county geometry artifact for ND map joins",
         "precinct boundary geometry or result-to-precinct crosswalk",
         "normalized historical baseline rows",
         "normalized audit, CVR availability, incident, correction, recount, and litigation rows"
       ],
-      "parserStatus": "EAC turnout config remains active; data/nd-2024-data-coverage-inventory.json and data/nd-2024-source-request-matrix.tsv document the official SOS dashboard/export, eligible-voter turnout caveat, historical archive, geometry, equipment, audit, recount, and records-request paths without loading result or review rows",
+      "parserStatus": "scripts/collect-nd-sos-results.mjs collects official SOS ResultsAjax JSON rows and writes countyPresidentCsv plus localComparisonCsv artifacts; active ND ETL now loads 53 county result rows, 383 same-key precinct President-versus-U.S.-Senate review rows, EAC fallback turnout, and county geometry",
       "manualReviewBurden": "medium",
-      "confidence": "candidate_parser_ready",
-      "caveats": "North Dakota does not require voter registration, so registered-voter denominator fields are not native turnout denominators. The official dashboard reports 371,975 voter turnout and 594,140 eligible voters, while active EAC fallback has 371,974 ballots cast and 0 registered voters; review source semantics before replacing turnout. The official export form is ASP.NET/viewstate based and needs a collector before rows are loaded.",
-      "nextAction": "Use data/nd-2024-source-request-matrix.tsv to collect official President and U.S. Senate export rows, reconcile eligible-voter turnout against EAC fallback, add county/precinct geometry or crosswalks, and collect audit/CVR/recount/incident/correction/litigation artifacts before adding ND to completed native states."
+      "confidence": "loaded_with_caveat",
+      "caveats": "North Dakota does not require voter registration, so registered-voter denominator fields are not native turnout denominators. Active turnout remains EAC fallback with 371,974 ballots cast and 0 registered voters until the official SOS eligible-voter turnout lead of 371,975 voter turnout and 594,140 eligible voters is normalized and reconciled. Review rows are advisory source-review context only; precinct geometry/crosswalks, historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain missing.",
+      "nextAction": "Reconcile and normalize SOS eligible-voter turnout, collect precinct geometry/crosswalks and official 2012/2016/2020 historical baselines, then collect audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "NE",

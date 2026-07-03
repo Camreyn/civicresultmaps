@@ -2,9 +2,9 @@
   "state": "ND",
   "stateName": "North Dakota",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
-  "checkedBy": "Wave 15 North Dakota state-data worker",
-  "status": "official_results_dashboard_and_exports_identified_inventory_only",
+  "checkedAt": "2026-07-03",
+  "checkedBy": "Wave 18 North Dakota state-data worker",
+  "status": "official_results_endpoint_loaded_precinct_review_eac_turnout_active",
   "productionChecked": false,
   "repoDrift": [
     {
@@ -15,28 +15,36 @@
   ],
   "currentEtLStatus": {
     "configFile": "etl/state-configs/nd.json",
-    "turnoutOnly": true,
-    "activeParser": "eacTurnoutCsv",
-    "activeLocalArtifact": "data/eac-2024-state-turnout/nd-2024-eac-turnout.csv",
+    "turnoutOnly": false,
+    "activeParser": "countyPresidentCsv + localComparisonCsv + eacTurnoutCsv",
+    "activeLocalArtifact": "data/nd-2024-sos-president-county.csv; data/nd-2024-sos-president-senate-precinct-review.csv; data/eac-2024-state-turnout/nd-2024-eac-turnout.csv",
     "expectedRows": {
-      "resultRows": 0,
-      "reviewRows": 0,
+      "resultRows": 53,
+      "reviewRows": 383,
       "turnoutRows": 53,
+      "stateTotal": 368155,
+      "trump": 246505,
+      "harris": 112327,
+      "other": 9323,
       "eacBallotsCast": 371974,
       "eacRegisteredVoters": 0
     },
-    "advisoryStatus": "No North Dakota certified result or same-grain review rows are loaded, so advisory indicators should remain zero until official President and comparison rows are normalized."
+    "advisoryStatus": "North Dakota now has official same-key President-versus-U.S.-Senate precinct review rows. Staging indicator report produced 383 review rows, 32 calculated advisory indicator rows, and 17 flagged jurisdictions/areas; this is advisory source-review context only, not proof of fraud or misconduct."
   },
   "officialSourceFindings": {
     "certifiedResults": {
-      "status": "official_dashboard_export_identified_parser_needed",
+      "status": "official_resultsajax_endpoint_loaded",
       "sourceAuthority": "North Dakota Secretary of State",
       "sourceUrls": [
         "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-        "https://results.sos.nd.gov/ResultsExport.aspx",
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=CTY&raceID=19893&osn=100&county=0&party=0",
         "https://vip.sos.nd.gov/PortalListDetails.aspx?ptlPKID=4&ptlhPKID=133"
       ],
-      "reportingGrain": "statewide_and_county_dashboard_with_export_form; precinct_or_county_rows_need_csv_export_capture",
+      "localArtifacts": [
+        "data/nd-2024-sos-president-county.csv",
+        "data/nd-2024-sos-results-manifest.json"
+      ],
+      "reportingGrain": "county certified result rows from official dashboard JSON; county-scoped precinct rows retained for review pairing",
       "observedOfficialTotals": {
         "resultsLastUpdated": "2026-04-21T13:33:23",
         "precinctsFullyReported": 385,
@@ -46,33 +54,36 @@
         "harrisVotes": 112327,
         "otherVotes": 9323
       },
-      "parserNeeded": "North Dakota results export form client or dashboard scraper that captures official President county/precinct rows, preserves write-ins, and records the export parameters used.",
-      "caveat": "The official dashboard and export form are identified, but no ND result artifact is committed and no certified result rows are loaded in this pass."
+      "parser": "scripts/collect-nd-sos-results.mjs -> countyPresidentCsv",
+      "caveat": "The collector uses the official SOS ResultsAjax JSON endpoint behind the dashboard rather than the ASP.NET export form because direct export POSTs returned the SOS error page in scripted replay. County rows reconcile to dashboard totals."
     },
     "sameGrainComparisonContest": {
-      "status": "official_dashboard_comparison_leads_identified_parser_needed",
-      "preferredContest": "U.S. Senate if available at the same exported grain as President; U.S. House or Governor are documented fallback statewide comparison contests.",
+      "status": "official_resultsajax_us_senate_precinct_review_loaded",
+      "preferredContest": "U.S. Senate",
       "sourceUrls": [
         "https://results.sos.nd.gov/ResultsSW.aspx?text=Race&type=SW&map=CTY",
-        "https://results.sos.nd.gov/ResultsExport.aspx"
+        "https://resultsws.sos.nd.gov/ResultsAjax.svc/GetMapData?type=SW&category=PREC&raceID=19847&osn=110&county=01&party=0"
+      ],
+      "localArtifacts": [
+        "data/nd-2024-sos-president-senate-precinct-review.csv",
+        "data/nd-2024-sos-results-manifest.json"
       ],
       "observedOfficialTotals": {
         "usSenateTotalVotes": 364327,
         "usSenateRepublicanVotes": 241569,
         "usSenateDemocraticNplVotes": 121602,
         "usSenateWriteInVotes": 1156,
-        "usHouseTotalVotes": 359787,
-        "governorTotalVotes": 361951
+        "loadedReviewRows": 383,
+        "zeroVotePrecinctKeysExcluded": 2
       },
       "missing": [
-        "machine-readable same-grain President and U.S. Senate rows",
-        "documented export parameters or local artifact for county/precinct rows",
-        "join keys from exported result rows to any geometry/crosswalk"
+        "precinct boundary geometry or result-to-precinct crosswalk",
+        "state-native eligible-voter turnout rows reconciled to the active EAC fallback"
       ],
-      "caveat": "County-level comparison rows would be a coarse source-review screen; precinct rows are preferred for maximum advisory accuracy if the official export can provide them."
+      "caveat": "Review rows are same-key county-scoped precinct comparisons from the official dashboard endpoint. They are advisory source-review context only, not findings."
     },
     "stateNativeTurnoutAndDenominator": {
-      "status": "official_eligible_voter_turnout_lead_identified_eac_fallback_active",
+      "status": "official_eligible_voter_turnout_lead_identified_eac_fallback_still_active",
       "sourceAuthority": "North Dakota Secretary of State",
       "sourceUrls": [
         "https://results.sos.nd.gov/VoterTurnoutDetails.aspx",
@@ -89,11 +100,11 @@
         "eacFallbackRegisteredVoters": 0,
         "officialMinusEacBallotsCast": 1
       },
-      "parserNeeded": "Turnout dashboard/export normalizer that records precinct ballots cast and any county eligible-voter denominator fields, then reconciles to the active EAC fallback.",
+      "parserNeeded": "Turnout dashboard/export normalizer that records precinct ballots cast and eligible-voter denominator fields, then reconciles to the active EAC fallback. Active ND ETL still uses EAC turnout rows.",
       "caveat": "North Dakota does not require voter registration. The active EAC registered-voter denominator is zero by source semantics, so turnout displays must use an eligible-voter or state-native denominator caveat rather than treating registered voters as simply missing."
     },
     "geometryAndCrosswalk": {
-      "status": "county_geometry_available_precinct_crosswalk_needed",
+      "status": "county_geometry_loaded_precinct_crosswalk_needed",
       "sourceAuthority": "U.S. Census Bureau; North Dakota Secretary of State; North Dakota official GIS or county auditors",
       "sourceUrls": [
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2738%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -105,11 +116,18 @@
         "official 2024 statewide precinct polling-place/precinct artifact committed to data/",
         "precinct boundary geometry or a crosswalk from precinct codes to result rows if subcounty overlays are added"
       ],
-      "caveat": "Current ND config has no map rows. County geometry would support county joins only; precinct ballots-cast codes on the turnout dashboard are not map-ready geometry."
+      "caveat": "Current ND config has no map rows. County geometry would support county joins only; precinct ballots-cast codes on the turnout dashboard are not map-ready geometry.",
+      "localArtifacts": [
+        "data/nd-counties.geojson"
+      ]
     },
     "historicalBaselines": {
       "status": "official_archive_leads_identified_not_loaded",
-      "targetYears": [2020, 2016, 2012],
+      "targetYears": [
+        2020,
+        2016,
+        2012
+      ],
       "sourceUrls": [
         "https://vip.sos.nd.gov/PortalListDetails.aspx?ptlPKID=4&ptlhPKID=133",
         "https://vip.sos.nd.gov/PortalListDetails.aspx?ptlPKID=4&ptlhPKID=62",
@@ -153,11 +171,11 @@
   },
   "sourceAcquisitionDecision": {
     "tier": "tier_2_official_dashboard_endpoint",
-    "reason": "The North Dakota Secretary of State publishes an official 2024 results dashboard with CSV/Excel/XML export options, statewide President and U.S. Senate totals, precinct turnout pages, recount pages, and archive links. The export form is ASP.NET/viewstate based, so a small export client or browser-assisted collector is needed before rows are loaded.",
+    "reason": "The North Dakota Secretary of State ResultsAjax GetMapData endpoint behind the official dashboard exposes stable JSON for county President totals and same-key county-scoped precinct President/U.S. Senate rows. The ASP.NET CSV/Excel/XML export form remains useful for manual cross-checks but scripted direct POST replay returned an error page.",
     "manualReviewBurden": "medium"
   },
   "websiteAndApiDisplayPath": {
-    "currentPath": "Current North Dakota staging/API path is turnout-only EAC fallback via etl/state-configs/nd.json.",
+    "currentPath": "Current North Dakota staging/API path is native county President rows, same-key precinct review rows, EAC fallback turnout, and county geometry via etl/state-configs/nd.json.",
     "planningApiPaths": [
       "/api/native-source-packages?state=ND",
       "/api/source-acquisition-tiers",
@@ -169,11 +187,10 @@
   },
   "requestMatrixArtifact": "data/nd-2024-source-request-matrix.tsv",
   "remainingRisks": [
-    "No native North Dakota certified President result rows are loaded yet.",
-    "No same-grain President-versus-comparison review rows are loaded, so advisory indicators should be zero.",
-    "The official dashboard turnout total is one ballot higher than the active EAC fallback; replacement requires source and field-semantics review.",
-    "North Dakota has no voter registration requirement, so registered-voter denominators are not the right native denominator for public turnout caveats.",
+    "Active turnout remains EAC fallback because North Dakota has no voter registration and SOS eligible-voter denominator rows have not been normalized or reconciled against the one-ballot SOS/EAC turnout difference.",
+    "Precinct review rows are loaded, but precinct boundary geometry/crosswalks are not loaded; map joins remain county-level.",
+    "Official 2012, 2016, and 2020 historical baseline rows are not normalized yet.",
     "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
-    "All advisory language must remain source-review context, not evidence of fraud or misconduct."
+    "Advisory indicators are source-review signals only, not evidence of fraud or misconduct."
   ]
 }
