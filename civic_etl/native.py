@@ -96,6 +96,10 @@ def _missouri_jurisdiction_name(raw: Any) -> str:
 def _rhode_island_jurisdiction_name(raw: Any) -> str:
     return str(raw or "").strip()
 
+
+def _alaska_jurisdiction_name(raw: Any) -> str:
+    return str(raw or "").strip()
+
 RHODE_ISLAND_CITY_TOWN_COUNTIES = {
     "Barrington": "Bristol County",
     "Bristol": "Bristol County",
@@ -7801,6 +7805,23 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
             "reviewRows": review_rows,
             "turnoutRows": turnout_rows,
             "historicalRows": historical_rows,
+            "metrics": metrics,
+        }
+
+    if config.code == "AK" and config.raw.get("certifiedResults", {}).get("format") == "countyPresidentCsv":
+        sources = _source_map(config)
+        result_rows, review_rows, turnout_rows, metrics = _county_president_csv_rows(
+            config,
+            sources,
+            missing_label="Alaska official statewide summary",
+            county_normalizer=_alaska_jurisdiction_name,
+        )
+        _assert_native_expected(config, metrics)
+        return {
+            "parser": "nativeAlaskaStatewideSummaryCsv",
+            "resultRows": result_rows,
+            "reviewRows": review_rows,
+            "turnoutRows": turnout_rows,
             "metrics": metrics,
         }
 

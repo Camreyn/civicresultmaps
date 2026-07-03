@@ -1,10 +1,9 @@
 {
   "code": "SD",
   "name": "South Dakota",
-  "authority": "U.S. Election Assistance Commission",
+  "authority": "South Dakota Secretary of State; U.S. Election Assistance Commission",
   "electionYear": 2024,
   "office": "President",
-  "turnoutOnly": true,
   "sources": [
     {
       "id": "sd-2024-eac-turnout",
@@ -15,6 +14,39 @@
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "status": "loaded"
+    },
+    {
+      "id": "sd-2024-president-wikipedia-county",
+      "category": "Secondary 2024 presidential county results table",
+      "url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_South_Dakota",
+      "localFile": "data/sd-2024-general-president-county.csv",
+      "parser": "countyPresidentCsv",
+      "authority": "Wikipedia county table citing South Dakota Secretary of State 2024 General Election Canvass and Certificate",
+      "timestampBasis": "County table collected by scripts/collect-sd-2024-county-results.mjs on the worker branch; the page cites the South Dakota Secretary of State canvass dated November 12, 2024.",
+      "confidence": "Secondary normalized county table used as caveated staging coverage because the official SD SOS canvass PDF/static export and archive election ID were not identified from scriptable official URLs in this pass. Statewide totals reconcile to 428,922 presidential votes: 272,081 Trump, 146,859 Harris, and 9,982 Other.",
+      "status": "candidate"
+    },
+    {
+      "id": "sd-2024-us-house-wikipedia-county",
+      "category": "Secondary 2024 U.S. House county comparison table",
+      "url": "https://en.wikipedia.org/wiki/2024_United_States_House_of_Representatives_election_in_South_Dakota",
+      "localFile": "data/sd-2024-general-us-house-county.csv",
+      "parser": "countyComparisonCsv",
+      "authority": "Wikipedia county table citing South Dakota Secretary of State 2024 General Election Canvass and Certificate",
+      "timestampBasis": "County table collected by scripts/collect-sd-2024-county-results.mjs on the worker branch; the page cites the South Dakota Secretary of State canvass dated November 12, 2024.",
+      "confidence": "Secondary normalized county table used as caveated comparison coverage because the official SD SOS canvass PDF/static export and archive election ID were not identified from scriptable official URLs in this pass. U.S. House statewide totals reconcile to 421,448 votes: 303,630 Republican and 117,818 Democratic.",
+      "status": "candidate"
+    },
+    {
+      "id": "sd-county-geometry",
+      "category": "County boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2746%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/sd-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Census TIGERweb county geography service artifact.",
+      "confidence": "County geometry is used for South Dakota county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
     },
     {
@@ -45,20 +77,21 @@
   },
   "expected": {
     "jurisdictions": 66,
-    "resultRows": 0,
-    "sources": 2,
-    "stateTotal": 0,
-    "trump": 0,
-    "harris": 0,
-    "other": 0,
-    "reviewRows": 0,
+    "resultRows": 66,
+    "sources": 5,
+    "geometryFeatures": 66,
+    "stateTotal": 428922,
+    "trump": 272081,
+    "harris": 146859,
+    "other": 9982,
+    "reviewRows": 66,
     "turnoutRows": 66
   },
   "capabilities": {
     "sourcePlanner": true,
-    "certifiedResults": false,
-    "map": false,
-    "reviewGraphs": false,
+    "certifiedResults": true,
+    "map": true,
+    "reviewGraphs": true,
     "turnout": true,
     "historicalBaseline": true
   },
@@ -74,5 +107,19 @@
         2020
       ]
     }
+  },
+  "certifiedResults": {
+    "format": "countyPresidentCsv",
+    "sourceId": "sd-2024-president-wikipedia-county",
+    "otherColumns": [
+      "other"
+    ]
+  },
+  "reviewCharts": {
+    "format": "countyComparisonCsv",
+    "sourceId": "sd-2024-us-house-wikipedia-county",
+    "comparisonContest": "United States Representative",
+    "coverageMode": "presidentVsUSHouse",
+    "warning": "South Dakota review rows are county-level President-versus-at-large-U.S.-House comparisons from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. They are useful as caveated staging/source-review coverage, but the official SOS canvass artifact or archive export still needs to be retained before treating the package as fully official native completion. These rows are not precinct-level vote-share scatter plots."
   }
 }

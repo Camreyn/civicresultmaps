@@ -1,0 +1,132 @@
+﻿{
+  "state": "SD",
+  "stateName": "South Dakota",
+  "checkedAt": "2026-07-03",
+  "currentConfigStatus": {
+    "activeParser": "countyPresidentCsv+countyComparisonCsv+eacTurnoutCsv+historicalPresidentialCsv",
+    "resultRows": 66,
+    "reviewRows": 66,
+    "turnoutRows": 66,
+    "historicalBaselineRows": 198,
+    "geometryFeatures": 66,
+    "completionDecision": "remain_in_source_discovery_queue",
+    "reason": "South Dakota now has reproducible county-level staging rows for President and at-large U.S. House, but those rows are generated from secondary Wikipedia county tables that cite the South Dakota Secretary of State 2024 General Election Canvass and Certificate. The official SOS canvass PDF/static export or archive election ID still needs to be retained before SD is listed as completed native coverage."
+  },
+  "loadedArtifacts": [
+    {
+      "id": "sd-2024-president-wikipedia-county",
+      "sourceTitle": "Wikipedia 2024 South Dakota presidential county table citing SD SOS canvass",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_South_Dakota",
+      "localFile": "data/sd-2024-general-president-county.csv",
+      "parser": "scripts/collect-sd-2024-county-results.mjs -> countyPresidentCsv",
+      "authority": "Secondary table with South Dakota Secretary of State canvass citation",
+      "reportingGrain": "county",
+      "expectedCounts": {
+        "rows": 66,
+        "totalVotes": 428922,
+        "trump": 272081,
+        "harris": 146859,
+        "other": 9982
+      },
+      "caveat": "Secondary staging artifact only until the official SD SOS canvass/export is collected and retained locally."
+    },
+    {
+      "id": "sd-2024-us-house-wikipedia-county",
+      "sourceTitle": "Wikipedia 2024 South Dakota U.S. House county table citing SD SOS canvass",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2024_United_States_House_of_Representatives_election_in_South_Dakota",
+      "localFile": "data/sd-2024-general-us-house-county.csv",
+      "parser": "scripts/collect-sd-2024-county-results.mjs -> countyComparisonCsv",
+      "authority": "Secondary table with South Dakota Secretary of State canvass citation",
+      "reportingGrain": "county",
+      "comparisonContest": "United States Representative",
+      "expectedCounts": {
+        "rows": 66,
+        "totalVotes": 421448,
+        "republican": 303630,
+        "democratic": 117818,
+        "other": 0
+      },
+      "caveat": "At-large U.S. House rows are county-level comparison context, not precinct scatter-plot coverage."
+    },
+    {
+      "id": "sd-2024-eac-turnout",
+      "sourceTitle": "EAC 2024 EAVS V2 South Dakota jurisdiction turnout fallback",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "localFile": "data/eac-2024-state-turnout/sd-2024-eac-turnout.csv",
+      "parser": "eacTurnoutCsv",
+      "authority": "U.S. Election Assistance Commission",
+      "reportingGrain": "jurisdiction",
+      "expectedCounts": {
+        "rows": 66,
+        "ballotsCast": 435739,
+        "registeredVoters": 690306
+      },
+      "caveat": "Fallback turnout remains active until a state-native SD ballots-cast plus registered-voter denominator artifact is collected and reconciled."
+    },
+    {
+      "id": "sd-historical-presidential-wikipedia-county",
+      "sourceTitle": "Wikipedia South Dakota county presidential tables for 2012, 2016, and 2020",
+      "sourceUrl": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_South_Dakota",
+      "localFile": "data/sd-historical-presidential-baseline.csv",
+      "parser": "scripts/collect-sd-historical-baseline.mjs -> historicalPresidentialCsv",
+      "authority": "Secondary county tables with source footnotes",
+      "reportingGrain": "county",
+      "expectedCounts": {
+        "rows": 198,
+        "years": [
+          2012,
+          2016,
+          2020
+        ]
+      },
+      "caveat": "Contextual baseline only; replace with official SD SOS historical canvass artifacts when collected."
+    },
+    {
+      "id": "sd-county-geometry",
+      "sourceTitle": "U.S. Census TIGERweb county geography",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2746%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/sd-counties.geojson",
+      "parser": "censusTigerwebCountyGeojson",
+      "authority": "U.S. Census Bureau",
+      "reportingGrain": "county",
+      "expectedCounts": {
+        "features": 66
+      },
+      "caveat": "County map joins only; precinct boundary geometry/crosswalks are not loaded."
+    },
+    {
+      "id": "sd-2024-equipment-context",
+      "sourceTitle": "Verified Voting Verifier South Dakota 2024 equipment context",
+      "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/46",
+      "localFile": "data/sd-2024-equipment-context.csv",
+      "parser": "equipment context registry",
+      "authority": "Verified Voting, supplemental context only",
+      "reportingGrain": "county",
+      "caveat": "Equipment context is not a vote, turnout, audit, incident, or proof-of-uniform-equipment source."
+    }
+  ],
+  "officialSourceProbe": {
+    "checkedUrls": [
+      "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+      "https://electionresults.sd.gov/Default.aspx",
+      "https://electionresults.sd.gov/ResultsMedia.aspx",
+      "https://electionresults.sd.gov/ResultsExport.aspx?",
+      "https://sd-fbfzg0h4abdgeyaz.a01.azurefd.net/ResultsAjax.svc?singleWsdl"
+    ],
+    "observedOfficialCapabilities": [
+      "The live SD results app exposes current election CSV/media/export pages and ResultsAjax service methods.",
+      "The WSDL exposes GetMapDataArchive, GetVoterTurnoutArchive, and GetProvisionalDataArchive methods that require an integer ElectionID.",
+      "The public pages inspected in this pass defaulted to the 2026 Primary Election; no scriptable 2024 General Election archive ElectionID or static canvass PDF URL was confirmed."
+    ],
+    "blocker": "Obtain the official SD SOS canvass PDF/static export, specifically the official 2024 General Election Canvass and Certificate PDF/static export URL or the electionresults.sd.gov archive ElectionID for November 5, 2024, before promoting SD to completed official-native coverage."
+  },
+  "displayCaveats": [
+    "County result and review rows are caveated secondary staging coverage until the official SD SOS canvass/export is retained.",
+    "Review rows are county-level President-versus-at-large-U.S.-House comparisons, not precinct-level scatter plots.",
+    "Turnout uses EAC jurisdiction fallback rows until state-native South Dakota turnout/registration denominator rows are collected.",
+    "Historical baselines are contextual secondary county tables for 2012, 2016, and 2020.",
+    "County geometry is loaded; precinct geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded."
+  ],
+  "requestMatrixArtifact": "data/sd-2024-source-request-matrix.tsv"
+}
+
