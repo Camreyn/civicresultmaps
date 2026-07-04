@@ -1180,17 +1180,17 @@
       "availableFields": [
         "county President rows",
         "county U.S. Senate rows",
-        "November 2024 active-voter denominator lead",
+        "November 2024 active-voter denominator lead with generated EAC fallback comparison summary",
         "official 2012/2016/2020 county historical presidential baseline rows"
       ],
       "missingFields": [
         "precinct rows",
         "state-native ballots-cast turnout rows to pair with the collected November 2024 active-voter denominator lead"
       ],
-      "parserStatus": "mississippiElectionRecapCsv loaded for county review; scripts/collect-ms-active-voter-count.mjs normalizes the official November 2024 Active Voter Count denominator lead; scripts/collect-ms-historical-baseline.mjs loads official SOS 2012/2016/2020 county presidential baselines; data/ms-2024-source-request-matrix.tsv tracks OCR, turnout, geometry, and administration-context follow-up asks",
+      "parserStatus": "mississippiElectionRecapCsv loaded for county review; scripts/collect-ms-active-voter-count.mjs normalizes the official November 2024 Active Voter Count denominator lead and writes data/ms-2024-turnout-denominator-lead-summary.json; scripts/collect-ms-historical-baseline.mjs loads official SOS 2012/2016/2020 county presidential baselines; data/ms-2024-source-request-matrix.tsv tracks OCR, turnout, geometry, and administration-context follow-up asks",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "County-level review is useful but not a precinct-level scatter plot. The collected SOS Active Voter Count PDF is a denominator lead only and does not replace ballots-cast turnout rows by itself.",
+      "caveats": "County-level review is useful but not a precinct-level scatter plot. The collected SOS Active Voter Count PDF and generated summary are denominator-lead context only and do not replace ballots-cast turnout rows by themselves.",
       "nextAction": "Keep loaded county and historical packages; use data/ms-2024-source-request-matrix.tsv to pair the collected November 2024 active-voter denominator lead with official Mississippi ballots-cast/voter-participation rows before replacing EAC turnout, and continue OCR/manual review before any precinct promotion."
     },
     {
