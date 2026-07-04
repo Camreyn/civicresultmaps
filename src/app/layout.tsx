@@ -17,6 +17,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon/favicon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    shortcut: "/favicon/favicon.ico",
+    apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   robots: {
     index: true,
     follow: true,
@@ -34,6 +44,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     url: siteUrl,
     siteName: "Civic Result Maps",
+    images: [{ url: "/icons/logo/crm-logo-full-lockup.svg", alt: "Civic Result Maps" }],
   },
   twitter: {
     card: "summary",

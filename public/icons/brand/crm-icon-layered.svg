@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>Civic Result Maps layered icon</title>
+  
+      <defs>
+        <linearGradient id="crm-creamGrad" x1="130" y1="70" x2="382" y2="268" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#F7F0E7"/>
+          <stop offset="0.52" stop-color="#E6E0D6"/>
+          <stop offset="1" stop-color="#BFB3A3"/>
+        </linearGradient>
+        <linearGradient id="crm-tealGrad" x1="128" y1="238" x2="384" y2="410" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#5EA89B"/>
+          <stop offset="0.45" stop-color="#2E6F64"/>
+          <stop offset="1" stop-color="#123F3B"/>
+        </linearGradient>
+        <linearGradient id="crm-coralGrad" x1="128" y1="160" x2="384" y2="338" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#F08A74"/>
+          <stop offset="0.55" stop-color="#E07A5F"/>
+          <stop offset="1" stop-color="#8F3F36"/>
+        </linearGradient>
+        <radialGradient id="crm-irisGrad" cx="42%" cy="35%" r="70%">
+          <stop offset="0" stop-color="#5EA89B"/>
+          <stop offset="0.55" stop-color="#2E6F64"/>
+          <stop offset="1" stop-color="#123F3B"/>
+        </radialGradient>
+        <filter id="crm-softShadow" x="-30%" y="-30%" width="160%" height="180%">
+          <feDropShadow dx="0" dy="16" stdDeviation="12" flood-color="#000000" flood-opacity="0.45"/>
+        </filter>
+        <filter id="crm-smallShadow" x="-25%" y="-25%" width="150%" height="160%">
+          <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000000" flood-opacity="0.34"/>
+        </filter>
+        <clipPath id="crm-topTileClip"><path d="M 261.00 92.88 L 397.00 171.12 Q 402.00 174.00 397.00 176.88 L 261.00 255.12 Q 256.00 258.00 251.00 255.12 L 115.00 176.88 Q 110.00 174.00 115.00 171.12 L 251.00 92.88 Q 256.00 90.00 261.00 92.88 Z"/></clipPath>
+      </defs>
+    
+      <g filter="url(#crm-softShadow)">
+        <path d="M 261.00 252.88 L 397.00 331.12 Q 402.00 334.00 397.00 336.88 L 261.00 415.12 Q 256.00 418.00 251.00 415.12 L 115.00 336.88 Q 110.00 334.00 115.00 331.12 L 251.00 252.88 Q 256.00 250.00 261.00 252.88 Z" fill="url(#crm-tealGrad)" stroke="#5EA89B" stroke-width="3" opacity="0.94"/>
+        <path d="M 261.00 172.88 L 397.00 251.12 Q 402.00 254.00 397.00 256.88 L 261.00 335.12 Q 256.00 338.00 251.00 335.12 L 115.00 256.88 Q 110.00 254.00 115.00 251.12 L 251.00 172.88 Q 256.00 170.00 261.00 172.88 Z" fill="url(#crm-coralGrad)" stroke="#F08A74" stroke-width="3" opacity="0.96"/>
+        <path d="M 261.00 92.88 L 397.00 171.12 Q 402.00 174.00 397.00 176.88 L 261.00 255.12 Q 256.00 258.00 251.00 255.12 L 115.00 176.88 Q 110.00 174.00 115.00 171.12 L 251.00 92.88 Q 256.00 90.00 261.00 92.88 Z" fill="url(#crm-creamGrad)" stroke="#F7F0E7" stroke-width="4"/>
+        
+      <g clip-path="url(#crm-topTileClip)" opacity="0.42" stroke="#BFB3A3" stroke-width="2.4">
+        <line x1="142" y1="108" x2="314" y2="207"/>
+        <line x1="186" y1="83" x2="358" y2="182"/>
+        <line x1="228" y1="58" x2="400" y2="157"/>
+        <line x1="272" y1="58" x2="100" y2="157"/>
+        <line x1="316" y1="83" x2="144" y2="182"/>
+        <line x1="360" y1="108" x2="188" y2="207"/>
+      </g>
+    
+        
+      <g class="crm-eye">
+        <path d="M 178.720 174.000 C 217.360 118.800 294.640 118.800 333.280 174.000 C 294.640 229.200 217.360 229.200 178.720 174.000 Z" fill="#061111"/>
+        <circle cx="256.000" cy="174.000" r="24.840" fill="url(#crm-irisGrad)"/>
+        <circle cx="256.000" cy="174.000" r="13.110" fill="#061111"/>
+        <circle cx="270.490" cy="159.510" r="7.176" fill="#F7F0E7"/>
+      </g>
+    
+      </g>
+    
+</svg>

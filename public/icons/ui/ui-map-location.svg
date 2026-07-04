@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title>Map location icon</title>
+  
+      <defs>
+        <linearGradient id="uiGrad" x1="48" y1="48" x2="208" y2="208" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#E6E0D6"/>
+          <stop offset="0.48" stop-color="#2E6F64"/>
+          <stop offset="1" stop-color="#E07A5F"/>
+        </linearGradient>
+      </defs>
+    
+          <g fill="none" stroke="url(#uiGrad)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M72 162 L120 134 L168 162 L120 190 Z"/>
+            <path d="M120 134 L120 190" opacity="0.6"/>
+            <path d="M168 162 L204 142 L216 150 L180 170" opacity="0.8"/>
+            <path d="M88 142 L52 162 L84 180" opacity="0.8"/>
+            <path d="M128 42 C101 42 84 62 84 86 C84 126 128 158 128 158 C128 158 172 126 172 86 C172 62 155 42 128 42 Z"/>
+            <circle cx="128" cy="86" r="14"/>
+          </g>
+        
+</svg>

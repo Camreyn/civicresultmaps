@@ -3,6 +3,7 @@ import {
   CircleDashed,
   Radar,
 } from "lucide-react";
+import { BrandMark } from "./brand-mark";
 import { NationalOverview } from "./national-overview";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
@@ -90,9 +91,7 @@ export default async function Home({ searchParams }: HomeProps) {
     <main className="app-shell">
       <header className="topbar">
         <div className="brand">
-          <span className="brand-mark" aria-hidden>
-            CRM
-          </span>
+          <BrandMark />
           <div>
             <strong>Civic Result Maps</strong>
             <span>National election result data platform</span>

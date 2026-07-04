@@ -1,4 +1,5 @@
 import { ArrowLeft, CheckCircle2, CircleDashed, Database, FileWarning, GitBranch, ListChecks, Radar } from "lucide-react";
+import { BrandMark } from "../brand-mark";
 import { listAdminSourceStatuses, listCompletenessReport, listNativeSourcePackages, listSourceAcquisitionTiers, listTurnoutSourceStatuses } from "@/lib/api";
 import {
   getNativeSourcePackage,
@@ -445,9 +446,7 @@ export default async function ReadinessPage() {
     <main className="readiness-shell">
       <header className="topbar">
         <a className="brand" href="/">
-          <span className="brand-mark" aria-hidden>
-            CRM
-          </span>
+          <BrandMark />
           <div>
             <strong>Civic Result Maps</strong>
             <span>Readiness dashboard</span>

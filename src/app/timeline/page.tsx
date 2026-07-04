@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ArrowLeft, Database, Map, Radar } from "lucide-react";
+import { BrandMark } from "../brand-mark";
 import { listSuspiciousTimelineEvents, summarizeSuspiciousTimeline } from "@/lib/suspicious-events";
 import { SuspiciousTimeline } from "./suspicious-timeline";
 
@@ -19,9 +20,7 @@ export default function TimelinePage() {
     <main className="timeline-shell">
       <header className="topbar">
         <a className="brand" href="/">
-          <span className="brand-mark" aria-hidden>
-            CRM
-          </span>
+          <BrandMark />
           <div>
             <strong>Civic Result Maps</strong>
             <span>Suspicious event timeline</span>

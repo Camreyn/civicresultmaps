@@ -80,15 +80,16 @@ input {
 .brand-mark {
   align-items: center;
   aspect-ratio: 1;
-  background: var(--foreground);
-  border-radius: 8px;
-  color: var(--background);
   display: inline-flex;
-  font-family: var(--font-code);
-  font-size: 11px;
-  font-weight: 800;
+  flex: 0 0 auto;
   justify-content: center;
-  width: 36px;
+  width: 38px;
+}
+
+.brand-mark-image {
+  display: block;
+  height: 38px;
+  width: 38px;
 }
 
 .brand div {
