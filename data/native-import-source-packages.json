@@ -3233,11 +3233,11 @@
       "state": "NY",
       "name": "New York",
       "priority": 10,
-      "currentStatus": "official_county_results_historical_loaded_partial_local_review_eac_turnout_admin_paths_documented_request_packets_monroe_advanced_wave23",
+      "currentStatus": "official_county_results_historical_partial_local_review_monroe_loaded_eac_turnout_admin_context_inventory",
       "completionDecision": {
-        "checkedAt": "2026-07-03",
+        "checkedAt": "2026-07-04",
         "decision": "remain_in_source_discovery_queue",
-        "reason": "NY should remain in sourceDiscoveryQueue rather than completedNativeStates because local review rows are partial supplemental OpenElections/legacy NYC coverage, 13 county equivalents remain outside normalized review coverage, active turnout is still EAC fallback, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation rows are not loaded. Wave 19 added data/ny-2024-source-request-matrix.tsv to keep those request targets explicit, and Wave 21 added verified Flateau/VEDA export-readiness evidence showing the official future path is not a 2024 replacement package. Wave 22 added data/ny-2024-missing-county-request-packets.json and county-specific request-matrix rows for all 13 missing county equivalents. Wave 23 retained Monroe County official canvass-book detail and certification PDFs, but Monroe remains excluded because the canvass-book detail totals do not reconcile to the final county certification."
+        "reason": "NY should remain in sourceDiscoveryQueue rather than completedNativeStates because local review rows are still partial supplemental/official coverage, 12 county equivalents remain outside normalized review coverage, active turnout is still EAC fallback, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation rows are not loaded. Wave 24 loaded 655 reconciled official Monroe County detail rows and kept data/ny-2024-missing-county-request-packets.json scoped to the remaining 12 county equivalents."
       },
       "officialSourcePages": [
         "https://elections.ny.gov/election-results",
@@ -3273,11 +3273,11 @@
         "NYSBOE audit, FOIL, county-board roster, Flateau/VEDA, and voting-technology paths documented in data/ny-2024-data-coverage-inventory.json",
         "data/ny-2024-source-request-matrix.tsv as the current official-source request queue for missing county local review, turnout, geometry, administration-context gaps, and future VEDA export readiness",
         "data/ny-2024-missing-county-request-packets.json as the county-by-county operational request packet for the 13 missing local-review county equivalents",
-        "Monroe County official 2024 canvass-book detail and November 26, 2024 certification PDFs retained as packet follow-through evidence, not loaded local review rows"
+        "Monroe County official 2024 canvass-book detail and November 26, 2024 certification PDFs reconciled and loaded as 655 local review rows"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for New York official county package; localComparisonCsv loaded for partial supplemental local review rows; historicalPresidentialCsv loaded from official NYSBOE PDFs; eacTurnoutCsv remains active. data/ny-2024-source-request-matrix.tsv now tracks the missing official election-district/local result, turnout/voter-history, geometry/crosswalk, administration-context source requests, and the VEDA export-readiness monitor. A complete official election-district parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed before full same-grain NY local coverage can replace the current caveats. Wave 22 request packets make the remaining county asks explicit. Wave 23 advances Monroe to official-artifact-found status, but no Monroe rows are loaded until the final detail-vs-certification discrepancy is resolved.",
-      "blocker": "County-level President and U.S. Senate rows and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. Partial local review rows cover 49 county equivalents through OpenElections/legacy NYC sources, while Herkimer, Jefferson, Monroe, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized review coverage. EAC turnout remains fallback because NYSBOE enrollment reports are denominator leads, not ballots-cast rows. Wave 21 verified that VEDA/Flateau is live but exposes no 2024 election data/exportable replacement rows; its results and downloads surfaces should be monitored for post-April 1, 2026 elections or any later historical 2024 export. CVR availability, audit comparison reports, incident/correction/recount/litigation records, and precinct/election-district geometry still need source collection or request-produced artifacts. Wave 23 found official Monroe County canvass-book detail and certification PDFs, but the detail source does not reconcile to the final certification, so it is retained as follow-through evidence rather than replacement rows. The remaining blocker is still packetized by county in data/ny-2024-missing-county-request-packets.json.",
+      "parserNeeded": "countyPresidentCsv loaded for New York official county package; localComparisonCsv loaded for partial supplemental local review rows; historicalPresidentialCsv loaded from official NYSBOE PDFs; eacTurnoutCsv remains active. data/ny-2024-source-request-matrix.tsv now tracks the missing official election-district/local result, turnout/voter-history, geometry/crosswalk, administration-context source requests, and the VEDA export-readiness monitor. A complete official election-district parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed before full same-grain NY local coverage can replace the current caveats. Wave 22 request packets make the remaining county asks explicit. Wave 24 adds a Monroe official-detail parser and loads 655 reconciled Monroe local review rows; the complete official statewide ED parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed.",
+      "blocker": "County-level President and U.S. Senate rows and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. Partial local review rows cover 50 county equivalents through OpenElections/legacy NYC sources plus reconciled official Monroe detail rows, while Herkimer, Jefferson, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized review coverage. EAC turnout remains fallback because NYSBOE enrollment reports are denominator leads, not ballots-cast rows. Wave 21 verified that VEDA/Flateau is live but exposes no 2024 election data/exportable replacement rows; its results and downloads surfaces should be monitored for post-April 1, 2026 elections or any later historical 2024 export. CVR availability, audit comparison reports, incident/correction/recount/litigation records, and precinct/election-district geometry still need source collection or request-produced artifacts. Wave 24 reconciled and loaded Monroe official detail rows. The remaining local blocker is still packetized by county in data/ny-2024-missing-county-request-packets.json.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "New York State Board of Elections official 2024 general election results PDF",
@@ -3299,7 +3299,7 @@
           "localFile": "data/ny-2024-local-review.csv; data/ny-2024-local-review-sources.json",
           "level": "election_district_or_local_unit_partial",
           "comparisonContest": "U.S. Senate",
-          "parserHint": "scripts/normalize-ny-local-review.mjs normalizes machine-readable files, selected reviewed text-layer PDFs, Suffolk text rows, and legacy NYC rows; data/ny-2024-local-review-sources.json records loaded, zero-row, and excluded source-file statuses, while image-only, president-only, unsupported, or unreviewed counties stay excluded until reviewed."
+          "parserHint": "scripts/normalize-ny-local-review.mjs normalizes machine-readable files, selected reviewed text-layer PDFs, Suffolk text rows, reconciled official Monroe County canvass-book detail rows, and legacy NYC rows; data/ny-2024-local-review-sources.json records loaded, zero-row, and excluded source-file statuses, while image-only, president-only, unsupported, or unreviewed counties stay excluded until reviewed."
         },
         "turnout": {
           "sourceTitle": "EAC fallback plus NYSBOE enrollment denominator leads",
@@ -3325,7 +3325,7 @@
           "sourceTitle": "New York 2024 data coverage and administration source inventory",
           "sourceUrl": "https://elections.ny.gov/flateau-database",
           "localFile": "data/ny-2024-data-coverage-inventory.json; data/ny-2024-source-request-matrix.tsv; data/ny-2024-missing-county-request-packets.json",
-          "parserHint": "Documents excluded local review counties, state-native turnout denominator leads, Flateau/VEDA future local data path and Wave 21 export-readiness blocker, county-board request paths, audit/CVR/incident/recount/litigation blockers, display caveats, and the Wave 21 request matrix. Wave 22 adds county-specific missing-local-review request packets with source-lead statuses for unreviewed PDFs, president-only workbooks, zero-row workbooks, and no-manifest-source counties. Wave 23 advances Monroe with official county canvass/certification artifacts but no loaded rows."
+          "parserHint": "Documents excluded local review counties, state-native turnout denominator leads, Flateau/VEDA future local data path and Wave 21 export-readiness blocker, county-board request paths, audit/CVR/incident/recount/litigation blockers, display caveats, and the Wave 21 request matrix. Wave 22 adds county-specific missing-local-review request packets with source-lead statuses for unreviewed PDFs, president-only workbooks, zero-row workbooks, and no-manifest-source counties. Wave 24 reconciles Monroe official county canvass/certification artifacts and loads 655 local review rows; remaining county request packets cover 12 county equivalents."
         },
         "equipmentContext": {
           "sourceTitle": "Verified Voting Verifier New York 2024 equipment context",
@@ -3334,11 +3334,11 @@
           "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
         },
         "monroePacketFollowThrough": {
-          "sourceTitle": "Monroe County Board of Elections 2024 General canvass-book detail and certification PDFs",
+          "sourceTitle": "Monroe County Board of Elections 2024 General canvass-book detail, certification, reconciliation, and turnout-lead PDFs",
           "sourceUrl": "https://www.monroecounty.gov/elections-results",
-          "localFile": "data/ny-2024-monroe-canvass-book.pdf; data/ny-2024-monroe-general-certification.pdf",
-          "level": "county certification plus local detail lead",
-          "parserHint": "Retained as request-packet follow-through only. Do not load Monroe local review rows until the canvass-book detail totals reconcile to the November 26, 2024 certification or the county provides a final detail export/explanation."
+          "localFile": "data/ny-2024-monroe-canvass-book.pdf; data/ny-2024-monroe-general-certification.pdf; data/ny-2024-monroe-reconciliation-summary.json; data/ny-2024-monroe-general-voter-turnout-v2.pdf",
+          "level": "legislative_district_or_town_by_election_district_detail",
+          "parserHint": "Loaded through scripts/ny-monroe-official-detail.mjs after detail rows reconciled to the November 26, 2024 certification and active NY county totals. Turnout v2 PDF is retained as a county-specific lead only; active NY turnout remains EAC fallback."
         }
       },
       "requestMatrixArtifact": "data/ny-2024-source-request-matrix.tsv",

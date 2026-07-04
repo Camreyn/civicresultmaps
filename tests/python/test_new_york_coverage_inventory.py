@@ -25,7 +25,7 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertFalse(config.raw.get("turnoutOnly", False))
         self.assertEqual(config.expected.sources, len(config.sources))
         self.assertEqual(len(artifact["native"]["resultRows"]), 62)
-        self.assertEqual(len(artifact["native"]["reviewRows"]), 9753)
+        self.assertEqual(len(artifact["native"]["reviewRows"]), 10408)
         self.assertEqual(len(artifact["native"]["turnoutRows"]), 62)
         self.assertEqual(len(artifact["native"]["historicalRows"]), 186)
         self.assertEqual(metrics["nativeResultTotalVotes"], 8381429)
@@ -47,7 +47,8 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
 
         queue_entry = next(row for row in native["sourceDiscoveryQueue"] if row["state"] == "NY")
         tier = next(row for row in tiers["states"] if row["state"] == "NY" and row["scope"] == "statewide")
-        monroe = next(row for row in manifest["files"] if row["file"] == "Monroe.xlsx")
+        monroe_workbook = next(row for row in manifest["files"] if row["file"] == "Monroe.xlsx")
+        monroe_official = next(row for row in manifest["files"] if row["file"] == "ny-2024-monroe-canvass-book.pdf")
         excluded = {row["county"] for row in manifest["excludedFiles"]}
 
         self.assertNotIn("NY", native["completedNativeStates"])
@@ -62,28 +63,27 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(queue_entry["requestMatrixArtifact"], "data/ny-2024-source-request-matrix.tsv")
         self.assertEqual(queue_entry["requestPacketArtifact"], "data/ny-2024-missing-county-request-packets.json")
         self.assertIn("source request matrix", tier["parserStatus"])
-        self.assertIn("13 county equivalents", tier["caveats"])
+        self.assertIn("12 county equivalents", tier["caveats"])
         self.assertIn("future official export paths", tier["parserStatus"])
         self.assertIn("Monroe", tier["parserStatus"])
 
         coverage = inventory["completionDecision"]["reviewCoverage"]
-        self.assertEqual(coverage["reviewRows"], 9753)
-        self.assertEqual(coverage["coveredCountyEquivalents"], 49)
-        self.assertEqual(coverage["missingCountyEquivalents"], 13)
-        self.assertEqual(coverage["requestPacketCount"], 13)
+        self.assertEqual(coverage["reviewRows"], 10408)
+        self.assertEqual(coverage["coveredCountyEquivalents"], 50)
+        self.assertEqual(coverage["missingCountyEquivalents"], 12)
+        self.assertEqual(coverage["requestPacketCount"], 12)
         self.assertEqual(coverage["requestPacketArtifact"], "data/ny-2024-missing-county-request-packets.json")
-        self.assertEqual(len(packets["packets"]), 13)
+        self.assertEqual(len(packets["packets"]), 12)
         self.assertEqual(packet_counties, set(coverage["excludedOrNotYetReviewedCounties"]))
         self.assertEqual(sum(packet["status"] == "packet_ready_no_loaded_rows" for packet in packets["packets"]), 12)
-        self.assertEqual(sum(packet["status"] == "official_artifacts_found_not_loaded_reconciliation_needed" for packet in packets["packets"]), 1)
+        self.assertEqual(sum(packet["status"] == "official_artifacts_found_not_loaded_reconciliation_needed" for packet in packets["packets"]), 0)
         self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Nassau County")["currentReviewStatus"], "no_manifest_source_file")
-        monroe_packet = next(packet for packet in packets["packets"] if packet["county"] == "Monroe County")
-        self.assertEqual(monroe_packet["currentSourceLead"]["status"], "official_canvass_book_detail_found_not_loaded")
-        self.assertEqual(monroe_packet["currentSourceLead"]["priorSupplementalLead"]["status"], "president_detail_only_no_us_senate_section")
-        self.assertIn("data/ny-2024-monroe-canvass-book.pdf", monroe_packet["followThroughArtifacts"][0]["localPath"])
+        self.assertNotIn("Monroe County", packet_counties)
+        self.assertEqual(monroe_official["status"], "loaded")
+        self.assertEqual(monroe_official["rows"], 655)
         self.assertEqual(next(packet for packet in packets["packets"] if packet["county"] == "Rockland County")["currentSourceLead"]["status"], "president_only_no_same_grain_us_senate_rows")
-        self.assertEqual(monroe["status"], "excluded_zero_rows")
-        self.assertIn("Monroe County", coverage["excludedOrNotYetReviewedCounties"])
+        self.assertEqual(monroe_workbook["status"], "excluded_zero_rows")
+        self.assertNotIn("Monroe County", coverage["excludedOrNotYetReviewedCounties"])
         self.assertIn("Rockland County", coverage["excludedOrNotYetReviewedCounties"])
         self.assertIn("Rockland County", excluded)
 
@@ -95,8 +95,8 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(request_rows["ny-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
         packet_request_ids = {packet["packetId"] for packet in packets["packets"]}
         self.assertTrue(packet_request_ids.issubset(request_rows.keys()))
-        self.assertEqual(request_rows["ny-2024-local-monroe"]["status"], "official_artifacts_found_not_loaded_reconciliation_needed")
-        self.assertTrue(all(request_rows[request_id]["status"] == "packet_ready_no_loaded_rows" for request_id in packet_request_ids if request_id != "ny-2024-local-monroe"))
+        self.assertEqual(request_rows["ny-2024-local-monroe"]["status"], "loaded_official_detail_reconciled")
+        self.assertTrue(all(request_rows[request_id]["status"] == "packet_ready_no_loaded_rows" for request_id in packet_request_ids))
 
         blocker_sources = {row["sourceUrl"]: row for row in inventory["officialBlockerEvidence"]}
         self.assertEqual(blocker_sources["https://flateau.elections.ny.gov/"]["observed"], "The VEDA dashboard reported 0 total elections for 2026 and no election data available.")
@@ -109,8 +109,9 @@ class NewYorkCoverageInventoryTests(unittest.TestCase):
         counties = {row["county"] for row in rows}
         missing_counties = set(self.load_json("data/ny-2024-data-coverage-inventory.json")["completionDecision"]["reviewCoverage"]["excludedOrNotYetReviewedCounties"])
 
-        self.assertEqual(len(rows), 9753)
+        self.assertEqual(len(rows), 10408)
         self.assertTrue(missing_counties.isdisjoint(counties))
+        self.assertIn("Monroe County", counties)
         self.assertIn("Suffolk County", counties)
         self.assertIn("Westchester County", counties)
 
