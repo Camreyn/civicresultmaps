@@ -1,0 +1,41 @@
+# Keep local/generated workspaces out of Vercel source uploads.
+.git/
+.next/
+node_modules/
+.vercel/
+.etl/
+.etl-test/
+.tools/
+.codex-remote-attachments/
+coverage/
+tmp/
+__pycache__/
+**/__pycache__/
+*.pyc
+tsconfig.tsbuildinfo
+
+# Never upload local secrets.
+.env
+.env.local
+.env.*.local
+.setup-token
+.import-token
+
+# The Next app imports only small registry files from data/ at runtime.
+# Large raw election artifacts stay in GitHub/source storage and are not
+# needed in Vercel deployment bundles.
+data/**
+!data/admin-source-packages.json
+!data/electronic-integrity-artifacts.json
+!data/electronic-integrity-received-files.json
+!data/electronic-integrity-request-contacts.json
+!data/electronic-integrity-request-operations.json
+!data/electronic-integrity-request-tracker.json
+!data/native-import-source-packages.json
+!data/source-acquisition-tiers.json
+!data/swing-state-2024-parity-status.json
+!data/turnout-source-packages.json
+!data/wi-2024-audit-summary.json
+!data/wi-2024-audit-selections.csv
+!data/eac-2024-vote-methods/
+!data/eac-2024-vote-methods/**
