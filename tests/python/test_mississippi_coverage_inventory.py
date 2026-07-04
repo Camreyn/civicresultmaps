@@ -3,12 +3,13 @@ import json
 import unittest
 from pathlib import Path
 
-
 class MississippiCoverageInventoryTest(unittest.TestCase):
+
     def setUp(self):
         self.inventory = json.loads(Path("data/ms-2024-data-coverage-inventory.json").read_text(encoding="utf-8-sig"))
         admin = json.loads(Path("data/admin-source-packages.json").read_text(encoding="utf-8-sig"))
         self.admin = next(entry for entry in admin["stateYearStatuses"] if entry["state"] == "MS")
+        self.turnout_summary = json.loads(Path("data/ms-2024-turnout-denominator-lead-summary.json").read_text(encoding="utf-8-sig"))
         with Path("data/ms-2024-source-request-matrix.tsv").open(encoding="utf-8-sig", newline="") as handle:
             self.request_rows = list(csv.DictReader(handle, delimiter="\t"))
         self.requests = {row["request_id"]: row for row in self.request_rows}
@@ -21,6 +22,19 @@ class MississippiCoverageInventoryTest(unittest.TestCase):
         self.assertIn("11 import-ready counties", self.requests["ms-precinct-president-senate-ocr-review"]["expected_rows_or_totals"])
         self.assertEqual(self.requests["ms-state-native-ballots-cast-turnout"]["status"], "denominator_lead_collected_ballots_cast_missing")
         self.assertIn("Keep EAC fallback turnout active", self.requests["ms-state-native-ballots-cast-turnout"]["caveats"])
+
+    def test_active_voter_denominator_summary_is_scripted_context_only(self):
+        artifact = next(
+            artifact for artifact in self.inventory["loadedArtifacts"] if artifact["id"] == "ms-2024-november-active-voter-count"
+        )
+        self.assertIn("ms-2024-turnout-denominator-lead-summary.json", artifact["localArtifactPath"])
+        self.assertEqual(self.turnout_summary["sourceStatus"], "denominator_lead_collected_ballots_cast_missing")
+        self.assertEqual(self.turnout_summary["activeVoterLead"]["rowCount"], 82)
+        self.assertEqual(self.turnout_summary["activeVoterLead"]["activeVoters"], 1980751)
+        self.assertEqual(self.turnout_summary["eacFallbackTurnout"]["registeredVoters"], 2131726)
+        self.assertEqual(self.turnout_summary["denominatorComparison"]["activeVotersMinusEacRegisteredVoters"], -150975)
+        self.assertFalse(self.turnout_summary["replacementDecision"]["activeTurnoutReplacement"])
+        self.assertIn("ballots-cast", self.turnout_summary["replacementDecision"]["reason"])
 
     def test_historical_rows_are_loaded_and_geometry_remains_request_only(self):
         historical_artifact = next(
@@ -39,6 +53,7 @@ class MississippiCoverageInventoryTest(unittest.TestCase):
 
         self.assertEqual(self.requests["ms-precinct-geometry-crosswalk"]["status"], "needs_official_geometry_or_crosswalk")
         self.assertIn("county map joins", self.requests["ms-precinct-geometry-crosswalk"]["caveats"])
+
     def test_admin_rows_stay_request_provenance_not_findings(self):
         admin_request = self.requests["ms-admin-audit-cvr-incident-records"]
         self.assertEqual(admin_request["status"], "needs_records_request_and_scope_review")
@@ -47,7 +62,6 @@ class MississippiCoverageInventoryTest(unittest.TestCase):
         self.assertIn("ms-2024-source-request-matrix", self.admin["audit"]["why"])
         self.assertEqual(self.admin["cvr"]["status"], "needs_data")
         self.assertEqual(self.admin["incidents"]["status"], "needs_data")
-
 
 if __name__ == "__main__":
     unittest.main()

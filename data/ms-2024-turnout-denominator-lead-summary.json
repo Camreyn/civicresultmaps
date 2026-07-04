@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "state": "MS",
+  "stateName": "Mississippi",
+  "electionYear": 2024,
+  "generatedAt": "2026-07-04T00:22:02.185Z",
+  "sourceStatus": "denominator_lead_collected_ballots_cast_missing",
+  "activeVoterLead": {
+    "sourceAuthority": "Mississippi Secretary of State",
+    "sourceUrl": "https://www.sos.ms.gov/sites/default/files/active-voter-count-reports/2024November%20Voter%20Count%20Red.pdf",
+    "sourcePage": "https://www.sos.ms.gov/elections-voting/active-voter-count-reports",
+    "localPdf": "data/ms-2024-november-active-voter-count.pdf",
+    "localCsv": "data/ms-2024-november-active-voter-count.csv",
+    "sourceMonth": "2024-11",
+    "rowCount": 82,
+    "activeVoters": 1980751,
+    "cvapEstimate": 2238135,
+    "activeVoterPctOfCvap": 88.5001,
+    "denominatorNote": "Monthly active voter count from Mississippi SEMS; denominator lead only, not ballots cast or turnout."
+  },
+  "eacFallbackTurnout": {
+    "localCsv": "data/eac-2024-state-turnout/ms-2024-eac-turnout.csv",
+    "rowCount": 82,
+    "ballotsCast": 1225176,
+    "registeredVoters": 2131726,
+    "sourceAuthority": "U.S. Election Assistance Commission",
+    "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports"
+  },
+  "denominatorComparison": {
+    "activeVotersMinusEacRegisteredVoters": -150975,
+    "activeVotersAsPctOfEacRegisteredVoters": 92.9177,
+    "eacRegisteredVotersMinusActiveVoters": 150975
+  },
+  "replacementDecision": {
+    "activeTurnoutReplacement": false,
+    "reason": "The Mississippi SOS active-voter report provides county denominator rows but no ballots-cast or voter-participation field. Keep EAC fallback turnout active until an official Mississippi ballots-cast or voter-participation artifact is collected, normalized, and reconciled.",
+    "requiredNextArtifact": "Official Mississippi 2024 General Election ballots-cast or voter-participation rows at county or precinct grain with denominator timing notes."
+  }
+}

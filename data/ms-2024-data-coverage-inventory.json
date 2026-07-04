@@ -5,7 +5,7 @@
   "electionYear": 2024,
   "checkedAt": "2026-07-03",
   "requestMatrixArtifact": "data/ms-2024-source-request-matrix.tsv",
-  "purpose": "Wave 10 Mississippi source-coverage inventory for loaded official county result/review rows, EAC fallback turnout, state-native active-voter denominator leads, OCR-gated county PDF precinct-review feasibility, loaded official historical baselines, county geometry, and administration-context gaps. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
+  "purpose": "Wave 10 Mississippi source-coverage inventory for loaded official county result/review rows, EAC fallback turnout, state-native active-voter denominator leads with a generated EAC comparison summary, OCR-gated county PDF precinct-review feasibility, loaded official historical baselines, county geometry, and administration-context gaps. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "firstReads": {
     "developerIndex": "docs/developer/index.md was not present in the worktree; absence recorded per wave instructions.",
     "requiredFilesRead": [
@@ -75,7 +75,7 @@
       "sourceAuthority": "Mississippi Secretary of State",
       "sourceUrl": "https://www.sos.ms.gov/sites/default/files/active-voter-count-reports/2024November%20Voter%20Count%20Red.pdf",
       "relatedSourceUrl": "https://www.sos.ms.gov/elections-voting/active-voter-count-reports",
-      "localArtifactPath": "data/ms-2024-november-active-voter-count.pdf; data/ms-2024-november-active-voter-count.csv",
+      "localArtifactPath": "data/ms-2024-november-active-voter-count.pdf; data/ms-2024-november-active-voter-count.csv; data/ms-2024-turnout-denominator-lead-summary.json",
       "reportingGrain": "county",
       "parserOrNormalizationPath": "scripts/collect-ms-active-voter-count.mjs; candidate source in etl/state-configs/ms.json",
       "expectedRowsOrTotals": {
@@ -83,7 +83,7 @@
         "activeVoters": 1980751,
         "cvapEstimate": 2238135
       },
-      "confidenceNotes": "Official Mississippi SOS November 2024 active-voter denominator lead. It is not loaded as turnout because it has no ballots-cast field and needs denominator timing/reconciliation against an official ballots-cast or voter-participation artifact."
+      "confidenceNotes": "Official Mississippi SOS November 2024 active-voter denominator lead. It is not loaded as turnout because it has no ballots-cast field and needs denominator timing/reconciliation against an official ballots-cast or voter-participation artifact. The generated summary records that the SOS active-voter denominator is 150,975 lower than the active EAC registered-voter fallback denominator."
     },
     {
       "id": "ms-2024-county-results-pdfs",
@@ -190,10 +190,10 @@
       "status": "denominator_lead_collected_ballots_cast_missing",
       "sourceAuthority": "Mississippi Secretary of State",
       "sourceUrl": "https://www.sos.ms.gov/elections-voting/active-voter-count-reports",
-      "localArtifactPath": "data/ms-2024-november-active-voter-count.pdf; data/ms-2024-november-active-voter-count.csv",
+      "localArtifactPath": "data/ms-2024-november-active-voter-count.pdf; data/ms-2024-november-active-voter-count.csv; data/ms-2024-turnout-denominator-lead-summary.json",
       "reportingGrain": "county_active_voter_denominator",
       "parserOrNormalizationPath": "scripts/collect-ms-active-voter-count.mjs",
-      "evidence": "The November 2024 active-voter count normalizes to 82 county rows, 1,980,751 active voters, and a 2,238,135 CVAP estimate.",
+      "evidence": "The November 2024 active-voter count normalizes to 82 county rows, 1,980,751 active voters, and a 2,238,135 CVAP estimate. The generated summary compares that lead with the active EAC fallback: 82 EAC rows, 1,225,176 ballots cast, 2,131,726 registered voters, and an SOS-active-minus-EAC-registered denominator delta of -150,975.",
       "caveats": "The SOS active-voter report is a denominator lead only. It does not provide ballots-cast, election-level voter participation, or a replacement turnout percentage by itself."
     },
     {
