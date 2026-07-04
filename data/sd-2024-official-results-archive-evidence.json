@@ -3,6 +3,11 @@
   "sourceUrls": {
     "archivedGeneralShell": "https://web.archive.org/web/20241105222716/https://electionresults.sd.gov/",
     "statewideExportShell": "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
+    "electionTerminology": "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
+    "officialResultsPage": "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+    "postElectionAuditPage": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+    "publicRecordsRequest": "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
+    "countyAuditors": "https://vip.sdsos.gov/CountyAuditors.aspx",
     "candidates": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetCandidates?ElectionType=General&ElectionID=684",
     "statewideCountyMapData": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetMapDataArchive?Type=SWR&Category=CTY&RaceID=0&OSN=0&County=0&Party=0&ElectionID=684",
     "countyTurnout": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684"
@@ -14,7 +19,7 @@
   "electionDate": "2024-11-05",
   "reportingGrain": "county",
   "parserOrNormalizationPath": "scripts/collect-sd-official-archive-evidence.mjs",
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-04",
   "archiveEvidence": {
     "serviceRoot": "https://sdresws.azurewebsites.net/ResultsAjax.svc",
     "electionID": 684,
@@ -158,7 +163,7 @@
         "title": "2024 Unofficial General Election Results",
         "stateLabel": "State of South Dakota",
         "precinctStatus": "Precincts 691 of 691 Reporting (Precincts Partially Reported: 0/691)",
-        "downloadedAtLabel": "Downloaded at 7/3/2026 6:05:07 PM",
+        "downloadedAtLabel": "Downloaded at 7/3/2026 10:18:39 PM",
         "rowCount": 66,
         "countyCount": 66,
         "sourceHeaders": [
@@ -202,7 +207,7 @@
         "title": "2024 Unofficial General Election Results",
         "stateLabel": "State of South Dakota",
         "precinctStatus": "Precincts 691 of 691 Reporting (Precincts Partially Reported: 0/691)",
-        "downloadedAtLabel": "Downloaded at 7/3/2026 6:05:07 PM",
+        "downloadedAtLabel": "Downloaded at 7/3/2026 10:18:39 PM",
         "rowCount": 66,
         "countyCount": 66,
         "sourceHeaders": [
@@ -229,6 +234,72 @@
       }
     }
   },
+  "officialResultsAvailabilityNote": "The results displayed on Election Night are unofficial. Once the 66 County Canvass Boards and the State Canvass Board canvass and certify the election results, the official results will be available on our website. Please visit SOS Elections for the official, certified results.",
+  "postElectionAuditSummary": {
+    "sourceUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+    "rowCount": 66,
+    "linkedCertificateCount": 83,
+    "discrepancySummaryCount": 14,
+    "discrepancySummaryCounties": [
+      "Aurora",
+      "Brule",
+      "Custer",
+      "Hand",
+      "Hughes",
+      "Hyde",
+      "Jackson",
+      "Lincoln",
+      "McCook",
+      "Minnehaha",
+      "Roberts",
+      "Spink",
+      "Tripp",
+      "Union"
+    ],
+    "countiesWithoutLinkedCertificate": [
+      {
+        "county": "Jackson",
+        "status": "100% accurate first precinct; 2nd precinct off by 2"
+      }
+    ]
+  },
+  "canvassUrlProbes": [
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20Election%20State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20Election%20State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20State%20Canvass%20and%20Certificate.pdf"
+    }
+  ],
   "expectedCertifiedTotals": {
     "presidentialElectors": {
       "totalVotes": 428922,

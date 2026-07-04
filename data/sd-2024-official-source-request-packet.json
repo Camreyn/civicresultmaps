@@ -1,0 +1,924 @@
+{
+  "sourceAuthority": "South Dakota Secretary of State",
+  "localArtifactPath": "data/sd-2024-official-source-request-packet.json",
+  "sourceUrl": "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+  "electionYear": 2024,
+  "reportingGrain": "county",
+  "parserOrNormalizationPath": "scripts/collect-sd-official-archive-evidence.mjs",
+  "checkedAt": "2026-07-04",
+  "status": "official_certified_reconciliation_request_packet",
+  "blocker": "The official ElectionID 684 results app and statewide XLSX export remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the current certified-style county staging rows. The certifying PDF/static export has not been found at the tested SOS paths.",
+  "requestTargets": [
+    {
+      "target": "South Dakota Secretary of State Elections Division",
+      "url": "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+      "requestPath": "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
+      "ask": "Provide the official 2024 General Election State Canvass and Certificate PDF/static export or a machine-readable county-level certified-result table for President and United States Representative."
+    },
+    {
+      "target": "South Dakota county auditors",
+      "url": "https://vip.sdsos.gov/CountyAuditors.aspx",
+      "ask": "If the state cannot provide a reconciled county export, request county canvass certificates or county-level certified abstracts for President and United States Representative."
+    }
+  ],
+  "requestedFields": [
+    "county",
+    "contest",
+    "candidate",
+    "party",
+    "certified_votes",
+    "write_in_or_canvass_adjustment_votes_if_separate",
+    "certification_date",
+    "source_document_url"
+  ],
+  "evidenceToAttach": [
+    {
+      "artifact": "data/sd-2024-official-results-archive-evidence.json",
+      "summary": "ElectionID 684 app/export evidence identifies the correct 2024 General federal contests but remains lower than the certified-style totals and is labeled unofficial."
+    },
+    {
+      "artifact": "data/sd-2024-general-statewide-results.xlsx",
+      "summary": "Official ResultsExport.aspx?eid=684 workbook retained locally as Statewide Results.xlsx."
+    },
+    {
+      "artifact": "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
+      "summary": "The results displayed on Election Night are unofficial. Once the 66 County Canvass Boards and the State Canvass Board canvass and certify the election results, the official results will be available on our website. Please visit SOS Elections for the official, certified results."
+    },
+    {
+      "artifact": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+      "summary": "Official 2024 General post-election audit page lists 66 county rows and 83 linked audit certificates; useful administration context but not a certified-result replacement."
+    }
+  ],
+  "officialPostElectionAuditContext": {
+    "sourceUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+    "rowCount": 66,
+    "linkedCertificateCount": 83,
+    "discrepancySummaryCounties": [
+      "Aurora",
+      "Brule",
+      "Custer",
+      "Hand",
+      "Hughes",
+      "Hyde",
+      "Jackson",
+      "Lincoln",
+      "McCook",
+      "Minnehaha",
+      "Roberts",
+      "Spink",
+      "Tripp",
+      "Union"
+    ],
+    "discrepancySummaryCount": 14,
+    "countiesWithoutLinkedCertificate": [
+      {
+        "county": "Jackson",
+        "status": "100% accurate first precinct; 2nd precinct off by 2"
+      }
+    ],
+    "countyRows": [
+      {
+        "county": "Aurora",
+        "status": "Was off by one, precinct 5 ballot in with precinct 3. So tabulator didn't count it as it was a wrong precinct.",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Auroa-PEA-Certification.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Beadle",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/BeadlePEAGeneral2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Bennett",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/BennettPEAGeneral2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Bon Homme",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/BonHommePEA-2024GENERAL.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Brookings",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Brookings%20County%20Post-Election%20Audit%20Certificates.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Brown",
+        "status": "No discrepancies",
+        "certificateCount": 2,
+        "certificateUrls": [
+          {
+            "label": "- Columbia Vote Center - Presidential",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Certificate%20of%20Post%20Election%20Audit%20-%20Presidential%20-%20Columbia%20VC%20-%20Signed.pdf"
+          },
+          {
+            "label": "- Columbia Vote Center - US Representative",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Certificate%20of%20Post%20Election%20Audit%20-%20US%20Representative%20-%20Columbia%20VC%20-%20Signed.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Brule",
+        "status": "One discrepancy",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/BruleCountyPEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Buffalo",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/BuffaloPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Butte",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Butte%20County%202024%20General%20Post-Election%20Audit%20Certification.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Campbell",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/CampbellPEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Charles Mix",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/PEA-CharlesMix-GE-24.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Clark",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/ClarkPEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Clay",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Clay2024%20General%20Post-Election%20Audit%20Certificate.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Codington",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/CodingtonPEA2024General.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Corson",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/CorsonPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Custer",
+        "status": "One discrepancy - believed to be human error",
+        "certificateCount": 2,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Custer-Certification%20of%20Post-Election%20Audit-Signed.pdf"
+          },
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Custer-Post%20Election%20Audit%20Certification%202024%20General.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Davison",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/DavisonPEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Day",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Day2024GeneralElectionSignedCertificate.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Deuel",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/DeuelPEAGeneral2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Dewey",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/DeweyCo%20Certificate%20of%20PEA%20-%20GENERAL%2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Douglas",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Douglas%20Co.%20PEA%20Cert%20Gen%2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Edmunds",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Edmunds%20PEA%20Results.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Fall River",
+        "status": "No discrepancies",
+        "certificateCount": 10,
+        "certificateUrls": [
+          {
+            "label": "Oelrichs Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Oelrichs%20Precinct.pdf"
+          },
+          {
+            "label": "Jackson Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Jackson%20Precinct.pdf"
+          },
+          {
+            "label": "HS4 Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HS4%20Precinct.pdf"
+          },
+          {
+            "label": "HS3 Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HS3%20Precinct.pdf"
+          },
+          {
+            "label": "HS2 Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HS2%20Precinct.pdf"
+          },
+          {
+            "label": "HS1 Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HS1%20Precinct.pdf"
+          },
+          {
+            "label": "Edgemont Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Edgemont%20Precinct.pdf"
+          },
+          {
+            "label": "Note",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/General%20Post%20Election%20Audit%20-%20EDA%20precinct,%20explanation%20on%20why%20off%20a%20lot%20from%20Tabulator.pdf"
+          },
+          {
+            "label": "Cascade Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Cascade%20Precinct.pdf"
+          },
+          {
+            "label": "Beaver Precinct",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Beaver%20Precinct.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Faulk",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/FaulkPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Grant",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/2024%20%20GRANT%20CO%20GE%20PEA%20CERTIFCATION.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Gregory",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Gregory%20County-%20General%20Election%20-%20Post%20Election%20Audit%20Certification.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Haakon",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HaakonGeneral%20Election%20PEA%20Certificate.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Hamlin",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Hamlin%2012-16.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Hand",
+        "status": "One discrepancy - believed the mark was to light for the machine to catch",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/2024.11.19%20-%20Hand%20County%20(Post%20Election%20Audit%20Materials).pdf"
+          }
+        ]
+      },
+      {
+        "county": "Hanson",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HansonPEACertification.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Harding",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Harding2024GenPEA.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Hughes",
+        "status": "Two discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HughesCountyPEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Hutchinson",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/HutchinsonPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Hyde",
+        "status": "Two discrepancies - believed to be human error",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Post%20Election%20Audit%20General%202024-Hyde.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Jackson",
+        "status": "100% accurate first precinct; 2nd precinct off by 2",
+        "certificateCount": 0,
+        "certificateUrls": []
+      },
+      {
+        "county": "Jerauld",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/JerauldPEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Jones",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Jones%20County%20Post-Election%20Audit%20-2024-11-15.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Kingsbury",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Kingsbury-Post%20Election%20Certificate%20General%202024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Lake",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Lake-PEA%20signed%20certificates.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Lawrence",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/LawrencePEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Lincoln",
+        "status": "One discrepancy",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Post-Election%20Audit%20Certificates.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Lyman",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Lyman-Certificate%20of%20Post%20Election%20Audit.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Marshall",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Marshall%20County%20General%20Election%20Post%20Election%20Audit%20Certificate.pdf"
+          }
+        ]
+      },
+      {
+        "county": "McCook",
+        "status": "One discrepancy",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/McCookPEA2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "McPherson",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/McPherson-2024%20General%20PEA%20Certificate.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Meade",
+        "status": "No discrepancies",
+        "certificateCount": 2,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit - Amendment F",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Meade-Certificate%20Constitutional%20Amendment%20F.pdf"
+          },
+          {
+            "label": "Certificate of post-election audit - Amendment H",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Meade-Certificate%20Constitutional%20Amendment%20H.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Mellette",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/MellettePEA2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Miner",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Miner%20County%20-%20Certificate%20of%20Post%20Election%20Audit%20-%20General%202024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Minnehaha",
+        "status": "Discrepancies",
+        "certificateCount": 5,
+        "certificateUrls": [
+          {
+            "label": "Certificate of Post-Election Audit 0209",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Certificates%20of%20Post-Election%20Audit%200209.pdf"
+          },
+          {
+            "label": "Certificate of Post-Election Audit 0317",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Certificates%20of%20Post-Election%20Audit%200317.pdf"
+          },
+          {
+            "label": "Certificate of Post-Election Audit 0405",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Certificates%20of%20Post-Election%20Audit%200405.pdf"
+          },
+          {
+            "label": "Certificate of Post-Election Audit 0509",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Certificates%20of%20Post-Election%20Audit%200509.pdf"
+          },
+          {
+            "label": "Certificate of Post-Election Audit VP-13",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Certificates%20of%20Post-Election%20Audit%20VP-13.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Moody",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/MoodyPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Oglala Lakota",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/OglalaLakotaPEAGeneral2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Pennington",
+        "status": "status_not_listed_on_summary_page",
+        "certificateCount": 3,
+        "certificateUrls": [
+          {
+            "label": "Certificate of Post-Election Audit - Precinct NU",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/6%20CERTIFICATE%20OF%20POST%20ELECTION%20AUDIT%20NU.pdf"
+          },
+          {
+            "label": "Certificate of Post-Election Audit - Precinct JS",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/6%20CERTIFICATE%20OF%20POST%20ELECTION%20AUDIT%20PRECINCT%20JS.pdf"
+          },
+          {
+            "label": "Certificate of Post-Election Audit - Precinct 5-4",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/CERTIFICATE%20OF%20POST%20ELECTION%20AUDIT%205-4.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Perkins",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Perkins%20County%20Certificate%20of%20Election.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Potter",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Post%20Election%20Audit%20Results.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Roberts",
+        "status": "One discrepancy - Possible hesitation mark",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Roberts_County_PEA.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Sanborn",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/SanbornCertificate%20of%20Post-Election%20Audit.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Spink",
+        "status": "One discrepancy",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/SpinkCertificate%20of%20Post%20Election%20Audit.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Stanley",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/StanleyCountyPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Sully",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Sully2024%20General%20Post%20Election%20Audit%20Certificate.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Todd",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/ToddPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Tripp",
+        "status": "Discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/TrippPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Turner",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/TurnerPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Union",
+        "status": "Discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/UnionPEAGen2024.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Walworth",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/WalworthPEAGen2024Cert.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Yankton",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/Yankton_PEA_2024Gen.pdf"
+          }
+        ]
+      },
+      {
+        "county": "Ziebach",
+        "status": "No discrepancies",
+        "certificateCount": 1,
+        "certificateUrls": [
+          {
+            "label": "Certificate of post-election audit",
+            "url": "https://sdsos.gov/elections-voting/assets/2024%20Assets/Post-Election-Audit-General/ZiebachPEAGen2024.pdf"
+          }
+        ]
+      }
+    ]
+  },
+  "canvassUrlProbes": [
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20Election%20State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20Election%20State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20General%20State%20Canvass%20and%20Certificate.pdf"
+    },
+    {
+      "url": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20State%20Canvass%20and%20Certificate.pdf",
+      "status": 404,
+      "statusText": "Not Found",
+      "contentType": "text/html",
+      "finalUrl": "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/Assets/Election%20Information/2024%20State%20Canvass%20and%20Certificate.pdf"
+    }
+  ],
+  "reconciliationDeltas": {
+    "status": "official_archive_and_statewide_export_do_not_reconcile_to_current_certified-style_staging_totals",
+    "presidentialCertifiedMinusArchive": 194,
+    "usHouseCertifiedMinusArchive": 184,
+    "presidentialCertifiedMinusStatewideExport": 194,
+    "usHouseCertifiedMinusStatewideExport": 184
+  },
+  "caveats": [
+    "This packet is a source-evidence and request artifact only; it is not a replacement result source.",
+    "Audit certificates document post-election audit context and selected discrepancies, but they do not provide complete certified county President and U.S. House totals.",
+    "Continue using the caveated secondary staging rows until the official certified canvass/export or a reconciling official payload is retained."
+  ]
+}
