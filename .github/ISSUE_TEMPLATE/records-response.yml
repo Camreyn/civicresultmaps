@@ -1,0 +1,91 @@
+name: Records request response
+description: Submit records, emails, or portal responses received from a government office.
+title: "[Records response] "
+labels:
+  - records-request
+  - data-review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when a government office responds to an information or public-records request related to Civic Result Maps source gaps. Please submit source-backed facts only. A response, delay, denial, fee estimate, or partial production is a records-status update; it is not evidence of misconduct by itself.
+  - type: input
+    id: state
+    attributes:
+      label: State or jurisdiction
+      description: Two-letter state code, state name, county, municipality, or statewide office.
+      placeholder: AZ, Maricopa County, or statewide
+    validations:
+      required: true
+  - type: input
+    id: request_id
+    attributes:
+      label: Request ID or tracking reference
+      description: Use the app request ID when available, or the agency portal/email tracking number.
+      placeholder: AZ-CVR-2024-001 or agency portal ID
+  - type: input
+    id: custodian
+    attributes:
+      label: Responding office or custodian
+      description: Name of the agency, county, municipality, or records officer that responded.
+      placeholder: Secretary of State records office
+    validations:
+      required: true
+  - type: input
+    id: response_date
+    attributes:
+      label: Response date
+      description: Date the response was received.
+      placeholder: 2026-07-04
+  - type: dropdown
+    id: response_status
+    attributes:
+      label: Response status
+      options:
+        - Records received
+        - Partial records received
+        - No responsive records
+        - Denied
+        - Fee estimate received
+        - Clarification requested
+        - Redirected to another custodian
+        - Delayed or pending
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: response_url
+    attributes:
+      label: Public link or upload location
+      description: Link to the public response, uploaded files, portal page, or share location if available.
+      placeholder: https://...
+  - type: textarea
+    id: files_received
+    attributes:
+      label: Files or records received
+      description: List filenames, formats, date ranges, affected jurisdictions, and whether original metadata/timestamps were preserved.
+      placeholder: |
+        - cvr_export.csv, countywide, CSV, received via portal
+        - audit_report.pdf, statewide, PDF
+  - type: textarea
+    id: response_summary
+    attributes:
+      label: Response summary
+      description: Summarize what the office said and what this response helps verify, reconcile, or rule out.
+      placeholder: The office stated that...
+    validations:
+      required: true
+  - type: textarea
+    id: follow_up_needed
+    attributes:
+      label: Follow-up needed
+      description: Note missing fields, fees, redactions, alternate custodians, or parser/source work needed before the data can be loaded.
+  - type: checkboxes
+    id: responsible_review
+    attributes:
+      label: Responsible records checklist
+      options:
+        - label: I removed private personal contact details that are not needed for source verification.
+          required: true
+        - label: I understand this submission is a source/status update, not proof of fraud, misconduct, or tampering.
+          required: true

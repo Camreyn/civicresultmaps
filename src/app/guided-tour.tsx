@@ -82,6 +82,46 @@ function readRect(target: Element | null): Rect | null {
   };
 }
 
+type Point = {
+  x: number;
+  y: number;
+};
+
+function rectAnchorCandidates(rect: Rect) {
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const right = rect.left + rect.width;
+  const bottom = rect.top + rect.height;
+
+  return [
+    { x: centerX, y: rect.top },
+    { x: right, y: rect.top },
+    { x: right, y: centerY },
+    { x: right, y: bottom },
+    { x: centerX, y: bottom },
+    { x: rect.left, y: bottom },
+    { x: rect.left, y: centerY },
+    { x: rect.left, y: rect.top },
+  ];
+}
+
+function distanceSquared(a: Point, b: Point) {
+  return (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
+}
+
+function rectCenter(rect: Rect): Point {
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+}
+
+function rectAnchorPoint(rect: Rect, toward: Point) {
+  return rectAnchorCandidates(rect).reduce((best, candidate) =>
+    distanceSquared(candidate, toward) < distanceSquared(best, toward) ? candidate : best,
+  );
+}
+
 function cardPosition(target: Rect | null, cardHeight = 260) {
   const width = 360;
   const margin = 18;
@@ -272,18 +312,8 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
     setIsOpen(true);
   };
 
-  const targetCenter = targetRect
-    ? {
-        x: targetRect.left + targetRect.width / 2,
-        y: targetRect.top + targetRect.height / 2,
-      }
-    : null;
-  const cardCenter = cardRect
-    ? {
-        x: cardRect.left + cardRect.width / 2,
-        y: cardRect.top + cardRect.height / 2,
-      }
-    : null;
+  const targetAnchor = targetRect && cardRect ? rectAnchorPoint(targetRect, rectCenter(cardRect)) : null;
+  const cardAnchor = cardRect && targetRect ? rectAnchorPoint(cardRect, rectCenter(targetRect)) : null;
 
   return (
     <>
@@ -307,7 +337,7 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
             />
           )}
 
-          {targetCenter && cardCenter && (
+          {targetAnchor && cardAnchor && (
             <svg aria-hidden className="tour-arrow">
               <defs>
                 <marker id="tour-arrow-head" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4">
@@ -315,12 +345,12 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
                 </marker>
               </defs>
               <path
-                d={`M ${cardCenter.x.toFixed(1)} ${cardCenter.y.toFixed(1)} C ${cardCenter.x.toFixed(1)} ${targetCenter.y.toFixed(
+                d={`M ${cardAnchor.x.toFixed(1)} ${cardAnchor.y.toFixed(1)} C ${cardAnchor.x.toFixed(1)} ${targetAnchor.y.toFixed(
                   1,
-                )}, ${targetCenter.x.toFixed(1)} ${cardCenter.y.toFixed(1)}, ${targetCenter.x.toFixed(1)} ${targetCenter.y.toFixed(1)}`}
+                )}, ${targetAnchor.x.toFixed(1)} ${cardAnchor.y.toFixed(1)}, ${targetAnchor.x.toFixed(1)} ${targetAnchor.y.toFixed(1)}`}
                 markerEnd="url(#tour-arrow-head)"
               />
-              <circle cx={targetCenter.x} cy={targetCenter.y} r="16" />
+              <circle cx={targetAnchor.x} cy={targetAnchor.y} r="16" />
             </svg>
           )}
 

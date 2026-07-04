@@ -12,6 +12,7 @@ import {
   Download,
   FileCheck2,
   GitBranch,
+  Github,
   HeartHandshake,
   History,
   ListChecks,
@@ -116,6 +117,8 @@ type ReviewerChecklistItem = {
 };
 type WorkspaceTourContext = {
   hasCoverage: boolean;
+  hasElectronicDraft: boolean;
+  hasElectronicRequestRows: boolean;
   hasEquipmentRows: boolean;
   hasHistoricalRows: boolean;
   hasImportRuns: boolean;
@@ -268,6 +271,7 @@ const glossaryEntries: GlossaryEntry[] = [
 
 const githubIssueUrl = "https://github.com/Camreyn/civicresultmaps/issues/new";
 const githubDataReviewTemplate = "data-review.yml";
+const githubRecordsResponseTemplate = "records-response.yml";
 
 const tourFeatureRegistry: TourFeature[] = [
   {
@@ -493,6 +497,63 @@ const tourFeatureRegistry: TourFeature[] = [
               title: "Historical coverage depends on rows",
             },
           ],
+  },
+  {
+    key: "electronic",
+    build: (context) => [
+      {
+        body: "Electronic Integrity tracks records needed to reconcile electronic outputs against official totals, paper or audit evidence, and custody records. Missing rows mean records still need to be requested or loaded, not that misconduct occurred.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "electronic-integrity",
+        tab: "electronic",
+        target: "[data-tour='electronic-integrity']",
+        title: "Open the electronic records workflow",
+      },
+      {
+        body: "Start with the Request guide. It explains what the records request asks for, normal outcomes such as fees or redirects, and why sending a request is not an allegation.",
+        fallbackTarget: "[data-tour='electronic-integrity']",
+        id: "request-guide",
+        tab: "electronic",
+        target: "[data-tour='request-guide-button']",
+        title: "Read the request guide first",
+      },
+      ...(context.hasElectronicRequestRows
+        ? [
+            {
+              body: "This banner appears when the selected state has records requests that need review. Use it to open the guide or jump into the prepared request draft.",
+              fallbackTarget: "[data-tour='electronic-integrity']",
+              id: "request-queue",
+              tab: "electronic" as const,
+              target: "[data-tour='request-attention-banner']",
+              title: "Find requests that need review",
+            },
+          ]
+        : []),
+      ...(context.hasElectronicDraft
+        ? [
+            {
+              body: "Use Copy email draft when you want to paste the request into your own email account or records portal. Review the recipient and custodian before sending.",
+              fallbackTarget: "[data-tour='request-draft-panel']",
+              id: "copy-request-email",
+              tab: "electronic" as const,
+              target: "[data-tour='request-copy-email']",
+              title: "Copy the request email text",
+            },
+          ]
+        : []),
+      ...(context.hasElectronicRequestRows
+        ? [
+            {
+              body: "After an office replies, use this GitHub form to submit the response, files, portal link, fee estimate, denial, redirect, or follow-up notes so maintainers can verify and load the source evidence.",
+              fallbackTarget: "[data-tour='request-draft-panel']",
+              id: "submit-records-response",
+              tab: "electronic" as const,
+              target: "[data-tour='request-submit-response']",
+              title: "Submit received records or replies",
+            },
+          ]
+        : []),
+    ],
   },
   {
     key: "planner",
@@ -1207,6 +1268,25 @@ function buildReportIssueUrl(input: {
   if (input.sourceUrl) {
     params.set("source_url", input.sourceUrl);
   }
+
+  return `${githubIssueUrl}?${params.toString()}`;
+}
+
+function buildRecordsResponseUrl(input: {
+  custodian?: string;
+  requestId?: string;
+  stateCode: string;
+  stateName: string;
+}) {
+  const params = new URLSearchParams({
+    custodian: input.custodian ?? "",
+    labels: "records-request,data-review",
+    request_id: input.requestId ?? "",
+    response_summary: "Paste or summarize the official response here. Include links, filenames, dates, fee notes, denials, redirects, or records produced.",
+    state: `${input.stateName} (${input.stateCode})`,
+    template: githubRecordsResponseTemplate,
+    title: `[Records response] ${input.stateCode}${input.requestId ? ` ${input.requestId}` : ""}`,
+  });
 
   return `${githubIssueUrl}?${params.toString()}`;
 }
@@ -2695,6 +2775,12 @@ export function WorkspaceTabs({
     stateCode: selectedStateCode,
     stateName,
   });
+  const recordsResponseUrl = buildRecordsResponseUrl({
+    custodian: electronicRequestRows[0]?.primaryCustodian,
+    requestId: electronicRequestRows[0]?.requestId,
+    stateCode: selectedStateCode,
+    stateName,
+  });
   const validationChecks = [
     {
       detail: `${coverage?.loadedJurisdictions ?? results.length} loaded jurisdictions`,
@@ -2727,6 +2813,8 @@ export function WorkspaceTabs({
     () =>
       buildWorkspaceTourSteps({
         hasCoverage: Boolean(coverage),
+        hasElectronicDraft: Boolean(electronicStateDraft),
+        hasElectronicRequestRows: electronicRequestRows.length > 0,
         hasHistoricalRows: historicalRows.length > 0,
         hasImportRuns: selectedImportRuns.length > 0,
         hasResults: results.length > 0,
@@ -2738,6 +2826,8 @@ export function WorkspaceTabs({
       }),
     [
       coverage,
+      electronicRequestRows.length,
+      electronicStateDraft,
       historicalRows.length,
       results.length,
       reviewRows.length,
@@ -4330,7 +4420,7 @@ export function WorkspaceTabs({
                   detail={electronicIntegrityStatus?.riskPosture ?? "No electronic-integrity package is registered."}
                   status={electronicQualityStatus(electronicIntegrityStatus?.overallStatus)}
                 />
-                <button className="secondary-button" onClick={() => setRequestGuideOpen(true)} type="button">
+                <button className="secondary-button" data-tour="request-guide-button" onClick={() => setRequestGuideOpen(true)} type="button">
                   <BookOpen aria-hidden size={15} />
                   Request guide
                 </button>
@@ -4338,7 +4428,7 @@ export function WorkspaceTabs({
               </div>
             </div>
             {electronicRequestQueueCount > 0 && (
-              <div className="request-attention-banner" role="status">
+              <div className="request-attention-banner" data-tour="request-attention-banner" role="status">
                 <span className="request-attention-mark">
                   <span aria-hidden className="request-attention-ring outer" />
                   <span aria-hidden className="request-attention-ring inner" />
@@ -4477,13 +4567,13 @@ export function WorkspaceTabs({
                       </span>
                     </div>
                     {electronicStateDraft && (
-                      <div className="request-draft-panel">
+                      <div className="request-draft-panel" data-tour="request-draft-panel">
                         <div>
                           <strong>Email draft</strong>
                           <span>{electronicStateDraft.routingHint} {electronicStateDraft.recipientHint}</span>
                         </div>
                         <div className="request-draft-actions">
-                          <button className="secondary-button" onClick={copyElectronicDraft} type="button">
+                          <button className="secondary-button" data-tour="request-copy-email" onClick={copyElectronicDraft} type="button">
                             <Copy aria-hidden size={15} />
                             {copiedElectronicDraft ? "Copied" : "Copy email draft"}
                           </button>
@@ -4493,6 +4583,10 @@ export function WorkspaceTabs({
                           </a>
                           <a className="secondary-button" href={electronicRequestRows[0]?.recipientLookupUrl} rel="noreferrer" target="_blank">
                             Find custodian
+                          </a>
+                          <a className="secondary-button" data-tour="request-submit-response" href={recordsResponseUrl} rel="noreferrer" target="_blank">
+                            <Github aria-hidden size={15} />
+                            Submit received records
                           </a>
                         </div>
                       </div>

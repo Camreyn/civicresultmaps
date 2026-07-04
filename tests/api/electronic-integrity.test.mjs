@@ -204,3 +204,26 @@ test("electronic request API exposes browser-ready email body and routing hints"
   assert.match(source, /routingHint/);
   assert.match(source, /Verify recipient email/);
 });
+
+test("electronic records request tour exposes response submission", () => {
+  const component = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const tour = readFileSync("src/app/guided-tour.tsx", "utf8");
+  const responseTemplate = readFileSync(".github/ISSUE_TEMPLATE/records-response.yml", "utf8");
+
+  assert.match(component, /githubRecordsResponseTemplate/);
+  assert.match(component, /records-response\.yml/);
+  assert.match(component, /buildRecordsResponseUrl/);
+  assert.match(component, /Open the electronic records workflow/);
+  assert.match(component, /Copy the request email text/);
+  assert.match(component, /Submit received records/);
+  assert.match(component, /request-guide-button/);
+  assert.match(component, /request-copy-email/);
+  assert.match(component, /request-submit-response/);
+  assert.match(tour, /rectAnchorCandidates/);
+  assert.match(tour, /rectAnchorPoint/);
+  assert.doesNotMatch(tour, /targetCenter/);
+  assert.doesNotMatch(tour, /cardCenter/);
+  assert.match(responseTemplate, /Records request response/);
+  assert.match(responseTemplate, /Response status/);
+  assert.match(responseTemplate, /not proof of fraud, misconduct, or tampering/);
+});
