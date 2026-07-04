@@ -553,3 +553,13 @@ test("statewide-only result rows remain visible in workspace and coverage", () =
   assert.match(dataAccess, /level: "state"/);
   assert.match(dataAccess, /cityTownResults\.length \? cityTownResults : stateResults/);
 });
+
+test("statewide-only result rows do not trigger boundary map joins", () => {
+  const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+
+  assert.match(explorer, /stateLevelOnlyResults = results\.length > 0 && results\.every\(\(row\) => row\.level === "state"\)/);
+  assert.match(explorer, /resultBoundaryGeometryUnavailable =/);
+  assert.match(explorer, /stateLevelOnlyResults \|\|/);
+  assert.match(explorer, /!resultBoundaryGeometryUnavailable &&/);
+  assert.match(explorer, /Statewide result loaded/);
+});

@@ -677,6 +677,8 @@ export function ResultsExplorer({
     return map;
   }, [sources]);
 
+  const statewideResult = results.find((row) => row.level === "state");
+  const stateLevelOnlyResults = results.length > 0 && results.every((row) => row.level === "state");
   const usingVerifierGeometry = mapMode === "equipment" && equipmentFeatures.length > 0;
   const activeFeatures = usingVerifierGeometry ? equipmentFeatures : features;
   const activeGeoStatus =
@@ -783,7 +785,8 @@ export function ResultsExplorer({
     ...Array.from(voteMethodByCounty.values()).map((row) => methodShare(row) ?? 0),
   );
 
-  const activeMapName = pinnedMapName ?? selectedMapName;
+  const activeMapName =
+    pinnedMapName ?? selectedMapName ?? (stateLevelOnlyResults ? statewideResult?.jurisdictionName ?? null : null);
   const selectedMapResult = activeMapName
     ? resultsByName.get(normalizeName(activeMapName))
     : undefined;
@@ -813,6 +816,11 @@ export function ResultsExplorer({
     const featureNames = new Set(
       features.map((feature) => normalizeName(resultNameForFeature(selectedState, featureName(feature)))),
     );
+    const joinedRows = results.filter(
+      (row) =>
+        !isNonGeographicResultRow(selectedState, row.jurisdictionName) &&
+        featureNames.has(normalizeName(row.jurisdictionName)),
+    ).length;
     const missingResults = features
       .map((feature) => resultNameForFeature(selectedState, featureName(feature)))
       .filter((name) => !resultsByName.has(normalizeName(name)))
@@ -826,7 +834,7 @@ export function ResultsExplorer({
       .map((row) => row.jurisdictionName)
       .sort((a, b) => a.localeCompare(b));
 
-    return { missingResults, unmappedRows };
+    return { joinedRows, missingResults, unmappedRows };
   }, [features, results, resultsByName, selectedState]);
 
   const visibleResults = useMemo(() => {
@@ -851,10 +859,28 @@ export function ResultsExplorer({
       .sort((a, b) => compareRows(a, b, sortKey));
   }, [indicatorsByJurisdiction, indicatorsByName, query, results, showFlaggedOnly, sortKey]);
 
+  const resultBoundaryGeometryUnavailable =
+    baseGeometryUnavailable ||
+    stateLevelOnlyResults ||
+    (geoStatus === "ready" && features.length > 0 && results.length > 0 && mapJoinStats.joinedRows === 0);
+
   const hasMapJoinWarnings =
+    !resultBoundaryGeometryUnavailable &&
     features.length > 0 &&
     geoStatus === "ready" &&
     (mapJoinStats.missingResults.length > 0 || mapJoinStats.unmappedRows.length > 0);
+
+  useEffect(() => {
+    if (
+      mapMode !== "equipment" &&
+      resultBoundaryGeometryUnavailable &&
+      equipmentGeoStatus === "ready" &&
+      equipmentFeatures.length > 0 &&
+      equipmentRows.length > 0
+    ) {
+      setMapMode("equipment");
+    }
+  }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, mapMode, resultBoundaryGeometryUnavailable]);
 
   useEffect(() => {
     setMapPan((current) => clampPan(current, mapZoom));
@@ -1037,7 +1063,7 @@ export function ResultsExplorer({
                 aria-pressed={mapMode === mode}
                 data-tour={mode === "method" ? "method-mode-button" : undefined}
                 disabled={
-                  (resultGeometryRequiredModes.has(mode as MapMode) && (baseGeometryUnavailable || results.length === 0)) ||
+                  (resultGeometryRequiredModes.has(mode as MapMode) && (resultBoundaryGeometryUnavailable || results.length === 0)) ||
                   (mode === "method" && voteMethodRows.length === 0) ||
                   (mode === "equipment" && (equipmentRows.length === 0 || !equipmentGeometryAvailable))
                 }
@@ -1084,7 +1110,15 @@ export function ResultsExplorer({
             </span>
           </div>
         )}
-        {results.length === 0 && equipmentGeometryAvailable ? (
+        {stateLevelOnlyResults ? (
+          <div className="map-warning" role="status">
+            <strong>Statewide result loaded</strong>
+            <span>
+              Certified results and advisory flags are loaded at statewide scope. Boundary-level Winner, Margin, Votes,
+              and Method maps need joinable county or district result rows before they can be shown.
+            </span>
+          </div>
+        ) : results.length === 0 && equipmentGeometryAvailable ? (
           <div className="map-warning" role="status">
             <strong>Certified results not loaded yet</strong>
             <span>
