@@ -1,0 +1,73 @@
+{
+  "state": "NY",
+  "county": "Monroe County",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-04",
+  "sourceAuthority": "Monroe County Board of Elections",
+  "sourceUrls": {
+    "canvassBook": "https://www.monroecounty.gov/files/boe/Election%20Results/Election%20Canvass%20Books/2024%20Cavnass%20Book.pdf",
+    "certification": "https://www.monroecounty.gov/files/boe/Election%20Results/Election%20Certifications/2024%20General%20Certification%202024-11-26.pdf",
+    "turnoutLead": "https://www.monroecounty.gov/files/boe/Election%20Results/Voter%20Turnout%20Reports/2024%20General%20Voter%20Turnout%20v2.pdf"
+  },
+  "localArtifacts": {
+    "canvassBook": "data/ny-2024-monroe-canvass-book.pdf",
+    "certification": "data/ny-2024-monroe-general-certification.pdf",
+    "turnoutLead": "data/ny-2024-monroe-general-voter-turnout-v2.pdf"
+  },
+  "reportingGrain": "legislative_district_or_town_by_election_district_detail",
+  "parserOrNormalizationPath": "scripts/ny-monroe-official-detail.mjs; scripts/reconcile-ny-monroe-sources.mjs; scripts/normalize-ny-local-review.mjs",
+  "rowCount": 655,
+  "detailTotals": {
+    "president": {
+      "pres_harris": 214757,
+      "pres_trump": 145940,
+      "pres_other": 7646,
+      "pres_total": 368343
+    },
+    "senate": {
+      "comparison_dem": 213432,
+      "comparison_rep": 140764,
+      "comparison_other": 1661
+    }
+  },
+  "certificationTotals": {
+    "president": {
+      "harris": 214757,
+      "trump": 145940,
+      "other": 7646,
+      "total": 368343
+    },
+    "senate": {
+      "dem": 213432,
+      "rep": 140764,
+      "other": 1661,
+      "totalIncludingBlankVoidScattering": 368341
+    }
+  },
+  "activeCountyTotals": {
+    "president": {
+      "harris": 214757,
+      "trump": 145940,
+      "other": 7646,
+      "total": 368343
+    },
+    "senate": {
+      "dem": 213432,
+      "rep": 140764,
+      "other": 1661
+    }
+  },
+  "turnoutLead": {
+    "totalVoters": 366695,
+    "registeredVoters": 499763,
+    "turnoutPct": 73.4,
+    "caveat": "Countywide GRAND Total parsed from the Monroe turnout v2 PDF; gender and legislative-district turnout subtotals are retained in the artifact but not normalized into active NY turnout rows."
+  },
+  "caveats": [
+    "Rows are official Monroe County local detail rows and reconcile to the November 26, 2024 certification and active NYSBOE county CSV totals.",
+    "President local pres_other follows the active NY county residual convention and includes scatter plus blank/void residual votes.",
+    "U.S. Senate comparison_other is Diane Sare/Larouche candidate votes only, matching the active county comparison CSV convention.",
+    "The Monroe turnout v2 PDF is retained as a county-specific state-native lead only; active NY turnout remains EAC fallback until a statewide New York turnout or voter-history package is collected and reconciled."
+  ],
+  "confidence": "official_detail_reconciled_loaded"
+}

@@ -66,9 +66,9 @@
       "url": "https://github.com/openelections/openelections-sources-ny/tree/master/2024/general",
       "localFile": "data/ny-2024-local-review.csv",
       "parser": "localComparisonCsv",
-      "authority": "OpenElections source collection from New York county boards of elections",
-      "timestampBasis": "Machine-readable county election-district source files collected in openelections/openelections-sources-ny 2024/general and normalized by scripts/normalize-ny-local-review.mjs.",
-      "confidence": "Local election-district review rows for NY counties with machine-readable CSV, HTML, XLSX, or reviewed text-layer PDF sources, plus legacy NYC local review rows. Image-only or unreviewed PDF counties remain excluded until their extraction path is reviewed.",
+      "authority": "OpenElections source collection from New York county boards of elections; Monroe County Board of Elections; legacy NYC source bundle",
+      "timestampBasis": "Machine-readable county election-district source files collected in openelections/openelections-sources-ny 2024/general, reconciled Monroe County official canvass-book detail rows, and legacy NYC local review rows normalized by scripts/normalize-ny-local-review.mjs.",
+      "confidence": "Local election-district review rows for NY counties with machine-readable CSV, HTML, XLSX, or reviewed text-layer PDF sources, reconciled official Monroe County detail rows, Suffolk text rows, plus legacy NYC local review rows. Image-only, president-only, unsupported, or unreviewed counties remain excluded until their extraction path is reviewed.",
       "status": "loaded"
     },
     {
@@ -139,8 +139,8 @@
     "sourceId": "ny-2024-local-review-openelections",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "sourceCoverage": "Machine-readable OpenElections county source files, selected text-layer OpenElections PDFs, plus legacy NYC local review rows; image-only or unreviewed PDF counties are not included in this review-row CSV yet.",
-    "warning": "New York local review rows are election-district President-versus-U.S. Senate comparisons normalized from machine-readable OpenElections county source files, selected text-layer OpenElections PDFs, plus legacy NYC local review rows. Image-only or unreviewed PDF counties are not included yet, and county-certified result totals remain the map authority."
+    "sourceCoverage": "Machine-readable OpenElections county source files, selected text-layer OpenElections PDFs, reconciled official Monroe County detail rows, plus legacy NYC local review rows; image-only, president-only, unsupported, or unreviewed counties are not included in this review-row CSV yet.",
+    "warning": "New York local review rows are election-district President-versus-U.S. Senate comparisons normalized from machine-readable OpenElections county source files, selected text-layer OpenElections PDFs, reconciled official Monroe County detail rows, plus legacy NYC local review rows. Image-only, president-only, unsupported, or unreviewed counties are not included yet, and county-certified result totals remain the map authority."
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -165,7 +165,7 @@
     "trump": 3579519,
     "harris": 4619543,
     "other": 182367,
-    "reviewRows": 9753,
+    "reviewRows": 10408,
     "turnoutRows": 62
   },
   "capabilities": {

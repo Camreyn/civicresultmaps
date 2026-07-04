@@ -1,4 +1,4 @@
-﻿import unittest
+import unittest
 
 from civic_etl.pipeline import build_staging_artifact, load_config, validate_config
 
@@ -16,7 +16,7 @@ class NewYorkHistoricalPipelineTests(unittest.TestCase):
         self.assertEqual(native["metrics"]["nativeHistoricalYears"], [2012, 2016, 2020])
         self.assertEqual(len(native["historicalRows"]), 186)
         self.assertIn("official NYSBOE general-election PDFs", native["metrics"]["nativeHistoricalWarning"])
-        self.assertIn("Image-only or unreviewed PDF counties", native["metrics"]["nativeReviewWarning"])
+        self.assertIn("Image-only, president-only, unsupported, or unreviewed counties", native["metrics"]["nativeReviewWarning"])
 
         albany_2012 = next(
             row

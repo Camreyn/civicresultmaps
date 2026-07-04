@@ -4,6 +4,7 @@ import https from "node:https";
 import { fileURLToPath } from "node:url";
 import XLSX from "xlsx";
 import { PDFParse } from "pdf-parse";
+import { MONROE_CANVASS_BOOK_URL, parseMonroeOfficialDetail } from "./ny-monroe-official-detail.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
@@ -1689,6 +1690,18 @@ async function main() {
     });
     console.log(`${county}: ${rows.length}`);
   }
+  const monroeOfficial = await parseMonroeOfficialDetail({ repoRoot });
+  normalizedRows.push(...monroeOfficial.rows);
+  manifest.push({
+    county: "Monroe County",
+    file: "ny-2024-monroe-canvass-book.pdf",
+    url: MONROE_CANVASS_BOOK_URL,
+    rows: monroeOfficial.rows.length,
+    status: "loaded",
+    authority: "Monroe County Board of Elections",
+    reason: "Official Monroe canvass-book detail rows reconcile to the November 26, 2024 county certification and active NY county totals.",
+  });
+  console.log(`Monroe County official canvass book: ${monroeOfficial.rows.length}`);
   const legacyText = await get(legacyNyUrl);
   globalThis.window = globalThis;
   eval(legacyText);

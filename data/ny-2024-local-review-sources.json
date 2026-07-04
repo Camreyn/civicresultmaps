@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T00:03:27.141Z",
+  "generatedAt": "2026-07-04T03:40:42.653Z",
   "sourceRepository": "openelections/openelections-sources-ny",
   "sourcePath": "2024/general",
   "files": [
@@ -318,6 +318,15 @@
       "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Westchester.pdf",
       "rows": 906,
       "status": "loaded"
+    },
+    {
+      "county": "Monroe County",
+      "file": "ny-2024-monroe-canvass-book.pdf",
+      "url": "https://www.monroecounty.gov/files/boe/Election%20Results/Election%20Canvass%20Books/2024%20Cavnass%20Book.pdf",
+      "rows": 655,
+      "status": "loaded",
+      "authority": "Monroe County Board of Elections",
+      "reason": "Official Monroe canvass-book detail rows reconcile to the November 26, 2024 county certification and active NY county totals."
     },
     {
       "county": "Bronx/Kings/New York/Queens/Richmond Counties",

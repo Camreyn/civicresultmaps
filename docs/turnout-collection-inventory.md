@@ -235,3 +235,7 @@ Wyoming now has official SOS 2024 certified results and precinct review rows loa
 
 Tennessee now has official 2024 SOS President county rows and same-key precinct President-versus-U.S.-Senate review rows loaded through `scripts/normalize-tn-sos-results.mjs`, but active turnout still uses official EAC 2024 V2 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/tn-2024-eac-turnout.csv`: 95 rows, 3,090,161 ballots cast, and 4,825,601 registered voters. The official SOS result PDFs do not replace turnout because they are contest-result canvass reports, not registered-voter denominator artifacts. Keep EAC fallback active until a Tennessee-native ballots-cast or voter-participation artifact with registered-voter denominator timing is collected and reconciled. See `data/tn-2024-data-coverage-inventory.json` for source URLs, caveats, and parser fields.
 
+
+## New York Wave 24 Monroe Turnout Lead
+
+Wave 24 retained Monroe County Board of Elections 2024 General Voter Turnout v2 PDF at `data/ny-2024-monroe-general-voter-turnout-v2.pdf` while reconciling Monroe local review rows. This is a county-specific state-native turnout lead only; active New York turnout remains official EAC 2024 V2 fallback until a statewide New York ballots-cast or voter-history package is collected and reconciled with county or election-district enrollment denominators.
