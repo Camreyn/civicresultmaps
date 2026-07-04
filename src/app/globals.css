@@ -1905,6 +1905,12 @@ input {
   text-decoration: none;
 }
 
+.request-response-link {
+  background: rgba(53, 199, 163, 0.12);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
 .request-attention-banner {
   align-items: center;
   background: linear-gradient(90deg, rgba(240, 195, 106, 0.16), rgba(53, 199, 163, 0.08));

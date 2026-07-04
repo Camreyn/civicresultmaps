@@ -198,9 +198,18 @@ test("timeline source collection events are backed by explicit source records", 
 
 test("electronic request API exposes browser-ready email body and routing hints", () => {
   const source = readFileSync("src/lib/electronic-integrity-requests.ts", "utf8");
+  const workspace = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const recordsTemplate = readFileSync(".github/ISSUE_TEMPLATE/records-response.yml", "utf8");
   assert.match(source, /requestEmailBody/);
   assert.match(source, /mailtoHref/);
   assert.match(source, /recipientHint/);
   assert.match(source, /routingHint/);
   assert.match(source, /Verify recipient email/);
+  assert.match(workspace, /buildRecordsResponseIssueUrl/);
+  assert.match(workspace, /githubRecordsResponseTemplate/);
+  assert.match(workspace, /Submit response/);
+  assert.match(workspace, /request-guide-button/);
+  assert.match(recordsTemplate, /Records request response/);
+  assert.match(recordsTemplate, /Response status/);
+  assert.match(recordsTemplate, /private requester contact details/);
 });

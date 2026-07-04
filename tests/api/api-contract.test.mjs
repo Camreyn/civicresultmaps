@@ -187,6 +187,7 @@ test("review indicators explain advisory meaning", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   const overview = readFileSync("src/app/national-overview.tsx", "utf8");
   const dataReviewTemplate = readFileSync(".github/ISSUE_TEMPLATE/data-review.yml", "utf8");
+  const recordsResponseTemplate = readFileSync(".github/ISSUE_TEMPLATE/records-response.yml", "utf8");
   const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
 
   assert.match(eli5, /ELI5/);
@@ -201,6 +202,12 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /githubIssueUrl/);
   assert.match(tabs, /githubDataReviewTemplate/);
   assert.match(tabs, /template: githubDataReviewTemplate/);
+  assert.match(tabs, /githubRecordsResponseTemplate/);
+  assert.match(tabs, /buildRecordsResponseIssueUrl/);
+  assert.match(tabs, /records-response,electronic-integrity/);
+  assert.match(tabs, /Submit response/);
+  assert.match(tabs, /submit-request-response/);
+  assert.match(tabs, /request-email-draft/);
   assert.match(tabs, /issue_type/);
   assert.match(tabs, /what_looks_wrong/);
   assert.doesNotMatch(tabs, /## What looks wrong\?/);
@@ -328,6 +335,10 @@ test("raw review turnout and historical APIs are exposed", () => {
   assert.match(readFileSync("src/app/results-explorer.tsx", "utf8"), /activeFeatures/);
   assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /Jump to tour step/);
   assert.match(readFileSync("src/app/guided-tour.tsx", "utf8"), /skipIfMissing/);
+  assert.match(tabs, /Open electronic records/);
+  assert.match(tabs, /Read the request guide/);
+  assert.match(tabs, /Send the request/);
+  assert.match(tabs, /Submit received records/);
 });
 
 test("equipment administration context is source-first and exportable", () => {

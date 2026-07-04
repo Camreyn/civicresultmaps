@@ -38,6 +38,7 @@ import type {
   CoverageSummary,
   ElectronicIntegrityStateSummary,
   ElectronicIntegrityRequestOperationSummary,
+  ElectronicIntegrityRequestSummary,
   EquipmentClusterDiagnostic,
   EquipmentRowSummary,
   HistoricalResultRowSummary,
@@ -119,6 +120,7 @@ type WorkspaceTourContext = {
   hasEquipmentRows: boolean;
   hasHistoricalRows: boolean;
   hasImportRuns: boolean;
+  hasElectronicRequests: boolean;
   hasResults: boolean;
   hasReviewRows: boolean;
   hasSources: boolean;
@@ -268,6 +270,7 @@ const glossaryEntries: GlossaryEntry[] = [
 
 const githubIssueUrl = "https://github.com/Camreyn/civicresultmaps/issues/new";
 const githubDataReviewTemplate = "data-review.yml";
+const githubRecordsResponseTemplate = "records-response.yml";
 
 const tourFeatureRegistry: TourFeature[] = [
   {
@@ -493,6 +496,47 @@ const tourFeatureRegistry: TourFeature[] = [
               title: "Historical coverage depends on rows",
             },
           ],
+  },
+  {
+    key: "electronic",
+    build: (context) => [
+      {
+        body: "Electronic Integrity tracks whether records like CVRs, ballot images, logs, audits, and custody files are available. Missing records are a request queue, not a finding.",
+        fallbackTarget: "[data-tour='workspace']",
+        id: "electronic-integrity",
+        tab: "electronic",
+        target: "[data-tour='electronic-integrity']",
+        title: "Open electronic records",
+      },
+      {
+        body: "Start here before sending anything. The guide explains what the request asks for, what a normal response can look like, and why this is an evidence-availability request.",
+        fallbackTarget: "[data-tour='electronic-integrity']",
+        id: "request-guide-button",
+        tab: "electronic",
+        target: "[data-tour='request-guide-button']",
+        title: "Read the request guide",
+      },
+      {
+        body: context.hasElectronicRequests
+          ? "Use Copy email draft to review or paste the request manually. Use Open mail app when the recipient is known, and Find custodian when the request needs a county, municipal, or portal route."
+          : `${context.stateName} does not currently have an open electronic-records request draft, so this step points back to the evidence panel.`,
+        fallbackTarget: "[data-tour='electronic-integrity']",
+        id: "request-email-draft",
+        skipIfMissing: true,
+        tab: "electronic",
+        target: "[data-tour='request-email-draft']",
+        title: "Send the request",
+      },
+      {
+        body: "After an office responds, click Submit response. GitHub opens a records-response form with the state and request IDs prefilled; add the response summary, file links or attachments, status, and caveats.",
+        fallbackTarget: "[data-tour='electronic-integrity']",
+        id: "submit-request-response",
+        skipIfMissing: true,
+        tab: "electronic",
+        target: "[data-tour='submit-request-response']",
+        title: "Submit received records",
+      },
+    ],
   },
   {
     key: "planner",
@@ -1209,6 +1253,48 @@ function buildReportIssueUrl(input: {
   }
 
   return `${githubIssueUrl}?${params.toString()}`;
+}
+
+function buildRecordsResponseIssueUrl(input: {
+  evidenceFamily: string;
+  requestIds: string[];
+  responseUrl?: string;
+  stateCode: string;
+  stateName: string;
+  custodian?: string;
+}) {
+  const requestId = input.requestIds.length ? input.requestIds.join(", ") : `${input.stateCode} request IDs unknown`;
+  const params = new URLSearchParams({
+    caveats:
+      "Note redactions, fee limits, missing field definitions, record-layout gaps, privacy concerns, or follow-up needed before these records can be parsed.",
+    custodian: input.custodian ?? "",
+    evidence_family: input.evidenceFamily,
+    labels: "records-response,electronic-integrity",
+    request_id: requestId,
+    response_status: "Records produced",
+    response_summary:
+      "Please summarize what the custodian provided, denied, redirected, fee-estimated, clarified, or left pending. Attach files after GitHub opens the issue if they are not public URLs.",
+    state: `${input.stateName} (${input.stateCode})`,
+    template: githubRecordsResponseTemplate,
+    title: `[Records response] ${input.stateCode} ${requestId}`,
+  });
+
+  if (input.responseUrl) {
+    params.set("response_url", input.responseUrl);
+  }
+
+  return `${githubIssueUrl}?${params.toString()}`;
+}
+
+function buildRequestResponseIssueUrl(request: ElectronicIntegrityRequestSummary) {
+  return buildRecordsResponseIssueUrl({
+    custodian: request.primaryCustodian,
+    evidenceFamily: request.artifactLabel,
+    requestIds: [request.requestId],
+    responseUrl: request.sourceUrl || request.recipientPortalUrl || request.recipientLookupUrl || undefined,
+    stateCode: request.state,
+    stateName: request.stateName,
+  });
 }
 
 function dataNoteStatus(hasRows: boolean, capability?: boolean, partial?: boolean): QualityBadgeStatus {
@@ -2695,6 +2781,14 @@ export function WorkspaceTabs({
     stateCode: selectedStateCode,
     stateName,
   });
+  const recordsResponseUrl = buildRecordsResponseIssueUrl({
+    custodian: electronicRequestRows[0]?.primaryCustodian,
+    evidenceFamily: electronicRequestRows.length > 1 ? "Multiple evidence families" : electronicRequestRows[0]?.artifactLabel ?? "Other election records",
+    requestIds: electronicStateDraft?.requestIds ?? electronicRequestRows.map((request) => request.requestId),
+    responseUrl: electronicRequestRows[0]?.sourceUrl || electronicRequestRows[0]?.recipientPortalUrl || electronicRequestRows[0]?.recipientLookupUrl || undefined,
+    stateCode: selectedStateCode,
+    stateName,
+  });
   const validationChecks = [
     {
       detail: `${coverage?.loadedJurisdictions ?? results.length} loaded jurisdictions`,
@@ -2727,6 +2821,7 @@ export function WorkspaceTabs({
     () =>
       buildWorkspaceTourSteps({
         hasCoverage: Boolean(coverage),
+        hasElectronicRequests: electronicRequestRows.length > 0,
         hasHistoricalRows: historicalRows.length > 0,
         hasImportRuns: selectedImportRuns.length > 0,
         hasResults: results.length > 0,
@@ -2738,6 +2833,7 @@ export function WorkspaceTabs({
       }),
     [
       coverage,
+      electronicRequestRows.length,
       historicalRows.length,
       results.length,
       reviewRows.length,
@@ -4296,8 +4392,9 @@ export function WorkspaceTabs({
                       <strong>How it works here</strong>
                       <p>
                         The app prepares a draft from the missing evidence list for {stateName}. Review the draft,
-                        verify the custodian, then use copy, email, or the lookup link to send it outside the app. The
-                        site does not automatically submit requests.
+                        verify the custodian, then use copy, email, or the lookup link to send it outside the app. When
+                        an office replies, use Submit response to open the GitHub form with this state and request IDs
+                        prefilled for review. The site does not automatically submit requests.
                       </p>
                     </article>
                   </div>
@@ -4330,7 +4427,7 @@ export function WorkspaceTabs({
                   detail={electronicIntegrityStatus?.riskPosture ?? "No electronic-integrity package is registered."}
                   status={electronicQualityStatus(electronicIntegrityStatus?.overallStatus)}
                 />
-                <button className="secondary-button" onClick={() => setRequestGuideOpen(true)} type="button">
+                <button className="secondary-button" data-tour="request-guide-button" onClick={() => setRequestGuideOpen(true)} type="button">
                   <BookOpen aria-hidden size={15} />
                   Request guide
                 </button>
@@ -4477,22 +4574,26 @@ export function WorkspaceTabs({
                       </span>
                     </div>
                     {electronicStateDraft && (
-                      <div className="request-draft-panel">
+                      <div className="request-draft-panel" data-tour="request-email-draft">
                         <div>
                           <strong>Email draft</strong>
                           <span>{electronicStateDraft.routingHint} {electronicStateDraft.recipientHint}</span>
                         </div>
                         <div className="request-draft-actions">
-                          <button className="secondary-button" onClick={copyElectronicDraft} type="button">
+                          <button className="secondary-button" data-tour="copy-request-draft" onClick={copyElectronicDraft} type="button">
                             <Copy aria-hidden size={15} />
                             {copiedElectronicDraft ? "Copied" : "Copy email draft"}
                           </button>
-                          <a className="secondary-button" href={electronicStateDraft.mailtoHref}>
+                          <a className="secondary-button" data-tour="open-request-draft" href={electronicStateDraft.mailtoHref}>
                             <Mail aria-hidden size={15} />
                             Open mail app
                           </a>
-                          <a className="secondary-button" href={electronicRequestRows[0]?.recipientLookupUrl} rel="noreferrer" target="_blank">
+                          <a className="secondary-button" data-tour="find-request-custodian" href={electronicRequestRows[0]?.recipientLookupUrl} rel="noreferrer" target="_blank">
                             Find custodian
+                          </a>
+                          <a className="secondary-button request-response-link" data-tour="submit-request-response" href={recordsResponseUrl} rel="noreferrer" target="_blank">
+                            <Send aria-hidden size={15} />
+                            Submit response
                           </a>
                         </div>
                       </div>
@@ -4506,6 +4607,7 @@ export function WorkspaceTabs({
                             <th>Status</th>
                             <th>Route</th>
                             <th>Response</th>
+                            <th>Submit</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -4524,6 +4626,11 @@ export function WorkspaceTabs({
                                 )}
                               </td>
                               <td>{request.responseSummary || request.feeStatus}</td>
+                              <td>
+                                <a className="table-source-link" href={buildRequestResponseIssueUrl(request)} rel="noreferrer" target="_blank">
+                                  Submit response
+                                </a>
+                              </td>
                             </tr>
                           ))}
                         </tbody>

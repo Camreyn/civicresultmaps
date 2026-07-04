@@ -1,0 +1,98 @@
+﻿name: Records request response
+description: Submit a public-records response or produced file for Civic Result Maps review.
+title: "[Records response] "
+labels:
+  - records-response
+  - electronic-integrity
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form when an election office, county, municipality, portal, or custodian responds to an information request. Please include official links or upload non-sensitive response files where GitHub allows it. Do not include private requester contact details unless they are already public and needed for review.
+  - type: input
+    id: state
+    attributes:
+      label: State
+      description: Two-letter code or full state name.
+      placeholder: WI
+    validations:
+      required: true
+  - type: input
+    id: request_id
+    attributes:
+      label: Request ID
+      description: Civic Result Maps tracking ID or IDs, if known.
+      placeholder: EI-2024-WI-CAST-VOTE-RECORDS
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence_family
+    attributes:
+      label: Evidence family
+      options:
+        - Cast vote records
+        - Ballot images
+        - Tabulator logs
+        - Audit results
+        - Logic and accuracy records
+        - Chain of custody
+        - Reporting-unit results
+        - Multiple evidence families
+        - Other election records
+    validations:
+      required: true
+  - type: input
+    id: custodian
+    attributes:
+      label: Responding custodian
+      description: Office, county, municipality, records portal, or vendor that answered.
+      placeholder: County Clerk, State Election Office, records portal, etc.
+  - type: input
+    id: response_url
+    attributes:
+      label: Response or file URL
+      description: Official portal URL, public file link, GitHub attachment URL, or source page.
+      placeholder: https://...
+  - type: textarea
+    id: response_summary
+    attributes:
+      label: Response summary
+      description: Summarize what was provided, denied, redirected, fee-estimated, clarified, or still pending.
+      placeholder: The office provided a CSV export and said ballot images are not retained by...
+    validations:
+      required: true
+  - type: textarea
+    id: files_received
+    attributes:
+      label: Files received
+      description: List filenames, formats, dates, hashes if available, or attach files below after creating the issue.
+      placeholder: cvr_export_2024_general.csv; readme.pdf; portal message dated...
+  - type: dropdown
+    id: response_status
+    attributes:
+      label: Response status
+      options:
+        - Records produced
+        - Partial production
+        - Redirected to another custodian
+        - Fee estimate
+        - Clarification requested
+        - No responsive records
+        - Denied or exempted
+        - Still pending
+    validations:
+      required: true
+  - type: textarea
+    id: caveats
+    attributes:
+      label: Caveats and handling notes
+      description: Note redactions, field definitions, missing record layouts, fee limits, privacy concerns, or restrictions.
+  - type: checkboxes
+    id: responsible_submission
+    attributes:
+      label: Responsible submission checklist
+      options:
+        - label: I removed private requester contact details unless they are necessary and already public.
+          required: true
+        - label: I understand this submission documents source availability only and is not a claim of misconduct.
+          required: true
