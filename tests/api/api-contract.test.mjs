@@ -559,7 +559,16 @@ test("statewide-only result rows do not trigger boundary map joins", () => {
 
   assert.match(explorer, /stateLevelOnlyResults = results\.length > 0 && results\.every\(\(row\) => row\.level === "state"\)/);
   assert.match(explorer, /resultBoundaryGeometryUnavailable =/);
-  assert.match(explorer, /stateLevelOnlyResults \|\|/);
+  assert.match(explorer, /stateLevelOnlyResults && !supplementalMapAvailable/);
   assert.match(explorer, /!resultBoundaryGeometryUnavailable &&/);
   assert.match(explorer, /Statewide result loaded/);
+});
+
+test("alaska supplemental overlay is labeled separately from native statewide results", () => {
+  const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+
+  assert.match(explorer, /ak-2024-legacy-house-district-overlay\.json/);
+  assert.match(explorer, /Supplemental House District overlay/);
+  assert.match(explorer, /native certified result remains statewide/i);
+  assert.match(explorer, /HD99\/non-geographic votes are excluded/);
 });

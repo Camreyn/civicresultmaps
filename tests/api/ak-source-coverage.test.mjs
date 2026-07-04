@@ -69,3 +69,22 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.ok(requestRows.some((row) => row.id === "ak-us-house-write-in-precinct-allocation"));
   assert.ok(requestRows.some((row) => row.local_artifact_status === "candidate_lead_collected"));
 });
+test("alaska legacy House District overlay is supplemental and reconciled", () => {
+  const overlay = JSON.parse(readFileSync("data/ak-2024-legacy-house-district-overlay.json", "utf8"));
+  const script = readFileSync("scripts/build-ak-legacy-house-district-overlay.mjs", "utf8");
+
+  assert.equal(overlay.label, "Legacy supplemental House District overlay");
+  assert.equal(overlay.rows.length, 40);
+  assert.equal(overlay.reconciliation.legacyMappedReviewRows, 522);
+  assert.equal(overlay.reconciliation.nativeStatewideTotal, 338177);
+  assert.equal(overlay.reconciliation.legacyMappedTotals.total, 337776);
+  assert.equal(overlay.reconciliation.excludedNonGeographicRow.total, 401);
+  assert.ok(overlay.caveats.some((caveat) => /Supplemental map overlay only/i.test(caveat)));
+  assert.ok(overlay.caveats.some((caveat) => /HD99/i.test(caveat)));
+  assert.ok(overlay.rows.every((row) => row.level === "district"));
+  assert.ok(overlay.indicators.length > 0);
+  assert.ok(overlay.indicators.every((indicator) => indicator.level === "district"));
+  assert.ok(overlay.indicators.every((indicator) => indicator.metrics.supplementalOverlay === true));
+  assert.match(script, /ak-app-data\.js/);
+  assert.match(script, /ak-2024-legacy-house-district-overlay\.json/);
+});

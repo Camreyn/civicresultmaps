@@ -55,6 +55,24 @@ type FeatureCollection = {
   type: "FeatureCollection";
 };
 
+type SupplementalMapOverlay = {
+  caveats: string[];
+  indicators: AnalysisIndicator[];
+  label: string;
+  reconciliation: {
+    excludedNonGeographicRow?: {
+      total?: number;
+    };
+    legacyMappedReviewRows?: number;
+  };
+  rows: ResultRow[];
+  source: {
+    authority: string;
+    bundleUrl: string;
+    sourceWorkbook: string;
+  };
+};
+
 const geoBaseUrl =
   "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
 const mapViewBox = { height: 560, width: 960 };
@@ -523,6 +541,7 @@ export function ResultsExplorer({
 }: ResultsExplorerProps) {
   const [features, setFeatures] = useState<GeoFeature[]>([]);
   const [equipmentFeatures, setEquipmentFeatures] = useState<GeoFeature[]>([]);
+  const [supplementalOverlay, setSupplementalOverlay] = useState<SupplementalMapOverlay | null>(null);
   const [equipmentGeoStatus, setEquipmentGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [mapMode, setMapMode] = useState<MapMode>("winner");
@@ -546,6 +565,14 @@ export function ResultsExplorer({
     startY: number;
   } | null>(null);
   const suppressMapClickRef = useRef(false);
+
+  const statewideResult = results.find((row) => row.level === "state");
+  const stateLevelOnlyResults = results.length > 0 && results.every((row) => row.level === "state");
+  const supplementalMapAvailable =
+    selectedState === "AK" && stateLevelOnlyResults && Boolean(supplementalOverlay?.rows.length);
+  const usingSupplementalMap = supplementalMapAvailable && mapMode !== "equipment";
+  const mapResults = usingSupplementalMap ? supplementalOverlay?.rows ?? [] : results;
+  const mapIndicators = usingSupplementalMap ? supplementalOverlay?.indicators ?? [] : indicators;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -610,6 +637,7 @@ export function ResultsExplorer({
   useEffect(() => {
     if (
       mapMode !== "equipment" &&
+      !stateLevelOnlyResults &&
       (results.length === 0 || geoStatus === "error" || (geoStatus === "ready" && features.length === 0)) &&
       equipmentGeoStatus === "ready" &&
       equipmentFeatures.length > 0 &&
@@ -617,7 +645,36 @@ export function ResultsExplorer({
     ) {
       setMapMode("equipment");
     }
-  }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, features.length, geoStatus, mapMode, results.length]);
+  }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, features.length, geoStatus, mapMode, results.length, stateLevelOnlyResults]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setSupplementalOverlay(null);
+
+    if (selectedState !== "AK") {
+      return () => controller.abort();
+    }
+
+    fetch(`${geoBaseUrl}/ak-2024-legacy-house-district-overlay.json`, {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Supplemental overlay request failed with ${response.status}`);
+        }
+
+        return response.json() as Promise<SupplementalMapOverlay>;
+      })
+      .then((overlay) => setSupplementalOverlay(overlay))
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          setSupplementalOverlay(null);
+        }
+      });
+
+    return () => controller.abort();
+  }, [selectedState]);
 
   const resultsByName = useMemo(() => {
     const map = new Map<string, ResultRow>();
@@ -626,6 +683,25 @@ export function ResultsExplorer({
     }
     return map;
   }, [results]);
+
+  const mapResultsByName = useMemo(() => {
+    const map = new Map<string, ResultRow>();
+    for (const row of mapResults) {
+      map.set(normalizeName(row.jurisdictionName), row);
+    }
+    return map;
+  }, [mapResults]);
+
+  const mapIndicatorsByName = useMemo(() => {
+    const map = new Map<string, AnalysisIndicator[]>();
+    for (const indicator of mapIndicators) {
+      map.set(normalizeName(indicator.jurisdictionName), [
+        ...(map.get(normalizeName(indicator.jurisdictionName)) ?? []),
+        indicator,
+      ]);
+    }
+    return map;
+  }, [mapIndicators]);
 
   const indicatorsByJurisdiction = useMemo(() => {
     const map = new Map<string, AnalysisIndicator[]>();
@@ -677,8 +753,6 @@ export function ResultsExplorer({
     return map;
   }, [sources]);
 
-  const statewideResult = results.find((row) => row.level === "state");
-  const stateLevelOnlyResults = results.length > 0 && results.every((row) => row.level === "state");
   const usingVerifierGeometry = mapMode === "equipment" && equipmentFeatures.length > 0;
   const activeFeatures = usingVerifierGeometry ? equipmentFeatures : features;
   const activeGeoStatus =
@@ -689,7 +763,11 @@ export function ResultsExplorer({
           ? "loading"
           : geoStatus
       : geoStatus;
-  const activeGeometrySource = usingVerifierGeometry ? "Verified Voting GIS areas" : "county boundaries";
+  const activeGeometrySource = usingVerifierGeometry
+    ? "Verified Voting GIS areas"
+    : usingSupplementalMap
+      ? "State House District boundaries"
+      : "county boundaries";
   const showAdvisoryMarkers = mapMode !== "equipment";
   const baseGeometryUnavailable = geoStatus === "error" || (geoStatus === "ready" && features.length === 0);
   const equipmentGeometryAvailable = equipmentGeoStatus === "ready" && equipmentFeatures.length > 0;
@@ -705,8 +783,8 @@ export function ResultsExplorer({
   }, [activeFeatures, selectedState]);
 
   const maxTotalVotes = useMemo(
-    () => results.reduce((max, row) => Math.max(max, row.totalVotes), 0),
-    [results],
+    () => mapResults.reduce((max, row) => Math.max(max, row.totalVotes), 0),
+    [mapResults],
   );
   const voteMethodOptions = useMemo(() => {
     const options = new Map<string, string>();
@@ -788,10 +866,10 @@ export function ResultsExplorer({
   const activeMapName =
     pinnedMapName ?? selectedMapName ?? (stateLevelOnlyResults ? statewideResult?.jurisdictionName ?? null : null);
   const selectedMapResult = activeMapName
-    ? resultsByName.get(normalizeName(activeMapName))
+    ? mapResultsByName.get(normalizeName(activeMapName)) ?? resultsByName.get(normalizeName(activeMapName))
     : undefined;
   const selectedMapIndicators = activeMapName
-    ? indicatorsByName.get(normalizeName(activeMapName)) ?? []
+    ? mapIndicatorsByName.get(normalizeName(activeMapName)) ?? indicatorsByName.get(normalizeName(activeMapName)) ?? []
     : [];
   const selectedMapVoteMethod = activeMapName
     ? voteMethodByCounty.get(normalizeName(resultNameForFeature(selectedState, activeMapName)))
@@ -808,24 +886,30 @@ export function ResultsExplorer({
         ? `${selectedMapResult.winner} by ${selectedMapResult.marginPct.toFixed(2)}% - ${selectedMapResult.totalVotes.toLocaleString()} votes`
         : "Winner, margin, and review flags appear here.";
   const selectedSource = selectedMapResult ? sourceById.get(selectedMapResult.sourceId) : undefined;
-  const pinnedMapResult = pinnedMapName ? resultsByName.get(normalizeName(pinnedMapName)) : undefined;
-  const pinnedMapIndicators = pinnedMapName ? indicatorsByName.get(normalizeName(pinnedMapName)) ?? [] : [];
+  const selectedSupplementalSource =
+    selectedMapResult?.sourceId === "ak-2024-legacy-house-district-overlay" ? supplementalOverlay?.source : undefined;
+  const pinnedMapResult = pinnedMapName
+    ? mapResultsByName.get(normalizeName(pinnedMapName)) ?? resultsByName.get(normalizeName(pinnedMapName))
+    : undefined;
+  const pinnedMapIndicators = pinnedMapName
+    ? mapIndicatorsByName.get(normalizeName(pinnedMapName)) ?? indicatorsByName.get(normalizeName(pinnedMapName)) ?? []
+    : [];
   const pinnedSource = pinnedMapResult ? sourceById.get(pinnedMapResult.sourceId) : undefined;
 
   const mapJoinStats = useMemo(() => {
     const featureNames = new Set(
       features.map((feature) => normalizeName(resultNameForFeature(selectedState, featureName(feature)))),
     );
-    const joinedRows = results.filter(
+    const joinedRows = mapResults.filter(
       (row) =>
         !isNonGeographicResultRow(selectedState, row.jurisdictionName) &&
         featureNames.has(normalizeName(row.jurisdictionName)),
     ).length;
     const missingResults = features
       .map((feature) => resultNameForFeature(selectedState, featureName(feature)))
-      .filter((name) => !resultsByName.has(normalizeName(name)))
+      .filter((name) => !mapResultsByName.has(normalizeName(name)))
       .sort((a, b) => a.localeCompare(b));
-    const unmappedRows = results
+    const unmappedRows = mapResults
       .filter(
         (row) =>
           !isNonGeographicResultRow(selectedState, row.jurisdictionName) &&
@@ -835,7 +919,7 @@ export function ResultsExplorer({
       .sort((a, b) => a.localeCompare(b));
 
     return { joinedRows, missingResults, unmappedRows };
-  }, [features, results, resultsByName, selectedState]);
+  }, [features, mapResults, mapResultsByName, selectedState]);
 
   const visibleResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -861,7 +945,7 @@ export function ResultsExplorer({
 
   const resultBoundaryGeometryUnavailable =
     baseGeometryUnavailable ||
-    stateLevelOnlyResults ||
+    (stateLevelOnlyResults && !supplementalMapAvailable) ||
     (geoStatus === "ready" && features.length > 0 && results.length > 0 && mapJoinStats.joinedRows === 0);
 
   const hasMapJoinWarnings =
@@ -874,13 +958,14 @@ export function ResultsExplorer({
     if (
       mapMode !== "equipment" &&
       resultBoundaryGeometryUnavailable &&
+      !supplementalMapAvailable &&
       equipmentGeoStatus === "ready" &&
       equipmentFeatures.length > 0 &&
       equipmentRows.length > 0
     ) {
       setMapMode("equipment");
     }
-  }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, mapMode, resultBoundaryGeometryUnavailable]);
+  }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, mapMode, resultBoundaryGeometryUnavailable, supplementalMapAvailable]);
 
   useEffect(() => {
     setMapPan((current) => clampPan(current, mapZoom));
@@ -1036,7 +1121,7 @@ export function ResultsExplorer({
             <h2>{countyLabel} Map</h2>
             <span>
               {activeGeoStatus === "ready"
-                ? `${activeFeatures.length} ${activeGeometrySource}, ${indicators.length} advisory review flags`
+                ? `${activeFeatures.length} ${activeGeometrySource}, ${mapIndicators.length} advisory review flags`
                 : activeGeoStatus === "loading"
                   ? "Loading repository GeoJSON"
                   : "Map geometry unavailable"}
@@ -1063,7 +1148,7 @@ export function ResultsExplorer({
                 aria-pressed={mapMode === mode}
                 data-tour={mode === "method" ? "method-mode-button" : undefined}
                 disabled={
-                  (resultGeometryRequiredModes.has(mode as MapMode) && (resultBoundaryGeometryUnavailable || results.length === 0)) ||
+                  (resultGeometryRequiredModes.has(mode as MapMode) && (resultBoundaryGeometryUnavailable || mapResults.length === 0)) ||
                   (mode === "method" && voteMethodRows.length === 0) ||
                   (mode === "equipment" && (equipmentRows.length === 0 || !equipmentGeometryAvailable))
                 }
@@ -1110,7 +1195,14 @@ export function ResultsExplorer({
             </span>
           </div>
         )}
-        {stateLevelOnlyResults ? (
+        {usingSupplementalMap ? (
+          <div className="map-warning" role="status">
+            <strong>Supplemental House District overlay</strong>
+            <span>
+              This map uses the legacy official-ENR House District aggregation: {supplementalOverlay?.rows.length ?? 0} mapped districts and {supplementalOverlay?.indicators.length ?? 0} advisory overlay flags. The native certified result remains statewide; HD99/non-geographic votes are excluded from this map.
+            </span>
+          </div>
+        ) : stateLevelOnlyResults ? (
           <div className="map-warning" role="status">
             <strong>Statewide result loaded</strong>
             <span>
@@ -1232,10 +1324,10 @@ export function ResultsExplorer({
               {activeFeatures.map((feature, featureIndex) => {
                 const name = featureName(feature);
                 const resultName = resultNameForFeature(selectedState, name);
-                const row = resultsByName.get(normalizeName(resultName));
+                const row = mapResultsByName.get(normalizeName(resultName));
                 const methodRow = voteMethodByCounty.get(normalizeName(resultName));
                 const equipmentRow = equipmentByCounty.get(normalizeName(resultName));
-                const countyIndicators = indicatorsByName.get(normalizeName(resultName)) ?? [];
+                const countyIndicators = mapIndicatorsByName.get(normalizeName(resultName)) ?? [];
                 const rings = polygonRings(feature);
                 const point = centroid(selectedState, feature, bounds);
                 const isSelected = selectedMapName && normalizeName(selectedMapName) === normalizeName(resultName);
@@ -1344,6 +1436,11 @@ export function ResultsExplorer({
               Equipment layer uses Verified Voting GIS areas when available; inspect a shape for source and uniformity notes.
             </span>
           )}
+          {usingSupplementalMap && (
+            <span className="legend-note">
+              Supplemental AK overlay excludes the non-geographic HD99 bucket and does not replace the native statewide certified result.
+            </span>
+          )}
           <span className="legend-note">Badge numbers count advisory indicators, not confirmed findings.</span>
           {selectedMapIndicators.length > 0 && (
             <span className="legend-note">
@@ -1419,10 +1516,10 @@ export function ResultsExplorer({
                 </div>
               )}
               <div className="drawer-source">
-                <strong>{selectedSource?.title ?? selectedMapResult.sourceId}</strong>
-                <span>{selectedSource?.authority ?? "Source record not matched in this API response."}</span>
-                {selectedSource?.sourceUrl && (
-                  <a href={selectedSource.sourceUrl} rel="noreferrer" target="_blank">
+                <strong>{selectedSource?.title ?? selectedSupplementalSource?.sourceWorkbook ?? selectedMapResult.sourceId}</strong>
+                <span>{selectedSource?.authority ?? selectedSupplementalSource?.authority ?? "Source record not matched in this API response."}</span>
+                {(selectedSource?.sourceUrl ?? selectedSupplementalSource?.bundleUrl) && (
+                  <a href={selectedSource?.sourceUrl ?? selectedSupplementalSource?.bundleUrl} rel="noreferrer" target="_blank">
                     <ExternalLink aria-hidden size={14} />
                     Open source
                   </a>
