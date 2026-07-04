@@ -30,5 +30,26 @@
     "Use county rows only as custodian follow-up if the state confirms no statewide export exists.",
     "Treat counties with at least 100 precincts or at least 30 precinct splits as high-volume/split follow-up priorities."
   ],
+  "stateRequestEvidence": [
+    {
+      "artifact": "data/in-2024-official-enr-public-data-inventory.json",
+      "finding": "Official retained ENR President and U.S. Senate category files expose 92 county/locality regions each, while the collected JurR files rescan to zero candidate containers."
+    },
+    {
+      "artifact": "data/in-statewide-precinct-counts-2023.pdf",
+      "finding": "The official statewide precinct-count PDF reports 5,147 precincts, 1,342 precinct splits, and 1,092 precincts with splits, so local-result requests must preserve precinct-split and reporting-mode identifiers."
+    },
+    {
+      "artifact": "data/source-records-request-packets/in-2024-precinct-results-request.md",
+      "finding": "Generated request packet asks for President and U.S. Senate rows at the same reporting-unit grain, field definitions, manifests, certification/finality status, and reconciliation back to official ENR county totals."
+    }
+  ],
+  "parserRequirements": [
+    "One row per contest, county, local reporting unit, precinct split if applicable, candidate, party, and vote mode if modes are provided.",
+    "Stable county/FIPS plus reporting-unit identifiers are required; display labels alone are not sufficient because precinct names may be duplicated or split.",
+    "A manifest must identify whether each county file contains precinct rows, precinct-split rows, vote-center/reporting-unit rows, absentee/early/provisional rows, or summary rows.",
+    "President and U.S. Senate imports must use the same local keys before replacing MIT/OpenElections supplemental review rows.",
+    "Importer validation must reconcile local President and U.S. Senate totals to the official ENR county category totals before any source caveat is relaxed."
+  ],
   "caveat": "This is an operational request tracker only. It does not contain candidate result rows and does not replace official ENR county results or supplemental review caveats."
 }

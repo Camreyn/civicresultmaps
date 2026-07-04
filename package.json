@@ -122,6 +122,7 @@
     "etl:collect:ma:county": "node scripts/collect-ma-county-results.mjs",
     "etl:collect:ma:historical": "node scripts/collect-ma-historical-baseline.mjs",
     "etl:collect:in:historical": "node scripts/collect-in-historical-baseline.mjs",
+    "etl:requests:in": "node scripts/build-in-request-routing.mjs && node scripts/build-in-request-packet.mjs",
     "etl:validate:in": "python -m civic_etl.cli validate --config etl/state-configs/in.json",
     "etl:import:in": "python -m civic_etl.cli import --config etl/state-configs/in.json --out .etl/staging",
     "etl:prepare:ca": "node scripts/normalize-ca-sov-workbooks.mjs && node scripts/normalize-ca-turnout.mjs",
