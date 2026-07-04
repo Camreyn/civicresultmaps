@@ -9,7 +9,8 @@
     "flateauDownloadsUrl": "https://flateau.elections.ny.gov/downloads",
     "enrollmentCountyUrl": "https://elections.ny.gov/enrollment-county",
     "enrollmentElectionDistrictUrl": "https://elections.ny.gov/enrollment-election-district?f%5B0%5D=filter_term%3A571",
-    "nysboeFoilUrl": "https://elections.ny.gov/freedom-information-law-foil-requests"
+    "nysboeFoilUrl": "https://elections.ny.gov/freedom-information-law-foil-requests",
+    "wave25OfficialPathCheckArtifact": "data/ny-2024-wave25-official-path-checks.json"
   },
   "requestFields": [
     "official 2024 General Election local/election-district President rows",
@@ -122,16 +123,18 @@
       "packetId": "ny-2024-local-oswego",
       "county": "Oswego County",
       "countyBoardRosterSearchCounty": "Oswego",
-      "currentReviewStatus": "excluded_not_loaded",
+      "currentReviewStatus": "official_result_workbook_lead_found_not_loaded",
       "currentSourceLead": {
-        "authority": "OpenElections source collection from New York county boards of elections",
-        "url": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Oswego.pdf",
-        "artifact": "Oswego.pdf",
-        "status": "unreviewed_pdf_text_extraction_not_loaded"
+        "authority": "Oswego County Board of Elections",
+        "url": "https://www.oswegocountyny.gov/government/board_of_elections/elections.php",
+        "artifact": "2024 General Election Official Results PDF/Excel public links",
+        "status": "official_public_result_lead_not_downloaded_or_reconciled",
+        "supplementalLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Oswego.pdf"
       },
-      "primaryRequest": "Request official same-grain local President and United States Senator rows, source totals, ballots-cast/voter-history rows, and ED geometry/crosswalks.",
+      "primaryRequest": "Collect the public official Oswego 2024 General Election results PDF/Excel through ordinary browser/manual download or a stable public URL, inspect whether it includes same-grain President and United States Senator rows, and reconcile to NYSBOE county totals before loading. If turnout/voter-history or geometry/crosswalk fields are absent, request those fields from Oswego County.",
       "parserOrNormalizationPath": "future NY official ED/local result parser",
-      "status": "packet_ready_no_loaded_rows"
+      "status": "official_artifacts_found_not_loaded_reconciliation_needed",
+      "wave25EvidenceArtifact": "data/ny-2024-wave25-official-path-checks.json"
     },
     {
       "packetId": "ny-2024-local-rockland",

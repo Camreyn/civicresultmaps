@@ -125,6 +125,17 @@
       "timestampBasis": "County presidential rows normalized by scripts/collect-ny-historical-baseline.mjs from official NYSBOE general-election PDFs for 2012, 2016, and 2020.",
       "confidence": "Official county historical presidential baselines used for context only. 2012 and 2016 other-vote totals include the separate NYSBOE official presidential write-in final total pages; 2020 uses the presidential table write-in column.",
       "status": "loaded"
+    },
+    {
+      "id": "ny-2024-wave25-official-path-checks",
+      "category": "Wave 25 official county path and request evidence",
+      "url": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "localFile": "data/ny-2024-wave25-official-path-checks.json",
+      "parser": "sourceCoverageEvidenceJson",
+      "authority": "New York State Board of Elections; selected New York county boards of elections",
+      "timestampBasis": "Wave 25 official-path recheck performed July 4, 2026 for the 12 remaining New York local-review county equivalents.",
+      "confidence": "Evidence-only artifact. Oswego County has an official public 2024 General PDF/Excel result lead that still needs ordinary collection, parsing, and reconciliation; Orange, Rockland, and Oswego map/crosswalk leads do not change active review coverage.",
+      "status": "candidate"
     }
   ],
   "certifiedResults": {
@@ -159,7 +170,7 @@
   "expected": {
     "jurisdictions": 62,
     "resultRows": 62,
-    "sources": 11,
+    "sources": 12,
     "geometryFeatures": 62,
     "stateTotal": 8381429,
     "trump": 3579519,
