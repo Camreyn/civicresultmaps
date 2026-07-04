@@ -122,57 +122,70 @@ function rectAnchorPoint(rect: Rect, toward: Point) {
   );
 }
 
+function rectOverlapArea(a: Rect, b: Rect) {
+  const xOverlap = Math.max(0, Math.min(a.left + a.width, b.left + b.width) - Math.max(a.left, b.left));
+  const yOverlap = Math.max(0, Math.min(a.top + a.height, b.top + b.height) - Math.max(a.top, b.top));
+
+  return xOverlap * yOverlap;
+}
+
 function cardPosition(target: Rect | null, cardHeight = 260) {
-  const width = 360;
-  const margin = 18;
+  const margin = 28;
+  const fallbackWidth = 380;
   if (typeof window === "undefined") {
     return {
       left: margin,
       top: margin,
-      width,
+      width: fallbackWidth,
     };
   }
 
   const viewportHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+  const width = Math.min(fallbackWidth, Math.max(280, viewportWidth - margin * 2));
   const usableCardHeight = Math.min(cardHeight, viewportHeight - margin * 2);
-  const clampTop = (top: number) => Math.max(margin, Math.min(top, viewportHeight - usableCardHeight - margin));
+  const right = Math.max(margin, viewportWidth - width - margin);
+  const bottom = Math.max(margin, viewportHeight - usableCardHeight - margin);
 
   if (!target) {
     return {
-      left: margin,
+      left: right,
       top: margin,
       width,
     };
   }
 
-  const viewportWidth = window.innerWidth;
-  const rightSide = target.left + target.width + margin;
-  const leftSide = target.left - width - margin;
-  const below = target.top + target.height + margin;
-  const above = target.top - usableCardHeight - margin;
-  const canUseRight = rightSide + width < viewportWidth - margin;
-  const canUseLeft = leftSide > margin;
-  const canUseBelow = below + usableCardHeight < viewportHeight - margin;
+  const positions = [
+    { left: margin, top: margin },
+    { left: right, top: margin },
+    { left: margin, top: bottom },
+    { left: right, top: bottom },
+  ];
+  const paddedTarget = {
+    height: target.height + margin * 2,
+    left: target.left - margin,
+    top: target.top - margin,
+    width: target.width + margin * 2,
+  };
+  const targetMidpoint = rectCenter(target);
 
-  if (canUseRight) {
-    return {
-      left: rightSide,
-      top: clampTop(target.top),
-      width,
-    };
-  }
+  const selectedPosition = positions.reduce((best, position) => {
+    const candidate = { ...position, height: usableCardHeight, width };
+    const bestRect = { ...best, height: usableCardHeight, width };
+    const candidateOverlap = rectOverlapArea(candidate, paddedTarget);
+    const bestOverlap = rectOverlapArea(bestRect, paddedTarget);
 
-  if (canUseLeft) {
-    return {
-      left: leftSide,
-      top: clampTop(target.top),
-      width,
-    };
-  }
+    if (candidateOverlap !== bestOverlap) {
+      return candidateOverlap < bestOverlap ? position : best;
+    }
+
+    return distanceSquared(rectCenter(candidate), targetMidpoint) > distanceSquared(rectCenter(bestRect), targetMidpoint)
+      ? position
+      : best;
+  });
 
   return {
-    left: Math.max(margin, Math.min(target.left, viewportWidth - width - margin)),
-    top: canUseBelow ? clampTop(below) : clampTop(above),
+    ...selectedPosition,
     width,
   };
 }
@@ -345,9 +358,7 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
                 </marker>
               </defs>
               <path
-                d={`M ${cardAnchor.x.toFixed(1)} ${cardAnchor.y.toFixed(1)} C ${cardAnchor.x.toFixed(1)} ${targetAnchor.y.toFixed(
-                  1,
-                )}, ${targetAnchor.x.toFixed(1)} ${cardAnchor.y.toFixed(1)}, ${targetAnchor.x.toFixed(1)} ${targetAnchor.y.toFixed(1)}`}
+                d={`M ${cardAnchor.x.toFixed(1)} ${cardAnchor.y.toFixed(1)} L ${targetAnchor.x.toFixed(1)} ${targetAnchor.y.toFixed(1)}`}
                 markerEnd="url(#tour-arrow-head)"
               />
               <circle cx={targetAnchor.x} cy={targetAnchor.y} r="16" />

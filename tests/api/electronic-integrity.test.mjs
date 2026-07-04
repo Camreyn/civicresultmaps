@@ -221,8 +221,12 @@ test("electronic records request tour exposes response submission", () => {
   assert.match(component, /request-submit-response/);
   assert.match(tour, /rectAnchorCandidates/);
   assert.match(tour, /rectAnchorPoint/);
+  assert.match(tour, /rectOverlapArea/);
+  assert.match(tour, /selectedPosition/);
+  assert.match(tour, / L /);
   assert.doesNotMatch(tour, /targetCenter/);
   assert.doesNotMatch(tour, /cardCenter/);
+  assert.doesNotMatch(tour, / C /);
   assert.match(responseTemplate, /Records request response/);
   assert.match(responseTemplate, /Response status/);
   assert.match(responseTemplate, /not proof of fraud, misconduct, or tampering/);
