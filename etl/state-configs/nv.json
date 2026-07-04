@@ -94,6 +94,17 @@
       "status": "loaded"
     },
     {
+      "id": "nv-2024-non-clark-county-request-packets",
+      "category": "Nevada 2024 non-Clark jurisdiction operational request packets",
+      "url": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+      "localFile": "data/nv-2024-non-clark-county-request-packets.json",
+      "parser": "coverageInventoryJson",
+      "authority": "CivicResultMaps official-source inventory using Nevada county election sources",
+      "timestampBasis": "State-scoped source request packet artifact generated July 4, 2026 from the county source request matrix.",
+      "confidence": "Context-only packet JSON for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt. It converts the request matrix into jurisdiction-specific asks for official local President/Senate rows, turnout denominators, geometry/crosswalks, CVR, audit, L&A, logs, custody, incident, correction, recount, and litigation records; it is not a vote-result parser.",
+      "status": "loaded"
+    },
+    {
       "id": "nv-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2732%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -130,7 +141,7 @@
     "sourceId": "nv-clark-2024-cvr-precinct-review",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "sourceCoverage": "Clark County, Washoe County, and Humboldt County official CVR precinct rows are loaded; the other 14 Nevada jurisdictions remain county-only until local exports or records-request productions are collected.",
+    "sourceCoverage": "Clark County, Washoe County, and Humboldt County official CVR precinct rows are loaded; the other 14 Nevada jurisdictions remain county-only until local exports or records-request productions are collected. Wave 24 adds generated jurisdiction-specific request packets for the remaining counties.",
     "partialCoverage": true,
     "missingJurisdictions": [
       "Carson City",
@@ -148,7 +159,7 @@
       "Storey County",
       "White Pine County"
     ],
-    "warning": "Nevada review rows now include Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and county CVR totals may differ from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports.",
+    "warning": "Nevada review rows now include Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-U.S. Senate rows. The rest of Nevada remains county-level statewide-results context, and county CVR totals may differ from certified county totals, so statewide conclusions still require source-row inspection and additional county local exports or request-packet responses.",
     "sourceIds": [
       "nv-clark-2024-cvr-precinct-review",
       "nv-washoe-2024-cvr-precinct-review",
@@ -185,7 +196,7 @@
   "expected": {
     "jurisdictions": 17,
     "resultRows": 17,
-    "sources": 10,
+    "sources": 11,
     "geometryFeatures": 17,
     "stateTotal": 1484840,
     "trump": 751205,

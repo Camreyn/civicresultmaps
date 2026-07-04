@@ -3174,7 +3174,7 @@
       "state": "NV",
       "name": "Nevada",
       "priority": 8,
-      "currentStatus": "partial_clark_washoe_humboldt_precinct_review_loaded_wave23_request_paths_refined",
+      "currentStatus": "partial_clark_washoe_humboldt_precinct_review_loaded_wave24_request_packets_added",
       "officialSourcePages": [
         "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
         "https://www.clarkcountynv.gov/government/departments/elections/reports_data_maps/index.php",
@@ -3186,16 +3186,17 @@
         "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information"
       ],
       "requiredArtifacts": [
-        "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt, tracked with official contact/custodian paths and expected-field detail in data/nv-2024-county-source-request-matrix.tsv",
+        "official precinct or local reporting-unit results for President and U.S. Senate for the 14 Nevada jurisdictions outside Clark, Washoe, and Humboldt, tracked with official contact/custodian paths and expected-field detail in data/nv-2024-county-source-request-matrix.tsv plus operational packets in data/nv-2024-non-clark-county-request-packets.json",
         "state-native turnout denominator rows with ballots-cast, registered-voter denominator, timing, and inactive-voter treatment notes",
         "official precinct/local reporting-unit geometry or crosswalks for subcounty review rows",
         "official 2012, 2016, and 2020 Nevada historical presidential baseline exports if available to replace secondary context rows",
         "post-election audit, remaining CVR availability, tabulator-log, L&A, custody, incident/correction, recount, and litigation artifacts"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; data/nv-2024-county-source-request-matrix.tsv now tracks the remaining 14 jurisdiction request paths with Wave 23 official contact/custodian and expected-field detail. Local exports or request-produced SOV/CVR files are still needed before statewide precinct advisory coverage can be calculated. A normalizedTurnoutCsv-style parser is needed before replacing EAC fallback turnout, and a geometry/crosswalk parser is needed before mapping subcounty review rows.",
-      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 3, 2026 source inventory and data/nv-2024-county-source-request-matrix.tsv record county-by-county request paths, Wave 23 official contact/custodian routes, expected result/turnout/geometry/admin fields, blocked state-native turnout access, county-only map geometry, secondary historical baseline caveats, and unnormalized audit/CVR/L&A/tabulator-log/custody/incident source needs.",
-      "requestMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
+      "parserNeeded": "localComparisonCsv loaded for Clark County, Washoe County, and Humboldt County CVR precinct rows; data/nv-2024-county-source-request-matrix.tsv tracks the remaining 14 jurisdiction request paths, and Wave 24 adds data/nv-2024-non-clark-county-request-packets.json as generated per-jurisdiction request packets. Local exports or request-produced SOV/CVR files are still needed before statewide precinct advisory coverage can be calculated. A normalizedTurnoutCsv-style parser is needed before replacing EAC fallback turnout, and a geometry/crosswalk parser is needed before mapping subcounty review rows.",
+      "blocker": "Clark County, Washoe County, and Humboldt County official CVR precinct President-versus-Senate rows are loaded, but statewide Nevada remains partial because the other 14 jurisdictions still have only county-level President-versus-Senate review rows. The July 4, 2026 Wave 24 packet pass rechecked Eureka County, found current/downloadable 2026 county election documents but no parser-ready 2024 local export/CVR, and generated data/nv-2024-non-clark-county-request-packets.json from the county request matrix to operationalize county-by-county official records requests.",
+      "requestMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
+      "requestPacketArtifact": "data/nv-2024-non-clark-county-request-packets.json"
     },
     {
       "state": "NH",
