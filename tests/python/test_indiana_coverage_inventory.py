@@ -41,6 +41,12 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(retained["1006"]["regionCount"], 92)
         self.assertEqual(retained["1019"]["localCandidateFieldNames"], [])
         self.assertEqual(self.enr_inventory["jurisdictionReportInventory"]["rescannedCandidateContainerCount"], 0)
+        recheck = self.enr_inventory["livePublicPathRecheck"]
+        self.assertEqual(recheck["checkedAt"], "2026-07-04")
+        self.assertIn("no browser automation", recheck["method"])
+        self.assertEqual(len(recheck["endpoints"]), 4)
+        self.assertTrue(all(endpoint["httpStatus"] == 200 for endpoint in recheck["endpoints"]))
+        self.assertIn("not a same-grain precinct/subcounty", recheck["conclusion"])
         self.assertIn("supplemental MIT/OpenElections", self.enr_inventory["conclusion"]["blocker"])
 
     def test_2012_historical_baseline_is_loaded_from_official_endpoint(self):
@@ -133,6 +139,14 @@ class IndianaCoverageInventoryTest(unittest.TestCase):
         self.assertIn("Marion County Election Board", marion["office_name"])
         self.assertIn("county_followup_if_state_confirms_no_statewide_export", marion["county_followup_status"])
         self.assertIn("no President or U.S. Senate candidate result rows", marion["notes"])
+
+    def test_live_recheck_is_carried_into_request_artifacts(self):
+        artifacts = {row["artifact"]: row for row in self.request_rows}
+        self.assertIn("July 4, 2026 ordinary public-path recheck", artifacts["official_precinct_or_local_reporting_unit_president"]["blocker"])
+        self.assertIn("documented Senate archive JSON", artifacts["official_precinct_or_local_reporting_unit_us_senate"]["blocker"])
+        packet = self.request_packet.read_text(encoding="utf-8-sig")
+        self.assertIn("Live ENR public-path recheck (2026-07-04)", packet)
+        self.assertIn("ordinary public HTTPS GET requests returned HTTP 200", packet)
 
 
 if __name__ == "__main__":

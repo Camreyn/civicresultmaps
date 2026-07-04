@@ -2,14 +2,14 @@
   "state": "IN",
   "stateName": "Indiana",
   "electionYear": 2024,
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-04",
   "purpose": "State-scoped coverage inventory for Indiana 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_vstop_audit_summary_loaded_county_request_routing_loaded",
+  "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_vstop_audit_summary_loaded_county_request_routing_loaded_live_public_enr_rechecked",
   "authorityPriority": "Official Indiana Election Division, Indiana Election Commission/Recount Commission, county election offices, official GIS/Census, and EAC sources first; secondary sources are context only and caveated.",
   "completionDecision": {
-    "checkedAt": "2026-07-03",
+    "checkedAt": "2026-07-04",
     "decision": "remain_in_source_discovery_queue",
-    "reason": "Indiana should remain out of completedNativeStates because official public ENR artifacts provide county President and U.S. Senate rows only, the collected JurR county JSON files do not contain President or U.S. Senate candidate rows, and current subcounty advisory flags depend on supplemental MIT/OpenElections precinct rows with upstream caveats. Official county results, county turnout, official historical baselines, and VSTOP audit-summary context are loaded, but official same-grain precinct/subcounty President and U.S. Senate rows remain the blocker for completed native local-review coverage."
+    "reason": "Indiana should remain out of completedNativeStates because official public ENR artifacts provide county President and U.S. Senate rows only, the collected JurR county JSON files do not contain President or U.S. Senate candidate rows, and current subcounty advisory flags depend on supplemental MIT/OpenElections precinct rows with upstream caveats. Official county results, county turnout, official historical baselines, and VSTOP audit-summary context are loaded. A July 4, 2026 ordinary public-path recheck returned HTTP 200 for settings.json, President, U.S. Senate, and statewideTurnout_A.json, but still found no official same-grain precinct/subcounty President and U.S. Senate export, so those rows remain the blocker for completed native local-review coverage."
   },
   "requestMatrixArtifact": "data/in-2024-source-request-matrix.tsv",
   "loadedArtifacts": [
@@ -83,11 +83,13 @@
         "senateRegions": 92,
         "jurisdictionReports": 92,
         "jurisdictionCandidateContainers": 0,
-        "publicSameGrainSubcountyPresidentSenateRows": 0
+        "publicSameGrainSubcountyPresidentSenateRows": 0,
+        "livePublicPathRecheckEndpoints": 4
       },
       "caveats": [
         "Evidence artifact only; it does not replace certified county result rows or supplemental local review rows.",
-        "The public ENR app path identifies office-category, ticker/settings, turnout, map, and referendum JurR files, but no public precinct/subcounty President or U.S. Senate candidate-result export."
+        "The public ENR app path identifies office-category, ticker/settings, turnout, map, and referendum JurR files, but no public precinct/subcounty President or U.S. Senate candidate-result export.",
+        "July 4, 2026 ordinary public ENR archive checks returned HTTP 200 for settings.json, OffCatC_1019_A.json, OffCatC_1006_A.json, and statewideTurnout_A.json; these reachable paths still do not expose same-grain precinct/subcounty President and U.S. Senate candidate rows."
       ],
       "confidence": "loaded_official_public_endpoint_inventory"
     },
@@ -321,8 +323,8 @@
         "downloadable candidate result export route",
         "hidden precinct/subcounty President or U.S. Senate JSON route"
       ],
-      "result": "scripts/inspect-in-enr-public-data.mjs records the Angular data path: settings.json reports version A; startup fetches statewideElectionsC_A/statewideTickerC_A and OffCatC_<OFFICECATEGORYID>_A.json files; the visible download-results directive fetches statewideTurnout_A.json and exports voter statistics only.",
-      "blocker": "No public ENR app script or retained official JSON artifact identifies a President or U.S. Senate precinct/subcounty candidate-result export. The retained President and U.S. Senate files each expose 92 county/locality regions, and the 92 JurR files rescan to zero candidate containers.",
+      "result": "scripts/inspect-in-enr-public-data.mjs records the Angular data path: settings.json reports version A; startup fetches statewideElectionsC_A/statewideTickerC_A and OffCatC_<OFFICECATEGORYID>_A.json files; the visible download-results directive fetches statewideTurnout_A.json and exports voter statistics only. A July 4, 2026 ordinary public-path recheck returned HTTP 200 for settings.json, OffCatC_1019_A.json, OffCatC_1006_A.json, and statewideTurnout_A.json.",
+      "blocker": "No public ENR app script or retained official JSON artifact identifies a President or U.S. Senate precinct/subcounty candidate-result export. The retained President and U.S. Senate files each expose 92 county/locality regions, and the 92 JurR files rescan to zero candidate containers. Those reachable official archive paths still provide county/locality candidate summaries and turnout/statistics data, not a same-grain precinct/subcounty President and U.S. Senate candidate export.",
       "evidenceArtifact": "data/in-2024-official-enr-public-data-inventory.json"
     },
     {
@@ -522,6 +524,7 @@
     }
   ],
   "confidenceNotes": [
+    "July 4, 2026 live public-path recheck: ordinary direct GETs to official ENR settings.json, President, U.S. Senate, and statewideTurnout_A.json returned HTTP 200; no anti-bot bypass was used and no same-grain precinct/subcounty candidate export was identified.",
     "Official county result and county turnout artifacts are suitable for county-level public-interest review with visible caveats.",
     "No official statewide precinct/subcounty President and same-grain U.S. Senate result export was confirmed in this pass.",
     "The generated data/in-2024-official-enr-public-data-inventory.json records the current public ENR app data-path evidence: President and U.S. Senate category files are county/locality-grain, JurR files contain zero candidate containers, and the visible download route is turnout statistics only.",
