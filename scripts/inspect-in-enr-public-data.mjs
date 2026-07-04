@@ -2,7 +2,7 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const repoRoot = process.cwd();
-const checkedAt = process.env.CHECKED_AT ?? "2026-07-03";
+const checkedAt = process.env.CHECKED_AT ?? "2026-07-04";
 const officialDir = path.join(repoRoot, "data", "in-2024-official-results");
 const jurDir = path.join(repoRoot, "data", "in-2024-enr-jurisdiction-reports");
 const outPath = path.join(repoRoot, "data", "in-2024-official-enr-public-data-inventory.json");
@@ -198,6 +198,37 @@ async function main() {
       ],
       conclusion:
         "The public app path identifies office-category, ticker/settings, turnout, map, and referendum JurR files. It does not identify a public President or U.S. Senate precinct/subcounty candidate-result export.",
+    },
+    livePublicPathRecheck: {
+      checkedAt: "2026-07-04",
+      method:
+        "Ordinary public HTTPS GET requests to documented official ENR archive data paths; no browser automation, credentialed access, or anti-bot bypass was used.",
+      endpoints: [
+        {
+          url: "https://enr.indianavoters.in.gov/archive/2024General/data/settings.json",
+          httpStatus: 200,
+          finding: "Settings metadata remains publicly reachable and identifies the archive data version family.",
+        },
+        {
+          url: "https://enr.indianavoters.in.gov/archive/2024General/data/OffCatC_1019_A.json",
+          httpStatus: 200,
+          finding:
+            "President office-category JSON remains publicly reachable; retained/local inspection shows county/locality candidate summaries, not precinct/subcounty candidate rows.",
+        },
+        {
+          url: "https://enr.indianavoters.in.gov/archive/2024General/data/OffCatC_1006_A.json",
+          httpStatus: 200,
+          finding:
+            "U.S. Senate office-category JSON remains publicly reachable; retained/local inspection shows county/locality candidate summaries, not precinct/subcounty candidate rows.",
+        },
+        {
+          url: "https://enr.indianavoters.in.gov/archive/2024General/data/statewideTurnout_A.json",
+          httpStatus: 200,
+          finding: "The public download/statistics data path remains reachable for turnout-style data, not candidate result rows.",
+        },
+      ],
+      conclusion:
+        "The ordinary public archive paths are reachable, but the checked ENR data family still exposes county-level President and U.S. Senate candidate rows plus turnout/statistics data, not a same-grain precinct/subcounty President and U.S. Senate export.",
     },
     statewideOfficeList: {
       officeCategoryCount: officeItems.length,

@@ -200,20 +200,21 @@
   },
   "coverageInventory": {
     "localFile": "data/in-2024-data-coverage-inventory.json",
-    "checkedAt": "2026-07-03",
-    "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_vstop_audit_summary_loaded",
+    "checkedAt": "2026-07-04",
+    "status": "official_county_results_turnout_2012_2016_2020_historical_loaded_supplemental_precinct_review_vstop_audit_summary_loaded_county_request_routing_loaded_live_public_enr_rechecked",
     "officialSourceSearchPath": [
       "https://enr.indianavoters.in.gov/archive/2024General/index.html",
       "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1019_A.json",
       "https://web.archive.org/web/20241229230948id_/https://enr.indianavoters.in.gov/site/data/OffCatC_1006_A.json",
       "https://web.archive.org/cdx?url=enr.indianavoters.in.gov/site/data/JurR_*_B.json&from=20241101&to=20250131&output=json",
+      "https://enr.indianavoters.in.gov/archive/2024General/data/statewideTurnout_A.json",
       "https://www.in.gov/sos/elections/voter-information/files/2024-General-Election-Turnout-and-Registration-Report.pdf",
       "https://www.in.gov/sos/elections/election-commission/election-results/",
       "https://www.in.gov/sos/elections/statistics-and-maps/",
       "https://www.in.gov/sos/elections/files/2024-General-Post-Election-Audit-Summary-Report-Final.pdf"
     ],
     "caveats": [
-      "Official Indiana ENR category JSON currently supports county certified President and U.S. Senate rows, not precinct/subcounty candidate rows.",
+      "Official Indiana ENR category JSON currently supports county certified President and U.S. Senate rows, not precinct/subcounty candidate rows; ordinary July 4, 2026 public-path checks confirmed the documented ENR archive JSON paths are reachable but still county/result-statistics scoped.",
       "Official JurR county JSON inventory files preserve county jurisdiction/contact and reporting-region structures but do not contain President or U.S. Senate candidate result rows.",
       "Local review rows remain supplemental MIT/OpenElections advisory inputs until official same-grain precinct/subcounty President and U.S. Senate rows are obtained.",
       "Official Indiana turnout is loaded at county grain; precinct turnout denominators and precinct boundary geometry remain uncollected.",
