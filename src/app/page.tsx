@@ -41,6 +41,7 @@ export default async function Home({ searchParams }: HomeProps) {
     countyResults,
     cityResults,
     cityTownResults,
+    stateResults,
     sources,
     coverage,
     importRuns,
@@ -59,6 +60,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
     listResults({ state: selectedState, year: selectedYear, level: "city" }),
     listResults({ state: selectedState, year: selectedYear, level: "city_town" }),
+    listResults({ state: selectedState, year: selectedYear, level: "state" }),
     listSources({ state: selectedState, year: selectedYear }),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     listImportRuns(),
@@ -72,8 +74,13 @@ export default async function Home({ searchParams }: HomeProps) {
     listElectronicIntegrityArtifacts({ state: selectedState, year: selectedYear }),
     listElectronicIntegrityRequests({ state: selectedState, year: selectedYear }),
   ]);
-  const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults;
-  const resultLevelLabel = results[0]?.level === "city" || results[0]?.level === "city_town" ? "Municipality" : undefined;
+  const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults.length ? cityTownResults : stateResults;
+  const resultLevelLabel =
+    results[0]?.level === "city" || results[0]?.level === "city_town"
+      ? "Municipality"
+      : results[0]?.level === "state"
+        ? "Statewide"
+        : undefined;
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
   const selectedCompleteness = completenessReport.find((summary) => summary.state === selectedStateCode);

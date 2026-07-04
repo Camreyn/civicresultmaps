@@ -542,3 +542,14 @@ test("indicator-dependent public reads are uncached", () => {
   assert.match(api, /export const listCompletenessReport = uncachedListCompletenessReport/);
   assert.doesNotMatch(api, /\["public-data", "indicators"\]/);
 });
+
+test("statewide-only result rows remain visible in workspace and coverage", () => {
+  const page = readFileSync("src/app/page.tsx", "utf8");
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+
+  assert.match(page, /level: "state"/);
+  assert.match(page, /cityTownResults\.length \? cityTownResults : stateResults/);
+  assert.match(page, /results\[0\]\?\.level === "state"/);
+  assert.match(dataAccess, /level: "state"/);
+  assert.match(dataAccess, /cityTownResults\.length \? cityTownResults : stateResults/);
+});
