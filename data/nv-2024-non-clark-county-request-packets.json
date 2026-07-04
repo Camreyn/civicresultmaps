@@ -1,0 +1,1103 @@
+{
+  "state": "NV",
+  "stateName": "Nevada",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-04",
+  "purpose": "Operational jurisdiction-by-jurisdiction request packets for Nevada jurisdictions outside the loaded Clark, Washoe, and Humboldt CVR review coverage. These packets are request/source tracking only; they do not load rows, promote production, or allege fraud or misconduct.",
+  "officialRouting": {
+    "nevadaSecretaryOfStateCountyClerkContacts": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+    "nevadaSecretaryOfStateElectionResults": "https://www.nvsos.gov/SOSelectionPages/results/2024StateWideGeneral/ElectionSummary.aspx",
+    "silverStateElectionResults": "https://silverstateelection.nv.gov/",
+    "eurekaCountyElections": "https://www.eurekacountynv.gov/departments/clerk-recorder/elections/"
+  },
+  "requestFields": [
+    "official 2024 General Election precinct/local President rows",
+    "official same-grain 2024 General Election United States Senator rows",
+    "candidate, party, vote, total, blank, overvote, undervote, and none-of-these-candidates fields where available",
+    "county, precinct, precinct portion, vote center, mail, early, provisional, and reporting-unit identifiers needed for joins",
+    "ballots-cast or voter-participation rows at county or local reporting-unit grain",
+    "registered-voter denominator, denominator timing, and active/inactive voter treatment",
+    "map-ready precinct or precinct-portion geometry, or an official crosswalk matching result/CVR labels",
+    "CVR availability or exports, post-election audit records, L&A test records, tabulator/EMS logs, custody records, incidents, corrections, recounts, and litigation records where public"
+  ],
+  "normalizationRules": [
+    "Do not load packet-produced rows until source authority, URL, local artifact path, reporting grain, parser path, expected row count, totals, caveats, and confidence notes are recorded.",
+    "Reconcile parsed President and U.S. Senate local rows to the official county totals in data/nv-2024-statewide-general-president.csv and data/nv-2024-statewide-general-senate.csv before changing Nevada review rows.",
+    "Treat turnout or registration rows as denominator leads only until ballots-cast semantics, denominator timing, inactive-voter treatment, and statewide totals are reconciled.",
+    "Treat county pages that point to Silver State as official routing evidence, not as local review rows, unless a machine-readable local export or records production is retained."
+  ],
+  "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
+  "packetCount": 14,
+  "sourceStatuses": {
+    "packet_ready_source_access_blocked": 3,
+    "packet_ready_no_loaded_rows": 8,
+    "official_page_rechecked_wave24_packet_ready_no_loaded_rows": 1,
+    "public_records_packet_ready_no_loaded_rows": 2
+  },
+  "packets": [
+    {
+      "packetId": "nv-2024-local-carson-city",
+      "jurisdiction": "Carson City",
+      "custodian": "Carson City Clerk-Recorder",
+      "officialSourceUrl": "https://www.carson.org/government/departments-a-f/clerk-recorder/elections",
+      "officialContactPath": "Nevada SOS county-clerk contact path; Carson City Clerk-Recorder elections page if DNS resolves",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "blocked_dns_or_site_resolution_wave13_confirmed",
+      "currentSourceLead": {
+        "authority": "Carson City Clerk-Recorder",
+        "url": "https://www.carson.org/government/departments-a-f/clerk-recorder/elections",
+        "status": "blocked_dns_or_site_resolution_wave13_confirmed",
+        "finding": "Wave 13 recheck on July 2, 2026 failed direct scripted DNS resolution for www.carson.org. No parser-ready 2024 President plus U.S. Senate local export or CVR was collected."
+      },
+      "primaryRequest": "Request from the Carson City Clerk-Recorder or through the Nevada SOS county-clerk contact path",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_source_access_blocked"
+    },
+    {
+      "packetId": "nv-2024-local-churchill-county",
+      "jurisdiction": "Churchill County",
+      "custodian": "Churchill County Clerk/Treasurer",
+      "officialSourceUrl": "https://www.churchillcountynv.gov/134/Elections",
+      "officialContactPath": "Churchill County Clerk/Treasurer elections page; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "reachable_no_parser_ready_export_found_wave13_confirmed",
+      "currentSourceLead": {
+        "authority": "Churchill County Clerk/Treasurer",
+        "url": "https://www.churchillcountynv.gov/134/Elections",
+        "status": "reachable_no_parser_ready_export_found_wave13_confirmed",
+        "finding": "Wave 13 recheck on July 2, 2026 reached the official county elections page with HTTP 200, but search and page-link checks did not surface a parser-ready 2024 General President plus U.S. Senate local export, SOV workbook, or CVR export."
+      },
+      "primaryRequest": "Request from the Churchill County Clerk/Treasurer",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-douglas-county",
+      "jurisdiction": "Douglas County",
+      "custodian": "Douglas County Clerk-Treasurer Elections Office",
+      "officialSourceUrl": "https://cltr.douglascountynv.gov/elections/results-and-resources",
+      "officialContactPath": "https://cltr.douglascountynv.gov/elections/results-and-resources; Douglas County Election Office phone and email on page",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "official_results_page_reachable_wave23_no_local_export_found",
+      "currentSourceLead": {
+        "authority": "Douglas County Clerk-Treasurer Elections Office",
+        "url": "https://cltr.douglascountynv.gov/elections/results-and-resources",
+        "status": "official_results_page_reachable_wave23_no_local_export_found",
+        "finding": "Wave 23 recheck on July 3, 2026 reached the official Results and Resources page. The page says previous Douglas County results include certified outcomes from the Clerk-Treasurer and Nevada SOS, but no parser-ready 2024 President plus U.S. Senate local export, SOV workbook, CVR export, or downloadable result file was exposed in the visible page body."
+      },
+      "primaryRequest": "Request from the Douglas County Clerk-Treasurer Elections Office",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-elko-county",
+      "jurisdiction": "Elko County",
+      "custodian": "Elko County Clerk",
+      "officialSourceUrl": "https://cms2.revize.com/revize/elkocounty/new_page/clerk/index.php",
+      "officialContactPath": "https://elkocountynv.net/your_government/departments/index.php; Clerk page phone/email; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "official_clerk_page_reachable_wave23_no_local_export_found",
+      "currentSourceLead": {
+        "authority": "Elko County Clerk",
+        "url": "https://cms2.revize.com/revize/elkocounty/new_page/clerk/index.php",
+        "status": "official_clerk_page_reachable_wave23_no_local_export_found",
+        "finding": "Wave 23 recheck on July 3, 2026 reached the official Elko County department directory and linked Clerk page. The Clerk page states the office coordinates elections and provides an Elections link plus Silver State Elections, but no parser-ready 2024 President plus U.S. Senate local export, SOV workbook, or CVR export was exposed in the visible page body."
+      },
+      "primaryRequest": "Request from the Elko County Clerk; the official department directory lists the Clerk with phone/email and the Clerk page links Elections and Silver State Elections",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-esmeralda-county",
+      "jurisdiction": "Esmeralda County",
+      "custodian": "Esmeralda County Clerk-Treasurer",
+      "officialSourceUrl": "https://accessesmeralda.com/county-offices/clerk-treasurer/elections/",
+      "officialContactPath": "Esmeralda County Clerk-Treasurer elections page; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "reachable_no_parser_ready_export_found",
+      "currentSourceLead": {
+        "authority": "Esmeralda County Clerk-Treasurer",
+        "url": "https://accessesmeralda.com/county-offices/clerk-treasurer/elections/",
+        "status": "reachable_no_parser_ready_export_found",
+        "finding": "Visible page links did not expose a parser-ready local export or CVR during the July 1, 2026 source pass."
+      },
+      "primaryRequest": "Request from the Esmeralda County Clerk-Treasurer",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-eureka-county",
+      "jurisdiction": "Eureka County",
+      "custodian": "Eureka County Clerk Recorder",
+      "officialSourceUrl": "https://www.eurekacountynv.gov/departments/clerk-recorder/elections/",
+      "officialContactPath": "https://www.eurekacountynv.gov/departments/clerk-recorder/elections/; Clerk Recorder phone/fax/address on page; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "official_elections_page_reachable_wave24_no_2024_local_export_found",
+      "currentSourceLead": {
+        "authority": "Eureka County Clerk Recorder",
+        "url": "https://www.eurekacountynv.gov/departments/clerk-recorder/elections/",
+        "status": "official_elections_page_reachable_wave24_no_2024_local_export_found",
+        "finding": "Wave 24 recheck on July 4, 2026 reached the current official Clerk Recorder Elections page. The page exposes current/downloadable 2026 election documents, a precinct map, Clerk Recorder phone/fax/address, and a Silver State Elections result link for county results, but no county-hosted parser-ready 2024 President plus U.S. Senate local export, SOV workbook, or CVR export was exposed."
+      },
+      "primaryRequest": "Request 2024 General local result/CVR/administration records from the Eureka County Clerk Recorder; visible page points county election results to Silver State Election for result lookup",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "official_page_rechecked_wave24_packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-lander-county",
+      "jurisdiction": "Lander County",
+      "custodian": "Lander County Clerk",
+      "officialSourceUrl": "https://landercountynv.org/government/clerk/index.php",
+      "officialContactPath": "https://landercountynv.org/government/clerk/index.php; landercountyclerk@landercountynvelections.gov; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "official_clerk_page_reachable_wave23_no_local_export_found",
+      "currentSourceLead": {
+        "authority": "Lander County Clerk",
+        "url": "https://landercountynv.org/government/clerk/index.php",
+        "status": "official_clerk_page_reachable_wave23_no_local_export_found",
+        "finding": "Wave 23 recheck on July 3, 2026 reached the current official Clerk page. The page states the Clerk is responsible for county elections and maintaining the voter registration database and lists the Clerk phone/email, but no parser-ready 2024 President plus U.S. Senate local export, SOV workbook, or CVR export was exposed in the visible page body."
+      },
+      "primaryRequest": "Request 2024 General local SOV/CVR, turnout, geometry, and administration records from the Lander County Clerk using the clerk page email/phone",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-lincoln-county",
+      "jurisdiction": "Lincoln County",
+      "custodian": "Lincoln County Clerk",
+      "officialSourceUrl": "https://lincolncountynv.gov/government/clerk/election/",
+      "officialContactPath": "Lincoln County Clerk election path if TLS allows; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "blocked_ssl_from_scripted_check",
+      "currentSourceLead": {
+        "authority": "Lincoln County Clerk",
+        "url": "https://lincolncountynv.gov/government/clerk/election/",
+        "status": "blocked_ssl_from_scripted_check",
+        "finding": "Likely official clerk election path failed scripted TLS validation in the July 1, 2026 source pass."
+      },
+      "primaryRequest": "Request from the Lincoln County Clerk or through the Nevada SOS county-clerk contact path",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_source_access_blocked"
+    },
+    {
+      "packetId": "nv-2024-local-lyon-county",
+      "jurisdiction": "Lyon County",
+      "custodian": "Lyon County Clerk/Treasurer",
+      "officialSourceUrl": "https://www.lyon-county.org/55/Elections",
+      "officialContactPath": "Lyon County Clerk/Treasurer elections page; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "reachable_no_parser_ready_export_found_wave13_confirmed",
+      "currentSourceLead": {
+        "authority": "Lyon County Clerk/Treasurer",
+        "url": "https://www.lyon-county.org/55/Elections",
+        "status": "reachable_no_parser_ready_export_found_wave13_confirmed",
+        "finding": "Wave 13 recheck on July 2, 2026 reached the official county elections page with HTTP 200, but search and page-link checks did not surface a parser-ready 2024 General President plus U.S. Senate local export, SOV workbook, or CVR export."
+      },
+      "primaryRequest": "Request from the Lyon County Clerk/Treasurer",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-mineral-county",
+      "jurisdiction": "Mineral County",
+      "custodian": "Mineral County Clerk-Treasurer",
+      "officialSourceUrl": "https://mineralcountynv.us/government/clerk_treasurer/election.php",
+      "officialContactPath": "https://mineralcountynv.us/government/clerk_treasurer/election.php; clerk-treasurer@mineralcountynv.org; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "official_election_page_reachable_wave23_no_2024_local_export_found",
+      "currentSourceLead": {
+        "authority": "Mineral County Clerk-Treasurer",
+        "url": "https://mineralcountynv.us/government/clerk_treasurer/election.php",
+        "status": "official_election_page_reachable_wave23_no_2024_local_export_found",
+        "finding": "Wave 23 recheck on July 3, 2026 reached the current official Clerk-Treasurer Election page. The page contains 2026 election information and Clerk-Treasurer contact email/phone, but no parser-ready 2024 President plus U.S. Senate local export, SOV workbook, or CVR export was exposed in the visible page body."
+      },
+      "primaryRequest": "Request 2024 General local SOV/CVR, turnout, geometry, and administration records from the Mineral County Clerk-Treasurer using the election/contact pages",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-nye-county",
+      "jurisdiction": "Nye County",
+      "custodian": "Nye County Clerk",
+      "officialSourceUrl": "https://www.nyecountynv.gov/267/Elections",
+      "officialContactPath": "Nye County Clerk elections page; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "reachable_no_parser_ready_export_found_wave13_confirmed",
+      "currentSourceLead": {
+        "authority": "Nye County Clerk",
+        "url": "https://www.nyecountynv.gov/267/Elections",
+        "status": "reachable_no_parser_ready_export_found_wave13_confirmed",
+        "finding": "Wave 13 recheck on July 2, 2026 reached the official county elections page with HTTP 200, but search and page-link checks did not surface a parser-ready 2024 General President plus U.S. Senate local export, SOV workbook, or CVR export."
+      },
+      "primaryRequest": "Request from the Nye County Clerk",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-pershing-county",
+      "jurisdiction": "Pershing County",
+      "custodian": "Pershing County Clerk-Treasurer",
+      "officialSourceUrl": "https://pershingcountynv.gov/government/clerk-treasurer/elections/",
+      "officialContactPath": "Pershing County Clerk-Treasurer election path if available; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "not_found_from_scripted_check",
+      "currentSourceLead": {
+        "authority": "Pershing County Clerk-Treasurer",
+        "url": "https://pershingcountynv.gov/government/clerk-treasurer/elections/",
+        "status": "not_found_from_scripted_check",
+        "finding": "Likely official elections path returned 404 from scripted access in the July 1, 2026 source pass."
+      },
+      "primaryRequest": "Request from the Pershing County Clerk-Treasurer or through the Nevada SOS county-clerk contact path",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "packet_ready_source_access_blocked"
+    },
+    {
+      "packetId": "nv-2024-local-storey-county",
+      "jurisdiction": "Storey County",
+      "custodian": "Storey County Clerk-Treasurer or election records custodian",
+      "officialSourceUrl": "https://www.storeycounty.org/635/Public-Records-Requests",
+      "officialContactPath": "https://www.storeycounty.org/635/Public-Records-Requests; public-records form; department directory",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "public_records_request_path_reachable_wave23_election_page_404",
+      "currentSourceLead": {
+        "authority": "Storey County Clerk-Treasurer or election records custodian",
+        "url": "https://www.storeycounty.org/635/Public-Records-Requests",
+        "status": "public_records_request_path_reachable_wave23_election_page_404",
+        "finding": "Wave 23 recheck on July 3, 2026 found the prior /187/Elections path returns a CivicEngage custom 404, while the official public-records page is reachable and provides the request form path. No parser-ready 2024 President plus U.S. Senate local export, SOV workbook, or CVR export was exposed from the homepage or records page."
+      },
+      "primaryRequest": "Request from the Storey County Clerk-Treasurer/election custodian through the official public-records form and department directory; specify election records so the request routes to the correct department",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "public_records_packet_ready_no_loaded_rows"
+    },
+    {
+      "packetId": "nv-2024-local-white-pine-county",
+      "jurisdiction": "White Pine County",
+      "custodian": "White Pine County Clerk or election records custodian",
+      "officialSourceUrl": "https://www.whitepinecounty.net/DocumentCenter/View/1068/Public-Record-Request?bidId=",
+      "officialContactPath": "https://www.whitepinecounty.net/DocumentCenter/View/1068/Public-Record-Request?bidId=; White Pine County department directory; Nevada SOS county-clerk contact path",
+      "currentReviewStatus": "needs_official_local_president_senate_rows",
+      "sourceCheckStatus": "public_records_request_form_reachable_wave23_election_page_404",
+      "currentSourceLead": {
+        "authority": "White Pine County Clerk or election records custodian",
+        "url": "https://www.whitepinecounty.net/DocumentCenter/View/1068/Public-Record-Request?bidId=",
+        "status": "public_records_request_form_reachable_wave23_election_page_404",
+        "finding": "Wave 23 recheck on July 3, 2026 found the prior /164/Elections path returns a CivicEngage custom 404, while the official homepage links a public-records request PDF. No parser-ready 2024 President plus U.S. Senate local export, SOV workbook, or CVR export was exposed from the homepage or records form."
+      },
+      "primaryRequest": "Request from the White Pine County Clerk/election custodian through the official public-records request PDF and department directory; specify electronic media delivery for CSV/CVR/log files",
+      "requestedArtifacts": {
+        "result": [
+          "2024 General precinct/local President rows",
+          "2024 General precinct/local U.S. Senate rows at the same grain"
+        ],
+        "turnout": [
+          "ballots-cast and registered-voter denominator rows with timing and inactive-voter treatment"
+        ],
+        "geometry": [
+          "precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry matching result identifiers"
+        ],
+        "administration": [
+          "CVR availability/export",
+          "audit",
+          "logic and accuracy",
+          "tabulator/EMS logs",
+          "custody",
+          "incident",
+          "correction",
+          "recount",
+          "litigation records"
+        ]
+      },
+      "expectedFields": {
+        "result": [
+          "precinct_or_local_unit",
+          "contest_name",
+          "candidate_name",
+          "party",
+          "votes",
+          "total_votes",
+          "source_timestamp",
+          "certification_or_canvass_status"
+        ],
+        "turnout": [
+          "ballots_cast",
+          "registered_voters",
+          "denominator_timing",
+          "active_inactive_voter_treatment",
+          "turnout_source_date"
+        ],
+        "geometry": [
+          "precinct_id",
+          "precinct_name",
+          "precinct_portion",
+          "geometry_file_or_crosswalk",
+          "GIS_contact"
+        ],
+        "administration": [
+          "audit_scope",
+          "audit_units",
+          "CVR_availability",
+          "L&A_test_records",
+          "tabulator_or_EMS_logs",
+          "custody_records",
+          "incident_or_correction_or_recount_or_litigation_records"
+        ]
+      },
+      "parserOrNormalizationPath": "future Nevada official local SOV/CVR result parser to localComparisonCsv after source totals reconcile",
+      "status": "public_records_packet_ready_no_loaded_rows"
+    }
+  ]
+}

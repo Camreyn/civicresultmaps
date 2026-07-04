@@ -2,9 +2,9 @@
   "state": "NV",
   "stateName": "Nevada",
   "electionYear": 2024,
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-04",
   "purpose": "State-scoped coverage inventory for Nevada 2024 result, review, turnout, CVR, audit, L&A, tabulator-log, custody, equipment, and incident/correction source paths. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "partial_clark_washoe_humboldt_precinct_review_loaded_wave23_request_paths_refined",
+  "status": "partial_clark_washoe_humboldt_precinct_review_loaded_wave24_request_packets_added",
   "authorityPriority": "Official state and county election sources first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -136,6 +136,25 @@
         "Rows now document official county pages, contact/custodian paths, expected result/turnout/geometry/admin fields, scripted check status, and requested result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation artifacts for the 14 jurisdictions outside Clark, Washoe, and Humboldt."
       ],
       "confidence": "loaded_context_request_matrix_wave23_contact_fields"
+    },
+    {
+      "id": "nv-2024-non-clark-county-request-packets",
+      "sourceAuthority": "CivicResultMaps official-source inventory using Nevada county election sources",
+      "sourceUrl": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+      "localPath": "data/nv-2024-non-clark-county-request-packets.json",
+      "electionYear": 2024,
+      "reportingGrain": "jurisdiction_request_packet",
+      "parserNormalizationPath": "scripts/create-nv-county-request-packets.mjs from data/nv-2024-county-source-request-matrix.tsv to coverageInventoryJson context",
+      "expectedCounts": {
+        "packetCount": 14,
+        "sourceMatrixRows": 14,
+        "eurekaWave24Rechecked": true
+      },
+      "caveats": [
+        "Context-only request packet artifact; it does not contain vote totals and is not a parser input for advisory calculations.",
+        "Eureka County was rechecked first in Wave 24. The official county page exposes current/downloadable 2026 election documents, a precinct map, contact details, and a Silver State results link, but no county-hosted parser-ready 2024 President plus U.S. Senate local export or CVR export was found."
+      ],
+      "confidence": "loaded_context_request_packets_wave24"
     }
   ],
   "remainingLocalReviewGaps": {
@@ -161,7 +180,10 @@
     "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
     "sourceMatrixRows": 14,
     "sourceMatrixPurpose": "Per-jurisdiction request checklist for result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation follow-up, including official contact/custodian paths and expected fields.",
-    "sourceMatrixColumns": 18
+    "sourceMatrixColumns": 18,
+    "sourcePacketArtifact": "data/nv-2024-non-clark-county-request-packets.json",
+    "sourcePacketRows": 14,
+    "sourcePacketPurpose": "Operational per-jurisdiction request packets generated from the matrix for official result, turnout, geometry, CVR, audit, L&A, tabulator-log, custody, incident, correction, recount, and litigation follow-up."
   },
   "sourceChecks": [
     {
@@ -242,9 +264,9 @@
     {
       "sourceAuthority": "Eureka County Clerk Recorder",
       "sourceUrl": "https://www.eurekacountynv.gov/departments/clerk-recorder/elections/",
-      "status": "official_elections_page_reachable_wave23_no_2024_local_export_found",
-      "checkedAt": "2026-07-03",
-      "finding": "Wave 23 recheck on July 3, 2026 reached the current official Clerk Recorder Elections page. The page contains 2026 election documents, a precinct map, Clerk Recorder phone/fax/address, and a Silver State Elections result link, but no county-hosted parser-ready 2024 President plus U.S. Senate local export or CVR export was exposed."
+      "status": "official_elections_page_reachable_wave24_no_2024_local_export_found",
+      "checkedAt": "2026-07-04",
+      "finding": "Wave 24 recheck on July 4, 2026 reached the current official Clerk Recorder Elections page. The page exposes current/downloadable 2026 election documents, a precinct map, Clerk Recorder phone/fax/address, and a Silver State Elections result link for county results, but no county-hosted parser-ready 2024 President plus U.S. Senate local export, SOV workbook, or CVR export was exposed."
     },
     {
       "sourceAuthority": "Lander County Clerk",
@@ -293,7 +315,8 @@
       ],
       "missingJurisdictionCount": 14,
       "caveat": "Loaded CVR-derived rows are normalized precinct aggregates for review context. Other counties still need official CVR availability checks or records-request productions.",
-      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
+      "sourcePacketArtifact": "data/nv-2024-non-clark-county-request-packets.json"
     },
     "audit": {
       "status": "needs_data",
@@ -322,6 +345,7 @@
     }
   },
   "nextActions": [
+    "Use data/nv-2024-non-clark-county-request-packets.json for jurisdiction-specific records requests, starting with Eureka County, before adding any non-Clark local review rows.",
     "Use data/nv-2024-county-source-request-matrix.tsv to collect or request official precinct/local President and U.S. Senate rows, CVRs, SOV exports, turnout denominators, geometry/crosswalks, and administration records for the remaining 14 Nevada jurisdictions listed in remainingJurisdictionSourceMatrix.",
     "Prioritize official county pages that Wave 23 confirmed as reachable for Douglas, Elko, Eureka, Lander, and Mineral; use public-records request paths for Storey and White Pine; use the Nevada SOS county-clerk contact path for blocked, stale, or non-exporting counties.",
     "Collect a state-native county or precinct turnout denominator artifact if Nevada publishes one outside the blocked live SOS pages.",
@@ -659,7 +683,8 @@
     ],
     "blocker": "Live NVSOS turnout, registration, and 2024 election-results pages returned Incapsula challenge pages, empty content, or transport errors from scripted access. County pages checked in this pass did not expose a complete state-native ballots-cast plus denominator package.",
     "requestPath": "Request county or statewide 2024 ballots-cast and registered-voter denominator rows, including denominator timing and inactive-voter treatment, from the Nevada SOS Elections Division or county clerks/registrars.",
-    "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
+    "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
+    "sourcePacketArtifact": "data/nv-2024-non-clark-county-request-packets.json"
   },
   "geometryStatus": {
     "countyGeometry": {
@@ -672,7 +697,8 @@
       "status": "not_loaded",
       "neededArtifact": "Official precinct/local reporting-unit boundaries or a map-ready crosswalk matching local result/CVR precinct identifiers.",
       "requestPath": "Request 2024 precinct boundary GIS, precinct portion crosswalks, or reporting-unit geometry from county GIS/election offices and the Nevada SOS if maintained centrally.",
-      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv"
+      "sourceMatrixArtifact": "data/nv-2024-county-source-request-matrix.tsv",
+      "sourcePacketArtifact": "data/nv-2024-non-clark-county-request-packets.json"
     }
   },
   "historicalBaselineStatus": {

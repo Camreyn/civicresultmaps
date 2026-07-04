@@ -117,6 +117,7 @@
     "etl:requests:electronic-integrity": "node scripts/create-electronic-integrity-request-packets.mjs",
     "etl:requests:electronic-integrity:sync": "node scripts/sync-electronic-integrity-request-operations.mjs",
     "validate:electronic-integrity-requests": "node scripts/sync-electronic-integrity-request-operations.mjs --dry-run",
+    "etl:requests:nv": "node scripts/create-nv-county-request-packets.mjs",
     "etl:reconcile:tx:vtd": "node scripts/report-tx-vtd-reconciliation.mjs",
     "etl:collect:tx:historical": "node scripts/collect-tx-historical-baseline.mjs",
     "etl:collect:ma:county": "node scripts/collect-ma-county-results.mjs",
