@@ -15,6 +15,8 @@ test("alaska native coverage loads official precinct review rows with write-in c
   const sourceTiers = JSON.parse(readFileSync("data/source-acquisition-tiers.json", "utf8"));
   const officialPageEvidence = JSON.parse(readFileSync("data/ak-2024-official-results-page-evidence.json", "utf8"));
   const requestRows = parseTsv(readFileSync("data/ak-2024-source-request-matrix.tsv", "utf8"));
+  const turnoutSemantics = JSON.parse(readFileSync("data/ak-2024-enr-turnout-semantics.json", "utf8"));
+  const requestPacket = JSON.parse(readFileSync("data/ak-2024-official-source-request-packet.json", "utf8"));
   const reviewCsv = readFileSync("data/ak-2024-general-precinct-president-us-house-review.csv", "utf8");
 
   const discoveryAk = nativePackages.sourceDiscoveryQueue.find((entry) => entry.state === "AK");
@@ -29,7 +31,7 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.equal(config.expected.resultRows, 1);
   assert.equal(config.expected.reviewRows, 523);
   assert.equal(config.expected.turnoutRows, 1);
-  assert.equal(config.expected.sources, 9);
+  assert.equal(config.expected.sources, 11);
   assert.equal(config.expected.stateTotal, 338177);
   assert.equal(config.expected.trump, 184458);
   assert.equal(config.expected.harris, 140026);
@@ -46,12 +48,16 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.equal(inventory.completionDecision.decision, "materially_advanced_precinct_review_loaded_with_caveats");
   assert.match(inventory.completionDecision.reason, /523 same-grain precinct\/reporting-unit/i);
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-general-enr-by-precinct"));
+  assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-enr-turnout-semantics"));
+  assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-official-source-request-packet"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.expectedCounts?.usHouseWriteInGapVersusSummary === 750));
   assert.ok(inventory.sourceNeeds.some((need) => need.id === "ak-us-house-write-in-precinct-allocation"));
   assert.ok(inventory.displayCaveats.some((caveat) => /not proof of fraud or misconduct/i.test(caveat)));
 
   assert.equal(officialPageEvidence.expectedCounts.loadedLowerGrainFederalRows, 523);
   assert.equal(officialPageEvidence.expectedCounts.usHouseWriteInGapVersusSummary, 750);
+  assert.equal(officialPageEvidence.expectedCounts.enrTurnoutRegisteredVoters, 611078);
+  assert.equal(officialPageEvidence.expectedCounts.enrTurnoutTotalBallots, 340981);
   assert.ok(officialPageEvidence.sourceUrls.includes("https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv"));
   assert.ok(officialPageEvidence.observations.some((observation) => /ENRbyPrecinct\.csv/.test(observation)));
   assert.ok(officialPageEvidence.caveats.some((caveat) => /write-ins/i.test(caveat)));
@@ -67,7 +73,21 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.match(tierAk.caveats, /750 votes below/);
 
   assert.ok(requestRows.some((row) => row.id === "ak-us-house-write-in-precinct-allocation"));
-  assert.ok(requestRows.some((row) => row.local_artifact_status === "candidate_lead_collected"));
+  assert.ok(requestRows.some((row) => row.id === "ak-local-turnout-denominator" && row.local_artifact_status === "semantics_reconciliation_lead_collected"));
+  assert.ok(requestRows.some((row) => row.id === "ak-official-source-request-packet"));
+
+  assert.equal(turnoutSemantics.totals.reportingUnits, 523);
+  assert.equal(turnoutSemantics.totals.registeredVoters, 611078);
+  assert.equal(turnoutSemantics.totals.totalBallots, 340981);
+  assert.equal(turnoutSemantics.categories.election_day_precinct.reportingUnits, 402);
+  assert.equal(turnoutSemantics.categories.district_absentee.registeredVoters, 0);
+  assert.equal(turnoutSemantics.categories.district_early_voting.registeredVoters, 0);
+  assert.equal(turnoutSemantics.categories.district_question.registeredVoters, 0);
+  assert.ok(turnoutSemantics.caveats.some((caveat) => /does not activate ENR turnout/i.test(caveat)));
+
+  assert.equal(requestPacket.requests.length, 5);
+  assert.ok(requestPacket.requests.some((request) => request.id === "ak-state-native-turnout-semantics"));
+  assert.ok(requestPacket.requests.some((request) => /Do not allocate the 750 write-ins/i.test(request.caveat)));
 });
 test("alaska legacy House District overlay is supplemental and reconciled", () => {
   const overlay = JSON.parse(readFileSync("data/ak-2024-legacy-house-district-overlay.json", "utf8"));

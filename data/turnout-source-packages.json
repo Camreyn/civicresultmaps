@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-06-20",
+  "checkedAt": "2026-07-04",
   "purpose": "Internal turnout source package inventory for Civic Result Maps. This file is not rendered in the app.",
   "notes": [
     "Loaded packages are already represented in native ETL configs and promoted database turnout rows.",
@@ -310,14 +310,24 @@
       "localFile": "data/eac-2024-state-turnout/ak-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 1,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active in ETL. Wave 25 confirmed official ENRbyPrecinct.csv Reg_voters and total_ballots fields reconcile statewide after de-duplicating to 523 reporting units, but mixed absentee/early/question reporting units require source-side denominator semantics before replacement.",
+      "nextAction": "Review data/ak-2024-enr-turnout-semantics.json and request Division of Elections interpretation of Reg_voters, total_ballots, denominator timing, and zero-registration district absentee/early/question reporting units before replacing EAC fallback.",
       "coverage": {
         "jurisdictionRows": 1,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ak-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 611078,
         "ballotsCast": 340981,
-        "warningRows": 0
+        "warningRows": 0,
+        "stateNativeLead": {
+          "sourceTitle": "Alaska Division of Elections ENRbyPrecinct.csv Reg_voters and total_ballots fields",
+          "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+          "localFile": "data/ak-2024-enr-turnout-semantics.json",
+          "reportingUnits": 523,
+          "registeredVoters": 611078,
+          "totalBallots": 340981,
+          "status": "semantics_reconciliation_lead_not_active_turnout",
+          "caveat": "Fields reconcile statewide, but absentee/early/question reporting units carry ballots with zero registered voters and require source-side interpretation before replacement."
+        }
       }
     },
     {

@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-04",
   "purpose": "Native importer handoff package for the next states after Ohio and Wisconsin.",
   "notes": [
     "These packages point to official source artifacts already present in this repository.",
@@ -2669,7 +2669,8 @@
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2/query?where=STATE%3D%2702%27&outFields=GEOID,STATE,SLDL,NAME,BASENAME&returnGeometry=true&outSR=4326&f=geojson",
         "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
         "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
-        "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf"
+        "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf",
+        "https://www.elections.alaska.gov/contact-us/"
       ],
       "requiredArtifacts": [
         "official 2024 Election Summary Report PDF",
@@ -2679,11 +2680,13 @@
         "EAC fallback turnout rows, matching the official summary Times Cast statewide totals",
         "State House District geometry retained as a future join lead only",
         "data/ak-2024-data-coverage-inventory.json and data/ak-2024-source-request-matrix.tsv documenting the remaining U.S. House write-in allocation, geometry/crosswalk, turnout, historical, and administration-context request fields",
-        "official results page evidence artifact documenting concrete ENR, SOVC, CVR, and RCV source URLs"
+        "official results page evidence artifact documenting concrete ENR, SOVC, CVR, and RCV source URLs",
+        "data/ak-2024-enr-turnout-semantics.json documenting ENR Reg_voters/total_ballots reconciliation and mixed reporting-unit caveats",
+        "data/ak-2024-official-source-request-packet.json refreshing request fields for write-ins, geometry/crosswalk, turnout semantics, historical baselines, and administration context"
       ],
       "preferredComparisonContest": "U.S. Representative first-choice votes; official ENRbyPrecinct.csv now provides same-grain President plus U.S. House named-candidate rows for 523 precinct/reporting units, with a 750-vote U.S. House write-in caveat.",
       "parserNeeded": "scripts/normalize-ak-election-summary.mjs generates statewide President CSVs from data/ak-2024-general-election-summary-report.pdf. scripts/normalize-ak-enr-by-precinct.mjs reads official data/ak-2024-general-enr-by-precinct.csv and writes data/ak-2024-general-precinct-president-us-house-review.csv for localComparisonCsv review rows. civic_etl/native.py uses countyPresidentCsv for the statewide certified row and localComparisonCsv for 523 AK review rows.",
-      "blocker": "Wave 22 materially advanced AK by locating, downloading, and normalizing the official Alaska Division of Elections ENRbyPrecinct.csv from the 2024 General All Details page. AK now stages one certified statewide President row, 523 official precinct/reporting-unit President-versus-U.S.-House named-candidate first-choice review rows, and one EAC turnout row. Remaining blockers are narrower: ENRbyPrecinct.csv does not itemize 750 statewide U.S. House write-in votes by reporting unit; rows include absentee/early/question/remote reporting units and cannot be joined to polygons without a reviewed geometry/crosswalk; active turnout remains EAC fallback until ENR Reg_voters/total_ballots denominator semantics are reviewed; official historical baselines and normalized audit/CVR/recount/incident/correction/litigation rows remain uncollected.",
+      "blocker": "Wave 25 keeps AK in sourceDiscoveryQueue but narrows the remaining blockers. AK stages one certified statewide President row, 523 official precinct/reporting-unit President-versus-U.S.-House named-candidate first-choice review rows, and one EAC turnout row. ENRbyPrecinct.csv still does not itemize 750 statewide U.S. House write-in votes by reporting unit. ENR Reg_voters and total_ballots de-duplicate to 523 reporting units and reconcile to 611,078 registered voters and 340,981 ballots, but district absentee, early-voting, and question rows carry ballots with zero registered voters, so active turnout remains EAC fallback until source-side denominator semantics are reviewed. Geometry/crosswalk, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation rows remain request-tracked in data/ak-2024-official-source-request-packet.json.",
       "availableArtifacts": {
         "presidentialStatewideResults": {
           "sourceTitle": "State of Alaska 2024 General Election Election Summary Report, official results",
@@ -2738,6 +2741,19 @@
           "level": "precinct_or_reporting_unit",
           "comparisonContest": "U.S. Representative first-choice named-candidate rows",
           "parserHint": "Run node scripts/normalize-ak-enr-by-precinct.mjs. The normalized localComparisonCsv emits 523 review rows and reconciles presidential totals exactly to the summary PDF. U.S. House DEM and REP named-candidate totals reconcile, but comparison_other excludes 750 statewide write-ins not itemized in ENRbyPrecinct.csv."
+        },
+        "turnoutSemantics": {
+          "sourceTitle": "Alaska Division of Elections ENRbyPrecinct turnout field semantics reconciliation",
+          "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+          "localFile": "data/ak-2024-enr-turnout-semantics.json",
+          "level": "precinct_or_reporting_unit",
+          "parserHint": "Run node scripts/report-ak-enr-turnout-semantics.mjs. De-duplicated reporting-unit Reg_voters sums to 611,078 and total_ballots sums to 340,981; keep as semantics evidence only until replacement rules are reviewed."
+        },
+        "officialSourceRequestPacket": {
+          "sourceTitle": "Alaska 2024 official source request packet",
+          "sourceUrl": "https://www.elections.alaska.gov/election-results/e/?id=24genr",
+          "localFile": "data/ak-2024-official-source-request-packet.json",
+          "parserHint": "Request packet for U.S. House write-in allocation, geometry/crosswalk, ENR turnout semantics, historical baselines, CVR, audit, recount, incident, correction, and litigation follow-through."
         }
       },
       "requestMatrixArtifact": "data/ak-2024-source-request-matrix.tsv",

@@ -2,7 +2,7 @@
   "state": "AK",
   "stateName": "Alaska",
   "electionYear": 2024,
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-04",
   "authority": "Alaska Division of Elections; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
   "completionDecision": {
     "decision": "materially_advanced_precinct_review_loaded_with_caveats",
@@ -81,6 +81,38 @@
         "registeredVoters": 611078
       },
       "caveat": "EAC fallback turnout matches the Alaska summary report statewide Times Cast and registered-voter figures. The ENR precinct CSV has registered-voter fields but active turnout remains EAC fallback until denominator timing and reporting-unit semantics are reviewed."
+    },
+    {
+      "id": "ak-2024-enr-turnout-semantics",
+      "sourceTitle": "Alaska ENRbyPrecinct.csv turnout field semantics reconciliation",
+      "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+      "localArtifact": "data/ak-2024-enr-turnout-semantics.json",
+      "parser": "scripts/report-ak-enr-turnout-semantics.mjs",
+      "reportingGrain": "precinct_or_reporting_unit",
+      "expectedCounts": {
+        "reportingUnits": 523,
+        "registeredVoters": 611078,
+        "totalBallots": 340981,
+        "electionDayPrecinctUnits": 402,
+        "districtAbsenteeUnits": 40,
+        "districtEarlyVotingUnits": 40,
+        "districtQuestionUnits": 40,
+        "federalOverseasAbsenteeUnits": 1
+      },
+      "caveat": "The ENR turnout fields reconcile statewide, but district absentee, early-voting, and question units carry ballots with zero registered voters; active turnout remains EAC fallback until denominator timing and reporting-unit semantics are confirmed."
+    },
+    {
+      "id": "ak-2024-official-source-request-packet",
+      "sourceTitle": "Alaska official source request packet for remaining 2024 gaps",
+      "sourceUrl": "https://www.elections.alaska.gov/election-results/e/?id=24genr",
+      "localArtifact": "data/ak-2024-official-source-request-packet.json",
+      "parser": "coverageInventoryJson",
+      "reportingGrain": "source_request_packet",
+      "expectedCounts": {
+        "requestRows": 5,
+        "officialSourceLeads": 6
+      },
+      "caveat": "Request packet only; it does not replace loaded official results, EAC turnout fallback, or advisory indicator inputs."
     }
   ],
   "sourceNeeds": [
@@ -96,8 +128,8 @@
     },
     {
       "id": "ak-state-native-turnout-local-denominator",
-      "neededArtifact": "Official Alaska turnout and registration denominator rows at compatible precinct/reporting-unit or House-district grain with denominator timing.",
-      "blocker": "The ENR CSV includes Reg_voters and total_ballots fields, but active ETL keeps EAC fallback until denominator timing and reporting-unit semantics are reviewed."
+      "neededArtifact": "Official Alaska interpretation of ENRbyPrecinct.csv Reg_voters and total_ballots fields, plus any turnout/registration denominator rows at compatible precinct/reporting-unit or House-district grain with denominator timing.",
+      "blocker": "The ENR CSV fields now reconcile statewide after de-duplicating to 523 reporting units, but district absentee, early-voting, and question units carry ballots with zero registered voters; active ETL keeps EAC fallback until source-side denominator timing and reporting-unit semantics are reviewed."
     },
     {
       "id": "ak-historical-baselines",
@@ -108,12 +140,18 @@
       "id": "ak-admin-context",
       "neededArtifact": "Official post-election audit, CVR availability, recount, incident, correction, litigation, and public-records request artifacts.",
       "blocker": "Verified Voting equipment context is loaded, but Alaska audit/CVR/incident/correction/litigation records are not normalized."
+    },
+    {
+      "id": "ak-official-source-request-packet",
+      "neededArtifact": "Follow-through on data/ak-2024-official-source-request-packet.json request fields for write-ins, geometry/crosswalks, turnout semantics, historical baselines, and administration context.",
+      "blocker": "Remaining gaps are request or manual-download/normalization tasks; no anti-bot bypass or inferred allocation should be used."
     }
   ],
   "displayCaveats": [
     "Current AK certified result rows are statewide only; map capability remains disabled.",
     "Review rows are official precinct/reporting-unit source-review rows, not proof of fraud or misconduct.",
     "U.S. House comparison rows are ranked-choice first-choice named-candidate rows and omit 750 statewide write-in votes not itemized in the ENR precinct CSV.",
-    "Rows include Election Day precincts plus absentee, early, question, and remote reporting units; do not join directly to precinct polygons without a reviewed crosswalk."
+    "Rows include Election Day precincts plus absentee, early, question, and remote reporting units; do not join directly to precinct polygons without a reviewed crosswalk.",
+    "ENR Reg_voters and total_ballots reconcile statewide after de-duplication, but mixed reporting-unit rows are not active turnout denominator rows without source-side semantics."
   ]
 }
