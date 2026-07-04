@@ -1,0 +1,160 @@
+{
+  "state": "NY",
+  "stateName": "New York",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-04",
+  "purpose": "Wave 25 official-path recheck for the 12 New York county equivalents still outside normalized 2024 local President-versus-U.S.-Senate review coverage. This artifact records public official pages, ordinary download/manual-review leads, and records-request paths only; it does not load rows, promote production, or allege fraud or misconduct.",
+  "method": [
+    "Rechecked NYSBOE statewide official paths for VEDA/Flateau, FOIL, post-election audit, and county-board roster routing.",
+    "Rechecked normal public county-board pages or result/map pages where they were discoverable without anti-bot bypass tactics.",
+    "Kept OpenElections source leads as supplemental current-source context only, not as silent replacements for official county or NYSBOE certified artifacts."
+  ],
+  "statewideOfficialPaths": [
+    {
+      "sourceAuthority": "New York State Board of Elections Flateau/VEDA program",
+      "sourceUrl": "https://elections.ny.gov/flateau-database",
+      "observed": "NYSBOE describes the future Flateau/VEDA data contract as election-district results, voter registration lists, voter history files, maps or district-configuration documentation, poll-site lists, districting plans, and related public election data.",
+      "blocker": "The page states the statute takes effect April 1, 2026 and applies to elections on or after that date, so it remains a future statewide publication path rather than a 2024 replacement source."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections FOIL",
+      "sourceUrl": "https://elections.ny.gov/freedom-information-law-foil-requests",
+      "observed": "NYSBOE directs written FOIL requests through GovQA and notes that most Board records are public on the website while other non-exempt records are available by request.",
+      "blocker": "Use this for State Board custody records such as audit comparison reports filed with NYSBOE, voter-history/voter-file records subject to election-purpose restrictions, CVR availability responses, and statewide administrative context not already public."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections Election Security",
+      "sourceUrl": "https://elections.ny.gov/election-security",
+      "observed": "NYSBOE describes post-election audit requirements under Election Law 9-211, including random selection of three percent of voting machines or systems and filing comparison reports with the State Board.",
+      "blocker": "No county-specific 2024 audit selection or comparison-report rows are loaded. Request county or State Board audit reports before normalizing audit context."
+    },
+    {
+      "sourceAuthority": "New York State Board of Elections County Board Roster",
+      "sourceUrl": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "observed": "The roster filter lists all 12 missing counties and exposes Summary PDF and Download CSV controls for county board routing.",
+      "blocker": "The roster is a request/contact path, not a result, turnout, audit, CVR, incident, recount, correction, litigation, or geometry artifact."
+    }
+  ],
+  "countyChecks": [
+    {
+      "county": "Herkimer County",
+      "status": "request_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Herkimer.pdf",
+      "observed": "No normal public official county-board result page or machine-readable same-grain President and U.S. Senate replacement was confirmed in this pass.",
+      "nextRequest": "Use the NYSBOE County Board Roster to request certified/final election-district or equivalent local President and U.S. Senate rows, ballots-cast or voter-history rows, ED geometry/crosswalks, and audit/CVR/recount/incident/correction/litigation records."
+    },
+    {
+      "county": "Jefferson County",
+      "status": "direct_county_contact_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "http://www.jeffersoncountyny.gov/departments/Elections",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Jefferson%20(unofficial).pdf",
+      "observed": "The official county elections page provides Board contact information and voter information links, but no public 2024 certified/final local President plus U.S. Senate result export was visible in the static page.",
+      "nextRequest": "Request certified/final local rows directly from Jefferson County Board of Elections because the current supplemental lead is explicitly unofficial and unreviewed."
+    },
+    {
+      "county": "Nassau County",
+      "status": "direct_county_results_path_confirmed_request_needed",
+      "officialCountyPath": "https://www.nassaucountyny.gov/566/Board-of-Elections",
+      "resultPath": "https://www.nassaucountyny.gov/571/Election-Results",
+      "foilOrContactPath": "https://forms.nassaucountyny.gov/",
+      "currentSourceLead": null,
+      "observed": "The official Nassau County Board of Elections page links to Election Results and states the Board canvasses election results and certifies winners; the Election Results page did not expose a static 2024 local result file in this pass.",
+      "nextRequest": "High-value county. Request official 2024 General election-district President and U.S. Senate rows, voter-history or ballots-cast rows, ED geometry/crosswalks, and audit/CVR/recount/incident/correction/litigation records."
+    },
+    {
+      "county": "Ontario County",
+      "status": "request_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Ontario.pdf",
+      "observed": "No normal public official county-board same-grain President and U.S. Senate replacement was confirmed in this pass.",
+      "nextRequest": "Use the NYSBOE County Board Roster to request final same-grain local rows and source totals, plus turnout/voter-history rows and ED geometry/crosswalks."
+    },
+    {
+      "county": "Orange County",
+      "status": "direct_county_results_and_geometry_paths_confirmed_request_needed",
+      "officialCountyPath": "https://www.orangecountygov.com/783/Board-of-Elections",
+      "resultPath": "https://www.orangecountygov.com/DocumentCenter/Index/293",
+      "geometryPath": "https://www.orangecountygov.com/2219/Election-District-Maps",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Orange.pdf",
+      "observed": "The official Orange County Board of Elections page links to an Election Results document center and an Election District Maps page. The maps page publishes municipal ED map PDFs plus an Orange County Election District Shapefiles ZIP lead, but no static 2024 local President plus U.S. Senate result export was visible in this pass.",
+      "nextRequest": "Pair any Orange ED shapefile/crosswalk lead with a request for official same-grain 2024 President and U.S. Senate rows and ballots-cast/voter-history fields before loading."
+    },
+    {
+      "county": "Orleans County",
+      "status": "request_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Orleans.pdf",
+      "observed": "No normal public official county-board same-grain President and U.S. Senate replacement was confirmed in this pass.",
+      "nextRequest": "Use the NYSBOE County Board Roster to request final same-grain local rows, turnout/voter-history rows, ED geometry/crosswalks, and administration-context records."
+    },
+    {
+      "county": "Oswego County",
+      "status": "official_result_workbook_lead_found_not_loaded_reconciliation_needed",
+      "officialCountyPath": "https://www.oswegocountyny.gov/government/board_of_elections/index.php",
+      "resultPath": "https://www.oswegocountyny.gov/government/board_of_elections/elections.php",
+      "geometryPath": "https://www.oswegocountyny.gov/government/board_of_elections/election_maps.php",
+      "foilOrContactPath": "https://www.oswegocountyny.gov/government/board_of_elections/Board%20of%20Elections/FOIL%20Request.pdf",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Oswego.pdf",
+      "observed": "The official Oswego County Board of Elections results page lists 2024 General Election Official Results in PDF and Excel formats, and the Board page links Maps plus a FOIL request form. The workbook is a public official result lead, but it is not yet downloaded, parsed, or reconciled to the active NYSBOE county President and U.S. Senate totals.",
+      "nextRequest": "Collect the public official Oswego 2024 General Excel/PDF through ordinary browser/manual download or a stable public URL, inspect whether it contains same-grain President and U.S. Senate rows, then reconcile before changing local review coverage. If the workbook lacks turnout or geometry fields, request ballots-cast/voter-history and map/crosswalk fields from Oswego County."
+    },
+    {
+      "county": "Rockland County",
+      "status": "direct_county_results_and_geometry_paths_confirmed_request_needed",
+      "officialCountyPath": "https://www.rocklandcountyny.gov/departments/board-of-elections",
+      "resultPath": "https://www.rocklandcountyny.gov/departments/board-of-elections/election-results",
+      "geometryPath": "https://www.rocklandcountyny.gov/departments/board-of-elections/election-district-maps",
+      "foilOrContactPath": "https://www.rocklandcountyny.gov/departments/board-of-elections/foil-information",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Rockland%20(president%20only).xlsx",
+      "observed": "The official Rockland County page links to Election Results and Past Election Results, but the visible result widget was current-cycle only in this pass. The Election District Maps page links town GIS maps for election districts. The current supplemental workbook remains President-only with no matching same-grain U.S. Senate rows.",
+      "nextRequest": "High-value county. Request the matching U.S. Senate local workbook/export or a combined official local canvass export, plus ballots-cast/voter-history rows and a result-label crosswalk to the Rockland GIS election-district map leads."
+    },
+    {
+      "county": "Schuyler County",
+      "status": "request_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Schuyler.pdf",
+      "observed": "No normal public official county-board same-grain President and U.S. Senate replacement was confirmed in this pass.",
+      "nextRequest": "Use the NYSBOE County Board Roster to request final same-grain local rows and source totals, plus turnout/voter-history rows and ED geometry/crosswalks."
+    },
+    {
+      "county": "Steuben County",
+      "status": "request_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Steuben.pdf",
+      "observed": "No normal public official county-board same-grain President and U.S. Senate replacement was confirmed in this pass.",
+      "nextRequest": "Use the NYSBOE County Board Roster to request final same-grain local rows and source totals, plus turnout/voter-history rows and ED geometry/crosswalks."
+    },
+    {
+      "county": "Wyoming County",
+      "status": "request_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Wyoming.pdf",
+      "observed": "No normal public official county-board same-grain President and U.S. Senate replacement was confirmed in this pass.",
+      "nextRequest": "Use the NYSBOE County Board Roster to request final same-grain local rows and source totals, plus turnout/voter-history rows and ED geometry/crosswalks."
+    },
+    {
+      "county": "Yates County",
+      "status": "request_path_confirmed_no_public_replacement_found",
+      "officialCountyPath": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "currentSourceLead": "https://github.com/openelections/openelections-sources-ny/blob/master/2024/general/Yates.pdf",
+      "observed": "No normal public official county-board same-grain President and U.S. Senate replacement was confirmed in this pass.",
+      "nextRequest": "Use the NYSBOE County Board Roster to request final same-grain local rows and source totals, plus turnout/voter-history rows and ED geometry/crosswalks."
+    }
+  ],
+  "summary": {
+    "missingCountyEquivalentsRechecked": 12,
+    "directCountyPathsConfirmed": 5,
+    "directGeometryOrCrosswalkLeadsConfirmed": [
+      "Orange County",
+      "Rockland County",
+      "Oswego County"
+    ],
+    "officialPublicResultLeadsFoundNotLoaded": [
+      "Oswego County"
+    ],
+    "publicReplacementRowsLoaded": 0,
+    "blockedReason": "No public official same-grain President plus U.S. Senate rows, paired ballots-cast or voter-history rows, and reviewed geometry/crosswalk package were loaded for the 12 remaining counties. Oswego now has an official public result workbook/PDF lead that still needs ordinary collection, inspection, and reconciliation. Continue county records requests and VEDA monitoring; do not use anti-bot bypass tactics."
+  }
+}

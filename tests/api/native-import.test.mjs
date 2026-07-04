@@ -128,6 +128,8 @@ test("new york coverage inventory preserves supplemental review caveats", () => 
   assert.match(inventory.completionDecision.reason, /turnout is not state-native/);
   assert.match(inventory.completionDecision.wave21Decision, /VEDA is live but has no election data/);
   assert.match(inventory.completionDecision.wave24Decision, /655 official Monroe/);
+  assert.match(inventory.completionDecision.wave25Decision, /Oswego County/);
+  assert.equal(requestPackets.packets.find((packet) => packet.county === "Oswego County").status, "official_artifacts_found_not_loaded_reconciliation_needed");
   assert.match(inventory.packetFollowThrough[0].confidence, /official_detail_reconciled_loaded/);
   assert.ok(inventory.officialBlockerEvidence.some((entry) => entry.sourceUrl === "https://flateau.elections.ny.gov/downloads" && /Voter Statistics/.test(entry.observed)));
   assert.match(discoveryNy.completionDecision.reason, /12 county equivalents/);

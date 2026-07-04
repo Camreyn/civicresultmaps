@@ -3249,11 +3249,11 @@
       "state": "NY",
       "name": "New York",
       "priority": 10,
-      "currentStatus": "official_county_results_historical_partial_local_review_monroe_loaded_eac_turnout_admin_context_inventory",
+      "currentStatus": "official_county_results_historical_partial_local_review_monroe_loaded_eac_turnout_admin_context_inventory_oswego_lead_wave25",
       "completionDecision": {
         "checkedAt": "2026-07-04",
         "decision": "remain_in_source_discovery_queue",
-        "reason": "NY should remain in sourceDiscoveryQueue rather than completedNativeStates because local review rows are still partial supplemental/official coverage, 12 county equivalents remain outside normalized review coverage, active turnout is still EAC fallback, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation rows are not loaded. Wave 24 loaded 655 reconciled official Monroe County detail rows and kept data/ny-2024-missing-county-request-packets.json scoped to the remaining 12 county equivalents."
+        "reason": "NY should remain in sourceDiscoveryQueue rather than completedNativeStates because local review rows are still partial supplemental/official coverage, 12 county equivalents remain outside normalized review coverage, active turnout is still EAC fallback, and precinct/election-district geometry plus normalized audit/CVR/incident/recount/litigation rows are not loaded. Wave 25 added official-path evidence and found an official Oswego County 2024 General PDF/Excel result lead, but no Oswego rows are loaded until the file is collected, parsed, and reconciled."
       },
       "officialSourcePages": [
         "https://elections.ny.gov/election-results",
@@ -3273,7 +3273,8 @@
         "https://elections.ny.gov/election-security",
         "https://elections.ny.gov/freedom-information-law-foil-requests",
         "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
-        "https://elections.ny.gov/voting-technology"
+        "https://elections.ny.gov/voting-technology",
+        "https://www.oswegocountyny.gov/government/board_of_elections/elections.php"
       ],
       "requiredArtifacts": [
         "official archive PDF document 476 for 2024-11-05 Presidential General results",
@@ -3288,12 +3289,13 @@
         "Verified Voting county equipment context for advisory administration metadata",
         "NYSBOE audit, FOIL, county-board roster, Flateau/VEDA, and voting-technology paths documented in data/ny-2024-data-coverage-inventory.json",
         "data/ny-2024-source-request-matrix.tsv as the current official-source request queue for missing county local review, turnout, geometry, administration-context gaps, and future VEDA export readiness",
-        "data/ny-2024-missing-county-request-packets.json as the county-by-county operational request packet for the 13 missing local-review county equivalents",
-        "Monroe County official 2024 canvass-book detail and November 26, 2024 certification PDFs reconciled and loaded as 655 local review rows"
+        "data/ny-2024-missing-county-request-packets.json as the county-by-county operational request packet for the 12 remaining missing local-review county equivalents",
+        "Monroe County official 2024 canvass-book detail and November 26, 2024 certification PDFs reconciled and loaded as 655 local review rows",
+        "data/ny-2024-wave25-official-path-checks.json as the Wave 25 official-path evidence artifact, including an official Oswego County public result lead not yet loaded"
       ],
       "preferredComparisonContest": "U.S. Senate",
-      "parserNeeded": "countyPresidentCsv loaded for New York official county package; localComparisonCsv loaded for partial supplemental local review rows; historicalPresidentialCsv loaded from official NYSBOE PDFs; eacTurnoutCsv remains active. data/ny-2024-source-request-matrix.tsv now tracks the missing official election-district/local result, turnout/voter-history, geometry/crosswalk, administration-context source requests, and the VEDA export-readiness monitor. A complete official election-district parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed before full same-grain NY local coverage can replace the current caveats. Wave 22 request packets make the remaining county asks explicit. Wave 24 adds a Monroe official-detail parser and loads 655 reconciled Monroe local review rows; the complete official statewide ED parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed.",
-      "blocker": "County-level President and U.S. Senate rows and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. Partial local review rows cover 50 county equivalents through OpenElections/legacy NYC sources plus reconciled official Monroe detail rows, while Herkimer, Jefferson, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized review coverage. EAC turnout remains fallback because NYSBOE enrollment reports are denominator leads, not ballots-cast rows. Wave 21 verified that VEDA/Flateau is live but exposes no 2024 election data/exportable replacement rows; its results and downloads surfaces should be monitored for post-April 1, 2026 elections or any later historical 2024 export. CVR availability, audit comparison reports, incident/correction/recount/litigation records, and precinct/election-district geometry still need source collection or request-produced artifacts. Wave 24 reconciled and loaded Monroe official detail rows. The remaining local blocker is still packetized by county in data/ny-2024-missing-county-request-packets.json.",
+      "parserNeeded": "countyPresidentCsv loaded for New York official county package; localComparisonCsv loaded for partial supplemental local review rows; historicalPresidentialCsv loaded from official NYSBOE PDFs; eacTurnoutCsv remains active. data/ny-2024-source-request-matrix.tsv tracks missing official election-district/local result, turnout/voter-history, geometry/crosswalk, administration-context source requests, and VEDA export-readiness. data/ny-2024-wave25-official-path-checks.json records the Wave 25 recheck and an official Oswego County 2024 General PDF/Excel result lead that still needs ordinary collection, parsing, and reconciliation. A complete official election-district parser, turnout/voter-history parser, and geometry/crosswalk parser are still needed before full same-grain NY local coverage can replace the current caveats.",
+      "blocker": "County-level President and U.S. Senate rows and 2012/2016/2020 official county historical baselines are loaded from NYSBOE official archive PDFs. Partial local review rows cover 50 county equivalents through OpenElections/legacy NYC sources plus reconciled official Monroe detail rows, while Herkimer, Jefferson, Nassau, Ontario, Orange, Orleans, Oswego, Rockland, Schuyler, Steuben, Wyoming, and Yates remain outside normalized review coverage. Wave 25 found an official Oswego County 2024 General PDF/Excel result lead, but it is not collected, parsed, or reconciled. EAC turnout remains fallback because NYSBOE enrollment reports are denominator leads, not ballots-cast rows. VEDA/Flateau is live but exposes no 2024 exportable replacement rows. CVR availability, audit comparison reports, incident/correction/recount/litigation records, and precinct/election-district geometry still need source collection or request-produced artifacts.",
       "availableArtifacts": {
         "presidentialCountyResults": {
           "sourceTitle": "New York State Board of Elections official 2024 general election results PDF",
@@ -3340,8 +3342,8 @@
         "coverageInventory": {
           "sourceTitle": "New York 2024 data coverage and administration source inventory",
           "sourceUrl": "https://elections.ny.gov/flateau-database",
-          "localFile": "data/ny-2024-data-coverage-inventory.json; data/ny-2024-source-request-matrix.tsv; data/ny-2024-missing-county-request-packets.json",
-          "parserHint": "Documents excluded local review counties, state-native turnout denominator leads, Flateau/VEDA future local data path and Wave 21 export-readiness blocker, county-board request paths, audit/CVR/incident/recount/litigation blockers, display caveats, and the Wave 21 request matrix. Wave 22 adds county-specific missing-local-review request packets with source-lead statuses for unreviewed PDFs, president-only workbooks, zero-row workbooks, and no-manifest-source counties. Wave 24 reconciles Monroe official county canvass/certification artifacts and loads 655 local review rows; remaining county request packets cover 12 county equivalents."
+          "localFile": "data/ny-2024-data-coverage-inventory.json; data/ny-2024-source-request-matrix.tsv; data/ny-2024-missing-county-request-packets.json; data/ny-2024-wave25-official-path-checks.json",
+          "parserHint": "Documents excluded local review counties, state-native turnout denominator leads, Flateau/VEDA future local data path and Wave 21 export-readiness blocker, county-board request paths, audit/CVR/incident/recount/litigation blockers, display caveats, and the Wave 21 request matrix. Wave 22 adds county-specific missing-local-review request packets with source-lead statuses for unreviewed PDFs, president-only workbooks, zero-row workbooks, and no-manifest-source counties. Wave 24 reconciles Monroe official county canvass/certification artifacts and loads 655 local review rows; remaining county request packets cover 12 county equivalents. Wave 25 adds official-path evidence and an Oswego public official result lead that remains not loaded pending ordinary collection, inspection, and reconciliation."
         },
         "equipmentContext": {
           "sourceTitle": "Verified Voting Verifier New York 2024 equipment context",
@@ -3355,6 +3357,13 @@
           "localFile": "data/ny-2024-monroe-canvass-book.pdf; data/ny-2024-monroe-general-certification.pdf; data/ny-2024-monroe-reconciliation-summary.json; data/ny-2024-monroe-general-voter-turnout-v2.pdf",
           "level": "legislative_district_or_town_by_election_district_detail",
           "parserHint": "Loaded through scripts/ny-monroe-official-detail.mjs after detail rows reconciled to the November 26, 2024 certification and active NY county totals. Turnout v2 PDF is retained as a county-specific lead only; active NY turnout remains EAC fallback."
+        },
+        "wave25OfficialPathChecks": {
+          "sourceTitle": "New York Wave 25 official county path and request evidence",
+          "sourceUrl": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+          "localFile": "data/ny-2024-wave25-official-path-checks.json",
+          "level": "county_request_path_and_public_official_source_lead",
+          "parserHint": "Evidence-only source artifact. Oswego has a public official 2024 General PDF/Excel lead; collect and reconcile before loading local rows."
         }
       },
       "requestMatrixArtifact": "data/ny-2024-source-request-matrix.tsv",
