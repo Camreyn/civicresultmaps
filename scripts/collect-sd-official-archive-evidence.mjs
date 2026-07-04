@@ -44,6 +44,44 @@ const expectedCertifiedTotals = {
     other: 0
   }
 };
+const wave25PublicRecheck = {
+  checkedAt: "2026-07-04",
+  method:
+    "Re-checked normal public SOS/electionresults pages, public search results, known 2024 SOS asset-path patterns, the ElectionID 684 export shell, ElectionTerminology FAQ, post-election audit page, public-records portal, and county-auditor directory. Did not use or recommend anti-bot bypass tactics.",
+  checkedOfficialPaths: [
+    urls.officialResultsPage,
+    urls.statewideExportShell,
+    urls.electionTerminology,
+    urls.postElectionAuditPage,
+    urls.publicRecordsRequest,
+    urls.countyAuditors,
+    "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
+  ],
+  result:
+    "No public certified 2024 General Election State Canvass and Certificate PDF/static export or reconciling official ElectionID 684 payload was found. The public official ElectionID 684 export shell still presents Unofficial Results General Election November 5, 2024, and the FAQ still directs users to SOS Elections for official certified results after county and state canvass certification.",
+  nextStep:
+    "Use the public-records request path and county-auditor directory with the retained ElectionID 684 evidence to request the certified canvass/export, county canvass abstracts, and any write-in or canvass-adjustment rows explaining the 194 President and 184 U.S. House vote deltas."
+};
+
+const turnoutLeadDecision = {
+  status: "retain_as_denominator_timing_lead_only",
+  activeFallback: {
+    source: "EAC 2024 EAVS V2 jurisdiction fallback",
+    rowCount: 66,
+    ballotsCast: 435739,
+    registeredVoters: 690306
+  },
+  officialArchiveLead: {
+    source: urls.countyTurnout,
+    rowCount: 66,
+    ballotsCast: 436478,
+    voters: 625192,
+    terminology:
+      "ElectionTerminology.aspx?eid=684 says Registered Voters are all individuals registered by the voter registration deadline and that turnout calculation is only based on active voters."
+  },
+  reason:
+    "The archive turnout ballots-cast total is 739 above the active EAC fallback and the archive Voters field is 65,114 below the EAC registered-voter denominator. Because the official terminology separates registered-voter language from active-voter turnout calculation and the ElectionID 684 export remains labeled unofficial, the archive turnout rows should not replace EAC fallback until SOS confirms denominator timing and field semantics."
+};
 
 async function fetchServiceJson(url) {
   const response = await fetch(url, {
@@ -463,6 +501,8 @@ const evidence = {
     discrepancySummaryCounties: postElectionAuditSummary.discrepancySummaryCounties,
     countiesWithoutLinkedCertificate: postElectionAuditSummary.countiesWithoutLinkedCertificate
   },
+  wave25PublicRecheck,
+  turnoutLeadDecision,
   canvassUrlProbes,
   expectedCertifiedTotals,
   reconciliation: {
@@ -543,6 +583,8 @@ const requestPacket = {
       summary: `Official 2024 General post-election audit page lists ${postElectionAuditSummary.rowCount} county rows and ${postElectionAuditSummary.linkedCertificateCount} linked audit certificates; useful administration context but not a certified-result replacement.`
     }
   ],
+  wave25PublicRecheck,
+  turnoutLeadDecision,
   officialPostElectionAuditContext: postElectionAuditSummary,
   canvassUrlProbes,
   reconciliationDeltas: evidence.reconciliation,

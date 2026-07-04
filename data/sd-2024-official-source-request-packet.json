@@ -7,7 +7,7 @@
   "parserOrNormalizationPath": "scripts/collect-sd-official-archive-evidence.mjs",
   "checkedAt": "2026-07-04",
   "status": "official_certified_reconciliation_request_packet",
-  "blocker": "The official ElectionID 684 results app and statewide XLSX export remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the current certified-style county staging rows. The certifying PDF/static export has not been found at the tested SOS paths.",
+  "blocker": "The official ElectionID 684 results app and statewide XLSX export remain labeled unofficial and total 194 President votes and 184 U.S. House votes below the current certified-style county staging rows. The certifying PDF/static export has not been found at the tested SOS paths or the Wave 25 normal public re-check paths.",
   "requestTargets": [
     {
       "target": "South Dakota Secretary of State Elections Division",
@@ -29,7 +29,8 @@
     "certified_votes",
     "write_in_or_canvass_adjustment_votes_if_separate",
     "certification_date",
-    "source_document_url"
+    "source_document_url",
+    "turnout_denominator_timing_and_active_inactive_voter_definition_if_turnout_is_supplied"
   ],
   "evidenceToAttach": [
     {
@@ -919,6 +920,39 @@
   "caveats": [
     "This packet is a source-evidence and request artifact only; it is not a replacement result source.",
     "Audit certificates document post-election audit context and selected discrepancies, but they do not provide complete certified county President and U.S. House totals.",
-    "Continue using the caveated secondary staging rows until the official certified canvass/export or a reconciling official payload is retained."
-  ]
+    "Continue using the caveated secondary staging rows until the official certified canvass/export or a reconciling official payload is retained.",
+    "ElectionID 684 turnout archive rows remain a denominator-timing lead only; request field definitions before replacing EAC turnout fallback."
+  ],
+  "wave25PublicRecheck": {
+    "checkedAt": "2026-07-04",
+    "method": "Re-checked normal public SOS/electionresults pages, public search results, known 2024 SOS asset-path patterns, the ElectionID 684 export shell, ElectionTerminology FAQ, post-election audit page, public-records portal, and county-auditor directory. Did not use or recommend anti-bot bypass tactics.",
+    "checkedOfficialPaths": [
+      "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+      "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
+      "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
+      "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+      "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
+      "https://vip.sdsos.gov/CountyAuditors.aspx",
+      "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
+    ],
+    "result": "No public certified 2024 General Election State Canvass and Certificate PDF/static export or reconciling official ElectionID 684 payload was found. The public official ElectionID 684 export shell still presents Unofficial Results General Election November 5, 2024, and the FAQ still directs users to SOS Elections for official certified results after county and state canvass certification.",
+    "nextStep": "Use the public-records request path and county-auditor directory with the retained ElectionID 684 evidence to request the certified canvass/export, county canvass abstracts, and any write-in or canvass-adjustment rows explaining the 194 President and 184 U.S. House vote deltas."
+  },
+  "turnoutLeadDecision": {
+    "status": "retain_as_denominator_timing_lead_only",
+    "activeFallback": {
+      "source": "EAC 2024 EAVS V2 jurisdiction fallback",
+      "rowCount": 66,
+      "ballotsCast": 435739,
+      "registeredVoters": 690306
+    },
+    "officialArchiveLead": {
+      "source": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
+      "rowCount": 66,
+      "ballotsCast": 436478,
+      "voters": 625192,
+      "terminology": "ElectionTerminology.aspx?eid=684 says Registered Voters are all individuals registered by the voter registration deadline and that turnout calculation is only based on active voters."
+    },
+    "reason": "The archive turnout ballots-cast total is 739 above the active EAC fallback and the archive Voters field is 65,114 below the EAC registered-voter denominator. Because the official terminology separates registered-voter language from active-voter turnout calculation and the ElectionID 684 export remains labeled unofficial, the archive turnout rows should not replace EAC fallback until SOS confirms denominator timing and field semantics."
+  }
 }

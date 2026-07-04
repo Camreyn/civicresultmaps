@@ -10,7 +10,7 @@
     "historicalBaselineRows": 198,
     "geometryFeatures": 66,
     "completionDecision": "remain_in_source_discovery_queue",
-    "reason": "South Dakota has reproducible county-level staging rows for President and at-large U.S. House, plus retained official SD SOS archive/export evidence identifying 2024 General ElectionID 684 and a Wave 24 official request packet. The official app export is labeled 2024 Unofficial General Election Results and matches the archive map-data totals, which are 194 President votes and 184 U.S. House votes below the current certified-style staging totals. Wave 24 additionally confirmed the official results FAQ directs users to SOS Elections for certified results after county and state canvass certification, retained a request packet with the SOS public-records path, and summarized the official 2024 General post-election audit page. The official SOS certified canvass PDF/static export or another reconciling official payload still needs to be retained before SD is listed as completed native coverage."
+    "reason": "South Dakota has reproducible county-level staging rows for President and at-large U.S. House, plus retained official SD SOS archive/export evidence identifying 2024 General ElectionID 684 and a Wave 24 official request packet. The official app export is labeled 2024 Unofficial General Election Results and matches the archive map-data totals, which are 194 President votes and 184 U.S. House votes below the current certified-style staging totals. Wave 24 additionally confirmed the official results FAQ directs users to SOS Elections for certified results after county and state canvass certification, retained a request packet with the SOS public-records path, and summarized the official 2024 General post-election audit page. The Wave 25 normal public re-check did not locate a certified canvass PDF/static export or another reconciling official payload, so one still needs to be retained before SD is listed as completed native coverage."
   },
   "loadedArtifacts": [
     {
@@ -202,7 +202,8 @@
       "The retained official statewide XLSX export labels itself 2024 Unofficial General Election Results and reconciles to the lower ElectionID 684 map-data totals, not to the certified-style staging totals.",
       "ElectionTerminology.aspx?eid=684 states that Election Night results are unofficial and that official certified results are available from SOS Elections after the 66 County Canvass Boards and State Canvass Board canvass and certify results.",
       "The official 2024 General post-election audit page lists 66 county rows, 83 linked audit certificate URLs, and 14 counties with discrepancy summary text. This is retained as administration context, not as a certified result source.",
-      "Wave 24 tested five likely 2024 State Canvass and Certificate PDF paths under the SOS 2024 election-information assets tree; all returned 404, so the request packet keeps the public-records and county-auditor request path as the next official step."
+      "Wave 24 tested five likely 2024 State Canvass and Certificate PDF paths under the SOS 2024 election-information assets tree; all returned 404, so the request packet keeps the public-records and county-auditor request path as the next official step.",
+      "Wave 25 normal public re-check found no certified canvass/static export or reconciling ElectionID 684 payload through ordinary SOS/electionresults pages, public search, the public-records portal, or county-auditor directory."
     ],
     "blocker": "Use the identified official SD SOS archive ElectionID 684, retained ResultsExport XLSX, official results FAQ text, and Wave 24 source-request packet as concrete follow-up evidence, but obtain the official 2024 General Election Canvass and Certificate PDF/static export or another official payload that reconciles to certified county President and U.S. House totals before promoting SD to completed official-native coverage. The retained ElectionID 684 map-data and statewide XLSX export totals are 428,728 President votes and 421,264 U.S. House votes, which are 194 and 184 votes below the current certified-style staging totals.",
     "archiveProbe": {
@@ -220,6 +221,38 @@
         "United States Representative"
       ],
       "result": "ElectionID 684 returned 2024 General Election federal candidate markers, county map-data rows, turnout rows, and a scriptable statewide XLSX export. President map RaceID 12665 and the XLSX President sheet both total 428,728 votes; U.S. House map RaceID 11954 and the XLSX U.S. House sheet both total 421,264 votes. Wave 24 added official results FAQ text, audit-page context, and a public-records/county-auditor request packet because those official app/export totals still do not reconcile to current certified-style staging totals."
+    },
+    "wave25PublicRecheck": {
+      "checkedAt": "2026-07-04",
+      "method": "Re-checked normal public SOS/electionresults pages, public search results, known 2024 SOS asset-path patterns, the ElectionID 684 export shell, ElectionTerminology FAQ, post-election audit page, public-records portal, and county-auditor directory. Did not use or recommend anti-bot bypass tactics.",
+      "checkedOfficialPaths": [
+        "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+        "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
+        "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
+        "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+        "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
+        "https://vip.sdsos.gov/CountyAuditors.aspx",
+        "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
+      ],
+      "result": "No public certified 2024 General Election State Canvass and Certificate PDF/static export or reconciling official ElectionID 684 payload was found. The public official ElectionID 684 export shell still presents Unofficial Results General Election November 5, 2024, and the FAQ still directs users to SOS Elections for official certified results after county and state canvass certification.",
+      "nextStep": "Use the public-records request path and county-auditor directory with the retained ElectionID 684 evidence to request the certified canvass/export, county canvass abstracts, and any write-in or canvass-adjustment rows explaining the 194 President and 184 U.S. House vote deltas."
+    },
+    "turnoutLeadDecision": {
+      "status": "retain_as_denominator_timing_lead_only",
+      "activeFallback": {
+        "source": "EAC 2024 EAVS V2 jurisdiction fallback",
+        "rowCount": 66,
+        "ballotsCast": 435739,
+        "registeredVoters": 690306
+      },
+      "officialArchiveLead": {
+        "source": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
+        "rowCount": 66,
+        "ballotsCast": 436478,
+        "voters": 625192,
+        "terminology": "ElectionTerminology.aspx?eid=684 says Registered Voters are all individuals registered by the voter registration deadline and that turnout calculation is only based on active voters."
+      },
+      "reason": "The archive turnout ballots-cast total is 739 above the active EAC fallback and the archive Voters field is 65,114 below the EAC registered-voter denominator. Because the official terminology separates registered-voter language from active-voter turnout calculation and the ElectionID 684 export remains labeled unofficial, the archive turnout rows should not replace EAC fallback until SOS confirms denominator timing and field semantics."
     }
   },
   "displayCaveats": [
@@ -228,7 +261,8 @@
     "Turnout uses EAC jurisdiction fallback rows. The official ElectionID 684 turnout archive is retained as a state-native lead only until denominator timing and replacement semantics are reviewed.",
     "Historical baselines are contextual secondary county tables for 2012, 2016, and 2020.",
     "County geometry is loaded; precinct geometry/crosswalks and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded.",
-    "Wave 24 source-request packet retains the SOS public-records path and official audit-page context. Audit certificates are administration context only and do not replace a certified canvass/export."
+    "Wave 24 source-request packet retains the SOS public-records path and official audit-page context. Audit certificates are administration context only and do not replace a certified canvass/export.",
+    "ElectionID 684 turnout archive remains a denominator-timing lead only: archive ballots cast are 739 above EAC fallback and archive Voters are 65,114 below EAC registered voters, while the official FAQ distinguishes registered voters from active-voter turnout calculation."
   ],
   "requestMatrixArtifact": "data/sd-2024-source-request-matrix.tsv",
   "requestPacketArtifact": "data/sd-2024-official-source-request-packet.json"
