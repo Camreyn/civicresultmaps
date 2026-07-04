@@ -103,6 +103,28 @@
       "timestampBasis": "Verified Voting Verifier 2024 equipment context collected in the administration source registry.",
       "confidence": "Supplemental jurisdiction-level equipment context only; not a vote, turnout, audit, incident, or proof-of-uniformity source.",
       "status": "loaded"
+    },
+    {
+      "id": "ak-2024-enr-turnout-semantics",
+      "category": "Official ENR turnout field semantics reconciliation",
+      "url": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+      "localFile": "data/ak-2024-enr-turnout-semantics.json",
+      "parser": "scripts/report-ak-enr-turnout-semantics.mjs",
+      "authority": "Alaska Division of Elections",
+      "timestampBasis": "Generated July 4, 2026 from official ENRbyPrecinct.csv retained from the Alaska 2024 General All Details page.",
+      "confidence": "De-duplicated ENR Reg_voters and total_ballots fields reconcile to statewide summary/EAC totals, but mixed reporting-unit denominator semantics remain pending source-side review before turnout replacement.",
+      "status": "loaded"
+    },
+    {
+      "id": "ak-2024-official-source-request-packet",
+      "category": "Official source request packet for remaining AK gaps",
+      "url": "https://www.elections.alaska.gov/election-results/e/?id=24genr",
+      "localFile": "data/ak-2024-official-source-request-packet.json",
+      "parser": "coverageInventoryJson",
+      "authority": "Alaska Division of Elections",
+      "timestampBasis": "Wave 25 request packet refreshed July 4, 2026 from official All Details, ENR, CVR, RCV, and historical-results source leads.",
+      "confidence": "Request packet only. It documents remaining write-in allocation, geometry/crosswalk, ENR turnout semantics, historical baseline, CVR, audit, recount, incident, correction, and litigation asks without replacing loaded totals.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -125,7 +147,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Alaska turnout rows use EAC 2024 V2 jurisdiction fallback rows. The statewide EAC ballots-cast and registered-voter totals match the official Alaska summary report Times Cast row, but no lower-grain state-native turnout denominator package is loaded.",
+    "notes": "Alaska turnout rows use EAC 2024 V2 jurisdiction fallback rows. The statewide EAC ballots-cast and registered-voter totals match the official Alaska summary report Times Cast row and the de-duplicated ENRbyPrecinct.csv Reg_voters/total_ballots fields, but no lower-grain state-native turnout denominator package is active until mixed reporting-unit semantics are reviewed.",
     "warningRequired": false,
     "expected": {
       "rowCount": 1,
@@ -137,7 +159,7 @@
   "expected": {
     "jurisdictions": 1,
     "resultRows": 1,
-    "sources": 9,
+    "sources": 11,
     "geometryFeatures": 40,
     "stateTotal": 338177,
     "trump": 184458,

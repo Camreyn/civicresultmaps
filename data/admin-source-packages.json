@@ -51,15 +51,22 @@
       },
       "audit": {
         "status": "needs_data",
-        "why": "Alaska 2024 post-election audit artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Alaska 2024 post-election audit artifacts have not been normalized. data/ak-2024-official-source-request-packet.json now records the official All Details and Division contact/request path for audit selection/outcome follow-up.",
+        "localArtifact": "data/ak-2024-official-source-request-packet.json"
       },
       "cvr": {
-        "status": "needs_data",
-        "why": "Alaska 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "candidate",
+        "why": "The official 2024 General All Details evidence identifies a CVR export ZIP URL, but CVR availability, format, and row-level records are not normalized. Use the request packet before loading CVR context.",
+        "reportingLevel": "official_cvr_zip_url_identified",
+        "sourceDocumentId": "ak-2024-cvr-export-url",
+        "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
+        "localArtifact": "data/ak-2024-official-source-request-packet.json",
+        "caveat": "Candidate source URL only; no CVR dataset or ballot-level context is loaded into ETL or public APIs."
       },
       "incidents": {
         "status": "needs_data",
-        "why": "Alaska 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "why": "Alaska 2024 incident, correction, recount, and litigation rows are not normalized. data/ak-2024-official-source-request-packet.json records request fields and official source leads for follow-up; absence of normalized rows is not evidence of misconduct.",
+        "localArtifact": "data/ak-2024-official-source-request-packet.json"
       }
     },
     {

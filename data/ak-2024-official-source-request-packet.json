@@ -1,0 +1,126 @@
+{
+  "state": "AK",
+  "stateName": "Alaska",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-04",
+  "authority": "Alaska Division of Elections",
+  "localArtifact": "data/ak-2024-official-source-request-packet.json",
+  "parserOrNormalizationPath": "coverageInventoryJson",
+  "purpose": "Request packet for remaining official Alaska 2024 source gaps after ENRbyPrecinct.csv review rows were loaded.",
+  "officialSourceLeads": [
+    {
+      "id": "ak-2024-general-all-details",
+      "sourceUrl": "https://www.elections.alaska.gov/election-results/e/?id=24genr",
+      "status": "official_page_reachable",
+      "notes": "Official All Details page for the 2024 General Election. Existing evidence records Summary PDF, ENRbyPrecinct.csv, HD SOVC PDFs, CVR export ZIP, and RCV report links."
+    },
+    {
+      "id": "ak-2024-enr-by-precinct",
+      "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+      "status": "loaded",
+      "localArtifact": "data/ak-2024-general-enr-by-precinct.csv",
+      "notes": "Official ENR precinct/reporting-unit CSV loaded for President and U.S. Representative named-candidate first-choice review rows."
+    },
+    {
+      "id": "ak-2024-cvr-export",
+      "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
+      "status": "official_url_identified_not_normalized",
+      "notes": "Official CVR export URL is identified by the All Details evidence, but this worker did not normalize CVR availability or CVR rows."
+    },
+    {
+      "id": "ak-2024-us-house-rcv-report",
+      "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf",
+      "status": "official_url_identified_not_normalized",
+      "notes": "Official U.S. Representative ranked-choice report URL is identified for RCV context, but it does not replace same-grain write-in allocation by reporting unit."
+    },
+    {
+      "id": "ak-historical-results-search",
+      "sourceUrl": "https://www.elections.alaska.gov/election-results/",
+      "status": "official_search_page_reachable",
+      "notes": "The official Election Results page describes certified result search and historical election results dating back to 1958. Use it to collect 2020, 2016, and 2012 official presidential baseline artifacts."
+    },
+    {
+      "id": "ak-contact-public-records-path",
+      "sourceUrl": "https://www.elections.alaska.gov/contact-us/",
+      "status": "request_path_candidate",
+      "notes": "Use the Division contact path for source-side confirmation or records routing if the All Details page does not publish the requested row-level artifact."
+    }
+  ],
+  "requests": [
+    {
+      "id": "ak-us-house-write-in-precinct-allocation",
+      "priority": "high",
+      "neededArtifact": "U.S. Representative write-in allocation by precinct/reporting unit, or written confirmation that ENRbyPrecinct.csv intentionally omits U.S. House write-in rows at that grain.",
+      "sourceEvidence": "ENRbyPrecinct.csv reconciles named U.S. House DEM and REP first-choice totals but is 750 votes below the Election Summary Report U.S. House total because write-ins are not itemized by reporting unit.",
+      "requestFields": [
+        "contest name and election date",
+        "reporting-unit key",
+        "write-in vote count by reporting unit",
+        "whether the rows are first-choice only",
+        "whether omitted write-ins are intentionally available only statewide"
+      ],
+      "caveat": "Do not allocate the 750 write-ins proportionally or infer local write-in rows without an official source."
+    },
+    {
+      "id": "ak-precinct-reporting-unit-geometry-crosswalk",
+      "priority": "high",
+      "neededArtifact": "Official precinct/reporting-unit geometry or crosswalk that distinguishes election-day precincts from district absentee, early-voting, question, remote, and HD99 federal/overseas absentee rows.",
+      "sourceEvidence": "The loaded ENR review rows include mixed reporting units; House District geometry is retained only as a lead.",
+      "requestFields": [
+        "reporting-unit identifier",
+        "precinct identifier",
+        "house district",
+        "reporting-unit type",
+        "geometry identifier or polygon source",
+        "instructions for absentee/early/question/remote/HD99 rows"
+      ],
+      "caveat": "Keep AK map-disabled until a reviewed crosswalk supports geometry joins."
+    },
+    {
+      "id": "ak-state-native-turnout-semantics",
+      "priority": "high",
+      "neededArtifact": "Division of Elections interpretation of ENRbyPrecinct.csv Reg_voters and total_ballots fields, including denominator timing and whether mixed reporting units can be used for turnout rows.",
+      "sourceEvidence": "data/ak-2024-enr-turnout-semantics.json shows de-duplicated ENR Reg_voters sum 611,078 and total_ballots sum 340,981, matching EAC fallback and summary Times Cast totals.",
+      "requestFields": [
+        "definition of Reg_voters",
+        "definition of total_ballots",
+        "denominator timing",
+        "handling for zero-registration district absentee/early/question units",
+        "whether federal/overseas HD99 belongs in statewide turnout"
+      ],
+      "caveat": "Do not replace the active EAC fallback until source semantics and warning behavior are reviewed."
+    },
+    {
+      "id": "ak-historical-baselines",
+      "priority": "medium",
+      "neededArtifact": "Official 2020, 2016, and 2012 presidential result artifacts at statewide and preferably compatible local grain.",
+      "sourceEvidence": "The official Election Results page is the historical result search path; historical baseline rows are not active in AK ETL.",
+      "requestFields": [
+        "election year",
+        "contest",
+        "reporting grain",
+        "candidate totals",
+        "write-in treatment",
+        "local artifact URL"
+      ],
+      "caveat": "Do not substitute secondary historical tables as official baseline rows without retaining the official artifact or caveat."
+    },
+    {
+      "id": "ak-admin-context",
+      "priority": "medium",
+      "neededArtifact": "Official audit, CVR availability, recount, incident, correction, litigation, and records-request response artifacts.",
+      "sourceEvidence": "Equipment context is loaded from Verified Voting; official AK administration-context rows are not normalized. The official 2024 CVR ZIP URL is identified but not normalized.",
+      "requestFields": [
+        "artifact type",
+        "source authority",
+        "source URL",
+        "reporting grain",
+        "affected contest or jurisdiction",
+        "parser/normalization path",
+        "caveats and confidentiality limits"
+      ],
+      "caveat": "Administration-context rows are source/provenance context only and are not proof of fraud or misconduct."
+    }
+  ],
+  "status": "request_packet_refreshed_enr_turnout_semantics_added"
+}

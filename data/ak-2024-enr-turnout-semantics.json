@@ -1,0 +1,61 @@
+{
+  "state": "AK",
+  "stateName": "Alaska",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-04",
+  "sourceAuthority": "Alaska Division of Elections",
+  "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+  "localArtifact": "data/ak-2024-enr-turnout-semantics.json",
+  "sourceArtifact": "data/ak-2024-general-enr-by-precinct.csv",
+  "parserOrNormalizationPath": "scripts/report-ak-enr-turnout-semantics.mjs",
+  "reportingGrain": "precinct_or_reporting_unit",
+  "fieldSemanticsObserved": {
+    "registeredVotersField": "Reg_voters",
+    "totalBallotsField": "total_ballots",
+    "observation": "The fields repeat on candidate/contest rows and reconcile after de-duplicating to one record per precinct/reporting unit."
+  },
+  "totals": {
+    "reportingUnits": 523,
+    "registeredVoters": 611078,
+    "totalBallots": 340981
+  },
+  "categories": {
+    "election_day_precinct": {
+      "reportingUnits": 402,
+      "registeredVoters": 610272,
+      "totalBallots": 175533
+    },
+    "federal_overseas_absentee": {
+      "reportingUnits": 1,
+      "registeredVoters": 806,
+      "totalBallots": 401
+    },
+    "district_absentee": {
+      "reportingUnits": 40,
+      "registeredVoters": 0,
+      "totalBallots": 77109
+    },
+    "district_early_voting": {
+      "reportingUnits": 40,
+      "registeredVoters": 0,
+      "totalBallots": 73152
+    },
+    "district_question": {
+      "reportingUnits": 40,
+      "registeredVoters": 0,
+      "totalBallots": 14786
+    }
+  },
+  "reconciliation": {
+    "matchesActiveEacFallbackRegisteredVoters": true,
+    "matchesActiveEacFallbackBallotsCast": true,
+    "matchesOfficialSummaryTimesCast": true
+  },
+  "caveats": [
+    "This artifact documents ENR field behavior only; it does not activate ENR turnout rows in ETL.",
+    "District absentee, early-voting, and question reporting units carry ballots with zero registered voters, while election-day precinct rows carry nearly all registered voters.",
+    "Use a Division of Elections interpretation or records response before replacing the active EAC fallback turnout package or using these rows for same-grain turnout screening.",
+    "Rows are mixed reporting units and should not be joined directly to precinct polygons without a reviewed crosswalk."
+  ],
+  "confidence": "official_enr_fields_reconcile_statewide_replacement_semantics_pending"
+}

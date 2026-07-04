@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-04",
   "description": "Source acquisition tier registry for planning result, review, turnout, and method collection work. This classifies acquisition difficulty and scripting ROI; it does not replace loaded result or review data.",
   "tierDefinitions": [
     {
@@ -73,7 +73,9 @@
         "normalized precinct/reporting-unit review CSV",
         "EAC fallback turnout CSV",
         "state House District GeoJSON",
-        "official results page evidence"
+        "official results page evidence",
+        "ENR turnout field semantics JSON",
+        "official source request packet JSON"
       ],
       "sourceUrls": [
         "https://www.elections.alaska.gov/election-results/",
@@ -82,7 +84,9 @@
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/2/query?where=STATE%3D%2702%27&outFields=GEOID,STATE,SLDL,NAME,BASENAME&returnGeometry=true&outSR=4326&f=geojson",
         "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
-        "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf"
+        "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf",
+        "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
+        "https://www.elections.alaska.gov/contact-us/"
       ],
       "exampleUrls": [
         "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
@@ -96,7 +100,9 @@
         "EAC fallback statewide turnout matching the official summary Times Cast row",
         "state House District geometry lead",
         "state-level equipment context from Verified Voting",
-        "official CVR ZIP and RCV report URLs documented as follow-up context"
+        "official CVR ZIP and RCV report URLs documented as follow-up context",
+        "ENR Reg_voters and total_ballots statewide reconciliation evidence matching EAC fallback and summary Times Cast totals",
+        "official request packet covering write-ins, geometry/crosswalk, turnout semantics, historical baselines, CVR, audit, recount, incident, correction, and litigation fields"
       ],
       "missingFields": [
         "U.S. House write-in allocation by precinct/reporting unit or source confirmation of omission",
@@ -105,11 +111,11 @@
         "loaded 2012/2016/2020 historical baselines",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "statewide President rows load from scripts/normalize-ak-election-summary.mjs; official ENRbyPrecinct.csv is retained and scripts/normalize-ak-enr-by-precinct.mjs generates 523 localComparisonCsv review rows at precinct/reporting-unit grain with a 750-vote U.S. House write-in caveat; active turnout remains EAC fallback",
+      "parserStatus": "statewide President rows load from scripts/normalize-ak-election-summary.mjs; official ENRbyPrecinct.csv is retained and scripts/normalize-ak-enr-by-precinct.mjs generates 523 localComparisonCsv review rows at precinct/reporting-unit grain with a 750-vote U.S. House write-in caveat; scripts/report-ak-enr-turnout-semantics.mjs confirms ENR Reg_voters/total_ballots reconcile statewide but active turnout remains EAC fallback pending source-side semantics",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "AK native staging now includes official precinct/reporting-unit President versus U.S. House named-candidate first-choice review rows, but certified map results remain statewide only. The ENR precinct CSV omits U.S. House write-in rows, so comparison_other is 750 votes below the statewide summary. Rows include non-geographic reporting units and should not be joined to geometry without a reviewed crosswalk.",
-      "nextAction": "Request/confirm U.S. House write-in allocation semantics for ENRbyPrecinct.csv, review whether its Reg_voters/total_ballots fields can replace EAC turnout, and collect geometry/crosswalk, historical baselines, and administration-context records."
+      "caveats": "AK native staging includes official precinct/reporting-unit President versus U.S. House named-candidate first-choice review rows, but certified map results remain statewide only. The ENR precinct CSV omits U.S. House write-in rows, so comparison_other is 750 votes below the statewide summary. ENR turnout fields reconcile statewide after de-duplication, but absentee/early/question units carry ballots with zero registered voters; rows include non-geographic reporting units and should not be joined to geometry without a reviewed crosswalk.",
+      "nextAction": "Use data/ak-2024-official-source-request-packet.json to request/confirm U.S. House write-in allocation semantics for ENRbyPrecinct.csv, ENR Reg_voters/total_ballots denominator timing, reporting-unit geometry/crosswalk, official historical baselines, and administration-context records."
     },
     {
       "state": "AL",

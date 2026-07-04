@@ -2,7 +2,7 @@
   "state": "AK",
   "stateName": "Alaska",
   "electionYear": 2024,
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-04",
   "sourceAuthority": "Alaska Division of Elections",
   "sourceUrls": [
     "https://www.elections.alaska.gov/election-results/",
@@ -10,7 +10,8 @@
     "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
     "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
     "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
-    "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf"
+    "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf",
+    "https://www.elections.alaska.gov/contact-us/"
   ],
   "localArtifact": "data/ak-2024-official-results-page-evidence.json",
   "reportingGrain": "source_discovery_and_loaded_precinct_review",
@@ -21,19 +22,24 @@
     "The ENR precinct CSV contains U.S. President / Vice President and U.S. Representative rows at the same precinct/reporting-unit grain.",
     "Normalized review rows reconcile exactly to the certified statewide presidential totals: 338,177 total votes, 184,458 Trump, 140,026 Harris, and 13,693 Other.",
     "U.S. House named-candidate first-choice rows reconcile to 156,245 DEM votes and 159,550 REP votes, but comparison_other is 13,010 because the ENR precinct CSV does not itemize 750 statewide U.S. House write-in votes included in the summary PDF.",
-    "Direct directory listing is no longer needed for this blocker because the All Details page exposes concrete official artifact URLs."
+    "Direct directory listing is no longer needed for this blocker because the All Details page exposes concrete official artifact URLs.",
+    "Wave 25 de-duplicated ENRbyPrecinct.csv to 523 reporting units and confirmed Reg_voters sums to 611,078 and total_ballots sums to 340,981, matching active EAC fallback and summary Times Cast statewide totals.",
+    "District absentee, early-voting, and question reporting units in ENR carry total_ballots with zero Reg_voters, so ENR turnout fields require source-side interpretation before replacing EAC fallback rows."
   ],
   "expectedCounts": {
     "loadedPresidentRows": 1,
     "loadedReviewRows": 523,
     "loadedTurnoutRows": 1,
     "loadedLowerGrainFederalRows": 523,
-    "usHouseWriteInGapVersusSummary": 750
+    "usHouseWriteInGapVersusSummary": 750,
+    "enrTurnoutRegisteredVoters": 611078,
+    "enrTurnoutTotalBallots": 340981
   },
   "caveats": [
     "Do not treat the 523 review rows as precinct polygons; they include absentee, early, question, remote, and HD99-style reporting units.",
     "Alaska U.S. Representative used ranked-choice voting in 2024, so these rows are first-choice named-candidate review rows only.",
-    "The official ENR precinct CSV does not itemize U.S. House write-ins by precinct/reporting unit. Request write-in allocation or source confirmation before representing comparison_other as write-in-complete."
+    "The official ENR precinct CSV does not itemize U.S. House write-ins by precinct/reporting unit. Request write-in allocation or source confirmation before representing comparison_other as write-in-complete.",
+    "ENR turnout fields are statewide-reconciled evidence only; do not activate them as local turnout denominators until mixed reporting-unit semantics are reviewed."
   ],
   "confidence": "official_precinct_review_artifact_loaded_with_us_house_write_in_caveat"
 }
