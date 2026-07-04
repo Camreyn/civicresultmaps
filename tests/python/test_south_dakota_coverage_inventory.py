@@ -54,6 +54,14 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertIn("reconcil", self.inventory["officialSourceProbe"]["blocker"])
         self.assertIn("2026 Primary Election", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
         self.assertEqual(self.inventory["officialSourceProbe"]["archiveProbe"]["checkedAt"], "2026-07-04")
+        self.assertEqual(self.inventory["officialSourceProbe"]["wave25PublicRecheck"]["checkedAt"], "2026-07-04")
+        self.assertIn("No public certified", self.inventory["officialSourceProbe"]["wave25PublicRecheck"]["result"])
+        self.assertIn("anti-bot bypass", self.inventory["officialSourceProbe"]["wave25PublicRecheck"]["method"])
+        self.assertEqual(
+            self.inventory["officialSourceProbe"]["turnoutLeadDecision"]["status"],
+            "retain_as_denominator_timing_lead_only",
+        )
+        self.assertEqual(self.inventory["officialSourceProbe"]["turnoutLeadDecision"]["officialArchiveLead"]["ballotsCast"], 436478)
         self.assertIn("ElectionID 684", self.inventory["officialSourceProbe"]["archiveProbe"]["result"])
         self.assertIn("statewide XLSX export", self.inventory["officialSourceProbe"]["archiveProbe"]["result"])
         self.assertIn("do not reconcile", " ".join(self.inventory["officialSourceProbe"]["observedOfficialCapabilities"]))
@@ -83,6 +91,11 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(turnout["rowCount"], 66)
         self.assertEqual(turnout["ballotsCast"], 436478)
         self.assertEqual(turnout["registeredVoters"], 625192)
+        self.assertEqual(self.evidence["turnoutLeadDecision"]["status"], "retain_as_denominator_timing_lead_only")
+        self.assertEqual(self.evidence["turnoutLeadDecision"]["activeFallback"]["ballotsCast"], 435739)
+        self.assertEqual(self.evidence["turnoutLeadDecision"]["officialArchiveLead"]["voters"], 625192)
+        self.assertIn("65,114 below", self.evidence["turnoutLeadDecision"]["reason"])
+        self.assertIn("No public certified", self.evidence["wave25PublicRecheck"]["result"])
         statewide_export = self.evidence["officialArchiveSummaries"]["statewideExport"]
         self.assertEqual(statewide_export["localArtifactPath"], "data/sd-2024-general-statewide-results.xlsx")
         self.assertIn("Statewide Results.xlsx", statewide_export["contentDisposition"])
@@ -124,9 +137,12 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertIn("ElectionID 684", self.request_rows["sd-official-2024-canvass"]["neededArtifact"])
         self.assertIn("Statewide Results.xlsx", self.request_rows["sd-official-2024-canvass"]["caveat"])
         self.assertIn("official-source-request-packet", self.request_rows["sd-official-2024-canvass"]["caveat"])
+        self.assertIn("Wave 25 normal public re-check", self.request_rows["sd-official-2024-canvass"]["caveat"])
         self.assertIn("RaceIDs 12665/11954", self.request_rows["sd-official-2024-canvass"]["caveat"])
         self.assertEqual(self.request_rows["sd-state-native-turnout"]["priority"], "P1")
         self.assertIn("GetVoterTurnoutArchive", self.request_rows["sd-state-native-turnout"]["knownUrlOrLead"])
+        self.assertIn("field definitions/timing", self.request_rows["sd-state-native-turnout"]["neededArtifact"])
+        self.assertIn("739 above EAC", self.request_rows["sd-state-native-turnout"]["caveat"])
 
     def test_wave24_request_packet_summarizes_official_followup_paths(self):
         self.assertEqual(self.request_packet["status"], "official_certified_reconciliation_request_packet")
@@ -136,6 +152,9 @@ class SouthDakotaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(self.request_packet["officialPostElectionAuditContext"]["discrepancySummaryCount"], 14)
         self.assertTrue(all(probe["status"] == 404 for probe in self.request_packet["canvassUrlProbes"]))
         self.assertTrue(any(target.get("requestPath", "").startswith("https://www.sd.gov/") for target in self.request_packet["requestTargets"]))
+        self.assertEqual(self.request_packet["wave25PublicRecheck"]["checkedAt"], "2026-07-04")
+        self.assertEqual(self.request_packet["turnoutLeadDecision"]["status"], "retain_as_denominator_timing_lead_only")
+        self.assertIn("turnout_denominator_timing", self.request_packet["requestedFields"][-1])
 
 
 if __name__ == "__main__":

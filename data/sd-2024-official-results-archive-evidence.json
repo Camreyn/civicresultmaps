@@ -325,6 +325,39 @@
     "The official archive ElectionID and service family are identified, and the official ElectionID 684 statewide XLSX export is retained locally, but both official app artifacts are labeled unofficial or map/export evidence and do not reconcile to the current certified-style staging totals.",
     "The retained archive payload and statewide export appear to be ENR/app results rather than the official canvass PDF/static export or write-in-inclusive certified county table.",
     "Current active SD result and review rows remain caveated secondary staging rows until an official canvass/export artifact or reconciling official archive payload is collected and parsed.",
-    "The official turnout archive is a state-native lead only; keep EAC fallback active until denominator timing and replacement semantics are reviewed."
-  ]
+    "The official turnout archive is a state-native lead only; keep EAC fallback active until denominator timing and replacement semantics are reviewed.",
+    "Wave 25 normal public re-check found no certified canvass/static export or reconciling ElectionID 684 payload through ordinary official public paths; keep the records-request path active."
+  ],
+  "wave25PublicRecheck": {
+    "checkedAt": "2026-07-04",
+    "method": "Re-checked normal public SOS/electionresults pages, public search results, known 2024 SOS asset-path patterns, the ElectionID 684 export shell, ElectionTerminology FAQ, post-election audit page, public-records portal, and county-auditor directory. Did not use or recommend anti-bot bypass tactics.",
+    "checkedOfficialPaths": [
+      "https://sdsos.gov/elections-voting/election-resources/election-results/default.aspx",
+      "https://electionresults.sd.gov/ResultsExport.aspx?eid=684",
+      "https://electionresults.sd.gov/ElectionTerminology.aspx?eid=684",
+      "https://sdsos.gov/elections-voting/upcoming-elections/general-information/2024/2024-general-postelection-audit-results.aspx",
+      "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
+      "https://vip.sdsos.gov/CountyAuditors.aspx",
+      "site:sdsos.gov/elections-voting 2024 General Election Canvass Certificate PDF public search"
+    ],
+    "result": "No public certified 2024 General Election State Canvass and Certificate PDF/static export or reconciling official ElectionID 684 payload was found. The public official ElectionID 684 export shell still presents Unofficial Results General Election November 5, 2024, and the FAQ still directs users to SOS Elections for official certified results after county and state canvass certification.",
+    "nextStep": "Use the public-records request path and county-auditor directory with the retained ElectionID 684 evidence to request the certified canvass/export, county canvass abstracts, and any write-in or canvass-adjustment rows explaining the 194 President and 184 U.S. House vote deltas."
+  },
+  "turnoutLeadDecision": {
+    "status": "retain_as_denominator_timing_lead_only",
+    "activeFallback": {
+      "source": "EAC 2024 EAVS V2 jurisdiction fallback",
+      "rowCount": 66,
+      "ballotsCast": 435739,
+      "registeredVoters": 690306
+    },
+    "officialArchiveLead": {
+      "source": "https://sdresws.azurewebsites.net/ResultsAjax.svc/GetVoterTurnoutArchive?ElectionID=684",
+      "rowCount": 66,
+      "ballotsCast": 436478,
+      "voters": 625192,
+      "terminology": "ElectionTerminology.aspx?eid=684 says Registered Voters are all individuals registered by the voter registration deadline and that turnout calculation is only based on active voters."
+    },
+    "reason": "The archive turnout ballots-cast total is 739 above the active EAC fallback and the archive Voters field is 65,114 below the EAC registered-voter denominator. Because the official terminology separates registered-voter language from active-voter turnout calculation and the ElectionID 684 export remains labeled unofficial, the archive turnout rows should not replace EAC fallback until SOS confirms denominator timing and field semantics."
+  }
 }
