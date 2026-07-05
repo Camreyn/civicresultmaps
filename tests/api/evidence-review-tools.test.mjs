@@ -35,3 +35,22 @@ test("guided tour includes evidence review toolkit steps", () => {
   assert.match(tabs, /target: "\[data-tour='flag-explainability-panel'\]"/);
   assert.match(tabs, /Low score means collect evidence before interpreting flags/);
 });
+test("review center exposes focused subviews", () => {
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const styles = readFileSync("src/app/globals.css", "utf8");
+
+  assert.match(tabs, /type ReviewView = "overview" \| "tools" \| "screening" \| "indicators" \| "methodology"/);
+  assert.match(tabs, /reviewViewOptions/);
+  assert.match(tabs, /data-tour="review-subnav"/);
+  assert.match(tabs, /data-tour="review-overview"/);
+  assert.match(tabs, /data-tour="review-tools-view"/);
+  assert.match(tabs, /data-tour="review-screening-view"/);
+  assert.match(tabs, /data-tour="review-indicators-view"/);
+  assert.match(tabs, /data-tour="review-methodology-view"/);
+  assert.match(tabs, /reviewView: "tools"/);
+  assert.match(tabs, /reviewView: "screening"/);
+  assert.match(tabs, /reviewView: "methodology"/);
+  assert.match(styles, /review-subnav/);
+  assert.match(styles, /review-overview-grid/);
+  assert.match(styles, /review-action-stack/);
+});
