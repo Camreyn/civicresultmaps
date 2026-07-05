@@ -1,0 +1,48 @@
+# Alaska 2024 source records request - SR-2024-AK-SOURCE-GAPS
+
+To: [verify recipient email or use official records portal]
+
+Portal/lookup:
+- https://www.elections.alaska.gov/contact-us/
+- https://www.elections.alaska.gov/contact-us/
+
+```text
+Hello,
+
+I am requesting public records for the Alaska 2024 general election source records listed below. This is a source-availability and reconciliation request only; it is not an allegation or proof of fraud, misconduct, or tampering.
+
+SECTION 1 - REQUESTER ACTION REQUIRED BEFORE SENDING
+- Replace the requester placeholders below with your contact information.
+- Verify the custodian, email address, or official portal before sending.
+- Send this from your own email account or official portal session.
+- Save replies, produced files, redirects, fee estimates, denials, and clarification emails.
+- Submit received responses through the GitHub records-response form so maintainers can verify and load them.
+
+Requester:
+[requester name]
+[organization, if any]
+[requester email]
+[requester phone, optional]
+
+SECTION 2 - CODEX-PREPARED SOURCE CONTEXT
+Tracking ID: SR-2024-AK-SOURCE-GAPS
+Local packet: data/ak-2024-official-source-request-packet.json
+Source lead: https://www.elections.alaska.gov/election-results/e/?id=24genr
+Evidence summary: Official ENRbyPrecinct rows are loaded for President and named U.S. House first-choice candidates, but U.S. House write-ins are 750 votes short at reporting-unit grain and mixed reporting units are not geometry-ready. ENR turnout fields reconcile statewide but need denominator semantics before replacing EAC fallback.
+Codex-prepared action: Prepared a state-level draft and packet reference. The app can copy the draft, open a mail client, and collect response metadata through GitHub.
+
+SECTION 3 - PUBLIC RECORDS REQUEST TEXT
+Requested records: Official U.S. House write-in allocation by reporting unit or source confirmation of omission; reporting-unit geometry/crosswalk; ENR Reg_voters and total_ballots field semantics; official 2020, 2016, and 2012 presidential baselines; CVR availability, audit, recount, incident, correction, litigation, and records-request response artifacts.
+
+Preferred production format: original exports where available, CSV, XLSX, JSON, PDF, shapefile/GeoJSON, record layouts, data dictionaries, or stable public URLs. Please preserve original filenames, timestamps, export settings, certification/finality labels, and field definitions.
+
+If your office does not maintain a requested record, please identify the state, county, municipal, vendor, or other custodian most likely to maintain it. If fees are expected, please provide an estimate before processing.
+
+Routing hint currently recorded for this request:
+Alaska Division of Elections
+https://www.elections.alaska.gov/contact-us/
+Lookup/redirect reference: https://www.elections.alaska.gov/contact-us/
+Use the Division contact path for source-side confirmation of ENR write-in allocation, reporting-unit geometry/crosswalks, turnout-field semantics, historical baselines, CVR availability, and administration-context records.
+
+Thank you.
+```
