@@ -1223,7 +1223,7 @@ function csvEscape(value: unknown) {
 }
 
 function csvContent(headers: string[], rows: unknown[][]) {
-  return [headers, ...rows].map((row) => row.map(csvEscape).join(" - ")).join(" - ");
+  return [headers, ...rows].map((row) => row.map(csvEscape).join(",")).join("\n");
 }
 
 function downloadBlob(filename: string, content: BlobPart[], type: string) {
