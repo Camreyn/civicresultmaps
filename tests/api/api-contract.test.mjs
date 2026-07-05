@@ -13,6 +13,31 @@ test("project is branded for Civic Result Maps", () => {
   assert.match(packageJson.description, /Civic Result Maps/);
 });
 
+
+test("README links graph calculation documentation", () => {
+  const readme = readFileSync("README.md", "utf8");
+  const graphDocs = readFileSync("docs/review-graph-calculations.md", "utf8");
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+
+  assert.match(readme, /docs\/review-graph-calculations\.md/);
+  assert.match(readme, /advisory review signals/);
+  assert.match(readme, /does not assert fraud,\s*tampering, or misconduct/);
+  assert.match(graphDocs, /Vote-Share By Vote-Count Scatterplot/);
+  assert.match(graphDocs, /Presidential-Versus-Comparison Drop-Off Histogram/);
+  assert.match(graphDocs, /Ticket-Splitting Proxy/);
+  assert.match(graphDocs, /Vote-Share Pattern/);
+  assert.match(graphDocs, /Average Down-Ballot Difference/);
+  assert.match(graphDocs, /Down-Ballot Outliers/);
+  assert.match(graphDocs, /Klimek-Style Proxy Fingerprints/);
+  assert.match(graphDocs, /Shpilkin-Style Vote-Share Diagnostics/);
+  assert.match(graphDocs, /EAC Datasets, Codebooks, and Surveys/);
+  assert.match(graphDocs, /NIST Voting Program/);
+  assert.match(graphDocs, /Statistical detection of systematic election irregularities/);
+  assert.match(graphDocs, /Statistical anomalies in 2011-2012 Russian elections/);
+  assert.match(graphDocs, /not findings of fraud, tampering, misconduct, or intent/);
+  assert.match(tabs, /return rowsToCsv\(headers, rows\)/);
+});
+
 test("public API route contracts exist", () => {
   const expectedRoutes = [
     "src/app/api/states/route.ts",
