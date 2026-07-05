@@ -19,6 +19,7 @@ import {
   listIndicators,
   listReviewRows,
   listResults,
+  listSourceRecordsRequests,
   listSources,
   listStates,
   listTurnoutRows,
@@ -55,6 +56,7 @@ export default async function Home({ searchParams }: HomeProps) {
     adminSourceStatuses,
     electronicIntegrityArtifacts,
     electronicIntegrityRequests,
+    sourceRecordsRequests,
   ] = await Promise.all([
     listStates(),
     listCompletenessReport({ year: selectedYear }),
@@ -74,6 +76,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listAdminSourceStatuses({ state: selectedState, year: selectedYear }),
     listElectronicIntegrityArtifacts({ state: selectedState, year: selectedYear }),
     listElectronicIntegrityRequests({ state: selectedState, year: selectedYear }),
+    listSourceRecordsRequests({ state: selectedState, year: selectedYear }),
   ]);
   const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults.length ? cityTownResults : stateResults;
   const resultLevelLabel =
@@ -178,6 +181,7 @@ export default async function Home({ searchParams }: HomeProps) {
             adminSourceStatus={adminSourceStatuses.states[0]}
             electronicIntegrityStatus={electronicIntegrityArtifacts.states[0]}
             electronicIntegrityRequests={electronicIntegrityRequests}
+            sourceRecordsRequests={sourceRecordsRequests}
           />
         </section>
       </div>

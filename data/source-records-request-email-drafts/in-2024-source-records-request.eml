@@ -1,0 +1,41 @@
+To: elections@iec.in.gov
+Subject: Indiana 2024 source records request - SR-2024-IN-PRECINCT-SUBCOUNTY-ROWS
+
+Hello,
+
+I am requesting public records for the Indiana 2024 general election source records listed below. This is a source-availability and reconciliation request only; it is not an allegation or proof of fraud, misconduct, or tampering.
+
+SECTION 1 - REQUESTER ACTION REQUIRED BEFORE SENDING
+- Replace the requester placeholders below with your contact information.
+- Verify the custodian, email address, or official portal before sending.
+- Send this from your own email account or official portal session.
+- Save replies, produced files, redirects, fee estimates, denials, and clarification emails.
+- Submit received responses through the GitHub records-response form so maintainers can verify and load them.
+
+Requester:
+[requester name]
+[organization, if any]
+[requester email]
+[requester phone, optional]
+
+SECTION 2 - REQUEST PREPARATION CONTEXT
+Tracking ID: SR-2024-IN-PRECINCT-SUBCOUNTY-ROWS
+Local packet: data/source-records-request-packets/in-2024-precinct-results-request.md
+Source lead: https://www.in.gov/sos/elections/
+Evidence summary: Official ENR county category JSON files are loaded, but ordinary public ENR archive paths expose county-level candidate summaries and turnout/statistics data, not same-grain precinct/subcounty President plus U.S. Senate rows. Indiana reports 5,147 precincts and 1,342 precinct splits in the retained statewide precinct-count PDF.
+Prepared action: Prepared the request packet, statewide routing summary, county fallback tracker, and sendable email draft.
+
+SECTION 3 - PUBLIC RECORDS REQUEST TEXT
+Requested records: Machine-readable official 2024 General President and U.S. Senate rows at the same precinct, precinct-split, township, ward, vote-center, or lowest maintained subcounty grain; field definitions; county manifest; certification/finality status; turnout/registration denominator rows; geometry/crosswalks; historical baselines; and administration-context records.
+
+Preferred production format: original exports where available, CSV, XLSX, JSON, PDF, shapefile/GeoJSON, record layouts, data dictionaries, or stable public URLs. Please preserve original filenames, timestamps, export settings, certification/finality labels, and field definitions.
+
+If your office does not maintain a requested record, please identify the state, county, municipal, vendor, or other custodian most likely to maintain it. If fees are expected, please provide an estimate before processing.
+
+Routing hint currently recorded for this request:
+Indiana Election Division
+https://www.in.gov/sos/elections/
+Lookup/redirect reference: https://www.in.gov/sos/elections/
+Use the statewide Election Division request first. County office routing should be used only if the state confirms no statewide same-grain precinct/subcounty export exists.
+
+Thank you.

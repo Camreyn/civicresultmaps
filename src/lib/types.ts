@@ -363,3 +363,72 @@ export type ElectronicIntegrityRequestOperationSummary = {
     states: number;
   };
 };
+export type SourceRecordsRequestSummary = {
+  requestId: string;
+  electionYear: number;
+  state: string;
+  stateName: string;
+  requestFamily: string;
+  requestLabel: string;
+  status: string;
+  priority: string;
+  preparedByProject: boolean;
+  manualActionRequired: boolean;
+  localPacket: string;
+  sourceUrl: string;
+  requestedRecords: string;
+  evidenceSummary: string;
+  preparedAction: string;
+  manualUserAction: string;
+  responseAction: string;
+};
+
+export type SourceRecordsRequestContactSummary = {
+  state: string;
+  primaryCustodian: string;
+  recipientEmail: string;
+  recipientPortalUrl: string;
+  recipientLookupUrl: string;
+  countyCustodianLikely: boolean;
+  notes: string;
+};
+
+export type SourceRecordsRequestStateDraft = {
+  state: string;
+  emailFile: string;
+  markdownFile: string;
+  subject: string;
+  requestIds: string[];
+  emailBody: string;
+  mailtoHref: string;
+  recipientHint: string;
+  routingHint: string;
+};
+
+export type SourceRecordsReceivedFileSummary = {
+  requestId: string;
+  state: string;
+  requestFamily: string;
+  status: string;
+  receivedAt: string;
+  files: string[];
+  accessionNotes: string;
+  normalizedArtifactPath: string;
+  ingestScript: string;
+};
+
+export type SourceRecordsRequestOperationSummary = {
+  caveat: string;
+  generatedAt: string;
+  contacts: SourceRecordsRequestContactSummary[];
+  receivedFiles: SourceRecordsReceivedFileSummary[];
+  requests: SourceRecordsRequestSummary[];
+  summary: {
+    draftFiles: SourceRecordsRequestStateDraft[];
+    manualActionRequiredRows: number;
+    requestRows: number;
+    rowsByStatus: Record<string, number>;
+    rowsByState: Record<string, number>;
+    states: number;
+  };
+};

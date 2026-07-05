@@ -1902,6 +1902,31 @@ input {
   justify-content: flex-end;
 }
 
+.source-records-request-section {
+  border-top: 1px solid rgba(53, 199, 163, 0.32);
+  display: grid;
+  gap: 14px;
+  padding-top: 16px;
+}
+
+.source-records-separation {
+  border-color: rgba(53, 199, 163, 0.35);
+}
+
+.source-records-request-panel {
+  align-items: flex-start;
+  border-color: rgba(53, 199, 163, 0.38);
+}
+
+.source-records-request-panel > div:not(.request-draft-actions) {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.manual-action-label {
+  color: var(--gold) !important;
+}
 .request-draft-actions a {
   text-decoration: none;
 }

@@ -39,6 +39,7 @@ import type {
   CoverageSummary,
   ElectronicIntegrityStateSummary,
   ElectronicIntegrityRequestOperationSummary,
+  SourceRecordsRequestOperationSummary,
   EquipmentClusterDiagnostic,
   EquipmentRowSummary,
   HistoricalResultRowSummary,
@@ -57,6 +58,7 @@ type WorkspaceTabsProps = {
   countyLabel: string;
   electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
   electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
+  sourceRecordsRequests: SourceRecordsRequestOperationSummary;
   equipmentRows: EquipmentRowSummary[];
   historicalRows: HistoricalResultRowSummary[];
   importRuns: ImportRunSummary[];
@@ -119,6 +121,8 @@ type WorkspaceTourContext = {
   hasCoverage: boolean;
   hasElectronicDraft: boolean;
   hasElectronicRequestRows: boolean;
+  hasSourceRecordsDraft: boolean;
+  hasSourceRecordsRequestRows: boolean;
   hasEquipmentRows: boolean;
   hasHistoricalRows: boolean;
   hasImportRuns: boolean;
@@ -538,6 +542,18 @@ const tourFeatureRegistry: TourFeature[] = [
               tab: "electronic" as const,
               target: "[data-tour='request-copy-email']",
               title: "Copy the request email text",
+            },
+          ]
+        : []),
+      ...(context.hasSourceRecordsRequestRows
+        ? [
+            {
+              body: "Source-records requests are separate from electronic-integrity evidence requests. The app prepares the draft and packet context here; you verify the custodian, send it yourself, and submit replies through the response form.",
+              fallbackTarget: "[data-tour='electronic-integrity']",
+              id: "source-records-request-draft",
+              tab: "electronic" as const,
+              target: "[data-tour='source-records-request-draft']",
+              title: "Use the separate source-records flow",
             },
           ]
         : []),
@@ -2153,6 +2169,7 @@ export function WorkspaceTabs({
   adminSourceStatus,
   electronicIntegrityStatus,
   electronicIntegrityRequests,
+  sourceRecordsRequests,
   coverage,
   countyLabel,
   equipmentRows,
@@ -2171,6 +2188,7 @@ export function WorkspaceTabs({
 }: WorkspaceTabsProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("map");
   const [copiedElectronicDraft, setCopiedElectronicDraft] = useState(false);
+  const [copiedSourceRecordsDraft, setCopiedSourceRecordsDraft] = useState(false);
   const [enabledScreeningGraphs, setEnabledScreeningGraphs] = useState<ScreeningGraphType[]>([
     "voteShareScatter",
     "dropoffHistogram",
@@ -2584,6 +2602,16 @@ export function WorkspaceTabs({
     counts[request.status] = (counts[request.status] ?? 0) + 1;
     return counts;
   }, {});
+  const sourceRecordsRequestRows = sourceRecordsRequests.requests;
+  const sourceRecordsRequestQueueCount = sourceRecordsRequestRows.length;
+  const totalRecordsRequestQueueCount = electronicRequestQueueCount + sourceRecordsRequestQueueCount;
+  const sourceRecordsDraftFiles = sourceRecordsRequests.summary.draftFiles;
+  const sourceRecordsStateDraft = sourceRecordsDraftFiles.find((draft) => draft.state === selectedStateCode);
+  const sourceRecordsRequestStatusCounts = sourceRecordsRequestRows.reduce<Record<string, number>>((counts, request) => {
+    counts[request.status] = (counts[request.status] ?? 0) + 1;
+    return counts;
+  }, {});
+
   const copyElectronicDraft = async () => {
     if (!electronicStateDraft?.emailBody) return;
     try {
@@ -2603,6 +2631,24 @@ export function WorkspaceTabs({
     window.setTimeout(() => setCopiedElectronicDraft(false), 2200);
   };
 
+  const copySourceRecordsDraft = async () => {
+    if (!sourceRecordsStateDraft?.emailBody) return;
+    try {
+      await navigator.clipboard.writeText(sourceRecordsStateDraft.emailBody);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = sourceRecordsStateDraft.emailBody;
+      textarea.setAttribute("readonly", "true");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
+    setCopiedSourceRecordsDraft(true);
+    window.setTimeout(() => setCopiedSourceRecordsDraft(false), 2200);
+  };
   const electronicStatusCounts = electronicArtifacts.reduce<Record<string, number>>((counts, artifact) => {
     counts[artifact.status] = (counts[artifact.status] ?? 0) + 1;
     return counts;
@@ -2781,6 +2827,12 @@ export function WorkspaceTabs({
     stateCode: selectedStateCode,
     stateName,
   });
+  const sourceRecordsResponseUrl = buildRecordsResponseUrl({
+    custodian: sourceRecordsRequests.contacts[0]?.primaryCustodian,
+    requestId: sourceRecordsRequestRows[0]?.requestId,
+    stateCode: selectedStateCode,
+    stateName,
+  });
   const validationChecks = [
     {
       detail: `${coverage?.loadedJurisdictions ?? results.length} loaded jurisdictions`,
@@ -2815,6 +2867,8 @@ export function WorkspaceTabs({
         hasCoverage: Boolean(coverage),
         hasElectronicDraft: Boolean(electronicStateDraft),
         hasElectronicRequestRows: electronicRequestRows.length > 0,
+        hasSourceRecordsDraft: Boolean(sourceRecordsStateDraft),
+        hasSourceRecordsRequestRows: sourceRecordsRequestRows.length > 0,
         hasHistoricalRows: historicalRows.length > 0,
         hasImportRuns: selectedImportRuns.length > 0,
         hasResults: results.length > 0,
@@ -2828,6 +2882,8 @@ export function WorkspaceTabs({
       coverage,
       electronicRequestRows.length,
       electronicStateDraft,
+      sourceRecordsRequestRows.length,
+      sourceRecordsStateDraft,
       historicalRows.length,
       results.length,
       reviewRows.length,
@@ -3174,9 +3230,9 @@ export function WorkspaceTabs({
             >
               <Icon aria-hidden size={16} />
               <span>{tab.label}</span>
-              {tab.key === "electronic" && electronicRequestQueueCount > 0 && (
-                <span className="tab-alert-badge" aria-label={`${electronicRequestQueueCount} records requests need review`}>
-                  {electronicRequestQueueCount}
+              {tab.key === "electronic" && totalRecordsRequestQueueCount > 0 && (
+                <span className="tab-alert-badge" aria-label={`${totalRecordsRequestQueueCount} records requests need review`}>
+                  {totalRecordsRequestQueueCount}
                 </span>
               )}
             </button>
@@ -4383,6 +4439,15 @@ export function WorkspaceTabs({
                       </p>
                     </article>
                     <article>
+                      <strong>Two separate lanes</strong>
+                      <p>
+                        Electronic-integrity requests ask for machine-output, audit, log, custody, and related evidence.
+                        Source-records requests ask for missing official results, comparison contests, turnout,
+                        geometry, historical baselines, and source caveats. The app prepares both drafts; you send them
+                        yourself and submit replies separately.
+                      </p>
+                    </article>
+                    <article>
                       <strong>How it works here</strong>
                       <p>
                         The app prepares a draft from the missing evidence list for {stateName}. Review the draft,
@@ -4483,7 +4548,97 @@ export function WorkspaceTabs({
                 input unless row-level data supports it.
               </span>
             </div>
-            {electronicIntegrityStatus ? (
+            {sourceRecordsRequestRows.length > 0 && (
+              <div className="source-records-request-section" data-tour="source-records-request-draft">
+                <div className="planner-note source-records-separation">
+                  <strong>Separate source-records requests</strong>
+                  <span>
+                    This is not the electronic-integrity evidence queue. The app prepares request text and packet context
+                    here; your manual step is to verify the custodian, send the email or portal request yourself, then
+                    submit any reply through GitHub.
+                  </span>
+                </div>
+                <div className="export-summary-grid">
+                  <article>
+                    <span>Prepared drafts</span>
+                    <strong>{sourceRecordsDraftFiles.length.toLocaleString()}</strong>
+                  </article>
+                  <article>
+                    <span>Your manual sends</span>
+                    <strong>{sourceRecordsRequests.summary.manualActionRequiredRows.toLocaleString()}</strong>
+                  </article>
+                  <article>
+                    <span>Source request rows</span>
+                    <strong>{sourceRecordsRequestQueueCount.toLocaleString()}</strong>
+                  </article>
+                  <article>
+                    <span>Status</span>
+                    <strong>
+                      {Object.entries(sourceRecordsRequestStatusCounts)
+                        .map(([status, count]) => `${evidenceStatusLabel(status)}: ${count}`)
+                        .join("; ")}
+                    </strong>
+                  </article>
+                </div>
+                {sourceRecordsStateDraft && (
+                  <div className="request-draft-panel source-records-request-panel">
+                    <div>
+                      <span className="section-label">Prepared draft</span>
+                      <strong>Source records request</strong>
+                      <span>{sourceRecordsStateDraft.routingHint} {sourceRecordsStateDraft.recipientHint}</span>
+                    </div>
+                    <div>
+                      <span className="section-label manual-action-label">Your manual step</span>
+                      <strong>Review, fill requester, send</strong>
+                      <span>The site does not send this email or portal request. Use your own account, then submit replies for review.</span>
+                    </div>
+                    <div className="request-draft-actions">
+                      <button className="secondary-button" data-tour="source-records-copy-email" onClick={copySourceRecordsDraft} type="button">
+                        <Copy aria-hidden size={15} />
+                        {copiedSourceRecordsDraft ? "Copied" : "Copy source request"}
+                      </button>
+                      <a className="secondary-button" href={sourceRecordsStateDraft.mailtoHref}>
+                        <Mail aria-hidden size={15} />
+                        Open mail app
+                      </a>
+                      <a className="secondary-button" href={sourceRecordsRequests.contacts[0]?.recipientLookupUrl} rel="noreferrer" target="_blank">
+                        Find source custodian
+                      </a>
+                      <a className="secondary-button" data-tour="source-records-submit-response" href={sourceRecordsResponseUrl} rel="noreferrer" target="_blank">
+                        <Github aria-hidden size={15} />
+                        Submit source response
+                      </a>
+                    </div>
+                  </div>
+                )}
+                <div className="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Request ID</th>
+                        <th>Source gap</th>
+                        <th>Status</th>
+                        <th>Prepared context</th>
+                        <th>Your step</th>
+                        <th>Response tracking</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sourceRecordsRequestRows.map((request) => (
+                        <tr key={request.requestId}>
+                          <td>{request.requestId}</td>
+                          <td>{request.requestLabel}</td>
+                          <td>{evidenceStatusLabel(request.status)}</td>
+                          <td>{request.preparedAction}</td>
+                          <td>{request.manualUserAction}</td>
+                          <td>{request.responseAction}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}            {electronicIntegrityStatus ? (
               <>
                 <div className="admin-source-grid" aria-label={`${stateName} electronic integrity status`}>
                   <article className={`admin-source-card ${electronicQualityStatus(electronicIntegrityStatus.overallStatus)}`}>
