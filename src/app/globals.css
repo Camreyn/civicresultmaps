@@ -2623,6 +2623,182 @@ input {
   padding: 12px 16px;
 }
 
+.review-center-panel {
+  overflow: hidden;
+}
+
+.review-center-header {
+  border-bottom: 1px solid var(--line);
+}
+
+.review-subnav {
+  background: rgba(255, 255, 255, 0.018);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  padding: 12px 16px;
+}
+
+.review-subnav-button {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  min-height: 62px;
+  min-width: 0;
+  padding: 10px;
+  text-align: left;
+}
+
+.review-subnav-button:hover,
+.review-subnav-button:focus-visible {
+  border-color: var(--accent-line);
+  color: var(--foreground);
+  outline: 0;
+}
+
+.review-subnav-button[aria-selected="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.review-subnav-button span {
+  color: inherit;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.review-subnav-button small {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.review-view-panel {
+  display: grid;
+  gap: 0;
+}
+
+.review-overview-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  padding: 16px;
+}
+
+.review-overview-card {
+  background: rgba(244, 241, 234, 0.025);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+}
+
+.review-overview-card > div:first-child {
+  display: grid;
+  gap: 5px;
+}
+
+.review-overview-card strong {
+  color: var(--foreground);
+}
+
+.review-overview-card p,
+.review-overview-card small,
+.review-overview-gap-list p,
+.review-action-stack span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.review-readiness-card {
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) 132px;
+}
+
+.review-readiness-card > button {
+  justify-self: start;
+}
+
+.readiness-score.compact {
+  min-height: 112px;
+}
+
+.review-overview-list,
+.review-action-stack,
+.review-overview-gap-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.review-overview-gap-list {
+  padding-left: 20px;
+}
+
+.review-overview-gap-list span {
+  color: var(--foreground);
+  font-weight: 850;
+}
+
+.review-overview-row,
+.review-action-stack button {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px;
+  text-align: left;
+}
+
+.review-overview-row:hover,
+.review-overview-row:focus-visible,
+.review-action-stack button:hover,
+.review-action-stack button:focus-visible {
+  border-color: var(--accent-line);
+  outline: 0;
+}
+
+.review-action-stack button {
+  font-weight: 850;
+}
+
+.review-action-stack span {
+  display: block;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.review-flag-mix-card {
+  grid-column: 1 / -1;
+}
+
+.compact-mini-bars {
+  padding: 0;
+}
+
+.review-view-panel > .evidence-toolkit,
+.review-view-panel > .flag-methodology-guide,
+.review-view-panel > .screening-section {
+  border-bottom: 0;
+}
+
+.review-view-panel > .review-tools {
+  border-top: 0;
+}
 .evidence-toolkit {
   border-bottom: 1px solid var(--line);
   display: grid;
@@ -3678,7 +3854,7 @@ td {
 }
 
 .review-summary-grid {
-  grid-template-columns: repeat(3, minmax(140px, 1fr));
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
 }
 
 .history-summary-grid {
@@ -4938,6 +5114,9 @@ td {
   }
 
   .review-tools,
+  .review-subnav,
+  .review-overview-grid,
+  .review-readiness-card,
   .evidence-toolkit-head,
   .evidence-dimension-grid,
   .evidence-tool-split,

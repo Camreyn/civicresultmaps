@@ -20,6 +20,7 @@ export type TourStep = {
   body: string;
   fallbackTarget?: string;
   id: string;
+  reviewView?: string;
   skipIfMissing?: boolean;
   tab?: TourTabKey;
   target: string;
@@ -36,6 +37,7 @@ type Rect = {
 type GuidedTourProps = {
   activeTab: TourTabKey;
   onSelectTab: (tab: TourTabKey) => void;
+  onStepChange?: (step: TourStep) => void;
   steps: TourStep[];
 };
 
@@ -190,7 +192,7 @@ function cardPosition(target: Rect | null, cardHeight = 260) {
   };
 }
 
-export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
+export function GuidedTour({ activeTab, onSelectTab, onStepChange, steps }: GuidedTourProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<Rect | null>(null);
@@ -206,6 +208,14 @@ export function GuidedTour({ activeTab, onSelectTab, steps }: GuidedTourProps) {
 
     setStepIndex(Math.max(0, steps.length - 1));
   }, [stepIndex, steps.length]);
+
+  useEffect(() => {
+    if (!isOpen || !activeStep) {
+      return;
+    }
+
+    onStepChange?.(activeStep);
+  }, [activeStep, isOpen, onStepChange]);
 
   useEffect(() => {
     if (!isOpen || !activeStep?.tab || activeStep.tab === activeTab) {

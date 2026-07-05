@@ -89,6 +89,7 @@ type TabKey =
   | "contact";
 type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
+type ReviewView = "overview" | "tools" | "screening" | "indicators" | "methodology";
 type ChartQualityStatus = "ready" | "acknowledgement_required" | "blocked";
 type QualityBadgeStatus = "ready" | "partial" | "proxy" | "missing" | "blocked";
 type ChartQualityDiagnostic = {
@@ -189,6 +190,14 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: GitBranch, key: "imports", label: "Import Runs" },
   { icon: HeartHandshake, key: "support", label: "Support" },
   { icon: Mail, key: "contact", label: "Contact" },
+];
+
+const reviewViewOptions: Array<{ key: ReviewView; label: string; summary: string }> = [
+  { key: "overview", label: "Overview", summary: "Status, readiness, top flags, and next actions" },
+  { key: "tools", label: "Evidence Tools", summary: "Readiness gaps and flag explainability" },
+  { key: "screening", label: "Screening", summary: "Charts, ticket-splitting proxy, and caveats" },
+  { key: "indicators", label: "Indicators", summary: "Search, filter, and inspect advisory rows" },
+  { key: "methodology", label: "Methodology", summary: "How each advisory flag is calculated" },
 ];
 
 const flagMethodologyGuides: FlagMethodologyGuide[] = [
@@ -423,15 +432,17 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "The Review Center collects advisory indicators. These are triage prompts for human review, not claims by themselves.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "review",
+              reviewView: "overview",
               tab: "review",
-              target: "[data-tour='review-layout']",
+              target: "[data-tour='review-overview']",
               title: "Review flagged patterns",
             },
             {
               body: "The Evidence Review Toolkit shows whether this state has enough source-backed inputs for responsible advisory review. Treat the score as readiness, not risk or proof.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "evidence-toolkit",
-              tab: "review" as const,
+              reviewView: "tools",
+              tab: "review",
               target: "[data-tour='evidence-toolkit']",
               title: "Open the evidence toolkit",
             },
@@ -439,7 +450,8 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "The readiness score combines certified results, source provenance, local review rows, comparison contests, turnout denominators, geometry, history, and audit/CVR/equipment context. Low score means collect evidence before interpreting flags.",
               fallbackTarget: "[data-tour='evidence-toolkit']",
               id: "evidence-readiness-score",
-              tab: "review" as const,
+              reviewView: "tools",
+              tab: "review",
               target: "[data-tour='evidence-readiness-score']",
               title: "Check review readiness first",
             },
@@ -447,7 +459,8 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "The flag explainability panel links top advisory flags to source context, denominator context, audit context, and remaining evidence needs. Use it to decide the next source check, not to declare conclusions.",
               fallbackTarget: "[data-tour='evidence-toolkit']",
               id: "flag-explainability-panel",
-              tab: "review" as const,
+              reviewView: "tools",
+              tab: "review",
               target: "[data-tour='flag-explainability-panel']",
               title: "Explain flags before escalating",
             },
@@ -455,6 +468,7 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "This guide is the table of contents for advisory flags. It explains how Vote-Share Pattern, Down-ballot Difference, and Down-ballot Outliers are calculated and what normal explanations to check first.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "flag-guide",
+              reviewView: "methodology",
               tab: "review",
               target: "[data-tour='flag-guide']",
               title: "Use the flag guide",
@@ -463,6 +477,7 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "The scatterplot compares local vote totals against vote share. Outliers are places worth inspecting against sources and local context.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "scatter",
+              reviewView: "screening",
               tab: "review",
               target: "[data-tour='review-scatter']",
               title: "Read the vote-share scatterplot",
@@ -471,6 +486,7 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "When the app detects missing rows, partial coverage, fragile counts, or unreconciled source context, charts are faded until the user acknowledges those limits. The listed reasons are specific to the selected chart.",
               fallbackTarget: "[data-tour='review-scatter']",
               id: "chart-caveat-gate",
+              reviewView: "screening",
               skipIfMissing: true,
               tab: "review",
               target: "[data-tour='chart-caveat-gate']",
@@ -480,6 +496,7 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "The drop-off histogram buckets local drop-off values. It is useful for seeing whether a pattern is isolated or appears across many rows.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "dropoff",
+              reviewView: "screening",
               tab: "review",
               target: "[data-tour='review-dropoff']",
               title: "Read the drop-off histogram",
@@ -506,7 +523,8 @@ const tourFeatureRegistry: TourFeature[] = [
               body: "The Evidence Review Toolkit still works when charts are missing. It shows which source families are blocking responsible advisory review and what evidence to collect next.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "evidence-toolkit-empty",
-              tab: "review" as const,
+              reviewView: "tools",
+              tab: "review",
               target: "[data-tour='evidence-toolkit']",
               title: "Use tools before charts are ready",
             },
@@ -986,7 +1004,7 @@ function auditContextSummary(indicator: AnalysisIndicator) {
     return "No WEC audit selected reporting units matched this review scope.";
   }
 
-  const equipment = audit.topEquipment?.length ? ` Equipment: ${audit.topEquipment.join(", ")}.` : "";
+  const equipment = audit.topEquipment?.length ? ` Equipment: ${audit.topEquipment.join(" - ")}.` : "";
   const aggregate = audit.aggregateAuditResults
     ? ` Statewide WEC audit context: final equipment error rate ${audit.aggregateAuditResults.finalEquipmentErrorRate ?? "not reported"}; ${audit.aggregateAuditResults.locallyReportedPotentialEquipmentIssueErrors ?? 0} reported potential equipment-issue errors were reviewed as partially or completely human-factor issues.`
     : "";
@@ -1161,9 +1179,9 @@ function buildFlagExplanation(input: {
     priority: severityBucket(input.indicator.severity),
     scope: indicatorScopeLabel(input.indicator),
     sourceContext: relatedSources.length
-      ? relatedSources.map((source) => `${source.authority}: ${source.title}. ${source.sourceUrl || "No direct URL recorded."}`).join(" ")
+      ? relatedSources.map((source) => `${source.authority}: ${source.title}. ${source.sourceUrl || "No direct URL recorded."}`).join(" - ")
       : relatedSourceIds.length
-        ? `Source IDs ${relatedSourceIds.join(", ")} are not present in the selected state's source list.`
+        ? `Source IDs ${relatedSourceIds.join(" - ")} are not present in the selected state's source list.`
         : "No related review-row source ID is available for this indicator.",
     summary: `${input.indicator.summary} ${indicatorExplanation(input.indicator.type)}`,
   };
@@ -1205,7 +1223,7 @@ function csvEscape(value: unknown) {
 }
 
 function csvContent(headers: string[], rows: unknown[][]) {
-  return [headers, ...rows].map((row) => row.map(csvEscape).join(",")).join("\n");
+  return [headers, ...rows].map((row) => row.map(csvEscape).join(" - ")).join(" - ");
 }
 
 function downloadBlob(filename: string, content: BlobPart[], type: string) {
@@ -1464,7 +1482,7 @@ function countyLevelReviewIssue(rows: ReviewRowSummary[]) {
     return null;
   }
 
-  const contestLabel = contests.size ? ` against ${[...contests].join(", ")}` : "";
+  const contestLabel = contests.size ? ` against ${[...contests].join(" - ")}` : "";
   return `These rows are county-level presidential comparison rows${contestLabel}, not precinct, ward, or municipal reporting-unit rows. Advisory flag generation requires multiple local rows inside a county, so this state should be read as county context only.`;
 }
 
@@ -1586,7 +1604,7 @@ function electronicArtifactLabel(type: string) {
   return type
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+    .join(" - ");
 }
 
 function evidenceStatusLabel(status: string | undefined) {
@@ -1907,7 +1925,7 @@ function buildDataNoteSections(input: {
   const reviewIsPartial =
     input.reviewRows.length > 0 && input.results.length > 0 && new Set(input.reviewRows.map((row) => row.jurisdictionCode)).size < input.results.length;
   const reviewModes = [...reviewCoverageModes(input.reviewRows)];
-  const reviewModeEvidence = reviewModes.length ? `Coverage mode: ${reviewModes.join(", ")}.` : null;
+  const reviewModeEvidence = reviewModes.length ? `Coverage mode: ${reviewModes.join(" - ")}.` : null;
   const reviewCountyLevelIssue = countyLevelReviewIssue(input.reviewRows);
   const eacTurnoutFallback = input.turnoutRows.some((row) => row.sourceId.toLowerCase().includes("eac"));
   const verifiedVotingEquipment = input.equipmentRows.some((row) => row.sourceId.toLowerCase().includes("verified-voting"));
@@ -1953,7 +1971,7 @@ function buildDataNoteSections(input: {
             ? "A map capability flag exists, but no loaded geometry source is tracked."
             : "Map geometry is not available for this state.",
       evidence: input.coverage?.validation.warnings.length
-        ? input.coverage.validation.warnings.join(" ")
+        ? input.coverage.validation.warnings.join(" - ")
         : mapIsReady
           ? "No map-join warning is currently reported."
           : !hasResultRows
@@ -2415,6 +2433,7 @@ export function WorkspaceTabs({
   const [isDataNotesCollapsed, setIsDataNotesCollapsed] = useState(true);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
+  const [reviewView, setReviewView] = useState<ReviewView>("overview");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -2430,6 +2449,12 @@ export function WorkspaceTabs({
     url.searchParams.set("state", selectedStateCode);
     url.searchParams.set("tab", tab);
     window.history.replaceState(null, "", url);
+  };
+
+  const syncReviewTourStep = (step: TourStep) => {
+    if (step.reviewView && reviewViewOptions.some((option) => option.key === step.reviewView)) {
+      setReviewView(step.reviewView as ReviewView);
+    }
   };
 
   const stateName = selectedState?.name ?? selectedStateCode;
@@ -2559,7 +2584,7 @@ export function WorkspaceTabs({
   const statewideTicketSplitSummary = useMemo(() => buildTicketSplitSummary(reviewRows), [reviewRows]);
   const selectedTicketSplitSummary = useMemo(() => buildTicketSplitSummary(selectedReviewRows), [selectedReviewRows]);
   const ticketSplitComparisonLabel = statewideTicketSplitSummary.comparisonContests.length
-    ? statewideTicketSplitSummary.comparisonContests.join(", ")
+    ? statewideTicketSplitSummary.comparisonContests.join(" - ")
     : "No comparison contest loaded";
   const reviewElectionYearLabel = reviewRows[0]?.electionYear ?? "selected election";
   const scatterAcknowledged = acknowledgedChartKeys.includes(scatterDiagnostic.acknowledgementKey);
@@ -2615,7 +2640,7 @@ export function WorkspaceTabs({
 
   useEffect(() => {
     setEnabledHistoricalYears(historicalYears);
-  }, [historicalYears.join(",")]);
+  }, [historicalYears.join(" - ")]);
 
   const historicalYearSummaries = useMemo(() => {
     const summaries = new Map<
@@ -2934,7 +2959,7 @@ export function WorkspaceTabs({
     title: `${stateName} flag mix`,
   });
   const historicalContextDiagnostic = staticChartDiagnostic({
-    acknowledgementKey: `history-context:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join("-")}` ,
+    acknowledgementKey: `history-context:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
     checked: [`${filteredHistoricalRows.length.toLocaleString()} historical baseline rows are loaded for the enabled years.`],
     issues: [
       "Historical baseline charts are context views, not a complete audit or ballot-accounting record.",
@@ -2946,7 +2971,7 @@ export function WorkspaceTabs({
     title: `${stateName} historical context charts`,
   });
   const klimekProxyDiagnostic = staticChartDiagnostic({
-    acknowledgementKey: `klimek-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join("-")}` ,
+    acknowledgementKey: `klimek-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
     checked: [`${historicalRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
     issues: [
       "This is a proxy graph, not a complete Klimek fingerprint.",
@@ -2959,7 +2984,7 @@ export function WorkspaceTabs({
     title: `${stateName} Klimek-style proxy fingerprints`,
   });
   const shpilkinProxyDiagnostic = staticChartDiagnostic({
-    acknowledgementKey: `shpilkin-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join("-")}` ,
+    acknowledgementKey: `shpilkin-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
     checked: [`${shpilkinRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
     issues: [
       "This groups county vote volume by vote-share buckets, not precinct-level or ballot-level distributions.",
@@ -3257,7 +3282,7 @@ export function WorkspaceTabs({
       coverage?.resultRows ?? results.length,
       coverage?.sourceCount ?? sources.length,
       coverage?.validation.passed ? "pass" : "gap",
-      coverage?.validation.warnings.join(" ") ?? "",
+      coverage?.validation.warnings.join(" - ") ?? "",
     ],
   ];
   const voteMethodExportHeaders = [
@@ -3324,7 +3349,7 @@ export function WorkspaceTabs({
     row.sourceGranularity,
     row.uniformityWarningRequired ? "true" : "false",
     row.uniformityNote,
-    row.configurationSignals.join(" | "),
+    row.configurationSignals.join(" - "),
     row.sourceId,
     row.sourceUrl,
   ]);
@@ -3429,7 +3454,7 @@ export function WorkspaceTabs({
       "Data notes:",
       ...dataNoteSections.map((note) => `- ${note.label}: ${qualityBadgeLabel(note.status)}. ${note.why}`),
       "",
-    ].join("\n");
+    ].join(" - ");
 
     zip.file("README.txt", readme);
     zip.file("results.csv", csvContent(resultExportHeaders, resultExportRows));
@@ -3468,7 +3493,7 @@ export function WorkspaceTabs({
   return (
     <section className="workspace-tabs" data-tour="workspace" aria-label={`${stateName} workspace`}>
       <nav className="tab-bar" data-tour="tab-bar" aria-label="Workspace sections">
-        <GuidedTour activeTab={activeTab} onSelectTab={selectTab} steps={workspaceTourSteps} />
+        <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -3589,7 +3614,7 @@ export function WorkspaceTabs({
                       <div>
                         <strong>{candidate}</strong>
                         <span>
-                          {votes.toLocaleString()} Ãƒâ€šÃ‚Â· {pct(votes, totalVotes)}
+                          {votes.toLocaleString()} - {pct(votes, totalVotes)}
                         </span>
                       </div>
                       <i
@@ -3613,8 +3638,8 @@ export function WorkspaceTabs({
 
       {activeTab === "review" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="review-panel">
-            <div className="panel-header">
+          <section className="panel review-center-panel" data-tour="review-panel">
+            <div className="panel-header review-center-header">
               <div>
                 <h2>Review Center</h2>
                 <span>{countyIndicators.length} county indicators and {indicators.length} total advisory indicators for {stateName}</span>
@@ -3634,6 +3659,23 @@ export function WorkspaceTabs({
                 <BarChart3 aria-hidden size={18} />
               </div>
             </div>
+            <div className="review-subnav" data-tour="review-subnav" role="tablist" aria-label="Review Center views">
+              {reviewViewOptions.map((option) => (
+                <button
+                  aria-selected={reviewView === option.key}
+                  className="review-subnav-button"
+                  key={option.key}
+                  onClick={() => setReviewView(option.key)}
+                  role="tab"
+                  type="button"
+                >
+                  <span>{option.label}</span>
+                  <small>{option.summary}</small>
+                </button>
+              ))}
+            </div>
+            {reviewView === "overview" && (
+              <section className="review-view-panel review-overview" data-tour="review-overview" aria-label="Review overview">
             <div className="review-summary-grid">
               <article>
                 <span>Flagged counties</span>
@@ -3652,6 +3694,113 @@ export function WorkspaceTabs({
                 <strong>{indicators[0]?.severity.toFixed(2) ?? "0.00"}</strong>
               </article>
             </div>
+                <div className="review-overview-grid">
+                  <article className="review-overview-card review-readiness-card">
+                    <div>
+                      <span className="section-label">Review readiness</span>
+                      <strong>{evidenceReadiness.label}</strong>
+                      <p>Start here before interpreting advisory flags. The score measures source-backed review support, not risk or proof.</p>
+                    </div>
+                    <div className="readiness-score compact" data-tour="overview-readiness-score">
+                      <span>Readiness</span>
+                      <strong>{evidenceReadinessScorePct}%</strong>
+                      <small>{evidenceReadiness.blockerCount.toLocaleString()} blocker{evidenceReadiness.blockerCount === 1 ? "" : "s"}</small>
+                    </div>
+                    <button className="secondary-button" onClick={() => setReviewView("tools")} type="button">
+                      <ShieldCheck aria-hidden size={15} />
+                      Open Evidence Tools
+                    </button>
+                  </article>
+                  <article className="review-overview-card">
+                    <div>
+                      <span className="section-label">Top advisory flags</span>
+                      <strong>{topIndicators.length ? "Review these first" : "No current advisory flags"}</strong>
+                    </div>
+                    {topIndicators.length ? (
+                      <div className="review-overview-list">
+                        {topIndicators.slice(0, 3).map((indicator) => (
+                          <button className="review-overview-row" key={indicator.id} onClick={() => setReviewView("indicators")} type="button">
+                            <span className="indicator-pill">! {indicator.label}</span>
+                            <strong>{indicator.jurisdictionName}</strong>
+                            <small>{indicatorScopeLabel(indicator)} - {severityBucket(indicator.severity)}</small>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>No advisory indicators crossed the current thresholds. Check Evidence Tools for coverage gaps.</p>
+                    )}
+                  </article>
+                  <article className="review-overview-card">
+                    <div>
+                      <span className="section-label">Highest-impact gaps</span>
+                      <strong>{evidenceGapPriorities.length ? "Collect or verify next" : "No major readiness gaps"}</strong>
+                    </div>
+                    {evidenceGapPriorities.length ? (
+                      <ol className="review-overview-gap-list">
+                        {evidenceGapPriorities.slice(0, 4).map((gap) => (
+                          <li key={gap.label}>
+                            <span>{gap.label}</span>
+                            <p>{gap.why}</p>
+                          </li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <p>Current loaded evidence covers the readiness dimensions tracked by this tool. Continue source-row review before making claims.</p>
+                    )}
+                  </article>
+                  <article className="review-overview-card">
+                    <div>
+                      <span className="section-label">Next best actions</span>
+                      <strong>Choose a focused workspace</strong>
+                    </div>
+                    <div className="review-action-stack">
+                      <button onClick={() => setReviewView("tools")} type="button">Evidence Tools<span>Explain readiness, source gaps, and top flags.</span></button>
+                      <button onClick={() => setReviewView("screening")} type="button">Screening<span>Review charts, caveats, and ticket-splitting proxy.</span></button>
+                      <button onClick={() => setReviewView("indicators")} type="button">Indicators<span>Search, filter, and inspect advisory rows.</span></button>
+                      <button onClick={() => setReviewView("methodology")} type="button">Methodology<span>Check formulas, thresholds, and common explanations.</span></button>
+                    </div>
+                  </article>
+                  <article className="review-overview-card review-flag-mix-card" data-tour="review-flag-mix">
+                    <div>
+                      <span className="section-label">Flag mix</span>
+                      <strong>Counts by advisory indicator type</strong>
+                    </div>
+                    <ChartQualityNotice diagnostic={flagMixDiagnostic} />
+                    <div className={`screening-chart-shell ${flagMixDiagnostic.status !== "ready" && !flagMixAcknowledged ? "is-gated" : ""}`}>
+                      <div className="chart-gate-frame">
+                        <div className="mini-bars compact-mini-bars">
+                          {groupedIndicatorCounts.length ? (
+                            groupedIndicatorCounts.map(([label, count]) => (
+                              <div className="mini-bar-row" key={label}>
+                                <span>{label}</span>
+                                <strong>{count}</strong>
+                                <i style={{ width: `${Math.max(8, (count / indicators.length) * 100)}%` }} />
+                              </div>
+                            ))
+                          ) : (
+                            <div className="empty-state compact">
+                              <strong>{reviewRows.length ? "No advisory flags generated" : "Waiting on review data"}</strong>
+                              <span>
+                                {reviewRows.length
+                                  ? reviewLimitation ?? "No loaded review rows crossed the current advisory thresholds."
+                                  : "Expected path: reviewCharts.metadata.rows in the state bundle."}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <ChartGate
+                        acknowledged={flagMixAcknowledged}
+                        diagnostic={flagMixDiagnostic}
+                        onAcknowledge={() => acknowledgeChart(flagMixDiagnostic.acknowledgementKey)}
+                      />
+                    </div>
+                  </article>
+                </div>
+              </section>
+            )}
+            {reviewView === "tools" && (
+              <section className="review-view-panel" data-tour="review-tools-view" aria-label="Evidence tools">
             <section className="evidence-toolkit" aria-label="Evidence review toolkit" data-tour="evidence-toolkit">
               <div className="evidence-toolkit-head">
                 <div>
@@ -3711,7 +3860,7 @@ export function WorkspaceTabs({
                           <div>
                             <span className="indicator-pill">! {explanation.label}</span>
                             <strong>{explanation.jurisdiction}</strong>
-                            <small>{explanation.scope} Â· {explanation.priority}</small>
+                            <small>{explanation.scope} - {explanation.priority}</small>
                           </div>
                           <p>{explanation.summary}</p>
                           <dl>
@@ -3729,7 +3878,7 @@ export function WorkspaceTabs({
                             </div>
                             <div>
                               <dt>Still needed</dt>
-                              <dd>{explanation.missingEvidence.slice(0, 3).join(" ")}</dd>
+                              <dd>{explanation.missingEvidence.slice(0, 3).join(" - ")}</dd>
                             </div>
                           </dl>
                         </article>
@@ -3741,77 +3890,10 @@ export function WorkspaceTabs({
                 </section>
               </div>
             </section>
-            <div className="review-tools">
-              <label className="table-search" htmlFor="review-search">
-                <Search aria-hidden size={16} />
-                <input
-                  autoComplete="off"
-                  id="review-search"
-                  onChange={(event) => setReviewQuery(event.target.value)}
-                  placeholder="Filter review indicators"
-                  type="search"
-                  value={reviewQuery}
-                />
-              </label>
-              <label className="sort-select-label" htmlFor="review-type">
-                <ListChecks aria-hidden size={16} />
-                <select
-                  className="sort-select"
-                  id="review-type"
-                  onChange={(event) => setReviewType(event.target.value)}
-                  value={reviewType}
-                >
-                  <option value="all">All flag types</option>
-                  {indicatorTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {indicatorLabel(type)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <section className="flag-methodology-guide" aria-label="Flag calculation guide" data-tour="flag-guide">
-              <div className="flag-guide-header">
-                <div>
-                  <strong>Flag Calculation Guide</strong>
-                  <span>Current advisory flag types, calculation triggers, and common checks before interpreting them.</span>
-                </div>
-                <nav aria-label="Flag table of contents" className="flag-guide-toc">
-                  {flagMethodologyGuides.map((guide) => (
-                    <a href={`#flag-guide-${guide.id}`} key={guide.id}>
-                      {guide.label}
-                    </a>
-                  ))}
-                </nav>
-              </div>
-              <div className="flag-guide-list">
-                {flagMethodologyGuides.map((guide) => (
-                  <article id={`flag-guide-${guide.id}`} key={guide.id}>
-                    <div>
-                      <span className="indicator-pill">! {guide.label}</span>
-                    </div>
-                    <dl>
-                      <div>
-                        <dt>Calculated from</dt>
-                        <dd>{guide.calculatedFrom}</dd>
-                      </div>
-                      <div>
-                        <dt>Threshold</dt>
-                        <dd>{guide.threshold}</dd>
-                      </div>
-                      <div>
-                        <dt>Alternative explanations</dt>
-                        <dd>{guide.alternativeExplanations}</dd>
-                      </div>
-                      <div>
-                        <dt>Validation checks</dt>
-                        <dd>{guide.validation}</dd>
-                      </div>
-                    </dl>
-                  </article>
-                ))}
-              </div>
-            </section>
+              </section>
+            )}
+            {reviewView === "screening" && (
+              <section className="review-view-panel" data-tour="review-screening-view" aria-label="Screening charts">
             {reviewRows.length ? (
               <section className="screening-section" aria-label="Statistical screening graphs">
                 <div className="screening-toolbar">
@@ -4206,6 +4288,39 @@ export function WorkspaceTabs({
                 <span>These graphs need reviewCharts.metadata.rows from the legacy bundle.</span>
               </div>
             )}
+              </section>
+            )}
+            {reviewView === "indicators" && (
+              <section className="review-view-panel" data-tour="review-indicators-view" aria-label="Advisory indicators">
+            <div className="review-tools">
+              <label className="table-search" htmlFor="review-search">
+                <Search aria-hidden size={16} />
+                <input
+                  autoComplete="off"
+                  id="review-search"
+                  onChange={(event) => setReviewQuery(event.target.value)}
+                  placeholder="Filter review indicators"
+                  type="search"
+                  value={reviewQuery}
+                />
+              </label>
+              <label className="sort-select-label" htmlFor="review-type">
+                <ListChecks aria-hidden size={16} />
+                <select
+                  className="sort-select"
+                  id="review-type"
+                  onChange={(event) => setReviewType(event.target.value)}
+                  value={reviewType}
+                >
+                  <option value="all">All flag types</option>
+                  {indicatorTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {indicatorLabel(type)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
             {indicators.length ? (
               <div className="review-layout" data-tour="review-layout">
                 <div className="priority-list">
@@ -4271,55 +4386,57 @@ export function WorkspaceTabs({
                 </span>
               </div>
             )}
-          </section>
-
-          <section className="panel" data-tour="history-panel">
-            <div className="panel-header">
-              <div>
-                <h2>Flag Mix</h2>
-                <span>Counts by advisory indicator type</span>
-              </div>
-              <Eli5>
-                This chart is like sorting warning sticky notes into piles. Bigger piles mean more places had the same
-                kind of advisory pattern.
-              </Eli5>
-            </div>
-            <ChartQualityNotice diagnostic={flagMixDiagnostic} />
-            <div
-              className={`screening-chart-shell ${flagMixDiagnostic.status !== "ready" && !flagMixAcknowledged ? "is-gated" : ""}`}
-            >
-              <div className="chart-gate-frame">
-                <div className="mini-bars">
-                  {groupedIndicatorCounts.length ? (
-                    groupedIndicatorCounts.map(([label, count]) => (
-                      <div className="mini-bar-row" key={label}>
-                        <span>{label}</span>
-                        <strong>{count}</strong>
-                        <i style={{ width: `${Math.max(8, (count / indicators.length) * 100)}%` }} />
-                      </div>
-                    ))
-                  ) : (
-                    <div className="empty-state compact">
-                      <strong>{reviewRows.length ? "No advisory flags generated" : "Waiting on review data"}</strong>
-                      <span>
-                        {reviewRows.length
-                          ? reviewLimitation ?? "No loaded review rows crossed the current advisory thresholds."
-                          : "Expected path: reviewCharts.metadata.rows in the state bundle."}
-                      </span>
-                    </div>
-                  )}
+              </section>
+            )}
+            {reviewView === "methodology" && (
+              <section className="review-view-panel" data-tour="review-methodology-view" aria-label="Flag methodology">
+            <section className="flag-methodology-guide" aria-label="Flag calculation guide" data-tour="flag-guide">
+              <div className="flag-guide-header">
+                <div>
+                  <strong>Flag Calculation Guide</strong>
+                  <span>Current advisory flag types, calculation triggers, and common checks before interpreting them.</span>
                 </div>
+                <nav aria-label="Flag table of contents" className="flag-guide-toc">
+                  {flagMethodologyGuides.map((guide) => (
+                    <a href={`#flag-guide-${guide.id}`} key={guide.id}>
+                      {guide.label}
+                    </a>
+                  ))}
+                </nav>
               </div>
-              <ChartGate
-                acknowledged={flagMixAcknowledged}
-                diagnostic={flagMixDiagnostic}
-                onAcknowledge={() => acknowledgeChart(flagMixDiagnostic.acknowledgementKey)}
-              />
-            </div>
+              <div className="flag-guide-list">
+                {flagMethodologyGuides.map((guide) => (
+                  <article id={`flag-guide-${guide.id}`} key={guide.id}>
+                    <div>
+                      <span className="indicator-pill">! {guide.label}</span>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>Calculated from</dt>
+                        <dd>{guide.calculatedFrom}</dd>
+                      </div>
+                      <div>
+                        <dt>Threshold</dt>
+                        <dd>{guide.threshold}</dd>
+                      </div>
+                      <div>
+                        <dt>Alternative explanations</dt>
+                        <dd>{guide.alternativeExplanations}</dd>
+                      </div>
+                      <div>
+                        <dt>Validation checks</dt>
+                        <dd>{guide.validation}</dd>
+                      </div>
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            </section>
+              </section>
+            )}
           </section>
         </div>
       )}
-
       {activeTab === "history" && (
         <div className="tab-panel-content">
           <section className="panel">
@@ -4412,7 +4529,7 @@ export function WorkspaceTabs({
                         </div>
                       </dl>
                       <small>
-                        {summary.rows.toLocaleString()} rows Ãƒâ€šÃ‚Â· {summary.sourceCount} source
+                        {summary.rows.toLocaleString()} rows - {summary.sourceCount} source
                         {summary.sourceCount === 1 ? "" : "s"}
                       </small>
                     </article>
@@ -4917,7 +5034,7 @@ export function WorkspaceTabs({
                     <strong>
                       {Object.entries(sourceRecordsRequestStatusCounts)
                         .map(([status, count]) => `${evidenceStatusLabel(status)}: ${count}`)
-                        .join("; ")}
+                        .join(" - ")}
                     </strong>
                   </article>
                 </div>
@@ -5012,7 +5129,7 @@ export function WorkspaceTabs({
                     <p>
                       {Object.entries(electronicStatusCounts)
                         .map(([status, count]) => `${evidenceStatusLabel(status)}: ${count}`)
-                        .join("; ") || "No registered evidence rows."}
+                        .join(" - ") || "No registered evidence rows."}
                     </p>
                     <span className="pending">Registry checked {electronicIntegrityStatus.electionYear}</span>
                   </article>
@@ -5047,7 +5164,7 @@ export function WorkspaceTabs({
                   <div className="planner-note">
                     <strong>Open records queue</strong>
                     <span>
-                      {electronicRequestArtifacts.map((artifact) => electronicArtifactLabel(artifact.type)).join(", ")}
+                      {electronicRequestArtifacts.map((artifact) => electronicArtifactLabel(artifact.type)).join(" - ")}
                     </span>
                   </div>
                 )}
@@ -5058,7 +5175,7 @@ export function WorkspaceTabs({
                       <span>
                         {Object.entries(electronicRequestStatusCounts)
                           .map(([status, count]) => `${evidenceStatusLabel(status)}: ${count}`)
-                          .join("; ")}
+                          .join(" - ")}
                         {electronicStateDraft ? ` Draft: ${electronicStateDraft.emailFile}` : ""}
                       </span>
                     </div>
@@ -5179,7 +5296,7 @@ export function WorkspaceTabs({
                 <strong>Latest selected-state import</strong>
                 <span>
                   {latestRun
-                    ? `${latestRun.status} Ãƒâ€šÃ‚Â· ${dateLabel(latestRun.finishedAt ?? latestRun.startedAt)}`
+                    ? `${latestRun.status} - ${dateLabel(latestRun.finishedAt ?? latestRun.startedAt)}`
                     : "No import run found for this state."}
                 </span>
               </article>
@@ -5525,7 +5642,7 @@ export function WorkspaceTabs({
                             </td>
                             <td>
                               {diagnostic.summary}
-                              <span>{` Controls: ${diagnostic.controls.join("; ")}.`}</span>
+                              <span>{` Controls: ${diagnostic.controls.join(" - ")}.`}</span>
                             </td>
                           </tr>
                         ))}
@@ -5601,7 +5718,7 @@ export function WorkspaceTabs({
                 <ul className="reviewer-checklist">
                   {reviewerChecklist.map((entry) => (
                     <li key={entry.item}>
-                      <span aria-hidden>ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“</span>
+                      <span aria-hidden>{"->"}</span>
                       {entry.item}
                     </li>
                   ))}
@@ -5857,7 +5974,7 @@ export function WorkspaceTabs({
                     {run.state} {run.electionYear}
                   </strong>
                   <span>
-                    {run.parser} Ãƒâ€šÃ‚Â· {dateLabel(run.startedAt)}
+                    {run.parser} - {dateLabel(run.startedAt)}
                   </span>
                   <span className="mono">{run.status}</span>
                   {Object.keys(run.summary).length > 0 && (
@@ -5866,7 +5983,7 @@ export function WorkspaceTabs({
                         .slice(0, 5)
                         .map(([key, value]) => `${key}: ${summaryValue(value)}`)
                         .filter(Boolean)
-                        .join(" Ãƒâ€šÃ‚Â· ")}
+                        .join(" - ")}
                     </span>
                   )}
                 </li>
