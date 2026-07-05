@@ -24,12 +24,12 @@ Requester:
 [requester email]
 [requester phone, optional]
 
-SECTION 2 - CODEX-PREPARED SOURCE CONTEXT
+SECTION 2 - REQUEST PREPARATION CONTEXT
 Tracking ID: SR-2024-AK-SOURCE-GAPS
 Local packet: data/ak-2024-official-source-request-packet.json
 Source lead: https://www.elections.alaska.gov/election-results/e/?id=24genr
 Evidence summary: Official ENRbyPrecinct rows are loaded for President and named U.S. House first-choice candidates, but U.S. House write-ins are 750 votes short at reporting-unit grain and mixed reporting units are not geometry-ready. ENR turnout fields reconcile statewide but need denominator semantics before replacing EAC fallback.
-Codex-prepared action: Prepared a state-level draft and packet reference. The app can copy the draft, open a mail client, and collect response metadata through GitHub.
+Prepared action: Prepared a state-level draft and packet reference. The app can copy the draft, open a mail client, and collect response metadata through GitHub.
 
 SECTION 3 - PUBLIC RECORDS REQUEST TEXT
 Requested records: Official U.S. House write-in allocation by reporting unit or source confirmation of omission; reporting-unit geometry/crosswalk; ENR Reg_voters and total_ballots field semantics; official 2020, 2016, and 2012 presidential baselines; CVR availability, audit, recount, incident, correction, litigation, and records-request response artifacts.

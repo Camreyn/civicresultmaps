@@ -548,7 +548,7 @@ const tourFeatureRegistry: TourFeature[] = [
       ...(context.hasSourceRecordsRequestRows
         ? [
             {
-              body: "Source-records requests are separate from electronic-integrity evidence requests. Codex prepares the draft and packet context here; you verify the custodian, send it yourself, and submit replies through the response form.",
+              body: "Source-records requests are separate from electronic-integrity evidence requests. The app prepares the draft and packet context here; you verify the custodian, send it yourself, and submit replies through the response form.",
               fallbackTarget: "[data-tour='electronic-integrity']",
               id: "source-records-request-draft",
               tab: "electronic" as const,
@@ -4443,7 +4443,7 @@ export function WorkspaceTabs({
                       <p>
                         Electronic-integrity requests ask for machine-output, audit, log, custody, and related evidence.
                         Source-records requests ask for missing official results, comparison contests, turnout,
-                        geometry, historical baselines, and source caveats. Codex prepares both drafts; you send them
+                        geometry, historical baselines, and source caveats. The app prepares both drafts; you send them
                         yourself and submit replies separately.
                       </p>
                     </article>
@@ -4553,14 +4553,14 @@ export function WorkspaceTabs({
                 <div className="planner-note source-records-separation">
                   <strong>Separate source-records requests</strong>
                   <span>
-                    This is not the electronic-integrity evidence queue. Codex prepares request text and packet context
+                    This is not the electronic-integrity evidence queue. The app prepares request text and packet context
                     here; your manual step is to verify the custodian, send the email or portal request yourself, then
                     submit any reply through GitHub.
                   </span>
                 </div>
                 <div className="export-summary-grid">
                   <article>
-                    <span>Codex-prepared drafts</span>
+                    <span>Prepared drafts</span>
                     <strong>{sourceRecordsDraftFiles.length.toLocaleString()}</strong>
                   </article>
                   <article>
@@ -4583,7 +4583,7 @@ export function WorkspaceTabs({
                 {sourceRecordsStateDraft && (
                   <div className="request-draft-panel source-records-request-panel">
                     <div>
-                      <span className="section-label">Codex-prepared draft</span>
+                      <span className="section-label">Prepared draft</span>
                       <strong>Source records request</strong>
                       <span>{sourceRecordsStateDraft.routingHint} {sourceRecordsStateDraft.recipientHint}</span>
                     </div>
@@ -4618,7 +4618,7 @@ export function WorkspaceTabs({
                         <th>Request ID</th>
                         <th>Source gap</th>
                         <th>Status</th>
-                        <th>Codex prepared</th>
+                        <th>Prepared context</th>
                         <th>Your step</th>
                         <th>Response tracking</th>
                       </tr>
@@ -4629,7 +4629,7 @@ export function WorkspaceTabs({
                           <td>{request.requestId}</td>
                           <td>{request.requestLabel}</td>
                           <td>{evidenceStatusLabel(request.status)}</td>
-                          <td>{request.codexPreparedAction}</td>
+                          <td>{request.preparedAction}</td>
                           <td>{request.manualUserAction}</td>
                           <td>{request.responseAction}</td>
                         </tr>

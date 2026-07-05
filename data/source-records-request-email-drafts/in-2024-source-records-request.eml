@@ -18,12 +18,12 @@ Requester:
 [requester email]
 [requester phone, optional]
 
-SECTION 2 - CODEX-PREPARED SOURCE CONTEXT
+SECTION 2 - REQUEST PREPARATION CONTEXT
 Tracking ID: SR-2024-IN-PRECINCT-SUBCOUNTY-ROWS
 Local packet: data/source-records-request-packets/in-2024-precinct-results-request.md
 Source lead: https://www.in.gov/sos/elections/
 Evidence summary: Official ENR county category JSON files are loaded, but ordinary public ENR archive paths expose county-level candidate summaries and turnout/statistics data, not same-grain precinct/subcounty President plus U.S. Senate rows. Indiana reports 5,147 precincts and 1,342 precinct splits in the retained statewide precinct-count PDF.
-Codex-prepared action: Prepared the request packet, statewide routing summary, county fallback tracker, and sendable email draft.
+Prepared action: Prepared the request packet, statewide routing summary, county fallback tracker, and sendable email draft.
 
 SECTION 3 - PUBLIC RECORDS REQUEST TEXT
 Requested records: Machine-readable official 2024 General President and U.S. Senate rows at the same precinct, precinct-split, township, ward, vote-center, or lowest maintained subcounty grain; field definitions; county manifest; certification/finality status; turnout/registration denominator rows; geometry/crosswalks; historical baselines; and administration-context records.

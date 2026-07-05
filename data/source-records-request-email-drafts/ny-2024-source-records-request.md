@@ -24,12 +24,12 @@ Requester:
 [requester email]
 [requester phone, optional]
 
-SECTION 2 - CODEX-PREPARED SOURCE CONTEXT
+SECTION 2 - REQUEST PREPARATION CONTEXT
 Tracking ID: SR-2024-NY-MISSING-COUNTY-EQUIVALENTS
 Local packet: data/ny-2024-missing-county-request-packets.json
 Source lead: https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster
 Evidence summary: Monroe and many county local rows are loaded, but Oswego has an official public PDF/Excel lead not yet parsed and 11 other county equivalents remain request-path blockers. NYSBOE enrollment reports are denominator leads only until paired with ballots-cast or voter-history rows.
-Codex-prepared action: Prepared county-equivalent packet metadata and a state-level draft that points to NYSBOE FOIL and county board routing.
+Prepared action: Prepared county-equivalent packet metadata and a state-level draft that points to NYSBOE FOIL and county board routing.
 
 SECTION 3 - PUBLIC RECORDS REQUEST TEXT
 Requested records: Official 2024 General local or election-district President rows and same-grain U.S. Senate rows for county equivalents still outside normalized local review coverage; turnout or voter-history rows; registered-voter denominator timing; ED geometry/crosswalks; audit/CVR/recount/correction/incident/litigation records; and stable public URLs for Oswego official PDF/Excel artifacts.

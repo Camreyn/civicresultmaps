@@ -372,13 +372,13 @@ export type SourceRecordsRequestSummary = {
   requestLabel: string;
   status: string;
   priority: string;
-  preparedByCodex: boolean;
+  preparedByProject: boolean;
   manualActionRequired: boolean;
   localPacket: string;
   sourceUrl: string;
   requestedRecords: string;
   evidenceSummary: string;
-  codexPreparedAction: string;
+  preparedAction: string;
   manualUserAction: string;
   responseAction: string;
 };

@@ -25,9 +25,9 @@ test("source records request operations are generated separately from electronic
 
   for (const request of tracker.requests) {
     assert.equal(request.requestFamily, "source_records");
-    assert.equal(request.preparedByCodex, true);
+    assert.equal(request.preparedByProject, true);
     assert.equal(request.manualActionRequired, true);
-    assert.match(request.codexPreparedAction, /Prepared/);
+    assert.match(request.preparedAction, /Prepared/);
     assert.match(request.manualUserAction, /send|Send|Verify/);
     assert.match(request.responseAction, /Submit/);
   }
@@ -45,13 +45,13 @@ test("source records contacts keep custodian routing explicit", () => {
   assert.equal(contacts.states.find((entry) => entry.state === "NY").countyCustodianLikely, true);
 });
 
-test("source records drafts make Codex-prepared and user-send steps obvious", () => {
+test("source records drafts make prepared and user-send steps obvious", () => {
   for (const draft of operations.drafts) {
     assert.equal(existsSync(draft.emailFile), true, `${draft.emailFile} should exist`);
     assert.equal(existsSync(draft.markdownFile), true, `${draft.markdownFile} should exist`);
     const email = readFileSync(draft.emailFile, "utf8");
     assert.match(email, /SECTION 1 - REQUESTER ACTION REQUIRED BEFORE SENDING/);
-    assert.match(email, /SECTION 2 - CODEX-PREPARED SOURCE CONTEXT/);
+    assert.match(email, /SECTION 2 - REQUEST PREPARATION CONTEXT/);
     assert.match(email, /SECTION 3 - PUBLIC RECORDS REQUEST TEXT/);
     assert.match(email, /not an allegation or proof of fraud, misconduct, or tampering/);
   }
@@ -74,7 +74,7 @@ test("source records API and UI are wired as a distinct workflow", () => {
   assert.match(page, /listSourceRecordsRequests/);
   assert.match(page, /sourceRecordsRequests=\{sourceRecordsRequests\}/);
   assert.match(tabs, /Separate source-records requests/);
-  assert.match(tabs, /Codex-prepared draft/);
+  assert.match(tabs, /Prepared draft/);
   assert.match(tabs, /Your manual step/);
   assert.match(tabs, /source-records-request-draft/);
   assert.match(tabs, /sourceRecordsResponseUrl/);
