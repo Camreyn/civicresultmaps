@@ -40,6 +40,7 @@ import type {
   ElectronicIntegrityStateSummary,
   ElectronicIntegrityRequestOperationSummary,
   SourceRecordsRequestOperationSummary,
+  SourceRecordsRequestSummary,
   EquipmentClusterDiagnostic,
   EquipmentRowSummary,
   HistoricalResultRowSummary,
@@ -106,6 +107,24 @@ type DataNoteSection = {
   label: string;
   status: QualityBadgeStatus;
   why: string;
+};
+type EvidenceReviewDimension = {
+  detail: string;
+  label: string;
+  score: number;
+  status: QualityBadgeStatus;
+  why: string;
+};
+type FlagExplanation = {
+  auditContext: string;
+  denominatorContext: string;
+  jurisdiction: string;
+  label: string;
+  missingEvidence: string[];
+  priority: string;
+  scope: string;
+  sourceContext: string;
+  summary: string;
 };
 type StateDataNoteOverride = Partial<Pick<DataNoteSection, "detail" | "evidence" | "status" | "why">> & {
   key: DataNoteSection["key"];
@@ -409,6 +428,30 @@ const tourFeatureRegistry: TourFeature[] = [
               title: "Review flagged patterns",
             },
             {
+              body: "The Evidence Review Toolkit shows whether this state has enough source-backed inputs for responsible advisory review. Treat the score as readiness, not risk or proof.",
+              fallbackTarget: "[data-tour='review-panel']",
+              id: "evidence-toolkit",
+              tab: "review" as const,
+              target: "[data-tour='evidence-toolkit']",
+              title: "Open the evidence toolkit",
+            },
+            {
+              body: "The readiness score combines certified results, source provenance, local review rows, comparison contests, turnout denominators, geometry, history, and audit/CVR/equipment context. Low score means collect evidence before interpreting flags.",
+              fallbackTarget: "[data-tour='evidence-toolkit']",
+              id: "evidence-readiness-score",
+              tab: "review" as const,
+              target: "[data-tour='evidence-readiness-score']",
+              title: "Check review readiness first",
+            },
+            {
+              body: "The flag explainability panel links top advisory flags to source context, denominator context, audit context, and remaining evidence needs. Use it to decide the next source check, not to declare conclusions.",
+              fallbackTarget: "[data-tour='evidence-toolkit']",
+              id: "flag-explainability-panel",
+              tab: "review" as const,
+              target: "[data-tour='flag-explainability-panel']",
+              title: "Explain flags before escalating",
+            },
+            {
               body: "This guide is the table of contents for advisory flags. It explains how Vote-Share Pattern, Down-ballot Difference, and Down-ballot Outliers are calculated and what normal explanations to check first.",
               fallbackTarget: "[data-tour='review-panel']",
               id: "flag-guide",
@@ -458,6 +501,14 @@ const tourFeatureRegistry: TourFeature[] = [
               tab: "review",
               target: "[data-tour='review-panel']",
               title: "Review coverage depends on rows",
+            },
+            {
+              body: "The Evidence Review Toolkit still works when charts are missing. It shows which source families are blocking responsible advisory review and what evidence to collect next.",
+              fallbackTarget: "[data-tour='review-panel']",
+              id: "evidence-toolkit-empty",
+              tab: "review" as const,
+              target: "[data-tour='evidence-toolkit']",
+              title: "Use tools before charts are ready",
             },
             {
               body: "Even when charts are not loaded, the Data Notes and Source Planner explain why. Missing review rows usually means the state still needs lower-level official data before advisory charts can be shown.",
@@ -960,6 +1011,163 @@ function denominatorContextSummary(indicator: AnalysisIndicator) {
   return `${denominator.defaultTurnoutDenominator ?? "Turnout denominator not recorded"}. ${denominator.missingDenominator ?? ""}`.trim();
 }
 
+function readinessStatus(score: number): QualityBadgeStatus {
+  if (score >= 0.9) return "ready";
+  if (score >= 0.5) return "partial";
+  if (score > 0) return "proxy";
+  return "missing";
+}
+
+function readinessGateLabel(score: number, blockerCount: number) {
+  if (blockerCount > 0 && score < 0.5) return "Blocked for responsible flag review";
+  if (score >= 0.8 && blockerCount === 0) return "Strong review support";
+  if (score >= 0.55) return "Partial review support";
+  if (score > 0) return "Weak review support";
+  return "Waiting on source data";
+}
+
+function scoreFromNote(note: DataNoteSection | undefined) {
+  if (!note) return 0;
+  if (note.status === "ready") return 1;
+  if (note.status === "partial") return 0.55;
+  if (note.status === "proxy") return 0.35;
+  return 0;
+}
+
+function buildEvidenceReadinessDimensions(input: {
+  adminSourceStatus: AdminSourceStatusSummary | undefined;
+  coverage: CoverageSummary | null;
+  dataNotes: DataNoteSection[];
+  electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
+  historicalRows: HistoricalResultRowSummary[];
+  indicators: AnalysisIndicator[];
+  reviewRows: ReviewRowSummary[];
+  sourceRecordsRequestRows: SourceRecordsRequestSummary[];
+  sources: SourceSummary[];
+  turnoutRows: TurnoutRowSummary[];
+}) {
+  const noteByKey = new Map(input.dataNotes.map((note) => [note.key, note]));
+  const comparisonRows = input.reviewRows.filter((row) => row.demDropoff !== null || row.repDropoff !== null).length;
+  const sourceUrlGaps = input.sources.filter((source) => !source.sourceUrl.trim()).length;
+  const loadedElectronicArtifacts = input.electronicIntegrityStatus?.artifacts.filter((artifact) => artifact.status === "loaded").length ?? 0;
+  const requestRows = input.sourceRecordsRequestRows.length;
+  const adminFamiliesLoaded = [
+    input.adminSourceStatus?.audit?.status,
+    input.adminSourceStatus?.cvr?.status,
+    input.adminSourceStatus?.incidents?.status,
+    input.adminSourceStatus?.equipment?.status,
+  ].filter((status) => status === "loaded" || status === "partial").length;
+  const dimensions: EvidenceReviewDimension[] = [
+    {
+      detail: noteByKey.get("results")?.detail ?? "Certified result rows are not loaded.",
+      label: "Certified results",
+      score: scoreFromNote(noteByKey.get("results")),
+      status: noteByKey.get("results")?.status ?? "missing",
+      why: noteByKey.get("results")?.why ?? "Official results are the baseline for every review tool.",
+    },
+    {
+      detail: `${input.sources.length.toLocaleString()} source record${input.sources.length === 1 ? "" : "s"}; ${sourceUrlGaps.toLocaleString()} missing URL${sourceUrlGaps === 1 ? "" : "s"}.`,
+      label: "Source provenance",
+      score: input.sources.length ? (sourceUrlGaps ? 0.55 : 1) : 0,
+      status: input.sources.length ? (sourceUrlGaps ? "partial" : "ready") : "missing",
+      why: "Every advisory signal should trace back to public source records before it is escalated.",
+    },
+    {
+      detail: noteByKey.get("review")?.detail ?? "No review rows are loaded.",
+      label: "Local review rows",
+      score: scoreFromNote(noteByKey.get("review")),
+      status: noteByKey.get("review")?.status ?? "missing",
+      why: noteByKey.get("review")?.why ?? "Flags need same-state local reporting-unit rows, not just statewide totals.",
+    },
+    {
+      detail: comparisonRows ? `${comparisonRows.toLocaleString()} review row${comparisonRows === 1 ? "" : "s"} include same-grain comparison-contest values.` : "No same-grain comparison contest values are loaded.",
+      label: "Comparison contest",
+      score: comparisonRows ? (comparisonRows === input.reviewRows.length ? 1 : 0.65) : 0,
+      status: comparisonRows ? (comparisonRows === input.reviewRows.length ? "ready" : "partial") : "missing",
+      why: "President-versus-Senate/Governor/House comparisons make drop-off flags more interpretable than vote-share alone.",
+    },
+    {
+      detail: noteByKey.get("turnout")?.detail ?? "No turnout denominator rows are loaded.",
+      label: "Turnout denominator",
+      score: scoreFromNote(noteByKey.get("turnout")),
+      status: noteByKey.get("turnout")?.status ?? "missing",
+      why: noteByKey.get("turnout")?.why ?? "Turnout denominators help separate accounting questions from candidate-level patterns.",
+    },
+    {
+      detail: noteByKey.get("map")?.detail ?? "Map geometry is not loaded.",
+      label: "Geometry and joins",
+      score: scoreFromNote(noteByKey.get("map")),
+      status: noteByKey.get("map")?.status ?? "missing",
+      why: noteByKey.get("map")?.why ?? "Maps need validated geometry joins before geographic clusters should be interpreted.",
+    },
+    {
+      detail: input.historicalRows.length ? `${input.historicalRows.length.toLocaleString()} historical baseline row${input.historicalRows.length === 1 ? "" : "s"} loaded.` : "No historical baseline rows are loaded.",
+      label: "Historical baselines",
+      score: scoreFromNote(noteByKey.get("history")),
+      status: noteByKey.get("history")?.status ?? "missing",
+      why: noteByKey.get("history")?.why ?? "Historical rows provide context, not proof, for unusual 2024 movement.",
+    },
+    {
+      detail: `${loadedElectronicArtifacts.toLocaleString()} electronic evidence artifact${loadedElectronicArtifacts === 1 ? "" : "s"} loaded; ${adminFamiliesLoaded.toLocaleString()} admin context famil${adminFamiliesLoaded === 1 ? "y" : "ies"} loaded or partial.`,
+      label: "Audit, CVR, equipment context",
+      score: Math.min(1, (loadedElectronicArtifacts + adminFamiliesLoaded) / 5),
+      status: readinessStatus(Math.min(1, (loadedElectronicArtifacts + adminFamiliesLoaded) / 5)),
+      why: "CVRs, audits, recounts, incidents, and equipment records are follow-up evidence families, not automatic confirmation or clearance.",
+    },
+    {
+      detail: requestRows ? `${requestRows.toLocaleString()} prepared source-record request${requestRows === 1 ? "" : "s"} remain in the queue.` : "No prepared source-record requests are queued for this state.",
+      label: "Remaining records queue",
+      score: requestRows ? 0.35 : 1,
+      status: requestRows ? "proxy" : "ready",
+      why: requestRows ? "Open source-record requests identify evidence still needed before stronger review conclusions are responsible." : "No source-record request rows are currently queued for this state.",
+    },
+  ];
+  const totalScore = dimensions.reduce((sum, dimension) => sum + dimension.score, 0) / dimensions.length;
+  const blockerCount = dimensions.filter((dimension) => dimension.status === "missing" || dimension.status === "blocked").length;
+  return { blockerCount, dimensions, label: readinessGateLabel(totalScore, blockerCount), score: totalScore };
+}
+
+function buildFlagExplanation(input: {
+  dataNotes: DataNoteSection[];
+  indicator: AnalysisIndicator;
+  reviewRows: ReviewRowSummary[];
+  sources: SourceSummary[];
+}): FlagExplanation {
+  const relatedRows = input.reviewRows.filter((row) => row.jurisdictionCode === input.indicator.jurisdictionCode);
+  const relatedSourceIds = [...new Set(relatedRows.map((row) => row.sourceId).filter(Boolean))];
+  const relatedSources = relatedSourceIds
+    .map((sourceId) => input.sources.find((candidate) => candidate.id === sourceId))
+    .filter((source): source is SourceSummary => Boolean(source));
+  const comparisonRows = relatedRows.filter((row) => row.demDropoff !== null || row.repDropoff !== null).length;
+  const missingEvidence = input.dataNotes
+    .filter((note) => note.status !== "ready")
+    .slice(0, 4)
+    .map((note) => `${note.label}: ${note.why}`);
+  if (relatedRows.length && relatedSources.length === 0) {
+    missingEvidence.unshift("Related review rows cite source IDs that are not present in the selected state's source list.");
+  }
+  if (!relatedRows.length) {
+    missingEvidence.unshift("Related review rows were not found for this indicator's jurisdiction in the current state payload.");
+  }
+  if (!comparisonRows) {
+    missingEvidence.unshift("Same-grain comparison contest values are missing for this jurisdiction, so read this as vote-share or source-coverage review only.");
+  }
+  return {
+    auditContext: auditContextSummary(input.indicator),
+    denominatorContext: denominatorContextSummary(input.indicator),
+    jurisdiction: input.indicator.jurisdictionName,
+    label: input.indicator.label,
+    missingEvidence,
+    priority: severityBucket(input.indicator.severity),
+    scope: indicatorScopeLabel(input.indicator),
+    sourceContext: relatedSources.length
+      ? relatedSources.map((source) => `${source.authority}: ${source.title}. ${source.sourceUrl || "No direct URL recorded."}`).join(" ")
+      : relatedSourceIds.length
+        ? `Source IDs ${relatedSourceIds.join(", ")} are not present in the selected state's source list.`
+        : "No related review-row source ID is available for this indicator.",
+    summary: `${input.indicator.summary} ${indicatorExplanation(input.indicator.type)}`,
+  };
+}
 function severityBucket(severity: number) {
   if (severity >= 0.85) {
     return "High review priority";
@@ -2807,6 +3015,50 @@ export function WorkspaceTabs({
     turnoutRows,
     voteMethodRows,
   });
+  const evidenceReadiness = useMemo(
+    () =>
+      buildEvidenceReadinessDimensions({
+        adminSourceStatus,
+        coverage,
+        dataNotes: dataNoteSections,
+        electronicIntegrityStatus,
+        historicalRows,
+        indicators,
+        reviewRows,
+        sourceRecordsRequestRows,
+        sources,
+        turnoutRows,
+      }),
+    [
+      adminSourceStatus,
+      coverage,
+      dataNoteSections,
+      electronicIntegrityStatus,
+      historicalRows,
+      indicators,
+      reviewRows,
+      sourceRecordsRequestRows,
+      sources,
+      turnoutRows,
+    ],
+  );
+  const evidenceReadinessScorePct = Math.round(evidenceReadiness.score * 100);
+  const evidenceGapPriorities = evidenceReadiness.dimensions
+    .filter((dimension) => dimension.score < 1)
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 5);
+  const flagExplanations = useMemo(
+    () =>
+      topIndicators.slice(0, 3).map((indicator) =>
+        buildFlagExplanation({
+          dataNotes: dataNoteSections,
+          indicator,
+          reviewRows,
+          sources,
+        }),
+      ),
+    [dataNoteSections, reviewRows, sources, topIndicators],
+  );
   const dataIssueUrl = buildReportIssueUrl({
     context: "Selected state workspace",
     sourceUrl: sources[0]?.sourceUrl || undefined,
@@ -3337,7 +3589,7 @@ export function WorkspaceTabs({
                       <div>
                         <strong>{candidate}</strong>
                         <span>
-                          {votes.toLocaleString()} Â· {pct(votes, totalVotes)}
+                          {votes.toLocaleString()} Ãƒâ€šÃ‚Â· {pct(votes, totalVotes)}
                         </span>
                       </div>
                       <i
@@ -3400,6 +3652,95 @@ export function WorkspaceTabs({
                 <strong>{indicators[0]?.severity.toFixed(2) ?? "0.00"}</strong>
               </article>
             </div>
+            <section className="evidence-toolkit" aria-label="Evidence review toolkit" data-tour="evidence-toolkit">
+              <div className="evidence-toolkit-head">
+                <div>
+                  <span className="section-label">Evidence Review Toolkit</span>
+                  <strong>{evidenceReadiness.label}</strong>
+                  <p>
+                    These tools rank whether the selected state can support responsible advisory review. They identify
+                    source gaps and follow-up priorities; they do not allege wrongdoing or assign intent.
+                  </p>
+                </div>
+                <div className="readiness-score" data-tour="evidence-readiness-score">
+                  <span>Readiness</span>
+                  <strong>{evidenceReadinessScorePct}%</strong>
+                  <small>{evidenceReadiness.blockerCount.toLocaleString()} blocker{evidenceReadiness.blockerCount === 1 ? "" : "s"}</small>
+                </div>
+              </div>
+              <div className="evidence-dimension-grid">
+                {evidenceReadiness.dimensions.map((dimension) => (
+                  <article className={`evidence-dimension ${dimension.status}`} key={dimension.label}>
+                    <div>
+                      <span>{dimension.label}</span>
+                      <QualityBadge detail={dimension.detail} status={dimension.status} />
+                    </div>
+                    <strong>{Math.round(dimension.score * 100)}%</strong>
+                    <p>{dimension.why}</p>
+                  </article>
+                ))}
+              </div>
+              <div className="evidence-tool-split">
+                <section className="evidence-gap-panel" data-tour="evidence-gap-priorities" aria-label="Highest impact remaining evidence gaps">
+                  <div>
+                    <span className="section-label">Highest-impact remaining gaps</span>
+                    <strong>{evidenceGapPriorities.length ? "Collect or verify these next" : "No major readiness gaps detected"}</strong>
+                  </div>
+                  {evidenceGapPriorities.length ? (
+                    <ol>
+                      {evidenceGapPriorities.map((gap) => (
+                        <li key={gap.label}>
+                          <span>{gap.label}</span>
+                          <p>{gap.why}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : (
+                    <p>Current loaded evidence covers the readiness dimensions tracked by this tool. Continue source-row review before making claims.</p>
+                  )}
+                </section>
+                <section className="flag-explain-panel" data-tour="flag-explainability-panel" aria-label="Flag explainability panel">
+                  <div>
+                    <span className="section-label">Flag Explainability Panel</span>
+                    <strong>{flagExplanations.length ? "Why the top flags exist" : "No advisory flags to explain"}</strong>
+                  </div>
+                  {flagExplanations.length ? (
+                    <div className="flag-explain-list">
+                      {flagExplanations.map((explanation) => (
+                        <article key={`${explanation.jurisdiction}-${explanation.label}`}>
+                          <div>
+                            <span className="indicator-pill">! {explanation.label}</span>
+                            <strong>{explanation.jurisdiction}</strong>
+                            <small>{explanation.scope} Â· {explanation.priority}</small>
+                          </div>
+                          <p>{explanation.summary}</p>
+                          <dl>
+                            <div>
+                              <dt>Source context</dt>
+                              <dd>{explanation.sourceContext}</dd>
+                            </div>
+                            <div>
+                              <dt>Denominator context</dt>
+                              <dd>{explanation.denominatorContext}</dd>
+                            </div>
+                            <div>
+                              <dt>Audit context</dt>
+                              <dd>{explanation.auditContext}</dd>
+                            </div>
+                            <div>
+                              <dt>Still needed</dt>
+                              <dd>{explanation.missingEvidence.slice(0, 3).join(" ")}</dd>
+                            </div>
+                          </dl>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No advisory indicators crossed the current thresholds. If review rows are missing, use the readiness gaps above to prioritize collection.</p>
+                  )}
+                </section>
+              </div>
+            </section>
             <div className="review-tools">
               <label className="table-search" htmlFor="review-search">
                 <Search aria-hidden size={16} />
@@ -4071,7 +4412,7 @@ export function WorkspaceTabs({
                         </div>
                       </dl>
                       <small>
-                        {summary.rows.toLocaleString()} rows Â· {summary.sourceCount} source
+                        {summary.rows.toLocaleString()} rows Ãƒâ€šÃ‚Â· {summary.sourceCount} source
                         {summary.sourceCount === 1 ? "" : "s"}
                       </small>
                     </article>
@@ -4838,7 +5179,7 @@ export function WorkspaceTabs({
                 <strong>Latest selected-state import</strong>
                 <span>
                   {latestRun
-                    ? `${latestRun.status} Â· ${dateLabel(latestRun.finishedAt ?? latestRun.startedAt)}`
+                    ? `${latestRun.status} Ãƒâ€šÃ‚Â· ${dateLabel(latestRun.finishedAt ?? latestRun.startedAt)}`
                     : "No import run found for this state."}
                 </span>
               </article>
@@ -5260,7 +5601,7 @@ export function WorkspaceTabs({
                 <ul className="reviewer-checklist">
                   {reviewerChecklist.map((entry) => (
                     <li key={entry.item}>
-                      <span aria-hidden>âœ“</span>
+                      <span aria-hidden>ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“</span>
                       {entry.item}
                     </li>
                   ))}
@@ -5516,7 +5857,7 @@ export function WorkspaceTabs({
                     {run.state} {run.electionYear}
                   </strong>
                   <span>
-                    {run.parser} Â· {dateLabel(run.startedAt)}
+                    {run.parser} Ãƒâ€šÃ‚Â· {dateLabel(run.startedAt)}
                   </span>
                   <span className="mono">{run.status}</span>
                   {Object.keys(run.summary).length > 0 && (
@@ -5525,7 +5866,7 @@ export function WorkspaceTabs({
                         .slice(0, 5)
                         .map(([key, value]) => `${key}: ${summaryValue(value)}`)
                         .filter(Boolean)
-                        .join(" Â· ")}
+                        .join(" Ãƒâ€šÃ‚Â· ")}
                     </span>
                   )}
                 </li>
