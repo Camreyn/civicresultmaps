@@ -1,0 +1,57 @@
+{
+  "checkedAt": "2026-07-04",
+  "description": "Operational contact metadata for source-records public-records requests. Recipient fields are intentionally conservative: do not invent an email address when the current custodian must be verified before sending.",
+  "defaultRequester": {
+    "name": "[requester name]",
+    "organization": "[organization, if any]",
+    "email": "[requester email]",
+    "phone": "[requester phone, optional]"
+  },
+  "states": [
+    {
+      "state": "AK",
+      "primaryCustodian": "Alaska Division of Elections",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.elections.alaska.gov/contact-us/",
+      "recipientLookupUrl": "https://www.elections.alaska.gov/contact-us/",
+      "countyCustodianLikely": false,
+      "notes": "Use the Division contact path for source-side confirmation of ENR write-in allocation, reporting-unit geometry/crosswalks, turnout-field semantics, historical baselines, CVR availability, and administration-context records."
+    },
+    {
+      "state": "IN",
+      "primaryCustodian": "Indiana Election Division",
+      "recipientEmail": "elections@iec.in.gov",
+      "recipientPortalUrl": "https://www.in.gov/sos/elections/",
+      "recipientLookupUrl": "https://www.in.gov/sos/elections/",
+      "countyCustodianLikely": true,
+      "notes": "Use the statewide Election Division request first. County office routing should be used only if the state confirms no statewide same-grain precinct/subcounty export exists."
+    },
+    {
+      "state": "NV",
+      "primaryCustodian": "Nevada Secretary of State Elections Division and county clerks/registrars",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.nvsos.gov/sos/elections",
+      "recipientLookupUrl": "https://www.nvsos.gov/sos/elections/voters/county-clerk-contact-information",
+      "countyCustodianLikely": true,
+      "notes": "Use the county-clerk contact path for the 14 Nevada jurisdictions outside loaded Clark, Washoe, and Humboldt CVR review coverage."
+    },
+    {
+      "state": "NY",
+      "primaryCustodian": "New York State Board of Elections and county boards of elections",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://elections.ny.gov/freedom-information-law-foil-requests",
+      "recipientLookupUrl": "https://publicreporting.elections.ny.gov/CountyBoardRoster/CountyBoardRoster",
+      "countyCustodianLikely": true,
+      "notes": "Use NYSBOE FOIL for state-maintained records and the County Board Roster for county-equivalent local result, turnout/voter-history, geometry/crosswalk, and administration-context records."
+    },
+    {
+      "state": "SD",
+      "primaryCustodian": "South Dakota Secretary of State Elections Division",
+      "recipientEmail": "",
+      "recipientPortalUrl": "https://www.sd.gov/cs?id=sc_cat_item&sys_id=f7f939eddbd4b150b2fb93d4f39619c0",
+      "recipientLookupUrl": "https://vip.sdsos.gov/CountyAuditors.aspx",
+      "countyCustodianLikely": true,
+      "notes": "Use the public-records path to request the certified 2024 General Election canvass/static export or a reconciling official county-level result payload. County auditors are fallback custodians if the state cannot provide a statewide certified export."
+    }
+  ]
+}

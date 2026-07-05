@@ -1,0 +1,71 @@
+{
+  "caveat": "Source-records request operations track collection workflow only. Missing, partial, denied, delayed, or redirected records do not prove fraud, misconduct, or tampering.",
+  "generatedAt": "2026-07-05",
+  "contacts": "data/source-records-request-contacts.json",
+  "tracker": "data/source-records-request-tracker.json",
+  "receivedFiles": "data/source-records-request-received-files.json",
+  "draftDir": "data/source-records-request-email-drafts",
+  "state": "all",
+  "dryRun": false,
+  "failures": [],
+  "requestRows": 5,
+  "manualActionRequiredRows": 5,
+  "draftCount": 5,
+  "rowsByStatus": {
+    "draft_ready": 5
+  },
+  "rowsByState": {
+    "AK": 1,
+    "IN": 1,
+    "NV": 1,
+    "NY": 1,
+    "SD": 1
+  },
+  "drafts": [
+    {
+      "state": "AK",
+      "emailFile": "data/source-records-request-email-drafts/ak-2024-source-records-request.eml",
+      "markdownFile": "data/source-records-request-email-drafts/ak-2024-source-records-request.md",
+      "subject": "Alaska 2024 source records request - SR-2024-AK-SOURCE-GAPS",
+      "requestIds": [
+        "SR-2024-AK-SOURCE-GAPS"
+      ]
+    },
+    {
+      "state": "IN",
+      "emailFile": "data/source-records-request-email-drafts/in-2024-source-records-request.eml",
+      "markdownFile": "data/source-records-request-email-drafts/in-2024-source-records-request.md",
+      "subject": "Indiana 2024 source records request - SR-2024-IN-PRECINCT-SUBCOUNTY-ROWS",
+      "requestIds": [
+        "SR-2024-IN-PRECINCT-SUBCOUNTY-ROWS"
+      ]
+    },
+    {
+      "state": "NV",
+      "emailFile": "data/source-records-request-email-drafts/nv-2024-source-records-request.eml",
+      "markdownFile": "data/source-records-request-email-drafts/nv-2024-source-records-request.md",
+      "subject": "Nevada 2024 source records request - SR-2024-NV-REMAINING-JURISDICTIONS",
+      "requestIds": [
+        "SR-2024-NV-REMAINING-JURISDICTIONS"
+      ]
+    },
+    {
+      "state": "NY",
+      "emailFile": "data/source-records-request-email-drafts/ny-2024-source-records-request.eml",
+      "markdownFile": "data/source-records-request-email-drafts/ny-2024-source-records-request.md",
+      "subject": "New York 2024 source records request - SR-2024-NY-MISSING-COUNTY-EQUIVALENTS",
+      "requestIds": [
+        "SR-2024-NY-MISSING-COUNTY-EQUIVALENTS"
+      ]
+    },
+    {
+      "state": "SD",
+      "emailFile": "data/source-records-request-email-drafts/sd-2024-source-records-request.eml",
+      "markdownFile": "data/source-records-request-email-drafts/sd-2024-source-records-request.md",
+      "subject": "South Dakota 2024 source records request - SR-2024-SD-CERTIFIED-CANVASS-EXPORT",
+      "requestIds": [
+        "SR-2024-SD-CERTIFIED-CANVASS-EXPORT"
+      ]
+    }
+  ]
+}
