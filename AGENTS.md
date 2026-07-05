@@ -131,3 +131,15 @@ Each worker PR must include:
 - Website/API display path checked
 - Caveats and remaining risks
 - Review-subagent result
+
+## Branch Naming And Public Exposure
+
+Use neutral branch prefixes that describe the work, not the agent or tool that created it:
+
+- `state/<state>-data-coverage` for state ETL/source work
+- `wave/<number>-integration` for wave integration branches
+- `docs/<topic>` for documentation
+- `feature/<topic>` for product work
+- `hotfix/<topic>` for urgent fixes
+
+Do not create new public branches with agent/tool names in the branch path. This repository is public, and GitHub does not support hiding individual branches in a public repository. Treat every pushed branch, draft PR branch, and branch name as public. Keep private or exploratory work local in worktrees until it is ready for a PR, and delete remote branches after their PRs are merged or closed.

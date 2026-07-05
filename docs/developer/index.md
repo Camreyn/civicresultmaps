@@ -1,4 +1,4 @@
-﻿# CivicResultMaps Developer Playbook
+# CivicResultMaps Developer Playbook
 
 This file is the operating manual for managed worker threads.
 
@@ -16,7 +16,7 @@ When coordinating state workers:
 2. Create at most five state workers per wave unless the prompt explicitly requests a smaller or larger batch.
 3. Create one worker per state unless the prompt explicitly requests separate state-task shards.
 4. Give each worker its own branch and worktree.
-5. Use branch names like `codex/state-<state>-data-coverage`.
+5. Use branch names like `state/<state>-data-coverage`.
 6. Keep worker briefs state-specific.
 7. Track status in a table.
 8. Before PR creation, compare worker diffs for conflicts against active branches.
@@ -72,7 +72,7 @@ Wave priority order:
 For each worker:
 
 1. Use a dedicated branch and worktree.
-2. Use branch names like `codex/state-<state>-data-coverage`.
+2. Use branch names like `state/<state>-data-coverage`.
 3. Keep state-specific work scoped to that branch unless shared helper work is explicitly split out.
 
 ## Worker Brief Template
@@ -81,7 +81,7 @@ Each worker receives:
 
 ```md
 State: <STATE>
-Branch: codex/state-<state>-data-coverage
+Branch: state/<state>-data-coverage
 Worktree: <path>
 
 Read `AGENTS.md` and `docs/developer/index.md`.
@@ -222,3 +222,15 @@ At the end of each wave, report:
 - Shared conflicts found
 - Highest-impact remaining gaps
 - Recommended next wave
+
+## Branch Naming And Public Exposure
+
+Use neutral branch prefixes that describe the task:
+
+- `state/<state>-data-coverage` for state ETL/source work
+- `wave/<number>-integration` for wave integration branches
+- `docs/<topic>` for documentation
+- `feature/<topic>` for product work
+- `hotfix/<topic>` for urgent fixes
+
+Do not use agent/tool names in branch paths. GitHub branches on a public repository are public; there is no repository rule that can make all non-`main` branches private while keeping the repository public. Coordinators should keep exploratory work in local worktrees until it is ready for PR review, push only necessary review branches, and delete remote branches after their PRs are merged or closed.
