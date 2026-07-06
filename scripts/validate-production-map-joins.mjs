@@ -118,10 +118,10 @@ for (const state of states) {
       fetchJson(`${appBaseUrl}/api/coverage?state=${state}&year=2024`).catch(() => null),
     ]);
     const skipReason = resultlessMapSkipReason(state, config, productionCoverage);
-    if ((results.data?.length ?? 0) === 0 && skipReason) {
+    if (skipReason) {
       report.push({
         state,
-        resultRows: 0,
+        resultRows: results.data?.length ?? 0,
         boundaries: geojson.features?.length ?? 0,
         blankNames: 0,
         unmatched: [],
