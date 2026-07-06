@@ -43,6 +43,7 @@ export default async function Home({ searchParams }: HomeProps) {
     countyResults,
     cityResults,
     cityTownResults,
+    townResults,
     stateResults,
     sources,
     coverage,
@@ -63,6 +64,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listResults({ state: selectedState, year: selectedYear, level: "county" }),
     listResults({ state: selectedState, year: selectedYear, level: "city" }),
     listResults({ state: selectedState, year: selectedYear, level: "city_town" }),
+    listResults({ state: selectedState, year: selectedYear, level: "town" }),
     listResults({ state: selectedState, year: selectedYear, level: "state" }),
     listSources({ state: selectedState, year: selectedYear }),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
@@ -78,9 +80,9 @@ export default async function Home({ searchParams }: HomeProps) {
     listElectronicIntegrityRequests({ state: selectedState, year: selectedYear }),
     listSourceRecordsRequests({ state: selectedState, year: selectedYear }),
   ]);
-  const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults.length ? cityTownResults : stateResults;
+  const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults.length ? cityTownResults : townResults.length ? townResults : stateResults;
   const resultLevelLabel =
-    results[0]?.level === "city" || results[0]?.level === "city_town"
+    results[0]?.level === "city" || results[0]?.level === "city_town" || results[0]?.level === "town"
       ? "Municipality"
       : results[0]?.level === "state"
         ? "Statewide"
