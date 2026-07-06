@@ -47,10 +47,11 @@ class NewMexicoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(sources["nm-2024-president-county-mapdata"]["status"], "loaded")
         self.assertEqual(sources["nm-2024-senate-precinct-mapdata"]["status"], "loaded")
         self.assertEqual(sources["nm-2024-data-coverage-inventory"]["status"], "candidate")
+        self.assertEqual(sources["nm-2024-voter-statistics-archive-lead"]["status"], "candidate")
 
     def test_inventory_records_loaded_sources_and_remaining_caveats(self):
-        self.assertEqual(self.inventory["status"], "official_sos_result_review_api_loaded_with_turnout_caveat")
-        self.assertIn("docs/developer/index.md", self.inventory["repoDrift"][0])
+        self.assertEqual(self.inventory["status"], "official_sos_result_review_api_loaded_with_turnout_and_voter_stats_caveats")
+        self.assertEqual(self.inventory["repoDrift"], [])
         self.assertFalse(self.inventory["productionChecked"])
 
         findings = self.inventory["officialSourceFindings"]
@@ -59,6 +60,8 @@ class NewMexicoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(findings["sameGrainComparisonContest"]["status"], "official_sos_precinct_api_loaded")
         self.assertEqual(findings["sameGrainComparisonContest"]["observedOfficialTotals"]["precinctComparisonRows"], 2165)
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialTotals"]["ballotsCastDeltaOfficialMinusEac"], 367)
+        self.assertEqual(findings["electionStatsDatabase"]["status"], "official_database_verified_source_validation_lead")
+        self.assertEqual(findings["voterStatisticsArchive"]["status"], "official_voter_statistics_archive_ocr_lead_not_loaded")
         self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2020, 2016])
         self.assertEqual(findings["historicalBaselines"]["status"], "official_2020_2016_sos_county_api_loaded_2012_blocked")
         self.assertEqual(findings["auditRecountCvrIncidentCorrectionLitigation"]["status"], "request_paths_documented_not_loaded")
@@ -78,10 +81,12 @@ class NewMexicoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(tier["tier"], "tier_2_official_dashboard_endpoint")
         self.assertEqual(tier["confidence"], "loaded_with_caveats")
         self.assertIn("official SOS mapdata API JSON", tier["exportFormats"])
+        self.assertIn("voter statistics archive OCR denominator lead", tier["exportFormats"])
         self.assertIn("NM", native["completedNativeStates"])
         self.assertFalse(any(row["state"] == "NM" for row in native["sourceDiscoveryQueue"]))
         self.assertEqual(native_package["expected"]["localReviewRows"], 2165)
         self.assertEqual(native_package["artifacts"]["localReviewRows"]["comparisonContest"], "United States Senator")
+        self.assertIn("electionStatsDatabase", native_package["artifacts"])
         self.assertEqual(turnout_status["coverage"]["stateNativeBallotsCastDelta"], 367)
         self.assertEqual(admin_status["audit"]["status"], "candidate")
         self.assertEqual(admin_status["cvr"]["status"], "candidate")
@@ -92,6 +97,8 @@ class NewMexicoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(self.request_rows["nm-2024-turnout-details"]["status"], "state_native_source_lead_not_loaded")
         self.assertEqual(self.request_rows["nm-2024-historical-baselines"]["status"], "partial_2020_2016_loaded_2012_blocked")
         self.assertEqual(self.request_rows["nm-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
+        self.assertEqual(self.request_rows["nm-2024-voter-statistics-archive"]["status"], "official_archive_ocr_lead_not_loaded")
+        self.assertEqual(self.request_rows["nm-electionstats-official-database"]["status"], "official_database_lead_not_loaded")
 
 
 if __name__ == "__main__":

@@ -1,146 +1,133 @@
-import { mkdir, writeFile } from "node:fs/promises";
+﻿import { mkdir, readFile, writeFile } from "node:fs/promises";
 
-const years = [2012, 2016, 2020];
+import { parseCsv } from "./normalize-eac-turnout.mjs";
+
 const state = "PA";
-const stateName = "Pennsylvania";
-const sourceId = "pa-historical-presidential-wikipedia-county";
+const sourceId = "pa-historical-presidential-official-bulk";
 const output = "data/pa-historical-presidential-baseline.csv";
 
-function stripTemplates(value) {
-  let output = value;
-  for (let index = 0; index < 12; index += 1) {
-    output = output.replace(/\{\{[^{}]*\}\}/g, "");
-  }
-  return output;
-}
-
-function clean(value) {
-  return stripTemplates(String(value ?? ""))
-    .replace(/<ref[^>]*>.*?<\/ref>/gs, "")
-    .replace(/<ref[^/]*\/>/g, "")
-    .replace(/<[^>]+>/g, "")
-    .replace(/\[\[[^\]|]*\|([^\]]+)\]\]/g, "$1")
-    .replace(/\[\[([^\]]+)\]\]/g, "$1")
-    .replace(/'''/g, "")
-    .replace(/''/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function numberFromCell(value) {
-  const normalized = clean(value)
-    .replace(/[\u2212\u2013\u2014]/g, "-")
-    .replace(/[^0-9.-]/g, "");
-  return normalized ? Number(normalized) : null;
-}
+const sources = [
+  {
+    year: 2012,
+    returnsFile: "data/pa-2012-general-election-returns-precinct.txt",
+    readmeFile: "data/pa-2012-general-election-returns-readme.txt",
+    sourceUrl:
+      "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+  },
+  {
+    year: 2016,
+    returnsFile: "data/pa-2016-general-election-returns-precinct.txt",
+    readmeFile: "data/pa-2016-general-election-returns-readme.txt",
+    sourceUrl:
+      "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+  },
+  {
+    year: 2020,
+    returnsFile: "data/pa-2020-general-election-returns-precinct.txt",
+    readmeFile: "data/pa-2020-general-election-returns-readme.txt",
+    sourceUrl:
+      "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+  },
+];
 
 function csvCell(value) {
   const text = String(value ?? "");
   return /[",\n\r]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
 }
 
-function countyTable(wikitext) {
-  const starts = [...wikitext.matchAll(/\{\|[^\n]*wikitable[^\n]*/g)].map((match) => match.index);
-  for (const start of starts) {
-    const end = wikitext.indexOf("|}", start);
-    const table = wikitext.slice(start, end + 2);
-    if (/County/i.test(table) && /Total votes cast|Total votes|Total\b/i.test(table) && /(Obama|Biden|Clinton)/i.test(table) && /(Romney|Trump)/i.test(table)) {
-      return table;
-    }
-  }
-  throw new Error("County presidential table not found.");
-}
-
-function parseCells(chunk) {
-  const lines = chunk.split("\n").filter((line) => /^[!|]/.test(line.trim()) && !line.trim().startsWith("|+"));
-  const cells = [];
-  for (let line of lines) {
-    line = line.trim();
-    if (line.startsWith("!") || line.startsWith("|")) {
-      line = line.slice(1);
-    }
-    const separator = line.includes("!!") ? /!!/ : /\|\|/;
-    for (let part of line.split(separator)) {
-      part = part.trim().replace(/^([^|]*\|)/, "");
-      cells.push(part);
-    }
-  }
-  return cells;
-}
-
-function columnIndexes(table) {
-  const headerChunk = table.split(/^\|-/m)[0];
-  const headers = parseCells(headerChunk).map(clean);
-  const demHeader = headers.findIndex((header) => /Democratic|Obama|Clinton|Biden/i.test(header));
-  const repHeader = headers.findIndex((header) => /Republican|Romney|Trump/i.test(header));
-  const totalHeader = headers.findIndex((header) => /Total votes cast|Total votes|Total/i.test(header));
-  if (demHeader === -1 || repHeader === -1 || totalHeader === -1) {
-    throw new Error(`Could not identify vote columns: ${headers.join(" | ")}`);
-  }
-  const voteCell = (headerIndex) => headerIndex * 2 - 1;
-  return { dem: voteCell(demHeader), rep: voteCell(repHeader), total: voteCell(totalHeader) };
-}
-
-function parseCountyRows(table, year) {
-  const columns = columnIndexes(table);
-  const rows = [];
-  for (const chunk of table.split(/^\|-/m).slice(1)) {
-    const cells = parseCells(chunk);
-    if (cells.length <= Math.max(columns.dem, columns.rep, columns.total)) {
+function parseCountyCodes(readmeText) {
+  const codes = new Map();
+  let inTable = false;
+  for (const line of readmeText.split(/\r?\n/)) {
+    const stripped = line.trim();
+    if (stripped === "County Code Table") {
+      inTable = true;
       continue;
     }
-
-    const county = clean(cells[0])
-      .replace(new RegExp(` County,? ${stateName}$`, "i"), "")
-      .replace(/ County$/i, "");
-    if (!county || county === "County" || /^Totals?$/i.test(county) || county.includes("|") || county.length > 32) {
+    if (!inTable || (stripped && /^-+$/.test(stripped))) {
       continue;
     }
-
-    const demVotes = numberFromCell(cells[columns.dem]);
-    const repVotes = numberFromCell(cells[columns.rep]);
-    const totalVotes = numberFromCell(cells[columns.total]);
-    const otherVotes = totalVotes - demVotes - repVotes;
-    if (![demVotes, repVotes, otherVotes, totalVotes].every(Number.isFinite) || otherVotes < 0) {
+    if (!stripped) {
+      if (codes.size) {
+        break;
+      }
       continue;
     }
+    const match = /^(\d{2})\s+(.+?)\s*$/.exec(stripped);
+    if (match) {
+      const code = Number(match[1]);
+      if (code >= 1 && code <= 67) {
+        codes.set(code, `${match[2]} County`);
+      }
+    }
+  }
+  if (codes.size !== 67) {
+    throw new Error(`Expected 67 Pennsylvania county codes, got ${codes.size}`);
+  }
+  return codes;
+}
 
-    rows.push({
+function intValue(value) {
+  const cleaned = String(value ?? "").replace(/[^0-9-]/g, "");
+  return cleaned ? Number(cleaned) : 0;
+}
+
+async function parseYear(source) {
+  const countyCodes = parseCountyCodes(await readFile(source.readmeFile, "utf8"));
+  const countyTotals = new Map();
+  const rows = parseCsv(await readFile(source.returnsFile, "utf8"));
+
+  for (const row of rows) {
+    if (row[8] !== "USP") {
+      continue;
+    }
+    const countyCode = Number(row[2]);
+    const county = countyCodes.get(countyCode);
+    if (!county) {
+      throw new Error(`${source.year} unknown county code ${row[2]}`);
+    }
+
+    const votes = intValue(row[15]);
+    const party = row[9];
+    const bucket = countyTotals.get(county) ?? {
       state,
-      election_year: year,
-      jurisdiction_name: `${county} County`,
-      county: `${county} County`,
-      local_unit: `${county} County`,
+      election_year: source.year,
+      jurisdiction_name: county,
+      county,
+      local_unit: county,
       source_id: sourceId,
       source_level: "county",
-      row_method: "wikipediaCountyPresidentialTable",
-      source_url: `https://en.wikipedia.org/wiki/${year}_United_States_presidential_election_in_${stateName}`,
-      dem_votes: demVotes,
-      rep_votes: repVotes,
-      other_votes: otherVotes,
-      total_votes: totalVotes,
-    });
+      row_method: "pennsylvaniaOfficialBulkPrecinctReturns",
+      source_url: source.sourceUrl,
+      dem_votes: 0,
+      rep_votes: 0,
+      other_votes: 0,
+      total_votes: 0,
+    };
+
+    if (party === "DEM") {
+      bucket.dem_votes += votes;
+    } else if (party === "REP") {
+      bucket.rep_votes += votes;
+    } else {
+      bucket.other_votes += votes;
+    }
+    bucket.total_votes += votes;
+    countyTotals.set(county, bucket);
   }
-  return rows;
+
+  const outputRows = [...countyTotals.values()].sort((a, b) => a.county.localeCompare(b.county));
+  if (outputRows.length !== 67) {
+    throw new Error(`${source.year} expected 67 county rows, got ${outputRows.length}`);
+  }
+  return outputRows;
 }
 
-async function fetchRows(year) {
-  const page = `${year}_United_States_presidential_election_in_${stateName}`;
-  const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${page}&prop=wikitext&format=json&formatversion=2`;
-  const response = await fetch(url, { headers: { "User-Agent": "CivicResultMaps data normalization" } });
-  if (!response.ok) {
-    throw new Error(`${url} failed: ${response.status} ${response.statusText}`);
-  }
-  const payload = await response.json();
-  return parseCountyRows(countyTable(payload.parse.wikitext), year);
-}
-
-const rows = (await Promise.all(years.map(fetchRows))).flat();
-for (const year of years) {
-  const yearRows = rows.filter((row) => row.election_year === year);
+const rows = (await Promise.all(sources.map(parseYear))).flat();
+for (const source of sources) {
+  const yearRows = rows.filter((row) => row.election_year === source.year);
   if (yearRows.length !== 67) {
-    throw new Error(`${year} expected 67 county rows, got ${yearRows.length}`);
+    throw new Error(`${source.year} expected 67 county rows, got ${yearRows.length}`);
   }
 }
 
@@ -162,4 +149,21 @@ const headers = [
 const csv = [headers.join(","), ...rows.map((row) => headers.map((header) => csvCell(row[header])).join(","))].join("\n") + "\n";
 await mkdir("data", { recursive: true });
 await writeFile(output, csv, "utf8");
-console.log(JSON.stringify({ rows: rows.length, years, output }, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      rows: rows.length,
+      years: sources.map((source) => source.year),
+      totalsByYear: Object.fromEntries(
+        sources.map((source) => {
+          const yearRows = rows.filter((row) => row.election_year === source.year);
+          return [source.year, yearRows.reduce((sum, row) => sum + row.total_votes, 0)];
+        }),
+      ),
+      sourceId,
+      output,
+    },
+    null,
+    2,
+  ),
+);

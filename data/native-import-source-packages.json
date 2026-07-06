@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-05",
+  "checkedAt": "2026-07-06",
   "purpose": "Native importer handoff package for the next states after Ohio and Wisconsin.",
   "notes": [
     "These packages point to official source artifacts already present in this repository.",
@@ -394,6 +394,26 @@
           "appReadyFile": "data/pa-counties.js",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "historicalBaselines": {
+          "sourceTitle": "Pennsylvania DOS historical precinct election returns bulk files",
+          "sourceUrl": "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
+          "localFile": "data/pa-historical-presidential-baseline.csv",
+          "sourceArtifacts": [
+            "data/pa-2012-general-election-returns-precinct.txt",
+            "data/pa-2012-general-election-returns-readme.txt",
+            "data/pa-2016-general-election-returns-precinct.txt",
+            "data/pa-2016-general-election-returns-readme.txt",
+            "data/pa-2020-general-election-returns-precinct.txt",
+            "data/pa-2020-general-election-returns-readme.txt"
+          ],
+          "parserHint": "scripts/collect-pa-historical-baseline.mjs aggregates official USP rows to county historicalPresidentialCsv rows.",
+          "rows": 201,
+          "years": [
+            2012,
+            2016,
+            2020
+          ]
         }
       },
       "expected": {
@@ -410,12 +430,14 @@
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff",
-        "turnoutMode": "county_vote_history_registration_summary"
+        "turnoutMode": "county_vote_history_registration_summary",
+        "historicalBaselineMode": "official_dos_bulk_context"
       },
       "caveats": [
         "Official readme says the election returns data was extracted January 10, 2025; the direct bulk file name includes 20250129.",
         "Turnout is county-level, not precinct-level.",
-        "Precinct boundary GeoJSON is not present in this package."
+        "Precinct boundary GeoJSON is not present in this package.",
+        "Historical baselines are official DOS bulk context; bulk rows do not include a separate write-in reconciliation artifact."
       ]
     },
     {
@@ -629,7 +651,7 @@
       "state": "NC",
       "name": "North Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_historical",
+      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_state_native_denominator_lead_historical",
       "authority": "North Carolina State Board of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/nc.json",
       "legacyReferenceBundle": "data/nc-app-data.js",
@@ -649,12 +671,12 @@
           "parserHint": "Filter review rows to Real Precinct=Y, then pair US PRESIDENT with NC GOVERNOR by County and Precinct. Certified county totals still aggregate all reporting units; Real Precinct=Y review rows cover 3,923,739 of 5,699,141 presidential votes."
         },
         "turnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback with NCSBE voter_stats/history_stats turnout leads",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports; https://www.ncsbe.gov/results-data/voter-registration-data; https://www.ncsbe.gov/results-data/voter-history-data; https://www.ncsbe.gov/results-data/voter-turnout/2024-general-election-turnout",
+          "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv; data/nc-2024-voter-stats.zip; data/nc-2024-history-stats.zip; data/nc-2024-turnout-source-review.json; data/nc-2024-turnout-denominator-lead.csv",
           "level": "jurisdiction",
-          "denominator": "EAC A1a Total Reg registered voters",
-          "ballotsCast": "EAC normalized ballots cast"
+          "denominator": "Active ETL uses EAC A1a Total Reg registered voters; NCSBE voter_stats_20241105.zip is retained as an official state-native denominator lead and matches the EAC registered-voter total exactly.",
+          "ballotsCast": "Active ETL uses EAC normalized ballots cast. NCSBE history_stats_20241105.zip reports voters who participated and remains a lead because its statewide total is below EAC ballots cast and the NCSBE overview ballots-cast figure."
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
@@ -668,6 +690,12 @@
           "sourceUrl": "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
           "localFile": "data/nc-2012-results-precinct.zip; data/nc-2016-results-precinct.zip; data/nc-2020-results-precinct.zip; data/nc-historical-presidential-baseline.csv",
           "parserHint": "Run npm run etl:collect:nc:historical to aggregate official NCSBE 2012, 2016, and 2020 US President rows to 300 county historicalPresidentialCsv baseline rows."
+        },
+        "turnoutDenominatorLead": {
+          "sourceTitle": "North Carolina State Board of Elections 2024 General voter_stats and history_stats ZIPs",
+          "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip; https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
+          "localFile": "data/nc-2024-voter-stats.zip; data/nc-2024-history-stats.zip; data/nc-2024-turnout-denominator-lead.csv; data/nc-2024-turnout-source-review.json",
+          "parserHint": "Run node scripts/normalize-nc-turnout.mjs to aggregate voter_stats registered voters and history_stats voters who participated to 100 county lead rows and the source-review summary. Keep as lead only until numerator semantics are reviewed."
         }
       },
       "expected": {
@@ -685,14 +713,14 @@
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_governor_real_precinct_filter",
-        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_ncsbe_denominator_history_leads",
         "historicalBaselineMode": "official_ncsbe_precinct_zip_county_aggregates"
       },
       "caveats": [
         "Certified county totals aggregate all NCSBE reporting units from the official results ZIP.",
         "Review charts filter to official Real Precinct=Y rows, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; early voting, absentee, provisional, transfer, and other non-real reporting units account for 1,775,402 presidential votes and remain in certified county totals only.",
         "Governor is the same-grain comparison contest because North Carolina had no 2024 U.S. Senate race.",
-        "Turnout rows use EAC 2024 V2 jurisdiction fallback data until a state-native North Carolina denominator source is collected and mapped into the turnout contract.",
+        "Turnout rows remain active EAC 2024 V2 jurisdiction fallback data. Official NCSBE voter_stats_20241105.zip is collected and sums to the same 7,854,464 registered voters as EAC; official history_stats_20241105.zip sums to 5,705,861 voters who participated, which is 50,245 below EAC ballots cast and 18,126 below the NCSBE turnout overview ballots-cast figure, so it is retained as a lead pending semantic review.",
         "Historical baseline rows are official NCSBE county aggregates for context only.",
         "Precinct boundary GeoJSON, normalized audit/recount/CVR availability, and incident/correction records remain gaps."
       ]
@@ -1657,7 +1685,7 @@
       "state": "OK",
       "name": "Oklahoma",
       "priority": 12,
-      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_admin_inventory",
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_ok_vr_denominator_lead_admin_inventory",
       "authority": "Oklahoma State Election Board; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context",
       "configFile": "etl/state-configs/ok.json",
       "legacyReferenceBundle": "data/ok-2024-official-results",
@@ -1677,12 +1705,12 @@
           "parserHint": "Pair President race 10001 precinct rows with precinct U.S. House rows where both Democratic and Republican candidates are present; retain nonzero presidential precincts without comparable House rows as vote-share-only review rows."
         },
         "turnout": {
-          "sourceTitle": "EAC 2024 jurisdiction turnout fallback",
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback plus Oklahoma Nov. 1 voter-registration denominator lead",
           "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
+          "localFile": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv; data/ok-2024-vrstats-county-denominator-lead.csv; data/ok-2024-vrstats-denominator-summary.json",
           "level": "jurisdiction",
-          "denominator": "EAC A1a Total Reg registered voters",
-          "ballotsCast": "EAC normalized ballots cast"
+          "denominator": "EAC A1a Total Reg registered voters; the Oklahoma State Election Board Nov. 1 VR PDF denominator lead parses to the same 2,442,211 statewide registered voters and zero county registered-voter mismatches.",
+          "ballotsCast": "EAC normalized ballots cast; keep fallback active because the OK VR PDF has no ballots-cast or voter-history field."
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
@@ -1708,6 +1736,14 @@
           "sourceUrl": "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/40",
           "localFile": "data/ok-2024-equipment-context.csv",
           "parserHint": "Context only; do not use for votes, turnout, audit, incidents, or proof of precinct-uniform equipment."
+        },
+        "turnoutDenominatorLead": {
+          "sourceTitle": "Oklahoma State Election Board MESA Current Registration Statistics by District 11/1/2024",
+          "sourceUrl": "https://oklahoma.gov/content/dam/ok/en/elections/voter-registration-statistics/2024-vr-statistics/vrstats-district-nov1-2024.pdf",
+          "localFile": "data/ok-2024-vrstats-district-nov1-2024.pdf; data/ok-2024-vrstats-county-denominator-lead.csv; data/ok-2024-vrstats-denominator-summary.json",
+          "level": "county_aggregated_from_congressional_district_county_fragments",
+          "denominator": "Nov. 1, 2024 registered voters by party; 77 county rows, 2,442,211 registered voters statewide.",
+          "parserHint": "scripts/collect-ok-vrstats-registration.mjs extracts the text-layer PDF, aggregates split county fragments from the congressional-district section, validates party totals, and reconciles the denominator to the active EAC fallback."
         }
       },
       "expected": {
@@ -1724,12 +1760,12 @@
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_precinct_with_vote_share_only_rows",
-        "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_ok_vr_denominator_lead_reconciled",
         "adminInventoryStatus": "equipment_context_loaded_audit_archive_and_request_paths_documented_not_row_level_loaded"
       },
       "caveats": [
         "Review rows use U.S. House by district rather than a single statewide comparison contest, and 460 nonzero presidential precinct rows are vote-share-only because comparable major-party House rows are absent.",
-        "Turnout rows use EAC 2024 V2 county/jurisdiction fallback data until Oklahoma-native turnout or voter-history denominator rows are collected and reconciled.",
+        "Turnout rows use EAC 2024 V2 county/jurisdiction fallback data. The collected Oklahoma State Election Board Nov. 1 VR PDF confirms the same 2,442,211 registered-voter denominator statewide with zero county registered-voter mismatches, but it has no ballots-cast field, so active turnout remains EAC fallback until Oklahoma-native ballots-cast or voter-history rows are collected and reconciled.",
         "County geometry is loaded; official precinct boundary geometry or a precinct-to-result crosswalk is not loaded.",
         "Official 2012, 2016, and 2020 historical result pages are identified, but historical baseline artifacts and a normalizer are not loaded.",
         "The official 2024 post-election audit archive and records-request path are documented, but normalized audit, CVR availability, recount, incident, correction, and litigation rows are not loaded."
@@ -2541,11 +2577,11 @@
         },
         "turnout": {
           "sourceTitle": "EAC 2024 New Mexico jurisdiction turnout fallback plus SOS turnout lead",
-          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-          "localFile": "data/eac-2024-state-turnout/nm-2024-eac-turnout.csv; data/nm-2024-data-coverage-inventory.json",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports; https://electionresults.sos.nm.gov/VoterTurnoutDetails.aspx?eid=2882; https://www.sos.nm.gov/sos-archive/voter-statistics-data-archive/2024-voter-statistics-data/",
+          "localFile": "data/eac-2024-state-turnout/nm-2024-eac-turnout.csv; data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
           "level": "jurisdiction_fallback_active_precinct_state_native_lead",
           "denominator": "Active ETL uses EAC registered voters. SOS results system reports eligible voters as a candidate replacement denominator.",
-          "parserHint": "Current ETL uses eacTurnoutCsv. SOS turnout details remain a lead until eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC difference are reviewed."
+          "parserHint": "Current ETL uses eacTurnoutCsv. SOS turnout details remain a lead until eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC difference are reviewed. The SOS 2024 voter-statistics archive is an OCR/manual-review registration denominator lead only and is not normalized in this branch."
         },
         "historicalBaseline": {
           "sourceTitle": "New Mexico SOS 2020 and 2016 President county mapdata APIs",
@@ -2565,6 +2601,12 @@
           "nameProperty": "NAME",
           "codeProperty": "COUNTY",
           "parserHint": "County geometry is present for county-level map joins. Precinct/voting-district geometry and result-key crosswalks remain unloaded."
+        },
+        "electionStatsDatabase": {
+          "sourceTitle": "New Mexico SOS Elections Database",
+          "sourceUrl": "https://electionstats.sos.nm.gov/",
+          "localFile": "data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
+          "parserHint": "Official searchable database of historical election information from source documents. Retained as source-validation/historical lead; not an active 2024 ETL input."
         }
       },
       "expected": {
@@ -2591,6 +2633,7 @@
         "After inference and de-duplication, President and U.S. Senate precinct totals are each 7 votes below the corresponding county-level official totals; county certified rows remain authoritative.",
         "Review rows are advisory public-interest screening context only and are not evidence of fraud or misconduct.",
         "Active turnout remains EAC fallback until SOS eligible-voter denominator semantics and the 367-ballot SOS-minus-EAC ballots-cast difference are reviewed.",
+        "The SOS voter-statistics archive is an official denominator lead but remains inactive pending OCR/manual artifact review and denominator-timing reconciliation.",
         "Precinct geometry/crosswalk, 2012 historical baseline, and normalized audit/CVR/recount/incident/correction/litigation rows are not loaded."
       ],
       "legacyReferenceBundle": "data/nm-2024-data-coverage-inventory.json"

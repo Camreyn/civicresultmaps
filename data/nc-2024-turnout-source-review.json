@@ -1,0 +1,67 @@
+{
+  "state": "NC",
+  "electionYear": 2024,
+  "parser": "scripts/normalize-nc-turnout.mjs",
+  "sourceAuthority": "North Carolina State Board of Elections",
+  "sourcePages": [
+    "https://www.ncsbe.gov/results-data/voter-registration-data",
+    "https://www.ncsbe.gov/results-data/voter-history-data",
+    "https://www.ncsbe.gov/results-data/voter-turnout/2024-general-election-turnout"
+  ],
+  "sourceArtifacts": {
+    "voterStats": {
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip",
+      "localFile": "data/nc-2024-voter-stats.zip",
+      "entry": "voter_stats_20241105.txt",
+      "rows": 685049,
+      "counties": 100,
+      "uniqueCountyPrecinctVtdKeys": 3250,
+      "registeredVoters": 7854464
+    },
+    "historyStats": {
+      "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
+      "localFile": "data/nc-2024-history-stats.zip",
+      "entry": "history_stats_20241105.txt",
+      "rows": 987529,
+      "counties": 100,
+      "uniqueCountyPrecinctVtdKeys": 3211,
+      "votersWhoVoted": 5705861,
+      "votingMethodTotals": {
+        "C": 18215,
+        "EC": 185711,
+        "EV": 4029071,
+        "M": 298076,
+        "P": 17149,
+        "T": 15271,
+        "V": 1142368
+      }
+    },
+    "turnoutDenominatorLead": {
+      "localFile": "data/nc-2024-turnout-denominator-lead.csv",
+      "rows": 100,
+      "votersWhoVoted": 5705861,
+      "registeredVoters": 7854464
+    }
+  },
+  "officialPublicPageChecks": {
+    "ncsbe2024GeneralElectionTurnoutTotalVoters": 5705861,
+    "ncsbe2024GeneralElectionTurnoutEligibleVoters": 7763502,
+    "ncsbeVoterTurnoutOverviewBallotsCast": 5723987,
+    "note": "The lead rows use voter_stats_20241105.zip for registered voters and history_stats_20241105.zip for voter-history participants. The voter_stats denominator matches active EAC registered voters, but it is 90,962 higher than the NCSBE turnout overview's eligible-voter figure."
+  },
+  "eacBenchmark": {
+    "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
+    "rows": 100,
+    "ballotsCast": 5756106,
+    "registeredVoters": 7854464,
+    "ncsbeHistoryMinusEacBallotsCast": -50245,
+    "ncsbeRegisteredMinusEacRegistered": 0
+  },
+  "replacementDecision": "Do not replace active EAC fallback turnout yet. The NCSBE voter_stats ZIP improves provenance for the registered-voter denominator and matches the active EAC denominator exactly, but the history_stats voter-history total is below both EAC ballots cast and the NCSBE turnout overview's ballots-cast figure. Keep the generated CSV as a state-native turnout-denominator lead until numerator semantics are reviewed.",
+  "caveats": [
+    "NCSBE history_stats_20241105.zip reports voters who participated by county, precinct, voting method, and demographics; it does not contain candidate choices or ballot item results.",
+    "NCSBE voter_stats_20241105.zip reports election-time registered-voter demographic counts by county and precinct; it is a denominator source, not a turnout numerator by itself.",
+    "The generated lead rows are county aggregates for source review and should not be used as same-grain precinct advisory inputs until precinct geometry/crosswalk and display semantics are reviewed.",
+    "The statewide voter-history total is 50,245 below the EAC fallback ballots-cast total and 18,126 below the NCSBE turnout overview page's 2024 ballots-cast figure."
+  ]
+}

@@ -1,12 +1,10 @@
 {
   "state": "NM",
   "stateName": "New Mexico",
-  "checkedAt": "2026-07-03",
-  "status": "official_sos_result_review_api_loaded_with_turnout_caveat",
+  "checkedAt": "2026-07-06",
+  "status": "official_sos_result_review_api_loaded_with_turnout_and_voter_stats_caveats",
   "scope": "Official New Mexico 2024 SOS President county result rows, President-vs-U.S. Senate precinct review rows, EAC turnout fallback rows, and 2020/2016 official SOS county historical baselines are loaded for staging. Audit, recount, CVR, incident, correction, litigation, state-native turnout replacement, and precinct geometry rows remain source leads only.",
-  "repoDrift": [
-    "docs/developer/index.md is required by AGENTS.md but is missing in this worktree."
-  ],
+  "repoDrift": [],
   "productionChecked": false,
   "displayPathChecked": "Staging artifact generation was checked through civic_etl.cli import. Public app/API display would flow through src/app/page.tsx and src/lib/data-access.ts after production promotion, while /api/native-source-packages and /api/source-acquisition-tiers expose planning registries. Production promotion and production API checks were not run from this worker branch.",
   "requestMatrixArtifact": "data/nm-2024-source-request-matrix.tsv",
@@ -57,7 +55,11 @@
         "eacFallbackRegisteredVoters": 1415984,
         "ballotsCastDeltaOfficialMinusEac": 367
       },
-      "caveat": "The SOS page uses eligible voters while the active EAC fallback uses registered voters. Review denominator timing and semantics before replacing EAC turnout."
+      "caveat": "The SOS results turnout page uses eligible voters while the active EAC fallback uses registered voters. The SOS voter-statistics archive is an official denominator lead but may require OCR/manual artifact review. Review denominator timing and semantics before replacing EAC turnout.",
+      "sourceUrls": [
+        "https://electionresults.sos.nm.gov/VoterTurnoutDetails.aspx?eid=2882",
+        "https://www.sos.nm.gov/sos-archive/voter-statistics-data-archive/2024-voter-statistics-data/"
+      ]
     },
     "geometryAndCrosswalk": {
       "status": "county_geometry_lead_documented_precinct_geometry_not_loaded",
@@ -68,8 +70,15 @@
     },
     "historicalBaselines": {
       "status": "official_2020_2016_sos_county_api_loaded_2012_blocked",
-      "targetYears": [2020, 2016, 2012],
-      "loadedYears": [2020, 2016],
+      "targetYears": [
+        2020,
+        2016,
+        2012
+      ],
+      "loadedYears": [
+        2020,
+        2016
+      ],
       "sourceUrls": [
         "https://electionresults.sos.nm.gov/Default.aspx?eid=2782",
         "https://electionresults.sos.nm.gov/?eid=84",
@@ -94,6 +103,22 @@
         "https://www.sos.nm.gov/voting-and-elections/data-and-maps/voter-data-information/"
       ],
       "caveat": "The SOS security page documents risk-limiting audit practice and the 2024 results system reports no possible recounts for the current 2024 General page. No 2024 audit outcome, CVR availability, incident, correction, recount, litigation, custody, or tabulator-log rows are normalized."
+    },
+    "electionStatsDatabase": {
+      "status": "official_database_verified_source_validation_lead",
+      "authority": "New Mexico Secretary of State",
+      "sourceUrl": "https://electionstats.sos.nm.gov/",
+      "observed": "The SOS Elections Database presents itself as a searchable database of historical election information from official source documents.",
+      "use": "Source-validation and historical lead only; active 2024 NM results/review continue to use retained GetMapDataArchive API artifacts."
+    },
+    "voterStatisticsArchive": {
+      "status": "official_voter_statistics_archive_ocr_lead_not_loaded",
+      "authority": "New Mexico Secretary of State",
+      "sourceUrl": "https://www.sos.nm.gov/sos-archive/voter-statistics-data-archive/2024-voter-statistics-data/",
+      "reportingGrain": "congressional_county_precinct_house_senate_judicial_public_education_commission_statewide_archive_lead",
+      "observed": "The SOS archive says voter statistics data includes detailed registration data for congressional, county precinct, house, senate, judicial, public education commission districts, and statewide totals, and that archive materials may not be fully accessible.",
+      "parserPath": "future OCR-backed voter statistics normalizer if a reviewed monthly artifact is collected",
+      "caveat": "No script-readable 2024 voter-statistics file is normalized in this branch. Treat as a denominator lead requiring OCR/manual artifact review, not as a silent replacement for EAC fallback turnout."
     }
   },
   "confirmedArtifacts": [
@@ -103,7 +128,10 @@
       "sourceUrl": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=CTY&raceID=10079&osn=102&county=0&party=0&electionID=2882",
       "localFile": "data/nm-2024-president-county-mapdata.json",
       "reportingGrain": "county",
-      "expectedRowsOrTotals": { "resultRows": 33, "presidentialTotalVotes": 923403 },
+      "expectedRowsOrTotals": {
+        "resultRows": 33,
+        "presidentialTotalVotes": 923403
+      },
       "parserStatus": "loaded in active NM ETL"
     },
     {
@@ -112,7 +140,11 @@
       "sourceUrl": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=PREC&raceID=10079&osn=102&county=0&party=0&electionID=2882",
       "localFile": "data/nm-2024-president-precinct-mapdata.json",
       "reportingGrain": "precinct",
-      "expectedRowsOrTotals": { "presidentPrecinctKeys": 2169, "reviewRows": 2165, "presidentialPrecinctVotesAfterInference": 923396 },
+      "expectedRowsOrTotals": {
+        "presidentPrecinctKeys": 2169,
+        "reviewRows": 2165,
+        "presidentialPrecinctVotesAfterInference": 923396
+      },
       "parserStatus": "loaded in active NM ETL"
     },
     {
@@ -121,7 +153,10 @@
       "sourceUrl": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=SW&category=PREC&raceID=9792&osn=180&county=0&party=0&electionID=2882",
       "localFile": "data/nm-2024-senate-precinct-mapdata.json",
       "reportingGrain": "precinct",
-      "expectedRowsOrTotals": { "comparisonRows": 2165, "senatePrecinctVotesAfterInference": 903304 },
+      "expectedRowsOrTotals": {
+        "comparisonRows": 2165,
+        "senatePrecinctVotesAfterInference": 903304
+      },
       "parserStatus": "loaded in active NM ETL"
     },
     {
@@ -130,7 +165,11 @@
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/nm-2024-eac-turnout.csv",
       "reportingGrain": "jurisdiction",
-      "expectedRowsOrTotals": { "turnoutRows": 33, "ballotsCast": 927923, "registeredVoters": 1415984 },
+      "expectedRowsOrTotals": {
+        "turnoutRows": 33,
+        "ballotsCast": 927923,
+        "registeredVoters": 1415984
+      },
       "parserStatus": "loaded in active NM ETL"
     },
     {
@@ -139,7 +178,9 @@
       "sourceUrl": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=CTY&raceID=6878&osn=102&county=0&party=0&electionID=2782",
       "localFile": "data/nm-2020-president-county-mapdata.json",
       "reportingGrain": "county",
-      "expectedRowsOrTotals": { "historicalBaselineRows": 33 },
+      "expectedRowsOrTotals": {
+        "historicalBaselineRows": 33
+      },
       "parserStatus": "loaded in active NM ETL"
     },
     {
@@ -148,14 +189,35 @@
       "sourceUrl": "https://electionresults-api.sos.nm.gov/NMResultsAjax.svc/GetMapDataArchive?type=FED&category=CTY&raceID=4067&osn=100&county=0&party=0&electionID=84",
       "localFile": "data/nm-2016-president-county-mapdata.json",
       "reportingGrain": "county",
-      "expectedRowsOrTotals": { "historicalBaselineRows": 33 },
+      "expectedRowsOrTotals": {
+        "historicalBaselineRows": 33
+      },
       "parserStatus": "loaded in active NM ETL"
+    },
+    {
+      "id": "nm-electionstats-official-database",
+      "sourceTitle": "New Mexico SOS Elections Database",
+      "sourceUrl": "https://electionstats.sos.nm.gov/",
+      "localFile": "data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
+      "reportingGrain": "historical_source_database",
+      "expectedRowsOrTotals": {},
+      "parserStatus": "source-validation lead only; not an active ETL input"
+    },
+    {
+      "id": "nm-2024-voter-statistics-archive-lead",
+      "sourceTitle": "New Mexico SOS 2024 Voter Statistics Data archive",
+      "sourceUrl": "https://www.sos.nm.gov/sos-archive/voter-statistics-data-archive/2024-voter-statistics-data/",
+      "localFile": "data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
+      "reportingGrain": "registration_denominator_archive_lead",
+      "expectedRowsOrTotals": {},
+      "parserStatus": "OCR/manual review lead only; not an active ETL input"
     }
   ],
   "remainingRisks": [
     "Official SOS precinct review rows require masked-count inference from percentages and de-duplication of repeated county/precinct/candidate rows; review output is public-interest advisory screening context only and not evidence of fraud or misconduct.",
     "After inference and de-duplication, President and U.S. Senate precinct totals are each 7 votes below the corresponding county-level official totals; certified county result rows remain the authoritative result totals.",
     "State-native turnout details are identified, but EAC fallback remains active until eligible-voter denominator semantics and the 367-ballot official-minus-EAC turnout difference are reviewed.",
+    "The SOS voter-statistics archive is an official registration denominator lead but is not normalized here because a reviewed script-readable artifact was not identified; OCR/manual artifact review is required before it can replace or supplement EAC fallback turnout.",
     "Precinct or voting-district geometry and result-label crosswalks are not loaded.",
     "2012 official historical baseline, normalized audit/CVR/recount/incident/correction/litigation records, custody records, and tabulator-log rows remain source leads or request paths only."
   ]

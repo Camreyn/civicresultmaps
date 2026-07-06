@@ -50,14 +50,14 @@
       "status": "loaded"
     },
     {
-      "id": "pa-historical-presidential-wikipedia-county",
-      "category": "Historical county presidential baseline rows",
-      "url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Pennsylvania",
+      "id": "pa-historical-presidential-official-bulk",
+      "category": "Official historical county presidential baseline rows from precinct bulk returns",
+      "url": "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
       "localFile": "data/pa-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
-      "authority": "Wikipedia county presidential tables with Pennsylvania Department of State source footnotes where available",
-      "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 30, 2026.",
-      "confidence": "Secondary normalized historical baseline used for context only because no official historical Pennsylvania bulk artifact is committed on this branch. Individual rows carry the per-year page URL.",
+      "authority": "Pennsylvania Department of State",
+      "timestampBasis": "Official 2012, 2016, and 2020 General Election precinct election returns and readmes downloaded from the Pennsylvania Department of State election data page and normalized by scripts/collect-pa-historical-baseline.mjs.",
+      "confidence": "Official Pennsylvania Department of State precinct election-return files aggregated to county presidential baselines. Historical rows are contextual baselines only; the official bulk rows do not include a separate write-in reconciliation artifact, so totals can differ from secondary certified-summary tables.",
       "status": "loaded"
     }
   ],
@@ -110,8 +110,8 @@
   },
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
-    "sourceId": "pa-historical-presidential-wikipedia-county",
-    "warning": "Pennsylvania historical baseline rows are county-level presidential results from 2012, 2016, and 2020 Wikipedia county tables with source footnotes. Use them as contextual baseline rows, not as 2024 certified data. Prefer replacing them with official Pennsylvania Department of State historical bulk artifacts if those are collected.",
+    "sourceId": "pa-historical-presidential-official-bulk",
+    "warning": "Pennsylvania historical baseline rows are contextual county-level presidential rows aggregated from official Department of State 2012, 2016, and 2020 precinct election-return bulk files. Use them as historical baselines, not as 2024 certified data. The official bulk rows do not include a separate write-in reconciliation artifact, so totals can differ from secondary certified-summary tables.",
     "expected": {
       "rowCount": 201,
       "years": [
@@ -124,7 +124,7 @@
   "coverageInventory": {
     "localFile": "data/pa-2024-data-coverage-inventory.json",
     "checkedAt": "2026-07-01",
-    "status": "official_precinct_review_county_turnout_loaded_precinct_registration_lead_collected",
+    "status": "official_precinct_review_county_turnout_loaded_official_historical_loaded_precinct_registration_lead_collected",
     "officialSourceSearchPath": [
       "https://www.pa.gov/agencies/dos/resources/voting-and-elections-resources/voting-and-election-statistics/election-data",
       "https://www.pa.gov/content/dam/copapwp-pagov/en/dos/resources/voting-and-elections/election%20data%20handbook%20general.pdf",
@@ -138,7 +138,7 @@
       "Current turnout rows remain county-level vote-history divided by registered voters.",
       "Precinct boundary geometry is not loaded, so maps remain county-level.",
       "2024 RLA source context is identified but not normalized into row-level audit context.",
-      "Historical baselines remain secondary contextual rows until official Pennsylvania historical bulk returns are normalized."
+      "Historical baselines are now official DOS bulk-return county context; the official bulk rows do not include a separate write-in reconciliation artifact, so totals can differ from secondary certified-summary tables."
     ]
   }
 }

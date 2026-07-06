@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-05",
+  "checkedAt": "2026-07-06",
   "purpose": "Internal turnout source package inventory for Civic Result Maps. This file is not rendered in the app.",
   "notes": [
     "Loaded packages are already represented in native ETL configs and promoted database turnout rows.",
@@ -281,19 +281,36 @@
       "sourceLevel": "jurisdiction",
       "denominatorType": "registeredVoters",
       "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback county turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+      "sourceTitle": "EAC fallback county turnout rows with official NCSBE turnout-denominator leads",
+      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports; https://www.ncsbe.gov/results-data/voter-registration-data; https://www.ncsbe.gov/results-data/voter-history-data; https://www.ncsbe.gov/results-data/voter-turnout/2024-general-election-turnout",
       "localFile": "data/eac-2024-state-turnout/nc-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 100,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active in ETL. Official NCSBE voter_stats and history_stats ZIPs were collected as state-native leads; voter_stats matches the EAC registered-voter denominator exactly, but history_stats voters who participated do not match EAC ballots cast or the NCSBE overview ballots-cast figure.",
+      "nextAction": "Keep EAC fallback active while reviewing NCSBE history_stats voter-participation semantics against published ballots-cast and eligible-voter totals; only replace after a documented numerator/denominator contract is confirmed.",
       "coverage": {
         "jurisdictionRows": 100,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/nc-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 7854464,
         "ballotsCast": 5756106,
-        "warningRows": 0
+        "warningRows": 0,
+        "stateNativeLead": {
+          "sourceTitle": "North Carolina State Board of Elections 2024 General voter_stats and history_stats ZIPs",
+          "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip; https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
+          "localFiles": [
+            "data/nc-2024-voter-stats.zip",
+            "data/nc-2024-history-stats.zip",
+            "data/nc-2024-turnout-denominator-lead.csv",
+            "data/nc-2024-turnout-source-review.json"
+          ],
+          "parser": "scripts/normalize-nc-turnout.mjs",
+          "status": "reviewed_documented_lead_not_active_turnout",
+          "ncsbeRegisteredVoters": 7854464,
+          "ncsbeHistoryVotersWhoVoted": 5705861,
+          "ncsbeHistoryMinusEacBallotsCast": -50245,
+          "ncsbeRegisteredMinusEacRegistered": 0,
+          "ncsbeHistoryMinusOverviewBallotsCast": -18126
+        }
       }
     },
     {
@@ -1114,19 +1131,24 @@
       "sourceLevel": "jurisdiction",
       "denominatorType": "registeredVoters",
       "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
+      "sourceTitle": "EAC fallback turnout rows plus OK Nov. 1 voter-registration denominator lead",
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 77,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active. The Oklahoma State Election Board Nov. 1, 2024 VR PDF was parsed as a denominator lead and reconciles to the EAC registered-voter denominator statewide and county-by-county.",
+      "nextAction": "Collect Oklahoma-native ballots-cast, voter-history, or voter-participation rows that can pair with the Nov. 1 registered-voter denominator lead; keep EAC fallback active until replacement semantics are reviewed.",
       "coverage": {
         "jurisdictionRows": 77,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ok-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 2442211,
         "ballotsCast": 1573274,
-        "warningRows": 0
+        "warningRows": 0,
+        "okVrDenominatorLeadFile": "data/ok-2024-vrstats-denominator-summary.json",
+        "okVrRegisteredVoters": 2442211,
+        "okVrCountyRegisteredVoterMismatchCount": 0,
+        "okVrDenominatorLeadCsv": "data/ok-2024-vrstats-county-denominator-lead.csv",
+        "okVrDenominatorLeadPdf": "data/ok-2024-vrstats-district-nov1-2024.pdf"
       }
     },
     {

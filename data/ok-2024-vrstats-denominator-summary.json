@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 1,
+  "state": "OK",
+  "stateName": "Oklahoma",
+  "electionYear": 2024,
+  "generatedAt": "2026-07-06T19:37:38.141Z",
+  "sourceStatus": "denominator_lead_collected_ballots_cast_missing",
+  "voterRegistrationLead": {
+    "sourceAuthority": "Oklahoma State Election Board",
+    "sourceTitle": "MESA Current Registration Statistics by District 11/1/2024",
+    "sourceUrl": "https://oklahoma.gov/content/dam/ok/en/elections/voter-registration-statistics/2024-vr-statistics/vrstats-district-nov1-2024.pdf",
+    "sourcePage": "https://oklahoma.gov/elections/voter-registration/voter-registration-statistics.html",
+    "localPdf": "data/ok-2024-vrstats-district-nov1-2024.pdf",
+    "localCsv": "data/ok-2024-vrstats-county-denominator-lead.csv",
+    "sourceDate": "2024-11-01",
+    "reportingGrain": "county_aggregated_from_congressional_district_county_fragments",
+    "rowCount": 77,
+    "libertarian": 23288,
+    "republican": 1278045,
+    "democrat": 659061,
+    "independent": 481817,
+    "registeredVoters": 2442211,
+    "parserNormalizationPath": "scripts/collect-ok-vrstats-registration.mjs",
+    "denominatorNote": "The PDF provides registered-voter denominator rows only. It does not provide ballots-cast, voter-history, or voter-participation rows."
+  },
+  "eacFallbackTurnout": {
+    "localCsv": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
+    "rowCount": 77,
+    "ballotsCast": 1573274,
+    "registeredVoters": 2442211,
+    "countyRegisteredVoters": [
+      {
+        "county": "Adair County",
+        "registeredVoters": 11667
+      },
+      {
+        "county": "Alfalfa County",
+        "registeredVoters": 3065
+      },
+      {
+        "county": "Atoka County",
+        "registeredVoters": 8331
+      },
+      {
+        "county": "Beaver County",
+        "registeredVoters": 3254
+      },
+      {
+        "county": "Beckham County",
+        "registeredVoters": 12082
+      },
+      {
+        "county": "Blaine County",
+        "registeredVoters": 5621
+      },
+      {
+        "county": "Bryan County",
+        "registeredVoters": 29178
+      },
+      {
+        "county": "Caddo County",
+        "registeredVoters": 14716
+      },
+      {
+        "county": "Canadian County",
+        "registeredVoters": 107072
+      },
+      {
+        "county": "Carter County",
+        "registeredVoters": 32101
+      },
+      {
+        "county": "Cherokee County",
+        "registeredVoters": 28909
+      },
+      {
+        "county": "Choctaw County",
+        "registeredVoters": 9355
+      },
+      {
+        "county": "Cimarron County",
+        "registeredVoters": 1406
+      },
+      {
+        "county": "Cleveland County",
+        "registeredVoters": 183522
+      },
+      {
+        "county": "Coal County",
+        "registeredVoters": 3945
+      },
+      {
+        "county": "Comanche County",
+        "registeredVoters": 63933
+      },
+      {
+        "county": "Cotton County",
+        "registeredVoters": 3883
+      },
+      {
+        "county": "Craig County",
+        "registeredVoters": 8800
+      },
+      {
+        "county": "Creek County",
+        "registeredVoters": 45861
+      },
+      {
+        "county": "Custer County",
+        "registeredVoters": 15949
+      },
+      {
+        "county": "Delaware County",
+        "registeredVoters": 28200
+      },
+      {
+        "county": "Dewey County",
+        "registeredVoters": 3108
+      },
+      {
+        "county": "Ellis County",
+        "registeredVoters": 2603
+      },
+      {
+        "county": "Garfield County",
+        "registeredVoters": 34703
+      },
+      {
+        "county": "Garvin County",
+        "registeredVoters": 16683
+      },
+      {
+        "county": "Grady County",
+        "registeredVoters": 36895
+      },
+      {
+        "county": "Grant County",
+        "registeredVoters": 2954
+      },
+      {
+        "county": "Greer County",
+        "registeredVoters": 2954
+      },
+      {
+        "county": "Harmon County",
+        "registeredVoters": 1425
+      },
+      {
+        "county": "Harper County",
+        "registeredVoters": 1961
+      },
+      {
+        "county": "Haskell County",
+        "registeredVoters": 7240
+      },
+      {
+        "county": "Hughes County",
+        "registeredVoters": 7286
+      },
+      {
+        "county": "Jackson County",
+        "registeredVoters": 13789
+      },
+      {
+        "county": "Jefferson County",
+        "registeredVoters": 3645
+      },
+      {
+        "county": "Johnston County",
+        "registeredVoters": 6324
+      },
+      {
+        "county": "Kay County",
+        "registeredVoters": 26794
+      },
+      {
+        "county": "Kingfisher County",
+        "registeredVoters": 9421
+      },
+      {
+        "county": "Kiowa County",
+        "registeredVoters": 4975
+      },
+      {
+        "county": "Latimer County",
+        "registeredVoters": 6292
+      },
+      {
+        "county": "LeFlore County",
+        "registeredVoters": 30315
+      },
+      {
+        "county": "Lincoln County",
+        "registeredVoters": 22196
+      },
+      {
+        "county": "Logan County",
+        "registeredVoters": 34849
+      },
+      {
+        "county": "Love County",
+        "registeredVoters": 6890
+      },
+      {
+        "county": "McClain County",
+        "registeredVoters": 29967
+      },
+      {
+        "county": "McCurtain County",
+        "registeredVoters": 17754
+      },
+      {
+        "county": "Mcintosh County",
+        "registeredVoters": 13054
+      },
+      {
+        "county": "Major County",
+        "registeredVoters": 4716
+      },
+      {
+        "county": "Marshall County",
+        "registeredVoters": 10169
+      },
+      {
+        "county": "Mayes County",
+        "registeredVoters": 25684
+      },
+      {
+        "county": "Murray County",
+        "registeredVoters": 8760
+      },
+      {
+        "county": "Muskogee County",
+        "registeredVoters": 39147
+      },
+      {
+        "county": "Noble County",
+        "registeredVoters": 7135
+      },
+      {
+        "county": "Nowata County",
+        "registeredVoters": 6705
+      },
+      {
+        "county": "Okfuskee County",
+        "registeredVoters": 6353
+      },
+      {
+        "county": "Oklahoma County",
+        "registeredVoters": 471129
+      },
+      {
+        "county": "Okmulgee County",
+        "registeredVoters": 22238
+      },
+      {
+        "county": "Osage County",
+        "registeredVoters": 30264
+      },
+      {
+        "county": "Ottawa County",
+        "registeredVoters": 18947
+      },
+      {
+        "county": "Pawnee County",
+        "registeredVoters": 10219
+      },
+      {
+        "county": "Payne County",
+        "registeredVoters": 46729
+      },
+      {
+        "county": "Pittsburg County",
+        "registeredVoters": 28116
+      },
+      {
+        "county": "Pontotoc County",
+        "registeredVoters": 23956
+      },
+      {
+        "county": "Pottawatomie County",
+        "registeredVoters": 43772
+      },
+      {
+        "county": "Pushmataha County",
+        "registeredVoters": 7222
+      },
+      {
+        "county": "Roger Mills County",
+        "registeredVoters": 2428
+      },
+      {
+        "county": "Rogers County",
+        "registeredVoters": 66543
+      },
+      {
+        "county": "Seminole County",
+        "registeredVoters": 13184
+      },
+      {
+        "county": "Sequoyah County",
+        "registeredVoters": 25238
+      },
+      {
+        "county": "Stephens County",
+        "registeredVoters": 28707
+      },
+      {
+        "county": "Texas County",
+        "registeredVoters": 9352
+      },
+      {
+        "county": "Tillman County",
+        "registeredVoters": 4114
+      },
+      {
+        "county": "Tulsa County",
+        "registeredVoters": 402547
+      },
+      {
+        "county": "Wagoner County",
+        "registeredVoters": 54510
+      },
+      {
+        "county": "Washington County",
+        "registeredVoters": 35916
+      },
+      {
+        "county": "Washita County",
+        "registeredVoters": 6905
+      },
+      {
+        "county": "Woods County",
+        "registeredVoters": 5139
+      },
+      {
+        "county": "Woodward County",
+        "registeredVoters": 11440
+      }
+    ],
+    "sourceAuthority": "U.S. Election Assistance Commission",
+    "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports"
+  },
+  "denominatorComparison": {
+    "okVrRegisteredMinusEacRegisteredVoters": 0,
+    "eacRegisteredVotersMinusOkVrRegistered": 0,
+    "countyRegisteredVoterMismatchCount": 0,
+    "countyRegisteredVoterMismatches": []
+  },
+  "replacementDecision": {
+    "activeTurnoutReplacement": false,
+    "reason": "The Oklahoma VR statistics PDF confirms the registered-voter denominator total used by the EAC fallback, but it has no ballots-cast or voter-history field. Keep EAC fallback turnout active until an Oklahoma-native ballots-cast or voter-participation artifact is collected and reconciled.",
+    "requiredNextArtifact": "Official Oklahoma 2024 General Election ballots-cast, voter-history, or voter-participation rows at county or precinct grain with denominator timing notes."
+  }
+}

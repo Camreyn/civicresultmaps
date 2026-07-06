@@ -3,8 +3,8 @@
   "state": "OK",
   "stateName": "Oklahoma",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
-  "status": "official_results_precinct_review_eac_turnout_county_geometry_equipment_context_audit_paths_documented",
+  "checkedAt": "2026-07-06",
+  "status": "official_results_precinct_review_eac_turnout_county_geometry_equipment_context_audit_paths_documented_ok_vr_denominator_lead_collected",
   "purpose": "State-scoped Oklahoma 2024 source coverage inventory for result, review, turnout, map, historical, and election-administration context. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "officialSourcePages": [
     "https://oklahoma.gov/elections/elections-results/election-results/2024-election-results/november-general-election.html",
@@ -17,7 +17,9 @@
     "https://oklahoma.gov/elections/voter-registration/voter-registration-statistics.html",
     "https://oklahoma.gov/elections/candidates/district-and-precinct-maps.html",
     "https://oklahoma.gov/elections/security-integrity/post-election-audits/post-election-audit-archives/2024-post-election-audits.html",
-    "https://oklahoma.gov/elections/about-us/information-and-records-requests.html"
+    "https://oklahoma.gov/elections/about-us/information-and-records-requests.html",
+    "https://results.okelections.gov/OKER/?elecDate=20241105",
+    "https://oklahoma.gov/content/dam/ok/en/elections/voter-registration-statistics/2024-vr-statistics/vrstats-district-nov1-2024.pdf"
   ],
   "loadedArtifacts": [
     {
@@ -105,6 +107,32 @@
       ]
     },
     {
+      "id": "ok-2024-vrstats-registration-denominator-lead",
+      "sourceAuthority": "Oklahoma State Election Board",
+      "sourceTitle": "MESA Current Registration Statistics by District 11/1/2024",
+      "sourceUrl": "https://oklahoma.gov/content/dam/ok/en/elections/voter-registration-statistics/2024-vr-statistics/vrstats-district-nov1-2024.pdf",
+      "localArtifact": "data/ok-2024-vrstats-district-nov1-2024.pdf; data/ok-2024-vrstats-county-denominator-lead.csv; data/ok-2024-vrstats-denominator-summary.json",
+      "electionYear": 2024,
+      "reportingGrain": "county_aggregated_from_congressional_district_county_fragments",
+      "parserNormalizationPath": "scripts/collect-ok-vrstats-registration.mjs",
+      "expectedCounts": {
+        "denominatorRows": 77,
+        "libertarian": 23288,
+        "republican": 1278045,
+        "democrat": 659061,
+        "independent": 481817,
+        "registeredVoters": 2442211,
+        "eacRegisteredVoters": 2442211,
+        "countyRegisteredVoterMismatchCount": 0
+      },
+      "confidence": "official_denominator_lead_reconciled_to_eac_registered_voters",
+      "caveats": [
+        "The PDF provides registered-voter denominator rows only; it does not provide ballots-cast, voter-history, or voter-participation rows.",
+        "County rows are aggregated from congressional-district county fragments before use as denominator provenance.",
+        "Active turnout remains the EAC fallback until an Oklahoma-native ballots-cast or voter-participation artifact is collected and reconciled."
+      ]
+    },
+    {
       "id": "ok-county-geometry",
       "sourceAuthority": "U.S. Census Bureau",
       "sourceTitle": "U.S. Census TIGERweb Oklahoma county geography",
@@ -162,10 +190,21 @@
       "requestNeed": "Collect race/county export artifacts for 2012, 2016, and 2020 and add a reproducible historical normalizer before enabling Oklahoma historical baseline rows."
     },
     "stateNativeTurnout": {
-      "status": "not_loaded_eac_fallback_active",
+      "status": "denominator_lead_collected_eac_fallback_active",
       "sourceUrl": "https://oklahoma.gov/elections/voter-registration/voter-registration-statistics.html",
+      "sourceUrls": [
+        "https://oklahoma.gov/elections/voter-registration/voter-registration-statistics.html",
+        "https://oklahoma.gov/content/dam/ok/en/elections/voter-registration-statistics/2024-vr-statistics/vrstats-district-nov1-2024.pdf"
+      ],
       "currentArtifact": "data/eac-2024-state-turnout/ok-2024-eac-turnout.csv",
-      "blocker": "The Oklahoma voter-registration statistics page provides registration-report leads and an interactive statistics export path, but no collected ballots-cast plus registered-voter denominator artifact suitable to replace EAC fallback turnout is loaded.",
+      "collectedArtifacts": [
+        "data/ok-2024-vrstats-district-nov1-2024.pdf",
+        "data/ok-2024-vrstats-county-denominator-lead.csv",
+        "data/ok-2024-vrstats-denominator-summary.json"
+      ],
+      "finding": "The official Nov. 1, 2024 Oklahoma State Election Board voter-registration PDF was collected and parsed into 77 county denominator-lead rows. Its statewide registered-voter total, 2,442,211, matches the active EAC fallback registered-voter denominator, with zero county registered-voter mismatches after county-name normalization.",
+      "blocker": "The Oklahoma voter-registration PDF has no ballots-cast, voter-history, or voter-participation field, so it is not a complete state-native turnout replacement.",
+      "parserNormalizationPath": "scripts/collect-ok-vrstats-registration.mjs",
       "requestNeed": "Official county or precinct voter participation/voter-history rows with registered-voter denominator timing, join keys, expected row count, and statewide ballots-cast reconciliation."
     },
     "precinctGeometry": {
@@ -203,7 +242,7 @@
     "src/app/api/admin-sources/route.ts"
   ],
   "remainingGaps": [
-    "state-native turnout or voter-history rows with registered-voter denominator timing",
+    "state-native ballots-cast or voter-history rows that can pair with the collected Nov. 1, 2024 registered-voter denominator lead",
     "official precinct boundary geometry or precinct-to-result crosswalk",
     "official 2012, 2016, and 2020 historical baseline artifacts and normalizer",
     "normalized post-election audit selection/outcome rows from the official archive documents",
