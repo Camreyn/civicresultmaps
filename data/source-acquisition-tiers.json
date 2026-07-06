@@ -470,28 +470,38 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout",
       "tier": "tier_1_official_export_database",
-      "reportingGrain": "county",
+      "reportingGrain": "precinct_location",
       "exportFormats": [
         "official county detail tables",
-        "csv"
+        "official precinct-level ZIP",
+        "field definitions PDF",
+        "tab-delimited statewide extract"
       ],
       "sourceUrls": [
-        "https://dos.fl.gov/elections/data-statistics/elections-data/"
+        "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+        "https://results.elections.myflorida.com/DetailRpt.Asp?ELECTIONDATE=11/5/2024&RACE=PRE&PARTY=&DIST=&GRP=&DATAMODE=",
+        "https://results.elections.myflorida.com/downloadresults.asp?ElectionDate=11/5/2024&DATAMODE="
       ],
       "exampleUrls": [],
       "availableFields": [
-        "county President versus U.S. Senate rows",
-        "county turnout"
+        "certified county presidential rows from official county detail table",
+        "precinct/location President versus U.S. Senate review rows from official precinct ZIP",
+        "precinct/location registered-voter denominator lead from official precinct ZIP",
+        "county turnout from EAC fallback",
+        "county geometry",
+        "secondary 2012/2016/2020 county historical presidential baselines"
       ],
       "missingFields": [
-        "precinct review rows",
-        "precinct boundary geometry"
+        "state-native ballots-cast rows compatible with the precinct ZIP registration denominator",
+        "precinct boundary geometry and result-label crosswalk",
+        "official 2012/2016/2020 historical baseline replacement rows",
+        "normalized audit, recount, CVR availability, incident, correction, litigation, custody, and tabulator-log rows"
       ],
-      "parserStatus": "native county review package loaded",
+      "parserStatus": "nativeFloridaDetailHtml keeps certified county map totals from the official county detail table; floridaPrecinctZipPresidentSenate loads 5,618 same-grain President-versus-U.S. Senate precinct/location review rows from data/fl-2024-general-precinct-results.zip; EAC fallback turnout remains active",
       "manualReviewBurden": "low",
-      "confidence": "loaded",
-      "caveats": "Current rows are county-level advisory inputs, not precinct scatter plots.",
-      "nextAction": "Look for official precinct-level Florida exports before upgrading review coverage."
+      "confidence": "loaded_with_caveat",
+      "caveats": "The official precinct ZIP is valid for same-grain review rows and registration-denominator leads, but not for replacing certified county map totals: its presidential candidate total is 204 votes below the official county detail table and its Trump total is one vote higher. The ZIP does not provide compatible ballots-cast rows, so turnout remains EAC fallback.",
+      "nextAction": "Collect compatible Florida state-native ballots-cast/turnout rows, precinct geometry/crosswalks, official historical baseline replacements, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "GA",
@@ -960,7 +970,8 @@
         "https://electionstats.state.ma.us/elections/view/140751/",
         "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
         "https://www.sec.state.ma.us/divisions/elections/recent-updates/2024-post-election-audits.htm",
-        "https://www.eac.gov/research-and-data/studies-and-reports"
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/registration-statistics.htm"
       ],
       "exampleUrls": [
         "https://electionstats.state.ma.us/elections/view/165300/",
@@ -975,7 +986,8 @@
         "official 2012/2016/2020 PD43+ county historical presidential baselines",
         "county geometry",
         "county equipment context",
-        "official post-election audit source page and request paths"
+        "official post-election audit source page and request paths",
+        "official Massachusetts registration statistics page verified as a statewide/local enrollment source lead"
       ],
       "missingFields": [
         "state-native local turnout denominator rows",
@@ -1052,7 +1064,8 @@
         "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
         "https://www.maine.gov/sos/elections-voting/election-results-data/previous-election-results",
         "https://www.eac.gov/research-and-data/studies-and-reports",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23"
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/23",
+        "https://www.maine.gov/sos/elections-voting/voter-data/statewide-registered-and-enrolled-voter"
       ],
       "exampleUrls": [
         "https://www.maine.gov/sos/sites/maine.gov.sos/files/inline-files/President%20and%20Vice%20President%20FINAL-Corrected%2020241205.xlsx",

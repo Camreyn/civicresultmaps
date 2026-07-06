@@ -4127,6 +4127,144 @@ def _verify_florida_extract(
         "nativeCountyDistributionAnalysis": bool(review_section.get("countyDistributionAnalysis")),
     }
 
+def _florida_precinct_zip_review_rows(
+    review_section: dict[str, Any],
+    sources: dict[str, SourceConfig],
+    result_rows: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    source = sources[review_section["sourceId"]]
+    precincts: dict[tuple[str, str, str], dict[str, Any]] = {}
+    county_files = 0
+    source_rows = 0
+    president_totals = {"Harris": 0, "Trump": 0, "Other": 0, "Special": 0}
+    senate_totals = {"DEM": 0, "REP": 0, "Other": 0, "Special": 0}
+    special_names = {"writeinvotes", "overvotes", "undervotes"}
+
+    with zipfile.ZipFile(_artifact_path(source)) as archive:
+        names = sorted(
+            name
+            for name in archive.namelist()
+            if re.search(r"_PctResults20241105\.txt$", name, re.IGNORECASE)
+        )
+        county_files = len(names)
+        for name in names:
+            with archive.open(name) as raw_handle:
+                handle = io.TextIOWrapper(raw_handle, encoding="latin-1", newline="")
+                for line in handle:
+                    if not line.strip():
+                        continue
+                    source_rows += 1
+                    columns = line.rstrip("\r\n").split("\t")
+                    if len(columns) < 19:
+                        continue
+                    county = _county_name(columns[1])
+                    precinct = str(columns[5]).strip()
+                    location = str(columns[6]).strip()
+                    contest = str(columns[11]).strip()
+                    candidate = str(columns[14]).strip()
+                    party = str(columns[15]).strip().upper()
+                    votes = int_text(columns[18])
+                    key = (county, precinct, location)
+                    current = precincts.setdefault(
+                        key,
+                        {
+                            "county": county,
+                            "precinct": precinct,
+                            "location": location,
+                            "registeredVoters": int_text(columns[7]),
+                            "harris": 0,
+                            "trump": 0,
+                            "presidentOther": 0,
+                            "presidentSpecial": 0,
+                            "senateDem": 0,
+                            "senateRep": 0,
+                            "senateOther": 0,
+                            "senateSpecial": 0,
+                        },
+                    )
+
+                    if contest == "President and Vice President":
+                        if party == "DEM":
+                            current["harris"] += votes
+                            president_totals["Harris"] += votes
+                        elif party == "REP":
+                            current["trump"] += votes
+                            president_totals["Trump"] += votes
+                        elif candidate.lower() in special_names:
+                            current["presidentSpecial"] += votes
+                            president_totals["Special"] += votes
+                        else:
+                            current["presidentOther"] += votes
+                            president_totals["Other"] += votes
+                    elif contest == "United States Senator":
+                        if party == "DEM":
+                            current["senateDem"] += votes
+                            senate_totals["DEM"] += votes
+                        elif party == "REP":
+                            current["senateRep"] += votes
+                            senate_totals["REP"] += votes
+                        elif candidate.lower() in special_names:
+                            current["senateSpecial"] += votes
+                            senate_totals["Special"] += votes
+                        else:
+                            current["senateOther"] += votes
+                            senate_totals["Other"] += votes
+
+    review_rows: list[dict[str, Any]] = []
+    for row in precincts.values():
+        total = row["harris"] + row["trump"] + row["presidentOther"]
+        if total <= 0 or row["senateDem"] + row["senateRep"] <= 0:
+            continue
+        local_unit = row["precinct"]
+        if row["location"]:
+            local_unit = f"{row['precinct']} - {row['location']}"
+        review_rows.append(
+            {
+                "county": row["county"],
+                "localUnit": local_unit,
+                "precinct": row["precinct"],
+                "precinctPollingLocation": row["location"],
+                "totalVotes": total,
+                "registeredVoters": row["registeredVoters"],
+                "harris": row["harris"],
+                "trump": row["trump"],
+                "harrisShare": pct(row["harris"], total),
+                "trumpShare": pct(row["trump"], total),
+                "demDropoff": pct(row["harris"] - row["senateDem"], total),
+                "repDropoff": pct(row["trump"] - row["senateRep"], total),
+                "coverageMode": review_section.get("coverageMode", "presidentVsSenatePrecinct"),
+                "comparisonContest": review_section.get("comparisonContest", ""),
+                "comparisonDemVotes": row["senateDem"],
+                "comparisonRepVotes": row["senateRep"],
+                "comparisonOtherVotes": row["senateOther"],
+                "sourceId": source.id,
+            }
+        )
+
+    registered_total = sum(row["registeredVoters"] for row in precincts.values())
+    president_candidate_total = president_totals["Harris"] + president_totals["Trump"] + president_totals["Other"]
+    certified_total = sum(row["totalVotes"] for row in result_rows)
+    return review_rows, {
+        "nativeComparisonRows": len(review_rows),
+        "nativePrecinctZipFiles": county_files,
+        "nativePrecinctZipRows": source_rows,
+        "nativePrecinctZipPrecinctRows": len(precincts),
+        "nativePrecinctZipReviewableRows": len(review_rows),
+        "nativePrecinctZipRegisteredVoters": registered_total,
+        "nativePrecinctZipZeroRegistrationRows": sum(1 for row in precincts.values() if row["registeredVoters"] == 0),
+        "nativePrecinctZipPresidentCandidateTotal": president_candidate_total,
+        "nativePrecinctZipPresidentCandidateTotalDelta": president_candidate_total - certified_total,
+        "nativePrecinctZipTrumpVotes": president_totals["Trump"],
+        "nativePrecinctZipHarrisVotes": president_totals["Harris"],
+        "nativePrecinctZipOtherVotes": president_totals["Other"],
+        "nativePrecinctZipPresidentSpecialRowsVotes": president_totals["Special"],
+        "nativePrecinctZipSenateDemVotes": senate_totals["DEM"],
+        "nativePrecinctZipSenateRepVotes": senate_totals["REP"],
+        "nativePrecinctZipSenateOtherVotes": senate_totals["Other"],
+        "nativePrecinctZipSenateSpecialRowsVotes": senate_totals["Special"],
+        "nativePrecinctZipSourceId": source.id,
+    }
+
 def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -4222,8 +4360,15 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
                     "sourceId": review_source.id,
                 }
             )
+    precinct_metrics: dict[str, Any] = {}
+    if review_section.get("format") == "floridaPrecinctZipPresidentSenate":
+        review_rows, precinct_metrics = _florida_precinct_zip_review_rows(review_section, sources, result_rows)
+        comparison_rows = precinct_metrics["nativeComparisonRows"]
 
-    verification_metrics = _verify_florida_extract(review_section, sources, result_rows, review_rows)
+    verification_review_rows = review_rows if review_section.get("format") == "floridaDetailHtmlCountyComparison" else []
+    verification_metrics = _verify_florida_extract(review_section, sources, result_rows, verification_review_rows)
+    if review_section.get("format") == "floridaPrecinctZipPresidentSenate":
+        verification_metrics["nativeExtractSenateVerificationSkipped"] = True
 
     turnout_rows: list[dict[str, Any]] = []
     turnout_metrics: dict[str, Any] = {"nativeTurnoutRows": 0}
@@ -4240,10 +4385,16 @@ def _florida_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[
         "nativeReviewWarning": review_section.get("warning", ""),
         "nativeComparisonRows": comparison_rows,
         "nativeComparisonContest": review_section.get("comparisonContest", ""),
+        **precinct_metrics,
         **verification_metrics,
         **turnout_metrics,
     }
-    return sorted(result_rows, key=lambda item: item["jurisdictionName"]), sorted(review_rows, key=lambda item: item["county"]), turnout_rows, metrics
+    return (
+        sorted(result_rows, key=lambda item: item["jurisdictionName"]),
+        sorted(review_rows, key=lambda item: (item["county"], item.get("localUnit", ""))),
+        turnout_rows,
+        metrics,
+    )
 
 
 def _virginia_title(value: Any) -> str:

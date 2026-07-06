@@ -506,14 +506,18 @@
       "localFile": "data/eac-2024-state-turnout/fl-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 67,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active Florida turnout source. The official Florida precinct-level ZIP is now loaded for review rows and includes a registered-voter field, but it is retained only as a denominator lead because it does not provide compatible ballots-cast rows and its registered-voter sum differs from the active EAC denominator.",
+      "nextAction": "Collect compatible Florida state-native ballots-cast or voter-participation rows that can be reconciled to the official precinct ZIP registration denominator before replacing the EAC fallback.",
       "coverage": {
         "jurisdictionRows": 67,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/fl-2024-eac-registered-voter-denominator.json",
         "registeredVoters": 15740083,
         "ballotsCast": 10999125,
         "warningRows": 0
+      },
+      "artifacts": {
+        "stateNativeRegistrationLead": "data/fl-2024-general-precinct-results.zip; data/fl-2024-precinct-source-review.json",
+        "dataDefinitions": "data/fl-2024-precinct-data-definitions.pdf"
       }
     },
     {

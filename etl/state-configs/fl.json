@@ -50,6 +50,39 @@
       "status": "loaded"
     },
     {
+      "id": "fl-2024-precinct-source-review",
+      "category": "Florida precinct ZIP source-shape and reconciliation review",
+      "url": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+      "localFile": "data/fl-2024-precinct-source-review.json",
+      "parser": "floridaPrecinctZipSourceReviewJson",
+      "authority": "Florida Department of State, Division of Elections",
+      "timestampBasis": "Generated from the official 2024 General Election precinct ZIP by scripts/collect-fl-precinct-results.mjs.",
+      "confidence": "Documents row counts, reviewable precinct rows, registered-voter lead totals, and the ZIP-versus-certified-county-detail presidential total caveat before using the ZIP for review rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "fl-2024-precinct-data-definitions",
+      "category": "Official precinct-level data dictionary",
+      "url": "https://dos.fl.gov/media/709209/final-precinct-level-elections-data-definitions-and-field-codes_20250624.pdf",
+      "localFile": "data/fl-2024-precinct-data-definitions.pdf",
+      "parser": "sourceDefinitionReference",
+      "authority": "Florida Department of State, Division of Elections",
+      "timestampBasis": "Data definition PDF updated June 24, 2025.",
+      "confidence": "Defines the 19 tab-delimited columns used by the official precinct-level ZIP, including county, precinct, registered voters, contest, candidate party, and vote total fields.",
+      "status": "loaded"
+    },
+    {
+      "id": "fl-2024-general-precinct-results",
+      "category": "Official precinct-level result rows and registration denominator lead",
+      "url": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+      "localFile": "data/fl-2024-general-precinct-results.zip",
+      "parser": "floridaPrecinctZipPresidentSenate",
+      "authority": "Florida Department of State, Division of Elections",
+      "timestampBasis": "Official 2024 General Election precinct-level ZIP listed on the Florida Department of State page last updated June 2, 2026.",
+      "confidence": "Official statewide precinct-level export derived from county-specific data submitted by supervisors of elections. Used for same-grain President-versus-U.S. Senate review rows and registration-denominator leads only; certified map totals remain anchored to the official county detail table because the ZIP presidential candidate total is 204 votes below the county detail table and the Trump total is one vote higher.",
+      "status": "loaded"
+    },
+    {
       "id": "fl-county-geometry",
       "category": "County boundaries",
       "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2712%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -77,15 +110,13 @@
     "sourceId": "fl-2024-general-president-detail"
   },
   "reviewCharts": {
-    "format": "floridaDetailHtmlCountyComparison",
-    "sourceId": "fl-2024-general-senate-detail",
+    "format": "floridaPrecinctZipPresidentSenate",
+    "sourceId": "fl-2024-general-precinct-results",
     "comparisonContest": "United States Senator",
-    "repCandidateContains": "Rick Scott",
-    "demCandidateContains": "Debbie Mucarsel-Powell",
-    "coverageMode": "presidentVsSenate",
-    "warning": "Florida review rows are county-level President-versus-U.S. Senate comparisons from official county detail tables, verified against the official statewide tab-delimited results extract. County-distribution indicators compare counties against the statewide county pattern; they are useful for statewide county review, but they are not precinct-level vote-share scatter plots.",
+    "coverageMode": "presidentVsSenatePrecinct",
+    "warning": "Florida review rows use the official precinct-level 2024 General Election ZIP to pair President and U.S. Senate rows by county, unique precinct identifier, and polling-location label. Certified county map totals remain sourced from the official county detail table because the precinct ZIP presidential candidate total is 204 votes below that table and the Trump total is one vote higher. The ZIP registration field is retained as a denominator lead only; active turnout rows remain EAC fallback until compatible state-native ballots-cast rows are collected.",
     "verificationSourceId": "fl-2024-general-results-extract",
-    "countyDistributionAnalysis": true
+    "sourceReviewId": "fl-2024-precinct-source-review"
   },
   "turnout": {
     "format": "eacTurnoutCsv",
@@ -93,7 +124,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Florida turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Florida turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. The official Florida precinct ZIP includes a registered-voter field that sums to 13,942,186 across unique precinct/location rows and is retained as a state-native denominator lead only; it is not a turnout replacement without compatible official ballots-cast rows and because it differs from the EAC registered-voter denominator.",
     "warningRequired": false,
     "expected": {
       "rowCount": 67,
@@ -117,13 +148,13 @@
   "expected": {
     "jurisdictions": 67,
     "resultRows": 67,
-    "sources": 6,
+    "sources": 9,
     "geometryFeatures": 67,
     "stateTotal": 10893752,
     "trump": 6110125,
     "harris": 4683038,
     "other": 100589,
-    "reviewRows": 67,
+    "reviewRows": 5618,
     "turnoutRows": 67
   },
   "capabilities": {
