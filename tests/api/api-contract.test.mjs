@@ -548,7 +548,7 @@ test("statewide-only result rows remain visible in workspace and coverage", () =
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
 
   assert.match(page, /level: "state"/);
-  assert.match(page, /cityTownResults\.length \? cityTownResults : stateResults/);
+  assert.match(page, /cityTownResults\.length \? cityTownResults : townResults\.length \? townResults : stateResults/);
   assert.match(page, /results\[0\]\?\.level === "state"/);
   assert.match(dataAccess, /level: "state"/);
   assert.match(dataAccess, /cityTownResults\.length \? cityTownResults : stateResults/);
