@@ -1511,6 +1511,71 @@
       ]
     },
     {
+      "state": "FL",
+      "name": "Florida",
+      "priority": 19,
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_secondary_historical_with_precinct_zip_caveat",
+      "authority": "Florida Department of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/fl.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Florida Department of State official 2024 General Election President county detail table",
+          "sourceUrl": "https://results.elections.myflorida.com/DetailRpt.Asp?ELECTIONDATE=11/5/2024&RACE=PRE&PARTY=&DIST=&GRP=&DATAMODE=",
+          "localFile": "data/fl-2024-general-president-detail.html",
+          "parserHint": "floridaDetailHtml reads the official county detail table and remains the certified county map source; totals reconcile to 10,893,752 candidate votes."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Florida Department of State 2024 General Election precinct-level ZIP",
+          "sourceUrl": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/",
+          "localFile": "data/fl-2024-general-precinct-results.zip; data/fl-2024-precinct-data-definitions.pdf; data/fl-2024-precinct-source-review.json",
+          "level": "precinct_location",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "floridaPrecinctZipPresidentSenate pairs President and U.S. Senate rows by county, unique precinct identifier, and polling-location label; use the ZIP for review rows only because its presidential candidate total is 204 votes below the certified county detail table."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 jurisdiction turnout fallback with Florida precinct ZIP registration-denominator lead",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/fl-2024-eac-turnout.csv",
+          "level": "jurisdiction",
+          "denominator": "EAC A1a Total Reg registered voters; official Florida precinct ZIP registered-voter field retained as denominator lead only",
+          "ballotsCast": "EAC normalized ballots cast"
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb Florida county boundaries",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2712%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/fl-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "GEOID"
+        }
+      },
+      "expected": {
+        "countyRows": 67,
+        "geometryFeatures": 67,
+        "stateTotal": 10893752,
+        "trump": 6110125,
+        "harris": 4683038,
+        "other": 100589,
+        "localReviewRows": 5618,
+        "turnoutRows": 67,
+        "historicalBaselineRows": 201
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_precinct_location_zip",
+        "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_registration_lead",
+        "historicalBaselineMode": "secondary_county_context_2012_2016_2020"
+      },
+      "caveats": [
+        "Certified Florida county map totals remain anchored to the official county detail table, not the precinct ZIP.",
+        "The official precinct ZIP presidential candidate total is 204 votes below the county detail table and the ZIP Trump total is one vote higher.",
+        "The precinct ZIP registered-voter field is a denominator lead only because no compatible state-native ballots-cast rows are loaded.",
+        "County geometry is loaded; precinct boundary geometry/crosswalks are not loaded.",
+        "Historical baselines are secondary county context rows and not 2024 certified data."
+      ],
+      "legacyReferenceBundle": "data/fl-app-data.js"
+    },
+    {
       "state": "MA",
       "name": "Massachusetts",
       "priority": 11,

@@ -2,7 +2,7 @@
   "state": "ME",
   "stateName": "Maine",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-06",
   "checkedBy": "Wave 17 Maine state-data worker",
   "productionChecked": false,
   "repoDrift": [
@@ -95,7 +95,8 @@
       "sourceUrls": [
         "https://www.maine.gov/sos/elections-voting/voter-data",
         "https://www.maine.gov/sos/elections-voting/voter-data/previous-enrollment-data",
-        "https://www.maine.gov/sos/elections-voting/voter-data/previous-absentee-data"
+        "https://www.maine.gov/sos/elections-voting/voter-data/previous-absentee-data",
+        "https://www.maine.gov/sos/elections-voting/voter-data/statewide-registered-and-enrolled-voter"
       ],
       "reportingGrain": "county_municipality_voting_district_party_for_registration; absentee_request_files_available_separately",
       "activeEacFallback": {
@@ -104,7 +105,7 @@
         "registeredVoters": 1223468
       },
       "parserNeeded": "Active/inactive registered-enrolled text files are collected as denominator leads, but turnout remains EAC fallback until compatible official ballots-cast or voter-participation rows are collected and reconciled.",
-      "caveat": "The 11/5/2024 registered/enrolled active and inactive files are denominator leads, not complete turnout replacements by themselves.",
+      "caveat": "The 11/5/2024 registered/enrolled active and inactive files are denominator leads, not complete turnout replacements by themselves. The submitted current and previous enrollment pages were rechecked July 6, 2026; they continue to support denominator leads, not a ballots-cast turnout replacement.",
       "localArtifacts": [
         "data/me-official-sources/me-2024-registered-enrolled-active-20241105.txt",
         "data/me-official-sources/me-2024-registered-enrolled-inactive-20241105.txt"

@@ -1,0 +1,37 @@
+{
+  "state": "FL",
+  "electionYear": 2024,
+  "generatedAt": "2026-07-06T05:12:35.722Z",
+  "sourceArtifacts": {
+    "precinctZip": "data/fl-2024-general-precinct-results.zip",
+    "dataDefinitions": "data/fl-2024-precinct-data-definitions.pdf",
+    "sourcePage": "https://dos.fl.gov/elections/data-statistics/elections-data/precinct-level-election-results/"
+  },
+  "sourceShape": {
+    "countyFiles": 67,
+    "sourceRows": 537897,
+    "precinctLocationRows": 5712,
+    "reviewablePresidentVsSenateRows": 5618,
+    "zeroRegistrationPrecinctLocationRows": 110,
+    "registeredVotersAcrossUniquePrecinctLocationRows": 13942186
+  },
+  "presidentTotals": {
+    "Harris": 4683038,
+    "Trump": 6110126,
+    "Other": 100384,
+    "Special": 108985
+  },
+  "senateTotals": {
+    "DEM": 4603077,
+    "REP": 5977707,
+    "Other": 176632,
+    "Special": 245108
+  },
+  "reconciliation": {
+    "certifiedCountyDetailPresidentCandidateTotal": 10893752,
+    "precinctZipPresidentCandidateTotal": 10893548,
+    "precinctZipCandidateTotalDelta": -204,
+    "caveat": "Use the precinct ZIP for same-grain local review rows and registration-denominator leads only. Certified Florida map totals remain anchored to the official county detail table because the precinct ZIP President candidate total is 204 votes below that table and the Trump total is one vote higher."
+  },
+  "downloads": null
+}

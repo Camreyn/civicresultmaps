@@ -47,7 +47,7 @@ class MaineCoverageInventoryTest(unittest.TestCase):
         inventory = load_json("data/me-2024-data-coverage-inventory.json")
 
         self.assertEqual(inventory["state"], "ME")
-        self.assertEqual(inventory["checkedAt"], "2026-07-02")
+        self.assertEqual(inventory["checkedAt"], "2026-07-06")
         self.assertIs(inventory["productionChecked"], False)
         self.assertEqual(inventory["repoDrift"][0]["path"], "docs/developer/index.md")
         self.assertEqual(inventory["officialSourceFindings"]["certifiedResults"]["status"], "official_excel_loaded")

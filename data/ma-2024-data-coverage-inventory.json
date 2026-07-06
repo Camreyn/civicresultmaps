@@ -3,7 +3,7 @@
   "state": "MA",
   "stateName": "Massachusetts",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-06",
   "status": "official_pd43_results_review_historical_loaded_eac_turnout_fallback_admin_paths_documented",
   "summary": "Massachusetts has official PD43+ county-certified presidential rows, city/town/ward/precinct President-versus-U.S. Senate review rows, official PD43+ county historical presidential baselines for 2012/2016/2020, county geometry, EAC jurisdiction turnout fallback, statewide official turnout-statistics cross-checks, Verified Voting county equipment context, and official/request-path administration context. No production promotion is implied by this inventory.",
   "officialSourcePages": [
@@ -15,7 +15,8 @@
     "https://electionstats.state.ma.us/elections/view/140751/",
     "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
     "https://www.sec.state.ma.us/divisions/elections/recent-updates/2024-post-election-audits.htm",
-    "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-registration-statistics.htm"
+    "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-registration-statistics.htm",
+    "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/registration-statistics.htm"
   ],
   "loadedArtifacts": {
     "presidentialCountyResults": {
@@ -58,7 +59,9 @@
       "statewideOfficialTurnoutSourceUrl": "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/voter-turnout-statistics.htm",
       "statewideOfficialBallotsCast": 3512930,
       "statewideOfficialRegisteredVoters": 5142343,
-      "caveat": "The Massachusetts turnout statistics page confirms statewide 2024 registered voters and total votes cast, but this pass did not identify an official city/town/ward/precinct turnout export to replace the active EAC jurisdiction fallback rows."
+      "caveat": "The Massachusetts turnout statistics page confirms statewide 2024 registered voters and total votes cast, but this pass did not identify an official city/town/ward/precinct turnout export to replace the active EAC jurisdiction fallback rows.",
+      "registrationStatisticsSourceUrl": "https://www.sec.state.ma.us/divisions/elections/research-and-statistics/registration-statistics.htm",
+      "registrationStatisticsCaveat": "Submitted Massachusetts registration statistics page publishes state election enrollment statistics, including 2024 and historical PDF/accessibility links. It is a statewide/local denominator source lead and cross-check path, not an active replacement for EAC jurisdiction turnout rows without compatible local ballots-cast rows."
     },
     "historicalBaselines": {
       "status": "loaded_official_pd43_county_context",
