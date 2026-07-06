@@ -2,9 +2,9 @@
   "state": "KY",
   "stateName": "Kentucky",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-07-06",
   "purpose": "State-scoped coverage inventory for Kentucky 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
-  "status": "official_precinct_review_county_map_eac_turnout_official_historical_loaded_state_turnout_reconciliation_documented_admin_context_partial",
+  "status": "official_precinct_review_county_map_eac_turnout_official_historical_loaded_state_turnout_reconciliation_documented_wave2_source_review_keeps_eac_admin_context_partial",
   "authorityPriority": "Official Kentucky State Board of Elections, county clerks, county boards of elections, official GIS/Census, EAC, and official court/board records first; secondary sources are context only and caveated.",
   "loadedArtifacts": [
     {
@@ -105,6 +105,30 @@
       "confidence": "candidate_reconciliation_not_loaded_turnout_replacement"
     },
     {
+      "id": "ky-2024-turnout-source-review",
+      "sourceAuthority": "Kentucky State Board of Elections; U.S. Election Assistance Commission",
+      "sourceUrl": "https://elect.ky.gov/results/Pages/default.aspx",
+      "localPath": "data/ky-2024-turnout-source-review.json",
+      "electionYear": 2024,
+      "reportingGrain": "county_result_downloads_and_county_turnout_reconciliation",
+      "parserNormalizationPath": "scripts/report-ky-turnout-source-review.mjs checks committed county recap artifacts, the turnout-registration reconciliation summary, and active EAC fallback rows. It documents why no active turnout replacement is made.",
+      "expectedCounts": {
+        "countyRecapPdfs": 120,
+        "countyRecapTextArtifacts": 120,
+        "stateBoardNumberVoting": 2086320,
+        "eacBallotsCast": 2086090,
+        "stateBoardMinusEacBallotsCastDelta": 230,
+        "registeredVoters": 3548136
+      },
+      "caveats": [
+        "The submitted Kentucky results archive and county recap downloads are official result/review sources, not turnout or registered-voter denominator sources.",
+        "The 2024 results page dashboard is labeled unofficial; certified/amended certification and county recap sheets remain the result source path.",
+        "State Board county turnout and registration PDFs remain candidate leads only because the turnout page says turnout reports are unofficial and may differ from election results after voter-registration rolls reopen.",
+        "Keep EAC fallback turnout active until county-clerk official turnout documentation or source-side replacement semantics are confirmed."
+      ],
+      "confidence": "reviewed_not_valid_turnout_replacement"
+    },
+    {
       "id": "ky-county-geometry",
       "sourceAuthority": "U.S. Census Bureau",
       "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2721%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -162,6 +186,17 @@
     }
   ],
   "officialSourceSearchPath": [
+    {
+      "sourceAuthority": "Kentucky State Board of Elections",
+      "sourceUrl": "https://elect.ky.gov/results/Pages/default.aspx",
+      "checkedFor": [
+        "submitted 2024 results source",
+        "official certification and county recap download path",
+        "county result-download turnout replacement suitability"
+      ],
+      "result": "Wave 2 review confirmed the results archive links the 2024 page, amended certification, and official 2024 General Recap Sheets. The county recap PDFs remain valid result/review artifacts only; they do not contain ballots-cast turnout or registered-voter denominator fields.",
+      "blocker": "No county result download on the submitted results path can replace EAC turnout. The State Board turnout PDFs remain excluded from active turnout because of the official unofficial-turnout caveat and the 230-voter State Board minus EAC ballots-cast delta."
+    },
     {
       "sourceAuthority": "Kentucky State Board of Elections",
       "sourceUrl": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
@@ -257,10 +292,10 @@
   "gaps": [
     {
       "artifact": "state_native_turnout_registration_denominator",
-      "status": "county_reconciliation_generated_not_loaded",
+      "status": "county_reconciliation_and_wave2_source_review_generated_not_loaded",
       "neededFor": "Replacing EAC fallback turnout and evaluating turnout/registration at Kentucky-native grain.",
       "preferredAuthority": "Kentucky State Board of Elections and county clerks.",
-      "remainingRisk": "Current turnout rows use official EAC fallback data. A county-level State Board turnout/registration reconciliation now exists, but the State Board page warns the reports are unofficial and county-clerk official documentation is still needed before replacement."
+      "remainingRisk": "Current turnout rows use official EAC fallback data. A county-level State Board turnout/registration reconciliation and Wave 2 source review now exist, but the State Board page warns the reports are unofficial and county-clerk official documentation or source-side replacement semantics are still needed before replacement."
     },
     {
       "artifact": "precinct_boundary_geometry",
@@ -280,6 +315,7 @@
   "confidenceNotes": [
     "Official 2024 result/review rows and official 2012/2016/2020 county historical baselines are loaded from Kentucky election-results artifacts.",
     "Kentucky State Board 2024 turnout and registration county PDFs now have a generated reconciliation against EAC fallback rows: same 3,548,136 registered-voter denominator, 2,086,320 State Board voters versus 2,086,090 EAC ballots cast, and EAC fallback remains active pending official county-clerk documentation review.",
-    "Current Kentucky advisory indicators remain public-interest screening outputs only; they are not proof of fraud or misconduct."
+    "Current Kentucky advisory indicators remain public-interest screening outputs only; they are not proof of fraud or misconduct.",
+    "Wave 2 Kentucky verification reviewed the submitted results archive and county recap downloads against the turnout-registration reconciliation; no county download can replace EAC fallback, and the State Board turnout PDFs remain excluded from active turnout pending county-clerk official documentation or source-side replacement semantics."
   ]
 }

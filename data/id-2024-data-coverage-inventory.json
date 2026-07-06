@@ -1,16 +1,19 @@
 {
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-06",
   "state": "ID",
   "stateName": "Idaho",
   "electionYear": 2024,
-  "status": "official_county_results_review_eac_turnout_county_geometry_equipment_context_historical_artifact_collected",
-  "summary": "Idaho has official Vote Idaho 2024 county presidential result rows, official Vote Idaho county U.S. House comparison rows, EAC 2024 V2 county turnout fallback rows, Census county geometry, county equipment context, and a collected official Idaho SOS 2012/2016 county historical presidential baseline CSV. The active staging importer does not yet emit Idaho historical rows because enabling the existing historicalPresidentialCsv path for the Idaho native branch would require a shared helper/importer change. State-native turnout, precinct/local reporting-unit rows, precinct geometry, active historical baseline display rows, 2020 historical baseline rows, and normalized audit/CVR/incident/correction/recount/litigation records remain uncollected or blocked.",
+  "status": "official_county_results_review_state_native_county_turnout_county_geometry_equipment_context_historical_artifact_collected",
+  "summary": "Idaho has official Vote Idaho 2024 county presidential result rows, official Vote Idaho county U.S. House comparison rows, official Idaho Secretary of State county turnout and registration denominator rows, Census county geometry, county equipment context, and a collected official Idaho SOS 2012/2016 county historical presidential baseline CSV. The state-native turnout workbook replaces the prior active EAC fallback after reconciliation to raw precinct-stat county totals and EAC benchmark rows. Active staging still lacks precinct/local reporting-unit result rows, precinct geometry, active historical baseline display rows, 2020 historical baseline rows, and normalized audit/CVR/incident/correction/recount/litigation records.",
   "officialSourcePages": [
     "https://sos.idaho.gov/elections-division/election-results/",
     "https://archive.voteidaho.gov/results/2024/general/xml.html",
     "https://archive.voteidaho.gov/results/2024/general/presidential.html",
     "https://archive.voteidaho.gov/results/2024/general/congressional.html",
     "https://archive.voteidaho.gov/results/2024/general/turnout.html",
+    "https://sos.idaho.gov/elections/data/results/2024/raw_stats_general.xlsx",
+    "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx",
+    "https://voteidaho.gov/data-and-dashboards/voter-turnout/",
     "https://canvass.sos.idaho.gov/",
     "https://sos.idaho.gov/elections-division/2020-results-county/",
     "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html",
@@ -57,7 +60,7 @@
     },
     {
       "id": "id-2024-eac-turnout",
-      "sourceTitle": "U.S. EAC 2024 EAVS V2 Idaho county turnout fallback",
+      "sourceTitle": "U.S. EAC 2024 EAVS V2 Idaho county turnout benchmark",
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localArtifact": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv",
       "reportingGrain": "jurisdiction_county",
@@ -67,10 +70,31 @@
         "ballotsCast": 917469,
         "registeredVoters": 1178750
       },
-      "confidence": "loaded_official_fallback",
+      "confidence": "retained_official_benchmark",
       "caveats": [
-        "Prefer an Idaho-native turnout or voter-participation artifact if one is collected and reconciled.",
-        "The Vote Idaho 2024 turnout page is an official source lead, but no local data artifact from that page has been normalized into the active turnout contract."
+        "Retained as benchmark context after state-native Idaho county turnout was loaded.",
+        "The Idaho SOS county turnout workbook matches EAC ballots cast and registered-voter totals in every county."
+      ]
+    },
+    {
+      "id": "id-2024-general-turnout-county-workbook",
+      "sourceTitle": "Idaho Secretary of State 2024 General Election county turnout workbook",
+      "sourceUrl": "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx",
+      "localArtifact": "data/id-2024-turnout-county-general.xlsx; data/id-2024-raw-stats-general.xlsx; data/id-2024-general-turnout.csv; data/id-2024-turnout-reconciliation-summary.json",
+      "reportingGrain": "county",
+      "parserNormalizationPath": "normalizedTurnoutCsv via scripts/normalize-id-turnout.mjs and etl/state-configs/id.json turnout",
+      "expectedCounts": {
+        "turnoutRows": 44,
+        "registrationAtCutoff": 1057735,
+        "electionDayRegistrations": 121015,
+        "registeredVoters": 1178750,
+        "ballotsCast": 917469
+      },
+      "confidence": "loaded_official_reconciled_to_raw_stats_and_eac_benchmark",
+      "caveats": [
+        "Total Registered Voters equals Registration at Cutoff plus Election Day Registrations in every county.",
+        "The official raw precinct turnout workbook is retained as a source lead, but active Idaho review rows remain county-level President-versus-U.S. House rows.",
+        "This turnout replacement does not change result, review, or advisory indicator semantics."
       ]
     },
     {
@@ -128,10 +152,12 @@
   ],
   "sourceFindings": {
     "stateNativeTurnout": {
-      "status": "not_loaded_eac_fallback_active",
-      "sourceUrl": "https://archive.voteidaho.gov/results/2024/general/turnout.html",
-      "currentArtifact": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv",
-      "requestNeed": "Official Idaho ballots-cast or voter-participation rows with registered-voter denominator, denominator timing, county or precinct grain, and statewide totals suitable for reconciliation before replacing EAC fallback."
+      "status": "official_state_native_county_turnout_loaded",
+      "sourceUrl": "https://voteidaho.gov/data-and-dashboards/voter-turnout/",
+      "localArtifact": "data/id-2024-general-turnout.csv",
+      "reconciliationSummary": "data/id-2024-turnout-reconciliation-summary.json",
+      "details": "Official county turnout workbook reports Registration at Cutoff, Election Day Registrations, Total Registered Voters, Ballots Cast, and Voter Turnout. The normalizer verifies county workbook rows against raw precinct-stat county totals and retained EAC benchmark rows.",
+      "remainingNeed": "Use official raw precinct turnout only after same-grain precinct/local President and comparison rows are collected, or keep precinct turnout documented as a source lead."
     },
     "precinctOrLocalReviewRows": {
       "status": "not_loaded",
@@ -188,15 +214,15 @@
       "/api/turnout-sources?state=ID&year=2024",
       "/api/admin-sources?state=ID&year=2024"
     ],
-    "advisoryUse": "Idaho advisory indicators use county-level official President-versus-U.S.-House review rows. U.S. House is district-based, and the review rows are screening/context signals only, not claims of fraud or misconduct.",
+    "advisoryUse": "Idaho advisory indicators use county-level official President-versus-U.S.-House review rows. U.S. House is district-based, and the review rows are screening/context signals only, not claims of fraud or misconduct. State-native county turnout is loaded for turnout context only.",
     "productionPromotion": "Not authorized from worker branch; no native:promote or native:counts run.",
     "historicalUse": "Collected 2012/2016 historical CSV is not active in Idaho staging or public historical display until the shared native importer path is updated outside this state-scoped worker PR."
   },
   "gaps": [
     {
-      "artifact": "state_native_turnout_denominator",
-      "status": "not_loaded_eac_fallback_active",
-      "remainingRisk": "EAC fallback turnout is official but not Idaho-native and may not match Vote Idaho turnout semantics."
+      "artifact": "same_grain_precinct_turnout_use",
+      "status": "source_lead_retained_not_active",
+      "remainingRisk": "Official raw precinct turnout exists, but active Idaho review rows remain county-level, so precinct turnout is not active for same-grain advisory screening."
     },
     {
       "artifact": "precinct_or_local_review_rows",

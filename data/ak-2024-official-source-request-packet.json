@@ -2,7 +2,7 @@
   "state": "AK",
   "stateName": "Alaska",
   "electionYear": 2024,
-  "checkedAt": "2026-07-04",
+  "checkedAt": "2026-07-06",
   "authority": "Alaska Division of Elections",
   "localArtifact": "data/ak-2024-official-source-request-packet.json",
   "parserOrNormalizationPath": "coverageInventoryJson",
@@ -80,7 +80,7 @@
       "id": "ak-state-native-turnout-semantics",
       "priority": "high",
       "neededArtifact": "Division of Elections interpretation of ENRbyPrecinct.csv Reg_voters and total_ballots fields, including denominator timing and whether mixed reporting units can be used for turnout rows.",
-      "sourceEvidence": "data/ak-2024-enr-turnout-semantics.json shows de-duplicated ENR Reg_voters sum 611,078 and total_ballots sum 340,981, matching EAC fallback and summary Times Cast totals.",
+      "sourceEvidence": "data/ak-2024-enr-turnout-semantics.json shows de-duplicated ENR Reg_voters sum 611,078 and total_ballots sum 340,981, matching EAC fallback and summary Times Cast totals. Wave 2 verification also found 120 zero-registration district absentee/early/question reporting units carrying 165,047 ballots, so ENR remains a documented lead rather than an active turnout replacement.",
       "requestFields": [
         "definition of Reg_voters",
         "definition of total_ballots",
@@ -88,7 +88,7 @@
         "handling for zero-registration district absentee/early/question units",
         "whether federal/overseas HD99 belongs in statewide turnout"
       ],
-      "caveat": "Do not replace the active EAC fallback until source semantics and warning behavior are reviewed."
+      "caveat": "Keep EAC fallback active. Do not replace active turnout with ENR rows until source semantics, denominator timing, and zero-registration district reporting-unit handling are confirmed."
     },
     {
       "id": "ak-historical-baselines",
@@ -122,5 +122,5 @@
       "caveat": "Administration-context rows are source/provenance context only and are not proof of fraud or misconduct."
     }
   ],
-  "status": "request_packet_refreshed_enr_turnout_semantics_added"
+  "status": "request_packet_refreshed_enr_turnout_reviewed_as_lead_not_replacement"
 }

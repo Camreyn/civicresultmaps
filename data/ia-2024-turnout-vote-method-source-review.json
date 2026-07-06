@@ -1,0 +1,58 @@
+{
+  "state": "IA",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-05",
+  "sourceAuthority": "Iowa Secretary of State",
+  "submittedSourceUrl": "https://sos.iowa.gov/iowans/election-results-statistics",
+  "clarityResultsUrl": "https://electionresults.iowa.gov/IA/122322/web.345435/",
+  "localDetailXmlDirectory": "data/ia-2024-county-detailxml-reports",
+  "decision": "keep_current_clarity_turnout_and_do_not_load_vote_method_rows",
+  "reason": "The current public vote-method contract is EAC participation-method rows. Iowa Clarity VoteType rows are candidate contest-vote splits by method, while the active Iowa turnout source already uses the separate VoterTurnout ballotsCast and totalVoters fields.",
+  "submittedSourceReview": {
+    "result": "The official Iowa Secretary of State election results/statistics page lists 2024 General Election links for Official Canvass by County, Precinct Results by County - Excel Format, Turnout Report, Statistical Reports, Daily Absentee Statistics, and General Election County Precinct Audits.",
+    "sourceUse": "Use the page as an official SOS index and historical/statistical lead. The active machine-readable county detail XML package remains the source for current result, review, and turnout rows."
+  },
+  "enrCountySelectionRequirement": {
+    "result": "County detail XML reports are county-selected ENR/Clarity report ZIPs, not a single statewide detail XML file.",
+    "collector": "scripts/collect-ia-clarity-county-reports.mjs",
+    "countyManifest": "data/ia-2024-county-detailxml-reports/manifest.json",
+    "countyReports": 99,
+    "firstCountyElectionId": "122323",
+    "lastCountyElectionId": "122421",
+    "sampleSourceUrl": "https://electionresults.iowa.gov/IA/Adair/122323/354568/reports/detailxml.zip"
+  },
+  "activeTurnout": {
+    "rows": 1651,
+    "ballotsCast": 1672068,
+    "registeredVoters": 1893715
+  },
+  "activeTurnoutMatchesConfig": true,
+  "officialClarityPresidentVoteTypeReview": {
+    "presidentCandidateVotes": 1663506,
+    "presidentVoteTypeVotes": 1663506,
+    "voteTypeTotals": {
+      "Election Day": 987176,
+      "Absentee": 676330
+    },
+    "voteTypeGroups": [
+      "Absentee",
+      "Election Day"
+    ],
+    "voteTypeTotalsMatchCandidateVotes": true,
+    "voteTypeGroupSumMatchesCandidateVotes": true,
+    "mismatchedChoiceRows": [],
+    "presidentVoteTypePrecinctRows": 26448,
+    "deltaPresidentCandidateVotesVsActiveTurnoutBallotsCast": -8562
+  },
+  "publicVoteMethodContract": {
+    "loader": "src/lib/vote-methods.ts",
+    "currentFilePattern": "data/eac-2024-vote-methods/<state>-<year>-eac-vote-methods.csv",
+    "iowaEacVoteMethodFileExists": false,
+    "contractCaveat": "Workspace UI copy describes these rows as participation-method context and explicitly separates them from candidate-by-method data."
+  },
+  "caveats": [
+    "Iowa VoteType rows reconcile to President candidate votes, but they are contest votes by candidate and method, not election-level ballots-cast turnout.",
+    "President candidate votes are 8,562 below VoterTurnout ballotsCast, so VoteType rows cannot replace active turnout.",
+    "Do not expose Iowa VoteType rows through the current EAC participation-method CSV/API contract unless a separate candidate-by-method contract and UI caveat are added."
+  ]
+}

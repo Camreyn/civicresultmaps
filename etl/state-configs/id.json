@@ -7,13 +7,24 @@
   "sources": [
     {
       "id": "id-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC benchmark turnout rows",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC benchmark turnout rows retained for reconciliation after Idaho state-native county turnout was collected.",
+      "status": "candidate"
+    },
+    {
+      "id": "id-2024-general-turnout-county-workbook",
+      "category": "Official 2024 General Election county turnout workbook",
+      "url": "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx",
+      "localFile": "data/id-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "Idaho Secretary of State",
+      "timestampBasis": "Vote Idaho 2024 General Election voter turnout county workbook collected from the official voter turnout data page on July 6, 2026.",
+      "confidence": "Official Idaho Secretary of State county turnout and registration rows normalized by scripts/normalize-id-turnout.mjs. Total Registered Voters equals Registration at Cutoff plus Election Day Registrations in every county; ballots cast and registered-voter totals match the retained EAC benchmark in every county.",
       "status": "loaded"
     },
     {
@@ -84,12 +95,12 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "id-2024-eac-turnout",
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "id-2024-general-turnout-county-workbook",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Idaho turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "registrationDenominatorTiming": "idahoSosGeneralElectionTurnout",
+    "sourceLevel": "county",
+    "notes": "Idaho turnout rows use official Secretary of State 2024 General Election county turnout workbook rows. Total Registered Voters equals Registration at Cutoff plus Election Day Registrations in every county; retained EAC benchmark rows match ballots cast and registered voters in every county.",
     "warningRequired": false,
     "expected": {
       "rowCount": 44,
@@ -100,7 +111,7 @@
   "expected": {
     "jurisdictions": 44,
     "resultRows": 44,
-    "sources": 7,
+    "sources": 8,
     "geometryFeatures": 44,
     "stateTotal": 904967,
     "trump": 605246,

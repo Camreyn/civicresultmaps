@@ -1,0 +1,72 @@
+{
+  "state": "GA",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-05",
+  "sourceAuthority": "Georgia Secretary of State",
+  "sourceUrl": "https://results.sos.ga.gov/results/public/Georgia",
+  "localExport": "data/ga-2024-official-results-export.json",
+  "decision": "keep_eac_fallback",
+  "reason": "The official Georgia SOS media export provides candidate result rows and vote-method candidate splits, but it does not expose registered-voter denominator or election-level ballots-cast fields. Historical SOS media exports likewise do not contain registration-like fields.",
+  "activeTurnoutSource": "data/eac-2024-state-turnout/ga-2024-eac-turnout.csv",
+  "eacFallback": {
+    "rows": 159,
+    "ballotsCast": 5297500,
+    "registeredVoters": 8234335
+  },
+  "officialMediaExport": {
+    "electionDate": "2024-11-05",
+    "electionName": "November General Election",
+    "createdAt": "2025-01-30T13:59:59.5881725Z",
+    "presidentCandidateVotes": 5250047,
+    "presidentGroupResultVotes": 5250047,
+    "voteMethodTotals": {
+      "Election Day": 1221257,
+      "Absentee by Mail": 283358,
+      "Provisional": 3645,
+      "Advanced Voting": 3741787
+    },
+    "groupTotalsMatchCandidateVotes": true,
+    "deltaPresidentVotesVsEacBallotsCast": -47453,
+    "exposesRegistrationLikeField": false
+  },
+  "historicalMediaExportFieldScan": [
+    {
+      "file": "data/ga-2012-official-results-export.json",
+      "hasRegistrationLikeField": false,
+      "topLevelKeys": [
+        "electionDate",
+        "electionName",
+        "createdAt",
+        "results",
+        "localResults"
+      ]
+    },
+    {
+      "file": "data/ga-2016-official-results-export.json",
+      "hasRegistrationLikeField": false,
+      "topLevelKeys": [
+        "electionDate",
+        "electionName",
+        "createdAt",
+        "results",
+        "localResults"
+      ]
+    },
+    {
+      "file": "data/ga-2020-official-results-export.json",
+      "hasRegistrationLikeField": false,
+      "topLevelKeys": [
+        "electionDate",
+        "electionName",
+        "createdAt",
+        "results",
+        "localResults"
+      ]
+    }
+  ],
+  "caveats": [
+    "Georgia groupResults are candidate votes by method for a contest, not all-ballot turnout by method.",
+    "President candidate votes are 47,453 below EAC ballots cast, so they cannot replace election-level ballots-cast turnout.",
+    "No registered-voter denominator or denominator timing field was found in the loaded 2024, 2020, 2016, or 2012 SOS media exports."
+  ]
+}

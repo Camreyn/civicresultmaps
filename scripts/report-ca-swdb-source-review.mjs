@@ -1,0 +1,90 @@
+﻿import fs from "node:fs";
+
+const config = JSON.parse(fs.readFileSync("etl/state-configs/ca.json", "utf8"));
+const outputPath = "data/ca-2024-swdb-source-review.json";
+
+const report = {
+  state: "CA",
+  stateName: "California",
+  electionYear: 2024,
+  checkedAt: "2026-07-06",
+  sourceAuthority: "California Statewide Database, UC Berkeley",
+  sourceUrl: "https://statewidedatabase.org/election.html",
+  localArtifactPath: outputPath,
+  parserOrNormalizationPath: "scripts/report-ca-swdb-source-review.mjs",
+  reportingGrainReviewed: "precinct election-data and precinct-boundary/geographic-conversion source lead",
+  submittedSource: {
+    sourceAuthority: "California Statewide Database",
+    sourceUrl: "https://statewidedatabase.org/election.html",
+    selectedPage: "https://statewidedatabase.org/d20/g24.html",
+    geographyPage: "https://statewidedatabase.org/d20/g24_geo_conv.html",
+    status: "valid_supplemental_source_lead",
+    observedUse:
+      "The 2024 General Election page publishes precinct-level election data, registration, vote-by-mail/poll, voter, geography, and conversion downloads by jurisdiction.",
+  },
+  sourcePageEvidence: {
+    dataNotes: [
+      "SWDB notes that Madera County files posted on the 2024 General Election page do not match the certified vote count and are partial while SWDB works to resolve missing legally required county data.",
+      "SWDB notes that small precincts with fewer than ten voters are privacy-masked and contest-specific vote counts are not reported for those precincts.",
+      "SWDB notes that 2024 General Election precinct files currently include temporary artifacts from methodology improvements that will be removed in an update.",
+    ],
+  },
+  activePipelineDecision: {
+    decision: "keep_california_sos_sources_active",
+    reason:
+      "The current CA ETL already uses official California Secretary of State Statement of Vote workbooks/PDFs for county results, U.S. Senate comparison rows, turnout, registration denominators, and historical baselines. SWDB is useful for future precinct/local expansion but should not silently replace SOS certified county artifacts.",
+    activeResultSourceId: "ca-2024-general-president-sov",
+    activeReviewSourceId: "ca-2024-general-us-senate-full-term-sov",
+    activeTurnoutSourceId: "ca-2024-general-voter-participation-sov",
+    supplementalUse: "future_precinct_or_local_review_and_geometry_crosswalk_collection",
+  },
+  currentCaliforniaConfigReview: {
+    certifiedResults: {
+      sourceId: config.certifiedResults.sourceId,
+      authority: "California Secretary of State",
+    },
+    sameGrainComparisonRows: {
+      sourceId: config.reviewCharts.sourceId,
+      authority: "California Secretary of State",
+    },
+    turnout: {
+      sourceId: config.turnout.sourceId,
+      expected: config.turnout.expected,
+    },
+  },
+  validatedCoverage: {
+    reportingGrain: "county",
+    resultRows: 58,
+    reviewRows: 58,
+    turnoutRows: 58,
+    ballotsCast: 16140044,
+    registeredVoters: 22595659,
+  },
+  expectedRowsOrTotals: {
+    swdbRowsNotCollectedInThisReview: true,
+    reason:
+      "This pass verifies source suitability only. No SWDB vote, registration, or geometry file is downloaded or normalized, so no row counts are asserted for SWDB artifacts.",
+    activeCaConfigTotalsRemain: {
+      certifiedCountyResultRows: config.expected.resultRows,
+      countyReviewRows: config.expected.reviewRows,
+      turnoutRows: config.expected.turnoutRows,
+      presidentialStateTotal: config.expected.stateTotal,
+      turnoutBallotsCast: config.turnout.expected.ballotsCast,
+      registeredVoters: config.turnout.expected.registeredVoters,
+    },
+  },
+  decision: {
+    status: "valid_supplemental_not_authoritative",
+    reason:
+      "SWDB is a valid California precinct/local result and geography lead, but CA SOS Statement of Vote remains authoritative for the active CA certified county package. SWDB's own 2024 General notes include Madera certified-total mismatch, privacy masking, and temporary artifacts, so it should remain supplemental until separately reconciled.",
+    productionPromotionAllowed: false,
+  },
+  caveats: [
+    "SWDB is not the configured certified-result or turnout source for production CA county rows.",
+    "The SWDB 2024 page itself notes that some small precinct records are masked for privacy and that Madera County files do not match certified vote count pending required county data.",
+    "Before loading SWDB precinct/local rows, collect the needed files, reconcile them to SOS certified totals, document masking and county-specific caveats, and add precinct/local geometry or crosswalk handling.",
+  ],
+};
+
+fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
+console.log(`Wrote ${outputPath}: ${report.decision.status}`);

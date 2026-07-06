@@ -111,8 +111,8 @@
       "localFile": "data/ak-2024-enr-turnout-semantics.json",
       "parser": "scripts/report-ak-enr-turnout-semantics.mjs",
       "authority": "Alaska Division of Elections",
-      "timestampBasis": "Generated July 4, 2026 from official ENRbyPrecinct.csv retained from the Alaska 2024 General All Details page.",
-      "confidence": "De-duplicated ENR Reg_voters and total_ballots fields reconcile to statewide summary/EAC totals, but mixed reporting-unit denominator semantics remain pending source-side review before turnout replacement.",
+      "timestampBasis": "Generated July 6, 2026 from official ENRbyPrecinct.csv retained from the Alaska 2024 General All Details page.",
+      "confidence": "De-duplicated ENR Reg_voters and total_ballots fields reconcile to statewide summary/EAC totals, but Wave 2 verification keeps them as a documented state-native lead rather than active turnout because 120 district absentee/early/question reporting units carry 165,047 ballots with zero registered voters.",
       "status": "loaded"
     },
     {
@@ -147,14 +147,22 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Alaska turnout rows use EAC 2024 V2 jurisdiction fallback rows. The statewide EAC ballots-cast and registered-voter totals match the official Alaska summary report Times Cast row and the de-duplicated ENRbyPrecinct.csv Reg_voters/total_ballots fields, but no lower-grain state-native turnout denominator package is active until mixed reporting-unit semantics are reviewed.",
+    "notes": "Alaska turnout rows use EAC 2024 V2 jurisdiction fallback rows. The statewide EAC ballots-cast and registered-voter totals match the official Alaska summary report Times Cast row and the de-duplicated ENRbyPrecinct.csv Reg_voters/total_ballots fields. Wave 2 verification keeps ENR turnout as a documented lead, not an active replacement, because 120 district absentee/early/question reporting units carry 165,047 ballots with zero registered voters and would produce misleading lower-grain turnout percentages without source-side denominator semantics.",
     "warningRequired": false,
     "expected": {
       "rowCount": 1,
       "ballotsCast": 340981,
       "registeredVoters": 611078
     },
-    "stateNativeSummarySourceId": "ak-2024-general-election-summary-report"
+    "stateNativeSummarySourceId": "ak-2024-general-election-summary-report",
+    "stateNativeLeadReview": {
+      "sourceId": "ak-2024-enr-turnout-semantics",
+      "decision": "remain_documented_lead_not_active_turnout",
+      "reviewedAt": "2026-07-06",
+      "zeroRegistrationBallotUnits": 120,
+      "zeroRegistrationBallots": 165047,
+      "activeTurnoutSourceId": "ak-2024-eac-turnout"
+    }
   },
   "expected": {
     "jurisdictions": 1,

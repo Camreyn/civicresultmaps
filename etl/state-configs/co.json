@@ -8,13 +8,24 @@
   "sources": [
     {
       "id": "co-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC benchmark turnout rows",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "National EAC benchmark turnout rows retained for reconciliation after Colorado state-native voter-statistics turnout was collected.",
+      "status": "candidate"
+    },
+    {
+      "id": "co-2024-historical-voter-statistics",
+      "category": "Official Colorado 2024 General Historical Election Data voter statistics CSV",
+      "url": "https://historicalelectiondata.coloradosos.gov/search?",
+      "localFile": "data/co-2024-historical-voter-statistics-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "Colorado Secretary of State",
+      "timestampBasis": "Historical Election Data search export for 2024 General Voting Statistics, election_id 159.",
+      "confidence": "Official Colorado Secretary of State voter-statistics export normalized by scripts/normalize-co-historical-voter-statistics.mjs. County Total Voters equals Active Voters plus Inactive Voters in all 64 counties and equals the former EAC registered-voter denominator statewide. Total Ballots Cast is 401 above EAC fallback and 35 above the Clarity ElectionVoterTurnout ballotsCast lead, so keep the reconciliation caveat visible.",
       "status": "loaded"
     },
     {
@@ -25,7 +36,7 @@
       "parser": "coloradoClarityDetailXml",
       "authority": "Colorado Secretary of State",
       "timestampBasis": "Official Clarity detail.xml timestamp 11/25/2025 1:45:46 PM MST for the 2024 General Election.",
-      "confidence": "Official machine-readable Clarity ZIP loaded for county Presidential Electors result rows and county CU Regent at-large comparison rows. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. ElectionVoterTurnout rows remain a turnout replacement lead only until totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
+      "confidence": "Official machine-readable Clarity ZIP loaded for county Presidential Electors result rows and county CU Regent at-large comparison rows. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. ElectionVoterTurnout rows remain a reconciliation lead because the Historical Election Data voter-statistics export is now the active state-native turnout source.",
       "status": "loaded"
     },
     {
@@ -58,28 +69,28 @@
       "parser": "sourceCoverageInventoryJson",
       "authority": "Colorado Secretary of State; Colorado county election offices; U.S. Census Bureau; Verified Voting",
       "timestampBasis": "Wave 14 source coverage inventory checked July 2, 2026; official Clarity detail.xml timestamp 11/25/2025 1:45:46 PM MST.",
-      "confidence": "Inventory documents the official Colorado Clarity ZIP now loaded for county result/review rows, EAC fallback turnout, county geometry/equipment context, and remaining historical, precinct, audit, CVR, recount, incident, correction, and litigation gaps.",
+      "confidence": "Inventory documents the official Colorado Clarity ZIP now loaded for county result/review rows, the official Historical Election Data voter-statistics turnout replacement, EAC benchmark rows, county geometry/equipment context, and remaining historical, precinct, audit, CVR, recount, incident, correction, and litigation gaps.",
       "status": "candidate"
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "co-2024-eac-turnout",
-    "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Colorado turnout rows still use EAC 2024 V2 county/jurisdiction fallback rows. Wave 14 confirmed the official Colorado Clarity detail XML turnout lead, but it is not active until totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "co-2024-historical-voter-statistics",
+    "denominatorType": "activePlusInactiveRegisteredVoters",
+    "registrationDenominatorTiming": "historicalElectionData2024General",
+    "sourceLevel": "county",
+    "notes": "Colorado turnout rows use official Secretary of State Historical Election Data 2024 General Voting Statistics county rows normalized from the voter-statistics CSV download. Total Voters equals Active Voters plus Inactive Voters in all 64 counties and equals the former EAC registered-voter denominator statewide. Total Ballots Cast is 401 above EAC fallback and 35 above the Clarity ElectionVoterTurnout ballotsCast lead; treat it as election-level turnout, not presidential contest votes.",
     "warningRequired": false,
     "expected": {
       "rowCount": 64,
-      "ballotsCast": 3240754,
+      "ballotsCast": 3241155,
       "registeredVoters": 4583280
     }
   },
   "expected": {
     "jurisdictions": 64,
     "resultRows": 64,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 64,
     "stateTotal": 3190873,
     "trump": 1377441,

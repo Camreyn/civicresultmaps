@@ -70,6 +70,17 @@
       "timestampBasis": "Official California Statement of Vote President by County workbooks for 2012, 2016, and 2020 normalized June 29, 2026.",
       "confidence": "Official California Secretary of State county presidential baselines used for historical context only. Individual rows carry the per-year Statement of Vote workbook URL.",
       "status": "loaded"
+    },
+    {
+      "id": "ca-2024-swdb-precinct-source-review",
+      "category": "Supplemental precinct and local result source review",
+      "url": "https://statewidedatabase.org/election.html",
+      "localFile": "data/ca-2024-swdb-source-review.json",
+      "parser": "scripts/report-ca-swdb-source-review.mjs",
+      "authority": "California Statewide Database, UC Berkeley",
+      "timestampBasis": "Submitted SWDB Election Data page and 2024 General Election precinct/geography pages reviewed July 6, 2026.",
+      "confidence": "Valid supplemental precinct/local result and geography source lead only. Keep California SOS Statement of Vote sources authoritative for active certified county results, county comparison rows, turnout, and historical baselines; SWDB notes Madera certified-total mismatch, small-precinct masking, and temporary 2024 artifacts.",
+      "status": "candidate"
     }
   ],
   "turnout": {
@@ -89,7 +100,7 @@
   "expected": {
     "jurisdictions": 58,
     "resultRows": 58,
-    "sources": 6,
+    "sources": 7,
     "geometryFeatures": 58,
     "stateTotal": 15865475,
     "trump": 6081697,

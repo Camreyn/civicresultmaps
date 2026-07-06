@@ -1,0 +1,59 @@
+{
+  "state": "KY",
+  "electionYear": 2024,
+  "generatedAt": "2026-07-06",
+  "sourceAuthority": "Kentucky State Board of Elections; U.S. Election Assistance Commission",
+  "submittedResultsSourceUrl": "https://elect.ky.gov/results/Pages/default.aspx",
+  "officialRecapSheetsUrl": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
+  "turnoutPageUrl": "https://elect.ky.gov/Resources/Pages/Turnout.aspx",
+  "registrationPageUrl": "https://elect.ky.gov/Resources/Pages/Registration-Statistics.aspx",
+  "localArtifactsReviewed": [
+    "data/ky-2024-general-recap-sheets.html",
+    "data/ky-2024-general-recap-sheets",
+    "data/ky-2024-general-recap-text",
+    "data/ky-2024-general-turnout-by-county.pdf",
+    "data/ky-2024-general-turnout-by-precinct.pdf",
+    "data/ky-2024-general-registration-by-county.pdf",
+    "data/ky-2024-general-registration-by-precinct.pdf",
+    "data/ky-2024-turnout-registration-reconciliation.csv",
+    "data/ky-2024-turnout-registration-reconciliation-summary.json",
+    "data/eac-2024-state-turnout/ky-2024-eac-turnout.csv"
+  ],
+  "reportingGrainReviewed": {
+    "certifiedResults": "county_and_precinct_recap_pdf_rows",
+    "turnoutReplacementCandidate": "county_turnout_and_registration_pdf_rows",
+    "activeTurnout": "county_jurisdiction_eac_fallback"
+  },
+  "countyResultDownloads": {
+    "recapPdfCount": 120,
+    "recapTextCount": 120,
+    "canReplaceEacFallbackTurnout": false,
+    "reason": "The county recap downloads are official result/review artifacts. They do not provide election-level ballots-cast turnout or registered-voter denominator fields, so they cannot replace the active EAC turnout package."
+  },
+  "turnoutRegistrationPdfReconciliation": {
+    "rowCount": 120,
+    "stateBoardNumberVoting": 2086320,
+    "stateBoardRegisteredVoters": 3548136,
+    "registrationPdfPrecinctCount": 3232,
+    "eacBallotsCast": 2086090,
+    "eacRegisteredVoters": 3548136,
+    "ballotsCastStateBoardMinusEac": 230,
+    "registeredVotersStateBoardMinusEac": 0,
+    "rowsWithBallotDelta": 85
+  },
+  "eacFallbackTotals": {
+    "rows": 120,
+    "ballotsCast": 2086090,
+    "registeredVoters": 3548136
+  },
+  "decision": "keep_eac_fallback",
+  "caveats": [
+    "The Kentucky results archive points users to certified/amended certification and official county recap sheets, while the page dashboard itself is labeled unofficial.",
+    "County recap PDFs are valid official result and review artifacts, but they are not turnout or registration denominator artifacts.",
+    "The State Board county turnout and registration PDFs reconcile to the same 3,548,136 registered-voter denominator as EAC, but the State Board voter total is 230 higher than EAC ballots cast across 85 counties.",
+    "The State Board turnout page says turnout reports are unofficial and may differ from election results because they are run after voter-registration rolls reopen.",
+    "County-clerk official turnout documentation or source-side replacement semantics are still needed before changing etl/state-configs/ky.json away from eacTurnoutCsv."
+  ],
+  "nextAction": "Keep EAC fallback active. Use Kentucky county clerks or State Board source-side documentation to confirm official turnout replacement semantics before adding a state-native active turnout parser.",
+  "confidence": "reviewed_not_valid_turnout_replacement"
+}

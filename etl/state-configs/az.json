@@ -59,6 +59,17 @@
       "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 20, 2026.",
       "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Arizona Secretary of State canvass sources where available.",
       "status": "loaded"
+    },
+    {
+      "id": "az-2024-source-confirmation-review",
+      "category": "Official source confirmation review",
+      "url": "https://azsos.gov/elections/election-information/2024-election-info#collps_election_info_04",
+      "localFile": "data/az-2024-source-confirmation-review.json",
+      "parser": "scripts/report-az-source-confirmation-review.mjs",
+      "authority": "Arizona Secretary of State",
+      "timestampBasis": "Official 2024 Election Information page rechecked July 6, 2026.",
+      "confidence": "The submitted AZ source is a valid official landing page for the signed statewide canvass already powering the active county result, review, and turnout package. It is documented as confirmation, not a new replacement source.",
+      "status": "documented_exclusion"
     }
   ],
   "certifiedResults": {
@@ -111,7 +122,7 @@
   "expected": {
     "jurisdictions": 15,
     "resultRows": 15,
-    "sources": 5,
+    "sources": 6,
     "geometryFeatures": 15,
     "stateTotal": 3390161,
     "trump": 1770242,
@@ -147,7 +158,8 @@
       "The signed Arizona canvass package supports county certified results, county President-versus-U.S. Senate advisory review, and county turnout denominators only.",
       "No official statewide precinct/local reporting-unit President and same-grain U.S. Senate export was accessible or confirmed in the 2026-06-30 source check.",
       "Maricopa, Pima, and Yavapai county result pages blocked scripted access from this environment; county-by-county manual collection or public-records requests remain the next source step.",
-      "The 2026-07-01 source pass identified official SOS hand-count audit summaries, county canvass links, Maricopa recount/litigation links, and records-request paths; these are administration context only and are not normalized audit/CVR/incident rows."
+      "The 2026-07-01 source pass identified official SOS hand-count audit summaries, county canvass links, Maricopa recount/litigation links, and records-request paths; these are administration context only and are not normalized audit/CVR/incident rows.",
+      "The 2026-07-06 source confirmation reviewed the submitted SOS 2024 Election Information page and kept the existing signed-canvass pipeline active."
     ],
     "remainingGaps": [
       "precinct/local reporting-unit President rows",

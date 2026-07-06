@@ -94,6 +94,17 @@
       "status": "loaded"
     },
     {
+      "id": "ga-2024-turnout-vote-method-source-review",
+      "category": "Georgia SOS vote-method and turnout replacement source review",
+      "url": "https://results.sos.ga.gov/results/public/Georgia",
+      "localFile": "data/ga-2024-turnout-vote-method-source-review.json",
+      "parser": "scripts/report-ga-turnout-vote-method-source-review.mjs",
+      "authority": "Georgia Secretary of State; U.S. Election Assistance Commission",
+      "timestampBasis": "Generated July 5, 2026 from the official Georgia SOS 2024 media export and historical media exports, with EAC fallback rows as the active turnout benchmark.",
+      "confidence": "Documented exclusion only. The SOS media export exposes candidate vote-method groupResults but no registered-voter denominator or election-level ballots-cast field; historical SOS media exports also lack registration-like fields. Keep EAC fallback turnout active until a Georgia-native turnout and registration artifact is collected.",
+      "status": "documented_exclusion"
+    },
+    {
       "id": "ga-2024-data-coverage-inventory",
       "category": "Georgia data coverage and source-gap inventory",
       "url": "https://results.sos.ga.gov/",
@@ -131,7 +142,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Georgia turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "notes": "Georgia turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. A July 5, 2026 review of the official Georgia SOS media export confirmed vote-method candidate splits for President but no registered-voter denominator or election-level ballots-cast field; President candidate votes are 47,453 below EAC ballots cast, so the export is not a turnout replacement.",
     "warningRequired": true,
     "expected": {
       "rowCount": 159,
@@ -142,7 +153,7 @@
   "expected": {
     "jurisdictions": 159,
     "resultRows": 159,
-    "sources": 9,
+    "sources": 10,
     "stateTotal": 5250066,
     "trump": 2663117,
     "harris": 2548017,

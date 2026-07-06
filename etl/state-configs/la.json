@@ -7,13 +7,35 @@
   "sources": [
     {
       "id": "la-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC benchmark turnout rows",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/la-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
+      "confidence": "Official EAC 2024 V2 parish/jurisdiction turnout rows retained as a benchmark after activation of the Louisiana Secretary of State post-election statistics turnout source.",
+      "status": "loaded"
+    },
+    {
+      "id": "la-2024-sos-post-election-statistics-workbooks",
+      "category": "Official Louisiana 2024 post-election statistics workbooks",
+      "url": "https://voterportal.sos.la.gov/graphical",
+      "localFile": "data/la-2024-post-election-statistics-statewide.xls; data/la-2024-post-election-statistics-parish.xls",
+      "parser": "scripts/normalize-la-post-election-statistics.mjs",
+      "authority": "Louisiana Secretary of State",
+      "timestampBasis": "Official Louisiana Secretary of State post-election statistics workbooks downloaded July 5, 2026 from the graphical results Statistics tab file paths.",
+      "confidence": "Official statewide and parish post-election statistics workbooks. The parish rows reconcile exactly to the statewide workbook; generated normalized turnout CSV is active in ETL.",
+      "status": "loaded"
+    },
+    {
+      "id": "la-2024-sos-post-election-statistics-turnout",
+      "category": "Official Louisiana 2024 parish post-election turnout statistics",
+      "url": "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls",
+      "localFile": "data/la-2024-post-election-statistics-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "Louisiana Secretary of State",
+      "timestampBasis": "Generated July 5, 2026 by scripts/normalize-la-post-election-statistics.mjs from official SOS parish post-election statistics workbook.",
+      "confidence": "Official parish-level qualified-voter and voted rows. SOS parish totals reconcile to SOS statewide statistics totals; EAC benchmark differs by -424 voted and -1 qualified/registered voter statewide.",
       "status": "loaded"
     },
     {
@@ -73,17 +95,25 @@
     }
   ],
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "la-2024-eac-turnout",
-    "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Louisiana turnout rows use EAC 2024 V2 parish/jurisdiction fallback rows until a state-native turnout artifact is collected.",
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "la-2024-sos-post-election-statistics-turnout",
+    "denominatorType": "qualifiedVoters",
+    "registrationDenominatorTiming": "closeOfRegistrationRecordsThirtyDaysPrior",
+    "sourceLevel": "parish",
+    "notes": "Louisiana turnout rows use official Secretary of State parish post-election statistics. The SOS page describes the denominator as qualified voters eligible for the election as of the close of registration records thirty days before election day; rows include active and inactive status voters and are election-level turnout, not presidential contest votes.",
     "warningRequired": false,
-    "expected": {
+    "eacBenchmark": {
+      "sourceId": "la-2024-eac-turnout",
       "rowCount": 64,
       "ballotsCast": 2021588,
-      "registeredVoters": 3046376
+      "registeredVoters": 3046376,
+      "ballotsCastDeltaSosMinusEac": -424,
+      "registeredVotersDeltaSosMinusEac": -1
+    },
+    "expected": {
+      "rowCount": 64,
+      "ballotsCast": 2021164,
+      "registeredVoters": 3046375
     }
   },
   "certifiedResults": {
@@ -109,7 +139,7 @@
   "expected": {
     "jurisdictions": 64,
     "resultRows": 64,
-    "sources": 6,
+    "sources": 8,
     "stateTotal": 2006975,
     "trump": 1208505,
     "harris": 766870,

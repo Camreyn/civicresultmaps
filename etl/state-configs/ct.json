@@ -1,4 +1,4 @@
-﻿{
+{
   "code": "CT",
   "name": "Connecticut",
   "authority": "Connecticut Secretary of the State; U.S. Election Assistance Commission; U.S. Census Bureau",
@@ -25,6 +25,17 @@
       "authority": "Connecticut Secretary of the State",
       "timestampBasis": "Official 2024 Statement of Vote PDF downloaded during Wave 17 CT source collection.",
       "confidence": "Certified publication retained for reconciliation. EMS town totals are internally consistent but must be reconciled against this PDF before promotion-level certified-total language.",
+      "status": "candidate"
+    },
+    {
+      "id": "ct-2024-election-history-source-review",
+      "category": "Official Connecticut Election History source review and turnout exclusion",
+      "url": "https://electionhistory.ct.gov/search?",
+      "localFile": "data/ct-2024-election-history-source-review.json",
+      "parser": "electionHistorySourceReviewJson",
+      "authority": "Connecticut Secretary of the State",
+      "timestampBasis": "Election History event 582 and voter-statistics CSV downloads reviewed July 6, 2026.",
+      "confidence": "Official result-history database confirms 2024 General Election President town/vote-channel totals reconcile to EMS, but the event 582 voterStats search returns zero rows and provides no registered-voter denominator; retain EMS turnout warning caveats.",
       "status": "candidate"
     },
     {
@@ -76,9 +87,24 @@
     "format": "connecticutEmsTownJson",
     "sourceId": "ct-2024-ems-election-91-version-80741",
     "presidentOfficeId": "16518",
-    "harrisCandidateIds": ["35838"],
-    "trumpCandidateIds": ["35839"],
-    "otherCandidateIds": ["35853", "35848", "35858", "36136", "36137", "36138", "36139", "36135", "36140", "36141"],
+    "harrisCandidateIds": [
+      "35838"
+    ],
+    "trumpCandidateIds": [
+      "35839"
+    ],
+    "otherCandidateIds": [
+      "35853",
+      "35848",
+      "35858",
+      "36136",
+      "36137",
+      "36138",
+      "36139",
+      "36135",
+      "36140",
+      "36141"
+    ],
     "expected": {
       "rowCount": 169,
       "stateTotal": 1759010,
@@ -94,9 +120,18 @@
     "comparisonOfficeId": "16524",
     "comparisonContest": "United States Senator",
     "coverageMode": "presidentVsSenate",
-    "comparisonDemCandidateIds": ["35495", "35860"],
-    "comparisonRepCandidateIds": ["35830"],
-    "comparisonOtherCandidateIds": ["36064", "35859", "36142"],
+    "comparisonDemCandidateIds": [
+      "35495",
+      "35860"
+    ],
+    "comparisonRepCandidateIds": [
+      "35830"
+    ],
+    "comparisonOtherCandidateIds": [
+      "36064",
+      "35859",
+      "36142"
+    ],
     "warning": "Connecticut U.S. Senate comparison rows fuse Christopher S. Murphy Democratic and Working Families ballot lines by person. Review rows are town-level public-interest screening inputs only, not precinct-level findings."
   },
   "turnout": {
@@ -105,7 +140,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "emsReported",
     "sourceLevel": "town",
-    "notes": "Connecticut EMS turnout rows use EV as registered/elector denominator and VV as voters checked. All rows are warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed.",
+    "notes": "Connecticut EMS turnout rows use EV as registered/elector denominator and VV as voters checked. All rows are warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed. The July 6, 2026 Election History source review confirmed event 582 President town/vote-channel totals but found no event 582 voter-statistics rows or registered-voter denominator, so it does not replace EMS turnout.",
     "warningRequired": true,
     "expected": {
       "rowCount": 169,
@@ -126,7 +161,7 @@
   "expected": {
     "jurisdictions": 169,
     "resultRows": 169,
-    "sources": 6,
+    "sources": 7,
     "stateTotal": 1759010,
     "trump": 736918,
     "harris": 992053,

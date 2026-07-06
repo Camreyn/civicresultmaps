@@ -27,6 +27,12 @@ class CaliforniaCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(native["metrics"]["nativeHistoricalYears"], [2012, 2016, 2020])
         self.assertIn("U.S. Senate full-term", native["metrics"]["nativeReviewWarning"])
 
+        sources = {source["id"]: source for source in artifact["sources"]}
+        swdb = sources["ca-2024-swdb-precinct-source-review"]
+        self.assertEqual(swdb["status"], "candidate")
+        self.assertEqual(swdb["parser"], "scripts/report-ca-swdb-source-review.mjs")
+        self.assertTrue(swdb["metadata"]["artifacts"][0]["exists"])
+
     def test_california_coverage_inventory_and_registries_match(self):
         inventory = self.load_json("data/ca-2024-data-coverage-inventory.json")
         loaded = {artifact["id"]: artifact for artifact in inventory["loadedArtifacts"]}
@@ -56,6 +62,29 @@ class CaliforniaCoverageInventoryTests(unittest.TestCase):
         ca_admin = next(row for row in admin["stateYearStatuses"] if row["state"] == "CA" and row["electionYear"] == 2024)
         self.assertEqual(ca_admin["audit"]["localArtifact"], "data/ca-2024-data-coverage-inventory.json")
         self.assertEqual(ca_admin["incidents"]["sourceUrl"], "https://www.sos.ca.gov/elections/recounts")
+
+    def test_submitted_swdb_source_review_stays_supplemental(self):
+        config = self.load_json("etl/state-configs/ca.json")
+        sources = {source["id"]: source for source in config["sources"]}
+        self.assertEqual(config["expected"]["sources"], len(config["sources"]))
+        self.assertEqual(sources["ca-2024-swdb-precinct-source-review"]["status"], "candidate")
+        self.assertIn("supplemental", sources["ca-2024-swdb-precinct-source-review"]["confidence"])
+
+        inventory = self.load_json("data/ca-2024-data-coverage-inventory.json")
+        findings = {finding["topic"]: finding for finding in inventory["sourceFindings"]}
+        self.assertEqual(
+            findings["submittedSwdbPrecinctSourceReview"]["status"],
+            "valid_supplemental_not_authoritative",
+        )
+
+        review = self.load_json("data/ca-2024-swdb-source-review.json")
+        self.assertEqual(review["decision"]["status"], "valid_supplemental_not_authoritative")
+        self.assertEqual(
+            review["currentCaliforniaConfigReview"]["certifiedResults"]["sourceId"],
+            "ca-2024-general-president-sov",
+        )
+        self.assertTrue(review["expectedRowsOrTotals"]["swdbRowsNotCollectedInThisReview"])
+        self.assertIn("Madera", " ".join(review["sourcePageEvidence"]["dataNotes"]))
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
   "state": "GA",
   "stateName": "Georgia",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
+  "checkedAt": "2026-07-05",
   "purpose": "State-scoped coverage inventory for Georgia 2024 result, review, turnout, map, historical, and election-administration context sources. This inventory records source availability and blockers; it does not promote production data and does not allege fraud or misconduct.",
   "status": "official_precinct_review_county_map_eac_turnout_official_historical_loaded_admin_context_partial",
   "authorityPriority": "Official Georgia Secretary of State, county election offices, official GIS/Census, EAC, and official audit/recount records first; secondary sources are context only and caveated.",
@@ -54,6 +54,27 @@
       "confidence": "loaded_fallback_turnout"
     },
     {
+      "id": "ga-2024-turnout-vote-method-source-review",
+      "sourceAuthority": "Georgia Secretary of State; U.S. Election Assistance Commission",
+      "sourceUrl": "https://results.sos.ga.gov/results/public/Georgia",
+      "localPath": "data/ga-2024-turnout-vote-method-source-review.json",
+      "electionYear": 2024,
+      "reportingGrain": "statewide contest vote-method review",
+      "parserNormalizationPath": "scripts/report-ga-turnout-vote-method-source-review.mjs",
+      "expectedCounts": {
+        "presidentCandidateVotes": 5250047,
+        "eacBallotsCast": 5297500,
+        "eacRegisteredVoters": 8234335,
+        "voteMethodGroups": 4
+      },
+      "caveats": [
+        "The SOS media export groupResults are candidate votes by method for a contest, not all-ballot turnout by method.",
+        "The loaded SOS media export and 2012/2016/2020 historical media exports do not expose registered-voter denominator fields.",
+        "President candidate votes are 47,453 below EAC ballots cast, so this source is not a turnout replacement."
+      ],
+      "confidence": "documented_exclusion_keep_eac_turnout"
+    },
+    {
       "id": "ga-county-geometry",
       "sourceAuthority": "U.S. Census Bureau",
       "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2713%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -80,7 +101,11 @@
       "parserNormalizationPath": "scripts/collect-ga-historical-baseline.mjs to historicalPresidentialCsv via etl/state-configs/ga.json historicalBaselines.format=historicalPresidentialCsv",
       "expectedCounts": {
         "rows": 477,
-        "years": [2012, 2016, 2020]
+        "years": [
+          2012,
+          2016,
+          2020
+        ]
       },
       "caveats": [
         "Historical rows are contextual baselines only, not 2024 certified data.",
@@ -115,10 +140,11 @@
         "county presidential rows",
         "precinct presidential rows",
         "precinct U.S. House comparison rows",
-        "2012, 2016, and 2020 historical media exports"
+        "2012, 2016, and 2020 historical media exports",
+        "vote-method candidate groupResults"
       ],
-      "result": "The official SOS media-export family is loaded for 2024 result/review rows and for 2012/2016/2020 county historical baselines.",
-      "blocker": "The export does not provide precinct boundary geometry or registered-voter denominator fields needed for state-native same-grain turnout screening."
+      "result": "The official SOS media-export family is loaded for 2024 result/review rows and for 2012/2016/2020 county historical baselines. The 2024 export also includes candidate groupResults by vote method for President.",
+      "blocker": "The export does not provide precinct boundary geometry, registered-voter denominator fields, or election-level ballots-cast fields needed for state-native turnout replacement."
     },
     {
       "sourceAuthority": "Georgia Secretary of State and county election offices",
@@ -196,6 +222,7 @@
   "confidenceNotes": [
     "Official 2024 result/review rows and official 2012/2016/2020 county historical baselines are loaded from Georgia SOS media exports.",
     "Current Georgia advisory indicators remain public-interest screening outputs only; they are not proof of fraud or misconduct.",
-    "Next source step is Georgia-native turnout/registration denominator collection and precinct boundary/crosswalk collection, followed by county/state requests for detailed audit, CVR, recount, incident, correction, and custody records."
+    "Next source step is Georgia-native turnout/registration denominator collection and precinct boundary/crosswalk collection, followed by county/state requests for detailed audit, CVR, recount, incident, correction, and custody records.",
+    "A July 5, 2026 source review confirmed Georgia SOS vote-method groupResults are candidate-result splits, not turnout/registration denominator rows; EAC turnout remains active."
   ]
 }

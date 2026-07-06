@@ -7,13 +7,24 @@
   "sources": [
     {
       "id": "hi-2024-eac-turnout",
-      "category": "EAC fallback turnout rows",
+      "category": "EAC benchmark turnout rows",
       "url": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localFile": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "authority": "U.S. Election Assistance Commission",
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
-      "confidence": "National EAC fallback turnout rows. Prefer Hawaii Office of Elections denominator artifacts when available; keep fallback and Kalawao caveats visible in the app.",
+      "confidence": "National EAC fallback/benchmark turnout rows retained for comparison. Active Hawaii turnout now uses Hawaii Office of Elections 2024 General Election registration and turnout statistics; EAC includes a warning-required Kalawao placeholder row not present in the state table.",
+      "status": "candidate"
+    },
+    {
+      "id": "hi-2024-general-turnout",
+      "category": "Official state-native registration and turnout statistics",
+      "url": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+      "localFile": "data/hi-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Official Registration and Turnout Statistics page, 2024 General Election table, last updated December 10, 2024.",
+      "confidence": "Official Hawaii Office of Elections county turnout rows normalized from the committed HTML source page by scripts/normalize-hi-turnout.mjs. Four election-county rows sum exactly to the statewide table: 522,236 turnout and 860,868 registered voters. Kalawao is not a separate Office result or turnout county row.",
       "status": "loaded"
     },
     {
@@ -46,7 +57,7 @@
       "parser": "censusTigerwebCountyGeojson",
       "authority": "U.S. Census Bureau",
       "timestampBasis": "Census TIGERweb county geography service artifact.",
-      "confidence": "County geometry is available for Hawaii county map joins. Kalawao has county geometry and an EAC warning turnout row, but the official Hawaii result detail reports county election rows for Hawaii, Honolulu, Kauai, and Maui only; precinct geometry/crosswalks are not loaded.",
+      "confidence": "County geometry is available for Hawaii county map joins. Kalawao has county geometry, but the official Hawaii result detail and Office turnout table report election rows for Hawaii, Honolulu, Kauai, and Maui only; precinct geometry/crosswalks are not loaded.",
       "status": "loaded"
     },
     {
@@ -67,8 +78,8 @@
       "localFile": "data/hi-2024-data-coverage-inventory.json",
       "parser": "coverageInventoryJson",
       "authority": "Hawaii Office of Elections",
-      "timestampBasis": "Wave 19 official-source coverage inventory checked July 3, 2026.",
-      "confidence": "Documents official Hawaii source leads, loaded text artifacts, turnout replacement candidate, GIS/crosswalk needs, recount/provisional/security context, historical-source paths, and remaining caveats. Inventory only; no normalized administration rows are loaded.",
+      "timestampBasis": "Wave 1 Hawaii turnout replacement checked July 5, 2026.",
+      "confidence": "Documents official Hawaii source leads, loaded text artifacts, state-native turnout replacement, GIS/crosswalk needs, recount/provisional/security context, historical-source paths, and remaining caveats. Inventory only; no normalized administration rows are loaded.",
       "status": "candidate"
     }
   ],
@@ -94,29 +105,29 @@
     "sourceId": "hi-2024-general-precinct-detail"
   },
   "turnout": {
-    "format": "eacTurnoutCsv",
-    "sourceId": "hi-2024-eac-turnout",
+    "format": "normalizedTurnoutCsv",
+    "sourceId": "hi-2024-general-turnout",
     "denominatorType": "registeredVoters",
-    "registrationDenominatorTiming": "eacReported",
-    "sourceLevel": "jurisdiction",
-    "notes": "Hawaii turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until the Hawaii Office of Elections registration/turnout table is normalized and reconciled. The state-native table reports 522,236 statewide turnout and 860,868 registered voters, but county registered-voter distribution and Kalawao handling need review before replacing EAC fallback.",
-    "warningRequired": true,
+    "registrationDenominatorTiming": "officialGeneralElectionStatistics",
+    "sourceLevel": "county",
+    "notes": "Hawaii turnout rows use the official Hawaii Office of Elections 2024 General Election registration and turnout statistics table. The four election-county rows (Hawaii, Maui, Kauai, and Honolulu) reconcile exactly to the statewide table: 522,236 turnout and 860,868 registered voters. Kalawao remains present in county geometry but is not a separate Office result or turnout county row.",
+    "warningRequired": false,
     "expected": {
-      "rowCount": 5,
+      "rowCount": 4,
       "ballotsCast": 522236,
-      "registeredVoters": 861333
+      "registeredVoters": 860868
     }
   },
   "expected": {
     "jurisdictions": 5,
     "resultRows": 4,
-    "sources": 6,
+    "sources": 7,
     "stateTotal": 516701,
     "trump": 193661,
     "harris": 313044,
     "other": 9996,
     "reviewRows": 467,
-    "turnoutRows": 5,
+    "turnoutRows": 4,
     "historicalBaselineRows": 0
   },
   "capabilities": {

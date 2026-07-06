@@ -1,0 +1,250 @@
+{
+  "checkedAt": "2026-07-05",
+  "state": "LA",
+  "source": {
+    "authority": "Louisiana Secretary of State",
+    "pageUrl": "https://voterportal.sos.la.gov/graphical",
+    "statewideWorkbookUrl": "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/statewide/2024_1105_sta.xls",
+    "parishWorkbookUrl": "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls",
+    "statewideWorkbookLocalFile": "data/la-2024-post-election-statistics-statewide.xls",
+    "parishWorkbookLocalFile": "data/la-2024-post-election-statistics-parish.xls",
+    "normalizedTurnoutLocalFile": "data/la-2024-post-election-statistics-turnout.csv",
+    "statewideWorkbookSha256": "792a311e81e7bd4ce7cba50bb0d9db7000e51a0692ee45a48cf9d8f537f4f502",
+    "parishWorkbookSha256": "e997927961a55b742d6b8d45acb42ef92e26ba97f571d68f1cd9085a8b6c9b27"
+  },
+  "sosTotals": {
+    "rowCount": 64,
+    "registeredVoters": 3046375,
+    "ballotsCast": 2021164
+  },
+  "statewideWorkbookTotals": {
+    "registeredVoters": 3046375,
+    "ballotsCast": 2021164
+  },
+  "eacFallbackTotals": {
+    "rowCount": 64,
+    "registeredVoters": 3046376,
+    "ballotsCast": 2021588
+  },
+  "deltas": {
+    "ballotsCastSosMinusEac": -424,
+    "registeredVotersSosMinusEac": -1,
+    "rowsWithBallotDelta": 22,
+    "rowsWithRegisteredVoterDelta": 1
+  },
+  "reconciliationRows": [
+    {
+      "jurisdictionName": "ASCENSION PARISH",
+      "sosBallotsCast": 62836,
+      "eacBallotsCast": 62852,
+      "ballotsCastDeltaSosMinusEac": -16,
+      "sosRegisteredVoters": 86371,
+      "eacRegisteredVoters": 86371,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "BEAUREGARD PARISH",
+      "sosBallotsCast": 15952,
+      "eacBallotsCast": 15952,
+      "ballotsCastDeltaSosMinusEac": 0,
+      "sosRegisteredVoters": 23589,
+      "eacRegisteredVoters": 23590,
+      "registeredVotersDeltaSosMinusEac": -1
+    },
+    {
+      "jurisdictionName": "BIENVILLE PARISH",
+      "sosBallotsCast": 6296,
+      "eacBallotsCast": 6298,
+      "ballotsCastDeltaSosMinusEac": -2,
+      "sosRegisteredVoters": 8964,
+      "eacRegisteredVoters": 8964,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "BOSSIER PARISH",
+      "sosBallotsCast": 52539,
+      "eacBallotsCast": 52549,
+      "ballotsCastDeltaSosMinusEac": -10,
+      "sosRegisteredVoters": 77986,
+      "eacRegisteredVoters": 77986,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "CADDO PARISH",
+      "sosBallotsCast": 95355,
+      "eacBallotsCast": 95397,
+      "ballotsCastDeltaSosMinusEac": -42,
+      "sosRegisteredVoters": 157242,
+      "eacRegisteredVoters": 157242,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "CALCASIEU PARISH",
+      "sosBallotsCast": 81589,
+      "eacBallotsCast": 81610,
+      "ballotsCastDeltaSosMinusEac": -21,
+      "sosRegisteredVoters": 128678,
+      "eacRegisteredVoters": 128678,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "CAMERON PARISH",
+      "sosBallotsCast": 3375,
+      "eacBallotsCast": 3376,
+      "ballotsCastDeltaSosMinusEac": -1,
+      "sosRegisteredVoters": 4641,
+      "eacRegisteredVoters": 4641,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "DE SOTO PARISH",
+      "sosBallotsCast": 13991,
+      "eacBallotsCast": 13995,
+      "ballotsCastDeltaSosMinusEac": -4,
+      "sosRegisteredVoters": 19757,
+      "eacRegisteredVoters": 19757,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "EAST BATON ROUGE PARISH",
+      "sosBallotsCast": 192669,
+      "eacBallotsCast": 192797,
+      "ballotsCastDeltaSosMinusEac": -128,
+      "sosRegisteredVoters": 293793,
+      "eacRegisteredVoters": 293793,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "IBERIA PARISH",
+      "sosBallotsCast": 29532,
+      "eacBallotsCast": 29538,
+      "ballotsCastDeltaSosMinusEac": -6,
+      "sosRegisteredVoters": 45763,
+      "eacRegisteredVoters": 45763,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "JEFFERSON DAVIS PARISH",
+      "sosBallotsCast": 14435,
+      "eacBallotsCast": 14436,
+      "ballotsCastDeltaSosMinusEac": -1,
+      "sosRegisteredVoters": 20982,
+      "eacRegisteredVoters": 20982,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "JEFFERSON PARISH",
+      "sosBallotsCast": 179422,
+      "eacBallotsCast": 179437,
+      "ballotsCastDeltaSosMinusEac": -15,
+      "sosRegisteredVoters": 274622,
+      "eacRegisteredVoters": 274622,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "LAFOURCHE PARISH",
+      "sosBallotsCast": 43068,
+      "eacBallotsCast": 43074,
+      "ballotsCastDeltaSosMinusEac": -6,
+      "sosRegisteredVoters": 60252,
+      "eacRegisteredVoters": 60252,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "LIVINGSTON PARISH",
+      "sosBallotsCast": 66254,
+      "eacBallotsCast": 66257,
+      "ballotsCastDeltaSosMinusEac": -3,
+      "sosRegisteredVoters": 88729,
+      "eacRegisteredVoters": 88729,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "NATCHITOCHES PARISH",
+      "sosBallotsCast": 15163,
+      "eacBallotsCast": 15164,
+      "ballotsCastDeltaSosMinusEac": -1,
+      "sosRegisteredVoters": 23920,
+      "eacRegisteredVoters": 23920,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "ORLEANS PARISH",
+      "sosBallotsCast": 160508,
+      "eacBallotsCast": 160672,
+      "ballotsCastDeltaSosMinusEac": -164,
+      "sosRegisteredVoters": 270639,
+      "eacRegisteredVoters": 270639,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "ST. JAMES PARISH",
+      "sosBallotsCast": 11895,
+      "eacBallotsCast": 11894,
+      "ballotsCastDeltaSosMinusEac": 1,
+      "sosRegisteredVoters": 15199,
+      "eacRegisteredVoters": 15199,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "ST. LANDRY PARISH",
+      "sosBallotsCast": 37333,
+      "eacBallotsCast": 37337,
+      "ballotsCastDeltaSosMinusEac": -4,
+      "sosRegisteredVoters": 58157,
+      "eacRegisteredVoters": 58157,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "ST. MARTIN PARISH",
+      "sosBallotsCast": 25177,
+      "eacBallotsCast": 25175,
+      "ballotsCastDeltaSosMinusEac": 2,
+      "sosRegisteredVoters": 37031,
+      "eacRegisteredVoters": 37031,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "ST. TAMMANY PARISH",
+      "sosBallotsCast": 139159,
+      "eacBallotsCast": 139162,
+      "ballotsCastDeltaSosMinusEac": -3,
+      "sosRegisteredVoters": 195782,
+      "eacRegisteredVoters": 195782,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "TANGIPAHOA PARISH",
+      "sosBallotsCast": 55583,
+      "eacBallotsCast": 55580,
+      "ballotsCastDeltaSosMinusEac": 3,
+      "sosRegisteredVoters": 82096,
+      "eacRegisteredVoters": 82096,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "WEBSTER PARISH",
+      "sosBallotsCast": 16383,
+      "eacBallotsCast": 16385,
+      "ballotsCastDeltaSosMinusEac": -2,
+      "sosRegisteredVoters": 23378,
+      "eacRegisteredVoters": 23378,
+      "registeredVotersDeltaSosMinusEac": 0
+    },
+    {
+      "jurisdictionName": "WINN PARISH",
+      "sosBallotsCast": 5822,
+      "eacBallotsCast": 5823,
+      "ballotsCastDeltaSosMinusEac": -1,
+      "sosRegisteredVoters": 8470,
+      "eacRegisteredVoters": 8470,
+      "registeredVotersDeltaSosMinusEac": 0
+    }
+  ],
+  "activeTurnoutDecision": "Use the Louisiana Secretary of State parish post-election statistics workbook as the active 2024 turnout source. The SOS parish rows reconcile exactly to the SOS statewide statistics workbook; EAC remains a retained official benchmark with a 424-voter turnout delta and one registered-voter denominator delta.",
+  "caveats": [
+    "The SOS graphical page describes these as qualified voter statistics and says qualified voters are registrants deemed eligible as of the close of registration records thirty days before the election.",
+    "The Voted field is election-level turnout from post-election statistics, not presidential contest votes.",
+    "The statistics page notes the qualified-voter count may not equal votes because voters may not cast ballots on every race for which they are eligible."
+  ]
+}

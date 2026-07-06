@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-04",
+  "checkedAt": "2026-07-05",
   "purpose": "Internal turnout source package inventory for Civic Result Maps. This file is not rendered in the app.",
   "notes": [
     "Loaded packages are already represented in native ETL configs and promoted database turnout rows.",
@@ -310,8 +310,8 @@
       "localFile": "data/eac-2024-state-turnout/ak-2024-eac-turnout.csv",
       "parser": "eacTurnoutCsv",
       "expectedTurnoutRows": 1,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active in ETL. Wave 25 confirmed official ENRbyPrecinct.csv Reg_voters and total_ballots fields reconcile statewide after de-duplicating to 523 reporting units, but mixed absentee/early/question reporting units require source-side denominator semantics before replacement.",
-      "nextAction": "Review data/ak-2024-enr-turnout-semantics.json and request Division of Elections interpretation of Reg_voters, total_ballots, denominator timing, and zero-registration district absentee/early/question reporting units before replacing EAC fallback.",
+      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain active in ETL. Wave 2 verified official ENRbyPrecinct.csv Reg_voters and total_ballots fields reconcile statewide after de-duplicating to 523 reporting units, but 120 district absentee/early/question reporting units carry 165,047 ballots with zero registered voters, so ENR remains a documented lead rather than an active turnout replacement.",
+      "nextAction": "Keep EAC fallback active. Request Division of Elections interpretation of Reg_voters, total_ballots, denominator timing, and zero-registration district absentee/early/question reporting units before reconsidering ENR replacement.",
       "coverage": {
         "jurisdictionRows": 1,
         "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/ak-2024-eac-registered-voter-denominator.json",
@@ -325,8 +325,10 @@
           "reportingUnits": 523,
           "registeredVoters": 611078,
           "totalBallots": 340981,
-          "status": "semantics_reconciliation_lead_not_active_turnout",
-          "caveat": "Fields reconcile statewide, but absentee/early/question reporting units carry ballots with zero registered voters and require source-side interpretation before replacement."
+          "status": "reviewed_documented_lead_not_active_turnout",
+          "zeroRegistrationBallotUnits": 120,
+          "zeroRegistrationBallots": 165047,
+          "caveat": "Fields reconcile statewide, but 120 district absentee/early/question reporting units carry 165,047 ballots with zero registered voters and require source-side interpretation before replacement."
         }
       }
     },
@@ -408,31 +410,31 @@
       "year": 2024,
       "priority": 14,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
-      "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "sourceLevel": "county",
+      "denominatorType": "activePlusInactiveRegisteredVoters",
+      "denominatorTiming": "historicalElectionData2024General",
+      "sourceTitle": "Colorado Historical Election Data 2024 General Voting Statistics CSV",
+      "sourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
+      "localFile": "data/co-2024-historical-voter-statistics-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 64,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows remain the active CO ETL package. Wave 18 committed the official Colorado Clarity detail XML ZIP for county result/review rows and retained its county turnout rows as a replacement lead only, pending totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference review.",
-      "nextAction": "Review the committed Colorado Clarity detail XML turnout rows and totalVoters denominator timing, reconcile against EAC fallback counts, and only then decide whether to normalize a state-native county turnout replacement.",
+      "statusNote": "Official Colorado Secretary of State Historical Election Data voter-statistics rows are validated in ETL as the active CO turnout package. Total Voters equals Active Voters plus Inactive Voters in all 64 counties and matches the former EAC registered-voter denominator statewide.",
+      "nextAction": "Keep the EAC and Clarity turnout reconciliation caveat visible: Historical Election Data Total Ballots Cast is 401 above EAC fallback and 35 above Clarity ElectionVoterTurnout. Normalize precinct voter-stat rows only after matching precinct result rows and geometry/crosswalks are collected.",
       "coverage": {
         "jurisdictionRows": 64,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/co-2024-eac-registered-voter-denominator.json",
+        "registeredVoterDenominatorFile": "data/co-2024-historical-voter-statistics-summary.json",
         "registeredVoters": 4583280,
-        "ballotsCast": 3240754,
+        "ballotsCast": 3241155,
         "warningRows": 0,
         "stateNativeLead": {
-          "sourceTitle": "Colorado SOS 2024 General Clarity ElectionVoterTurnout rows",
-          "sourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+          "sourceTitle": "Colorado SOS Historical Election Data 2024 General Voting Statistics CSV",
+          "sourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
           "reportingLevel": "county",
-          "ballotsCast": 3241120,
-          "totalVoters": 4058938,
-          "status": "committed_lead_not_active_turnout",
-          "caveat": "totalVoters denominator semantics and 366-ballot difference versus EAC fallback ballotsCast require review before replacement.",
-          "localFile": "data/co-2024-clarity-detailxml.zip"
+          "ballotsCast": 3241155,
+          "totalVoters": 4583280,
+          "status": "loaded_active_turnout",
+          "caveat": "Total Ballots Cast is election-level turnout, 401 above EAC fallback and 35 above Clarity ElectionVoterTurnout.",
+          "localFile": "data/co-2024-historical-voter-statistics-turnout.csv"
         }
       }
     },
@@ -450,14 +452,17 @@
       "localFile": "data/ct-2024-ems-election-91-version-80741",
       "parser": "connecticutEmsTownJson",
       "expectedTurnoutRows": 169,
-      "statusNote": "Official EMS town turnout rows are loaded in native staging with warning-required semantics. EAC fallback remains retained as a benchmark, not the active CT staging turnout source.",
-      "nextAction": "Review EMS EV/VV/ABR/ABC/EBR/EBC/EDR/EDC semantics against the Statement of Vote turnout/registration tables and EAC fallback before production promotion.",
+      "statusNote": "Official EMS town turnout rows are loaded in native staging with warning-required semantics. EAC fallback remains retained as a benchmark, not the active CT staging turnout source. Election History was reviewed on July 6, 2026 and excluded as a turnout replacement because event 582 voterStats returns zero rows and no registered-voter denominator.",
+      "nextAction": "Review EMS EV/VV/ABR/ABC/EBR/EBC/EDR/EDC semantics against the Statement of Vote turnout/registration tables and EAC fallback before production promotion; keep Election History as a President result/vote-channel cross-check only unless a future event-582 voter-statistics export is published.",
       "coverage": {
         "jurisdictionRows": 169,
         "registeredVoterDenominatorFile": "data/ct-2024-ems-election-91-version-80741/voterTurnout_Electiondata.json",
         "registeredVoters": 2348545,
         "ballotsCast": 1788981,
         "warningRows": 169
+      },
+      "artifacts": {
+        "electionHistorySourceReview": "data/ct-2024-election-history-source-review.json"
       }
     },
     {
@@ -517,22 +522,23 @@
       "year": 2024,
       "priority": 18,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "county",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
-      "expectedTurnoutRows": 5,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "denominatorTiming": "officialGeneralElectionStatistics",
+      "sourceTitle": "Hawaii Office of Elections Registration and Turnout Statistics",
+      "sourceUrl": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+      "localFile": "data/hi-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
+      "expectedTurnoutRows": 4,
+      "statusNote": "Official Hawaii Office of Elections 2024 General Election registration and turnout rows are normalized and active in ETL. Four county rows reconcile exactly to the statewide table.",
+      "nextAction": "Keep the Kalawao/no-separate-election-county caveat visible; collect precinct geometry or crosswalks only if subcounty turnout/map joins are pursued.",
       "coverage": {
-        "jurisdictionRows": 5,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/hi-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 861333,
-        "ballotsCast": 522137,
-        "warningRows": 1
+        "jurisdictionRows": 4,
+        "registeredVoterDenominatorFile": "data/hi-2024-registration-turnout-statistics.html; data/hi-2024-turnout-reconciliation-summary.json",
+        "registeredVoters": 860868,
+        "ballotsCast": 522236,
+        "warningRows": 0,
+        "eacBenchmarkFile": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv"
       }
     },
     {
@@ -565,19 +571,19 @@
       "year": 2024,
       "priority": 20,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
+      "sourceLevel": "county",
       "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "denominatorTiming": "idahoSosGeneralElectionTurnout",
+      "sourceTitle": "Idaho Secretary of State 2024 General Election county turnout workbook",
+      "sourceUrl": "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx",
+      "localFile": "data/id-2024-general-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 44,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official Idaho Secretary of State county turnout and registration rows are validated in ETL. EAC 2024 EAVS rows remain retained as benchmark context and match statewide and county totals.",
+      "nextAction": "Keep county-grain turnout caveat visible; use the raw precinct turnout workbook only after same-grain precinct/local result and comparison rows are loaded.",
       "coverage": {
         "jurisdictionRows": 44,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/id-2024-eac-registered-voter-denominator.json",
+        "registeredVoterDenominatorFile": "data/id-2024-turnout-county-general.xlsx",
         "registeredVoters": 1178750,
         "ballotsCast": 917469,
         "warningRows": 0
@@ -735,22 +741,29 @@
       "year": 2024,
       "priority": 25,
       "status": "loaded",
-      "sourceLevel": "jurisdiction",
-      "denominatorType": "registeredVoters",
-      "denominatorTiming": "eacReported",
-      "sourceTitle": "EAC fallback turnout rows",
-      "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
-      "localFile": "data/eac-2024-state-turnout/la-2024-eac-turnout.csv",
-      "parser": "eacTurnoutCsv",
+      "sourceLevel": "parish",
+      "denominatorType": "qualifiedVoters",
+      "denominatorTiming": "closeOfRegistrationRecordsThirtyDaysPrior",
+      "sourceTitle": "Louisiana SOS parish post-election turnout statistics",
+      "sourceUrl": "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls",
+      "localFile": "data/la-2024-post-election-statistics-turnout.csv",
+      "parser": "normalizedTurnoutCsv",
       "expectedTurnoutRows": 64,
-      "statusNote": "Official EAC 2024 EAVS fallback turnout rows are validated in ETL and promoted to the database; prefer state-native denominator artifacts when available.",
-      "nextAction": "Prefer official state election office turnout/registration artifact when available; keep the EAC fallback visibly caveated until then.",
+      "statusNote": "Official Louisiana SOS parish post-election statistics are active in ETL. The rows reconcile to the SOS statewide statistics workbook and replace the prior EAC fallback; EAC remains a retained benchmark with a 424-voter and one registered-voter statewide delta.",
+      "nextAction": "Keep the qualified-voter denominator caveat visible; collect precinct-level turnout denominators only if matching subparish geometry/crosswalks are added.",
       "coverage": {
         "jurisdictionRows": 64,
-        "registeredVoterDenominatorFile": "data/eac-2024-state-turnout/la-2024-eac-registered-voter-denominator.json",
-        "registeredVoters": 3046376,
-        "ballotsCast": 2021588,
-        "warningRows": 0
+        "registeredVoterDenominatorFile": "data/la-2024-post-election-statistics-parish.xls",
+        "registeredVoters": 3046375,
+        "ballotsCast": 2021164,
+        "warningRows": 0,
+        "eacBenchmark": {
+          "localFile": "data/eac-2024-state-turnout/la-2024-eac-turnout.csv",
+          "registeredVoters": 3046376,
+          "ballotsCast": 2021588,
+          "ballotsCastDeltaSosMinusEac": -424,
+          "registeredVotersDeltaSosMinusEac": -1
+        }
       }
     },
     {
@@ -1786,6 +1799,97 @@
       "caveats": [
         "Total ballots counted is election-level turnout across the ballot, not presidential contest votes.",
         "The denominator is the Active voters column from Utah county standardized canvass statistics."
+      ]
+    },
+    {
+      "state": "CO",
+      "name": "Colorado",
+      "authority": "Colorado Secretary of State",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "Colorado Historical Election Data 2024 General Voting Statistics CSV",
+        "sourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
+        "localFile": "data/co-2024-historical-voter-statistics-turnout.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Colorado Historical Election Data Total Voters field",
+        "sourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
+        "localFile": "data/co-2024-historical-voter-statistics-summary.json",
+        "parser": "scripts/normalize-co-historical-voter-statistics.mjs",
+        "denominatorType": "activePlusInactiveRegisteredVoters",
+        "denominatorTiming": "historicalElectionData2024General"
+      },
+      "expected": {
+        "turnoutRows": 64,
+        "registeredVoters": 4583280,
+        "ballotsCast": 3241155
+      },
+      "caveats": [
+        "Turnout is county-level, not precinct-level in the active package.",
+        "Total Voters equals Active Voters plus Inactive Voters in all counties and matches the former EAC denominator.",
+        "Total Ballots Cast is election-level turnout, not presidential contest votes, and is 401 above EAC fallback and 35 above the Clarity ElectionVoterTurnout lead."
+      ]
+    },
+    {
+      "state": "HI",
+      "name": "Hawaii",
+      "authority": "Hawaii Office of Elections",
+      "sourceLevel": "county",
+      "turnoutSource": {
+        "sourceTitle": "Hawaii Office of Elections Registration and Turnout Statistics",
+        "sourceUrl": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+        "localFile": "data/hi-2024-general-turnout.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Hawaii Office of Elections 2024 General registered voters",
+        "sourceUrl": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+        "localFile": "data/hi-2024-general-turnout.csv",
+        "parser": "scripts/normalize-hi-turnout.mjs",
+        "denominatorType": "registeredVoters",
+        "denominatorTiming": "officeElectionStatisticsTable"
+      },
+      "expected": {
+        "turnoutRows": 4,
+        "registeredVoters": 860868,
+        "ballotsCast": 522236
+      },
+      "caveats": [
+        "Turnout is county-level for Hawaii, Maui, Kauai, and Honolulu only; Kalawao has no separate Office turnout row.",
+        "The Office table reports election-level turnout, not presidential contest votes.",
+        "EAC 2024 V2 rows remain retained as benchmark context with a Kalawao placeholder and 465 more registered voters statewide."
+      ]
+    },
+    {
+      "state": "LA",
+      "name": "Louisiana",
+      "authority": "Louisiana Secretary of State",
+      "sourceLevel": "parish",
+      "turnoutSource": {
+        "sourceTitle": "Louisiana SOS parish post-election statistics workbook",
+        "sourceUrl": "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls",
+        "localFile": "data/la-2024-post-election-statistics-turnout.csv",
+        "parser": "normalizedTurnoutCsv"
+      },
+      "denominatorSource": {
+        "sourceTitle": "Louisiana SOS post-election qualified-voter statistics",
+        "sourceUrl": "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls",
+        "localFile": "data/la-2024-post-election-statistics-parish.xls",
+        "parser": "scripts/normalize-la-post-election-statistics.mjs",
+        "denominatorType": "qualifiedVoters",
+        "denominatorTiming": "closeOfRegistrationRecordsThirtyDaysPrior"
+      },
+      "expected": {
+        "turnoutRows": 64,
+        "registeredVoters": 3046375,
+        "ballotsCast": 2021164
+      },
+      "caveats": [
+        "Turnout is parish-level, not precinct-level.",
+        "Qualified voters are election-eligible registrants as of the close of registration records thirty days before election day and include active and inactive status rows.",
+        "The Voted field is election-level turnout, not presidential contest votes.",
+        "EAC 2024 V2 rows remain retained as benchmark context but are no longer the configured Louisiana turnout source."
       ]
     }
   ],

@@ -26,6 +26,17 @@
       "timestampBasis": "Official 2024 General Election by-office CSV downloads collected June 29, 2026.",
       "confidence": "Official Illinois State Board of Elections CSV exports. Presidential rows are aggregated to Illinois election jurisdictions for certified results; advisory review rows join President to U.S. House only where the same jurisdiction/precinct key is unambiguous and the House race has both Democratic and Republican candidate votes.",
       "status": "loaded"
+    },
+    {
+      "id": "il-2024-by-office-turnout-source-review",
+      "category": "Official precinct data turnout replacement review",
+      "url": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
+      "localFile": "data/il-2024-turnout-source-review.json",
+      "parser": "illinoisByOfficeTurnoutSourceReview",
+      "authority": "Illinois State Board of Elections",
+      "timestampBasis": "Official 2024 General Election by-office CSV turnout-field review generated July 5, 2026.",
+      "confidence": "The official by-office precinct CSVs expose Registration and VoteCount fields, but the President CSV lacks an election-level ballots-cast field, has 2,260 precinct keys with zero Registration, and the reviewed registration/contest-total sums do not reconcile to active turnout benchmarks. Documented as a state-native lead that is not a valid turnout replacement.",
+      "status": "documented_exclusion"
     }
   ],
   "turnout": {
@@ -34,7 +45,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "Illinois turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout denominator artifact is promoted separately.",
+    "notes": "Illinois turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. A July 5, 2026 review of the official Illinois State Board of Elections by-office precinct CSVs found Registration and VoteCount fields but no valid turnout replacement: statewide Registration sums to 7,210,422 versus 8,970,541 EAC registered voters, 2,260 precinct keys have zero Registration, and President contest totals including over/under/blank rows are 14,371 below EAC ballots cast.",
     "warningRequired": false,
     "expected": {
       "rowCount": 108,
@@ -45,7 +56,7 @@
   "expected": {
     "jurisdictions": 108,
     "resultRows": 108,
-    "sources": 2,
+    "sources": 3,
     "stateTotal": 5649779,
     "trump": 2449079,
     "harris": 3062863,

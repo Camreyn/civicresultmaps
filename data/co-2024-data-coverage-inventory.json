@@ -2,21 +2,16 @@
   "state": "CO",
   "stateName": "Colorado",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
-  "status": "official_clarity_county_native_loaded",
+  "checkedAt": "2026-07-05",
+  "status": "official_clarity_county_native_turnout_loaded",
   "productionChecked": false,
-  "repoDrift": [
-    {
-      "path": "docs/developer/index.md",
-      "status": "missing_on_current_main",
-      "note": "AGENTS.md names this as a required first read, but the file is absent in this worktree. This is recorded as repo drift and did not block the Colorado source inventory."
-    }
-  ],
-  "displayPathChecked": "Colorado native staging now emits county result rows, county President-versus-CU-Regent review rows, and EAC fallback turnout rows. Public app/API display would flow through src/app/page.tsx, src/lib/api, /api/results, /api/coverage, /api/sources, /api/native-source-packages, and /api/source-acquisition-tiers after human-reviewed promotion. Production promotion and production API checks were not run from this worker branch.",
+  "repoDrift": [],
+  "displayPathChecked": "Colorado native staging now emits county result rows, county President-versus-CU-Regent review rows, and state-native Historical Election Data county turnout rows. Public app/API display would flow through src/app/page.tsx, src/lib/api, /api/results, /api/coverage, /api/sources, /api/native-source-packages, /api/source-acquisition-tiers, and /api/turnout after human-reviewed promotion. Production promotion and production API checks were not run from this worker branch.",
   "officialSourcePages": [
     "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
     "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
     "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+    "https://historicalelectiondata.coloradosos.gov/search?",
     "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
     "https://www.sos.state.co.us/pubs/elections/VotingSystems/",
     "https://www.sos.state.co.us/pubs/elections/Resources/countyElectionOffices.html",
@@ -59,7 +54,7 @@
         "Endpoint is official and machine-readable, and the ZIP is now committed as the active CO county result/review source.",
         "The loaded Clarity candidate rows sum to 3,190,873 county votes, 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source.",
         "The statewide detail XML exposes county candidate totals and precinct participation counts, not per-precinct candidate totals.",
-        "Do not replace the current EAC turnout rows until Colorado totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed."
+        "Clarity ElectionVoterTurnout remains a reconciliation lead: its ballotsCast total is 35 below the Historical Election Data Total Ballots Cast value, and its totalVoters field is not the active registered-voter denominator."
       ]
     },
     {
@@ -90,12 +85,38 @@
       ]
     },
     {
+      "id": "co-2024-historical-voter-statistics",
+      "sourceAuthority": "Colorado Secretary of State",
+      "sourceTitle": "Colorado Historical Election Data 2024 General Voting Statistics CSV",
+      "sourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
+      "localPath": "data/co-2024-historical-voter-statistics.csv; data/co-2024-historical-voter-statistics-turnout.csv; data/co-2024-historical-voter-statistics-summary.json",
+      "status": "loaded_active_state_native_turnout_config",
+      "parserNormalizationPath": "scripts/normalize-co-historical-voter-statistics.mjs generates normalizedTurnoutCsv rows for etl/state-configs/co.json",
+      "reportingGrain": "county totals from 2024 General Voting Statistics, election_id 159, blank vote_channel rows",
+      "expectedRowsOrTotals": {
+        "turnoutRows": 64,
+        "activeVoters": 4074612,
+        "inactiveVoters": 508668,
+        "totalVoters": 4583280,
+        "ballotsCast": 3241155,
+        "historicalMinusEacBallotsCast": 401,
+        "historicalMinusClarityBallotsCast": 35,
+        "historicalMinusEacRegisteredVoters": 0
+      },
+      "caveats": [
+        "The export is official Colorado Secretary of State Historical Election Data and includes county and precinct voter-statistics rows; this pass normalizes county rows only.",
+        "Total Voters equals Active Voters plus Inactive Voters in all 64 counties and equals the former EAC registered-voter denominator statewide.",
+        "Total Ballots Cast is election-level turnout, not presidential contest votes.",
+        "Total Ballots Cast is 401 above EAC fallback and 35 above the Clarity ElectionVoterTurnout ballotsCast lead; retain this reconciliation caveat."
+      ]
+    },
+    {
       "id": "co-2024-eac-turnout-fallback",
       "sourceAuthority": "U.S. Election Assistance Commission",
-      "sourceTitle": "EAC 2024 EAVS V2 Colorado jurisdiction turnout fallback",
+      "sourceTitle": "EAC 2024 EAVS V2 Colorado jurisdiction turnout benchmark",
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localPath": "data/eac-2024-state-turnout/co-2024-eac-turnout.csv",
-      "status": "loaded_active_turnout_config",
+      "status": "retained_benchmark_not_active_turnout_config",
       "parserNormalizationPath": "eacTurnoutCsv via etl/state-configs/co.json",
       "reportingGrain": "county/jurisdiction",
       "expectedRowsOrTotals": {
@@ -104,8 +125,8 @@
         "registeredVoters": 4583280
       },
       "caveats": [
-        "Current CO config is turnout-only and continues to load this EAC fallback package.",
-        "The official Colorado Clarity XML reports 3,241,120 ballotsCast and 4,058,938 totalVoters; replacement requires denominator review before changing active turnout semantics."
+        "EAC rows are retained as official benchmark context after the Colorado Historical Election Data voter-statistics export replaced active turnout.",
+        "The Historical Election Data export reports the same 4,583,280 registered/Total Voters denominator and 401 more Total Ballots Cast than EAC."
       ]
     },
     {
@@ -158,10 +179,10 @@
     },
     {
       "topic": "stateNativeTurnout",
-      "status": "official_turnout_lead_confirmed_not_replacing_eac",
-      "bestSourceUrl": "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
-      "finding": "The official Clarity XML reports 64 county turnout rows, 3,241,120 ballotsCast, and 4,058,938 totalVoters.",
-      "blocker": "The active EAC fallback reports 3,240,754 ballots cast and 4,583,280 registered voters. Review Colorado totalVoters denominator semantics and the 366-ballot ballots-cast difference before replacing EAC fallback."
+      "status": "official_state_native_turnout_loaded",
+      "bestSourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
+      "finding": "The official Historical Election Data voter-statistics CSV reports 64 county 2024 General rows with 3,241,155 Total Ballots Cast and 4,583,280 Total Voters. Total Voters equals Active Voters plus Inactive Voters in every county and matches the former EAC registered-voter denominator statewide.",
+      "blocker": "No turnout replacement blocker remains for county-grain 2024 registration/turnout. Retain the reconciliation caveat that Total Ballots Cast is 401 above EAC fallback and 35 above the Clarity ElectionVoterTurnout ballotsCast lead; precinct voter-stat rows were collected in the raw export but not normalized for active turnout."
     },
     {
       "topic": "historicalBaselines",
@@ -189,12 +210,12 @@
   "recommendedNextSteps": [
     "Collect an official write-in-inclusive Abstract artifact or source note that allocates the 1,872 presidential-vote gap before representing CO county rows as complete certified totals.",
     "If advisory accuracy below county level is required, request official county detail reports, precinct-level SOV exports, CVR-derived precinct aggregates, or a precinct/result crosswalk from Colorado SOS or county election offices.",
-    "Resolve whether Clarity totalVoters is the correct registered-voter denominator for the public turnout contract before replacing EAC fallback rows.",
+    "Keep Historical Election Data turnout active and retain EAC/Clarity reconciliation caveats; normalize precinct voter-stat rows only after matching precinct result rows and geometry/crosswalks are collected.",
     "Collect official 2020, 2016, and 2012 Colorado SOS Abstract of Votes Cast county presidential artifacts before enabling historicalBaseline for CO.",
     "Collect or request official 2024 risk-limiting audit selection/outcome files, CVR availability statements, recount/correction/incident/litigation records, ballot manifests, and custody/log artifacts before adding normalized administration rows."
   ],
   "remainingRisks": [
-    "Colorado now has county-level native result and President-versus-Regent review rows, but no precinct/local candidate rows, precinct geometry/crosswalks, historical baselines, audit, CVR, incident, correction, recount, or litigation rows are loaded by this pass.",
+    "Colorado now has county-level native result, President-versus-Regent review, and state-native county turnout rows, but no precinct/local candidate rows, precinct geometry/crosswalks, historical baselines, audit, CVR, incident, correction, recount, or litigation rows are loaded by this pass.",
     "Loaded Clarity presidential county candidate rows are 1,872 votes below the prior Abstract/certified-total lead, likely write-in or abstract-only scope; this remains unallocated and caveated.",
     "County-level President-versus-Regent review is a coarse source-review screen, not precinct scatter-plot coverage.",
     "The current evidence records source availability and data gaps only. It is not evidence of fraud or misconduct."

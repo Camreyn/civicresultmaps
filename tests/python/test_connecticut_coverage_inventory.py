@@ -34,6 +34,14 @@ class ConnecticutCoverageInventoryTest(unittest.TestCase):
 
         findings = {finding["topic"]: finding for finding in inventory["sourceFindings"]}
         self.assertEqual(
+            findings["electionHistorySourceReview"]["status"],
+            "official_result_cross_check_not_turnout_replacement",
+        )
+        self.assertIn(
+            "does not replace EMS EV/VV turnout",
+            findings["electionHistorySourceReview"]["blocker"],
+        )
+        self.assertEqual(
             findings["sameGrainComparisonContest"]["status"],
             "official_town_us_senate_loaded_with_cross_endorsement_caveat",
         )
@@ -86,7 +94,7 @@ class ConnecticutCoverageInventoryTest(unittest.TestCase):
         ) as handle:
             rows = list(csv.DictReader(handle, delimiter="\t"))
 
-        self.assertEqual(len(rows), 7)
+        self.assertEqual(len(rows), 8)
         by_id = {row["request_id"]: row for row in rows}
         self.assertEqual(
             by_id["ct-ems-town-president-senate"]["status"],
@@ -100,13 +108,33 @@ class ConnecticutCoverageInventoryTest(unittest.TestCase):
         self.assertTrue(
             by_id["ct-town-geometry-crosswalk"]["expected_rows_or_totals"].startswith("Raw 174")
         )
+        self.assertEqual(
+            by_id["ct-election-history-source-review"]["status"],
+            "official_result_cross_check_turnout_replacement_excluded",
+        )
+        self.assertIn(
+            "no event 582 registered-voter denominator",
+            by_id["ct-election-history-source-review"]["caveats"],
+        )
+
+        review = load_json("data/ct-2024-election-history-source-review.json")
+        self.assertEqual(review["decision"]["status"], "exclude_as_turnout_replacement")
+        self.assertEqual(review["event582PresidentReview"]["townCount"], 169)
+        self.assertEqual(review["event582PresidentReview"]["totalVotesCastRow"], 1759010)
+        self.assertEqual(review["event582VoterStatisticsReview"]["rows"], 0)
+        self.assertEqual(
+            review["emsTurnoutComparison"]["electionHistoryPresidentMinusEmsVotersChecked"],
+            -29971,
+        )
 
         tiers = load_json("data/source-acquisition-tiers.json")
         ct_tier = next(state for state in tiers["states"] if state["state"] == "CT")
         self.assertEqual(ct_tier["tier"], "tier_2_official_dashboard_endpoint")
         self.assertEqual(ct_tier["reportingGrain"], "town")
         self.assertIn("Statement of Vote", ct_tier["caveats"])
+        self.assertIn("event 582 voterStats returns zero rows", ct_tier["caveats"])
         self.assertIn("native Connecticut EMS town parser", ct_tier["parserStatus"])
+        self.assertIn("report-ct-election-history-source-review", ct_tier["parserStatus"])
 
         native = load_json("data/native-import-source-packages.json")
         self.assertIn("CT", native["completedNativeStates"])
@@ -116,6 +144,8 @@ class ConnecticutCoverageInventoryTest(unittest.TestCase):
         self.assertTrue(config["capabilities"]["turnout"])
         self.assertTrue(config["capabilities"]["certifiedResults"])
         self.assertEqual(config["expected"]["reviewRows"], 169)
+        self.assertEqual(config["expected"]["sources"], 7)
+        self.assertIn("Election History source review", config["turnout"]["notes"])
 
 
 if __name__ == "__main__":

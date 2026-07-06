@@ -22,6 +22,7 @@ class KentuckyCoverageInventoryTests(unittest.TestCase):
             "ky-2024-state-turnout-pdf-lead",
             "ky-2024-general-registration-pdf-lead",
             "ky-2024-turnout-registration-reconciliation",
+            "ky-2024-turnout-source-review",
             "ky-2024-data-coverage-inventory",
         ]:
             self.assertIn(source_id, sources)
@@ -35,7 +36,7 @@ class KentuckyCoverageInventoryTests(unittest.TestCase):
         inventory = json.loads(Path("data/ky-2024-data-coverage-inventory.json").read_text())
 
         self.assertEqual(inventory["state"], "KY")
-        self.assertEqual(inventory["checkedAt"], "2026-07-01")
+        self.assertEqual(inventory["checkedAt"], "2026-07-06")
         turnout = next(
             item
             for item in inventory["loadedArtifacts"]
@@ -48,6 +49,27 @@ class KentuckyCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(turnout["expectedCounts"]["stateBoardMinusEacRegisteredVotersDelta"], 0)
         self.assertTrue(any("unofficial" in note for note in turnout["caveats"]))
         self.assertTrue(any(gap["artifact"] == "precinct_boundary_geometry" for gap in inventory["gaps"]))
+
+    def test_kentucky_wave2_turnout_source_review_keeps_eac_active(self):
+        review = json.loads(Path("data/ky-2024-turnout-source-review.json").read_text())
+        inventory = json.loads(Path("data/ky-2024-data-coverage-inventory.json").read_text())
+
+        self.assertEqual(review["decision"], "keep_eac_fallback")
+        self.assertEqual(review["confidence"], "reviewed_not_valid_turnout_replacement")
+        self.assertEqual(review["countyResultDownloads"]["recapPdfCount"], 120)
+        self.assertEqual(review["countyResultDownloads"]["recapTextCount"], 120)
+        self.assertFalse(review["countyResultDownloads"]["canReplaceEacFallbackTurnout"])
+        self.assertEqual(review["turnoutRegistrationPdfReconciliation"]["ballotsCastStateBoardMinusEac"], 230)
+        self.assertEqual(review["eacFallbackTotals"]["ballotsCast"], 2086090)
+        self.assertTrue(any("unofficial" in caveat for caveat in review["caveats"]))
+
+        source_review = next(
+            item
+            for item in inventory["loadedArtifacts"]
+            if item["id"] == "ky-2024-turnout-source-review"
+        )
+        self.assertEqual(source_review["confidence"], "reviewed_not_valid_turnout_replacement")
+        self.assertEqual(source_review["expectedCounts"]["stateBoardMinusEacBallotsCastDelta"], 230)
 
     def test_kentucky_turnout_reconciliation_summary_keeps_eac_active(self):
         summary = json.loads(Path("data/ky-2024-turnout-registration-reconciliation-summary.json").read_text())

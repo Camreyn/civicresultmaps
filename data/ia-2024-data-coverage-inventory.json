@@ -3,13 +3,13 @@
   "state": "IA",
   "stateName": "Iowa",
   "electionYear": 2024,
-  "checkedAt": "2026-07-01",
-  "purpose": "Wave 9 Iowa source-coverage inventory for loaded official result, review, turnout, county geometry, and equipment artifacts plus official vote-method, precinct-geometry, audit, historical-replacement, recount, CVR, incident, correction, and litigation source leads.",
+  "checkedAt": "2026-07-05",
+  "purpose": "Wave 2 Iowa verification inventory for loaded official result, review, turnout, county geometry, and equipment artifacts plus official vote-method, precinct-geometry, audit, historical-replacement, recount, CVR, incident, correction, and litigation source leads.",
   "firstReads": {
-    "developerIndex": "docs/developer/index.md was not present in the worktree.",
+    "developerIndex": "docs/developer/index.md read before Wave 2 Iowa verification.",
     "requiredFilesRead": [
       "AGENTS.md",
-      "docs/developer/index.md (missing in worktree; absence recorded)",
+      "docs/developer/index.md",
       "README.md",
       "package.json",
       "scripts/state-metadata.mjs",
@@ -40,6 +40,24 @@
         "registeredVoters": 1893715
       },
       "confidenceNotes": "Official county detailxml.zip reports from the Iowa Secretary of State Clarity results app. The parser loads county certified presidential totals, precinct President-versus-U.S. House review rows, and VoterTurnout precinct ballotsCast/totalVoters rows. U.S. House remains district-based advisory comparison context."
+    },
+    {
+      "id": "ia-2024-turnout-vote-method-source-review",
+      "sourceAuthority": "Iowa Secretary of State",
+      "sourceUrl": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "localArtifactPath": "data/ia-2024-turnout-vote-method-source-review.json",
+      "reportingGrain": "statewide source review of county detail XML precinct turnout and President VoteType rows",
+      "parserOrNormalizationPath": "scripts/report-ia-turnout-vote-method-source-review.mjs",
+      "expectedRowsOrTotals": {
+        "activeTurnoutRows": 1651,
+        "activeTurnoutBallotsCast": 1672068,
+        "activeTurnoutRegisteredVoters": 1893715,
+        "presidentCandidateVotes": 1663506,
+        "presidentVoteTypeVotes": 1663506,
+        "voteTypeGroups": 2,
+        "presidentCandidateVotesMinusTurnoutBallotsCast": -8562
+      },
+      "confidenceNotes": "Documented exclusion only. The official SOS index was reviewed, and the county-selected Clarity detail XML reports were inspected. VoterTurnout precinct rows remain the active turnout source; President VoteType rows are candidate contest-vote method splits and are not loaded into the current public EAC participation-method CSV/API contract."
     },
     {
       "id": "ia-2024-official-clarity-results",
@@ -99,15 +117,15 @@
   "sourceFindings": [
     {
       "topic": "ballotMethodFields",
-      "status": "source_fields_confirmed_not_normalized",
+      "status": "source_fields_confirmed_documented_exclusion",
       "sourceAuthority": "Iowa Secretary of State",
-      "sourceUrl": "https://electionresults.iowa.gov/IA/122322/web.345435/",
-      "localArtifactPath": "data/ia-2024-county-detailxml-reports/*/detailxml.zip",
+      "sourceUrl": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "localArtifactPath": "data/ia-2024-turnout-vote-method-source-review.json; data/ia-2024-county-detailxml-reports/*/detailxml.zip",
       "reportingGrain": "precinct candidate vote type",
-      "parserOrNormalizationPath": "not currently normalized into the public vote-method CSV/API contract",
-      "evidence": "Loaded county detail XML reports include Choice/VoteType rows for President and U.S. House with method labels such as Election Day and Absentee. The public vote-method loader currently reads data/eac-2024-vote-methods/*.csv and has no Iowa Clarity VoteType normalizer.",
-      "caveats": "VoteType rows are candidate/contest votes by method, not all-ballot turnout by method. Do not expose them through the public vote-method API/UI until a dedicated normalizer, reconciliation checks, and UI caveat exist.",
-      "feasibility": "Feasible as a future candidate-by-method normalizer if it clearly labels rows as contest-vote method splits, reconciles candidate VoteType sums to contest candidate totals, handles null precinct groupResults, and avoids presenting the rows as all-ballot turnout by method."
+      "parserOrNormalizationPath": "scripts/report-ia-turnout-vote-method-source-review.mjs documents the source review; not normalized into the public vote-method CSV/API contract",
+      "evidence": "The retained review artifact confirms the official Iowa SOS results/statistics page is the submitted source index, county detail XML reports are county-selected ENR/Clarity report ZIPs, active VoterTurnout precinct rows sum to 1,651 rows, 1,672,068 ballots cast, and 1,893,715 registered voters, and President VoteType rows sum to 1,663,506 candidate votes split into Election Day and Absentee. President VoteType candidate votes are 8,562 below VoterTurnout ballotsCast.",
+      "caveats": "VoteType rows are candidate/contest votes by method, not all-ballot turnout by method. Do not expose them through the current public EAC participation-method API/UI contract unless a separate candidate-by-method contract, reconciliation checks, and UI caveat exist.",
+      "feasibility": "Feasible as a future candidate-by-method normalizer only if it clearly labels rows as contest-vote method splits, reconciles candidate VoteType sums to contest candidate totals, handles precinct names with punctuation/slashes, and avoids presenting the rows as all-ballot turnout by method."
     },
     {
       "topic": "precinctBoundaryGeometry",
@@ -192,6 +210,11 @@
   "scriptedAccessNotes": [
     {
       "url": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "checkedAt": "2026-07-05",
+      "result": "Wave 2 verification confirmed the official SOS page lists 2024 General Official Canvass by County, Precinct Results by County - Excel Format, Turnout Report, Statistical Reports, Daily Absentee Statistics, and General Election County Precinct Audits. The active machine-readable result/review/turnout source remains the county-selected Clarity detail XML package documented in data/ia-2024-turnout-vote-method-source-review.json."
+    },
+    {
+      "url": "https://sos.iowa.gov/iowans/election-results-statistics",
       "checkedAt": "2026-07-01",
       "result": "Browser/web discovery identified official 2024 precinct results Excel, voter-registration totals, statistical reports, county precinct-audit image, and historical result/statistical-report leads. Direct scripted file download from sos.iowa.gov can return Cloudflare challenges from this environment."
     },
@@ -218,7 +241,7 @@
   ],
   "remainingRisks": [
     "No official statewide precinct boundary geometry is loaded, so current public map joins are county-level. Official SOS county precinct shapefile ZIPs are identified but need collection, normalization, and Clarity precinct-name crosswalk work.",
-    "Clarity VoteType rows are confirmed in source XML, but no Iowa vote-method normalizer/public CSV is loaded yet. These rows are candidate contest votes by method, not all-ballot turnout by method.",
+    "Clarity VoteType rows are confirmed and reconciled in data/ia-2024-turnout-vote-method-source-review.json, but no Iowa vote-method normalizer/public CSV is loaded. These rows are candidate contest votes by method, not all-ballot turnout by method.",
     "The official SOS 2024 General Election County Precinct Audits image is identified, but no selected-precinct/outcome table is normalized and scripted download is Cloudflare-challenged from this environment.",
     "Official 2024 recount/admin audit outcomes, CVR availability, and incident/correction/litigation artifacts remain request-path tasks.",
     "Historical baseline rows remain secondary context and should be replaced only after official Iowa historical county presidential artifacts are collected and parsed reproducibly."
