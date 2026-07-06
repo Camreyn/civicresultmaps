@@ -39,6 +39,39 @@
       "status": "candidate"
     },
     {
+      "id": "nc-2024-ncsbe-voter-stats",
+      "category": "Official registered-voter denominator lead",
+      "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip",
+      "localFile": "data/nc-2024-voter-stats.zip",
+      "parser": "scripts/normalize-nc-turnout.mjs",
+      "authority": "North Carolina State Board of Elections",
+      "timestampBasis": "Official NCSBE 2024 General election-time registered-voter stats ZIP linked from the voter registration data page.",
+      "confidence": "Official county/precinct registered-voter denominator lead. The statewide registered-voter total matches the active EAC fallback denominator exactly, but this artifact is not a turnout numerator.",
+      "status": "loaded"
+    },
+    {
+      "id": "nc-2024-ncsbe-history-stats",
+      "category": "Official voter-history turnout lead",
+      "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
+      "localFile": "data/nc-2024-history-stats.zip",
+      "parser": "scripts/normalize-nc-turnout.mjs",
+      "authority": "North Carolina State Board of Elections",
+      "timestampBasis": "Official NCSBE 2024 General voter-history stats ZIP linked from the voter history and 2024 turnout pages.",
+      "confidence": "Official grouped voter-history lead with county, precinct, voting-method, and demographic fields. Keep as a turnout lead until voter-history totals versus ballots-cast semantics are reviewed.",
+      "status": "loaded"
+    },
+    {
+      "id": "nc-2024-turnout-source-review",
+      "category": "State-native turnout denominator lead review",
+      "url": "https://www.ncsbe.gov/results-data/voter-turnout/2024-general-election-turnout",
+      "localFile": "data/nc-2024-turnout-source-review.json",
+      "parser": "scripts/normalize-nc-turnout.mjs",
+      "authority": "North Carolina State Board of Elections",
+      "timestampBasis": "Generated July 6, 2026 from official NCSBE voter_stats_20241105.zip and history_stats_20241105.zip.",
+      "confidence": "Documents that NCSBE voter_stats improves denominator provenance while history_stats remains a lead because its statewide voter total is below both EAC ballots cast and the NCSBE turnout overview ballots-cast figure.",
+      "status": "loaded"
+    },
+    {
       "id": "nc-historical-presidential-results-zips",
       "category": "Historical county presidential baseline rows",
       "url": "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
@@ -79,7 +112,7 @@
     "denominatorType": "registeredVoters",
     "registrationDenominatorTiming": "eacReported",
     "sourceLevel": "jurisdiction",
-    "notes": "North Carolina turnout rows use EAC 2024 V2 county/jurisdiction fallback rows until a state-native turnout-denominator artifact is collected.",
+    "notes": "North Carolina turnout rows use EAC 2024 V2 county/jurisdiction fallback rows. Official NCSBE voter_stats and history_stats ZIPs are retained as state-native denominator/turnout leads, but history_stats voter totals require ballots-cast semantic review before replacement.",
     "warningRequired": true,
     "expected": {
       "rowCount": 100,
@@ -90,7 +123,7 @@
   "expected": {
     "jurisdictions": 100,
     "resultRows": 100,
-    "sources": 4,
+    "sources": 7,
     "stateTotal": 5699141,
     "trump": 2898423,
     "harris": 2715375,

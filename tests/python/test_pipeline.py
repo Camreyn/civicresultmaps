@@ -204,6 +204,19 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 4075)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 4075)
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 4103)
+        self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 3982883)
+        self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 3272414)
+        self.assertTrue(
+            all(row["sourceId"] == "mn-2024-precinct-results" for row in artifact["native"]["turnoutRows"])
+        )
+        self.assertTrue(
+            all(
+                row["denominatorType"] == "registeredVotersPlusElectionDayRegistrations"
+                and row["registrationDenominatorTiming"] == "electionDayPlusEDR"
+                and not row["warningRequired"]
+                for row in artifact["native"]["turnoutRows"]
+            )
+        )
         self.assertFalse(artifact["capabilities"]["historicalBaseline"])
         self.assertEqual(len(artifact["native"].get("historicalRows", [])), 0)
         self.assertTrue(any(row["coverageMode"] == "presidentVsSenate" for row in artifact["native"]["reviewRows"]))
@@ -263,6 +276,16 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 100)
         self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 7854464)
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 5756106)
+        source_ids = {source["id"] for source in artifact["sources"]}
+        self.assertIn("nc-2024-ncsbe-voter-stats", source_ids)
+        self.assertIn("nc-2024-ncsbe-history-stats", source_ids)
+        self.assertIn("nc-2024-turnout-source-review", source_ids)
+        turnout_review = json.loads(Path("data/nc-2024-turnout-source-review.json").read_text(encoding="utf-8"))
+        self.assertEqual(turnout_review["sourceArtifacts"]["voterStats"]["registeredVoters"], 7854464)
+        self.assertEqual(turnout_review["sourceArtifacts"]["historyStats"]["votersWhoVoted"], 5705861)
+        self.assertEqual(turnout_review["eacBenchmark"]["ncsbeRegisteredMinusEacRegistered"], 0)
+        self.assertEqual(turnout_review["eacBenchmark"]["ncsbeHistoryMinusEacBallotsCast"], -50245)
+        self.assertIn("Do not replace active EAC fallback turnout yet", turnout_review["replacementDecision"])
         self.assertTrue(any(row["coverageMode"] == "presidentVsGovernor" for row in artifact["native"]["reviewRows"]))
 
     def test_oklahoma_official_csv_zip_parser_builds_county_and_precinct_rows(self):

@@ -83,6 +83,28 @@
       "status": "loaded"
     },
     {
+      "id": "nm-2024-voter-statistics-archive-lead",
+      "category": "Official New Mexico SOS 2024 voter statistics archive OCR lead",
+      "url": "https://www.sos.nm.gov/sos-archive/voter-statistics-data-archive/2024-voter-statistics-data/",
+      "localFile": "data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official SOS voter statistics archive checked July 6, 2026.",
+      "confidence": "Official archive page for 2024 voter statistics. It is a denominator lead only; no script-readable local voter-statistics artifact is normalized in this branch, and OCR/manual artifact review is required before replacing EAC fallback turnout.",
+      "status": "candidate"
+    },
+    {
+      "id": "nm-electionstats-official-database",
+      "category": "Official New Mexico SOS election statistics database lead",
+      "url": "https://electionstats.sos.nm.gov/",
+      "localFile": "data/nm-2024-data-coverage-inventory.json; data/nm-2024-source-request-matrix.tsv",
+      "parser": "sourceCoverageInventoryJson",
+      "authority": "New Mexico Secretary of State",
+      "timestampBasis": "Official SOS Elections Database checked July 6, 2026.",
+      "confidence": "Official searchable database of historical election information from official source documents. Retained as a historical/source-validation lead; current 2024 results/review ETL continues to use the loaded SOS GetMapDataArchive API artifacts.",
+      "status": "candidate"
+    },
+    {
       "id": "nm-2024-data-coverage-inventory",
       "category": "New Mexico 2024 official source coverage inventory and request matrix",
       "url": "https://electionresults.sos.nm.gov/Default.aspx?eid=2882",
@@ -165,7 +187,7 @@
   "expected": {
     "jurisdictions": 33,
     "resultRows": 33,
-    "sources": 10,
+    "sources": 12,
     "stateTotal": 923403,
     "trump": 423391,
     "harris": 478802,
