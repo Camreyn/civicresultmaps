@@ -47,6 +47,27 @@ test("public API route contracts exist", () => {
 });
 
 
+
+test("state links expose data-rich social previews", () => {
+  const home = readFileSync("src/app/page.tsx", "utf8");
+  const preview = readFileSync("src/lib/social-preview.ts", "utf8");
+  const socialCard = readFileSync("src/app/api/social-card/route.tsx", "utf8");
+
+  assert.match(home, /generateMetadata/);
+  assert.match(home, /summary_large_image/);
+  assert.match(home, /openGraph/);
+  assert.match(home, /preview\.imagePath/);
+  assert.match(preview, /buildStateSocialPreview/);
+  assert.match(preview, /Advisory indicators are review prompts/);
+  assert.match(preview, /not findings of fraud or misconduct/);
+  assert.match(preview, /Result rows/);
+  assert.match(preview, /Turnout rows/);
+  assert.match(preview, /Advisory flags/);
+  assert.match(socialCard, /ImageResponse/);
+  assert.match(socialCard, /1200/);
+  assert.match(socialCard, /630/);
+  assert.match(socialCard, /Vercel-CDN-Cache-Control/);
+});
 test("public year-filtered APIs default missing year to 2024", () => {
   const routes = [
     "src/app/api/results/route.ts",

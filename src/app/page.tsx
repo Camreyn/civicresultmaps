@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   CheckCircle2,
   CircleDashed,
@@ -25,6 +26,7 @@ import {
   listTurnoutRows,
   listVoteMethodRows,
 } from "@/lib/api";
+import { buildStateSocialPreview } from "@/lib/social-preview";
 
 const selectedYear = 2024;
 
@@ -33,6 +35,45 @@ type HomeProps = {
     state?: string;
   }>;
 };
+
+export async function generateMetadata({ searchParams }: HomeProps): Promise<Metadata> {
+  const params = await searchParams;
+  const preview = await buildStateSocialPreview({ state: params?.state, year: selectedYear });
+
+  return {
+    title: preview.title,
+    description: preview.description,
+    alternates: {
+      canonical: preview.urlPath,
+    },
+    openGraph: {
+      type: "website",
+      title: preview.title,
+      description: preview.description,
+      url: preview.urlPath,
+      siteName: "Civic Result Maps",
+      images: [
+        {
+          url: preview.imagePath,
+          width: 1200,
+          height: 630,
+          alt: preview.imageAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: preview.title,
+      description: preview.description,
+      images: [
+        {
+          url: preview.imagePath,
+          alt: preview.imageAlt,
+        },
+      ],
+    },
+  };
+}
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
