@@ -163,6 +163,25 @@
         "This artifact is administration context and request routing only; it does not normalize audit-unit outcomes, CVRs, ballot images, tabulator logs, L&A records, custody records, incidents, or corrections."
       ],
       "confidence": "source_inventory_partial_admin_context"
+    },
+    {
+      "id": "az-2024-source-confirmation-review",
+      "sourceAuthority": "Arizona Secretary of State",
+      "sourceUrl": "https://azsos.gov/elections/election-information/2024-election-info#collps_election_info_04",
+      "localPath": "data/az-2024-source-confirmation-review.json",
+      "electionYear": 2024,
+      "reportingGrain": "source_confirmation",
+      "parserNormalizationPath": "scripts/report-az-source-confirmation-review.mjs",
+      "expectedCounts": {
+        "activeResultRows": 15,
+        "activeReviewRows": 15,
+        "activeTurnoutRows": 15
+      },
+      "caveats": [
+        "Confirmation artifact only; it does not replace the signed canvass result, review, or turnout rows.",
+        "The submitted SOS page links the signed statewide canvass already used by the active AZ pipeline."
+      ],
+      "confidence": "official_source_confirmation_review"
     }
   ],
   "officialSourceSearchPath": [
@@ -293,6 +312,7 @@
     "Loaded AZ result, review, turnout, geometry, equipment, and historical artifacts are suitable for county-level public-interest review with visible caveats.",
     "No official statewide precinct-level or county-local result export was accessible or confirmed in this pass, so no scripted collection/normalization upgrade was added.",
     "Next implementation step should be a county-by-county official source inventory or public-records request packet before parser work.",
-    "Official SOS hand-count status, Maricopa recount/litigation, early-ballot, public-records, and county-contact paths are now documented in data/az-2024-admin-source-inventory.json; they are not normalized administration evidence rows."
+    "Official SOS hand-count status, Maricopa recount/litigation, early-ballot, public-records, and county-contact paths are now documented in data/az-2024-admin-source-inventory.json; they are not normalized administration evidence rows.",
+    "The 2026-07-06 submitted-source confirmation found the AZ SOS 2024 Election Information page valid and already represented by the active signed-canvass pipeline."
   ]
 }

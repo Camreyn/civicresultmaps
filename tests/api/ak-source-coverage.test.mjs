@@ -31,6 +31,10 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.equal(config.expected.resultRows, 1);
   assert.equal(config.expected.reviewRows, 523);
   assert.equal(config.expected.turnoutRows, 1);
+  assert.equal(config.turnout.sourceId, "ak-2024-eac-turnout");
+  assert.equal(config.turnout.stateNativeLeadReview.decision, "remain_documented_lead_not_active_turnout");
+  assert.equal(config.turnout.stateNativeLeadReview.zeroRegistrationBallotUnits, 120);
+  assert.equal(config.turnout.stateNativeLeadReview.zeroRegistrationBallots, 165047);
   assert.equal(config.expected.sources, 11);
   assert.equal(config.expected.stateTotal, 338177);
   assert.equal(config.expected.trump, 184458);
@@ -79,6 +83,12 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.equal(turnoutSemantics.totals.reportingUnits, 523);
   assert.equal(turnoutSemantics.totals.registeredVoters, 611078);
   assert.equal(turnoutSemantics.totals.totalBallots, 340981);
+  assert.equal(turnoutSemantics.sourceArtifactSha256, "aca7ab6e949d1319b48692ab8e8b694835ff6a9bd862fc9efbac91550c25f957");
+  assert.equal(turnoutSemantics.replacementReview.decision, "remain_documented_lead_not_active_turnout");
+  assert.equal(turnoutSemantics.replacementReview.activeTurnoutSourceId, "ak-2024-eac-turnout");
+  assert.equal(turnoutSemantics.replacementReview.zeroRegistrationBallotUnits, 120);
+  assert.equal(turnoutSemantics.replacementReview.zeroRegistrationBallots, 165047);
+  assert.match(turnoutSemantics.replacementReview.invalidReplacementModes.join(" "), /duplicate the active EAC fallback totals/);
   assert.equal(turnoutSemantics.categories.election_day_precinct.reportingUnits, 402);
   assert.equal(turnoutSemantics.categories.district_absentee.registeredVoters, 0);
   assert.equal(turnoutSemantics.categories.district_early_voting.registeredVoters, 0);

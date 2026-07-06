@@ -30,7 +30,11 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(native["parser"], "nativeHawaiiOfficeText")
         self.assertEqual(len(native["resultRows"]), 4)
         self.assertEqual(len(native["reviewRows"]), 467)
-        self.assertEqual(len(native["turnoutRows"]), 5)
+        self.assertEqual(len(native["turnoutRows"]), 4)
+        self.assertEqual(metrics["nativeTurnoutRows"], 4)
+        self.assertEqual(metrics["nativeBallotsCast"], 522236)
+        self.assertEqual(metrics["nativeRegisteredVoters"], 860868)
+        self.assertEqual(metrics["nativeTurnoutWarningRows"], 0)
         self.assertEqual(metrics["nativeResultTotalVotes"], 516701)
         self.assertEqual(metrics["nativeHarrisVotes"], 313044)
         self.assertEqual(metrics["nativeTrumpVotes"], 193661)
@@ -44,6 +48,8 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(metrics["nativeHawaiiMissingComparisonRows"], 0)
         self.assertEqual(sources["hi-2024-general-summary"]["status"], "loaded")
         self.assertEqual(sources["hi-2024-general-precinct-detail"]["status"], "loaded")
+        self.assertEqual(sources["hi-2024-general-turnout"]["status"], "loaded")
+        self.assertEqual(sources["hi-2024-eac-turnout"]["status"], "candidate")
         self.assertEqual(sources["hi-2024-data-coverage-inventory"]["status"], "candidate")
 
     def test_hawaii_official_text_exports_have_expected_federal_totals(self):
@@ -81,6 +87,19 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
             ),
             501763,
         )
+
+    def test_hawaii_official_turnout_rows_replace_eac_fallback(self):
+        turnout_rows = list(csv.DictReader(Path("data/hi-2024-general-turnout.csv").read_text(encoding="utf-8-sig").splitlines()))
+        summary = self.load_json("data/hi-2024-turnout-reconciliation-summary.json")
+
+        self.assertEqual(len(turnout_rows), 4)
+        self.assertEqual(sum(int(row["registered_voters"]) for row in turnout_rows), 860868)
+        self.assertEqual(sum(int(row["ballots_cast"]) for row in turnout_rows), 522236)
+        self.assertEqual(summary["officialRows"]["countyRegisteredVoters"], 860868)
+        self.assertEqual(summary["officialRows"]["countyBallotsCast"], 522236)
+        self.assertEqual(summary["eacBenchmark"]["registeredVotersDeltaOfficialMinusEac"], -465)
+        self.assertEqual(summary["eacBenchmark"]["ballotsCastDeltaOfficialMinusEac"], 0)
+        self.assertIn("no separate Kalawao row", summary["eacBenchmark"]["kalawaoRowStatus"])
 
     def test_hawaii_registries_are_aligned_for_loaded_native_coverage(self):
         inventory = self.load_json("data/hi-2024-data-coverage-inventory.json")

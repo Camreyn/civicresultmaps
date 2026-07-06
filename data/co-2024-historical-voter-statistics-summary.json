@@ -1,0 +1,34 @@
+{
+  "sourceAuthority": "Colorado Secretary of State",
+  "sourceUrl": "https://historicalelectiondata.coloradosos.gov/search?",
+  "downloadUrl": "https://historicalelectiondata.coloradosos.gov/api/download_search.csv",
+  "localRawCsv": "data/co-2024-historical-voter-statistics.csv",
+  "localNormalizedCsv": "data/co-2024-historical-voter-statistics-turnout.csv",
+  "parserOrNormalizationPath": "scripts/normalize-co-historical-voter-statistics.mjs",
+  "electionId": 159,
+  "electionDate": "2024-11-05",
+  "reportingGrain": "county",
+  "expected": {
+    "countyRows": 64,
+    "activeVoters": 4074612,
+    "inactiveVoters": 508668,
+    "totalVoters": 4583280,
+    "ballotsCast": 3241155
+  },
+  "reconciliation": {
+    "eacFallbackBallotsCast": 3240754,
+    "eacFallbackRegisteredVoters": 4583280,
+    "clarityElectionVoterTurnoutBallotsCast": 3241120,
+    "clarityElectionVoterTurnoutTotalVoters": 4058938,
+    "historicalMinusEacBallotsCast": 401,
+    "historicalMinusClarityBallotsCast": 35,
+    "historicalMinusEacRegisteredVoters": 0
+  },
+  "caveats": [
+    "The Historical Election Data export is official Colorado Secretary of State data and provides explicit 2024 General Voting Statistics county rows.",
+    "The normalized denominator uses Total Voters, which equals Active Voters plus Inactive Voters in every county and equals the current EAC registered-voter denominator statewide.",
+    "Total Ballots Cast is election-level turnout, not presidential contest votes.",
+    "Total Ballots Cast is 401 above the active EAC fallback and 35 above the Clarity ElectionVoterTurnout ballotsCast lead; keep this reconciliation note visible.",
+    "The raw export also includes precinct voter-stat rows, but this pass normalizes only county rows to match the current map/review grain."
+  ]
+}

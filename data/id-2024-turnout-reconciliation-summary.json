@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-07-06",
+  "state": "ID",
+  "electionYear": 2024,
+  "status": "loaded_state_native_turnout_replaces_eac_fallback",
+  "sourcePageUrl": "https://voteidaho.gov/data-and-dashboards/voter-turnout/",
+  "countyWorkbookUrl": "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx",
+  "rawStatsWorkbookUrl": "https://sos.idaho.gov/elections/data/results/2024/raw_stats_general.xlsx",
+  "localArtifacts": {
+    "countyWorkbook": "data/id-2024-turnout-county-general.xlsx",
+    "rawStatsWorkbook": "data/id-2024-raw-stats-general.xlsx",
+    "normalizedTurnoutCsv": "data/id-2024-general-turnout.csv",
+    "eacBenchmark": "data/eac-2024-state-turnout/id-2024-eac-turnout.csv"
+  },
+  "parserOrNormalizationPath": "scripts/normalize-id-turnout.mjs",
+  "reportingGrain": "county",
+  "denominator": {
+    "type": "registeredVoters",
+    "timing": "idahoSosGeneralElectionTurnout",
+    "note": "The official county workbook reports Registration at Cutoff, Election Day Registrations, Total Registered Voters, Ballots Cast, and Voter Turnout. Total Registered Voters equals cutoff registration plus Election Day registrations in every county."
+  },
+  "totals": {
+    "rows": 44,
+    "registrationAtCutoff": 1057735,
+    "electionDayRegistrations": 121015,
+    "registeredVoters": 1178750,
+    "ballotsCast": 917469
+  },
+  "sourceStatewideTotalRow": {
+    "registrationAtCutoff": 1057735,
+    "electionDayRegistrations": 121015,
+    "registeredVoters": 1178750,
+    "ballotsCast": 917469,
+    "turnoutPct": 77.8340615058324
+  },
+  "eacBenchmarkComparison": {
+    "ballotsCastDeltaSosMinusEac": 0,
+    "registeredVotersDeltaSosMinusEac": 0,
+    "note": "The Idaho SOS county workbook matches the retained EAC 2024 V2 county fallback rows for ballots cast and total registered voters in every county."
+  },
+  "caveats": [
+    "Rows are county turnout and registration denominators, not precinct turnout rows.",
+    "Precinct turnout is available in the raw stats workbook as a source lead, but active Idaho review rows remain county-level President-versus-U.S. House rows.",
+    "State-native turnout replacement does not change result, review, or advisory indicator semantics."
+  ],
+  "confidence": "loaded_official_reconciled_to_raw_stats_and_eac_benchmark"
+}

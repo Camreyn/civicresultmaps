@@ -1,4 +1,4 @@
-﻿{
+{
   "state": "CA",
   "stateName": "California",
   "electionYear": 2024,
@@ -66,7 +66,11 @@
       "parser": "scripts/normalize-ca-sov-workbooks.mjs",
       "reportingGrain": "county",
       "expectedRows": 174,
-      "years": [2012, 2016, 2020],
+      "years": [
+        2012,
+        2016,
+        2020
+      ],
       "status": "loaded"
     },
     {
@@ -92,6 +96,19 @@
       "expectedRows": 58,
       "status": "loaded",
       "caveat": "Equipment rows are jurisdiction-level administration context only; they are not vote, turnout, audit, incident, or proof-of-uniformity rows."
+    },
+    {
+      "id": "ca-2024-swdb-precinct-source-review",
+      "topic": "supplementalPrecinctLocalSourceReview",
+      "sourceTitle": "California Statewide Database 2024 General Election Precinct Data",
+      "sourceUrl": "https://statewidedatabase.org/election.html",
+      "selectedSourceUrl": "https://statewidedatabase.org/d20/g24.html",
+      "localArtifact": "data/ca-2024-swdb-source-review.json",
+      "parser": "scripts/report-ca-swdb-source-review.mjs",
+      "reportingGrain": "source_review",
+      "expectedRows": 1,
+      "status": "documented_supplemental_not_active",
+      "caveat": "SWDB is valid for future precinct/local collection, but active CA production rows continue to use official Secretary of State Statement of Vote county artifacts."
     }
   ],
   "sourceFindings": [
@@ -139,12 +156,26 @@
       "status": "not_loaded",
       "sourceUrl": "https://www.sos.ca.gov/elections/prior-elections/statewide-election-results/general-election-nov-5-2024/statement-vote",
       "finding": "Current CA review rows are county-level President-versus-U.S. Senate full-term comparisons. Precinct, city, or other local reporting-unit President plus same-grain comparison rows were not loaded in this pass."
+    },
+    {
+      "topic": "submittedSwdbPrecinctSourceReview",
+      "status": "valid_supplemental_not_authoritative",
+      "sourceUrl": "https://statewidedatabase.org/election.html",
+      "localArtifact": "data/ca-2024-swdb-source-review.json",
+      "parser": "scripts/report-ca-swdb-source-review.mjs",
+      "finding": "The submitted California Statewide Database source is a valid precinct/local result and geography source lead, but it remains supplemental. The active CA package should keep California SOS Statement of Vote sources authoritative for certified county results, county U.S. Senate comparison rows, turnout, and historical baselines.",
+      "caveats": [
+        "SWDB's 2024 General page notes that Madera County posted files do not match certified vote counts and are partial pending required county data.",
+        "SWDB notes small precinct privacy masking and temporary 2024 file artifacts.",
+        "No SWDB vote rows are downloaded or normalized in the current CA ETL."
+      ]
     }
   ],
   "displayCaveats": [
     "County-level CA review rows are advisory comparison context, not precinct scatter plots or findings.",
     "The active CA turnout package uses SOS total voters and 15-day registered-voter denominators; presidential contest votes reconcile separately to the President by County workbook.",
     "County geometry is loaded for map joins; precinct boundary geometry is not loaded.",
+    "SWDB is retained as a supplemental precinct/local and geography lead only; CA SOS Statement of Vote remains authoritative until any SWDB parser reconciles to certified totals.",
     "Audit, CVR, incident, correction, recount, litigation, custody, and tabulator-log paths are source leads only until official row-level artifacts are collected and normalized."
   ]
 }

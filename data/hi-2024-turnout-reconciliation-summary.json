@@ -1,0 +1,33 @@
+{
+  "state": "HI",
+  "electionYear": 2024,
+  "sourceUrl": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+  "localSourceArtifact": "data/hi-2024-registration-turnout-statistics.html",
+  "normalizedTurnoutArtifact": "data/hi-2024-general-turnout.csv",
+  "parser": "scripts/normalize-hi-turnout.mjs",
+  "sourcePageLastUpdated": "December 10, 2024",
+  "officialRows": {
+    "statewide": {
+      "registeredVoters": 860868,
+      "ballotsCast": 522236,
+      "turnoutPct": 60.7
+    },
+    "counties": 4,
+    "countyRegisteredVoters": 860868,
+    "countyBallotsCast": 522236
+  },
+  "eacBenchmark": {
+    "localFile": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv",
+    "rows": 5,
+    "registeredVotersExcludingNegativePlaceholders": 861333,
+    "ballotsCastExcludingNegativePlaceholders": 522236,
+    "registeredVotersDeltaOfficialMinusEac": -465,
+    "ballotsCastDeltaOfficialMinusEac": 0,
+    "kalawaoRowStatus": "EAC fallback contains a warning-required Kalawao placeholder row with negative values; the Hawaii Office table has no separate Kalawao row."
+  },
+  "caveats": [
+    "The Hawaii Office table reports four election-county rows: Hawaii, Maui, Kauai, and Honolulu.",
+    "Kalawao remains present in county geometry but is not a separate Hawaii Office result or turnout county row.",
+    "Turnout is election-level voter turnout, not presidential contest votes."
+  ]
+}

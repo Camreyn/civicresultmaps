@@ -33,13 +33,13 @@ class IdahoCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(artifacts["id-2024-general-official-xml-index"]["confidence"], "loaded_official_with_county_table_fallback")
         self.assertEqual(artifacts["id-2024-general-official-xml-index"]["expectedCounts"]["stateTotal"], 904967)
         self.assertEqual(artifacts["id-2024-general-official-congressional-map"]["expectedCounts"]["reviewRows"], 44)
-        self.assertEqual(artifacts["id-2024-eac-turnout"]["confidence"], "loaded_official_fallback")
+        self.assertEqual(artifacts["id-2024-eac-turnout"]["confidence"], "retained_official_benchmark")
         self.assertEqual(artifacts["id-2024-eac-turnout"]["expectedCounts"]["registeredVoters"], 1178750)
         self.assertEqual(artifacts["id-county-geometry"]["expectedCounts"]["geometryFeatures"], 44)
         self.assertEqual(artifacts["id-2024-equipment-context"]["confidence"], "loaded_context_only")
         self.assertEqual(artifacts["id-historical-presidential-baseline"]["expectedCounts"]["historicalRows"], 88)
 
-        self.assertEqual(findings["stateNativeTurnout"]["status"], "not_loaded_eac_fallback_active")
+        self.assertEqual(findings["stateNativeTurnout"]["status"], "official_state_native_county_turnout_loaded")
         self.assertEqual(findings["historicalBaselines"]["status"], "collected_2012_2016_not_active_2020_blocked")
         self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2012, 2016])
         self.assertEqual(findings["historicalBaselines"]["targetYears"], [2012, 2016, 2020])
@@ -67,7 +67,8 @@ class IdahoCoverageInventoryTests(unittest.TestCase):
 
         turnout_id = next(entry for entry in turnout_packages["stateYearStatuses"] if entry["state"] == "ID")
         self.assertEqual(turnout_id["expectedTurnoutRows"], 44)
-        self.assertIn("EAC", turnout_id["sourceTitle"])
+        self.assertIn("Idaho Secretary of State", turnout_id["sourceTitle"])
+        self.assertEqual(turnout_id["sourceLevel"], "county")
 
         admin_id = next(entry for entry in admin_packages["stateYearStatuses"] if entry["state"] == "ID")
         self.assertEqual(admin_id["equipment"]["expectedJurisdictions"], 44)

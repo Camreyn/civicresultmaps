@@ -1,7 +1,7 @@
 {
   "state": "CT",
   "stateName": "Connecticut",
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-06",
   "productionChecked": false,
   "reportingGrain": "town",
   "requestMatrixArtifact": "data/ct-2024-source-request-matrix.tsv",
@@ -17,7 +17,7 @@
     "turnoutRows": 169,
     "ballotsCast": 1788981,
     "registeredVoters": 2348545,
-    "caveat": "The active CT staging config now loads official EMS town President, U.S. Senate review, and turnout rows. EMS town/state totals are internally consistent but still require Statement-of-Vote reconciliation before production-level certified-total claims."
+    "caveat": "The active CT staging config loads official EMS town President, U.S. Senate review, and turnout rows. EMS town/state totals are internally consistent, and the July 6, 2026 Election History review confirms President town/vote-channel totals. Election History does not provide event-582 voter-statistic rows or a registered-voter denominator, so EMS turnout remains warning-required and Statement-of-Vote reconciliation remains required before production-level certified-total claims."
   },
   "officialSourcePages": [
     {
@@ -44,6 +44,11 @@
       "title": "Connecticut Election History",
       "url": "https://electionhistory.ct.gov/",
       "notes": "Official historical election database compiled from official source documents."
+    },
+    {
+      "title": "Connecticut Election History source review",
+      "url": "https://electionhistory.ct.gov/search?",
+      "notes": "Wave 2 review retained data/ct-2024-election-history-source-review.json. Event 582 President rows reconcile to EMS town/vote-channel totals, but the voterStats-only search returns no November 5, 2024 General Election voter-statistic rows."
     },
     {
       "title": "Connecticut SOTS Statistics and Data",
@@ -188,8 +193,18 @@
       "reportingGrain": "town",
       "sourceAuthority": "Connecticut Secretary of the State EMS and Statement of Vote",
       "expectedRowsOrTotals": "169 town turnout rows; EMS statewide EV/registered voters 2,348,545 and VV/voters checked 1,788,981.",
-      "blocker": "Rows remain warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed.",
+      "blocker": "Rows remain warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed. Election History was reviewed and excluded as a turnout replacement because event 582 voterStats returns zero rows and no registered-voter denominator.",
       "localArtifact": "data/ct-2024-ems-election-91-version-80741"
+    },
+    {
+      "topic": "electionHistorySourceReview",
+      "status": "official_result_cross_check_not_turnout_replacement",
+      "reportingGrain": "city_town_vote_channel_for_results",
+      "sourceAuthority": "Connecticut Secretary of the State Election History",
+      "sourceUrl": "https://electionhistory.ct.gov/search?",
+      "localArtifact": "data/ct-2024-election-history-source-review.json",
+      "expectedRowsOrTotals": "Event 582 President download returns 64,890 rows; 169 towns; Harris 992,053, Trump 736,918, Other 30,039, and Total Votes Cast 1,759,010, matching EMS President totals.",
+      "blocker": "The event 582 voterStats-only download returns zero rows, and the 2024 voterStats-only download only returns January 23, 2024 special-election Voting Statistics rows for Bridgeport and West Haven. Election History therefore does not replace EMS EV/VV turnout or Statement-of-Vote/EAC reconciliation caveats."
     },
     {
       "topic": "precinctWardAvailability",
@@ -258,6 +273,7 @@
   "remainingRisks": [
     "EMS and Statement of Vote presidential totals must be reconciled before production promotion or certified-total language.",
     "State-native turnout rows are loaded from EMS EV/VV fields but remain warning-required pending EMS/SOV/EAC denominator and ballots-cast semantics review.",
+    "Connecticut Election History confirms President town/vote-channel totals but lacks November 5, 2024 General Election voter-statistic rows; do not treat its President Total Ballots Cast row as election-level turnout.",
     "Town/MCD geometry is collected but needs placeholder filtering and EMS town-name crosswalk QA before production map joins.",
     "Precinct/ward candidate vote rows or CVR availability remain unconfirmed; current review rows are town-level only.",
     "Official 2012, 2016, and 2020 historical town baselines are source leads only and are not loaded.",

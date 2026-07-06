@@ -1,0 +1,185 @@
+{
+  "state": "CT",
+  "checkedAt": "2026-07-06",
+  "sourceAuthority": "Connecticut Secretary of the State Election History",
+  "sourceUrl": "https://electionhistory.ct.gov/search?",
+  "downloadEndpoint": "https://ct.elstats.civera.com/api/download_search.csv",
+  "localArtifactPath": "data/ct-2024-election-history-source-review.json",
+  "electionYear": 2024,
+  "reportingGrainReviewed": "city_town_vote_channel_for_results; voter_statistics_search",
+  "queries": {
+    "eventPresidentSearch": {
+      "global": {
+        "events": [
+          582
+        ]
+      },
+      "contests": {
+        "candidates": [],
+        "divisions": [],
+        "offices": [
+          {
+            "id": 352,
+            "name": "President"
+          }
+        ]
+      },
+      "specialElectionsOnly": false,
+      "voterStats": false,
+      "stages": []
+    },
+    "eventVoterStatsSearch": {
+      "global": {
+        "events": [
+          582
+        ]
+      },
+      "specialElectionsOnly": false,
+      "voterStats": true,
+      "stages": []
+    },
+    "yearVoterStatsSearch": {
+      "global": {
+        "years": {
+          "from": 2024,
+          "to": 2024
+        }
+      },
+      "specialElectionsOnly": false,
+      "voterStats": true,
+      "stages": []
+    }
+  },
+  "event582PresidentReview": {
+    "electionId": "582",
+    "electionDate": "2024-11-05T00:00:00Z",
+    "rows": 64890,
+    "cityTownRows": 11830,
+    "townCount": 169,
+    "voteChannels": [
+      "Absentee",
+      "Early",
+      "Election Day",
+      "Same Day Registration",
+      "Unknown"
+    ],
+    "candidateTotals": [
+      {
+        "name": "Total Ballots Cast",
+        "votes": 1759010
+      },
+      {
+        "name": "Total Votes Cast",
+        "votes": 1759010
+      },
+      {
+        "name": "Kamala Harris and Tim Walz",
+        "votes": 992053
+      },
+      {
+        "name": "Donald J. Trump and JD Vance",
+        "votes": 736918
+      },
+      {
+        "name": "Stein and Ware",
+        "votes": 14281
+      },
+      {
+        "name": "Kennedy' Jr. and Shanahan",
+        "votes": 8448
+      },
+      {
+        "name": "Oliver and ter Maat and ter Maat",
+        "votes": 6729
+      },
+      {
+        "name": "De la Cruz and Unknown Garcia",
+        "votes": 264
+      },
+      {
+        "name": "Sonski",
+        "votes": 162
+      },
+      {
+        "name": "West",
+        "votes": 128
+      },
+      {
+        "name": "Ayyadurai and Ellis and Unknown Ellis",
+        "votes": 21
+      },
+      {
+        "name": "Fox",
+        "votes": 4
+      },
+      {
+        "name": "Potus and Kennedy and Unknown Kennedy",
+        "votes": 2
+      },
+      {
+        "name": "McNeil",
+        "votes": 0
+      }
+    ],
+    "totalBallotsCastRow": 1759010,
+    "totalVotesCastRow": 1759010,
+    "caveat": "Election History exposes Total Ballots Cast and Total Votes Cast as President-contest rows by vote channel. They reconcile to President contest votes, not election-level turnout."
+  },
+  "event582VoterStatisticsReview": {
+    "rows": 0,
+    "conclusion": "No Voting Statistics rows are returned by the voterStats-only download for the November 5, 2024 General Election event."
+  },
+  "year2024VoterStatisticsReview": {
+    "rows": 198,
+    "elections": [
+      {
+        "electionId": "585",
+        "electionDate": "2024-01-23T00:00:00Z",
+        "electionType": "Special",
+        "districtName": "Bridgeport",
+        "rows": 154
+      },
+      {
+        "electionId": "585",
+        "electionDate": "2024-01-23T00:00:00Z",
+        "electionType": "Special",
+        "districtName": "West Haven",
+        "rows": 44
+      }
+    ],
+    "statisticNames": [
+      "Number of Names on Registry",
+      "Number Checked as Having Voted",
+      "Machine/Polling Place Total",
+      "Absentee Total",
+      "Early Votes Total",
+      "Election Day Registration (EDR)",
+      "Military Total",
+      "Overseas",
+      "Overseas Total",
+      "Presidential Total",
+      "Provisional Total",
+      "Same Day Registration (SDR)",
+      "Total Ballots Cast"
+    ],
+    "conclusion": "The 2024 voterStats-only download returns January 23, 2024 special-election Voting Statistics rows for Bridgeport and West Haven, not November 5, 2024 General Election turnout rows."
+  },
+  "emsTurnoutComparison": {
+    "localFile": "data/ct-2024-ems-election-91-version-80741/voterTurnout_Electiondata.json",
+    "rows": 169,
+    "registeredVoters": 2348545,
+    "votersChecked": 1788981,
+    "absenteeReported": 118362,
+    "earlyVotingReported": 718871,
+    "sameDayRegistrationReported": 52853,
+    "presidentContestVotes": 1759010,
+    "electionHistoryPresidentMinusEmsVotersChecked": -29971,
+    "hasRegistrationDenominator": false
+  },
+  "decision": {
+    "status": "exclude_as_turnout_replacement",
+    "reason": "Election History confirms the 2024 General Election President town/vote-channel totals used by EMS, but it does not provide event-582 voter-statistic rows or a registered-voter denominator. Its President Total Ballots Cast row equals contest votes and is 29,971 below EMS voters checked.",
+    "activeTurnoutRecommendation": "Keep CT active turnout on EMS voterTurnout_Electiondata.json with warningRequired=true. Retain Statement-of-Vote and EAC reconciliation caveats.",
+    "resultUse": "Use Election History as an official result and vote-channel cross-check, not as an active turnout replacement."
+  }
+}

@@ -50,6 +50,17 @@
       "status": "candidate"
     },
     {
+      "id": "ky-2024-turnout-source-review",
+      "category": "Kentucky Wave 2 turnout replacement source review",
+      "url": "https://elect.ky.gov/results/Pages/default.aspx",
+      "localFile": "data/ky-2024-turnout-source-review.json",
+      "parser": "kentuckyTurnoutSourceReview",
+      "authority": "Kentucky State Board of Elections; U.S. Election Assistance Commission",
+      "timestampBasis": "Generated July 6, 2026 by scripts/report-ky-turnout-source-review.mjs from committed Kentucky county recap artifacts, turnout-registration reconciliation outputs, and active EAC fallback rows.",
+      "confidence": "Documents the Wave 2 replacement decision. Official county recap downloads are valid result/review sources but not turnout denominator sources; State Board turnout PDFs remain excluded from active turnout because of the unofficial-turnout caveat and 230-voter State Board minus EAC ballots-cast delta.",
+      "status": "candidate"
+    },
+    {
       "id": "ky-2024-general-recap-sheets-page",
       "category": "Official 2024 general election county recap sheet index",
       "url": "https://elect.ky.gov/results/2020-2029/Pages/2024General-Recap-Sheets.aspx",
@@ -144,7 +155,7 @@
   "expected": {
     "jurisdictions": 120,
     "resultRows": 120,
-    "sources": 11,
+    "sources": 12,
     "stateTotal": 2036111,
     "trump": 1315523,
     "harris": 691021,

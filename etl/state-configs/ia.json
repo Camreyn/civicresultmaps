@@ -83,6 +83,17 @@
       "status": "candidate"
     },
     {
+      "id": "ia-2024-turnout-vote-method-source-review",
+      "category": "Iowa Clarity turnout and vote-method source review",
+      "url": "https://sos.iowa.gov/iowans/election-results-statistics",
+      "localFile": "data/ia-2024-turnout-vote-method-source-review.json",
+      "parser": "scripts/report-ia-turnout-vote-method-source-review.mjs",
+      "authority": "Iowa Secretary of State",
+      "timestampBasis": "Generated July 5, 2026 from the official Iowa SOS county detail XML reports and the SOS election results/statistics index.",
+      "confidence": "Documented exclusion only. The official Clarity VoteType rows reconcile to President candidate votes, but they are candidate contest-vote method splits, not election-level turnout rows. Keep current VoterTurnout ballotsCast/totalVoters rows active unless a separate candidate-by-method public contract is added.",
+      "status": "documented_exclusion"
+    },
+    {
       "id": "ia-2024-official-precinct-shapefile-lead",
       "category": "Official precinct boundary shapefile candidate source",
       "url": "https://sos.iowa.gov/shapefiles-county-precincts",
@@ -131,7 +142,7 @@
   "expected": {
     "jurisdictions": 99,
     "resultRows": 99,
-    "sources": 10,
+    "sources": 11,
     "geometryFeatures": 99,
     "stateTotal": 1663506,
     "trump": 927019,

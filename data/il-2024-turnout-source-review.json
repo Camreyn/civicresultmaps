@@ -1,0 +1,183 @@
+{
+  "state": "IL",
+  "electionYear": 2024,
+  "sourceAuthority": "Illinois State Board of Elections",
+  "sourceUrl": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
+  "directDownloadPattern": "https://elections.il.gov/Downloads/ElectionOperations/ElectionResults/ByOffice/66/<office-csv>",
+  "localArtifactPath": "data/il-2024-official-results/66-120-PRESIDENT AND VICE PRESIDENT-2024GE.csv",
+  "eacBenchmarkPath": "data/eac-2024-state-turnout/il-2024-eac-turnout.csv",
+  "reportingGrain": "precinct_by_office_result_rows",
+  "parserOrNormalizationPath": "scripts/report-il-turnout-source-review.mjs",
+  "generatedAt": "2026-07-05",
+  "fieldsReviewed": [
+    "JurisdictionID",
+    "JurisName",
+    "CandidateName",
+    "ContestName",
+    "PrecinctName",
+    "Registration",
+    "VoteCount"
+  ],
+  "officialPresidentCsvTotals": {
+    "precinctRows": 10062,
+    "registration": 7210422,
+    "candidateVotes": 5649779,
+    "contestTotalIncludingNonCandidateRows": 5702776,
+    "overVotes": 4821,
+    "underVotes": 47666,
+    "blankBallots": 510,
+    "zeroRegistrationPrecincts": 2260
+  },
+  "eacFallbackTotals": {
+    "rows": 108,
+    "ballotsCast": 5717147,
+    "registeredVoters": 8970541
+  },
+  "deltasVsEacFallback": {
+    "registration": -1760119,
+    "contestTotalIncludingNonCandidateRows": -14371,
+    "candidateVotes": -67368
+  },
+  "largestRegistrationDeltas": [
+    {
+      "jurisdictionName": "WILL",
+      "precincts": 764,
+      "zeroRegistrationPrecincts": 764,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 438888,
+      "registrationDeltaVsEac": -438888,
+      "officialContestTotalIncludingNonCandidateRows": 331367,
+      "eacBallotsCast": 331367,
+      "contestTotalDeltaVsEac": 0
+    },
+    {
+      "jurisdictionName": "COOK",
+      "precincts": 1430,
+      "zeroRegistrationPrecincts": 0,
+      "officialRegistration": 1640040,
+      "eacRegisteredVoters": 1800799,
+      "registrationDeltaVsEac": -160759,
+      "officialContestTotalIncludingNonCandidateRows": 1089942,
+      "eacBallotsCast": 1112978,
+      "contestTotalDeltaVsEac": -23036
+    },
+    {
+      "jurisdictionName": "PEORIA",
+      "precincts": 311,
+      "zeroRegistrationPrecincts": 311,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 130395,
+      "registrationDeltaVsEac": -130395,
+      "officialContestTotalIncludingNonCandidateRows": 80332,
+      "eacBallotsCast": 80332,
+      "contestTotalDeltaVsEac": 0
+    },
+    {
+      "jurisdictionName": "LAKE",
+      "precincts": 431,
+      "zeroRegistrationPrecincts": 0,
+      "officialRegistration": 448174,
+      "eacRegisteredVoters": 545033,
+      "registrationDeltaVsEac": -96859,
+      "officialContestTotalIncludingNonCandidateRows": 315616,
+      "eacBallotsCast": 315616,
+      "contestTotalDeltaVsEac": 0
+    },
+    {
+      "jurisdictionName": "WILLIAMSON",
+      "precincts": 56,
+      "zeroRegistrationPrecincts": 56,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 53816,
+      "registrationDeltaVsEac": -53816,
+      "officialContestTotalIncludingNonCandidateRows": 33346,
+      "eacBallotsCast": 33346,
+      "contestTotalDeltaVsEac": 0
+    },
+    {
+      "jurisdictionName": "MORGAN",
+      "precincts": 64,
+      "zeroRegistrationPrecincts": 64,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 45757,
+      "registrationDeltaVsEac": -45757,
+      "officialContestTotalIncludingNonCandidateRows": 14730,
+      "eacBallotsCast": 14820,
+      "contestTotalDeltaVsEac": -90
+    },
+    {
+      "jurisdictionName": "GRUNDY",
+      "precincts": 90,
+      "zeroRegistrationPrecincts": 90,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 38854,
+      "registrationDeltaVsEac": -38854,
+      "officialContestTotalIncludingNonCandidateRows": 26786,
+      "eacBallotsCast": 26815,
+      "contestTotalDeltaVsEac": -29
+    },
+    {
+      "jurisdictionName": "JACKSON",
+      "precincts": 123,
+      "zeroRegistrationPrecincts": 123,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 36442,
+      "registrationDeltaVsEac": -36442,
+      "officialContestTotalIncludingNonCandidateRows": 22770,
+      "eacBallotsCast": 22693,
+      "contestTotalDeltaVsEac": 77
+    },
+    {
+      "jurisdictionName": "McHENRY",
+      "precincts": 223,
+      "zeroRegistrationPrecincts": 0,
+      "officialRegistration": 204366,
+      "eacRegisteredVoters": 239261,
+      "registrationDeltaVsEac": -34895,
+      "officialContestTotalIncludingNonCandidateRows": 163996,
+      "eacBallotsCast": 163920,
+      "contestTotalDeltaVsEac": 76
+    },
+    {
+      "jurisdictionName": "FULTON",
+      "precincts": 89,
+      "zeroRegistrationPrecincts": 89,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 24741,
+      "registrationDeltaVsEac": -24741,
+      "officialContestTotalIncludingNonCandidateRows": 16295,
+      "eacBallotsCast": 16325,
+      "contestTotalDeltaVsEac": -30
+    },
+    {
+      "jurisdictionName": "ST. CLAIR",
+      "precincts": 149,
+      "zeroRegistrationPrecincts": 0,
+      "officialRegistration": 167565,
+      "eacRegisteredVoters": 188339,
+      "registrationDeltaVsEac": -20774,
+      "officialContestTotalIncludingNonCandidateRows": 114629,
+      "eacBallotsCast": 114629,
+      "contestTotalDeltaVsEac": 0
+    },
+    {
+      "jurisdictionName": "IROQUOIS",
+      "precincts": 76,
+      "zeroRegistrationPrecincts": 76,
+      "officialRegistration": 0,
+      "eacRegisteredVoters": 19017,
+      "registrationDeltaVsEac": -19017,
+      "officialContestTotalIncludingNonCandidateRows": 13428,
+      "eacBallotsCast": 13428,
+      "contestTotalDeltaVsEac": 0
+    }
+  ],
+  "decision": "keep_eac_fallback",
+  "caveats": [
+    "The official by-office precinct CSV includes a Registration field, but it sums to 7,210,422 statewide versus 8,970,541 registered voters in the active EAC fallback.",
+    "The President CSV has 2,260 precinct keys with zero Registration, including whole election-authority groups such as Will, Peoria, Williamson, Grundy, and Iroquois in this artifact.",
+    "The by-office CSV does not include an election-level ballots-cast field. Summing President candidate, over-vote, under-vote, and blank-ballot rows gives 5,702,776, which is 14,371 below the active EAC ballots-cast total of 5,717,147.",
+    "Use the by-office CSV for official result and review rows only. Keep EAC fallback turnout active until Illinois publishes or confirms a turnout/voter-participation artifact with ballots-cast and denominator timing."
+  ],
+  "confidence": "reviewed_not_valid_turnout_replacement"
+}

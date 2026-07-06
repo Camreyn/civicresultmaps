@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
@@ -13,6 +14,7 @@ const EXPECTED = {
   registeredVoters: 611078,
   totalBallots: 340981,
 };
+const CHECKED_AT = "2026-07-06";
 
 function intValue(value) {
   const cleaned = String(value ?? "").replace(/[^\d.-]/g, "");
@@ -51,7 +53,8 @@ function reportingUnitCategory(row) {
 }
 
 function summarize() {
-  const sourceRows = rowObjects(readFileSync(inputPath, "utf8"));
+  const sourceText = readFileSync(inputPath, "utf8");
+  const sourceRows = rowObjects(sourceText);
   const reportingUnits = new Map();
 
   for (const row of sourceRows) {
@@ -89,6 +92,16 @@ function summarize() {
     { reportingUnits: 0, registeredVoters: 0, totalBallots: 0 },
   );
 
+  const zeroRegistrationBallotUnits = [...reportingUnits.values()].filter(
+    (unit) => unit.registeredVoters === 0 && unit.totalBallots > 0,
+  );
+  const positiveRegistrationUnits = [...reportingUnits.values()].filter((unit) => unit.registeredVoters > 0);
+  const zeroRegistrationBallots = zeroRegistrationBallotUnits.reduce((total, unit) => total + unit.totalBallots, 0);
+  const positiveRegistrationBallots = positiveRegistrationUnits.reduce(
+    (total, unit) => total + unit.totalBallots,
+    0,
+  );
+
   for (const [key, expected] of Object.entries(EXPECTED)) {
     if (totals[key] !== expected) {
       throw new Error(`AK ENR turnout ${key} mismatch: ${totals[key]} != ${expected}`);
@@ -99,11 +112,12 @@ function summarize() {
     state: "AK",
     stateName: "Alaska",
     electionYear: 2024,
-    checkedAt: "2026-07-04",
+    checkedAt: CHECKED_AT,
     sourceAuthority: "Alaska Division of Elections",
     sourceUrl,
     localArtifact: "data/ak-2024-enr-turnout-semantics.json",
     sourceArtifact: "data/ak-2024-general-enr-by-precinct.csv",
+    sourceArtifactSha256: createHash("sha256").update(sourceText).digest("hex"),
     parserOrNormalizationPath: "scripts/report-ak-enr-turnout-semantics.mjs",
     reportingGrain: "precinct_or_reporting_unit",
     fieldSemanticsObserved: {
@@ -114,6 +128,23 @@ function summarize() {
     },
     totals,
     categories,
+    replacementReview: {
+      decision: "remain_documented_lead_not_active_turnout",
+      reason:
+        "ENR Reg_voters and total_ballots reconcile statewide after de-duplication, but row-level reporting units mix election-day precinct denominators with district absentee, early-voting, and question ballot buckets that have zero registered voters.",
+      zeroRegistrationBallotUnits: zeroRegistrationBallotUnits.length,
+      zeroRegistrationBallots,
+      positiveRegistrationUnits: positiveRegistrationUnits.length,
+      positiveRegistrationBallots,
+      invalidReplacementModes: [
+        "Loading all 523 reporting units as turnout rows would create ballot-carrying rows with no registered-voter denominator.",
+        "Loading only the 403 positive-denominator reporting units would omit district absentee, early-voting, and question ballots from local turnout context.",
+        "Collapsing ENR to one statewide turnout row would duplicate the active EAC fallback totals without adding reviewed lower-grain semantics.",
+      ],
+      activeTurnoutSourceId: "ak-2024-eac-turnout",
+      recommendedAction:
+        "Keep EAC fallback turnout active and retain ENR Reg_voters/total_ballots as a state-native lead until the Alaska Division of Elections confirms denominator timing and mixed reporting-unit handling.",
+    },
     reconciliation: {
       matchesActiveEacFallbackRegisteredVoters: totals.registeredVoters === 611078,
       matchesActiveEacFallbackBallotsCast: totals.totalBallots === 340981,
@@ -122,10 +153,11 @@ function summarize() {
     caveats: [
       "This artifact documents ENR field behavior only; it does not activate ENR turnout rows in ETL.",
       "District absentee, early-voting, and question reporting units carry ballots with zero registered voters, while election-day precinct rows carry nearly all registered voters.",
+      "The ENR fields should remain a documented lead rather than replacing active EAC turnout because the lower-grain denominator semantics would produce misleading row-level turnout percentages.",
       "Use a Division of Elections interpretation or records response before replacing the active EAC fallback turnout package or using these rows for same-grain turnout screening.",
       "Rows are mixed reporting units and should not be joined directly to precinct polygons without a reviewed crosswalk.",
     ],
-    confidence: "official_enr_fields_reconcile_statewide_replacement_semantics_pending",
+    confidence: "official_enr_fields_reconcile_statewide_reviewed_not_valid_turnout_replacement",
   };
 }
 

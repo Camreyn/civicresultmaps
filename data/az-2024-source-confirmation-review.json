@@ -1,0 +1,88 @@
+{
+  "state": "AZ",
+  "stateName": "Arizona",
+  "electionYear": 2024,
+  "checkedAt": "2026-07-06",
+  "sourceAuthority": "Arizona Secretary of State",
+  "submittedSourceUrl": "https://azsos.gov/elections/election-information/2024-election-info#collps_election_info_04",
+  "normalizedSubmittedSourceUrl": "https://azsos.gov/elections/election-information/2024-election-info",
+  "submittedSourcePageObservation": {
+    "basis": "Live page review on 2026-07-06, followed by deterministic local config/inventory verification.",
+    "observedFacts": [
+      "The submitted SOS 2024 Election Information page lists a Statewide Canvass section for the 2024 General Election.",
+      "That section links the 2024 General Election Signed Canvass and labels it Signed Nov 25, 2024.",
+      "The linked signed canvass PDF URL matches the active AZ signed canvass source in the repo config."
+    ],
+    "signedCanvassUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf"
+  },
+  "reviewedLocalContracts": [
+    "etl/state-configs/az.json",
+    "data/az-2024-data-coverage-inventory.json",
+    "data/az-2024-admin-source-inventory.json",
+    "data/source-acquisition-tiers.json",
+    "data/native-import-source-packages.json"
+  ],
+  "decision": "already_represented_by_signed_canvass_pipeline",
+  "productionPromotionPerformed": false,
+  "representedBy": {
+    "certifiedResults": {
+      "sourceId": "az-2024-general-canvass-signed",
+      "parser": "arizonaCanvassCountyCsv",
+      "localArtifact": "data/az-2024-general-canvass-president.csv",
+      "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+      "reportingGrain": "county",
+      "expectedRows": 15,
+      "expectedStateTotal": 3390161
+    },
+    "reviewRows": {
+      "sourceId": "az-2024-general-canvass-senate",
+      "parser": "countyComparisonCsv",
+      "localArtifact": "data/az-2024-general-canvass-senate.csv",
+      "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+      "reportingGrain": "county",
+      "comparisonContest": "United States Senator",
+      "expectedRows": 15
+    },
+    "turnout": {
+      "sourceId": "az-2024-general-canvass-signed",
+      "parser": "normalizedTurnoutCsv",
+      "localArtifact": "data/az-2024-general-canvass-president.csv",
+      "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+      "reportingGrain": "county",
+      "denominatorType": "totalEligibleRegistration",
+      "expectedRows": 15,
+      "expectedBallotsCast": 3428011,
+      "expectedRegisteredVoters": 4367593
+    },
+    "sourceInventory": {
+      "coverageInventory": "data/az-2024-data-coverage-inventory.json",
+      "adminSourceInventory": "data/az-2024-admin-source-inventory.json",
+      "sourceTier": "tier_6_official_pdf_hostile",
+      "nativePackageStatus": "AZ is listed in completedNativeStates; this registry does not repeat a full AZ state package row."
+    }
+  },
+  "noNewResultSourceNeeded": true,
+  "caveats": [
+    "The submitted SOS page is an official source page and source-navigation record; the loaded result, review, and turnout rows come from its signed statewide canvass PDF link.",
+    "The signed canvass pipeline supports county certified results, county President-versus-U.S. Senate advisory review, and county turnout denominators only.",
+    "No official statewide precinct/local President plus same-grain U.S. Senate export is represented by this submitted page or loaded in the current AZ package.",
+    "This review is source confirmation only. It does not promote production data and does not allege fraud or misconduct."
+  ],
+  "remainingGaps": [
+    {
+      "artifact": "precinct_or_local_reporting_unit_results",
+      "status": "not_found",
+      "neededFor": "Same-grain President-versus-U.S. Senate review rows below county level."
+    },
+    {
+      "artifact": "precinct_boundary_geometry",
+      "status": "not_loaded",
+      "neededFor": "Subcounty map joins if precinct/local result rows are collected."
+    },
+    {
+      "artifact": "audit_recount_cvr_incident_correction_records",
+      "status": "request_path_documented_partial_public_context",
+      "neededFor": "Independent reconciliation, electronic-record review, recount/correction context, and explanation of any advisory row."
+    }
+  ]
+}

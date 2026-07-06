@@ -13,6 +13,10 @@ class IowaCoverageInventoryTests(unittest.TestCase):
 
         self.assertEqual(config["expected"]["sources"], len(config["sources"]))
         self.assertIn("ia-2024-clarity-vote-type-method-lead", source_ids)
+        self.assertIn("ia-2024-turnout-vote-method-source-review", source_ids)
+        source_review = next(source for source in config["sources"] if source["id"] == "ia-2024-turnout-vote-method-source-review")
+        self.assertEqual(source_review["status"], "documented_exclusion")
+        self.assertIn("candidate contest-vote method splits", source_review["confidence"])
         self.assertIn("ia-2024-official-precinct-shapefile-lead", source_ids)
         self.assertIn("ia-2024-general-precinct-audit-lead", source_ids)
         self.assertIn("ia-official-historical-canvass-leads", source_ids)
@@ -21,12 +25,32 @@ class IowaCoverageInventoryTests(unittest.TestCase):
         inventory = self.load_json("data/ia-2024-data-coverage-inventory.json")
         findings = {finding["topic"]: finding for finding in inventory["sourceFindings"]}
 
-        self.assertEqual(findings["ballotMethodFields"]["status"], "source_fields_confirmed_not_normalized")
+        self.assertEqual(findings["ballotMethodFields"]["status"], "source_fields_confirmed_documented_exclusion")
         self.assertIn("candidate-by-method", findings["ballotMethodFields"]["feasibility"])
+        self.assertIn("ia-2024-turnout-vote-method-source-review.json", findings["ballotMethodFields"]["localArtifactPath"])
+        review_artifact = next(artifact for artifact in inventory["loadedArtifacts"] if artifact["id"] == "ia-2024-turnout-vote-method-source-review")
+        self.assertEqual(review_artifact["expectedRowsOrTotals"]["activeTurnoutRows"], 1651)
+        self.assertEqual(review_artifact["expectedRowsOrTotals"]["presidentCandidateVotesMinusTurnoutBallotsCast"], -8562)
         self.assertEqual(findings["precinctBoundaryGeometry"]["sourceUrl"], "https://sos.iowa.gov/shapefiles-county-precincts")
         self.assertEqual(findings["postElectionAudit"]["status"], "official_source_identified_not_normalized")
         self.assertIn("officialHistoricalReplacementLeads", findings)
         self.assertTrue(any(artifact["id"] == "ia-2024-equipment-context" for artifact in inventory["loadedArtifacts"]))
+
+    def test_iowa_turnout_vote_method_review_keeps_current_turnout_active(self):
+        report = self.load_json("data/ia-2024-turnout-vote-method-source-review.json")
+
+        self.assertEqual(report["decision"], "keep_current_clarity_turnout_and_do_not_load_vote_method_rows")
+        self.assertTrue(report["activeTurnoutMatchesConfig"])
+        self.assertEqual(report["activeTurnout"], {"rows": 1651, "ballotsCast": 1672068, "registeredVoters": 1893715})
+        self.assertEqual(report["officialClarityPresidentVoteTypeReview"]["presidentCandidateVotes"], 1663506)
+        self.assertEqual(report["officialClarityPresidentVoteTypeReview"]["voteTypeTotals"], {"Election Day": 987176, "Absentee": 676330})
+        self.assertTrue(report["officialClarityPresidentVoteTypeReview"]["voteTypeTotalsMatchCandidateVotes"])
+        self.assertEqual(report["officialClarityPresidentVoteTypeReview"]["mismatchedChoiceRows"], [])
+        self.assertEqual(report["officialClarityPresidentVoteTypeReview"]["deltaPresidentCandidateVotesVsActiveTurnoutBallotsCast"], -8562)
+        self.assertEqual(report["enrCountySelectionRequirement"]["countyReports"], 99)
+        self.assertIn("/Adair/122323/354568/reports/detailxml.zip", report["enrCountySelectionRequirement"]["sampleSourceUrl"])
+        self.assertFalse(report["publicVoteMethodContract"]["iowaEacVoteMethodFileExists"])
+        self.assertIn("candidate-by-method", report["publicVoteMethodContract"]["contractCaveat"])
 
     def test_iowa_admin_and_queue_registries_match_inventory_leads(self):
         admin_registry = self.load_json("data/admin-source-packages.json")

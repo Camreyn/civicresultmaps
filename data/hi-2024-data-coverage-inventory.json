@@ -2,12 +2,10 @@
   "state": "HI",
   "stateName": "Hawaii",
   "electionYear": 2024,
-  "checkedAt": "2026-07-03",
-  "checkedBy": "Wave 19 Hawaii native data coverage worker",
-  "scope": "Official Hawaii 2024 result/review text parser activated for native staging; active turnout remains EAC fallback and production promotion was not performed.",
-  "repoDrift": [
-    "AGENTS.md references docs/developer/index.md, but that file is missing in this worktree/current main. This was recorded as repo drift and did not block the source-coverage pass."
-  ],
+  "checkedAt": "2026-07-05",
+  "checkedBy": "Wave 1 Hawaii data coverage worker",
+  "scope": "Official Hawaii 2024 result/review text parser remains active; state-native Office registration and turnout rows are now normalized and active in staging. Production promotion was not performed.",
+  "repoDrift": [],
   "officialSourcePages": [
     "https://elections.hawaii.gov/election-results/",
     "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
@@ -74,6 +72,26 @@
         "nonGeographicSenateKeysExcluded": 2
       },
       "caveatsAndConfidenceNotes": "Official source artifact is now wired into native staging. Review rows exclude zero-vote numbered keys and zero-vote non-geographic keys; the retained 467 review rows still aggregate to the certified statewide presidential total. County labels are a reproducible district-range crosswalk, not precinct geometry."
+    },
+    {
+      "id": "hi-2024-general-turnout",
+      "sourceAuthority": "Hawaii Office of Elections",
+      "sourceTitle": "2024 General Election registration and turnout statistics table",
+      "sourceUrl": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+      "localArtifactPath": "data/hi-2024-registration-turnout-statistics.html; data/hi-2024-general-turnout.csv; data/hi-2024-turnout-reconciliation-summary.json",
+      "electionYear": 2024,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "scripts/normalize-hi-turnout.mjs generates normalizedTurnoutCsv rows from the committed Hawaii Office HTML source page.",
+      "expectedRowCountsOrTotals": {
+        "turnoutRows": 4,
+        "registeredVoters": 860868,
+        "ballotsCast": 522236,
+        "statewideRegisteredVoters": 860868,
+        "statewideTurnout": 522236,
+        "eacRegisteredVoterDeltaOfficialMinusEac": -465,
+        "eacBallotsCastDeltaOfficialMinusEac": 0
+      },
+      "caveatsAndConfidenceNotes": "Official Hawaii Office table reports four election-county rows (Hawaii, Maui, Kauai, Honolulu) that reconcile exactly to the statewide 2024 General row. Kalawao is not a separate Office result or turnout county row; EAC fallback remains retained as a benchmark only."
     }
   ],
   "existingLocalContextArtifacts": [
@@ -82,14 +100,15 @@
       "sourceAuthority": "U.S. Election Assistance Commission",
       "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
       "localArtifactPath": "data/eac-2024-state-turnout/hi-2024-eac-turnout.csv",
-      "reportingGrain": "jurisdiction",
+      "reportingGrain": "jurisdiction benchmark",
       "parserOrNormalizationPath": "eacTurnoutCsv",
       "expectedRowCountsOrTotals": {
         "turnoutRows": 5,
-        "ballotsCast": 522236,
-        "registeredVotersInConfig": 861333
+        "ballotsCastExcludingNegativePlaceholders": 522236,
+        "registeredVotersExcludingNegativePlaceholders": 861333,
+        "officialRegisteredVoterDelta": -465
       },
-      "caveatsAndConfidenceNotes": "Active HI config uses EAC fallback turnout only. Kalawao is warning-gated in the EAC row set, and the state-native turnout page should be reconciled before replacing fallback."
+      "caveatsAndConfidenceNotes": "Retained as EAC benchmark only. The EAC row set includes a warning-required Kalawao placeholder row with negative values and a registered-voter denominator 465 higher than the Hawaii Office table; active HI config now uses state-native Office turnout rows."
     },
     {
       "id": "hi-county-geometry",
@@ -145,10 +164,18 @@
       "notes": "The official precinct detail text includes President and U.S. Senate rows at precinct_split grain. The parser keeps nonzero numbered precinct/split rows only for advisory review; excluded zero-vote keys are documented in staging metrics."
     },
     "turnoutAndRegistrationDenominators": {
-      "status": "state_native_lead_identified_eac_fallback_active",
-      "activeSourceId": "hi-2024-eac-turnout",
-      "stateNativeLead": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
-      "notes": "Active staging keeps 5 EAC fallback jurisdiction rows totaling 522,236 ballots cast and 861,333 registered voters. The Hawaii Office table reports 522,236 statewide turnout and 860,868 registered voters, but county registered-voter distribution and Kalawao handling require reconciliation before replacement."
+      "status": "state_native_turnout_loaded",
+      "activeSourceId": "hi-2024-general-turnout",
+      "stateNativeSource": "https://elections.hawaii.gov/resources/registration-voter-turnout-statistics/",
+      "normalizedArtifact": "data/hi-2024-general-turnout.csv",
+      "reconciliationArtifact": "data/hi-2024-turnout-reconciliation-summary.json",
+      "observedNativeTotals": {
+        "turnoutRows": 4,
+        "registeredVoters": 860868,
+        "ballotsCast": 522236,
+        "warningRows": 0
+      },
+      "notes": "The Hawaii Office 2024 General Election table reports four county rows that sum exactly to the statewide 860,868 registered voters and 522,236 turnout. Kalawao remains present in county geometry but is not a separate Office result or turnout county row. EAC fallback is retained as benchmark context only."
     },
     "geometryAndCrosswalks": {
       "status": "county_geometry_loaded_precinct_geometry_lead_identified",
@@ -180,15 +207,15 @@
   },
   "requestMatrixArtifact": "data/hi-2024-source-request-matrix.tsv",
   "displayApiCaveats": {
-    "activeConfig": "HI native staging now loads official 2024 President county result rows and same-grain U.S. Senate precinct/split review rows from etl/state-configs/hi.json. Active turnout remains EAC fallback; historical/admin rows remain source paths only.",
+    "activeConfig": "HI native staging loads official 2024 President county result rows, same-grain U.S. Senate precinct/split review rows, and state-native Hawaii Office county turnout rows from etl/state-configs/hi.json. Historical/admin rows remain source paths only.",
     "advisoryUse": "Any future advisory indicators are source-review signals only, not claims of fraud or misconduct.",
-    "productionPromotion": "No production promotion was performed in Wave 19; current production/API counts were not checked."
+    "productionPromotion": "No production promotion was performed in Wave 1; current production/API counts were not checked."
   },
   "productionChecked": false,
   "remainingRisks": [
     "Advisory rows are public-interest source-review signals only, not claims of fraud or misconduct.",
     "County labels for review rows come from a district-range crosswalk, not loaded precinct geometry; collect official precinct geometry/crosswalks before subcounty map overlays.",
-    "Active turnout remains EAC fallback until the Hawaii Office turnout table, county registered-voter distribution, and Kalawao handling are reconciled.",
+    "Active turnout now uses Hawaii Office county rows, but Kalawao remains a geometry-only county for this package and is not a separate Office result or turnout row.",
     "Official 2012/2016/2020 historical baselines and normalized audit/CVR/recount/incident/correction/litigation rows are still missing."
   ]
 }

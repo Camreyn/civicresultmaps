@@ -2,11 +2,12 @@
   "state": "AK",
   "stateName": "Alaska",
   "electionYear": 2024,
-  "checkedAt": "2026-07-04",
+  "checkedAt": "2026-07-06",
   "sourceAuthority": "Alaska Division of Elections",
   "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
   "localArtifact": "data/ak-2024-enr-turnout-semantics.json",
   "sourceArtifact": "data/ak-2024-general-enr-by-precinct.csv",
+  "sourceArtifactSha256": "aca7ab6e949d1319b48692ab8e8b694835ff6a9bd862fc9efbac91550c25f957",
   "parserOrNormalizationPath": "scripts/report-ak-enr-turnout-semantics.mjs",
   "reportingGrain": "precinct_or_reporting_unit",
   "fieldSemanticsObserved": {
@@ -46,6 +47,21 @@
       "totalBallots": 14786
     }
   },
+  "replacementReview": {
+    "decision": "remain_documented_lead_not_active_turnout",
+    "reason": "ENR Reg_voters and total_ballots reconcile statewide after de-duplication, but row-level reporting units mix election-day precinct denominators with district absentee, early-voting, and question ballot buckets that have zero registered voters.",
+    "zeroRegistrationBallotUnits": 120,
+    "zeroRegistrationBallots": 165047,
+    "positiveRegistrationUnits": 403,
+    "positiveRegistrationBallots": 175934,
+    "invalidReplacementModes": [
+      "Loading all 523 reporting units as turnout rows would create ballot-carrying rows with no registered-voter denominator.",
+      "Loading only the 403 positive-denominator reporting units would omit district absentee, early-voting, and question ballots from local turnout context.",
+      "Collapsing ENR to one statewide turnout row would duplicate the active EAC fallback totals without adding reviewed lower-grain semantics."
+    ],
+    "activeTurnoutSourceId": "ak-2024-eac-turnout",
+    "recommendedAction": "Keep EAC fallback turnout active and retain ENR Reg_voters/total_ballots as a state-native lead until the Alaska Division of Elections confirms denominator timing and mixed reporting-unit handling."
+  },
   "reconciliation": {
     "matchesActiveEacFallbackRegisteredVoters": true,
     "matchesActiveEacFallbackBallotsCast": true,
@@ -54,8 +70,9 @@
   "caveats": [
     "This artifact documents ENR field behavior only; it does not activate ENR turnout rows in ETL.",
     "District absentee, early-voting, and question reporting units carry ballots with zero registered voters, while election-day precinct rows carry nearly all registered voters.",
+    "The ENR fields should remain a documented lead rather than replacing active EAC turnout because the lower-grain denominator semantics would produce misleading row-level turnout percentages.",
     "Use a Division of Elections interpretation or records response before replacing the active EAC fallback turnout package or using these rows for same-grain turnout screening.",
     "Rows are mixed reporting units and should not be joined directly to precinct polygons without a reviewed crosswalk."
   ],
-  "confidence": "official_enr_fields_reconcile_statewide_replacement_semantics_pending"
+  "confidence": "official_enr_fields_reconcile_statewide_reviewed_not_valid_turnout_replacement"
 }

@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-04",
+  "checkedAt": "2026-07-05",
   "description": "Source acquisition tier registry for planning result, review, turnout, and method collection work. This classifies acquisition difficulty and scripting ROI; it does not replace loaded result or review data.",
   "tierDefinitions": [
     {
@@ -271,11 +271,13 @@
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2706%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
         "https://www.sos.ca.gov/elections/election-cybersecurity",
         "https://www.sos.ca.gov/elections/recounts",
-        "https://www.sos.ca.gov/administration/public-records-act-requests"
+        "https://www.sos.ca.gov/administration/public-records-act-requests",
+        "https://statewidedatabase.org/election.html"
       ],
       "exampleUrls": [
         "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/16-president.xlsx",
-        "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/19-uss-ft.xlsx"
+        "https://elections.cdn.sos.ca.gov/sov/2024-general/sov/19-uss-ft.xlsx",
+        "https://statewidedatabase.org/d20/g24.html"
       ],
       "availableFields": [
         "official county presidential totals",
@@ -285,7 +287,8 @@
         "official 2012/2016/2020 county presidential historical baseline workbooks",
         "official Statement of Vote voting-systems-by-county PDF lead and Verified Voting county equipment context",
         "official election-security 1% manual audit description",
-        "SOS recount and Public Records Act request paths for remaining administration context"
+        "SOS recount and Public Records Act request paths for remaining administration context",
+        "SWDB supplemental 2024 precinct/local result, registration, voter, geography, and conversion source lead documented for future reconciliation"
       ],
       "missingFields": [
         "precinct or city/local reporting-unit President rows",
@@ -297,8 +300,8 @@
       "parserStatus": "native county package loaded from official California SOS Statement of Vote President and U.S. Senate XLSX workbooks; official SOS county voter-participation PDF normalized by scripts/normalize-ca-turnout.mjs; historical 2012/2016/2020 county baselines normalized from official SOS workbooks",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Current CA review rows are county-level President-versus-U.S. Senate full-term comparisons, not precinct or city/local scatter plots. Turnout uses SOS voter participation rows; registered voters are 15-day Report of Registration totals and do not include Same Day Voter Registration after the 15-day close. Normalized audit/CVR/incident/correction/recount/litigation rows are not loaded.",
-      "nextAction": "Use data/ca-2024-data-coverage-inventory.json as the current CA source-search record; next steps are precinct/local reporting-unit result exports, precinct geometry/crosswalks, and normalized audit/CVR/recount/incident/correction/litigation records from SOS or county sources."
+      "caveats": "Current CA review rows are county-level President-versus-U.S. Senate full-term comparisons, not precinct or city/local scatter plots. Turnout uses SOS voter participation rows; registered voters are 15-day Report of Registration totals and do not include Same Day Voter Registration after the 15-day close. Normalized audit/CVR/incident/correction/recount/litigation rows are not loaded. SWDB is documented as a supplemental future precinct/local source lead only; SOS Statement of Vote remains authoritative for active certified county rows until any SWDB files are collected, masking-reviewed, and reconciled.",
+      "nextAction": "Use data/ca-2024-data-coverage-inventory.json and data/ca-2024-swdb-source-review.json as the current CA source-search records; next steps are precinct/local reporting-unit result exports, precinct geometry/crosswalks, and normalized audit/CVR/recount/incident/correction/litigation records from SOS or county sources."
     },
     {
       "state": "CO",
@@ -311,7 +314,8 @@
       "exportFormats": [
         "official Clarity detail XML ZIP endpoint",
         "official SOS Abstract of Votes Cast source path",
-        "EAC fallback turnout CSV",
+        "official Historical Election Data voter-statistics CSV",
+        "EAC benchmark turnout CSV",
         "Census county GeoJSON",
         "Verified Voting equipment context"
       ],
@@ -319,6 +323,7 @@
         "https://results.enr.clarityelections.com/CO/122598/web.345435/#/summary",
         "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
         "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
+        "https://historicalelectiondata.coloradosos.gov/search?",
         "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -332,8 +337,9 @@
       "availableFields": [
         "official county presidential candidate rows from the committed Clarity detail XML endpoint",
         "loaded county CU Regent at-large comparison rows from the same endpoint",
-        "official county turnout lead from Clarity ElectionVoterTurnout rows retained for denominator review",
-        "EAC fallback turnout rows currently loaded in active turnout ETL",
+        "official state-native county turnout and active-plus-inactive registered-voter denominator rows from Historical Election Data voter statistics",
+        "EAC fallback turnout rows retained as benchmark context",
+        "Clarity ElectionVoterTurnout rows retained as reconciliation context",
         "county geometry",
         "county equipment context"
       ],
@@ -345,11 +351,11 @@
         "official 2012/2016/2020 historical baselines normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, litigation, custody, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "coloradoClarityDetailXml loaded for 64 county President rows and 64 county President-versus-CU-Regent review rows; active turnout remains EAC fallback while Clarity totalVoters denominator semantics and the 366-ballot ballots-cast difference are reviewed",
+      "parserStatus": "coloradoClarityDetailXml loaded for 64 county President rows and 64 county President-versus-CU-Regent review rows; scripts/normalize-co-historical-voter-statistics.mjs collects the Historical Election Data voter-statistics CSV and writes the active normalizedTurnoutCsv county turnout rows",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. Colorado had no 2024 U.S. Senate race; the same-grain comparison is county-level CU Regent at-large. Do not replace EAC fallback turnout until Clarity totalVoters denominator semantics and the 366-ballot Clarity-versus-EAC ballots-cast difference are reviewed.",
-      "nextAction": "Collect an official write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, then pursue precinct/local result rows, precinct geometry/crosswalks, state-native turnout semantics, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation artifacts."
+      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. Colorado had no 2024 U.S. Senate race; the same-grain comparison is county-level CU Regent at-large. Active turnout now uses official Historical Election Data 2024 General Voting Statistics county rows: Total Voters equals Active Voters plus Inactive Voters and matches the former EAC denominator, while Total Ballots Cast is 401 above EAC and 35 above Clarity ElectionVoterTurnout.",
+      "nextAction": "Collect an official write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, then pursue precinct/local result rows, precinct geometry/crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "CT",
@@ -364,7 +370,8 @@
         "official Statement of Vote PDF",
         "official EMS town turnout JSON",
         "Census TIGERweb county-subdivision GeoJSON",
-        "EAC fallback turnout CSV benchmark"
+        "EAC fallback turnout CSV benchmark",
+        "official Election History CSV source-review artifact"
       ],
       "sourceUrls": [
         "https://ctemspublic.tgstg.net/",
@@ -380,13 +387,15 @@
         "https://ctemspublic.tgstg.net/ng-app/data/election/91/Version.json",
         "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
         "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/voterTurnout_Electiondata.json",
-        "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e"
+        "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
+        "https://electionhistory.ct.gov/search?"
       ],
       "availableFields": [
         "official town President rows in EMS static JSON loaded into staging",
         "official town U.S. Senate rows in the same EMS static JSON loaded into staging with cross-endorsed Murphy lines fused",
         "official EMS town turnout rows loaded into staging as warning-required state-native turnout context",
         "official Statement of Vote PDF collected as reconciliation source",
+        "official Election History event 582 President town/vote-channel source review confirming EMS President totals",
         "official polling-place labels and reporting-completeness fields for 759 polling places",
         "official Statement of Vote and Election History leads for 2012, 2016, and 2020 historical baselines",
         "county geometry, town/MCD geometry lead, and Verified Voting equipment context",
@@ -394,16 +403,17 @@
       ],
       "missingFields": [
         "reconciled EMS-versus-Statement-of-Vote presidential totals before production promotion",
+        "Election History event 582 voter-statistic rows or registered-voter denominator that could replace EMS turnout warnings",
         "confirmed precinct/ward candidate vote rows or CVR availability",
         "EMS town/MCD geometry crosswalk QA and precinct/ward geometry if sub-town rows are collected",
         "official 2012/2016/2020 historical baselines normalized into ETL",
         "normalized audit, CVR, recount, incident, correction, and litigation rows"
       ],
-      "parserStatus": "native Connecticut EMS town parser loaded for 169 town President rows, 169 same-grain U.S. Senate review rows, and 169 warning-required EMS turnout rows; data/ct-2024-data-coverage-inventory.json and data/ct-2024-source-request-matrix.tsv document the SOV reconciliation, geometry, historical, and admin caveats",
+      "parserStatus": "native Connecticut EMS town parser loaded for 169 town President rows, 169 same-grain U.S. Senate review rows, and 169 warning-required EMS turnout rows; scripts/report-ct-election-history-source-review.mjs generates data/ct-2024-election-history-source-review.json, which confirms Election History event 582 President totals but excludes it as a turnout replacement",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Connecticut geography and reporting are town-centric. EMS townVotes rows sum to EMS stateVotes presidential total 1,759,010, while the official 2024 Statement of Vote PDF remains a required reconciliation source before production promotion or certified-total language. EMS turnout EV/VV rows are loaded as warning-required until EMS/SOV/EAC field semantics are reviewed. Current advisory rows are town-level public-interest screening inputs only, not precinct/ward findings.",
-      "nextAction": "Run Statement-of-Vote reconciliation, QA the EMS town-name to Census MCD geometry crosswalk, review EMS report-download paths for precinct/ward rows or CVR availability, normalize official historical baselines, and collect audit/CVR/recount/incident/correction/litigation records if published or request-produced."
+      "caveats": "Connecticut geography and reporting are town-centric. EMS townVotes rows sum to EMS stateVotes presidential total 1,759,010, and Election History event 582 President rows confirm the same town/vote-channel totals. The official 2024 Statement of Vote PDF remains a required reconciliation source before production promotion or certified-total language. EMS turnout EV/VV rows are loaded as warning-required until EMS/SOV/EAC field semantics are reviewed; Election History event 582 voterStats returns zero rows and does not provide a turnout replacement. Current advisory rows are town-level public-interest screening inputs only, not precinct/ward findings.",
+      "nextAction": "Run Statement-of-Vote reconciliation, QA the EMS town-name to Census MCD geometry crosswalk, keep Election History as result/historical cross-check only unless a future voter-statistics export appears for event 582, review EMS report-download paths for precinct/ward rows or CVR availability, normalize official historical baselines, and collect audit/CVR/recount/incident/correction/litigation records if published or request-produced."
     },
     {
       "state": "DE",
@@ -495,7 +505,9 @@
         "official media export JSON"
       ],
       "sourceUrls": [
-        "https://results.sos.ga.gov/"
+        "https://results.sos.ga.gov/",
+        "https://results.sos.ga.gov/results/public/Georgia",
+        "https://sos.ga.gov/page/historical-elections-results"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -503,17 +515,19 @@
         "precinct U.S. House comparison rows from the same official media export",
         "county turnout from EAC fallback",
         "official 2012/2016/2020 county historical presidential baselines from Georgia SOS media exports",
-        "county equipment context from Verified Voting Verifier"
+        "county equipment context from Verified Voting Verifier",
+        "official President vote-method candidate groupResults from SOS media export",
+        "documented turnout/registration exclusion review at data/ga-2024-turnout-vote-method-source-review.json"
       ],
       "missingFields": [
         "state-native turnout denominator",
         "precinct boundary geometry",
         "normalized official audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export; official county historical baseline CSV generated from 2012/2016/2020 SOS media exports",
+      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export; official county historical baseline CSV generated from 2012/2016/2020 SOS media exports; scripts/report-ga-turnout-vote-method-source-review.mjs documents that SOS vote-method groupResults are candidate-result splits and not a turnout replacement",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings. Of 2,684 nonzero presidential precinct review rows, 2,637 have comparable two-party U.S. House rows, 8 have one-sided House comparison coverage, and 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts. Turnout remains EAC fallback and precinct geometry/admin evidence are not loaded. Historical rows are official county-level SOS media-export baselines for context only; the 2020 media export reports the original November general-election export total and should not be mixed with separate recount tables without reconciliation.",
+      "caveats": "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings. Of 2,684 nonzero presidential precinct review rows, 2,637 have comparable two-party U.S. House rows, 8 have one-sided House comparison coverage, and 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts. Turnout remains EAC fallback and precinct geometry/admin evidence are not loaded. Historical rows are official county-level SOS media-export baselines for context only; the 2020 media export reports the original November general-election export total and should not be mixed with separate recount tables without reconciliation. The July 5, 2026 vote-method source review found official President groupResults by Election Day, Absentee by Mail, Provisional, and Advanced Voting, but no registered-voter denominator or election-level ballots-cast field; EAC turnout remains active.",
       "nextAction": "Use data/ga-2024-data-coverage-inventory.json as the current GA source-search record; next steps are state-native turnout denominators, precinct boundary geometry/crosswalks, and official audit/recount/CVR/incident/correction artifacts."
     },
     {
@@ -542,25 +556,25 @@
         "https://files.hawaii.gov/elections/files/results/2024/General/media.txt"
       ],
       "availableFields": [
-        "official county presidential rows aggregated from the Office of Elections precinct/split text export",
-        "official precinct/split President rows for 467 nonzero numbered precinct/split units",
-        "official precinct/split U.S. Senate comparison rows for all 467 nonzero President review units",
-        "official precinct/split registered-voter and ballots fields in precinct detail text retained as turnout lead context",
-        "state-native turnout and registration table lead",
+        "official statewide certified President totals from summary.txt",
+        "official county presidential rows aggregated from numbered precinct/split rows",
+        "official precinct/split President rows",
+        "official same-grain U.S. Senate comparison rows",
+        "official Hawaii Office county registration and turnout rows",
         "county geometry",
-        "supplemental county equipment context"
+        "equipment context from Verified Voting",
+        "official 2024 recount/provisional/security/source-request paths documented in coverage inventory"
       ],
       "missingFields": [
-        "reconciled state-native turnout replacement for active EAC fallback",
-        "official 2024 precinct boundary geometry or precinct_splitId crosswalk",
-        "loaded official 2012/2016/2020 historical baselines",
-        "normalized audit, recount, CVR availability, incident, correction, and litigation rows"
+        "precinct boundary geometry or official precinct_splitId crosswalk",
+        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeHawaiiOfficeText is active in etl/state-configs/hi.json. It decodes the official UTF-16 summary.txt and media.txt exports, skips the Format#1 banner, uses CSV parsing that preserves embedded candidate-name newlines, aggregates four county President rows from numbered precinct/split rows, emits 467 nonzero President-versus-U.S.-Senate review rows, and keeps EAC fallback turnout active.",
+      "parserStatus": "nativeHawaiiOfficeText is active in etl/state-configs/hi.json. It decodes the official UTF-16 summary.txt and media.txt exports, skips the Format#1 banner, uses CSV parsing that preserves embedded candidate-name newlines, aggregates four county President rows from numbered precinct/split rows, emits 467 nonzero President-versus-U.S.-Senate review rows, and now loads four state-native Hawaii Office turnout rows generated by scripts/normalize-hi-turnout.mjs.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys (PRES, OS I, OS II). County labels are derived from official numbered precinct district ranges: 01-08 Hawaii, 09-14 Maui, 15-17 Kauai, and 18-51 Honolulu. Kalawao has county geometry and an EAC warning turnout row but no separate Office of Elections result county row. Turnout remains EAC fallback until the state-native turnout table is normalized and reconciled. Advisory outputs are source-review signals only, not claims of fraud or misconduct.",
-      "nextAction": "Normalize and reconcile the Hawaii Office of Elections turnout table, collect precinct geometry/crosswalks, add official 2012/2016/2020 historical baselines, and pursue normalized audit/CVR/recount/incident/correction/litigation records."
+      "caveats": "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys (PRES, OS I, OS II). County labels are derived from official numbered precinct district ranges: 01-08 Hawaii, 09-14 Maui, 15-17 Kauai, and 18-51 Honolulu. Kalawao has county geometry but no separate Office of Elections result or turnout county row; the four official turnout rows reconcile to the statewide 2024 General table. Advisory outputs are source-review signals only, not claims of fraud or misconduct.",
+      "nextAction": "Collect precinct geometry/crosswalks, add official 2012/2016/2020 historical baselines, and pursue normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "IA",
@@ -619,7 +633,9 @@
       "exportFormats": [
         "official Vote Idaho XML endpoints",
         "official Vote Idaho map HTML widgets",
-        "EAC fallback turnout CSV",
+        "official county turnout XLSX",
+        "official raw precinct turnout XLSX",
+        "retained EAC benchmark turnout CSV",
         "Census county GeoJSON",
         "Verified Voting equipment CSV"
       ],
@@ -630,16 +646,21 @@
         "https://archive.voteidaho.gov/results/2024/general/congressional.html",
         "https://archive.voteidaho.gov/results/2024/general/turnout.html",
         "https://canvass.sos.idaho.gov/",
+        "https://sos.idaho.gov/elections/data/results/2024/raw_stats_general.xlsx",
+        "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx",
+        "https://voteidaho.gov/data-and-dashboards/voter-turnout/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/16"
       ],
       "exampleUrls": [
-        "https://archive.voteidaho.gov/results/2024/general/xml.html"
+        "https://archive.voteidaho.gov/results/2024/general/xml.html",
+        "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx"
       ],
       "availableFields": [
         "official county presidential totals",
         "official county U.S. House comparison rows",
-        "EAC fallback turnout rows",
+        "official state-native county turnout and total registered-voter denominator rows",
+        "official raw precinct turnout source lead",
         "county geometry",
         "county equipment context",
         "official 2012, 2016, and 2020 historical source leads"
@@ -647,16 +668,16 @@
       "missingFields": [
         "precinct/local reporting-unit President rows",
         "same-grain precinct/local comparison contest rows",
-        "state-native turnout denominator",
+        "loaded precinct turnout rows joined to same-grain review rows",
         "precinct boundary geometry or reporting-unit crosswalk",
         "loaded official 2012/2016/2020 historical baseline rows",
         "normalized official audit, CVR, incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "nativeIdahoCountyPresidentCsv loaded from data/id-2024-general-president.csv and data/id-2024-general-us-house.csv; data/id-2024-data-coverage-inventory.json documents remaining official-source leads and gaps",
+      "parserStatus": "nativeIdahoCountyPresidentCsv loaded from data/id-2024-general-president.csv and data/id-2024-general-us-house.csv; official state-native county turnout rows load from data/id-2024-general-turnout.csv generated by scripts/normalize-id-turnout.mjs; data/id-2024-data-coverage-inventory.json documents remaining official-source leads and gaps",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Current Idaho review rows are county-level President-versus-U.S.-House comparisons, not precinct scatter plots. U.S. House is district-based, EAC turnout is fallback rather than Idaho-native, and no normalized historical baseline, audit, CVR, incident, correction, recount, litigation, or precinct-geometry rows are loaded.",
-      "nextAction": "Use data/id-2024-data-coverage-inventory.json as the current ID source-search record; next steps are state-native turnout, precinct/local result exports, precinct geometry/crosswalks, historical baseline normalization, and official audit/CVR/incident/correction/recount/litigation source collection."
+      "caveats": "Current Idaho review rows are county-level President-versus-U.S.-House comparisons, not precinct scatter plots. U.S. House is district-based. Turnout now uses official Idaho SOS county turnout rows, while the official raw precinct turnout workbook remains a source lead until precinct/local President and comparison rows are loaded at the same grain. No normalized audit, CVR, incident, correction, recount, litigation, or precinct-geometry rows are loaded.",
+      "nextAction": "Use data/id-2024-data-coverage-inventory.json as the current ID source-search record; next steps are precinct/local result exports, same-grain precinct turnout use, precinct geometry/crosswalks, historical baseline activation, and official audit/CVR/incident/correction/recount/litigation source collection."
     },
     {
       "state": "IL",
@@ -668,7 +689,8 @@
       "reportingGrain": "precinct",
       "exportFormats": [
         "official by-office CSV downloads",
-        "EAC fallback turnout"
+        "EAC fallback turnout",
+        "official by-office turnout-field review JSON"
       ],
       "sourceUrls": [
         "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
@@ -678,18 +700,20 @@
       "availableFields": [
         "precinct presidential results",
         "precinct U.S. House results",
-        "jurisdiction registration by precinct",
+        "by-office Registration field reviewed as denominator lead only",
+        "President contest over-vote, under-vote, and blank-ballot rows reviewed as contest-total lead only",
         "EAC fallback turnout"
       ],
       "missingFields": [
-        "state-native turnout denominator artifact promoted separately",
+        "state-native turnout or voter-participation artifact with confirmed ballots-cast field and denominator timing",
+        "valid precinct registration denominator for all election authorities",
         "statewide Senate/Governor same-grain comparison contest for 2024"
       ],
-      "parserStatus": "illinoisElectionResultsByOfficeCsvDirectory loaded for official presidential jurisdiction results and precinct President-vs-U.S.-House review rows",
+      "parserStatus": "illinoisElectionResultsByOfficeCsvDirectory loaded for official presidential jurisdiction results and precinct President-vs-U.S.-House review rows; scripts/report-il-turnout-source-review.mjs documents why by-office Registration/VoteCount fields are not an active turnout replacement",
       "manualReviewBurden": "medium",
-      "confidence": "loaded",
-      "caveats": "Illinois 2024 has no statewide U.S. Senate or Governor contest in the by-office package. Review rows compare President to U.S. House only where the jurisdiction/precinct key is unambiguous and the House row has both Democratic and Republican candidate votes; split/multi-district precinct keys and uncontested House rows are omitted.",
-      "nextAction": "Optional next steps are precinct/district geometry and a state-native turnout denominator source; keep the U.S. House comparison caveat visible."
+      "confidence": "loaded_with_caveat",
+      "caveats": "Illinois 2024 has no statewide U.S. Senate or Governor contest in the by-office package. Review rows compare President to U.S. House only where the jurisdiction/precinct key is unambiguous and the House row has both Democratic and Republican candidate votes; split/multi-district precinct keys and uncontested House rows are omitted. The by-office President CSV is not a valid turnout replacement: Registration sums to 7,210,422 versus 8,970,541 EAC registered voters, 2,260 precinct keys have zero Registration, and President contest totals including over/under/blank rows are 14,371 below EAC ballots cast.",
+      "nextAction": "Keep EAC fallback turnout active; request or locate an Illinois State Board of Elections turnout/voter-participation artifact with explicit ballots-cast, registered-voter denominator timing, and election-authority or precinct join keys."
     },
     {
       "state": "IN",
@@ -873,7 +897,9 @@
       "exportFormats": [
         "Louisiana SOS static precinct CSV endpoints",
         "Louisiana SOS human-readable XLSX workbook",
-        "EAC fallback turnout CSV",
+        "Louisiana SOS post-election statistics XLS workbooks",
+        "normalized SOS parish turnout CSV",
+        "EAC benchmark turnout CSV",
         "Census TIGERweb GeoJSON"
       ],
       "sourceUrls": [
@@ -881,7 +907,10 @@
         "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential",
         "https://s3-us-west-2.amazonaws.com/mediaresults.sos.la.gov/HumanReadableElectionResults/20241105/Election+Results+(11-05-2024).xlsx",
         "https://www.eac.gov/research-and-data/studies-and-reports",
-        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+        "https://voterportal.sos.la.gov/graphical",
+        "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/statewide/2024_1105_sta.xls",
+        "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls"
       ],
       "exampleUrls": [
         "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential"
@@ -890,22 +919,22 @@
         "official parish presidential totals",
         "official precinct and vote-mode President rows",
         "official precinct and vote-mode U.S. House comparison rows where same-grain keys align",
-        "EAC fallback turnout rows",
+        "official SOS parish post-election qualified-voter and voted turnout rows",
+        "EAC benchmark turnout rows",
         "parish geometry",
         "parish equipment context from Verified Voting Verifier",
         "data/la-2024-data-coverage-inventory.json coverage inventory"
       ],
       "missingFields": [
-        "state-native turnout denominator rows",
         "precinct boundary geometry or precinct-to-parish crosswalks",
         "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "louisianaSosPrecinctCsvDirectory loaded for official parish President result rows and precinct/vote-mode President-versus-U.S.-House review rows; EAC fallback turnout, Census parish geometry, admin equipment context, and data/la-2024-data-coverage-inventory.json are documented",
+      "parserStatus": "louisianaSosPrecinctCsvDirectory loaded for official parish President result rows and precinct/vote-mode President-versus-U.S.-House review rows; scripts/normalize-la-post-election-statistics.mjs generates active SOS parish turnout rows from official post-election statistics workbooks; EAC is retained as a benchmark; Census parish geometry, admin equipment context, and data/la-2024-data-coverage-inventory.json are documented",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Louisiana uses parishes rather than counties. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context, not same-office statewide comparison rows. EAC turnout remains a fallback until state-native denominator artifacts are collected.",
-      "nextAction": "Collect state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baseline artifacts, and normalized audit/CVR/incident/correction/recount/litigation records."
+      "caveats": "Louisiana uses parishes rather than counties. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context, not same-office statewide comparison rows. SOS turnout uses qualified voters as of the close of registration records thirty days before the election and election-level Voted counts, not presidential contest votes.",
+      "nextAction": "Collect precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baseline artifacts, and normalized audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "MA",
