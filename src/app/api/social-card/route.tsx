@@ -203,11 +203,7 @@ function makePath(state: string, rings: number[][][], bounds: MapBounds) {
     .join(" ");
 }
 
-function countyFill(winner: string, flagged: boolean) {
-  if (flagged) {
-    return "#f0c36a";
-  }
-
+function countyFill(winner: string) {
   if (/harris|dem/i.test(winner)) {
     return "#82b8ff";
   }
@@ -338,7 +334,7 @@ export async function GET(request: NextRequest) {
               <div style={{ display: "flex", color: "#35c7a3", fontSize: 24, fontWeight: 900 }}>{preview.year} President</div>
               <div style={{ display: "flex", fontSize: 50, fontWeight: 900, lineHeight: 1 }}>{preview.stateName}</div>
               <div style={{ display: "flex", fontSize: 20, color: "#a9aaa4", lineHeight: 1.25 }}>
-                County map with advisory-flag overlay from currently loaded public data.
+                County result map with advisory indicators from currently loaded public data.
               </div>
             </div>
 
@@ -373,7 +369,7 @@ export async function GET(request: NextRequest) {
             <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 16, color: "#a9aaa4" }}>
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#82b8ff" }} />Harris</span>
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#ff8f7e" }} />Trump</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#f0c36a", border: "2px solid #35c7a3" }} />Advisory flag</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "transparent", border: "2px solid #f0c36a" }} />Advisory outline</span>
             </div>
           </div>
 
@@ -384,9 +380,19 @@ export async function GET(request: NextRequest) {
                 <path
                   key={feature.key}
                   d={feature.path}
-                  fill={countyFill(feature.winner, feature.flagged)}
-                  stroke={feature.flagged ? "#35c7a3" : "#101112"}
-                  strokeWidth={feature.flagged ? 2.4 : 0.85}
+                  fill={countyFill(feature.winner)}
+                  stroke="#101112"
+                  strokeWidth={0.85}
+                />
+              ))}
+              {paths.filter((feature) => feature.flagged).map((feature) => (
+                <path
+                  key={`${feature.key}-advisory`}
+                  d={feature.path}
+                  fill="transparent"
+                  stroke="#f0c36a"
+                  strokeWidth={2.1}
+                  opacity={0.86}
                 />
               ))}
             </svg>

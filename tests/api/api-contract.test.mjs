@@ -58,7 +58,7 @@ test("state links expose data-rich social previews", () => {
   assert.match(home, /openGraph/);
   assert.match(home, /preview\.imagePath/);
   assert.match(preview, /buildStateSocialPreview/);
-  assert.match(preview, /Advisory indicators are review prompts/);
+  assert.match(preview, /Advisory indicators mark source-reconciliation checks/);
   assert.match(preview, /not findings of fraud or misconduct/);
   assert.match(preview, /Result rows/);
   assert.match(preview, /Turnout rows/);

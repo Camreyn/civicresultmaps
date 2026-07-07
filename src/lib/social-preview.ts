@@ -2,9 +2,9 @@ import { listCompletenessReport, listResults, listStates } from "./api";
 
 export const socialPreviewYear = 2024;
 export const socialPreviewSiteUrl = "https://www.civicresultmaps.org";
-export const socialPreviewImageVersion = "map-v3";
+export const socialPreviewImageVersion = "map-v4";
 export const socialPreviewCaveat =
-  "Advisory indicators are review prompts for source reconciliation, not findings of fraud or misconduct.";
+  "Advisory indicators mark source-reconciliation checks, not findings of fraud or misconduct.";
 
 type PreviewMetric = {
   label: string;
@@ -58,7 +58,7 @@ export async function buildStateSocialPreview(input: {
     return {
       advisoryCaveat: socialPreviewCaveat,
       description:
-        "Explore official election result maps, source provenance, turnout context, historical baselines, and advisory review prompts.",
+        "Explore official election result maps, source provenance, turnout context, historical baselines, and advisory review indicators.",
       imageAlt: "Civic Result Maps public election data preview",
       imagePath: `${socialPreviewSiteUrl}/api/social-card?year=${year}&v=${socialPreviewImageVersion}`,
       metrics: [
