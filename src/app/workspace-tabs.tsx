@@ -32,6 +32,7 @@ import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
+import { buildVoteShareDistributionDiagnostics, voteShareBucketIndex } from "@/lib/distribution-diagnostics";
 import type {
   AnalysisIndicator,
   AdminSourceStatusSummary,
@@ -2769,14 +2770,30 @@ export function WorkspaceTabs({
             totalVotes,
           };
         });
+        const diagnostics = buildVoteShareDistributionDiagnostics(
+          buckets.map((bucket) => ({
+            high: bucket.high,
+            label: bucket.label,
+            low: bucket.low,
+            rowCount: bucket.rows,
+            value: bucket.totalVotes,
+          })),
+        );
 
         return {
-          buckets,
+          buckets: buckets.map((bucket, index) => ({
+            ...bucket,
+            diagnostic: diagnostics[index],
+          })),
           maxBucketVotes: Math.max(1, ...buckets.map((bucket) => bucket.totalVotes)),
           year: yearGroup.year,
         };
       }),
     [historicalRowsByYear],
+  );
+  const shpilkinDiagnosticsByYear = useMemo(
+    () => new Map(shpilkinRowsByYear.map((yearGroup) => [yearGroup.year, yearGroup])),
+    [shpilkinRowsByYear],
   );
   const topIndicators = filteredIndicators.slice(0, 6);
   const voteMethodSummaries = useMemo(() => {
@@ -4668,7 +4685,7 @@ export function WorkspaceTabs({
                         <strong>Klimek-Style Vote Fingerprints</strong>
                         <span>
                           Separate year charts plotting Democratic share against county vote volume as a temporary turnout
-                          proxy. True Klimek fingerprints will use turnout percentages once denominators are imported.
+                          proxy. Dots inherit the diagnostic color from the matching Shpilkin vote-share bucket.
                         </span>
                         <Eli5>
                           Imagine each county as a dot. The dot's left-right position is vote share, and its height is
@@ -4705,16 +4722,20 @@ export function WorkspaceTabs({
                                 const x = 34 + (demShare / 100) * 210;
                                 const y = 136 - Math.sqrt((row.totalVotes ?? 0) / yearGroup.maxTotalVotes) * 112;
                                 const radius = Math.max(2.4, Math.min(7.5, Math.sqrt((row.totalVotes ?? 0) / yearGroup.maxTotalVotes) * 7));
+                                const bucketIndex = voteShareBucketIndex(demShare);
+                                const diagnostic = shpilkinDiagnosticsByYear.get(yearGroup.year)?.buckets[bucketIndex]?.diagnostic;
+                                const severity = diagnostic?.severity ?? "neutral";
+                                const winner = (row.demVotes ?? 0) >= (row.repVotes ?? 0) ? "Democratic" : "Republican";
                                 return (
                                   <circle
-                                    className={demShare >= 50 ? "fingerprint-dem-dot" : "fingerprint-rep-dot"}
+                                    className={`fingerprint-diagnostic-dot diagnostic-${severity}`}
                                     cx={x.toFixed(2)}
                                     cy={y.toFixed(2)}
                                     key={row.id}
                                     r={radius.toFixed(2)}
                                   >
                                     <title>
-                                      {row.jurisdictionName}: D {demShare.toFixed(2)}%, total {(row.totalVotes ?? 0).toLocaleString()}
+                                      {row.jurisdictionName}: D {demShare.toFixed(2)}%, total {(row.totalVotes ?? 0).toLocaleString()}, winner {winner}. {diagnostic ? `${diagnostic.label} bucket: ${diagnostic.reason}` : "No bucket diagnostic available."}
                                     </title>
                                   </circle>
                                 );
@@ -4738,8 +4759,8 @@ export function WorkspaceTabs({
                       <div>
                         <strong>Shpilkin-Style Vote-Share Diagnostics</strong>
                         <span>
-                          Vote volume grouped by Democratic share bucket for each enabled year. This separates the
-                          distribution diagnostic from the Klimek fingerprint view.
+                          Vote volume grouped by Democratic share bucket for each enabled year. Bars are colored by
+                          peak-and-valley fit, and the expected unimodal curve is overlaid.
                         </span>
                         <Eli5>
                           Imagine sorting counties into buckets by how Democratic they were, then stacking their votes in
@@ -4764,17 +4785,28 @@ export function WorkspaceTabs({
                           <div className="shpilkin-panel" key={yearGroup.year}>
                             <strong>{yearGroup.year}</strong>
                             <div className="shpilkin-bars" role="img" aria-label={`${yearGroup.year} Shpilkin-style vote-share bucket chart`}>
+                              <svg className="shpilkin-expected-curve" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                                <polyline
+                                  points={yearGroup.buckets
+                                    .map((bucket, index) => {
+                                      const x = 5 + index * 10;
+                                      const y = 100 - (bucket.diagnostic.expectedValue / yearGroup.maxBucketVotes) * 100;
+                                      return `${x},${clamp(y, 0, 100)}`;
+                                    })
+                                    .join(" ")}
+                                />
+                              </svg>
                               {yearGroup.buckets.map((bucket) => {
                                 const height = Math.max(4, (bucket.totalVotes / yearGroup.maxBucketVotes) * 100);
-                                const demShare = bucket.totalVotes ? (bucket.demVotes / bucket.totalVotes) * 100 : 0;
+                                const severity = bucket.diagnostic.severity;
                                 return (
                                   <div className="shpilkin-bucket" key={bucket.label}>
                                     <i
-                                      className={demShare >= 50 ? "shpilkin-dem-bar" : "shpilkin-rep-bar"}
+                                      className={`shpilkin-diagnostic-bar diagnostic-${severity}`}
                                       style={{ height: `${height}%` }}
                                     >
                                       <span>
-                                        {bucket.label}: {bucket.totalVotes.toLocaleString()} votes, {bucket.rows} rows
+                                        {bucket.label}: {bucket.totalVotes.toLocaleString()} votes, {bucket.rows} rows. {bucket.diagnostic.reason}
                                       </span>
                                     </i>
                                   </div>
@@ -4785,6 +4817,12 @@ export function WorkspaceTabs({
                               <span>0% D</span>
                               <span>50%</span>
                               <span>100%</span>
+                            </div>
+                            <div className="distribution-legend" aria-label="Distribution diagnostic colors">
+                              <span><i className="diagnostic-healthy" /> Fits curve</span>
+                              <span><i className="diagnostic-watch" /> Watch</span>
+                              <span><i className="diagnostic-elevated" /> Elevated</span>
+                              <span><i className="diagnostic-severe" /> Severe</span>
                             </div>
                           </div>
                         ))}

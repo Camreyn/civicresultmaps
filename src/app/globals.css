@@ -4100,7 +4100,8 @@ td {
 }
 
 .fingerprint-dem-dot,
-.fingerprint-rep-dot {
+.fingerprint-rep-dot,
+.fingerprint-diagnostic-dot {
   fill-opacity: 0.72;
   stroke: #101112;
   stroke-width: 1;
@@ -4144,6 +4145,7 @@ td {
   grid-template-columns: repeat(10, minmax(10px, 1fr));
   height: 150px;
   padding: 14px 8px 0;
+  position: relative;
 }
 
 .shpilkin-bucket {
@@ -4151,6 +4153,8 @@ td {
   display: flex;
   height: 100%;
   min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .shpilkin-bucket i {
@@ -4179,6 +4183,88 @@ td {
 
 .shpilkin-rep-bar {
   background: linear-gradient(180deg, #ff9c93, #d64338);
+}
+.fingerprint-diagnostic-dot.diagnostic-neutral,
+.shpilkin-diagnostic-bar.diagnostic-neutral {
+  background: #8f9790;
+  fill: #8f9790;
+}
+
+.fingerprint-diagnostic-dot.diagnostic-healthy,
+.shpilkin-diagnostic-bar.diagnostic-healthy,
+.distribution-legend .diagnostic-healthy {
+  background: #35b779;
+  fill: #35b779;
+}
+
+.fingerprint-diagnostic-dot.diagnostic-watch,
+.shpilkin-diagnostic-bar.diagnostic-watch,
+.distribution-legend .diagnostic-watch {
+  background: #f0c84b;
+  fill: #f0c84b;
+}
+
+.fingerprint-diagnostic-dot.diagnostic-elevated,
+.shpilkin-diagnostic-bar.diagnostic-elevated,
+.distribution-legend .diagnostic-elevated {
+  background: #f08a3c;
+  fill: #f08a3c;
+}
+
+.fingerprint-diagnostic-dot.diagnostic-severe,
+.shpilkin-diagnostic-bar.diagnostic-severe,
+.distribution-legend .diagnostic-severe {
+  background: #e04444;
+  fill: #e04444;
+}
+
+.shpilkin-expected-curve {
+  bottom: 0;
+  height: calc(100% - 14px);
+  left: 8px;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  right: 8px;
+  top: 14px;
+  width: calc(100% - 16px);
+  z-index: 2;
+}
+
+.shpilkin-expected-curve polyline {
+  fill: none;
+  stroke: rgba(244, 241, 234, 0.8);
+  stroke-dasharray: 4 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.shpilkin-diagnostic-bar {
+  box-shadow: 0 0 0 1px rgba(16, 17, 18, 0.58);
+}
+
+.distribution-legend {
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-code);
+  font-size: 10px;
+  gap: 8px 12px;
+}
+
+.distribution-legend span {
+  align-items: center;
+  display: inline-flex;
+  gap: 5px;
+}
+
+.distribution-legend i {
+  border-radius: 999px;
+  display: inline-block;
+  height: 8px;
+  width: 8px;
 }
 
 .shpilkin-labels {
