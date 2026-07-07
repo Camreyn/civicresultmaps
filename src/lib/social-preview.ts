@@ -2,7 +2,7 @@ import { listCompletenessReport, listResults, listStates } from "./api";
 
 export const socialPreviewYear = 2024;
 export const socialPreviewSiteUrl = "https://www.civicresultmaps.org";
-export const socialPreviewImageVersion = "map-v5";
+export const socialPreviewImageVersion = "map-v6";
 export const socialPreviewCaveat =
   "Advisory indicators mark source-reconciliation checks, not findings of fraud or misconduct.";
 
@@ -17,6 +17,7 @@ export type StateSocialPreview = {
   imageAlt: string;
   imagePath: string;
   metrics: PreviewMetric[];
+  socialUrlPath: string;
   stateCode: string;
   stateName: string;
   title: string;
@@ -67,6 +68,7 @@ export async function buildStateSocialPreview(input: {
         metric("Source records", completenessReport.reduce((sum, state) => sum + state.sourceCount, 0)),
         metric("Advisory flags", completenessReport.reduce((sum, state) => sum + state.indicatorCount, 0)),
       ],
+      socialUrlPath: `/?share=${socialPreviewImageVersion}`,
       stateCode: "US",
       stateName: "Civic Result Maps",
       title: "Civic Result Maps",
@@ -108,6 +110,7 @@ export async function buildStateSocialPreview(input: {
       metric("Advisory flags", indicatorCount),
       metric("Flagged areas", flaggedAreas),
     ],
+    socialUrlPath: `/?state=${stateCode}&share=${socialPreviewImageVersion}`,
     stateCode,
     stateName: selectedState.name,
     title: `${selectedState.name} ${year} President Data`,

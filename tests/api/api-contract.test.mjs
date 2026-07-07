@@ -64,7 +64,8 @@ test("state links expose data-rich social previews", () => {
   assert.match(preview, /Turnout rows/);
   assert.match(preview, /Advisory flags/);
   assert.match(preview, /Map-ready states/);
-  assert.match(preview, /map-v5/);
+  assert.match(preview, /socialUrlPath/);
+  assert.match(preview, /map-v6/);
   assert.doesNotMatch(preview, /Data Preview/);
   assert.match(socialCard, /ImageResponse/);
   assert.match(socialCard, /1200/);

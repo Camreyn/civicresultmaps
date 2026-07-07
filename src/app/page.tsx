@@ -50,7 +50,7 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
       type: "website",
       title: preview.title,
       description: preview.description,
-      url: preview.urlPath,
+      url: preview.socialUrlPath,
       siteName: "Civic Result Maps",
       images: [
         {
