@@ -2,6 +2,7 @@ import { listCompletenessReport, listResults, listStates } from "./api";
 
 export const socialPreviewYear = 2024;
 export const socialPreviewSiteUrl = "https://www.civicresultmaps.org";
+export const socialPreviewImageVersion = "map-v1";
 export const socialPreviewCaveat =
   "Advisory indicators are review prompts for source reconciliation, not findings of fraud or misconduct.";
 
@@ -59,7 +60,7 @@ export async function buildStateSocialPreview(input: {
       description:
         "Explore official election result maps, source provenance, turnout context, historical baselines, and advisory review prompts.",
       imageAlt: "Civic Result Maps public election data preview",
-      imagePath: `/api/social-card?year=${year}`,
+      imagePath: `${socialPreviewSiteUrl}/api/social-card?year=${year}&v=${socialPreviewImageVersion}`,
       metrics: [
         metric("Loaded states", completenessReport.length),
         metric("Source records", completenessReport.reduce((sum, state) => sum + state.sourceCount, 0)),
@@ -95,7 +96,7 @@ export async function buildStateSocialPreview(input: {
     advisoryCaveat: socialPreviewCaveat,
     description: `${selectedState.name} ${year} president data preview: ${descriptionParts.join(", ")}. ${socialPreviewCaveat}`,
     imageAlt: `${selectedState.name} ${year} election data preview from Civic Result Maps`,
-    imagePath: `/api/social-card?state=${stateCode}&year=${year}`,
+    imagePath: `${socialPreviewSiteUrl}/api/social-card?state=${stateCode}&year=${year}&v=${socialPreviewImageVersion}`,
     metrics: [
       metric("Total votes", totalVotes),
       metric("Result rows", resultRows),
