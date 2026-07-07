@@ -4055,40 +4055,69 @@ td {
   background: var(--gold);
 }
 
-.fingerprint-grid {
+.fingerprint-grid,
+.shpilkin-grid {
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.fingerprint-panel {
-  background: #111312;
-  border: 1px solid var(--line);
+.fingerprint-panel,
+.shpilkin-panel {
+  background:
+    linear-gradient(180deg, rgba(244, 241, 234, 0.055), rgba(244, 241, 234, 0.018)),
+    #101312;
+  border: 1px solid rgba(244, 241, 234, 0.12);
   border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(244, 241, 234, 0.06),
+    0 14px 34px rgba(0, 0, 0, 0.18);
   display: grid;
-  gap: 8px;
+  gap: 10px;
   padding: 12px;
 }
 
-.fingerprint-panel > strong {
+.fingerprint-panel-head {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.fingerprint-panel-head strong {
   color: var(--foreground);
   font-family: var(--font-code);
   font-size: 13px;
 }
 
+.fingerprint-panel-head span {
+  color: var(--quiet);
+  font-family: var(--font-code);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .fingerprint-panel svg {
+  background:
+    linear-gradient(rgba(244, 241, 234, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 241, 234, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(19, 24, 22, 0.96), rgba(8, 11, 10, 0.96));
+  background-size: 100% 30px, 35px 100%, 100% 100%;
+  border: 1px solid rgba(244, 241, 234, 0.12);
+  border-radius: 6px;
   display: block;
   height: auto;
   width: 100%;
 }
 
 .fingerprint-axis {
-  stroke: #59605b;
+  stroke: rgba(244, 241, 234, 0.42);
   stroke-width: 1;
 }
 
 .fingerprint-midline {
-  stroke: rgba(244, 241, 234, 0.22);
+  stroke: rgba(244, 241, 234, 0.32);
   stroke-dasharray: 4 4;
   stroke-width: 1;
 }
@@ -4102,9 +4131,13 @@ td {
 .fingerprint-dem-dot,
 .fingerprint-rep-dot,
 .fingerprint-diagnostic-dot {
-  fill-opacity: 0.72;
-  stroke: #101112;
+  fill-opacity: 0.82;
+  stroke: rgba(8, 10, 9, 0.9);
   stroke-width: 1;
+}
+
+.fingerprint-diagnostic-dot {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
 
 .fingerprint-dem-dot {
@@ -4115,35 +4148,21 @@ td {
   fill: #ef5b4f;
 }
 
-.shpilkin-grid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(2, minmax(260px, 1fr));
-}
-
-.shpilkin-panel {
-  background: #111312;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: grid;
-  gap: 10px;
-  padding: 12px;
-}
-
-.shpilkin-panel > strong {
-  color: var(--foreground);
-  font-family: var(--font-code);
-  font-size: 13px;
-}
-
 .shpilkin-bars {
   align-items: end;
-  border-bottom: 1px solid #59605b;
-  border-left: 1px solid #59605b;
+  background:
+    linear-gradient(rgba(244, 241, 234, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 241, 234, 0.04) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(19, 24, 22, 0.96), rgba(8, 11, 10, 0.96));
+  background-size: 100% 30px, 10% 100%, 100% 100%;
+  border: 1px solid rgba(244, 241, 234, 0.12);
+  border-bottom-color: rgba(244, 241, 234, 0.36);
+  border-left-color: rgba(244, 241, 234, 0.36);
+  border-radius: 6px 6px 0 0;
   display: grid;
   gap: 5px;
   grid-template-columns: repeat(10, minmax(10px, 1fr));
-  height: 150px;
+  height: 168px;
   padding: 14px 8px 0;
   position: relative;
 }
@@ -4177,43 +4196,37 @@ td {
   width: 1px;
 }
 
-.shpilkin-dem-bar {
-  background: linear-gradient(180deg, #87b5ff, #326dde);
-}
-
-.shpilkin-rep-bar {
-  background: linear-gradient(180deg, #ff9c93, #d64338);
-}
 .fingerprint-diagnostic-dot.diagnostic-neutral,
-.shpilkin-diagnostic-bar.diagnostic-neutral {
+.shpilkin-diagnostic-bar.diagnostic-neutral,
+.distribution-key .diagnostic-neutral {
   background: #8f9790;
   fill: #8f9790;
 }
 
 .fingerprint-diagnostic-dot.diagnostic-healthy,
 .shpilkin-diagnostic-bar.diagnostic-healthy,
-.distribution-legend .diagnostic-healthy {
+.distribution-key .diagnostic-healthy {
   background: #35b779;
   fill: #35b779;
 }
 
 .fingerprint-diagnostic-dot.diagnostic-watch,
 .shpilkin-diagnostic-bar.diagnostic-watch,
-.distribution-legend .diagnostic-watch {
+.distribution-key .diagnostic-watch {
   background: #f0c84b;
   fill: #f0c84b;
 }
 
 .fingerprint-diagnostic-dot.diagnostic-elevated,
 .shpilkin-diagnostic-bar.diagnostic-elevated,
-.distribution-legend .diagnostic-elevated {
+.distribution-key .diagnostic-elevated {
   background: #f08a3c;
   fill: #f08a3c;
 }
 
 .fingerprint-diagnostic-dot.diagnostic-severe,
 .shpilkin-diagnostic-bar.diagnostic-severe,
-.distribution-legend .diagnostic-severe {
+.distribution-key .diagnostic-severe {
   background: #e04444;
   fill: #e04444;
 }
@@ -4233,38 +4246,66 @@ td {
 
 .shpilkin-expected-curve polyline {
   fill: none;
-  stroke: rgba(244, 241, 234, 0.8);
-  stroke-dasharray: 4 3;
+  stroke: rgba(244, 241, 234, 0.92);
+  stroke-dasharray: 5 3;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 2;
+  stroke-width: 2.4;
   vector-effect: non-scaling-stroke;
 }
 
 .shpilkin-diagnostic-bar {
-  box-shadow: 0 0 0 1px rgba(16, 17, 18, 0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 0 0 1px rgba(8, 10, 9, 0.58),
+    0 6px 18px rgba(0, 0, 0, 0.24);
 }
 
-.distribution-legend {
+.distribution-key {
+  align-items: center;
+  background: rgba(244, 241, 234, 0.04);
+  border: 1px solid rgba(244, 241, 234, 0.1);
+  border-radius: 8px;
   color: var(--muted);
   display: flex;
   flex-wrap: wrap;
   font-family: var(--font-code);
   font-size: 10px;
-  gap: 8px 12px;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
 }
 
-.distribution-legend span {
+.distribution-key span {
   align-items: center;
   display: inline-flex;
-  gap: 5px;
+  gap: 6px;
+  white-space: nowrap;
 }
 
-.distribution-legend i {
+.distribution-key i {
   border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(8, 10, 9, 0.7);
   display: inline-block;
-  height: 8px;
-  width: 8px;
+  height: 9px;
+  width: 9px;
+}
+
+.expected-curve-swatch {
+  border-top: 2px dashed rgba(244, 241, 234, 0.9);
+  display: inline-block;
+  height: 0;
+  width: 24px;
+}
+
+.dot-size-swatch {
+  background: rgba(53, 183, 121, 0.22);
+  border: 1px solid rgba(244, 241, 234, 0.55);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 4px rgba(53, 183, 121, 0.35);
+  display: inline-block;
+  height: 16px;
+  width: 16px;
 }
 
 .shpilkin-labels {
@@ -4274,7 +4315,6 @@ td {
   font-size: 10px;
   justify-content: space-between;
 }
-
 .empty-panel,
 .table-note {
   border-top: 1px solid var(--line);

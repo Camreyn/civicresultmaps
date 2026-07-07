@@ -1203,6 +1203,17 @@ function pct(value: number, total: number) {
   return total > 0 ? `${((value / total) * 100).toFixed(2)}%` : "0.00%";
 }
 
+function candidateVotes(votes: Record<string, number>, aliases: string[]) {
+  for (const [candidate, value] of Object.entries(votes)) {
+    const normalized = candidate.toLowerCase();
+    if (aliases.some((alias) => normalized.includes(alias))) {
+      return value;
+    }
+  }
+
+  return 0;
+}
+
 function summaryValue(value: unknown) {
   if (typeof value === "number") {
     return value.toLocaleString();
@@ -2634,9 +2645,46 @@ export function WorkspaceTabs({
     return Array.from(totals.entries()).sort((a, b) => b[1] - a[1]);
   }, [results]);
 
+  const currentYearHistoricalRows = useMemo<HistoricalResultRowSummary[]>(() => {
+    const existing2024Rows = new Set(
+      historicalRows
+        .filter((row) => row.electionYear === 2024)
+        .map((row) => row.jurisdictionCode || row.jurisdictionName),
+    );
+
+    return results
+      .filter((row) => row.year === 2024 && row.level !== "state" && row.totalVotes > 0)
+      .filter((row) => !existing2024Rows.has(row.jurisdictionCode || row.jurisdictionName))
+      .map((row) => {
+        const demVotes = candidateVotes(row.votes, ["harris", "democrat", "democratic"]);
+        const repVotes = candidateVotes(row.votes, ["trump", "republican"]);
+        const otherVotes = Math.max(0, row.totalVotes - demVotes - repVotes);
+        return {
+          demVotes,
+          electionYear: row.year,
+          id: `${row.state}-${row.year}-${row.jurisdictionCode || row.jurisdictionName}-current-results`,
+          jurisdictionCode: row.jurisdictionCode,
+          jurisdictionName: row.jurisdictionName,
+          localUnit: row.jurisdictionName,
+          metrics: { source: "currentCertifiedResults" },
+          otherVotes,
+          repVotes,
+          rowMethod: "currentCertifiedResults",
+          sourceDocumentId: row.sourceId,
+          sourceId: row.sourceId,
+          sourceLevel: row.level,
+          state: row.state,
+          totalVotes: row.totalVotes,
+        };
+      });
+  }, [historicalRows, results]);
+  const historicalComparisonRows = useMemo(
+    () => [...historicalRows, ...currentYearHistoricalRows],
+    [currentYearHistoricalRows, historicalRows],
+  );
   const historicalYears = useMemo(
-    () => Array.from(new Set(historicalRows.map((row) => row.electionYear))).sort((a, b) => a - b),
-    [historicalRows],
+    () => Array.from(new Set(historicalComparisonRows.map((row) => row.electionYear))).sort((a, b) => a - b),
+    [historicalComparisonRows],
   );
 
   useEffect(() => {
@@ -2656,7 +2704,7 @@ export function WorkspaceTabs({
       }
     >();
 
-    for (const row of historicalRows) {
+    for (const row of historicalComparisonRows) {
       const summary = summaries.get(row.electionYear) ?? {
         demVotes: 0,
         otherVotes: 0,
@@ -2688,14 +2736,14 @@ export function WorkspaceTabs({
         };
       })
       .sort((a, b) => b.year - a.year);
-  }, [historicalRows]);
+  }, [historicalComparisonRows]);
 
   const visibleHistoricalYearSet = useMemo(
     () => new Set(enabledHistoricalYears),
     [enabledHistoricalYears],
   );
   const filteredHistoricalSummaries = historicalYearSummaries.filter((summary) => visibleHistoricalYearSet.has(summary.year));
-  const filteredHistoricalRows = historicalRows.filter((row) => visibleHistoricalYearSet.has(row.electionYear));
+  const filteredHistoricalRows = historicalComparisonRows.filter((row) => visibleHistoricalYearSet.has(row.electionYear));
   const visibleHistoricalRows = filteredHistoricalRows.slice(0, 150);
   const maxHistoricalMargin = Math.max(1, ...filteredHistoricalSummaries.map((summary) => summary.marginPct));
   const historicalGraphOptions: Array<{ key: HistoricalGraphType; label: string }> = [
@@ -4461,8 +4509,8 @@ export function WorkspaceTabs({
               <div>
                 <h2>Historical Baselines</h2>
                 <span>
-                  {historicalRows.length
-                    ? `${historicalRows.length.toLocaleString()} rows across ${historicalYearSummaries.length} election years`
+                  {historicalComparisonRows.length
+                    ? `${historicalComparisonRows.length.toLocaleString()} rows across ${historicalYearSummaries.length} election years`
                   : "Waiting on historical rows from the legacy bundle"}
                 </span>
               </div>
@@ -4473,16 +4521,16 @@ export function WorkspaceTabs({
                 </Eli5>
                 <QualityBadge
                   detail={
-                    historicalRows.length
-                      ? "Historical context rows are loaded. Fingerprint charts remain proxy views until turnout denominators are used."
+                    historicalComparisonRows.length
+                      ? "Historical and current-year comparison rows are loaded. Fingerprint charts remain proxy views until turnout denominators are used."
                       : "Historical baseline rows are not loaded."
                   }
-                  status={historicalRows.length ? "proxy" : "missing"}
+                  status={historicalComparisonRows.length ? "proxy" : "missing"}
                 />
                 <History aria-hidden size={18} />
               </div>
             </div>
-            {historicalRows.length ? (
+            {historicalComparisonRows.length ? (
               <>
                 <div className="history-controls" aria-label="Historical year toggles">
                   <span>Show years</span>
@@ -4705,10 +4753,21 @@ export function WorkspaceTabs({
                       <ChartQualityNotice diagnostic={klimekProxyDiagnostic} />
 <div className={`screening-chart-shell ${klimekProxyDiagnostic.status !== "ready" && !klimekProxyAcknowledged ? "is-gated" : ""}`}>
   <div className="chart-gate-frame">
+<div className="distribution-key" aria-label="Diagnostic color key">
+  <span><i className="diagnostic-healthy" /> Fits curve</span>
+  <span><i className="diagnostic-watch" /> Watch</span>
+  <span><i className="diagnostic-elevated" /> Elevated</span>
+  <span><i className="diagnostic-severe" /> Severe</span>
+  <span><i className="diagnostic-neutral" /> Sparse</span>
+  <span><b className="dot-size-swatch" /> Dot size = vote volume</span>
+</div>
 <div className="fingerprint-grid">
                         {historicalRowsByYear.map((yearGroup) => (
                           <div className="fingerprint-panel" key={yearGroup.year}>
-                            <strong>{yearGroup.year}</strong>
+                            <div className="fingerprint-panel-head">
+                              <strong>{yearGroup.year}</strong>
+                              <span>{yearGroup.rows.length.toLocaleString()} rows</span>
+                            </div>
                             <svg role="img" viewBox="0 0 260 170" aria-label={`${yearGroup.year} Klimek-style vote fingerprint`}>
                               <line className="fingerprint-axis" x1="34" x2="244" y1="136" y2="136" />
                               <line className="fingerprint-axis" x1="34" x2="34" y1="16" y2="136" />
@@ -4780,10 +4839,21 @@ export function WorkspaceTabs({
                       <ChartQualityNotice diagnostic={shpilkinProxyDiagnostic} />
 <div className={`screening-chart-shell ${shpilkinProxyDiagnostic.status !== "ready" && !shpilkinProxyAcknowledged ? "is-gated" : ""}`}>
   <div className="chart-gate-frame">
+<div className="distribution-key" aria-label="Diagnostic color key">
+  <span><i className="diagnostic-healthy" /> Fits curve</span>
+  <span><i className="diagnostic-watch" /> Watch</span>
+  <span><i className="diagnostic-elevated" /> Elevated</span>
+  <span><i className="diagnostic-severe" /> Severe</span>
+  <span><i className="diagnostic-neutral" /> Sparse</span>
+  <span><b className="expected-curve-swatch" /> Expected curve</span>
+</div>
 <div className="shpilkin-grid">
                         {shpilkinRowsByYear.map((yearGroup) => (
                           <div className="shpilkin-panel" key={yearGroup.year}>
-                            <strong>{yearGroup.year}</strong>
+                            <div className="fingerprint-panel-head">
+                              <strong>{yearGroup.year}</strong>
+                              <span>{yearGroup.buckets.reduce((sum, bucket) => sum + bucket.rows, 0).toLocaleString()} rows</span>
+                            </div>
                             <div className="shpilkin-bars" role="img" aria-label={`${yearGroup.year} Shpilkin-style vote-share bucket chart`}>
                               <svg className="shpilkin-expected-curve" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                                 <polyline
@@ -4818,12 +4888,7 @@ export function WorkspaceTabs({
                               <span>50%</span>
                               <span>100%</span>
                             </div>
-                            <div className="distribution-legend" aria-label="Distribution diagnostic colors">
-                              <span><i className="diagnostic-healthy" /> Fits curve</span>
-                              <span><i className="diagnostic-watch" /> Watch</span>
-                              <span><i className="diagnostic-elevated" /> Elevated</span>
-                              <span><i className="diagnostic-severe" /> Severe</span>
-                            </div>
+
                           </div>
                         ))}
                       </div>
