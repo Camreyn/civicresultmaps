@@ -3369,12 +3369,15 @@ input {
   background: rgba(13, 15, 14, 0.88);
   border: 1px solid rgba(240, 195, 106, 0.42);
   border-radius: 8px;
+  box-sizing: border-box;
   color: var(--foreground);
   display: grid;
   gap: 10px;
   inset: 14px;
   justify-items: center;
   line-height: 1.45;
+  overflow-wrap: anywhere;
+  overflow-y: auto;
   padding: 18px;
   position: absolute;
   text-align: center;
@@ -3407,6 +3410,11 @@ input {
 
 .screening-chart-gate li {
   font-size: 12px;
+}
+
+.screening-chart-gate .secondary-button {
+  max-width: 100%;
+  white-space: normal;
 }
 
 .screening-chart-frame {
@@ -5146,6 +5154,46 @@ td {
     grid-template-columns: 1fr;
   }
 
+  .screening-chart-shell.is-gated {
+    display: grid;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .screening-chart-shell.is-gated .chart-gate-frame {
+    min-height: 132px;
+  }
+
+  .screening-chart-shell.is-gated .screening-chart-gate {
+    inset: auto;
+    max-height: none;
+    order: -1;
+    position: static;
+    width: 100%;
+  }
+
+  .screening-chart-gate {
+    justify-items: stretch;
+    padding: 14px;
+    text-align: left;
+  }
+
+  .screening-chart-gate svg,
+  .screening-chart-gate strong,
+  .screening-chart-gate p,
+  .screening-chart-gate ul,
+  .screening-chart-gate .secondary-button {
+    justify-self: center;
+  }
+
+  .screening-chart-gate p,
+  .screening-chart-gate ul {
+    max-width: 100%;
+  }
+
+  .screening-chart-gate .secondary-button {
+    width: 100%;
+  }
   .topbar {
     align-items: flex-start;
     flex-direction: column;
