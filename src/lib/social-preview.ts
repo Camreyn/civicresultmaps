@@ -2,7 +2,7 @@ import { listCompletenessReport, listResults, listStates } from "./api";
 
 export const socialPreviewYear = 2024;
 export const socialPreviewSiteUrl = "https://www.civicresultmaps.org";
-export const socialPreviewImageVersion = "map-v2";
+export const socialPreviewImageVersion = "map-v3";
 export const socialPreviewCaveat =
   "Advisory indicators are review prompts for source reconciliation, not findings of fraud or misconduct.";
 

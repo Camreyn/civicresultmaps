@@ -18,7 +18,6 @@ const size = {
 
 const mapViewBox = { width: 700, height: 420 };
 const rawGeoBaseUrl = "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
-const brandIconSrc = "https://www.civicresultmaps.org/icons/brand/crm-icon-layered.svg";
 
 type GeoFeature = {
   geometry: {
@@ -274,6 +273,20 @@ async function loadMapPaths(state: string, year: number): Promise<MapFeaturePath
   });
 }
 
+function BrandIcon() {
+  return (
+    <svg width="44" height="44" viewBox="0 0 512 512">
+      <path d="M 261 253 L 397 331 Q 402 334 397 337 L 261 415 Q 256 418 251 415 L 115 337 Q 110 334 115 331 L 251 253 Q 256 250 261 253 Z" fill="#35c7a3" opacity="0.92" />
+      <path d="M 261 173 L 397 251 Q 402 254 397 257 L 261 335 Q 256 338 251 335 L 115 257 Q 110 254 115 251 L 251 173 Q 256 170 261 173 Z" fill="#ff8f7e" opacity="0.96" />
+      <path d="M 261 93 L 397 171 Q 402 174 397 177 L 261 255 Q 256 258 251 255 L 115 177 Q 110 174 115 171 L 251 93 Q 256 90 261 93 Z" fill="#f4f1ea" />
+      <path d="M 179 174 C 217 119 295 119 333 174 C 295 229 217 229 179 174 Z" fill="#061111" />
+      <circle cx="256" cy="174" r="25" fill="#35c7a3" />
+      <circle cx="256" cy="174" r="13" fill="#061111" />
+      <circle cx="270" cy="160" r="7" fill="#f4f1ea" />
+    </svg>
+  );
+}
+
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const preview = await buildStateSocialPreview({
@@ -313,7 +326,7 @@ export async function GET(request: NextRequest) {
                   overflow: "hidden",
                 }}
               >
-                <img src={brandIconSrc} width="44" height="44" alt="" />
+                <BrandIcon />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <div style={{ display: "flex", fontSize: 23, fontWeight: 900 }}>Civic Result Maps</div>
