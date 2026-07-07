@@ -2,7 +2,7 @@ import { listCompletenessReport, listResults, listStates } from "./api";
 
 export const socialPreviewYear = 2024;
 export const socialPreviewSiteUrl = "https://www.civicresultmaps.org";
-export const socialPreviewImageVersion = "map-v4";
+export const socialPreviewImageVersion = "map-v5";
 export const socialPreviewCaveat =
   "Advisory indicators mark source-reconciliation checks, not findings of fraud or misconduct.";
 
@@ -59,16 +59,17 @@ export async function buildStateSocialPreview(input: {
       advisoryCaveat: socialPreviewCaveat,
       description:
         "Explore official election result maps, source provenance, turnout context, historical baselines, and advisory review indicators.",
-      imageAlt: "Civic Result Maps public election data preview",
+      imageAlt: "Civic Result Maps national election data overview",
       imagePath: `${socialPreviewSiteUrl}/api/social-card?year=${year}&v=${socialPreviewImageVersion}`,
       metrics: [
         metric("Loaded states", completenessReport.length),
+        metric("Map-ready states", completenessReport.filter((state) => state.capabilities.map).length),
         metric("Source records", completenessReport.reduce((sum, state) => sum + state.sourceCount, 0)),
         metric("Advisory flags", completenessReport.reduce((sum, state) => sum + state.indicatorCount, 0)),
       ],
       stateCode: "US",
       stateName: "Civic Result Maps",
-      title: "Civic Result Maps Data Preview",
+      title: "Civic Result Maps",
       urlPath: "/",
       year,
     };
@@ -94,8 +95,8 @@ export async function buildStateSocialPreview(input: {
 
   return {
     advisoryCaveat: socialPreviewCaveat,
-    description: `${selectedState.name} ${year} president data preview: ${descriptionParts.join(", ")}. ${socialPreviewCaveat}`,
-    imageAlt: `${selectedState.name} ${year} election data preview from Civic Result Maps`,
+    description: `${selectedState.name} ${year} president data: ${descriptionParts.join(", ")}. ${socialPreviewCaveat}`,
+    imageAlt: `${selectedState.name} ${year} election data from Civic Result Maps`,
     imagePath: `${socialPreviewSiteUrl}/api/social-card?state=${stateCode}&year=${year}&v=${socialPreviewImageVersion}`,
     metrics: [
       metric("Total votes", totalVotes),
@@ -109,7 +110,7 @@ export async function buildStateSocialPreview(input: {
     ],
     stateCode,
     stateName: selectedState.name,
-    title: `${selectedState.name} ${year} President Data Preview`,
+    title: `${selectedState.name} ${year} President Data`,
     urlPath: `/?state=${stateCode}`,
     year,
   };

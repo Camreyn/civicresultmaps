@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { listIndicators, listResults } from "@/lib/api";
+import { listCompletenessReport, listIndicators, listResults } from "@/lib/api";
 import {
   buildStateSocialPreview,
   socialPreviewCaveat,
@@ -18,6 +18,13 @@ const size = {
 
 const mapViewBox = { width: 700, height: 420 };
 const rawGeoBaseUrl = "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
+const nationalTileOrder = [
+  "WA", "ID", "MT", "ND", "MN", "WI", "MI", "NY", "VT", "ME",
+  "OR", "NV", "WY", "SD", "IA", "IL", "IN", "OH", "PA", "NH",
+  "CA", "UT", "CO", "NE", "MO", "KY", "WV", "VA", "MD", "MA",
+  "AK", "AZ", "NM", "KS", "AR", "TN", "NC", "SC", "DE", "RI",
+  "HI", "OK", "TX", "LA", "MS", "AL", "GA", "FL", "NJ", "CT",
+];
 
 type GeoFeature = {
   geometry: {
@@ -269,6 +276,57 @@ async function loadMapPaths(state: string, year: number): Promise<MapFeaturePath
   });
 }
 
+type CompletenessReport = Awaited<ReturnType<typeof listCompletenessReport>>;
+
+function readinessColor(status: string) {
+  if (status === "complete") {
+    return "#35c7a3";
+  }
+  if (status === "review_ready") {
+    return "#82b8ff";
+  }
+  if (status === "results_only") {
+    return "#f0c36a";
+  }
+  return "#2c302e";
+}
+
+function NationalReadinessGrid({ report }: { report: CompletenessReport }) {
+  const reportByState = new Map(report.map((state) => [state.state, state]));
+
+  return (
+    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, width: 612 }}>
+        {nationalTileOrder.map((code) => {
+          const state = reportByState.get(code);
+          const fill = state ? readinessColor(state.status) : "#2c302e";
+          const muted = !state?.resultRows;
+          return (
+            <div
+              key={code}
+              style={{
+                width: 54,
+                height: 52,
+                border: "1px solid #2c302e",
+                borderRadius: 7,
+                background: fill,
+                color: fill === "#2c302e" ? "#f4f1ea" : "#061111",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 21,
+                fontWeight: 900,
+                opacity: muted ? 0.5 : 1,
+              }}
+            >
+              {code}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 function BrandIcon() {
   return (
     <svg width="44" height="44" viewBox="0 0 512 512">
@@ -289,7 +347,11 @@ export async function GET(request: NextRequest) {
     state: params.get("state") ?? undefined,
     year: parseYear(params.get("year")),
   });
-  const paths = await loadMapPaths(preview.stateCode, preview.year);
+  const isNational = preview.stateCode === "US";
+  const [paths, nationalReport] = await Promise.all([
+    loadMapPaths(preview.stateCode, preview.year),
+    isNational ? listCompletenessReport({ year: preview.year }) : Promise.resolve([] as CompletenessReport),
+  ]);
   const hasMap = paths.length > 0;
   const flaggedCount = paths.filter((item) => item.flagged).length;
 
@@ -334,18 +396,18 @@ export async function GET(request: NextRequest) {
               <div style={{ display: "flex", color: "#35c7a3", fontSize: 24, fontWeight: 900 }}>{preview.year} President</div>
               <div style={{ display: "flex", fontSize: 50, fontWeight: 900, lineHeight: 1 }}>{preview.stateName}</div>
               <div style={{ display: "flex", fontSize: 20, color: "#a9aaa4", lineHeight: 1.25 }}>
-                County result map with advisory indicators from currently loaded public data.
+                {isNational ? "National readiness overview from currently loaded public data." : "County result map with advisory indicators from currently loaded public data."}
               </div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "flex", gap: 10 }}>
-                <Metric label="Result rows" value={metricValue(preview.metrics, "Result rows")} />
-                <Metric label="Sources" value={metricValue(preview.metrics, "Sources")} />
+                <Metric label={isNational ? "Loaded states" : "Result rows"} value={metricValue(preview.metrics, isNational ? "Loaded states" : "Result rows")} />
+                <Metric label={isNational ? "Map-ready" : "Sources"} value={metricValue(preview.metrics, isNational ? "Map-ready states" : "Sources")} />
               </div>
               <div style={{ display: "flex", gap: 10 }}>
-                <Metric label="Advisory flags" value={metricValue(preview.metrics, "Advisory flags")} />
-                <Metric label="Flagged areas" value={flaggedCount ? flaggedCount.toLocaleString("en-US") : metricValue(preview.metrics, "Flagged areas")} />
+                <Metric label={isNational ? "Sources" : "Advisory flags"} value={metricValue(preview.metrics, isNational ? "Source records" : "Advisory flags")} />
+                <Metric label={isNational ? "Advisory" : "Flagged areas"} value={isNational ? metricValue(preview.metrics, "Advisory flags") : flaggedCount ? flaggedCount.toLocaleString("en-US") : metricValue(preview.metrics, "Flagged areas")} />
               </div>
             </div>
           </div>
@@ -365,15 +427,27 @@ export async function GET(request: NextRequest) {
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <div style={{ display: "flex", fontSize: 22, fontWeight: 900 }}>County Result Map</div>
+            <div style={{ display: "flex", fontSize: 22, fontWeight: 900 }}>{isNational ? "National Data Readiness" : "County Result Map"}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 16, color: "#a9aaa4" }}>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#82b8ff" }} />Harris</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#ff8f7e" }} />Trump</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "transparent", border: "2px solid #f0c36a" }} />Advisory outline</span>
+              {isNational ? (
+                <>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#35c7a3" }} />Complete</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#82b8ff" }} />Review ready</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#f0c36a" }} />Results only</span>
+                </>
+              ) : (
+                <>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#82b8ff" }} />Harris</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#ff8f7e" }} />Trump</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "transparent", border: "2px solid #f0c36a" }} />Advisory outline</span>
+                </>
+              )}
             </div>
           </div>
 
-          {hasMap ? (
+          {isNational ? (
+            <NationalReadinessGrid report={nationalReport} />
+          ) : hasMap ? (
             <svg width="700" height="420" viewBox={`0 0 ${mapViewBox.width} ${mapViewBox.height}`}>
               <rect x="0" y="0" width={mapViewBox.width} height={mapViewBox.height} rx="8" fill="#111312" />
               {paths.map((feature) => (
@@ -398,7 +472,7 @@ export async function GET(request: NextRequest) {
             </svg>
           ) : (
             <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#a9aaa4", fontSize: 26 }}>
-              Map geometry is not available for this preview.
+              Map geometry is not available for this card.
             </div>
           )}
         </div>

@@ -63,9 +63,14 @@ test("state links expose data-rich social previews", () => {
   assert.match(preview, /Result rows/);
   assert.match(preview, /Turnout rows/);
   assert.match(preview, /Advisory flags/);
+  assert.match(preview, /Map-ready states/);
+  assert.match(preview, /map-v5/);
+  assert.doesNotMatch(preview, /Data Preview/);
   assert.match(socialCard, /ImageResponse/);
   assert.match(socialCard, /1200/);
   assert.match(socialCard, /630/);
+  assert.match(socialCard, /NationalReadinessGrid/);
+  assert.match(socialCard, /National Data Readiness/);
   assert.match(socialCard, /Vercel-CDN-Cache-Control/);
 });
 test("public year-filtered APIs default missing year to 2024", () => {
