@@ -17,6 +17,8 @@ const size = {
 };
 
 const mapViewBox = { width: 700, height: 420 };
+const rawGeoBaseUrl = "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
+const brandIconSrc = "https://www.civicresultmaps.org/icons/brand/crm-icon-layered.svg";
 
 type GeoFeature = {
   geometry: {
@@ -204,18 +206,18 @@ function makePath(state: string, rings: number[][][], bounds: MapBounds) {
 
 function countyFill(winner: string, flagged: boolean) {
   if (flagged) {
-    return "#f6b35b";
+    return "#f0c36a";
   }
 
   if (/harris|dem/i.test(winner)) {
-    return "#6fa7d8";
+    return "#82b8ff";
   }
 
   if (/trump|rep/i.test(winner)) {
-    return "#de806d";
+    return "#ff8f7e";
   }
 
-  return "#d6d0c5";
+  return "#2c302e";
 }
 
 async function loadMapPaths(state: string, year: number): Promise<MapFeaturePath[]> {
@@ -228,7 +230,17 @@ async function loadMapPaths(state: string, year: number): Promise<MapFeaturePath
     const geoJsonPath = path.join(process.cwd(), "data", `${state.toLowerCase()}-counties.geojson`);
     collection = JSON.parse(await readFile(geoJsonPath, "utf8")) as FeatureCollection;
   } catch {
-    return [];
+    try {
+      const response = await fetch(`${rawGeoBaseUrl}/${state.toLowerCase()}-counties.geojson`, {
+        next: { revalidate: 60 * 60 * 24 },
+      });
+      if (!response.ok) {
+        return [];
+      }
+      collection = (await response.json()) as FeatureCollection;
+    } catch {
+      return [];
+    }
   }
 
   const [countyResults, cityResults, cityTownResults, townResults, stateResults, indicators] = await Promise.all([
@@ -279,9 +291,9 @@ export async function GET(request: NextRequest) {
           width: "100%",
           height: "100%",
           display: "flex",
-          background: "#f6f2ea",
-          color: "#17211f",
-          fontFamily: "Arial, sans-serif",
+          background: "#101112",
+          color: "#f4f1ea",
+          fontFamily: "Geist, Inter, Segoe UI, Arial, sans-serif",
           padding: "42px 48px",
         }}
       >
@@ -293,27 +305,26 @@ export async function GET(request: NextRequest) {
                   width: 44,
                   height: 44,
                   borderRadius: 8,
-                  background: "#0f766e",
-                  color: "#ffffff",
+                  background: "#171918",
+                  color: "#f4f1ea",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 21,
-                  fontWeight: 900,
+                  overflow: "hidden",
                 }}
               >
-                CRM
+                <img src={brandIconSrc} width="44" height="44" alt="" />
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <div style={{ display: "flex", fontSize: 23, fontWeight: 900 }}>Civic Result Maps</div>
-                <div style={{ display: "flex", fontSize: 16, color: "#596561" }}>Public election data explorer</div>
+                <div style={{ display: "flex", fontSize: 16, color: "#a9aaa4" }}>Public election data explorer</div>
               </div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ display: "flex", color: "#0f766e", fontSize: 24, fontWeight: 900 }}>{preview.year} President</div>
+              <div style={{ display: "flex", color: "#35c7a3", fontSize: 24, fontWeight: 900 }}>{preview.year} President</div>
               <div style={{ display: "flex", fontSize: 50, fontWeight: 900, lineHeight: 1 }}>{preview.stateName}</div>
-              <div style={{ display: "flex", fontSize: 20, color: "#4f5d59", lineHeight: 1.25 }}>
+              <div style={{ display: "flex", fontSize: 20, color: "#a9aaa4", lineHeight: 1.25 }}>
                 County map with advisory-flag overlay from currently loaded public data.
               </div>
             </div>
@@ -330,15 +341,15 @@ export async function GET(request: NextRequest) {
             </div>
           </div>
 
-          <div style={{ display: "flex", fontSize: 17, color: "#4b5754", lineHeight: 1.25 }}>{socialPreviewCaveat}</div>
+          <div style={{ display: "flex", fontSize: 17, color: "#a9aaa4", lineHeight: 1.25 }}>{socialPreviewCaveat}</div>
         </div>
 
         <div
           style={{
             flex: 1,
-            border: "1px solid #d9d0c2",
+            border: "1px solid #2c302e",
             borderRadius: 8,
-            background: "#fffaf1",
+            background: "#171918",
             display: "flex",
             flexDirection: "column",
             padding: 22,
@@ -346,28 +357,28 @@ export async function GET(request: NextRequest) {
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <div style={{ display: "flex", fontSize: 22, fontWeight: 900 }}>County Result Map</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 16, color: "#53605d" }}>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#6fa7d8" }} />Harris</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#de806d" }} />Trump</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#f6b35b", border: "2px solid #9f321f" }} />Advisory flag</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 16, color: "#a9aaa4" }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#82b8ff" }} />Harris</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#ff8f7e" }} />Trump</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}><i style={{ width: 18, height: 12, background: "#f0c36a", border: "2px solid #35c7a3" }} />Advisory flag</span>
             </div>
           </div>
 
           {hasMap ? (
             <svg width="700" height="420" viewBox={`0 0 ${mapViewBox.width} ${mapViewBox.height}`}>
-              <rect x="0" y="0" width={mapViewBox.width} height={mapViewBox.height} rx="8" fill="#f7f3ea" />
+              <rect x="0" y="0" width={mapViewBox.width} height={mapViewBox.height} rx="8" fill="#111312" />
               {paths.map((feature) => (
                 <path
                   key={feature.key}
                   d={feature.path}
                   fill={countyFill(feature.winner, feature.flagged)}
-                  stroke={feature.flagged ? "#9f321f" : "#ffffff"}
+                  stroke={feature.flagged ? "#35c7a3" : "#101112"}
                   strokeWidth={feature.flagged ? 2.4 : 0.85}
                 />
               ))}
             </svg>
           ) : (
-            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#53605d", fontSize: 26 }}>
+            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#a9aaa4", fontSize: 26 }}>
               Map geometry is not available for this preview.
             </div>
           )}
@@ -390,16 +401,16 @@ function Metric({ label, value }: { label: string; value: string }) {
       style={{
         width: 145,
         height: 72,
-        border: "1px solid #d8d0c2",
+        border: "1px solid #2c302e",
         borderRadius: 8,
-        background: "#fffaf1",
+        background: "#171918",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         padding: "0 14px",
       }}
     >
-      <div style={{ display: "flex", fontSize: 15, color: "#5c6764" }}>{label}</div>
+      <div style={{ display: "flex", fontSize: 15, color: "#a9aaa4" }}>{label}</div>
       <div style={{ display: "flex", fontSize: 26, fontWeight: 900 }}>{value}</div>
     </div>
   );
