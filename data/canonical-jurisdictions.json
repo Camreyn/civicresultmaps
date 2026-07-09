@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-09T01:06:15.349Z",
+  "generatedAt": "2026-07-09T22:18:25.825Z",
   "source": "Generated from committed data/*-counties.geojson files plus explicit non-FIPS reporting exceptions.",
   "tagContract": "county:<GEOID> for Census county/county-equivalent rows; reporting:<STATE>:<SLUG> for explicit election reporting exceptions.",
   "jurisdictions": [
@@ -10274,7 +10274,11 @@
       "displayName": "De Witt County",
       "aliases": [
         "De Witt County",
-        "De Witt"
+        "De Witt",
+        "DeWitt",
+        "DeWITT",
+        "DeWitt County",
+        "DeWITT County"
       ],
       "geometryKey": "DE WITT",
       "source": "il-counties.geojson",
@@ -10634,7 +10638,11 @@
       "displayName": "Jo Daviess County",
       "aliases": [
         "Jo Daviess County",
-        "Jo Daviess"
+        "Jo Daviess",
+        "JoDaviess",
+        "JoDAVIESS",
+        "JoDaviess County",
+        "JoDAVIESS County"
       ],
       "geometryKey": "JO DAVIESS",
       "source": "il-counties.geojson",

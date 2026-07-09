@@ -94,6 +94,19 @@ function aliasVariants(name, basename) {
     variants.add("LaSalle");
     variants.add("LaSalle County");
   }
+  if (/^De Witt/i.test(name) || /^De Witt/i.test(basename)) {
+    variants.add("DeWitt");
+    variants.add("DeWITT");
+    variants.add("DeWitt County");
+    variants.add("DeWITT County");
+  }
+
+  if (/^Jo Daviess/i.test(name) || /^Jo Daviess/i.test(basename)) {
+    variants.add("JoDaviess");
+    variants.add("JoDAVIESS");
+    variants.add("JoDaviess County");
+    variants.add("JoDAVIESS County");
+  }
 
   return Array.from(variants)
     .map((alias) => String(alias || "").trim())

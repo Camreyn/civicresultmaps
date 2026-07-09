@@ -77,6 +77,12 @@ function candidateBucket(row) {
     return null;
   }
 
+  if (candidate.includes("BIDEN")) {
+    return "dem";
+  }
+  if (candidate.includes("TRUMP")) {
+    return "rep";
+  }
   const party = String(row.PartyName ?? "").trim().toUpperCase();
   if (party.includes("DEMOCRATIC")) {
     return "dem";
