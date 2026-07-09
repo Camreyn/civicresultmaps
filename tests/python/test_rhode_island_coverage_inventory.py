@@ -46,7 +46,7 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         })
         self.assertEqual(sum(row["totalVotes"] for row in county_rows), 511784)
         self.assertEqual(len(artifact["native"]["reviewRows"]), 444)
-        self.assertEqual(len(artifact["native"]["historicalRows"]), 80)
+        self.assertEqual(len(artifact["native"]["historicalRows"]), 86)
         self.assertTrue(artifact["capabilities"]["map"])
         self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 7)
         self.assertEqual(artifact["native"]["metrics"]["nativeMapResultRows"], 5)
@@ -58,7 +58,11 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 39)
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 522164)
         self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 792075)
-        self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalYears"], [2012, 2016])
+        self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalYears"], [2012, 2016, 2020])
+        historical_2020 = [row for row in artifact["native"]["historicalRows"] if row["electionYear"] == 2020]
+        self.assertEqual(len([row for row in historical_2020 if row["sourceLevel"] == "county"]), 5)
+        self.assertEqual(len([row for row in historical_2020 if row["sourceLevel"] == "federal_precincts"]), 1)
+        self.assertEqual(sum(row["totalVotes"] for row in historical_2020), 517757)
 
         sources = {source["id"]: source for source in artifact["sources"]}
         self.assertEqual(sources["ri-2024-boe-long-format-zip"]["status"], "loaded")
@@ -73,8 +77,9 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(findings["certifiedResults"]["observedOfficialTotals"]["statewidePresidentTotal"], 513386)
         self.assertEqual(findings["sameGrainComparisonContest"]["observedOfficialTotals"]["statewideSenateTotal"], 491948)
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialTotals"]["eacFallbackRows"], 39)
-        self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2012, 2016])
-        self.assertIn("2020", findings["historicalBaselines"]["blockers"][0])
+        self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2012, 2016, 2020])
+        self.assertEqual(findings["historicalBaselines"]["loadedRows"]["rows2020CountyAggregates"], 5)
+        self.assertEqual(findings["historicalBaselines"]["blockers"], [])
         self.assertEqual(findings["auditRecountCvrIncidentCorrectionLitigation"]["status"], "request_paths_documented_not_loaded")
         self.assertIn("not findings", self.inventory["remainingRisks"][-1])
 
@@ -82,6 +87,7 @@ class RhodeIslandCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(self.request_rows["ri-2024-certified-results-zip"]["status"], "loaded_with_reconciliation_caveat")
         self.assertEqual(self.request_rows["ri-2024-us-senate-review"]["status"], "loaded_with_zip_delta_caveat")
         self.assertEqual(self.request_rows["ri-2024-state-native-turnout"]["status"], "state_native_source_not_loaded")
+        self.assertEqual(self.request_rows["ri-2024-historical-baselines"]["status"], "loaded_2020_county_aggregated")
         self.assertEqual(self.request_rows["ri-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
 
 

@@ -37,6 +37,17 @@
       "timestampBasis": "Official 2024 General Election by-office CSV turnout-field review generated July 5, 2026.",
       "confidence": "The official by-office precinct CSVs expose Registration and VoteCount fields, but the President CSV lacks an election-level ballots-cast field, has 2,260 precinct keys with zero Registration, and the reviewed registration/contest-total sums do not reconcile to active turnout benchmarks. Documented as a state-native lead that is not a valid turnout replacement.",
       "status": "documented_exclusion"
+    },
+    {
+      "id": "il-2020-general-president-by-office",
+      "category": "Official 2020 historical presidential baseline",
+      "url": "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=58",
+      "localFile": "data/il-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Illinois State Board of Elections",
+      "timestampBasis": "Official 2020 General Election by-office President CSV downloaded from the Illinois State Board of Elections ByOffice/58 path and normalized July 9, 2026.",
+      "confidence": "Official Illinois State Board of Elections by-office President rows normalized to 102 county-named election-authority historical baseline rows. The six separate city election authorities are intentionally excluded rather than forced into county FIPS tags.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -56,13 +67,14 @@
   "expected": {
     "jurisdictions": 108,
     "resultRows": 108,
-    "sources": 3,
+    "sources": 4,
     "stateTotal": 5649779,
     "trump": 2449079,
     "harris": 3062863,
     "other": 137837,
     "reviewRows": 6655,
-    "turnoutRows": 108
+    "turnoutRows": 108,
+    "historicalBaselineRows": 102
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -70,7 +82,7 @@
     "map": false,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "illinoisElectionResultsByOfficeCsvDirectory",
@@ -82,5 +94,16 @@
     "comparisonContest": "U.S. House",
     "coverageMode": "presidentVsHouseContestedPrecinct",
     "warning": "Illinois review rows compare official precinct President rows with U.S. House rows where the jurisdiction/precinct key is unambiguous and the House contest has both Democratic and Republican candidate votes. Rows are omitted for precinct keys appearing in multiple House districts and for uncontested or one-party House comparison rows. This is an advisory same-election comparison, not a statewide Senate or Governor comparison."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "il-2020-general-president-by-office",
+    "warning": "Illinois 2020 historical baseline rows are official by-office President county-named election-authority rows. The six separate city election authorities in the official source are excluded from county-tagged historical rows rather than forced into county FIPS tags; use these as same-source historical context, not full-county certified totals for counties with separate city election authorities.",
+    "expected": {
+      "rowCount": 102,
+      "years": [
+        2020
+      ]
+    }
   }
 }

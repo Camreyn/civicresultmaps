@@ -13,16 +13,19 @@ const sourceUrls = {
   president: "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-president.pdf",
   senate: "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-us-senate.pdf",
   turnout: "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
+  historical2020: "https://www.nj.gov/state/elections/assets/pdf/election-results/2020/2020-official-general-results-president.pdf",
 };
 
 const paths = {
   presidentPdf: path.join(repoRoot, "data", "nj-2024-official-general-results-president.pdf"),
   senatePdf: path.join(repoRoot, "data", "nj-2024-official-general-results-us-senate.pdf"),
   turnoutPdf: path.join(repoRoot, "data", "nj-2024-official-general-voter-turnout.pdf"),
+  historical2020Pdf: path.join(repoRoot, "data", "nj-2020-official-general-results-president.pdf"),
   presidentCsv: path.join(repoRoot, "data", "nj-2024-general-president-county.csv"),
   senateCsv: path.join(repoRoot, "data", "nj-2024-general-senate-county.csv"),
   turnoutCsv: path.join(repoRoot, "data", "nj-2024-official-turnout-county.csv"),
   turnoutSummary: path.join(repoRoot, "data", "nj-2024-turnout-reconciliation-summary.json"),
+  historicalCsv: path.join(repoRoot, "data", "nj-2020-historical-presidential-baseline.csv"),
 };
 
 const counties = [
@@ -50,7 +53,31 @@ const counties = [
 ];
 
 const countyDisplay = new Map(counties.map((county) => [county, `${titleCase(county)} County`]));
+const countyFips = new Map([
+  ["ATLANTIC", "34001"],
+  ["BERGEN", "34003"],
+  ["BURLINGTON", "34005"],
+  ["CAMDEN", "34007"],
+  ["CAPE MAY", "34009"],
+  ["CUMBERLAND", "34011"],
+  ["ESSEX", "34013"],
+  ["GLOUCESTER", "34015"],
+  ["HUDSON", "34017"],
+  ["HUNTERDON", "34019"],
+  ["MERCER", "34021"],
+  ["MIDDLESEX", "34023"],
+  ["MONMOUTH", "34025"],
+  ["MORRIS", "34027"],
+  ["OCEAN", "34029"],
+  ["PASSAIC", "34031"],
+  ["SALEM", "34033"],
+  ["SOMERSET", "34035"],
+  ["SUSSEX", "34037"],
+  ["UNION", "34039"],
+  ["WARREN", "34041"],
+]);
 const countyPattern = new RegExp(`^(${counties.map(escapeRegex).sort((a, b) => b.length - a.length).join("|")})\\s+.+?\\s+([\\d,]+)$`);
+const historicalCountyPattern = new RegExp(`^(${counties.map(escapeRegex).sort((a, b) => b.length - a.length).join("|")})(?:\\s+.+?)?\\s+([\\d,]+)$`);
 
 function escapeRegex(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -109,6 +136,15 @@ function candidateBucket(line, contest) {
   return null;
 }
 
+function historicalCandidateBucket(line) {
+  if (/^JOSEPH R\. BIDEN\b/.test(line)) return "dem_votes";
+  if (/^DONALD J\. TRUMP\b/.test(line)) return "rep_votes";
+  if (/^(JO JORGENSEN|HOWIE HAWKINS|BILL HAMMONS|DON BLANKENSHIP|GLORIA ESTELA LA RIVA|ROQUE "ROCKY" DE LA)\b/.test(line)) {
+    return "other_votes";
+  }
+  return null;
+}
+
 function emptyRows(keys) {
   return new Map(
     counties.map((county) => [
@@ -156,6 +192,63 @@ function parseContestCountyRows(text, contest, keys, expectedTotals) {
     jurisdiction_name: countyDisplay.get(county),
     ...rowsByCounty.get(county),
   }));
+}
+
+function parseHistorical2020Rows(text) {
+  const keys = ["dem_votes", "rep_votes", "other_votes"];
+  const rowsByCounty = emptyRows(keys);
+  let bucket = null;
+
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.replace(/\s+/g, " ").trim();
+    const nextBucket = historicalCandidateBucket(line);
+    if (nextBucket) {
+      bucket = nextBucket;
+      continue;
+    }
+
+    const match = line.match(historicalCountyPattern);
+    if (!match) {
+      continue;
+    }
+    if (!bucket) {
+      throw new Error(`2020 historical county tally encountered before candidate bucket: ${line}`);
+    }
+    const county = match[1];
+    rowsByCounty.get(county)[bucket] += intValue(match[2]);
+  }
+
+  const totals = Object.fromEntries(keys.map((key) => [key, 0]));
+  for (const values of rowsByCounty.values()) {
+    for (const key of keys) totals[key] += values[key];
+  }
+  const expected = { dem_votes: 2608400, rep_votes: 1883313, other_votes: 57744 };
+  for (const [key, value] of Object.entries(expected)) {
+    if (totals[key] !== value) {
+      throw new Error(`New Jersey 2020 historical ${key} total mismatch: ${totals[key]} != ${value}`);
+    }
+  }
+
+  return counties.map((county) => {
+    const values = rowsByCounty.get(county);
+    const displayName = countyDisplay.get(county);
+    return {
+      state: "NJ",
+      election_year: 2020,
+      jurisdiction_name: displayName,
+      county: displayName,
+      local_unit: displayName,
+      jurisdiction_tag: `county:${countyFips.get(county)}`,
+      source_id: "nj-2020-official-general-results-president-pdf",
+      source_level: "county",
+      row_method: "newJerseyDoePdfCountyHistoricalPresident",
+      dem_votes: values.dem_votes,
+      rep_votes: values.rep_votes,
+      other_votes: values.other_votes,
+      total_votes: values.dem_votes + values.rep_votes + values.other_votes,
+      source_url: sourceUrls.historical2020,
+    };
+  });
 }
 
 function parseTurnoutRows(text) {
@@ -222,6 +315,7 @@ async function main() {
   const presidentText = await extractText(paths.presidentPdf);
   const senateText = await extractText(paths.senatePdf);
   const turnoutText = await extractText(paths.turnoutPdf);
+  const historical2020Text = await extractText(paths.historical2020Pdf);
 
   const presidentRows = parseContestCountyRows(
     presidentText,
@@ -236,6 +330,7 @@ async function main() {
     { comparison_rep: 1773589, comparison_dem: 2161491, comparison_other: 96715 },
   );
   const turnout = parseTurnoutRows(turnoutText);
+  const historicalRows = parseHistorical2020Rows(historical2020Text);
 
   writeCsv(paths.presidentCsv, ["state", "election_year", "jurisdiction_name", "trump", "harris", "other"], presidentRows);
   writeCsv(paths.senateCsv, ["state", "election_year", "jurisdiction_name", "comparison_rep", "comparison_dem", "comparison_other"], senateRows);
@@ -263,6 +358,26 @@ async function main() {
       "election_districts",
     ],
     turnout.rows,
+  );
+  writeCsv(
+    paths.historicalCsv,
+    [
+      "state",
+      "election_year",
+      "jurisdiction_name",
+      "county",
+      "local_unit",
+      "jurisdiction_tag",
+      "source_id",
+      "source_level",
+      "row_method",
+      "dem_votes",
+      "rep_votes",
+      "other_votes",
+      "total_votes",
+      "source_url",
+    ],
+    historicalRows,
   );
 
   const summary = {
@@ -293,8 +408,10 @@ async function main() {
         presidentRows: presidentRows.length,
         senateRows: senateRows.length,
         turnoutRows: turnout.rows.length,
+        historicalRows: historicalRows.length,
         presidentTotal: 1968215 + 2220713 + 83797,
         senateTotal: 1773589 + 2161491 + 96715,
+        historical2020Total: historicalRows.reduce((sum, row) => sum + row.total_votes, 0),
         turnoutTotals: turnout.totals,
       },
       null,

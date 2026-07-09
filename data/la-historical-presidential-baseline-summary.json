@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-07-09",
+  "state": "LA",
+  "source": {
+    "authority": "Louisiana Secretary of State",
+    "sourcePageUrl": "https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential",
+    "precinctCsvUrl": "https://voterportal.sos.la.gov/ElectionResults/ElectionResults/Data?blob=20201103/csv/ByPrecinct_59568.csv",
+    "rawCsvLocalFile": "data/la-2020-general-presidential-electors-by-precinct.csv",
+    "normalizedCsvLocalFile": "data/la-historical-presidential-baseline.csv",
+    "parserNormalizationPath": "scripts/collect-la-historical-baseline.mjs",
+    "rawCsvSha256": "eb1ad9114185c4f1b208d5dc7871b0be7f607e412d65303613cbb16a46332f31"
+  },
+  "expected": {
+    "rows": 64,
+    "demVotes": 856034,
+    "repVotes": 1255776,
+    "otherVotes": 36252,
+    "totalVotes": 2148062
+  },
+  "actual": {
+    "rows": 64,
+    "demVotes": 856034,
+    "repVotes": 1255776,
+    "otherVotes": 36252,
+    "totalVotes": 2148062
+  },
+  "caveats": [
+    "Louisiana parishes are Census county equivalents; normalized rows preserve Parish display names for county-equivalent joins.",
+    "Rows are official 2020 parish presidential baselines for context and jurisdictionTag matching, not 2024 certified-result replacements.",
+    "2012 and 2016 official parish historical baselines remain uncollected in this pass."
+  ]
+}

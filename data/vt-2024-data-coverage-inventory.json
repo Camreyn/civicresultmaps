@@ -2,15 +2,9 @@
   "state": "VT",
   "stateName": "Vermont",
   "electionYear": 2024,
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-09",
   "productionChecked": false,
-  "repoDrift": [
-    {
-      "path": "docs/developer/index.md",
-      "status": "missing_in_worktree",
-      "note": "Required first-read path was not present in this worktree; AGENTS.md fallback instructions were read."
-    }
-  ],
+  "repoDrift": [],
   "currentEtLStatus": {
     "config": "etl/state-configs/vt.json",
     "turnoutOnly": false,
@@ -18,14 +12,15 @@
     "expectedRows": {
       "resultRows": 14,
       "reviewRows": 283,
-      "turnoutRows": 247
+      "turnoutRows": 247,
+      "historicalBaselineRows": 14
     },
     "capabilities": {
       "certifiedResults": true,
       "reviewGraphs": true,
       "map": true,
       "turnout": true,
-      "historicalBaseline": false
+      "historicalBaseline": true
     }
   },
   "officialSourceFindings": {
@@ -112,17 +107,38 @@
       "notes": "The SOS results page identifies 2024 audit results and recount results for House District Bennington-1 and House District Windsor-3. No normalized audit, CVR availability, incident, correction, or litigation rows are loaded."
     },
     "historicalBaselines": {
-      "status": "official_archive_leads_identified_not_collected",
+      "status": "loaded_official_2020_county_aggregate_2016_2012_pending",
+      "loadedYears": [
+        2020
+      ],
       "targetYears": [
         2020,
         2016,
         2012
       ],
+      "authority": "Vermont Secretary of State",
       "sourceUrls": [
-        "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
-        "https://electionarchive.vermont.gov/"
+        "https://electionarchive.vermont.gov/elections/view/144513/",
+        "https://electionarchive.vermont.gov/elections/download/144513/precincts_include:0/"
       ],
-      "notes": "The SOS results page and electionarchive.vermont.gov are official archive leads. Baseline artifacts were not collected or normalized in this pass."
+      "localArtifacts": [
+        "data/vt-2020-president-municipality-results.xls",
+        "data/vt-historical-presidential-baseline.csv"
+      ],
+      "parserNormalizationPath": "scripts/collect-vt-historical-baseline.mjs -> historicalPresidentialCsv via etl/state-configs/vt.json historicalBaselines.sourceId=vt-historical-presidential-baseline",
+      "reportingGrain": "county aggregate from 246 official 2020 municipality rows using the official Vermont 2024 static manifest town-to-county crosswalk",
+      "expectedRows": 14,
+      "jurisdictionTagMode": "county:<GEOID> tags from data/vt-counties.geojson, e.g. county:50001 through county:50027",
+      "reconciliation": {
+        "municipalityRowsAggregated": 246,
+        "countyRows": 14,
+        "bidenVotes": 242820,
+        "trumpVotes": 112704,
+        "otherCandidateAndWriteInVotes": 11904,
+        "candidateVotes": 367428,
+        "totalVotesCastIncludingBlanksSpoiled": 370968
+      },
+      "caveats": "County historical context only. The source export is official SOS municipality-level data; county rows are reproducible aggregates using the official manifest county crosswalk. Essex uses the pre-2022 municipality label and maps safely to Chittenden County. 2016 and 2012 official baseline rows remain pending."
     }
   },
   "officialEndpointChecks": [
@@ -147,15 +163,15 @@
     }
   ],
   "displayPathStatus": {
-    "staging": "VT staging now emits 14 county President result rows, 283 town/reporting-district President-versus-U.S.-Senate review rows, and 247 EAC fallback turnout rows.",
+    "staging": "VT staging emits 14 county President result rows, 283 town/reporting-district President-versus-U.S.-Senate review rows, 247 EAC fallback turnout rows, and 14 official 2020 county historical baseline rows.",
     "apiWebsite": "No production promotion was performed. Production reflection was not checked.",
-    "capabilityDecision": "certifiedResults, reviewGraphs, and county map are enabled from official SOS static JSON; historicalBaseline remains disabled and state-native turnout replacement remains blocked on denominator review."
+    "capabilityDecision": "certifiedResults, reviewGraphs, county map, turnout, and 2020 historicalBaseline are enabled; state-native turnout replacement remains blocked on denominator review, and 2016/2012 historical rows remain pending."
   },
   "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv",
   "remainingRisks": [
     "State-native turnout replacement remains blocked because SOS JSON registered voters, certified canvass registered voters, and EAC fallback registered voters differ.",
     "Town/reporting-district geometry is not loaded, so subcounty map overlays remain unavailable even though county result map rows are active.",
-    "Official 2020/2016/2012 historical baselines are not normalized.",
+    "Official 2016 and 2012 historical baselines are not normalized yet; 2020 is loaded from official SOS municipality rows aggregated to county.",
     "Audit, recount, CVR availability, incident, correction, and litigation records are not normalized; these gaps are source-coverage limitations only and are not evidence of fraud or misconduct."
   ]
 }

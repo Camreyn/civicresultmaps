@@ -84,13 +84,13 @@
     },
     {
       "id": "id-historical-presidential-baseline",
-      "category": "Official 2012/2016 historical county presidential baseline rows with 2020 blocker documented",
-      "url": "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html",
+      "category": "Official 2012/2016/2020 historical county presidential baseline rows",
+      "url": "https://sos.idaho.gov/elections-division/2020-results-statistics/",
       "localFile": "data/id-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
       "authority": "Idaho Secretary of State",
-      "timestampBasis": "Official Idaho Secretary of State 2012 and 2016 county presidential archive pages normalized by scripts/collect-id-historical-baseline.py on July 2, 2026. The 2020 county baseline is not loaded because official county abstracts are partly PDF-only in this environment and the secondary county table failed official statewide reconciliation.",
-      "confidence": "Collected official 2012/2016 county historical presidential baselines for context only; not_active_in_staging until the shared native importer enables historicalPresidentialCsv for the Idaho countyPresidentCsv branch. The 2020 historical baseline remains blocked pending a script-readable official county artifact or reviewed PDF/OCR extraction; do not substitute the mismatched secondary county table.",
+      "timestampBasis": "Official Idaho Secretary of State 2012, 2016, and 2020 county presidential archive/statistics pages normalized by scripts/collect-id-historical-baseline.py on July 9, 2026.",
+      "confidence": "Loaded official 2012/2016/2020 county historical presidential baselines for context. 2020 uses the official SOS county statistics page, including named third-party and aggregate write-in columns, and reconciles to official statewide totals.",
       "status": "loaded"
     }
   ],
@@ -118,7 +118,8 @@
     "harris": 274972,
     "other": 24749,
     "reviewRows": 44,
-    "turnoutRows": 44
+    "turnoutRows": 44,
+    "historicalBaselineRows": 132
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -126,7 +127,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "countyPresidentCsv",
@@ -141,5 +142,13 @@
     "comparisonContest": "United States Representative",
     "coverageMode": "presidentVsUSHouse",
     "warning": "Idaho review rows are county-level President-versus-U.S. House comparisons from the official Vote Idaho archive. The public archive does not expose presidential precinct-level rows in the collected source package; U.S. House is district-based, so these are advisory screening inputs, not confirmed findings."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "id-historical-presidential-baseline",
+    "expected": {
+      "rowCount": 132
+    },
+    "warning": "Idaho historical baselines are official county-level context rows for 2012, 2016, and 2020. They are used for county flip/join context, not as 2024 certified results or advisory findings."
   }
 }

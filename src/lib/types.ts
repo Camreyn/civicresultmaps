@@ -28,9 +28,10 @@ export type ResultRow = {
   state: string;
   year: number;
   office: string;
-  level: "county" | "state" | "district" | "precinct" | "city" | "city_town" | "town" | "rest_of_county";
+  level: "county" | "state" | "district" | "precinct" | "city" | "town" | "city_town" | "rest_of_county";
   jurisdictionCode: string;
   jurisdictionName: string;
+  jurisdictionTag?: string | null;
   votes: Record<string, number>;
   totalVotes: number;
   marginVotes: number;
@@ -75,6 +76,15 @@ export type CompletenessSummary = {
   authority: string;
   resultRows: number;
   resultJurisdictions: number;
+  historicalJoinReady: boolean;
+  jurisdictionTagCoverage: {
+    resultJurisdictions: number;
+    taggedResultJurisdictions: number;
+    historical2020Jurisdictions: number;
+    taggedHistorical2020Jurisdictions: number;
+    matchedHistorical2020Jurisdictions: number;
+    missingHistorical2020Jurisdictions: number;
+  };
   sourceCount: number;
   mapGeometrySourceCount: number;
   sourcesMissingUrls: number;
@@ -118,7 +128,8 @@ export type AnalysisIndicator = {
   electionYear: number;
   jurisdictionCode: string;
   jurisdictionName: string;
-  level: "county" | "state" | "district" | "precinct" | "city" | "city_town" | "town" | "rest_of_county";
+  jurisdictionTag?: string | null;
+  level: "county" | "state" | "district" | "precinct" | "city" | "town" | "city_town" | "rest_of_county";
   type: string;
   severity: number;
   label: string;
@@ -133,6 +144,7 @@ export type ReviewRowSummary = {
   electionYear: number;
   jurisdictionCode: string;
   jurisdictionName: string;
+  jurisdictionTag?: string | null;
   localUnit: string;
   level: string;
   harrisVotes: number | null;
@@ -152,6 +164,7 @@ export type TurnoutRowSummary = {
   electionYear: number;
   jurisdictionCode: string;
   jurisdictionName: string;
+  jurisdictionTag?: string | null;
   level: string;
   ballotsCast: number;
   registeredVoters: number | null;
@@ -167,6 +180,7 @@ export type VoteMethodRowSummary = {
   electionYear: number;
   jurisdictionCode: string;
   jurisdictionName: string;
+  jurisdictionTag?: string | null;
   county: string;
   localUnit: string;
   level: string;
@@ -191,6 +205,7 @@ export type HistoricalResultRowSummary = {
   rowMethod: string;
   jurisdictionCode: string;
   jurisdictionName: string;
+  jurisdictionTag?: string | null;
   localUnit: string;
   demVotes: number | null;
   repVotes: number | null;
@@ -206,6 +221,7 @@ export type EquipmentRowSummary = {
   electionYear: number;
   jurisdictionCode: string;
   jurisdictionName: string;
+  jurisdictionTag?: string | null;
   level: string;
   vendor: string;
   systemName: string;

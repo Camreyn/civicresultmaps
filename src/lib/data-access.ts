@@ -26,6 +26,7 @@ import type {
   StateSummary,
   TurnoutRowSummary,
 } from "./types";
+import { jurisdictionTagForRow } from "./jurisdiction-tags";
 
 const emptyCapabilities: CapabilitySummary = {
   sourcePlanner: true,
@@ -83,6 +84,7 @@ function completenessGaps(input: {
   reviewRowCount: number;
   sourceCount: number;
   sourcesMissingUrls: number;
+  jurisdictionTagCoverage?: CompletenessSummary["jurisdictionTagCoverage"];
 }) {
   const gaps: string[] = [];
 
@@ -114,6 +116,15 @@ function completenessGaps(input: {
 
   if (!input.capabilities.historicalBaseline) {
     gaps.push("Historical baseline pending");
+  }
+
+  const tagCoverage = input.jurisdictionTagCoverage;
+  if (tagCoverage && tagCoverage.resultJurisdictions > tagCoverage.taggedResultJurisdictions) {
+    gaps.push(`${tagCoverage.resultJurisdictions - tagCoverage.taggedResultJurisdictions} result jurisdiction${tagCoverage.resultJurisdictions - tagCoverage.taggedResultJurisdictions === 1 ? "" : "s"} missing canonical tags`);
+  }
+
+  if (tagCoverage && tagCoverage.missingHistorical2020Jurisdictions > 0) {
+    gaps.push(`${tagCoverage.missingHistorical2020Jurisdictions} tagged jurisdiction${tagCoverage.missingHistorical2020Jurisdictions === 1 ? "" : "s"} missing 2020 historical join rows`);
   }
 
   return gaps;
@@ -163,6 +174,15 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
     const sourcesMissingUrls = sources.filter((source) => !source.sourceUrl.trim()).length;
     const indicatorCount = state.capabilities.reviewGraphs ? 1 : 0;
     const reviewRowCount = state.capabilities.reviewGraphs ? results.length : 0;
+    const resultJurisdictions = new Set(results.map((row) => row.jurisdictionCode)).size;
+    const jurisdictionTagCoverage: CompletenessSummary["jurisdictionTagCoverage"] = {
+      resultJurisdictions,
+      taggedResultJurisdictions: 0,
+      historical2020Jurisdictions: 0,
+      taggedHistorical2020Jurisdictions: 0,
+      matchedHistorical2020Jurisdictions: 0,
+      missingHistorical2020Jurisdictions: 0,
+    };
     const status = completenessStatus({
       capabilities: state.capabilities,
       mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
@@ -177,7 +197,9 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
       name: state.name,
       authority: state.authority,
       resultRows: results.length,
-      resultJurisdictions: new Set(results.map((row) => row.jurisdictionCode)).size,
+      resultJurisdictions,
+      historicalJoinReady: false,
+      jurisdictionTagCoverage,
       sourceCount: sources.length,
       mapGeometrySourceCount: sources.filter(isMapGeometrySource).length,
       sourcesMissingUrls,
@@ -212,6 +234,7 @@ function seedCompletenessReport(year: number): CompletenessSummary[] {
         reviewRowCount,
         sourceCount: sources.length,
         sourcesMissingUrls,
+        jurisdictionTagCoverage,
       }),
     };
   });
@@ -383,6 +406,7 @@ export async function listResults(input: {
     level: string;
     jurisdictionCode: string;
     jurisdictionName: string;
+    jurisdictionTag: string | null;
     candidateName: string;
     party: string;
     votes: number;
@@ -432,6 +456,7 @@ export async function listResults(input: {
         level: row.level as ResultRow["level"],
         jurisdictionCode: row.jurisdictionCode,
         jurisdictionName: row.jurisdictionName,
+        jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({ state: row.stateCode, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.level }),
         votes: {},
         totalVotes: 0,
         marginVotes: 0,
@@ -536,6 +561,7 @@ export async function listIndicators(input: {
     id: string;
     jurisdictionCode: string;
     jurisdictionName: string;
+    jurisdictionTag: string | null;
     label: string;
     level: AnalysisIndicator["level"];
     metrics: unknown;
@@ -554,6 +580,7 @@ export async function listIndicators(input: {
         analysis_indicators.election_year as "electionYear",
         analysis_indicators.jurisdiction_code as "jurisdictionCode",
         analysis_indicators.jurisdiction_name as "jurisdictionName",
+        analysis_indicators.jurisdiction_tag as "jurisdictionTag",
         analysis_indicators.level,
         analysis_indicators.indicator_type as "type",
         analysis_indicators.severity,
@@ -580,6 +607,7 @@ export async function listIndicators(input: {
     id: row.id,
     jurisdictionCode: row.jurisdictionCode,
     jurisdictionName: row.jurisdictionName,
+    jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({ state: row.state, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.level }),
     label: row.label,
     level: row.level,
     metrics: row.metrics as Record<string, unknown>,
@@ -608,6 +636,7 @@ export async function listReviewRows(input: {
     id: string;
     jurisdictionCode: string;
     jurisdictionName: string;
+    jurisdictionTag: string | null;
     level: string;
     localUnit: string;
     metrics: unknown;
@@ -628,6 +657,7 @@ export async function listReviewRows(input: {
         review_rows.election_year as "electionYear",
         review_rows.jurisdiction_code as "jurisdictionCode",
         review_rows.jurisdiction_name as "jurisdictionName",
+        review_rows.jurisdiction_tag as "jurisdictionTag",
         review_rows.local_unit as "localUnit",
         review_rows.level,
         review_rows.harris_votes as "harrisVotes",
@@ -662,6 +692,7 @@ export async function listReviewRows(input: {
     id: row.id,
     jurisdictionCode: row.jurisdictionCode,
     jurisdictionName: row.jurisdictionName,
+    jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({ state: row.state, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.level }),
     level: row.level,
     localUnit: row.localUnit,
     metrics: row.metrics as Record<string, unknown>,
@@ -690,6 +721,7 @@ export async function listTurnoutRows(input: {
     id: string;
     jurisdictionCode: string;
     jurisdictionName: string;
+    jurisdictionTag: string | null;
     level: string;
     registeredVoters: number | null;
     sourceSlug: string | null;
@@ -707,6 +739,7 @@ export async function listTurnoutRows(input: {
         turnout_rows.election_year as "electionYear",
         turnout_rows.jurisdiction_code as "jurisdictionCode",
         turnout_rows.jurisdiction_name as "jurisdictionName",
+        turnout_rows.jurisdiction_tag as "jurisdictionTag",
         turnout_rows.level,
         turnout_rows.ballots_cast as "ballotsCast",
         turnout_rows.registered_voters as "registeredVoters",
@@ -732,6 +765,7 @@ export async function listTurnoutRows(input: {
     id: row.id,
     jurisdictionCode: row.jurisdictionCode,
     jurisdictionName: row.jurisdictionName,
+    jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({ state: row.state, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.level }),
     level: row.level,
     registeredVoters: row.registeredVoters,
     sourceId: row.sourceSlug ?? "database",
@@ -757,6 +791,7 @@ export async function listHistoricalResultRows(input: {
     id: string;
     jurisdictionCode: string;
     jurisdictionName: string;
+    jurisdictionTag: string | null;
     localUnit: string;
     metrics: unknown;
     otherVotes: number | null;
@@ -782,6 +817,7 @@ export async function listHistoricalResultRows(input: {
             historical_result_rows.row_method as "rowMethod",
             historical_result_rows.jurisdiction_code as "jurisdictionCode",
             historical_result_rows.jurisdiction_name as "jurisdictionName",
+            historical_result_rows.jurisdiction_tag as "jurisdictionTag",
             historical_result_rows.local_unit as "localUnit",
             historical_result_rows.dem_votes as "demVotes",
             historical_result_rows.rep_votes as "repVotes",
@@ -806,6 +842,7 @@ export async function listHistoricalResultRows(input: {
             historical_result_rows.row_method as "rowMethod",
             historical_result_rows.jurisdiction_code as "jurisdictionCode",
             historical_result_rows.jurisdiction_name as "jurisdictionName",
+            historical_result_rows.jurisdiction_tag as "jurisdictionTag",
             historical_result_rows.local_unit as "localUnit",
             historical_result_rows.dem_votes as "demVotes",
             historical_result_rows.rep_votes as "repVotes",
@@ -829,6 +866,7 @@ export async function listHistoricalResultRows(input: {
     id: row.id,
     jurisdictionCode: row.jurisdictionCode,
     jurisdictionName: row.jurisdictionName,
+    jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({ state: row.state, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.sourceLevel }),
     localUnit: row.localUnit,
     metrics: row.metrics as Record<string, unknown>,
     otherVotes: row.otherVotes,
@@ -859,6 +897,7 @@ export async function listEquipmentRows(input: {
     id: string;
     jurisdictionCode: string;
     jurisdictionName: string;
+    jurisdictionTag: string | null;
     level: string;
     metrics: unknown;
     paperRecord: string;
@@ -885,6 +924,7 @@ export async function listEquipmentRows(input: {
         equipment_rows.election_year as "electionYear",
         equipment_rows.jurisdiction_code as "jurisdictionCode",
         equipment_rows.jurisdiction_name as "jurisdictionName",
+        equipment_rows.jurisdiction_tag as "jurisdictionTag",
         equipment_rows.level,
         equipment_rows.vendor,
         equipment_rows.system_name as "systemName",
@@ -928,6 +968,7 @@ export async function listEquipmentRows(input: {
       id: row.id,
       jurisdictionCode: row.jurisdictionCode,
       jurisdictionName: row.jurisdictionName,
+      jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({ state: row.state, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.level }),
       level: row.level,
       metrics,
       paperRecord: row.paperRecord,
@@ -971,6 +1012,10 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
     notes: string | null;
     resultRows: string | number | null;
     resultJurisdictions: string | number | null;
+    taggedResultJurisdictions: string | number | null;
+    historical2020Jurisdictions: string | number | null;
+    taggedHistorical2020Jurisdictions: string | number | null;
+    matchedHistorical2020Jurisdictions: string | number | null;
     sourceCount: string | number | null;
     mapGeometrySourceCount: string | number | null;
     sourcesMissingUrls: string | number | null;
@@ -1002,7 +1047,8 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         select
           result_rows.state_code,
           count(*) as result_rows,
-          count(distinct result_rows.jurisdiction_code) as result_jurisdictions
+          count(distinct result_rows.jurisdiction_code) as result_jurisdictions,
+          count(distinct result_rows.jurisdiction_tag) filter (where result_rows.jurisdiction_tag is not null and result_rows.level = 'county') as tagged_result_jurisdictions
         from result_rows
         inner join contests on result_rows.contest_id = contests.id
         inner join elections on contests.election_id = elections.id
@@ -1072,6 +1118,31 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         from historical_result_rows
         group by state_code
       ),
+      historical_2020_tag_counts as (
+        select
+          state_code,
+          count(distinct jurisdiction_code) as historical_2020_jurisdictions,
+          count(distinct jurisdiction_tag) filter (where jurisdiction_tag is not null and source_level = 'county') as tagged_historical_2020_jurisdictions
+        from historical_result_rows
+        where election_year = 2020
+        group by state_code
+      ),
+      historical_join_counts as (
+        select
+          result_rows.state_code,
+          count(distinct result_rows.jurisdiction_tag) as matched_historical_2020_jurisdictions
+        from result_rows
+        inner join contests on result_rows.contest_id = contests.id
+        inner join elections on contests.election_id = elections.id
+        inner join historical_result_rows
+          on historical_result_rows.state_code = result_rows.state_code
+          and historical_result_rows.election_year = 2020
+          and historical_result_rows.jurisdiction_tag = result_rows.jurisdiction_tag
+        where elections.year = ${input.year}
+          and result_rows.level = 'county'
+          and result_rows.jurisdiction_tag is not null
+        group by result_rows.state_code
+      ),
       equipment_row_counts as (
         select
           state_code,
@@ -1116,6 +1187,10 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         capability_flags.notes,
         coalesce(result_counts.result_rows, 0) as "resultRows",
         coalesce(result_counts.result_jurisdictions, 0) as "resultJurisdictions",
+        coalesce(result_counts.tagged_result_jurisdictions, 0) as "taggedResultJurisdictions",
+        coalesce(historical_2020_tag_counts.historical_2020_jurisdictions, 0) as "historical2020Jurisdictions",
+        coalesce(historical_2020_tag_counts.tagged_historical_2020_jurisdictions, 0) as "taggedHistorical2020Jurisdictions",
+        coalesce(historical_join_counts.matched_historical_2020_jurisdictions, 0) as "matchedHistorical2020Jurisdictions",
         coalesce(source_counts.source_count, 0) as "sourceCount",
         coalesce(source_counts.map_geometry_source_count, 0) as "mapGeometrySourceCount",
         coalesce(source_counts.sources_missing_urls, 0) as "sourcesMissingUrls",
@@ -1146,6 +1221,8 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       left join review_row_counts on states.code = review_row_counts.state_code
       left join turnout_row_counts on states.code = turnout_row_counts.state_code
       left join historical_row_counts on states.code = historical_row_counts.state_code
+      left join historical_2020_tag_counts on states.code = historical_2020_tag_counts.state_code
+      left join historical_join_counts on states.code = historical_join_counts.state_code
       left join equipment_row_counts on states.code = equipment_row_counts.state_code
       left join import_counts on states.code = import_counts.state_code
       left join latest_native_imports on states.code = latest_native_imports.state_code
@@ -1166,6 +1243,20 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       notes: row.notes ?? emptyCapabilities.notes,
     };
     const resultRows = Number(row.resultRows ?? 0);
+    const resultJurisdictions = Number(row.resultJurisdictions ?? 0);
+    const taggedResultJurisdictions = Number(row.taggedResultJurisdictions ?? 0);
+    const historical2020Jurisdictions = Number(row.historical2020Jurisdictions ?? 0);
+    const taggedHistorical2020Jurisdictions = Number(row.taggedHistorical2020Jurisdictions ?? 0);
+    const matchedHistorical2020Jurisdictions = Number(row.matchedHistorical2020Jurisdictions ?? 0);
+    const missingHistorical2020Jurisdictions = Math.max(taggedResultJurisdictions - matchedHistorical2020Jurisdictions, 0);
+    const jurisdictionTagCoverage: CompletenessSummary["jurisdictionTagCoverage"] = {
+      resultJurisdictions,
+      taggedResultJurisdictions,
+      historical2020Jurisdictions,
+      taggedHistorical2020Jurisdictions,
+      matchedHistorical2020Jurisdictions,
+      missingHistorical2020Jurisdictions,
+    };
     const sourceCount = Number(row.sourceCount ?? 0);
     const mapGeometrySourceCount = Number(row.mapGeometrySourceCount ?? 0);
     const sourcesMissingUrls = Number(row.sourcesMissingUrls ?? 0);
@@ -1187,7 +1278,9 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
       name: row.name,
       authority: row.authority,
       resultRows,
-      resultJurisdictions: Number(row.resultJurisdictions ?? 0),
+      resultJurisdictions,
+      historicalJoinReady: taggedResultJurisdictions > 0 && missingHistorical2020Jurisdictions === 0,
+      jurisdictionTagCoverage,
       sourceCount,
       mapGeometrySourceCount,
       sourcesMissingUrls,
@@ -1222,6 +1315,7 @@ export async function listCompletenessReport(input: { year: number }): Promise<C
         reviewRowCount,
         sourceCount,
         sourcesMissingUrls,
+        jurisdictionTagCoverage,
       }),
     };
   });

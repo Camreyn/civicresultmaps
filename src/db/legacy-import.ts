@@ -1,5 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { reviewPolicy } from "../lib/review-policy.ts";
+import { jurisdictionTagForRow } from "../lib/jurisdiction-tags.ts";
 import { getDatabaseUrl } from "./url.ts";
 
 type LegacyCountyResult = {
@@ -319,6 +320,7 @@ async function ensureAnalysisIndicatorsTable(sql: { query: (statement: string) =
       election_year integer not null,
       jurisdiction_code text not null,
       jurisdiction_name text not null,
+      jurisdiction_tag text,
       level text not null,
       indicator_type text not null,
       severity numeric(10, 4) not null,
@@ -330,6 +332,8 @@ async function ensureAnalysisIndicatorsTable(sql: { query: (statement: string) =
       created_at timestamp with time zone default now() not null
     )
   `);
+  await sql.query(`alter table analysis_indicators add column if not exists jurisdiction_tag text`);
+
   await sql.query(`
     create unique index if not exists analysis_indicators_unique_idx
     on analysis_indicators (
@@ -389,6 +393,10 @@ async function ensureLegacyDetailTables(sql: { query: (statement: string) => Pro
       source_document_id uuid references source_documents(id)
     )
   `);
+  for (const table of ["result_rows", "review_rows", "turnout_rows", "historical_result_rows", "equipment_rows", "analysis_indicators"]) {
+    await sql.query(`alter table ${table} add column if not exists jurisdiction_tag text`);
+  }
+
   await sql.query(`
     create unique index if not exists historical_rows_state_year_source_local_idx
     on historical_result_rows (state_code, election_year, source_id, jurisdiction_code, local_unit)
@@ -587,6 +595,7 @@ export async function refreshLegacyStateIndicators(input: LegacyImportInput) {
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         level,
         indicator_type,
         severity,
@@ -601,6 +610,7 @@ export async function refreshLegacyStateIndicators(input: LegacyImportInput) {
         2024,
         ${indicator.jurisdictionCode},
         ${indicator.county},
+        ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionCode: indicator.jurisdictionCode, jurisdictionName: indicator.county, level: "county" })},
         'county',
         ${indicator.type},
         ${indicator.severity},
@@ -613,6 +623,7 @@ export async function refreshLegacyStateIndicators(input: LegacyImportInput) {
       on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
       do update set
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         severity = excluded.severity,
         summary = excluded.summary,
         detail = excluded.detail,
@@ -754,6 +765,7 @@ export async function refreshLegacyStateHistorical(input: LegacyImportInput) {
           row_method,
           jurisdiction_code,
           jurisdiction_name,
+        jurisdiction_tag,
           local_unit,
           dem_votes,
           rep_votes,
@@ -771,6 +783,7 @@ export async function refreshLegacyStateHistorical(input: LegacyImportInput) {
           ${series.rowMethod ?? ""},
           ${jurisdictionCode(input.stateCode, county)},
           ${county},
+          ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionCode: jurisdictionCode(input.stateCode, county), jurisdictionName: county, level: "county" })},
           ${localUnit},
           ${numberOrNull(row.dem)},
           ${numberOrNull(row.rep)},
@@ -792,6 +805,7 @@ export async function refreshLegacyStateHistorical(input: LegacyImportInput) {
           source_level = excluded.source_level,
           row_method = excluded.row_method,
           jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
           dem_votes = excluded.dem_votes,
           rep_votes = excluded.rep_votes,
           other_votes = excluded.other_votes,
@@ -1043,6 +1057,7 @@ export async function importLegacyState(input: LegacyImportInput) {
           state_code,
           jurisdiction_code,
           jurisdiction_name,
+        jurisdiction_tag,
           level,
           candidate_name,
           party,
@@ -1054,6 +1069,7 @@ export async function importLegacyState(input: LegacyImportInput) {
           ${input.stateCode},
           ${code},
           ${county},
+          ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionCode: code, jurisdictionName: county, level: "county" })},
           'county',
           ${candidateName},
           ${candidateParties[candidateName as keyof typeof candidateParties]},
@@ -1063,6 +1079,7 @@ export async function importLegacyState(input: LegacyImportInput) {
         on conflict (contest_id, level, jurisdiction_code, candidate_name, party)
         do update set
           jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
           votes = excluded.votes,
           source_document_id = excluded.source_document_id
       `;
@@ -1107,6 +1124,7 @@ export async function importLegacyState(input: LegacyImportInput) {
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         local_unit,
         level,
         harris_votes,
@@ -1125,6 +1143,7 @@ export async function importLegacyState(input: LegacyImportInput) {
         2024,
         ${jurisdictionCode(input.stateCode, county)},
         ${county},
+          ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionCode: jurisdictionCode(input.stateCode, county), jurisdictionName: county, level: "county" })},
         ${localUnit},
         'local',
         ${numberOrNull(row.harris)},
@@ -1141,6 +1160,7 @@ export async function importLegacyState(input: LegacyImportInput) {
       do update set
         import_run_id = excluded.import_run_id,
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         level = excluded.level,
         harris_votes = excluded.harris_votes,
         trump_votes = excluded.trump_votes,
@@ -1172,6 +1192,7 @@ export async function importLegacyState(input: LegacyImportInput) {
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         level,
         ballots_cast,
         registered_voters,
@@ -1186,6 +1207,7 @@ export async function importLegacyState(input: LegacyImportInput) {
         2024,
         ${jurisdictionCode(input.stateCode, `${county}-${localUnit}`)},
         ${[county, localUnit].filter(Boolean).join(" / ")},
+        ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionName: county, level: "county" })},
         ${row.sourceLevel ?? "local"},
         ${row.ballotsCast ?? 0},
         ${numberOrNull(row.registeredVoters)},
@@ -1198,6 +1220,7 @@ export async function importLegacyState(input: LegacyImportInput) {
       do update set
         import_run_id = excluded.import_run_id,
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         ballots_cast = excluded.ballots_cast,
         registered_voters = excluded.registered_voters,
         turnout_pct = excluded.turnout_pct,
@@ -1232,6 +1255,7 @@ export async function importLegacyState(input: LegacyImportInput) {
           row_method,
           jurisdiction_code,
           jurisdiction_name,
+        jurisdiction_tag,
           local_unit,
           dem_votes,
           rep_votes,
@@ -1249,6 +1273,7 @@ export async function importLegacyState(input: LegacyImportInput) {
           ${series.rowMethod ?? ""},
           ${jurisdictionCode(input.stateCode, county)},
           ${county},
+          ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionCode: jurisdictionCode(input.stateCode, county), jurisdictionName: county, level: "county" })},
           ${localUnit},
           ${numberOrNull(row.dem)},
           ${numberOrNull(row.rep)},
@@ -1270,6 +1295,7 @@ export async function importLegacyState(input: LegacyImportInput) {
           source_level = excluded.source_level,
           row_method = excluded.row_method,
           jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
           dem_votes = excluded.dem_votes,
           rep_votes = excluded.rep_votes,
           other_votes = excluded.other_votes,
@@ -1288,6 +1314,7 @@ export async function importLegacyState(input: LegacyImportInput) {
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         level,
         indicator_type,
         severity,
@@ -1302,6 +1329,7 @@ export async function importLegacyState(input: LegacyImportInput) {
         2024,
         ${indicator.jurisdictionCode},
         ${indicator.county},
+        ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionCode: indicator.jurisdictionCode, jurisdictionName: indicator.county, level: "county" })},
         'county',
         ${indicator.type},
         ${indicator.severity},
@@ -1314,6 +1342,7 @@ export async function importLegacyState(input: LegacyImportInput) {
       on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
       do update set
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         severity = excluded.severity,
         summary = excluded.summary,
         detail = excluded.detail,

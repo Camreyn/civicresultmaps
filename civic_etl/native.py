@@ -84,6 +84,21 @@ def _nevada_jurisdiction_name(raw: Any) -> str:
     if re.fullmatch(r"carson\s+city(?:\s+county)?", value, re.IGNORECASE):
         return "Carson City"
     return _county_name(value)
+
+
+def _maryland_jurisdiction_name(raw: Any) -> str:
+    value = str(raw or "").strip()
+    if re.fullmatch(r"baltimore\s+city(?:\s+county)?", value, re.IGNORECASE):
+        return "Baltimore City"
+    return _county_name(value)
+
+
+def _louisiana_parish_name(raw: Any) -> str:
+    value = str(raw or "").strip()
+    if not value:
+        return ""
+    titled = value.title() if value.isupper() else value
+    return titled if re.search(r"\bparish$", titled, re.IGNORECASE) else f"{titled} Parish"
 def _missouri_jurisdiction_name(raw: Any) -> str:
     value = str(raw or "").strip()
     if re.fullmatch(r"kansas\s+city(?:\s+county)?", value, re.IGNORECASE):
@@ -2634,6 +2649,10 @@ def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig
                 if config.code == "NV"
                 else _rhode_island_jurisdiction_name(row.get("jurisdiction_name"))
                 if config.code == "RI"
+                else _maryland_jurisdiction_name(row.get("jurisdiction_name"))
+                if config.code == "MD"
+                else _louisiana_parish_name(row.get("jurisdiction_name"))
+                if config.code == "LA"
                 else _county_name(row.get("jurisdiction_name"))
             )
             if not county:
@@ -2652,6 +2671,10 @@ def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig
                     "totalVotes": int_text(row.get("total_votes")),
                     "sourceUrl": row.get("source_url") or source.url,
                     "sourceDocumentId": source.id,
+                    "jurisdictionTag": (row.get("jurisdiction_tag") or "").strip() or None,
+                    "jurisdictionGeoid": (row.get("jurisdiction_geoid") or "").strip() or None,
+                    "sourceDisplayName": (row.get("source_display_name") or row.get("source_jurisdiction_name") or row.get("jurisdiction_name") or county),
+                    "sourceJurisdictionName": (row.get("source_jurisdiction_name") or row.get("source_display_name") or row.get("jurisdiction_name") or county),
                 }
             )
 

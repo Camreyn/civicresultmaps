@@ -68,6 +68,14 @@ Recommended wave sizes:
 - 5 states for normal source inventory, historical baselines, parser gaps, and validation work
 - 7 to 10 states only for lightweight documentation, caveat, or source-tier updates
 
+## Jurisdiction Tag And Historical Flip Waves
+
+When coordinating work to improve national county flip counts, use `jurisdictionTag` coverage as the source of truth. The coordinator must run `npm run jurisdictions:flips` before each wave, update `data/jurisdiction-tag-coverage-waves.json`, and assign workers only to states with missing tagged 2024 county rows that lack 2020 historical baseline matches.
+
+State workers must keep work scoped to their assigned state, collect official 2020 county or county-equivalent presidential baselines first, and ensure loaded historical rows resolve to the same `county:<GEOID>` tags as 2024 result rows. Do not force non-county, statewide-only, town, or ambiguous reporting units into county FIPS tags. If an official source is blocked and a secondary source is used, record the caveat in the state config and source inventories.
+
+Before a worker PR is ready, the worker must report the state's before/after `npm run jurisdictions:flips` coverage if checked, run the relevant state ETL validate/import command, and include the normal end-of-state advisory indicator report. Workers must not run production promotion or backfill apply commands. The coordinator handles post-merge promotion, backfill apply review, and final national flip reporting from a clean merged branch only.
+
 ## Implementation Rules
 
 Make the smallest complete change. Keep state-specific work scoped to that state unless a shared helper is clearly required.
@@ -131,3 +139,15 @@ Each worker PR must include:
 - Website/API display path checked
 - Caveats and remaining risks
 - Review-subagent result
+
+## Branch Naming And Public Exposure
+
+Use neutral branch prefixes that describe the work, not the agent or tool that created it:
+
+- `state/<state>-data-coverage` for state ETL/source work
+- `wave/<number>-integration` for wave integration branches
+- `docs/<topic>` for documentation
+- `feature/<topic>` for product work
+- `hotfix/<topic>` for urgent fixes
+
+Do not create new public branches with agent/tool names in the branch path. This repository is public, and GitHub does not support hiding individual branches in a public repository. Treat every pushed branch, draft PR branch, and branch name as public. Keep private or exploratory work local in worktrees until it is ready for a PR, and delete remote branches after their PRs are merged or closed.

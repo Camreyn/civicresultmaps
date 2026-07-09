@@ -92,6 +92,17 @@
       "timestampBasis": "Wave 12 Louisiana coverage inventory created July 2, 2026 from committed official artifacts, official source pages, and source-package registries.",
       "confidence": "Inventory only. Documents loaded official precinct result/review artifacts, EAC fallback turnout, parish geometry, equipment context, and remaining historical, audit, CVR, incident, correction, recount, litigation, turnout, and precinct-geometry gaps.",
       "status": "candidate"
+    },
+    {
+      "id": "la-historical-presidential-baseline",
+      "category": "Official 2020 parish presidential historical baseline rows",
+      "url": "https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential",
+      "localFile": "data/la-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Louisiana Secretary of State",
+      "timestampBasis": "Official Louisiana Secretary of State 2020 general election Presidential Electors precinct CSV downloaded July 9, 2026 from /ElectionResults/ElectionResults/Data?blob=20201103/csv/ByPrecinct_59568.csv and normalized by scripts/collect-la-historical-baseline.mjs.",
+      "confidence": "Official 2020 parish historical baseline rows used for county-equivalent context and jurisdictionTag matching. The raw official precinct CSV is retained at data/la-2020-general-presidential-electors-by-precinct.csv and reconciles to SOS statewide totals: 856,034 Biden votes, 1,255,776 Trump votes, 36,252 other votes, and 2,148,062 total votes. Official 2012 and 2016 parish baselines remain uncollected.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -139,13 +150,14 @@
   "expected": {
     "jurisdictions": 64,
     "resultRows": 64,
-    "sources": 8,
+    "sources": 9,
     "stateTotal": 2006975,
     "trump": 1208505,
     "harris": 766870,
     "other": 31600,
     "reviewRows": 3885,
-    "turnoutRows": 64
+    "turnoutRows": 64,
+    "historicalBaselineRows": 64
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -153,6 +165,21 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "la-historical-presidential-baseline",
+    "warning": "Louisiana historical baseline rows currently include official 2020 parish presidential results only. Parishes are Census county equivalents and should resolve to county:<GEOID> jurisdiction tags for 2020-to-2024 flip context. Use these rows as contextual historical baselines, not as 2024 certified data. Official 2012 and 2016 parish baselines remain uncollected.",
+    "expected": {
+      "rowCount": 64,
+      "years": [
+        2020
+      ],
+      "totalVotes": 2148062,
+      "demVotes": 856034,
+      "repVotes": 1255776,
+      "otherVotes": 36252
+    }
   }
 }

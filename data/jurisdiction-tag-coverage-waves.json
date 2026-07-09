@@ -1,0 +1,939 @@
+{
+  "checkedAt": "2026-07-09T07:06:21.084Z",
+  "sourceCommand": "npm run jurisdictions:flips",
+  "purpose": "Coordinator tracker for closing 2020-to-2024 county flip coverage gaps using canonical jurisdictionTag joins.",
+  "currentCoverage": {
+    "resultRows2024": 3110,
+    "taggedRows2024": 3088,
+    "historicalRows2020": 2401,
+    "taggedHistoricalRows2020": 2389,
+    "matchedRows": 2389,
+    "missingHistoricalRows": 699,
+    "redToBlue": 0,
+    "blueToRed": 66
+  },
+  "defaults": {
+    "branchPattern": "state/<state>-data-coverage",
+    "workerScope": "Load or repair official 2020 county/county-equivalent presidential historical baseline rows that join to 2024 rows by jurisdictionTag.",
+    "sourcePriority": "Official state election sources first; secondary sources only with explicit caveats when official sources are blocked or not machine-readable.",
+    "noProductionPromotion": true,
+    "requiredCoordinatorCommands": [
+      "npm run jurisdictions:flips",
+      "npm run jurisdictions:validate",
+      "npm run jurisdictions:backfill:dry-run",
+      "npm run test:api"
+    ],
+    "requiredWorkerCommands": [
+      "npm run jurisdictions:validate",
+      "npm run jurisdictions:flips",
+      "npm run native:report-indicators -- .etl/staging",
+      "npm run etl:validate:<state>",
+      "npm run etl:import:<state>"
+    ],
+    "waveStatusValues": [
+      "planned",
+      "active",
+      "blocked",
+      "complete",
+      "deferred"
+    ],
+    "workerStatusValues": [
+      "unassigned",
+      "assigned",
+      "ready_for_pr",
+      "draft_pr_opened",
+      "blocked",
+      "deferred",
+      "merged"
+    ],
+    "waveAdvanceGate": "Do not start the next wave until every current-wave worker is ready_for_pr, draft_pr_opened, blocked, or deferred, and the coordinator has refreshed this tracker from npm run jurisdictions:flips."
+  },
+  "waves": [
+    {
+      "wave": 1,
+      "status": "complete",
+      "states": [
+        {
+          "state": "IL",
+          "branch": "state/il-data-coverage",
+          "taggedRows2024": 100,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 100,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Eight 2024 result rows are untagged or non-county; worker should focus only on tagged county-equivalent rows.",
+          "agentId": "019f4561-2566-7df3-9815-bc874e21afb7",
+          "agentNickname": "Hooke",
+          "assignedAt": "2026-07-09T05:38:41.270Z",
+          "completedAt": "2026-07-09T05:53:21.294Z",
+          "result": {
+            "sourceAuthority": "Illinois State Board of Elections",
+            "sourceUrl": "official 2020 General by-office President CSV, election ID 58, ByOffice/58 download",
+            "historicalRows2020": 102,
+            "matchedRowsAfterLocalImport": 100,
+            "localMissingAfterImport": 0,
+            "excludedRows": "Six separate CITY OF ... election-authority rows excluded rather than forced into county FIPS tags.",
+            "validations": [
+              "node scripts\\collect-il-historical-baseline.mjs",
+              "python -m civic_etl.cli validate --config etl/state-configs/il.json",
+              "python -m civic_etl.cli import --config etl/state-configs/il.json --out .etl/staging",
+              "npm run native:report-indicators -- .etl/staging",
+              "python -m unittest tests.python.test_pipeline.PipelineTests.test_illinois_native_staging_parses_official_by_office_csvs",
+              "python -m unittest discover -s tests/python",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run validate:turnout-packages"
+            ],
+            "indicatorReport": {
+              "reviewRows": 6655,
+              "calculatedIndicatorRows": 99,
+              "flaggedJurisdictionCount": 66,
+              "flaggedAreaCount": 66,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "Worker worktree is 19 commits behind origin/main and lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration."
+          }
+        },
+        {
+          "state": "TN",
+          "branch": "state/tn-data-coverage",
+          "taggedRows2024": 95,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 95,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "State has county result coverage but no loaded 2020 historical county baseline rows in the public flip report.",
+          "agentId": "019f4561-7026-7013-9a0b-f18a2960c5f6",
+          "agentNickname": "Socrates",
+          "assignedAt": "2026-07-09T05:38:41.270Z",
+          "completedAt": "2026-07-09T06:03:31.392Z",
+          "result": {
+            "sourceAuthority": "Tennessee Secretary of State",
+            "sourceUrl": "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf",
+            "historicalRows2020": 95,
+            "matchedRowsAfterLocalImport": 95,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "npm install",
+              "npm run etl:prepare:tn",
+              "npm run etl:validate:tn",
+              "npm run etl:import:tn",
+              "npm run native:report-indicators -- .etl/staging",
+              "node tests/api/tn-source-coverage.test.mjs",
+              "python -m unittest tests.python.test_tennessee_historical",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers"
+            ],
+            "indicatorReport": {
+              "reviewRows": 1859,
+              "calculatedIndicatorRows": 149,
+              "flaggedJurisdictionCount": 86,
+              "flaggedAreaCount": 86,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "Worker worktree did not contain jurisdiction scripts, so coordinator must rerun jurisdiction flip checks after integration. Official 2012 and 2016 TN historical baselines remain uncollected."
+          }
+        },
+        {
+          "state": "OK",
+          "branch": "state/ok-data-coverage",
+          "taggedRows2024": 76,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 76,
+          "sourceLeadStatus": "official historical result pages are documented as leads",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "One 2024 result row remains untagged or non-county; do not force it into county FIPS.",
+          "agentId": "019f4561-ad9a-7ef0-8375-d6c7f0ff381d",
+          "agentNickname": "Fermat",
+          "assignedAt": "2026-07-09T05:38:41.270Z",
+          "completedAt": "2026-07-09T06:05:35.680Z",
+          "result": {
+            "sourceAuthority": "Oklahoma State Election Board",
+            "sourceUrl": "https://oklahoma.gov/elections/elections-results/election-results/2020-election-results/2020-november-general-election.html; https://results.okelections.gov/OKER/?elecDate=20201103",
+            "historicalRows2020": 77,
+            "matchedRowsAfterLocalImport": 77,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "node scripts\\normalize-ok-historical-baseline.mjs",
+              "node tests\\api\\ok-source-coverage.test.mjs",
+              "python -m unittest tests.python.test_oklahoma_historical",
+              "python -m unittest tests.python.test_pipeline.PipelineTests.test_oklahoma_official_csv_zip_parser_builds_county_and_precinct_rows",
+              "python -m civic_etl.cli validate --config etl\\state-configs\\ok.json",
+              "python -m civic_etl.cli import --config etl\\state-configs\\ok.json --out .etl\\staging",
+              "npm run native:report-indicators -- .etl\\staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run validate:turnout-packages",
+              "git diff --check"
+            ],
+            "indicatorReport": {
+              "reviewRows": 1977,
+              "calculatedIndicatorRows": 99,
+              "flaggedJurisdictionCount": 66,
+              "flaggedAreaCount": 66,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "Worker worktree did not contain jurisdiction scripts, so coordinator must rerun jurisdiction flip checks after integration. Pre-existing OK turnout-denominator edits are also dirty in that worktree and should be intentionally included or separated before PR."
+          }
+        },
+        {
+          "state": "LA",
+          "branch": "state/la-data-coverage",
+          "taggedRows2024": 64,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 64,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Louisiana parish rows should still use county:<GEOID> because Census treats parishes as county equivalents.",
+          "agentId": "019f4561-eec5-7ae1-929e-f1b13b2864f6",
+          "agentNickname": "Popper",
+          "assignedAt": "2026-07-09T05:38:41.270Z",
+          "completedAt": "2026-07-09T05:50:38.887Z",
+          "result": {
+            "sourceAuthority": "Louisiana Secretary of State",
+            "sourceUrl": "https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential",
+            "historicalRows2020": 64,
+            "matchedRowsAfterLocalImport": 64,
+            "validations": [
+              "node scripts/collect-la-historical-baseline.mjs",
+              "python -m unittest tests.python.test_louisiana_coverage_inventory",
+              "python -m civic_etl.cli validate --config etl/state-configs/la.json",
+              "python -m civic_etl.cli import --config etl/state-configs/la.json --out .etl/staging",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers"
+            ],
+            "indicatorReport": {
+              "reviewRows": 3885,
+              "calculatedIndicatorRows": 75,
+              "flaggedJurisdictionCount": 48,
+              "flaggedAreaCount": 48,
+              "types": [
+                "average_down_ballot_difference",
+                "vote_share_pattern",
+                "down_ballot_outliers"
+              ]
+            },
+            "caveat": "Worker could not run jurisdiction flip scripts from LA worktree because that worktree package.json did not contain those scripts; coordinator should rerun from integration branch."
+          }
+        },
+        {
+          "state": "CO",
+          "branch": "state/co-data-coverage",
+          "taggedRows2024": 64,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 64,
+          "sourceLeadStatus": "official 2012/2016/2020 historical baselines remain documented as missing",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Coordinate with existing Colorado turnout/historical-voter-statistics work to avoid shared-file conflicts.",
+          "agentId": "019f4562-36a9-7f03-9046-67d36bbbc49e",
+          "agentNickname": "Confucius",
+          "assignedAt": "2026-07-09T05:38:41.270Z",
+          "completedAt": "2026-07-09T05:51:56.965Z",
+          "result": {
+            "sourceAuthority": "Colorado Secretary of State Historical Election Data",
+            "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/3640",
+            "historicalRows2020": 64,
+            "matchedRowsAfterLocalImport": 64,
+            "localMissingAfterImport": 0,
+            "localFlipSummary": {
+              "redToBlue": 0,
+              "blueToRed": 1,
+              "blueToRedCounties": [
+                "Pueblo County"
+              ]
+            },
+            "validations": [
+              "node scripts/normalize-co-historical-presidential-baseline.mjs",
+              "python -m unittest tests.python.test_colorado_coverage_inventory",
+              "python -m civic_etl.cli validate --config etl/state-configs/co.json",
+              "python -m civic_etl.cli import --config etl/state-configs/co.json --out .etl/staging",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run jurisdictions:validate",
+              "npm run jurisdictions:flips",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers"
+            ],
+            "indicatorReport": {
+              "reviewRows": 64,
+              "calculatedIndicatorRows": 60,
+              "flaggedJurisdictionCount": 60,
+              "flaggedAreaCount": 60,
+              "types": [
+                "county_down_ballot_distribution"
+              ]
+            },
+            "caveat": "Live production flip report still shows CO as missing until branch is merged and data is promoted. Existing dirty CO turnout/config/docs changes did not block the worker."
+          }
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "status": "complete",
+      "states": [
+        {
+          "state": "MT",
+          "branch": "state/mt-data-coverage",
+          "taggedRows2024": 56,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 56,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "County rows only; verify official 2020 county canvass totals before loading.",
+          "agentId": "019f4817-6337-76f1-8b4b-1bc0dffcc2f0",
+          "agentNickname": "Chandrasekhar",
+          "assignedAt": "2026-07-09T06:51:22.930Z",
+          "retryOf": "019f45a3-f7ca-7060-890e-150f59ef8699",
+          "retryAssignedAt": "2026-07-09T18:15:28.655Z",
+          "completedAt": "2026-07-09T18:30:45.651Z",
+          "result": {
+            "sourceAuthority": "Montana Secretary of State",
+            "sourceUrl": "https://sosmt.gov/wp-content/uploads/2020_General_Precinct-by-Precinct.xlsx; https://sosmt.gov/wp-content/uploads/State_Canvass_Report.pdf",
+            "historicalRows2020": 56,
+            "matchedRowsAfterLocalImport": 56,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "python scripts\\normalize-mt-historical-baseline.py",
+              "python -m civic_etl.cli validate --config etl/state-configs/mt.json",
+              "python -m civic_etl.cli import --config etl/state-configs/mt.json --out .etl/staging",
+              "python -m unittest tests.python.test_montana_historical",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers"
+            ],
+            "indicatorReport": {
+              "reviewRows": 726,
+              "calculatedIndicatorRows": 61,
+              "flaggedJurisdictionCount": 29,
+              "flaggedAreaCount": 29,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference",
+                "down_ballot_outliers"
+              ]
+            },
+            "caveat": "MT historical baseline covers official 2020 county presidential rows only. Official 2016/2012 county baselines remain uncollected/unnormalized. Existing 2024 caveats remain: workbook omits 27 certified presidential write-in votes; turnout remains EAC fallback. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "etl/state-configs/mt.json",
+              "civic_etl/native.py",
+              "scripts/normalize-mt-historical-baseline.py",
+              "data/mt-2020-general-precinct-by-precinct.xlsx",
+              "data/mt-2020-statewide-general-election-canvass.pdf",
+              "data/mt-historical-presidential-baseline.csv",
+              "data/native-import-source-packages.json",
+              "data/source-acquisition-tiers.json",
+              "docs/native-import-source-packages.md",
+              "tests/python/test_montana_historical.py"
+            ],
+            "sharedConflictRisk": "Low/moderate: shared civic_etl/native.py and shared inventory docs."
+          }
+        },
+        {
+          "state": "SC",
+          "branch": "state/sc-data-coverage",
+          "taggedRows2024": 46,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 46,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Keep 2024 U.S. House review caveats separate from county historical baseline work.",
+          "agentId": "019f45a4-3449-7d41-97da-03023a484c53",
+          "agentNickname": "Zeno",
+          "assignedAt": "2026-07-09T06:51:22.930Z",
+          "completedAt": "2026-07-09T07:01:53.296Z",
+          "result": {
+            "sourceAuthority": "South Carolina Election Commission / South Carolina Elections Database",
+            "sourceUrl": "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false",
+            "historicalRows2020": 46,
+            "matchedRowsAfterLocalImport": 46,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "npm run etl:collect:sc:historical",
+              "python -m unittest tests.python.test_south_carolina_historical",
+              "python -m civic_etl.cli validate --config etl/state-configs/sc.json",
+              "python -m civic_etl.cli import --config etl/state-configs/sc.json --out .etl/staging",
+              "python -m unittest tests.python.test_south_carolina_historical tests.python.test_pipeline",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run native:report-indicators -- .etl/staging",
+              "git diff --check"
+            ],
+            "indicatorReport": {
+              "reviewRows": 2401,
+              "calculatedIndicatorRows": 78,
+              "flaggedJurisdictionCount": 45,
+              "flaggedAreaCount": 45,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "Worker branch lacks jurisdiction scripts, so coordinator should rerun jurisdiction flip checks after integration. Adds 2020 only; 2012/2016 remain future work."
+          }
+        },
+        {
+          "state": "ID",
+          "branch": "state/id-data-coverage",
+          "taggedRows2024": 44,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 44,
+          "sourceLeadStatus": "official 2012/2016/2020 historical baseline normalization remains missing",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "County-level historical rows are sufficient for flip coverage; precinct rows are a separate gap.",
+          "agentId": "019f45a4-73c0-74c1-81dd-be309c697d2d",
+          "agentNickname": "Copernicus",
+          "assignedAt": "2026-07-09T06:51:22.930Z",
+          "completedAt": "2026-07-09T07:05:14.832Z",
+          "result": {
+            "sourceAuthority": "Idaho Secretary of State",
+            "sourceUrl": "https://sos.idaho.gov/elections-division/2020-results-statistics/",
+            "historicalRows2020": 44,
+            "totalHistoricalRows": 132,
+            "matchedRowsAfterLocalImport": 44,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "python scripts\\collect-id-historical-baseline.py",
+              "python -m unittest tests.python.test_idaho_historical tests.python.test_idaho_coverage_inventory",
+              "python -m civic_etl.cli validate --config etl/state-configs/id.json",
+              "python -m civic_etl.cli import --config etl/state-configs/id.json --out .etl/staging",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run validate:turnout-packages",
+              "npm run validate:provenance",
+              "git diff --check"
+            ],
+            "indicatorReport": {
+              "reviewRows": 44,
+              "calculatedIndicatorRows": 27,
+              "flaggedJurisdictionCount": 27,
+              "flaggedAreaCount": 27,
+              "types": [
+                "county_down_ballot_distribution"
+              ]
+            },
+            "caveat": "Worker branch lacks jurisdiction scripts; coordinator should rerun flip coverage after integration. validate:maps failed globally from IL/PA 429s, while ID map join showed 44 result rows, 44 boundaries, 0 unmatched."
+          }
+        },
+        {
+          "state": "WA",
+          "branch": "state/wa-data-coverage",
+          "taggedRows2024": 39,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 39,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Do not conflate participating precinct review caveat with county certified historical baseline coverage.",
+          "agentId": "019f45a4-b5a6-75e1-9fb6-6a0232806aea",
+          "agentNickname": "Godel",
+          "assignedAt": "2026-07-09T06:51:22.930Z",
+          "completedAt": "2026-07-09T07:03:00.234Z",
+          "result": {
+            "sourceAuthority": "Washington Secretary of State",
+            "sourceUrl": "https://results.vote.wa.gov/results/20201103/export.html; https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv",
+            "historicalRows2020": 39,
+            "matchedRowsAfterLocalImport": 39,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "node scripts/normalize-wa-historical-baseline.mjs",
+              "python -m unittest tests.python.test_washington_historical",
+              "npm run etl:validate:wa",
+              "npm run etl:import:wa",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run test:etl"
+            ],
+            "indicatorReport": {
+              "reviewRows": 5007,
+              "calculatedIndicatorRows": 57,
+              "flaggedJurisdictionCount": 37,
+              "flaggedAreaCount": 37,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "Worker branch lacks jurisdiction scripts; coordinator should rerun flip coverage after integration. 2012/2016 WA historical baselines remain uncollected; 2024 participating precinct review caveat preserved."
+          }
+        },
+        {
+          "state": "OR",
+          "branch": "state/or-data-coverage",
+          "taggedRows2024": 36,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 36,
+          "sourceLeadStatus": "official 2012/2016/2020 historical baseline rows remain missing",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "County rows are enough for flip coverage; precinct/local review gaps are separate.",
+          "agentId": "019f45a4-f439-7150-b93b-507b669f0d3c",
+          "agentNickname": "Nash",
+          "assignedAt": "2026-07-09T06:51:22.930Z",
+          "completedAt": "2026-07-09T07:06:21.083Z",
+          "result": {
+            "sourceAuthority": "Oregon Secretary of State",
+            "sourceUrl": "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735450",
+            "historicalRows2020": 36,
+            "matchedRowsAfterLocalImport": 36,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "node scripts/normalize-or-official-results.mjs",
+              "python -m unittest tests.python.test_oregon_coverage_inventory",
+              "python -m civic_etl.cli validate --config etl/state-configs/or.json",
+              "python -m civic_etl.cli import --config etl/state-configs/or.json --out .etl/staging",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run validate:turnout-packages"
+            ],
+            "indicatorReport": {
+              "reviewRows": 36,
+              "calculatedIndicatorRows": 6,
+              "flaggedJurisdictionCount": 6,
+              "flaggedAreaCount": 6,
+              "types": [
+                "county_down_ballot_distribution"
+              ]
+            },
+            "caveat": "Worker branch lacks jurisdiction scripts; coordinator should rerun flip coverage after integration. 2012/2016 OR historical baselines remain source leads only."
+          }
+        }
+      ]
+    },
+    {
+      "wave": 3,
+      "status": "complete",
+      "states": [
+        {
+          "state": "MD",
+          "branch": "state/md-data-coverage",
+          "taggedRows2024": 22,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 22,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Two 2024 rows are untagged or ambiguous; Baltimore city/county ambiguity must not be guessed.",
+          "agentId": "019f47d5-574b-7990-a3fe-9bdc9d5130bb",
+          "agentNickname": "Galileo",
+          "assignedAt": "2026-07-09T17:04:45.784Z",
+          "completedAt": "2026-07-09T17:50:15.304Z",
+          "result": {
+            "sourceAuthority": "Maryland State Board of Elections",
+            "sourceUrl": "https://elections.maryland.gov/elections/archive/2020/election_data/index.html",
+            "historicalRows2020": 24,
+            "matchedRowsAfterLocalImport": 24,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "python -m civic_etl.cli validate --config etl/state-configs/md.json",
+              "python -m civic_etl.cli import --config etl/state-configs/md.json --out .etl/staging",
+              "python -m unittest tests.python.test_maryland_historical",
+              "existing MD parser test",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "git diff --check"
+            ],
+            "indicatorReport": {
+              "reviewRows": 1958,
+              "calculatedIndicatorRows": 48,
+              "flaggedJurisdictionCount": 24,
+              "flaggedAreaCount": 24,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference",
+                "down_ballot_outliers"
+              ]
+            },
+            "caveat": "Historical baseline covers 2020 only; 2016/2012 remain. Statewide County=00 row is reconciliation-only. Baltimore City and Baltimore County are mapped from distinct official SBE files and Census GEOIDs, not guessed. Turnout remains EAC fallback. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "civic_etl/native.py",
+              "etl/state-configs/md.json",
+              "scripts/normalize-md-historical-baseline.mjs",
+              "tests/python/test_maryland_historical.py",
+              "data/md-2020-general-county-results/*.csv",
+              "data/md-2020-general-statewide.csv",
+              "data/md-historical-presidential-baseline.csv",
+              "data/md-2020-historical-presidential-baseline-summary.json",
+              "data/native-import-source-packages.json",
+              "data/source-acquisition-tiers.json",
+              "docs/native-import-source-packages.md"
+            ],
+            "sharedConflictRisk": "Moderate: shared civic_etl/native.py and shared inventory docs."
+          }
+        },
+        {
+          "state": "NJ",
+          "branch": "state/nj-data-coverage",
+          "taggedRows2024": 21,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 21,
+          "sourceLeadStatus": "official historical baseline source needed",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "County rows only; municipal historical rows are out of scope for flip coverage.",
+          "agentId": "019f47d5-9a97-7502-87c4-6f2261f848a3",
+          "agentNickname": "Kierkegaard",
+          "assignedAt": "2026-07-09T17:04:45.785Z",
+          "completedAt": "2026-07-09T17:56:28.916Z",
+          "result": {
+            "sourceAuthority": "New Jersey Department of State, Division of Elections",
+            "sourceUrl": "https://www.nj.gov/state/elections/assets/pdf/election-results/2020/2020-official-general-results-president.pdf",
+            "historicalRows2020": 21,
+            "matchedRowsAfterLocalImport": 21,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "npm run etl:prepare:nj",
+              "python -m unittest tests.python.test_new_jersey_historical",
+              "npm run etl:validate:nj",
+              "npm run etl:import:nj",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run validate:turnout-packages"
+            ],
+            "indicatorReport": {
+              "reviewRows": 21,
+              "calculatedIndicatorRows": 8,
+              "flaggedJurisdictionCount": 8,
+              "flaggedAreaCount": 8,
+              "types": [
+                "county_down_ballot_distribution"
+              ]
+            },
+            "caveat": "2020 historical rows are county-level context only; 2012/2016 remain follow-up; municipal review rows, municipal geometry/crosswalks, and administration-context rows remain unloaded. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "scripts/normalize-nj-doe-pdfs.mjs",
+              "etl/state-configs/nj.json",
+              "data/nj-2020-official-general-results-president.pdf",
+              "data/nj-2020-historical-presidential-baseline.csv",
+              "data/nj-2024-data-coverage-inventory.json",
+              "data/native-import-source-packages.json",
+              "data/source-acquisition-tiers.json",
+              "docs/native-import-source-packages.md",
+              "docs/turnout-collection-inventory.md",
+              "tests/python/test_new_jersey_historical.py",
+              "civic_etl/native.py"
+            ],
+            "sharedConflictRisk": "Low/moderate: shared civic_etl/native.py and shared inventory docs."
+          }
+        },
+        {
+          "state": "VT",
+          "branch": "state/vt-data-coverage",
+          "taggedRows2024": 14,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 14,
+          "sourceLeadStatus": "2020/2016/2012 historical baseline rows remain missing",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Use county-level aggregated rows for flip coverage; town/reporting-district geometry is separate.",
+          "agentId": "019f47d5-e3e6-7742-a3d5-14b784a0436f",
+          "agentNickname": "Pauli",
+          "assignedAt": "2026-07-09T17:04:45.785Z",
+          "completedAt": "2026-07-09T17:21:57.792Z",
+          "result": {
+            "sourceAuthority": "Vermont Secretary of State",
+            "sourceUrl": "https://electionarchive.vermont.gov/elections/view/144513/; https://electionarchive.vermont.gov/elections/download/144513/precincts_include:0/",
+            "historicalRows2020": 14,
+            "matchedRowsAfterLocalImport": 14,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "node scripts\\collect-vt-historical-baseline.mjs",
+              "python -m civic_etl.cli validate --config etl/state-configs/vt.json",
+              "python -m civic_etl.cli import --config etl/state-configs/vt.json --out .etl/staging",
+              "python -m unittest tests.python.test_vermont_coverage_inventory",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "git diff --check"
+            ],
+            "indicatorReport": {
+              "reviewRows": 283,
+              "calculatedIndicatorRows": 11,
+              "flaggedJurisdictionCount": 9,
+              "flaggedAreaCount": 9,
+              "types": [
+                "average_down_ballot_difference",
+                "vote_share_pattern"
+              ]
+            },
+            "caveat": "2020 historical rows are county aggregate context from official municipality rows using the existing VT manifest county crosswalk; 2016/2012 remain pending; active turnout remains EAC fallback; town/reporting-district geometry remains unloaded. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "etl/state-configs/vt.json",
+              "scripts/collect-vt-historical-baseline.mjs",
+              "data/vt-2020-president-municipality-results.xls",
+              "data/vt-historical-presidential-baseline.csv",
+              "data/vt-2024-data-coverage-inventory.json",
+              "data/vt-2024-source-request-matrix.tsv",
+              "tests/python/test_vermont_coverage_inventory.py",
+              "civic_etl/native.py",
+              "data/native-import-source-packages.json",
+              "data/source-acquisition-tiers.json",
+              "docs/native-import-source-packages.md"
+            ],
+            "sharedConflictRisk": "Moderate: shared inventory docs plus narrow civic_etl/native.py historical jurisdiction_tag/import payload change."
+          }
+        },
+        {
+          "state": "NH",
+          "branch": "state/nh-data-coverage",
+          "taggedRows2024": 10,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 10,
+          "sourceLeadStatus": "2016 archive and 2020/2012 historical requests documented as blockers",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Historical source collection may require archive/request follow-up.",
+          "agentId": "019f47d6-2726-71c2-812d-335bc5408752",
+          "agentNickname": "Euler",
+          "assignedAt": "2026-07-09T17:04:45.785Z",
+          "completedAt": "2026-07-09T17:23:43.103Z",
+          "result": {
+            "sourceAuthority": "New Hampshire Secretary of State",
+            "sourceUrl": "https://www.sos.nh.gov/elections/2020-election-results/2020-general-election-results; Internet Archive timestamp 20231127033944",
+            "historicalRows2020": 10,
+            "totalHistoricalRows": 20,
+            "matchedRowsAfterLocalImport": 10,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "npm run etl:prepare:nh",
+              "python -m unittest tests.python.test_new_hampshire_historical tests.python.test_new_hampshire_coverage_inventory",
+              "python -m civic_etl.cli validate --config etl/state-configs/nh.json",
+              "npm run etl:import:nh",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers"
+            ],
+            "indicatorReport": {
+              "reviewRows": 304,
+              "calculatedIndicatorRows": 14,
+              "flaggedJurisdictionCount": 9,
+              "flaggedAreaCount": 9,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "2012 official historical sources remain blocked/request-tracked. Historical rows are county context only; town/ward detail was not forced into county tags beyond official workbook county summary rows. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "data/nh-2020-president.xls",
+              "data/nh-2020-presidential-write-ins.xls",
+              "scripts/normalize-nh-historical-baseline.mjs",
+              "data/nh-historical-presidential-baseline.csv",
+              "etl/state-configs/nh.json",
+              "civic_etl/native.py",
+              "package.json",
+              "shared inventory/docs NH entries",
+              "tests for NH"
+            ],
+            "sharedConflictRisk": "Moderate: shared civic_etl/native.py and package.json edits overlap conceptually with VT generic historical CSV changes."
+          }
+        },
+        {
+          "state": "RI",
+          "branch": "state/ri-data-coverage",
+          "taggedRows2024": 5,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 5,
+          "sourceLeadStatus": "2020 long-format archive layout needs decoding before loading",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Keep federal precincts and reconciliation deltas as non-geographic rows, not county FIPS rows.",
+          "agentId": "019f47d6-6e29-7ac1-9b82-65f2b88aea78",
+          "agentNickname": "Mill",
+          "assignedAt": "2026-07-09T17:04:45.785Z",
+          "completedAt": "2026-07-09T17:21:13.156Z",
+          "result": {
+            "sourceAuthority": "Rhode Island Board of Elections",
+            "sourceUrl": "https://www.ri.gov/election/results/2020/general_election/data/rigen2020l.zip",
+            "historicalRows2020": 6,
+            "totalHistoricalRows": 86,
+            "matchedRowsAfterLocalImport": 5,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "python -m unittest tests.python.test_rhode_island_coverage_inventory",
+              "npm run etl:validate:ri",
+              "npm run etl:import:ri",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "npm run validate:turnout-packages",
+              "git diff --check"
+            ],
+            "indicatorReport": {
+              "reviewRows": 444,
+              "calculatedIndicatorRows": 6,
+              "flaggedJurisdictionCount": 5,
+              "flaggedAreaCount": 5,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "2020 county rows are aggregated from official BOE city/town rows to five Census counties; Federal Precincts remains non-geographic and is not forced into county FIPS. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "scripts/normalize-ri-boe-results.mjs",
+              "data/ri-historical-presidential-baseline.csv",
+              "etl/state-configs/ri.json",
+              "data/ri-2024-data-coverage-inventory.json",
+              "data/ri-2024-source-request-matrix.tsv",
+              "data/native-import-source-packages.json",
+              "data/source-acquisition-tiers.json",
+              "docs/native-import-source-packages.md",
+              "tests/python/test_rhode_island_coverage_inventory.py"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "wave": 4,
+      "status": "complete",
+      "states": [
+        {
+          "state": "HI",
+          "branch": "state/hi-data-coverage",
+          "taggedRows2024": 4,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 4,
+          "sourceLeadStatus": "official 2012/2016/2020 historical baselines remain missing",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Hawaii county-equivalent rows are few; verify county aggregation against official source layout.",
+          "agentId": "019f4806-7e7c-7cb3-92e3-f9b37c48b824",
+          "agentNickname": "Raman",
+          "assignedAt": "2026-07-09T17:57:06.824Z",
+          "completedAt": "2026-07-09T18:07:35.876Z",
+          "result": {
+            "sourceAuthority": "Hawaii Office of Elections",
+            "sourceUrl": "https://elections.hawaii.gov/election-results/; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
+            "historicalRows2020": 4,
+            "matchedRowsAfterLocalImport": 4,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "node scripts\\normalize-hi-historical-baseline.mjs",
+              "python -m unittest tests.python.test_hawaii_coverage_inventory",
+              "python -m civic_etl.cli validate --config etl/state-configs/hi.json",
+              "python -m civic_etl.cli import --config etl/state-configs/hi.json --out .etl/staging",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers"
+            ],
+            "indicatorReport": {
+              "reviewRows": 467,
+              "calculatedIndicatorRows": 11,
+              "flaggedJurisdictionCount": 4,
+              "flaggedAreaCount": 4,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference",
+                "down_ballot_outliers"
+              ]
+            },
+            "caveat": "Kalawao remains excluded from result rows with caveats preserved. Official 2016/2012 HI historical baselines remain pending. 2020 uses district crosswalk 01-07 Hawaii, 08-13 Maui, 14-16 Kauai, 17-51 Honolulu. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "data/hi-2020-general-summary.txt",
+              "data/hi-2020-general-precinct-detail.txt",
+              "data/hi-historical-presidential-baseline.csv",
+              "data/hi-2020-historical-presidential-baseline-summary.json",
+              "scripts/normalize-hi-historical-baseline.mjs",
+              "etl/state-configs/hi.json",
+              "data/hi-2024-data-coverage-inventory.json",
+              "data/hi-2024-source-request-matrix.tsv",
+              "data/source-acquisition-tiers.json",
+              "data/native-import-source-packages.json",
+              "docs/native-import-source-packages.md",
+              "tests/python/test_hawaii_coverage_inventory.py"
+            ],
+            "sharedConflictRisk": "Medium: shared source-acquisition/native-package docs."
+          }
+        },
+        {
+          "state": "DE",
+          "branch": "state/de-data-coverage",
+          "taggedRows2024": 3,
+          "matchedRows2020": 0,
+          "missingHistoricalRows": 3,
+          "sourceLeadStatus": "historical archive paths documented; parser not loaded",
+          "workerStatus": "ready_for_pr",
+          "prUrl": null,
+          "notes": "Small county count but broader Delaware source parsing is incomplete; keep historical baseline work scoped.",
+          "agentId": "019f4806-80d9-7511-9bbb-a72abf0fe75f",
+          "agentNickname": "Dalton",
+          "assignedAt": "2026-07-09T17:57:06.824Z",
+          "completedAt": "2026-07-09T18:15:04.142Z",
+          "result": {
+            "sourceAuthority": "Delaware Department of Elections",
+            "sourceUrl": "https://elections.delaware.gov/reports/GE2020.html; https://elections.delaware.gov/reports/GE2020.csv",
+            "historicalRows2020": 3,
+            "matchedRowsAfterLocalImport": 3,
+            "localMissingAfterImport": 0,
+            "validations": [
+              "python scripts\\normalize-de-historical-baseline.py",
+              "python -m unittest tests.python.test_delaware_historical",
+              "python -m civic_etl.cli validate --config etl/state-configs/de.json",
+              "python -m civic_etl.cli import --config etl/state-configs/de.json --out .etl/staging",
+              "npm run native:report-indicators -- .etl/staging",
+              "npm run validate:source-packages",
+              "npm run validate:source-acquisition-tiers",
+              "git diff --check"
+            ],
+            "indicatorReport": {
+              "reviewRows": 529,
+              "calculatedIndicatorRows": 6,
+              "flaggedJurisdictionCount": 3,
+              "flaggedAreaCount": 3,
+              "types": [
+                "vote_share_pattern",
+                "average_down_ballot_difference"
+              ]
+            },
+            "caveat": "Only official 2020 county historical baselines loaded. Official 2016/2012 archive leads remain pending. Active turnout remains EAC fallback. Election-district geometry/crosswalks remain unloaded. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "changedFiles": [
+              "civic_etl/native.py",
+              "etl/state-configs/de.json",
+              "scripts/normalize-de-historical-baseline.py",
+              "tests/python/test_delaware_historical.py",
+              "data/de-2020-general-election-results-report.html",
+              "data/de-2020-general-election-results-report.csv",
+              "data/de-historical-presidential-baseline.csv",
+              "data/de-2024-data-coverage-inventory.json",
+              "data/de-2024-source-request-matrix.tsv",
+              "data/native-import-source-packages.json",
+              "data/source-acquisition-tiers.json",
+              "docs/native-import-source-packages.md"
+            ],
+            "sharedConflictRisk": "Moderate: shared civic_etl/native.py and shared inventory docs."
+          }
+        }
+      ]
+    }
+  ],
+  "coordinatorAcceptance": [
+    "All feasible states have official or caveated 2020 county/county-equivalent historical rows loaded.",
+    "npm run jurisdictions:flips reports remaining unmatched rows only for documented non-county, ambiguous, or source-blocked cases.",
+    "Worker PRs document source authority, source URL, local artifact path, parser path, expected row counts, caveats, and validation commands.",
+    "No worker branch runs production promotion or jurisdiction backfill apply commands."
+  ]
+}

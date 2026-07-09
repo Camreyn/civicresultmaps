@@ -70,6 +70,39 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer Washington Secretary of State turnout-denominator artifacts if equal or finer official detail is later sourced.",
       "status": "candidate"
+    },
+    {
+      "id": "wa-2020-export-page",
+      "category": "Official 2020 export index",
+      "url": "https://results.vote.wa.gov/results/20201103/export.html",
+      "localFile": "data/wa-2020-export-page.html",
+      "parser": "washingtonExportIndexHtml",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Official November 3, 2020 General Election export page listing statewide, county, and precinct CSV exports.",
+      "confidence": "Official Washington Secretary of State export index for the 2020 general election result files.",
+      "status": "loaded"
+    },
+    {
+      "id": "wa-2020-all-counties-csv",
+      "category": "Official 2020 county presidential results",
+      "url": "https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv",
+      "localFile": "data/wa-2020-all-counties.csv",
+      "parser": "washingtonAllCountiesCsv",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Official all-counties CSV export from the November 3, 2020 General Election results site.",
+      "confidence": "Official Washington Secretary of State county CSV used to normalize 2020 county presidential historical baselines.",
+      "status": "loaded"
+    },
+    {
+      "id": "wa-historical-presidential-baseline",
+      "category": "Official 2020 county presidential historical baseline",
+      "url": "https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv",
+      "localFile": "data/wa-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Normalized by scripts/normalize-wa-historical-baseline.mjs from the official November 3, 2020 General Election all-counties CSV export.",
+      "confidence": "Official county-level 2020 presidential historical baseline rows used for 2020-to-2024 county flip joins. Use as contextual baseline rows, not as 2024 certified data.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -79,15 +112,23 @@
     "presidentContest": "United States President/Vice President",
     "statewidePresidentContest": "President/Vice President",
     "candidateRules": {
-      "harris": ["Kamala D. Harris"],
-      "trump": ["Donald J. Trump"]
+      "harris": [
+        "Kamala D. Harris"
+      ],
+      "trump": [
+        "Donald J. Trump"
+      ]
     }
   },
   "comparisonContest": {
     "label": "United States Senator",
     "contestName": "U.S. Senator",
-    "democraticCandidateContains": ["Maria Cantwell"],
-    "republicanCandidateContains": ["Raul Garcia"],
+    "democraticCandidateContains": [
+      "Maria Cantwell"
+    ],
+    "republicanCandidateContains": [
+      "Raul Garcia"
+    ],
     "sourceId": "wa-2024-all-state-precincts-csv"
   },
   "reviewCharts": {
@@ -113,13 +154,14 @@
   "expected": {
     "jurisdictions": 39,
     "resultRows": 39,
-    "sources": 6,
+    "sources": 9,
     "stateTotal": 3924243,
     "trump": 1530923,
     "harris": 2245849,
     "other": 147471,
     "reviewRows": 5007,
-    "turnoutRows": 39
+    "turnoutRows": 39,
+    "historicalBaselineRows": 39
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -127,6 +169,21 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "wa-historical-presidential-baseline",
+    "warning": "Washington historical baseline rows are official 2020 county-level presidential results from the Washington Secretary of State all-counties CSV export. They are contextual baseline rows for county flip joins, not 2024 certified data. Official 2012 and 2016 county baselines remain uncollected in this pass.",
+    "expected": {
+      "rowCount": 39,
+      "years": [
+        2020
+      ],
+      "totalVotes": 4087631,
+      "demVotes": 2369612,
+      "repVotes": 1584651,
+      "otherVotes": 133368
+    }
   }
 }
