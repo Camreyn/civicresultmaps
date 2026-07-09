@@ -1,4 +1,4 @@
-﻿import assert from "node:assert/strict";
+import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
@@ -60,3 +60,15 @@ test("jurisdiction flip wave coordination stays explicit", () => {
 
 
 
+
+test("jurisdiction tag resolver keeps county and city alias fixes explicit", () => {
+  const registry = JSON.parse(readFileSync("data/canonical-jurisdictions.json", "utf8"));
+  const byTag = new Map(registry.jurisdictions.map((row) => [row.jurisdictionTag, row]));
+  const resolver = readFileSync("src/lib/jurisdiction-tags.ts", "utf8");
+
+  assert.equal(byTag.get("county:29063")?.aliases.includes("De Kalb County"), true);
+  assert.equal(byTag.get("county:40079")?.aliases.includes("Leflore County"), true);
+  assert.match(resolver, /function hasCityMarker/);
+  assert.match(resolver, /function hasCountyMarker/);
+  assert.match(resolver, /disambiguateAdministrativeKind\(Array\.from\(candidates\.values\(\)\), name, code\)/);
+});

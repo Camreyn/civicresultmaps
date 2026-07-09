@@ -108,6 +108,17 @@ function aliasVariants(name, basename) {
     variants.add("JoDAVIESS County");
   }
 
+  if (/^DeKalb/i.test(name) || /^DeKalb/i.test(basename)) {
+    variants.add("De Kalb");
+    variants.add("De Kalb County");
+  }
+
+  if (/^Le Flore/i.test(name) || /^Le Flore/i.test(basename)) {
+    variants.add("Leflore");
+    variants.add("Leflore County");
+    variants.add("LeFlore");
+    variants.add("LeFlore County");
+  }
   return Array.from(variants)
     .map((alias) => String(alias || "").trim())
     .filter(Boolean);

@@ -1,4 +1,4 @@
-﻿import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 export type CanonicalJurisdiction = {
@@ -86,6 +86,33 @@ function aliasIndex() {
   return cachedAliasIndex;
 }
 
+function hasCityMarker(name: string, code: string) {
+  return /\bcity\b/i.test(name) || /[-_]city(?:$|[-_])/i.test(code);
+}
+
+function hasCountyMarker(name: string, code: string) {
+  return /\bcounty\b/i.test(name) || /[-_]county(?:$|[-_])/i.test(code);
+}
+
+function disambiguateAdministrativeKind(rows: CanonicalJurisdiction[], name: string, code: string) {
+  const wantsCity = hasCityMarker(name, code);
+  const wantsCounty = hasCountyMarker(name, code);
+  if (!wantsCity && !wantsCounty) {
+    return rows;
+  }
+
+  const filtered = rows.filter((row) => {
+    if (wantsCity) {
+      return /\bcity$/i.test(row.displayName) || row.level === "county_equivalent";
+    }
+    if (wantsCounty) {
+      return /\bcounty$/i.test(row.displayName) || row.level === "county";
+    }
+    return true;
+  });
+
+  return filtered.length ? filtered : rows;
+}
 function isNonGeographicName(value: string) {
   return /^(statewide|statewide total|total|uocava|federal only|overseas|write[- ]?in|scattered)$/i.test(
     value.trim(),
@@ -131,7 +158,7 @@ export function resolveJurisdictionTag(input: {
     }
   }
 
-  const rows = Array.from(candidates.values());
+  const rows = disambiguateAdministrativeKind(Array.from(candidates.values()), name, code);
   if (rows.length === 1) {
     return { jurisdictionTag: rows[0].jurisdictionTag, reason: "matched", candidates: rows };
   }
