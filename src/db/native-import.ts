@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
 import { reviewPolicy } from "../lib/review-policy.ts";
+import { jurisdictionTagForRow } from "../lib/jurisdiction-tags.ts";
 
 type NativeSource = {
   id: string;
@@ -108,6 +109,9 @@ type NativeHistoricalRow = {
   sourceLevel: string;
   rowMethod: string;
   jurisdictionName: string;
+  jurisdictionTag?: string;
+  jurisdictionGeoid?: string;
+  sourceDisplayName?: string;
   localUnit: string;
   demVotes?: number;
   repVotes?: number;
@@ -855,6 +859,7 @@ export async function promoteNativeStagingArtifact(path: string) {
   let storedResultRows = 0;
   for (const row of native.resultRows) {
     const code = jurisdictionCode(stateCode, row.jurisdictionName);
+    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionCode: code, jurisdictionName: row.jurisdictionName, level: row.level });
     await sql`
       insert into jurisdictions (state_code, code, name, level)
       values (${stateCode}, ${code}, ${row.jurisdictionName}, ${row.level})
@@ -869,6 +874,7 @@ export async function promoteNativeStagingArtifact(path: string) {
           state_code,
           jurisdiction_code,
           jurisdiction_name,
+          jurisdiction_tag,
           level,
           candidate_name,
           party,
@@ -881,6 +887,7 @@ export async function promoteNativeStagingArtifact(path: string) {
           ${stateCode},
           ${code},
           ${row.jurisdictionName},
+          ${tag},
           ${row.level},
           ${candidate},
           ${candidateParties[candidate]},
@@ -891,6 +898,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         do update set
           import_run_id = excluded.import_run_id,
           jurisdiction_name = excluded.jurisdiction_name,
+          jurisdiction_tag = excluded.jurisdiction_tag,
           votes = excluded.votes,
           source_document_id = excluded.source_document_id
       `;
@@ -901,6 +909,8 @@ export async function promoteNativeStagingArtifact(path: string) {
   let storedReviewRows = 0;
   for (const [index, row] of native.reviewRows.entries()) {
     const localUnit = row.localUnit || `review-row-${index + 1}`;
+    const code = jurisdictionCode(stateCode, row.county);
+    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionCode: code, jurisdictionName: row.county, level: "county" });
     await sql`
       insert into review_rows (
         import_run_id,
@@ -908,6 +918,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         local_unit,
         level,
         harris_votes,
@@ -924,8 +935,9 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${importRun.id},
         ${stateCode},
         ${electionYear},
-        ${jurisdictionCode(stateCode, row.county)},
+        ${code},
         ${row.county},
+        ${tag},
         ${localUnit},
         'local',
         ${numberOrNull(row.harris)},
@@ -942,6 +954,7 @@ export async function promoteNativeStagingArtifact(path: string) {
       do update set
         import_run_id = excluded.import_run_id,
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         level = excluded.level,
         harris_votes = excluded.harris_votes,
         trump_votes = excluded.trump_votes,
@@ -958,12 +971,14 @@ export async function promoteNativeStagingArtifact(path: string) {
 
   let storedIndicatorRows = 0;
   for (const indicator of await analysisIndicatorsForNativeRows(stateCode, native.reviewRows)) {
+    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionCode: indicator.jurisdictionCode, jurisdictionName: indicator.county || indicator.jurisdictionName, level: indicator.level });
     await sql`
       insert into analysis_indicators (
         state_code,
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         level,
         indicator_type,
         severity,
@@ -978,6 +993,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${electionYear},
         ${indicator.jurisdictionCode},
         ${indicator.jurisdictionName},
+        ${tag},
         ${indicator.level},
         ${indicator.type},
         ${indicator.severity},
@@ -990,6 +1006,7 @@ export async function promoteNativeStagingArtifact(path: string) {
       on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
       do update set
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         severity = excluded.severity,
         summary = excluded.summary,
         detail = excluded.detail,
@@ -1002,6 +1019,8 @@ export async function promoteNativeStagingArtifact(path: string) {
   let storedTurnoutRows = 0;
   for (const [index, row] of native.turnoutRows.entries()) {
     const localUnit = row.localUnit || `turnout-row-${index + 1}`;
+    const code = jurisdictionCode(stateCode, `${row.county}-${localUnit}`);
+    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionName: row.county, level: "county" });
     await sql`
       insert into turnout_rows (
         import_run_id,
@@ -1009,6 +1028,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         level,
         ballots_cast,
         registered_voters,
@@ -1021,8 +1041,9 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${importRun.id},
         ${stateCode},
         ${electionYear},
-        ${jurisdictionCode(stateCode, `${row.county}-${localUnit}`)},
+        ${code},
         ${[row.county, localUnit].filter(Boolean).join(" / ")},
+        ${tag},
         ${row.level ?? "local"},
         ${row.ballotsCast},
         ${numberOrNull(row.registeredVoters)},
@@ -1035,6 +1056,7 @@ export async function promoteNativeStagingArtifact(path: string) {
       do update set
         import_run_id = excluded.import_run_id,
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         ballots_cast = excluded.ballots_cast,
         registered_voters = excluded.registered_voters,
         turnout_pct = excluded.turnout_pct,
@@ -1048,6 +1070,8 @@ export async function promoteNativeStagingArtifact(path: string) {
   let storedHistoricalRows = 0;
   for (const [index, row] of historicalRows.entries()) {
     const localUnit = row.localUnit || `historical-row-${index + 1}`;
+    const code = jurisdictionCode(stateCode, row.jurisdictionName);
+    const tag = row.jurisdictionTag ?? jurisdictionTagForRow({ state: stateCode, jurisdictionCode: code, jurisdictionName: row.jurisdictionName, level: row.sourceLevel });
     await sql`
       insert into historical_result_rows (
         import_run_id,
@@ -1058,6 +1082,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         row_method,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         local_unit,
         dem_votes,
         rep_votes,
@@ -1073,8 +1098,9 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${row.sourceId},
         ${row.sourceLevel},
         ${row.rowMethod},
-        ${jurisdictionCode(stateCode, row.jurisdictionName)},
+        ${code},
         ${row.jurisdictionName},
+        ${tag},
         ${localUnit},
         ${numberOrNull(row.demVotes)},
         ${numberOrNull(row.repVotes)},
@@ -1089,6 +1115,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         source_level = excluded.source_level,
         row_method = excluded.row_method,
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         dem_votes = excluded.dem_votes,
         rep_votes = excluded.rep_votes,
         other_votes = excluded.other_votes,

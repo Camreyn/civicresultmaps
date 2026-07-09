@@ -8,11 +8,11 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false,
+    "historicalBaseline": true,
     "resultRows": 95,
     "reviewRows": 1859,
     "turnoutRows": 95,
-    "historicalBaselineRows": 0
+    "historicalBaselineRows": 95
   },
   "officialSourcesLoaded": [
     {
@@ -104,6 +104,23 @@
         "equipmentContextRows": 95
       },
       "confidenceNotes": "Supplemental equipment context only. Do not use as votes, turnout, audit results, CVR availability, incident records, or proof of precinct-uniform equipment."
+    },
+    {
+      "id": "tn-2020-general-by-county-pdf",
+      "authority": "Tennessee Secretary of State",
+      "sourceUrl": "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf",
+      "localArtifact": "data/tn-2020-general-by-county.pdf",
+      "electionYear": 2020,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "scripts/normalize-tn-sos-results.mjs",
+      "expectedRowsOrTotals": {
+        "countyRows": 95,
+        "presidentialVotes": 3053851,
+        "trump": 1852475,
+        "biden": 1143711,
+        "other": 57665
+      },
+      "confidenceNotes": "Official county results PDF dated December 2, 2020. The normalizer reads the main presidential county table plus continuation write-in columns and asserts statewide candidate totals before writing historical baseline rows."
     }
   ],
   "normalizedArtifacts": [
@@ -135,6 +152,21 @@
       "localArtifact": "data/tn-2024-result-review-reconciliation-summary.json",
       "parser": "tennesseeSosResultReviewReconciliationJson",
       "sourceUrl": "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf"
+    },
+    {
+      "localArtifact": "data/tn-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "sourceUrl": "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf",
+      "rowCount": 95,
+      "electionYears": [
+        2020
+      ],
+      "totals": {
+        "trump": 1852475,
+        "biden": 1143711,
+        "other": 57665,
+        "total": 3053851
+      }
     }
   ],
   "remainingGaps": [
@@ -150,10 +182,11 @@
       "needed": "Official statewide precinct boundary geometry or a county election-precinct crosswalk that joins the SOS precinct labels."
     },
     {
-      "id": "tn-historical-baseline-2012-2016-2020",
-      "status": "not_loaded",
-      "needed": "Official Tennessee SOS county presidential artifacts for 2012, 2016, and 2020 normalized into historicalPresidentialCsv rows.",
-      "blocker": "This pass confirmed the current 2024 PDF URLs and source page path, but did not identify script-stable official historical PDF URLs or exports for all three baseline years. Do not substitute secondary county tables without explicit caveats."
+      "id": "tn-historical-baseline-2012-2016",
+      "status": "partial_loaded_2020_official",
+      "loaded": "Official 2020 county presidential baseline rows are normalized from the Tennessee SOS 2020 General by County PDF.",
+      "needed": "Official Tennessee SOS county presidential artifacts for 2012 and 2016 normalized into historicalPresidentialCsv rows.",
+      "caveat": "Do not substitute secondary county tables without explicit caveats."
     },
     {
       "id": "tn-audit-cvr-recount-incident-correction-litigation",
@@ -165,7 +198,6 @@
     "Tennessee review rows are precinct-level President-versus-U.S.-Senate comparisons from the official SOS precinct PDF and are advisory screening inputs only, not findings of fraud or misconduct.",
     "County map joins use Census county geometry; precinct boundary geometry is not loaded.",
     "Turnout remains EAC fallback until a Tennessee-native turnout/registration denominator artifact is collected and reconciled.",
-    "Historical baseline rows for 2012, 2016, and 2020 are not loaded in the TN native config."
+    "Official 2020 county historical baseline rows are loaded; official 2012 and 2016 county historical baseline rows remain uncollected."
   ]
 }
-

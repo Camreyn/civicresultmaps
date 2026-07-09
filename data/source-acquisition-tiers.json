@@ -315,6 +315,7 @@
         "official Clarity detail XML ZIP endpoint",
         "official SOS Abstract of Votes Cast source path",
         "official Historical Election Data voter-statistics CSV",
+        "official 2020 Historical Election Data President contest CSV",
         "EAC benchmark turnout CSV",
         "Census county GeoJSON",
         "Verified Voting equipment context"
@@ -324,6 +325,7 @@
         "https://results.enr.clarityelections.com/CO/122598/current_ver.txt",
         "https://results.enr.clarityelections.com/CO/122598/367167/reports/detailxml.zip",
         "https://historicalelectiondata.coloradosos.gov/search?",
+        "https://historicalelectiondata.coloradosos.gov/contest/3640",
         "https://www.sos.state.co.us/pubs/elections/Results/Abstract/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2708%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
@@ -338,6 +340,7 @@
         "official county presidential candidate rows from the committed Clarity detail XML endpoint",
         "loaded county CU Regent at-large comparison rows from the same endpoint",
         "official state-native county turnout and active-plus-inactive registered-voter denominator rows from Historical Election Data voter statistics",
+        "official 2020 county presidential historical baseline rows from Historical Election Data contest export",
         "EAC fallback turnout rows retained as benchmark context",
         "Clarity ElectionVoterTurnout rows retained as reconciliation context",
         "county geometry",
@@ -348,14 +351,14 @@
         "precinct or local reporting-unit President rows",
         "same-grain precinct or local comparison contest rows",
         "precinct boundary geometry or reporting-unit crosswalk",
-        "official 2012/2016/2020 historical baselines normalized into ETL",
+        "official 2012 and 2016 historical baselines normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, litigation, custody, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "coloradoClarityDetailXml loaded for 64 county President rows and 64 county President-versus-CU-Regent review rows; scripts/normalize-co-historical-voter-statistics.mjs collects the Historical Election Data voter-statistics CSV and writes the active normalizedTurnoutCsv county turnout rows",
+      "parserStatus": "coloradoClarityDetailXml loaded for 64 county President rows and 64 county President-versus-CU-Regent review rows; scripts/normalize-co-historical-voter-statistics.mjs collects the Historical Election Data voter-statistics CSV and writes the active normalizedTurnoutCsv county turnout rows; scripts/normalize-co-historical-presidential-baseline.mjs collects the official 2020 President contest list CSV and writes 64 historicalPresidentialCsv county baseline rows",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. Colorado had no 2024 U.S. Senate race; the same-grain comparison is county-level CU Regent at-large. Active turnout now uses official Historical Election Data 2024 General Voting Statistics county rows: Total Voters equals Active Voters plus Inactive Voters and matches the former EAC denominator, while Total Ballots Cast is 401 above EAC and 35 above Clarity ElectionVoterTurnout.",
-      "nextAction": "Collect an official write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, then pursue precinct/local result rows, precinct geometry/crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation artifacts."
+      "caveats": "The official Clarity statewide detail XML exposes county candidate totals and precinct participation counts, but no per-precinct candidate result rows were observed. Loaded presidential candidate rows sum to 3,190,873, which is 1,872 below the prior Abstract/certified-total lead of 3,192,745; do not allocate that gap by county without an official source. Colorado had no 2024 U.S. Senate race; the same-grain comparison is county-level CU Regent at-large. Active turnout now uses official Historical Election Data 2024 General Voting Statistics county rows: Total Voters equals Active Voters plus Inactive Voters and matches the former EAC denominator, while Total Ballots Cast is 401 above EAC and 35 above Clarity ElectionVoterTurnout. Official 2020 county presidential baselines are loaded from the same Historical Election Data platform; 2012 and 2016 baselines remain missing.",
+      "nextAction": "Collect an official write-in-inclusive Abstract artifact or source note for the 1,872-vote presidential gap, then pursue precinct/local result rows, precinct geometry/crosswalks, official 2012 and 2016 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation artifacts."
     },
     {
       "state": "CT",
@@ -426,6 +429,7 @@
       "exportFormats": [
         "official HTML report tables",
         "official statewide CSV export",
+        "official 2020 HTML/CSV historical report",
         "official AGP fixed-width text",
         "EAC fallback turnout CSV",
         "county GeoJSON"
@@ -433,6 +437,7 @@
       "sourceUrls": [
         "https://elections.delaware.gov/elections/election_archive.html",
         "https://elections.delaware.gov/reports/GE2024.html",
+        "https://elections.delaware.gov/reports/GE2020.html",
         "https://app.powerbigov.us/view?r=eyJrIjoiYmIwM2I3OWUtYjQxNC00YzYxLWEzY2MtY2MwMTIwMjg4NWFhIiwidCI6IjhjMDllNTY5LTUxYzUtNGRlZS1hYmIyLThiOTljMzJhNDM5NiJ9",
         "https://elections.delaware.gov/voter/registrationtotals/reports/agprpt_2024.txt",
         "https://elections.delaware.gov/maps/",
@@ -449,19 +454,20 @@
         "EAC fallback turnout rows",
         "DOE AGP state-native registered/voted reconciliation lead",
         "county geometry",
-        "supplemental county equipment context"
+        "supplemental county equipment context",
+        "official 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
         "active state-native turnout replacement",
         "election-district boundary geometry and result-label crosswalk",
-        "official 2012/2016/2020 historical baseline rows",
+        "official 2012/2016 historical baseline rows",
         "normalized audit, recount, CVR availability, incident, correction, litigation, custody, and tabulator-log rows"
       ],
-      "parserStatus": "delawareOfficialReportHtml loaded for official county President rows and election-district President-versus-U.S.-Senate review rows; EAC fallback turnout remains active with AGP reconciliation artifact retained",
+      "parserStatus": "delawareOfficialReportHtml loaded for official county President rows and election-district President-versus-U.S.-Senate review rows; scripts/normalize-de-historical-baseline.py loads official 2020 county historical baseline rows; EAC fallback turnout remains active with AGP reconciliation artifact retained",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The DOE report CSV is statewide only, so local review rows parse from official HTML report tables. Active turnout remains EAC fallback because DOE AGP voted and registered totals differ from EAC fallback semantics. Election-district geometry/crosswalks and official historical/admin-context rows remain unloaded.",
-      "nextAction": "Review AGP voted-versus-ballots-cast semantics before any turnout replacement, then collect FirstMap election-district geometry/crosswalks and official historical/admin artifacts."
+      "caveats": "The DOE report CSV is statewide only, so local review rows parse from official HTML report tables. Active turnout remains EAC fallback because DOE AGP voted and registered totals differ from EAC fallback semantics. Election-district geometry/crosswalks, official 2016/2012 historical rows, and official admin-context rows remain unloaded.",
+      "nextAction": "Review AGP voted-versus-ballots-cast semantics before any turnout replacement, then collect FirstMap election-district geometry/crosswalks plus official 2016/2012 historical and admin artifacts."
     },
     {
       "state": "FL",
@@ -573,18 +579,19 @@
         "official Hawaii Office county registration and turnout rows",
         "county geometry",
         "equipment context from Verified Voting",
-        "official 2024 recount/provisional/security/source-request paths documented in coverage inventory"
+        "official 2024 recount/provisional/security/source-request paths documented in coverage inventory",
+        "official Hawaii Office 2020 county historical presidential baseline rows with county:<GEOID> tags"
       ],
       "missingFields": [
         "precinct boundary geometry or official precinct_splitId crosswalk",
-        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "official 2016 and 2012 historical baseline artifacts normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeHawaiiOfficeText is active in etl/state-configs/hi.json. It decodes the official UTF-16 summary.txt and media.txt exports, skips the Format#1 banner, uses CSV parsing that preserves embedded candidate-name newlines, aggregates four county President rows from numbered precinct/split rows, emits 467 nonzero President-versus-U.S.-Senate review rows, and now loads four state-native Hawaii Office turnout rows generated by scripts/normalize-hi-turnout.mjs.",
+      "parserStatus": "nativeHawaiiOfficeText is active in etl/state-configs/hi.json. It decodes the official UTF-16 2024 summary.txt and media.txt exports, skips the Format#1 banner, uses CSV parsing that preserves embedded candidate-name newlines, aggregates four county President rows from numbered precinct/split rows, emits 467 nonzero President-versus-U.S.-Senate review rows, loads four state-native Hawaii Office turnout rows generated by scripts/normalize-hi-turnout.mjs, and appends four official 2020 county historical baseline rows generated by scripts/normalize-hi-historical-baseline.mjs.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys (PRES, OS I, OS II). County labels are derived from official numbered precinct district ranges: 01-08 Hawaii, 09-14 Maui, 15-17 Kauai, and 18-51 Honolulu. Kalawao has county geometry but no separate Office of Elections result or turnout county row; the four official turnout rows reconcile to the statewide 2024 General table. Advisory outputs are source-review signals only, not claims of fraud or misconduct.",
-      "nextAction": "Collect precinct geometry/crosswalks, add official 2012/2016/2020 historical baselines, and pursue normalized audit/CVR/recount/incident/correction/litigation records."
+      "caveats": "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys (PRES, OS I, OS II). 2024 county labels are derived from official numbered precinct district ranges: 01-08 Hawaii, 09-14 Maui, 15-17 Kauai, and 18-51 Honolulu. The 2020 historical baseline uses the official 2020 district crosswalk: 01-07 Hawaii, 08-13 Maui, 14-16 Kauai, and 17-51 Honolulu, and emits only county:15001, county:15003, county:15007, and county:15009. Kalawao has county geometry but no separate Office of Elections result or turnout county row. Advisory outputs are source-review signals only, not claims of fraud or misconduct.",
+      "nextAction": "Collect official 2016 and 2012 Hawaii historical baseline rows, precinct geometry/crosswalks if subcounty overlays are pursued, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "IA",
@@ -647,7 +654,10 @@
         "official raw precinct turnout XLSX",
         "retained EAC benchmark turnout CSV",
         "Census county GeoJSON",
-        "Verified Voting equipment CSV"
+        "Verified Voting equipment CSV",
+        "official 2012/2016 archive HTML",
+        "official 2020 county statistics HTML",
+        "historical baseline CSV"
       ],
       "sourceUrls": [
         "https://sos.idaho.gov/elections-division/election-results/",
@@ -660,7 +670,10 @@
         "https://sos.idaho.gov/elections/data/results/2024/turnout_county_general.xlsx",
         "https://voteidaho.gov/data-and-dashboards/voter-turnout/",
         "https://www.eac.gov/research-and-data/studies-and-reports",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/16"
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/16",
+        "https://sos.idaho.gov/elections-division/2020-results-statistics/",
+        "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html",
+        "https://archive.sos.idaho.gov/ELECT/results/2012/General/cnty_USPres.htm"
       ],
       "exampleUrls": [
         "https://archive.voteidaho.gov/results/2024/general/xml.html",
@@ -673,21 +686,21 @@
         "official raw precinct turnout source lead",
         "county geometry",
         "county equipment context",
-        "official 2012, 2016, and 2020 historical source leads"
+        "official 2012, 2016, and 2020 historical source leads",
+        "official 2012/2016/2020 county historical presidential baselines"
       ],
       "missingFields": [
         "precinct/local reporting-unit President rows",
         "same-grain precinct/local comparison contest rows",
         "loaded precinct turnout rows joined to same-grain review rows",
         "precinct boundary geometry or reporting-unit crosswalk",
-        "loaded official 2012/2016/2020 historical baseline rows",
         "normalized official audit, CVR, incident, correction, recount, and litigation records"
       ],
-      "parserStatus": "nativeIdahoCountyPresidentCsv loaded from data/id-2024-general-president.csv and data/id-2024-general-us-house.csv; official state-native county turnout rows load from data/id-2024-general-turnout.csv generated by scripts/normalize-id-turnout.mjs; data/id-2024-data-coverage-inventory.json documents remaining official-source leads and gaps",
+      "parserStatus": "nativeIdahoCountyPresidentCsv loaded from data/id-2024-general-president.csv and data/id-2024-general-us-house.csv; official state-native county turnout rows load from data/id-2024-general-turnout.csv generated by scripts/normalize-id-turnout.mjs; official 2012/2016/2020 county historical rows load from data/id-historical-presidential-baseline.csv generated by scripts/collect-id-historical-baseline.py; data/id-2024-data-coverage-inventory.json documents remaining official-source leads and gaps",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Current Idaho review rows are county-level President-versus-U.S.-House comparisons, not precinct scatter plots. U.S. House is district-based. Turnout now uses official Idaho SOS county turnout rows, while the official raw precinct turnout workbook remains a source lead until precinct/local President and comparison rows are loaded at the same grain. No normalized audit, CVR, incident, correction, recount, litigation, or precinct-geometry rows are loaded.",
-      "nextAction": "Use data/id-2024-data-coverage-inventory.json as the current ID source-search record; next steps are precinct/local result exports, same-grain precinct turnout use, precinct geometry/crosswalks, historical baseline activation, and official audit/CVR/incident/correction/recount/litigation source collection."
+      "caveats": "Current Idaho review rows are county-level President-versus-U.S.-House comparisons, not precinct scatter plots. U.S. House is district-based. Turnout now uses official Idaho SOS county turnout rows, while the official raw precinct turnout workbook remains a source lead until precinct/local President and comparison rows are loaded at the same grain. Historical baselines are official county-level context rows for 2012, 2016, and 2020. No normalized audit, CVR, incident, correction, recount, litigation, or precinct-geometry rows are loaded.",
+      "nextAction": "Use data/id-2024-data-coverage-inventory.json as the current ID source-search record; next steps are precinct/local result exports, same-grain precinct turnout use, precinct geometry/crosswalks, and official audit/CVR/incident/correction/recount/litigation source collection."
     },
     {
       "state": "IL",
@@ -700,10 +713,13 @@
       "exportFormats": [
         "official by-office CSV downloads",
         "EAC fallback turnout",
-        "official by-office turnout-field review JSON"
+        "official by-office turnout-field review JSON",
+        "official 2020 by-office President CSV",
+        "normalized historical baseline CSV"
       ],
       "sourceUrls": [
         "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=66",
+        "https://www.elections.il.gov/ElectionOperations/ElectionVoteTotals.aspx?ID=58",
         "https://www.eac.gov/research-and-data/studies-and-reports"
       ],
       "exampleUrls": [],
@@ -712,18 +728,19 @@
         "precinct U.S. House results",
         "by-office Registration field reviewed as denominator lead only",
         "President contest over-vote, under-vote, and blank-ballot rows reviewed as contest-total lead only",
-        "EAC fallback turnout"
+        "EAC fallback turnout",
+        "official 2020 county-named election-authority presidential historical baseline rows"
       ],
       "missingFields": [
         "state-native turnout or voter-participation artifact with confirmed ballots-cast field and denominator timing",
         "valid precinct registration denominator for all election authorities",
         "statewide Senate/Governor same-grain comparison contest for 2024"
       ],
-      "parserStatus": "illinoisElectionResultsByOfficeCsvDirectory loaded for official presidential jurisdiction results and precinct President-vs-U.S.-House review rows; scripts/report-il-turnout-source-review.mjs documents why by-office Registration/VoteCount fields are not an active turnout replacement",
+      "parserStatus": "illinoisElectionResultsByOfficeCsvDirectory loaded for official presidential jurisdiction results and precinct President-vs-U.S.-House review rows; scripts/report-il-turnout-source-review.mjs documents why by-office Registration/VoteCount fields are not an active turnout replacement; scripts/collect-il-historical-baseline.mjs normalizes official 2020 by-office President rows into county-named historical baseline rows",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Illinois 2024 has no statewide U.S. Senate or Governor contest in the by-office package. Review rows compare President to U.S. House only where the jurisdiction/precinct key is unambiguous and the House row has both Democratic and Republican candidate votes; split/multi-district precinct keys and uncontested House rows are omitted. The by-office President CSV is not a valid turnout replacement: Registration sums to 7,210,422 versus 8,970,541 EAC registered voters, 2,260 precinct keys have zero Registration, and President contest totals including over/under/blank rows are 14,371 below EAC ballots cast.",
-      "nextAction": "Keep EAC fallback turnout active; request or locate an Illinois State Board of Elections turnout/voter-participation artifact with explicit ballots-cast, registered-voter denominator timing, and election-authority or precinct join keys."
+      "caveats": "Illinois 2024 has no statewide U.S. Senate or Governor contest in the by-office package. Review rows compare President to U.S. House only where the jurisdiction/precinct key is unambiguous and the House row has both Democratic and Republican candidate votes; split/multi-district precinct keys and uncontested House rows are omitted. The by-office President CSV is not a valid turnout replacement: Registration sums to 7,210,422 versus 8,970,541 EAC registered voters, 2,260 precinct keys have zero Registration, and President contest totals including over/under/blank rows are 14,371 below EAC ballots cast. The 2020 historical baseline uses official by-office county-named election-authority rows and excludes the six separate city election authorities rather than forcing them into county FIPS tags.",
+      "nextAction": "Keep EAC fallback turnout active; request or locate an Illinois State Board of Elections turnout/voter-participation artifact with explicit ballots-cast, registered-voter denominator timing, and election-authority or precinct join keys. For historical flip coverage, review canonical aliases for official DeWITT and JoDAVIESS spellings if the coordinator wants those two county-named rows tagged."
     },
     {
       "state": "IN",
@@ -901,7 +918,7 @@
       "stateName": "Louisiana",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_equipment_admin_context",
+      "dataFamily": "results_review_turnout_historical_equipment_admin_context",
       "tier": "tier_2_official_dashboard_endpoint",
       "reportingGrain": "precinct_vote_mode_and_parish",
       "exportFormats": [
@@ -910,7 +927,9 @@
         "Louisiana SOS post-election statistics XLS workbooks",
         "normalized SOS parish turnout CSV",
         "EAC benchmark turnout CSV",
-        "Census TIGERweb GeoJSON"
+        "Census TIGERweb GeoJSON",
+        "official 2020 SOS precinct CSV historical baseline",
+        "normalized 2020 historical baseline CSV"
       ],
       "sourceUrls": [
         "https://voterportal.sos.la.gov/static/",
@@ -920,7 +939,8 @@
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2722%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
         "https://voterportal.sos.la.gov/graphical",
         "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/statewide/2024_1105_sta.xls",
-        "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls"
+        "https://electionstatistics.sos.la.gov/data/Post_Election_Statistics/parish/2024_1105_par.xls",
+        "https://voterportal.sos.la.gov/static/20201103/resultsRace/Presidential"
       ],
       "exampleUrls": [
         "https://voterportal.sos.la.gov/static/20241105/resultsRace/Presidential"
@@ -931,20 +951,21 @@
         "official precinct and vote-mode U.S. House comparison rows where same-grain keys align",
         "official SOS parish post-election qualified-voter and voted turnout rows",
         "EAC benchmark turnout rows",
+        "official 2020 parish presidential historical baseline rows",
         "parish geometry",
         "parish equipment context from Verified Voting Verifier",
         "data/la-2024-data-coverage-inventory.json coverage inventory"
       ],
       "missingFields": [
         "precinct boundary geometry or precinct-to-parish crosswalks",
-        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "official 2012/2016 parish historical baseline artifacts normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "louisianaSosPrecinctCsvDirectory loaded for official parish President result rows and precinct/vote-mode President-versus-U.S.-House review rows; scripts/normalize-la-post-election-statistics.mjs generates active SOS parish turnout rows from official post-election statistics workbooks; EAC is retained as a benchmark; Census parish geometry, admin equipment context, and data/la-2024-data-coverage-inventory.json are documented",
+      "parserStatus": "louisianaSosPrecinctCsvDirectory loaded for official parish President result rows and precinct/vote-mode President-versus-U.S.-House review rows; scripts/normalize-la-post-election-statistics.mjs generates active SOS parish turnout rows from official post-election statistics workbooks; scripts/collect-la-historical-baseline.mjs generates 64 official 2020 parish historical baseline rows from the SOS 2020 Presidential Electors precinct CSV; EAC is retained as a benchmark; Census parish geometry, admin equipment context, and data/la-2024-data-coverage-inventory.json are documented",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "Louisiana uses parishes rather than counties. U.S. House is district-based and candidate-specific, so review rows are advisory source-review context, not same-office statewide comparison rows. SOS turnout uses qualified voters as of the close of registration records thirty days before the election and election-level Voted counts, not presidential contest votes.",
-      "nextAction": "Collect precinct boundary geometry/crosswalks, official 2012/2016/2020 historical baseline artifacts, and normalized audit/CVR/incident/correction/recount/litigation records."
+      "nextAction": "Collect precinct boundary geometry/crosswalks, official 2012/2016 historical baseline artifacts, and normalized audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "MA",
@@ -1006,18 +1027,21 @@
       "stateName": "Maryland",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_turnout",
+      "dataFamily": "results_review_turnout_historical_geometry",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
         "official statewide all-precinct CSV",
         "official precinct reference XLSX",
-        "EAC fallback turnout"
+        "EAC fallback turnout",
+        "official 2020 county result CSVs"
       ],
       "sourceUrls": [
         "https://elections.maryland.gov/elections/archive/2024/election_data/PG24_AllPrecincts.csv",
         "https://elections.maryland.gov/elections/archive/2024/Polling%20Places%20AEMS%20PG24.xlsx",
-        "https://www.eac.gov/research-and-data/studies-and-reports"
+        "https://www.eac.gov/research-and-data/studies-and-reports",
+        "https://elections.maryland.gov/elections/archive/2020/election_data/index.html",
+        "https://elections.maryland.gov/elections/archive/2020/election_data/All_State_2020_General.csv"
       ],
       "exampleUrls": [
         "https://elections.maryland.gov/elections/archive/2024/election_data/index.html"
@@ -1031,18 +1055,20 @@
         "mail-in ballot round 1 totals",
         "provisional totals",
         "mail-in ballot round 2 totals",
-        "EAC fallback turnout"
+        "EAC fallback turnout",
+        "official 2020 county/county-equivalent presidential historical baseline rows"
       ],
       "missingFields": [
         "state-native precinct registered-voter denominator",
         "precinct boundary geometry",
-        "audit/CVR/incident artifacts"
+        "audit/CVR/incident artifacts",
+        "official 2016 and 2012 county/county-equivalent historical presidential baseline rows"
       ],
-      "parserStatus": "marylandPrecinctCsv parser loaded in etl/state-configs/md.json",
+      "parserStatus": "marylandPrecinctCsv parser loaded in etl/state-configs/md.json; scripts/normalize-md-historical-baseline.mjs normalizes official SBE 2020 county/county-equivalent presidential baseline rows to historicalPresidentialCsv",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Official SBE precinct candidate rows support President-versus-U.S.-Senate directional screening. Turnout still uses EAC jurisdiction fallback until a Maryland-native registered-voter denominator is collected.",
-      "nextAction": "Collect Maryland state-native registered-voter/ballots-cast denominator rows and any post-election audit/CVR/incident artifacts."
+      "caveats": "Official SBE precinct candidate rows support President-versus-U.S.-Senate directional screening. Turnout still uses EAC jurisdiction fallback until a Maryland-native registered-voter denominator is collected. Historical baseline rows currently cover 2020 only; statewide-only rows are retained only for reconciliation, and Baltimore City/Baltimore County tags come only from distinct official files and Census GEOIDs.",
+      "nextAction": "Collect Maryland state-native registered-voter/ballots-cast denominator rows, official 2016/2012 county historical baselines, and any post-election audit/CVR/incident artifacts."
     },
     {
       "state": "ME",
@@ -1290,11 +1316,14 @@
         "https://electionresults.mt.gov/ResultsList.aspx?eid=450002785",
         "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
         "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass",
-        "https://sosmt.gov/elections/systems/"
+        "https://sosmt.gov/elections/systems/",
+        "https://sosmt.gov/wp-content/uploads/2020_General_Precinct-by-Precinct.xlsx",
+        "https://sosmt.gov/wp-content/uploads/State_Canvass_Report.pdf"
       ],
       "exampleUrls": [
         "https://sosmt.gov/docs/32/results/66992/2024_general_precinct_by_precinct",
-        "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass"
+        "https://sosmt.gov/docs/31/post-election/66775/2024-general-election-report-state-canvass",
+        "https://sosmt.gov/wp-content/uploads/2020_General_Precinct-by-Precinct.xlsx"
       ],
       "availableFields": [
         "precinct President rows",
@@ -1302,20 +1331,21 @@
         "official statewide canvass context",
         "EAC fallback county/jurisdiction turnout rows",
         "county geometry",
-        "Verified Voting county equipment context"
+        "Verified Voting county equipment context",
+        "official 2020 county presidential historical baseline rows with county:<GEOID> tags"
       ],
       "missingFields": [
         "state-native turnout denominator",
         "precinct boundary geometry",
-        "normalized official 2020/2016/2012 county historical baselines",
         "normalized post-election audit/recount/CVR availability artifacts",
-        "normalized incident/correction/litigation records"
+        "normalized incident/correction/litigation records",
+        "normalized official 2016/2012 county historical baselines"
       ],
-      "parserStatus": "montanaPrecinctResultsXlsx loaded for official precinct President-versus-U.S. Senate review rows; EAC fallback turnout is warning-marked; historical and admin-context artifacts remain inventory/documentation gaps",
+      "parserStatus": "montanaPrecinctResultsXlsx loaded for official precinct President-versus-U.S. Senate review rows; scripts/normalize-mt-historical-baseline.py loads official 2020 county presidential baseline rows with county:<GEOID> tags; EAC fallback turnout is warning-marked; 2016/2012 historical and admin-context artifacts remain inventory/documentation gaps",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "Official workbook rows omit 27 presidential write-in votes that are included in the separate certified canvass total. County maps use Census county geometry only. Turnout currently uses warning-marked EAC fallback rows until a Montana state-native denominator artifact is collected.",
-      "nextAction": "Collect or normalize Montana state-native turnout denominators, precinct boundary geometry, official 2020/2016/2012 county historical baselines, and post-election audit/recount/CVR/incident/correction context."
+      "caveats": "Official workbook rows omit 27 presidential write-in votes that are included in the separate certified canvass total. County maps use Census county geometry only. Turnout currently uses warning-marked EAC fallback rows until a Montana state-native denominator artifact is collected. Official 2020 historical baseline rows are loaded at county grain; 2016 and 2012 official historical baselines remain unnormalized.",
+      "nextAction": "Collect or normalize Montana state-native turnout denominators, precinct boundary geometry, official 2016/2012 county historical baselines, and post-election audit/recount/CVR/incident/correction context."
     },
     {
       "state": "NC",
@@ -1485,7 +1515,7 @@
         "XLS",
         "XLSX",
         "normalized CSV",
-        "archived official 2016 XLS/XLSX baseline leads",
+        "archived official 2016/2020 XLS/XLSX baseline workbooks",
         "admin inventory JSON",
         "source request matrix TSV"
       ],
@@ -1498,7 +1528,10 @@
         "https://web.archive.org/web/20250611055423id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2024-ge-names-on-checklist_7.xlsx",
         "https://web.archive.org/cdx?url=www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-president*&output=json&fl=timestamp,original,statuscode,mimetype&filter=statuscode:200&collapse=urlkey",
         "https://web.archive.org/web/20240720085749id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-governor.xls",
-        "https://web.archive.org/web/20240720085753id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-congressional-district-1.xlsx"
+        "https://web.archive.org/web/20240720085753id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/inline-documents/sonh/2016-ge-congressional-district-1.xlsx",
+        "https://www.sos.nh.gov/elections/2020-election-results/2020-general-election-results",
+        "https://web.archive.org/web/20231127033944id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/documents/2020%20GE%20Election%20Tallies/2020-president.xls",
+        "https://web.archive.org/web/20231127033944id_/https://www.sos.nh.gov/sites/g/files/ehbemt561/files/documents/2020%20GE%20Election%20Tallies/2020-presidential-write-ins.xls"
       ],
       "availableFields": [
         "town/ward President rows",
@@ -1508,21 +1541,21 @@
         "town/ward names-on-checklist registered-voter denominator rows",
         "county geometry",
         "county equipment context",
-        "official 2016 archive leads for President, Governor, and U.S. House historical baseline feasibility",
+        "official 2016 and 2020 county presidential historical baseline rows normalized from archived SOS workbooks",
         "NH administration/source inventory with recount, geometry, audit, CVR, incident, correction, and litigation request paths",
         "NH source request matrix with exact follow-up rows for 2016/2020/2012 historical baselines, town/ward geometry, and administration-context records"
       ],
       "missingFields": [
-        "loaded 2012/2016/2020 historical President-versus-U.S. House and President-versus-Governor ticket-splitting baseline",
+        "official 2012 historical President baseline and historical President-versus-U.S. House/Governor ticket-splitting baselines",
         "town/ward boundary geometry",
         "normalized post-election audit rows",
         "normalized recount, CVR availability, incident/correction, and litigation rows"
       ],
-      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs; data/nh-2024-admin-source-inventory.json records exact official 2016 CDX capture metadata and remaining admin/geometry request paths; data/nh-2024-source-request-matrix.tsv records exact official-source follow-up rows",
+      "parserStatus": "newHampshireTownWardCsv loaded with official President, Governor, U.S. House, ballots-cast, and names-on-checklist rows normalized by scripts/normalize-nh-general-workbooks.mjs; scripts/normalize-nh-historical-baseline.mjs now generates 20 official county historical presidential rows for 2016 and 2020 with county:<GEOID> tags; data/nh-2024-admin-source-inventory.json records remaining admin/geometry/2012 request paths",
       "manualReviewBurden": "medium",
-      "confidence": "loaded_with_district_comparison_caveat",
-      "caveats": "Live SOS page is access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals. The 2016 historical archive lead is not loaded until artifacts are downloaded, parsed, and reconciled; July 2 CDX checks confirmed exact official 20240720 captures but binary downloads failed from the worker environment. 2020 and 2012 remain targeted archive/records-request items tracked in data/nh-2024-source-request-matrix.tsv.",
-      "nextAction": "Download and parse the official 2016 archived President, Governor, and U.S. House XLS/XLSX leads; continue targeted archive/records requests for 2020 and 2012; request town/ward geometry or a reporting-unit crosswalk; normalize official audit/recount/CVR/incident/correction/litigation records if obtained."
+      "confidence": "loaded_with_district_comparison_and_historical_caveats",
+      "caveats": "Live SOS pages are access-limited from this environment; archived official workbook artifacts are retained. U.S. House is same town/ward grain but district-based rather than a single statewide contest. State-native ballots-cast and names-on-checklist rows replace EAC fallback turnout, with a one-vote source summary/detail caveat in ballots-cast totals. Official 2016 and 2020 county historical presidential baselines are loaded as contextual county rows with FIPS jurisdiction tags; 2012 remains a targeted archive/records-request item tracked in data/nh-2024-source-request-matrix.tsv.",
+      "nextAction": "Continue targeted archive/records requests for official 2012 historical baseline artifacts; request town/ward geometry or a reporting-unit crosswalk; normalize official audit/recount/CVR/incident/correction/litigation records if obtained."
     },
     {
       "state": "NJ",
@@ -1547,7 +1580,8 @@
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-president.pdf",
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-us-senate.pdf",
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-voter-turnout.pdf",
-        "https://njogis-newjersey.opendata.arcgis.com/datasets/municipal-boundaries-of-nj/about"
+        "https://njogis-newjersey.opendata.arcgis.com/datasets/municipal-boundaries-of-nj/about",
+        "https://www.nj.gov/state/elections/assets/pdf/election-results/2020/2020-official-general-results-president.pdf"
       ],
       "exampleUrls": [
         "https://www.nj.gov/state/elections/assets/pdf/election-results/2024/2024-official-general-results-president-atlantic.pdf",
@@ -1564,20 +1598,21 @@
         "official county-by-county municipal President rows identified as follow-up source leads",
         "official county-by-county municipal U.S. Senate comparison rows identified as follow-up source leads",
         "official 2012/2016/2020 historical archive source leads",
-        "official 2024 county post-election audit PDF links and county-official request paths"
+        "official 2024 county post-election audit PDF links and county-official request paths",
+        "official 2020 county presidential historical baseline rows with county:<GEOID> jurisdiction tags"
       ],
       "missingFields": [
         "loaded municipal President-versus-U.S.-Senate review rows",
         "municipal boundary geometry and DOE-label crosswalk",
-        "normalized official historical baseline rows",
+        "normalized official 2012 and 2016 historical baseline rows",
         "normalized county post-election audit outcome rows",
         "normalized CVR availability, incident, correction, recount, litigation, ballot-manifest, tabulator-log, and EMS-log rows"
       ],
-      "parserStatus": "scripts/normalize-nj-doe-pdfs.mjs loads official DOE statewide text-layer PDFs into 21 county President rows, 21 county U.S. Senate comparison rows, and 21 county turnout rows; municipal PDFs, historical baselines, audit PDFs, and administration records remain source/request follow-up items",
+      "parserStatus": "scripts/normalize-nj-doe-pdfs.mjs loads official DOE statewide text-layer PDFs into 21 county President rows, 21 county U.S. Senate comparison rows, 21 county turnout rows, and 21 official 2020 county historical baseline rows with county:<GEOID> tags; municipal PDFs, 2012/2016 historical baselines, audit PDFs, and administration records remain source/request follow-up items",
       "manualReviewBurden": "medium",
       "confidence": "loaded_county_with_municipal_followup",
-      "caveats": "Current NJ review rows are county-level President-versus-U.S.-Senate comparisons from official statewide DOE PDFs, not municipal or precinct scatter plots. DOE county turnout replaces the EAC fallback in staging, while data/nj-2024-turnout-reconciliation-summary.json records the 52,335 DOE-minus-EAC registered-voter denominator difference and zero ballots-cast difference. Municipal PDFs, municipal geometry/crosswalks, historical baselines, and normalized audit/CVR/incident/correction/recount/litigation rows remain unnormalized.",
-      "nextAction": "Collect and parse the 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, municipal registered-voters/ballots-cast PDFs, municipal geometry/crosswalks, official 2012/2016/2020 historical baselines, and county audit/CVR/incident/correction/recount/litigation records."
+      "caveats": "Current NJ review rows are county-level President-versus-U.S.-Senate comparisons from official statewide DOE PDFs, not municipal or precinct scatter plots. DOE county turnout replaces the EAC fallback in staging, while data/nj-2024-turnout-reconciliation-summary.json records the 52,335 DOE-minus-EAC registered-voter denominator difference and zero ballots-cast difference. Official 2020 county historical baseline rows are loaded with county:<GEOID> tags; municipal PDFs, municipal geometry/crosswalks, 2012/2016 historical baselines, and normalized audit/CVR/incident/correction/recount/litigation rows remain unnormalized.",
+      "nextAction": "Collect and parse the 21 county municipal President PDFs, 21 county municipal U.S. Senate PDFs, municipal registered-voters/ballots-cast PDFs, municipal geometry/crosswalks, official 2012/2016 historical baselines, and county audit/CVR/incident/correction/recount/litigation records."
     },
     {
       "state": "NM",
@@ -1808,7 +1843,8 @@
         "EAC fallback turnout CSV",
         "Census county GeoJSON",
         "Verified Voting equipment context CSV",
-        "official Nov. 1 voter-registration PDF denominator lead"
+        "official Nov. 1 voter-registration PDF denominator lead",
+        "official 2020 results app county tables"
       ],
       "sourceUrls": [
         "https://oklahoma.gov/elections/elections-results/election-results/2024-election-results/november-general-election.html",
@@ -1819,7 +1855,8 @@
         "https://oklahoma.gov/elections/security-integrity/post-election-audits/post-election-audit-archives/2024-post-election-audits.html",
         "https://oklahoma.gov/elections/candidates/district-and-precinct-maps.html",
         "https://oklahoma.gov/elections/about-us/information-and-records-requests.html",
-        "https://oklahoma.gov/content/dam/ok/en/elections/voter-registration-statistics/2024-vr-statistics/vrstats-district-nov1-2024.pdf"
+        "https://oklahoma.gov/content/dam/ok/en/elections/voter-registration-statistics/2024-vr-statistics/vrstats-district-nov1-2024.pdf",
+        "https://results.okelections.gov/OKER/?elecDate=20201103"
       ],
       "exampleUrls": [
         "https://results.okelections.gov/OKERS/enrapi/GetExtract/PLCSV/20241105",
@@ -1833,20 +1870,21 @@
         "county geometry",
         "county equipment context from Verified Voting",
         "official post-election audit archive source path",
-        "official Nov. 1, 2024 county registered-voter denominator lead parsed from congressional-district county fragments and reconciled to EAC registered voters"
+        "official Nov. 1, 2024 county registered-voter denominator lead parsed from congressional-district county fragments and reconciled to EAC registered voters",
+        "official 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
         "state-native ballots-cast or voter-history rows to pair with the collected Nov. 1 registered-voter denominator lead",
         "precinct boundary geometry or precinct-to-county crosswalk",
-        "loaded official 2012/2016/2020 historical baseline rows",
+        "loaded official 2012 and 2016 historical baseline rows",
         "normalized post-election audit selection/outcome rows",
         "normalized CVR availability, recount, incident, correction, and litigation records"
       ],
-      "parserStatus": "nativeOklahomaOfficialCsvZip loads race-level, county-level, and precinct-level official OK exports; EAC fallback turnout and county geometry are loaded; scripts/collect-ok-vrstats-registration.mjs collects and normalizes the official Nov. 1 VR PDF as a denominator lead that reconciles to EAC registered voters; data/ok-2024-data-coverage-inventory.json documents remaining source gaps.",
+      "parserStatus": "nativeOklahomaOfficialCsvZip loads race-level, county-level, and precinct-level official OK exports; EAC fallback turnout and county geometry are loaded; scripts/collect-ok-vrstats-registration.mjs collects and normalizes the official Nov. 1 VR PDF as a denominator lead that reconciles to EAC registered voters; scripts/normalize-ok-historical-baseline.mjs loads official 2020 county presidential historical baseline rows from the Oklahoma Election Results app tables; data/ok-2024-data-coverage-inventory.json documents remaining source gaps.",
       "manualReviewBurden": "low",
       "confidence": "loaded_with_caveat",
-      "caveats": "Oklahoma has official export endpoints for race, county, and precinct results, so acquisition is Tier 1 for result/review data. Review rows use U.S. House by district and retain vote-share-only rows when a precinct lacks both major-party House candidates. Turnout remains EAC fallback; the collected Nov. 1 VR PDF confirms the registered-voter denominator total but has no ballots-cast field. County geometry is loaded only at county grain, and normalized historical, audit, CVR, recount, incident, correction, and litigation rows are not loaded.",
-      "nextAction": "Collect Oklahoma-native ballots-cast or voter-history rows that can pair with the Nov. 1 registered-voter denominator lead, official precinct geometry/crosswalks, historical 2012/2016/2020 result exports, and row-level audit/CVR/recount/incident/correction/litigation artifacts or request responses."
+      "caveats": "Oklahoma has official export endpoints for race, county, and precinct 2024 result/review data, so acquisition is Tier 1 for result/review data. Review rows use U.S. House by district and retain vote-share-only rows when a precinct lacks both major-party House candidates. Turnout remains EAC fallback; the collected Nov. 1 VR PDF confirms the registered-voter denominator total but has no ballots-cast field. Official 2020 county historical baseline rows are loaded from the public results app; 2012 and 2016 historical baselines remain source leads. County geometry is loaded only at county grain, and normalized audit, CVR, recount, incident, correction, and litigation rows are not loaded.",
+      "nextAction": "Collect Oklahoma-native ballots-cast or voter-history rows that can pair with the Nov. 1 registered-voter denominator lead, official precinct geometry/crosswalks, official 2012 and 2016 historical result exports/app tables, and row-level audit/CVR/recount/incident/correction/litigation artifacts or request responses."
     },
     {
       "state": "OR",
@@ -1861,7 +1899,9 @@
         "normalized county CSV",
         "ORMS county precinct PDF/CSV package",
         "EAC fallback turnout CSV",
-        "Census county GeoJSON"
+        "Census county GeoJSON",
+        "official 2020 historical abstract PDF",
+        "normalized 2020 historical baseline CSV"
       ],
       "sourceUrls": [
         "https://sos.oregon.gov/elections/Pages/electionhistory.aspx",
@@ -1870,13 +1910,17 @@
         "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735459",
         "https://sos.oregon.gov/elections/Pages/voting-systems.aspx",
         "https://sos.oregon.gov/elections/Pages/countyofficials.aspx",
-        "https://oregonsos.govqa.us/WEBAPP/_rs/"
+        "https://oregonsos.govqa.us/WEBAPP/_rs/",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735458",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735450",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/6873777",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/6873690"
       ],
       "exampleUrls": [
-        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735458",
-        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/13735450",
-        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873777",
-        "https://records.sos.state.or.us/ORSOSCM/Recordhtml/6873690"
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735458",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735450",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/6873777",
+        "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/6873690"
       ],
       "availableFields": [
         "official county presidential totals",
@@ -1885,20 +1929,21 @@
         "Census county geometry",
         "county equipment context from Verified Voting",
         "official ORMS precinct result package collected for provenance",
-        "official 2012/2016/2020 historical result PDF leads"
+        "official 2020 county presidential historical baseline rows",
+        "official 2012/2016 historical result PDF leads"
       ],
       "missingFields": [
         "normalized precinct President and same-grain comparison rows",
         "state-native turnout denominator rows from the official Oregon turnout statistics PDF",
         "precinct boundary geometry or reporting-unit crosswalks",
-        "normalized official 2012/2016/2020 historical baseline rows",
+        "normalized official 2012/2016 historical baseline rows",
         "normalized post-election audit, CVR availability, incident, correction, recount, litigation, tabulator-log, logic-and-accuracy, custody, and ballot-image records"
       ],
-      "parserStatus": "native county President-versus-Attorney-General package loaded from official Oregon abstract PDF; ORMS precinct package collected but not normalized; data/or-2024-data-coverage-inventory.json documents official turnout, historical, audit/CVR, request, and display-path gaps",
+      "parserStatus": "native county President-versus-Attorney-General package loaded from official Oregon abstract PDF; scripts/normalize-or-official-results.mjs now also normalizes official 2020 county President historical baseline rows from the ORMS record viewer; ORMS precinct package collected but not normalized; data/or-2024-data-coverage-inventory.json documents remaining turnout, 2012/2016 historical, audit/CVR, request, and display-path gaps",
       "manualReviewBurden": "high",
       "confidence": "loaded_with_caveat",
-      "caveats": "Current Oregon review rows are county-level advisory inputs, not precinct scatter plots. The official ORMS precinct package includes many image/PDF artifacts requiring county-aware extraction or request-produced machine-readable files. Turnout remains EAC fallback until the official Oregon voter registration and turnout statistics PDF is normalized and reconciled. Historical and administration-context rows are source leads only.",
-      "nextAction": "Normalize the 2024 official turnout statistics PDF, then build or request machine-readable precinct President plus same-grain comparison rows and official 2012/2016/2020 historical baseline rows."
+      "caveats": "Current Oregon review rows are county-level advisory inputs, not precinct scatter plots. The official ORMS precinct package includes many image/PDF artifacts requiring county-aware extraction or request-produced machine-readable files. Turnout remains EAC fallback until the official Oregon voter registration and turnout statistics PDF is normalized and reconciled. Official 2020 county historical baseline rows are loaded for flip joins; 2012/2016 historical baselines and administration-context rows remain source leads only.",
+      "nextAction": "Normalize the 2024 official turnout statistics PDF, then build or request machine-readable precinct President plus same-grain comparison rows and official 2012/2016 historical baseline rows."
     },
     {
       "state": "PA",
@@ -1962,58 +2007,63 @@
         "official city/town presidential rows aggregated to county result-map rows, plus federal-precinct and posted-total reconciliation rows",
         "official same-key President-versus-U.S. Senate review rows from the BOE long-format ZIP",
         "EAC fallback turnout rows",
-        "official 2012 and 2016 city/town/federal historical baselines",
+        "official 2012 and 2016 city/town/federal historical baselines plus 2020 county-aggregated official historical baseline rows",
         "county geometry and supplemental equipment context"
       ],
       "missingFields": [
         "state-native turnout and registration denominator rows",
         "result-ready city/town or precinct geometry/crosswalk for finer overlays",
-        "decoded and reconciled 2020 historical baseline rows",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeRhodeIslandBoeCsv loaded from data/ri-2024-general-election-long-format.zip and data/ri-2024-general-election-statewide.json; data/ri-2024-data-coverage-inventory.json documents ZIP-vs-posted deltas, EAC turnout fallback, partial historical baselines, and remaining blockers",
+      "parserStatus": "nativeRhodeIslandBoeCsv loaded from data/ri-2024-general-election-long-format.zip and data/ri-2024-general-election-statewide.json; scripts/normalize-ri-boe-results.mjs now loads official 2012/2016 city/town/federal historical rows and official 2020 county-aggregated historical rows from rigen2020l.asc; data/ri-2024-data-coverage-inventory.json documents ZIP-vs-posted deltas, EAC turnout fallback, and remaining geometry/admin blockers",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
       "caveats": "The 2024 raw technical ZIP is 32 President votes and 29 U.S. Senate votes below posted statewide JSON, so certified President rows include a non-geographic reconciliation delta and review rows exclude posted-total deltas, zero-vote Limited rows, and presidential-only rows. Turnout remains EAC fallback. County map capability is enabled through official city/town-to-county aggregation; finer overlays still need result-ready city/town or precinct geometry/crosswalks.",
-      "nextAction": "Decode/reconcile the 2020 archive vote-group layout, collect state-native turnout denominators, collect city/town or precinct geometry/crosswalks, and normalize audit/CVR/recount/incident/correction/litigation records."
+      "nextAction": "Collect state-native turnout denominators, collect city/town or precinct geometry/crosswalks, and normalize audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "SC",
       "stateName": "South Carolina",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
         "official CSV download",
-        "Election History table export"
+        "Election History table export",
+        "official 2020 historical President CSV download",
+        "normalized historical baseline CSV"
       ],
       "sourceUrls": [
         "https://electionhistory.scvotes.gov/",
-        "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false"
+        "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+        "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false"
       ],
       "exampleUrls": [
         "https://electionhistory.scvotes.gov/contest/7131",
-        "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false"
+        "https://sc.elstats.civera.com/api/download_contest/7131_table.csv?split_party=false",
+        "https://electionhistory.scvotes.gov/contest/1974",
+        "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false"
       ],
       "availableFields": [
         "official presidential county and precinct CSV rows",
         "official U.S. House county and precinct CSV comparison rows",
         "official VREMS county voter-history turnout and printed-list registration rows",
         "official VREMS precinct/polling-place locator export",
-        "EAC turnout fallback retained as a benchmark"
+        "EAC turnout fallback retained as a benchmark",
+        "official 2020 county presidential historical baseline rows from the SC Elections Database contest CSV"
       ],
       "missingFields": [
         "map-ready precinct boundary geometry",
         "statewide same-office comparison contest",
         "active-registered-voter denominator artifact at the same grain as precinct results"
       ],
-      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads; county turnout now uses normalized SC VREMS voter-history rows",
+      "parserStatus": "native parser loaded from official Election History President and U.S. House CSV downloads; county turnout uses normalized SC VREMS voter-history rows; scripts/collect-sc-historical-baseline.mjs normalizes official 2020 county President rows",
       "manualReviewBurden": "low",
       "confidence": "loaded",
-      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening. SC VREMS turnout denominators are printed registration-list counts that include active voters plus some inactive voters for the selected election, so turnout rows are warning-required.",
-      "nextAction": "Optional upgrades are map-ready precinct boundary geometry, an active-voter denominator at county or precinct grain, and any official statewide comparison race if one becomes available."
+      "caveats": "U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before advisory directional screening. SC VREMS turnout denominators are printed registration-list counts that include active voters plus some inactive voters for the selected election, so turnout rows are warning-required. The loaded 2020 historical baseline rows are county-level context only.",
+      "nextAction": "Optional upgrades are map-ready precinct boundary geometry, an active-voter denominator at county or precinct grain, official 2012/2016 county historical baselines, and any official statewide comparison race if one becomes available."
     },
     {
       "state": "SD",
@@ -2087,14 +2137,15 @@
       "stateName": "Tennessee",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout_geometry_equipment_admin_context",
+      "dataFamily": "results_review_turnout_historical_geometry_equipment_admin_context",
       "tier": "tier_6_official_pdf_hostile",
       "reportingGrain": "precinct",
       "exportFormats": [
         "official text-layer PDF",
         "normalized CSV",
         "EAC fallback turnout CSV",
-        "county GeoJSON"
+        "county GeoJSON",
+        "official historical text-layer PDF"
       ],
       "sourceUrls": [
         "https://sos.tn.gov/elections/results",
@@ -2103,10 +2154,12 @@
         "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf",
         "https://www.eac.gov/research-and-data/studies-and-reports",
         "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2747%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
-        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/47"
+        "https://verifiedvoting.org/verifier/#mode/navigate/map/voteEquip/mapType/ppEquip/year/2024/state/47",
+        "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf"
       ],
       "exampleUrls": [
-        "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf"
+        "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf",
+        "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf"
       ],
       "availableFields": [
         "official county presidential totals",
@@ -2114,19 +2167,20 @@
         "official precinct U.S. Senate comparison rows",
         "EAC fallback turnout rows",
         "county geometry",
-        "county equipment context from Verified Voting Verifier"
+        "county equipment context from Verified Voting Verifier",
+        "official 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
         "state-native turnout denominator rows",
         "precinct boundary geometry or reporting-unit crosswalk",
-        "official 2012/2016/2020 historical baseline artifacts normalized into ETL",
+        "official 2012/2016 historical baseline artifacts normalized into ETL",
         "normalized official audit, recount, CVR availability, incident, correction, and litigation records"
       ],
-      "parserStatus": "scripts/normalize-tn-sos-results.mjs normalizes the official SOS precinct PDF to 95 county President rows and 1,859 nonzero precinct President-versus-U.S.-Senate review rows; EAC fallback turnout, county geometry, and equipment context are loaded",
+      "parserStatus": "scripts/normalize-tn-sos-results.mjs normalizes the official SOS precinct PDF to 95 county President rows and 1,859 nonzero precinct President-versus-U.S.-Senate review rows; it also normalizes the official SOS 2020 General by County PDF to 95 county historical baseline rows. EAC fallback turnout, county geometry, and equipment context are loaded.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "The official source is a text-layer PDF rather than a structured export; the normalizer reconciles parsed precinct totals to official statewide totals before writing CSV artifacts. Turnout remains EAC fallback, county geometry is loaded, precinct geometry/crosswalks are not loaded, and no normalized historical baseline or administration-context rows are loaded beyond equipment metadata.",
-      "nextAction": "Collect state-native turnout denominators, official precinct geometry/crosswalks, official 2012/2016/2020 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records."
+      "caveats": "The official 2024 source is a text-layer PDF rather than a structured export; the normalizer reconciles parsed precinct totals to official statewide totals before writing CSV artifacts. Official 2020 county historical baseline rows are loaded from a Tennessee SOS text-layer PDF and resolve to county tags through existing county helpers. Turnout remains EAC fallback, county geometry is loaded, precinct geometry/crosswalks are not loaded, and no normalized administration-context rows are loaded beyond equipment metadata.",
+      "nextAction": "Collect state-native turnout denominators, official precinct geometry/crosswalks, official 2012/2016 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
       "state": "TX",
@@ -2289,12 +2343,15 @@
         "official SOS canvass PDF",
         "official SOS turnout PDF",
         "official recount XLSX",
-        "EAC fallback turnout"
+        "EAC fallback turnout",
+        "official SOS 2020 archive CSV export"
       ],
       "sourceUrls": [
         "https://sos.vermont.gov/elections/election-info-resources/elections-results-data/",
         "https://static.electionresults.vermont.gov/elections/elections.json",
-        "https://electionarchive.vermont.gov/"
+        "https://electionarchive.vermont.gov/",
+        "https://electionarchive.vermont.gov/elections/view/144513/",
+        "https://electionarchive.vermont.gov/elections/download/144513/precincts_include:0/"
       ],
       "exampleUrls": [
         "https://static.electionresults.vermont.gov/elections/67a35c79-05a2-4ae3-a77d-97812256188b.json",
@@ -2310,50 +2367,58 @@
         "official turnout JSON/PDF lead",
         "certified canvass PDF retained as source-of-record reconciliation artifact",
         "county geometry",
-        "equipment context"
+        "equipment context",
+        "official 2020 county historical presidential baseline rows aggregated from SOS municipality export"
       ],
       "missingFields": [
         "state-native turnout importer replacing EAC fallback",
         "town/reporting-district geometry and crosswalk for subcounty maps",
-        "2020/2016/2012 historical baseline rows",
+        "2016/2012 historical baseline rows",
         "normalized audit, recount, CVR, incident, correction, and litigation rows"
       ],
-      "parserStatus": "nativeVermontStaticElectionJson loads 14 county President rows and 283 town/reporting-district President-versus-U.S.-Senate review rows from official SOS static JSON after excluding the duplicated STATE WIDE summary row and reconciling to certified canvass totals; active turnout remains EAC fallback.",
+      "parserStatus": "nativeVermontStaticElectionJson loads 14 county President rows and 283 town/reporting-district President-versus-U.S.-Senate review rows from official SOS static JSON after excluding the duplicated STATE WIDE summary row and reconciling to certified canvass totals; scripts/collect-vt-historical-baseline.mjs adds 14 official 2020 county historical baseline rows from the SOS archive municipality export; active turnout remains EAC fallback.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "County result and town/reporting-district review rows are active and source-reconciled. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Active turnout remains EAC fallback because SOS JSON, SOS canvass cover-page, and EAC registered-voter totals differ. Town/reporting-district geometry, historical baselines, and normalized administration-context rows remain missing.",
-      "nextAction": "Resolve SOS turnout denominator timing before replacing EAC fallback; collect town/reporting-district geometry, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation context."
+      "caveats": "County result and town/reporting-district review rows are active and source-reconciled. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Active turnout remains EAC fallback because SOS JSON, SOS canvass cover-page, and EAC registered-voter totals differ. Official 2020 historical county rows are loaded as county aggregate context; 2016/2012 historical baselines, town/reporting-district geometry, and normalized administration-context rows remain missing.",
+      "nextAction": "Resolve SOS turnout denominator timing before replacing EAC fallback; collect town/reporting-district geometry, official 2016/2012 historical baselines, and normalized audit/CVR/recount/incident/correction/litigation context."
     },
     {
       "state": "WA",
       "stateName": "Washington",
       "jurisdictionName": "Statewide participating county package",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical",
       "tier": "tier_1_official_export_database",
       "reportingGrain": "precinct",
       "exportFormats": [
         "CSV"
       ],
       "sourceUrls": [
-        "https://www.sos.wa.gov/elections/data-research/election-data-and-maps"
+        "https://www.sos.wa.gov/elections/data-research/election-data-and-maps",
+        "https://results.vote.wa.gov/results/20201103/export.html",
+        "https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv"
       ],
-      "exampleUrls": [],
+      "exampleUrls": [
+        "https://results.vote.wa.gov/results/20241105/export/20241105_AllCounties.csv",
+        "https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv"
+      ],
       "availableFields": [
         "county presidential totals",
         "participating precinct review rows",
-        "county turnout fallback"
+        "county turnout fallback",
+        "official 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
         "complete statewide precinct export",
         "precinct boundary geometry",
-        "state-native turnout denominator"
+        "state-native turnout denominator",
+        "official 2012 and 2016 county historical baselines"
       ],
-      "parserStatus": "native participating precinct review package loaded",
+      "parserStatus": "native participating precinct review package loaded; scripts/normalize-wa-historical-baseline.mjs normalizes official 2020 SOS all-counties CSV rows into 39 county historical baseline rows",
       "manualReviewBurden": "medium",
-      "confidence": "partial",
-      "caveats": "Participating precinct export is 5,309 presidential votes below certified county totals.",
-      "nextAction": "Identify whether a complete statewide precinct package exists or keep participating-export caveat."
+      "confidence": "partial_with_2020_historical_loaded",
+      "caveats": "Participating precinct export is 5,309 presidential votes below certified county totals. Official 2020 county presidential historical baselines are loaded for county flip joins; 2012 and 2016 historical baselines remain uncollected.",
+      "nextAction": "Identify whether a complete statewide precinct package exists or keep participating-export caveat; collect state-native turnout denominators, precinct geometry, and official 2012/2016 historical county baselines."
     },
     {
       "state": "WI",

@@ -81,6 +81,28 @@
       "timestampBasis": "Wave 12 official-source coverage inventory checked July 2, 2026.",
       "confidence": "Documents loaded Oregon artifacts, official historical and turnout source leads, public-records and county-office request paths, and remaining audit/CVR/incident/correction/recount/litigation gaps. Inventory only; no normalized administration rows are loaded.",
       "status": "candidate"
+    },
+    {
+      "id": "or-2020-general-official-results",
+      "category": "Official 2020 statewide and county results abstract",
+      "url": "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735450",
+      "localFile": "data/or-2020-general-official-results.pdf",
+      "parser": "oregonOfficialResultsPdf",
+      "authority": "Oregon Secretary of State",
+      "timestampBasis": "Official November 3, 2020 General Election Abstract of Votes PDF retained from the ORMS record viewer.",
+      "confidence": "Official Oregon Secretary of State abstract used by scripts/normalize-or-official-results.mjs to produce 2020 county presidential historical baseline rows.",
+      "status": "loaded"
+    },
+    {
+      "id": "or-2020-general-president-county",
+      "category": "Official 2020 presidential county historical baseline rows",
+      "url": "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735450",
+      "localFile": "data/or-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Oregon Secretary of State",
+      "timestampBasis": "Official November 3, 2020 General Election Abstract of Votes President county table normalized July 9, 2026.",
+      "confidence": "Official Oregon Secretary of State county presidential totals normalized from the 2020 abstract PDF by scripts/normalize-or-official-results.mjs for county: jurisdictionTag flip joins.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -100,14 +122,15 @@
   "expected": {
     "jurisdictions": 36,
     "resultRows": 36,
-    "sources": 7,
+    "sources": 9,
     "geometryFeatures": 36,
     "stateTotal": 2244493,
     "trump": 919480,
     "harris": 1240600,
     "other": 84413,
     "reviewRows": 36,
-    "turnoutRows": 36
+    "turnoutRows": 36,
+    "historicalBaselineRows": 36
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -115,7 +138,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "countyPresidentCsv",
@@ -130,5 +153,16 @@
     "comparisonContest": "Attorney General",
     "coverageMode": "presidentVsAttorneyGeneral",
     "warning": "Oregon review rows are county-level President-versus-Attorney General comparisons from official Abstract of Votes county totals. They support county-level flags and directional screening, but they are not precinct-level vote-share scatter plots. Official county precinct artifacts are collected for provenance and later OCR-backed normalization."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "or-2020-general-president-county",
+    "warning": "Oregon historical baseline rows are official county-level 2020 presidential results from the Oregon Secretary of State General Election Abstract of Votes. Use them as contextual baseline rows for 2020-to-2024 county flip joins, not as 2024 certified data; official 2012 and 2016 county baselines remain uncollected in this pass.",
+    "expected": {
+      "rowCount": 36,
+      "years": [
+        2020
+      ]
+    }
   }
 }

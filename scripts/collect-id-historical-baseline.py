@@ -18,6 +18,7 @@ OUTPUT = Path("data/id-historical-presidential-baseline.csv")
 OFFICIAL_2012 = Path("data/id-2012-general-president-by-county.html")
 OFFICIAL_2016 = Path("data/id-2016-general-president-by-county.html")
 OFFICIAL_2020_STATEWIDE = Path("data/id-2020-general-statewide.html")
+OFFICIAL_2020_STATISTICS = Path("data/id-2020-general-statistics.html")
 OFFICIAL_2020_ABSTRACTS = Path("data/id-2020-general-county-abstracts.zip")
 SECONDARY_2020_COUNTIES = Path("data/id-2020-general-president-by-county-wikipedia.html")
 CURRENT_COUNTIES = Path("data/id-2024-general-president.csv")
@@ -134,7 +135,48 @@ def source_url(year: int) -> str:
         return "https://archive.sos.idaho.gov/ELECT/results/2012/General/cnty_USPres.htm"
     if year == 2016:
         return "https://archive.sos.idaho.gov/ELECT/results/2016/General/president_by_county.html"
-    return "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Idaho"
+    return "https://sos.idaho.gov/elections-division/2020-results-statistics/"
+
+
+def official_2020_statistics_rows() -> list[dict[str, object]]:
+    rows = parse_tables(OFFICIAL_2020_STATISTICS)
+    counties = known_counties()
+    data_rows = []
+    in_president_table = False
+
+    for row in rows:
+        if row and any("Joseph R. Biden" in cell for cell in row) and any("Donald J. Trump" in cell for cell in row):
+            in_president_table = True
+            continue
+        if in_president_table and row and row[0] == "TOTAL":
+            break
+        if not in_president_table:
+            continue
+
+        county = county_name(row[0]) if row else ""
+        if len(row) != 9 or county not in counties:
+            continue
+        dem_votes = int_value(row[1])
+        rep_votes = int_value(row[6])
+        other_votes = sum(int_value(value) for index, value in enumerate(row[1:], start=1) if index not in {1, 6})
+        data_rows.append(
+            {
+                "state": STATE,
+                "election_year": 2020,
+                "jurisdiction_name": county,
+                "county": county,
+                "local_unit": county,
+                "source_id": SOURCE_ID,
+                "source_level": "county",
+                "row_method": "officialIdahoSosStatisticsHtmlCountyHistorical",
+                "source_url": source_url(2020),
+                "dem_votes": dem_votes,
+                "rep_votes": rep_votes,
+                "other_votes": other_votes,
+                "total_votes": dem_votes + rep_votes + other_votes,
+            }
+        )
+    return data_rows
 
 
 def parse_2020_secondary_rows() -> list[dict[str, object]]:
@@ -275,22 +317,27 @@ def assert_expected(rows: list[dict[str, object]], year: int) -> None:
         raise ValueError(f"{year} totals mismatch: expected {EXPECTED[year]!r}, got {totals!r}")
 
 
-def assert_2020_blocked() -> None:
-    with zipfile.ZipFile(OFFICIAL_2020_ABSTRACTS) as archive:
-        pdf_counties = [Path(name).stem for name in archive.namelist() if name.lower().endswith(".pdf")]
-    if len(pdf_counties) != 6:
-        raise ValueError(f"Expected 6 PDF-only 2020 county abstracts, found {len(pdf_counties)}: {pdf_counties}")
-
+def assert_2020_official_crosschecks(rows: list[dict[str, object]]) -> None:
     statewide = official_2020_statewide_totals()
     expected = EXPECTED[2020]
     expected_tuple = (expected["dem_votes"], expected["rep_votes"], expected["other_votes"], expected["total_votes"])
     if statewide != expected_tuple:
         raise ValueError(f"2020 official statewide cross-check mismatch: {statewide!r}")
 
-    secondary_rows = parse_2020_secondary_rows()
-    secondary_total = sum(int(row["total_votes"]) for row in secondary_rows)
-    if secondary_total == expected["total_votes"]:
-        raise ValueError("Secondary 2020 county table unexpectedly reconciled to official SOS statewide total")
+    assert_expected(rows, 2020)
+
+    xlsx_totals = official_2020_xlsx_totals()
+    missing_counties = {county for county in known_counties() if county not in xlsx_totals}
+    if missing_counties != {"Butte County", "Camas County", "Custer County", "Gem County", "Idaho County", "Owyhee County"}:
+        raise ValueError(f"Unexpected 2020 official abstract XLSX/PDF split: {sorted(missing_counties)}")
+
+    by_county = {str(row["jurisdiction_name"]): row for row in rows}
+    for county, (dem_votes, rep_votes, other_votes_without_writeins, _) in xlsx_totals.items():
+        row = by_county[county]
+        if int(row["dem_votes"]) != dem_votes or int(row["rep_votes"]) != rep_votes:
+            raise ValueError(f"2020 statistics/XLSX major-party mismatch for {county}")
+        if int(row["other_votes"]) < other_votes_without_writeins:
+            raise ValueError(f"2020 statistics other total is below XLSX candidate total for {county}")
 
 
 def write_rows(rows: list[dict[str, object]]) -> None:
@@ -319,18 +366,17 @@ def main() -> int:
     rows = []
     rows_2012 = official_archive_rows(OFFICIAL_2012, 2012, "Barack Obama", "Mitt Romney")
     rows_2016 = official_archive_rows(OFFICIAL_2016, 2016, "Hillary Rodham Clinton", "Donald J. Trump")
+    rows_2020 = official_2020_statistics_rows()
     for year, year_rows in [(2012, rows_2012), (2016, rows_2016)]:
         assert_expected(year_rows, year)
         rows.extend(year_rows)
-    assert_2020_blocked()
+    assert_2020_official_crosschecks(rows_2020)
+    rows.extend(rows_2020)
 
     rows.sort(key=lambda row: (int(row["election_year"]), str(row["jurisdiction_name"])))
     write_rows(rows)
     print(f"Wrote {len(rows)} Idaho historical presidential baseline rows to {OUTPUT}")
-    print(
-        "2020 not loaded: official county abstract ZIP has PDF-only counties without a text extractor "
-        "in this environment, and the secondary county table does not reconcile to official SOS statewide totals."
-    )
+    print("2020 loaded from the official Idaho SOS county statistics page and reconciled to statewide totals.")
     return 0
 
 

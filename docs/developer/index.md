@@ -1,4 +1,4 @@
-﻿# CivicResultMaps Developer Playbook
+# CivicResultMaps Developer Playbook
 
 This file is the operating manual for managed worker threads.
 
@@ -16,7 +16,7 @@ When coordinating state workers:
 2. Create at most five state workers per wave unless the prompt explicitly requests a smaller or larger batch.
 3. Create one worker per state unless the prompt explicitly requests separate state-task shards.
 4. Give each worker its own branch and worktree.
-5. Use branch names like `codex/state-<state>-data-coverage`.
+5. Use branch names like `state/<state>-data-coverage`.
 6. Keep worker briefs state-specific.
 7. Track status in a table.
 8. Before PR creation, compare worker diffs for conflicts against active branches.
@@ -37,6 +37,37 @@ Recommended wave sizes:
 - 3 states for messy OCR, hostile PDFs, local-county collection, or high shared-helper risk.
 - 5 states for normal source inventory, historical baselines, parser gaps, and validation work.
 - 7 to 10 states only for lightweight documentation, caveat, or source-tier updates.
+
+
+## Jurisdiction Tag Flip-Coverage Waves
+
+Use this workflow when the goal is national 2020-to-2024 county flip completeness rather than broad state data coverage.
+
+Coordinator duties:
+
+1. Run `npm run jurisdictions:flips` and record the generated coverage counts.
+2. Update `data/jurisdiction-tag-coverage-waves.json` with wave, state, missing count, branch, and status.
+3. Assign at most five state workers per wave unless source complexity requires fewer.
+4. Give each worker one state and the exact goal: load official 2020 county/county-equivalent presidential historical baselines that join to 2024 rows by `jurisdictionTag`.
+5. Between waves, rerun `npm run jurisdictions:flips`, refresh the tracker, and drop states whose missing counts are resolved.
+
+Worker duties:
+
+1. Prefer official state election sources for 2020 county/county-equivalent presidential results.
+2. Add or update a reproducible parser/normalizer rather than hand-editing normalized output.
+3. Preserve source display names, but ensure historical rows resolve to `county:<GEOID>` where Census county-equivalent FIPS applies.
+4. Leave statewide-only, non-county, town, and ambiguous reporting rows unforced unless an explicit non-FIPS reporting tag already exists.
+5. Document source authority, source URL, artifact path, parser path, row counts, caveats, and confidence in the state config or inventories.
+6. Do not run production promotion or jurisdiction backfill apply commands from worker branches.
+
+Required worker report additions:
+
+| Field | Required |
+| --- | --- |
+| Flip coverage before/after | State matched rows, missing rows, and flip counts if checked |
+| Jurisdiction tags | Confirmation that historical rows join on `jurisdictionTag` |
+| Source caveat | Official source status or secondary-source caveat |
+| Coordinator handoff | Whether the state is ready for merge, blocked, or needs another wave |
 
 ## Inventory Pass
 
@@ -72,7 +103,7 @@ Wave priority order:
 For each worker:
 
 1. Use a dedicated branch and worktree.
-2. Use branch names like `codex/state-<state>-data-coverage`.
+2. Use branch names like `state/<state>-data-coverage`.
 3. Keep state-specific work scoped to that branch unless shared helper work is explicitly split out.
 
 ## Worker Brief Template
@@ -81,7 +112,7 @@ Each worker receives:
 
 ```md
 State: <STATE>
-Branch: codex/state-<state>-data-coverage
+Branch: state/<state>-data-coverage
 Worktree: <path>
 
 Read `AGENTS.md` and `docs/developer/index.md`.
@@ -222,3 +253,15 @@ At the end of each wave, report:
 - Shared conflicts found
 - Highest-impact remaining gaps
 - Recommended next wave
+
+## Branch Naming And Public Exposure
+
+Use neutral branch prefixes that describe the task:
+
+- `state/<state>-data-coverage` for state ETL/source work
+- `wave/<number>-integration` for wave integration branches
+- `docs/<topic>` for documentation
+- `feature/<topic>` for product work
+- `hotfix/<topic>` for urgent fixes
+
+Do not use agent/tool names in branch paths. GitHub branches on a public repository are public; there is no repository rule that can make all non-`main` branches private while keeping the repository public. Coordinators should keep exploratory work in local worktrees until it is ready for PR review, push only necessary review branches, and delete remote branches after their PRs are merged or closed.

@@ -27,7 +27,7 @@
       "resultRows": 7,
       "reviewRows": 444,
       "turnoutRows": 39,
-      "historicalBaselineRows": 80,
+      "historicalBaselineRows": 86,
       "eacBallotsCast": 522164,
       "eacRegisteredVoters": 792075
     },
@@ -141,9 +141,17 @@
       "caveat": "Current RI county map capability is enabled by aggregating official city/town rows to county totals. Federal Precincts and the posted-total reconciliation delta are retained as non-geographic rows and excluded from map joins; city/town and precinct overlays still need result-ready geometry or crosswalks."
     },
     "historicalBaselines": {
-      "status": "partial_official_archive_rows_loaded",
-      "loadedYears": [2012, 2016],
-      "targetYears": [2020, 2016, 2012],
+      "status": "official_archive_rows_loaded_2020_county_aggregated",
+      "loadedYears": [
+        2012,
+        2016,
+        2020
+      ],
+      "targetYears": [
+        2020,
+        2016,
+        2012
+      ],
       "sourceUrls": [
         "https://www.ri.gov/election/results/2020/general_election/data/",
         "https://www.ri.gov/election/results/2016/general_election/data/",
@@ -158,10 +166,25 @@
         "data/ri-2020-general-election-statewide.json",
         "data/ri-historical-presidential-baseline.csv"
       ],
-      "blockers": [
-        "2020 official long-format ZIP uses an alternate vote-group layout; the inspected total field did not reconcile to posted statewide JSON, so 2020 rows are collected but not loaded."
-      ],
-      "caveat": "Historical rows are contextual official BOE city/town/federal rows for 2012 and 2016 only; 2020 remains a parser blocker."
+      "blockers": [],
+      "caveat": "Historical rows remain contextual baselines. 2012 and 2016 are official BOE city/town/federal rows. 2020 is aggregated from official BOE city/town rows to the five Census county names used by the 2024 result-map path; Federal Precincts are retained separately and should not be forced into county FIPS tags.",
+      "loadedRows": {
+        "totalRows": 86,
+        "rows2012": 40,
+        "rows2016": 40,
+        "rows2020": 6,
+        "rows2020CountyAggregates": 5,
+        "rows2020FederalPrecincts": 1
+      },
+      "parser": "scripts/normalize-ri-boe-results.mjs",
+      "reconciliation": {
+        "sourceEntry": "rigen2020l.asc inside data/ri-2020-general-election-long-format.zip",
+        "postedStatewideJsonTotal": 517757,
+        "biden": 307486,
+        "trump": 199922,
+        "other": 10349,
+        "rowShape": "five county aggregates plus Federal Precincts retained separately"
+      }
     },
     "auditRecountCvrIncidentCorrectionLitigation": {
       "status": "request_paths_documented_not_loaded",
@@ -205,7 +228,7 @@
     "The U.S. Senate raw ZIP rows are 29 votes below posted statewide JSON, and review rows exclude zero-vote Limited rows plus presidential-only rows.",
     "EAC fallback turnout is active; no Rhode Island-native registered-voter denominator replacement is normalized.",
     "County map rows are generated from official city/town totals; city/town, precinct, district, mail, early-vote, and polling-place labels still need geometry/crosswalk review before finer map overlays are enabled.",
-    "2020 official historical archive artifacts are collected but not loaded until the alternate vote-group layout is decoded and reconciled.",
+    "2020 historical baseline rows are now loaded as official BOE county aggregates; Federal Precincts remain non-geographic and are not forced into county FIPS tags.",
     "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
     "All advisory indicator rows are source-review calculations, not findings of fraud or misconduct."
   ]

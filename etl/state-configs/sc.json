@@ -59,6 +59,28 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for South Carolina county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "sc-2020-election-history-president",
+      "category": "Official 2020 general election presidential CSV results",
+      "url": "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false",
+      "localFile": "data/sc-2020-election-history/president-1974.csv",
+      "parser": "southCarolinaElectionHistoryCsvHistoricalSource",
+      "authority": "South Carolina Election Commission",
+      "timestampBasis": "South Carolina Elections Database official CSV download for General Nov 2020 President of the United States, contest id 1974, collected July 9, 2026.",
+      "confidence": "Official South Carolina Elections Database CSV with statewide, county, and precinct rows. County rows are retained as the source artifact for 2020 county historical baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "sc-historical-presidential-baseline",
+      "category": "Historical county presidential baseline rows",
+      "url": "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false",
+      "localFile": "data/sc-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "South Carolina Election Commission",
+      "timestampBasis": "County presidential rows normalized by scripts/collect-sc-historical-baseline.mjs from the official South Carolina Elections Database 2020 General Election President CSV.",
+      "confidence": "Official county-level 2020 presidential baseline rows used for historical context only. Rows preserve SC county display names so they can resolve to the same county-equivalent GEOID tags as 2024 county result rows.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -78,14 +100,15 @@
   "expected": {
     "jurisdictions": 46,
     "resultRows": 46,
-    "sources": 5,
+    "sources": 7,
     "geometryFeatures": 46,
     "stateTotal": 2548140,
     "trump": 1483747,
     "harris": 1028452,
     "other": 35941,
     "reviewRows": 2401,
-    "turnoutRows": 46
+    "turnoutRows": 46,
+    "historicalBaselineRows": 46
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -93,7 +116,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "southCarolinaElectionHistoryCsv",
@@ -115,5 +138,16 @@
     ],
     "coverageMode": "presidentVsUSHouse",
     "warning": "South Carolina review rows use official South Carolina Elections Database precinct presidential rows and President-versus-U.S.-House comparison rows. U.S. House is district-based rather than a single statewide comparison race; duplicate county/precinct keys from district splits are aggregated before comparison, one nonzero presidential row lacks a nonzero House comparison and is kept as vote-share-only, and precinct boundary geometry is not included. Use these rows as advisory screening inputs, not confirmed findings."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "sc-historical-presidential-baseline",
+    "warning": "South Carolina historical baseline rows are official county-level presidential results from the South Carolina Elections Database 2020 General Election President CSV. Use them as contextual baselines, not as 2024 certified data.",
+    "expected": {
+      "rowCount": 46,
+      "years": [
+        2020
+      ]
+    }
   }
 }

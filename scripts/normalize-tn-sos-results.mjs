@@ -5,12 +5,17 @@ import { PDFParse } from "pdf-parse";
 const repoRoot = process.cwd();
 
 const precinctPdfPath = path.join(repoRoot, "data", "tn-2024-general-by-precinct.pdf");
+const historicalCountyPdfPath = path.join(repoRoot, "data", "tn-2020-general-by-county.pdf");
+const countyGeojsonPath = path.join(repoRoot, "data", "tn-counties.geojson");
 const presidentCountyCsvPath = path.join(repoRoot, "data", "tn-2024-general-president-county.csv");
 const reviewCsvPath = path.join(repoRoot, "data", "tn-2024-general-president-senate-precinct-review.csv");
 const reconciliationPath = path.join(repoRoot, "data", "tn-2024-result-review-reconciliation-summary.json");
+const historicalCsvPath = path.join(repoRoot, "data", "tn-historical-presidential-baseline.csv");
 
 const PRECINCT_SOURCE_URL =
   "https://sos-prod.tnsosgovfiles.com/s3fs-public/document/20241105GeneralbyPrecinct.pdf";
+const HISTORICAL_2020_SOURCE_URL =
+  "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf";
 
 const PRESIDENT_TOTALS = {
   trump: 1966865,
@@ -28,6 +33,23 @@ const SENATE_TOTALS = {
   chandler: 28444,
   moses: 24682,
   robinson: 8278,
+};
+
+const HISTORICAL_2020_TOTALS = {
+  trump: 1852475,
+  biden: 1143711,
+  blankenship: 5365,
+  deLaFuente: 1860,
+  hawkins: 4545,
+  jorgensen: 29877,
+  kennedy: 2576,
+  laRiva: 2301,
+  west: 10279,
+  boddie: 1,
+  carroll: 762,
+  hoefling: 31,
+  simmons: 68,
+  wells: 0,
 };
 
 function intText(value) {
@@ -120,6 +142,30 @@ function assertTotals(label, actual, expected) {
   if (mismatches.length) {
     throw new Error(`${label} totals did not reconcile: ${JSON.stringify(mismatches)}`);
   }
+}
+
+function countyKey(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function tennesseeCountyLookup() {
+  const geojson = JSON.parse(fs.readFileSync(countyGeojsonPath, "utf8"));
+  const counties = new Map();
+  for (const feature of geojson.features ?? []) {
+    const name = feature.properties?.NAME;
+    const basename = feature.properties?.BASENAME;
+    if (!name || !basename) {
+      continue;
+    }
+    counties.set(countyKey(basename), name);
+    counties.set(countyKey(name), name);
+  }
+  if (new Set(counties.values()).size !== 95) {
+    throw new Error("Expected 95 Tennessee county names from county GeoJSON");
+  }
+  return counties;
 }
 
 function parsePrecinctPdf(text) {
@@ -275,6 +321,159 @@ function buildReviewRows(presidentRows, senateRows) {
     .sort((a, b) => a.county.localeCompare(b.county) || a.local_unit.localeCompare(b.local_unit));
 }
 
+function parseHistoricalCountyPdf(text) {
+  const counties = tennesseeCountyLookup();
+  const rows = new Map();
+  let contest = null;
+
+  for (const rawLine of text.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) {
+      continue;
+    }
+
+    if (line === "United States President") {
+      contest = "president";
+      continue;
+    }
+    if (line === "United States Senate") {
+      contest = null;
+      continue;
+    }
+    if (contest !== "president" || line.includes("STATE TOTALS")) {
+      continue;
+    }
+
+    const parts = rawLine.trim().split(/\t+/);
+    const county = counties.get(countyKey(parts.at(-1)));
+    if (!county) {
+      continue;
+    }
+
+    const values = numericTokens(rawLine);
+    if (values.length === 10) {
+      if (rows.has(county) && rows.get(county).main) {
+        throw new Error(`Duplicate 2020 TN historical main row for ${county}`);
+      }
+      rows.set(county, {
+        ...(rows.get(county) ?? {}),
+        main: {
+          trump: values[0],
+          biden: values[1],
+          blankenship: values[2],
+          deLaFuente: values[3],
+          hawkins: values[4],
+          jorgensen: values[5],
+          laRiva: values[6],
+          west: values[7],
+          boddie: values[8],
+          kennedy: values[9],
+        },
+      });
+      continue;
+    }
+
+    if (values.length === 4) {
+      if (rows.has(county) && rows.get(county).writeIns) {
+        throw new Error(`Duplicate 2020 TN historical write-in row for ${county}`);
+      }
+      rows.set(county, {
+        ...(rows.get(county) ?? {}),
+        writeIns: {
+          carroll: values[0],
+          hoefling: values[1],
+          simmons: values[2],
+          wells: values[3],
+        },
+      });
+    }
+  }
+
+  const canonicalCountyNames = new Set(counties.values());
+  const missing = [...canonicalCountyNames].filter((county) => !rows.get(county)?.main || !rows.get(county)?.writeIns);
+  if (missing.length) {
+    throw new Error(`Missing 2020 TN historical rows for: ${missing.sort().join(", ")}`);
+  }
+
+  const totals = Object.fromEntries(Object.keys(HISTORICAL_2020_TOTALS).map((key) => [key, 0]));
+  for (const row of rows.values()) {
+    for (const [key, value] of Object.entries(row.main)) {
+      totals[key] += value;
+    }
+    for (const [key, value] of Object.entries(row.writeIns)) {
+      totals[key] += value;
+    }
+  }
+  for (const [key, expected] of Object.entries(HISTORICAL_2020_TOTALS)) {
+    if (totals[key] !== expected) {
+      throw new Error(`TN 2020 historical ${key} total ${totals[key]} did not match expected ${expected}`);
+    }
+  }
+
+  return [...canonicalCountyNames]
+    .sort((a, b) => a.localeCompare(b))
+    .map((county) => {
+      const row = rows.get(county);
+      const other = [
+        row.main.blankenship,
+        row.main.deLaFuente,
+        row.main.hawkins,
+        row.main.jorgensen,
+        row.main.kennedy,
+        row.main.laRiva,
+        row.main.west,
+        row.main.boddie,
+        row.writeIns.carroll,
+        row.writeIns.hoefling,
+        row.writeIns.simmons,
+        row.writeIns.wells,
+      ].reduce((sum, value) => sum + value, 0);
+      return {
+        state: "TN",
+        election_year: 2020,
+        jurisdiction_name: county,
+        county,
+        local_unit: county,
+        source_id: "tn-historical-presidential-baseline",
+        source_level: "county",
+        row_method: "tennesseeSosCountyPdfHistorical",
+        source_url: HISTORICAL_2020_SOURCE_URL,
+        dem_votes: row.main.biden,
+        rep_votes: row.main.trump,
+        other_votes: other,
+        total_votes: row.main.biden + row.main.trump + other,
+      };
+    });
+}
+
+async function writeHistoricalBaselineRows() {
+  if (!fs.existsSync(historicalCountyPdfPath)) {
+    throw new Error(`Missing official TN 2020 county PDF: ${path.relative(repoRoot, historicalCountyPdfPath)}`);
+  }
+  const text = await extractPdfText(historicalCountyPdfPath);
+  const historicalRows = parseHistoricalCountyPdf(text);
+  writeCsv(
+    historicalCsvPath,
+    [
+      "state",
+      "election_year",
+      "jurisdiction_name",
+      "county",
+      "local_unit",
+      "source_id",
+      "source_level",
+      "row_method",
+      "source_url",
+      "dem_votes",
+      "rep_votes",
+      "other_votes",
+      "total_votes",
+    ],
+    historicalRows,
+  );
+  return historicalRows;
+}
+
 async function main() {
   if (!fs.existsSync(precinctPdfPath)) {
     throw new Error(`Missing official TN precinct PDF: ${path.relative(repoRoot, precinctPdfPath)}`);
@@ -361,9 +560,12 @@ async function main() {
 
   fs.writeFileSync(reconciliationPath, `${JSON.stringify(reconciliation, null, 2)}\n`, "utf8");
 
+  const historicalRows = await writeHistoricalBaselineRows();
+
   console.log(
     `Wrote ${path.relative(repoRoot, presidentCountyCsvPath)} (${countyRows.length} county rows) and ` +
-      `${path.relative(repoRoot, reviewCsvPath)} (${reviewRows.length} review rows).`,
+      `${path.relative(repoRoot, reviewCsvPath)} (${reviewRows.length} review rows). ` +
+      `Wrote ${path.relative(repoRoot, historicalCsvPath)} (${historicalRows.length} historical rows).`,
   );
 }
 

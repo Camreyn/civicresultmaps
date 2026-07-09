@@ -1,0 +1,87 @@
+{
+  "state": "HI",
+  "electionYear": 2020,
+  "sourceAuthority": "Hawaii Office of Elections",
+  "sourceUrls": {
+    "statewideSummaryText": "https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
+    "statewidePrecinctDetailText": "https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
+    "countySummaryPdfs": {
+      "Hawaii County": "https://files.hawaii.gov/elections/files/results/2020/general/coh.pdf",
+      "Honolulu County": "https://files.hawaii.gov/elections/files/results/2020/general/cch.pdf",
+      "Kauai County": "https://files.hawaii.gov/elections/files/results/2020/general/cok.pdf",
+      "Maui County": "https://files.hawaii.gov/elections/files/results/2020/general/com.pdf"
+    }
+  },
+  "localArtifacts": {
+    "statewideSummaryText": "data/hi-2020-general-summary.txt",
+    "statewidePrecinctDetailText": "data/hi-2020-general-precinct-detail.txt",
+    "normalizedCsv": "data/hi-historical-presidential-baseline.csv"
+  },
+  "parser": "scripts/normalize-hi-historical-baseline.mjs",
+  "reportingGrain": "county_from_precinct_split",
+  "rowCount": 4,
+  "statewideTotals": {
+    "dem": 366130,
+    "rep": 196864,
+    "other": 11475,
+    "total": 574469
+  },
+  "countyTotals": [
+    {
+      "county": "Hawaii County",
+      "jurisdictionTag": "county:15001",
+      "dem": 58731,
+      "rep": 26897,
+      "other": 2186,
+      "total": 87814,
+      "sourceUrl": "https://files.hawaii.gov/elections/files/results/2020/general/coh.pdf"
+    },
+    {
+      "county": "Honolulu County",
+      "jurisdictionTag": "county:15003",
+      "dem": 238869,
+      "rep": 136259,
+      "other": 6986,
+      "total": 382114,
+      "sourceUrl": "https://files.hawaii.gov/elections/files/results/2020/general/cch.pdf"
+    },
+    {
+      "county": "Kauai County",
+      "jurisdictionTag": "county:15007",
+      "dem": 21225,
+      "rep": 11582,
+      "other": 690,
+      "total": 33497,
+      "sourceUrl": "https://files.hawaii.gov/elections/files/results/2020/general/cok.pdf"
+    },
+    {
+      "county": "Maui County",
+      "jurisdictionTag": "county:15009",
+      "dem": 47305,
+      "rep": 22126,
+      "other": 1613,
+      "total": 71044,
+      "sourceUrl": "https://files.hawaii.gov/elections/files/results/2020/general/com.pdf"
+    }
+  ],
+  "crosswalk": {
+    "01-07": "Hawaii County",
+    "08-13": "Maui County",
+    "14-16": "Kauai County",
+    "17-51": "Honolulu County"
+  },
+  "caveats": [
+    "County rows are aggregated from official numbered precinct/split rows because the text exports are statewide files.",
+    "The 2020 district-to-county crosswalk differs from the 2024 parser's reapportioned district ranges.",
+    "Kalawao has county geometry/EAC context but no separate Hawaii Office presidential result county row and is not emitted.",
+    "Statewide-only, non-geographic, or unmapped rows are excluded rather than forced into county tags."
+  ],
+  "excluded": {
+    "nonGeographicKeys": [
+      "251"
+    ],
+    "unmappedDistricts": [
+      "Presidential"
+    ]
+  }
+}

@@ -48,6 +48,17 @@
       "timestampBasis": "Census TIGERweb county geography service artifact.",
       "confidence": "County geometry is used for Maryland county map joins; precinct boundary geometry is not included in this package.",
       "status": "loaded"
+    },
+    {
+      "id": "md-historical-presidential-baseline",
+      "category": "Official 2020 historical presidential county baseline",
+      "url": "https://elections.maryland.gov/elections/archive/2020/election_data/index.html",
+      "localFile": "data/md-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Maryland State Board of Elections",
+      "timestampBasis": "Official Maryland State Board of Elections 2020 General Election county result CSVs; downloaded July 9, 2026.",
+      "confidence": "Official county and county-equivalent presidential baseline rows normalized by scripts/normalize-md-historical-baseline.mjs from data/md-2020-general-county-results/*.csv and reconciled to data/md-2020-general-statewide.csv. Baltimore City and Baltimore County are mapped only from distinct official files and Census GEOIDs.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -85,14 +96,15 @@
   "expected": {
     "jurisdictions": 24,
     "resultRows": 24,
-    "sources": 4,
+    "sources": 5,
     "geometryFeatures": 24,
     "stateTotal": 3038334,
     "trump": 1035550,
     "harris": 1902577,
     "other": 100207,
     "reviewRows": 1958,
-    "turnoutRows": 24
+    "turnoutRows": 24,
+    "historicalBaselineRows": 24
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -100,6 +112,21 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "md-historical-presidential-baseline",
+    "warning": "Maryland historical baseline rows are official 2020 State Board of Elections county and county-equivalent presidential rows. Use them as contextual baselines only, not as 2024 certified data. The statewide County=00 row is retained only for reconciliation and is not emitted as a jurisdiction row.",
+    "expected": {
+      "rowCount": 24,
+      "years": [
+        2020
+      ],
+      "totalVotes": 3037030,
+      "demVotes": 1985023,
+      "repVotes": 976414,
+      "otherVotes": 75593
+    }
   }
 }

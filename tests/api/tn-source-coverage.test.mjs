@@ -24,12 +24,17 @@ assert.equal(config.capabilities.certifiedResults, true);
 assert.equal(config.capabilities.map, true);
 assert.equal(config.capabilities.reviewGraphs, true);
 assert.equal(config.capabilities.turnout, true);
-assert.equal(config.capabilities.historicalBaseline, false);
+assert.equal(config.capabilities.historicalBaseline, true);
+assert.equal(config.expected.historicalBaselineRows, 95);
+assert.equal(config.historicalBaselines.sourceId, "tn-historical-presidential-baseline");
+assert.equal(config.historicalBaselines.expected.rowCount, 95);
+assert.deepEqual(config.historicalBaselines.expected.years, [2020]);
 
 assert.equal(inventory.currentConfigStatus.reviewRows, config.expected.reviewRows);
 assert.equal(inventory.currentConfigStatus.turnoutOnly, false);
+assert.equal(inventory.currentConfigStatus.historicalBaselineRows, 95);
 assert.ok(inventory.remainingGaps.some((gap) => gap.id === "tn-state-native-turnout-denominator"));
-assert.ok(inventory.remainingGaps.some((gap) => gap.id === "tn-historical-baseline-2012-2016-2020"));
+assert.ok(inventory.remainingGaps.some((gap) => gap.id === "tn-historical-baseline-2012-2016"));
 assert.ok(inventory.displayCaveats.some((caveat) => caveat.includes("not findings")));
 
 assert.equal(reconciliation.countyRows, 95);
@@ -42,10 +47,13 @@ assert.equal(reconciliation.precinctKeyReconciliation.missingSenateRows, 0);
 assert.ok(sourcePackages.completedNativeStates.includes("TN"));
 const tnPackage = sourcePackages.states.find((entry) => entry.state === "TN");
 assert.equal(tnPackage.expected.localReviewRows, 1859);
+assert.equal(tnPackage.expected.historicalBaselineRows, 95);
+assert.equal(tnPackage.artifacts.historicalBaseline.level, "county");
 assert.equal(tnPackage.artifacts.localReviewRows.comparisonContest, "U.S. Senate");
 assert.match(tnPackage.caveats.join("\n"), /not findings/);
 
 const tnTier = acquisitionTiers.states.find((entry) => entry.state === "TN" && entry.scope === "statewide");
 assert.equal(tnTier.tier, "tier_6_official_pdf_hostile");
 assert.ok(tnTier.availableFields.includes("official precinct U.S. Senate comparison rows"));
+assert.ok(tnTier.availableFields.includes("official 2020 county presidential historical baseline rows"));
 assert.match(tnTier.parserStatus, /normalize-tn-sos-results/);

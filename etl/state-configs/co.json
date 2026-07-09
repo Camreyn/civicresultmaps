@@ -71,6 +71,28 @@
       "timestampBasis": "Wave 14 source coverage inventory checked July 2, 2026; official Clarity detail.xml timestamp 11/25/2025 1:45:46 PM MST.",
       "confidence": "Inventory documents the official Colorado Clarity ZIP now loaded for county result/review rows, the official Historical Election Data voter-statistics turnout replacement, EAC benchmark rows, county geometry/equipment context, and remaining historical, precinct, audit, CVR, recount, incident, correction, and litigation gaps.",
       "status": "candidate"
+    },
+    {
+      "id": "co-2020-general-president-list",
+      "category": "Official Colorado 2020 General President Historical Election Data contest CSV",
+      "url": "https://historicalelectiondata.coloradosos.gov/contest/3640",
+      "localFile": "data/co-2020-general-president-list.csv",
+      "parser": "coloradoHistoricalElectionDataContestCsv",
+      "authority": "Colorado Secretary of State",
+      "timestampBasis": "Historical Election Data 2020 General President contest, contest_id 3640 and election_id 11.",
+      "confidence": "Official Colorado Secretary of State Historical Election Data list export retained as the raw source for 2020 county presidential baseline normalization.",
+      "status": "loaded"
+    },
+    {
+      "id": "co-2020-historical-presidential-baseline",
+      "category": "Official Colorado 2020 county presidential historical baseline rows",
+      "url": "https://historicalelectiondata.coloradosos.gov/contest/3640",
+      "localFile": "data/co-2020-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Colorado Secretary of State",
+      "timestampBasis": "Normalized by scripts/normalize-co-historical-presidential-baseline.mjs from the official Historical Election Data 2020 General President contest list export.",
+      "confidence": "Official county-level 2020 presidential baseline rows for 64 Colorado counties. Rows are contextual historical baselines used for county:<GEOID> flip joins; 2012 and 2016 remain uncollected.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -90,14 +112,15 @@
   "expected": {
     "jurisdictions": 64,
     "resultRows": 64,
-    "sources": 6,
+    "sources": 8,
     "geometryFeatures": 64,
     "stateTotal": 3190873,
     "trump": 1377441,
     "harris": 1728159,
     "other": 85273,
     "reviewRows": 64,
-    "turnoutRows": 64
+    "turnoutRows": 64,
+    "historicalBaselineRows": 64
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -105,7 +128,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "coloradoClarityDetailXml",
@@ -122,5 +145,16 @@
     "comparisonContest": "Regent of the University of Colorado - At Large",
     "coverageMode": "presidentVsRegent",
     "warning": "Colorado review rows are county-level President-versus-CU-Regent-at-large comparisons from the official Secretary of State Clarity detail XML ZIP. The loaded presidential candidate rows are 1,872 votes below the prior Abstract/certified-total lead, so use these as official county source-review inputs rather than a write-in-inclusive certified total. They are not precinct scatter-plot coverage and not confirmed findings."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "co-2020-historical-presidential-baseline",
+    "warning": "Colorado historical baseline rows are official county-level 2020 General Election President results from the Colorado Secretary of State Historical Election Data contest export. Use them as contextual baseline rows for 2020-to-2024 county flip joins, not as 2024 certified data. Official 2012 and 2016 county presidential baselines remain uncollected.",
+    "expected": {
+      "rowCount": 64,
+      "years": [
+        2020
+      ]
+    }
   }
 }

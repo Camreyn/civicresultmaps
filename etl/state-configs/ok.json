@@ -48,6 +48,28 @@
       "timestampBasis": "EAC 2024 EAVS V2 public dataset released February 12, 2026.",
       "confidence": "National EAC fallback turnout rows. Prefer state election office denominator artifacts when available; keep fallback caveats visible in the app.",
       "status": "loaded"
+    },
+    {
+      "id": "ok-2020-official-app-president-county-results",
+      "category": "Official 2020 county presidential result rows",
+      "url": "https://results.okelections.gov/OKER/?elecDate=20201103",
+      "localFile": "data/ok-2020-official-app-president-county-results.csv",
+      "parser": "normalizeOkHistoricalBaselineSourceCsv",
+      "authority": "Oklahoma State Election Board",
+      "timestampBasis": "Official Oklahoma Election Results app county tables for the November 3, 2020 General Election.",
+      "confidence": "Official county presidential rows collected from the public Oklahoma Election Results app and normalized by scripts/normalize-ok-historical-baseline.mjs.",
+      "status": "loaded"
+    },
+    {
+      "id": "ok-historical-presidential-baseline",
+      "category": "Official 2020 county presidential baseline rows",
+      "url": "https://oklahoma.gov/elections/elections-results/election-results/2020-election-results/2020-november-general-election.html",
+      "localFile": "data/ok-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Oklahoma State Election Board",
+      "timestampBasis": "County presidential rows normalized by scripts/normalize-ok-historical-baseline.mjs from the official Oklahoma Election Results app for November 3, 2020.",
+      "confidence": "Official 2020 county-level presidential baseline used for historical context only. 2012 and 2016 remain source leads, not loaded baseline rows.",
+      "status": "loaded"
     }
   ],
   "turnout": {
@@ -67,13 +89,14 @@
   "expected": {
     "jurisdictions": 77,
     "resultRows": 77,
-    "sources": 4,
+    "sources": 6,
     "stateTotal": 1566173,
     "trump": 1036213,
     "harris": 499599,
     "other": 30361,
     "reviewRows": 1977,
-    "turnoutRows": 77
+    "turnoutRows": 77,
+    "historicalBaselineRows": 77
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -81,7 +104,7 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
   },
   "certifiedResults": {
     "format": "oklahomaOfficialCsvZip",
@@ -175,5 +198,16 @@
     "comparisonRaceContains": "UNITED STATES REPRESENTATIVE",
     "coverageMode": "presidentVsUSHouse",
     "warning": "Oklahoma native review rows use official precinct presidential vote-share screening and same-precinct President-versus-U.S. House comparison only where the exported precinct has both Democratic and Republican U.S. House candidate votes. U.S. House District 3 and other non-comparable precincts are retained as vote-share-only rows."
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "ok-historical-presidential-baseline",
+    "warning": "Oklahoma historical baseline rows currently include official 2020 county presidential results from the Oklahoma State Election Board results app. Use them as contextual baseline rows, not as 2024 certified data. Official 2012 and 2016 baseline rows remain future collection work.",
+    "expected": {
+      "rowCount": 77,
+      "years": [
+        2020
+      ]
+    }
   }
 }

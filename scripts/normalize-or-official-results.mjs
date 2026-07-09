@@ -5,6 +5,30 @@ import { PDFParse } from "pdf-parse";
 const inputPdf = "data/or-2024-general-official-results.pdf";
 const presidentOut = "data/or-2024-general-president.csv";
 const attorneyGeneralOut = "data/or-2024-general-attorney-general.csv";
+const historicalOut = "data/or-historical-presidential-baseline.csv";
+
+const historicalSources = [
+  {
+    year: 2020,
+    recordId: "13735450",
+    title: "2020 November General Election Official Results(2).PDF",
+    localPdf: "data/or-2020-general-official-results.pdf",
+    sourceId: "or-2020-general-president-county",
+    sourceUrl: "https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/13735450",
+    expected: {
+      rows: 36,
+      demVotes: 1340383,
+      repVotes: 958448,
+      otherVotes: 75490,
+      totalVotes: 2374321,
+    },
+    columns: {
+      dem: 1,
+      rep: 0,
+      other: [2, 3, 4, 5],
+    },
+  },
+];
 
 const counties = [
   "Baker",
@@ -103,6 +127,28 @@ function assertEqual(label, actual, expected) {
   }
 }
 
+async function fetchOrmsEmbeddedPdf(recordId, outputPath) {
+  const url = `https://records.sos.state.or.us/ORSOSWebDrawer/Recordhtml/${recordId}`;
+  const response = await fetch(url, {
+    headers: { "user-agent": "CivicResultMaps Oregon historical baseline normalizer" },
+  });
+  if (!response.ok) {
+    throw new Error(`${url} failed: ${response.status} ${response.statusText}`);
+  }
+  const html = await response.text();
+  const match = html.match(/pdfjsProcessing"\s*:\s*\{\s*"file"\s*:\s*\{\s*"data"\s*:\s*"([^"]+)"/);
+  if (!match) {
+    throw new Error(`${url} did not expose an embedded PDF payload`);
+  }
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, Buffer.from(match[1], "base64"));
+}
+
+async function ensureHistoricalPdf(source) {
+  if (fs.existsSync(source.localPdf)) return;
+  await fetchOrmsEmbeddedPdf(source.recordId, source.localPdf);
+}
+
 async function extractPdfText(filePath) {
   const parser = new PDFParse({ data: fs.readFileSync(filePath) });
   try {
@@ -111,6 +157,44 @@ async function extractPdfText(filePath) {
   } finally {
     await parser.destroy();
   }
+}
+
+function historicalRowsFromPdf(text, source) {
+  const parsed = parseCountyRows(contestBlock(text, "US President"), `${source.year} US President`, 6);
+  const rows = [...parsed.rows.entries()].map(([county, values]) => {
+    const demVotes = values[source.columns.dem];
+    const repVotes = values[source.columns.rep];
+    const otherVotes = source.columns.other.reduce((sum, index) => sum + values[index], 0);
+    return {
+      state: "OR",
+      election_year: source.year,
+      jurisdiction_name: county,
+      county,
+      local_unit: county,
+      source_id: source.sourceId,
+      source_level: "county",
+      row_method: "oregonOfficialAbstractPdfHistorical",
+      source_url: source.sourceUrl,
+      dem_votes: demVotes,
+      rep_votes: repVotes,
+      other_votes: otherVotes,
+      total_votes: demVotes + repVotes + otherVotes,
+    };
+  });
+  const totals = rows.reduce(
+    (sum, row) => ({
+      rows: sum.rows + 1,
+      demVotes: sum.demVotes + row.dem_votes,
+      repVotes: sum.repVotes + row.rep_votes,
+      otherVotes: sum.otherVotes + row.other_votes,
+      totalVotes: sum.totalVotes + row.total_votes,
+    }),
+    { rows: 0, demVotes: 0, repVotes: 0, otherVotes: 0, totalVotes: 0 },
+  );
+  for (const [key, expected] of Object.entries(source.expected)) {
+    assertEqual(`${source.year} historical ${key}`, totals[key], expected);
+  }
+  return rows;
 }
 
 const text = await extractPdfText(inputPdf);
@@ -156,5 +240,32 @@ writeCsv(
   attorneyGeneralRows,
 );
 
+const historicalRows = [];
+for (const source of historicalSources) {
+  await ensureHistoricalPdf(source);
+  historicalRows.push(...historicalRowsFromPdf(await extractPdfText(source.localPdf), source));
+}
+
+writeCsv(
+  historicalOut,
+  [
+    "state",
+    "election_year",
+    "jurisdiction_name",
+    "county",
+    "local_unit",
+    "source_id",
+    "source_level",
+    "row_method",
+    "source_url",
+    "dem_votes",
+    "rep_votes",
+    "other_votes",
+    "total_votes",
+  ],
+  historicalRows.sort((a, b) => a.election_year - b.election_year || a.jurisdiction_name.localeCompare(b.jurisdiction_name)),
+);
+
 console.log(`Wrote ${presidentRows.length} presidential county rows to ${presidentOut}`);
 console.log(`Wrote ${attorneyGeneralRows.length} Attorney General county rows to ${attorneyGeneralOut}`);
+console.log(`Wrote ${historicalRows.length} historical presidential county rows to ${historicalOut}`);

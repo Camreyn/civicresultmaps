@@ -81,6 +81,39 @@
       "timestampBasis": "Wave 1 Hawaii turnout replacement checked July 5, 2026.",
       "confidence": "Documents official Hawaii source leads, loaded text artifacts, state-native turnout replacement, GIS/crosswalk needs, recount/provisional/security context, historical-source paths, and remaining caveats. Inventory only; no normalized administration rows are loaded.",
       "status": "candidate"
+    },
+    {
+      "id": "hi-2020-general-summary",
+      "category": "Official certified 2020 statewide result text export",
+      "url": "https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
+      "localFile": "data/hi-2020-general-summary.txt",
+      "parser": "hawaiiOffice2020Text",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Certified 2020 General Election text export linked from Hawaii Office of Elections results page.",
+      "confidence": "Official statewide summary text cross-check for 2020 President totals: 574,469 total votes, 366,130 Biden, 196,864 Trump, and 11,475 Other.",
+      "status": "loaded"
+    },
+    {
+      "id": "hi-2020-general-precinct-detail",
+      "category": "Official certified 2020 statewide precinct detail text export",
+      "url": "https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
+      "localFile": "data/hi-2020-general-precinct-detail.txt",
+      "parser": "scripts/normalize-hi-historical-baseline.mjs",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Certified 2020 General Election precinct detail text export linked from Hawaii Office of Elections results page.",
+      "confidence": "Official precinct/split text used by scripts/normalize-hi-historical-baseline.mjs to aggregate four 2020 county historical baseline rows. The script asserts statewide summary totals and official county summary PDF totals using the 2020 district crosswalk: 01-07 Hawaii, 08-13 Maui, 14-16 Kauai, and 17-51 Honolulu.",
+      "status": "loaded"
+    },
+    {
+      "id": "hi-historical-presidential-baseline",
+      "category": "Official 2020 county presidential historical baseline",
+      "url": "https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
+      "localFile": "data/hi-historical-presidential-baseline.csv",
+      "parser": "historicalPresidentialCsv",
+      "authority": "Hawaii Office of Elections",
+      "timestampBasis": "Normalized from certified 2020 General Election precinct detail text and reconciled to Hawaii Office county summary PDFs.",
+      "confidence": "Four county rows include stable county:<GEOID> tags for Hawaii, Honolulu, Kauai, and Maui. Kalawao is not emitted because it is not a separate Hawaii Office presidential result county row.",
+      "status": "loaded"
     }
   ],
   "certifiedResults": {
@@ -121,14 +154,14 @@
   "expected": {
     "jurisdictions": 5,
     "resultRows": 4,
-    "sources": 7,
+    "sources": 10,
     "stateTotal": 516701,
     "trump": 193661,
     "harris": 313044,
     "other": 9996,
     "reviewRows": 467,
     "turnoutRows": 4,
-    "historicalBaselineRows": 0
+    "historicalBaselineRows": 4
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -136,6 +169,17 @@
     "map": true,
     "reviewGraphs": true,
     "turnout": true,
-    "historicalBaseline": false
+    "historicalBaseline": true
+  },
+  "historicalBaselines": {
+    "format": "historicalPresidentialCsv",
+    "sourceId": "hi-historical-presidential-baseline",
+    "expected": {
+      "rowCount": 4,
+      "years": [
+        2020
+      ]
+    },
+    "warning": "Hawaii historical baseline rows are official 2020 county context aggregated from statewide precinct/split text using the 2020 numbered district county crosswalk. Kalawao has geometry/EAC context but no separate Hawaii Office presidential result row and is not forced into county result rows."
   }
 }
