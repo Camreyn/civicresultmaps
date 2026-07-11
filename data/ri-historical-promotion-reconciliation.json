@@ -1,0 +1,887 @@
+{
+  "state": "RI",
+  "audit": "historical_promotion_granularity_reconciliation",
+  "decision": "accepted",
+  "promotionSafe": true,
+  "sourceAuthority": "Rhode Island Board of Elections; CivicResultMaps production API",
+  "liveApiUrl": "https://www.civicresultmaps.org/api/historical-baselines?state=RI&limit=5000&includeMetrics=true",
+  "liveApiSource": "database",
+  "stagingArtifact": ".etl/staging/ri-2024-staging.json",
+  "liveProfile": "legacy_municipal_2012_2016_county_2020",
+  "acceptedReplacement": {
+    "prePromotionLiveProfile": "legacy_municipal_2012_2016_county_2020",
+    "prePromotionLiveRows": 86,
+    "canonicalStagedRows": 18,
+    "acceptedRowReduction": 68,
+    "prePromotionRowsByYear": {
+      "2012": 40,
+      "2016": 40,
+      "2020": 6
+    },
+    "canonicalRowsByYear": {
+      "2012": 6,
+      "2016": 6,
+      "2020": 6
+    }
+  },
+  "summary": {
+    "liveRows": 86,
+    "stagedRows": 18,
+    "rowReduction": 68,
+    "yearsPreserved": [
+      2012,
+      2016,
+      2020
+    ],
+    "liveTaggedRows": 11,
+    "stagedTaggedRows": 15,
+    "stagedCanonicalCountyTags": [
+      "county:44001",
+      "county:44003",
+      "county:44005",
+      "county:44007",
+      "county:44009"
+    ],
+    "nonGeographicFederalRowsPreserved": 3,
+    "statewideVoteDeltaAcrossAllYears": {
+      "demVotes": 0,
+      "repVotes": 0,
+      "otherVotes": 0,
+      "totalVotes": 0
+    }
+  },
+  "years": [
+    {
+      "year": 2012,
+      "live": {
+        "rowCount": 40,
+        "taggedRowCount": 3,
+        "distinctTags": [
+          "county:44001",
+          "county:44005",
+          "county:44007"
+        ],
+        "sourceLevels": {
+          "city_town": 39,
+          "federal_precincts": 1
+        },
+        "rowMethods": [
+          "rhodeIslandBoeLongFormatZip"
+        ],
+        "statewideTotals": {
+          "demVotes": 279677,
+          "repVotes": 157204,
+          "otherVotes": 9168,
+          "totalVotes": 446049
+        },
+        "displayNames": [
+          "Barrington",
+          "Bristol",
+          "Burrillville",
+          "Central Falls",
+          "Charlestown",
+          "Coventry",
+          "Cranston",
+          "Cumberland",
+          "East Greenwich",
+          "East Providence",
+          "Exeter",
+          "Federal Precincts",
+          "Foster",
+          "Glocester",
+          "Hopkinton",
+          "Jamestown",
+          "Johnston",
+          "Lincoln",
+          "Little Compton",
+          "Middletown",
+          "Narragansett",
+          "New Shoreham",
+          "Newport",
+          "North Kingstown",
+          "North Providence",
+          "North Smithfield",
+          "Pawtucket",
+          "Portsmouth",
+          "Providence",
+          "Richmond",
+          "Scituate",
+          "Smithfield",
+          "South Kingstown",
+          "Tiverton",
+          "Warren",
+          "Warwick",
+          "West Greenwich",
+          "West Warwick",
+          "Westerly",
+          "Woonsocket"
+        ]
+      },
+      "staged": {
+        "rowCount": 6,
+        "taggedRowCount": 5,
+        "distinctTags": [
+          "county:44001",
+          "county:44003",
+          "county:44005",
+          "county:44007",
+          "county:44009"
+        ],
+        "sourceLevels": {
+          "county": 5,
+          "federal_precincts": 1
+        },
+        "rowMethods": [
+          "rhodeIslandBoeLongFormatZipCountyAggregation",
+          "rhodeIslandBoeLongFormatZipNonGeographic"
+        ],
+        "statewideTotals": {
+          "demVotes": 279677,
+          "repVotes": 157204,
+          "otherVotes": 9168,
+          "totalVotes": 446049
+        },
+        "displayNames": [
+          "Bristol County",
+          "Federal Precincts",
+          "Kent County",
+          "Newport County",
+          "Providence County",
+          "Washington County"
+        ]
+      },
+      "difference": {
+        "rowCount": -34,
+        "taggedRowCount": 2,
+        "statewideTotals": {
+          "demVotes": 0,
+          "repVotes": 0,
+          "otherVotes": 0,
+          "totalVotes": 0
+        }
+      },
+      "canonicalReconciliation": [
+        {
+          "jurisdictionName": "Bristol County",
+          "jurisdictionTag": "county:44001",
+          "liveAggregatedTotals": {
+            "demVotes": 14974,
+            "repVotes": 9231,
+            "otherVotes": 471,
+            "totalVotes": 24676
+          },
+          "stagedTotals": {
+            "demVotes": 14974,
+            "repVotes": 9231,
+            "otherVotes": 471,
+            "totalVotes": 24676
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Kent County",
+          "jurisdictionTag": "county:44003",
+          "liveAggregatedTotals": {
+            "demVotes": 45564,
+            "repVotes": 31567,
+            "otherVotes": 1792,
+            "totalVotes": 78923
+          },
+          "stagedTotals": {
+            "demVotes": 45564,
+            "repVotes": 31567,
+            "otherVotes": 1792,
+            "totalVotes": 78923
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Newport County",
+          "jurisdictionTag": "county:44005",
+          "liveAggregatedTotals": {
+            "demVotes": 23463,
+            "repVotes": 15202,
+            "otherVotes": 787,
+            "totalVotes": 39452
+          },
+          "stagedTotals": {
+            "demVotes": 23463,
+            "repVotes": 15202,
+            "otherVotes": 787,
+            "totalVotes": 39452
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Providence County",
+          "jurisdictionTag": "county:44007",
+          "liveAggregatedTotals": {
+            "demVotes": 159520,
+            "repVotes": 75785,
+            "otherVotes": 4481,
+            "totalVotes": 239786
+          },
+          "stagedTotals": {
+            "demVotes": 159520,
+            "repVotes": 75785,
+            "otherVotes": 4481,
+            "totalVotes": 239786
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Washington County",
+          "jurisdictionTag": "county:44009",
+          "liveAggregatedTotals": {
+            "demVotes": 35888,
+            "repVotes": 25366,
+            "otherVotes": 1625,
+            "totalVotes": 62879
+          },
+          "stagedTotals": {
+            "demVotes": 35888,
+            "repVotes": 25366,
+            "otherVotes": 1625,
+            "totalVotes": 62879
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Federal Precincts",
+          "jurisdictionTag": null,
+          "liveAggregatedTotals": {
+            "demVotes": 268,
+            "repVotes": 53,
+            "otherVotes": 12,
+            "totalVotes": 333
+          },
+          "stagedTotals": {
+            "demVotes": 268,
+            "repVotes": 53,
+            "otherVotes": 12,
+            "totalVotes": 333
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "live": {
+        "rowCount": 40,
+        "taggedRowCount": 3,
+        "distinctTags": [
+          "county:44001",
+          "county:44005",
+          "county:44007"
+        ],
+        "sourceLevels": {
+          "city_town": 39,
+          "federal_precincts": 1
+        },
+        "rowMethods": [
+          "rhodeIslandBoeLongFormatZip"
+        ],
+        "statewideTotals": {
+          "demVotes": 252525,
+          "repVotes": 180543,
+          "otherVotes": 31076,
+          "totalVotes": 464144
+        },
+        "displayNames": [
+          "Barrington",
+          "Bristol",
+          "Burrillville",
+          "Central Falls",
+          "Charlestown",
+          "Coventry",
+          "Cranston",
+          "Cumberland",
+          "East Greenwich",
+          "East Providence",
+          "Exeter",
+          "Federal Precincts",
+          "Foster",
+          "Glocester",
+          "Hopkinton",
+          "Jamestown",
+          "Johnston",
+          "Lincoln",
+          "Little Compton",
+          "Middletown",
+          "Narragansett",
+          "New Shoreham",
+          "Newport",
+          "North Kingstown",
+          "North Providence",
+          "North Smithfield",
+          "Pawtucket",
+          "Portsmouth",
+          "Providence",
+          "Richmond",
+          "Scituate",
+          "Smithfield",
+          "South Kingstown",
+          "Tiverton",
+          "Warren",
+          "Warwick",
+          "West Greenwich",
+          "West Warwick",
+          "Westerly",
+          "Woonsocket"
+        ]
+      },
+      "staged": {
+        "rowCount": 6,
+        "taggedRowCount": 5,
+        "distinctTags": [
+          "county:44001",
+          "county:44003",
+          "county:44005",
+          "county:44007",
+          "county:44009"
+        ],
+        "sourceLevels": {
+          "county": 5,
+          "federal_precincts": 1
+        },
+        "rowMethods": [
+          "rhodeIslandBoeLongFormatZipCountyAggregation",
+          "rhodeIslandBoeLongFormatZipNonGeographic"
+        ],
+        "statewideTotals": {
+          "demVotes": 252525,
+          "repVotes": 180543,
+          "otherVotes": 31076,
+          "totalVotes": 464144
+        },
+        "displayNames": [
+          "Bristol County",
+          "Federal Precincts",
+          "Kent County",
+          "Newport County",
+          "Providence County",
+          "Washington County"
+        ]
+      },
+      "difference": {
+        "rowCount": -34,
+        "taggedRowCount": 2,
+        "statewideTotals": {
+          "demVotes": 0,
+          "repVotes": 0,
+          "otherVotes": 0,
+          "totalVotes": 0
+        }
+      },
+      "canonicalReconciliation": [
+        {
+          "jurisdictionName": "Bristol County",
+          "jurisdictionTag": "county:44001",
+          "liveAggregatedTotals": {
+            "demVotes": 14609,
+            "repVotes": 8965,
+            "otherVotes": 1901,
+            "totalVotes": 25475
+          },
+          "stagedTotals": {
+            "demVotes": 14609,
+            "repVotes": 8965,
+            "otherVotes": 1901,
+            "totalVotes": 25475
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Kent County",
+          "jurisdictionTag": "county:44003",
+          "liveAggregatedTotals": {
+            "demVotes": 37788,
+            "repVotes": 38336,
+            "otherVotes": 5929,
+            "totalVotes": 82053
+          },
+          "stagedTotals": {
+            "demVotes": 37788,
+            "repVotes": 38336,
+            "otherVotes": 5929,
+            "totalVotes": 82053
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Newport County",
+          "jurisdictionTag": "county:44005",
+          "liveAggregatedTotals": {
+            "demVotes": 22851,
+            "repVotes": 15077,
+            "otherVotes": 3117,
+            "totalVotes": 41045
+          },
+          "stagedTotals": {
+            "demVotes": 22851,
+            "repVotes": 15077,
+            "otherVotes": 3117,
+            "totalVotes": 41045
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Providence County",
+          "jurisdictionTag": "county:44007",
+          "liveAggregatedTotals": {
+            "demVotes": 142899,
+            "repVotes": 90882,
+            "otherVotes": 14693,
+            "totalVotes": 248474
+          },
+          "stagedTotals": {
+            "demVotes": 142899,
+            "repVotes": 90882,
+            "otherVotes": 14693,
+            "totalVotes": 248474
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Washington County",
+          "jurisdictionTag": "county:44009",
+          "liveAggregatedTotals": {
+            "demVotes": 33741,
+            "repVotes": 27230,
+            "otherVotes": 5398,
+            "totalVotes": 66369
+          },
+          "stagedTotals": {
+            "demVotes": 33741,
+            "repVotes": 27230,
+            "otherVotes": 5398,
+            "totalVotes": 66369
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Federal Precincts",
+          "jurisdictionTag": null,
+          "liveAggregatedTotals": {
+            "demVotes": 637,
+            "repVotes": 53,
+            "otherVotes": 38,
+            "totalVotes": 728
+          },
+          "stagedTotals": {
+            "demVotes": 637,
+            "repVotes": 53,
+            "otherVotes": 38,
+            "totalVotes": 728
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "live": {
+        "rowCount": 6,
+        "taggedRowCount": 5,
+        "distinctTags": [
+          "county:44001",
+          "county:44003",
+          "county:44005",
+          "county:44007",
+          "county:44009"
+        ],
+        "sourceLevels": {
+          "county": 5,
+          "federal_precincts": 1
+        },
+        "rowMethods": [
+          "rhodeIslandBoeLongFormatZipCountyAggregate"
+        ],
+        "statewideTotals": {
+          "demVotes": 307486,
+          "repVotes": 199922,
+          "otherVotes": 10349,
+          "totalVotes": 517757
+        },
+        "displayNames": [
+          "Bristol County",
+          "Federal Precincts",
+          "Kent County",
+          "Newport County",
+          "Providence County",
+          "Washington County"
+        ]
+      },
+      "staged": {
+        "rowCount": 6,
+        "taggedRowCount": 5,
+        "distinctTags": [
+          "county:44001",
+          "county:44003",
+          "county:44005",
+          "county:44007",
+          "county:44009"
+        ],
+        "sourceLevels": {
+          "county": 5,
+          "federal_precincts": 1
+        },
+        "rowMethods": [
+          "rhodeIslandBoeLongFormatZipCountyAggregation",
+          "rhodeIslandBoeLongFormatZipNonGeographic"
+        ],
+        "statewideTotals": {
+          "demVotes": 307486,
+          "repVotes": 199922,
+          "otherVotes": 10349,
+          "totalVotes": 517757
+        },
+        "displayNames": [
+          "Bristol County",
+          "Federal Precincts",
+          "Kent County",
+          "Newport County",
+          "Providence County",
+          "Washington County"
+        ]
+      },
+      "difference": {
+        "rowCount": 0,
+        "taggedRowCount": 0,
+        "statewideTotals": {
+          "demVotes": 0,
+          "repVotes": 0,
+          "otherVotes": 0,
+          "totalVotes": 0
+        }
+      },
+      "canonicalReconciliation": [
+        {
+          "jurisdictionName": "Bristol County",
+          "jurisdictionTag": "county:44001",
+          "liveAggregatedTotals": {
+            "demVotes": 18050,
+            "repVotes": 9745,
+            "otherVotes": 620,
+            "totalVotes": 28415
+          },
+          "stagedTotals": {
+            "demVotes": 18050,
+            "repVotes": 9745,
+            "otherVotes": 620,
+            "totalVotes": 28415
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Kent County",
+          "jurisdictionTag": "county:44003",
+          "liveAggregatedTotals": {
+            "demVotes": 49113,
+            "repVotes": 42001,
+            "otherVotes": 1979,
+            "totalVotes": 93093
+          },
+          "stagedTotals": {
+            "demVotes": 49113,
+            "repVotes": 42001,
+            "otherVotes": 1979,
+            "totalVotes": 93093
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Newport County",
+          "jurisdictionTag": "county:44005",
+          "liveAggregatedTotals": {
+            "demVotes": 29486,
+            "repVotes": 15722,
+            "otherVotes": 940,
+            "totalVotes": 46148
+          },
+          "stagedTotals": {
+            "demVotes": 29486,
+            "repVotes": 15722,
+            "otherVotes": 940,
+            "totalVotes": 46148
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Providence County",
+          "jurisdictionTag": "county:44007",
+          "liveAggregatedTotals": {
+            "demVotes": 165012,
+            "repVotes": 102551,
+            "otherVotes": 5104,
+            "totalVotes": 272667
+          },
+          "stagedTotals": {
+            "demVotes": 165012,
+            "repVotes": 102551,
+            "otherVotes": 5104,
+            "totalVotes": 272667
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Washington County",
+          "jurisdictionTag": "county:44009",
+          "liveAggregatedTotals": {
+            "demVotes": 44549,
+            "repVotes": 29818,
+            "otherVotes": 1693,
+            "totalVotes": 76060
+          },
+          "stagedTotals": {
+            "demVotes": 44549,
+            "repVotes": 29818,
+            "otherVotes": 1693,
+            "totalVotes": 76060
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        },
+        {
+          "jurisdictionName": "Federal Precincts",
+          "jurisdictionTag": null,
+          "liveAggregatedTotals": {
+            "demVotes": 1276,
+            "repVotes": 85,
+            "otherVotes": 13,
+            "totalVotes": 1374
+          },
+          "stagedTotals": {
+            "demVotes": 1276,
+            "repVotes": 85,
+            "otherVotes": 13,
+            "totalVotes": 1374
+          },
+          "delta": {
+            "demVotes": 0,
+            "repVotes": 0,
+            "otherVotes": 0,
+            "totalVotes": 0
+          }
+        }
+      ]
+    }
+  ],
+  "canonicalFlipImpact": [
+    {
+      "label": "2016-to-2020",
+      "matchedCountyTags": 5,
+      "flips": [
+        {
+          "county": "Kent County",
+          "direction": "rep_to_dem",
+          "tag": "county:44003"
+        }
+      ]
+    },
+    {
+      "label": "2016-to-2024",
+      "matchedCountyTags": 5,
+      "flips": [
+        {
+          "county": "Kent County",
+          "direction": "rep_to_dem",
+          "tag": "county:44003"
+        }
+      ]
+    },
+    {
+      "label": "2020-to-2024",
+      "matchedCountyTags": 5,
+      "flips": []
+    }
+  ],
+  "displayPathChanges": {
+    "apiRoute": "/api/historical-baselines?state=RI",
+    "frontendPath": "The Historical tab groups County Movement by jurisdictionName, draws per-row fingerprint/diagnostic panels, reports row counts, and exports the same API rows.",
+    "years2012And2016": {
+      "before": "39 city/town display rows plus Federal Precincts per year",
+      "after": "five county display rows plus Federal Precincts per year",
+      "removedMunicipalityDisplayNames": [
+        "Barrington",
+        "Bristol",
+        "Burrillville",
+        "Central Falls",
+        "Charlestown",
+        "Coventry",
+        "Cranston",
+        "Cumberland",
+        "East Greenwich",
+        "East Providence",
+        "Exeter",
+        "Foster",
+        "Glocester",
+        "Hopkinton",
+        "Jamestown",
+        "Johnston",
+        "Lincoln",
+        "Little Compton",
+        "Middletown",
+        "Narragansett",
+        "New Shoreham",
+        "Newport",
+        "North Kingstown",
+        "North Providence",
+        "North Smithfield",
+        "Pawtucket",
+        "Portsmouth",
+        "Providence",
+        "Richmond",
+        "Scituate",
+        "Smithfield",
+        "South Kingstown",
+        "Tiverton",
+        "Warren",
+        "Warwick",
+        "West Greenwich",
+        "West Warwick",
+        "Westerly",
+        "Woonsocket"
+      ],
+      "addedCountyDisplayNames": [
+        "Bristol County",
+        "Kent County",
+        "Newport County",
+        "Providence County",
+        "Washington County"
+      ],
+      "retainedNonGeographicDisplayNames": [
+        "Federal Precincts"
+      ]
+    },
+    "year2020": "The six display names and vote totals are unchanged; only row-method provenance text becomes explicit county aggregation/non-geographic provenance."
+  },
+  "acceptanceChecks": [
+    {
+      "id": "recognized-live-profile",
+      "passed": true,
+      "evidence": "legacy_municipal_2012_2016_county_2020"
+    },
+    {
+      "id": "all-years-preserved",
+      "passed": true,
+      "evidence": "2012, 2016, and 2020 exist in both live and staging."
+    },
+    {
+      "id": "official-statewide-totals-preserved",
+      "passed": true,
+      "evidence": "Democratic, Republican, Other, and total votes match pinned official totals in every year."
+    },
+    {
+      "id": "every-canonical-row-reconciles",
+      "passed": true,
+      "evidence": "All five county aggregates and Federal Precincts have zero vote delta in every year."
+    },
+    {
+      "id": "canonical-county-tags-complete",
+      "passed": true,
+      "evidence": "Staging contains county:44001, 44003, 44005, 44007, and 44009 exactly once per year."
+    },
+    {
+      "id": "canonical-flip-impact-reviewed",
+      "passed": true,
+      "evidence": "Kent County is the sole RI red-to-blue flip for 2016-to-2020 and 2016-to-2024; RI has no 2020-to-2024 county flip."
+    },
+    {
+      "id": "non-geographic-row-unforced",
+      "passed": true,
+      "evidence": "Federal Precincts remains present and has no county FIPS tag in every year."
+    }
+  ],
+  "caveats": [
+    "Acceptance is limited to replacing historical display/reporting grain; it does not authorize production promotion.",
+    "Municipal detail for 2012 and 2016 will no longer be displayed by the historical API after promotion, but all municipal votes are preserved in reviewed county aggregates.",
+    "The legacy 2012 and 2016 API associated Bristol, Newport, and Providence municipality rows with same-named county tags; staging replaces those partial-county tag matches with complete county totals.",
+    "Federal Precincts is non-geographic and remains intentionally unforced for county flip joins."
+  ]
+}

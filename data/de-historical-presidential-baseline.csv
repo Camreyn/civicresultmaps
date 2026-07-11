@@ -1,4 +1,7 @@
-state,election_year,jurisdiction_name,source_jurisdiction_name,jurisdiction_tag,source_id,source_level,row_method,dem_votes,rep_votes,other_votes,total_votes,source_url
-DE,2020,New Castle,New Castle,county:10003,de-2020-official-results-report,county,delawareOfficialReportHtmlCountyHistorical,195034,88364,4235,287633,https://elections.delaware.gov/reports/GE2020.html
-DE,2020,Kent,Kent,county:10001,de-2020-official-results-report,county,delawareOfficialReportHtmlCountyHistorical,44552,41009,1464,87025,https://elections.delaware.gov/reports/GE2020.html
-DE,2020,Sussex,Sussex,county:10005,de-2020-official-results-report,county,delawareOfficialReportHtmlCountyHistorical,56682,71230,1440,129352,https://elections.delaware.gov/reports/GE2020.html
+state,election_year,jurisdiction_name,jurisdiction_tag,source_id,source_level,row_method,dem_votes,rep_votes,other_votes,total_votes,source_url
+DE,2016,Kent County,county:10001,de-historical-presidential-baseline,county,historicalPresidentialCsv,33351,36991,3918,74260,https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwoff_kns.txt
+DE,2016,New Castle County,county:10003,de-historical-presidential-baseline,county,historicalPresidentialCsv,162919,85525,13063,261507,https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwoff_kns.txt
+DE,2016,Sussex County,county:10005,de-historical-presidential-baseline,county,historicalPresidentialCsv,39333,62611,3879,105823,https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwoff_kns.txt
+DE,2020,Kent County,county:10001,de-historical-presidential-baseline,county,historicalPresidentialCsv,44552,41009,1464,87025,https://elections.delaware.gov/reports/GE2020.html
+DE,2020,New Castle County,county:10003,de-historical-presidential-baseline,county,historicalPresidentialCsv,195034,88364,4235,287633,https://elections.delaware.gov/reports/GE2020.html
+DE,2020,Sussex County,county:10005,de-historical-presidential-baseline,county,historicalPresidentialCsv,56682,71230,1440,129352,https://elections.delaware.gov/reports/GE2020.html

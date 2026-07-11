@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-07-11T02:01:41.992Z",
+  "authority": "South Carolina Election Commission",
+  "parser": "scripts/normalize-sc-historical-presidential-baseline.mjs",
+  "caveat": "Official South Carolina Elections Database 2016 and 2020 presidential contest CSVs normalized to county baselines. 2012 remains uncollected.",
+  "sources": [
+    {
+      "id": "sc-2016-election-history-president",
+      "year": 2016,
+      "contestId": "5292",
+      "url": "https://sc.elstats.civera.com/api/download_contest/5292_table.csv?split_party=false",
+      "localFile": "data/sc-2016-president-5292.csv",
+      "rowCount": 46,
+      "demVotes": 855373,
+      "repVotes": 1155389,
+      "otherVotes": 92265,
+      "totalVotes": 2103027
+    },
+    {
+      "id": "sc-2020-election-history-president",
+      "year": 2020,
+      "contestId": "1974",
+      "url": "https://sc.elstats.civera.com/api/download_contest/1974_table.csv?split_party=false",
+      "localFile": "data/sc-2020-president-1974.csv",
+      "rowCount": 46,
+      "demVotes": 1091541,
+      "repVotes": 1385103,
+      "otherVotes": 36685,
+      "totalVotes": 2513329
+    }
+  ],
+  "output": {
+    "localFile": "data/sc-historical-presidential-baseline.csv",
+    "rowCount": 92,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

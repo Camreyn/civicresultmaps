@@ -1,0 +1,1147 @@
+{
+  "capturedAt": "2026-07-11T02:39:57.625Z",
+  "status": "accepted_pre_promotion_snapshot",
+  "scope": "Illinois historical-baseline and 2024 county-rollup promotion acceptance",
+  "authority": "CivicResultMaps production API reconciled to official Illinois State Board of Elections artifacts",
+  "sources": {
+    "liveHistorical": {
+      "url": "https://www.civicresultmaps.org/api/historical-baselines?state=IL&limit=5000",
+      "generatedAt": "2026-07-11T02:35:42.338Z",
+      "mode": "database"
+    },
+    "liveResults2024": {
+      "url": "https://www.civicresultmaps.org/api/results?state=IL&year=2024&level=county",
+      "generatedAt": "2026-07-11T02:35:41.304Z",
+      "mode": "database"
+    },
+    "liveIndicators2024": {
+      "url": "https://www.civicresultmaps.org/api/indicators?state=IL&year=2024&limit=5000",
+      "generatedAt": "2026-07-11T02:35:41.437Z",
+      "mode": "database"
+    },
+    "stagedArtifact": ".etl/staging/il-2024-staging.json",
+    "officialHistoricalSummary": "data/il-historical-presidential-baseline-summary.json"
+  },
+  "parser": "scripts/reconcile-il-historical-promotion.mjs",
+  "reportingGrain": "county",
+  "caveat": "The production snapshot is reconciliation evidence, not an election-authority source. Official historical workbooks exclude blank, undervote, and overvote records. Six parent counties gain candidate votes previously kept in separate city election-authority result rows.",
+  "liveHistorical": {
+    "yearCounts": {
+      "2020": 102
+    },
+    "tupleSha256": "0b309481c5cdfd626819009e2b73eeda96189abf099a548e08178b1fcc23b3d6",
+    "totals2020": {
+      "dem": 2451655,
+      "rep": 2218997,
+      "other": 105681,
+      "total": 4776333
+    },
+    "rows": [
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Adams County",
+        "jurisdictionTag": "county:17001",
+        "demVotes": 8633,
+        "repVotes": 24220,
+        "otherVotes": 674,
+        "totalVotes": 33527
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Alexander County",
+        "jurisdictionTag": "county:17003",
+        "demVotes": 1114,
+        "repVotes": 1486,
+        "otherVotes": 21,
+        "totalVotes": 2621
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Bond County",
+        "jurisdictionTag": "county:17005",
+        "demVotes": 2288,
+        "repVotes": 5625,
+        "otherVotes": 252,
+        "totalVotes": 8165
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Boone County",
+        "jurisdictionTag": "county:17007",
+        "demVotes": 10542,
+        "repVotes": 13883,
+        "otherVotes": 623,
+        "totalVotes": 25048
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Brown County",
+        "jurisdictionTag": "county:17009",
+        "demVotes": 486,
+        "repVotes": 1931,
+        "otherVotes": 108,
+        "totalVotes": 2525
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Bureau County",
+        "jurisdictionTag": "county:17011",
+        "demVotes": 6669,
+        "repVotes": 10411,
+        "otherVotes": 414,
+        "totalVotes": 17494
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Calhoun County",
+        "jurisdictionTag": "county:17013",
+        "demVotes": 677,
+        "repVotes": 2046,
+        "otherVotes": 50,
+        "totalVotes": 2773
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Carroll County",
+        "jurisdictionTag": "county:17015",
+        "demVotes": 2748,
+        "repVotes": 5105,
+        "otherVotes": 184,
+        "totalVotes": 8037
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Cass County",
+        "jurisdictionTag": "county:17017",
+        "demVotes": 1615,
+        "repVotes": 3625,
+        "otherVotes": 86,
+        "totalVotes": 5326
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Champaign County",
+        "jurisdictionTag": "county:17019",
+        "demVotes": 57067,
+        "repVotes": 35285,
+        "otherVotes": 3221,
+        "totalVotes": 95573
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Christian County",
+        "jurisdictionTag": "county:17021",
+        "demVotes": 4335,
+        "repVotes": 11563,
+        "otherVotes": 333,
+        "totalVotes": 16231
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Clark County",
+        "jurisdictionTag": "county:17023",
+        "demVotes": 1993,
+        "repVotes": 6226,
+        "otherVotes": 150,
+        "totalVotes": 8369
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Clay County",
+        "jurisdictionTag": "county:17025",
+        "demVotes": 1129,
+        "repVotes": 5629,
+        "otherVotes": 141,
+        "totalVotes": 6899
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Clinton County",
+        "jurisdictionTag": "county:17027",
+        "demVotes": 4493,
+        "repVotes": 14304,
+        "otherVotes": 417,
+        "totalVotes": 19214
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Coles County",
+        "jurisdictionTag": "county:17029",
+        "demVotes": 8067,
+        "repVotes": 14037,
+        "otherVotes": 564,
+        "totalVotes": 22668
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Cook County",
+        "jurisdictionTag": "county:17031",
+        "demVotes": 781238,
+        "repVotes": 377035,
+        "otherVotes": 19534,
+        "totalVotes": 1177807
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Crawford County",
+        "jurisdictionTag": "county:17033",
+        "demVotes": 2202,
+        "repVotes": 7043,
+        "otherVotes": 196,
+        "totalVotes": 9441
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Cumberland County",
+        "jurisdictionTag": "county:17035",
+        "demVotes": 1142,
+        "repVotes": 4601,
+        "otherVotes": 106,
+        "totalVotes": 5849
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "DeKALB County",
+        "jurisdictionTag": "county:17037",
+        "demVotes": 24643,
+        "repVotes": 21905,
+        "otherVotes": 1441,
+        "totalVotes": 47989
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "DeWITT County",
+        "jurisdictionTag": "county:17039",
+        "demVotes": 2191,
+        "repVotes": 5632,
+        "otherVotes": 216,
+        "totalVotes": 8039
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Douglas County",
+        "jurisdictionTag": "county:17041",
+        "demVotes": 2335,
+        "repVotes": 6227,
+        "otherVotes": 198,
+        "totalVotes": 8760
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "DuPAGE County",
+        "jurisdictionTag": "county:17043",
+        "demVotes": 281222,
+        "repVotes": 193611,
+        "otherVotes": 12890,
+        "totalVotes": 487723
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Edgar County",
+        "jurisdictionTag": "county:17045",
+        "demVotes": 1887,
+        "repVotes": 6193,
+        "otherVotes": 132,
+        "totalVotes": 8212
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Edwards County",
+        "jurisdictionTag": "county:17047",
+        "demVotes": 488,
+        "repVotes": 2833,
+        "otherVotes": 47,
+        "totalVotes": 3368
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Effingham County",
+        "jurisdictionTag": "county:17049",
+        "demVotes": 3716,
+        "repVotes": 15006,
+        "otherVotes": 361,
+        "totalVotes": 19083
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Fayette County",
+        "jurisdictionTag": "county:17051",
+        "demVotes": 1826,
+        "repVotes": 8055,
+        "otherVotes": 195,
+        "totalVotes": 10076
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Ford County",
+        "jurisdictionTag": "county:17053",
+        "demVotes": 1754,
+        "repVotes": 5048,
+        "otherVotes": 165,
+        "totalVotes": 6967
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Franklin County",
+        "jurisdictionTag": "county:17055",
+        "demVotes": 4760,
+        "repVotes": 13622,
+        "otherVotes": 287,
+        "totalVotes": 18669
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Fulton County",
+        "jurisdictionTag": "county:17057",
+        "demVotes": 6503,
+        "repVotes": 9867,
+        "otherVotes": 354,
+        "totalVotes": 16724
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Gallatin County",
+        "jurisdictionTag": "county:17059",
+        "demVotes": 622,
+        "repVotes": 2019,
+        "otherVotes": 34,
+        "totalVotes": 2675
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Greene County",
+        "jurisdictionTag": "county:17061",
+        "demVotes": 1349,
+        "repVotes": 4770,
+        "otherVotes": 118,
+        "totalVotes": 6237
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Grundy County",
+        "jurisdictionTag": "county:17063",
+        "demVotes": 9626,
+        "repVotes": 16523,
+        "otherVotes": 607,
+        "totalVotes": 26756
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Hamilton County",
+        "jurisdictionTag": "county:17065",
+        "demVotes": 824,
+        "repVotes": 3432,
+        "otherVotes": 67,
+        "totalVotes": 4323
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Hancock County",
+        "jurisdictionTag": "county:17067",
+        "demVotes": 2315,
+        "repVotes": 6906,
+        "otherVotes": 182,
+        "totalVotes": 9403
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Hardin County",
+        "jurisdictionTag": "county:17069",
+        "demVotes": 449,
+        "repVotes": 1691,
+        "otherVotes": 22,
+        "totalVotes": 2162
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Henderson County",
+        "jurisdictionTag": "county:17071",
+        "demVotes": 1187,
+        "repVotes": 2394,
+        "otherVotes": 75,
+        "totalVotes": 3656
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Henry County",
+        "jurisdictionTag": "county:17073",
+        "demVotes": 9797,
+        "repVotes": 15300,
+        "otherVotes": 604,
+        "totalVotes": 25701
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Iroquois County",
+        "jurisdictionTag": "county:17075",
+        "demVotes": 2908,
+        "repVotes": 10877,
+        "otherVotes": 258,
+        "totalVotes": 14043
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Jackson County",
+        "jurisdictionTag": "county:17077",
+        "demVotes": 11181,
+        "repVotes": 10890,
+        "otherVotes": 647,
+        "totalVotes": 22718
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Jasper County",
+        "jurisdictionTag": "county:17079",
+        "demVotes": 1007,
+        "repVotes": 4494,
+        "otherVotes": 85,
+        "totalVotes": 5586
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Jefferson County",
+        "jurisdictionTag": "county:17081",
+        "demVotes": 4608,
+        "repVotes": 12476,
+        "otherVotes": 352,
+        "totalVotes": 17436
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Jersey County",
+        "jurisdictionTag": "county:17083",
+        "demVotes": 2961,
+        "repVotes": 8712,
+        "otherVotes": 287,
+        "totalVotes": 11960
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "JoDAVIESS County",
+        "jurisdictionTag": "county:17085",
+        "demVotes": 5109,
+        "repVotes": 7166,
+        "otherVotes": 250,
+        "totalVotes": 12525
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Johnson County",
+        "jurisdictionTag": "county:17087",
+        "demVotes": 1281,
+        "repVotes": 5059,
+        "otherVotes": 110,
+        "totalVotes": 6450
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Kane County",
+        "jurisdictionTag": "county:17089",
+        "demVotes": 130166,
+        "repVotes": 96775,
+        "otherVotes": 4922,
+        "totalVotes": 231863
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Kankakee County",
+        "jurisdictionTag": "county:17091",
+        "demVotes": 20271,
+        "repVotes": 28532,
+        "otherVotes": 1237,
+        "totalVotes": 50040
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Kendall County",
+        "jurisdictionTag": "county:17093",
+        "demVotes": 33168,
+        "repVotes": 29492,
+        "otherVotes": 1545,
+        "totalVotes": 64205
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Knox County",
+        "jurisdictionTag": "county:17095",
+        "demVotes": 3797,
+        "repVotes": 6721,
+        "otherVotes": 227,
+        "totalVotes": 10745
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Lake County",
+        "jurisdictionTag": "county:17097",
+        "demVotes": 204032,
+        "repVotes": 123594,
+        "otherVotes": 8049,
+        "totalVotes": 335675
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "LaSALLE County",
+        "jurisdictionTag": "county:17099",
+        "demVotes": 22442,
+        "repVotes": 30113,
+        "otherVotes": 1132,
+        "totalVotes": 53687
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Lawrence County",
+        "jurisdictionTag": "county:17101",
+        "demVotes": 1419,
+        "repVotes": 4886,
+        "otherVotes": 117,
+        "totalVotes": 6422
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Lee County",
+        "jurisdictionTag": "county:17103",
+        "demVotes": 6407,
+        "repVotes": 9630,
+        "otherVotes": 403,
+        "totalVotes": 16440
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Livingston County",
+        "jurisdictionTag": "county:17105",
+        "demVotes": 4615,
+        "repVotes": 12208,
+        "otherVotes": 391,
+        "totalVotes": 17214
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Logan County",
+        "jurisdictionTag": "county:17107",
+        "demVotes": 3840,
+        "repVotes": 9136,
+        "otherVotes": 351,
+        "totalVotes": 13327
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "McDONOUGH County",
+        "jurisdictionTag": "county:17109",
+        "demVotes": 4992,
+        "repVotes": 7027,
+        "otherVotes": 308,
+        "totalVotes": 12327
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "McHENRY County",
+        "jurisdictionTag": "county:17111",
+        "demVotes": 78154,
+        "repVotes": 82260,
+        "otherVotes": 4164,
+        "totalVotes": 164578
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "McLEAN County",
+        "jurisdictionTag": "county:17113",
+        "demVotes": 22220,
+        "repVotes": 24547,
+        "otherVotes": 1434,
+        "totalVotes": 48201
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Macon County",
+        "jurisdictionTag": "county:17115",
+        "demVotes": 19847,
+        "repVotes": 28589,
+        "otherVotes": 1098,
+        "totalVotes": 49534
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Macoupin County",
+        "jurisdictionTag": "county:17117",
+        "demVotes": 7365,
+        "repVotes": 16153,
+        "otherVotes": 552,
+        "totalVotes": 24070
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Madison County",
+        "jurisdictionTag": "county:17119",
+        "demVotes": 57836,
+        "repVotes": 76031,
+        "otherVotes": 3691,
+        "totalVotes": 137558
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Marion County",
+        "jurisdictionTag": "county:17121",
+        "demVotes": 4524,
+        "repVotes": 12678,
+        "otherVotes": 292,
+        "totalVotes": 17494
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Marshall County",
+        "jurisdictionTag": "county:17123",
+        "demVotes": 2005,
+        "repVotes": 4197,
+        "otherVotes": 143,
+        "totalVotes": 6345
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Mason County",
+        "jurisdictionTag": "county:17125",
+        "demVotes": 1985,
+        "repVotes": 4654,
+        "otherVotes": 146,
+        "totalVotes": 6785
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Massac County",
+        "jurisdictionTag": "county:17127",
+        "demVotes": 1725,
+        "repVotes": 4997,
+        "otherVotes": 96,
+        "totalVotes": 6818
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Menard County",
+        "jurisdictionTag": "county:17129",
+        "demVotes": 2022,
+        "repVotes": 4764,
+        "otherVotes": 168,
+        "totalVotes": 6954
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Mercer County",
+        "jurisdictionTag": "county:17131",
+        "demVotes": 3280,
+        "repVotes": 5418,
+        "otherVotes": 216,
+        "totalVotes": 8914
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Monroe County",
+        "jurisdictionTag": "county:17133",
+        "demVotes": 6569,
+        "repVotes": 14142,
+        "otherVotes": 495,
+        "totalVotes": 21206
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Montgomery County",
+        "jurisdictionTag": "county:17135",
+        "demVotes": 3905,
+        "repVotes": 9544,
+        "otherVotes": 312,
+        "totalVotes": 13761
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Morgan County",
+        "jurisdictionTag": "county:17137",
+        "demVotes": 5076,
+        "repVotes": 9950,
+        "otherVotes": 307,
+        "totalVotes": 15333
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Moultrie County",
+        "jurisdictionTag": "county:17139",
+        "demVotes": 1662,
+        "repVotes": 4964,
+        "otherVotes": 130,
+        "totalVotes": 6756
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Ogle County",
+        "jurisdictionTag": "county:17141",
+        "demVotes": 9428,
+        "repVotes": 16248,
+        "otherVotes": 664,
+        "totalVotes": 26340
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Peoria County",
+        "jurisdictionTag": "county:17143",
+        "demVotes": 43578,
+        "repVotes": 38252,
+        "otherVotes": 2137,
+        "totalVotes": 83967
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Perry County",
+        "jurisdictionTag": "county:17145",
+        "demVotes": 2612,
+        "repVotes": 7313,
+        "otherVotes": 146,
+        "totalVotes": 10071
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Piatt County",
+        "jurisdictionTag": "county:17147",
+        "demVotes": 3329,
+        "repVotes": 6248,
+        "otherVotes": 274,
+        "totalVotes": 9851
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Pike County",
+        "jurisdictionTag": "county:17149",
+        "demVotes": 1484,
+        "repVotes": 6332,
+        "otherVotes": 149,
+        "totalVotes": 7965
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Pope County",
+        "jurisdictionTag": "county:17151",
+        "demVotes": 433,
+        "repVotes": 1722,
+        "otherVotes": 21,
+        "totalVotes": 2176
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Pulaski County",
+        "jurisdictionTag": "county:17153",
+        "demVotes": 891,
+        "repVotes": 1699,
+        "otherVotes": 41,
+        "totalVotes": 2631
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Putnam County",
+        "jurisdictionTag": "county:17155",
+        "demVotes": 1338,
+        "repVotes": 1993,
+        "otherVotes": 64,
+        "totalVotes": 3395
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Randolph County",
+        "jurisdictionTag": "county:17157",
+        "demVotes": 3592,
+        "repVotes": 11076,
+        "otherVotes": 242,
+        "totalVotes": 14910
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Richland County",
+        "jurisdictionTag": "county:17159",
+        "demVotes": 1830,
+        "repVotes": 6089,
+        "otherVotes": 158,
+        "totalVotes": 8077
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Rock Island County",
+        "jurisdictionTag": "county:17161",
+        "demVotes": 36691,
+        "repVotes": 28603,
+        "otherVotes": 1653,
+        "totalVotes": 66947
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "St. Clair County",
+        "jurisdictionTag": "county:17163",
+        "demVotes": 60198,
+        "repVotes": 56869,
+        "otherVotes": 2956,
+        "totalVotes": 120023
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Saline County",
+        "jurisdictionTag": "county:17165",
+        "demVotes": 2789,
+        "repVotes": 8103,
+        "otherVotes": 197,
+        "totalVotes": 11089
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Sangamon County",
+        "jurisdictionTag": "county:17167",
+        "demVotes": 48917,
+        "repVotes": 53485,
+        "otherVotes": 2740,
+        "totalVotes": 105142
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Schuyler County",
+        "jurisdictionTag": "county:17169",
+        "demVotes": 1068,
+        "repVotes": 2773,
+        "otherVotes": 77,
+        "totalVotes": 3918
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Scott County",
+        "jurisdictionTag": "county:17171",
+        "demVotes": 572,
+        "repVotes": 2114,
+        "otherVotes": 57,
+        "totalVotes": 2743
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Shelby County",
+        "jurisdictionTag": "county:17173",
+        "demVotes": 2504,
+        "repVotes": 9426,
+        "otherVotes": 185,
+        "totalVotes": 12115
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Stark County",
+        "jurisdictionTag": "county:17175",
+        "demVotes": 815,
+        "repVotes": 2004,
+        "otherVotes": 67,
+        "totalVotes": 2886
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Stephenson County",
+        "jurisdictionTag": "county:17177",
+        "demVotes": 9055,
+        "repVotes": 12521,
+        "otherVotes": 535,
+        "totalVotes": 22111
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Tazewell County",
+        "jurisdictionTag": "county:17179",
+        "demVotes": 24819,
+        "repVotes": 42513,
+        "otherVotes": 1944,
+        "totalVotes": 69276
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Union County",
+        "jurisdictionTag": "county:17181",
+        "demVotes": 2579,
+        "repVotes": 6161,
+        "otherVotes": 164,
+        "totalVotes": 8904
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Vermilion County",
+        "jurisdictionTag": "county:17183",
+        "demVotes": 5246,
+        "repVotes": 16042,
+        "otherVotes": 409,
+        "totalVotes": 21697
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Wabash County",
+        "jurisdictionTag": "county:17185",
+        "demVotes": 1253,
+        "repVotes": 4237,
+        "otherVotes": 117,
+        "totalVotes": 5607
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Warren County",
+        "jurisdictionTag": "county:17187",
+        "demVotes": 3090,
+        "repVotes": 4676,
+        "otherVotes": 158,
+        "totalVotes": 7924
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Washington County",
+        "jurisdictionTag": "county:17189",
+        "demVotes": 1641,
+        "repVotes": 6115,
+        "otherVotes": 165,
+        "totalVotes": 7921
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Wayne County",
+        "jurisdictionTag": "county:17191",
+        "demVotes": 1187,
+        "repVotes": 7176,
+        "otherVotes": 136,
+        "totalVotes": 8499
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "White County",
+        "jurisdictionTag": "county:17193",
+        "demVotes": 1517,
+        "repVotes": 5791,
+        "otherVotes": 123,
+        "totalVotes": 7431
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Whiteside County",
+        "jurisdictionTag": "county:17195",
+        "demVotes": 12253,
+        "repVotes": 14527,
+        "otherVotes": 653,
+        "totalVotes": 27433
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Will County",
+        "jurisdictionTag": "county:17197",
+        "demVotes": 183915,
+        "repVotes": 155116,
+        "otherVotes": 7235,
+        "totalVotes": 346266
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Williamson County",
+        "jurisdictionTag": "county:17199",
+        "demVotes": 10206,
+        "repVotes": 22801,
+        "otherVotes": 723,
+        "totalVotes": 33730
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Winnebago County",
+        "jurisdictionTag": "county:17201",
+        "demVotes": 30354,
+        "repVotes": 40408,
+        "otherVotes": 1964,
+        "totalVotes": 72726
+      },
+      {
+        "electionYear": 2020,
+        "jurisdictionName": "Woodford County",
+        "jurisdictionTag": "county:17203",
+        "demVotes": 6160,
+        "repVotes": 14799,
+        "otherVotes": 543,
+        "totalVotes": 21502
+      }
+    ]
+  },
+  "stagedHistorical": {
+    "yearCounts": {
+      "2016": 102,
+      "2020": 102
+    },
+    "tupleSha256": {
+      "2016": "77607330cf1cce8285172b71b3e9ec0653170b05feca4c18f49a91c87188b514",
+      "2020": "66a25f4644b1804e2b3b144f87703259b38af1ca3a082e632732845f926428c2"
+    },
+    "totals": {
+      "2016": {
+        "dem": 3090729,
+        "rep": 2146015,
+        "other": 299680,
+        "total": 5536424
+      },
+      "2020": {
+        "dem": 3471915,
+        "rep": 2446891,
+        "other": 114938,
+        "total": 6033744
+      }
+    }
+  },
+  "comparison2020": {
+    "matchedTags": 102,
+    "differentRows": 100,
+    "unchangedRows": 2,
+    "unchangedTags": [
+      "county:17001",
+      "county:17069"
+    ],
+    "fieldChangeCounts": {
+      "dem": 6,
+      "rep": 6,
+      "other": 100,
+      "total": 100
+    },
+    "stagedMinusLive": {
+      "dem": 1020260,
+      "rep": 227894,
+      "other": 9257,
+      "total": 1257411
+    },
+    "winnerChanges": [
+      {
+        "jurisdictionTag": "county:17113",
+        "liveWinner": "red",
+        "stagedWinner": "blue",
+        "liveDemVotes": 22220,
+        "liveRepVotes": 24547,
+        "stagedDemVotes": 43933,
+        "stagedRepVotes": 40502
+      },
+      {
+        "jurisdictionTag": "county:17201",
+        "liveWinner": "red",
+        "stagedWinner": "blue",
+        "liveDemVotes": 30354,
+        "liveRepVotes": 40408,
+        "stagedDemVotes": 64056,
+        "stagedRepVotes": 60861
+      }
+    ]
+  },
+  "comparison2024": {
+    "liveRawRows": 108,
+    "liveCityElectionAuthorityRows": [
+      {
+        "jurisdictionName": "City of Bloomington",
+        "parentTag": "county:17113"
+      },
+      {
+        "jurisdictionName": "City of Chicago",
+        "parentTag": "county:17031"
+      },
+      {
+        "jurisdictionName": "City of Danville",
+        "parentTag": "county:17183"
+      },
+      {
+        "jurisdictionName": "City of East St. Louis",
+        "parentTag": "county:17163"
+      },
+      {
+        "jurisdictionName": "City of Galesburg",
+        "parentTag": "county:17095"
+      },
+      {
+        "jurisdictionName": "City of Rockford",
+        "parentTag": "county:17201"
+      }
+    ],
+    "liveAggregatedTags": 102,
+    "stagedRows": 102,
+    "mismatchedVoteTuples": 0,
+    "tupleSha256": "341b0c235812737b1f01feaa2a9b5810a298a5a3a9758af175572126fca28586",
+    "totals": {
+      "dem": 3062863,
+      "rep": 2449079,
+      "other": 137837,
+      "total": 5649779
+    }
+  },
+  "flipEffects": {
+    "live2020ToStaged2024": {
+      "redToBlue": 2,
+      "blueToRed": 0,
+      "rows": [
+        {
+          "jurisdictionTag": "county:17113",
+          "fromWinner": "red",
+          "toWinner": "blue"
+        },
+        {
+          "jurisdictionTag": "county:17201",
+          "fromWinner": "red",
+          "toWinner": "blue"
+        }
+      ]
+    },
+    "staged2016ToStaged2020": {
+      "redToBlue": 2,
+      "blueToRed": 0,
+      "rows": [
+        {
+          "jurisdictionTag": "county:17093",
+          "fromWinner": "red",
+          "toWinner": "blue"
+        },
+        {
+          "jurisdictionTag": "county:17113",
+          "fromWinner": "red",
+          "toWinner": "blue"
+        }
+      ]
+    },
+    "staged2016ToStaged2024": {
+      "redToBlue": 2,
+      "blueToRed": 0,
+      "rows": [
+        {
+          "jurisdictionTag": "county:17093",
+          "fromWinner": "red",
+          "toWinner": "blue"
+        },
+        {
+          "jurisdictionTag": "county:17113",
+          "fromWinner": "red",
+          "toWinner": "blue"
+        }
+      ]
+    },
+    "staged2020ToStaged2024": {
+      "redToBlue": 0,
+      "blueToRed": 0,
+      "rows": []
+    }
+  },
+  "advisoryIndicatorReview": {
+    "stagedReportCommand": "npm.cmd run native:report-indicators -- .etl/staging",
+    "live": {
+      "indicatorRows": 99,
+      "uniqueNames": 66,
+      "uniqueTags": 60,
+      "byType": {
+        "average_down_ballot_difference": 36,
+        "vote_share_pattern": 63
+      }
+    },
+    "staged": {
+      "reviewRows": 6655,
+      "indicatorRows": 90,
+      "uniqueFlaggedJurisdictions": 60,
+      "flaggedAreas": 60,
+      "byType": {
+        "vote_share_pattern": 57,
+        "average_down_ballot_difference": 33
+      }
+    },
+    "expectedReplacement": "The canonical county rollup merges six city election authorities into their parent counties, so promotion is expected to replace 99 pre-rollup stored indicators with 90 staged indicators. This is a calculation-scope change, not an election-integrity finding."
+  },
+  "acceptance": {
+    "decision": "accept",
+    "rationale": "Staging preserves all 102 live 2020 tags, adds 102 official 2016 rows, replaces the 100 nonmatching 2020 tuples with official candidate/write-in totals, and preserves exact 2024 votes while rolling six city election authorities into their parent counties.",
+    "promotionAuthorizedByThisArtifact": false
+  }
+}

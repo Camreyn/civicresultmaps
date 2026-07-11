@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-07-11T02:01:46.995Z",
+  "authority": "New Jersey Department of State, Division of Elections",
+  "parser": "scripts/normalize-nj-historical-presidential-baseline.mjs",
+  "caveat": "Official New Jersey 2016 county President PDFs and 2020 statewide President PDF normalized to county baselines. 2012 remains uncollected.",
+  "sources": [
+    {
+      "id": "nj-2016-county-president-pdfs",
+      "year": 2016,
+      "url": "https://www.nj.gov/state/elections/election-information-2016.shtml",
+      "localFile": "data/nj-2016-county-president-pdfs",
+      "rowCount": 21,
+      "demVotes": 2148278,
+      "repVotes": 1601933,
+      "otherVotes": 123835,
+      "totalVotes": 3874046
+    },
+    {
+      "id": "nj-2020-official-general-results-president",
+      "year": 2020,
+      "url": "https://www.nj.gov/state/elections/assets/pdf/election-results/2020/2020-official-general-results-president.pdf",
+      "localFile": "data/nj-2020-official-general-results-president.pdf",
+      "rowCount": 21,
+      "demVotes": 2608400,
+      "repVotes": 1883313,
+      "otherVotes": 57744,
+      "totalVotes": 4549457
+    }
+  ],
+  "output": {
+    "localFile": "data/nj-historical-presidential-baseline.csv",
+    "rowCount": 42,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

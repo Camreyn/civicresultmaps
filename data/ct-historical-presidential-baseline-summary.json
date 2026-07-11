@@ -1,0 +1,436 @@
+{
+  "sourceAuthority": "Connecticut Secretary of the State; U.S. Census Bureau",
+  "sourceUrls": [
+    "https://ctemspublic.tgstg.net/ng-app/data/election/1/5603/townVotes_Electiondata.json",
+    "https://ctemspublic.tgstg.net/ng-app/data/election/54/64824/townVotes_Electiondata.json",
+    "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
+    "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/22/query?where=STATE%3D%2709%27&outFields=GEOID,STATE,COUNTY,COUSUB,NAME,BASENAME,COUSUBNS&returnGeometry=true&outSR=4326&f=geojson",
+    "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2709%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson"
+  ],
+  "localArtifacts": {
+    "emsPackages": [
+      "data/ct-2016-ems-election-1-version-5603",
+      "data/ct-2020-ems-election-54-version-64824",
+      "data/ct-2024-ems-election-91-version-80741"
+    ],
+    "censusTownGeometry": "data/ct-town-mcds.geojson",
+    "censusPlanningRegionGeometry": "data/ct-counties.geojson",
+    "townPlanningRegionCrosswalk": "data/ct-current-planning-region-crosswalk.csv",
+    "historicalBaseline": "data/ct-historical-presidential-baseline.csv"
+  },
+  "parserOrNormalizationPath": "scripts/normalize-ct-historical-presidential-baseline.mjs",
+  "reportingGrain": "current Census planning region/county-equivalent",
+  "crosswalk": {
+    "sourceTownRows": 169,
+    "outputRows": 169,
+    "planningRegions": [
+      {
+        "geoid": "09110",
+        "jurisdictionTag": "county:09110",
+        "name": "Capitol Planning Region",
+        "townRows": 38
+      },
+      {
+        "geoid": "09120",
+        "jurisdictionTag": "county:09120",
+        "name": "Greater Bridgeport Planning Region",
+        "townRows": 6
+      },
+      {
+        "geoid": "09130",
+        "jurisdictionTag": "county:09130",
+        "name": "Lower Connecticut River Valley Planning Region",
+        "townRows": 17
+      },
+      {
+        "geoid": "09140",
+        "jurisdictionTag": "county:09140",
+        "name": "Naugatuck Valley Planning Region",
+        "townRows": 19
+      },
+      {
+        "geoid": "09150",
+        "jurisdictionTag": "county:09150",
+        "name": "Northeastern Connecticut Planning Region",
+        "townRows": 16
+      },
+      {
+        "geoid": "09160",
+        "jurisdictionTag": "county:09160",
+        "name": "Northwest Hills Planning Region",
+        "townRows": 21
+      },
+      {
+        "geoid": "09170",
+        "jurisdictionTag": "county:09170",
+        "name": "South Central Connecticut Planning Region",
+        "townRows": 15
+      },
+      {
+        "geoid": "09180",
+        "jurisdictionTag": "county:09180",
+        "name": "Southeastern Connecticut Planning Region",
+        "townRows": 19
+      },
+      {
+        "geoid": "09190",
+        "jurisdictionTag": "county:09190",
+        "name": "Western Connecticut Planning Region",
+        "townRows": 18
+      }
+    ],
+    "joinRule": "Exact Connecticut EMS town name equals Census BASENAME; EMS town ID/name equality is required across 2016, 2020, and 2024 before aggregation."
+  },
+  "contests": [
+    {
+      "year": 2016,
+      "electionId": 1,
+      "version": 5603,
+      "presidentOfficeId": "1",
+      "demCandidate": {
+        "id": "677",
+        "name": "Clinton and Kaine"
+      },
+      "repCandidate": {
+        "id": "668",
+        "name": "Trump and Pence"
+      },
+      "sourceUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/1/5603/townVotes_Electiondata.json",
+      "localRawDirectory": "data/ct-2016-ems-election-1-version-5603",
+      "rawSha256": {
+        "lookup": "f2484b6ed6e55f6ca5e116259940c6e63dcfc05e00feba9eeeb5ec37129710be",
+        "townVotes": "801bb9f35d09f6daf0a9baa7f7ec0b8d6fc8d5fffe17c626feacea3fd0b6749f",
+        "stateVotes": "45b34d0185d0fa1eb8e331c6b19233cf1ca56bda84139b46cfc914c1ea9f6be7"
+      },
+      "townRows": 169,
+      "planningRegionRows": [
+        {
+          "geoid": "09110",
+          "jurisdictionTag": "county:09110",
+          "name": "Capitol Planning Region",
+          "demVotes": 263521,
+          "repVotes": 165761,
+          "otherVotes": 21432,
+          "totalVotes": 450714
+        },
+        {
+          "geoid": "09120",
+          "jurisdictionTag": "county:09120",
+          "name": "Greater Bridgeport Planning Region",
+          "demVotes": 79827,
+          "repVotes": 47048,
+          "otherVotes": 4769,
+          "totalVotes": 131644
+        },
+        {
+          "geoid": "09130",
+          "jurisdictionTag": "county:09130",
+          "name": "Lower Connecticut River Valley Planning Region",
+          "demVotes": 48874,
+          "repVotes": 41433,
+          "otherVotes": 4717,
+          "totalVotes": 95024
+        },
+        {
+          "geoid": "09140",
+          "jurisdictionTag": "county:09140",
+          "name": "Naugatuck Valley Planning Region",
+          "demVotes": 86541,
+          "repVotes": 107150,
+          "otherVotes": 8116,
+          "totalVotes": 201807
+        },
+        {
+          "geoid": "09150",
+          "jurisdictionTag": "county:09150",
+          "name": "Northeastern Connecticut Planning Region",
+          "demVotes": 17036,
+          "repVotes": 24322,
+          "otherVotes": 2943,
+          "totalVotes": 44301
+        },
+        {
+          "geoid": "09160",
+          "jurisdictionTag": "county:09160",
+          "name": "Northwest Hills Planning Region",
+          "demVotes": 25787,
+          "repVotes": 30503,
+          "otherVotes": 3054,
+          "totalVotes": 59344
+        },
+        {
+          "geoid": "09170",
+          "jurisdictionTag": "county:09170",
+          "name": "South Central Connecticut Planning Region",
+          "demVotes": 149603,
+          "repVotes": 95390,
+          "otherVotes": 9430,
+          "totalVotes": 254423
+        },
+        {
+          "geoid": "09180",
+          "jurisdictionTag": "county:09180",
+          "name": "Southeastern Connecticut Planning Region",
+          "demVotes": 63705,
+          "repVotes": 53194,
+          "otherVotes": 7247,
+          "totalVotes": 124146
+        },
+        {
+          "geoid": "09190",
+          "jurisdictionTag": "county:09190",
+          "name": "Western Connecticut Planning Region",
+          "demVotes": 162678,
+          "repVotes": 108414,
+          "otherVotes": 12425,
+          "totalVotes": 283517
+        }
+      ],
+      "totals": {
+        "rows": 9,
+        "demVotes": 897572,
+        "repVotes": 673215,
+        "otherVotes": 74133,
+        "totalVotes": 1644920
+      }
+    },
+    {
+      "year": 2020,
+      "electionId": 54,
+      "version": 64824,
+      "presidentOfficeId": "7970",
+      "demCandidate": {
+        "id": "18662",
+        "name": "Biden and Harris"
+      },
+      "repCandidate": {
+        "id": "18661",
+        "name": "Trump and Pence"
+      },
+      "sourceUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/54/64824/townVotes_Electiondata.json",
+      "localRawDirectory": "data/ct-2020-ems-election-54-version-64824",
+      "rawSha256": {
+        "lookup": "dfc9fb8c6b41f884d2a475f91895220521cc2b5bbefc2ff50b2b7d9bc9dc1bae",
+        "townVotes": "e5ae25c470abcf65fd21b05c8b1154d957bed582b69ec3876a86a44ed716bc7b",
+        "stateVotes": "6ebeb75631ce4b20924a4398f947feaaef148be7742a647006767abe140eafa8"
+      },
+      "townRows": 169,
+      "planningRegionRows": [
+        {
+          "geoid": "09110",
+          "jurisdictionTag": "county:09110",
+          "name": "Capitol Planning Region",
+          "demVotes": 308252,
+          "repVotes": 175869,
+          "otherVotes": 8034,
+          "totalVotes": 492155
+        },
+        {
+          "geoid": "09120",
+          "jurisdictionTag": "county:09120",
+          "name": "Greater Bridgeport Planning Region",
+          "demVotes": 94273,
+          "repVotes": 48179,
+          "otherVotes": 1777,
+          "totalVotes": 144229
+        },
+        {
+          "geoid": "09130",
+          "jurisdictionTag": "county:09130",
+          "name": "Lower Connecticut River Valley Planning Region",
+          "demVotes": 61239,
+          "repVotes": 43340,
+          "otherVotes": 1804,
+          "totalVotes": 106383
+        },
+        {
+          "geoid": "09140",
+          "jurisdictionTag": "county:09140",
+          "name": "Naugatuck Valley Planning Region",
+          "demVotes": 107854,
+          "repVotes": 113795,
+          "otherVotes": 3205,
+          "totalVotes": 224854
+        },
+        {
+          "geoid": "09150",
+          "jurisdictionTag": "county:09150",
+          "name": "Northeastern Connecticut Planning Region",
+          "demVotes": 22156,
+          "repVotes": 27542,
+          "otherVotes": 1131,
+          "totalVotes": 50829
+        },
+        {
+          "geoid": "09160",
+          "jurisdictionTag": "county:09160",
+          "name": "Northwest Hills Planning Region",
+          "demVotes": 32314,
+          "repVotes": 31995,
+          "otherVotes": 1146,
+          "totalVotes": 65455
+        },
+        {
+          "geoid": "09170",
+          "jurisdictionTag": "county:09170",
+          "name": "South Central Connecticut Planning Region",
+          "demVotes": 173810,
+          "repVotes": 102095,
+          "otherVotes": 3562,
+          "totalVotes": 279467
+        },
+        {
+          "geoid": "09180",
+          "jurisdictionTag": "county:09180",
+          "name": "Southeastern Connecticut Planning Region",
+          "demVotes": 79867,
+          "repVotes": 56341,
+          "otherVotes": 3035,
+          "totalVotes": 139243
+        },
+        {
+          "geoid": "09190",
+          "jurisdictionTag": "county:09190",
+          "name": "Western Connecticut Planning Region",
+          "demVotes": 201066,
+          "repVotes": 115561,
+          "otherVotes": 4615,
+          "totalVotes": 321242
+        }
+      ],
+      "totals": {
+        "rows": 9,
+        "demVotes": 1080831,
+        "repVotes": 714717,
+        "otherVotes": 28309,
+        "totalVotes": 1823857
+      }
+    },
+    {
+      "year": 2024,
+      "electionId": 91,
+      "version": 80741,
+      "presidentOfficeId": "16518",
+      "demCandidate": {
+        "id": "35838",
+        "name": "Harris and Walz"
+      },
+      "repCandidate": {
+        "id": "35839",
+        "name": "Trump and Vance"
+      },
+      "sourceUrl": "https://ctemspublic.tgstg.net/ng-app/data/election/91/80741/townVotes_Electiondata.json",
+      "localRawDirectory": "data/ct-2024-ems-election-91-version-80741",
+      "rawSha256": {
+        "lookup": "68a1d58f4ac5ab8ffa6703bd819c69976c2380c7905c28761708e1eb85a7b10f",
+        "townVotes": "e6a0e8b21c85bebd06677a067e38fc2289137048c1cc8721ddb061020ed453e6",
+        "stateVotes": "cce1f41cc4f6d2c5e934b1950695321b324e4c41058e7c937daaf51f4dfba345"
+      },
+      "townRows": 169,
+      "planningRegionRows": [
+        {
+          "geoid": "09110",
+          "jurisdictionTag": "county:09110",
+          "name": "Capitol Planning Region",
+          "demVotes": 285105,
+          "repVotes": 181038,
+          "otherVotes": 8302,
+          "totalVotes": 474445
+        },
+        {
+          "geoid": "09120",
+          "jurisdictionTag": "county:09120",
+          "name": "Greater Bridgeport Planning Region",
+          "demVotes": 83461,
+          "repVotes": 51519,
+          "otherVotes": 2068,
+          "totalVotes": 137048
+        },
+        {
+          "geoid": "09130",
+          "jurisdictionTag": "county:09130",
+          "name": "Lower Connecticut River Valley Planning Region",
+          "demVotes": 58360,
+          "repVotes": 44318,
+          "otherVotes": 1826,
+          "totalVotes": 104504
+        },
+        {
+          "geoid": "09140",
+          "jurisdictionTag": "county:09140",
+          "name": "Naugatuck Valley Planning Region",
+          "demVotes": 99237,
+          "repVotes": 115290,
+          "otherVotes": 3060,
+          "totalVotes": 217587
+        },
+        {
+          "geoid": "09150",
+          "jurisdictionTag": "county:09150",
+          "name": "Northeastern Connecticut Planning Region",
+          "demVotes": 21165,
+          "repVotes": 29028,
+          "otherVotes": 777,
+          "totalVotes": 50970
+        },
+        {
+          "geoid": "09160",
+          "jurisdictionTag": "county:09160",
+          "name": "Northwest Hills Planning Region",
+          "demVotes": 31137,
+          "repVotes": 31944,
+          "otherVotes": 1009,
+          "totalVotes": 64090
+        },
+        {
+          "geoid": "09170",
+          "jurisdictionTag": "county:09170",
+          "name": "South Central Connecticut Planning Region",
+          "demVotes": 156248,
+          "repVotes": 103087,
+          "otherVotes": 5673,
+          "totalVotes": 265008
+        },
+        {
+          "geoid": "09180",
+          "jurisdictionTag": "county:09180",
+          "name": "Southeastern Connecticut Planning Region",
+          "demVotes": 76146,
+          "repVotes": 58392,
+          "otherVotes": 2456,
+          "totalVotes": 136994
+        },
+        {
+          "geoid": "09190",
+          "jurisdictionTag": "county:09190",
+          "name": "Western Connecticut Planning Region",
+          "demVotes": 181194,
+          "repVotes": 122302,
+          "otherVotes": 4868,
+          "totalVotes": 308364
+        }
+      ],
+      "totals": {
+        "rows": 9,
+        "demVotes": 992053,
+        "repVotes": 736918,
+        "otherVotes": 30039,
+        "totalVotes": 1759010
+      }
+    }
+  ],
+  "historicalExpected": {
+    "rows": 18,
+    "demVotes": 1978403,
+    "repVotes": 1387932,
+    "otherVotes": 102442,
+    "totalVotes": 3468777
+  },
+  "caveats": [
+    "The 2016, 2020, and 2024 town vote packages are official Connecticut Secretary of the State EMS static JSON and reconcile exactly to their corresponding EMS stateVotes President totals.",
+    "Current nine-region county-equivalent assignments are derived from official current Census county-subdivision COUNTY/GEOID fields and exact EMS-to-Census BASENAME matches, not from Connecticut's retired eight-county reporting labels.",
+    "The 2016 and 2020 rows are contextual current-geography aggregates for jurisdictionTag flip comparisons; the planning regions did not serve as election reporting units in those elections.",
+    "The 2024 EMS totals are retained for town-ID/crosswalk source QA; active 2024 President result and review values use the separately normalized certified Statement of Vote rows, which exceed EMS version 80741 by 265 votes.",
+    "Official 2012 Connecticut presidential baselines remain uncollected in this pass."
+  ]
+}

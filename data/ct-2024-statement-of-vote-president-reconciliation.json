@@ -1,0 +1,544 @@
+{
+  "state": "CT",
+  "electionYear": 2024,
+  "contest": "President",
+  "sourceAuthority": "Connecticut Secretary of the State",
+  "sourceUrl": "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
+  "reportingGrain": "town source aggregated to current Census planning-region county-equivalents",
+  "parserOrNormalizationPath": "scripts/normalize-ct-2024-statement-of-vote.mjs",
+  "localArtifacts": {
+    "statementOfVotePdf": "data/ct-2024-statement-of-vote.pdf",
+    "emsComparisonPackage": "data/ct-2024-ems-election-91-version-80741",
+    "planningRegionCrosswalk": "data/ct-current-planning-region-crosswalk.csv",
+    "normalizedTownCsv": "data/ct-2024-statement-of-vote-president-town.csv",
+    "reconciliationSummary": "data/ct-2024-statement-of-vote-president-reconciliation.json"
+  },
+  "sourceFiles": {
+    "statementOfVotePdf": {
+      "bytes": 3139465,
+      "pages": 170,
+      "sha256": "1043dc18895adcff95e227e136eb19ef1c65f2a452a4dc97105fb4738cf3751c",
+      "extractedPresidentPages": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34
+      ]
+    },
+    "emsLookupSha256": "68a1d58f4ac5ab8ffa6703bd819c69976c2380c7905c28761708e1eb85a7b10f",
+    "emsTownVotesSha256": "e6a0e8b21c85bebd06677a067e38fc2289137048c1cc8721ddb061020ed453e6",
+    "emsStateVotesSha256": "cce1f41cc4f6d2c5e934b1950695321b324e4c41058e7c937daaf51f4dfba345",
+    "planningRegionCrosswalkSha256": "dbcaa1b22a5205ddb32d1f517474d35505808cbee56af42e9d6b1707e1142e25",
+    "normalizedTownCsvSha256": "38e2d0066e0c87bd1b4676e0f25a85d526c949d3afcee1e168c3880a16828b17"
+  },
+  "expected": {
+    "townRows": 169,
+    "ticketRowsPerTown": 12,
+    "planningRegionRows": 9,
+    "totals": {
+      "harris": 992197,
+      "trump": 737024,
+      "other": 30054,
+      "total": 1759275
+    }
+  },
+  "ticketReconciliation": [
+    {
+      "candidateId": "35838",
+      "ticket": "Harris and Walz",
+      "outputColumn": "harris_and_walz",
+      "sovVotes": 992197,
+      "emsVotes": 992053,
+      "difference": 144
+    },
+    {
+      "candidateId": "35839",
+      "ticket": "Trump and Vance",
+      "outputColumn": "trump_and_vance",
+      "sovVotes": 737024,
+      "emsVotes": 736918,
+      "difference": 106
+    },
+    {
+      "candidateId": "35853",
+      "ticket": "Stein and Ware",
+      "outputColumn": "stein_and_ware",
+      "sovVotes": 14286,
+      "emsVotes": 14281,
+      "difference": 5
+    },
+    {
+      "candidateId": "35848",
+      "ticket": "Oliver and ter Maat",
+      "outputColumn": "oliver_and_ter_maat",
+      "sovVotes": 6731,
+      "emsVotes": 6729,
+      "difference": 2
+    },
+    {
+      "candidateId": "35858",
+      "ticket": "Kennedy, Jr. and Shanahan",
+      "outputColumn": "kennedy_jr_and_shanahan",
+      "sovVotes": 8452,
+      "emsVotes": 8448,
+      "difference": 4
+    },
+    {
+      "candidateId": "36135",
+      "ticket": "Ayyadurai and Ellis",
+      "outputColumn": "ayyadurai_and_ellis",
+      "sovVotes": 21,
+      "emsVotes": 21,
+      "difference": 0
+    },
+    {
+      "candidateId": "36136",
+      "ticket": "De la Cruz and Garcia",
+      "outputColumn": "de_la_cruz_and_garcia",
+      "sovVotes": 267,
+      "emsVotes": 264,
+      "difference": 3
+    },
+    {
+      "candidateId": "36137",
+      "ticket": "Fox and McVay",
+      "outputColumn": "fox_and_mcvay",
+      "sovVotes": 4,
+      "emsVotes": 4,
+      "difference": 0
+    },
+    {
+      "candidateId": "36138",
+      "ticket": "McNeil and McNeil",
+      "outputColumn": "mcneil_and_mcneil",
+      "sovVotes": 0,
+      "emsVotes": 0,
+      "difference": 0
+    },
+    {
+      "candidateId": "36139",
+      "ticket": "Potus and Kennedy",
+      "outputColumn": "potus_and_kennedy",
+      "sovVotes": 2,
+      "emsVotes": 2,
+      "difference": 0
+    },
+    {
+      "candidateId": "36140",
+      "ticket": "Sonski and Onak",
+      "outputColumn": "sonski_and_onak",
+      "sovVotes": 162,
+      "emsVotes": 162,
+      "difference": 0
+    },
+    {
+      "candidateId": "36141",
+      "ticket": "West and Abdullah",
+      "outputColumn": "west_and_abdullah",
+      "sovVotes": 129,
+      "emsVotes": 128,
+      "difference": 1
+    }
+  ],
+  "statewideReconciliation": {
+    "sov": {
+      "harris": 992197,
+      "trump": 737024,
+      "other": 30054,
+      "total": 1759275
+    },
+    "ems": {
+      "harris": 992053,
+      "trump": 736918,
+      "other": 30039,
+      "total": 1759010
+    },
+    "difference": {
+      "harris": 144,
+      "trump": 106,
+      "other": 15,
+      "total": 265
+    },
+    "ticketDifference": {
+      "harris_and_walz": 144,
+      "trump_and_vance": 106,
+      "stein_and_ware": 5,
+      "oliver_and_ter_maat": 2,
+      "kennedy_jr_and_shanahan": 4,
+      "ayyadurai_and_ellis": 0,
+      "de_la_cruz_and_garcia": 3,
+      "fox_and_mcvay": 0,
+      "mcneil_and_mcneil": 0,
+      "potus_and_kennedy": 0,
+      "sonski_and_onak": 0,
+      "west_and_abdullah": 1
+    }
+  },
+  "townReconciliation": {
+    "comparedTownRows": 169,
+    "unchangedTownRows": 165,
+    "changedTownRows": 4,
+    "differences": [
+      {
+        "townId": 28,
+        "townName": "Colchester",
+        "planningRegionGeoid": "09180",
+        "jurisdictionTag": "county:09180",
+        "changedTickets": [
+          "harris_and_walz"
+        ],
+        "sovVotes": {
+          "harris_and_walz": 4989
+        },
+        "emsVotes": {
+          "harris_and_walz": 5002
+        },
+        "difference": {
+          "harris_and_walz": -13
+        }
+      },
+      {
+        "townId": 78,
+        "townName": "Mansfield",
+        "planningRegionGeoid": "09110",
+        "jurisdictionTag": "county:09110",
+        "changedTickets": [
+          "harris_and_walz",
+          "trump_and_vance",
+          "stein_and_ware",
+          "kennedy_jr_and_shanahan",
+          "de_la_cruz_and_garcia",
+          "west_and_abdullah"
+        ],
+        "sovVotes": {
+          "harris_and_walz": 6746,
+          "trump_and_vance": 2295,
+          "stein_and_ware": 99,
+          "kennedy_jr_and_shanahan": 50,
+          "de_la_cruz_and_garcia": 4,
+          "west_and_abdullah": 6
+        },
+        "emsVotes": {
+          "harris_and_walz": 6690,
+          "trump_and_vance": 2250,
+          "stein_and_ware": 96,
+          "kennedy_jr_and_shanahan": 46,
+          "de_la_cruz_and_garcia": 1,
+          "west_and_abdullah": 5
+        },
+        "difference": {
+          "harris_and_walz": 56,
+          "trump_and_vance": 45,
+          "stein_and_ware": 3,
+          "kennedy_jr_and_shanahan": 4,
+          "de_la_cruz_and_garcia": 3,
+          "west_and_abdullah": 1
+        }
+      },
+      {
+        "townId": 130,
+        "townName": "Southbury",
+        "planningRegionGeoid": "09140",
+        "jurisdictionTag": "county:09140",
+        "changedTickets": [
+          "harris_and_walz",
+          "trump_and_vance"
+        ],
+        "sovVotes": {
+          "harris_and_walz": 6341,
+          "trump_and_vance": 6217
+        },
+        "emsVotes": {
+          "harris_and_walz": 6315,
+          "trump_and_vance": 6207
+        },
+        "difference": {
+          "harris_and_walz": 26,
+          "trump_and_vance": 10
+        }
+      },
+      {
+        "townId": 152,
+        "townName": "Waterford",
+        "planningRegionGeoid": "09180",
+        "jurisdictionTag": "county:09180",
+        "changedTickets": [
+          "harris_and_walz",
+          "trump_and_vance",
+          "stein_and_ware",
+          "oliver_and_ter_maat"
+        ],
+        "sovVotes": {
+          "harris_and_walz": 6582,
+          "trump_and_vance": 5309,
+          "stein_and_ware": 81,
+          "oliver_and_ter_maat": 59
+        },
+        "emsVotes": {
+          "harris_and_walz": 6507,
+          "trump_and_vance": 5258,
+          "stein_and_ware": 79,
+          "oliver_and_ter_maat": 57
+        },
+        "difference": {
+          "harris_and_walz": 75,
+          "trump_and_vance": 51,
+          "stein_and_ware": 2,
+          "oliver_and_ter_maat": 2
+        }
+      }
+    ]
+  },
+  "planningRegionReconciliation": [
+    {
+      "geoid": "09110",
+      "jurisdictionTag": "county:09110",
+      "name": "Capitol Planning Region",
+      "towns": 38,
+      "sov": {
+        "harris": 285161,
+        "trump": 181083,
+        "other": 8313,
+        "total": 474557
+      },
+      "ems": {
+        "harris": 285105,
+        "trump": 181038,
+        "other": 8302,
+        "total": 474445
+      },
+      "difference": {
+        "harris": 56,
+        "trump": 45,
+        "other": 11,
+        "total": 112
+      }
+    },
+    {
+      "geoid": "09120",
+      "jurisdictionTag": "county:09120",
+      "name": "Greater Bridgeport Planning Region",
+      "towns": 6,
+      "sov": {
+        "harris": 83461,
+        "trump": 51519,
+        "other": 2068,
+        "total": 137048
+      },
+      "ems": {
+        "harris": 83461,
+        "trump": 51519,
+        "other": 2068,
+        "total": 137048
+      },
+      "difference": {
+        "harris": 0,
+        "trump": 0,
+        "other": 0,
+        "total": 0
+      }
+    },
+    {
+      "geoid": "09130",
+      "jurisdictionTag": "county:09130",
+      "name": "Lower Connecticut River Valley Planning Region",
+      "towns": 17,
+      "sov": {
+        "harris": 58360,
+        "trump": 44318,
+        "other": 1826,
+        "total": 104504
+      },
+      "ems": {
+        "harris": 58360,
+        "trump": 44318,
+        "other": 1826,
+        "total": 104504
+      },
+      "difference": {
+        "harris": 0,
+        "trump": 0,
+        "other": 0,
+        "total": 0
+      }
+    },
+    {
+      "geoid": "09140",
+      "jurisdictionTag": "county:09140",
+      "name": "Naugatuck Valley Planning Region",
+      "towns": 19,
+      "sov": {
+        "harris": 99263,
+        "trump": 115300,
+        "other": 3060,
+        "total": 217623
+      },
+      "ems": {
+        "harris": 99237,
+        "trump": 115290,
+        "other": 3060,
+        "total": 217587
+      },
+      "difference": {
+        "harris": 26,
+        "trump": 10,
+        "other": 0,
+        "total": 36
+      }
+    },
+    {
+      "geoid": "09150",
+      "jurisdictionTag": "county:09150",
+      "name": "Northeastern Connecticut Planning Region",
+      "towns": 16,
+      "sov": {
+        "harris": 21165,
+        "trump": 29028,
+        "other": 777,
+        "total": 50970
+      },
+      "ems": {
+        "harris": 21165,
+        "trump": 29028,
+        "other": 777,
+        "total": 50970
+      },
+      "difference": {
+        "harris": 0,
+        "trump": 0,
+        "other": 0,
+        "total": 0
+      }
+    },
+    {
+      "geoid": "09160",
+      "jurisdictionTag": "county:09160",
+      "name": "Northwest Hills Planning Region",
+      "towns": 21,
+      "sov": {
+        "harris": 31137,
+        "trump": 31944,
+        "other": 1009,
+        "total": 64090
+      },
+      "ems": {
+        "harris": 31137,
+        "trump": 31944,
+        "other": 1009,
+        "total": 64090
+      },
+      "difference": {
+        "harris": 0,
+        "trump": 0,
+        "other": 0,
+        "total": 0
+      }
+    },
+    {
+      "geoid": "09170",
+      "jurisdictionTag": "county:09170",
+      "name": "South Central Connecticut Planning Region",
+      "towns": 15,
+      "sov": {
+        "harris": 156248,
+        "trump": 103087,
+        "other": 5673,
+        "total": 265008
+      },
+      "ems": {
+        "harris": 156248,
+        "trump": 103087,
+        "other": 5673,
+        "total": 265008
+      },
+      "difference": {
+        "harris": 0,
+        "trump": 0,
+        "other": 0,
+        "total": 0
+      }
+    },
+    {
+      "geoid": "09180",
+      "jurisdictionTag": "county:09180",
+      "name": "Southeastern Connecticut Planning Region",
+      "towns": 19,
+      "sov": {
+        "harris": 76208,
+        "trump": 58443,
+        "other": 2460,
+        "total": 137111
+      },
+      "ems": {
+        "harris": 76146,
+        "trump": 58392,
+        "other": 2456,
+        "total": 136994
+      },
+      "difference": {
+        "harris": 62,
+        "trump": 51,
+        "other": 4,
+        "total": 117
+      }
+    },
+    {
+      "geoid": "09190",
+      "jurisdictionTag": "county:09190",
+      "name": "Western Connecticut Planning Region",
+      "towns": 18,
+      "sov": {
+        "harris": 181194,
+        "trump": 122302,
+        "other": 4868,
+        "total": 308364
+      },
+      "ems": {
+        "harris": 181194,
+        "trump": 122302,
+        "other": 4868,
+        "total": 308364
+      },
+      "difference": {
+        "harris": 0,
+        "trump": 0,
+        "other": 0,
+        "total": 0
+      }
+    }
+  ],
+  "promotionSafety": {
+    "resultRowsReady": true,
+    "rationale": "Use the normalized 169-town certified Statement of Vote President rows for the nine current planning-region result aggregates; retain EMS version 80741 only for U.S. Senate comparison and turnout fields.",
+    "exactTownCoverage": true,
+    "exactTicketCoverage": true,
+    "exactPrintedTotalReconciliation": true,
+    "exactPlanningRegionCrosswalk": true,
+    "remainingResultBlockers": []
+  },
+  "caveats": [
+    "The certified Statement of Vote contains 265 more presidential votes than EMS version 80741: 144 Harris, 106 Trump, and 15 across other tickets/write-ins. The normalized SOV rows supersede EMS President values for active 2024 result and review calculations.",
+    "U.S. Senate comparison and EV/VV turnout fields remain sourced from EMS version 80741. Turnout semantics remain warning-required and are not certified by this presidential reconciliation.",
+    "The nine result rows are current Census planning-region county-equivalent aggregates of 169 official town rows. Planning regions are comparison geography, not Connecticut election reporting units."
+  ]
+}

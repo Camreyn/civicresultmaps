@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-07-11T02:01:41.856Z",
+  "authority": "Maryland State Board of Elections",
+  "parser": "scripts/normalize-md-historical-presidential-baseline.mjs",
+  "caveat": "Official Maryland 2016 county result HTML and 2020 full all-precinct CSV normalized to county/county-equivalent baselines. Baltimore City and Baltimore County remain distinct county-equivalent rows. 2012 remains uncollected.",
+  "sources": [
+    {
+      "id": "md-2016-president-county-results",
+      "year": 2016,
+      "url": "https://elections.maryland.gov/elections/archive/2016/results/general/gen_detail_results_2016_4_BOT001-.html",
+      "localFile": "data/md-2016-president-county-results.html",
+      "rowCount": 24,
+      "demVotes": 1677928,
+      "repVotes": 943169,
+      "otherVotes": 160349,
+      "totalVotes": 2781446
+    },
+    {
+      "id": "md-2020-general-all-by-precinct",
+      "year": 2020,
+      "url": "https://elections.maryland.gov/elections/archive/2020/election_data/All_By_Precinct_2020_General.csv",
+      "localFile": "data/md-2020-general-all-by-precinct.csv",
+      "rowCount": 24,
+      "demVotes": 1985023,
+      "repVotes": 976414,
+      "otherVotes": 75594,
+      "totalVotes": 3037031
+    }
+  ],
+  "output": {
+    "localFile": "data/md-historical-presidential-baseline.csv",
+    "rowCount": 48,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

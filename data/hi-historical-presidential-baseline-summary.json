@@ -1,0 +1,57 @@
+{
+  "authority": "Hawaii Office of Elections",
+  "parser": "scripts/normalize-hi-historical-presidential-baseline.mjs",
+  "caveat": "Official Hawaii 2016 and 2020 statewide summary/detail text exports are normalized to four county result rows. Kalawao County is not reported as a separate official result county in these exports and is not forced into a zero or allocated county row.",
+  "sources": [
+    {
+      "year": 2016,
+      "sourceIds": [
+        "hi-2016-general-summary",
+        "hi-2016-general-precinct-detail"
+      ],
+      "urls": [
+        "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt",
+        "https://files.hawaii.gov/elections/files/results/2016/general/media.txt"
+      ],
+      "localFiles": [
+        "data/hi-2016-general-summary.txt",
+        "data/hi-2016-general-precinct-detail.txt"
+      ],
+      "rowCount": 4,
+      "dem": 266891,
+      "rep": 128847,
+      "other": 33199,
+      "total": 428937,
+      "skippedNonGeographicVotes": 0
+    },
+    {
+      "year": 2020,
+      "sourceIds": [
+        "hi-2020-general-summary",
+        "hi-2020-general-precinct-detail"
+      ],
+      "urls": [
+        "https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
+        "https://files.hawaii.gov/elections/files/results/2020/general/media.txt"
+      ],
+      "localFiles": [
+        "data/hi-2020-general-summary.txt",
+        "data/hi-2020-general-precinct-detail.txt"
+      ],
+      "rowCount": 4,
+      "dem": 366130,
+      "rep": 196864,
+      "other": 11475,
+      "total": 574469,
+      "skippedNonGeographicVotes": 0
+    }
+  ],
+  "output": {
+    "localFile": "data/hi-historical-presidential-baseline.csv",
+    "rowCount": 8,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}
