@@ -73,12 +73,41 @@ type SupplementalMapOverlay = {
   };
 };
 
+type SourceDrawerPayload = {
+  authority: string;
+  caveats: string[];
+  category: string;
+  confidence: string;
+  endpoint: string;
+  localArtifact: string;
+  parser: string;
+  reportIssueHref: string;
+  sourceId: string;
+  sourceUrl: string;
+  status: string;
+  title: string;
+};
+const githubIssueUrl = "https://github.com/Camreyn/civicresultmaps/issues/new";
 const geoBaseUrl =
   "https://raw.githubusercontent.com/Camreyn/civicresultmaps/main/data";
 const mapViewBox = { height: 560, width: 960 };
 const mapZoomStep = 0.35;
 const mapMaxZoom = 3;
 const mapPanStep = 72;
+
+function buildSourceReportIssueHref(state: string, sourceId: string) {
+  const params = new URLSearchParams({
+    issue_type: "Source provenance",
+    labels: "data-review",
+    source_id: sourceId,
+    state,
+    template: "data-review.yml",
+    title: `[Source issue] ${state} ${sourceId}`,
+    what_looks_wrong: "Describe the source URL, artifact, parser, status, caveat, or row link that should be reviewed.",
+  });
+
+  return `${githubIssueUrl}?${params.toString()}`;
+}
 
 function geoJsonPath(state: string) {
   if (state === "AK") {
@@ -888,6 +917,53 @@ export function ResultsExplorer({
   const selectedSource = selectedMapResult ? sourceById.get(selectedMapResult.sourceId) : undefined;
   const selectedSupplementalSource =
     selectedMapResult?.sourceId === "ak-2024-legacy-house-district-overlay" ? supplementalOverlay?.source : undefined;
+  const selectedSourceDrawer: SourceDrawerPayload | null = selectedSource
+    ? {
+        authority: selectedSource.authority,
+        caveats: [selectedSource.timestampBasis, selectedSource.confidence].filter(Boolean),
+        category: selectedSource.category,
+        confidence: selectedSource.confidence,
+        endpoint: `/api/sources?state=${selectedState}&year=2024`,
+        localArtifact: selectedSource.localArtifact || "Local artifact not recorded",
+        parser: selectedSource.parser || "Parser not recorded",
+        reportIssueHref: buildSourceReportIssueHref(selectedState, selectedSource.id),
+        sourceId: selectedSource.id,
+        sourceUrl: selectedSource.sourceUrl,
+        status: selectedSource.status,
+        title: selectedSource.title,
+      }
+    : selectedSupplementalSource && selectedMapResult
+      ? {
+          authority: selectedSupplementalSource.authority,
+          caveats: supplementalOverlay?.caveats ?? ["Supplemental overlay source; does not replace certified native statewide result."],
+          category: "supplemental_map_overlay",
+          confidence: "legacy supplemental",
+          endpoint: `/api/sources?state=${selectedState}&year=2024`,
+          localArtifact: selectedSupplementalSource.sourceWorkbook,
+          parser: "legacy overlay loader",
+          reportIssueHref: buildSourceReportIssueHref(selectedState, selectedMapResult.sourceId),
+          sourceId: selectedMapResult.sourceId,
+          sourceUrl: selectedSupplementalSource.bundleUrl,
+          status: "candidate",
+          title: selectedSupplementalSource.sourceWorkbook,
+        }
+      : selectedMapResult
+        ? {
+            authority: "Source not linked",
+            caveats: ["source not linked: this row exposes a sourceId, but the current source API payload did not include a matching source record."],
+            category: "source not linked",
+            confidence: "unmatched sourceId",
+            endpoint: `/api/sources?state=${selectedState}&year=2024`,
+            localArtifact: "Not recorded",
+            parser: "Not recorded",
+            reportIssueHref: buildSourceReportIssueHref(selectedState, selectedMapResult.sourceId),
+            sourceId: selectedMapResult.sourceId,
+            sourceUrl: "",
+            status: "source not linked",
+            title: selectedMapResult.sourceId,
+          }
+        : null;
+
   const pinnedMapResult = pinnedMapName
     ? mapResultsByName.get(normalizeName(pinnedMapName)) ?? resultsByName.get(normalizeName(pinnedMapName))
     : undefined;
@@ -1496,11 +1572,11 @@ export function ResultsExplorer({
                 <div className="drawer-source">
                   <strong>{selectedMapEquipment.systemName || selectedMapEquipment.vendor}</strong>
                   <span>
-                    {selectedMapEquipment.standardSystem || "Standard system not recorded"} ·{" "}
+                    {selectedMapEquipment.standardSystem || "Standard system not recorded"} / {" "}
                     {selectedMapEquipment.tabulation || "Tabulation not recorded"}
                   </span>
                   <span>
-                    Accessible: {selectedMapEquipment.accessibleSystem || "Not recorded"} · Poll book:{" "}
+                    Accessible: {selectedMapEquipment.accessibleSystem || "Not recorded"} / Poll book:{" "}
                     {selectedMapEquipment.pollBookSystem || "Not recorded"}
                   </span>
                   <span>{selectedMapEquipment.uniformityNote}</span>
@@ -1525,6 +1601,62 @@ export function ResultsExplorer({
                   </a>
                 )}
               </div>
+              {selectedSourceDrawer && (
+                <details className="source-drawer-panel" data-tour="source-drawer" open>
+                  <summary>Source Drawer</summary>
+                  <dl>
+                    <div>
+                      <dt>Authority</dt>
+                      <dd>{selectedSourceDrawer.authority}</dd>
+                    </div>
+                    <div>
+                      <dt>URL</dt>
+                      <dd>
+                        {selectedSourceDrawer.sourceUrl ? (
+                          <a href={selectedSourceDrawer.sourceUrl} rel="noreferrer" target="_blank">
+                            Open source
+                          </a>
+                        ) : (
+                          "source not linked"
+                        )}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Local artifact</dt>
+                      <dd>{selectedSourceDrawer.localArtifact}</dd>
+                    </div>
+                    <div>
+                      <dt>Parser</dt>
+                      <dd>{selectedSourceDrawer.parser}</dd>
+                    </div>
+                    <div>
+                      <dt>Category</dt>
+                      <dd>{selectedSourceDrawer.category}</dd>
+                    </div>
+                    <div>
+                      <dt>Confidence</dt>
+                      <dd>{selectedSourceDrawer.confidence}</dd>
+                    </div>
+                    <div>
+                      <dt>Status</dt>
+                      <dd>{selectedSourceDrawer.status}</dd>
+                    </div>
+                    <div>
+                      <dt>Related API endpoint</dt>
+                      <dd>{selectedSourceDrawer.endpoint}</dd>
+                    </div>
+                  </dl>
+                  <div className="source-drawer-caveats">
+                    <strong>Caveats</strong>
+                    {selectedSourceDrawer.caveats.map((caveat) => (
+                      <span key={caveat}>{caveat}</span>
+                    ))}
+                  </div>
+                  <a className="secondary-link" href={selectedSourceDrawer.reportIssueHref} rel="noreferrer" target="_blank">
+                    Report source issue
+                  </a>
+                </details>
+              )}
               <div className="drawer-indicators">
                 {selectedMapIndicators.length ? (
                   selectedMapIndicators.map((indicator) => (
