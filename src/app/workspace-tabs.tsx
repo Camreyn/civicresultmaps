@@ -66,6 +66,7 @@ type WorkspaceTabsProps = {
   indicators: AnalysisIndicator[];
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
+  statewideResultRows: ResultRow[];
   selectedCompleteness: CompletenessSummary | undefined;
   selectedState: StateSummary | undefined;
   selectedStateCode: string;
@@ -2404,6 +2405,7 @@ export function WorkspaceTabs({
   indicators,
   reviewRows,
   results,
+  statewideResultRows,
   selectedCompleteness,
   selectedState,
   selectedStateCode,
@@ -2625,13 +2627,13 @@ export function WorkspaceTabs({
 
   const candidateTotals = useMemo(() => {
     const totals = new Map<string, number>();
-    for (const row of results) {
+    for (const row of statewideResultRows) {
       for (const [candidate, votes] of Object.entries(row.votes)) {
         totals.set(candidate, (totals.get(candidate) ?? 0) + votes);
       }
     }
     return Array.from(totals.entries()).sort((a, b) => b[1] - a[1]);
-  }, [results]);
+  }, [statewideResultRows]);
 
   const historicalYears = useMemo(
     () => Array.from(new Set(historicalRows.map((row) => row.electionYear))).sort((a, b) => a - b),

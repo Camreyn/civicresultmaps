@@ -2,7 +2,7 @@ import { listCompletenessReport, listResults, listStates } from "./api";
 
 export const socialPreviewYear = 2024;
 export const socialPreviewSiteUrl = "https://www.civicresultmaps.org";
-export const socialPreviewImageVersion = "map-v6";
+export const socialPreviewImageVersion = "map-v7";
 export const socialPreviewCaveat =
   "Advisory indicators mark source-reconciliation checks, not findings of fraud or misconduct.";
 
@@ -43,7 +43,7 @@ export async function buildStateSocialPreview(input: {
 }): Promise<StateSocialPreview> {
   const stateCode = (input.state ?? "").slice(0, 2).toUpperCase();
   const year = input.year ?? socialPreviewYear;
-  const [states, completenessReport, countyResults, cityResults, cityTownResults, townResults, stateResults] = await Promise.all([
+  const [states, completenessReport, countyResults, cityResults, cityTownResults, townResults, stateResults, federalPrecinctResults, nonGeographicResults] = await Promise.all([
     listStates(),
     listCompletenessReport({ year }),
     listResults({ state: stateCode, year, level: "county" }),
@@ -51,6 +51,8 @@ export async function buildStateSocialPreview(input: {
     listResults({ state: stateCode, year, level: "city_town" }),
     listResults({ state: stateCode, year, level: "town" }),
     listResults({ state: stateCode, year, level: "state" }),
+    listResults({ state: stateCode, year, level: "federal_precincts" }),
+    listResults({ state: stateCode, year, level: "non_geographic" }),
   ]);
   const selectedState = states.find((state) => state.code === stateCode);
   const completeness = completenessReport.find((state) => state.state === stateCode);
@@ -77,7 +79,17 @@ export async function buildStateSocialPreview(input: {
     };
   }
 
-  const rows = selectedResultRows([countyResults, cityResults, cityTownResults, townResults, stateResults]);
+  const geographicRows = selectedResultRows([countyResults, cityResults, cityTownResults, townResults, stateResults]);
+  const rows = geographicRows[0]?.level === "state"
+    ? geographicRows
+    : Array.from(
+        new Map(
+          [...geographicRows, ...federalPrecinctResults, ...nonGeographicResults].map((row) => [
+            `${row.level}:${row.jurisdictionCode}`,
+            row,
+          ] as const),
+        ).values(),
+      );
   const totalVotes = rows.reduce((sum, row) => sum + row.totalVotes, 0);
   const resultRows = completeness?.resultRows ?? rows.length;
   const resultJurisdictions = completeness?.resultJurisdictions ?? new Set(rows.map((row) => row.jurisdictionCode)).size;
