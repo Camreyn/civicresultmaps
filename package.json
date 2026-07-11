@@ -173,6 +173,7 @@
     "jurisdictions:flips:2016-2024": "node --experimental-strip-types scripts/report-national-county-flips.mjs --from=2016 --to=2024",
     "jurisdictions:coverage:2024": "node --experimental-strip-types scripts/report-2024-county-list-coverage.mjs --year=2024 --family=results",
     "jurisdictions:coverage:2016": "node --experimental-strip-types scripts/report-2024-county-list-coverage.mjs --year=2016 --family=historical",
+    "jurisdictions:coverage:2020": "node --experimental-strip-types scripts/report-2024-county-list-coverage.mjs --year=2020 --family=historical",
     "etl:prepare:wa": "node scripts/normalize-wa-historical-presidential-baseline.mjs",
     "etl:prepare:mt": "node scripts/normalize-mt-historical-presidential-baseline.mjs",
     "etl:prepare:sc": "node scripts/normalize-sc-historical-presidential-baseline.mjs",
@@ -180,7 +181,10 @@
     "etl:prepare:md": "node scripts/normalize-md-historical-presidential-baseline.mjs",
     "etl:prepare:de": "python scripts/normalize-de-historical-presidential-baseline.py",
     "etl:prepare:hi": "node scripts/normalize-hi-historical-presidential-baseline.mjs",
-    "etl:prepare:vt": "node scripts/normalize-vt-historical-presidential-baseline.mjs"
+    "etl:prepare:vt": "node scripts/normalize-vt-historical-presidential-baseline.mjs",
+    "etl:prepare:dc": "node scripts/normalize-dc-certified-results.mjs",
+    "etl:validate:dc": "npm run etl:prepare:dc && python -m civic_etl.cli validate --config etl/state-configs/dc.json",
+    "etl:import:dc": "npm run etl:prepare:dc && python -m civic_etl.cli import --config etl/state-configs/dc.json --out .etl/staging"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

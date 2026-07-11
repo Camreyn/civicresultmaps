@@ -28,7 +28,7 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertFalse(config.raw.get("turnoutOnly", False))
         self.assertEqual(config.expected.sources, len(config.sources))
         self.assertEqual(native["parser"], "nativeHawaiiOfficeText")
-        self.assertEqual(len(native["resultRows"]), 4)
+        self.assertEqual(len(native["resultRows"]), 5)
         self.assertEqual(len(native["reviewRows"]), 467)
         self.assertEqual(len(native["turnoutRows"]), 4)
         self.assertEqual(metrics["nativeTurnoutRows"], 4)
@@ -46,11 +46,78 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(metrics["nativeHawaiiNonGeographicSenateKeysExcluded"], 2)
         self.assertEqual(metrics["nativeHawaiiZeroVoteNumberedPresidentKeysSkipped"], 27)
         self.assertEqual(metrics["nativeHawaiiMissingComparisonRows"], 0)
+        self.assertEqual(metrics["nativeHawaiiKalawaoPrecinct"], "13-09")
+        self.assertEqual(metrics["nativeHawaiiKalawaoPrecinctSplitIds"], ["487", "78"])
+        self.assertEqual(metrics["nativeHawaiiKalawaoTotalVotes"], 18)
+        self.assertEqual(metrics["nativeHawaiiKalawaoHarrisVotes"], 15)
+        self.assertEqual(metrics["nativeHawaiiKalawaoTrumpVotes"], 3)
+        self.assertEqual(metrics["nativeHawaiiKalawaoOtherVotes"], 0)
+
+        kalawao = next(row for row in native["resultRows"] if row["jurisdictionName"] == "Kalawao County")
+        self.assertEqual(kalawao["jurisdictionCode"], "005")
+        self.assertEqual(kalawao["votes"], {"Trump": 3, "Harris": 15, "Other": 0})
+        self.assertEqual(kalawao["totalVotes"], 18)
+        maui = next(row for row in native["resultRows"] if row["jurisdictionName"] == "Maui County")
+        self.assertEqual(maui["votes"], {"Trump": 22618, "Harris": 38890, "Other": 1367})
+        self.assertEqual(maui["totalVotes"], 62875)
+
+        kalawao_review = [row for row in native["reviewRows"] if row["county"] == "Kalawao County"]
+        self.assertEqual(len(kalawao_review), 2)
+        self.assertEqual({row["localUnit"] for row in kalawao_review}, {"13-09 [78]", "13-09 VSC [487]"})
+        self.assertEqual(sum(row["totalVotes"] for row in kalawao_review), 18)
+        self.assertEqual(sum(row["harris"] for row in kalawao_review), 15)
+        self.assertEqual(sum(row["trump"] for row in kalawao_review), 3)
+
+        historical = native["historicalRows"]
+        self.assertEqual(len(historical), 10)
+        expected_historical = {
+            2016: {
+                "Hawaii County": ("county:15001", 41259, 17501, 6107, 64867),
+                "Honolulu County": ("county:15003", 175696, 90326, 19768, 285790),
+                "Kalawao County": ("county:15005", 14, 1, 5, 20),
+                "Kauai County": ("county:15007", 16456, 7574, 2305, 26335),
+                "Maui County": ("county:15009", 33466, 13445, 5014, 51925),
+            },
+            2020: {
+                "Hawaii County": ("county:15001", 58731, 26897, 2186, 87814),
+                "Honolulu County": ("county:15003", 238869, 136259, 6986, 382114),
+                "Kalawao County": ("county:15005", 23, 1, 0, 24),
+                "Kauai County": ("county:15007", 21225, 11582, 690, 33497),
+                "Maui County": ("county:15009", 47282, 22125, 1613, 71020),
+            },
+        }
+        for year, expected_counties in expected_historical.items():
+            year_rows = [row for row in historical if row["electionYear"] == year]
+            self.assertEqual(len(year_rows), 5)
+            for county, (tag, dem, rep, other, total) in expected_counties.items():
+                row = next(item for item in year_rows if item["jurisdictionName"] == county)
+                self.assertEqual(row["jurisdictionTag"], tag)
+                self.assertEqual(
+                    (row["demVotes"], row["repVotes"], row["otherVotes"], row["totalVotes"]),
+                    (dem, rep, other, total),
+                )
+
+        historical_ranges = config.raw["historicalBaselines"]["districtRangesByYear"]
+        for year in ("2016", "2020"):
+            self.assertEqual(historical_ranges[year]["01-07"], "Hawaii County")
+            self.assertEqual(historical_ranges[year]["08-13"], "Maui County except precinct 13-09")
+            self.assertEqual(historical_ranges[year]["13-09"], "Kalawao County")
+            self.assertEqual(historical_ranges[year]["14-16"], "Kauai County")
+            self.assertEqual(historical_ranges[year]["17-51"], "Honolulu County")
+
         self.assertEqual(sources["hi-2024-general-summary"]["status"], "loaded")
         self.assertEqual(sources["hi-2024-general-precinct-detail"]["status"], "loaded")
         self.assertEqual(sources["hi-2024-general-turnout"]["status"], "loaded")
         self.assertEqual(sources["hi-2024-eac-turnout"]["status"], "candidate")
         self.assertEqual(sources["hi-2024-data-coverage-inventory"]["status"], "candidate")
+
+    def test_hawaii_kalawao_reconciliation_fails_closed(self):
+        config = load_config("etl/state-configs/hi.json")
+        report = validate_config(config)
+        config.raw["certifiedResults"]["kalawaoPrecinct"]["expected"]["total"] = 19
+
+        with self.assertRaisesRegex(ValueError, "Hawaii Kalawao precinct reconciliation failed"):
+            build_staging_artifact(config, report)
 
     def test_hawaii_official_text_exports_have_expected_federal_totals(self):
         summary = self.load_hi_csv("data/hi-2024-general-summary.txt")
@@ -60,6 +127,9 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         senate_summary = [row for row in summary if row["#Contest ID"] == "100"]
         president_precinct = [row for row in precinct if row["Contest_id"] == "283"]
         senate_precinct = [row for row in precinct if row["Contest_id"] == "100"]
+        kalawao_president = [
+            row for row in president_precinct if row['#"Precinct_Name"'] == "13-09"
+        ]
         numbered_president_ids = {
             row["precinct_splitId"]
             for row in president_precinct
@@ -72,6 +142,11 @@ class HawaiiCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(int(president_summary[0]["Registered Voters"]), 860868)
         self.assertEqual(len({row["precinct_splitId"] for row in president_precinct}), 497)
         self.assertEqual(len({row["precinct_splitId"] for row in senate_precinct}), 496)
+        self.assertEqual({row["precinct_splitId"] for row in kalawao_president}, {"78", "487"})
+        self.assertEqual(
+            sum(int(row["Mail votes"]) + int(row["In-Person votes"]) for row in kalawao_president),
+            18,
+        )
         self.assertEqual(len(numbered_president_ids), 467)
         self.assertEqual(
             sum(

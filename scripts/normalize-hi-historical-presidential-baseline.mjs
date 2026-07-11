@@ -9,8 +9,32 @@ const summaryPath = path.join(dataDir, "hi-historical-presidential-baseline-summ
 const COUNTY_TAGS = new Map([
   ["Hawaii County", "county:15001"],
   ["Honolulu County", "county:15003"],
+  ["Kalawao County", "county:15005"],
   ["Kauai County", "county:15007"],
   ["Maui County", "county:15009"],
+]);
+
+const KALAWAO_PRECINCT = "13-09";
+const KALAWAO_PRECINCT_SPLIT_ID = "78";
+const HISTORICAL_DISTRICT_RANGES = new Map([
+  [
+    2016,
+    [
+      { min: 1, max: 7, county: "Hawaii County" },
+      { min: 8, max: 13, county: "Maui County" },
+      { min: 14, max: 16, county: "Kauai County" },
+      { min: 17, max: 51, county: "Honolulu County" },
+    ],
+  ],
+  [
+    2020,
+    [
+      { min: 1, max: 7, county: "Hawaii County" },
+      { min: 8, max: 13, county: "Maui County" },
+      { min: 14, max: 16, county: "Kauai County" },
+      { min: 17, max: 51, county: "Honolulu County" },
+    ],
+  ],
 ]);
 
 const SOURCES = [
@@ -22,7 +46,14 @@ const SOURCES = [
     detailUrl: "https://files.hawaii.gov/elections/files/results/2016/general/media.txt",
     summaryFile: path.join(dataDir, "hi-2016-general-summary.txt"),
     detailFile: path.join(dataDir, "hi-2016-general-precinct-detail.txt"),
-    expected: { rowCount: 4, dem: 266891, rep: 128847, other: 33199, total: 428937 },
+    expected: { rowCount: 5, dem: 266891, rep: 128847, other: 33199, total: 428937 },
+    expectedCountyTotals: {
+      "Hawaii County": { dem: 41259, rep: 17501, other: 6107, total: 64867 },
+      "Honolulu County": { dem: 175696, rep: 90326, other: 19768, total: 285790 },
+      "Kalawao County": { dem: 14, rep: 1, other: 5, total: 20 },
+      "Kauai County": { dem: 16456, rep: 7574, other: 2305, total: 26335 },
+      "Maui County": { dem: 33466, rep: 13445, other: 5014, total: 51925 },
+    },
   },
   {
     year: 2020,
@@ -32,7 +63,14 @@ const SOURCES = [
     detailUrl: "https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
     summaryFile: path.join(dataDir, "hi-2020-general-summary.txt"),
     detailFile: path.join(dataDir, "hi-2020-general-precinct-detail.txt"),
-    expected: { rowCount: 4, dem: 366130, rep: 196864, other: 11475, total: 574469 },
+    expected: { rowCount: 5, dem: 366130, rep: 196864, other: 11475, total: 574469 },
+    expectedCountyTotals: {
+      "Hawaii County": { dem: 58731, rep: 26897, other: 2186, total: 87814 },
+      "Honolulu County": { dem: 238869, rep: 136259, other: 6986, total: 382114 },
+      "Kalawao County": { dem: 23, rep: 1, other: 0, total: 24 },
+      "Kauai County": { dem: 21225, rep: 11582, other: 690, total: 33497 },
+      "Maui County": { dem: 47282, rep: 22125, other: 1613, total: 71020 },
+    },
   },
 ];
 
@@ -102,14 +140,16 @@ function presidentBucket(candidate) {
   return "other";
 }
 
-function countyForPrecinct(precinctName) {
+function countyForPrecinct(precinctName, year) {
   if (!/^\d{2}-\d{2}$/.test(String(precinctName ?? ""))) return null;
+  if (precinctName === KALAWAO_PRECINCT) return "Kalawao County";
+
+  const ranges = HISTORICAL_DISTRICT_RANGES.get(year);
+  if (!ranges) {
+    throw new Error("No reviewed Hawaii historical county crosswalk for " + year);
+  }
   const district = Number(String(precinctName).split("-", 1)[0]);
-  if (district >= 1 && district <= 8) return "Hawaii County";
-  if (district >= 9 && district <= 14) return "Maui County";
-  if (district >= 15 && district <= 17) return "Kauai County";
-  if (district >= 18 && district <= 51) return "Honolulu County";
-  return null;
+  return ranges.find((range) => district >= range.min && district <= range.max)?.county ?? null;
 }
 
 function voteTotal(row) {
@@ -132,6 +172,17 @@ function summarizeRows(rows) {
   };
 }
 
+function assertVoteTuple(label, actual, expected) {
+  const mismatches = Object.fromEntries(
+    ["dem", "rep", "other", "total"]
+      .filter((key) => actual[key] !== expected[key])
+      .map((key) => [key, { actual: actual[key], expected: expected[key] }]),
+  );
+  if (Object.keys(mismatches).length) {
+    throw new Error(label + " reconciliation failed: " + JSON.stringify(mismatches));
+  }
+}
+
 function parseSource(source) {
   const summaryRows = readHawaiiRows(source.summaryFile).filter((row) => row["Contest ID"] === "1");
   const summaryTotals = { dem: 0, rep: 0, other: 0, total: 0 };
@@ -143,10 +194,14 @@ function parseSource(source) {
   }
 
   const counties = new Map([...COUNTY_TAGS.keys()].map((county) => [county, { dem: 0, rep: 0, other: 0, total: 0 }]));
+  const kalawaoPrecinctSplitIds = new Set();
   let skippedNonGeographicVotes = 0;
   for (const row of readHawaiiRows(source.detailFile)) {
     if (String(row.Contest_id ?? "") !== "1") continue;
-    const county = countyForPrecinct(row.Precinct_Name);
+    if (row.Precinct_Name === KALAWAO_PRECINCT) {
+      kalawaoPrecinctSplitIds.add(String(row.precinct_splitId ?? "").trim());
+    }
+    const county = countyForPrecinct(row.Precinct_Name, source.year);
     const votes = voteTotal(row);
     if (!county) {
       skippedNonGeographicVotes += votes;
@@ -156,6 +211,25 @@ function parseSource(source) {
     const countyTotals = counties.get(county);
     countyTotals[bucket] += votes;
     countyTotals.total += votes;
+  }
+
+  const actualKalawaoSplitIds = [...kalawaoPrecinctSplitIds].sort();
+  if (JSON.stringify(actualKalawaoSplitIds) !== JSON.stringify([KALAWAO_PRECINCT_SPLIT_ID])) {
+    throw new Error(
+      source.year + " Kalawao precinct split IDs changed: " + JSON.stringify(actualKalawaoSplitIds)
+        + " != " + JSON.stringify([KALAWAO_PRECINCT_SPLIT_ID]),
+    );
+  }
+  const expectedCountyNames = Object.keys(source.expectedCountyTotals).sort();
+  const actualCountyNames = [...counties.keys()].sort();
+  if (JSON.stringify(actualCountyNames) !== JSON.stringify(expectedCountyNames)) {
+    throw new Error(
+      source.year + " Hawaii expected county pins changed: "
+        + JSON.stringify(actualCountyNames) + " != " + JSON.stringify(expectedCountyNames),
+    );
+  }
+  for (const [county, expected] of Object.entries(source.expectedCountyTotals)) {
+    assertVoteTuple(source.year + " " + county, counties.get(county), expected);
   }
 
   const rows = [...counties.entries()].map(([county, votes]) => ({
@@ -180,19 +254,45 @@ function parseSource(source) {
   if (JSON.stringify(summaryComparable) !== JSON.stringify(source.expected)) {
     throw new Error(`${source.year} Hawaii summary totals did not reconcile: ${JSON.stringify(summaryComparable)} != ${JSON.stringify(source.expected)}`);
   }
-  return { rows, totals, skippedNonGeographicVotes };
+  return {
+    rows,
+    totals,
+    skippedNonGeographicVotes,
+    kalawaoPrecinct: {
+      precinctName: KALAWAO_PRECINCT,
+      precinctSplitIds: actualKalawaoSplitIds,
+      jurisdictionTag: COUNTY_TAGS.get("Kalawao County"),
+      ...source.expectedCountyTotals["Kalawao County"],
+    },
+    mauiResidual: { ...counties.get("Maui County") },
+    countyTotals: Object.fromEntries(
+      [...counties.entries()].map(([county, values]) => [county, { ...values }]),
+    ),
+    districtRanges: HISTORICAL_DISTRICT_RANGES.get(source.year).map((range) => ({
+      districts: String(range.min).padStart(2, "0") + "-" + String(range.max).padStart(2, "0"),
+      county: range.county,
+    })),
+  };
 }
 
 const outputRows = [];
 const summary = {
   authority: "Hawaii Office of Elections",
   parser: "scripts/normalize-hi-historical-presidential-baseline.mjs",
-  caveat: "Official Hawaii 2016 and 2020 statewide summary/detail text exports are normalized to four county result rows. Kalawao County is not reported as a separate official result county in these exports and is not forced into a zero or allocated county row.",
+  caveat: "Official Hawaii 2016 and 2020 statewide summary/detail text exports are normalized with the reviewed pre-reapportionment district ranges for each source year: 01-07 Hawaii, 08-13 Maui, 14-16 Kauai, and 17-51 Honolulu. Precinct 13-09 is split from Maui and pinned to Kalawao County FIPS 15005; all five county tuples and statewide totals are asserted before output.",
   sources: [],
 };
 
 for (const source of SOURCES) {
-  const { rows, totals, skippedNonGeographicVotes } = parseSource(source);
+  const {
+    rows,
+    totals,
+    skippedNonGeographicVotes,
+    kalawaoPrecinct,
+    mauiResidual,
+    countyTotals,
+    districtRanges,
+  } = parseSource(source);
   outputRows.push(...rows);
   summary.sources.push({
     year: source.year,
@@ -204,6 +304,10 @@ for (const source of SOURCES) {
     ],
     ...totals,
     skippedNonGeographicVotes,
+    kalawaoPrecinct,
+    mauiResidual,
+    countyTotals,
+    districtRanges,
   });
 }
 

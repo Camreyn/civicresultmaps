@@ -16,6 +16,7 @@ test("project is branded for Civic Result Maps", () => {
 test("public API route contracts exist", () => {
   const expectedRoutes = [
     "src/app/api/states/route.ts",
+    "src/app/api/jurisdictions/route.ts",
     "src/app/api/elections/route.ts",
     "src/app/api/results/route.ts",
     "src/app/api/sources/route.ts",

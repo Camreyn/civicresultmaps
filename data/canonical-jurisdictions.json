@@ -1,8 +1,458 @@
 {
-  "generatedAt": "2026-07-09T23:21:23.344Z",
-  "source": "Generated from committed data/*-counties.geojson files plus explicit non-FIPS reporting exceptions.",
-  "tagContract": "county:<GEOID> for Census county/county-equivalent rows; reporting:<STATE>:<SLUG> for explicit election reporting exceptions.",
+  "generatedAt": "2026-07-11T05:17:32.190Z",
+  "source": "Generated from committed data/*-counties.geojson files.",
+  "tagContract": "county:<GEOID> for Census county/county-equivalent rows.",
   "jurisdictions": [
+    {
+      "jurisdictionTag": "county:02013",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02013",
+      "fips": "02013",
+      "displayName": "Aleutians East Borough",
+      "aliases": [
+        "Aleutians East Borough",
+        "Aleutians East"
+      ],
+      "geometryKey": "ALEUTIANS EAST",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02016",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02016",
+      "fips": "02016",
+      "displayName": "Aleutians West Census Area",
+      "aliases": [
+        "Aleutians West Census Area",
+        "Aleutians West"
+      ],
+      "geometryKey": "ALEUTIANS WEST",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02020",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02020",
+      "fips": "02020",
+      "displayName": "Anchorage Municipality",
+      "aliases": [
+        "Anchorage Municipality",
+        "Anchorage"
+      ],
+      "geometryKey": "ANCHORAGE",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02050",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02050",
+      "fips": "02050",
+      "displayName": "Bethel Census Area",
+      "aliases": [
+        "Bethel Census Area",
+        "Bethel"
+      ],
+      "geometryKey": "BETHEL",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02060",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02060",
+      "fips": "02060",
+      "displayName": "Bristol Bay Borough",
+      "aliases": [
+        "Bristol Bay Borough",
+        "Bristol Bay"
+      ],
+      "geometryKey": "BRISTOL BAY",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02063",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02063",
+      "fips": "02063",
+      "displayName": "Chugach Census Area",
+      "aliases": [
+        "Chugach Census Area",
+        "Chugach"
+      ],
+      "geometryKey": "CHUGACH",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02066",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02066",
+      "fips": "02066",
+      "displayName": "Copper River Census Area",
+      "aliases": [
+        "Copper River Census Area",
+        "Copper River"
+      ],
+      "geometryKey": "COPPER RIVER",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02068",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02068",
+      "fips": "02068",
+      "displayName": "Denali Borough",
+      "aliases": [
+        "Denali Borough",
+        "Denali"
+      ],
+      "geometryKey": "DENALI",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02070",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02070",
+      "fips": "02070",
+      "displayName": "Dillingham Census Area",
+      "aliases": [
+        "Dillingham Census Area",
+        "Dillingham"
+      ],
+      "geometryKey": "DILLINGHAM",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02090",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02090",
+      "fips": "02090",
+      "displayName": "Fairbanks North Star Borough",
+      "aliases": [
+        "Fairbanks North Star Borough",
+        "Fairbanks North Star"
+      ],
+      "geometryKey": "FAIRBANKS NORTH STAR",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02100",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02100",
+      "fips": "02100",
+      "displayName": "Haines Borough",
+      "aliases": [
+        "Haines Borough",
+        "Haines"
+      ],
+      "geometryKey": "HAINES",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02105",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02105",
+      "fips": "02105",
+      "displayName": "Hoonah-Angoon Census Area",
+      "aliases": [
+        "Hoonah-Angoon Census Area",
+        "Hoonah-Angoon"
+      ],
+      "geometryKey": "HOONAH ANGOON",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02110",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02110",
+      "fips": "02110",
+      "displayName": "Juneau City and Borough",
+      "aliases": [
+        "Juneau City and Borough",
+        "Juneau"
+      ],
+      "geometryKey": "JUNEAU",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02122",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02122",
+      "fips": "02122",
+      "displayName": "Kenai Peninsula Borough",
+      "aliases": [
+        "Kenai Peninsula Borough",
+        "Kenai Peninsula"
+      ],
+      "geometryKey": "KENAI PENINSULA",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02130",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02130",
+      "fips": "02130",
+      "displayName": "Ketchikan Gateway Borough",
+      "aliases": [
+        "Ketchikan Gateway Borough",
+        "Ketchikan Gateway"
+      ],
+      "geometryKey": "KETCHIKAN GATEWAY",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02150",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02150",
+      "fips": "02150",
+      "displayName": "Kodiak Island Borough",
+      "aliases": [
+        "Kodiak Island Borough",
+        "Kodiak Island"
+      ],
+      "geometryKey": "KODIAK ISLAND",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02158",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02158",
+      "fips": "02158",
+      "displayName": "Kusilvak Census Area",
+      "aliases": [
+        "Kusilvak Census Area",
+        "Kusilvak"
+      ],
+      "geometryKey": "KUSILVAK",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02164",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02164",
+      "fips": "02164",
+      "displayName": "Lake and Peninsula Borough",
+      "aliases": [
+        "Lake and Peninsula Borough",
+        "Lake and Peninsula"
+      ],
+      "geometryKey": "LAKE AND PENINSULA",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02170",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02170",
+      "fips": "02170",
+      "displayName": "Matanuska-Susitna Borough",
+      "aliases": [
+        "Matanuska-Susitna Borough",
+        "Matanuska-Susitna"
+      ],
+      "geometryKey": "MATANUSKA SUSITNA",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02180",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02180",
+      "fips": "02180",
+      "displayName": "Nome Census Area",
+      "aliases": [
+        "Nome Census Area",
+        "Nome"
+      ],
+      "geometryKey": "NOME",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02185",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02185",
+      "fips": "02185",
+      "displayName": "North Slope Borough",
+      "aliases": [
+        "North Slope Borough",
+        "North Slope"
+      ],
+      "geometryKey": "NORTH SLOPE",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02188",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02188",
+      "fips": "02188",
+      "displayName": "Northwest Arctic Borough",
+      "aliases": [
+        "Northwest Arctic Borough",
+        "Northwest Arctic"
+      ],
+      "geometryKey": "NORTHWEST ARCTIC",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02195",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02195",
+      "fips": "02195",
+      "displayName": "Petersburg Borough",
+      "aliases": [
+        "Petersburg Borough",
+        "Petersburg"
+      ],
+      "geometryKey": "PETERSBURG",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02198",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02198",
+      "fips": "02198",
+      "displayName": "Prince of Wales-Hyder Census Area",
+      "aliases": [
+        "Prince of Wales-Hyder Census Area",
+        "Prince of Wales-Hyder"
+      ],
+      "geometryKey": "PRINCE OF WALES HYDER",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02220",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02220",
+      "fips": "02220",
+      "displayName": "Sitka City and Borough",
+      "aliases": [
+        "Sitka City and Borough",
+        "Sitka"
+      ],
+      "geometryKey": "SITKA",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02230",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02230",
+      "fips": "02230",
+      "displayName": "Skagway Municipality",
+      "aliases": [
+        "Skagway Municipality",
+        "Skagway"
+      ],
+      "geometryKey": "SKAGWAY",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02240",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02240",
+      "fips": "02240",
+      "displayName": "Southeast Fairbanks Census Area",
+      "aliases": [
+        "Southeast Fairbanks Census Area",
+        "Southeast Fairbanks"
+      ],
+      "geometryKey": "SOUTHEAST FAIRBANKS",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02275",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02275",
+      "fips": "02275",
+      "displayName": "Wrangell City and Borough",
+      "aliases": [
+        "Wrangell City and Borough",
+        "Wrangell"
+      ],
+      "geometryKey": "WRANGELL",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02282",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02282",
+      "fips": "02282",
+      "displayName": "Yakutat City and Borough",
+      "aliases": [
+        "Yakutat City and Borough",
+        "Yakutat"
+      ],
+      "geometryKey": "YAKUTAT",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:02290",
+      "state": "AK",
+      "level": "county_equivalent",
+      "geoid": "02290",
+      "fips": "02290",
+      "displayName": "Yukon-Koyukuk Census Area",
+      "aliases": [
+        "Yukon-Koyukuk Census Area",
+        "Yukon-Koyukuk"
+      ],
+      "geometryKey": "YUKON KOYUKUK",
+      "source": "ak-counties.geojson",
+      "caveat": ""
+    },
     {
       "jurisdictionTag": "county:01001",
       "state": "AL",
@@ -4336,6 +4786,23 @@
       ],
       "geometryKey": "WESTERN CONNECTICUT PLANNING REGION",
       "source": "ct-counties.geojson",
+      "caveat": ""
+    },
+    {
+      "jurisdictionTag": "county:11001",
+      "state": "DC",
+      "level": "county_equivalent",
+      "geoid": "11001",
+      "fips": "11001",
+      "displayName": "District of Columbia",
+      "aliases": [
+        "District of Columbia",
+        "Washington",
+        "Washington, DC",
+        "Washington, D.C."
+      ],
+      "geometryKey": "DISTRICT OF COLUMBIA",
+      "source": "dc-counties.geojson",
       "caveat": ""
     },
     {
@@ -10329,7 +10796,9 @@
       "displayName": "DuPage County",
       "aliases": [
         "DuPage County",
-        "DuPage"
+        "DuPage",
+        "Du Page",
+        "Du Page County"
       ],
       "geometryKey": "DUPAGE",
       "source": "il-counties.geojson",
@@ -10753,7 +11222,11 @@
       "displayName": "LaSalle County",
       "aliases": [
         "LaSalle County",
-        "LaSalle"
+        "LaSalle",
+        "La Salle",
+        "La Salle County",
+        "Lasalle",
+        "Lasalle County"
       ],
       "geometryKey": "LASALLE",
       "source": "il-counties.geojson",
@@ -16746,7 +17219,12 @@
       "displayName": "LaSalle Parish",
       "aliases": [
         "LaSalle Parish",
-        "LaSalle"
+        "LaSalle",
+        "La Salle",
+        "La Salle County",
+        "Lasalle",
+        "Lasalle County",
+        "LaSalle County"
       ],
       "geometryKey": "LASALLE",
       "source": "la-counties.geojson",
@@ -21412,21 +21890,6 @@
       "geometryKey": "JOHNSON",
       "source": "mo-counties.geojson",
       "caveat": ""
-    },
-    {
-      "jurisdictionTag": "reporting:MO:KANSAS-CITY",
-      "state": "MO",
-      "level": "reporting_jurisdiction",
-      "geoid": "",
-      "fips": "",
-      "displayName": "Kansas City",
-      "aliases": [
-        "Kansas City",
-        "Kansas City County"
-      ],
-      "geometryKey": "KANSAS CITY",
-      "source": "Missouri Secretary of State reporting jurisdiction",
-      "caveat": "Kansas City is reported as a separate election jurisdiction and does not map to one Census county-equivalent."
     },
     {
       "jurisdictionTag": "county:29103",

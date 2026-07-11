@@ -2,9 +2,9 @@
   "state": "HI",
   "stateName": "Hawaii",
   "electionYear": 2024,
-  "checkedAt": "2026-07-05",
-  "checkedBy": "Wave 1 Hawaii data coverage worker",
-  "scope": "Official Hawaii 2024 result/review text parser remains active; state-native Office registration and turnout rows are now normalized and active in staging. Production promotion was not performed.",
+  "checkedAt": "2026-07-11",
+  "checkedBy": "Kalawao FIPS reconciliation worker",
+  "scope": "Official Hawaii 2024 result/review text parser pins precinct 13-09 to Kalawao FIPS 15005. The 2016/2020 historical normalizer now uses explicit pre-reapportionment district ranges for each year, separates 13-09 from Maui, and asserts every county tuple and statewide total. State-native Office turnout remains four rows because Kalawao is not separate in the turnout table. Production promotion was not performed.",
   "repoDrift": [],
   "officialSourcePages": [
     "https://elections.hawaii.gov/election-results/",
@@ -18,7 +18,13 @@
     "https://elections.hawaii.gov/2024-general-election-provisional-ballot-dispositions/",
     "https://elections.hawaii.gov/resources/absentee-voting-report/",
     "https://elections.hawaii.gov/voting/county-elections-divisions/",
-    "https://elections.hawaii.gov/resources/election-objections/"
+    "https://elections.hawaii.gov/resources/election-objections/",
+    "https://files.hawaii.gov/elections/files/maps/Election2024Maps/HD_13.pdf",
+    "https://files.hawaii.gov/elections/files/maps/precincttext/Precinct-Boundary-Descriptions-Statewide.pdf",
+    "https://files.hawaii.gov/elections/files/results/2020/general/coh.pdf",
+    "https://files.hawaii.gov/elections/files/results/2020/general/cch.pdf",
+    "https://files.hawaii.gov/elections/files/results/2020/general/cok.pdf",
+    "https://files.hawaii.gov/elections/files/results/2020/general/com.pdf"
   ],
   "downloadedArtifacts": [
     {
@@ -55,7 +61,7 @@
       "localArtifactPath": "data/hi-2024-general-precinct-detail.txt",
       "electionYear": 2024,
       "reportingGrain": "precinct_split",
-      "parserOrNormalizationPath": "nativeHawaiiOfficeText in civic_etl/native.py; decodes official UTF-16 precinct detail text, skips Format#1 banner, parses embedded-newline-safe CSV, derives county labels from official numbered precinct district ranges, and pairs President contest 283 with U.S. Senate contest 100 by precinct_splitId.",
+      "parserOrNormalizationPath": "nativeHawaiiOfficeText in civic_etl/native.py; decodes official UTF-16 precinct detail text, skips Format#1, parses embedded-newline-safe CSV, derives county labels from numbered precinct ranges, pins precinct 13-09 (split IDs 78 and 487) to Kalawao County FIPS 15005, and pairs President contest 283 with U.S. Senate contest 100 by precinct_splitId.",
       "expectedRowCountsOrTotals": {
         "totalRows": 17944,
         "uniquePrecinctSplitIds": 497,
@@ -65,13 +71,31 @@
         "senateRows": 1984,
         "senatePrecinctSplitIds": 496,
         "senateTotalVotes": 501763,
-        "loadedCountyResultRows": 4,
+        "loadedCountyResultRows": 5,
         "loadedReviewRows": 467,
         "zeroVoteNumberedPresidentKeysSkipped": 27,
         "nonGeographicPresidentKeysExcluded": 3,
-        "nonGeographicSenateKeysExcluded": 2
+        "nonGeographicSenateKeysExcluded": 2,
+        "kalawao": {
+          "precinctName": "13-09",
+          "jurisdictionTag": "county:15005",
+          "harris": 15,
+          "trump": 3,
+          "other": 0,
+          "total": 18,
+          "precinctSplitIds": [
+            "78",
+            "487"
+          ]
+        },
+        "mauiResidual": {
+          "harris": 38890,
+          "trump": 22618,
+          "other": 1367,
+          "total": 62875
+        }
       },
-      "caveatsAndConfidenceNotes": "Official source artifact is now wired into native staging. Review rows exclude zero-vote numbered keys and zero-vote non-geographic keys; the retained 467 review rows still aggregate to the certified statewide presidential total. County labels are a reproducible district-range crosswalk, not precinct geometry."
+      "caveatsAndConfidenceNotes": "Official source artifact is wired into native staging. Precinct 13-09 split IDs 78 and 487 are assigned to Kalawao using the official HD 13 map and statewide precinct-boundary descriptions, with exact Kalawao and Maui residual assertions. Review rows exclude zero-vote numbered and non-geographic keys; the retained 467 rows still aggregate to the certified statewide presidential total. Other county labels remain a reproducible district-range crosswalk, not loaded precinct geometry."
     },
     {
       "id": "hi-2024-general-turnout",
@@ -91,7 +115,113 @@
         "eacRegisteredVoterDeltaOfficialMinusEac": -465,
         "eacBallotsCastDeltaOfficialMinusEac": 0
       },
-      "caveatsAndConfidenceNotes": "Official Hawaii Office table reports four election-county rows (Hawaii, Maui, Kauai, Honolulu) that reconcile exactly to the statewide 2024 General row. Kalawao is not a separate Office result or turnout county row; EAC fallback remains retained as a benchmark only."
+      "caveatsAndConfidenceNotes": "Official Hawaii Office table reports four election-county turnout rows (Hawaii, Maui, Kauai, Honolulu) that reconcile exactly to the statewide 2024 General row. The table has no separate Kalawao turnout/registration row; the result parser independently derives Kalawao votes from precinct 13-09. EAC fallback remains benchmark context only."
+    },
+    {
+      "id": "hi-historical-presidential-baseline",
+      "sourceAuthority": "Hawaii Office of Elections",
+      "sourceTitle": "2016 and 2020 General Election statewide summary and precinct detail text files",
+      "sourceUrl": "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt; https://files.hawaii.gov/elections/files/results/2016/general/media.txt; https://files.hawaii.gov/elections/files/results/2020/general/summary.txt; https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
+      "localArtifactPath": "data/hi-2016-general-summary.txt; data/hi-2016-general-precinct-detail.txt; data/hi-2020-general-summary.txt; data/hi-2020-general-precinct-detail.txt; data/hi-historical-presidential-baseline.csv; data/hi-historical-presidential-baseline-summary.json",
+      "reportingGrain": "county_and_county_equivalent_from_precinct_split",
+      "parserOrNormalizationPath": "scripts/normalize-hi-historical-presidential-baseline.mjs parses official summary/detail text with explicit 2016 and 2020 pre-reapportionment district ranges (01-07 Hawaii, 08-13 Maui, 14-16 Kauai, 17-51 Honolulu), separates precinct 13-09 split ID 78 into Kalawao FIPS 15005, and fails closed on all five county tuples, row counts, and statewide totals.",
+      "expectedRowCountsOrTotals": {
+        "historicalRows": 10,
+        "rowsPerYear": 5,
+        "kalawao2016": {
+          "dem": 14,
+          "rep": 1,
+          "other": 5,
+          "total": 20
+        },
+        "kalawao2020": {
+          "dem": 23,
+          "rep": 1,
+          "other": 0,
+          "total": 24
+        },
+        "statewide2016": {
+          "dem": 266891,
+          "rep": 128847,
+          "other": 33199,
+          "total": 428937
+        },
+        "statewide2020": {
+          "dem": 366130,
+          "rep": 196864,
+          "other": 11475,
+          "total": 574469
+        },
+        "countyTotals2016": {
+          "Hawaii County": {
+            "dem": 41259,
+            "rep": 17501,
+            "other": 6107,
+            "total": 64867
+          },
+          "Honolulu County": {
+            "dem": 175696,
+            "rep": 90326,
+            "other": 19768,
+            "total": 285790
+          },
+          "Kalawao County": {
+            "dem": 14,
+            "rep": 1,
+            "other": 5,
+            "total": 20
+          },
+          "Kauai County": {
+            "dem": 16456,
+            "rep": 7574,
+            "other": 2305,
+            "total": 26335
+          },
+          "Maui County": {
+            "dem": 33466,
+            "rep": 13445,
+            "other": 5014,
+            "total": 51925
+          }
+        },
+        "countyTotals2020": {
+          "Hawaii County": {
+            "dem": 58731,
+            "rep": 26897,
+            "other": 2186,
+            "total": 87814
+          },
+          "Honolulu County": {
+            "dem": 238869,
+            "rep": 136259,
+            "other": 6986,
+            "total": 382114
+          },
+          "Kalawao County": {
+            "dem": 23,
+            "rep": 1,
+            "other": 0,
+            "total": 24
+          },
+          "Kauai County": {
+            "dem": 21225,
+            "rep": 11582,
+            "other": 690,
+            "total": 33497
+          },
+          "Maui County": {
+            "dem": 47282,
+            "rep": 22125,
+            "other": 1613,
+            "total": 71020
+          }
+        }
+      },
+      "caveatsAndConfidenceNotes": "The retained official detail files use pre-2021 reapportionment district numbering, so the historical parser does not reuse the 2024 district ranges. Official 2020 county PDFs reconcile after precinct 13-09 is split from the Maui-administered result into Kalawao FIPS 15005. Official 2012 county baselines remain uncollected.",
+      "electionYear": [
+        2016,
+        2020
+      ]
     }
   ],
   "existingLocalContextArtifacts": [
@@ -138,16 +268,33 @@
     "certifiedPresidentResults": {
       "status": "official_text_loaded_native_staging",
       "preferredSourceId": "hi-2024-general-summary",
-      "reportingGrain": "four county result rows aggregated from official numbered precinct/split detail rows with statewide summary cross-check",
+      "reportingGrain": "five county/county-equivalent result rows aggregated from official numbered precinct/split detail rows with statewide summary cross-check",
       "observedNativeTotals": {
-        "countyResultRows": 4,
+        "countyResultRows": 5,
         "presidentialTotalVotes": 516701,
         "harris": 313044,
         "trump": 193661,
         "other": 9996,
-        "certifiedVoteGap": 0
+        "certifiedVoteGap": 0,
+        "kalawao": {
+          "jurisdictionTag": "county:15005",
+          "harris": 15,
+          "trump": 3,
+          "other": 0,
+          "total": 18,
+          "precinctSplitIds": [
+            "78",
+            "487"
+          ]
+        },
+        "mauiResidual": {
+          "harris": 38890,
+          "trump": 22618,
+          "other": 1367,
+          "total": 62875
+        }
       },
-      "notes": "The active native parser cross-checks the official summary text and emits county rows for Hawaii, Honolulu, Kauai, and Maui. Kalawao has county geometry and EAC turnout context but no separate Hawaii Office result county row."
+      "notes": "The active native parser cross-checks the official summary and emits all five Hawaii county/county-equivalent rows. Precinct 13-09 (split IDs 78 and 487) is pinned to Kalawao County FIPS 15005 using official map and boundary evidence; exact Kalawao and Maui residual tuples are asserted."
     },
     "sameGrainComparisonContest": {
       "status": "official_precinct_split_review_loaded_native_staging",
@@ -161,7 +308,7 @@
         "nonGeographicPresidentKeysExcluded": 3,
         "nonGeographicSenateKeysExcluded": 2
       },
-      "notes": "The official precinct detail text includes President and U.S. Senate rows at precinct_split grain. The parser keeps nonzero numbered precinct/split rows only for advisory review; excluded zero-vote keys are documented in staging metrics."
+      "notes": "The official precinct detail includes President and U.S. Senate rows at precinct_split grain. The parser keeps nonzero numbered precinct/split rows for advisory review, assigns both precinct 13-09 split rows to Kalawao, and documents excluded zero-vote keys in staging metrics."
     },
     "turnoutAndRegistrationDenominators": {
       "status": "state_native_turnout_loaded",
@@ -175,22 +322,112 @@
         "ballotsCast": 522236,
         "warningRows": 0
       },
-      "notes": "The Hawaii Office 2024 General Election table reports four county rows that sum exactly to the statewide 860,868 registered voters and 522,236 turnout. Kalawao remains present in county geometry but is not a separate Office result or turnout county row. EAC fallback is retained as benchmark context only."
+      "notes": "The Hawaii Office 2024 General Election table reports four turnout rows that sum exactly to 860,868 registered voters and 522,236 ballots. It has no separate Kalawao turnout/registration row, so no denominator is allocated to FIPS 15005; Kalawao result votes are independently derived from precinct 13-09. EAC fallback is benchmark context only."
     },
     "geometryAndCrosswalks": {
-      "status": "county_geometry_loaded_precinct_geometry_lead_identified",
+      "status": "county_geometry_loaded_kalawao_pin_reviewed_precinct_geometry_not_loaded",
       "countyGeometry": "data/hi-counties.geojson",
       "precinctGeometryLead": "https://elections.hawaii.gov/resources/maps/geographic-information-systems-gis-files/",
-      "notes": "The Office of Elections GIS page links 2022 Election Precincts and 2021 reapportionment district files. Confirm 2024 applicability and crosswalk to precinct_splitId before subcounty mapping."
+      "notes": "All five county/county-equivalent geometries are loaded. Official HD 13 and statewide precinct-boundary documents support assigning precinct 13-09 to Kalawao County FIPS 15005. Full precinct geometry/crosswalks remain unloaded, so subcounty overlays are still disabled.",
+      "kalawaoCrosswalkEvidence": [
+        "https://files.hawaii.gov/elections/files/maps/Election2024Maps/HD_13.pdf",
+        "https://files.hawaii.gov/elections/files/maps/precincttext/Precinct-Boundary-Descriptions-Statewide.pdf"
+      ]
     },
     "historicalBaselines": {
-      "status": "official_source_pages_identified_not_loaded",
+      "status": "official_2016_2020_loaded",
       "targetYears": [
         2020,
         2016,
         2012
       ],
-      "notes": "The Hawaii results page lists official certified General Election reports/text files for 2020, 2016, and 2012. This pass did not collect or normalize those historical artifacts; add a reproducible historical parser before enabling HI historicalBaseline."
+      "normalizedArtifact": "data/hi-historical-presidential-baseline.csv",
+      "reconciliationArtifact": "data/hi-historical-presidential-baseline-summary.json",
+      "observedNativeTotals": {
+        "historicalRows": 10,
+        "rowsPerLoadedYear": 5,
+        "kalawao2016": {
+          "dem": 14,
+          "rep": 1,
+          "other": 5,
+          "total": 20
+        },
+        "kalawao2020": {
+          "dem": 23,
+          "rep": 1,
+          "other": 0,
+          "total": 24
+        },
+        "countyTotals2016": {
+          "Hawaii County": {
+            "dem": 41259,
+            "rep": 17501,
+            "other": 6107,
+            "total": 64867
+          },
+          "Honolulu County": {
+            "dem": 175696,
+            "rep": 90326,
+            "other": 19768,
+            "total": 285790
+          },
+          "Kalawao County": {
+            "dem": 14,
+            "rep": 1,
+            "other": 5,
+            "total": 20
+          },
+          "Kauai County": {
+            "dem": 16456,
+            "rep": 7574,
+            "other": 2305,
+            "total": 26335
+          },
+          "Maui County": {
+            "dem": 33466,
+            "rep": 13445,
+            "other": 5014,
+            "total": 51925
+          }
+        },
+        "countyTotals2020": {
+          "Hawaii County": {
+            "dem": 58731,
+            "rep": 26897,
+            "other": 2186,
+            "total": 87814
+          },
+          "Honolulu County": {
+            "dem": 238869,
+            "rep": 136259,
+            "other": 6986,
+            "total": 382114
+          },
+          "Kalawao County": {
+            "dem": 23,
+            "rep": 1,
+            "other": 0,
+            "total": 24
+          },
+          "Kauai County": {
+            "dem": 21225,
+            "rep": 11582,
+            "other": 690,
+            "total": 33497
+          },
+          "Maui County": {
+            "dem": 47282,
+            "rep": 22125,
+            "other": 1613,
+            "total": 71020
+          }
+        }
+      },
+      "notes": "Official 2016 and 2020 summary/detail text files are normalized reproducibly with their pre-reapportionment district ranges. Precinct 13-09 split ID 78 is separated from Maui and pinned to Kalawao FIPS 15005. Every county tuple and statewide total is asserted; official 2012 baselines remain uncollected.",
+      "districtRangesByYear": {
+        "2016": "01-07 Hawaii; 08-13 Maui except 13-09; 13-09 Kalawao; 14-16 Kauai; 17-51 Honolulu",
+        "2020": "01-07 Hawaii; 08-13 Maui except 13-09; 13-09 Kalawao; 14-16 Kauai; 17-51 Honolulu"
+      }
     },
     "auditRecountCvrIncidentCorrectionLitigation": {
       "status": "source_paths_documented_not_normalized",
@@ -207,15 +444,15 @@
   },
   "requestMatrixArtifact": "data/hi-2024-source-request-matrix.tsv",
   "displayApiCaveats": {
-    "activeConfig": "HI native staging loads official 2024 President county result rows, same-grain U.S. Senate precinct/split review rows, and state-native Hawaii Office county turnout rows from etl/state-configs/hi.json. Historical/admin rows remain source paths only.",
+    "activeConfig": "HI native staging loads five official 2024 President county/county-equivalent result rows, including Kalawao FIPS 15005 from pinned precinct 13-09 split IDs 78 and 487; 467 same-grain U.S. Senate review rows; four Hawaii Office turnout rows; and ten official 2016/2020 historical rows.",
     "advisoryUse": "Any future advisory indicators are source-review signals only, not claims of fraud or misconduct.",
     "productionPromotion": "No production promotion was performed in Wave 1; current production/API counts were not checked."
   },
   "productionChecked": false,
   "remainingRisks": [
     "Advisory rows are public-interest source-review signals only, not claims of fraud or misconduct.",
-    "County labels for review rows come from a district-range crosswalk, not loaded precinct geometry; collect official precinct geometry/crosswalks before subcounty map overlays.",
-    "Active turnout now uses Hawaii Office county rows, but Kalawao remains a geometry-only county for this package and is not a separate Office result or turnout row.",
-    "Official 2012/2016/2020 historical baselines and normalized audit/CVR/recount/incident/correction/litigation rows are still missing."
+    "County labels for review rows use a documented district-range crosswalk with precinct 13-09 pinned to Kalawao; collect complete official precinct geometry/crosswalks before subcounty map overlays.",
+    "Active turnout uses four Hawaii Office rows; Kalawao has a result row but no separate Office turnout/registration row, so no turnout values are allocated to FIPS 15005.",
+    "Official 2016/2020 historical baselines are loaded; official 2012 baselines and normalized audit/CVR/recount/incident/correction/litigation rows remain missing."
   ]
 }

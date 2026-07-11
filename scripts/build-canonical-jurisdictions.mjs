@@ -11,6 +11,7 @@ const stateFipsByPostal = {
   CA: "06",
   CO: "08",
   CT: "09",
+  DC: "11",
   DE: "10",
   FL: "12",
   GA: "13",
@@ -66,9 +67,11 @@ function normalizeAlias(value) {
     .replace(/\bst[.]\b/gi, "st")
     .replace(/\bste[.]\b/gi, "ste")
     .replace(/\bcounty\b/gi, "")
+    .replace(/\bcity\s+and\s+borough\b/gi, "")
     .replace(/\bcity\b/gi, "")
     .replace(/\bparish\b/gi, "")
     .replace(/\bborough\b/gi, "")
+    .replace(/\bmunicipality\b/gi, "")
     .replace(/\bcensus\s+area\b/gi, "")
     .replace(/[^a-z0-9]+/gi, " ")
     .trim()
@@ -80,6 +83,7 @@ function aliasVariants(name, basename) {
   variants.add(String(name || "").replace(/\s+County$/i, ""));
   variants.add(String(name || "").replace(/\s+Parish$/i, ""));
   variants.add(String(name || "").replace(/\s+city$/i, ""));
+  variants.add(String(name || "").replace(/\s+Municipality$/i, ""));
   variants.add(String(basename || "").replace(/^St[.]\s+/i, "Saint "));
   variants.add(String(name || "").replace(/^St[.]\s+/i, "Saint "));
 
@@ -88,12 +92,19 @@ function aliasVariants(name, basename) {
     variants.add("Jeff Davis County");
   }
 
-  if (/^La Salle/i.test(name) || /^La Salle/i.test(basename)) {
+  if (/^La\s*Salle/i.test(name) || /^La\s*Salle/i.test(basename)) {
+    variants.add("La Salle");
+    variants.add("La Salle County");
     variants.add("Lasalle");
     variants.add("Lasalle County");
     variants.add("LaSalle");
     variants.add("LaSalle County");
   }
+  if (/^DuPage/i.test(name) || /^DuPage/i.test(basename)) {
+    variants.add("Du Page");
+    variants.add("Du Page County");
+  }
+
   if (/^De Witt/i.test(name) || /^De Witt/i.test(basename)) {
     variants.add("DeWitt");
     variants.add("DeWITT");
@@ -126,13 +137,16 @@ function aliasVariants(name, basename) {
 
 function levelForFeature(properties) {
   const name = String(properties.NAME || "");
+  if (String(properties.STATE || "") === "11" && /^District of Columbia$/i.test(name)) {
+    return "county_equivalent";
+  }
   if (/\bcity$/i.test(name)) {
     return "county_equivalent";
   }
   if (/\bparish$/i.test(name)) {
     return "county_equivalent";
   }
-  if (/\bborough$|\bcensus area$/i.test(name)) {
+  if (/\bborough$|\bcensus area$|\bmunicipality$/i.test(name)) {
     return "county_equivalent";
   }
   return "county";
@@ -154,12 +168,18 @@ for (const file of files) {
       properties.GEOID || (stateFipsByPostal[state] && countyFips ? `${stateFipsByPostal[state]}${countyFips}` : ""),
     ).trim();
     const displayName = String(properties.NAME || properties.county_name || properties.BASENAME || "").trim();
-    const fullDisplayName = /\b(county|parish|city|borough|census area)$/i.test(displayName)
+    const fullDisplayName = /\b(county|parish|city|borough|census area|municipality)$/i.test(displayName)
+      || /^District of Columbia$/i.test(displayName)
       ? displayName
       : `${displayName} County`;
     const basename = String(properties.BASENAME || properties.county_name || fullDisplayName).trim();
     if (!geoid || !fullDisplayName) {
       continue;
+    }
+
+    const aliases = aliasVariants(fullDisplayName, basename);
+    if (geoid === "11001") {
+      aliases.push("Washington", "Washington, DC", "Washington, D.C.");
     }
 
     rows.push({
@@ -169,31 +189,17 @@ for (const file of files) {
       geoid,
       fips: geoid,
       displayName: fullDisplayName,
-      aliases: aliasVariants(fullDisplayName, basename),
+      aliases: Array.from(new Set(aliases)),
       geometryKey: normalizeAlias(fullDisplayName),
       source: file,
       caveat: "",
     });
   }
 }
-
-rows.push({
-  jurisdictionTag: "reporting:MO:KANSAS-CITY",
-  state: "MO",
-  level: "reporting_jurisdiction",
-  geoid: "",
-  fips: "",
-  displayName: "Kansas City",
-  aliases: ["Kansas City", "Kansas City County"],
-  geometryKey: "KANSAS CITY",
-  source: "Missouri Secretary of State reporting jurisdiction",
-  caveat: "Kansas City is reported as a separate election jurisdiction and does not map to one Census county-equivalent.",
-});
-
 const output = {
   generatedAt: new Date().toISOString(),
-  source: "Generated from committed data/*-counties.geojson files plus explicit non-FIPS reporting exceptions.",
-  tagContract: "county:<GEOID> for Census county/county-equivalent rows; reporting:<STATE>:<SLUG> for explicit election reporting exceptions.",
+  source: "Generated from committed data/*-counties.geojson files.",
+  tagContract: "county:<GEOID> for Census county/county-equivalent rows.",
   jurisdictions: rows.sort((left, right) => left.state.localeCompare(right.state) || left.displayName.localeCompare(right.displayName)),
 };
 

@@ -13,9 +13,14 @@
       "data/mo-2024-general-president.csv",
       "data/mo-2024-general-senate.csv",
       "data/mo-2024-general-turnout.csv",
-      "data/mo-historical-presidential-baseline.csv"
+      "data/mo-historical-presidential-baseline.csv",
+      "data/mo-2024-general-president-county.csv",
+      "data/mo-2024-general-senate-county.csv",
+      "data/mo-2024-general-turnout-county.csv",
+      "data/mo-historical-presidential-county-baseline.csv",
+      "data/mo-county-fips-reconciliation.json"
     ],
-    "scopeNote": "Official county/reporting-jurisdiction President, U.S. Senate, turnout, and historical baseline rows are loaded. The SOS results page identifies precinct-level general-election result files as purchasable from the Elections Division, so precinct-level Missouri review rows remain blocked until that file is obtained.",
+    "scopeNote": "Official 116-election-authority President, U.S. Senate, turnout, and historical rows remain retained. Active canonical artifacts expose 115 Census counties/county-equivalents after the reviewed Jackson County/Kansas City aggregation. The SOS results page still identifies precinct-level files as purchasable, so precinct review remains blocked until obtained.",
     "requestNeed": "Purchase or request 2024 general election precinct-level result files for President and U.S. Senate, plus any reporting-unit definitions needed to distinguish Kansas City and county jurisdictions. See data/mo-2024-source-request-tracker.json for the request packet fields.",
     "checkedPageEvidence": {
       "checkedAt": "2026-07-01",
@@ -81,17 +86,27 @@
       "localArtifact": "data/mo-counties.geojson",
       "authority": "U.S. Census Bureau TIGERweb",
       "reportingLevel": "county",
-      "scopeNote": "Loaded map geometry supports county joins only. Kansas City is a separate SOS reporting jurisdiction and does not have a separate Census county polygon."
+      "scopeNote": "Loaded Census geometry supports 115 county/county-equivalent FIPS joins. The canonical result artifacts sum Kansas City within Jackson County with Jackson County outside Kansas City into county:29095; no standalone Kansas City polygon is created."
     },
-    "scopeNote": "No official statewide precinct-boundary geometry or precinct-to-county/reporting-jurisdiction crosswalk was identified in this pass. Missouri precinct review rows should not be mapped or joined below county/reporting-jurisdiction grain until the purchasable precinct file is paired with an official boundary file or reporting-unit crosswalk.",
+    "scopeNote": "County FIPS reconciliation is resolved for the active canonical artifacts. No official statewide precinct-boundary geometry or precinct-to-election-authority crosswalk was identified, so subcounty mapping remains blocked.",
     "requestNeed": "Request 2024 precinct boundary GIS, precinct identifiers, split precinct definitions, and crosswalk fields that join the purchasable precinct result file to county/Kansas City/St. Louis City reporting jurisdictions. See data/mo-2024-source-request-tracker.json for the request packet fields."
   },
   "displayApiCaveats": {
-    "status": "documented_county_reporting_jurisdiction_only",
-    "reviewLevel": "county_reporting_jurisdiction",
-    "mapLevel": "county_with_kansas_city_reporting_jurisdiction_caveat",
-    "advisoryUse": "Current Missouri advisory rows compare official President and U.S. Senate rows at county/reporting-jurisdiction grain only. They are screening inputs, not findings, and not precinct-level scatter plots.",
+    "status": "canonical_county_fips_loaded_precinct_detail_blocked",
+    "reviewLevel": "county",
+    "mapLevel": "census_county_and_county_equivalent",
+    "advisoryUse": "Current Missouri advisory rows compare official President and U.S. Senate totals at canonical Census county grain. Jackson County includes both SOS election-authority source rows. These are screening inputs, not findings, and not precinct-level scatter plots.",
     "productionPromotion": "No production promotion is authorized from this worker pass. Regenerate staging and run native:report-indicators before any later promotion."
   },
-  "requestTrackerArtifact": "data/mo-2024-source-request-tracker.json"
+  "requestTrackerArtifact": "data/mo-2024-source-request-tracker.json",
+  "countyFipsReconciliation": {
+    "status": "loaded",
+    "officialEvidenceUrl": "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
+    "localArtifact": "data/mo-county-fips-reconciliation.json",
+    "parser": "scripts/normalize-mo-sos-pdfs.mjs",
+    "rawElectionAuthorityRows": 116,
+    "canonicalCountyRows": 115,
+    "jacksonCountyJurisdictionTag": "county:29095",
+    "statewideDeltaStatus": "zero_for_results_comparison_turnout_and_history"
+  }
 }

@@ -1,4 +1,4 @@
-import { getCanonicalJurisdictionRegistry, jurisdictionTagForRow } from "../src/lib/jurisdiction-tags.ts";
+import { getCanonicalJurisdictionRegistry, resolveJurisdictionTag } from "../src/lib/jurisdiction-tags.ts";
 import { loadStagingJurisdictionReportSource } from "./lib/staging-jurisdiction-report-source.mjs";
 
 const baseArg = process.argv.find((arg) => arg.startsWith("--base="));
@@ -40,14 +40,18 @@ async function api(route) {
   return response.json();
 }
 
-function tagFor(row, state) {
-  return row.jurisdictionTag ?? jurisdictionTagForRow({
+function resolutionFor(row, state) {
+  if (row.jurisdictionTag) {
+    return { jurisdictionTag: row.jurisdictionTag, reason: "persisted" };
+  }
+  return resolveJurisdictionTag({
     state,
     jurisdictionCode: row.jurisdictionCode,
     jurisdictionName: row.jurisdictionName,
     level: family === "historical" ? row.sourceLevel : row.level,
   });
 }
+
 
 async function rowsForState(state) {
   if (useStagingForState(state)) {
@@ -72,6 +76,7 @@ const states = stagingSource && !overlayStates.size
   ? stagingSource.states
   : (await api("/api/states")).data.map((state) => state.code).sort();
 const unresolved = [];
+const intentionalNonGeographic = [];
 const duplicateTags = [];
 const missingExpectedTags = [];
 const summaries = [];
@@ -82,16 +87,33 @@ for (const state of states) {
   const expectedTags = new Map(expectedRows.map((row) => [row.jurisdictionTag, row.displayName]));
   const seenTags = new Map();
 
+  let unresolvedRowCount = 0;
+  let intentionalNonGeographicRowCount = 0;
+
   for (const row of rows) {
-    const tag = tagFor(row, state);
+    const resolution = resolutionFor(row, state);
+    const tag = resolution.jurisdictionTag;
+    const detail = {
+      state,
+      jurisdictionName: row.jurisdictionName,
+      jurisdictionCode: row.jurisdictionCode,
+      level: family === "historical" ? row.sourceLevel : row.level,
+      totalVotes: row.totalVotes,
+      reason: resolution.reason,
+    };
     if (!tag) {
-      unresolved.push({
-        state,
-        jurisdictionName: row.jurisdictionName,
-        jurisdictionCode: row.jurisdictionCode,
-        level: family === "historical" ? row.sourceLevel : row.level,
-        totalVotes: row.totalVotes,
-      });
+      if (resolution.reason === "non_geographic") {
+        intentionalNonGeographic.push(detail);
+        intentionalNonGeographicRowCount += 1;
+      } else {
+        unresolved.push(detail);
+        unresolvedRowCount += 1;
+      }
+      continue;
+    }
+    if (!tag.startsWith("county:")) {
+      unresolved.push({ ...detail, reason: "non_county_tag", tag });
+      unresolvedRowCount += 1;
       continue;
     }
     seenTags.set(tag, [...(seenTags.get(tag) ?? []), row.jurisdictionName]);
@@ -114,7 +136,8 @@ for (const state of states) {
     expectedCountyEquivalentRows: expectedRows.length,
     rows: rows.length,
     resolvedCountyTags: Array.from(seenTags.keys()).filter((tag) => tag.startsWith("county:")).length,
-    unresolvedRows: rows.length - Array.from(seenTags.values()).reduce((sum, names) => sum + names.length, 0),
+    unresolvedRows: unresolvedRowCount,
+    intentionalNonGeographicRows: intentionalNonGeographicRowCount,
     duplicateTags: Array.from(seenTags.values()).filter((names) => names.length > 1).length,
     missingExpectedTags: expectedRows.filter((row) => !seenTags.has(row.jurisdictionTag)).length,
   });
@@ -132,6 +155,7 @@ const output = {
     rows: summaries.reduce((sum, row) => sum + row.rows, 0),
     resolvedCountyTags: summaries.reduce((sum, row) => sum + row.resolvedCountyTags, 0),
     unresolvedRows: unresolved.length,
+    intentionalNonGeographicRows: intentionalNonGeographic.length,
     duplicateTags: duplicateTags.length,
     missingExpectedTags: missingExpectedTags.length,
   },
@@ -139,12 +163,13 @@ const output = {
     (row) => row.unresolvedRows || row.duplicateTags || row.missingExpectedTags,
   ),
   unresolved,
+  intentionalNonGeographic,
   duplicateTags,
   missingExpectedTags,
   caveats: [
-    "Alaska has no county-equivalent registry rows until an official/reviewed borough/census-area aggregation crosswalk is loaded.",
+    "Alaska has 30 canonical current county-equivalent FIPS tags, but exact election-result allocation remains unavailable because official district-only ballots span multiple county equivalents.",
     "Connecticut expected rows are Census planning regions; older county-era historical rows need a reviewed county/planning-region treatment before they count as current county-equivalent rows.",
-    "District of Columbia is not included unless the state/API registry exposes DC and county:11001 rows.",
+    "District of Columbia is represented by the single Census county-equivalent tag county:11001.",
     "Coverage is a tag-join audit only; missing historical rows require separate official baseline collection.",
   ],
 };

@@ -4,13 +4,13 @@
   "electionYear": 2024,
   "checkedAt": "2026-07-01",
   "authority": "Missouri Secretary of State and local election authorities",
-  "purpose": "Missouri 2024 request tracker for source families that are not normalized into the current county/reporting-jurisdiction ETL package.",
+  "purpose": "Missouri 2024 request tracker for source families outside the canonical county ETL package and for remaining subcounty or administration-context gaps.",
   "currentLoadedScope": {
-    "results": "Official county/reporting-jurisdiction President rows are loaded from the Missouri Secretary of State 2024 General Election results-by-county PDF.",
-    "comparison": "Official county/reporting-jurisdiction U.S. Senate rows are loaded from the same source PDF.",
-    "turnout": "Official Secretary of State registered-voter turnout rows are loaded at county/reporting-jurisdiction grain.",
-    "historical": "Official 2012, 2016, and 2020 presidential county/reporting-jurisdiction baseline rows are loaded from Missouri Secretary of State PDFs.",
-    "map": "Loaded geometry is Census county geometry only; Kansas City is a separate reporting jurisdiction in source data and does not have a separate Census county polygon."
+    "results": "Official 116-election-authority President rows are retained unchanged; the active canonical artifact has 115 Census county/county-equivalent rows after summing Kansas City within Jackson County into Jackson County FIPS 29095.",
+    "comparison": "Official 116-election-authority U.S. Senate rows are retained unchanged; the active canonical comparison artifact has 115 Census county/county-equivalent rows using the same Jackson County aggregation.",
+    "turnout": "Official Secretary of State registered-voter turnout rows are retained at 116-election-authority grain and loaded through a 115-county canonical artifact with zero statewide ballot and registration deltas.",
+    "historical": "Official 2012, 2016, and 2020 presidential election-authority baselines are retained at 116 rows per year and loaded through 115 explicit county:<GEOID> rows per year.",
+    "map": "Loaded Census geometry and active result artifacts now share 115 county/county-equivalent FIPS tags. The aggregation does not create precinct geometry."
   },
   "requests": [
     {
@@ -101,23 +101,26 @@
     },
     {
       "id": "mo-2024-kansas-city-display-validation",
-      "status": "documented_display_caveat",
+      "status": "resolved_county_fips_aggregation",
       "sourceAuthority": "Missouri Secretary of State",
       "sourceUrl": "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
       "sourceEvidence": "The local election authority page separates Jackson County outside Kansas City from Kansas City within Jackson County.",
-      "localArtifactStatus": "covered_by_existing_county_package",
+      "localArtifactStatus": "canonical_county_artifacts_loaded",
       "neededArtifacts": [
-        "Keep Kansas City as a reporting-jurisdiction caveat in review, turnout, and map displays",
-        "Do not expect a separate Kansas City polygon from Census county geometry"
+        "Retain the official 116-election-authority President, U.S. Senate, turnout, and historical source CSVs unchanged",
+        "Use the generated 115-county artifacts for result, comparison, turnout, historical, and county-map FIPS joins",
+        "Keep precinct/crosswalk collection separate from the resolved county aggregation"
       ],
-      "requestPath": "No new request is required for current county-level display; a precinct/crosswalk request is required before subcounty display.",
-      "parserNeeded": "none for current county/reporting-jurisdiction package.",
-      "caveat": "Kansas City source rows should be treated as a separate reporting jurisdiction, not a separate county geometry feature."
+      "requestPath": "No new request is required for the reviewed county FIPS aggregation; precinct files and crosswalks remain separate request items.",
+      "parserNeeded": "scripts/normalize-mo-sos-pdfs.mjs emits the canonical county artifacts and data/mo-county-fips-reconciliation.json.",
+      "caveat": "The reviewed aggregation resolves county FIPS 29095 by summing Jackson County outside Kansas City and Kansas City within Jackson County. It does not imply precinct coverage or a standalone Kansas City county polygon."
     }
   ],
   "validationExpectations": [
-    "Missouri staging should continue to emit 116 result rows, 116 review rows, 116 turnout rows, and 348 historical baseline rows before any production promotion.",
+    "Missouri staging should emit 115 result rows, 115 review rows, 115 turnout rows, and 345 historical baseline rows (115 per year) from the canonical county artifacts.",
+    "data/mo-county-fips-reconciliation.json must retain 116-row raw source counts, 115-row canonical counts, exact Jackson County pins, complete county FIPS coverage, and zero statewide deltas.",
     "native:report-indicators must be rerun on regenerated staging before promotion; advisory indicators are review signals only, not findings.",
-    "Any future precinct upgrade must reconcile precinct President totals to certified county/reporting-jurisdiction totals and document Kansas City/St. Louis City handling."
-  ]
+    "Any future precinct upgrade must reconcile precinct President totals to certified election-authority and canonical county totals and document Jackson County/Kansas City handling."
+  ],
+  "countyFipsReconciliationArtifact": "data/mo-county-fips-reconciliation.json"
 }

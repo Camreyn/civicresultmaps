@@ -83,6 +83,17 @@
       "status": "loaded"
     },
     {
+      "id": "ak-county-equivalent-boundary",
+      "category": "Alaska borough, census-area, and municipality county-equivalent boundaries",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2702%27&outFields=GEOID%2CSTATE%2CCOUNTY%2CNAME%2CBASENAME&returnGeometry=true&outSR=4326&f=geojson",
+      "localFile": "data/ak-counties.geojson",
+      "parser": "censusTigerwebCountyEquivalentGeojson",
+      "authority": "U.S. Census Bureau",
+      "timestampBasis": "Official TIGERweb State/County service response collected July 10, 2026; reviewed SHA-256 25633feb37dd8c8cce7483860c8af35fd88f9c08b252f84a4089b3681438bc10.",
+      "confidence": "Official 30-feature Alaska county-equivalent geometry for the canonical FIPS registry. This does not authorize allocating Alaska's statewide or mixed precinct/reporting-unit election rows to boroughs or census areas.",
+      "status": "loaded"
+    },
+    {
       "id": "ak-2024-data-coverage-inventory",
       "category": "Alaska 2024 data coverage and administration source inventory",
       "url": "https://www.elections.alaska.gov/election-results/",
@@ -167,14 +178,15 @@
   "expected": {
     "jurisdictions": 1,
     "resultRows": 1,
-    "sources": 11,
+    "sources": 12,
     "geometryFeatures": 40,
     "stateTotal": 338177,
     "trump": 184458,
     "harris": 140026,
     "other": 13693,
     "reviewRows": 523,
-    "turnoutRows": 1
+    "turnoutRows": 1,
+    "canonicalCountyEquivalentFeatures": 30
   },
   "capabilities": {
     "sourcePlanner": true,

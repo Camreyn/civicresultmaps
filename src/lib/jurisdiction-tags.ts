@@ -31,6 +31,8 @@ export function normalizeJurisdictionAlias(value: string) {
   return String(value || "")
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
+    .replace(/['\u2019]/g, "")
+    .replace(/\bgd[.]?\b/gi, "grand")
     .replace(/&/g, " and ")
     .replace(/\bsaint\b/gi, "st")
     .replace(/\bst[.]\b/gi, "st")
@@ -40,6 +42,7 @@ export function normalizeJurisdictionAlias(value: string) {
     .replace(/\bparish\b/gi, "")
     .replace(/\bborough\b/gi, "")
     .replace(/\bcensus\s+area\b/gi, "")
+    .replace(/\bmunicipality\b/gi, "")
     .replace(/[^a-z0-9]+/gi, " ")
     .trim()
     .toUpperCase();
@@ -65,7 +68,14 @@ export function getCanonicalJurisdictionRegistry() {
 }
 
 function aliasKeysFor(row: CanonicalJurisdiction) {
-  return [row.displayName, row.geoid, row.fips, row.jurisdictionTag, ...row.aliases]
+  return [
+    row.displayName,
+    row.geoid,
+    row.fips,
+    row.jurisdictionTag,
+    ...(row.geoid.length === 5 ? [row.geoid.slice(2)] : []),
+    ...row.aliases,
+  ]
     .map(normalizeJurisdictionAlias)
     .filter(Boolean);
 }
@@ -94,9 +104,12 @@ function hasCountyMarker(name: string, code: string) {
   return /\bcounty\b/i.test(name) || /[-_]county(?:$|[-_])/i.test(code);
 }
 
-function disambiguateAdministrativeKind(rows: CanonicalJurisdiction[], name: string, code: string) {
+function disambiguateAdministrativeKind(rows: CanonicalJurisdiction[], name: string, code: string, level: string) {
   const wantsCity = hasCityMarker(name, code);
-  const wantsCounty = hasCountyMarker(name, code);
+  const normalizedLevel = level.toLowerCase().replaceAll("_", " ");
+  const wantsCounty = hasCountyMarker(name, code) || (
+    !wantsCity && /county|parish|borough|census area|planning region/.test(normalizedLevel)
+  );
   if (!wantsCity && !wantsCounty) {
     return rows;
   }
@@ -114,7 +127,7 @@ function disambiguateAdministrativeKind(rows: CanonicalJurisdiction[], name: str
   return filtered.length ? filtered : rows;
 }
 function isNonGeographicName(value: string) {
-  return /^(statewide|statewide total|total|uocava|federal only|overseas|write[- ]?in|scattered)$/i.test(
+  return /^(statewide|statewide total|total|uocava|state uocava|federal only|federal precincts?|overseas|write[- ]?in|scattered)$/i.test(
     value.trim(),
   );
 }
@@ -137,13 +150,22 @@ export function resolveJurisdictionTag(input: {
     return { jurisdictionTag: null, reason: "missing", candidates: [] };
   }
 
-  if (name && isNonGeographicName(name)) {
+  if (
+    (name && isNonGeographicName(name))
+    || (state === "ME" && code.toUpperCase() === "ME-STATE-UOCAVA")
+    || (state === "RI" && code.toUpperCase() === "RI-FEDERAL-PRECINCTS")
+  ) {
     return { jurisdictionTag: null, reason: "non_geographic", candidates: [] };
   }
 
+  const explicitParentCounty =
+    name.match(/,\s*([^,]+?\s+County)\b/i)?.[1]
+    ?? name.match(/^(.+?\s+County)\s+outside\b/i)?.[1]
+    ?? "";
   const candidateKeys = [
     name,
     name.split("/")[0] ?? "",
+    explicitParentCounty,
     code.replace(new RegExp(`^${state}[-_]`, "i"), ""),
     code.replace(new RegExp(`^${state}`, "i"), ""),
   ]
@@ -158,7 +180,7 @@ export function resolveJurisdictionTag(input: {
     }
   }
 
-  const rows = disambiguateAdministrativeKind(Array.from(candidates.values()), name, code);
+  const rows = disambiguateAdministrativeKind(Array.from(candidates.values()), name, code, String(input.level || ""));
   if (rows.length === 1) {
     return { jurisdictionTag: rows[0].jurisdictionTag, reason: "matched", candidates: rows };
   }

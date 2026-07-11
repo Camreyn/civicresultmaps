@@ -227,6 +227,7 @@ If two workers touch the same shared file, coordinate the smaller PR first or sp
 Workers should verify the relevant state appears through the public API or UI path:
 
 - `/api/states`
+- `/api/jurisdictions?state=<STATE>&fips=<GEOID>` (canonical current Census county/county-equivalent FIPS registry)
 - `/api/results?state=<STATE>&year=2024`
 - `/api/sources?state=<STATE>&year=2024`
 - `/api/coverage?state=<STATE>&year=2024`

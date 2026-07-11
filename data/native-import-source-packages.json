@@ -15,6 +15,7 @@
     "CA",
     "CO",
     "CT",
+    "DC",
     "DE",
     "FL",
     "GA",
@@ -1168,7 +1169,7 @@
       "state": "MO",
       "name": "Missouri",
       "priority": 15,
-      "nativeReadiness": "complete_county_map_county_review_turnout_historical_admin_inventory_precinct_file_purchase_blocker",
+      "nativeReadiness": "complete_115_county_fips_map_review_turnout_historical_admin_inventory",
       "authority": "Missouri Secretary of State",
       "configFile": "etl/state-configs/mo.json",
       "legacyReferenceBundle": "data/mo-2024-general-results-by-county.pdf",
@@ -1176,24 +1177,25 @@
         "presidentialCountyResults": {
           "sourceTitle": "Missouri SOS official 2024 general election results by county PDF and normalized presidential CSV",
           "sourceUrl": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
-          "localFile": "data/mo-2024-general-president.csv",
-          "parserHint": "countyPresidentCsv rows extracted from the official SOS results-by-county PDF and cross-checked against the official grand total PDF."
+          "localFile": "data/mo-2024-general-president-county.csv",
+          "parserHint": "scripts/normalize-mo-sos-pdfs.mjs retains the 116 official election-authority rows and emits 115 canonical Census-county rows. Kansas City within Jackson County is summed with Jackson outside Kansas City into county:29095 with zero statewide delta."
         },
         "localReviewRows": {
           "sourceTitle": "Missouri SOS official 2024 general election results by county PDF and normalized U.S. Senate CSV",
           "sourceUrl": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/ActualResults-November52024.pdf",
-          "localFile": "data/mo-2024-general-senate.csv",
-          "level": "county_reporting_jurisdiction",
+          "localFile": "data/mo-2024-general-senate-county.csv",
+          "level": "county",
           "comparisonContest": "U.S. Senate",
-          "parserHint": "countyComparisonCsv rows compare President and U.S. Senate at the same county/reporting-jurisdiction grain; Kansas City is a separate reporting jurisdiction in the source PDF."
+          "parserHint": "Canonical President-versus-U.S.-Senate comparison rows cover 115 county/county-equivalent FIPS tags. Jackson County combines the two official SOS authority rows and reconciles exactly."
         },
         "turnout": {
           "sourceTitle": "Missouri SOS official 2024 General Election voter turnout report",
           "sourceUrl": "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/Nov2024OfficialVoterTurnout.pdf",
-          "localFile": "data/mo-2024-general-turnout.csv",
-          "level": "jurisdiction",
+          "localFile": "data/mo-2024-general-turnout-county.csv",
+          "level": "county",
           "denominator": "registered voters from SOS turnout report",
-          "ballotsCast": "actual voters from SOS turnout report"
+          "ballotsCast": "actual voters from SOS turnout report",
+          "parserHint": "Canonical 115-county turnout rows retain official actual-voter and registered-voter totals; Jackson combines Kansas City-within-Jackson and Jackson-outside-Kansas-City."
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
@@ -1201,30 +1203,43 @@
           "localFile": "data/mo-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Missouri SOS official 2012/2016/2020 presidential county baselines",
+          "sourceUrl": "https://www.sos.mo.gov/elections/results",
+          "localFile": "data/mo-historical-presidential-county-baseline.csv",
+          "level": "county",
+          "years": [
+            2012,
+            2016,
+            2020
+          ],
+          "parserHint": "Canonical 115-county rows per year with explicit county:<GEOID> tags and zero statewide deltas; Kansas City is aggregated into Jackson County FIPS 29095."
         }
       },
       "expected": {
-        "countyRows": 116,
+        "countyRows": 115,
         "geometryFeatures": 115,
         "stateTotal": 2995327,
         "trump": 1751986,
         "harris": 1200599,
         "other": 42742,
-        "localReviewRows": 116,
-        "turnoutRows": 116
+        "localReviewRows": 115,
+        "turnoutRows": 115,
+        "historicalBaselineRows": 345
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
-        "reviewMode": "president_vs_senate_dropoff_county_reporting_jurisdiction_pdf",
-        "turnoutMode": "sos_2024_registered_voter_turnout_report"
+        "reviewMode": "president_vs_senate_115_canonical_county_fips",
+        "turnoutMode": "sos_2024_115_canonical_county_rows",
+        "historicalBaselineMode": "official_2012_2016_2020_115_county_fips_rows"
       },
       "caveats": [
-        "Review rows are county/reporting-jurisdiction advisory inputs, not precinct scatter plots.",
-        "The SOS results page says precinct-level general election data files are available for purchase from the Elections Division, so subcounty advisory rows remain blocked until that file is obtained.",
-        "Kansas City is reported separately from counties in the SOS PDFs and does not have a separate county polygon in the loaded Census county geometry.",
-        "Historical 2012/2016/2020 presidential baselines are loaded from official SOS PDFs; the 2016 PDF does not expose county-level write-in detail, so other/total values use visible-column sums.",
-        "Administration-source inventory is recorded in data/mo-2024-admin-source-inventory.json, and data/mo-2024-source-request-tracker.json records the precinct-file, geometry/crosswalk, Kansas City display, audit, CVR, incident/correction, recount, and litigation request fields. Normalized audit, CVR availability, incident/correction, recount, and litigation rows are not loaded."
+        "Official source PDFs expose 116 local election-authority rows. The SOS authority list identifies Kansas City within Jackson County and Jackson outside Kansas City, so the canonical package sums them into county:29095.",
+        "Review rows are official county-level advisory inputs, not precinct scatter plots.",
+        "The 2016 historical PDF omits county-level write-in detail; other/total values remain visible-column sums.",
+        "Precinct-level President and Senate files remain purchasable/request-only, and normalized administration-context rows remain incomplete."
       ]
     },
     {
@@ -2682,7 +2697,7 @@
       "state": "HI",
       "name": "Hawaii",
       "priority": 11,
-      "nativeReadiness": "complete_county_map_precinct_split_review_state_native_turnout_2016_2020_historical_context_official_2016_2020_historical",
+      "nativeReadiness": "complete_five_county_map_precinct_split_review_state_native_turnout_2016_2020_historical_context",
       "authority": "Hawaii Office of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/hi.json",
       "artifacts": {
@@ -2690,7 +2705,7 @@
           "sourceTitle": "Hawaii Office of Elections 2024 General Election text exports",
           "sourceUrl": "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
           "localFile": "data/hi-2024-general-summary.txt; data/hi-2024-general-precinct-detail.txt",
-          "parserHint": "nativeHawaiiOfficeText decodes UTF-16 exports, skips the Format#1 banner, cross-checks certified statewide President totals from summary.txt, and aggregates county rows from numbered precinct/split rows in media.txt."
+          "parserHint": "nativeHawaiiOfficeText decodes the official UTF-16 exports, reconciles certified statewide totals, and emits all five county/county-equivalent rows. Exact precinct 13-09 split IDs 78 and 487 are pinned to Kalawao FIPS 15005 using official election-map and boundary evidence."
         },
         "localReviewRows": {
           "sourceTitle": "Hawaii Office of Elections 2024 General Election precinct detail text export",
@@ -2715,7 +2730,7 @@
           "localFile": "data/hi-counties.geojson",
           "nameProperty": "NAME",
           "codeProperty": "COUNTY",
-          "parserHint": "County geometry supports four loaded result counties plus Kalawao geometry. Precinct boundary geometry and precinct_splitId crosswalks are not loaded."
+          "parserHint": "County geometry supports all five loaded result counties. The reviewed official HD 13 map and statewide boundary description identify precinct 13-09 as Kalawao; full precinct geometry remains unloaded."
         },
         "coverageInventory": {
           "sourceTitle": "Hawaii 2024 data coverage and administration source inventory",
@@ -2738,11 +2753,11 @@
             2016,
             2020
           ],
-          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs aggregates official precinct detail President rows to the four counties reported by Hawaii election exports and writes county:<GEOID> jurisdiction tags. Kalawao is not forced."
+          "parserHint": "scripts/normalize-hi-historical-presidential-baseline.mjs emits five county/county-equivalent rows per year. Precinct 13-09 is pinned to county:15005 with exact 2016/2020 vote tuples, Maui residuals, and statewide-zero-delta gates."
         }
       },
       "expected": {
-        "countyRows": 4,
+        "countyRows": 5,
         "geometryFeatures": 5,
         "stateTotal": 516701,
         "trump": 193661,
@@ -2750,26 +2765,26 @@
         "other": 9996,
         "localReviewRows": 467,
         "turnoutRows": 4,
-        "historicalBaselineRows": 8
+        "historicalBaselineRows": 10
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_senate_precinct_split_nonzero_numbered_units",
         "turnoutMode": "official_hawaii_office_registration_turnout_statistics_county_rows",
-        "historicalBaselineMode": "official_source_paths_identified_not_loaded",
+        "historicalBaselineMode": "official_2016_2020_five_county_baseline_with_kalawao_15005",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized"
       },
       "caveats": [
-        "The county result rows are aggregated from official numbered precinct/split rows using documented 2024 district ranges: 01-08 Hawaii, 09-14 Maui, 15-17 Kauai, and 18-51 Honolulu. Kalawao has no separate Office of Elections result or turnout county row.",
-        "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys; the 467 retained review rows still aggregate to the certified statewide presidential total.",
-        "Active turnout now uses Hawaii Office of Elections 2024 General Election registration and turnout statistics: 4 county rows, 522,236 turnout, and 860,868 registered voters. EAC remains retained as a benchmark; its 5-row fallback included a warning-required Kalawao placeholder and a 465-voter higher registered-voter denominator.",
-        "County geometry is loaded; precinct boundaries/crosswalks are not loaded.",
+        "Precinct 13-09 is assigned to Kalawao County FIPS 15005 from official Hawaii election-map and precinct-boundary evidence; exact current and historical tuples and Maui residuals fail closed.",
+        "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys; 467 retained review rows still reconcile to the certified statewide total.",
+        "Active turnout uses four Hawaii Office election-county rows. The source table does not split Kalawao turnout or registration, so no denominator is invented for FIPS 15005.",
+        "County geometry is loaded; full precinct boundaries/crosswalks are not loaded.",
         "Advisory review rows are public-interest source-review inputs only, not findings of fraud or misconduct.",
-        "Official 2012/2016/2020 historical baselines and normalized audit, CVR availability, recount, incident, correction, and litigation rows remain missing."
+        "Official 2012 historical baselines and normalized administration-context rows remain missing."
       ],
       "legacyReferenceBundle": "data/hi-2024-data-coverage-inventory.json",
-      "nextAction": "Normalize state-native turnout, collect precinct geometry/crosswalks, add official historical baseline rows, and normalize or request audit/CVR/recount/incident/correction/litigation context."
+      "nextAction": "Collect official 2012 historical rows, complete precinct geometry/crosswalks if subcounty overlays are pursued, and normalize administration context."
     },
     {
       "state": "NM",
@@ -3032,6 +3047,127 @@
         "Audit, CVR, recount, incident, correction, and litigation records remain request-tracked only.",
         "Advisory indicators are not evidence of fraud or misconduct."
       ]
+    },
+    {
+      "state": "AK",
+      "name": "Alaska",
+      "priority": 0,
+      "nativeReadiness": "statewide_results_with_30_county_equivalent_registry_tags_no_exact_allocation",
+      "authority": "Alaska Division of Elections; U.S. Census Bureau",
+      "configFile": "etl/state-configs/ak.json",
+      "legacyReferenceBundle": "data/ak-2024-data-coverage-inventory.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Alaska Division of Elections 2024 General Election Summary",
+          "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
+          "localFile": "data/ak-2024-general-president-statewide.csv",
+          "parserHint": "Official certified presidential totals remain one statewide, untagged row; no county-equivalent allocation is inferred."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Alaska Division of Elections ENR by precinct export",
+          "sourceUrl": "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
+          "localFile": "data/ak-2024-general-enr-by-precinct.csv; data/ak-2024-general-precinct-president-us-house-review.csv",
+          "level": "precinct_reporting_unit",
+          "parserHint": "Reporting units include district-only absentee, early, and questioned ballots and are not forced into county FIPS tags."
+        },
+        "turnout": {
+          "sourceTitle": "EAC 2024 Alaska statewide turnout fallback",
+          "sourceUrl": "https://www.eac.gov/research-and-data/studies-and-reports",
+          "localFile": "data/eac-2024-state-turnout/ak-2024-eac-turnout.csv",
+          "level": "state",
+          "parserHint": "Statewide fallback only; no county-equivalent turnout denominator is inferred."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb current Alaska county-equivalent geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2702%27&outFields=GEOID%2CSTATE%2CCOUNTY%2CNAME%2CBASENAME&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/ak-counties.geojson",
+          "parserHint": "All 30 current county-equivalent FIPS tags are canonical metadata only until an exact election-result crosswalk exists."
+        }
+      },
+      "expected": {
+        "countyRows": 0,
+        "geometryFeatures": 30,
+        "stateTotal": 338177,
+        "trump": 184458,
+        "harris": 140026,
+        "other": 13693,
+        "localReviewRows": 523,
+        "turnoutRows": 1
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "official_reporting_units_unforced",
+        "turnoutMode": "statewide_fallback",
+        "countyFipsStatus": "30_current_registry_tags_no_exact_result_allocation"
+      },
+      "caveats": [
+        "Twelve 2024 House districts span multiple county equivalents and contain district-only ballots; assigning those votes to county FIPS would fabricate geography.",
+        "The 2016 Valdez-Cordova vintage split also requires a reviewed current-geography allocation.",
+        "Alaska result rows remain statewide and untagged while the 30 current Census county-equivalent tags are queryable as canonical metadata."
+      ],
+      "nextAction": "Request official county-equivalent totals or ballot-to-home-precinct mappings for 2016, 2020, and 2024."
+    },
+    {
+      "state": "DC",
+      "name": "District of Columbia",
+      "priority": 0,
+      "nativeReadiness": "complete_single_county_equivalent_2016_2020_2024",
+      "authority": "District of Columbia Board of Elections; U.S. Census Bureau",
+      "configFile": "etl/state-configs/dc.json",
+      "legacyReferenceBundle": "data/dc-presidential-normalization-summary.json",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "D.C. Board of Elections 2024 certified precinct results",
+          "sourceUrl": "https://electionresults.dcboe.org/Downloads/Reports/November_5_2024_General_Election_Certified_Results.csv",
+          "localFile": "data/dc-2024-general-election-certified-results.csv; data/dc-2024-general-president-county-equivalent.csv",
+          "parserHint": "scripts/normalize-dc-certified-results.mjs verifies the official source hash and aggregates candidate votes to county:11001."
+        },
+        "localReviewRows": {
+          "sourceTitle": "D.C. Board of Elections certified result export",
+          "sourceUrl": "https://electionresults.dcboe.org/Downloads/Reports/November_5_2024_General_Election_Certified_Results.csv",
+          "localFile": "data/dc-presidential-normalization-summary.json",
+          "level": "not_loaded",
+          "parserHint": "No same-grain comparison contest is loaded; the summary records this explicit zero-row scope."
+        },
+        "turnout": {
+          "sourceTitle": "D.C. Board of Elections certified result export",
+          "sourceUrl": "https://electionresults.dcboe.org/Downloads/Reports/November_5_2024_General_Election_Certified_Results.csv",
+          "localFile": "data/dc-presidential-normalization-summary.json",
+          "level": "not_loaded",
+          "parserHint": "Candidate totals are loaded; a reviewed registration/ballots-cast denominator package is not yet active."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb District of Columbia county-equivalent geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2711%27&outFields=GEOID%2CSTATE%2CCOUNTY%2CNAME%2CBASENAME&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/dc-counties.geojson",
+          "parserHint": "Single county-equivalent GEOID 11001."
+        }
+      },
+      "expected": {
+        "countyRows": 1,
+        "geometryFeatures": 1,
+        "stateTotal": 325869,
+        "trump": 21076,
+        "harris": 294185,
+        "other": 10608,
+        "localReviewRows": 0,
+        "turnoutRows": 0,
+        "historicalBaselineRows": 2
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "not_loaded",
+        "turnoutMode": "not_loaded",
+        "historicalBaselineMode": "official_2016_2020_single_county_equivalent"
+      },
+      "caveats": [
+        "D.C. is one Census county-equivalent; official precinct votes aggregate exactly to county:11001.",
+        "Overvotes and undervotes are reconciled but excluded from candidate-vote totals.",
+        "Review and turnout denominator packages are not yet loaded."
+      ],
+      "nextAction": "Add a same-grain comparison contest and reviewed turnout denominator if needed; county FIPS coverage is complete."
     }
   ],
   "sourceDiscoveryQueue": [

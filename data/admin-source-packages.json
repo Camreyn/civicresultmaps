@@ -285,6 +285,30 @@
       }
     },
     {
+      "state": "DC",
+      "stateName": "District of Columbia",
+      "electionYear": 2024,
+      "status": "partial",
+      "priority": "standard",
+      "equipment": {
+        "status": "needs_data",
+        "reportingLevel": "county_equivalent",
+        "why": "A reviewed D.C. equipment context package is not loaded; absence is not evidence about equipment use."
+      },
+      "audit": {
+        "status": "needs_data",
+        "why": "D.C. 2024 post-election audit selection and outcome artifacts are not normalized."
+      },
+      "cvr": {
+        "status": "needs_data",
+        "why": "D.C. 2024 CVR availability and release status are not normalized."
+      },
+      "incidents": {
+        "status": "needs_data",
+        "why": "D.C. incident, correction, recount, and litigation context is not normalized."
+      }
+    },
+    {
       "state": "DE",
       "stateName": "Delaware",
       "electionYear": 2024,

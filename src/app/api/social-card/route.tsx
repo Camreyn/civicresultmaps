@@ -21,7 +21,7 @@ const rawGeoBaseUrl = "https://raw.githubusercontent.com/Camreyn/civicresultmaps
 const nationalTileOrder = [
   "WA", "ID", "MT", "ND", "MN", "WI", "MI", "NY", "VT", "ME",
   "OR", "NV", "WY", "SD", "IA", "IL", "IN", "OH", "PA", "NH",
-  "CA", "UT", "CO", "NE", "MO", "KY", "WV", "VA", "MD", "MA",
+  "CA", "UT", "CO", "NE", "MO", "KY", "WV", "VA", "MD", "DC", "MA",
   "AK", "AZ", "NM", "KS", "AR", "TN", "NC", "SC", "DE", "RI",
   "HI", "OK", "TX", "LA", "MS", "AL", "GA", "FL", "NJ", "CT",
 ];

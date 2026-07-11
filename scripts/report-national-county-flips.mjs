@@ -41,12 +41,13 @@ async function api(route) {
 }
 
 function tagFor(row, state, levelField = "level") {
-  return row.jurisdictionTag ?? jurisdictionTagForRow({
+  const tag = row.jurisdictionTag ?? jurisdictionTagForRow({
     state,
     jurisdictionCode: row.jurisdictionCode,
     jurisdictionName: row.jurisdictionName,
     level: row[levelField],
   });
+  return tag?.startsWith("county:") ? tag : null;
 }
 
 function colorForResultRow(row) {

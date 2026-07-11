@@ -68,6 +68,8 @@ def _county_name(raw: Any) -> str:
     value = str(raw or "").strip()
     if not value or value.lower() in {"multiple counties", "total", "percentage"}:
         return ""
+    if re.fullmatch(r"district\s+of\s+columbia(?:\s+county)?", value, re.IGNORECASE):
+        return "District of Columbia"
     titled = value.title() if value.isupper() else value
     return titled if re.search(r"\bcounty\b$", titled, re.IGNORECASE) else f"{titled} County"
 
@@ -1708,9 +1710,12 @@ def _mississippi_election_recap_rows(
 HAWAII_COUNTY_CODES = {
     "Hawaii County": "001",
     "Honolulu County": "003",
+    "Kalawao County": "005",
     "Kauai County": "007",
     "Maui County": "009",
 }
+
+HAWAII_KALAWAO_PRECINCT = "13-09"
 
 
 def _hawaii_text_rows(source: SourceConfig) -> list[dict[str, str]]:
@@ -1735,6 +1740,9 @@ def _hawaii_text_rows(source: SourceConfig) -> list[dict[str, str]]:
 def _hawaii_precinct_county(precinct_name: str) -> str | None:
     if not re.match(r"^\d{2}-\d{2}$", str(precinct_name or "")):
         return None
+
+    if precinct_name == HAWAII_KALAWAO_PRECINCT:
+        return "Kalawao County"
 
     district = int(str(precinct_name).split("-", 1)[0])
     if 1 <= district <= 8:
@@ -1800,6 +1808,7 @@ def _hawaii_office_text_rows(
     }
     president_by_key: dict[str, dict[str, Any]] = {}
     senate_by_key: dict[str, dict[str, int]] = {}
+    kalawao_president_keys: set[str] = set()
     non_geographic_president_keys: set[str] = set()
     non_geographic_senate_keys: set[str] = set()
 
@@ -1820,6 +1829,8 @@ def _hawaii_office_text_rows(
             continue
 
         if contest_id == president_contest:
+            if precinct_name == HAWAII_KALAWAO_PRECINCT:
+                kalawao_president_keys.add(key)
             bucket = _hawaii_president_bucket(row.get("Candidate_name", ""))
             county_values = counties[county]
             county_values[bucket] += votes
@@ -1846,6 +1857,54 @@ def _hawaii_office_text_rows(
             )
             comparison_values[bucket] += votes
             comparison_values["total"] += votes
+
+    kalawao_config = result_section.get("kalawaoPrecinct", {})
+    expected_kalawao_name = str(kalawao_config.get("precinctName") or "")
+    expected_kalawao_split_ids = {str(value) for value in kalawao_config.get("precinctSplitIds", [])}
+    expected_kalawao = {
+        key: int_text(kalawao_config.get("expected", {}).get(key))
+        for key in ("harris", "trump", "other", "total")
+    }
+    actual_kalawao = counties["Kalawao County"]
+    kalawao_mismatches: dict[str, Any] = {}
+    if expected_kalawao_name != HAWAII_KALAWAO_PRECINCT:
+        kalawao_mismatches["precinctName"] = {
+            "actual": HAWAII_KALAWAO_PRECINCT,
+            "expected": expected_kalawao_name,
+        }
+    if kalawao_president_keys != expected_kalawao_split_ids:
+        kalawao_mismatches["precinctSplitIds"] = {
+            "actual": sorted(kalawao_president_keys),
+            "expected": sorted(expected_kalawao_split_ids),
+        }
+    for key, expected in expected_kalawao.items():
+        if actual_kalawao[key] != expected:
+            kalawao_mismatches[key] = {"actual": actual_kalawao[key], "expected": expected}
+    if kalawao_mismatches:
+        raise ValueError(f"Hawaii Kalawao precinct reconciliation failed: {kalawao_mismatches}")
+
+    expected_maui = {
+        key: int_text(kalawao_config.get("expectedMauiResidual", {}).get(key))
+        for key in ("harris", "trump", "other", "total")
+    }
+    actual_maui = counties["Maui County"]
+    maui_mismatches = {
+        key: {"actual": actual_maui[key], "expected": expected}
+        for key, expected in expected_maui.items()
+        if actual_maui[key] != expected
+    }
+    if maui_mismatches:
+        raise ValueError(f"Hawaii Maui residual reconciliation failed: {maui_mismatches}")
+
+    county_aggregate = {
+        key: sum(values[key] for values in counties.values())
+        for key in ("harris", "trump", "other", "total")
+    }
+    summary_aggregate = {**summary_values, "total": summary_total}
+    if county_aggregate != summary_aggregate:
+        raise ValueError(
+            f"Hawaii county-to-summary reconciliation failed: {county_aggregate} != {summary_aggregate}"
+        )
 
     result_rows = [
         {
@@ -1918,6 +1977,12 @@ def _hawaii_office_text_rows(
         "nativeHawaiiSummaryTrumpVotes": summary_values["trump"],
         "nativeHawaiiSummaryHarrisVotes": summary_values["harris"],
         "nativeHawaiiSummaryOtherVotes": summary_values["other"],
+        "nativeHawaiiKalawaoPrecinct": HAWAII_KALAWAO_PRECINCT,
+        "nativeHawaiiKalawaoPrecinctSplitIds": sorted(kalawao_president_keys),
+        "nativeHawaiiKalawaoTotalVotes": actual_kalawao["total"],
+        "nativeHawaiiKalawaoHarrisVotes": actual_kalawao["harris"],
+        "nativeHawaiiKalawaoTrumpVotes": actual_kalawao["trump"],
+        "nativeHawaiiKalawaoOtherVotes": actual_kalawao["other"],
         "nativeHawaiiNonGeographicPresidentKeysExcluded": len(non_geographic_president_keys),
         "nativeHawaiiNonGeographicSenateKeysExcluded": len(non_geographic_senate_keys),
         "nativeHawaiiZeroVoteNumberedPresidentKeysSkipped": sum(1 for values in president_by_key.values() if not values["total"]),

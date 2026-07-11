@@ -1,0 +1,96 @@
+{
+  "state": "DC",
+  "authority": "District of Columbia Board of Elections",
+  "parser": "scripts/normalize-dc-certified-results.mjs",
+  "reportingGrain": "official precinct rows aggregated to the single Census county-equivalent",
+  "jurisdiction": {
+    "state": "DC",
+    "name": "District of Columbia",
+    "geoid": "11001",
+    "tag": "county:11001",
+    "level": "county"
+  },
+  "sources": [
+    {
+      "year": 2016,
+      "id": "dc-2016-general-election-certified-results",
+      "url": "https://electionresults.dcboe.org/Downloads/Reports/November_8_2016_General_Election_Certified_Results.csv",
+      "localFile": "data/dc-2016-general-election-certified-results.csv",
+      "sha256": "2d18520c7be0f01fc5682935e7269230aed193ed8c9df8b4b0aa695e3f1893da",
+      "sourceRows": 8724,
+      "presidentRows": 1001,
+      "reportingUnits": 143,
+      "candidateVotes": {
+        "dem": 282830,
+        "rep": 12723,
+        "other": 15715,
+        "total": 311268
+      },
+      "excludedNonCandidateMarks": {
+        "overvotes": 243,
+        "undervotes": 1064
+      }
+    },
+    {
+      "year": 2020,
+      "id": "dc-2020-general-election-certified-results",
+      "url": "https://electionresults.dcboe.org/Downloads/Reports/November_3_2020_General_Election_Certified_Results.csv",
+      "localFile": "data/dc-2020-general-election-certified-results.csv",
+      "sha256": "fe4d855fa5fe5b2b73155a58f0c7874d0e6dfe93d8f6e105bd9cfa6ff09b130e",
+      "sourceRows": 10502,
+      "presidentRows": 1008,
+      "reportingUnits": 144,
+      "candidateVotes": {
+        "dem": 317323,
+        "rep": 18586,
+        "other": 8447,
+        "total": 344356
+      },
+      "excludedNonCandidateMarks": {
+        "overvotes": 0,
+        "undervotes": 0
+      }
+    },
+    {
+      "year": 2024,
+      "id": "dc-2024-general-election-certified-results",
+      "url": "https://electionresults.dcboe.org/Downloads/Reports/November_5_2024_General_Election_Certified_Results.csv",
+      "localFile": "data/dc-2024-general-election-certified-results.csv",
+      "sha256": "0156d194d452b5688cee45cae5d18316f26e20e6493c2dddd0c8b63b4c64fa4a",
+      "sourceRows": 9272,
+      "presidentRows": 864,
+      "reportingUnits": 144,
+      "candidateVotes": {
+        "dem": 294185,
+        "rep": 21076,
+        "other": 10608,
+        "total": 325869
+      },
+      "excludedNonCandidateMarks": {
+        "overvotes": 460,
+        "undervotes": 2075
+      }
+    }
+  ],
+  "outputs": {
+    "current": {
+      "localFile": "data/dc-2024-general-president-county-equivalent.csv",
+      "rowCount": 1,
+      "sha256": "ff0348503979cf730756bd3298e239c3ea057f7a7ef849de7d5a276767cb8c06"
+    },
+    "historical": {
+      "localFile": "data/dc-historical-presidential-baseline.csv",
+      "rowCount": 2,
+      "years": [
+        2016,
+        2020
+      ],
+      "sha256": "67b27ec2e539a182cc74eb8b6c6bcc3c84bb830be3e1b7ff1c73ec9a88a164ea"
+    }
+  },
+  "caveats": [
+    "D.C. is a single Census county-equivalent (GEOID 11001); precinct rows are aggregated without inventing sub-county FIPS codes.",
+    "Overvotes and undervotes are retained in reconciliation metrics but excluded from candidate-vote totals.",
+    "Historical rows are contextual presidential baselines for canonical jurisdictionTag joins."
+  ]
+}
