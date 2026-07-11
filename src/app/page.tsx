@@ -145,7 +145,7 @@ export default async function Home({ searchParams }: HomeProps) {
   const selected = states.find((state) => state.code === selectedState);
   const selectedStateCode = selected?.code ?? selectedState;
   const selectedCompleteness = completenessReport.find((summary) => summary.state === selectedStateCode);
-  const totalVotes = results.reduce((sum, row) => sum + row.totalVotes, 0);
+  const totalVotes = statewideResultRows.reduce((sum, row) => sum + row.totalVotes, 0);
 
   return (
     <main className="app-shell">
