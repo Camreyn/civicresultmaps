@@ -86,6 +86,8 @@ export default async function Home({ searchParams }: HomeProps) {
     cityTownResults,
     townResults,
     stateResults,
+    federalPrecinctResults,
+    nonGeographicResults,
     sources,
     coverage,
     importRuns,
@@ -107,6 +109,8 @@ export default async function Home({ searchParams }: HomeProps) {
     listResults({ state: selectedState, year: selectedYear, level: "city_town" }),
     listResults({ state: selectedState, year: selectedYear, level: "town" }),
     listResults({ state: selectedState, year: selectedYear, level: "state" }),
+    listResults({ state: selectedState, year: selectedYear, level: "federal_precincts" }),
+    listResults({ state: selectedState, year: selectedYear, level: "non_geographic" }),
     listSources({ state: selectedState, year: selectedYear }),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     listImportRuns(),
@@ -122,6 +126,16 @@ export default async function Home({ searchParams }: HomeProps) {
     listSourceRecordsRequests({ state: selectedState, year: selectedYear }),
   ]);
   const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults.length ? cityTownResults : townResults.length ? townResults : stateResults;
+  const statewideResultRows = results[0]?.level === "state"
+    ? results
+    : Array.from(
+        new Map(
+          [...results, ...federalPrecinctResults, ...nonGeographicResults].map((row) => [
+            `${row.level}:${row.jurisdictionCode}`,
+            row,
+          ] as const),
+        ).values(),
+      );
   const resultLevelLabel =
     results[0]?.level === "city" || results[0]?.level === "city_town" || results[0]?.level === "town"
       ? "Municipality"
@@ -213,6 +227,7 @@ export default async function Home({ searchParams }: HomeProps) {
             indicators={indicators}
             reviewRows={reviewRows}
             results={results}
+            statewideResultRows={statewideResultRows}
             selectedCompleteness={selectedCompleteness}
             selectedState={selected}
             selectedStateCode={selectedStateCode}

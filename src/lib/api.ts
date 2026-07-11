@@ -41,7 +41,7 @@ export const officeQuery = z
   .default("president");
 
 export const levelQuery = z
-  .enum(["county", "state", "district", "precinct", "city", "city_town", "town"])
+  .enum(["county", "state", "district", "precinct", "city", "city_town", "town", "federal_precincts", "non_geographic"])
   .default("county");
 
 export function apiEnvelope<T>(data: T, meta: Record<string, unknown> = {}) {
