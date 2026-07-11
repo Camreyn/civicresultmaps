@@ -19,6 +19,7 @@ import { listVoteMethodRows as uncachedListVoteMethodRows } from "./vote-methods
 
 export const publicDataRevalidateSeconds = 15 * 60;
 export const publicDataStaleSeconds = 24 * 60 * 60;
+const publicDataCacheNamespace = "public-data-fips-2026-07-11";
 
 export const publicDataCacheHeaders = {
   "Cache-Control": `public, max-age=0, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
@@ -57,7 +58,7 @@ export function apiEnvelope<T>(data: T, meta: Record<string, unknown> = {}) {
 
 export const getCoverageSummary = unstable_cache(
   uncachedGetCoverageSummary,
-  ["public-data", "coverage-summary"],
+  [publicDataCacheNamespace, "coverage-summary"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
@@ -65,13 +66,13 @@ export const listCompletenessReport = uncachedListCompletenessReport;
 
 export const listEquipmentRows = unstable_cache(
   uncachedListEquipmentRows,
-  ["public-data", "equipment-rows"],
+  [publicDataCacheNamespace, "equipment-rows"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
 export const listHistoricalResultRows = unstable_cache(
   uncachedListHistoricalResultRows,
-  ["public-data", "historical-result-rows"],
+  [publicDataCacheNamespace, "historical-result-rows"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
@@ -79,13 +80,13 @@ export const listIndicators = uncachedListIndicators;
 
 export const listElections = unstable_cache(
   uncachedListElections,
-  ["public-data", "elections"],
+  [publicDataCacheNamespace, "elections"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
 export const listImportRuns = unstable_cache(
   uncachedListImportRuns,
-  ["public-data", "import-runs"],
+  [publicDataCacheNamespace, "import-runs"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
@@ -93,13 +94,13 @@ export const listReviewRows = uncachedListReviewRows;
 
 export const listResults = unstable_cache(
   uncachedListResults,
-  ["public-data", "results"],
+  [publicDataCacheNamespace, "results"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
 export const listSources = unstable_cache(
   uncachedListSources,
-  ["public-data", "sources"],
+  [publicDataCacheNamespace, "sources"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
@@ -107,13 +108,13 @@ export const listStates = uncachedListStates;
 
 export const listTurnoutRows = unstable_cache(
   uncachedListTurnoutRows,
-  ["public-data", "turnout-rows"],
+  [publicDataCacheNamespace, "turnout-rows"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
 export const listVoteMethodRows = unstable_cache(
   uncachedListVoteMethodRows,
-  ["public-data", "vote-method-rows"],
+  [publicDataCacheNamespace, "vote-method-rows"],
   { revalidate: publicDataRevalidateSeconds },
 );
 
