@@ -75,7 +75,8 @@
         "state House District GeoJSON",
         "official results page evidence",
         "ENR turnout field semantics JSON",
-        "official source request packet JSON"
+        "official source request packet JSON",
+        "current Census county-equivalent GeoJSON"
       ],
       "sourceUrls": [
         "https://www.elections.alaska.gov/election-results/",
@@ -86,7 +87,8 @@
         "https://www.elections.alaska.gov/results/24GENR/ENRbyPrecinct.csv",
         "https://www.elections.alaska.gov/results/24GENR/RCV-USRep.pdf",
         "https://www.elections.alaska.gov/results/24GENR/CVR_Export_20241130154411.zip",
-        "https://www.elections.alaska.gov/contact-us/"
+        "https://www.elections.alaska.gov/contact-us/",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2702%27&outFields=GEOID%2CSTATE%2CCOUNTY%2CNAME%2CBASENAME&returnGeometry=true&outSR=4326&f=geojson"
       ],
       "exampleUrls": [
         "https://www.elections.alaska.gov/results/24GENR/ElectionSummaryReport.pdf",
@@ -102,20 +104,22 @@
         "state-level equipment context from Verified Voting",
         "official CVR ZIP and RCV report URLs documented as follow-up context",
         "ENR Reg_voters and total_ballots statewide reconciliation evidence matching EAC fallback and summary Times Cast totals",
-        "official request packet covering write-ins, geometry/crosswalk, turnout semantics, historical baselines, CVR, audit, recount, incident, correction, and litigation fields"
+        "official request packet covering write-ins, geometry/crosswalk, turnout semantics, historical baselines, CVR, audit, recount, incident, correction, and litigation fields",
+        "all 30 current Census county-equivalent FIPS tags and geometry"
       ],
       "missingFields": [
         "U.S. House write-in allocation by precinct/reporting unit or source confirmation of omission",
         "geometry/crosswalk for mixed precinct, absentee, early, question, remote, and HD99 reporting units",
         "state-native lower-grain turnout denominator rows reviewed for denominator timing",
         "loaded 2012/2016/2020 historical baselines",
-        "normalized official audit, recount, CVR availability, incident, correction, and litigation rows"
+        "normalized official audit, recount, CVR availability, incident, correction, and litigation rows",
+        "exact county-equivalent presidential allocations for 2016, 2020, and 2024"
       ],
-      "parserStatus": "statewide President rows load from scripts/normalize-ak-election-summary.mjs; official ENRbyPrecinct.csv is retained and scripts/normalize-ak-enr-by-precinct.mjs generates 523 localComparisonCsv review rows at precinct/reporting-unit grain with a 750-vote U.S. House write-in caveat; scripts/report-ak-enr-turnout-semantics.mjs confirms ENR Reg_voters/total_ballots reconcile statewide but active turnout remains EAC fallback pending source-side semantics",
+      "parserStatus": "statewide President rows load from scripts/normalize-ak-election-summary.mjs; official ENRbyPrecinct.csv is retained and scripts/normalize-ak-enr-by-precinct.mjs generates 523 localComparisonCsv review rows at precinct/reporting-unit grain with a 750-vote U.S. House write-in caveat; scripts/report-ak-enr-turnout-semantics.mjs confirms ENR Reg_voters/total_ballots reconcile statewide but active turnout remains EAC fallback pending source-side semantics; data/ak-counties.geojson now supplies 30 canonical county-equivalent FIPS tags without changing statewide result grain",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "AK native staging includes official precinct/reporting-unit President versus U.S. House named-candidate first-choice review rows, but certified map results remain statewide only. The ENR precinct CSV omits U.S. House write-in rows, so comparison_other is 750 votes below the statewide summary. ENR turnout fields reconcile statewide after de-duplication, but absentee/early/question units carry ballots with zero registered voters; rows include non-geographic reporting units and should not be joined to geometry without a reviewed crosswalk.",
-      "nextAction": "Use data/ak-2024-official-source-request-packet.json to request/confirm U.S. House write-in allocation semantics for ENRbyPrecinct.csv, ENR Reg_voters/total_ballots denominator timing, reporting-unit geometry/crosswalk, official historical baselines, and administration-context records."
+      "caveats": "AK native staging includes official precinct/reporting-unit President versus U.S. House named-candidate first-choice review rows, but certified map results remain statewide only. The ENR precinct CSV omits U.S. House write-in rows, so comparison_other is 750 votes below the statewide summary. ENR turnout fields reconcile statewide after de-duplication, but absentee/early/question units carry ballots with zero registered voters; rows include non-geographic reporting units and should not be joined to geometry without a reviewed crosswalk. Twelve 2024 House districts span multiple county equivalents, so county election totals remain unavailable and no allocation is forced.",
+      "nextAction": "Request official county-equivalent totals or ballot-to-home-precinct mappings for 2016, 2020, and 2024, including a reviewed current-geography treatment for the 2016 Valdez-Cordova split."
     },
     {
       "state": "AL",
@@ -436,6 +440,44 @@
       "nextAction": "Collect an official 2012 baseline, review EMS report-download paths for precinct/ward rows or CVR availability, resolve EV/VV turnout semantics, and normalize audit/CVR/recount/incident/correction/litigation records if published or request-produced."
     },
     {
+      "state": "DC",
+      "stateName": "District of Columbia",
+      "jurisdictionName": "Statewide",
+      "scope": "statewide",
+      "dataFamily": "results_historical_geometry",
+      "tier": "tier_1_official_export_database",
+      "reportingGrain": "official_precinct_to_single_county_equivalent",
+      "exportFormats": [
+        "official certified CSV",
+        "normalized county-equivalent CSV",
+        "Census GeoJSON"
+      ],
+      "sourceUrls": [
+        "https://electionresults.dcboe.org/Downloads/Reports/November_8_2016_General_Election_Certified_Results.csv",
+        "https://electionresults.dcboe.org/Downloads/Reports/November_3_2020_General_Election_Certified_Results.csv",
+        "https://electionresults.dcboe.org/Downloads/Reports/November_5_2024_General_Election_Certified_Results.csv",
+        "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2711%27&outFields=GEOID%2CSTATE%2CCOUNTY%2CNAME%2CBASENAME&returnGeometry=true&outSR=4326&f=geojson"
+      ],
+      "exampleUrls": [
+        "https://electionresults.dcboe.org/Downloads/Reports/November_5_2024_General_Election_Certified_Results.csv"
+      ],
+      "availableFields": [
+        "official certified 2016, 2020, and 2024 presidential candidate votes",
+        "single county-equivalent FIPS 11001",
+        "official precinct counts and overvote/undervote reconciliation",
+        "Census county-equivalent geometry"
+      ],
+      "missingFields": [
+        "same-grain comparison contest",
+        "reviewed turnout and registration denominator package"
+      ],
+      "parserStatus": "scripts/normalize-dc-certified-results.mjs verifies reviewed source hashes and emits one 2024 row plus one historical row for each of 2016 and 2020, all joined to county:11001.",
+      "manualReviewBurden": "low",
+      "confidence": "loaded",
+      "caveats": "D.C. is one county-equivalent. Overvotes and undervotes are reconciled separately and excluded from candidate totals; no sub-county FIPS units are inferred.",
+      "nextAction": "Add comparison and turnout context if needed; county FIPS coverage is complete."
+    },
+    {
       "state": "DE",
       "stateName": "Delaware",
       "jurisdictionName": "Statewide",
@@ -593,7 +635,9 @@
         "https://files.hawaii.gov/elections/files/results/2016/general/summary.txt",
         "https://files.hawaii.gov/elections/files/results/2016/general/media.txt",
         "https://files.hawaii.gov/elections/files/results/2020/general/summary.txt",
-        "https://files.hawaii.gov/elections/files/results/2020/general/media.txt"
+        "https://files.hawaii.gov/elections/files/results/2020/general/media.txt",
+        "https://files.hawaii.gov/elections/files/maps/Election2024Maps/HD_13.pdf",
+        "https://files.hawaii.gov/elections/files/maps/precincttext/Precinct-Boundary-Descriptions-Statewide.pdf"
       ],
       "exampleUrls": [
         "https://files.hawaii.gov/elections/files/results/2024/General/summary.txt",
@@ -615,7 +659,8 @@
         "official precinct/split registered-voter and ballots fields in precinct detail text retained as turnout lead context",
         "state-native turnout and registration table lead",
         "supplemental county equipment context",
-        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags"
+        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags",
+        "Kalawao County FIPS 15005 result rows for 2016, 2020, and 2024 from exact precinct 13-09"
       ],
       "missingFields": [
         "precinct boundary geometry or official precinct_splitId crosswalk",
@@ -625,10 +670,10 @@
         "normalized audit, recount, CVR availability, incident, correction, and litigation rows",
         "official 2012 county or county-equivalent presidential baseline normalized into ETL"
       ],
-      "parserStatus": "nativeHawaiiOfficeText decodes the official 2024 UTF-16 summary and precinct-detail exports, aggregates four county President rows, emits 467 President-versus-U.S.-Senate review rows, and loads four state-native turnout rows generated by scripts/normalize-hi-turnout.mjs; scripts/normalize-hi-historical-presidential-baseline.mjs loads eight official 2016/2020 county baseline rows with Kalawao left unforced.",
+      "parserStatus": "nativeHawaiiOfficeText emits five 2024 county/county-equivalent President rows, 467 review rows, and four state-native turnout rows; the historical normalizer emits five rows each for 2016 and 2020. Exact Kalawao and Maui residual tuples fail closed.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "Review rows exclude 27 zero-vote numbered President precinct/split keys and three zero-vote non-geographic President keys (PRES, OS I, OS II). County labels are derived from official numbered precinct district ranges: 01-08 Hawaii, 09-14 Maui, 15-17 Kauai, and 18-51 Honolulu. Kalawao has county geometry and an EAC warning turnout row but no separate Office of Elections result county row. Turnout remains EAC fallback until the state-native turnout table is normalized and reconciled. Advisory outputs are source-review signals only, not claims of fraud or misconduct.",
+      "caveats": "Official map and boundary evidence identify precinct 13-09 as Kalawao County FIPS 15005. The Hawaii Office turnout table still has only four election-county rows, so no Kalawao turnout denominator is invented. Full precinct geometry remains unloaded.",
       "nextAction": "Collect official 2012 Hawaii historical baseline rows, precinct geometry/crosswalks if subcounty overlays are pursued, and normalized audit/CVR/recount/incident/correction/litigation records."
     },
     {
@@ -1266,16 +1311,17 @@
         "official PDF"
       ],
       "sourceUrls": [
-        "https://www.sos.mo.gov/elections/results"
+        "https://www.sos.mo.gov/elections/results",
+        "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority"
       ],
       "exampleUrls": [
         "https://www.sos.mo.gov/CMSImages/ElectionResultsStatistics/2024GeneralElection.pdf"
       ],
       "availableFields": [
-        "county/reporting-jurisdiction President rows",
-        "county/reporting-jurisdiction U.S. Senate comparison rows",
+        "canonical county President rows",
+        "canonical county U.S. Senate comparison rows",
         "state-native registered-voter turnout denominators",
-        "2012/2016/2020 official county/reporting-jurisdiction presidential historical baselines",
+        "2012/2016/2020 official canonical county presidential historical baselines",
         "Verified Voting equipment context",
         "official administration-source inventory for audit, CVR availability, incident/correction, recount, litigation, and qualified-system context"
       ],
@@ -1287,10 +1333,10 @@
         "county-by-county CVR availability records",
         "normalized incident/correction/recount/litigation rows"
       ],
-      "parserStatus": "countyPresidentCsv loaded for official county/reporting-jurisdiction results; normalizedTurnoutCsv and historicalPresidentialCsv generated from official Missouri SOS PDFs by scripts/normalize-mo-sos-pdfs.mjs; administration-source inventory recorded in data/mo-2024-admin-source-inventory.json",
+      "parserStatus": "scripts/normalize-mo-sos-pdfs.mjs retains official 116-authority source rows and emits 115 canonical county FIPS rows for President, Senate, turnout, and each historical year; Jackson County combines Kansas City-within-Jackson and Jackson-outside-Kansas-City with zero statewide delta.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_blocker",
-      "caveats": "County/reporting-jurisdiction review rows are official and source-cited, but they are not precinct-level advisory rows. Kansas City is a separate reporting jurisdiction in the SOS PDFs and does not have a separate county polygon. The 2016 historical baseline sums visible party columns because the by-county PDF does not expose county-level write-in detail.",
+      "caveats": "The official SOS authority list establishes that the Kansas City row is within Jackson County. Canonical outputs aggregate it to county:29095. Review rows remain county-level rather than precinct-level; the 2016 visible-column caveat remains.",
       "nextAction": "Use data/mo-2024-source-request-tracker.json to purchase or request Missouri SOS precinct-level general election files for 2024 President and U.S. Senate, then add precinct geometry and collect/normalize 2024 audit certificates, CVR availability rows, incidents, corrections, recounts, and litigation records."
     },
     {

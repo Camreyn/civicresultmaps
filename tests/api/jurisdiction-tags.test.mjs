@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { loadStagingJurisdictionReportSource } from "../../scripts/lib/staging-jurisdiction-report-source.mjs";
 import { readFinalizedRootEntry } from "../../scripts/lib/ri-finalized-zip.mjs";
-import { jurisdictionTagForRow } from "../../src/lib/jurisdiction-tags.ts";
+import { jurisdictionTagForRow, resolveJurisdictionTag } from "../../src/lib/jurisdiction-tags.ts";
 import JSZip from "jszip";
 import test from "node:test";
 
@@ -18,7 +18,8 @@ test("canonical jurisdiction registry resolves known FIPS aliases", () => {
   assert.equal(byTag.get("county:48283")?.aliases.includes("Lasalle County"), true);
   assert.equal(byTag.get("county:51510")?.displayName, "Alexandria city");
   assert.equal(byTag.get("county:09190")?.displayName, "Western Connecticut Planning Region");
-  assert.match(byTag.get("reporting:MO:KANSAS-CITY")?.caveat ?? "", /separate election jurisdiction/);
+  assert.equal(byTag.has("reporting:MO:KANSAS-CITY"), false);
+  assert.equal(registry.jurisdictions.filter((row) => row.jurisdictionTag.startsWith("county:")).length, 3144);
 });
 
 test("jurisdiction tag resolver handles known city/county and spelling ambiguities", () => {
@@ -33,10 +34,29 @@ test("jurisdiction tag resolver handles known city/county and spelling ambiguiti
     [{ state: "VA", jurisdictionName: "Fairfax County", jurisdictionCode: "VA-FAIRFAX", level: "county" }, "county:51059"],
     [{ state: "IL", jurisdictionName: "DeWITT County", jurisdictionCode: "IL-DEWITT", level: "county" }, "county:17039"],
     [{ state: "IL", jurisdictionName: "JoDAVIESS County", jurisdictionCode: "IL-JODAVIESS", level: "county" }, "county:17085"],
+    [{ state: "CA", jurisdictionName: "City and County of San Francisco", jurisdictionCode: "CA-075", level: "city and county" }, "county:06075"],
+    [{ state: "CO", jurisdictionName: "City and County of Broomfield", jurisdictionCode: "CO-014", level: "city and county" }, "county:08014"],
+    [{ state: "HI", jurisdictionName: "City and County of Honolulu", jurisdictionCode: "HI-003", level: "city and county" }, "county:15003"],
+    [{ state: "MD", jurisdictionName: "City of Baltimore", jurisdictionCode: "MD-510", level: "city" }, "county:24510"],
+    [{ state: "VA", jurisdictionName: "City of Alexandria", jurisdictionCode: "VA-510", level: "city" }, "county:51510"],
+    [{ state: "VA", jurisdictionName: "City of Winchester", jurisdictionCode: "VA-840", level: "city" }, "county:51840"],
+    [{ state: "MI", jurisdictionName: "Gd. Traverse County", jurisdictionCode: "MI-GD-TRAVERSE", level: "county" }, "county:26055"],
+    [{ state: "IL", jurisdictionName: "Du Page County", jurisdictionCode: "IL-DU-PAGE", level: "county" }, "county:17043"],
+    [{ state: "MD", jurisdictionName: "Prince Georges County", jurisdictionCode: "MD-PRINCE-GEORGES", level: "county" }, "county:24033"],
+    [{ state: "WI", jurisdictionName: "Merrill, Lincoln County", jurisdictionCode: "WI-LINCOLN-MERRILL-CITY", level: "city" }, "county:55069"],
+    [{ state: "WI", jurisdictionName: "Lincoln County outside Merrill", jurisdictionCode: "WI-LINCOLN-MERRILL-REST", level: "rest_of_county" }, "county:55069"],
+    [{ state: "IL", jurisdictionName: "La Salle County", jurisdictionCode: "IL-LA-SALLE", level: "county" }, "county:17099"],
+    [{ state: "MD", jurisdictionName: "Queen Annes County", jurisdictionCode: "MD-QUEEN-ANNES", level: "county" }, "county:24035"],
+    [{ state: "MD", jurisdictionName: "St. Marys County", jurisdictionCode: "MD-ST-MARYS", level: "county" }, "county:24037"],
   ];
   for (const [input, expected] of cases) {
     assert.equal(jurisdictionTagForRow(input), expected);
   }
+
+  assert.equal(jurisdictionTagForRow({ state: "CT", jurisdictionName: "Fairfield County", jurisdictionCode: "CT-001", level: "county" }), null);
+  assert.equal(jurisdictionTagForRow({ state: "VA", jurisdictionName: "", jurisdictionCode: "VA-515", level: "county" }), null);
+  assert.equal(resolveJurisdictionTag({ state: "ME", jurisdictionName: "State UOCAVA", jurisdictionCode: "ME-STATE-UOCAVA", level: "non_geographic" }).reason, "non_geographic");
+  assert.equal(resolveJurisdictionTag({ state: "RI", jurisdictionName: "Federal Precincts", jurisdictionCode: "RI-FEDERAL-PRECINCTS", level: "federal_precincts" }).reason, "non_geographic");
 });
 
 test("jurisdiction tag schema and API surface are wired", () => {
@@ -48,6 +68,8 @@ test("jurisdiction tag schema and API surface are wired", () => {
   const packageScripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
   const flipReport = readFileSync("scripts/report-national-county-flips.mjs", "utf8");
   const coverageReport = readFileSync("scripts/report-2024-county-list-coverage.mjs", "utf8");
+  const backfill = readFileSync("scripts/backfill-jurisdiction-tags.mjs", "utf8");
+  const nextConfig = readFileSync("next.config.ts", "utf8");
 
   assert.match(schema, /jurisdictionTag: text\("jurisdiction_tag"\)/);
   assert.match(types, /jurisdictionTag\?: string \| null/);
@@ -68,6 +90,10 @@ test("jurisdiction tag schema and API surface are wired", () => {
   assert.match(coverageReport, /--staging-dir=/);
   assert.match(coverageReport, /--overlay-states=/);
   assert.match(coverageReport, /stagingSource\.rowsForState/);
+  assert.match(flipReport, /startsWith\("county:"\)/);
+  assert.match(backfill, /--confirm-plan=/);
+  assert.match(backfill, /target\.jurisdiction_tag is null/);
+  assert.match(nextConfig, /canonical-jurisdictions\.json/);
 });
 
 test("jurisdiction flip wave coordination stays explicit", () => {

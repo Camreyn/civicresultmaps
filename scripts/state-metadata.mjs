@@ -6,6 +6,7 @@ export const states = [
   { code: "CA", name: "California", fips: "06" },
   { code: "CO", name: "Colorado", fips: "08" },
   { code: "CT", name: "Connecticut", fips: "09" },
+  { code: "DC", name: "District of Columbia", fips: "11" },
   { code: "DE", name: "Delaware", fips: "10" },
   { code: "FL", name: "Florida", fips: "12" },
   { code: "GA", name: "Georgia", fips: "13", priority: "swing" },

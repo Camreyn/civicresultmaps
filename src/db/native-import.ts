@@ -906,11 +906,19 @@ export async function promoteNativeStagingArtifact(path: string) {
     }
   }
 
+  const reviewTagsByJurisdictionCode = new Map<string, string>();
   let storedReviewRows = 0;
   for (const [index, row] of native.reviewRows.entries()) {
     const localUnit = row.localUnit || `review-row-${index + 1}`;
     const code = jurisdictionCode(stateCode, row.county);
     const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionCode: code, jurisdictionName: row.county, level: "county" });
+    const existingTag = reviewTagsByJurisdictionCode.get(code);
+    if (tag && existingTag && existingTag !== tag) {
+      throw new Error("Review rows resolve jurisdiction code " + code + " to multiple county tags.");
+    }
+    if (tag) {
+      reviewTagsByJurisdictionCode.set(code, tag);
+    }
     await sql`
       insert into review_rows (
         import_run_id,
@@ -971,7 +979,8 @@ export async function promoteNativeStagingArtifact(path: string) {
 
   let storedIndicatorRows = 0;
   for (const indicator of await analysisIndicatorsForNativeRows(stateCode, native.reviewRows)) {
-    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionCode: indicator.jurisdictionCode, jurisdictionName: indicator.county || indicator.jurisdictionName, level: indicator.level });
+    const tag = reviewTagsByJurisdictionCode.get(indicator.jurisdictionCode)
+      ?? jurisdictionTagForRow({ state: stateCode, jurisdictionCode: indicator.jurisdictionCode, jurisdictionName: indicator.county || indicator.jurisdictionName, level: indicator.level });
     await sql`
       insert into analysis_indicators (
         state_code,

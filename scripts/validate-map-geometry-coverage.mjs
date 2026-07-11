@@ -70,6 +70,10 @@ async function main() {
   const equipmentGeometry = [];
   for (const entry of stateStatuses) {
     const state = entry.state;
+    if (entry.equipment?.status !== "loaded") {
+      warnings.push(`${state} equipment geometry was not checked because its registry status is ${entry.equipment?.status ?? "missing"}.`);
+      continue;
+    }
     try {
       const geometry = await readGeoJson(equipmentAreaPath(state));
       equipmentGeometry.push({ expected: entry.equipment?.expectedJurisdictions ?? null, state, ...geometry });

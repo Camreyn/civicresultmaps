@@ -2,11 +2,11 @@
   "state": "AK",
   "stateName": "Alaska",
   "electionYear": 2024,
-  "checkedAt": "2026-07-06",
+  "checkedAt": "2026-07-10",
   "authority": "Alaska Division of Elections; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting",
   "completionDecision": {
     "decision": "materially_advanced_precinct_review_loaded_with_caveats",
-    "reason": "Wave 22 located and retained the official Alaska Division of Elections 2024 General ENRbyPrecinct.csv from the All Details page. The new normalized artifact loads 523 same-grain precinct/reporting-unit President versus U.S. Representative named-candidate first-choice review rows. Presidential totals reconcile exactly to the certified summary report; U.S. House named DEM/REP candidate totals reconcile exactly, while the ENR precinct CSV does not itemize 750 statewide U.S. House write-in votes included in the summary PDF. Certified map results remain statewide only and AK remains map-disabled until a reviewed geography/crosswalk decision is made."
+    "reason": "Wave 22 located and retained the official Alaska Division of Elections 2024 General ENRbyPrecinct.csv from the All Details page. The new normalized artifact loads 523 same-grain precinct/reporting-unit President versus U.S. Representative named-candidate first-choice review rows. Presidential totals reconcile exactly to the certified summary report; U.S. House named DEM/REP candidate totals reconcile exactly, while the ENR precinct CSV does not itemize 750 statewide U.S. House write-in votes included in the summary PDF. Certified map results remain statewide only and AK remains map-disabled until a reviewed geography/crosswalk decision is made. Official Census TIGERweb geometry now supplies all 30 Alaska borough/census-area/municipality county-equivalent FIPS entries to the canonical registry, but no official reviewed election-reporting-unit crosswalk exists; the certified Alaska result therefore remains statewide and untagged rather than being forced into those FIPS."
   },
   "loadedArtifacts": [
     {
@@ -115,6 +115,20 @@
         "officialSourceLeads": 6
       },
       "caveat": "Request packet only; it does not replace loaded official results, EAC turnout fallback, or advisory indicator inputs."
+    },
+    {
+      "id": "ak-county-equivalent-boundary",
+      "sourceTitle": "U.S. Census TIGERweb Alaska county-equivalent boundaries",
+      "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2702%27&outFields=GEOID%2CSTATE%2CCOUNTY%2CNAME%2CBASENAME&returnGeometry=true&outSR=4326&f=geojson",
+      "localArtifact": "data/ak-counties.geojson",
+      "parser": "scripts/build-canonical-jurisdictions.mjs",
+      "reportingGrain": "county_equivalent_geometry",
+      "sourceArtifactSha256": "25633feb37dd8c8cce7483860c8af35fd88f9c08b252f84a4089b3681438bc10",
+      "expectedCounts": {
+        "countyEquivalentFeatures": 30,
+        "canonicalCountyFipsTags": 30
+      },
+      "caveat": "Registry and geometry coverage only. Alaska's certified 2024 result is statewide, and the 523 ENR rows mix precincts with absentee, early, question, remote, and HD99-style reporting units. Do not allocate those votes to borough/census-area FIPS without an official reviewed crosswalk."
     }
   ],
   "sourceNeeds": [
@@ -126,7 +140,7 @@
     {
       "id": "ak-precinct-reporting-unit-geometry-crosswalk",
       "neededArtifact": "Official precinct/reporting-unit geometry or a reviewed crosswalk that safely handles Election Day precincts plus absentee, early, question, remote, and HD99-style reporting units.",
-      "blocker": "House District geometry exists, but normalized review rows are mixed reporting units rather than geometry-ready precinct polygons."
+      "blocker": "Official Census geometry now covers all 30 Alaska county-equivalents for registry purposes, but the 523 normalized election rows mix Election Day precincts with absentee, early, question, remote, and HD99-style reporting units. Census polygons alone do not provide a vote-allocation crosswalk; keep the certified result statewide and untagged until an official reviewed crosswalk exists."
     },
     {
       "id": "ak-state-native-turnout-local-denominator",
@@ -155,6 +169,7 @@
     "U.S. House comparison rows are ranked-choice first-choice named-candidate rows and omit 750 statewide write-in votes not itemized in the ENR precinct CSV.",
     "Rows include Election Day precincts plus absentee, early, question, and remote reporting units; do not join directly to precinct polygons without a reviewed crosswalk.",
     "ENR Reg_voters and total_ballots reconcile statewide after de-duplication, but mixed reporting-unit rows are not active turnout denominator rows without source-side semantics.",
-    "Wave 2 turnout verification keeps ENR Reg_voters/total_ballots as a documented state-native lead only; active turnout remains the EAC statewide fallback."
+    "Wave 2 turnout verification keeps ENR Reg_voters/total_ballots as a documented state-native lead only; active turnout remains the EAC statewide fallback.",
+    "Alaska's 30 Census county-equivalent FIPS entries are registry geometry only; the certified statewide result and mixed ENR reporting units remain untagged because no official reviewed borough/census-area vote-allocation crosswalk exists."
   ]
 }

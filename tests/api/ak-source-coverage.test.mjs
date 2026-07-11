@@ -35,7 +35,9 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.equal(config.turnout.stateNativeLeadReview.decision, "remain_documented_lead_not_active_turnout");
   assert.equal(config.turnout.stateNativeLeadReview.zeroRegistrationBallotUnits, 120);
   assert.equal(config.turnout.stateNativeLeadReview.zeroRegistrationBallots, 165047);
-  assert.equal(config.expected.sources, 11);
+  assert.equal(config.expected.sources, 12);
+  assert.equal(config.expected.canonicalCountyEquivalentFeatures, 30);
+  assert.ok(config.sources.some((source) => source.id === "ak-county-equivalent-boundary"));
   assert.equal(config.expected.stateTotal, 338177);
   assert.equal(config.expected.trump, 184458);
   assert.equal(config.expected.harris, 140026);
@@ -54,6 +56,7 @@ test("alaska native coverage loads official precinct review rows with write-in c
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-general-enr-by-precinct"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-enr-turnout-semantics"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-2024-official-source-request-packet"));
+  assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.id === "ak-county-equivalent-boundary"));
   assert.ok(inventory.loadedArtifacts.some((artifact) => artifact.expectedCounts?.usHouseWriteInGapVersusSummary === 750));
   assert.ok(inventory.sourceNeeds.some((need) => need.id === "ak-us-house-write-in-precinct-allocation"));
   assert.ok(inventory.displayCaveats.some((caveat) => /not proof of fraud or misconduct/i.test(caveat)));

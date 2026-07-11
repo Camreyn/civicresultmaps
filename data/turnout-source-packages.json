@@ -483,6 +483,21 @@
       }
     },
     {
+      "state": "DC",
+      "name": "District of Columbia",
+      "year": 2024,
+      "priority": 51,
+      "status": "needs_data",
+      "sourceLevel": "county_equivalent",
+      "denominatorType": "notLoaded",
+      "denominatorTiming": "notLoaded",
+      "sourceTitle": "D.C. Board of Elections 2024 certified result export",
+      "sourceUrl": "https://electionresults.dcboe.org/Downloads/Reports/November_5_2024_General_Election_Certified_Results.csv",
+      "parser": "notLoaded",
+      "statusNote": "Certified candidate totals are loaded, but no reviewed 2024 election-level ballots-cast and registration denominator package is active.",
+      "nextAction": "Collect and reconcile official D.C. ballots-cast and registered-voter denominator fields before enabling turnout."
+    },
+    {
       "state": "DE",
       "name": "Delaware",
       "year": 2024,
@@ -1920,6 +1935,28 @@
     }
   ],
   "partialPackages": [],
-  "missingRequests": [],
-  "remainingStatesNeedingPackages": []
+  "missingRequests": [
+    {
+      "state": "DC",
+      "name": "District of Columbia",
+      "needed": "Official 2024 election-level ballots cast and registered-voter denominator data.",
+      "preferredLevel": "county_equivalent",
+      "requiredFields": [
+        "sourceTitle",
+        "sourceUrl",
+        "localFile",
+        "reportingLevel",
+        "ballotsCastField",
+        "denominatorField",
+        "denominatorTiming",
+        "joinKeys",
+        "expectedRowCount",
+        "caveats"
+      ],
+      "notes": "D.C. certified candidate totals do not by themselves provide a reviewed turnout/registration denominator package; absence is a source-coverage gap only."
+    }
+  ],
+  "remainingStatesNeedingPackages": [
+    "DC"
+  ]
 }

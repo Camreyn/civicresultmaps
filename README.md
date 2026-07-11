@@ -19,6 +19,7 @@ patterns, generated state registries, and validation expectations.
 ## Public API V1
 
 - `GET /api/states`
+- `GET /api/jurisdictions?state=<STATE>&fips=<GEOID>`
 - `GET /api/elections?year=2024&office=president`
 - `GET /api/results?state=WI&year=2024&level=county`
 - `GET /api/sources?state=WI&year=2024`

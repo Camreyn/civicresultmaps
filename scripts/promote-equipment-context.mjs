@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
+import { jurisdictionTagForRow } from "../src/lib/jurisdiction-tags.ts";
 import { requireState, stateCodes } from "./state-metadata.mjs";
 
 function getDatabaseUrl() {
@@ -210,6 +211,14 @@ async function promoteState(sql, registry, state, year) {
   `;
 
   for (const row of rows) {
+    const resolvedTag = jurisdictionTagForRow({
+      state,
+      jurisdictionCode: row.jurisdictionCode,
+      jurisdictionName: row.jurisdictionName,
+      level: row.level || "county",
+    });
+    const jurisdictionTag = resolvedTag?.startsWith("county:") ? resolvedTag : null;
+
     await sql`
       insert into jurisdictions (state_code, code, name, level)
       values (${state}, ${row.jurisdictionCode}, ${row.jurisdictionName}, ${row.level || "county"})
@@ -223,6 +232,7 @@ async function promoteState(sql, registry, state, year) {
         election_year,
         jurisdiction_code,
         jurisdiction_name,
+        jurisdiction_tag,
         level,
         vendor,
         system_name,
@@ -246,6 +256,7 @@ async function promoteState(sql, registry, state, year) {
         ${year},
         ${row.jurisdictionCode},
         ${row.jurisdictionName},
+        ${jurisdictionTag},
         ${row.level || "county"},
         ${row.vendor},
         ${row.systemName},
@@ -274,6 +285,7 @@ async function promoteState(sql, registry, state, year) {
       do update set
         import_run_id = excluded.import_run_id,
         jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
         vendor = excluded.vendor,
         system_name = excluded.system_name,
         equipment_type = excluded.equipment_type,

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { states as configuredStates } from "./state-metadata.mjs";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const packagePath = path.join(repoRoot, "data", "turnout-source-packages.json");
@@ -240,8 +241,15 @@ for (const row of packages.stateYearStatuses ?? []) {
 }
 
 const states2024 = new Set((packages.stateYearStatuses ?? []).filter((row) => row.year === 2024).map((row) => row.state));
-if (states2024.size !== 50) {
-  fail("GLOBAL", `stateYearStatuses must include all 50 states for 2024; found ${states2024.size}`);
+const expectedStates2024 = new Set(configuredStates.map((state) => state.code));
+for (const state of expectedStates2024) {
+  if (!states2024.has(state)) fail(state, "missing 2024 stateYearStatuses entry");
+}
+for (const state of states2024) {
+  if (!expectedStates2024.has(state)) fail(state, "unexpected 2024 stateYearStatuses entry");
+}
+if (states2024.size !== expectedStates2024.size) {
+  fail("GLOBAL", `stateYearStatuses must include all ${expectedStates2024.size} configured jurisdictions for 2024; found ${states2024.size}`);
 }
 
 for (const requiredColumn of ["state", "election_year", "jurisdiction_name", "level", "ballots_cast", "registered_voters", "denominator_note", "warning_required", "source_url"]) {

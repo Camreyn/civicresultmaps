@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "state": "MO",
+  "electionYears": [
+    2012,
+    2016,
+    2020,
+    2024
+  ],
+  "generatedBy": "scripts/normalize-mo-sos-pdfs.mjs",
+  "purpose": "Reproducible Missouri Census-county FIPS aggregation that preserves the official 116-election-authority source rows and emits 115 county/county-equivalent rows.",
+  "officialGeographyEvidence": {
+    "authority": "Missouri Secretary of State",
+    "url": "https://www.sos.mo.gov/elections/goVoteMissouri/localelectionauthority",
+    "checkedAt": "2026-07-10",
+    "finding": "The official local-election-authority directory identifies Jackson County outside Kansas City and Kansas City within Jackson County as separate election authorities. Their rows are therefore summed for Census Jackson County GEOID 29095.",
+    "censusGeometryArtifact": "data/mo-counties.geojson",
+    "censusCountyEquivalentCount": 115
+  },
+  "transformation": {
+    "inputGrain": "116 Missouri election authorities, including Jackson County outside Kansas City and Kansas City within Jackson County",
+    "outputGrain": "115 Census counties/county-equivalents",
+    "aggregation": "Kansas City + Jackson County -> Jackson County (county:29095)",
+    "displayNameNormalization": "De Kalb County -> DeKalb County (county:29063)",
+    "rawArtifactsRemainUnchanged": true
+  },
+  "artifacts": {
+    "president2024": {
+      "raw": {
+        "localArtifact": "data/mo-2024-general-president.csv",
+        "rowCount": 116,
+        "sha256": "0ed3c7684e64b7274d67898056f839f9315725834dbf640b9599b20a86948f83"
+      },
+      "canonical": {
+        "localArtifact": "data/mo-2024-general-president-county.csv",
+        "rowCount": 115,
+        "sha256": "66fe3e2b51c5183e1010842c1f53ee6071cf3a659ac74933f887efe16867148f"
+      }
+    },
+    "senate2024": {
+      "raw": {
+        "localArtifact": "data/mo-2024-general-senate.csv",
+        "rowCount": 116,
+        "sha256": "ae368cb2ffdc13df3a583ac973f589f7fffa4364973499c9140db0706d7886c7"
+      },
+      "canonical": {
+        "localArtifact": "data/mo-2024-general-senate-county.csv",
+        "rowCount": 115,
+        "sha256": "2eb073326fefce17aaa3d2d08c44a889109a6c64c38bd2432b4e2c1dc4ab99e8"
+      }
+    },
+    "turnout2024": {
+      "raw": {
+        "localArtifact": "data/mo-2024-general-turnout.csv",
+        "rowCount": 116,
+        "sha256": "7e38b19296d393f46710d3652473f44205bc38e90d6c6ce31c96c12e5d1f85e4"
+      },
+      "canonical": {
+        "localArtifact": "data/mo-2024-general-turnout-county.csv",
+        "rowCount": 115,
+        "sha256": "3e96b12bcecad35053474eb021b165190abf74ab8d2dd35f280b66fbd649dde6"
+      }
+    },
+    "historicalPresidential": {
+      "raw": {
+        "localArtifact": "data/mo-historical-presidential-baseline.csv",
+        "rowCount": 348,
+        "sha256": "89c8dc7c6ca458abec9a9a6063d5a211bb1bf6583523445ad45a239a3016ebd7"
+      },
+      "canonical": {
+        "localArtifact": "data/mo-historical-presidential-county-baseline.csv",
+        "rowCount": 345,
+        "sha256": "37a7c6a4643beb1177a4cf5cccd3303d33824b4065a65b51b16806157cd89d66"
+      }
+    }
+  },
+  "fipsCoverage": {
+    "expectedCountyEquivalentsPerYear": 115,
+    "president2024": 115,
+    "senate2024": 115,
+    "turnout2024": 115,
+    "historicalByYear": {
+      "2012": 115,
+      "2016": 115,
+      "2020": 115
+    },
+    "missingTags": [],
+    "duplicateTags": []
+  },
+  "statewideZeroDeltaGates": {
+    "president2024": {
+      "raw": {
+        "trump": 1751986,
+        "harris": 1200599,
+        "other": 42742,
+        "total": 2995327
+      },
+      "canonical": {
+        "trump": 1751986,
+        "harris": 1200599,
+        "other": 42742,
+        "total": 2995327
+      },
+      "delta": {
+        "trump": 0,
+        "harris": 0,
+        "other": 0,
+        "total": 0
+      }
+    },
+    "senate2024": {
+      "raw": {
+        "rep": 1651907,
+        "dem": 1243728,
+        "other": 76924,
+        "total": 2972559
+      },
+      "canonical": {
+        "rep": 1651907,
+        "dem": 1243728,
+        "other": 76924,
+        "total": 2972559
+      },
+      "delta": {
+        "rep": 0,
+        "dem": 0,
+        "other": 0,
+        "total": 0
+      }
+    },
+    "turnout2024": {
+      "raw": {
+        "ballots_cast": 2995376,
+        "registered_voters": 4433383
+      },
+      "canonical": {
+        "ballots_cast": 2995376,
+        "registered_voters": 4433383
+      },
+      "delta": {
+        "ballots_cast": 0,
+        "registered_voters": 0
+      }
+    },
+    "historicalPresidential": {
+      "2012": {
+        "raw": {
+          "dem": 1223796,
+          "rep": 1482440,
+          "other": 51087,
+          "total": 2757323
+        },
+        "canonical": {
+          "dem": 1223796,
+          "rep": 1482440,
+          "other": 51087,
+          "total": 2757323
+        },
+        "delta": {
+          "dem": 0,
+          "rep": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      "2016": {
+        "raw": {
+          "dem": 1071068,
+          "rep": 1594511,
+          "other": 135870,
+          "total": 2801449
+        },
+        "canonical": {
+          "dem": 1071068,
+          "rep": 1594511,
+          "other": 135870,
+          "total": 2801449
+        },
+        "delta": {
+          "dem": 0,
+          "rep": 0,
+          "other": 0,
+          "total": 0
+        }
+      },
+      "2020": {
+        "raw": {
+          "dem": 1253014,
+          "rep": 1718736,
+          "other": 53410,
+          "total": 3025160
+        },
+        "canonical": {
+          "dem": 1253014,
+          "rep": 1718736,
+          "other": 53410,
+          "total": 3025160
+        },
+        "delta": {
+          "dem": 0,
+          "rep": 0,
+          "other": 0,
+          "total": 0
+        }
+      }
+    }
+  },
+  "jacksonCountyPins": {
+    "sourceRows": {
+      "president2024": [
+        {
+          "jurisdictionName": "Jackson County",
+          "trump": 99385,
+          "harris": 91366,
+          "oliver": 1692,
+          "stein": 1164,
+          "sonski": 64,
+          "de_la_cruz": 54,
+          "ayyadurai": 3,
+          "potus": 1
+        },
+        {
+          "jurisdictionName": "Kansas City",
+          "trump": 26225,
+          "harris": 95660,
+          "oliver": 905,
+          "stein": 1305,
+          "sonski": 68,
+          "de_la_cruz": 123,
+          "ayyadurai": 2,
+          "potus": 0
+        }
+      ],
+      "senate2024": [
+        {
+          "jurisdictionName": "Jackson County",
+          "comparison_rep": 92530,
+          "comparison_dem": 93333,
+          "comparison_other": 5669
+        },
+        {
+          "jurisdictionName": "Kansas City",
+          "comparison_rep": 24524,
+          "comparison_dem": 95675,
+          "comparison_other": 3741
+        }
+      ],
+      "turnout2024": [
+        {
+          "jurisdictionName": "Jackson County",
+          "ballots_cast": 193729,
+          "registered_voters": 277889
+        },
+        {
+          "jurisdictionName": "Kansas City",
+          "ballots_cast": 124288,
+          "registered_voters": 229293
+        }
+      ],
+      "historicalPresidential": {
+        "2012": [
+          {
+            "jurisdictionName": "Jackson County",
+            "dem_votes": 78283,
+            "rep_votes": 93199,
+            "other_votes": 3282,
+            "total_votes": 174764
+          },
+          {
+            "jurisdictionName": "Kansas City",
+            "dem_votes": 105670,
+            "rep_votes": 29509,
+            "other_votes": 1634,
+            "total_votes": 136813
+          }
+        ],
+        "2016": [
+          {
+            "jurisdictionName": "Jackson County",
+            "dem_votes": 71237,
+            "rep_votes": 91557,
+            "other_votes": 9929,
+            "total_votes": 172723
+          },
+          {
+            "jurisdictionName": "Kansas City",
+            "dem_votes": 97735,
+            "rep_votes": 24654,
+            "other_votes": 5882,
+            "total_votes": 128271
+          }
+        ],
+        "2020": [
+          {
+            "jurisdictionName": "Jackson County",
+            "dem_votes": 92182,
+            "rep_votes": 100142,
+            "other_votes": 4049,
+            "total_votes": 196373
+          },
+          {
+            "jurisdictionName": "Kansas City",
+            "dem_votes": 107660,
+            "rep_votes": 26393,
+            "other_votes": 2507,
+            "total_votes": 136560
+          }
+        ]
+      }
+    },
+    "canonical": {
+      "president2024": {
+        "trump": 125610,
+        "harris": 187026,
+        "other": 5381,
+        "total": 318017
+      },
+      "senate2024": {
+        "rep": 117054,
+        "dem": 189008,
+        "other": 9410,
+        "total": 315472
+      },
+      "turnout2024": {
+        "ballots": 318017,
+        "registered": 507182,
+        "turnoutPct": "62.70"
+      },
+      "historicalPresidential": {
+        "2012": {
+          "dem": 183953,
+          "rep": 122708,
+          "other": 4916,
+          "total": 311577
+        },
+        "2016": {
+          "dem": 168972,
+          "rep": 116211,
+          "other": 15811,
+          "total": 300994
+        },
+        "2020": {
+          "dem": 199842,
+          "rep": 126535,
+          "other": 6556,
+          "total": 332933
+        }
+      }
+    }
+  },
+  "gates": {
+    "rawRowCounts": {
+      "president": 116,
+      "senate": 116,
+      "turnout": 116,
+      "historical": 348
+    },
+    "canonicalRowCounts": {
+      "president": 115,
+      "senate": 115,
+      "turnout": 115,
+      "historical": 345
+    },
+    "rawArtifactsPreservedByteForByte": true,
+    "statewideDeltasAreZero": true,
+    "jacksonPinsMatchReviewedValues": true,
+    "everyCanonicalRowHasCountyFips": true
+  },
+  "caveats": [
+    "The source PDFs remain authoritative at 116-election-authority grain; the canonical artifacts are a deterministic county-geography view.",
+    "The aggregation does not create precinct geography and does not change the documented precinct-file purchase/crosswalk blocker.",
+    "The 2016 historical PDF does not expose county-level write-in detail; its other and total values remain sums of visible party columns."
+  ]
+}

@@ -17,7 +17,7 @@ const actual2024States = new Set(
 );
 
 if (actual2024States.size !== expected2024States.size) {
-  errors.push(`2024 admin source package registry must include all 50 states; found ${actual2024States.size}.`);
+  errors.push(`2024 admin source package registry must include all configured states; found ${actual2024States.size}.`);
 }
 
 for (const state of expected2024States) {
