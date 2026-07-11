@@ -1,16 +1,16 @@
 {
-  "checkedAt": "2026-07-09T07:06:21.084Z",
-  "sourceCommand": "npm run jurisdictions:flips",
+  "checkedAt": "2026-07-11T06:04:08.581Z",
+  "sourceCommand": "npm run jurisdictions:flips:2020-2024",
   "purpose": "Coordinator tracker for closing 2020-to-2024 county flip coverage gaps using canonical jurisdictionTag joins.",
   "currentCoverage": {
-    "resultRows2024": 3110,
-    "taggedRows2024": 3088,
-    "historicalRows2020": 2401,
-    "taggedHistoricalRows2020": 2389,
-    "matchedRows": 2389,
-    "missingHistoricalRows": 699,
+    "resultRows2024": 3114,
+    "taggedRows2024": 3114,
+    "historicalRows2020": 3116,
+    "taggedHistoricalRows2020": 3114,
+    "matchedRows": 3114,
+    "missingHistoricalRows": 0,
     "redToBlue": 0,
-    "blueToRed": 66
+    "blueToRed": 87
   },
   "defaults": {
     "branchPattern": "state/<state>-data-coverage",
@@ -935,5 +935,19 @@
     "npm run jurisdictions:flips reports remaining unmatched rows only for documented non-county, ambiguous, or source-blocked cases.",
     "Worker PRs document source authority, source URL, local artifact path, parser path, expected row counts, caveats, and validation commands.",
     "No worker branch runs production promotion or jurisdiction backfill apply commands."
-  ]
+  ],
+  "initialWaveGapRows": 699,
+  "finalAcceptance": {
+    "registryCountyEquivalentRows": 3144,
+    "exactResultFipsRows2024": 3114,
+    "exactHistoricalFipsRows2020": 3114,
+    "matchedRows2020To2024": 3114,
+    "missingComparisonRows": 0,
+    "registryOnlyAlaskaCountyEquivalentTags": 30,
+    "unresolvedRows": 0,
+    "duplicateTags": 0,
+    "productionBackfillAppliedRows": 11480,
+    "postBackfillPendingRows": 0,
+    "caveat": "Alaska has 30 canonical current county-equivalent FIPS tags but no exact official 2016/2020/2024 result allocation; Maine State UOCAVA and Rhode Island Federal Precincts remain intentional non-geographic rows."
+  }
 }

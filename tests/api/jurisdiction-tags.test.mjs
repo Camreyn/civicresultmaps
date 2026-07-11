@@ -114,11 +114,11 @@ test("jurisdiction flip wave coordination stays explicit", () => {
   assert.match(agents, /`gpt-5\.6-sol` with `max` reasoning/);
   assert.match(agents, /`gpt-5\.6-terra` with `medium` reasoning/);
   assert.match(agents, /`gpt-5\.6-luna` with `(?:high|xhigh)` reasoning/);
-  assert.equal(tracker.currentCoverage.missingHistoricalRows, 699);
-  assert.equal(tracker.currentCoverage.blueToRed, 66);
+  assert.equal(tracker.currentCoverage.missingHistoricalRows, 0);
+  assert.equal(tracker.currentCoverage.blueToRed, 87);
   assert.equal(tracker.currentCoverage.redToBlue, 0);
-  assert.equal(tracker2016.currentCoverage.missingExpectedTags2016, 657);
-  assert.equal(tracker2016.comparisonCoverage["2016To2024"].blueToRed, 57);
+  assert.equal(tracker2016.currentCoverage.missingExpectedTags2016, 30);
+  assert.equal(tracker2016.comparisonCoverage["2016To2024"].blueToRed, 69);
   assert.equal(tracker2016.waves.every((wave) => wave.states.length <= 5), true);
 
   const assignedStates = tracker.waves.flatMap((wave) => wave.states.map((state) => state.state));
@@ -132,7 +132,7 @@ test("jurisdiction flip wave coordination stays explicit", () => {
   assert.equal(tracker.waves.every((wave) => wave.states.every((state) => state.branch === `state/${state.state.toLowerCase()}-data-coverage`)), true);
   assert.equal(
     tracker.waves.reduce((sum, wave) => sum + wave.states.reduce((waveSum, state) => waveSum + state.missingHistoricalRows, 0), 0),
-    tracker.currentCoverage.missingHistoricalRows,
+    tracker.initialWaveGapRows,
   );
 });
 

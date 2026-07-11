@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-11",
+  "checkedAt": "2026-07-11T06:04:08.581Z",
   "sourceCommands": [
     "npm run jurisdictions:coverage:2016",
     "npm run jurisdictions:flips:2016-2020",
@@ -8,20 +8,21 @@
   ],
   "purpose": "Coordinator tracker for closing 2016 historical presidential county/county-equivalent FIPS coverage gaps using canonical jurisdictionTag joins.",
   "currentCoverage": {
-    "expectedCountyEquivalentRows": 3113,
-    "historicalRows2016": 3115,
-    "resolvedCountyTags2016": 3112,
-    "unresolvedRows2016": 2,
+    "expectedCountyEquivalentRows": 3144,
+    "historicalRows2016": 3116,
+    "resolvedCountyTags2016": 3114,
+    "unresolvedRows2016": 0,
     "duplicateTags2016": 0,
-    "missingExpectedTags2016": 1
+    "missingExpectedTags2016": 30,
+    "intentionalNonGeographicRows2016": 2
   },
   "comparisonCoverage": {
     "2016To2020": {
-      "rows2016": 3115,
-      "taggedRows2016": 3113,
-      "rows2020": 3115,
-      "taggedRows2020": 3113,
-      "matchedRows": 3113,
+      "rows2016": 3116,
+      "taggedRows2016": 3114,
+      "rows2020": 3116,
+      "taggedRows2020": 3114,
+      "matchedRows": 3114,
       "missingComparisonRows": 0,
       "untaggedFromRows": 2,
       "untaggedToRows": 2,
@@ -29,11 +30,11 @@
       "blueToRed": 15
     },
     "2016To2024": {
-      "rows2016": 3115,
-      "taggedRows2016": 3113,
-      "rows2024": 3113,
-      "taggedRows2024": 3113,
-      "matchedRows": 3113,
+      "rows2016": 3116,
+      "taggedRows2016": 3114,
+      "rows2024": 3114,
+      "taggedRows2024": 3114,
+      "matchedRows": 3114,
       "missingComparisonRows": 0,
       "untaggedFromRows": 2,
       "untaggedToRows": 0,
@@ -41,11 +42,11 @@
       "blueToRed": 69
     },
     "2020To2024": {
-      "rows2020": 3115,
-      "taggedRows2020": 3113,
-      "rows2024": 3113,
-      "taggedRows2024": 3113,
-      "matchedRows": 3113,
+      "rows2020": 3116,
+      "taggedRows2020": 3114,
+      "rows2024": 3114,
+      "taggedRows2024": 3114,
+      "matchedRows": 3114,
       "missingComparisonRows": 0,
       "untaggedFromRows": 2,
       "untaggedToRows": 0,
@@ -780,5 +781,29 @@
       "Kalawao County remains the sole expected 2016 registry tag not separately reported in the official Hawaii exports; no allocation is forced.",
       "Maine State UOCAVA and Rhode Island Federal Precincts remain intentional untagged non-geographic rows."
     ]
+  },
+  "finalAcceptance": {
+    "registryCountyEquivalentRows": 3144,
+    "exactHistoricalFipsRows2016": 3114,
+    "exactHistoricalFipsRows2020": 3114,
+    "exactResultFipsRows2024": 3114,
+    "registryOnlyAlaskaCountyEquivalentTags": 30,
+    "intentionalNonGeographicRowsPerHistoricalYear": 2,
+    "unresolvedRows": 0,
+    "duplicateTags": 0,
+    "flipCounts": {
+      "2016To2020": {
+        "redToBlue": 64,
+        "blueToRed": 15
+      },
+      "2016To2024": {
+        "redToBlue": 31,
+        "blueToRed": 69
+      },
+      "2020To2024": {
+        "redToBlue": 0,
+        "blueToRed": 87
+      }
+    }
   }
 }
