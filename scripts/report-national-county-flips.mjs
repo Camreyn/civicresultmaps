@@ -7,6 +7,7 @@ const overlayStatesArg = process.argv.find((arg) => arg.startsWith("--overlay-st
 const base = baseArg?.slice("--base=".length) ?? "https://www.civicresultmaps.org";
 const fromYear = Number(process.argv.find((arg) => arg.startsWith("--from="))?.slice("--from=".length) ?? 2020);
 const toYear = Number(process.argv.find((arg) => arg.startsWith("--to="))?.slice("--to=".length) ?? 2024);
+const reportRun = Date.now().toString(36);
 
 const overlayStates = new Set((overlayStatesArg ?? "").split(",").map((state) => state.trim().toUpperCase()).filter(Boolean));
 const invalidOverlayState = Array.from(overlayStates).find((state) => !/^[A-Z]{2}$/.test(state));
@@ -30,7 +31,9 @@ for (const state of overlayStates) {
 const useStagingForState = (state) => stagingSource && (!overlayStates.size || overlayStates.has(state));
 
 async function api(route) {
-  const response = await fetch(`${base}${route}`);
+  const url = new URL(route, base);
+  url.searchParams.set("reportRun", reportRun);
+  const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`${route} returned ${response.status}`);
   }
