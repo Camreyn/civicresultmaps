@@ -444,7 +444,7 @@
     "In PowerShell use npm.cmd and require stagingOverlay in report output; npm.ps1 can silently consume option-looking report arguments."
   ],
   "localImplementationStatus": {
-    "note": "All seventeen candidate states were merged in PR #155, promoted state-by-state, and accepted against the live public API and site. PR #157 fixed public result jurisdictionTag projection and made production coverage/flip reports cache-fresh per run.",
+    "note": "All seventeen candidate states were merged in PR #155, promoted state-by-state, and accepted against the live public API and site. PR #157 fixed public result jurisdictionTag projection and cache-fresh reporting. PRs #159 and #160 added unforced non-geographic rows to statewide totals without changing geographic map/review sets.",
     "completedStates": [
       "CO",
       "CT",
@@ -470,10 +470,12 @@
     "finalLocalProjectionAt": "2026-07-10T23:52:35.362Z",
     "productionMergedOn": "2026-07-11",
     "productionPromotedOn": "2026-07-11",
-    "productionAcceptedAt": "2026-07-11T03:33:00Z",
+    "productionAcceptedAt": "2026-07-11T03:55:00Z",
     "mergedPullRequests": [
       155,
-      157
+      157,
+      159,
+      160
     ]
   },
   "localOverlayProjection": {
@@ -629,7 +631,7 @@
     "status": "superseded_by_production_acceptance"
   },
   "productionAcceptance": {
-    "checkedAt": "2026-07-11T03:33:00Z",
+    "checkedAt": "2026-07-11T03:55:00Z",
     "reportMode": "Cache-fresh public API reads plus in-app browser verification of deployed state pages after state-by-state production promotion.",
     "mergedPullRequests": [
       {
@@ -641,6 +643,16 @@
         "number": 157,
         "title": "Fix live jurisdiction tag reporting",
         "mergeCommit": "03daddd7928b28eee4110df661ecd34d20b6a904"
+      },
+      {
+        "number": 159,
+        "title": "Include non-geographic votes in statewide totals",
+        "mergeCommit": "f6522ba95a56a17192d5aac173f9157e8f881280"
+      },
+      {
+        "number": 160,
+        "title": "Use statewide rows for headline totals",
+        "mergeCommit": "9f4598046d69674faf12e6d01f44593ef9765b05"
       }
     ],
     "promotedStates": [
@@ -726,7 +738,17 @@
       },
       "RI": {
         "rows": 5,
-        "taggedRows": 5
+        "taggedRows": 5,
+        "nonGeographicRows": 1,
+        "nonGeographicTaggedRows": 0,
+        "statewideTotalVotes": 513386
+      },
+      "ME": {
+        "rows": 16,
+        "taggedRows": 16,
+        "nonGeographicRows": 1,
+        "nonGeographicTaggedRows": 0,
+        "statewideTotalVotes": 831375
       }
     },
     "advisoryIndicatorChecks": {
@@ -750,7 +772,9 @@
     "siteChecks": [
       "Connecticut page renders the certified 1,759,275-vote total, Northwest Hills Planning Region, and no map-join warning.",
       "Illinois page renders 102 result jurisdictions, 204 historical rows, 90 advisory indicators, and no separate city-election-authority result rows.",
-      "Canonical CT and IL 2020 historical URLs returned fresh tagged rows; McLean and Winnebago remain blue in both 2020 and 2024."
+      "Canonical CT and IL 2020 historical URLs returned fresh tagged rows; McLean and Winnebago remain blue in both 2020 and 2024.",
+      "Rhode Island page renders the certified 513,386-vote statewide total while retaining five visible mapped counties plus one unforced Federal Precincts API row.",
+      "Maine page renders the certified 831,375-vote statewide total while retaining sixteen visible mapped counties plus one unforced State UOCAVA API row."
     ],
     "remainingCaveats": [
       "Kalawao County remains the sole expected 2016 registry tag not separately reported in the official Hawaii exports; no allocation is forced.",
