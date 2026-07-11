@@ -3,41 +3,54 @@
   "sourceCommands": [
     "npm run jurisdictions:coverage:2016",
     "npm run jurisdictions:flips:2016-2020",
-    "npm run jurisdictions:flips:2016-2024"
+    "npm run jurisdictions:flips:2016-2024",
+    "npm run jurisdictions:flips:2020-2024"
   ],
   "purpose": "Coordinator tracker for closing 2016 historical presidential county/county-equivalent FIPS coverage gaps using canonical jurisdictionTag joins.",
   "currentCoverage": {
     "expectedCountyEquivalentRows": 3113,
-    "historicalRows2016": 2495,
-    "resolvedCountyTags2016": 2456,
-    "unresolvedRows2016": 38,
+    "historicalRows2016": 3115,
+    "resolvedCountyTags2016": 3112,
+    "unresolvedRows2016": 2,
     "duplicateTags2016": 0,
-    "missingExpectedTags2016": 657
+    "missingExpectedTags2016": 1
   },
   "comparisonCoverage": {
     "2016To2020": {
-      "rows2016": 2495,
-      "taggedRows2016": 2457,
-      "rows2020": 3106,
-      "taggedRows2020": 3104,
-      "matchedRows": 2457,
-      "missingComparisonRows": 647,
-      "untaggedFromRows": 38,
+      "rows2016": 3115,
+      "taggedRows2016": 3113,
+      "rows2020": 3115,
+      "taggedRows2020": 3113,
+      "matchedRows": 3113,
+      "missingComparisonRows": 0,
+      "untaggedFromRows": 2,
       "untaggedToRows": 2,
-      "redToBlue": 47,
-      "blueToRed": 12
+      "redToBlue": 64,
+      "blueToRed": 15
     },
     "2016To2024": {
-      "rows2016": 2495,
-      "taggedRows2016": 2457,
-      "rows2024": 3110,
-      "taggedRows2024": 3104,
-      "matchedRows": 2457,
-      "missingComparisonRows": 647,
-      "untaggedFromRows": 38,
-      "untaggedToRows": 6,
-      "redToBlue": 22,
-      "blueToRed": 57
+      "rows2016": 3115,
+      "taggedRows2016": 3113,
+      "rows2024": 3113,
+      "taggedRows2024": 3113,
+      "matchedRows": 3113,
+      "missingComparisonRows": 0,
+      "untaggedFromRows": 2,
+      "untaggedToRows": 0,
+      "redToBlue": 31,
+      "blueToRed": 69
+    },
+    "2020To2024": {
+      "rows2020": 3115,
+      "taggedRows2020": 3113,
+      "rows2024": 3113,
+      "taggedRows2024": 3113,
+      "matchedRows": 3113,
+      "missingComparisonRows": 0,
+      "untaggedFromRows": 2,
+      "untaggedToRows": 0,
+      "redToBlue": 0,
+      "blueToRed": 87
     }
   },
   "defaults": {
@@ -89,7 +102,7 @@
           "branch": "state/il-data-coverage",
           "missingExpectedTags2016": 102,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Illinois State Board of Elections GE2016Cty.xls and GE2020Cty.xls Candidate Totals by County workbooks into 204 historical rows: exactly 102 canonical county tags per year. Source hashes, candidate totals, and the Census county-reference hash/join fields are recorded in the reconciliation summary. Promotion preserves the live 2020 year/tags but materially corrects incomplete live totals and requires explicit review.",
           "localStatus": "implemented_official_2016_2020_county_workbooks",
           "sourceLeads": [
@@ -110,7 +123,7 @@
           "branch": "state/tn-data-coverage",
           "missingExpectedTags2016": 95,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Tennessee Secretary of State 2016 President by County PDF and 2020 General by County PDF into a combined 190-row county baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -129,7 +142,7 @@
           "branch": "state/ok-data-coverage",
           "missingExpectedTags2016": 77,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Collected official Oklahoma State Election Board 2016 and 2020 CountyResults CSV ZIP exports through the public results application using a short-lived token held only in memory. Normalized all President race 10001 candidates to 77 canonical county tags per year. The 2020 export contains six tickets and exactly matches all 77 live rows/tags/vote fields; staging adds 77 tagged 2016 rows and removes no live year. Oklahoma contributes no county flips.",
           "localStatus": "implemented_official_2016_2020_county_results",
           "sourceLeads": [
@@ -153,7 +166,7 @@
           "branch": "state/la-data-coverage",
           "missingExpectedTags2016": 64,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Louisiana Secretary of State 2016 and 2020 Presidential Electors ByParish CSV blobs into a combined 128-row parish/county-equivalent baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "validation": [
@@ -167,7 +180,7 @@
           "branch": "state/co-data-coverage",
           "missingExpectedTags2016": 64,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Colorado Secretary of State Historical Election Data 2016 and 2020 President contest CSVs into a combined 128-row county baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "validation": [
@@ -187,7 +200,7 @@
           "branch": "state/mt-data-coverage",
           "missingExpectedTags2016": 56,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Montana Secretary of State 2016 and 2020 precinct workbooks into a combined 112-row county baseline; separate write-in canvass totals are retained as context, and 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -207,7 +220,7 @@
           "branch": "state/sc-data-coverage",
           "missingExpectedTags2016": 46,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official South Carolina Elections Database 2016 and 2020 presidential contest CSVs into a combined 92-row county baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -225,7 +238,7 @@
           "branch": "state/wa-data-coverage",
           "missingExpectedTags2016": 39,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Washington Secretary of State 2016 and 2020 all-counties CSV exports into a combined 78-row county baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -243,7 +256,7 @@
           "branch": "state/or-data-coverage",
           "missingExpectedTags2016": 36,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Oregon 2016 and 2020 General Election Abstract of Votes PDFs into a combined 72-row county baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -261,7 +274,7 @@
           "branch": "state/md-data-coverage",
           "missingExpectedTags2016": 24,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Maryland SBE 2016 county President result page and 2020 all-by-precinct CSV into a combined 48-row county/county-equivalent baseline; Baltimore City and Baltimore County remain distinct FIPS-resolved rows; 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -286,7 +299,7 @@
           "branch": "state/nj-data-coverage",
           "missingExpectedTags2016": 21,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official New Jersey DOE 2016 county President PDFs and 2020 statewide President PDF into a combined 42-row county baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -305,7 +318,7 @@
           "branch": "state/vt-data-coverage",
           "missingExpectedTags2016": 14,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Vermont Election Archive 2016 and 2020 presidential municipality CSVs, aggregated them to 14 counties using the reviewed 2024 town/county crosswalk, and emitted a combined 28-row county baseline with jurisdictionTag values.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -326,7 +339,7 @@
           "branch": "state/ct-data-coverage",
           "missingExpectedTags2016": 9,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Official Connecticut EMS 2016/2020 town baselines and the certified 2024 Statement of Vote are aggregated through the exact 169-town Census crosswalk to nine current planning regions. The SOV reconciles 1,759,275 presidential votes and confirms Northwest Hills at Harris 31,137 / Trump 31,944.",
           "localStatus": "promotion_accepted_sov_reconciled",
           "sourceLeads": [
@@ -348,7 +361,7 @@
           "branch": "state/hi-data-coverage",
           "missingExpectedTags2016": 5,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Hawaii 2016 and 2020 summary/detail text files, aggregated districts to the four reported county rows using the same district/county crosswalk as 2024, and emitted an 8-row tagged county baseline. Kalawao is not separately reported by the official exports and remains explicit rather than forced.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -370,7 +383,7 @@
           "branch": "state/de-data-coverage",
           "missingExpectedTags2016": 3,
           "unresolvedRows2016": 0,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Loaded official Delaware 2016 raw statewide-office-by-county export and 2020 report HTML into a combined 6-row county baseline; 2012 remains missing.",
           "localStatus": "implemented",
           "sourceLeads": [
@@ -395,7 +408,7 @@
           "branch": "state/ri-data-coverage",
           "missingExpectedTags2016": 2,
           "unresolvedRows2016": 37,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Reads explicit finalized root members from official 2012, 2016, 2020, and 2024 BOE long-format ZIPs, fails closed on statewide candidate-bucket differences, and emits five county tags plus unforced Federal Precincts per historical year. The local package closes both missing RI tags and adds Kent County as a 2016-to-2020 and 2016-to-2024 red-to-blue flip.",
           "localStatus": "implemented_2012_2016_2020_finalized_root_county_aggregation",
           "validation": [
@@ -412,7 +425,7 @@
           "branch": "state/me-data-coverage",
           "missingExpectedTags2016": 0,
           "unresolvedRows2016": 1,
-          "workerStatus": "ready_for_pr",
+          "workerStatus": "merged",
           "notes": "Added Maine county FIPS jurisdictionTag values to the official 2016 and 2020 historical county rows. The two State UOCAVA rows remain non-geographic with null jurisdictionTag, which is the expected treatment unless a reviewed county allocation exists.",
           "localStatus": "implemented_county_tags_uocava_unforced",
           "validation": [
@@ -425,13 +438,13 @@
     }
   ],
   "caveats": [
-    "The top-level currentCoverage and comparisonCoverage fields remain the live production baseline; localOverlayProjection records unpromoted staging effects.",
+    "The top-level currentCoverage and comparisonCoverage fields are the post-promotion live acceptance captured through cache-fresh public API reads; localOverlayProjection retains the pre-promotion staging overlay record.",
     "Alaska has no county-equivalent registry rows until an official/reviewed borough/census-area aggregation crosswalk is loaded.",
     "Do not force statewide-only, town-level, UOCAVA, Federal Precincts, Kalawao without a reported allocation, or ambiguous reporting units into county FIPS tags.",
     "In PowerShell use npm.cmd and require stagingOverlay in report output; npm.ps1 can silently consume option-looking report arguments."
   ],
   "localImplementationStatus": {
-    "note": "All seventeen candidate states are integrated on a clean origin/main branch. CT SOV, RI grain migration, IL county rollup, and OK official token-exchange artifacts are accepted for production; no unresolved promotion blocker remains.",
+    "note": "All seventeen candidate states were merged in PR #155, promoted state-by-state, and accepted against the live public API and site. PR #157 fixed public result jurisdictionTag projection and made production coverage/flip reports cache-fresh per run.",
     "completedStates": [
       "CO",
       "CT",
@@ -454,11 +467,18 @@
     "blockedStates": [],
     "deferredStates": [],
     "wave3Wave4CompletedAt": "2026-07-10T06:46:50.766Z",
-    "finalLocalProjectionAt": "2026-07-10T23:52:35.362Z"
+    "finalLocalProjectionAt": "2026-07-10T23:52:35.362Z",
+    "productionMergedOn": "2026-07-11",
+    "productionPromotedOn": "2026-07-11",
+    "productionAcceptedAt": "2026-07-11T03:33:00Z",
+    "mergedPullRequests": [
+      155,
+      157
+    ]
   },
   "localOverlayProjection": {
     "checkedAt": "2026-07-10T23:52:35.362Z",
-    "reportMode": "Live API with exact candidate state artifacts overlaid from .etl/staging; no production promotion performed.",
+    "reportMode": "Pre-promotion live API with exact candidate state artifacts overlaid from .etl/staging; retained as the accepted projection record.",
     "overlayStates": [
       "CO",
       "CT",
@@ -563,7 +583,7 @@
           "vote_share_pattern": 5,
           "average_down_ballot_difference": 7
         },
-        "productionStatus": "Certified SOV reconciliation complete; staging uses nine planning regions and awaits authorized promotion."
+        "productionStatus": "Promoted; the live public API returns 12 indicator rows (7 average-down-ballot and 5 vote-share), all 12 tagged."
       },
       "IL": {
         "nativeReviewRows": 6655,
@@ -574,7 +594,7 @@
           "vote_share_pattern": 57,
           "average_down_ballot_difference": 33
         },
-        "productionStatus": "Not checked as a production write cycle; no promotion occurred."
+        "productionStatus": "Promoted; the live public API returns 90 indicator rows (33 average-down-ballot and 57 vote-share), all 90 tagged."
       },
       "RI": {
         "nativeReviewRows": 444,
@@ -585,7 +605,7 @@
           "vote_share_pattern": 4,
           "average_down_ballot_difference": 2
         },
-        "productionStatus": "Read-only review found production and staging indicator counts equal; historical/result staging was not promoted."
+        "productionStatus": "Promoted; the live public API returns 6 indicator rows (2 average-down-ballot and 4 vote-share), all 6 tagged."
       },
       "OK": {
         "nativeReviewRows": 1977,
@@ -596,7 +616,7 @@
           "vote_share_pattern": 60,
           "average_down_ballot_difference": 39
         },
-        "productionStatus": "Production has the same 99 rows, type counts, and 66 names, but only 65 tagged indicators because the LeFlore average-down-ballot row has a null production jurisdictionTag."
+        "productionStatus": "Promoted; the live public API returns 99 indicator rows (39 average-down-ballot and 60 vote-share), all 99 tagged, including canonical Le Flore County."
       }
     },
     "promotionSafetyConfirmed": [
@@ -605,6 +625,136 @@
       "Connecticut SOV reconciliation is exact across 169 towns and nine regions; the Northwest Hills 2020-to-2024 flip is confirmed.",
       "Rhode Island 86-to-18 historical migration preserves every vote bucket and all years while restoring five canonical county tags.",
       "Illinois preserves all 102 live 2020 tags, corrects 100 official vote tuples, and rolls six 2024 city authorities into counties with zero vote loss."
+    ],
+    "status": "superseded_by_production_acceptance"
+  },
+  "productionAcceptance": {
+    "checkedAt": "2026-07-11T03:33:00Z",
+    "reportMode": "Cache-fresh public API reads plus in-app browser verification of deployed state pages after state-by-state production promotion.",
+    "mergedPullRequests": [
+      {
+        "number": 155,
+        "title": "Complete 2016 county flip production coverage",
+        "mergeCommit": "9612a7d338763ef213027fa21dde41e3b37c6a37"
+      },
+      {
+        "number": 157,
+        "title": "Fix live jurisdiction tag reporting",
+        "mergeCommit": "03daddd7928b28eee4110df661ecd34d20b6a904"
+      }
+    ],
+    "promotedStates": [
+      "CO",
+      "CT",
+      "DE",
+      "HI",
+      "IL",
+      "LA",
+      "MD",
+      "ME",
+      "MT",
+      "NJ",
+      "OK",
+      "OR",
+      "RI",
+      "SC",
+      "TN",
+      "VT",
+      "WA"
+    ],
+    "commands": [
+      "npm.cmd run jurisdictions:coverage:2016",
+      "npm.cmd run jurisdictions:flips:2016-2020",
+      "npm.cmd run jurisdictions:flips:2016-2024",
+      "npm.cmd run jurisdictions:flips:2020-2024"
+    ],
+    "coverage2016": {
+      "expectedCountyEquivalentRows": 3113,
+      "historicalRows2016": 3115,
+      "resolvedCountyTags2016": 3112,
+      "unresolvedRows2016": 2,
+      "duplicateTags2016": 0,
+      "missingExpectedTags2016": 1,
+      "missingExpectedTag": "county:15005 Kalawao County"
+    },
+    "comparisons": {
+      "2016To2020": {
+        "rows2016": 3115,
+        "taggedRows2016": 3113,
+        "rows2020": 3115,
+        "taggedRows2020": 3113,
+        "matchedRows": 3113,
+        "missingComparisonRows": 0,
+        "untaggedFromRows": 2,
+        "untaggedToRows": 2,
+        "redToBlue": 64,
+        "blueToRed": 15
+      },
+      "2016To2024": {
+        "rows2016": 3115,
+        "taggedRows2016": 3113,
+        "rows2024": 3113,
+        "taggedRows2024": 3113,
+        "matchedRows": 3113,
+        "missingComparisonRows": 0,
+        "untaggedFromRows": 2,
+        "untaggedToRows": 0,
+        "redToBlue": 31,
+        "blueToRed": 69
+      },
+      "2020To2024": {
+        "rows2020": 3115,
+        "taggedRows2020": 3113,
+        "rows2024": 3113,
+        "taggedRows2024": 3113,
+        "matchedRows": 3113,
+        "missingComparisonRows": 0,
+        "untaggedFromRows": 2,
+        "untaggedToRows": 0,
+        "redToBlue": 0,
+        "blueToRed": 87
+      }
+    },
+    "publicResultTagChecks": {
+      "CT": {
+        "rows": 9,
+        "taggedRows": 9
+      },
+      "IL": {
+        "rows": 102,
+        "taggedRows": 102
+      },
+      "RI": {
+        "rows": 5,
+        "taggedRows": 5
+      }
+    },
+    "advisoryIndicatorChecks": {
+      "CT": {
+        "rows": 12,
+        "taggedRows": 12
+      },
+      "IL": {
+        "rows": 90,
+        "taggedRows": 90
+      },
+      "RI": {
+        "rows": 6,
+        "taggedRows": 6
+      },
+      "OK": {
+        "rows": 99,
+        "taggedRows": 99
+      }
+    },
+    "siteChecks": [
+      "Connecticut page renders the certified 1,759,275-vote total, Northwest Hills Planning Region, and no map-join warning.",
+      "Illinois page renders 102 result jurisdictions, 204 historical rows, 90 advisory indicators, and no separate city-election-authority result rows.",
+      "Canonical CT and IL 2020 historical URLs returned fresh tagged rows; McLean and Winnebago remain blue in both 2020 and 2024."
+    ],
+    "remainingCaveats": [
+      "Kalawao County remains the sole expected 2016 registry tag not separately reported in the official Hawaii exports; no allocation is forced.",
+      "Maine State UOCAVA and Rhode Island Federal Precincts remain intentional untagged non-geographic rows."
     ]
   }
 }
