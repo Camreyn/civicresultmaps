@@ -1,5 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
+import canonicalRegistry from "../../data/canonical-jurisdictions.json" with { type: "json" };
 
 export type CanonicalJurisdiction = {
   jurisdictionTag: string;
@@ -48,22 +47,12 @@ export function normalizeJurisdictionAlias(value: string) {
     .toUpperCase();
 }
 
-function registryPath() {
-  return path.join(process.cwd(), "data", "canonical-jurisdictions.json");
-}
-
 export function getCanonicalJurisdictionRegistry() {
   if (cachedRegistry) {
     return cachedRegistry;
   }
 
-  const file = registryPath();
-  if (!existsSync(file)) {
-    cachedRegistry = { jurisdictions: [] };
-    return cachedRegistry;
-  }
-
-  cachedRegistry = JSON.parse(readFileSync(file, "utf8")) as Registry;
+  cachedRegistry = canonicalRegistry as Registry;
   return cachedRegistry;
 }
 
