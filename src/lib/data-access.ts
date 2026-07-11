@@ -421,6 +421,7 @@ export async function listResults(input: {
         result_rows.state_code as "stateCode",
         elections.office,
         result_rows.level,
+        result_rows.jurisdiction_tag as "jurisdictionTag",
         result_rows.jurisdiction_code as "jurisdictionCode",
         result_rows.jurisdiction_name as "jurisdictionName",
         result_rows.candidate_name as "candidateName",
