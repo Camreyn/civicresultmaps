@@ -26,6 +26,7 @@ tsconfig.tsbuildinfo
 # needed in Vercel deployment bundles.
 data/**
 !data/admin-source-packages.json
+!data/canonical-jurisdictions.json
 !data/electronic-integrity-artifacts.json
 !data/electronic-integrity-received-files.json
 !data/electronic-integrity-request-contacts.json
