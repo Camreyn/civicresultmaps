@@ -50,14 +50,47 @@
       "status": "loaded"
     },
     {
+      "id": "md-2016-president-county-results",
+      "category": "Official 2016 county presidential historical baseline page",
+      "url": "https://elections.maryland.gov/elections/archive/2016/results/general/gen_detail_results_2016_4_BOT001-.html",
+      "localFile": "data/md-2016-president-county-results.html",
+      "parser": "marylandSbeCountyResultHtml",
+      "authority": "Maryland State Board of Elections",
+      "timestampBasis": "Official 2016 Presidential General Election county result page last updated December 9, 2016 at 10:56:31 AM.",
+      "confidence": "Official county/county-equivalent presidential result table. The normalizer sums every continuation/write-in table and keeps Baltimore City distinct from Baltimore County.",
+      "status": "loaded"
+    },
+    {
+      "id": "md-2020-general-all-by-precinct",
+      "category": "Official 2020 general election all-precinct candidate rows",
+      "url": "https://elections.maryland.gov/elections/archive/2020/election_data/All_By_Precinct_2020_General.csv",
+      "localFile": "data/md-2020-general-all-by-precinct.csv",
+      "parser": "marylandHistoricalPrecinctCsv",
+      "authority": "Maryland State Board of Elections",
+      "timestampBasis": "Official Maryland State Board of Elections 2020 Presidential General Election all-by-precinct CSV.",
+      "confidence": "Official statewide precinct candidate CSV with Total Votes by row; normalized to county/county-equivalent presidential historical baselines.",
+      "status": "loaded"
+    },
+    {
+      "id": "md-2020-president-state-results",
+      "category": "Official 2020 presidential statewide historical baseline summary page",
+      "url": "https://elections.maryland.gov/elections/archive/2020/results/general/gen_results_2020_4_001-.html",
+      "localFile": "data/md-2020-president-state-results.html",
+      "parser": "marylandSbeStateSummaryHtml",
+      "authority": "Maryland State Board of Elections",
+      "timestampBasis": "Official 2020 Presidential General Election result summary page retained as a statewide totals cross-check.",
+      "confidence": "Cross-check artifact for statewide 2020 presidential candidate totals; county rows are generated from the official all-by-precinct CSV.",
+      "status": "loaded"
+    },
+    {
       "id": "md-historical-presidential-baseline",
-      "category": "Official 2020 historical presidential county baseline",
-      "url": "https://elections.maryland.gov/elections/archive/2020/election_data/index.html",
+      "category": "Official Maryland 2016 and 2020 county presidential historical baseline rows",
+      "url": "https://elections.maryland.gov/elections/archive/2016/results/general/gen_detail_results_2016_4_BOT001-.html; https://elections.maryland.gov/elections/archive/2020/election_data/All_By_Precinct_2020_General.csv",
       "localFile": "data/md-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
       "authority": "Maryland State Board of Elections",
-      "timestampBasis": "Official Maryland State Board of Elections 2020 General Election county result CSVs; downloaded July 9, 2026.",
-      "confidence": "Official county and county-equivalent presidential baseline rows normalized by scripts/normalize-md-historical-baseline.mjs from data/md-2020-general-county-results/*.csv and reconciled to data/md-2020-general-statewide.csv. Baltimore City and Baltimore County are mapped only from distinct official files and Census GEOIDs.",
+      "timestampBasis": "Normalized by scripts/normalize-md-historical-presidential-baseline.mjs from official 2016 county result HTML and official 2020 all-by-precinct CSV.",
+      "confidence": "Official county/county-equivalent 2016 and 2020 presidential baseline rows for 24 Maryland jurisdictions. Rows are contextual historical baselines used for county:<GEOID> flip joins; 2012 remains uncollected.",
       "status": "loaded"
     }
   ],
@@ -96,7 +129,7 @@
   "expected": {
     "jurisdictions": 24,
     "resultRows": 24,
-    "sources": 5,
+    "sources": 8,
     "geometryFeatures": 24,
     "stateTotal": 3038334,
     "trump": 1035550,
@@ -104,7 +137,7 @@
     "other": 100207,
     "reviewRows": 1958,
     "turnoutRows": 24,
-    "historicalBaselineRows": 24
+    "historicalBaselineRows": 48
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -117,16 +150,13 @@
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
     "sourceId": "md-historical-presidential-baseline",
-    "warning": "Maryland historical baseline rows are official 2020 State Board of Elections county and county-equivalent presidential rows. Use them as contextual baselines only, not as 2024 certified data. The statewide County=00 row is retained only for reconciliation and is not emitted as a jurisdiction row.",
+    "warning": "Maryland historical baseline rows are official county/county-equivalent 2016 and 2020 General Election President results from Maryland State Board of Elections artifacts. Use them as contextual baseline rows for jurisdictionTag county flip joins, not as 2024 certified data. Baltimore City and Baltimore County are separate Census county-equivalent tags. Official 2012 county presidential baselines remain uncollected.",
     "expected": {
-      "rowCount": 24,
+      "rowCount": 48,
       "years": [
+        2016,
         2020
-      ],
-      "totalVotes": 3037030,
-      "demVotes": 1985023,
-      "repVotes": 976414,
-      "otherVotes": 75593
+      ]
     }
   }
 }

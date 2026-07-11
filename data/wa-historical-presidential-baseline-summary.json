@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-07-11T02:01:43.618Z",
+  "authority": "Washington Secretary of State",
+  "parser": "scripts/normalize-wa-historical-presidential-baseline.mjs",
+  "caveat": "Official county-level 2016 and 2020 Washington presidential baselines from Secretary of State all-counties CSV exports. 2012 remains uncollected.",
+  "sources": [
+    {
+      "id": "wa-2016-all-counties-csv",
+      "year": 2016,
+      "url": "https://results.vote.wa.gov/results/20161108/export/20161108_AllCounties.csv",
+      "localFile": "data/wa-2016-all-counties.csv",
+      "rowCount": 39,
+      "demVotes": 1742718,
+      "repVotes": 1221747,
+      "otherVotes": 244749,
+      "totalVotes": 3209214
+    },
+    {
+      "id": "wa-2020-all-counties-csv",
+      "year": 2020,
+      "url": "https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv",
+      "localFile": "data/wa-2020-all-counties.csv",
+      "rowCount": 39,
+      "demVotes": 2369612,
+      "repVotes": 1584651,
+      "otherVotes": 133368,
+      "totalVotes": 4087631
+    }
+  ],
+  "output": {
+    "localFile": "data/wa-historical-presidential-baseline.csv",
+    "rowCount": 78,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

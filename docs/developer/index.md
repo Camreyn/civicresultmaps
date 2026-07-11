@@ -51,6 +51,18 @@ Coordinator duties:
 4. Give each worker one state and the exact goal: load official 2020 county/county-equivalent presidential historical baselines that join to 2024 rows by `jurisdictionTag`.
 5. Between waves, rerun `npm run jurisdictions:flips`, refresh the tracker, and drop states whose missing counts are resolved.
 
+Before integration or promotion, run the historical coverage and flip reports with both `--staging-dir=.etl/staging` and `--overlay-states=<comma-separated candidate states>`. This overlays only the proposed state artifacts on live API data, preserving production rows for states outside the wave. In PowerShell, invoke `npm.cmd` explicitly so `npm.ps1` cannot consume option-looking script arguments as npm configuration. Treat the run as invalid unless the JSON output contains the expected `stagingOverlay` object:
+
+```powershell
+npm.cmd run jurisdictions:coverage:2016 -- --staging-dir=.etl/staging --overlay-states=CO,LA
+npm.cmd run jurisdictions:flips:2016-2020 -- --staging-dir=.etl/staging --overlay-states=CO,LA
+npm.cmd run jurisdictions:flips:2016-2024 -- --staging-dir=.etl/staging --overlay-states=CO,LA
+```
+
+Run pure `--staging-dir` reports as a separate native-artifact audit; do not treat them as a production projection.
+
+Compare the live and staged historical year/row sets for every candidate state. Native promotion replaces all historical rows for a state when the artifact contains historical rows, so any staged omission of a live year or unexplained row reduction blocks promotion pending parser completion or an explicitly reviewed preservation strategy.
+
 Worker duties:
 
 1. Prefer official state election sources for 2020 county/county-equivalent presidential results.

@@ -1,0 +1,465 @@
+{
+  "generatedAt": "2026-07-11T02:01:46.206Z",
+  "authority": "Illinois State Board of Elections",
+  "discoveryPageUrl": "https://www.elections.il.gov/ElectionOperations/DownloadVoteTotals.aspx",
+  "parser": "scripts/collect-il-historical-presidential-baseline.mjs",
+  "reportingGrain": "county",
+  "caveat": "Official Candidate Totals by County workbooks contain candidate and write-in votes, but not blank, undervote, or overvote records. Non-Democratic/non-Republican rows are other_votes. These are contextual historical baselines, not 2024 certified results.",
+  "countyReference": {
+    "authority": "U.S. Census Bureau",
+    "sourceUrl": "https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html",
+    "localFile": "data/il-counties.geojson",
+    "sha256": "d56a4c5aaf531549ad4d346aadc6e345feaa335d2f1342843447d1438db499c8",
+    "featureCount": 102,
+    "joinFields": [
+      "properties.BASENAME",
+      "properties.NAME",
+      "properties.GEOID"
+    ]
+  },
+  "sources": [
+    {
+      "id": "il-2016-general-candidate-totals-by-county",
+      "year": 2016,
+      "discoveryPageUrl": "https://www.elections.il.gov/ElectionOperations/DownloadVoteTotals.aspx",
+      "resolvedUrl": "https://www.elections.il.gov/Downloads/ElectionOperations/VoteTotals/GE2016Cty.xls",
+      "localFile": "data/il-2016-general-candidate-totals-by-county.xls",
+      "sha256": "b8fb06bb7318581c82f7bb9c0d54763c59554ff5443088eb9b9780573d46d63b",
+      "byteLength": 1115648,
+      "sheetName": "TotalsByCounty",
+      "sourceCandidateRows": 2923,
+      "sourceCountyCount": 102,
+      "normalizedRowCount": 102,
+      "totals": {
+        "rows": 102,
+        "dem": 3090729,
+        "rep": 2146015,
+        "other": 299680,
+        "total": 5536424
+      },
+      "candidateTotals": [
+        {
+          "candidate": "HILLARY RODHAM CLINTON",
+          "partyName": "DEMOCRATIC",
+          "partyAbbrev": "DEM",
+          "votes": 3090729
+        },
+        {
+          "candidate": "DONALD J. TRUMP",
+          "partyName": "REPUBLICAN",
+          "partyAbbrev": "REP",
+          "votes": 2146015
+        },
+        {
+          "candidate": "GARY JOHNSON",
+          "partyName": "LIBERTARIAN",
+          "partyAbbrev": "LIB",
+          "votes": 209596
+        },
+        {
+          "candidate": "JILL STEIN",
+          "partyName": "GREEN",
+          "partyAbbrev": "GRN",
+          "votes": 76802
+        },
+        {
+          "candidate": "EVAN MCMULLIN",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 11655
+        },
+        {
+          "candidate": "DARRELL CASTLE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1138
+        },
+        {
+          "candidate": "TOM HOEFLING",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 175
+        },
+        {
+          "candidate": "LAURENCE KOTLIKOFF",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 82
+        },
+        {
+          "candidate": "JAMES ANDERSON",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 61
+        },
+        {
+          "candidate": "PHILLIP SEEBERG",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 27
+        },
+        {
+          "candidate": "MARSHALL ROY SCHOENKE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 25
+        },
+        {
+          "candidate": "KEVIN MCKEE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 24
+        },
+        {
+          "candidate": "JOSEPH A. MALDONADO",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 20
+        },
+        {
+          "candidate": "JOANN BREIVOGEL",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 12
+        },
+        {
+          "candidate": "DAVID G. STACK",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 10
+        },
+        {
+          "candidate": "LAIO MORRIS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 10
+        },
+        {
+          "candidate": "MATTHEW ROBERTS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 8
+        },
+        {
+          "candidate": "JONATHAN LEE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 7
+        },
+        {
+          "candidate": "BEN HARTNELL",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 6
+        },
+        {
+          "candidate": "AUTHOR C. BRUMFIELD",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 5
+        },
+        {
+          "candidate": "DUFF COOPER SMITH",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 4
+        },
+        {
+          "candidate": "CHERUNDA FOX",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 3
+        },
+        {
+          "candidate": "ROY WAYNE TYREE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 3
+        },
+        {
+          "candidate": "TIMOTHY B. MELUCH",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 3
+        },
+        {
+          "candidate": "DEM J. WYSINGER",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "JAMES T. STRUCK",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "MARK J. HARPER",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "NATHAN JOHNSON",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "DAVID FORMHALS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "JIM BROWN",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "SHELIA MARIE BOLAR",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        }
+      ]
+    },
+    {
+      "id": "il-2020-general-candidate-totals-by-county",
+      "year": 2020,
+      "discoveryPageUrl": "https://www.elections.il.gov/ElectionOperations/DownloadVoteTotals.aspx",
+      "resolvedUrl": "https://www.elections.il.gov/Downloads/ElectionOperations/VoteTotals/GE2020Cty.xls",
+      "localFile": "data/il-2020-general-candidate-totals-by-county.xls",
+      "sha256": "91ac8c0a006b5d723619ee4acaa5ce3e410c16c682aaa037be943344f8de2620",
+      "byteLength": 783872,
+      "sheetName": "tblGE2020JasonK",
+      "sourceCandidateRows": 1361,
+      "sourceCountyCount": 102,
+      "normalizedRowCount": 102,
+      "totals": {
+        "rows": 102,
+        "dem": 3471915,
+        "rep": 2446891,
+        "other": 114938,
+        "total": 6033744
+      },
+      "candidateTotals": [
+        {
+          "candidate": "JOSEPH R. BIDEN",
+          "partyName": "DEMOCRATIC",
+          "partyAbbrev": "DEM",
+          "votes": 3471915
+        },
+        {
+          "candidate": "DONALD J. TRUMP",
+          "partyName": "REPUBLICAN",
+          "partyAbbrev": "REP",
+          "votes": 2446891
+        },
+        {
+          "candidate": "JO JORGENSEN",
+          "partyName": "LIBERTARIAN",
+          "partyAbbrev": "LIB",
+          "votes": 66544
+        },
+        {
+          "candidate": "HOWIE HAWKINS",
+          "partyName": "GREEN",
+          "partyAbbrev": "GRN",
+          "votes": 30494
+        },
+        {
+          "candidate": "BRIAN CARROLL",
+          "partyName": "AMERICAN SOLIDARITY PARTY",
+          "partyAbbrev": "ASP",
+          "votes": 9548
+        },
+        {
+          "candidate": "GLORIA LA RIVA",
+          "partyName": "PARTY FOR SOCIALISM AND LIBERATION",
+          "partyAbbrev": "PSL",
+          "votes": 8046
+        },
+        {
+          "candidate": "JOHN FARNEY",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 84
+        },
+        {
+          "candidate": "JADE SIMMONS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 78
+        },
+        {
+          "candidate": "MARK CHARLES",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 75
+        },
+        {
+          "candidate": "DON BLANKENSHIP",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 18
+        },
+        {
+          "candidate": "KASEY WELLS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 18
+        },
+        {
+          "candidate": "ANDY WILLIAMS JR.",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 8
+        },
+        {
+          "candidate": "BARBARA BELLAR",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 7
+        },
+        {
+          "candidate": "JOSEPH KISHORE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 5
+        },
+        {
+          "candidate": "KEVIN McKEE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 4
+        },
+        {
+          "candidate": "PHILL COLLINS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 3
+        },
+        {
+          "candidate": "JAMES TIMOTHY STRUCK",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 2
+        },
+        {
+          "candidate": "DEBORAH ROUSE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "DENNIS ANDREW BALL",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "JEREMY HIGGS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "MARY RUTH CARO SIMMONS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 1
+        },
+        {
+          "candidate": "BRYAN ROBINSON",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "CHRIS FRANKLIN",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "DAVID JEFFREY NASH",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "HOWIE HAWKINS",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "KATHERINE FORBES",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "KATHRYN GIBSON",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "LOWELL MARTIN SEIDA",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "MARCUS SYKES",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "PRESIDENT R19 BODDIE",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "PRINCESS KHADIJAH MARYANN JACOB-FAMBRO",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "RANDALL FOLTYNIEWICZ",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "SHAWN HOWARD",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        },
+        {
+          "candidate": "TODD CELLA",
+          "partyName": null,
+          "partyAbbrev": null,
+          "votes": 0
+        }
+      ]
+    }
+  ],
+  "output": {
+    "localFile": "data/il-historical-presidential-baseline.csv",
+    "rowCount": 204,
+    "rowsPerYear": {
+      "2016": 102,
+      "2020": 102
+    },
+    "jurisdictionTagPattern": "county:<GEOID>"
+  }
+}

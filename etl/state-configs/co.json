@@ -73,6 +73,17 @@
       "status": "candidate"
     },
     {
+      "id": "co-2016-general-president-list",
+      "category": "Official Colorado 2016 General President Historical Election Data contest CSV",
+      "url": "https://historicalelectiondata.coloradosos.gov/contest/4436",
+      "localFile": "data/co-2016-general-president-list.csv",
+      "parser": "coloradoHistoricalElectionDataContestCsv",
+      "authority": "Colorado Secretary of State",
+      "timestampBasis": "Historical Election Data 2016 General President contest, contest_id 4436 and election_id 17.",
+      "confidence": "Official Colorado Secretary of State Historical Election Data list export retained as the raw source for 2016 county presidential baseline normalization.",
+      "status": "loaded"
+    },
+    {
       "id": "co-2020-general-president-list",
       "category": "Official Colorado 2020 General President Historical Election Data contest CSV",
       "url": "https://historicalelectiondata.coloradosos.gov/contest/3640",
@@ -84,14 +95,14 @@
       "status": "loaded"
     },
     {
-      "id": "co-2020-historical-presidential-baseline",
-      "category": "Official Colorado 2020 county presidential historical baseline rows",
-      "url": "https://historicalelectiondata.coloradosos.gov/contest/3640",
-      "localFile": "data/co-2020-historical-presidential-baseline.csv",
+      "id": "co-historical-presidential-baseline",
+      "category": "Official Colorado 2016 and 2020 county presidential historical baseline rows",
+      "url": "https://historicalelectiondata.coloradosos.gov/contest/4436; https://historicalelectiondata.coloradosos.gov/contest/3640",
+      "localFile": "data/co-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
       "authority": "Colorado Secretary of State",
-      "timestampBasis": "Normalized by scripts/normalize-co-historical-presidential-baseline.mjs from the official Historical Election Data 2020 General President contest list export.",
-      "confidence": "Official county-level 2020 presidential baseline rows for 64 Colorado counties. Rows are contextual historical baselines used for county:<GEOID> flip joins; 2012 and 2016 remain uncollected.",
+      "timestampBasis": "Normalized by scripts/normalize-co-historical-presidential-baseline.mjs from official Historical Election Data 2016 and 2020 General President contest list exports.",
+      "confidence": "Official county-level 2016 and 2020 presidential baseline rows for 64 Colorado counties. Rows are contextual historical baselines used for county:<GEOID> flip joins; 2012 remains uncollected.",
       "status": "loaded"
     }
   ],
@@ -112,7 +123,7 @@
   "expected": {
     "jurisdictions": 64,
     "resultRows": 64,
-    "sources": 8,
+    "sources": 9,
     "geometryFeatures": 64,
     "stateTotal": 3190873,
     "trump": 1377441,
@@ -120,7 +131,7 @@
     "other": 85273,
     "reviewRows": 64,
     "turnoutRows": 64,
-    "historicalBaselineRows": 64
+    "historicalBaselineRows": 128
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -148,11 +159,12 @@
   },
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
-    "sourceId": "co-2020-historical-presidential-baseline",
-    "warning": "Colorado historical baseline rows are official county-level 2020 General Election President results from the Colorado Secretary of State Historical Election Data contest export. Use them as contextual baseline rows for 2020-to-2024 county flip joins, not as 2024 certified data. Official 2012 and 2016 county presidential baselines remain uncollected.",
+    "sourceId": "co-historical-presidential-baseline",
+    "warning": "Colorado historical baseline rows are official county-level 2016 and 2020 General Election President results from Colorado Secretary of State Historical Election Data contest exports. Use them as contextual baseline rows for jurisdictionTag county flip joins, not as 2024 certified data. Official 2012 county presidential baselines remain uncollected.",
     "expected": {
-      "rowCount": 64,
+      "rowCount": 128,
       "years": [
+        2016,
         2020
       ]
     }

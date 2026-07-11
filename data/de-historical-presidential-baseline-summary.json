@@ -1,0 +1,37 @@
+{
+  "authority": "Delaware Department of Elections",
+  "parser": "scripts/normalize-de-historical-presidential-baseline.py",
+  "caveat": "Official Delaware 2016 raw statewide-office-by-county export and 2020 official report HTML normalized to county baselines. The 2016 raw export labels the New Castle County column as Wilmington.",
+  "sources": [
+    {
+      "id": "de-2016-general-statewide-office-by-county",
+      "year": 2016,
+      "url": "https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwoff_kns.txt",
+      "localFile": "data/de-2016-general-statewide-office-by-county.txt",
+      "rowCount": 3,
+      "demVotes": 235603,
+      "repVotes": 185127,
+      "otherVotes": 20860,
+      "totalVotes": 441590
+    },
+    {
+      "id": "de-2020-general-election-results-report",
+      "year": 2020,
+      "url": "https://elections.delaware.gov/reports/GE2020.html",
+      "localFile": "data/de-2020-general-election-results-report.html",
+      "rowCount": 3,
+      "demVotes": 296268,
+      "repVotes": 200603,
+      "otherVotes": 7139,
+      "totalVotes": 504010
+    }
+  ],
+  "output": {
+    "localFile": "data/de-historical-presidential-baseline.csv",
+    "rowCount": 6,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

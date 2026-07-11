@@ -1,23 +1,50 @@
 {
   "state": "CT",
   "stateName": "Connecticut",
-  "checkedAt": "2026-07-06",
-  "productionChecked": false,
-  "reportingGrain": "town",
+  "checkedAt": "2026-07-11",
+  "productionChecked": true,
+  "reportingGrain": "town_source_to_current_planning_region_result_aggregate",
   "requestMatrixArtifact": "data/ct-2024-source-request-matrix.tsv",
-  "repoDrift": [
-    "docs/developer/index.md is referenced by AGENTS.md but is missing on the current main/worktree; this is recorded as non-blocking repo drift."
-  ],
+  "repoDrift": [],
   "currentConfigStatus": {
     "config": "etl/state-configs/ct.json",
     "turnoutOnly": false,
-    "activeAuthority": "Connecticut Secretary of the State EMS static JSON, with EAC fallback retained as a benchmark",
-    "resultRows": 169,
+    "activeAuthority": "Connecticut Secretary of the State certified Statement of Vote President rows, with EMS U.S. Senate comparison and turnout fields and EAC fallback retained as a benchmark",
+    "sourceTownResultRows": 169,
+    "resultRows": 9,
     "reviewRows": 169,
     "turnoutRows": 169,
+    "historicalRows": 18,
+    "historicalYears": [
+      2016,
+      2020
+    ],
+    "planningRegionCrosswalkRows": 169,
+    "planningRegionCountyEquivalentTags": 9,
     "ballotsCast": 1788981,
     "registeredVoters": 2348545,
-    "caveat": "The active CT staging config loads official EMS town President, U.S. Senate review, and turnout rows. EMS town/state totals are internally consistent, and the July 6, 2026 Election History review confirms President town/vote-channel totals. Election History does not provide event-582 voter-statistic rows or a registered-voter denominator, so EMS turnout remains warning-required and Statement-of-Vote reconciliation remains required before production-level certified-total claims."
+    "caveat": "The active CT staging config aggregates 169 certified 2024 Statement of Vote town President rows to nine current Census planning-region county-equivalents, while EMS version 80741 supplies 169 town U.S. Senate comparison and turnout rows. Official 2016 and 2020 EMS President rows use the same tags. The presidential SOV reconciliation is complete; turnout semantics remain warning-required.",
+    "certifiedPresidentVotes": 1759275,
+    "certifiedPresidentBuckets": {
+      "harris": 992197,
+      "trump": 737024,
+      "other": 30054
+    },
+    "emsPresidentDifferenceVotes": 265
+  },
+  "productionApiStatus": {
+    "checkedAt": "2026-07-10",
+    "historicalRows": 0,
+    "currentCountyEquivalentResultRows": 0,
+    "indicatorRows": 15,
+    "flaggedJurisdictions": 8,
+    "flaggedAreas": 8,
+    "indicatorTypes": {
+      "average_down_ballot_difference": 7,
+      "vote_share_pattern": 8
+    },
+    "geography": "Retired eight-county EMS labels with null jurisdictionTag values",
+    "caveat": "Production does not yet reflect the proposed nine current planning-region result/history rows or the staging indicator counts. No production promotion was run from this worker."
   },
   "officialSourcePages": [
     {
@@ -28,7 +55,7 @@
     {
       "title": "Connecticut Elections Management System public reporting app",
       "url": "https://ctemspublic.tgstg.net/",
-      "notes": "Official public reporting app exposes versioned static JSON for 2024 town results, statewide totals, turnout, districts, reporting status, and reports."
+      "notes": "Official public reporting app exposes versioned static JSON for 2016, 2020, and 2024 town President results and statewide totals, plus 2024 turnout, districts, reporting status, and reports."
     },
     {
       "title": "2024 Connecticut Statement of Vote PDF",
@@ -67,7 +94,7 @@
     }
   ],
   "emsPublicReporting": {
-    "status": "official_static_json_collected_parser_loaded_with_reconciliation_caveat",
+    "status": "official_static_json_loaded_for_senate_comparison_and_turnout_president_superseded_by_certified_sov",
     "electionId": "91",
     "electionName": "11/05/2024 -- Presidential Election 2024",
     "version": "80741",
@@ -165,20 +192,76 @@
       ],
       "caveat": "Connecticut has cross-endorsed ballot lines. The Wave 17 native parser fuses Christopher S. Murphy Democratic and Working Families ballot lines by person for comparison-row calculations."
     },
-    "reconciliationCaveat": "The EMS townVotes rows sum to the EMS stateVotes presidential total of 1,759,010. The official 2024 Statement of Vote PDF remains collected as a reconciliation source because earlier PDF text/county/congressional summaries reviewed in Wave 14 showed different presidential totals. Reconcile before production promotion or certified-total language.",
+    "reconciliationCaveat": "The EMS townVotes President rows sum to 1,759,010. The certified Statement of Vote has 1,759,275 votes (+265: Harris +144, Trump +106, Other +15), localized to Colchester, Mansfield, Southbury, and Waterford. Active President result/review values use the SOV rows; EMS remains the U.S. Senate comparison and turnout source.",
     "localArtifact": "data/ct-2024-ems-election-91-version-80741"
   },
-  "sourceFindings": [
-    {
-      "topic": "certifiedPresidentResults",
-      "status": "official_ems_json_loaded_with_sov_reconciliation_caveat",
-      "reportingGrain": "town",
-      "sourceAuthority": "Connecticut Secretary of the State",
-      "expectedRowsOrTotals": "169 town President rows from EMS townVotes; EMS statewide presidential total 1,759,010.",
-      "blocker": "Statement-of-Vote PDF reconciliation is still required before production promotion or certified-total claims.",
-      "localArtifact": "data/ct-2024-ems-election-91-version-80741"
+  "historicalEmsAndCurrentGeography": {
+    "status": "official_2016_2020_loaded_current_planning_region_aggregate",
+    "collector": "scripts/collect-ct-historical-presidential-baseline.mjs",
+    "normalizer": "scripts/normalize-ct-historical-presidential-baseline.mjs",
+    "crosswalkArtifact": "data/ct-current-planning-region-crosswalk.csv",
+    "historicalArtifact": "data/ct-historical-presidential-baseline.csv",
+    "summaryArtifact": "data/ct-historical-presidential-baseline-summary.json",
+    "crosswalk": {
+      "sourceAuthority": "U.S. Census Bureau; Connecticut Secretary of the State",
+      "sourceTownGeometry": "data/ct-town-mcds.geojson",
+      "sourcePlanningRegionGeometry": "data/ct-counties.geojson",
+      "emsTownRows": 169,
+      "censusTownRows": 169,
+      "outputRows": 169,
+      "planningRegionRows": 9,
+      "joinRule": "Exact EMS town ID/name pairs across 2016, 2020, and 2024; exact current Census BASENAME match; Census COUNTY/GEOID supplies the current planning-region county-equivalent tag.",
+      "regionTags": [
+        "county:09110",
+        "county:09120",
+        "county:09130",
+        "county:09140",
+        "county:09150",
+        "county:09160",
+        "county:09170",
+        "county:09180",
+        "county:09190"
+      ]
     },
-    {
+    "elections": [
+      {
+        "year": 2016,
+        "electionId": "1",
+        "version": "5603",
+        "localArtifact": "data/ct-2016-ems-election-1-version-5603",
+        "townRows": 169,
+        "planningRegionRows": 9,
+        "demVotes": 897572,
+        "repVotes": 673215,
+        "otherVotes": 74133,
+        "totalVotes": 1644920
+      },
+      {
+        "year": 2020,
+        "electionId": "54",
+        "version": "64824",
+        "localArtifact": "data/ct-2020-ems-election-54-version-64824",
+        "townRows": 169,
+        "planningRegionRows": 9,
+        "demVotes": 1080831,
+        "repVotes": 714717,
+        "otherVotes": 28309,
+        "totalVotes": 1823857
+      }
+    ],
+    "caveat": "Planning regions are the current Census county-equivalent comparison geography and were not the historical election reporting units. Official 2012 rows remain uncollected."
+  },
+  "sourceFindings": {
+    "0": {
+      "topic": "certifiedPresidentResults",
+      "status": "official_certified_sov_town_rows_loaded_current_planning_region_aggregate_reconciled",
+      "reportingGrain": "169_towns_aggregated_to_9_current_planning_regions",
+      "sourceAuthority": "Connecticut Secretary of the State",
+      "expectedRowsOrTotals": "169 certified Statement of Vote town President rows aggregated to nine county-equivalent result rows tagged county:09110 through county:09190; statewide total 1,759,275 (992,197 Harris; 737,024 Trump; 30,054 Other).",
+      "blocker": "No 2024 presidential result reconciliation blocker remains. Production promotion is a separate coordinator action; current-geography and turnout caveats remain.",
+      "localArtifact": "data/ct-2024-statement-of-vote.pdf; data/ct-2024-statement-of-vote-president-town.csv; data/ct-2024-statement-of-vote-president-reconciliation.json; data/ct-current-planning-region-crosswalk.csv"
+    },
+    "1": {
       "topic": "sameGrainComparisonContest",
       "status": "official_town_us_senate_loaded_with_cross_endorsement_caveat",
       "reportingGrain": "town",
@@ -187,71 +270,76 @@
       "blocker": "No parser blocker remains for town comparison rows; cross-endorsed ballot-line fusion caveat must remain visible.",
       "localArtifact": "data/ct-2024-ems-election-91-version-80741"
     },
-    {
+    "2": {
       "topic": "stateNativeTurnout",
       "status": "official_town_turnout_loaded_warning_required",
       "reportingGrain": "town",
       "sourceAuthority": "Connecticut Secretary of the State EMS and Statement of Vote",
       "expectedRowsOrTotals": "169 town turnout rows; EMS statewide EV/registered voters 2,348,545 and VV/voters checked 1,788,981.",
-      "blocker": "Rows remain warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed. Election History was reviewed and excluded as a turnout replacement because event 582 voterStats returns zero rows and no registered-voter denominator.",
+      "blocker": "Rows remain warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed.",
       "localArtifact": "data/ct-2024-ems-election-91-version-80741"
     },
-    {
-      "topic": "electionHistorySourceReview",
-      "status": "official_result_cross_check_not_turnout_replacement",
-      "reportingGrain": "city_town_vote_channel_for_results",
-      "sourceAuthority": "Connecticut Secretary of the State Election History",
-      "sourceUrl": "https://electionhistory.ct.gov/search?",
-      "localArtifact": "data/ct-2024-election-history-source-review.json",
-      "expectedRowsOrTotals": "Event 582 President download returns 64,890 rows; 169 towns; Harris 992,053, Trump 736,918, Other 30,039, and Total Votes Cast 1,759,010, matching EMS President totals.",
-      "blocker": "The event 582 voterStats-only download returns zero rows, and the 2024 voterStats-only download only returns January 23, 2024 special-election Voting Statistics rows for Bridgeport and West Haven. Election History therefore does not replace EMS EV/VV turnout or Statement-of-Vote/EAC reconciliation caveats."
-    },
-    {
+    "3": {
       "topic": "precinctWardAvailability",
       "status": "precinct_labels_available_vote_rows_not_confirmed",
       "reportingGrain": "town_with_polling_place_labels",
       "expectedRowsOrTotals": "759 polling-place labels and precinct reporting-completeness rows are present in EMS Lookupdata/officePrecincts.",
       "blocker": "Static JSON townVotes was confirmed at town grain; precinct/ward candidate vote exports or CVR availability still need report-download review or records requests."
     },
-    {
+    "4": {
       "topic": "geometryAndCrosswalk",
-      "status": "town_mcd_geometry_collected_crosswalk_needs_qa",
-      "reportingGrain": "town",
+      "status": "official_exact_town_to_current_planning_region_crosswalk_loaded",
+      "reportingGrain": "town_to_current_planning_region_county_equivalent",
       "loadedArtifacts": [
         "data/ct-counties.geojson",
-        "data/ct-town-mcds.geojson"
+        "data/ct-town-mcds.geojson",
+        "data/ct-current-planning-region-crosswalk.csv"
       ],
       "sourceLead": "Census TIGERweb Current WMS county-subdivision layer 22 with STATE='09'",
-      "blocker": "Raw Census layer has 169 town/MCD features plus five COUSUB=00000 placeholders; EMS town-name crosswalk QA is needed before map promotion."
+      "blocker": "No crosswalk blocker remains: the normalizer filters five placeholders and proves 169 exact EMS-to-Census BASENAME matches. Production promotion remains a separate coordinator decision."
     },
-    {
+    "5": {
       "topic": "historicalBaselines",
-      "status": "official_2020_2016_2012_source_leads_not_loaded",
+      "status": "official_2016_2020_loaded_current_planning_region_2012_missing",
       "targetYears": [
         2012,
         2016,
         2020
       ],
-      "sourceLead": "SOTS Statement of Vote archive and Connecticut Election History; EMS election IDs 54 for 2020 and 1 for 2016 were also identified.",
-      "blocker": "Historical town baseline parser is not implemented."
+      "loadedYears": [
+        2016,
+        2020
+      ],
+      "sourceAuthority": "Connecticut Secretary of the State EMS; U.S. Census Bureau current geography",
+      "expectedRowsOrTotals": "Nine current planning-region rows per loaded year. 2016 total 1,644,920; 2020 total 1,823,857.",
+      "localArtifact": "data/ct-historical-presidential-baseline.csv",
+      "blocker": "Official 2012 rows remain uncollected. Planning-region aggregation is current comparison geography, not the historical reporting unit."
     },
-    {
+    "6": {
       "topic": "postElectionAudit",
       "status": "official_linked_uconn_report_lead_not_loaded",
       "sourceLead": "UConn VoTeR post-election audit reports linked from the SOTS election-information page.",
       "blocker": "Audit selection/outcome rows are not normalized."
     },
-    {
+    "7": {
       "topic": "cvrAvailabilityAndRequestPaths",
       "status": "request_path_needed_not_loaded",
       "blocker": "No statewide CVR export or official CVR availability record was normalized in this pass; use SOTS and municipal records-request paths if precinct/ward or CVR-level evidence is needed."
     },
-    {
+    "8": {
       "topic": "recountsCorrectionsIncidentsLitigation",
       "status": "request_path_needed_not_loaded",
       "blocker": "No recount, correction, incident, or litigation artifact rows are loaded. This is a source-coverage gap only, not evidence of misconduct."
     },
-    {
+    "9": {
+      "topic": "equipmentContext",
+      "status": "county_equipment_context_loaded",
+      "sourceAuthority": "Verified Voting Verifier",
+      "localArtifact": "data/ct-2024-equipment-context.csv",
+      "expectedRowsOrTotals": "8 historical county context rows",
+      "caveat": "Equipment context is supplemental administration metadata and is not a vote, turnout, audit, or incident source."
+    },
+    "10": {
       "topic": "equipmentContext",
       "status": "county_equipment_context_loaded",
       "sourceAuthority": "Verified Voting Verifier",
@@ -259,25 +347,61 @@
       "expectedRowsOrTotals": "8 historical county context rows",
       "caveat": "Equipment context is supplemental administration metadata and is not a vote, turnout, audit, or incident source."
     }
-  ],
+  },
   "mapJoinImplications": [
-    "Connecticut 2024 result availability is town-centric. County joins are context only because the active result/review rows use EMS town reporting units.",
-    "Census TIGERweb town/MCD geometry is collected at data/ct-town-mcds.geojson; filter five COUSUB=00000 placeholder features and QA EMS town-name joins before map promotion.",
+    "Connecticut 2024 President results use certified Statement of Vote town rows and aggregate reproducibly to nine current Census planning-region county-equivalents for map and jurisdictionTag joins; EMS U.S. Senate review and turnout rows remain at town grain.",
+    "The 169-row crosswalk exact-matches EMS names to Census BASENAME and derives each county:09110-through-county:09190 tag from Census COUNTY/GEOID. Retired eight-county EMS labels are not forced into current county-equivalent tags.",
     "Ward/precinct maps should not be implied from the current data. EMS exposes 759 polling-place labels and reporting status, but candidate vote rows below town grain were not confirmed in static JSON."
   ],
   "websiteAndApiDisplayPath": {
-    "currentConfig": "native_ems_town_result_review_turnout_staging",
-    "productionChecked": false,
-    "displayCaveat": "Current CT staging output has town-level EMS result, review, and turnout rows. Production/API display was not checked or promoted; keep SOV reconciliation, turnout semantics, town-geometry crosswalk, and sub-town availability caveats visible."
+    "currentConfig": "native_certified_sov_current_planning_region_results_with_ems_town_review_turnout_and_2016_2020_history_staging",
+    "productionChecked": true,
+    "displayCaveat": "Current CT staging output has nine certified-SOV current planning-region 2024 result rows, 169 SOV-President-versus-EMS-Senate town review rows, 169 EMS turnout rows, and 18 tagged 2016/2020 historical rows. The live API still reflects retired eight-county labels until coordinator promotion. Keep current-geography historical aggregation, turnout semantics, and sub-town availability caveats visible."
   },
   "remainingRisks": [
-    "EMS and Statement of Vote presidential totals must be reconciled before production promotion or certified-total language.",
     "State-native turnout rows are loaded from EMS EV/VV fields but remain warning-required pending EMS/SOV/EAC denominator and ballots-cast semantics review.",
-    "Connecticut Election History confirms President town/vote-channel totals but lacks November 5, 2024 General Election voter-statistic rows; do not treat its President Total Ballots Cast row as election-level turnout.",
-    "Town/MCD geometry is collected but needs placeholder filtering and EMS town-name crosswalk QA before production map joins.",
+    "The nine planning-region rows use current Census county-equivalent geography. This is a reviewed comparison crosswalk, not a claim that those regions were historical election reporting units.",
     "Precinct/ward candidate vote rows or CVR availability remain unconfirmed; current review rows are town-level only.",
-    "Official 2012, 2016, and 2020 historical town baselines are source leads only and are not loaded.",
+    "Official 2016 and 2020 historical baselines are loaded; official 2012 rows remain uncollected.",
     "Audit/CVR/recount/incident/correction/litigation rows remain unnormalized.",
     "All advisory language must remain source-gap and reconciliation language only; this inventory does not make or support fraud or misconduct claims."
-  ]
+  ],
+  "statementOfVoteReconciliation": {
+    "status": "complete_certified_town_rows_active",
+    "sourceAuthority": "Connecticut Secretary of the State",
+    "sourceUrl": "https://portal.ct.gov/-/media/sots/electionservices/statementofvote_pdfs/2024_statement_of_vote.pdf?hash=27BE5012F5EF0B6BBF37B2A9242B54A2&rev=21871844f0be463886b823b12e6a442e",
+    "sourcePdf": "data/ct-2024-statement-of-vote.pdf",
+    "normalizedTownRows": "data/ct-2024-statement-of-vote-president-town.csv",
+    "summary": "data/ct-2024-statement-of-vote-president-reconciliation.json",
+    "parser": "scripts/normalize-ct-2024-statement-of-vote.mjs",
+    "pdfSha256": "1043dc18895adcff95e227e136eb19ef1c65f2a452a4dc97105fb4738cf3751c",
+    "townRows": 169,
+    "tickets": 12,
+    "planningRegionRows": 9,
+    "sovTotals": {
+      "harris": 992197,
+      "trump": 737024,
+      "other": 30054,
+      "total": 1759275
+    },
+    "emsTotals": {
+      "harris": 992053,
+      "trump": 736918,
+      "other": 30039,
+      "total": 1759010
+    },
+    "difference": {
+      "harris": 144,
+      "trump": 106,
+      "other": 15,
+      "total": 265
+    },
+    "changedTowns": [
+      "Colchester",
+      "Mansfield",
+      "Southbury",
+      "Waterford"
+    ],
+    "promotionSafety": "The nine current-planning-region result rows are promotion-ready from certified SOV President values. EMS remains active only for U.S. Senate comparison and warning-required turnout fields."
+  }
 }

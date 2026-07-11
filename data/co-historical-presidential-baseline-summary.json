@@ -1,0 +1,61 @@
+{
+  "sourceAuthority": "Colorado Secretary of State",
+  "sourceUrls": [
+    "https://historicalelectiondata.coloradosos.gov/contest/4436",
+    "https://historicalelectiondata.coloradosos.gov/contest/3640"
+  ],
+  "localRawCsvs": [
+    "data/co-2016-general-president-list.csv",
+    "data/co-2020-general-president-list.csv"
+  ],
+  "localNormalizedCsv": "data/co-historical-presidential-baseline.csv",
+  "parserOrNormalizationPath": "scripts/normalize-co-historical-presidential-baseline.mjs",
+  "reportingGrain": "county",
+  "contests": [
+    {
+      "year": 2016,
+      "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/4436",
+      "downloadUrl": "https://historicalelectiondata.coloradosos.gov/api/download_contest/4436_list.csv?split_party=false",
+      "localRawCsv": "data/co-2016-general-president-list.csv",
+      "contestId": 4436,
+      "electionId": 17,
+      "electionDate": "2016-11-08",
+      "expected": {
+        "rows": 64,
+        "demVotes": 1338870,
+        "repVotes": 1202484,
+        "otherVotes": 238893,
+        "totalVotes": 2780247
+      }
+    },
+    {
+      "year": 2020,
+      "sourceUrl": "https://historicalelectiondata.coloradosos.gov/contest/3640",
+      "downloadUrl": "https://historicalelectiondata.coloradosos.gov/api/download_contest/3640_list.csv?split_party=false",
+      "localRawCsv": "data/co-2020-general-president-list.csv",
+      "contestId": 3640,
+      "electionId": 11,
+      "electionDate": "2020-11-03",
+      "expected": {
+        "rows": 64,
+        "demVotes": 1804352,
+        "repVotes": 1364607,
+        "otherVotes": 88021,
+        "totalVotes": 3256980
+      }
+    }
+  ],
+  "expected": {
+    "rows": 128,
+    "demVotes": 3143222,
+    "repVotes": 2567091,
+    "otherVotes": 326914,
+    "totalVotes": 6037227
+  },
+  "caveats": [
+    "The Historical Election Data exports are official Colorado Secretary of State data for the 2016 and 2020 General Election President contests.",
+    "The normalizer uses county rows with blank vote_channel values and excludes Total Votes Cast and Total Ballots Cast pseudocandidate rows.",
+    "Rows are county historical baseline context for jurisdictionTag flip joins, not 2024 certified-result rows.",
+    "Official 2012 Colorado historical presidential baselines remain uncollected in this pass."
+  ]
+}

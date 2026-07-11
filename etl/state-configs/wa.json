@@ -83,25 +83,36 @@
       "status": "loaded"
     },
     {
+      "id": "wa-2016-all-counties-csv",
+      "category": "Official 2016 general election all-counties CSV export",
+      "url": "https://results.vote.wa.gov/results/20161108/export/20161108_AllCounties.csv",
+      "localFile": "data/wa-2016-all-counties.csv",
+      "parser": "washingtonAllCountiesHistoricalCsv",
+      "authority": "Washington Secretary of State",
+      "timestampBasis": "Official Washington Secretary of State November 8, 2016 General Election all-counties CSV export.",
+      "confidence": "Official county-level presidential results retained as raw source for 2016 historical baseline normalization.",
+      "status": "loaded"
+    },
+    {
       "id": "wa-2020-all-counties-csv",
-      "category": "Official 2020 county presidential results",
+      "category": "Official 2020 general election all-counties CSV export",
       "url": "https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv",
       "localFile": "data/wa-2020-all-counties.csv",
-      "parser": "washingtonAllCountiesCsv",
+      "parser": "washingtonAllCountiesHistoricalCsv",
       "authority": "Washington Secretary of State",
-      "timestampBasis": "Official all-counties CSV export from the November 3, 2020 General Election results site.",
-      "confidence": "Official Washington Secretary of State county CSV used to normalize 2020 county presidential historical baselines.",
+      "timestampBasis": "Official Washington Secretary of State November 3, 2020 General Election all-counties CSV export.",
+      "confidence": "Official county-level presidential results retained as raw source for 2020 historical baseline normalization.",
       "status": "loaded"
     },
     {
       "id": "wa-historical-presidential-baseline",
-      "category": "Official 2020 county presidential historical baseline",
-      "url": "https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv",
+      "category": "Official Washington 2016 and 2020 county presidential historical baseline rows",
+      "url": "https://results.vote.wa.gov/results/20161108/export/20161108_AllCounties.csv; https://results.vote.wa.gov/results/20201103/export/20201103_AllCounties.csv",
       "localFile": "data/wa-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
       "authority": "Washington Secretary of State",
-      "timestampBasis": "Normalized by scripts/normalize-wa-historical-baseline.mjs from the official November 3, 2020 General Election all-counties CSV export.",
-      "confidence": "Official county-level 2020 presidential historical baseline rows used for 2020-to-2024 county flip joins. Use as contextual baseline rows, not as 2024 certified data.",
+      "timestampBasis": "Normalized by scripts/normalize-wa-historical-presidential-baseline.mjs from official 2016 and 2020 Washington Secretary of State all-counties CSV exports.",
+      "confidence": "Official county-level 2016 and 2020 presidential baseline rows for 39 Washington counties. Rows are contextual historical baselines used for county:<GEOID> flip joins; 2012 remains uncollected.",
       "status": "loaded"
     }
   ],
@@ -154,14 +165,14 @@
   "expected": {
     "jurisdictions": 39,
     "resultRows": 39,
-    "sources": 9,
+    "sources": 10,
     "stateTotal": 3924243,
     "trump": 1530923,
     "harris": 2245849,
     "other": 147471,
     "reviewRows": 5007,
     "turnoutRows": 39,
-    "historicalBaselineRows": 39
+    "historicalBaselineRows": 78
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -174,16 +185,13 @@
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
     "sourceId": "wa-historical-presidential-baseline",
-    "warning": "Washington historical baseline rows are official 2020 county-level presidential results from the Washington Secretary of State all-counties CSV export. They are contextual baseline rows for county flip joins, not 2024 certified data. Official 2012 and 2016 county baselines remain uncollected in this pass.",
+    "warning": "Washington historical baseline rows are official county-level 2016 and 2020 presidential results from Washington Secretary of State all-counties CSV exports. Use them as contextual jurisdictionTag flip baselines, not as 2024 certified-result rows. Official 2012 county presidential baselines remain uncollected.",
     "expected": {
-      "rowCount": 39,
+      "rowCount": 78,
       "years": [
+        2016,
         2020
-      ],
-      "totalVotes": 4087631,
-      "demVotes": 2369612,
-      "repVotes": 1584651,
-      "otherVotes": 133368
+      ]
     }
   }
 }

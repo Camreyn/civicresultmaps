@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-07-11T02:01:44.834Z",
+  "authority": "Montana Secretary of State",
+  "parser": "scripts/normalize-mt-historical-presidential-baseline.mjs",
+  "caveat": "Official Montana 2016 and 2020 precinct workbooks are normalized to county presidential baselines. The election-results export and precinct workbooks do not allocate separate write-in canvass votes into county rows, so Dem/Rep winners join by FIPS while other_votes and total_votes exclude write-in canvass totals.",
+  "sources": [
+    {
+      "id": "mt-2016-general-results-by-precinct",
+      "year": 2016,
+      "url": "https://sosmt.gov/Portals/142/Elections/archives/2010s/2016/2016-General-Results-by-Precinct.xlsx",
+      "localFile": "data/mt-2016-general-results-by-precinct.xlsx",
+      "rowCount": 56,
+      "demVotes": 177709,
+      "repVotes": 279240,
+      "otherVotes": 37577,
+      "totalVotes": 494526
+    },
+    {
+      "id": "mt-2020-general-precinct-by-precinct",
+      "year": 2020,
+      "url": "https://sosmt.gov/wp-content/uploads/2020_General_Precinct-by-Precinct.xlsx",
+      "localFile": "data/mt-2020-general-precinct-by-precinct.xlsx",
+      "rowCount": 56,
+      "demVotes": 244786,
+      "repVotes": 343602,
+      "otherVotes": 15252,
+      "totalVotes": 603640
+    }
+  ],
+  "contextSources": [
+    {
+      "id": "mt-2016-general-statewide-canvass",
+      "year": 2016,
+      "url": "https://sosmt.gov/wp-content/uploads/attachments/2016GeneralStatewideCanvass.pdf",
+      "localFile": "data/mt-2016-general-statewide-canvass.pdf",
+      "statewideWriteInVotes": null
+    },
+    {
+      "id": "mt-2016-general-state-canvass-write-in",
+      "year": 2016,
+      "url": "https://sosmt.gov/wp-content/uploads/attachments/2016GeneralStateCanvassWriteIn.pdf",
+      "localFile": "data/mt-2016-general-state-canvass-write-in.pdf",
+      "statewideWriteInVotes": 2621
+    },
+    {
+      "id": "mt-2020-state-canvass-report",
+      "year": 2020,
+      "url": "https://sosmt.gov/wp-content/uploads/State_Canvass_Report.pdf",
+      "localFile": "data/mt-2020-state-canvass-report.pdf",
+      "statewideWriteInVotes": null
+    },
+    {
+      "id": "mt-2020-state-canvass-write-in-by-county",
+      "year": 2020,
+      "url": "https://sosmt.gov/wp-content/uploads/State_Canvass_Writein_by_County.pdf",
+      "localFile": "data/mt-2020-state-canvass-write-in-by-county.pdf",
+      "statewideWriteInVotes": 34
+    }
+  ],
+  "output": {
+    "localFile": "data/mt-historical-presidential-baseline.csv",
+    "rowCount": 112,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

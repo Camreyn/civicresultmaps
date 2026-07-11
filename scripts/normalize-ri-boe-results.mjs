@@ -1,11 +1,13 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import JSZip from "jszip";
+import { readFinalizedRootEntry } from "./lib/ri-finalized-zip.mjs";
+import { RI_CITY_TOWN_COUNTIES, RI_COUNTY_TAGS } from "./lib/ri-jurisdictions.mjs";
 
 const STATE = "RI";
 
 const CURRENT = {
   year: 2024,
   zipPath: "data/ri-2024-general-election-long-format.zip",
+  finalizedEntryName: "rigen2024l.txt",
   statewideJsonPath: "data/ri-2024-general-election-statewide.json",
   presidentCsvPath: "data/ri-2024-general-president-city-town.csv",
   reviewCsvPath: "data/ri-2024-general-president-senate-review.csv",
@@ -16,68 +18,27 @@ const HISTORICAL = [
   {
     year: 2012,
     zipPath: "data/ri-2012-general-election-long-format.zip",
+    finalizedEntryName: "rigen2012l.asc",
     statewideJsonPath: "data/ri-2012-general-election-statewide.json",
     sourceUrl: "https://www.ri.gov/election/results/2012/general_election/data/rigen2012l.zip",
   },
   {
     year: 2016,
     zipPath: "data/ri-2016-general-election-long-format.zip",
+    finalizedEntryName: "rigen2016l.asc",
     statewideJsonPath: "data/ri-2016-general-election-statewide.json",
     sourceUrl: "https://www.ri.gov/election/results/2016/general_election/data/rigen2016l.zip",
   },
   {
     year: 2020,
     zipPath: "data/ri-2020-general-election-long-format.zip",
+    finalizedEntryName: "rigen2020l.asc",
     statewideJsonPath: "data/ri-2020-general-election-statewide.json",
     sourceUrl: "https://www.ri.gov/election/results/2020/general_election/data/rigen2020l.zip",
-    entryName: "rigen2020l.asc",
-    aggregateToCounty: true,
   },
 ];
 
 const historicalCsvPath = "data/ri-historical-presidential-baseline.csv";
-
-const RHODE_ISLAND_CITY_TOWN_COUNTIES = new Map([
-  ["Barrington", "Bristol County"],
-  ["Bristol", "Bristol County"],
-  ["Warren", "Bristol County"],
-  ["Coventry", "Kent County"],
-  ["East Greenwich", "Kent County"],
-  ["Warwick", "Kent County"],
-  ["West Greenwich", "Kent County"],
-  ["West Warwick", "Kent County"],
-  ["Jamestown", "Newport County"],
-  ["Little Compton", "Newport County"],
-  ["Middletown", "Newport County"],
-  ["Newport", "Newport County"],
-  ["Portsmouth", "Newport County"],
-  ["Tiverton", "Newport County"],
-  ["Burrillville", "Providence County"],
-  ["Central Falls", "Providence County"],
-  ["Cranston", "Providence County"],
-  ["Cumberland", "Providence County"],
-  ["East Providence", "Providence County"],
-  ["Foster", "Providence County"],
-  ["Glocester", "Providence County"],
-  ["Johnston", "Providence County"],
-  ["Lincoln", "Providence County"],
-  ["North Providence", "Providence County"],
-  ["North Smithfield", "Providence County"],
-  ["Pawtucket", "Providence County"],
-  ["Providence", "Providence County"],
-  ["Scituate", "Providence County"],
-  ["Smithfield", "Providence County"],
-  ["Woonsocket", "Providence County"],
-  ["Charlestown", "Washington County"],
-  ["Exeter", "Washington County"],
-  ["Hopkinton", "Washington County"],
-  ["Narragansett", "Washington County"],
-  ["New Shoreham", "Washington County"],
-  ["North Kingstown", "Washington County"],
-  ["Richmond", "Washington County"],
-  ["South Kingstown", "Washington County"],
-  ["Westerly", "Washington County"],
-]);
 
 function intText(value) {
   const cleaned = String(value ?? "").replace(/[^\d.-]/g, "");
@@ -173,18 +134,8 @@ function emptyVotes() {
   return { dem: 0, rep: 0, other: 0, total: 0 };
 }
 
-async function readLongRecords(zipPath, entryName) {
-  const zip = await JSZip.loadAsync(readFileSync(zipPath));
-  const entry = entryName
-    ? zip.file(entryName)
-    : Object.values(zip.files).find(
-        (file) =>
-          !file.dir && !file.name.includes("__MACOSX") && /(?:_results\.(?:txt|asc)|l\.asc)$/iu.test(file.name),
-      );
-  if (!entry) {
-    throw new Error(`Could not find long-format results file in ${zipPath}`);
-  }
-  const text = await entry.async("string");
+async function readLongRecords(zipPath, finalizedEntryName) {
+  const text = await readFinalizedRootEntry(readFileSync(zipPath), finalizedEntryName, zipPath);
   return text
     .split(/\r?\n/u)
     .filter((line) => line.trim())
@@ -250,7 +201,7 @@ function totalsForJurisdictions(byJurisdiction) {
   return totals;
 }
 
-function reconcileJurisdictionTotals(byJurisdiction, parsedTotals, postedTotals) {
+function assertExactTotals(label, parsedTotals, postedTotals) {
   const delta = {
     dem: postedTotals.dem - parsedTotals.dem,
     rep: postedTotals.rep - parsedTotals.rep,
@@ -258,13 +209,12 @@ function reconcileJurisdictionTotals(byJurisdiction, parsedTotals, postedTotals)
     total: postedTotals.total - parsedTotals.total,
   };
   if (delta.total || delta.dem || delta.rep || delta.other) {
-    byJurisdiction.set("Statewide Reconciliation Delta", delta);
+    throw new Error(`${label} finalized-root totals do not match posted statewide totals: ${JSON.stringify(delta)}`);
   }
   return delta;
 }
 
 function levelForJurisdiction(jurisdiction) {
-  if (jurisdiction === "Statewide Reconciliation Delta") return "non_geographic_reconciliation";
   if (jurisdiction === "Federal Precincts") return "federal_precincts";
   return "city_town";
 }
@@ -273,44 +223,24 @@ function sortedEntries(map) {
   return [...map.entries()].sort(([left], [right]) => left.localeCompare(right));
 }
 
-function aggregateHistoricalJurisdictionsToCounties(byJurisdiction) {
-  const aggregated = new Map();
-  for (const [jurisdiction, votes] of byJurisdiction.entries()) {
-    const outputJurisdiction = RHODE_ISLAND_CITY_TOWN_COUNTIES.get(jurisdiction) ?? jurisdiction;
-    if (
-      !RHODE_ISLAND_CITY_TOWN_COUNTIES.has(jurisdiction) &&
-      jurisdiction !== "Federal Precincts" &&
-      jurisdiction !== "Statewide Reconciliation Delta"
-    ) {
-      throw new Error(`Unmapped Rhode Island historical jurisdiction: ${jurisdiction}`);
-    }
-    const target = aggregated.get(outputJurisdiction) ?? emptyVotes();
-    target.dem += votes.dem;
-    target.rep += votes.rep;
-    target.other += votes.other;
-    target.total += votes.total;
-    aggregated.set(outputJurisdiction, target);
-  }
-  return aggregated;
-}
-
 async function normalizeCurrent() {
-  const records = await readLongRecords(CURRENT.zipPath);
+  const records = await readLongRecords(CURRENT.zipPath, CURRENT.finalizedEntryName);
   const president = extractContest(records, "president");
   const senate = extractContest(records, "senate");
   const presidentParsedTotals = totalsForJurisdictions(president.byJurisdiction);
   const senateParsedTotals = totalsForJurisdictions(senate.byJurisdiction);
   const presidentPostedTotals = readStatewideBuckets(CURRENT.statewideJsonPath, "Presidential Electors For:");
   const senatePostedTotals = readStatewideBuckets(CURRENT.statewideJsonPath, "Senator in Congress");
-  const presidentDelta = reconcileJurisdictionTotals(
-    president.byJurisdiction,
+  const presidentDelta = assertExactTotals(
+    "2024 RI President",
     presidentParsedTotals,
     presidentPostedTotals,
   );
-  const reconciledPresidentTotals = totalsForJurisdictions(president.byJurisdiction);
-  if (reconciledPresidentTotals.total !== presidentPostedTotals.total) {
-    throw new Error("2024 RI President reconciliation failed");
-  }
+  const senateDelta = assertExactTotals(
+    "2024 RI Senate",
+    senateParsedTotals,
+    senatePostedTotals,
+  );
 
   const presidentRows = sortedEntries(president.byJurisdiction).map(([jurisdiction, votes]) => ({
     state: STATE,
@@ -379,16 +309,11 @@ async function normalizeCurrent() {
   return {
     presidentRows: presidentRows.length,
     reviewRows: reviewRows.length,
-    presidentTotal: reconciledPresidentTotals.total,
+    presidentTotal: presidentParsedTotals.total,
     senateZipTotal: senateParsedTotals.total,
     senatePostedTotal: senatePostedTotals.total,
     presidentDelta,
-    senateDelta: {
-      dem: senatePostedTotals.dem - senateParsedTotals.dem,
-      rep: senatePostedTotals.rep - senateParsedTotals.rep,
-      other: senatePostedTotals.other - senateParsedTotals.other,
-      total: senatePostedTotals.total - senateParsedTotals.total,
-    },
+    senateDelta,
     presidentialOnlyRows: presidentReportingEntries.filter(([key, unit]) => !senate.byReportingUnit.has(key) && unit.votes.total > 0)
       .length,
     zeroVoteSameKeyRows: presidentReportingEntries.filter(([key, unit]) => senate.byReportingUnit.has(key) && unit.votes.total === 0)
@@ -399,40 +324,64 @@ async function normalizeCurrent() {
 async function normalizeHistorical() {
   const rows = [];
   for (const source of HISTORICAL) {
-    const records = await readLongRecords(source.zipPath, source.entryName);
+    const records = await readLongRecords(source.zipPath, source.finalizedEntryName);
     const president = extractContest(records, "president");
     const parsedTotals = totalsForJurisdictions(president.byJurisdiction);
     const postedTotals = readStatewideBuckets(source.statewideJsonPath, "Presidential Electors For:");
-    reconcileJurisdictionTotals(president.byJurisdiction, parsedTotals, postedTotals);
-    const outputJurisdictions = source.aggregateToCounty
-      ? aggregateHistoricalJurisdictionsToCounties(president.byJurisdiction)
-      : president.byJurisdiction;
-    const reconciledTotals = totalsForJurisdictions(president.byJurisdiction);
-    if (reconciledTotals.total !== postedTotals.total) {
-      throw new Error(`${source.year} RI President reconciliation failed`);
+    assertExactTotals(`${source.year} RI President`, parsedTotals, postedTotals);
+
+    const byCounty = new Map([...RI_COUNTY_TAGS.keys()].map((county) => [county, emptyVotes()]));
+    const nonGeographic = [];
+    for (const [jurisdiction, votes] of sortedEntries(president.byJurisdiction)) {
+      if (jurisdiction === "Federal Precincts") {
+        nonGeographic.push({ jurisdiction, votes, level: "federal_precincts" });
+        continue;
+      }
+      const county = RI_CITY_TOWN_COUNTIES.get(jurisdiction);
+      if (!county) {
+        throw new Error(`${source.year} RI historical city/town row did not map to a county: ${jurisdiction}`);
+      }
+      const target = byCounty.get(county);
+      target.dem += votes.dem;
+      target.rep += votes.rep;
+      target.other += votes.other;
+      target.total += votes.total;
     }
-    for (const [jurisdiction, votes] of sortedEntries(outputJurisdictions)) {
+
+    for (const [county, votes] of sortedEntries(byCounty)) {
+      rows.push({
+        state: STATE,
+        election_year: source.year,
+        jurisdiction_name: county,
+        jurisdiction_tag: RI_COUNTY_TAGS.get(county),
+        source_id: "ri-historical-presidential-baseline",
+        source_level: "county",
+        row_method: "rhodeIslandBoeLongFormatZipCountyAggregation",
+        dem_votes: votes.dem,
+        rep_votes: votes.rep,
+        other_votes: votes.other,
+        total_votes: votes.total,
+        source_url: source.sourceUrl,
+        local_unit: county,
+        notes: "County presidential baseline row aggregated from official RI BOE city/town long-format ZIP rows.",
+      });
+    }
+    for (const { jurisdiction, votes, level } of nonGeographic) {
       rows.push({
         state: STATE,
         election_year: source.year,
         jurisdiction_name: jurisdiction,
+        jurisdiction_tag: "",
         source_id: "ri-historical-presidential-baseline",
-        source_level: source.aggregateToCounty && jurisdiction.endsWith(" County") ? "county" : levelForJurisdiction(jurisdiction),
-        row_method: source.aggregateToCounty ? "rhodeIslandBoeLongFormatZipCountyAggregate" : "rhodeIslandBoeLongFormatZip",
+        source_level: level,
+        row_method: "rhodeIslandBoeLongFormatZipNonGeographic",
         dem_votes: votes.dem,
         rep_votes: votes.rep,
         other_votes: votes.other,
         total_votes: votes.total,
         source_url: source.sourceUrl,
         local_unit: jurisdiction,
-        notes:
-          jurisdiction === "Federal Precincts"
-            ? "Non-geographic federal precinct rows retained from the official RI BOE long-format ZIP."
-            : jurisdiction === "Statewide Reconciliation Delta"
-              ? "Posted statewide JSON total minus long-format ZIP row total; retained as a non-geographic reconciliation row."
-              : source.aggregateToCounty
-                ? "County presidential baseline row aggregated from official RI BOE city/town rows; Federal Precincts are retained separately."
-                : "City/town presidential baseline row normalized from the official RI BOE long-format ZIP.",
+        notes: "Non-geographic federal precinct rows retained from the official RI BOE long-format ZIP and left unforced for county FIPS joins.",
       });
     }
   }
@@ -440,6 +389,7 @@ async function normalizeHistorical() {
     "state",
     "election_year",
     "jurisdiction_name",
+    "jurisdiction_tag",
     "source_id",
     "source_level",
     "row_method",

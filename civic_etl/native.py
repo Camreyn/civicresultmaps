@@ -171,6 +171,37 @@ def _illinois_jurisdiction_name(raw: Any) -> str:
     return _county_name(value)
 
 
+ILLINOIS_ELECTION_AUTHORITY_COUNTY_ROLLUPS = {
+    "City of Bloomington": "McLean County",
+    "City of Chicago": "Cook County",
+    "City of Danville": "Vermilion County",
+    "City of East St. Louis": "St. Clair County",
+    "City of Galesburg": "Knox County",
+    "City of Rockford": "Winnebago County",
+}
+
+ILLINOIS_COUNTY_NAME_OVERRIDES = {
+    "DeKALB County": "DeKalb County",
+    "DeWITT County": "De Witt County",
+    "DuPAGE County": "DuPage County",
+    "JoDAVIESS County": "Jo Daviess County",
+    "LaSALLE County": "LaSalle County",
+    "McDONOUGH County": "McDonough County",
+    "McHENRY County": "McHenry County",
+    "McLEAN County": "McLean County",
+}
+
+
+def _illinois_county_rollup_name(raw: Any) -> str:
+    jurisdiction = _illinois_jurisdiction_name(raw)
+    if not jurisdiction:
+        return ""
+    return ILLINOIS_COUNTY_NAME_OVERRIDES.get(
+        jurisdiction,
+        ILLINOIS_ELECTION_AUTHORITY_COUNTY_ROLLUPS.get(jurisdiction, jurisdiction),
+    )
+
+
 WASHINGTON_COUNTY_CODES = {
     "AD": "Adams County",
     "AS": "Asotin County",
@@ -1125,7 +1156,7 @@ def _illinois_official_csv_rows(
 
         for row in reader:
             key = _illinois_result_key(row)
-            jurisdiction = _illinois_jurisdiction_name(row.get("JurisName"))
+            jurisdiction = _illinois_county_rollup_name(row.get("JurisName"))
             if not jurisdiction:
                 continue
             precinct = presidential_by_precinct.setdefault(
@@ -2070,6 +2101,10 @@ def _rhode_island_county_president_rows(
     }
     return result_rows, review_rows, turnout_rows, metrics
 
+def _connecticut_planning_region_name(raw: Any) -> str:
+    return str(raw or "").strip()
+
+
 def _connecticut_ems_vote_totals(rows: list[dict[str, Any]], candidate_ids: list[str]) -> int:
     selected = {str(candidate_id) for candidate_id in candidate_ids}
     total = 0
@@ -2082,6 +2117,89 @@ def _connecticut_ems_vote_totals(rows: list[dict[str, Any]], candidate_ids: list
 
 def _connecticut_ems_contest_total(rows: list[dict[str, Any]]) -> int:
     return sum(int_text(payload.get("V")) for row in rows for payload in row.values())
+
+
+_CONNECTICUT_SOV_TICKET_COLUMNS = [
+    "harris_and_walz",
+    "trump_and_vance",
+    "stein_and_ware",
+    "oliver_and_ter_maat",
+    "kennedy_jr_and_shanahan",
+    "ayyadurai_and_ellis",
+    "de_la_cruz_and_garcia",
+    "fox_and_mcvay",
+    "mcneil_and_mcneil",
+    "potus_and_kennedy",
+    "sonski_and_onak",
+    "west_and_abdullah",
+]
+
+
+def _connecticut_sov_town_rows(
+    section: dict[str, Any],
+    sources: dict[str, SourceConfig],
+    town_ids: dict[str, str],
+    crosswalk_rows: dict[str, dict[str, str]],
+) -> tuple[dict[str, dict[str, Any]], str]:
+    source_id = str(section.get("statementOfVoteTownSourceId") or "")
+    if not source_id:
+        return {}, ""
+    if source_id not in sources:
+        raise ValueError(f"Connecticut SOV town source is not registered: {source_id}")
+    source = sources[source_id]
+    required = {
+        "town_id",
+        "town_name",
+        "planning_region_geoid",
+        "planning_region_name",
+        "jurisdiction_tag",
+        *_CONNECTICUT_SOV_TICKET_COLUMNS,
+        "other_votes",
+        "total_votes",
+        "source_id",
+    }
+    output: dict[str, dict[str, Any]] = {}
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Connecticut SOV town CSV missing columns: {', '.join(missing)}")
+        for index, row in enumerate(reader, start=2):
+            town_id = str(row.get("town_id") or "").strip()
+            if not town_id or town_id in output:
+                raise ValueError(f"Connecticut SOV town CSV row {index} has a missing or duplicate town ID")
+            if town_id not in town_ids or str(row.get("town_name") or "").strip() != town_ids[town_id]:
+                raise ValueError(f"Connecticut SOV town CSV row {index} does not match EMS town metadata")
+            crosswalk = crosswalk_rows[town_id]
+            expected_metadata = {
+                "planning_region_geoid": crosswalk["planning_region_geoid"],
+                "planning_region_name": crosswalk["planning_region_name"],
+                "jurisdiction_tag": crosswalk["jurisdiction_tag"],
+                "source_id": source.id,
+            }
+            for field, expected in expected_metadata.items():
+                if str(row.get(field) or "").strip() != expected:
+                    raise ValueError(f"Connecticut SOV town CSV row {index} has invalid {field}")
+            values: dict[str, int] = {}
+            for field in [*_CONNECTICUT_SOV_TICKET_COLUMNS, "other_votes", "total_votes"]:
+                raw = str(row.get(field) or "").strip()
+                if not re.fullmatch(r"\d+", raw):
+                    raise ValueError(f"Connecticut SOV town CSV row {index} has invalid {field}")
+                values[field] = int(raw)
+            calculated_other = sum(
+                values[field]
+                for field in _CONNECTICUT_SOV_TICKET_COLUMNS
+                if field not in {"harris_and_walz", "trump_and_vance"}
+            )
+            calculated_total = values["harris_and_walz"] + values["trump_and_vance"] + calculated_other
+            if values["other_votes"] != calculated_other or values["total_votes"] != calculated_total:
+                raise ValueError(f"Connecticut SOV town CSV row {index} does not reconcile")
+            output[town_id] = values
+    if set(output) != set(town_ids):
+        raise ValueError(
+            f"Connecticut SOV town CSV expected {len(town_ids)} exact town IDs, got {len(output)}"
+        )
+    return output, source.id
 
 
 def _connecticut_ems_town_rows(
@@ -2101,11 +2219,34 @@ def _connecticut_ems_town_rows(
     turnout = json.loads((source_dir / "voterTurnout_Electiondata.json").read_text(encoding="utf-8-sig"))
 
     town_ids = {str(town_id): str(name).strip() for town_id, name in lookup.get("townIds", {}).items()}
-    counties = {str(county_id): f"{name} County" for county_id, name in lookup.get("counties", {}).items()}
-    county_by_town = {
-        str(row.get("TownID")): counties.get(str(row.get("CountyID")), "")
-        for row in lookup.get("countyTowns", [])
-    }
+    crosswalk_source_id = str(section.get("planningRegionCrosswalkSourceId") or "")
+    if not crosswalk_source_id or crosswalk_source_id not in sources:
+        raise ValueError("Connecticut EMS config is missing planningRegionCrosswalkSourceId")
+    crosswalk_source = sources[crosswalk_source_id]
+    crosswalk_rows: dict[str, dict[str, str]] = {}
+    with _artifact_path(crosswalk_source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {
+            "ems_town_id",
+            "ems_town_name",
+            "planning_region_geoid",
+            "planning_region_name",
+            "jurisdiction_tag",
+        }
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Connecticut planning-region crosswalk missing columns: {', '.join(missing)}")
+        for index, row in enumerate(reader, start=2):
+            town_id = str(row.get("ems_town_id") or "").strip()
+            if not town_id or town_id in crosswalk_rows:
+                raise ValueError(f"Connecticut planning-region crosswalk row {index} has a missing or duplicate town ID")
+            crosswalk_rows[town_id] = {key: str(value or "").strip() for key, value in row.items()}
+    if len(crosswalk_rows) != len(town_ids):
+        raise ValueError(f"Connecticut planning-region crosswalk expected {len(town_ids)} towns, got {len(crosswalk_rows)}")
+    sov_town_rows, presidential_source_id = _connecticut_sov_town_rows(
+        section, sources, town_ids, crosswalk_rows
+    )
+    presidential_source_id = presidential_source_id or source.id
     president_office = str(section.get("presidentOfficeId", "16518"))
     comparison_office = str(review_section.get("comparisonOfficeId", "16524"))
     harris_ids = [str(value) for value in section.get("harrisCandidateIds", [])]
@@ -2113,16 +2254,31 @@ def _connecticut_ems_town_rows(
     comparison_dem_ids = [str(value) for value in review_section.get("comparisonDemCandidateIds", [])]
     comparison_rep_ids = [str(value) for value in review_section.get("comparisonRepCandidateIds", [])]
 
-    result_rows: list[dict[str, Any]] = []
+    planning_region_totals: dict[str, dict[str, Any]] = {}
     review_rows: list[dict[str, Any]] = []
     turnout_rows: list[dict[str, Any]] = []
     comparison_rows = 0
+    ems_president_total_votes = 0
 
     for town_id in sorted(town_ids, key=lambda value: int_text(value)):
         town_name = town_ids[town_id]
-        county = county_by_town.get(town_id)
-        if not town_name or not county:
-            raise ValueError(f"Connecticut EMS town {town_id} is missing town or county metadata")
+        crosswalk = crosswalk_rows.get(town_id)
+        if not town_name or not crosswalk:
+            raise ValueError(f"Connecticut EMS town {town_id} is missing town or planning-region metadata")
+        if crosswalk.get("ems_town_name") != town_name:
+            raise ValueError(
+                f"Connecticut EMS town ID/name drift for {town_id}: "
+                f"{town_name!r} versus {crosswalk.get('ems_town_name')!r}"
+            )
+        planning_region_geoid = crosswalk.get("planning_region_geoid", "")
+        planning_region_name = crosswalk.get("planning_region_name", "")
+        jurisdiction_tag = crosswalk.get("jurisdiction_tag", "")
+        if (
+            not re.fullmatch(r"09\d{3}", planning_region_geoid)
+            or not planning_region_name.endswith("Planning Region")
+            or jurisdiction_tag != f"county:{planning_region_geoid}"
+        ):
+            raise ValueError(f"Connecticut EMS town {town_name} has invalid planning-region metadata")
 
         contests = town_votes.get(town_id, {})
         president_rows = contests.get(president_office, [])
@@ -2133,24 +2289,33 @@ def _connecticut_ems_town_rows(
         other = total - harris - trump
         if other < 0:
             raise ValueError(f"Connecticut EMS town {town_name} has invalid presidential totals")
+        ems_president_total_votes += total
+        if sov_town_rows:
+            sov = sov_town_rows[town_id]
+            harris = sov["harris_and_walz"]
+            trump = sov["trump_and_vance"]
+            other = sov["other_votes"]
+            total = sov["total_votes"]
 
-        result_rows.append(
+        region = planning_region_totals.setdefault(
+            planning_region_geoid,
             {
-                "jurisdictionName": town_name,
-                "jurisdictionCode": f"CT-TOWN-{int_text(town_id):03d}",
-                "level": "town",
-                "county": county,
-                "votes": {
-                    "Trump": trump,
-                    "Harris": harris,
-                    "Other": other,
-                },
-                "totalVotes": total,
-                "margin": trump - harris,
-                "marginPct": pct(trump - harris, total),
-                "sourceId": source.id,
-            }
+                "name": planning_region_name,
+                "jurisdictionTag": jurisdiction_tag,
+                "trump": 0,
+                "harris": 0,
+                "other": 0,
+                "total": 0,
+                "towns": 0,
+            },
         )
+        if region["name"] != planning_region_name or region["jurisdictionTag"] != jurisdiction_tag:
+            raise ValueError(f"Connecticut planning-region metadata conflicts for GEOID {planning_region_geoid}")
+        region["trump"] += trump
+        region["harris"] += harris
+        region["other"] += other
+        region["total"] += total
+        region["towns"] += 1
 
         comparison_dem = _connecticut_ems_vote_totals(comparison_contest_rows, comparison_dem_ids)
         comparison_rep = _connecticut_ems_vote_totals(comparison_contest_rows, comparison_rep_ids)
@@ -2161,7 +2326,7 @@ def _connecticut_ems_town_rows(
             comparison_rows += 1
         review_rows.append(
             {
-                "county": county,
+                "county": planning_region_name,
                 "localUnit": town_name,
                 "totalVotes": total,
                 "harris": harris,
@@ -2179,7 +2344,8 @@ def _connecticut_ems_town_rows(
                 "comparisonOtherVotes": comparison_other,
                 "comparisonDemCandidatePresent": comparison_dem > 0,
                 "comparisonRepCandidatePresent": comparison_rep > 0,
-                "sourceId": source.id,
+                "sourceId": presidential_source_id,
+                "comparisonSourceId": source.id,
             }
         )
 
@@ -2190,7 +2356,7 @@ def _connecticut_ems_town_rows(
         voters_checked = int_text(turnout_record.get("VV"))
         turnout_rows.append(
             {
-                "county": county,
+                "county": planning_region_name,
                 "localUnit": town_name,
                 "level": turnout_section.get("sourceLevel", "town"),
                 "ballotsCast": voters_checked,
@@ -2206,12 +2372,44 @@ def _connecticut_ems_town_rows(
             }
         )
 
+    result_rows = [
+        {
+            "jurisdictionName": values["name"],
+            "jurisdictionCode": f"CT-{geoid}",
+            "jurisdictionTag": values["jurisdictionTag"],
+            "level": "county",
+            "county": values["name"],
+            "votes": {
+                "Trump": values["trump"],
+                "Harris": values["harris"],
+                "Other": values["other"],
+            },
+            "totalVotes": values["total"],
+            "margin": values["trump"] - values["harris"],
+            "marginPct": pct(values["trump"] - values["harris"], values["total"]),
+            "sourceId": presidential_source_id,
+        }
+        for geoid, values in sorted(planning_region_totals.items())
+    ]
+
     metrics = {
         "nativeResultRows": len(result_rows),
+        "nativeTownResultRows": len(town_ids),
+        "nativePlanningRegionRows": len(result_rows),
+        "nativePlanningRegionCrosswalkRows": len(crosswalk_rows),
+        "nativePlanningRegionTownCounts": {
+            geoid: values["towns"] for geoid, values in sorted(planning_region_totals.items())
+        },
         "nativeResultTotalVotes": sum(row["totalVotes"] for row in result_rows),
         "nativeTrumpVotes": sum(row["votes"]["Trump"] for row in result_rows),
         "nativeHarrisVotes": sum(row["votes"]["Harris"] for row in result_rows),
         "nativeOtherVotes": sum(row["votes"]["Other"] for row in result_rows),
+        "nativePresidentSourceId": presidential_source_id,
+        "nativeComparisonSourceId": source.id,
+        "nativeStatementOfVoteTownRows": len(sov_town_rows),
+        "nativeEmsPresidentTotalVotes": ems_president_total_votes,
+        "nativeStatementOfVoteAdjustmentVotes": sum(row["totalVotes"] for row in result_rows)
+        - ems_president_total_votes,
         "nativeReviewRows": len(review_rows),
         "nativeReviewWarning": review_section.get("warning", ""),
         "nativeComparisonRows": comparison_rows,
@@ -2649,6 +2847,8 @@ def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig
                 if config.code == "NV"
                 else _rhode_island_jurisdiction_name(row.get("jurisdiction_name"))
                 if config.code == "RI"
+                else _connecticut_planning_region_name(row.get("jurisdiction_name"))
+                if config.code == "CT"
                 else _maryland_jurisdiction_name(row.get("jurisdiction_name"))
                 if config.code == "MD"
                 else _louisiana_parish_name(row.get("jurisdiction_name"))
@@ -7763,11 +7963,14 @@ def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     if config.code == "CT" and config.raw.get("certifiedResults", {}).get("format") == "connecticutEmsTownJson":
         sources = _source_map(config)
         result_rows, review_rows, turnout_rows, metrics = _connecticut_ems_town_rows(config, sources)
+        historical_rows, historical_metrics = _historical_baseline_rows(config, sources)
+        metrics = {**metrics, **historical_metrics}
         _assert_native_expected(config, metrics)
         return {
             "parser": "nativeConnecticutEmsTownJson",
             "resultRows": result_rows,
             "reviewRows": review_rows,
+            "historicalRows": historical_rows,
             "turnoutRows": turnout_rows,
             "metrics": metrics,
         }

@@ -319,16 +319,17 @@ Remaining gaps: state-native local turnout denominators, official precinct/ward/
 
 - Config: `etl/state-configs/ok.json`
 - Authority: Oklahoma State Election Board; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting equipment context
-- County results source: `data/ok-2024-official-results/ok-2024-county-level-results.zip`, from the official OK Election Results county-level CSV ZIP export
-- Race-level reconciliation source: `data/ok-2024-official-results/ok-2024-race-level-results.csv`, from the official race-level CSV export
-- Local review source: `data/ok-2024-official-results/ok-2024-precinct-level-results.zip`, from the official precinct-level CSV ZIP export
-- Comparison contest: U.S. House by district; same-precinct rows are comparable only where both Democratic and Republican House candidate votes are present, with vote-share-only rows retained for non-comparable precincts
-- Turnout source: EAC 2024 county/jurisdiction fallback rows at `data/eac-2024-state-turnout/ok-2024-eac-turnout.csv`; the Oklahoma State Election Board Nov. 1, 2024 VR PDF is retained at `data/ok-2024-vrstats-district-nov1-2024.pdf` and parsed by `scripts/collect-ok-vrstats-registration.mjs` into `data/ok-2024-vrstats-county-denominator-lead.csv` plus `data/ok-2024-vrstats-denominator-summary.json` as a denominator lead
-- County boundary: `data/ok-counties.geojson`
-- Coverage/admin inventory: `data/ok-2024-data-coverage-inventory.json` documents official historical result pages for 2012/2016/2020, the official 2024 post-election audit archive, precinct GIS source lead, the Nov. 1 VR denominator lead, records-request path, equipment context, and remaining CVR/recount/incident/correction/litigation gaps
+- 2024 county/race/precinct exports remain loaded from the official Oklahoma Election Results application
+- Historical raw sources: `data/ok-2016-official-results/20161108_CountyResults_csv.zip` and `data/ok-2020-official-results/20201103_CountyResults_csv.zip`, collected through the official public application with a short-lived bearer token kept only in memory
+- Historical normalizer: `scripts/normalize-ok-historical-presidential-baseline.py` requires one exact root CSV member, President race 10001, the complete official candidate set, exact source rows/totals, and all 77 county names matched against the Census/config county references
+- Historical output: `data/ok-historical-presidential-baseline.csv` contains 154 rows—77 canonical `county:<GEOID>` tags for each of 2016 and 2020
+- Reconciliation manifest: `data/ok-historical-presidential-baseline-summary.json` records discovery/export URLs, ZIP/member metadata, source hashes, all candidate totals, the Census county-reference hash, and exact county/tag coverage
+- Turnout remains EAC 2024 county/jurisdiction fallback at `data/eac-2024-state-turnout/ok-2024-eac-turnout.csv`; Oklahoma-native turnout/voter-history denominator rows remain a source gap
+- County boundary: `data/ok-counties.geojson`; precinct geometry/crosswalk remains missing
 
-Expected validation: 77 county result rows, 77 county geometry features, 1,566,173 presidential votes, 1,036,213 Trump votes, 499,599 Harris votes, 30,361 other votes, 1,977 precinct review rows, and 77 EAC fallback turnout rows. The parsed Nov. 1 VR denominator lead has 77 county rows, 2,442,211 registered voters, and zero county registered-voter mismatches against EAC; it does not replace turnout because it has no ballots-cast field. Remaining gaps are Oklahoma-native ballots-cast or voter-history rows, precinct boundary geometry/crosswalks, loaded 2012/2016/2020 historical baseline rows, normalized row-level audit outcomes, CVR availability, recount, incident, correction, and litigation records. Current advisory rows are public-interest screening inputs only, not findings.
+Expected validation: 77 current result rows, 1,977 precinct review rows, 77 EAC fallback turnout rows, and 154 historical rows. Official historical candidate totals are 1,452,992 in 2016 (420,375 Democratic; 949,136 Republican; 83,481 Other) and 1,560,699 in 2020 (503,890 Democratic; 1,020,280 Republican; 36,529 Other). The 2020 export contains six tickets—three additional independent tickets account for 11,798 votes beyond the Democratic, Republican, and Libertarian totals.
 
+Promotion safety review found live Oklahoma history contains only 77 tagged 2020 rows; staging preserves all 77 tags and every vote field exactly and adds 77 tagged 2016 rows, so no live year or row is removed. The sole display-text change is `county:40079` from live `LeFlore County` to canonical Census `Le Flore County`; the official export label `LEFLORE` remains in `local_unit`. Oklahoma contributes no 2016-to-2020 or 2016-to-2024 county flips. Remaining gaps are official 2012 county history, Oklahoma-native turnout, precinct geometry/crosswalks, normalized row-level audit outcomes, CVR availability, recount, incident, correction, and litigation records. Current advisory rows are public-interest screening inputs only, not findings.
 ## Native ETL Acceptance Criteria
 
 For each state, the native importer should fail before promotion if:
@@ -567,20 +568,30 @@ Delaware remains in source discovery rather than `completedNativeStates`. The ac
 
 No native result or advisory review parser is loaded. The 2024 report is official, but scripted inspection did not confirm a stable raw text/CSV result endpoint; older-style 2024 raw path guesses returned 404. The DOE AGP turnout report is script-readable and reports 788,864 registered voters and 518,086 voted statewide, versus active EAC fallback 788,441 registered voters and 514,367 ballots cast, so it needs a parser and reconciliation review before replacing EAC fallback. Remaining source needs are official machine-readable President plus same-grain U.S. Senate rows, election-district geometry/crosswalks, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation records. Advisory rows are source-review context only, not findings of fraud or misconduct.
 
+## Illinois Historical County Baseline Update (2026-07-10)
+
+- Config: `etl/state-configs/il.json`
+- Authority: Illinois State Board of Elections; U.S. Census Bureau county reference
+- Official historical sources: `data/il-2016-general-candidate-totals-by-county.xls` and `data/il-2020-general-candidate-totals-by-county.xls` from the Illinois Candidate Totals by County download page
+- Normalizer: `scripts/collect-il-historical-presidential-baseline.mjs`
+- Output: `data/il-historical-presidential-baseline.csv` with 204 rows, exactly 102 canonical `county:<GEOID>` tags for each of 2016 and 2020
+- Reconciliation/provenance: `data/il-historical-presidential-baseline-summary.json` records official workbook URLs and hashes, worksheet/candidate totals, plus the Census county-reference URL, local path, hash, join fields, and 102-feature count
+- Promotion reconciliation: `data/il-historical-promotion-reconciliation.json`, generated by `scripts/reconcile-il-historical-promotion.mjs`, pins every pre-promotion live 2020 tuple, exact live/staged hashes, 2024 election-authority rollups, flip effects, and advisory-indicator counts
+
+Official totals reconcile to 5,536,424 presidential candidate votes in 2016 (3,090,729 Democratic; 2,146,015 Republican; 299,680 Other) and 6,033,744 in 2020 (3,471,915 Democratic; 2,446,891 Republican; 114,938 Other). The workbooks include candidate and write-in votes but not blank, undervote, or overvote records. The pinned pre-promotion live package has 102 tagged 2020 rows, but 100 vote tuples differ: six parent counties omit candidate votes held in separate city election-authority rows, and 100 rows use a broader Other/noncandidate treatment. Staging preserves every tag, adds 102 official 2016 rows, corrects McLean and Winnebago from incomplete red winners to official blue winners, and removes two spurious 2020-to-2024 red-to-blue flips. The 108 live 2024 jurisdiction rows aggregate exactly to the 102 staged county tuples. The canonical rollup also recalculates 90 staged indicators instead of 99 pre-rollup production indicators; this is a calculation-scope change, not an election-integrity finding. Official 2012 county history remains uncollected.
+
 ## Connecticut Wave 17 Native Activation
 
 - Config: `etl/state-configs/ct.json`
-- Authority: Connecticut Secretary of the State; U.S. Election Assistance Commission; U.S. Census Bureau; UConn VoTeR audit reports; Verified Voting equipment context
-- Current active package: official EMS election 91/version 80741 static JSON at `data/ct-2024-ems-election-91-version-80741`, with 169 town President result rows, 169 same-grain U.S. Senate review rows, and 169 warning-required EMS town turnout rows
-- President source: CT EMS `townVotes_Electiondata.json` office 16518, with 992,053 Harris votes, 736,918 Trump votes, 30,039 other votes, and 1,759,010 total EMS presidential votes
-- Comparison source: CT EMS `townVotes_Electiondata.json` office 16524 U.S. Senator, with Christopher S. Murphy Democratic plus Working Families lines fused by person for 1,000,695 Democratic comparison votes, Matthew M. Corey Republican line at 678,256 comparison votes, and 29,308 other votes
-- Turnout source: CT EMS `voterTurnout_Electiondata.json`, with EMS EV registered/elector denominator total 2,348,545 and VV voters-checked total 1,788,981; all turnout rows are warning-required pending EMS/SOV/EAC semantics review
-- Certified cross-check source: 2024 Statement of Vote PDF at `data/ct-2024-statement-of-vote.pdf`; reconcile the known EMS-versus-SOV presidential total discrepancy before production promotion or certified-total language
-- Election History review: `data/ct-2024-election-history-source-review.json`, generated by `scripts/report-ct-election-history-source-review.mjs`, confirms event 582 President town/vote-channel totals match EMS but excludes Election History as a turnout replacement because event 582 `voterStats` returns zero rows and no registered-voter denominator
-- Geometry: Census TIGERweb county-subdivision layer 22 is collected at `data/ct-town-mcds.geojson`; raw response has 174 features, so filter five COUSUB=00000 placeholders and QA EMS town-name joins before map promotion
-- Administration context: `data/ct-2024-equipment-context.csv` remains supplemental Verified Voting context only; UConn VoTeR post-election audit, CVR availability, recount, incident, correction, and litigation rows are not normalized
+- Authority: Connecticut Secretary of the State; U.S. Census Bureau; U.S. Election Assistance Commission; UConn VoTeR audit reports; Verified Voting equipment context
+- Certified 2024 President source: `data/ct-2024-statement-of-vote.pdf`, SHA-256 `1043dc18895adcff95e227e136eb19ef1c65f2a452a4dc97105fb4738cf3751c`
+- Reproducible normalization: `scripts/normalize-ct-2024-statement-of-vote.mjs` extracts all 169 towns and 12 presidential tickets from SOV pages 11-34 into `data/ct-2024-statement-of-vote-president-town.csv`; `data/ct-2024-statement-of-vote-president-reconciliation.json` records PDF, EMS, crosswalk, output hashes, and town/region comparisons
+- Active result geography: 169 certified SOV town rows aggregate through `data/ct-current-planning-region-crosswalk.csv` to nine current Census planning-region county-equivalent rows totaling 1,759,275 votes (992,197 Harris; 737,024 Trump; 30,054 Other)
+- EMS reconciliation: certified SOV has 265 more President votes than EMS election 91/version 80741 (+144 Harris, +106 Trump, +15 Other), localized to Colchester, Mansfield, Southbury, and Waterford. EMS remains active for 169 town U.S. Senate comparison and turnout rows.
+- Historical output: `data/ct-historical-presidential-baseline.csv` contains 18 rows, nine current planning-region tags per year for 2016/2020; `data/ct-historical-presidential-baseline-summary.json` records exact EMS/stateVotes reconciliation and source hashes
+- Crosswalk/geometry: all 169 EMS town ID/name pairs match across 2016, 2020, and 2024; each town exactly matches Census `BASENAME` and resolves through Census `COUNTY`/`GEOID` to `county:09110` through `county:09190`
 
-CT is now listed in `completedNativeStates` for native staging coverage, with caveats. The source inventory and request matrix are `data/ct-2024-data-coverage-inventory.json` and `data/ct-2024-source-request-matrix.tsv`. Current CT advisory output is town-level public-interest screening context only; it is not precinct/ward evidence and is not evidence of fraud or misconduct.
+Expected staging validation: 9 certified-SOV tagged result rows, 169 SOV-President-versus-EMS-Senate review rows, 169 warning-required EMS turnout rows, and 18 historical rows. The presidential reconciliation blocker is closed, and Northwest Hills is unchanged by the SOV corrections (31,137 Harris; 31,944 Trump), confirming its 2020-to-2024 Blue-to-Red planning-region flip. Production promotion remains a coordinator action. Current-geography, turnout-semantics, sub-town availability, and missing-2012 caveats remain. Advisory rows are public-interest screening context only and are not evidence of fraud or misconduct.
 ## Hawaii Wave 19 Native Activation
 
 - Config: `etl/state-configs/hi.json`
@@ -657,18 +668,19 @@ Expected validation: 17 certified result rows including State UOCAVA, 16 county 
 
 - Config: `etl/state-configs/ri.json`
 - Authority: Rhode Island Board of Elections; U.S. Election Assistance Commission
-- Current active package: native President county-map rows aggregated from official city/town rows, explicit non-geographic federal/reconciliation rows, same-key President-versus-U.S.-Senate review rows, EAC fallback turnout, and partial official historical baselines
-- Official result artifacts collected: `data/ri-2024-general-election-long-format.zip`, `data/ri-2024-general-election-short-format.zip`, `data/ri-2024-general-election-statewide.json`, and `data/ri-boe-results-data-description.pdf`
-- Normalized artifacts: `data/ri-2024-general-president-city-town.csv`, `data/ri-2024-general-president-senate-review.csv`, and `data/ri-historical-presidential-baseline.csv`
-- Parser path: `scripts/normalize-ri-boe-results.mjs` plus `nativeRhodeIslandBoeCsv`
-- Comparison contest: U.S. Senate, paired at same BOE reporting-unit key where nonzero President rows exist
-- Turnout source: active ETL remains EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/ri-2024-eac-turnout.csv`
-- Historical baselines: official 2012 and 2016 RI.gov archive rows are loaded; 2020 artifacts are collected but blocked by an alternate vote-group layout that did not reconcile in this pass
+- Official artifacts: finalized long-format ZIPs for 2012, 2016, 2020, and 2024; the 2024 posted statewide JSON remains the exact-total cross-check
+- Normalizer: `scripts/normalize-ri-boe-results.mjs` reads only the explicit finalized root member, rejects sanitized non-root ZIP paths, and fails closed unless President and U.S. Senate candidate buckets match posted totals exactly
+- Current output: `data/ri-2024-general-president-city-town.csv` contains five county-map rows plus unforced Federal Precincts; `data/ri-2024-general-president-senate-review.csv` contains 444 same-key reporting-unit review rows
+- Historical output: `data/ri-historical-presidential-baseline.csv` contains 18 rows—five canonical county tags plus unforced Federal Precincts for each of 2012, 2016, and 2020
+- Turnout: active ETL remains EAC 2024 jurisdiction fallback at `data/eac-2024-state-turnout/ri-2024-eac-turnout.csv`
 
-Expected validation: 7 President result rows (five county-map rows plus Federal Precincts and a non-geographic reconciliation delta), 444 review rows, 39 EAC fallback turnout rows, 80 historical baseline rows, and posted statewide President totals of 513,386 votes: 285,156 Harris, 214,406 Trump, and 13,824 Other. The official long-format ZIP is 32 President votes and 29 U.S. Senate votes below the posted statewide JSON, so the normalized President package includes a non-geographic reconciliation delta and review rows exclude posted-total deltas, zero-vote Limited rows, and presidential-only rows.
+Expected staging validation: 6 President result rows, 444 review rows, 39 EAC fallback turnout rows, 18 historical rows, and exact posted 2024 totals of 513,386 President votes (285,156 Harris; 214,406 Trump; 13,824 Other) and 491,948 U.S. Senate votes. No synthetic reconciliation row is emitted.
 
-Remaining gaps are state-native turnout/registration denominators, result-ready city/town or precinct geometry/crosswalks for finer overlays, decoded 2020 historical baseline rows, and normalized audit/CVR/recount/incident/correction/litigation records. Current advisory rows are source-review calculations only, not findings.
+Promotion acceptance (July 10, 2026): `scripts/audit-ri-historical-promotion.mjs` compared the live database-backed API with `.etl/staging/ri-2024-staging.json` and wrote the fail-closed record at `data/ri-historical-promotion-reconciliation.json`. Live history has 86 rows: 40 municipal/federal rows in 2012, 40 in 2016, and 6 county/federal rows in 2020. Staging has 18 rows: five canonical county tags plus unforced Federal Precincts for each year. The 68-row reduction is intentional and accepted for coordinator integration; it does not itself authorize promotion.
 
+The audit reconciles Democratic, Republican, Other, and total votes with zero delta statewide and in every county/Federal Precincts bucket for all three years. Live 2012 and 2016 each have only three tagged rows, because Bristol, Newport, and Providence municipality labels inherited same-named county tags; staging has all five complete county aggregates per year. The Historical tab, API, and export will therefore change 2012/2016 display grain from 39 municipalities plus Federal Precincts to five counties plus Federal Precincts. The 2020 display names and totals are unchanged. Canonical flip reporting has five matched county tags and identifies Kent County as Rhode Island's sole red-to-blue flip for both 2016-to-2020 and 2016-to-2024; Rhode Island has no 2020-to-2024 county flip.
+
+Remaining gaps are state-native turnout/registration denominators, finer city/town or precinct geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records. Advisory rows are source-review calculations only, not findings.
 ## Delaware Wave 17 Native Activation
 
 - Config: `etl/state-configs/de.json`
@@ -762,3 +774,9 @@ Remaining gaps are Tennessee-native turnout/registration denominators, precinct 
 - Turnout source review: `data/il-2024-turnout-source-review.json`, generated by `scripts/report-il-turnout-source-review.mjs`
 
 The official by-office President CSV includes `Registration` and `VoteCount`, but it is not a valid state-native turnout replacement. The review found 10,062 President precinct keys, 7,210,422 summed Registration, 2,260 zero-registration precinct keys, and 5,702,776 President candidate plus over/under/blank rows. Active EAC fallback remains 108 rows, 5,717,147 ballots cast, and 8,970,541 registered voters, so the by-office Registration total is 1,760,119 below EAC and the contest total is 14,371 below EAC ballots cast. Keep EAC fallback active until an Illinois turnout/voter-participation artifact with explicit ballots-cast, denominator timing, and election-authority or precinct join keys is published or confirmed. Current advisory review rows remain source-review inputs only, not findings.
+
+## 2016 County Flip Production Integration (2026-07-11)
+
+The clean staging-over-live projection covers CO, CT, DE, HI, IL, LA, MD, ME, MT, NJ, OK, OR, RI, SC, TN, VT, and WA. It matches all 3,113 comparable county/county-equivalent tags with zero missing comparison pairs. The projected counts are 64 red-to-blue and 15 blue-to-red for 2016-to-2020, 31 red-to-blue and 69 blue-to-red for 2016-to-2024, and 0 red-to-blue and 87 blue-to-red for 2020-to-2024. Hawaii county:15005 Kalawao remains an official-export coverage caveat but is absent from both comparison sides and does not create a missing pair.
+
+Promotion acceptance is fail-closed for the material migrations. Connecticut now uses the certified 2024 Statement of Vote: 1,759,275 votes across 169 towns and nine planning regions, confirming Northwest Hills blue-to-red. Rhode Island reduces 86 historical rows to 18 county/federal rows with zero vote delta. Illinois preserves 102 live tags, corrects 100 official 2020 vote tuples, and rolls six city election authorities into counties without 2024 vote loss. Oklahoma preserves all 77 live 2020 tags and vote tuples and adds 77 official 2016 rows; its public-app token was short-lived and never persisted. See data/jurisdiction-tag-coverage-2016-waves.json and the CT, IL, RI, and OK reconciliation artifacts for exact evidence.

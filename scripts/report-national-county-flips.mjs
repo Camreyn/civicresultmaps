@@ -1,6 +1,33 @@
-﻿import { jurisdictionTagForRow } from "../src/lib/jurisdiction-tags.ts";
+import { jurisdictionTagForRow } from "../src/lib/jurisdiction-tags.ts";
+import { loadStagingJurisdictionReportSource } from "./lib/staging-jurisdiction-report-source.mjs";
 
-const base = process.argv.find((arg) => arg.startsWith("--base="))?.slice("--base=".length) ?? "https://www.civicresultmaps.org";
+const baseArg = process.argv.find((arg) => arg.startsWith("--base="));
+const stagingDir = process.argv.find((arg) => arg.startsWith("--staging-dir="))?.slice("--staging-dir=".length);
+const overlayStatesArg = process.argv.find((arg) => arg.startsWith("--overlay-states="))?.slice("--overlay-states=".length);
+const base = baseArg?.slice("--base=".length) ?? "https://www.civicresultmaps.org";
+const fromYear = Number(process.argv.find((arg) => arg.startsWith("--from="))?.slice("--from=".length) ?? 2020);
+const toYear = Number(process.argv.find((arg) => arg.startsWith("--to="))?.slice("--to=".length) ?? 2024);
+
+const overlayStates = new Set((overlayStatesArg ?? "").split(",").map((state) => state.trim().toUpperCase()).filter(Boolean));
+const invalidOverlayState = Array.from(overlayStates).find((state) => !/^[A-Z]{2}$/.test(state));
+
+if (
+  !Number.isInteger(fromYear)
+  || !Number.isInteger(toYear)
+  || fromYear >= toYear
+  || (baseArg && stagingDir && !overlayStates.size)
+  || (overlayStatesArg != null && (!stagingDir || !overlayStates.size || invalidOverlayState))
+) {
+  throw new Error("Usage: report-national-county-flips.mjs [--from=2016] [--to=2024] [--base=https://...] [--staging-dir=.etl/staging [--overlay-states=CO,LA]]");
+}
+
+const stagingSource = stagingDir ? await loadStagingJurisdictionReportSource(stagingDir) : null;
+for (const state of overlayStates) {
+  if (!stagingSource.states.includes(state)) {
+    throw new Error(`No staging artifact found for overlay state ${state}`);
+  }
+}
+const useStagingForState = (state) => stagingSource && (!overlayStates.size || overlayStates.has(state));
 
 async function api(route) {
   const response = await fetch(`${base}${route}`);
@@ -19,58 +46,127 @@ function tagFor(row, state, levelField = "level") {
   });
 }
 
-function color2024(row) {
-  if (row.winner === "Harris") return "blue";
-  if (row.winner === "Trump") return "red";
-  return null;
+function colorForResultRow(row) {
+  if (["Harris", "Biden", "Clinton", "Obama"].includes(row.winner)) return "blue";
+  if (["Trump", "Romney", "McCain"].includes(row.winner)) return "red";
+
+  const votes = row.votes ?? {};
+  const demVotes = votes.Harris ?? votes.Biden ?? votes.Clinton ?? votes.Obama;
+  const repVotes = votes.Trump ?? votes.Romney ?? votes.McCain;
+  if (demVotes == null || repVotes == null || demVotes === repVotes) {
+    return null;
+  }
+  return demVotes > repVotes ? "blue" : "red";
 }
 
-const states = (await api("/api/states")).data.map((state) => state.code);
+function colorForHistoricalRow(row) {
+  if (row.demVotes == null || row.repVotes == null || row.demVotes === row.repVotes) {
+    return null;
+  }
+  return row.demVotes > row.repVotes ? "blue" : "red";
+}
+
+async function comparableRowsForState(state, year) {
+  if (useStagingForState(state)) {
+    const family = year === 2024 ? "results" : "historical";
+    return {
+      family,
+      rows: stagingSource.rowsForState(state, family, year),
+      levelField: family === "results" ? "level" : "sourceLevel",
+      colorForRow: family === "results" ? colorForResultRow : colorForHistoricalRow,
+    };
+  }
+
+  if (year === 2024) {
+    const results = await api(`/api/results?state=${state}&year=2024&level=county`);
+    return {
+      family: "results",
+      rows: results.data,
+      levelField: "level",
+      colorForRow: colorForResultRow,
+    };
+  }
+
+  const history = await api(`/api/historical-baselines?state=${state}&year=${year}&limit=5000`);
+  return {
+    family: "historical",
+    rows: history.data,
+    levelField: "sourceLevel",
+    colorForRow: colorForHistoricalRow,
+  };
+}
+
+function summaryKey(prefix, year) {
+  return `${prefix}${year}`;
+}
+
+function totalsFor(summaries, key) {
+  return summaries.reduce((sum, row) => sum + row[key], 0);
+}
+
+function comparableLabel(year, family) {
+  return `${year}${family === "results" ? " result" : " historical"}`;
+}
+
+const states = stagingSource && !overlayStates.size
+  ? stagingSource.states
+  : (await api("/api/states")).data.map((state) => state.code);
 const flips = [];
 const summaries = [];
 
 for (const state of states) {
-  const [results, history] = await Promise.all([
-    api(`/api/results?state=${state}&year=2024&level=county`),
-    api(`/api/historical-baselines?state=${state}&year=2020&limit=5000`),
+  const [fromComparable, toComparable] = await Promise.all([
+    comparableRowsForState(state, fromYear),
+    comparableRowsForState(state, toYear),
   ]);
 
-  const historicalByTag = new Map();
-  let taggedHistorical = 0;
-  for (const row of history.data) {
-    const tag = tagFor(row, state, "sourceLevel");
-    if (!tag || row.demVotes == null || row.repVotes == null || row.demVotes === row.repVotes) {
-      continue;
-    }
-    taggedHistorical += 1;
-    historicalByTag.set(tag, row);
-  }
-
-  let tagged2024 = 0;
-  let matched = 0;
-  let redToBlue = 0;
-  let blueToRed = 0;
-  for (const row of results.data) {
-    const tag = tagFor(row, state);
+  const fromByTag = new Map();
+  let taggedFromRows = 0;
+  let votableFromRows = 0;
+  for (const row of fromComparable.rows) {
+    const tag = tagFor(row, state, fromComparable.levelField);
     if (!tag) {
       continue;
     }
-    tagged2024 += 1;
-    const historical = historicalByTag.get(tag);
-    if (!historical) {
+    taggedFromRows += 1;
+    const fromColor = fromComparable.colorForRow(row);
+    if (!fromColor) {
       continue;
     }
-    const winner2024 = color2024(row);
-    if (!winner2024) {
+    votableFromRows += 1;
+    fromByTag.set(tag, row);
+  }
+
+  let taggedToRows = 0;
+  let votableToRows = 0;
+  let matched = 0;
+  let redToBlue = 0;
+  let blueToRed = 0;
+  for (const row of toComparable.rows) {
+    const tag = tagFor(row, state, toComparable.levelField);
+    if (!tag) {
       continue;
     }
-    const winner2020 = historical.demVotes > historical.repVotes ? "blue" : "red";
+    taggedToRows += 1;
+    const toColor = toComparable.colorForRow(row);
+    if (!toColor) {
+      continue;
+    }
+    votableToRows += 1;
+    const fromRow = fromByTag.get(tag);
+    if (!fromRow) {
+      continue;
+    }
+    const fromColor = fromComparable.colorForRow(fromRow);
+    if (!fromColor) {
+      continue;
+    }
     matched += 1;
-    if (winner2020 === "red" && winner2024 === "blue") {
+    if (fromColor === "red" && toColor === "blue") {
       redToBlue += 1;
       flips.push({ direction: "red_to_blue", state, tag, county: row.jurisdictionName });
     }
-    if (winner2020 === "blue" && winner2024 === "red") {
+    if (fromColor === "blue" && toColor === "red") {
       blueToRed += 1;
       flips.push({ direction: "blue_to_red", state, tag, county: row.jurisdictionName });
     }
@@ -78,31 +174,49 @@ for (const state of states) {
 
   summaries.push({
     state,
-    resultRows2024: results.data.length,
-    taggedRows2024: tagged2024,
-    historicalRows2020: history.data.length,
-    taggedHistoricalRows2020: taggedHistorical,
+    [summaryKey("rows", fromYear)]: fromComparable.rows.length,
+    [summaryKey("taggedRows", fromYear)]: taggedFromRows,
+    [summaryKey("votableRows", fromYear)]: votableFromRows,
+    [summaryKey("rows", toYear)]: toComparable.rows.length,
+    [summaryKey("taggedRows", toYear)]: taggedToRows,
+    [summaryKey("votableRows", toYear)]: votableToRows,
     matchedRows: matched,
-    missingHistoricalRows: Math.max(tagged2024 - matched, 0),
+    missingComparisonRows: Math.max(taggedToRows - matched, 0),
+    untaggedFromRows: fromComparable.rows.length - taggedFromRows,
+    untaggedToRows: toComparable.rows.length - taggedToRows,
     redToBlue,
     blueToRed,
   });
 }
 
 const output = {
-  base,
+  base: stagingSource && !overlayStates.size ? stagingSource.base : base,
+  ...(overlayStates.size ? { stagingOverlay: { directory: stagingSource.base, states: Array.from(overlayStates).sort() } } : {}),
   generatedAt: new Date().toISOString(),
+  fromYear,
+  toYear,
+  comparison: `${fromYear}-to-${toYear}`,
+  fromFamily: fromYear === 2024 ? "results" : "historical",
+  toFamily: toYear === 2024 ? "results" : "historical",
   redToBlue: flips.filter((flip) => flip.direction === "red_to_blue").length,
   blueToRed: flips.filter((flip) => flip.direction === "blue_to_red").length,
   coverage: {
-    resultRows2024: summaries.reduce((sum, row) => sum + row.resultRows2024, 0),
-    taggedRows2024: summaries.reduce((sum, row) => sum + row.taggedRows2024, 0),
-    historicalRows2020: summaries.reduce((sum, row) => sum + row.historicalRows2020, 0),
-    taggedHistoricalRows2020: summaries.reduce((sum, row) => sum + row.taggedHistoricalRows2020, 0),
-    matchedRows: summaries.reduce((sum, row) => sum + row.matchedRows, 0),
-    missingHistoricalRows: summaries.reduce((sum, row) => sum + row.missingHistoricalRows, 0),
+    [summaryKey("rows", fromYear)]: totalsFor(summaries, summaryKey("rows", fromYear)),
+    [summaryKey("taggedRows", fromYear)]: totalsFor(summaries, summaryKey("taggedRows", fromYear)),
+    [summaryKey("votableRows", fromYear)]: totalsFor(summaries, summaryKey("votableRows", fromYear)),
+    [summaryKey("rows", toYear)]: totalsFor(summaries, summaryKey("rows", toYear)),
+    [summaryKey("taggedRows", toYear)]: totalsFor(summaries, summaryKey("taggedRows", toYear)),
+    [summaryKey("votableRows", toYear)]: totalsFor(summaries, summaryKey("votableRows", toYear)),
+    matchedRows: totalsFor(summaries, "matchedRows"),
+    missingComparisonRows: totalsFor(summaries, "missingComparisonRows"),
+    untaggedFromRows: totalsFor(summaries, "untaggedFromRows"),
+    untaggedToRows: totalsFor(summaries, "untaggedToRows"),
   },
-  stateSummaries: summaries.filter((row) => row.redToBlue || row.blueToRed || row.missingHistoricalRows),
+  labels: {
+    from: comparableLabel(fromYear, fromYear === 2024 ? "results" : "historical"),
+    to: comparableLabel(toYear, toYear === 2024 ? "results" : "historical"),
+  },
+  stateSummaries: summaries.filter((row) => row.redToBlue || row.blueToRed || row.missingComparisonRows || row.untaggedFromRows || row.untaggedToRows),
   flips: flips.sort((left, right) => `${left.direction}:${left.state}:${left.county}`.localeCompare(`${right.direction}:${right.state}:${right.county}`)),
 };
 

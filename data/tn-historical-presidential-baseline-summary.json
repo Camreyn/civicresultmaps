@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-07-11T02:01:43.561Z",
+  "authority": "Tennessee Secretary of State",
+  "parser": "scripts/normalize-tn-historical-presidential-baseline.mjs",
+  "caveat": "Official county-level 2016 and 2020 Tennessee presidential baselines. 2012 remains uncollected.",
+  "sources": [
+    {
+      "id": "tn-2016-president-by-county-pdf",
+      "year": 2016,
+      "url": "https://sos-tn-gov-files.s3.amazonaws.com/PresidentbyCountyNov2016.pdf",
+      "localFile": "data/tn-2016-president-by-county.pdf",
+      "rowCount": 95,
+      "demVotes": 870695,
+      "repVotes": 1522925,
+      "otherVotes": 114407,
+      "totalVotes": 2508027
+    },
+    {
+      "id": "tn-2020-general-by-county-pdf",
+      "year": 2020,
+      "url": "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf",
+      "localFile": "data/tn-2020-general-by-county.pdf",
+      "rowCount": 95,
+      "demVotes": 1143711,
+      "repVotes": 1852475,
+      "otherVotes": 57665,
+      "totalVotes": 3053851
+    }
+  ],
+  "output": {
+    "localFile": "data/tn-historical-presidential-baseline.csv",
+    "rowCount": 190,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

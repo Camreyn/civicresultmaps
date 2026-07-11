@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-07-11T02:01:44.589Z",
+  "authority": "Oregon Secretary of State",
+  "parser": "scripts/normalize-or-historical-presidential-baseline.mjs",
+  "caveat": "Official Oregon 2016 and 2020 General Election Abstract of Votes PDFs normalized to county baselines. 2012 remains uncollected.",
+  "sources": [
+    {
+      "id": "or-2016-general-official-results",
+      "year": 2016,
+      "url": "https://records.sos.state.or.us/ORSOSWebDrawer/Record/6873777/File/document",
+      "localFile": "data/or-2016-general-official-results.pdf",
+      "rowCount": 36,
+      "demVotes": 1002106,
+      "repVotes": 782403,
+      "otherVotes": 216827,
+      "totalVotes": 2001336
+    },
+    {
+      "id": "or-2020-general-official-results",
+      "year": 2020,
+      "url": "https://digitalcollections.library.oregon.gov/nodes/view/208504",
+      "localFile": "data/or-2020-general-official-results.pdf",
+      "rowCount": 36,
+      "demVotes": 1340383,
+      "repVotes": 958448,
+      "otherVotes": 75490,
+      "totalVotes": 2374321
+    }
+  ],
+  "output": {
+    "localFile": "data/or-historical-presidential-baseline.csv",
+    "rowCount": 72,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}

@@ -25,6 +25,20 @@ Before changing code or data, read:
 - API tests: `tests/api/`
 - Python ETL tests: `tests/python/`
 
+## Model And Delegation Policy
+
+When model selection is available, use `gpt-5.6-sol` with `max` reasoning for the primary coordinator. Sol Max owns user-intent interpretation, wave planning and prioritization, cross-state or shared-helper decisions, integration, final validation, production decisions, and the final user-facing report.
+
+Delegate bounded exploration instead of spending Sol Max on routine reconnaissance:
+
+- Use `gpt-5.6-terra` with `medium` reasoning for broad repository exploration, state inventories, official-source reconnaissance, parser-path tracing, and first-pass implementation research.
+- Use `gpt-5.6-luna` with `high` reasoning for narrow source checks, targeted file searches, focused test or validation work, and routine diff review.
+- Use `gpt-5.6-luna` with `xhigh` reasoning when a bounded exploration task needs deeper multi-step reasoning but does not yet require coordinator-level synthesis.
+
+Every managed-worker or exploration-subagent brief must state the requested model and reasoning level, define a bounded state or question, require evidence and file/source references, and identify what must be escalated back to the coordinator. Do not assign Sol Max to routine search, inventory, collection, mechanical validation, or first-pass review. Escalate to Sol Max when findings require cross-state judgment, a shared architectural change, uncertain election-geography interpretation, conflict reconciliation, final integration, or production action.
+
+If the active subagent interface does not expose model selection, preserve the same division of labor by keeping delegated work bounded to exploration or routine verification, and report the limitation to the coordinator. Never claim a particular model or reasoning level was used when the runtime did not allow it to be selected.
+
 ## Data Rules
 
 Use official sources first: state election offices, county election offices, EAC, Census, official GIS, official canvass reports, audit reports, recount records, official ENR exports, and other authoritative public records.
@@ -75,6 +89,18 @@ When coordinating work to improve national county flip counts, use `jurisdiction
 State workers must keep work scoped to their assigned state, collect official 2020 county or county-equivalent presidential baselines first, and ensure loaded historical rows resolve to the same `county:<GEOID>` tags as 2024 result rows. Do not force non-county, statewide-only, town, or ambiguous reporting units into county FIPS tags. If an official source is blocked and a secondary source is used, record the caveat in the state config and source inventories.
 
 Before a worker PR is ready, the worker must report the state's before/after `npm run jurisdictions:flips` coverage if checked, run the relevant state ETL validate/import command, and include the normal end-of-state advisory indicator report. Workers must not run production promotion or backfill apply commands. The coordinator handles post-merge promotion, backfill apply review, and final national flip reporting from a clean merged branch only.
+
+Before historical-wave integration or promotion, the coordinator must simulate the exact candidate state set over live API data with the staging-overlay report options. In PowerShell, invoke `npm.cmd` explicitly; `npm.ps1` can consume option-looking script arguments as npm configuration and silently run a live-only report. Require a `stagingOverlay` object in report output before trusting the result, for example:
+
+```powershell
+npm.cmd run jurisdictions:coverage:2016 -- --staging-dir=.etl/staging --overlay-states=CO,LA
+npm.cmd run jurisdictions:flips:2016-2020 -- --staging-dir=.etl/staging --overlay-states=CO,LA
+npm.cmd run jurisdictions:flips:2016-2024 -- --staging-dir=.etl/staging --overlay-states=CO,LA
+```
+
+A pure `--staging-dir` report is a native-artifact audit, not a production projection, because the live database can contain historical years that native staging omits. Native promotion replaces all historical rows for a state whenever its staging artifact contains historical rows. Compare the live and staged year/row sets for every overlay state; if staging would remove a live year or unexplained rows, block promotion until the parser/source package is complete or a reviewed preservation strategy exists.
+
+For 2016 historical FIPS work, use the same canonical `jurisdictionTag` rules rather than creating a separate 2016 naming system. The coordinator must run `npm run jurisdictions:coverage:2016`, `npm run jurisdictions:flips:2016-2020`, and `npm run jurisdictions:flips:2016-2024`, update `data/jurisdiction-tag-coverage-2016-waves.json`, then prioritize states with missing, duplicate, or untagged 2016 county/county-equivalent rows. Workers must collect official 2016 presidential county or county-equivalent baselines where feasible, preserve source display names, and ensure 2016 rows resolve to the same `county:<GEOID>` tags used by 2020 and 2024. Connecticut historical county rows, Alaska reporting units, town-level rows, statewide-only rows, and other non-FIPS units must remain caveated unless a reviewed crosswalk or explicit reporting tag exists.
 
 ## Implementation Rules
 

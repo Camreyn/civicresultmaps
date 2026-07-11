@@ -1,0 +1,39 @@
+{
+  "authority": "Vermont Secretary of State Elections Division",
+  "parser": "scripts/normalize-vt-historical-presidential-baseline.mjs",
+  "caveat": "Official Vermont Election Results Archive municipality CSV downloads are aggregated to county baselines using the official Vermont 2024 static manifest town-to-county crosswalk plus explicit abbreviation aliases. Blank and spoiled ballots remain excluded from candidate-vote historical baselines.",
+  "sources": [
+    {
+      "id": "vt-2016-president-municipality-results",
+      "year": 2016,
+      "electionArchiveId": "82048",
+      "url": "https://electionarchive.vermont.gov/elections/download/82048/precincts_include:0/",
+      "localFile": "data/vt-2016-president-municipality-results.csv",
+      "rowCount": 14,
+      "dem": 178573,
+      "rep": 95369,
+      "other": 41125,
+      "total": 315067
+    },
+    {
+      "id": "vt-2020-president-municipality-results",
+      "year": 2020,
+      "electionArchiveId": "144513",
+      "url": "https://electionarchive.vermont.gov/elections/download/144513/precincts_include:0/",
+      "localFile": "data/vt-2020-president-municipality-results.csv",
+      "rowCount": 14,
+      "dem": 242820,
+      "rep": 112704,
+      "other": 11904,
+      "total": 367428
+    }
+  ],
+  "output": {
+    "localFile": "data/vt-historical-presidential-baseline.csv",
+    "rowCount": 28,
+    "years": [
+      2016,
+      2020
+    ]
+  }
+}
