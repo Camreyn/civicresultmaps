@@ -27,6 +27,7 @@ type ResultsExplorerProps = {
   initialMapMode?: MapMode;
   equipmentRows: EquipmentRowSummary[];
   indicators: AnalysisIndicator[];
+  indicatorsEvaluated: boolean;
   results: ResultRow[];
   reviewRows: ReviewRowSummary[];
   selectedState: string;
@@ -61,6 +62,7 @@ type FeatureCollection = {
 type SupplementalMapOverlay = {
   caveats: string[];
   indicators: AnalysisIndicator[];
+  indicatorsEvaluated: boolean;
   label: string;
   reconciliation: {
     excludedNonGeographicRow?: {
@@ -161,7 +163,7 @@ function metricNumber(metrics: Record<string, unknown>, key: string) {
 }
 
 function voteShareFallbackBenefit(row: ResultRow | undefined, hasVoteShareReviewRows: boolean) {
-  if (!row || !hasVoteShareReviewRows || (row.winner !== "Harris" && row.winner !== "Trump")) {
+  if (!row || !hasVoteShareReviewRows || (!isDemocraticWinner(row.winner) && !isRepublicanWinner(row.winner))) {
     return null;
   }
 
@@ -176,11 +178,24 @@ function reviewRowIsVoteShareOnly(row: ReviewRowSummary) {
   const coverageMode = row.metrics && typeof row.metrics.coverageMode === "string" ? row.metrics.coverageMode : "";
   return (
     coverageMode === "voteShareOnly" ||
-    (row.harrisShare !== null &&
-      row.trumpShare !== null &&
+    ((row.demShare ?? row.harrisShare) !== null &&
+      (row.repShare ?? row.trumpShare) !== null &&
       (row.demDropoff === null || row.demDropoff === 0) &&
       (row.repDropoff === null || row.repDropoff === 0))
   );
+}
+
+function metricString(metrics: Record<string, unknown>, key: string) {
+  const value = metrics[key];
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function shortCandidateName(value: string | null, fallback: string) {
+  const source = (value ?? fallback).replace(/\([^)]*\)/g, "").trim();
+  const commaName = source.split(",")[0]?.trim();
+  const parts = (commaName || source).split(/\s+/).filter(Boolean);
+  const label = parts[parts.length - 1] ?? fallback;
+  return label.length > 1 ? `${label[0].toUpperCase()}${label.slice(1).toLowerCase()}` : label;
 }
 
 function possibleFlagBenefit(indicators: AnalysisIndicator[], row?: ResultRow, hasVoteShareReviewRows = false) {
@@ -188,10 +203,18 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[], row?: ResultRow, h
     return voteShareFallbackBenefit(row, hasVoteShareReviewRows) ?? { label: "-", title: "No advisory indicators are loaded for this jurisdiction." };
   }
 
-  let harrisSignals = 0;
-  let trumpSignals = 0;
-  let harrisShareSignals = 0;
-  let trumpShareSignals = 0;
+  const demCandidate = shortCandidateName(
+    indicators.map((indicator) => metricString(indicator.metrics, "demCandidate")).find(Boolean) ?? null,
+    "Harris",
+  );
+  const repCandidate = shortCandidateName(
+    indicators.map((indicator) => metricString(indicator.metrics, "repCandidate")).find(Boolean) ?? null,
+    "Trump",
+  );
+  let demSignals = 0;
+  let repSignals = 0;
+  let demShareSignals = 0;
+  let repShareSignals = 0;
   const evidence: string[] = [];
   const shareEvidence: string[] = [];
   const coverageModes = new Set<string>();
@@ -217,9 +240,9 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[], row?: ResultRow, h
       if (demAverageDropoff !== null && demAverageDropoff !== 0) {
         const points = Math.abs(demAverageDropoff);
         if (demAverageDropoff > 0) {
-          harrisSignals += points;
+          demSignals += points;
         } else {
-          trumpSignals += points;
+          repSignals += points;
         }
         evidence.push(`DEM presidential-vs-comparison gap ${demAverageDropoff.toFixed(2)} points`);
       }
@@ -227,31 +250,33 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[], row?: ResultRow, h
       if (repAverageDropoff !== null && repAverageDropoff !== 0) {
         const points = Math.abs(repAverageDropoff);
         if (repAverageDropoff > 0) {
-          trumpSignals += points;
+          repSignals += points;
         } else {
-          harrisSignals += points;
+          demSignals += points;
         }
         evidence.push(`REP presidential-vs-comparison gap ${repAverageDropoff.toFixed(2)} points`);
       }
     }
 
     if (indicator.type === "vote_share_pattern") {
-      const harrisCorrelation = metricNumber(indicator.metrics, "harrisCorrelation");
-      const trumpCorrelation = metricNumber(indicator.metrics, "trumpCorrelation");
-      if (harrisCorrelation !== null) {
-        harrisShareSignals += Math.max(0, harrisCorrelation);
-        shareEvidence.push(`Harris share r=${harrisCorrelation.toFixed(3)}`);
+      const demCorrelation = metricNumber(indicator.metrics, "demCorrelation")
+        ?? metricNumber(indicator.metrics, "harrisCorrelation");
+      const repCorrelation = metricNumber(indicator.metrics, "repCorrelation")
+        ?? metricNumber(indicator.metrics, "trumpCorrelation");
+      if (demCorrelation !== null) {
+        demShareSignals += Math.max(0, demCorrelation);
+        shareEvidence.push(`${demCandidate} share r=${demCorrelation.toFixed(3)}`);
       }
-      if (trumpCorrelation !== null) {
-        trumpShareSignals += Math.max(0, trumpCorrelation);
-        shareEvidence.push(`Trump share r=${trumpCorrelation.toFixed(3)}`);
+      if (repCorrelation !== null) {
+        repShareSignals += Math.max(0, repCorrelation);
+        shareEvidence.push(`${repCandidate} share r=${repCorrelation.toFixed(3)}`);
       }
     }
   }
 
   const hasHouseComparison = Array.from(coverageModes).some((mode) => /house/i.test(mode));
 
-  if (harrisSignals > 0 || trumpSignals > 0) {
+  if (demSignals > 0 || repSignals > 0) {
     const caveat = hasHouseComparison
       ? "U.S. House races are district- and candidate-specific controls, so this label names presidential-over-House dropoff direction instead of candidate benefit."
       : lowConfidenceDirectional
@@ -259,26 +284,30 @@ function possibleFlagBenefit(indicators: AnalysisIndicator[], row?: ResultRow, h
         : "It summarizes which candidate's same-party presidential total is higher relative to the comparison contest in loaded review rows.";
     const title = `Advisory directional screen only. ${caveat} It is not proof of interference, causation, or actual benefit. ${evidence.slice(0, 3).join("; ")}.`;
 
-    if (harrisSignals > trumpSignals * 1.2) {
-      return { label: hasHouseComparison ? "DEM pres > House" : lowConfidenceDirectional ? "Harris / DEM (low)" : "Harris / DEM", title };
+    if (demSignals > repSignals * 1.2) {
+      if (hasHouseComparison) return { label: "DEM pres > House", title };
+      if (demCandidate === "Harris") return { label: lowConfidenceDirectional ? "Harris / DEM (low)" : "Harris / DEM", title };
+      return { label: `${demCandidate} / DEM${lowConfidenceDirectional ? " (low)" : ""}`, title };
     }
 
-    if (trumpSignals > harrisSignals * 1.2) {
-      return { label: hasHouseComparison ? "REP pres > House" : lowConfidenceDirectional ? "Trump / REP (low)" : "Trump / REP", title };
+    if (repSignals > demSignals * 1.2) {
+      if (hasHouseComparison) return { label: "REP pres > House", title };
+      if (repCandidate === "Trump") return { label: lowConfidenceDirectional ? "Trump / REP (low)" : "Trump / REP", title };
+      return { label: `${repCandidate} / REP${lowConfidenceDirectional ? " (low)" : ""}`, title };
     }
 
     return { label: hasHouseComparison ? "Mixed House gap" : "Mixed", title };
   }
 
-  if (harrisShareSignals > 0 || trumpShareSignals > 0) {
+  if (demShareSignals > 0 || repShareSignals > 0) {
     const title = `Vote-share-only advisory screen. No same-row down-ballot comparison is loaded for this jurisdiction, so this does not infer candidate benefit; it only names which candidate-share correlation is stronger in the loaded vote-share flag. ${shareEvidence.slice(0, 3).join("; ")}.`;
 
-    if (harrisShareSignals > trumpShareSignals * 1.2) {
-      return { label: "Harris share pattern", title };
+    if (demShareSignals > repShareSignals * 1.2) {
+      return { label: demCandidate === "Harris" ? "Harris share pattern" : `${demCandidate} share pattern`, title };
     }
 
-    if (trumpShareSignals > harrisShareSignals * 1.2) {
-      return { label: "Trump share pattern", title };
+    if (repShareSignals > demShareSignals * 1.2) {
+      return { label: repCandidate === "Trump" ? "Trump share pattern" : `${repCandidate} share pattern`, title };
     }
 
     return { label: "Mixed share pattern", title };
@@ -545,6 +574,7 @@ export function ResultsExplorer({
   equipmentRows,
   electionYear,
   indicators,
+  indicatorsEvaluated,
   initialFips,
   initialMapMode,
   results,
@@ -737,6 +767,17 @@ export function ResultsExplorer({
     return map;
   }, [mapIndicators]);
 
+  const mapIndicatorsByTag = useMemo(() => {
+    const map = new Map<string, AnalysisIndicator[]>();
+    for (const indicator of mapIndicators) {
+      if (!indicator.jurisdictionTag) continue;
+      map.set(indicator.jurisdictionTag, [
+        ...(map.get(indicator.jurisdictionTag) ?? []),
+        indicator,
+      ]);
+    }
+    return map;
+  }, [mapIndicators]);
   const indicatorsByJurisdiction = useMemo(() => {
     const map = new Map<string, AnalysisIndicator[]>();
     for (const indicator of indicators) {
@@ -748,6 +789,17 @@ export function ResultsExplorer({
     return map;
   }, [indicators]);
 
+  const indicatorsByTag = useMemo(() => {
+    const map = new Map<string, AnalysisIndicator[]>();
+    for (const indicator of indicators) {
+      if (!indicator.jurisdictionTag) continue;
+      map.set(indicator.jurisdictionTag, [
+        ...(map.get(indicator.jurisdictionTag) ?? []),
+        indicator,
+      ]);
+    }
+    return map;
+  }, [indicators]);
   const indicatorsByName = useMemo(() => {
     const map = new Map<string, AnalysisIndicator[]>();
     for (const indicator of indicators) {
@@ -903,7 +955,12 @@ export function ResultsExplorer({
     ? mapResultsByName.get(normalizeName(activeMapName)) ?? resultsByName.get(normalizeName(activeMapName))
     : undefined;
   const selectedMapIndicators = activeMapName
-    ? mapIndicatorsByName.get(normalizeName(activeMapName)) ?? indicatorsByName.get(normalizeName(activeMapName)) ?? []
+    ? (selectedMapResult?.jurisdictionTag
+        ? mapIndicatorsByTag.get(selectedMapResult.jurisdictionTag) ?? indicatorsByTag.get(selectedMapResult.jurisdictionTag)
+        : undefined)
+      ?? mapIndicatorsByName.get(normalizeName(activeMapName))
+      ?? indicatorsByName.get(normalizeName(activeMapName))
+      ?? []
     : [];
   const selectedMapVoteMethod = activeMapName
     ? voteMethodByCounty.get(normalizeName(resultNameForFeature(selectedState, activeMapName)))
@@ -926,7 +983,12 @@ export function ResultsExplorer({
     ? mapResultsByName.get(normalizeName(pinnedMapName)) ?? resultsByName.get(normalizeName(pinnedMapName))
     : undefined;
   const pinnedMapIndicators = pinnedMapName
-    ? mapIndicatorsByName.get(normalizeName(pinnedMapName)) ?? indicatorsByName.get(normalizeName(pinnedMapName)) ?? []
+    ? (pinnedMapResult?.jurisdictionTag
+        ? mapIndicatorsByTag.get(pinnedMapResult.jurisdictionTag) ?? indicatorsByTag.get(pinnedMapResult.jurisdictionTag)
+        : undefined)
+      ?? mapIndicatorsByName.get(normalizeName(pinnedMapName))
+      ?? indicatorsByName.get(normalizeName(pinnedMapName))
+      ?? []
     : [];
   const pinnedSource = pinnedMapResult ? sourceById.get(pinnedMapResult.sourceId) : undefined;
 
@@ -959,7 +1021,10 @@ export function ResultsExplorer({
     const normalizedQuery = query.trim().toLowerCase();
     return results
       .filter((row) => {
-        const rowIndicators = indicatorsByJurisdiction.get(row.jurisdictionCode) ?? indicatorsByName.get(normalizeName(row.jurisdictionName)) ?? [];
+        const rowIndicators = (row.jurisdictionTag ? indicatorsByTag.get(row.jurisdictionTag) : undefined)
+          ?? indicatorsByJurisdiction.get(row.jurisdictionCode)
+          ?? indicatorsByName.get(normalizeName(row.jurisdictionName))
+          ?? [];
         if (showFlaggedOnly && !rowIndicators.length) {
           return false;
         }
@@ -975,7 +1040,7 @@ export function ResultsExplorer({
         );
       })
       .sort((a, b) => compareRows(a, b, sortKey));
-  }, [indicatorsByJurisdiction, indicatorsByName, query, results, showFlaggedOnly, sortKey]);
+  }, [indicatorsByJurisdiction, indicatorsByName, indicatorsByTag, query, results, showFlaggedOnly, sortKey]);
 
   const resultBoundaryGeometryUnavailable =
     baseGeometryUnavailable ||
@@ -1174,7 +1239,9 @@ export function ResultsExplorer({
             <h2>{countyLabel} Map</h2>
             <span>
               {activeGeoStatus === "ready"
-                ? `${activeFeatures.length} ${activeGeometrySource}, ${mapIndicators.length} advisory review flags`
+                ? indicatorsEvaluated
+                  ? `${activeFeatures.length} ${activeGeometrySource}, ${mapIndicators.length} advisory review flags`
+                  : `${activeFeatures.length} ${activeGeometrySource}, advisory indicators not evaluated`
                 : activeGeoStatus === "loading"
                   ? "Loading repository GeoJSON"
                   : "Map geometry unavailable"}
@@ -1380,7 +1447,9 @@ export function ResultsExplorer({
                 const row = mapResultsByName.get(normalizeName(resultName));
                 const methodRow = voteMethodByCounty.get(normalizeName(resultName));
                 const equipmentRow = equipmentByCounty.get(normalizeName(resultName));
-                const countyIndicators = mapIndicatorsByName.get(normalizeName(resultName)) ?? [];
+                const countyIndicators = (row?.jurisdictionTag ? mapIndicatorsByTag.get(row.jurisdictionTag) : undefined)
+                  ?? mapIndicatorsByName.get(normalizeName(resultName))
+                  ?? [];
                 const rings = polygonRings(feature);
                 const point = centroid(selectedState, feature, bounds);
                 const isSelected = selectedMapName && normalizeName(selectedMapName) === normalizeName(resultName);
@@ -1494,7 +1563,11 @@ export function ResultsExplorer({
               Supplemental AK overlay excludes the non-geographic HD99 bucket and does not replace the native statewide certified result.
             </span>
           )}
-          <span className="legend-note">Badge numbers count advisory indicators, not confirmed findings.</span>
+          <span className="legend-note">
+            {indicatorsEvaluated
+              ? "Badge numbers count advisory indicators, not confirmed findings."
+              : "Advisory indicators are not evaluated for this state-year because same-grain comparison rows are not loaded."}
+          </span>
           {selectedMapIndicators.length > 0 && (
             <span className="legend-note">
               {selectedMapIndicators.length} advisory flag{selectedMapIndicators.length === 1 ? "" : "s"} selected
@@ -1534,7 +1607,7 @@ export function ResultsExplorer({
                 </div>
                 <div>
                   <dt>Flags</dt>
-                  <dd>{selectedMapIndicators.length}</dd>
+                  <dd>{indicatorsEvaluated ? selectedMapIndicators.length : "N/E"}</dd>
                 </div>
                 <div>
                   <dt>{selectedVoteMethodLabel}</dt>
@@ -1588,7 +1661,11 @@ export function ResultsExplorer({
                     </article>
                   ))
                 ) : (
-                  <span className="no-indicator">No advisory indicators loaded for this jurisdiction.</span>
+                                    <span className="no-indicator">
+                    {indicatorsEvaluated
+                      ? "No advisory indicators crossed a threshold for this jurisdiction."
+                      : "Advisory indicators are not evaluated for this state-year."}
+                  </span>
                 )}
               </div>
             </>
@@ -1714,11 +1791,19 @@ export function ResultsExplorer({
                     const isPinnedRow = pinnedMapName && normalizeName(row.jurisdictionName) === normalizeName(pinnedMapName);
                     const isPreviewRow =
                       !isPinnedRow && selectedMapName && normalizeName(row.jurisdictionName) === normalizeName(selectedMapName);
-                    const rowIndicators = indicatorsByJurisdiction.get(row.jurisdictionCode) ?? indicatorsByName.get(normalizeName(row.jurisdictionName)) ?? [];
+                    const rowIndicators = (row.jurisdictionTag ? indicatorsByTag.get(row.jurisdictionTag) : undefined)
+                      ?? indicatorsByJurisdiction.get(row.jurisdictionCode)
+                      ?? indicatorsByName.get(normalizeName(row.jurisdictionName))
+                      ?? [];
                     const hasVoteShareReviewRows =
                       voteShareReviewByJurisdiction.has(row.jurisdictionCode) ||
                       voteShareReviewByName.has(normalizeName(row.jurisdictionName));
-                    const benefit = possibleFlagBenefit(rowIndicators, row, hasVoteShareReviewRows);
+                    const benefit = indicatorsEvaluated
+                      ? possibleFlagBenefit(rowIndicators, row, hasVoteShareReviewRows)
+                      : {
+                          label: "Not evaluated",
+                          title: "Same-grain comparison rows are not loaded for this state-year, so advisory indicators were not calculated.",
+                        };
                     const rowClassName = [
                       "clickable-row",
                       isPinnedRow ? "selected-row" : isPreviewRow ? "preview-row" : null,
@@ -1765,7 +1850,12 @@ export function ResultsExplorer({
                             ))}
                           </div>
                         ) : (
-                          <span className="no-indicator">-</span>
+                                                    <span
+                            className="no-indicator"
+                            title={indicatorsEvaluated ? "No advisory flag crossed a threshold." : "Advisory indicators not evaluated for this state-year."}
+                          >
+                            {indicatorsEvaluated ? "-" : "N/E"}
+                          </span>
                         )}
                       </td>
                       <td className="benefit-cell" title={benefit.title}>{benefit.label}</td>

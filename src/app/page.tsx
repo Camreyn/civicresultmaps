@@ -31,6 +31,7 @@ import {
   listTurnoutRows,
   listVoteMethodRows,
 } from "@/lib/api";
+import { summarizeIndicatorEvaluation } from "@/lib/analysis-indicators";
 import {
   isSupportedPresidentialYear,
   supportedPresidentialYears,
@@ -175,7 +176,8 @@ export default async function Home({ searchParams }: HomeProps) {
     : undefined;
   const initialFips = /^\d{5}$/.test(params?.fips ?? "") ? params?.fips : undefined;
 
-  const needsReview = selectedYear === 2024 && ["map", "review", "methodology", "exports"].includes(activeTab);
+  const needsReview = ["map", "review", "methodology", "exports"].includes(activeTab);
+  const needsIndicators = activeTab === "map" || needsReview;
   const needsTurnout = ["history", "data", "exports"].includes(activeTab);
   const needsHistory = ["history", "data", "exports"].includes(activeTab);
   const needsMethods = selectedYear === 2024 && ["map", "electronic", "data", "exports"].includes(activeTab);
@@ -205,9 +207,9 @@ export default async function Home({ searchParams }: HomeProps) {
     loadDisplaySources(selectedState, selectedYear),
     getCoverageSummary({ state: selectedState, year: selectedYear }),
     needsImports ? listImportRuns() : Promise.resolve([]),
-    needsReview ? listIndicators({ state: selectedState, year: 2024 }) : Promise.resolve([]),
+    needsIndicators ? listIndicators({ state: selectedState, year: selectedYear }) : Promise.resolve([]),
     needsReview
-      ? listReviewRows({ state: selectedState, year: 2024, includeMetrics: true, limit: 5000 })
+      ? listReviewRows({ state: selectedState, year: selectedYear, includeMetrics: true, limit: 5000 })
       : Promise.resolve([]),
     needsTurnout ? listTurnoutRows({ state: selectedState, year: 2024, limit: 20000 }) : Promise.resolve([]),
     needsHistory ? listHistoricalResultRows({ state: selectedState, limit: 5000 }) : Promise.resolve([]),
@@ -258,6 +260,11 @@ export default async function Home({ searchParams }: HomeProps) {
   const selectedCompleteness = completenessReport.find((summary) => summary.state === selectedStateCode);
   const totalVotes = statewideResultRows.reduce((sum, row) => sum + row.totalVotes, 0);
   const historicalCoverageReady = selectedYear !== 2024 && results.length > 0;
+  const indicatorsEvaluated = Boolean(coverage?.capabilities.reviewGraphs || indicators.length || reviewRows.length);
+  const indicatorEvaluation = summarizeIndicatorEvaluation(
+    reviewRows.map((row) => ({ jurisdictionName: row.jurisdictionName })),
+    indicators,
+  );
   const displayCoverage = selectedYear === 2024 || !coverage
     ? coverage
     : {
@@ -268,7 +275,9 @@ export default async function Home({ searchParams }: HomeProps) {
         validation: {
           passed: historicalCoverageReady,
           warnings: historicalCoverageReady
-            ? ["Historical county rows use canonical county:<GEOID> joins; 2024 review and administration layers are intentionally not overlaid."]
+            ? [indicatorsEvaluated
+                ? "Historical county rows use canonical county:<GEOID> joins. Same-year advisory indicators are overlaid; 2024 administration layers remain separate."
+                : "Historical county rows use canonical county:<GEOID> joins. This state-year has not been evaluated for advisory indicators; 2024 administration layers remain separate."]
             : ["No comparable canonical county rows are available for this state and year."],
           errors: [],
         },
@@ -362,8 +371,16 @@ export default async function Home({ searchParams }: HomeProps) {
 
           {selectedYear !== 2024 && (
             <p className="historical-map-note">
-              Historical mode shows canonical county presidential rows only. Review indicators, vote methods,
-              equipment, and administration records remain 2024 context and are not overlaid on this map.
+              Historical mode shows canonical county presidential rows. {indicatorsEvaluated
+                ? "Same-year advisory indicators are overlaid from loaded President-versus-comparison-contest rows."
+                : "Advisory indicators are not evaluated for this state-year because same-grain comparison rows are not loaded."}{" "}
+              Vote methods, equipment, and administration records remain 2024 context and are not overlaid.
+            </p>
+          )}
+          {selectedYear !== 2024 && indicatorEvaluation.broadSignalWarning && (
+            <p className="historical-map-note historical-map-warning" role="status">
+              <strong>Broad-signal caution.</strong>{" "}
+              {indicatorEvaluation.broadSignalWarning}
             </p>
           )}
 
@@ -397,6 +414,7 @@ export default async function Home({ searchParams }: HomeProps) {
             historicalRows={historicalRows}
             importRuns={importRuns}
             indicators={indicators}
+            indicatorsEvaluated={indicatorsEvaluated}
             initialFips={initialFips}
             initialMapMode={initialMapMode}
             initialTab={activeTab}

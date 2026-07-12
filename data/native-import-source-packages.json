@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-11",
+  "checkedAt": "2026-07-12",
   "purpose": "Native importer handoff package for the next states after Ohio and Wisconsin.",
   "notes": [
     "These packages point to official source artifacts already present in this repository.",
@@ -217,6 +217,96 @@
         "Equipment context is loaded from Verified Voting as supplemental administration metadata; normalized official audit/recount/CVR/incident/correction/litigation rows are not loaded.",
         "Official 2012, 2016, and 2020 historical baseline rows are not loaded; use the Secretary of State results page or TotalResults archive paths as the next official source lead."
       ]
+    },
+    {
+      "state": "AZ",
+      "name": "Arizona",
+      "priority": 6,
+      "nativeReadiness": "complete_county_map_county_review_state_native_turnout_secondary_historical_baseline_official_historical_review_admin_context_partial",
+      "authority": "Arizona Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau",
+      "configFile": "etl/state-configs/az.json",
+      "legacyReferenceBundle": "data/az-app-data.js",
+      "artifacts": {
+        "presidentialCountyResults": {
+          "sourceTitle": "Arizona Secretary of State 2024 signed statewide canvass",
+          "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+          "localFile": "data/az-2024-general-canvass-president.csv",
+          "parserHint": "arizonaCanvassCountyCsv loads the 15 retained county presidential rows transcribed from the official signed canvass."
+        },
+        "localReviewRows": {
+          "sourceTitle": "Arizona Secretary of State 2024 signed statewide canvass U.S. Senate rows",
+          "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+          "localFile": "data/az-2024-general-canvass-senate.csv",
+          "level": "county",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "countyComparisonCsv pairs the 15 county presidential and U.S. Senate rows; these are county review inputs, not precinct scatter rows."
+        },
+        "turnout": {
+          "sourceTitle": "Arizona Secretary of State 2024 signed statewide canvass turnout rows",
+          "sourceUrl": "https://apps.azsos.gov/election/2024/ge/canvass/20241105_GeneralCanvass_Signed.pdf",
+          "localFile": "data/az-2024-general-canvass-president.csv",
+          "level": "county",
+          "denominator": "Signed-canvass Total Eligible Registration",
+          "ballotsCast": "Signed-canvass Total Ballots Cast"
+        },
+        "historicalBaseline": {
+          "sourceTitle": "Secondary Arizona county presidential tables with state-election-source footnotes",
+          "sourceUrl": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Arizona",
+          "localFile": "data/az-historical-presidential-baseline.csv",
+          "level": "county",
+          "parserHint": "historicalPresidentialCsv loads 45 contextual county rows for 2012, 2016, and 2020. This secondary artifact remains contextual pending an official baseline replacement."
+        },
+        "historicalReviewRows": {
+          "sourceTitle": "Arizona Secretary of State official 2016 signed canvass and 2020 detailed election XML",
+          "sourceUrl": "https://apps.azsos.gov/election/2016/General/Official%20Signed%20State%20Canvass.pdf",
+          "additionalSourceUrls": [
+            "https://apps.azsos.gov/election/2020/resultsdetail_2020generalxml.zip"
+          ],
+          "localFile": "data/az-2016-general-official-signed-state-canvass.pdf; data/az-2020-general-results-detail.xml.zip; data/az-historical-review-rows.csv; data/az-historical-review-reconciliation.json",
+          "level": "county",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Run python scripts/normalize_az_historical_review.py. historicalReviewCsv loads 30 canonical county rows, 15 each for 2016 and 2020. The reconciliation artifact records source hashes, statewide totals, PDF visual QA, and 38 fail-closed corrections for printed one-vote cells missing from the PDF text layer."
+        },
+        "countyBoundary": {
+          "sourceTitle": "U.S. Census TIGERweb county geography",
+          "sourceUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?where=STATE%3D%2704%27&outFields=NAME,BASENAME,GEOID,STATE,COUNTY&returnGeometry=true&outSR=4326&f=geojson",
+          "localFile": "data/az-counties.geojson",
+          "nameProperty": "NAME",
+          "codeProperty": "COUNTY"
+        }
+      },
+      "expected": {
+        "countyRows": 15,
+        "geometryFeatures": 15,
+        "stateTotal": 3390161,
+        "trump": 1770242,
+        "harris": 1582860,
+        "other": 37059,
+        "localReviewRows": 15,
+        "turnoutRows": 15,
+        "historicalBaselineRows": 45,
+        "historicalReviewRows": 30,
+        "historicalReviewRowsByYear": {
+          "2016": 15,
+          "2020": 15
+        }
+      },
+      "validationStatus": {
+        "localArtifactsPresent": true,
+        "generatedBundleTotalsReconcile": true,
+        "reviewMode": "president_vs_us_senate_county",
+        "turnoutMode": "official_signed_canvass_total_eligible_registration",
+        "historicalMode": "secondary_county_context_2012_2016_2020",
+        "historicalReviewMode": "official_azsos_county_president_vs_us_senate_2016_2020"
+      },
+      "caveats": [
+        "Current and historical review rows are county-level screening context, not precinct-level evidence.",
+        "The official 2016 PDF parser records 38 printed one-vote cells absent from the PDF text layer as reviewed fail-closed corrections; every candidate row reconciles to its printed statewide total.",
+        "The official 2016 presidential candidate rows total 2,573,165, while the secondary contextual baseline totals 2,604,657. The 31,492-vote difference is entirely in unresolved other-vote semantics; do not silently replace or combine these totals.",
+        "The 2012/2016/2020 presidential baseline remains secondary context pending a reviewed official replacement.",
+        "Advisory indicators are review signals only and are not findings of fraud or misconduct."
+      ],
+      "blocker": "Remaining Arizona gaps are official precinct/local President and same-grain U.S. Senate rows, precinct geometry/crosswalks, normalized administration records, and a reviewed official replacement for the secondary historical-baseline other-vote semantics."
     },
     {
       "state": "MN",
@@ -669,7 +759,7 @@
       "state": "NC",
       "name": "North Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_state_native_denominator_lead_historical",
+      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_state_native_denominator_lead_historical_2020_historical_review_2016_not_evaluated",
       "authority": "North Carolina State Board of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/nc.json",
       "legacyReferenceBundle": "data/nc-app-data.js",
@@ -709,6 +799,15 @@
           "localFile": "data/nc-2012-results-precinct.zip; data/nc-2016-results-precinct.zip; data/nc-2020-results-precinct.zip; data/nc-historical-presidential-baseline.csv",
           "parserHint": "Run npm run etl:collect:nc:historical to aggregate official NCSBE 2012, 2016, and 2020 US President rows to 300 county historicalPresidentialCsv baseline rows."
         },
+        "historicalReviewRows": {
+          "sourceTitle": "North Carolina State Board of Elections official 2020 general precinct President and U.S. Senate results",
+          "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip",
+          "localFile": "data/nc-2020-results-precinct.zip; data/nc-2020-historical-review-rows.csv; data/nc-2016-results-precinct.zip",
+          "level": "precinct",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Run node scripts/normalize-nc-historical-review.mjs. historicalReviewCsv loads 2,662 official county/precinct keys marked Real Precinct=Y across 100 canonical county tags, and exactly reconciles 403 Real Precinct=N administrative keys outside the advisory rows. The same script records 2016 as not evaluated because the official 2016 export has no Real Precinct column and label-based geography inference is not permitted.",
+          "notEvaluated2016SourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2016_11_08/results_pct_20161108.zip"
+        },
         "turnoutDenominatorLead": {
           "sourceTitle": "North Carolina State Board of Elections 2024 General voter_stats and history_stats ZIPs",
           "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip; https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/history_stats_20241105.zip",
@@ -725,14 +824,19 @@
         "other": 85343,
         "localReviewRows": 2658,
         "turnoutRows": 100,
-        "historicalBaselineRows": 300
+        "historicalBaselineRows": 300,
+        "historicalReviewRows": 2662,
+        "historicalReviewRowsByYear": {
+          "2020": 2662
+        }
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_governor_real_precinct_filter",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_ncsbe_denominator_history_leads",
-        "historicalBaselineMode": "official_ncsbe_precinct_zip_county_aggregates"
+        "historicalBaselineMode": "official_ncsbe_precinct_zip_county_aggregates",
+        "historicalReviewMode": "official_2020_real_precinct_y_president_vs_us_senate_2016_not_evaluated"
       },
       "caveats": [
         "Certified county totals aggregate all NCSBE reporting units from the official results ZIP.",
@@ -740,6 +844,8 @@
         "Governor is the same-grain comparison contest because North Carolina had no 2024 U.S. Senate race.",
         "Turnout rows remain active EAC 2024 V2 jurisdiction fallback data. Official NCSBE voter_stats_20241105.zip is collected and sums to the same 7,854,464 registered voters as EAC; official history_stats_20241105.zip sums to 5,705,861 voters who participated, which is 50,245 below EAC ballots cast and 18,126 below the NCSBE turnout overview ballots-cast figure, so it is retained as a lead pending semantic review.",
         "Historical baseline rows are official NCSBE county aggregates for context only.",
+        "The 2020 historical advisory package contains 2,662 same-grain President-versus-U.S.-Senate rows explicitly marked Real Precinct=Y. Included presidential votes total 3,201,711 and included comparison votes total 3,172,016; 403 Real Precinct=N administrative keys are excluded and reconcile to 2,323,091 presidential votes and 2,302,936 comparison votes.",
+        "North Carolina 2016 is explicitly not evaluated for historical advisory indicators because the official NCSBE export predates the Real Precinct field; administrative units are not inferred from labels.",
         "Precinct boundary GeoJSON, normalized audit/recount/CVR availability, and incident/correction records remain gaps."
       ]
     },
@@ -1408,7 +1514,7 @@
       "state": "GA",
       "name": "Georgia",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_official_historical_admin_context_partial",
+      "nativeReadiness": "complete_county_map_precinct_review_eac_turnout_official_historical_review_admin_context_partial",
       "authority": "Georgia Secretary of State; U.S. Election Assistance Commission; U.S. Census Bureau; Verified Voting Verifier",
       "configFile": "etl/state-configs/ga.json",
       "artifacts": {
@@ -1439,6 +1545,14 @@
           "sourceUrl": "https://results.sos.ga.gov/",
           "localFile": "data/ga-2012-official-results-export.json; data/ga-2016-official-results-export.json; data/ga-2020-official-results-export.json; data/ga-historical-presidential-baseline.csv",
           "parserHint": "Run node scripts/collect-ga-historical-baseline.mjs to regenerate 477 county presidential baseline rows for 2012, 2016, and 2020."
+        },
+        "historicalReviewRows": {
+          "sourceTitle": "Georgia Secretary of State official 2016 and 2020 county President and U.S. Senate media exports",
+          "sourceUrl": "https://results.sos.ga.gov/",
+          "localFile": "data/ga-2016-official-results-export.json; data/ga-2020-official-results-export.json; data/ga-historical-review-rows.csv",
+          "level": "county",
+          "comparisonContest": "U.S. Senate",
+          "parserHint": "Run node scripts/normalize-ga-historical-review.mjs. historicalReviewCsv loads 318 canonical county rows: 159 President-versus-United States Senator, Isakson rows for 2016 and 159 President-versus-regular US Senate (Perdue) rows for the original November 2020 general election. The selected county contest options expose no precinct-result rows; the Loeffler special election is excluded."
         },
         "countyBoundary": {
           "sourceTitle": "U.S. Census TIGERweb county geography",
@@ -1474,25 +1588,34 @@
         "other": 38932,
         "localReviewRows": 2684,
         "turnoutRows": 159,
-        "historicalBaselineRows": 477
+        "historicalBaselineRows": 477,
+        "historicalReviewRows": 318,
+        "historicalReviewRowsByYear": {
+          "2016": 159,
+          "2020": 159
+        }
       },
       "validationStatus": {
         "localArtifactsPresent": true,
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_with_district_caveats",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback_after_sos_vote_method_review",
-        "historicalMode": "official_sos_media_export_county_baselines"
+        "historicalMode": "official_sos_media_export_county_baselines",
+        "historicalReviewMode": "official_sos_county_president_vs_us_senate_2016_2020"
       },
       "caveats": [
         "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings.",
         "County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows.",
         "Turnout remains EAC fallback; state-native turnout denominators are not loaded.",
         "Precinct boundary GeoJSON is not present in this package.",
-        "Historical rows are context only; the 2020 media export reports the original November general-election export total and should not be mixed with recount tables without reconciliation.",
+        "Historical presidential baseline rows are context only; the 2020 media export reports the original November general-election export total and should not be mixed with recount tables without reconciliation.",
+        "Historical advisory rows are county-only same-grain President-versus-U.S.-Senate context: 159 canonical county rows for 2016 and 159 for 2020. The 2016 rows reconcile to 4,092,373 presidential votes and 3,897,792 Senate votes; the 2020 rows reconcile to 4,998,482 presidential votes and 4,952,175 regular Senate votes.",
+        "The 2020 historical advisory comparison uses the regular US Senate (Perdue) contest from the original November general export before the runoff; the Loeffler special election is excluded. The selected county contest options contain no precinct-result rows, so the package must not be described as precinct historical coverage.",
+        "Historical advisory indicators are review signals only; candidate differences, contest differences, split-ticket voting, and participation differences can explain broad patterns and the rows are not findings of misconduct.",
         "The July 5, 2026 Georgia vote-method source review confirms official SOS groupResults are candidate-result splits, not turnout/registration denominator rows; EAC turnout remains active until a state-native turnout artifact is collected."
       ],
       "legacyReferenceBundle": "data/ga-app-data.js",
-      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
+      "blocker": "Georgia has official 2024 result/review rows, official historical baselines, official 2016 and 2020 county historical advisory rows, county geometry, equipment context, and a retained vote-method source review. Remaining blockers are state-native turnout/registration denominator rows, precinct boundary geometry/crosswalks, and normalized audit/recount/CVR/incident/correction/litigation records."
     },
     {
       "state": "KS",

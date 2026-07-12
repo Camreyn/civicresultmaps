@@ -84,3 +84,5 @@ npm run etl:import
 The v1 ETL package keeps agents advisory only. Agents can propose parser
 mappings, summarize source pages, and flag validation gaps, but production data
 writes remain human-reviewed.
+
+Historical 2016/2020 advisory evaluation requires official same-grain presidential and comparison-contest rows. See [`docs/historical-advisory-indicators.md`](docs/historical-advisory-indicators.md) for the candidate-neutral row contract, evaluated/not-evaluated semantics, broad-signal warning, and promotion safeguards.

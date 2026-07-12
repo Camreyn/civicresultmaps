@@ -306,7 +306,8 @@ function formatNumber(value: number | null | undefined) {
 }
 
 function expectedValue(sourcePackage: NativeSourcePackage | undefined, key: keyof NativeSourcePackage["expected"]) {
-  return sourcePackage?.expected[key] ?? null;
+  const value = sourcePackage?.expected[key];
+  return typeof value === "number" ? value : null;
 }
 
 function sourceDiscoveryStatusLabel(status: NativeSourceDiscoveryQueueEntry["currentStatus"]) {

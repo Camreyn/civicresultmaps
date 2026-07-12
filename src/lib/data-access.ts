@@ -38,6 +38,37 @@ const emptyCapabilities: CapabilitySummary = {
   notes: "",
 };
 
+async function getDatabaseCapabilitySummary(input: { state: string; year: number }): Promise<CapabilitySummary | null> {
+  try {
+    const sql = neon(getDatabaseUrl());
+    const [row] = (await sql`
+      select
+        source_planner as "sourcePlanner",
+        certified_results as "certifiedResults",
+        map,
+        review_graphs as "reviewGraphs",
+        turnout,
+        historical_baseline as "historicalBaseline",
+        notes
+      from capability_flags
+      where state_code = ${input.state}
+        and election_year = ${input.year}
+      limit 1
+    `) as Array<{
+      sourcePlanner: boolean;
+      certifiedResults: boolean;
+      map: boolean;
+      reviewGraphs: boolean;
+      turnout: boolean;
+      historicalBaseline: boolean;
+      notes: string;
+    }>;
+    return row ?? null;
+  } catch {
+    return null;
+  }
+}
+
 function toIsoTimestamp(value: Date | string | null) {
   if (!value) {
     return null;
@@ -280,6 +311,7 @@ export async function listStates(): Promise<StateSummary[]> {
         capability_flags.notes
       from states
       left join capability_flags on states.code = capability_flags.state_code
+        and capability_flags.election_year = 2024
       order by states.name
     `) as typeof rows;
   } catch {
@@ -637,7 +669,10 @@ export async function listReviewRows(input: {
   }
 
   let rows: Array<{
+    demCandidate: string | null;
     demDropoff: string | number | null;
+    demShare: string | number | null;
+    demVotes: number | null;
     electionYear: number;
     harrisShare: string | number | null;
     harrisVotes: number | null;
@@ -648,7 +683,10 @@ export async function listReviewRows(input: {
     level: string;
     localUnit: string;
     metrics: unknown;
+    repCandidate: string | null;
     repDropoff: string | number | null;
+    repShare: string | number | null;
+    repVotes: number | null;
     sourceSlug: string | null;
     state: string;
     totalVotes: number | null;
@@ -668,6 +706,12 @@ export async function listReviewRows(input: {
         review_rows.jurisdiction_tag as "jurisdictionTag",
         review_rows.local_unit as "localUnit",
         review_rows.level,
+        review_rows.dem_candidate as "demCandidate",
+        review_rows.rep_candidate as "repCandidate",
+        coalesce(review_rows.dem_votes, review_rows.harris_votes) as "demVotes",
+        coalesce(review_rows.rep_votes, review_rows.trump_votes) as "repVotes",
+        coalesce(review_rows.dem_share, review_rows.harris_share) as "demShare",
+        coalesce(review_rows.rep_share, review_rows.trump_share) as "repShare",
         review_rows.harris_votes as "harrisVotes",
         review_rows.trump_votes as "trumpVotes",
         review_rows.total_votes as "totalVotes",
@@ -693,7 +737,10 @@ export async function listReviewRows(input: {
   }
 
   return rows.map((row) => ({
+    demCandidate: row.demCandidate,
     demDropoff: row.demDropoff === null ? null : Number(row.demDropoff),
+    demShare: row.demShare === null ? null : Number(row.demShare),
+    demVotes: row.demVotes,
     electionYear: row.electionYear,
     harrisShare: row.harrisShare === null ? null : Number(row.harrisShare),
     harrisVotes: row.harrisVotes,
@@ -704,7 +751,10 @@ export async function listReviewRows(input: {
     level: row.level,
     localUnit: row.localUnit,
     metrics: row.metrics as Record<string, unknown>,
+    repCandidate: row.repCandidate,
     repDropoff: row.repDropoff === null ? null : Number(row.repDropoff),
+    repShare: row.repShare === null ? null : Number(row.repShare),
+    repVotes: row.repVotes,
     sourceId: row.sourceSlug ?? "database",
     state: row.state,
     totalVotes: row.totalVotes,
@@ -1337,13 +1387,14 @@ export async function getCoverageSummary(input: {
     return getCoverage(input.state, input.year);
   }
 
-  const [stateList, countyResults, cityResults, cityTownResults, stateResults, sources] = await Promise.all([
+  const [stateList, countyResults, cityResults, cityTownResults, stateResults, sources, capabilities] = await Promise.all([
     listStates(),
     listResults({ state: input.state, year: input.year, level: "county" }),
     listResults({ state: input.state, year: input.year, level: "city" }),
     listResults({ state: input.state, year: input.year, level: "city_town" }),
     listResults({ state: input.state, year: input.year, level: "state" }),
     listSources(input),
+    getDatabaseCapabilitySummary(input),
   ]);
   const results = countyResults.length ? countyResults : cityResults.length ? cityResults : cityTownResults.length ? cityTownResults : stateResults;
   const state = stateList.find((entry) => entry.code === input.state);
@@ -1366,7 +1417,7 @@ export async function getCoverageSummary(input: {
       warnings: results.length > 0 ? [] : ["No result rows are loaded for this state yet."],
       errors: [],
     },
-    capabilities: state.capabilities,
+    capabilities: capabilities ?? emptyCapabilities,
   };
 }
 

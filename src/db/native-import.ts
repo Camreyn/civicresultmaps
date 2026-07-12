@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
-import { neon } from "@neondatabase/serverless";
+import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
+import { calculateAnalysisIndicators, type CandidateNeutralReviewRow } from "../lib/analysis-indicators.ts";
 import { reviewPolicy } from "../lib/review-policy.ts";
 import { jurisdictionTagForRow } from "../lib/jurisdiction-tags.ts";
 
@@ -23,48 +24,7 @@ type NativeResultRow = {
   sourceId: string;
 };
 
-type NativeReviewRow = {
-  county: string;
-  comparisonDemCandidatePresent?: boolean;
-  comparisonDemVotes?: number;
-  comparisonRepCandidatePresent?: boolean;
-  comparisonRepVotes?: number;
-  coverageMode?: string;
-  localUnit: string;
-  totalVotes?: number;
-  harris?: number;
-  trump?: number;
-  harrisShare?: number;
-  trumpShare?: number;
-  demDropoff?: number;
-  repDropoff?: number;
-  sourceId: string;
-};
-
-type NativeIndicatorMetrics = {
-  demAverageDropoff: number;
-  demOutliers: number;
-  harrisCorrelation: number;
-  outlierTrigger: number;
-  repAverageDropoff: number;
-  repOutliers: number;
-  rowCount: number;
-  trumpCorrelation: number;
-} & Record<string, unknown>;
-
-type NativeAnalysisIndicator = {
-  county: string;
-  detail: string;
-  jurisdictionCode: string;
-  jurisdictionName: string;
-  label: string;
-  level: "county" | "city" | "rest_of_county";
-  metrics: NativeIndicatorMetrics;
-  severity: number;
-  sourceId: string;
-  summary: string;
-  type: string;
-};
+type NativeReviewRow = CandidateNeutralReviewRow;
 
 type WisconsinAuditSelection = {
   ballotsAudited: number;
@@ -87,7 +47,7 @@ type NativeReviewScope = {
   county: string;
   jurisdictionCode: string;
   jurisdictionName: string;
-  level: NativeAnalysisIndicator["level"];
+  level: "county" | "city" | "rest_of_county";
   rows: NativeReviewRow[];
 };
 type NativeTurnoutRow = {
@@ -148,6 +108,7 @@ type NativeArtifact = {
     reviewRows: NativeReviewRow[];
     turnoutRows: NativeTurnoutRow[];
     historicalRows?: NativeHistoricalRow[];
+    historicalReviewRows?: NativeReviewRow[];
     metrics: Record<string, unknown>;
   };
 };
@@ -185,151 +146,12 @@ function numberOrNull(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function average(values: number[]) {
-  if (!values.length) {
-    return 0;
-  }
-
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
-}
-
-function standardDeviation(values: number[]) {
-  if (values.length < 2) {
-    return 0;
-  }
-
-  const mean = average(values);
-  return Math.sqrt(average(values.map((value) => (value - mean) ** 2)));
-}
-
-function finiteNumbers(values: Array<number | undefined>) {
-  return values.filter((value): value is number => typeof value === "number" && Number.isFinite(value));
-}
-
-function zScore(value: number | undefined, mean: number, deviation: number) {
-  return typeof value === "number" && Number.isFinite(value) && deviation ? (value - mean) / deviation : 0;
-}
-
-function pearsonSafe(xValues: number[], yValues: number[]) {
-  const length = Math.min(xValues.length, yValues.length);
-
-  if (length < 2) {
-    return 0;
-  }
-
-  const x = xValues.slice(0, length);
-  const y = yValues.slice(0, length);
-  const xAverage = average(x);
-  const yAverage = average(y);
-  let numerator = 0;
-  let xSquareSum = 0;
-  let ySquareSum = 0;
-
-  for (let index = 0; index < length; index += 1) {
-    const xDelta = x[index] - xAverage;
-    const yDelta = y[index] - yAverage;
-    numerator += xDelta * yDelta;
-    xSquareSum += xDelta * xDelta;
-    ySquareSum += yDelta * yDelta;
-  }
-
-  const denominator = Math.sqrt(xSquareSum) * Math.sqrt(ySquareSum);
-  return denominator ? numerator / denominator : 0;
-}
-
-function indicatorSeverity(metrics: NativeIndicatorMetrics) {
-  const correlationScore =
-    Math.max(Math.abs(metrics.trumpCorrelation), Math.abs(metrics.harrisCorrelation)) /
-    Math.max(0.01, reviewPolicy.voteShareCorrelationThreshold);
-  const averageDropoffScore =
-    Math.max(Math.abs(metrics.demAverageDropoff), Math.abs(metrics.repAverageDropoff)) /
-    Math.max(0.1, reviewPolicy.downBallotAverageThresholdPct);
-  const outlierScore =
-    (metrics.demOutliers + metrics.repOutliers) / Math.max(1, metrics.outlierTrigger);
-
-  return Number((correlationScore + averageDropoffScore + outlierScore).toFixed(4));
-}
-
 function titleCase(value: string) {
   return value
     .toLowerCase()
     .split(/\s+/)
     .map((part) => (part.length <= 2 ? part.toUpperCase() : `${part[0].toUpperCase()}${part.slice(1)}`))
     .join(" ");
-}
-
-function cityNameForWard(localUnit: string) {
-  const match = String(localUnit || "").match(/^\s*city of\s+(.+?)\s+(?:wards?|precincts?)\b/i);
-  return match ? titleCase(match[1]) : null;
-}
-
-function reviewScopesForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
-  const rowsByCounty = new Map<string, NativeReviewRow[]>();
-
-  for (const row of rows) {
-    if (!row.county) {
-      continue;
-    }
-
-    const county = normalizeJurisdictionName(row.county);
-    rowsByCounty.set(county, [...(rowsByCounty.get(county) ?? []), row]);
-  }
-
-  const scopes: NativeReviewScope[] = Array.from(rowsByCounty.entries()).map(([county, countyRows]) => ({
-    county,
-    jurisdictionCode: jurisdictionCode(stateCode, county),
-    jurisdictionName: county,
-    level: "county",
-    rows: countyRows,
-  }));
-
-  if (stateCode !== "WI") {
-    return scopes;
-  }
-
-  const cityGroups = new Map<string, { city: string; county: string; rows: NativeReviewRow[] }>();
-  for (const row of rows) {
-    const city = cityNameForWard(row.localUnit);
-    if (!city || !row.county) {
-      continue;
-    }
-    const county = normalizeJurisdictionName(row.county);
-    const key = `${county.toLowerCase()}|${city.toLowerCase()}`;
-    const current = cityGroups.get(key) ?? { city, county, rows: [] };
-    current.rows.push(row);
-    cityGroups.set(key, current);
-  }
-
-  for (const split of cityGroups.values()) {
-    if (split.rows.length < reviewPolicy.minWardRows) {
-      continue;
-    }
-    const cityLocalUnits = new Set(split.rows.map((row) => row.localUnit));
-    const countyRows = rowsByCounty.get(split.county) ?? [];
-    const restRows = countyRows.filter((row) => !cityLocalUnits.has(row.localUnit));
-    if (!restRows.length) {
-      continue;
-    }
-
-    scopes.push({
-      city: split.city,
-      county: split.county,
-      jurisdictionCode: jurisdictionCode(stateCode, `${split.county}-${split.city}-city`),
-      jurisdictionName: `${split.city}, ${split.county} County`,
-      level: "city",
-      rows: split.rows,
-    });
-    scopes.push({
-      city: split.city,
-      county: split.county,
-      jurisdictionCode: jurisdictionCode(stateCode, `${split.county}-${split.city}-rest`),
-      jurisdictionName: `${split.county} County outside ${split.city}`,
-      level: "rest_of_county",
-      rows: restRows,
-    });
-  }
-
-  return scopes;
 }
 
 function splitCsvLine(line: string) {
@@ -436,121 +258,6 @@ function denominatorContextForScope(stateCode: string, scope: NativeReviewScope)
   };
 }
 
-function countyDistributionIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
-  if (rows.length < reviewPolicy.minWardRows) {
-    return [] as NativeAnalysisIndicator[];
-  }
-
-  const countyRows = rows.filter((row) => {
-    const localUnit = String(row.localUnit || "").trim();
-    return (
-      row.county &&
-      (normalizeJurisdictionName(localUnit || row.county) === normalizeJurisdictionName(row.county) ||
-        /^county\s+total$/i.test(localUnit))
-    );
-  });
-
-  if (countyRows.length !== rows.length) {
-    return [] as NativeAnalysisIndicator[];
-  }
-
-  const demValues = finiteNumbers(countyRows.map((row) => row.demDropoff));
-  const repValues = finiteNumbers(countyRows.map((row) => row.repDropoff));
-  if (!demValues.length && !repValues.length) {
-    return [] as NativeAnalysisIndicator[];
-  }
-
-  const demMean = average(demValues);
-  const repMean = average(repValues);
-  const demDeviation = standardDeviation(demValues);
-  const repDeviation = standardDeviation(repValues);
-  const indicators: NativeAnalysisIndicator[] = [];
-
-  for (const row of countyRows) {
-    const demDropoff = row.demDropoff ?? 0;
-    const repDropoff = row.repDropoff ?? 0;
-    const demDistributionZ = zScore(row.demDropoff, demMean, demDeviation);
-    const repDistributionZ = zScore(row.repDropoff, repMean, repDeviation);
-    const absoluteTrigger =
-      Math.abs(demDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct ||
-      Math.abs(repDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct;
-    const distributionTrigger =
-      Math.abs(demDistributionZ) >= reviewPolicy.countyDistributionZThreshold ||
-      Math.abs(repDistributionZ) >= reviewPolicy.countyDistributionZThreshold;
-
-    if (!absoluteTrigger && !distributionTrigger) {
-      continue;
-    }
-
-    const county = normalizeJurisdictionName(row.county);
-    const metrics: NativeIndicatorMetrics = {
-      county,
-      countyDistributionDropoffThresholdPct: reviewPolicy.countyDistributionDropoffThresholdPct,
-      countyDistributionZThreshold: reviewPolicy.countyDistributionZThreshold,
-      demAverageDropoff: demDropoff,
-      demDistributionMean: demMean,
-      demDistributionStdDev: demDeviation,
-      demDistributionZ,
-      demOutliers: Math.abs(demDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct ? 1 : 0,
-      harrisCorrelation: 0,
-      outlierTrigger: 1,
-      repAverageDropoff: repDropoff,
-      repDistributionMean: repMean,
-      repDistributionStdDev: repDeviation,
-      repDistributionZ,
-      repOutliers: Math.abs(repDropoff) >= reviewPolicy.countyDistributionDropoffThresholdPct ? 1 : 0,
-      rowCount: 1,
-      scopeType: "county",
-      statewideCountyRows: countyRows.length,
-      trumpCorrelation: 0,
-    };
-    const maxZ = Math.max(Math.abs(demDistributionZ), Math.abs(repDistributionZ));
-    const maxDropoff = Math.max(Math.abs(demDropoff), Math.abs(repDropoff));
-    const severity = Number(
-      (
-        maxZ / Math.max(0.1, reviewPolicy.countyDistributionZThreshold) +
-        maxDropoff / Math.max(0.1, reviewPolicy.countyDistributionDropoffThresholdPct)
-      ).toFixed(4),
-    );
-
-    indicators.push({
-      county,
-      detail:
-        "This county-level President-versus-comparison-contest difference is large in absolute terms or relative to the statewide county distribution. It is an advisory county review screen, not precinct-level evidence or proof of tampering.",
-      jurisdictionCode: jurisdictionCode(stateCode, county),
-      jurisdictionName: county,
-      label: "County comparison outlier",
-      level: "county",
-      metrics,
-      severity,
-      sourceId: row.sourceId,
-      summary: `County comparison crossed threshold: DEM ${demDropoff.toFixed(2)}%, REP ${repDropoff.toFixed(2)}%, DEM z=${demDistributionZ.toFixed(2)}, REP z=${repDistributionZ.toFixed(2)}.`,
-      type: "county_down_ballot_distribution",
-    });
-  }
-
-  return indicators;
-}
-
-function isComparableDownBallotRow(row: NativeReviewRow) {
-  if (row.coverageMode === "voteShareOnly" || row.coverageMode === "oneSidedHouseComparison" || row.coverageMode === "multiDistrictHouseComparison") {
-    return false;
-  }
-
-  if (
-    typeof row.comparisonDemCandidatePresent === "boolean" ||
-    typeof row.comparisonRepCandidatePresent === "boolean"
-  ) {
-    return Boolean(row.comparisonDemCandidatePresent && row.comparisonRepCandidatePresent);
-  }
-
-  if (typeof row.comparisonDemVotes === "number" || typeof row.comparisonRepVotes === "number") {
-    return Number(row.comparisonDemVotes ?? 0) > 0 && Number(row.comparisonRepVotes ?? 0) > 0;
-  }
-
-  return row.coverageMode !== undefined || Number.isFinite(row.demDropoff) || Number.isFinite(row.repDropoff);
-}
-
 function comparisonContextForScope(scope: NativeReviewScope) {
   const coverageModes = Array.from(
     new Set(
@@ -584,109 +291,180 @@ function comparisonContextForScope(scope: NativeReviewScope) {
 }
 
 async function analysisIndicatorsForNativeRows(stateCode: string, rows: NativeReviewRow[]) {
-  const indicators: NativeAnalysisIndicator[] = [];
   const wisconsinContext = await loadWisconsinIndicatorContext(stateCode);
-
-  indicators.push(...countyDistributionIndicatorsForNativeRows(stateCode, rows));
-
-  for (const scope of reviewScopesForNativeRows(stateCode, rows)) {
-    if (scope.rows.length < reviewPolicy.minWardRows) {
-      continue;
-    }
-
-    const trumpCorrelation = pearsonSafe(
-      scope.rows.map((row) => row.trump ?? 0),
-      scope.rows.map((row) => row.trumpShare ?? 0),
-    );
-    const harrisCorrelation = pearsonSafe(
-      scope.rows.map((row) => row.harris ?? 0),
-      scope.rows.map((row) => row.harrisShare ?? 0),
-    );
-    const downBallotRows = scope.rows.filter(isComparableDownBallotRow);
-    const demAverageDropoff = average(downBallotRows.map((row) => row.demDropoff ?? 0));
-    const repAverageDropoff = average(downBallotRows.map((row) => row.repDropoff ?? 0));
-    const demOutliers = downBallotRows.filter(
-      (row) =>
-        (row.harris ?? 0) >= reviewPolicy.minCandidateVotes &&
-        Math.abs(row.demDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
-    ).length;
-    const repOutliers = downBallotRows.filter(
-      (row) =>
-        (row.trump ?? 0) >= reviewPolicy.minCandidateVotes &&
-        Math.abs(row.repDropoff ?? 0) >= reviewPolicy.outlierThresholdPct,
-    ).length;
-    const outlierTrigger = Math.max(3, Math.ceil(downBallotRows.length * 0.05));
-    const metrics: NativeIndicatorMetrics = {
+  return calculateAnalysisIndicators(stateCode, rows, {
+    enrichMetrics: (scope) => ({
       auditContext: auditContextForScope(scope, wisconsinContext),
       ...comparisonContextForScope(scope),
-      comparableDownBallotRowCount: downBallotRows.length,
-      county: scope.county,
-      demAverageDropoff,
-      demOutliers,
       denominatorContext: denominatorContextForScope(stateCode, scope),
-      harrisCorrelation,
-      incomparableDownBallotRowCount: scope.rows.length - downBallotRows.length,
-      outlierTrigger,
-      repAverageDropoff,
-      repOutliers,
-      rowCount: scope.rows.length,
-      scopeType: scope.level,
-      trumpCorrelation,
-      ...(scope.city ? { city: scope.city } : {}),
-    };
-    const severity = indicatorSeverity(metrics);
-    const sourceId = scope.rows.find((row) => row.sourceId)?.sourceId ?? "";
-    const base = {
-      county: scope.county,
-      jurisdictionCode: scope.jurisdictionCode,
-      jurisdictionName: scope.jurisdictionName,
-      level: scope.level,
-      metrics,
-      severity,
-      sourceId,
-    };
+    }),
+  });
+}
 
-    if (
-      Math.abs(trumpCorrelation) >= reviewPolicy.voteShareCorrelationThreshold ||
-      Math.abs(harrisCorrelation) >= reviewPolicy.voteShareCorrelationThreshold
-    ) {
-      indicators.push({
-        ...base,
-        detail:
-          "Bigger local reporting-unit vote totals move with candidate vote share strongly enough to pass the native review threshold. This is an advisory review flag, not proof of tampering.",
-        label: "Vote-share pattern",
-        summary: `Vote-share correlation crossed threshold: Trump r=${trumpCorrelation.toFixed(3)}, Harris r=${harrisCorrelation.toFixed(3)}.`,
-        type: "vote_share_pattern",
-      });
-    }
+function reviewRowForYear(row: NativeReviewRow, fallbackYear: number): NativeReviewRow {
+  const electionYear = Number(row.electionYear ?? fallbackYear);
+  const candidateDefaults = electionYear === 2016
+    ? { dem: "Hillary Clinton", rep: "Donald Trump" }
+    : electionYear === 2020
+      ? { dem: "Joe Biden", rep: "Donald Trump" }
+      : electionYear === 2024
+        ? { dem: "Kamala Harris", rep: "Donald Trump" }
+        : { dem: "Democratic candidate", rep: "Republican candidate" };
 
-    if (
-      Math.abs(demAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct ||
-      Math.abs(repAverageDropoff) >= reviewPolicy.downBallotAverageThresholdPct
-    ) {
-      indicators.push({
-        ...base,
-        detail:
-          "The average gap between presidential votes and same-party down-ballot votes is large enough to review. Split-ticket voting can explain some gap; this flag identifies areas needing supporting records.",
-        label: "Average down-ballot difference",
-        summary: `Average President-vs-down-ballot difference crossed threshold: DEM ${demAverageDropoff.toFixed(2)}%, REP ${repAverageDropoff.toFixed(2)}%.`,
-        type: "average_down_ballot_difference",
-      });
-    }
+  return {
+    ...row,
+    demCandidate: row.demCandidate ?? candidateDefaults.dem,
+    demShare: row.demShare ?? row.harrisShare,
+    demVotes: row.demVotes ?? row.harris,
+    electionYear,
+    level: row.level ?? "local",
+    repCandidate: row.repCandidate ?? candidateDefaults.rep,
+    repShare: row.repShare ?? row.trumpShare,
+    repVotes: row.repVotes ?? row.trump,
+  };
+}
 
-    if (demOutliers + repOutliers >= outlierTrigger) {
-      indicators.push({
-        ...base,
-        detail:
-          "Enough local result rows have unusually large President-versus-down-ballot differences to pass the outlier-count threshold. This is an advisory review flag, not proof of tampering.",
-        label: "Down-ballot outliers",
-        summary: `Drop-off outlier count crossed threshold: DEM ${demOutliers}, REP ${repOutliers}, trigger ${outlierTrigger}.`,
-        type: "down_ballot_outliers",
-      });
-    }
+async function retargetLegacySourceDocument(
+  sql: NeonQueryFunction<false, false>,
+  input: { legacySlug: string; sourceElectionYear: number; targetSlug: string },
+) {
+  if (input.legacySlug === input.targetSlug) {
+    return;
   }
 
-  return indicators;
+  const [legacyDocument] = await sql`
+    select id from source_documents where slug = ${input.legacySlug} limit 1
+  `;
+  if (!legacyDocument) {
+    return;
+  }
+
+  const [targetDocument] = await sql`
+    select id from source_documents where slug = ${input.targetSlug} limit 1
+  `;
+  if (!targetDocument) {
+    await sql`
+      update source_documents
+      set slug = ${input.targetSlug}, election_year = ${input.sourceElectionYear}
+      where id = ${legacyDocument.id}
+    `;
+    return;
+  }
+
+  await sql`update import_runs set source_document_id = ${targetDocument.id} where source_document_id = ${legacyDocument.id}`;
+  await sql`update result_rows set source_document_id = ${targetDocument.id} where source_document_id = ${legacyDocument.id}`;
+  await sql`update turnout_rows set source_document_id = ${targetDocument.id} where source_document_id = ${legacyDocument.id}`;
+  await sql`update review_rows set source_document_id = ${targetDocument.id} where source_document_id = ${legacyDocument.id}`;
+  await sql`update historical_result_rows set source_document_id = ${targetDocument.id} where source_document_id = ${legacyDocument.id}`;
+  await sql`update equipment_rows set source_document_id = ${targetDocument.id} where source_document_id = ${legacyDocument.id}`;
+  await sql`update analysis_indicators set source_document_id = ${targetDocument.id} where source_document_id = ${legacyDocument.id}`;
+  await sql`delete from source_documents where id = ${legacyDocument.id}`;
+}
+
+function requiredSourceDocumentId(
+  sourceIds: Map<string, string>,
+  sourceId: string | undefined,
+  context: string,
+) {
+  const documentId = sourceId ? sourceIds.get(sourceId) : undefined;
+  if (!documentId) {
+    throw new Error(`${context} references unknown source ${sourceId || "(missing)"}.`);
+  }
+  return documentId;
+}
+
+export function validateNativeSourceReferences(input: {
+  historicalRows?: Array<{ sourceDocumentId?: string; sourceId?: string }>;
+  knownSourceIds: Iterable<string>;
+  resultRows?: Array<{ sourceId?: string }>;
+  turnoutRows?: Array<{ sourceId?: string }>;
+}) {
+  const sourceIdList = Array.from(input.knownSourceIds);
+  const knownSourceIds = new Set(sourceIdList);
+  if (knownSourceIds.size !== sourceIdList.length) {
+    throw new Error("Native staging artifact contains duplicate source ids.");
+  }
+
+  const assertKnown = (sourceId: string | undefined, context: string) => {
+    if (!sourceId || !knownSourceIds.has(sourceId)) {
+      throw new Error(`${context} references unknown source ${sourceId || "(missing)"}.`);
+    }
+  };
+
+  for (const row of input.resultRows ?? []) {
+    assertKnown(row.sourceId, "Result row");
+  }
+  for (const row of input.turnoutRows ?? []) {
+    assertKnown(row.sourceId, "Turnout row");
+  }
+  for (const row of input.historicalRows ?? []) {
+    assertKnown(row.sourceDocumentId ?? row.sourceId, "Historical result row");
+  }
+}
+
+export function partitionReviewRowsForPromotion(input: {
+  currentRows: NativeReviewRow[];
+  electionYear: number;
+  historicalRows?: NativeReviewRow[];
+  knownSourceIds: Iterable<string>;
+}): {
+  historicalReviewYears: number[];
+  reviewRowsByYear: Map<number, NativeReviewRow[]>;
+} {
+  const knownSourceIds = new Set(input.knownSourceIds);
+  const reviewRowsByYear = new Map<number, NativeReviewRow[]>();
+
+  const addReviewRow = (row: NativeReviewRow, fallbackYear: number, kind: "current" | "historical") => {
+    const normalized = reviewRowForYear(row, fallbackYear);
+    const rowYear = Number(normalized.electionYear);
+    if (!Number.isInteger(rowYear) || rowYear <= 0) {
+      throw new Error(`${kind} review row ${row.county}/${row.localUnit} has an invalid election year.`);
+    }
+    if (kind === "current" && rowYear !== input.electionYear) {
+      throw new Error(
+        `Current review row ${row.county}/${row.localUnit} targets ${rowYear}; expected ${input.electionYear}.`,
+      );
+    }
+    if (kind === "historical" && rowYear === input.electionYear) {
+      throw new Error(
+        `Historical review row ${row.county}/${row.localUnit} targets the current election year ${input.electionYear}.`,
+      );
+    }
+    if (kind === "historical" && rowYear > input.electionYear) {
+      throw new Error(
+        `Historical review row ${row.county}/${row.localUnit} targets future year ${rowYear}; expected a year before ${input.electionYear}.`,
+      );
+    }
+
+    if (!normalized.sourceId?.trim()) {
+      throw new Error(`${kind} review row ${row.county}/${row.localUnit} is missing its primary source id.`);
+    }
+
+    for (const sourceId of [normalized.sourceId, normalized.comparisonSourceId].filter(
+      (value): value is string => typeof value === "string" && value.trim().length > 0,
+    )) {
+      if (!knownSourceIds.has(sourceId)) {
+        throw new Error(
+          `${kind} review row ${row.county}/${row.localUnit} references unknown source ${sourceId}.`,
+        );
+      }
+    }
+
+    reviewRowsByYear.set(rowYear, [...(reviewRowsByYear.get(rowYear) ?? []), normalized]);
+  };
+
+  for (const row of input.currentRows) {
+    addReviewRow(row, input.electionYear, "current");
+  }
+  for (const row of input.historicalRows ?? []) {
+    addReviewRow(row, Number(row.electionYear), "historical");
+  }
+
+  const historicalReviewYears = Array.from(reviewRowsByYear.keys())
+    .filter((year) => year !== input.electionYear)
+    .sort((left, right) => left - right);
+
+  return { historicalReviewYears, reviewRowsByYear };
 }
 
 function assertPromotable(artifact: NativeArtifact) {
@@ -715,7 +493,19 @@ export async function promoteNativeStagingArtifact(path: string) {
   const electionYear = artifact.election.year;
   const office = artifact.election.office.toLowerCase();
   const native = artifact.native!;
-
+  const artifactSourceIds = artifact.sources.map((source) => source.id);
+  validateNativeSourceReferences({
+    historicalRows: native.historicalRows,
+    knownSourceIds: artifactSourceIds,
+    resultRows: native.resultRows,
+    turnoutRows: native.turnoutRows,
+  });
+  const { historicalReviewYears, reviewRowsByYear } = partitionReviewRowsForPromotion({
+    currentRows: native.reviewRows,
+    electionYear,
+    historicalRows: native.historicalReviewRows,
+    knownSourceIds: artifactSourceIds,
+  });
   await sql`
     insert into states (code, name, authority)
     values (${stateCode}, ${artifact.state.name}, ${artifact.state.authority})
@@ -748,6 +538,24 @@ export async function promoteNativeStagingArtifact(path: string) {
 
   const sourceIds = new Map<string, string>();
   for (const source of artifact.sources) {
+    const metadataElectionYear = Number(source.metadata?.electionYear);
+    const metadataElectionYears = Array.isArray(source.metadata?.electionYears)
+      ? source.metadata.electionYears.map(Number).filter(Number.isInteger)
+      : [];
+    const sourceElectionYear = Number.isInteger(metadataElectionYear)
+      ? metadataElectionYear
+      : metadataElectionYears.length
+        ? Math.max(...metadataElectionYears)
+        : electionYear;
+    const targetSlug = `${stateCode.toLowerCase()}-${sourceElectionYear}-${source.id}`;
+    const legacySlug = `${stateCode.toLowerCase()}-${electionYear}-${source.id}`;
+    if (sourceElectionYear !== electionYear) {
+      await retargetLegacySourceDocument(sql, {
+        legacySlug,
+        sourceElectionYear,
+        targetSlug,
+      });
+    }
     const [document] = await sql`
       insert into source_documents (
         slug,
@@ -765,9 +573,9 @@ export async function promoteNativeStagingArtifact(path: string) {
         metadata
       )
       values (
-        ${`${stateCode.toLowerCase()}-${electionYear}-${source.id}`},
+        ${targetSlug},
         ${stateCode},
-        ${electionYear},
+        ${sourceElectionYear},
         ${source.category},
         ${source.category},
         ${source.sourceUrl},
@@ -827,16 +635,20 @@ export async function promoteNativeStagingArtifact(path: string) {
   const shouldReplaceReviewRows =
     native.reviewRows.length > 0 ||
     (native.resultRows.length > 0 && "nativeReviewRows" in native.metrics);
-  if (shouldReplaceReviewRows) {
+  const reviewYearsToReplace = [
+    ...(shouldReplaceReviewRows ? [electionYear] : []),
+    ...historicalReviewYears,
+  ];
+  for (const reviewYear of reviewYearsToReplace) {
     await sql`
       delete from review_rows
       where state_code = ${stateCode}
-        and election_year = ${electionYear}
+        and election_year = ${reviewYear}
     `;
     await sql`
       delete from analysis_indicators
       where state_code = ${stateCode}
-        and election_year = ${electionYear}
+        and election_year = ${reviewYear}
     `;
   }
   const shouldReplaceTurnoutRows = native.turnoutRows.length > 0;
@@ -892,7 +704,7 @@ export async function promoteNativeStagingArtifact(path: string) {
           ${candidate},
           ${candidateParties[candidate]},
           ${votes},
-          ${sourceIds.get(row.sourceId) ?? primarySourceId ?? null}
+          ${requiredSourceDocumentId(sourceIds, row.sourceId, "Native row")}
         )
         on conflict (contest_id, level, jurisdiction_code, candidate_name, party)
         do update set
@@ -906,123 +718,179 @@ export async function promoteNativeStagingArtifact(path: string) {
     }
   }
 
-  const reviewTagsByJurisdictionCode = new Map<string, string>();
+  const reviewTagsByYearAndJurisdictionCode = new Map<string, string>();
+  const storedReviewRowsByYear: Record<string, number> = {};
   let storedReviewRows = 0;
-  for (const [index, row] of native.reviewRows.entries()) {
-    const localUnit = row.localUnit || `review-row-${index + 1}`;
-    const code = jurisdictionCode(stateCode, row.county);
-    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionCode: code, jurisdictionName: row.county, level: "county" });
-    const existingTag = reviewTagsByJurisdictionCode.get(code);
-    if (tag && existingTag && existingTag !== tag) {
-      throw new Error("Review rows resolve jurisdiction code " + code + " to multiple county tags.");
+  let storedHistoricalReviewRows = 0;
+  for (const [reviewYear, yearRows] of Array.from(reviewRowsByYear.entries()).sort(([left], [right]) => left - right)) {
+    for (const [index, row] of yearRows.entries()) {
+      const localUnit = row.localUnit || `review-row-${index + 1}`;
+      const code = jurisdictionCode(stateCode, row.county);
+      const resolvedTag = jurisdictionTagForRow({
+        state: stateCode,
+        jurisdictionCode: code,
+        jurisdictionName: row.county,
+        level: "county",
+      });
+      if (row.jurisdictionTag && resolvedTag && row.jurisdictionTag !== resolvedTag) {
+        throw new Error(`Review row ${reviewYear} ${row.county} has conflicting county tags.`);
+      }
+      const tag = row.jurisdictionTag ?? resolvedTag;
+      const tagKey = `${reviewYear}:${code}`;
+      const existingTag = reviewTagsByYearAndJurisdictionCode.get(tagKey);
+      if (tag && existingTag && existingTag !== tag) {
+        throw new Error(`Review rows resolve ${tagKey} to multiple county tags.`);
+      }
+      if (tag) {
+        reviewTagsByYearAndJurisdictionCode.set(tagKey, tag);
+      }
+      await sql`
+        insert into review_rows (
+          import_run_id,
+          state_code,
+          election_year,
+          jurisdiction_code,
+          jurisdiction_name,
+          jurisdiction_tag,
+          local_unit,
+          level,
+          dem_candidate,
+          rep_candidate,
+          dem_votes,
+          rep_votes,
+          total_votes,
+          dem_share,
+          rep_share,
+          harris_votes,
+          trump_votes,
+          harris_share,
+          trump_share,
+          dem_dropoff,
+          rep_dropoff,
+          metrics,
+          source_document_id
+        )
+        values (
+          ${importRun.id},
+          ${stateCode},
+          ${reviewYear},
+          ${code},
+          ${row.county},
+          ${tag},
+          ${localUnit},
+          ${row.level ?? "local"},
+          ${row.demCandidate ?? null},
+          ${row.repCandidate ?? null},
+          ${numberOrNull(row.demVotes)},
+          ${numberOrNull(row.repVotes)},
+          ${numberOrNull(row.totalVotes)},
+          ${numberOrNull(row.demShare)},
+          ${numberOrNull(row.repShare)},
+          ${reviewYear === 2024 ? numberOrNull(row.harris ?? row.demVotes) : null},
+          ${reviewYear === 2024 ? numberOrNull(row.trump ?? row.repVotes) : null},
+          ${reviewYear === 2024 ? numberOrNull(row.harrisShare ?? row.demShare) : null},
+          ${reviewYear === 2024 ? numberOrNull(row.trumpShare ?? row.repShare) : null},
+          ${numberOrNull(row.demDropoff)},
+          ${numberOrNull(row.repDropoff)},
+          ${JSON.stringify(row)}::jsonb,
+          ${requiredSourceDocumentId(sourceIds, row.sourceId, "Native row")}
+        )
+        on conflict (state_code, election_year, jurisdiction_code, local_unit)
+        do update set
+          import_run_id = excluded.import_run_id,
+          jurisdiction_name = excluded.jurisdiction_name,
+          jurisdiction_tag = excluded.jurisdiction_tag,
+          level = excluded.level,
+          dem_candidate = excluded.dem_candidate,
+          rep_candidate = excluded.rep_candidate,
+          dem_votes = excluded.dem_votes,
+          rep_votes = excluded.rep_votes,
+          total_votes = excluded.total_votes,
+          dem_share = excluded.dem_share,
+          rep_share = excluded.rep_share,
+          harris_votes = excluded.harris_votes,
+          trump_votes = excluded.trump_votes,
+          harris_share = excluded.harris_share,
+          trump_share = excluded.trump_share,
+          dem_dropoff = excluded.dem_dropoff,
+          rep_dropoff = excluded.rep_dropoff,
+          metrics = excluded.metrics,
+          source_document_id = excluded.source_document_id
+      `;
+      storedReviewRowsByYear[String(reviewYear)] = (storedReviewRowsByYear[String(reviewYear)] ?? 0) + 1;
+      if (reviewYear === electionYear) {
+        storedReviewRows += 1;
+      } else {
+        storedHistoricalReviewRows += 1;
+      }
     }
-    if (tag) {
-      reviewTagsByJurisdictionCode.set(code, tag);
-    }
-    await sql`
-      insert into review_rows (
-        import_run_id,
-        state_code,
-        election_year,
-        jurisdiction_code,
-        jurisdiction_name,
-        jurisdiction_tag,
-        local_unit,
-        level,
-        harris_votes,
-        trump_votes,
-        total_votes,
-        harris_share,
-        trump_share,
-        dem_dropoff,
-        rep_dropoff,
-        metrics,
-        source_document_id
-      )
-      values (
-        ${importRun.id},
-        ${stateCode},
-        ${electionYear},
-        ${code},
-        ${row.county},
-        ${tag},
-        ${localUnit},
-        'local',
-        ${numberOrNull(row.harris)},
-        ${numberOrNull(row.trump)},
-        ${numberOrNull(row.totalVotes)},
-        ${numberOrNull(row.harrisShare)},
-        ${numberOrNull(row.trumpShare)},
-        ${numberOrNull(row.demDropoff)},
-        ${numberOrNull(row.repDropoff)},
-        ${JSON.stringify(row)}::jsonb,
-        ${sourceIds.get(row.sourceId) ?? primarySourceId ?? null}
-      )
-      on conflict (state_code, election_year, jurisdiction_code, local_unit)
-      do update set
-        import_run_id = excluded.import_run_id,
-        jurisdiction_name = excluded.jurisdiction_name,
-        jurisdiction_tag = excluded.jurisdiction_tag,
-        level = excluded.level,
-        harris_votes = excluded.harris_votes,
-        trump_votes = excluded.trump_votes,
-        total_votes = excluded.total_votes,
-        harris_share = excluded.harris_share,
-        trump_share = excluded.trump_share,
-        dem_dropoff = excluded.dem_dropoff,
-        rep_dropoff = excluded.rep_dropoff,
-        metrics = excluded.metrics,
-        source_document_id = excluded.source_document_id
-    `;
-    storedReviewRows += 1;
   }
 
+  const storedIndicatorRowsByYear: Record<string, number> = {};
   let storedIndicatorRows = 0;
-  for (const indicator of await analysisIndicatorsForNativeRows(stateCode, native.reviewRows)) {
-    const tag = reviewTagsByJurisdictionCode.get(indicator.jurisdictionCode)
-      ?? jurisdictionTagForRow({ state: stateCode, jurisdictionCode: indicator.jurisdictionCode, jurisdictionName: indicator.county || indicator.jurisdictionName, level: indicator.level });
-    await sql`
-      insert into analysis_indicators (
-        state_code,
-        election_year,
-        jurisdiction_code,
-        jurisdiction_name,
-        jurisdiction_tag,
-        level,
-        indicator_type,
-        severity,
-        label,
-        summary,
-        detail,
-        metrics,
-        source_document_id
-      )
-      values (
-        ${stateCode},
-        ${electionYear},
-        ${indicator.jurisdictionCode},
-        ${indicator.jurisdictionName},
-        ${tag},
-        ${indicator.level},
-        ${indicator.type},
-        ${indicator.severity},
-        ${indicator.label},
-        ${indicator.summary},
-        ${indicator.detail},
-        ${JSON.stringify(indicator.metrics)}::jsonb,
-        ${sourceIds.get(indicator.sourceId) ?? primarySourceId ?? null}
-      )
-      on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
-      do update set
-        jurisdiction_name = excluded.jurisdiction_name,
-        jurisdiction_tag = excluded.jurisdiction_tag,
-        severity = excluded.severity,
-        summary = excluded.summary,
-        detail = excluded.detail,
-        metrics = excluded.metrics,
-        source_document_id = excluded.source_document_id
-    `;
-    storedIndicatorRows += 1;
+  let storedHistoricalIndicatorRows = 0;
+  for (const [reviewYear, yearRows] of Array.from(reviewRowsByYear.entries()).sort(([left], [right]) => left - right)) {
+    const calculatedIndicators = reviewYear === electionYear
+      ? await analysisIndicatorsForNativeRows(stateCode, yearRows)
+      : calculateAnalysisIndicators(stateCode, yearRows);
+    for (const indicator of calculatedIndicators) {
+      const calculatedTag = "jurisdictionTag" in indicator ? indicator.jurisdictionTag : null;
+      const tag = calculatedTag
+        ?? reviewTagsByYearAndJurisdictionCode.get(`${reviewYear}:${indicator.jurisdictionCode}`)
+        ?? jurisdictionTagForRow({
+          state: stateCode,
+          jurisdictionCode: indicator.jurisdictionCode,
+          jurisdictionName: indicator.county || indicator.jurisdictionName,
+          level: indicator.level,
+        });
+      await sql`
+        insert into analysis_indicators (
+          state_code,
+          election_year,
+          jurisdiction_code,
+          jurisdiction_name,
+          jurisdiction_tag,
+          level,
+          indicator_type,
+          severity,
+          label,
+          summary,
+          detail,
+          metrics,
+          source_document_id
+        )
+        values (
+          ${stateCode},
+          ${reviewYear},
+          ${indicator.jurisdictionCode},
+          ${indicator.jurisdictionName},
+          ${tag},
+          ${indicator.level},
+          ${indicator.type},
+          ${indicator.severity},
+          ${indicator.label},
+          ${indicator.summary},
+          ${indicator.detail},
+          ${JSON.stringify(indicator.metrics)}::jsonb,
+          ${requiredSourceDocumentId(sourceIds, indicator.sourceId, "Calculated indicator")}
+        )
+        on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
+        do update set
+          jurisdiction_name = excluded.jurisdiction_name,
+          jurisdiction_tag = excluded.jurisdiction_tag,
+          severity = excluded.severity,
+          summary = excluded.summary,
+          detail = excluded.detail,
+          metrics = excluded.metrics,
+          source_document_id = excluded.source_document_id
+      `;
+      storedIndicatorRowsByYear[String(reviewYear)] = (storedIndicatorRowsByYear[String(reviewYear)] ?? 0) + 1;
+      if (reviewYear === electionYear) {
+        storedIndicatorRows += 1;
+      } else {
+        storedHistoricalIndicatorRows += 1;
+      }
+    }
   }
 
   let storedTurnoutRows = 0;
@@ -1059,7 +927,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${numberOrNull(row.turnoutPct)},
         ${row.registrationDenominatorTiming ?? row.denominatorType ?? "Not recorded"},
         ${Boolean(row.warningRequired)},
-        ${sourceIds.get(row.sourceId) ?? primarySourceId ?? null}
+        ${requiredSourceDocumentId(sourceIds, row.sourceId, "Native row")}
       )
       on conflict (state_code, election_year, level, jurisdiction_code)
       do update set
@@ -1116,7 +984,7 @@ export async function promoteNativeStagingArtifact(path: string) {
         ${numberOrNull(row.otherVotes)},
         ${numberOrNull(row.totalVotes)},
         ${JSON.stringify(row)}::jsonb,
-        ${sourceIds.get(row.sourceDocumentId ?? row.sourceId) ?? primarySourceId ?? null}
+        ${requiredSourceDocumentId(sourceIds, row.sourceDocumentId ?? row.sourceId, "Historical result row")}
       )
       on conflict (state_code, election_year, source_id, jurisdiction_code, local_unit)
       do update set
@@ -1140,6 +1008,11 @@ export async function promoteNativeStagingArtifact(path: string) {
     storedResultRows,
     storedReviewRows,
     storedIndicatorRows,
+    storedHistoricalReviewRows,
+    storedHistoricalIndicatorRows,
+    storedReviewRowsByYear,
+    storedIndicatorRowsByYear,
+    historicalReviewYears,
     storedTurnoutRows,
     storedHistoricalRows,
   };
@@ -1196,6 +1069,52 @@ export async function promoteNativeStagingArtifact(path: string) {
       end
   `;
 
+  for (const historicalReviewYear of historicalReviewYears) {
+    const historicalBaselineLoaded = historicalRows.some((row) => row.electionYear === historicalReviewYear);
+    await sql`
+      insert into capability_flags (
+        state_code,
+        election_year,
+        certified_results,
+        map,
+        review_graphs,
+        turnout,
+        historical_baseline,
+        source_planner,
+        notes
+      )
+      values (
+        ${stateCode},
+        ${historicalReviewYear},
+        ${historicalBaselineLoaded},
+        ${historicalBaselineLoaded},
+        true,
+        false,
+        ${historicalBaselineLoaded},
+        true,
+        'Same-grain historical presidential and comparison-contest rows loaded. Advisory indicators identify review signals only and are not findings of misconduct.'
+      )
+      on conflict (state_code, election_year) do update set
+        certified_results = case
+          when ${historicalBaselineLoaded} then true
+          else capability_flags.certified_results
+        end,
+        map = case
+          when ${historicalBaselineLoaded} then true
+          else capability_flags.map
+        end,
+        review_graphs = true,
+        historical_baseline = case
+          when ${historicalBaselineLoaded} then true
+          else capability_flags.historical_baseline
+        end,
+        notes = case
+          when capability_flags.notes is null or capability_flags.notes = '' then excluded.notes
+          when position(excluded.notes in capability_flags.notes) > 0 then capability_flags.notes
+          else capability_flags.notes || ' ' || excluded.notes
+        end
+    `;
+  }
   await sql`
     insert into validation_reports (
       import_run_id,

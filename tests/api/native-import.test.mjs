@@ -7,6 +7,7 @@ test("native importer promotes validated staging artifacts only", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   const script = readFileSync("scripts/promote-native-staging.mjs", "utf8");
   const policy = readFileSync("src/lib/review-policy.ts", "utf8");
+  const calculator = readFileSync("src/lib/analysis-indicators.ts", "utf8");
 
   assert.match(importer, /promoteNativeStagingArtifact/);
   assert.match(importer, /import \{ reviewPolicy \} from "\.\.\/lib\/review-policy\.ts"/);
@@ -23,28 +24,35 @@ test("native importer promotes validated staging artifacts only", () => {
   assert.doesNotMatch(importer, /!artifact\.capabilities\.reviewGraphs/);
   assert.match(importer, /delete from analysis_indicators/);
   assert.match(importer, /analysisIndicatorsForNativeRows/);
-  assert.match(importer, /reviewScopesForNativeRows/);
-  assert.match(importer, /rest_of_county/);
+  assert.match(importer, /calculateAnalysisIndicators/);
+  assert.match(importer, /historicalReviewRows/);
+  assert.match(importer, /reviewYearsToReplace/);
+  assert.match(importer, /storedHistoricalReviewRows/);
+  assert.match(importer, /storedHistoricalIndicatorRows/);
+  assert.match(importer, /dem_candidate/);
+  assert.match(importer, /sourceElectionYear/);
+  assert.match(calculator, /scopesForRows/);
+  assert.match(calculator, /rest_of_county/);
   assert.match(importer, /auditContextForScope/);
   assert.match(importer, /aggregateAuditResults/);
   assert.match(importer, /denominatorContextForScope/);
   assert.match(importer, /comparisonContextForScope/);
-  assert.match(importer, /isComparableDownBallotRow/);
-  assert.match(importer, /oneSidedHouseComparison/);
-  assert.match(importer, /multiDistrictHouseComparison/);
-  assert.match(importer, /comparableDownBallotRowCount/);
-  assert.match(importer, /comparisonCoverageMode/);
-  assert.match(importer, /directionalScreenConfidence/);
-  assert.match(importer, /directionalScreenReason/);
-  assert.match(importer, /presidentVsGovernor/);
-  assert.match(importer, /presidentVsUSHouse/);
+  assert.match(calculator, /isComparableDownBallotRow/);
+  assert.match(calculator, /oneSidedHouseComparison/);
+  assert.match(calculator, /multiDistrictHouseComparison/);
+  assert.match(calculator, /comparableDownBallotRowCount/);
+  assert.match(calculator, /comparisonCoverageMode/);
+  assert.match(calculator, /directionalScreenConfidence/);
+  assert.match(calculator, /directionalScreenReason/);
+  assert.match(calculator, /presidentVsGovernor/);
+  assert.match(calculator, /presidentVsUSHouse/);
   assert.match(explorer, /Harris \/ DEM \(low\)/);
   assert.match(explorer, /Governor-only/);
   assert.match(explorer, /DEM pres > House/);
   assert.match(explorer, /REP pres > House/);
   assert.match(explorer, /Harris share pattern/);
   assert.match(explorer, /presidential-over-House dropoff direction instead of candidate benefit/);
-  assert.match(importer, /jurisdictionName: `\$\{split\.city\}, \$\{split\.county\} County`/);
+  assert.match(calculator, /jurisdictionName: `\$\{group\.city\}, \$\{group\.county\} County`/);
   assert.match(importer, /insert into analysis_indicators/);
   assert.match(importer, /storedIndicatorRows/);
   assert.match(policy, /downBallotAverageThresholdPct: 2/);
@@ -70,15 +78,17 @@ test("native staging indicator report uses the shared review policy", () => {
   const script = readFileSync("scripts/report-staging-indicator-counts.mjs", "utf8");
 
   assert.match(script, /reviewPolicy/);
-  assert.match(script, /average_down_ballot_difference/);
-  assert.match(script, /isComparableDownBallotRow/);
-  assert.match(script, /comparableDownBallotRowCount/);
-  assert.match(script, /down_ballot_outliers/);
+  assert.match(script, /calculateAnalysisIndicators/);
+  assert.match(script, /historicalReviewRows/);
+  assert.match(script, /--year=/);
+  assert.match(script, /buildStagingIndicatorReport/);
+  assert.match(script, /same-grain_review_rows_loaded/);
+  assert.match(script, /no_historical_review_rows/);
   assert.match(script, /uniqueFlaggedJurisdictions/);
   assert.match(script, /uniqueFlaggedCountyJurisdictions/);
   assert.match(script, /flaggedAreas/);
   assert.match(script, /byLevel/);
-  assert.match(script, /cityNameForWard/);
+  assert.match(script, /broadSignalWarning/);
 });
 
 test("review indicator reads require enabled review graph capability", () => {

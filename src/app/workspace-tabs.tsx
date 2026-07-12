@@ -68,6 +68,7 @@ type WorkspaceTabsProps = {
   initialTab?: string;
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
+  indicatorsEvaluated: boolean;
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   statewideResultRows: ResultRow[];
@@ -2411,6 +2412,7 @@ export function WorkspaceTabs({
   initialTab,
   importRuns,
   indicators,
+  indicatorsEvaluated,
   reviewRows,
   results,
   statewideResultRows,
@@ -3217,26 +3219,32 @@ export function WorkspaceTabs({
   ]);
   const reviewRowExportHeaders = [
     "jurisdiction",
+    "jurisdiction_tag",
     "local_unit",
     "level",
-    "harris_votes",
-    "trump_votes",
+    "dem_candidate",
+    "rep_candidate",
+    "dem_votes",
+    "rep_votes",
     "total_votes",
-    "harris_share",
-    "trump_share",
+    "dem_share",
+    "rep_share",
     "dem_dropoff",
     "rep_dropoff",
     "source",
   ];
   const reviewRowExportRows = reviewRows.map((row) => [
     row.jurisdictionName,
+    row.jurisdictionTag ?? "",
     row.localUnit,
     row.level,
-    row.harrisVotes ?? "",
-    row.trumpVotes ?? "",
+    row.demCandidate ?? "",
+    row.repCandidate ?? "",
+    row.demVotes ?? row.harrisVotes ?? "",
+    row.repVotes ?? row.trumpVotes ?? "",
     row.totalVotes ?? "",
-    row.harrisShare ?? "",
-    row.trumpShare ?? "",
+    row.demShare ?? row.harrisShare ?? "",
+    row.repShare ?? row.trumpShare ?? "",
     row.demDropoff ?? "",
     row.repDropoff ?? "",
     row.sourceId,
@@ -3548,6 +3556,7 @@ export function WorkspaceTabs({
               electionYear={electionYear}
               equipmentRows={equipmentRows}
               indicators={indicators}
+              indicatorsEvaluated={indicatorsEvaluated}
               initialFips={initialFips}
               initialMapMode={initialMapMode}
               results={results}

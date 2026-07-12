@@ -80,6 +80,50 @@
       "authority": "North Carolina State Board of Elections",
       "timestampBasis": "Official NCSBE historical precinct results ZIPs for the November 6, 2012, November 8, 2016, and November 3, 2020 general elections, normalized July 1, 2026.",
       "confidence": "Official NCSBE precinct result exports aggregated to county historical presidential baseline rows. Use as historical context only; 2024 certified results continue to use the 2024 official result ZIP.",
+      "metadata": {
+        "artifactRole": "deterministic_normalization_output",
+        "electionYears": [2012, 2016, 2020]
+      },
+      "status": "loaded"
+    },
+    {
+      "id": "nc-2016-results-precinct-zip",
+      "category": "Historical precinct advisory eligibility source (not evaluated)",
+      "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2016_11_08/results_pct_20161108.zip",
+      "localFile": "data/nc-2016-results-precinct.zip",
+      "parser": "scripts/normalize-nc-historical-review.mjs",
+      "authority": "North Carolina State Board of Elections",
+      "electionYear": 2016,
+      "reportingGrain": "Precinct and administrative reporting units without an explicit Real Precinct field",
+      "timestampBasis": "Official NCSBE precinct results ZIP for the November 8, 2016 general election.",
+      "confidence": "Official source retained as an explicit historical advisory exclusion. The export predates the Real Precinct field, so administrative units cannot be excluded without inferring geography from labels; 2016 is not evaluated.",
+      "status": "documented_exclusion"
+    },
+    {
+      "id": "nc-2020-results-precinct-zip",
+      "category": "Official historical precinct President and U.S. Senate review source",
+      "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip",
+      "localFile": "data/nc-2020-results-precinct.zip",
+      "parser": "scripts/normalize-nc-historical-review.mjs",
+      "authority": "North Carolina State Board of Elections",
+      "electionYear": 2020,
+      "reportingGrain": "Precinct and administrative reporting units with official Real Precinct flag",
+      "timestampBasis": "Official NCSBE precinct results ZIP for the November 3, 2020 general election.",
+      "confidence": "Official NCSBE same-grain President and U.S. Senate result rows. Historical advisory normalization includes only the 2,662 county/precinct keys explicitly marked Real Precinct=Y and reconciles the 403 Real Precinct=N administrative keys separately.",
+      "status": "loaded"
+    },
+    {
+      "id": "nc-2020-historical-review-rows",
+      "category": "Normalized historical precinct President and U.S. Senate review rows",
+      "url": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip",
+      "localFile": "data/nc-2020-historical-review-rows.csv",
+      "parser": "historicalReviewCsv",
+      "authority": "North Carolina State Board of Elections",
+      "electionYear": 2020,
+      "reportingGrain": "Official Real Precinct=Y county/precinct rows",
+      "derivedFrom": "nc-2020-results-precinct-zip",
+      "timestampBasis": "Generated July 12, 2026 from the tracked official NCSBE 2020 general precinct results ZIP.",
+      "confidence": "Deterministic candidate-neutral historical review CSV with 2,662 President-versus-U.S.-Senate rows, canonical county GEOID tags, exact included/excluded/full-source vote reconciliation, and explicit source provenance.",
       "status": "loaded"
     }
   ],
@@ -123,13 +167,14 @@
   "expected": {
     "jurisdictions": 100,
     "resultRows": 100,
-    "sources": 7,
+    "sources": 10,
     "stateTotal": 5699141,
     "trump": 2898423,
     "harris": 2715375,
     "other": 85343,
     "reviewRows": 2658,
-    "turnoutRows": 100
+    "turnoutRows": 100,
+    "historicalReviewRows": 2662
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -150,6 +195,62 @@
         2016,
         2020
       ]
+    }
+  },
+  "historicalReview": {
+    "format": "historicalReviewCsv",
+    "sourceId": "nc-2020-historical-review-rows",
+    "evaluatedYears": [
+      2020
+    ],
+    "notEvaluatedYears": [
+      {
+        "electionYear": 2016,
+        "status": "not_evaluated",
+        "reasonCode": "official_export_missing_real_precinct_column",
+        "sourceId": "nc-2016-results-precinct-zip",
+        "reason": "The official 2016 NCSBE export predates the Real Precinct field. Administrative reporting units cannot be excluded without inferring geography from labels, so CivicResultMaps does not calculate 2016 advisory indicators for North Carolina from this source."
+      }
+    ],
+    "realPrecinctFilter": {
+      "column": "Real Precinct",
+      "includeValue": "Y",
+      "appliesTo": "historicalReviewRowsOnly",
+      "includedReportingUnitKeys": 2662,
+      "excludedAdministrativeKeys": 403,
+      "includedPresidentialVotes": 3201711,
+      "excludedPresidentialVotes": 2323091,
+      "sourcePresidentialVotes": 5524802,
+      "includedComparisonVotes": 3172016,
+      "excludedComparisonVotes": 2302936,
+      "sourceComparisonVotes": 5474952
+    },
+    "warning": "North Carolina 2020 historical advisory rows use official same-grain NCSBE President and U.S. Senate results only where Real Precinct=Y. The 403 Real Precinct=N administrative keys are excluded and exactly reconciled rather than inferred from labels. North Carolina 2016 is explicitly not evaluated because its official export lacks the Real Precinct field. Advisory indicators identify review signals and are not proof of fraud or misconduct.",
+    "expected": {
+      "rowCount": 2662,
+      "years": [
+        2020
+      ],
+      "rowCountsByYear": {
+        "2020": 2662
+      },
+      "presidential": {
+        "demCandidate": "Joseph R. Biden",
+        "repCandidate": "Donald J. Trump",
+        "demVotes": 1354907,
+        "repVotes": 1796371,
+        "otherVotes": 50433,
+        "totalVotes": 3201711
+      },
+      "comparison": {
+        "contest": "US SENATE",
+        "demCandidate": "Cal Cunningham",
+        "repCandidate": "Thom Tillis",
+        "demVotes": 1303306,
+        "repVotes": 1719501,
+        "otherVotes": 149209,
+        "totalVotes": 3172016
+      }
     }
   }
 }

@@ -5993,6 +5993,16 @@ td {
   line-height: 1.55;
 }
 
+.historical-map-warning {
+  border-color: rgba(244, 199, 109, 0.32);
+  color: #e7d9b9;
+  background: rgba(66, 49, 19, 0.42);
+}
+
+.historical-map-warning strong {
+  color: #f4c76d;
+}
+
 @media (max-width: 1120px) {
   .topbar-actions {
     flex-wrap: wrap;

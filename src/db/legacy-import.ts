@@ -358,6 +358,12 @@ async function ensureLegacyDetailTables(sql: { query: (statement: string) => Pro
       jurisdiction_name text not null,
       local_unit text default '' not null,
       level text default 'local' not null,
+      dem_candidate text,
+      rep_candidate text,
+      dem_votes integer,
+      rep_votes integer,
+      dem_share numeric(8, 4),
+      rep_share numeric(8, 4),
       harris_votes integer,
       trump_votes integer,
       total_votes integer,
@@ -368,6 +374,14 @@ async function ensureLegacyDetailTables(sql: { query: (statement: string) => Pro
       metrics jsonb default '{}'::jsonb not null,
       source_document_id uuid references source_documents(id)
     )
+  `);
+  await sql.query(`
+    alter table review_rows add column if not exists dem_candidate text;
+    alter table review_rows add column if not exists rep_candidate text;
+    alter table review_rows add column if not exists dem_votes integer;
+    alter table review_rows add column if not exists rep_votes integer;
+    alter table review_rows add column if not exists dem_share numeric(8, 4);
+    alter table review_rows add column if not exists rep_share numeric(8, 4);
   `);
   await sql.query(`
     create unique index if not exists review_rows_state_year_jurisdiction_local_idx
@@ -1127,6 +1141,12 @@ export async function importLegacyState(input: LegacyImportInput) {
         jurisdiction_tag,
         local_unit,
         level,
+        dem_candidate,
+        rep_candidate,
+        dem_votes,
+        rep_votes,
+        dem_share,
+        rep_share,
         harris_votes,
         trump_votes,
         total_votes,
@@ -1146,6 +1166,12 @@ export async function importLegacyState(input: LegacyImportInput) {
           ${jurisdictionTagForRow({ state: input.stateCode, jurisdictionCode: jurisdictionCode(input.stateCode, county), jurisdictionName: county, level: "county" })},
         ${localUnit},
         'local',
+        'Kamala Harris',
+        'Donald Trump',
+        ${numberOrNull(row.harris)},
+        ${numberOrNull(row.trump)},
+        ${numberOrNull(row.harrisShare)},
+        ${numberOrNull(row.trumpShare)},
         ${numberOrNull(row.harris)},
         ${numberOrNull(row.trump)},
         ${numberOrNull(row.total)},
@@ -1162,6 +1188,12 @@ export async function importLegacyState(input: LegacyImportInput) {
         jurisdiction_name = excluded.jurisdiction_name,
         jurisdiction_tag = excluded.jurisdiction_tag,
         level = excluded.level,
+        dem_candidate = excluded.dem_candidate,
+        rep_candidate = excluded.rep_candidate,
+        dem_votes = excluded.dem_votes,
+        rep_votes = excluded.rep_votes,
+        dem_share = excluded.dem_share,
+        rep_share = excluded.rep_share,
         harris_votes = excluded.harris_votes,
         trump_votes = excluded.trump_votes,
         total_votes = excluded.total_votes,
