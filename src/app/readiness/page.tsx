@@ -457,9 +457,9 @@ export default async function ReadinessPage() {
             <ArrowLeft aria-hidden size={15} />
             Workspace
           </a>
-          <a className="topbar-link" href="/timeline">
+          <a className="topbar-link" href="/evidence">
             <Radar aria-hidden size={15} />
-            Timeline
+            Evidence
           </a>
           <span className="domain">civicresultmaps.org</span>
         </div>

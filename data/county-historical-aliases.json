@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceAuthority": "United States Census Bureau",
+  "description": "Reviewed former county and county-equivalent names/FIPS mapped to current canonical county equivalents for discovery only. One former geography can resolve to multiple current geographies; these records are not vote-allocation crosswalks.",
+  "records": [
+    {
+      "state": "AK",
+      "formerFips": "02270",
+      "formerName": "Wade Hampton Census Area",
+      "successorFips": ["02158"],
+      "relationship": "renamed_and_recoded",
+      "effectiveDate": "2015-07-01",
+      "caveat": "The Census Bureau renamed and recoded Wade Hampton Census Area as Kusilvak Census Area. This discovery alias does not alter reported election geography.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2015/geography-changes.html"
+    },
+    {
+      "state": "SD",
+      "formerFips": "46113",
+      "formerName": "Shannon County",
+      "successorFips": ["46102"],
+      "relationship": "renamed_and_recoded",
+      "effectiveDate": "2015-05-01",
+      "caveat": "The Census Bureau records Shannon County as renamed and recoded to Oglala Lakota County.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2015/geography-changes.html"
+    },
+    {
+      "state": "AK",
+      "formerFips": "02261",
+      "formerName": "Valdez-Cordova Census Area",
+      "successorFips": ["02063", "02066"],
+      "relationship": "split",
+      "effectiveDate": "2019-01-02",
+      "caveat": "Valdez-Cordova Census Area split into Chugach and Copper River Census Areas. Both successors are shown for discovery; no historical election total is allocated between them.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/geography/technical-documentation/county-changes.2010.html"
+    },
+    {
+      "state": "VA",
+      "formerFips": "51515",
+      "formerName": "Bedford city",
+      "successorFips": ["51019"],
+      "relationship": "absorbed",
+      "effectiveDate": "2013-07-01",
+      "caveat": "Bedford changed from an independent city/county equivalent to a town within Bedford County. This is a discovery relationship, not a historical result reallocation.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/geography/technical-documentation/county-changes.2010.html"
+    },
+    {
+      "state": "AK",
+      "formerFips": "02195",
+      "formerName": "Petersburg Census Area",
+      "successorFips": ["02195"],
+      "relationship": "renamed_same_code",
+      "effectiveDate": "2013-01-03",
+      "caveat": "Petersburg Census Area became Petersburg Borough while retaining FIPS 02195 and changing boundaries.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/acs/technical-documentation/table-and-geography-changes/2014/geography-changes.html"
+    },
+    {
+      "state": "AK",
+      "formerFips": "02280",
+      "formerName": "Wrangell-Petersburg Census Area",
+      "successorFips": ["02195", "02275"],
+      "relationship": "split",
+      "effectiveDate": "2008-06-01",
+      "caveat": "Wrangell-Petersburg Census Area was reconstituted as Petersburg Census Area and Wrangell City and Borough. Successors are discovery links only.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/geography/technical-documentation/county-changes.2000.html"
+    },
+    {
+      "state": "AK",
+      "formerFips": "02201",
+      "formerName": "Prince of Wales-Outer Ketchikan Census Area",
+      "successorFips": ["02130", "02198", "02275"],
+      "relationship": "split_and_annexed",
+      "effectiveDate": "2008-05-19",
+      "caveat": "The former census area was divided among Ketchikan Gateway Borough, Prince of Wales-Hyder Census Area, and Wrangell City and Borough. Successors are discovery links only.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/geography/technical-documentation/county-changes.2000.html"
+    },
+    {
+      "state": "AK",
+      "formerFips": "02232",
+      "formerName": "Skagway-Hoonah-Angoon Census Area",
+      "successorFips": ["02105", "02230"],
+      "relationship": "split",
+      "effectiveDate": "2007-06-20",
+      "caveat": "Skagway-Hoonah-Angoon Census Area split into Hoonah-Angoon Census Area and Skagway Municipality. Successors are discovery links only.",
+      "sourceUrl": "https://www.census.gov/programs-surveys/geography/technical-documentation/county-changes.2000.html"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09001",
+      "formerName": "Fairfield County",
+      "successorFips": ["09120", "09140", "09190"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former Fairfield County overlaps Greater Bridgeport, Naugatuck Valley, and Western Connecticut Planning Regions. Results are not transferred by this search relationship.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09003",
+      "formerName": "Hartford County",
+      "successorFips": ["09110", "09140", "09160"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former Hartford County overlaps Capitol, Naugatuck Valley, and Northwest Hills Planning Regions. Results are not transferred by this search relationship.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09005",
+      "formerName": "Litchfield County",
+      "successorFips": ["09140", "09160", "09190"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former Litchfield County overlaps Naugatuck Valley, Northwest Hills, and Western Connecticut Planning Regions. Results are not transferred by this search relationship.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09007",
+      "formerName": "Middlesex County",
+      "successorFips": ["09130"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former Middlesex County maps to Lower Connecticut River Valley Planning Region in the Census county-to-county-subdivision crosswalk.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09009",
+      "formerName": "New Haven County",
+      "successorFips": ["09140", "09170"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former New Haven County overlaps Naugatuck Valley and South Central Connecticut Planning Regions. Results are not transferred by this search relationship.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09011",
+      "formerName": "New London County",
+      "successorFips": ["09130", "09150", "09180"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former New London County overlaps Lower Connecticut River Valley, Northeastern Connecticut, and Southeastern Connecticut Planning Regions. Results are not transferred by this search relationship.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09013",
+      "formerName": "Tolland County",
+      "successorFips": ["09110", "09150"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former Tolland County overlaps Capitol and Northeastern Connecticut Planning Regions. Results are not transferred by this search relationship.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    },
+    {
+      "state": "CT",
+      "formerFips": "09015",
+      "formerName": "Windham County",
+      "successorFips": ["09150", "09180"],
+      "relationship": "replaced_by_planning_regions",
+      "effectiveDate": "2022-01-01",
+      "caveat": "Former Windham County overlaps Northeastern Connecticut and Southeastern Connecticut Planning Regions. Results are not transferred by this search relationship.",
+      "sourceUrl": "https://www2.census.gov/geo/docs/reference/ct_change/ct_cou_to_cousub_crosswalk.txt"
+    }
+  ]
+}

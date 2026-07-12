@@ -18,10 +18,13 @@ import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
+import { candidateNamesForYear } from "@/lib/state-year-results";
 import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, ReviewRowSummary, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
-
 type ResultsExplorerProps = {
   countyLabel: string;
+  electionYear: 2016 | 2020 | 2024;
+  initialFips?: string;
+  initialMapMode?: MapMode;
   equipmentRows: EquipmentRowSummary[];
   indicators: AnalysisIndicator[];
   results: ResultRow[];
@@ -102,6 +105,14 @@ function normalizeName(name: string) {
     .replace(/\s+(County|Parish|Planning Region)$/i, "")
     .replace(/[^a-z0-9]+/gi, "")
     .toUpperCase();
+}
+
+function isDemocraticWinner(winner: string) {
+  return ["Harris", "Biden", "Clinton"].includes(winner);
+}
+
+function isRepublicanWinner(winner: string) {
+  return winner === "Trump";
 }
 
 function featureName(feature: GeoFeature) {
@@ -518,11 +529,11 @@ function countyFill(
 
   const strength = mode === "margin" ? clamp(row.marginPct / 42, 0, 1) : clamp(row.marginPct / 60, 0, 1);
 
-  if (row.winner === "Harris") {
+  if (isDemocraticWinner(row.winner)) {
     return mixColor([191, 219, 254], [29, 78, 216], strength);
   }
 
-  if (row.winner === "Trump") {
+  if (isRepublicanWinner(row.winner)) {
     return mixColor([254, 202, 202], [220, 38, 38], strength);
   }
 
@@ -532,7 +543,10 @@ function countyFill(
 export function ResultsExplorer({
   countyLabel,
   equipmentRows,
+  electionYear,
   indicators,
+  initialFips,
+  initialMapMode,
   results,
   reviewRows,
   selectedState,
@@ -544,7 +558,7 @@ export function ResultsExplorer({
   const [supplementalOverlay, setSupplementalOverlay] = useState<SupplementalMapOverlay | null>(null);
   const [equipmentGeoStatus, setEquipmentGeoStatus] = useState<"error" | "loading" | "ready">("loading");
   const [geoStatus, setGeoStatus] = useState<"error" | "loading" | "ready">("loading");
-  const [mapMode, setMapMode] = useState<MapMode>("winner");
+  const [mapMode, setMapMode] = useState<MapMode>(initialMapMode ?? "winner");
   const [mapPan, setMapPan] = useState<MapPan>({ x: 0, y: 0 });
   const [mapZoom, setMapZoom] = useState(1);
   const [selectedVoteMethod, setSelectedVoteMethod] = useState("in_person_early");
@@ -565,6 +579,7 @@ export function ResultsExplorer({
     startY: number;
   } | null>(null);
   const suppressMapClickRef = useRef(false);
+  const yearCandidates = candidateNamesForYear(electionYear);
 
   const statewideResult = results.find((row) => row.level === "state");
   const stateLevelOnlyResults = results.length > 0 && results.every((row) => row.level === "state");
@@ -577,7 +592,12 @@ export function ResultsExplorer({
   useEffect(() => {
     const controller = new AbortController();
     setGeoStatus("loading");
-    setEquipmentGeoStatus("loading");
+    if (electionYear === 2024) {
+      setEquipmentGeoStatus("loading");
+    } else {
+      setEquipmentFeatures([]);
+      setEquipmentGeoStatus("ready");
+    }
     setSelectedMapName(null);
     setPinnedMapName(null);
     setMapPan({ x: 0, y: 0 });
@@ -609,7 +629,8 @@ export function ResultsExplorer({
       setGeoStatus("ready");
     }
 
-    fetch(`${geoBaseUrl}/${verifiedVotingAreaPath(selectedState)}`, {
+    if (electionYear === 2024) {
+      fetch(`${geoBaseUrl}/${verifiedVotingAreaPath(selectedState)}`, {
       cache: "no-store",
       signal: controller.signal,
     })
@@ -630,12 +651,14 @@ export function ResultsExplorer({
           setEquipmentGeoStatus("error");
         }
       });
+    }
 
     return () => controller.abort();
-  }, [selectedState]);
+  }, [electionYear, selectedState]);
 
   useEffect(() => {
     if (
+      electionYear === 2024 &&
       mapMode !== "equipment" &&
       !stateLevelOnlyResults &&
       (results.length === 0 || geoStatus === "error" || (geoStatus === "ready" && features.length === 0)) &&
@@ -645,13 +668,13 @@ export function ResultsExplorer({
     ) {
       setMapMode("equipment");
     }
-  }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, features.length, geoStatus, mapMode, results.length, stateLevelOnlyResults]);
+  }, [electionYear, equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, features.length, geoStatus, mapMode, results.length, stateLevelOnlyResults]);
 
   useEffect(() => {
     const controller = new AbortController();
     setSupplementalOverlay(null);
 
-    if (selectedState !== "AK") {
+    if (electionYear !== 2024 || selectedState !== "AK") {
       return () => controller.abort();
     }
 
@@ -674,7 +697,7 @@ export function ResultsExplorer({
       });
 
     return () => controller.abort();
-  }, [selectedState]);
+  }, [electionYear, selectedState]);
 
   const resultsByName = useMemo(() => {
     const map = new Map<string, ResultRow>();
@@ -684,6 +707,17 @@ export function ResultsExplorer({
     return map;
   }, [results]);
 
+  useEffect(() => {
+    if (!initialFips) {
+      return;
+    }
+
+    const row = results.find((result) => result.jurisdictionTag === `county:${initialFips}`);
+    if (row) {
+      setSelectedMapName(row.jurisdictionName);
+      setPinnedMapName(row.jurisdictionName);
+    }
+  }, [initialFips, results]);
   const mapResultsByName = useMemo(() => {
     const map = new Map<string, ResultRow>();
     for (const row of mapResults) {
@@ -1104,13 +1138,32 @@ export function ResultsExplorer({
     }
   };
 
+  const updateExplorerUrl = (key: "fips" | "mode", value: string | null) => {
+    const url = new URL(window.location.href);
+    if (value) {
+      url.searchParams.set(key, value);
+    } else {
+      url.searchParams.delete(key);
+    }
+    window.history.replaceState(null, "", url);
+  };
+
+  const selectMapMode = (mode: MapMode) => {
+    setMapMode(mode);
+    updateExplorerUrl("mode", mode);
+  };
+
   const inspectJurisdiction = (name: string) => {
     setSelectedMapName(name);
     setPinnedMapName(name);
+    const row = mapResultsByName.get(normalizeName(name)) ?? resultsByName.get(normalizeName(name));
+    const fips = row?.jurisdictionTag?.match(/^county:(\d{5})$/)?.[1] ?? null;
+    updateExplorerUrl("fips", fips);
   };
 
   const clearPinnedJurisdiction = () => {
     setPinnedMapName(null);
+    updateExplorerUrl("fips", null);
   };
 
   return (
@@ -1149,11 +1202,11 @@ export function ResultsExplorer({
                 data-tour={mode === "method" ? "method-mode-button" : undefined}
                 disabled={
                   (resultGeometryRequiredModes.has(mode as MapMode) && (resultBoundaryGeometryUnavailable || mapResults.length === 0)) ||
-                  (mode === "method" && voteMethodRows.length === 0) ||
-                  (mode === "equipment" && (equipmentRows.length === 0 || !equipmentGeometryAvailable))
+                  (mode === "method" && (electionYear !== 2024 || voteMethodRows.length === 0)) ||
+                  (mode === "equipment" && (electionYear !== 2024 || equipmentRows.length === 0 || !equipmentGeometryAvailable))
                 }
                 key={mode}
-                onClick={() => setMapMode(mode as MapMode)}
+                onClick={() => selectMapMode(mode as MapMode)}
                 type="button"
               >
                 {label}
@@ -1417,10 +1470,10 @@ export function ResultsExplorer({
             <div className="margin-scale-legend" aria-label="Winner margin color scale">
               <div className="margin-scale-bar" aria-hidden />
               <div className="margin-scale-labels">
-                <span>Strong Harris Win</span>
-                <span>Weak Harris Win</span>
-                <span>Weak Trump Win</span>
-                <span>Strong Trump Win</span>
+                <span>Strong {yearCandidates.dem} Win</span>
+                <span>Weak {yearCandidates.dem} Win</span>
+                <span>Weak {yearCandidates.rep} Win</span>
+                <span>Strong {yearCandidates.rep} Win</span>
               </div>
             </div>
           )}
@@ -1468,12 +1521,12 @@ export function ResultsExplorer({
             <>
               <dl className="jurisdiction-stats">
                 <div>
-                  <dt>Harris</dt>
-                  <dd>{(selectedMapResult.votes.Harris ?? 0).toLocaleString()}</dd>
+                  <dt>{yearCandidates.dem}</dt>
+                  <dd>{(selectedMapResult.votes[yearCandidates.dem] ?? 0).toLocaleString()}</dd>
                 </div>
                 <div>
-                  <dt>Trump</dt>
-                  <dd>{(selectedMapResult.votes.Trump ?? 0).toLocaleString()}</dd>
+                  <dt>{yearCandidates.rep}</dt>
+                  <dd>{(selectedMapResult.votes[yearCandidates.rep] ?? 0).toLocaleString()}</dd>
                 </div>
                 <div>
                   <dt>Total</dt>
@@ -1648,8 +1701,8 @@ export function ResultsExplorer({
                     <th>Flags</th>
                     <th>Directional screen</th>
                     <th>Winner</th>
-                    <th>Harris</th>
-                    <th>Trump</th>
+                    <th>{yearCandidates.dem}</th>
+                    <th>{yearCandidates.rep}</th>
                     <th>Total</th>
                     <th>Margin</th>
                     <th>Source</th>
@@ -1716,11 +1769,11 @@ export function ResultsExplorer({
                         )}
                       </td>
                       <td className="benefit-cell" title={benefit.title}>{benefit.label}</td>
-                      <td className={row.winner === "Harris" ? "winner-harris" : "winner-trump"}>
+                      <td className={isDemocraticWinner(row.winner) ? "winner-harris" : "winner-trump"}>
                         {row.winner}
                       </td>
-                      <td className="mono">{(row.votes.Harris ?? 0).toLocaleString()}</td>
-                      <td className="mono">{(row.votes.Trump ?? 0).toLocaleString()}</td>
+                      <td className="mono">{(row.votes[yearCandidates.dem] ?? 0).toLocaleString()}</td>
+                      <td className="mono">{(row.votes[yearCandidates.rep] ?? 0).toLocaleString()}</td>
                       <td className="mono">{row.totalVotes.toLocaleString()}</td>
                       <td className="mono">
                         {row.marginVotes.toLocaleString()} ({row.marginPct.toFixed(2)}%)

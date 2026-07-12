@@ -16,6 +16,7 @@ import {
   listTurnoutRows as uncachedListTurnoutRows,
 } from "./data-access";
 import { listVoteMethodRows as uncachedListVoteMethodRows } from "./vote-methods";
+import { publicApiSchemaVersion } from "./api-version";
 
 export const publicDataRevalidateSeconds = 15 * 60;
 export const publicDataStaleSeconds = 24 * 60 * 60;
@@ -23,8 +24,17 @@ const publicDataCacheNamespace = "public-data-fips-2026-07-11";
 
 export const publicDataCacheHeaders = {
   "Cache-Control": `public, max-age=0, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Expose-Headers": "Content-Disposition, X-Data-Sha256, X-Pagination-Limit, X-Pagination-Offset, X-Release-Id, X-Total-Count",
   "CDN-Cache-Control": `public, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
   "Vercel-CDN-Cache-Control": `public, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
+};
+
+export const publicApiErrorHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Cache-Control": "no-store",
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
 };
 
 export const stateQuery = z
@@ -51,6 +61,31 @@ export function apiEnvelope<T>(data: T, meta: Record<string, unknown> = {}) {
     meta: {
       generatedAt: new Date().toISOString(),
       source: currentDataSource(),
+      releaseId: null,
+      schemaVersion: publicApiSchemaVersion,
+      ...meta,
+    },
+  };
+}
+
+export type PublicApiError = string | {
+  code: string;
+  issues?: Array<{ field: string; message: string }>;
+  message: string;
+};
+
+export function apiErrorEnvelope(
+  error: PublicApiError,
+  meta: Record<string, unknown> = {},
+) {
+  return {
+    data: null,
+    error,
+    meta: {
+      generatedAt: new Date().toISOString(),
+      source: currentDataSource(),
+      releaseId: null,
+      schemaVersion: publicApiSchemaVersion,
       ...meta,
     },
   };

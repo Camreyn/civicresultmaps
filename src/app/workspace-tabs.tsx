@@ -58,10 +58,14 @@ type WorkspaceTabsProps = {
   coverage: CoverageSummary | null;
   countyLabel: string;
   electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
+  electionYear: 2016 | 2020 | 2024;
   electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
   sourceRecordsRequests: SourceRecordsRequestOperationSummary;
   equipmentRows: EquipmentRowSummary[];
   historicalRows: HistoricalResultRowSummary[];
+  initialFips?: string;
+  initialMapMode?: "winner" | "margin" | "volume" | "method" | "equipment";
+  initialTab?: string;
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
   reviewRows: ReviewRowSummary[];
@@ -2397,10 +2401,14 @@ export function WorkspaceTabs({
   electronicIntegrityStatus,
   electronicIntegrityRequests,
   sourceRecordsRequests,
+  electionYear,
   coverage,
   countyLabel,
   equipmentRows,
   historicalRows,
+  initialFips,
+  initialMapMode,
+  initialTab,
   importRuns,
   indicators,
   reviewRows,
@@ -2414,7 +2422,10 @@ export function WorkspaceTabs({
   turnoutRows,
   voteMethodRows,
 }: WorkspaceTabsProps) {
-  const [activeTab, setActiveTab] = useState<TabKey>("map");
+  const requestedTab = initialTab && tabs.some((item) => item.key === initialTab)
+    ? initialTab as TabKey
+    : "map";
+  const [activeTab, setActiveTab] = useState<TabKey>(requestedTab);
   const [copiedElectronicDraft, setCopiedElectronicDraft] = useState(false);
   const [copiedSourceRecordsDraft, setCopiedSourceRecordsDraft] = useState(false);
   const [enabledScreeningGraphs, setEnabledScreeningGraphs] = useState<ScreeningGraphType[]>([
@@ -2448,9 +2459,18 @@ export function WorkspaceTabs({
   const selectTab = (tab: TabKey) => {
     setActiveTab(tab);
     const url = new URL(window.location.href);
+    if (tab !== "map") {
+      url.searchParams.set("year", "2024");
+      url.searchParams.delete("mode");
+      url.searchParams.delete("fips");
+    }
     url.searchParams.set("state", selectedStateCode);
     url.searchParams.set("tab", tab);
-    window.history.replaceState(null, "", url);
+    if (tab === activeTab) {
+      window.history.replaceState(null, "", url);
+      return;
+    }
+    window.location.assign(url);
   };
 
   const syncReviewTourStep = (step: TourStep) => {
@@ -3525,8 +3545,11 @@ export function WorkspaceTabs({
           <div className="content-grid">
             <ResultsExplorer
               countyLabel={countyLabel}
+              electionYear={electionYear}
               equipmentRows={equipmentRows}
               indicators={indicators}
+              initialFips={initialFips}
+              initialMapMode={initialMapMode}
               results={results}
               reviewRows={reviewRows}
               selectedState={selectedStateCode}

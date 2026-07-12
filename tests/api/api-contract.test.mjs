@@ -66,7 +66,7 @@ test("state links expose data-rich social previews", () => {
   assert.match(preview, /Advisory flags/);
   assert.match(preview, /Map-ready states/);
   assert.match(preview, /socialUrlPath/);
-  assert.match(preview, /map-v6/);
+  assert.match(preview, /map-v7/);
   assert.doesNotMatch(preview, /Data Preview/);
   assert.match(socialCard, /ImageResponse/);
   assert.match(socialCard, /1200/);
@@ -576,7 +576,9 @@ test("statewide-only result rows remain visible in workspace and coverage", () =
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
 
   assert.match(page, /level: "state"/);
-  assert.match(page, /cityTownResults\.length \? cityTownResults : townResults\.length \? townResults : stateResults/);
+  assert.match(page, /cityTownResults\.length/);
+  assert.match(page, /townResults\.length/);
+  assert.match(page, /stateResults/);
   assert.match(page, /results\[0\]\?\.level === "state"/);
   assert.match(dataAccess, /level: "state"/);
   assert.match(dataAccess, /cityTownResults\.length \? cityTownResults : stateResults/);

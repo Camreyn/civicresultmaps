@@ -395,9 +395,16 @@ export async function listResults(input: {
   level: string;
 }): Promise<ResultRow[]> {
   if (!hasDatabase()) {
-    return seedResults.filter(
-      (row) => row.state === input.state && row.year === input.year && row.level === input.level,
-    );
+    return seedResults
+      .filter(
+        (row) => row.state === input.state && row.year === input.year && row.level === input.level,
+      )
+      .map((row) => ({
+        ...row,
+        jurisdictionTag: row.jurisdictionTag ?? jurisdictionTagForRow({
+          state: row.state, jurisdictionCode: row.jurisdictionCode, jurisdictionName: row.jurisdictionName, level: row.level,
+        }),
+      }));
   }
 
   let rows: Array<{
