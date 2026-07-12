@@ -592,7 +592,7 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff_participating_precinct_export",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
-        "historicalBaselineMode": "official_sos_2020_county_baseline_context",
+        "historicalBaselineMode": "official_sos_2016_2020_county_baseline_context",
         "historicalMode": "official_sos_all_counties_csv_context_2016_2020_2012_missing"
       },
       "caveats": [
@@ -645,7 +645,7 @@
           "sourceTitle": "Tennessee 2024 data coverage and administration source inventory",
           "sourceUrl": "https://sos.tn.gov/elections/results",
           "localFile": "data/tn-2024-data-coverage-inventory.json",
-          "parserHint": "Documents loaded official result/review artifacts, official 2020 historical baseline rows, and remaining state-native turnout, precinct geometry, 2012/2016 historical baseline, audit, CVR, recount, incident, correction, and litigation gaps."
+          "parserHint": "Documents loaded official result/review artifacts and official 2016/2020 historical baseline rows, plus remaining state-native turnout, precinct geometry, 2012 historical baseline, audit, CVR, recount, incident, correction, and litigation gaps."
         },
         "equipmentContext": {
           "sourceTitle": "Verified Voting Verifier Tennessee 2024 equipment context",
@@ -657,6 +657,7 @@
           "sourceTitle": "Tennessee Secretary of State official 2016 and 2020 county presidential PDFs",
           "sourceUrl": "https://sos-tn-gov-files.s3.amazonaws.com/PresidentbyCountyNov2016.pdf; https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf",
           "localFile": "data/tn-2016-president-by-county.pdf; data/tn-2020-general-by-county.pdf; data/tn-historical-presidential-baseline.csv",
+          "level": "county",
           "parserHint": "scripts/normalize-tn-historical-presidential-baseline.mjs extracts official county presidential rows and writes 190 historical baseline rows for 2016 and 2020."
         }
       },
@@ -915,7 +916,7 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_us_house_dropoff_district_based",
         "turnoutMode": "sc_vrems_county_voter_history_warning_required",
-        "historicalBaselineMode": "official_sc_elections_database_2020_county_baseline_context",
+        "historicalBaselineMode": "official_sc_elections_database_2016_2020_county_baseline_context",
         "historicalMode": "official_election_history_county_csv_2016_2020_2012_missing"
       },
       "caveats": [
@@ -994,7 +995,7 @@
         "generatedBundleTotalsReconcile": true,
         "reviewMode": "president_vs_senate_dropoff_precinct_csv",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback",
-        "historicalBaselineMode": "official_sbe_2020_county_or_county_equivalent_context",
+        "historicalBaselineMode": "official_sbe_2016_2020_county_or_county_equivalent_context",
         "historicalMode": "official_sbe_county_2016_precinct_2020_2012_missing"
       },
       "caveats": [
@@ -2805,7 +2806,7 @@
         "reviewMode": "president_vs_senate_county_pdf_rows",
         "turnoutMode": "official_doe_county_turnout_with_eac_benchmark_reconciliation",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized",
-        "historicalBaselineMode": "official_doe_2020_county_presidential_pdf_context",
+        "historicalBaselineMode": "official_doe_2016_2020_county_presidential_pdf_context",
         "historicalMode": "official_doe_pdf_county_2016_2020_2012_missing"
       },
       "caveats": [
@@ -3078,13 +3079,13 @@
         "reviewMode": "president_vs_us_senate_town_reporting_district",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_state_native_leads_collected",
         "adminInventoryStatus": "equipment_context_loaded_audit_cvr_incident_paths_documented_not_normalized",
-        "historicalBaselineMode": "loaded_official_2020_county_aggregate_from_sos_archive_municipality_rows"
+        "historicalBaselineMode": "loaded_official_2016_2020_county_aggregate_from_sos_archive_municipality_rows"
       },
       "caveats": [
         "The official static federal JSON contains a duplicated STATE WIDE summary row; nativeVermontStaticElectionJson excludes it and reconciles the remaining rows to the certified canvass.",
         "U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only.",
         "Active turnout remains EAC fallback. Vermont SOS turnout JSON/PDF artifacts are retained as state-native leads until denominator timing is reviewed.",
-        "County geometry is loaded; town/reporting-district geometry, official historical baselines, and normalized administration-context rows are not loaded."
+        "County geometry and official 2016/2020 county historical baselines are loaded; town/reporting-district geometry, official 2012 historical baselines, and normalized administration-context rows are not loaded."
       ],
       "legacyReferenceBundle": "data/vt-2024-data-coverage-inventory.json"
     },

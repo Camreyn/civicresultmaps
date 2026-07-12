@@ -2,9 +2,9 @@
   "state": "NJ",
   "stateName": "New Jersey",
   "electionYear": 2024,
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-12",
   "checkedBy": "Wave 18 New Jersey state-data worker",
-  "scope": "Loaded official county-level DOE President, U.S. Senate, and turnout rows from statewide PDFs; municipal, historical, geometry, audit, CVR, incident, correction, recount, litigation, and request-path gaps remain documented.",
+  "scope": "Loaded official county-level DOE President, U.S. Senate, turnout, and 2016/2020 historical rows; municipal, 2012 historical, geometry, audit, CVR, incident, correction, recount, litigation, and request-path gaps remain documented.",
   "productionChecked": false,
   "repoDrift": [
     {
@@ -22,6 +22,7 @@
       "resultRows": 21,
       "reviewRows": 21,
       "turnoutRows": 21,
+      "historicalBaselineRows": 42,
       "stateTotal": 4272725,
       "harris": 2220713,
       "trump": 1968215,
@@ -130,19 +131,52 @@
       "caveat": "County geometry is already present for county map joins; municipal geometry/crosswalk is needed before subcounty map overlays."
     },
     "historicalBaselines": {
-      "status": "official_archive_leads_identified_not_loaded",
-      "targetYears": [
-        2020,
+      "status": "loaded_official_2016_2020_county_2012_pending",
+      "loadedYears": [
         2016,
+        2020
+      ],
+      "targetYears": [
+        2016,
+        2020,
         2012
       ],
+      "authority": "New Jersey Department of State, Division of Elections",
       "sourceUrls": [
-        "https://www.nj.gov/state/elections/election-information-2020.shtml",
         "https://www.nj.gov/state/elections/election-information-2016.shtml",
+        "https://www.nj.gov/state/elections/assets/pdf/election-results/2020/2020-official-general-results-president.pdf",
         "https://www.nj.gov/state/elections/election-information-2012.shtml"
       ],
-      "parserNeeded": "Reuse the New Jersey DOE statewide/county PDF normalizer against official presidential result links for 2020, 2016, and 2012.",
-      "caveat": "Historical baseline rows are not loaded; official archive leads should be normalized before secondary sources are considered."
+      "localArtifacts": [
+        "data/nj-2016-county-president-pdfs",
+        "data/nj-2020-official-general-results-president.pdf",
+        "data/nj-historical-presidential-baseline.csv",
+        "data/nj-historical-presidential-baseline-summary.json"
+      ],
+      "parserNormalizationPath": "scripts/normalize-nj-historical-presidential-baseline.mjs -> historicalPresidentialCsv",
+      "reportingGrain": "county",
+      "expectedRows": 42,
+      "jurisdictionTagMode": "All normalized county names resolve uniquely through the canonical county resolver to county:<GEOID> tags",
+      "reconciliation": {
+        "byYear": {
+          "2016": {
+            "countyRows": 21,
+            "demVotes": 2148278,
+            "repVotes": 1601933,
+            "otherVotes": 123835,
+            "totalVotes": 3874046
+          },
+          "2020": {
+            "countyRows": 21,
+            "demVotes": 2608400,
+            "repVotes": 1883313,
+            "otherVotes": 57744,
+            "totalVotes": 4549457
+          }
+        },
+        "combinedTotalVotes": 8423503
+      },
+      "caveats": "Official county historical context only. The 2016 statewide PDF text layer is damaged, so the reproducible normalizer uses the official county President PDFs linked by the state archive page. Official 2012 county baselines remain pending."
     },
     "auditRecountCvrIncidentCorrectionLitigation": {
       "status": "official_audit_links_and_request_paths_documented_not_loaded",
@@ -189,7 +223,7 @@
     "Current New Jersey advisory review rows are county-level only, not municipal or precinct scatter plots.",
     "Municipal President and U.S. Senate PDFs, municipal turnout PDFs, municipal geometry/crosswalks, and non-geographic Federal Overseas/Hand Counts handling remain unnormalized.",
     "State-native DOE turnout is loaded at county grain; the retained reconciliation summary records a 52,335 registered-voter difference versus EAC fallback and zero ballots-cast difference.",
-    "No normalized official 2012/2016/2020 historical baseline rows are loaded.",
+    "Official 2012 county historical baseline rows remain pending; official 2016 and 2020 county rows are loaded.",
     "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
     "All advisory language must remain source-review context, not evidence of fraud or misconduct."
   ]

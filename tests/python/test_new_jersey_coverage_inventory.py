@@ -41,7 +41,7 @@ class NewJerseyCoverageInventoryTests(unittest.TestCase):
 
     def test_inventory_records_official_pdf_package_turnout_delta_and_remaining_gaps(self):
         self.assertEqual(self.inventory["state"], "NJ")
-        self.assertEqual(self.inventory["checkedAt"], "2026-07-03")
+        self.assertEqual(self.inventory["checkedAt"], "2026-07-12")
         self.assertFalse(self.inventory["productionChecked"])
 
         current = self.inventory["currentEtLStatus"]
@@ -49,6 +49,7 @@ class NewJerseyCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(current["expectedRows"]["resultRows"], 21)
         self.assertEqual(current["expectedRows"]["reviewRows"], 21)
         self.assertEqual(current["expectedRows"]["turnoutRows"], 21)
+        self.assertEqual(current["expectedRows"]["historicalBaselineRows"], 42)
 
         findings = self.inventory["officialSourceFindings"]
         self.assertEqual(findings["certifiedPresidentResults"]["status"], "loaded_official_statewide_pdf_county_rows")
@@ -59,7 +60,9 @@ class NewJerseyCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialTotals"]["stateOfficialBallotsCast"], 4321921)
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialTotals"]["officialMinusEacRegisteredVoters"], 52335)
         self.assertEqual(findings["geometryAndCrosswalk"]["status"], "county_geometry_loaded_municipal_geometry_lead_identified_not_loaded")
-        self.assertEqual(findings["historicalBaselines"]["targetYears"], [2020, 2016, 2012])
+        self.assertEqual(findings["historicalBaselines"]["status"], "loaded_official_2016_2020_county_2012_pending")
+        self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2016, 2020])
+        self.assertEqual(findings["historicalBaselines"]["targetYears"], [2016, 2020, 2012])
         self.assertEqual(findings["auditRecountCvrIncidentCorrectionLitigation"]["status"], "official_audit_links_and_request_paths_documented_not_loaded")
         self.assertIn("not evidence of fraud or misconduct", self.inventory["remainingRisks"][-1])
 
@@ -86,10 +89,12 @@ class NewJerseyCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(turnout_status["localFile"], "data/nj-2024-official-turnout-county.csv")
         self.assertEqual(turnout_status["coverage"]["registeredVoters"], 6682699)
         self.assertEqual(admin_nj["audit"]["status"], "candidate")
+        self.assertEqual(native_entry["expected"]["historicalBaselineRows"], 42)
         self.assertEqual(admin_nj["audit"]["localArtifact"], "data/nj-2024-data-coverage-inventory.json")
 
         self.assertEqual(self.request_rows["nj-2024-certified-president-pdfs"]["status"], "statewide_pdf_loaded_municipal_parser_needed")
         self.assertEqual(self.request_rows["nj-2024-turnout-pdfs"]["status"], "statewide_pdf_loaded_municipal_turnout_parser_needed")
+        self.assertEqual(self.request_rows["nj-2024-historical-baselines"]["status"], "loaded_2016_2020_official_county_2012_pending")
         self.assertEqual(self.request_rows["nj-2024-admin-cvr-incident-records"]["status"], "needs_records_request_and_scope_review")
 
 

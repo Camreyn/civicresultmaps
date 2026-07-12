@@ -4,7 +4,7 @@ from civic_etl.pipeline import build_staging_artifact, load_config, validate_con
 
 
 class SouthCarolinaHistoricalPipelineTests(unittest.TestCase):
-    def test_south_carolina_election_history_builds_2020_county_baselines(self):
+    def test_south_carolina_election_history_builds_2016_2020_county_baselines(self):
         config = load_config("etl/state-configs/sc.json")
         report = validate_config(config)
         artifact = build_staging_artifact(config, report)
@@ -12,10 +12,10 @@ class SouthCarolinaHistoricalPipelineTests(unittest.TestCase):
 
         self.assertTrue(report.passed)
         self.assertEqual(native["parser"], "nativeSouthCarolinaElectionHistoryCsv")
-        self.assertEqual(native["metrics"]["nativeHistoricalRows"], 46)
-        self.assertEqual(native["metrics"]["nativeHistoricalYears"], [2020])
-        self.assertEqual(len(native["historicalRows"]), 46)
-        self.assertIn("South Carolina Elections Database", native["metrics"]["nativeHistoricalWarning"])
+        self.assertEqual(native["metrics"]["nativeHistoricalRows"], 92)
+        self.assertEqual(native["metrics"]["nativeHistoricalYears"], [2016, 2020])
+        self.assertEqual(len(native["historicalRows"]), 92)
+        self.assertIn("official Elections Database", native["metrics"]["nativeHistoricalWarning"])
 
         abbeville_2020 = next(
             row

@@ -487,7 +487,7 @@ function profileCaveats(county: CanonicalJurisdiction, history: CountyElectionHi
       ? "Rhode Island Federal Precincts is an intentional non-geographic row and is not allocated to any county profile."
       : "",
     county.fips === "15005"
-      ? "Kalawao County is not separately reported in the official statewide exports; no vote allocation is forced into this profile."
+      ? "Kalawao County presidential rows use the official Hawaii precinct 13-09 assignment to county FIPS 15005. The Hawaii Office turnout table does not report a separate Kalawao denominator."
       : "",
     ...history.filter((row) => !row.available).flatMap((row) => row.caveats),
   ]);

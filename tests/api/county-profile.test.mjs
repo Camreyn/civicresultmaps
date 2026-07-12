@@ -260,3 +260,23 @@ test("Alaska profiles remain unavailable without a reviewed reporting-unit cross
   assert.equal(profile.history.every((row) => !row.available), true);
   assert.equal(profile.caveats.some((caveat) => /no county-equivalent vote allocation is inferred/i.test(caveat)), true);
 });
+
+test("Kalawao profiles preserve the official result assignment without inventing turnout", () => {
+  const county = findCanonicalCountyByFips("15005");
+  assert.ok(county);
+  const profile = buildCountyProfile({
+    county,
+    currentResults: [],
+    equipmentRows: [],
+    historicalRows: [],
+    indicators: [],
+    sources: [],
+    turnoutRows: [],
+    voteMethodRows: [],
+  });
+  const caveats = profile.caveats.join(" ");
+
+  assert.match(caveats, /official Hawaii precinct 13-09 assignment/i);
+  assert.match(caveats, /does not report a separate Kalawao denominator/i);
+  assert.doesNotMatch(caveats, /Kalawao County is not separately reported/i);
+});

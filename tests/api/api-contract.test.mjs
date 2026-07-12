@@ -95,11 +95,15 @@ test("public year-filtered APIs default missing year to 2024", () => {
 
 test("map joins support repository GeoJSON county name variants", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+  const socialCard = readFileSync("src/app/api/social-card/route.tsx", "utf8");
+  const productionValidator = readFileSync("scripts/validate-production-map-joins.mjs", "utf8");
   assert.match(explorer, /county_name/);
   assert.match(explorer, /function featureName/);
   assert.match(explorer, /ak-house-districts\.geojson/);
   assert.match(explorer, /lon - 360/);
-  assert.match(explorer, /KALAWAO/);
+  assert.doesNotMatch(explorer, /state === "HI" && normalizeName\(name\) === "KALAWAO"/);
+  assert.doesNotMatch(socialCard, /state === "HI" && normalizeName\(name\) === "KALAWAO"/);
+  assert.doesNotMatch(productionValidator, /state === "HI" && normalized === "KALAWAO"/);
   assert.match(explorer, /KANSASCITY/);
   assert.match(explorer, /function coordinateBounds/);
   assert.match(explorer, /function longitudeScale/);

@@ -31,7 +31,7 @@ class VermontCoverageInventoryTest(unittest.TestCase):
         self.assertTrue(config.raw["capabilities"]["map"])
         self.assertTrue(config.raw["capabilities"]["turnout"])
         self.assertTrue(config.raw["capabilities"]["historicalBaseline"])
-        self.assertEqual(len(native["historicalRows"]), 14)
+        self.assertEqual(len(native["historicalRows"]), 28)
 
         self.assertEqual(metrics["nativeHarrisVotes"], 235791)
         self.assertEqual(metrics["nativeTrumpVotes"], 119395)
@@ -46,9 +46,9 @@ class VermontCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(metrics["nativeExcludedStatewideSummaryRows"], 2)
         self.assertEqual(metrics["nativeTurnoutParser"], "eacTurnoutCsv")
         self.assertEqual(metrics["nativeTurnoutWarningRows"], 247)
-        self.assertEqual(metrics["nativeHistoricalRows"], 14)
-        self.assertEqual(metrics["nativeHistoricalYears"], [2020])
-        addison_2020 = next(row for row in native["historicalRows"] if row["jurisdictionName"] == "Addison County")
+        self.assertEqual(metrics["nativeHistoricalRows"], 28)
+        self.assertEqual(metrics["nativeHistoricalYears"], [2016, 2020])
+        addison_2020 = next(row for row in native["historicalRows"] if row["electionYear"] == 2020 and row["jurisdictionName"] == "Addison County")
         self.assertEqual(addison_2020["jurisdictionTag"], "county:50001")
         self.assertEqual(addison_2020["demVotes"], 14967)
         self.assertEqual(addison_2020["repVotes"], 6292)
@@ -56,12 +56,12 @@ class VermontCoverageInventoryTest(unittest.TestCase):
 
     def test_inventory_records_resolved_result_blocker_and_remaining_turnout_gap(self):
         self.assertEqual(self.inventory["state"], "VT")
-        self.assertEqual(self.inventory["checkedAt"], "2026-07-09")
+        self.assertEqual(self.inventory["checkedAt"], "2026-07-12")
         self.assertFalse(self.inventory["productionChecked"])
         self.assertFalse(self.inventory["currentEtLStatus"]["turnoutOnly"])
         self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["resultRows"], 14)
         self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["reviewRows"], 283)
-        self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["historicalBaselineRows"], 14)
+        self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["historicalBaselineRows"], 28)
         self.assertEqual(self.inventory["repoDrift"], [])
 
         findings = self.inventory["officialSourceFindings"]
@@ -74,9 +74,9 @@ class VermontCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(findings["stateNativeTurnout"]["observedCanvassRegisteredVoters"], 522600)
         self.assertEqual(findings["stateNativeTurnout"]["activeFallbackTotals"]["ballotsCast"], 361604)
         self.assertEqual(findings["geometryAndCrosswalk"]["status"], "county_geometry_loaded_town_reporting_geometry_missing")
-        self.assertEqual(findings["historicalBaselines"]["status"], "loaded_official_2020_county_aggregate_2016_2012_pending")
-        self.assertEqual(findings["historicalBaselines"]["expectedRows"], 14)
-        self.assertEqual(findings["historicalBaselines"]["reconciliation"]["candidateVotes"], 367428)
+        self.assertEqual(findings["historicalBaselines"]["status"], "loaded_official_2016_2020_county_aggregate_2012_pending")
+        self.assertEqual(findings["historicalBaselines"]["expectedRows"], 28)
+        self.assertEqual(findings["historicalBaselines"]["reconciliation"]["byYear"]["2020"]["candidateVotes"], 367428)
         self.assertIn("county:<GEOID>", findings["historicalBaselines"]["jurisdictionTagMode"])
 
     def test_registries_mark_vermont_native_results_loaded(self):
@@ -92,9 +92,9 @@ class VermontCoverageInventoryTest(unittest.TestCase):
 
         self.assertIn("VT", native["completedNativeStates"])
         self.assertFalse(any(row["state"] == "VT" for row in native.get("sourceDiscoveryQueue", [])))
-        self.assertEqual(package["nativeReadiness"], "complete_county_map_town_district_review_eac_turnout_2020_historical_context")
+        self.assertEqual(package["nativeReadiness"], "complete_county_map_town_district_review_eac_turnout_historical_2016_2020")
         self.assertEqual(package["expected"]["localReviewRows"], 283)
-        self.assertEqual(package["expected"]["historicalBaselineRows"], 14)
+        self.assertEqual(package["expected"]["historicalBaselineRows"], 28)
         self.assertIn("historicalBaseline", package["artifacts"])
         self.assertEqual(tier["confidence"], "loaded_with_caveat")
         self.assertIn("official SOS static JSON", tier["exportFormats"])
@@ -110,7 +110,7 @@ class VermontCoverageInventoryTest(unittest.TestCase):
         self.assertEqual(self.requests["vt-2024-same-grain-us-senate"]["status"], "loaded_reconciled_static_json")
         self.assertIn("283 town/reporting-district rows", self.requests["vt-2024-same-grain-us-senate"]["expected_rows_or_totals"])
         self.assertEqual(self.requests["vt-2024-state-native-turnout"]["status"], "official_pdf_json_identified_not_loaded")
-        self.assertEqual(self.requests["vt-2024-historical-baselines"]["status"], "loaded_2020_official_county_aggregate_2016_2012_pending")
+        self.assertEqual(self.requests["vt-2024-historical-baselines"]["status"], "loaded_official_2016_2020_county_aggregate_2012_pending")
         self.assertIn("county:<GEOID>", self.requests["vt-2024-historical-baselines"]["expected_rows_or_totals"])
         self.assertIn("522600", self.requests["vt-2024-state-native-turnout"]["confidence_notes"])
         self.assertIn("evidence of fraud or misconduct", self.requests["vt-2024-audit-recount-cvr-incident-records"]["caveats"])

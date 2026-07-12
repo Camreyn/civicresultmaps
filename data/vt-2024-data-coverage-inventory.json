@@ -2,7 +2,7 @@
   "state": "VT",
   "stateName": "Vermont",
   "electionYear": 2024,
-  "checkedAt": "2026-07-09",
+  "checkedAt": "2026-07-12",
   "productionChecked": false,
   "repoDrift": [],
   "currentEtLStatus": {
@@ -13,7 +13,7 @@
       "resultRows": 14,
       "reviewRows": 283,
       "turnoutRows": 247,
-      "historicalBaselineRows": 14
+      "historicalBaselineRows": 28
     },
     "capabilities": {
       "certifiedResults": true,
@@ -107,38 +107,51 @@
       "notes": "The SOS results page identifies 2024 audit results and recount results for House District Bennington-1 and House District Windsor-3. No normalized audit, CVR availability, incident, correction, or litigation rows are loaded."
     },
     "historicalBaselines": {
-      "status": "loaded_official_2020_county_aggregate_2016_2012_pending",
+      "status": "loaded_official_2016_2020_county_aggregate_2012_pending",
       "loadedYears": [
+        2016,
         2020
       ],
       "targetYears": [
-        2020,
         2016,
+        2020,
         2012
       ],
-      "authority": "Vermont Secretary of State",
+      "authority": "Vermont Secretary of State Elections Division",
       "sourceUrls": [
-        "https://electionarchive.vermont.gov/elections/view/144513/",
+        "https://electionarchive.vermont.gov/elections/download/82048/precincts_include:0/",
         "https://electionarchive.vermont.gov/elections/download/144513/precincts_include:0/"
       ],
       "localArtifacts": [
-        "data/vt-2020-president-municipality-results.xls",
-        "data/vt-historical-presidential-baseline.csv"
+        "data/vt-2016-president-municipality-results.csv",
+        "data/vt-2020-president-municipality-results.csv",
+        "data/vt-historical-presidential-baseline.csv",
+        "data/vt-historical-presidential-baseline-summary.json"
       ],
-      "parserNormalizationPath": "scripts/collect-vt-historical-baseline.mjs -> historicalPresidentialCsv via etl/state-configs/vt.json historicalBaselines.sourceId=vt-historical-presidential-baseline",
-      "reportingGrain": "county aggregate from 246 official 2020 municipality rows using the official Vermont 2024 static manifest town-to-county crosswalk",
-      "expectedRows": 14,
+      "parserNormalizationPath": "scripts/normalize-vt-historical-presidential-baseline.mjs -> historicalPresidentialCsv",
+      "reportingGrain": "county aggregates from official 2016 and 2020 municipality CSV downloads using the official Vermont manifest town-to-county crosswalk plus reviewed abbreviation aliases",
+      "expectedRows": 28,
       "jurisdictionTagMode": "county:<GEOID> tags from data/vt-counties.geojson, e.g. county:50001 through county:50027",
       "reconciliation": {
-        "municipalityRowsAggregated": 246,
-        "countyRows": 14,
-        "bidenVotes": 242820,
-        "trumpVotes": 112704,
-        "otherCandidateAndWriteInVotes": 11904,
-        "candidateVotes": 367428,
-        "totalVotesCastIncludingBlanksSpoiled": 370968
+        "byYear": {
+          "2016": {
+            "countyRows": 14,
+            "demVotes": 178573,
+            "repVotes": 95369,
+            "otherVotes": 41125,
+            "candidateVotes": 315067
+          },
+          "2020": {
+            "countyRows": 14,
+            "demVotes": 242820,
+            "repVotes": 112704,
+            "otherVotes": 11904,
+            "candidateVotes": 367428
+          }
+        },
+        "combinedCandidateVotes": 682495
       },
-      "caveats": "County historical context only. The source export is official SOS municipality-level data; county rows are reproducible aggregates using the official manifest county crosswalk. Essex uses the pre-2022 municipality label and maps safely to Chittenden County. 2016 and 2012 official baseline rows remain pending."
+      "caveats": "County historical context only. Official municipality rows are reproducibly aggregated with the official manifest crosswalk and reviewed aliases; Essex uses the pre-2022 municipality label and maps safely to Chittenden County. Official 2012 county baselines remain pending."
     }
   },
   "officialEndpointChecks": [
@@ -163,15 +176,15 @@
     }
   ],
   "displayPathStatus": {
-    "staging": "VT staging emits 14 county President result rows, 283 town/reporting-district President-versus-U.S.-Senate review rows, 247 EAC fallback turnout rows, and 14 official 2020 county historical baseline rows.",
+    "staging": "VT staging emits 14 county President result rows, 283 town/reporting-district President-versus-U.S.-Senate review rows, 247 EAC fallback turnout rows, and 28 official 2016/2020 county historical baseline rows.",
     "apiWebsite": "No production promotion was performed. Production reflection was not checked.",
-    "capabilityDecision": "certifiedResults, reviewGraphs, county map, turnout, and 2020 historicalBaseline are enabled; state-native turnout replacement remains blocked on denominator review, and 2016/2012 historical rows remain pending."
+    "capabilityDecision": "certifiedResults, reviewGraphs, county map, turnout, and 2016/2020 historicalBaseline are enabled; state-native turnout replacement remains blocked on denominator review, and 2012 historical rows remain pending."
   },
   "requestMatrixArtifact": "data/vt-2024-source-request-matrix.tsv",
   "remainingRisks": [
     "State-native turnout replacement remains blocked because SOS JSON registered voters, certified canvass registered voters, and EAC fallback registered voters differ.",
     "Town/reporting-district geometry is not loaded, so subcounty map overlays remain unavailable even though county result map rows are active.",
-    "Official 2016 and 2012 historical baselines are not normalized yet; 2020 is loaded from official SOS municipality rows aggregated to county.",
+    "Official 2012 county historical baselines remain pending; official 2016 and 2020 municipality rows are loaded as reproducible county aggregates.",
     "Audit, recount, CVR availability, incident, correction, and litigation records are not normalized; these gaps are source-coverage limitations only and are not evidence of fraud or misconduct."
   ]
 }

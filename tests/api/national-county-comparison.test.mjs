@@ -131,6 +131,32 @@ test("direction, state, FIPS, name, and alias filtering stay canonical", () => {
   assert.deepEqual(byFips.rows.map((row) => row.jurisdictionTag), ["county:01003"]);
 });
 
+test("Kalawao comparisons caveat only a genuinely missing year", () => {
+  const kalawaoReference = [{
+    aliases: ["Kalawao"],
+    caveat: "",
+    displayName: "Kalawao County",
+    fips: "15005",
+    jurisdictionTag: "county:15005",
+    state: "HI",
+  }];
+  const completeFrom = dataset(2020, [
+    { fips: "15005", jurisdictionTag: "county:15005", snapshot: snapshot(2020, 23, 1, 24), state: "HI" },
+  ]);
+  const completeTo = dataset(2024, [
+    { fips: "15005", jurisdictionTag: "county:15005", snapshot: snapshot(2024, 15, 3, 18), state: "HI" },
+  ]);
+
+  const complete = buildNationalCountyComparison({ from: completeFrom, references: kalawaoReference, state: "HI", to: completeTo });
+  assert.doesNotMatch(complete.coverage.caveats.join(" "), /Kalawao County/);
+
+  const missing = buildNationalCountyComparison({ from: dataset(2020, []), references: kalawaoReference, state: "HI", to: completeTo });
+  const caveats = missing.coverage.caveats.join(" ");
+  assert.match(caveats, /official Hawaii precinct 13-09 assignment/i);
+  assert.match(caveats, /missing comparison year is not inferred or allocated/i);
+  assert.doesNotMatch(caveats, /not separately reported in the official Hawaii exports/i);
+});
+
 test("confidence classification distinguishes exact, derived, proxy, and partial paths", () => {
   const base = {
     demVotes: 50,

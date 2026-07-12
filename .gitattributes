@@ -1,0 +1,42 @@
+# Keep byte-hashed Connecticut inputs and generated artifacts stable across platforms.
+/data/ct-2024-ems-election-91-version-80741/Lookupdata.json text eol=lf
+/data/ct-2024-ems-election-91-version-80741/stateVotes_Electiondata.json text eol=lf
+/data/ct-2024-ems-election-91-version-80741/townVotes_Electiondata.json text eol=lf
+/data/ct-current-planning-region-crosswalk.csv text eol=lf
+/data/ct-2024-statement-of-vote-president-town.csv text eol=lf
+/data/ct-2024-statement-of-vote-president-reconciliation.json text eol=lf
+
+# Preserve official Missouri source bytes while keeping canonical outputs deterministic.
+/data/mo-2024-general-president.csv text eol=crlf
+/data/mo-2024-general-senate.csv text eol=crlf
+/data/mo-2024-general-turnout.csv text eol=crlf
+/data/mo-historical-presidential-baseline.csv text eol=crlf
+/data/mo-2024-general-president-county.csv text eol=lf
+/data/mo-2024-general-senate-county.csv text eol=lf
+/data/mo-2024-general-turnout-county.csv text eol=lf
+/data/mo-historical-presidential-county-baseline.csv text eol=lf
+
+# Keep Oklahoma historical normalization inputs and outputs byte-stable.
+/data/ok-counties.geojson text eol=lf
+/data/ok-historical-presidential-baseline.csv text eol=lf
+/data/ok-historical-presidential-baseline-summary.json text eol=lf
+
+# Keep Tennessee historical normalized artifacts on the normalizer's LF contract.
+/data/tn-historical-presidential-baseline.csv text eol=lf
+/data/tn-historical-presidential-baseline-summary.json text eol=lf
+
+# Keep combined historical baseline artifacts on their normalizers' LF contract.
+/data/de-historical-presidential-baseline.csv text eol=lf
+/data/de-historical-presidential-baseline-summary.json text eol=lf
+/data/nj-historical-presidential-baseline.csv text eol=lf
+/data/nj-historical-presidential-baseline-summary.json text eol=lf
+/data/md-historical-presidential-baseline.csv text eol=lf
+/data/md-historical-presidential-baseline-summary.json text eol=lf
+/data/mt-historical-presidential-baseline.csv text eol=lf
+/data/mt-historical-presidential-baseline-summary.json text eol=lf
+/data/sc-historical-presidential-baseline.csv text eol=lf
+/data/sc-historical-presidential-baseline-summary.json text eol=lf
+/data/vt-historical-presidential-baseline.csv text eol=lf
+/data/vt-historical-presidential-baseline-summary.json text eol=lf
+/data/wa-historical-presidential-baseline.csv text eol=lf
+/data/wa-historical-presidential-baseline-summary.json text eol=lf

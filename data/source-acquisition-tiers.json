@@ -526,9 +526,7 @@
         "DOE AGP state-native registered/voted reconciliation lead",
         "county geometry",
         "supplemental county equipment context",
-        "official 2020 county presidential historical baseline rows",
-        "official 2016 county presidential historical baselines",
-        "official 2020 county presidential historical baselines"
+        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags"
       ],
       "missingFields": [
         "active state-native turnout replacement",
@@ -1738,9 +1736,7 @@
         "official county-by-county municipal U.S. Senate comparison rows identified as follow-up source leads",
         "official 2012/2016/2020 historical archive source leads",
         "official 2024 county post-election audit PDF links and county-official request paths",
-        "official 2020 county presidential historical baseline rows with county:<GEOID> jurisdiction tags",
-        "official 2016 county presidential historical baselines",
-        "official 2020 county presidential historical baselines"
+        "official 2016 and 2020 county presidential historical baseline rows that resolve to canonical county:<GEOID> tags"
       ],
       "missingFields": [
         "loaded municipal President-versus-U.S.-Senate review rows",
@@ -2340,7 +2336,6 @@
         "EAC fallback turnout rows",
         "county geometry",
         "county equipment context from Verified Voting Verifier",
-        "official 2020 county presidential historical baseline rows",
         "official 2016 and 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
@@ -2543,8 +2538,7 @@
         "certified canvass PDF retained as source-of-record reconciliation artifact",
         "county geometry",
         "equipment context",
-        "official 2020 county historical presidential baseline rows aggregated from SOS municipality export",
-        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags"
+        "official 2016 and 2020 county presidential historical baseline rows aggregated from SOS municipality exports with county:<GEOID> tags"
       ],
       "missingFields": [
         "state-native turnout importer replacing EAC fallback",
@@ -2555,8 +2549,8 @@
       "parserStatus": "nativeVermontStaticElectionJson loads 14 county President rows and 283 town/reporting-district President-versus-U.S.-Senate review rows from official SOS static JSON after excluding the duplicated STATE WIDE summary row and reconciling to certified canvass totals; active turnout remains EAC fallback.; scripts/normalize-vt-historical-presidential-baseline.mjs loads official 2016/2020 archive CSV baselines.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "County result and town/reporting-district review rows are active and source-reconciled. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Active turnout remains EAC fallback because SOS JSON, SOS canvass cover-page, and EAC registered-voter totals differ. Town/reporting-district geometry, historical baselines, and normalized administration-context rows remain missing.",
-      "nextAction": "Resolve SOS turnout denominator timing before replacing EAC fallback; collect town/reporting-district geometry, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation context."
+      "caveats": "County result and town/reporting-district review rows are active and source-reconciled. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Active turnout remains EAC fallback because SOS JSON, SOS canvass cover-page, and EAC registered-voter totals differ. Official 2016 and 2020 county historical baselines are loaded; town/reporting-district geometry, official 2012 baselines, and normalized administration-context rows remain missing.",
+      "nextAction": "Resolve SOS turnout denominator timing before replacing EAC fallback; collect town/reporting-district geometry, the official 2012 county historical baseline, and normalized audit/CVR/recount/incident/correction/litigation context."
     },
     {
       "state": "WA",
@@ -2585,7 +2579,6 @@
         "county presidential totals",
         "participating precinct review rows",
         "county turnout fallback",
-        "official 2020 county presidential historical baseline rows",
         "official 2016 and 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
@@ -2596,7 +2589,7 @@
       ],
       "parserStatus": "native participating precinct review package loaded; scripts/normalize-wa-historical-presidential-baseline.mjs downloads official 2016 and 2020 all-counties CSV exports and writes 78 historicalPresidentialCsv county baseline rows",
       "manualReviewBurden": "medium",
-      "confidence": "partial_with_2020_historical_loaded",
+      "confidence": "partial_with_2016_2020_historical_loaded",
       "caveats": "Participating precinct export is 5,309 presidential votes below certified county totals. Official 2016 and 2020 county presidential historical baselines are loaded from all-counties CSV exports; 2012 remains missing.",
       "nextAction": "Identify whether a complete statewide precinct package exists or keep participating-export caveat; collect state-native turnout denominator, precinct geometry, 2012 historical baseline, and administration-context artifacts."
     },

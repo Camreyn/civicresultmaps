@@ -362,7 +362,7 @@ class PipelineTests(unittest.TestCase):
 
         self.assertTrue(report.passed)
         self.assertEqual(artifact["native"]["parser"], "nativeIllinoisElectionResultsByOfficeCsvDirectory")
-        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 108)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 102)
         self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 5649779)
         self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 2449079)
         self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 3062863)
@@ -699,18 +699,18 @@ class PipelineTests(unittest.TestCase):
 
         self.assertTrue(report.passed)
         self.assertEqual(artifact["native"]["parser"], "nativeMissouriCountyPresidentCsv")
-        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 116)
+        self.assertEqual(artifact["native"]["metrics"]["nativeResultRows"], 115)
         self.assertEqual(artifact["native"]["metrics"]["nativeResultTotalVotes"], 2995327)
         self.assertEqual(artifact["native"]["metrics"]["nativeTrumpVotes"], 1751986)
         self.assertEqual(artifact["native"]["metrics"]["nativeHarrisVotes"], 1200599)
         self.assertEqual(artifact["native"]["metrics"]["nativeOtherVotes"], 42742)
-        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 116)
-        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 116)
+        self.assertEqual(artifact["native"]["metrics"]["nativeReviewRows"], 115)
+        self.assertEqual(artifact["native"]["metrics"]["nativeComparisonRows"], 115)
         self.assertEqual(artifact["native"]["metrics"]["nativeComparisonContest"], "United States Senator")
-        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 116)
+        self.assertEqual(artifact["native"]["metrics"]["nativeTurnoutRows"], 115)
         self.assertEqual(artifact["native"]["metrics"]["nativeBallotsCast"], 2995376)
         self.assertEqual(artifact["native"]["metrics"]["nativeRegisteredVoters"], 4433383)
-        self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalRows"], 348)
+        self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalRows"], 345)
         self.assertEqual(artifact["native"]["metrics"]["nativeHistoricalYears"], [2012, 2016, 2020])
         boone_turnout = next(row for row in artifact["native"]["turnoutRows"] if row["county"] == "Boone County")
         self.assertEqual(boone_turnout["ballotsCast"], 90110)
@@ -1698,8 +1698,8 @@ class PipelineTests(unittest.TestCase):
 
         self.assertEqual(status, 0)
         staged_files = list(tmp.glob("*-2024-staging.json"))
-        self.assertEqual(len(staged_files), 50)
-        for state in ["ak", "az", "ga", "mi", "mn", "nc", "nv", "oh", "pa", "sc", "wa", "wi", "wy"]:
+        self.assertEqual(len(staged_files), 51)
+        for state in ["ak", "az", "dc", "ga", "mi", "mn", "nc", "nv", "oh", "pa", "sc", "wa", "wi", "wy"]:
             self.assertTrue((tmp / f"{state}-2024-staging.json").exists())
 
 

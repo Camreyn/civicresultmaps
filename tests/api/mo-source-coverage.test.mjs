@@ -109,8 +109,8 @@ test("Missouri registries preserve loaded turnout and historical baselines while
   assert.match(requestSource?.confidence ?? "", /does not load vote, turnout, audit, CVR, or incident rows/);
 
   assert.ok(nativeMo, "MO native package entry is present");
-  assert.match(nativeMo.nativeReadiness, /precinct_file_purchase_blocker/);
-  assert.match(nativeMo.caveats.join("\n"), /source-request-tracker/);
+  assert.match(nativeMo.nativeReadiness, /complete_115_county_fips/);
+  assert.match(nativeMo.caveats.join("\n"), /purchasable\/request-only/);
 
   assert.ok(tierMo, "MO acquisition tier entry is present");
   assert.match(tierMo.missingFields.join("\n"), /precinct boundary geometry/);

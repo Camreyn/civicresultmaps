@@ -122,9 +122,6 @@ function featureName(feature: GeoFeature) {
 }
 
 function resultNameForFeature(state: string, name: string) {
-  if (state === "HI" && normalizeName(name) === "KALAWAO") {
-    return "Maui";
-  }
   if (state === "MS" && normalizeName(name) === "JEFFERSONDAVIS") {
     return "Jeff Davis County";
   }

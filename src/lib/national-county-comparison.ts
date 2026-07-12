@@ -353,7 +353,7 @@ function missingTagCaveats(input: {
   if (scopeIncludes("HI")) {
     const kalawao = input.references.find((row) => row.jurisdictionTag === "county:15005");
     if (kalawao && (lacksComparableSnapshot(input.fromMap, kalawao.jurisdictionTag) || lacksComparableSnapshot(input.toMap, kalawao.jurisdictionTag))) {
-      caveats.push("Kalawao County is not separately reported in the official Hawaii exports; no allocation is forced.");
+      caveats.push("Kalawao County presidential rows use the official Hawaii precinct 13-09 assignment to county FIPS 15005; a missing comparison year is not inferred or allocated.");
     }
   }
 
