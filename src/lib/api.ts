@@ -20,7 +20,7 @@ import { publicApiSchemaVersion } from "./api-version";
 
 export const publicDataRevalidateSeconds = 15 * 60;
 export const publicDataStaleSeconds = 24 * 60 * 60;
-const publicDataCacheNamespace = "public-data-fips-2026-07-11";
+const publicDataCacheNamespace = "public-data-historical-advisory-2026-07-12";
 
 export const publicDataCacheHeaders = {
   "Cache-Control": `public, max-age=0, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
