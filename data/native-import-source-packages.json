@@ -760,7 +760,7 @@
       "state": "NC",
       "name": "North Carolina",
       "priority": 6,
-      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_state_native_denominator_lead_historical_2020_historical_review_2016_not_evaluated",
+      "nativeReadiness": "complete_county_map_real_precinct_review_eac_turnout_state_native_denominator_lead_historical_2016_2020_historical_review",
       "authority": "North Carolina State Board of Elections; U.S. Election Assistance Commission; U.S. Census Bureau",
       "configFile": "etl/state-configs/nc.json",
       "legacyReferenceBundle": "data/nc-app-data.js",
@@ -801,13 +801,12 @@
           "parserHint": "Run npm run etl:collect:nc:historical to aggregate official NCSBE 2012, 2016, and 2020 US President rows to 300 county historicalPresidentialCsv baseline rows."
         },
         "historicalReviewRows": {
-          "sourceTitle": "North Carolina State Board of Elections official 2020 general precinct President and U.S. Senate results",
-          "sourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip",
-          "localFile": "data/nc-2020-results-precinct.zip; data/nc-2020-historical-review-rows.csv; data/nc-2016-results-precinct.zip",
-          "level": "precinct",
+          "sourceTitle": "North Carolina State Board of Elections official 2016 and 2020 general President and U.S. Senate results",
+          "sourceUrl": "https://www.ncsbe.gov/results-data/election-results/historical-election-results-data",
+          "localFile": "data/nc-2016-results-precinct.zip; data/nc-2020-results-precinct.zip; data/nc-historical-review-rows.csv",
+          "level": "county (2016); precinct (2020)",
           "comparisonContest": "U.S. Senate",
-          "parserHint": "Run node scripts/normalize-nc-historical-review.mjs. historicalReviewCsv loads 2,662 official county/precinct keys marked Real Precinct=Y across 100 canonical county tags, and exactly reconciles 403 Real Precinct=N administrative keys outside the advisory rows. The same script records 2016 as not evaluated because the official 2016 export has no Real Precinct column and label-based geography inference is not permitted.",
-          "notEvaluated2016SourceUrl": "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2016_11_08/results_pct_20161108.zip"
+          "parserHint": "Run node scripts/normalize-nc-historical-review.mjs. The 2016 path aggregates all 3,209 official reporting-unit keys by the explicit County field into 100 county rows whose presidential tuples exactly match the existing official baseline; it retains one signed -4 write-in source adjustment before final nonnegative reconciliation. The 2020 path remains 2,662 official Real Precinct=Y county/precinct keys and exactly reconciles 403 excluded Real Precinct=N administrative keys."
         },
         "turnoutDenominatorLead": {
           "sourceTitle": "North Carolina State Board of Elections 2024 General voter_stats and history_stats ZIPs",
@@ -826,8 +825,9 @@
         "localReviewRows": 2658,
         "turnoutRows": 100,
         "historicalBaselineRows": 300,
-        "historicalReviewRows": 2662,
+        "historicalReviewRows": 2762,
         "historicalReviewRowsByYear": {
+          "2016": 100,
           "2020": 2662
         }
       },
@@ -837,7 +837,7 @@
         "reviewMode": "president_vs_governor_real_precinct_filter",
         "turnoutMode": "eac_2024_v2_jurisdiction_fallback_with_ncsbe_denominator_history_leads",
         "historicalBaselineMode": "official_ncsbe_precinct_zip_county_aggregates",
-        "historicalReviewMode": "official_2020_real_precinct_y_president_vs_us_senate_2016_not_evaluated"
+        "historicalReviewMode": "official_2016_county_and_2020_real_precinct_y_president_vs_us_senate"
       },
       "caveats": [
         "Certified county totals aggregate all NCSBE reporting units from the official results ZIP.",
@@ -846,7 +846,7 @@
         "Turnout rows remain active EAC 2024 V2 jurisdiction fallback data. Official NCSBE voter_stats_20241105.zip is collected and sums to the same 7,854,464 registered voters as EAC; official history_stats_20241105.zip sums to 5,705,861 voters who participated, which is 50,245 below EAC ballots cast and 18,126 below the NCSBE turnout overview ballots-cast figure, so it is retained as a lead pending semantic review.",
         "Historical baseline rows are official NCSBE county aggregates for context only.",
         "The 2020 historical advisory package contains 2,662 same-grain President-versus-U.S.-Senate rows explicitly marked Real Precinct=Y. Included presidential votes total 3,201,711 and included comparison votes total 3,172,016; 403 Real Precinct=N administrative keys are excluded and reconcile to 2,323,091 presidential votes and 2,302,936 comparison votes.",
-        "North Carolina 2016 is explicitly not evaluated for historical advisory indicators because the official NCSBE export predates the Real Precinct field; administrative units are not inferred from labels.",
+        "The 2016 historical advisory package aggregates all official President and U.S. Senate reporting rows by the explicit County field into 100 county rows and makes no precinct-level claim. All presidential county tuples match the official 2016 baseline; one signed -4 write-in source correction is retained before final nonnegative reconciliation.",
         "Precinct boundary GeoJSON, normalized audit/recount/CVR availability, and incident/correction records remain gaps."
       ]
     },

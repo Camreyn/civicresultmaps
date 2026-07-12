@@ -60,9 +60,9 @@ The 2016 and 2020 rows use official Georgia Secretary of State media exports at 
 
 ### North Carolina
 
-The 2020 rows use the official NCSBE precinct export and include only keys explicitly marked `Real Precinct=Y` in both President and U.S. Senate. Administrative keys marked `N` are reconciled separately and remain in the official county baseline totals, not the precinct advisory dataset.
+The 2016 rows use the official NCSBE export at county grain. Every President and U.S. Senate reporting row is aggregated by the explicit source `County` field into 100 canonical county rows; no precinct or administrative-unit classification is inferred. All 100 presidential county tuples exactly match the existing official 2016 baseline. The source contains one signed `-4` write-in correction row, which is retained before final nonnegative county and statewide reconciliation.
 
-North Carolina 2016 is not evaluated. That official export predates the `Real Precinct` field and mixes geographic and administrative reporting units. CivicResultMaps does not infer geography from names such as absentee, one stop, provisional, or transfer.
+The 2020 rows use the official NCSBE precinct export and include only keys explicitly marked `Real Precinct=Y` in both President and U.S. Senate. Administrative keys marked `N` are reconciled separately and remain in the official county baseline totals, not the precinct advisory dataset.
 
 ## Reproduction and review
 
