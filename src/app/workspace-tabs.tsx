@@ -47,6 +47,7 @@ import type {
   ImportRunSummary,
   ResultRow,
   ReviewRowSummary,
+  SecurityIncidentSummary,
   SourceSummary,
   StateSummary,
   TurnoutRowSummary,
@@ -61,6 +62,7 @@ type WorkspaceTabsProps = {
   electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
   sourceRecordsRequests: SourceRecordsRequestOperationSummary;
   equipmentRows: EquipmentRowSummary[];
+  securityIncidents: SecurityIncidentSummary[];
   historicalRows: HistoricalResultRowSummary[];
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
@@ -2400,6 +2402,7 @@ export function WorkspaceTabs({
   coverage,
   countyLabel,
   equipmentRows,
+  securityIncidents,
   historicalRows,
   importRuns,
   indicators,
@@ -3526,6 +3529,7 @@ export function WorkspaceTabs({
             <ResultsExplorer
               countyLabel={countyLabel}
               equipmentRows={equipmentRows}
+              securityIncidents={securityIncidents}
               indicators={indicators}
               results={results}
               reviewRows={reviewRows}
@@ -5889,6 +5893,10 @@ export function WorkspaceTabs({
                 <strong>{equipmentRows.length.toLocaleString()}</strong>
               </article>
               <article>
+                <span>Security incident rows</span>
+                <strong>{securityIncidents.length.toLocaleString()}</strong>
+              </article>
+              <article>
                 <span>Total votes</span>
                 <strong>{totalVotes.toLocaleString()}</strong>
               </article>
@@ -5927,6 +5935,10 @@ export function WorkspaceTabs({
               <li>
                 <strong>Equipment context</strong>
                 <code>/api/equipment?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+              </li>
+              <li>
+                <strong>Security incidents</strong>
+                <code>/api/security-incidents?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
               </li>
               <li>
                 <strong>Admin source statuses</strong>

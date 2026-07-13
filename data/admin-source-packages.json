@@ -397,8 +397,12 @@
         "why": "Georgia 2024 CVR artifacts have not been inventoried or normalized into this administration context registry yet."
       },
       "incidents": {
-        "status": "needs_data",
-        "why": "Georgia 2024 incident, correction, and litigation artifacts have not been inventoried or normalized into this administration context registry yet."
+        "status": "partial",
+        "sourceUrl": "https://fultoncountyga.gov/-/media/Departments/Registration-and-Elections/Previous-Meetings/BRE-Approved-Minutes/BRE-11524-Approved-Minutes-630p.pdf",
+        "localArtifact": "data/election-security-incident-source-inventory-2024.json",
+        "normalizedArtifact": "data/election-security-incidents-2024.json",
+        "why": "Two official county-level Georgia Election Day bomb-threat disruption rows are normalized for Fulton and DeKalb counties. Statewide incident, correction, recount, and litigation coverage remains incomplete.",
+        "caveat": "Partial official-source incident coverage only. These administration-context rows are separate from results and advisory indicators, are not evidence of fraud or misconduct, and do not establish that counties without rows had no incidents."
       }
     },
     {

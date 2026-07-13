@@ -15,6 +15,7 @@ import {
   listElectronicIntegrityArtifacts,
   listElectronicIntegrityRequests,
   listEquipmentRows,
+  listSecurityIncidents,
   listHistoricalResultRows,
   listImportRuns,
   listIndicators,
@@ -97,6 +98,7 @@ export default async function Home({ searchParams }: HomeProps) {
     historicalRows,
     voteMethodRows,
     equipmentRows,
+    securityIncidents,
     adminSourceStatuses,
     electronicIntegrityArtifacts,
     electronicIntegrityRequests,
@@ -120,6 +122,7 @@ export default async function Home({ searchParams }: HomeProps) {
     listHistoricalResultRows({ state: selectedState, limit: 5000 }),
     listVoteMethodRows({ state: selectedState, year: selectedYear, limit: 20000 }),
     listEquipmentRows({ state: selectedState, year: selectedYear, limit: 20000 }),
+    listSecurityIncidents({ state: selectedState, year: selectedYear, limit: 5000 }),
     listAdminSourceStatuses({ state: selectedState, year: selectedYear }),
     listElectronicIntegrityArtifacts({ state: selectedState, year: selectedYear }),
     listElectronicIntegrityRequests({ state: selectedState, year: selectedYear }),
@@ -236,6 +239,7 @@ export default async function Home({ searchParams }: HomeProps) {
             turnoutRows={turnoutRows}
             voteMethodRows={voteMethodRows}
             equipmentRows={equipmentRows}
+            securityIncidents={securityIncidents}
             adminSourceStatus={adminSourceStatuses.states[0]}
             electronicIntegrityStatus={electronicIntegrityArtifacts.states[0]}
             electronicIntegrityRequests={electronicIntegrityRequests}

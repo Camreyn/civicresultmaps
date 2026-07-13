@@ -16,6 +16,7 @@ import {
   listTurnoutRows as uncachedListTurnoutRows,
 } from "./data-access";
 import { listVoteMethodRows as uncachedListVoteMethodRows } from "./vote-methods";
+import { listSecurityIncidents as uncachedListSecurityIncidents } from "./security-incidents";
 
 export const publicDataRevalidateSeconds = 15 * 60;
 export const publicDataStaleSeconds = 24 * 60 * 60;
@@ -95,6 +96,12 @@ export const listReviewRows = uncachedListReviewRows;
 export const listResults = unstable_cache(
   uncachedListResults,
   [publicDataCacheNamespace, "results"],
+  { revalidate: publicDataRevalidateSeconds },
+);
+
+export const listSecurityIncidents = unstable_cache(
+  uncachedListSecurityIncidents,
+  [publicDataCacheNamespace, "security-incidents"],
   { revalidate: publicDataRevalidateSeconds },
 );
 

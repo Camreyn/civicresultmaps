@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "description": "Nationwide coverage inventory for official 2024 general-election security incident sources. Coverage status is separate from normalized event rows.",
+  "electionYear": 2024,
+  "reportingGrain": "county",
+  "normalizationPath": "src/lib/security-incidents.ts#listSecurityIncidents",
+  "expected": {
+    "configuredStates": 51,
+    "statesWithNormalizedRows": 1,
+    "normalizedEventRows": 2
+  },
+  "caveat": "A needs_data status means no qualifying official county-level event row has been normalized in this registry. It does not establish that no incident occurred. National statements are context only unless they identify a joinable jurisdiction.",
+  "nationalContext": [
+    {
+      "sourceAuthority": "Federal Bureau of Investigation",
+      "sourceTitle": "FBI Statement on Bomb Threats to Polling Locations",
+      "sourceUrl": "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations",
+      "localArtifact": null,
+      "electionYear": 2024,
+      "reportingGrain": "multi-state",
+      "normalizationPath": "inventory_only_no_county_join",
+      "expectedRowCount": null,
+      "acquisitionStatus": "url_verified_local_download_blocked",
+      "confidence": "high_for_national_context_only",
+      "caveat": "The FBI statement confirms bomb threats to polling locations in several states and says none had been determined credible at the time of publication, but it names no state or county. It cannot support a county map row by itself. The official page was verified, but its anti-bot challenge blocked a reproducible local download in this pass."
+    }
+  ],
+  "stateCoverage": [
+    { "state": "AK", "stateName": "Alaska", "status": "needs_data" },
+    { "state": "AL", "stateName": "Alabama", "status": "needs_data" },
+    { "state": "AR", "stateName": "Arkansas", "status": "needs_data" },
+    { "state": "AZ", "stateName": "Arizona", "status": "needs_data" },
+    { "state": "CA", "stateName": "California", "status": "needs_data" },
+    { "state": "CO", "stateName": "Colorado", "status": "needs_data" },
+    { "state": "CT", "stateName": "Connecticut", "status": "needs_data" },
+    { "state": "DC", "stateName": "District of Columbia", "status": "needs_data" },
+    { "state": "DE", "stateName": "Delaware", "status": "needs_data" },
+    { "state": "FL", "stateName": "Florida", "status": "needs_data" },
+    {
+      "state": "GA",
+      "stateName": "Georgia",
+      "status": "partial",
+      "sourceAuthorities": [
+        "Fulton County Board of Registration and Elections",
+        "DeKalb County Police Department"
+      ],
+      "sourceUrls": [
+        "https://fultoncountyga.gov/-/media/Departments/Registration-and-Elections/Previous-Meetings/BRE-Approved-Minutes/BRE-11524-Approved-Minutes-630p.pdf",
+        "https://www.fultoncountyga.gov/news/2024/11/05/voting-hours-extended-at-five-fulton-county-polls",
+        "https://dekalbcountyga.gov/news/dekalb-county-police-find-no-bombs-six-voting-precincts-received-threats"
+      ],
+      "localArtifacts": [
+        "data/ga-2024-election-day-security-fulton-bre-minutes.pdf",
+        "data/ga-2024-election-day-security-fulton.html",
+        "data/ga-2024-election-day-security-dekalb.html"
+      ],
+      "expectedRowCount": 2,
+      "confidence": "high_for_normalized_rows_partial_for_statewide_coverage",
+      "caveat": "Two county-level official records are normalized. This is not a statewide census of all threats, disruptions, corrections, litigation, or related administrative events."
+    },
+    { "state": "HI", "stateName": "Hawaii", "status": "needs_data" },
+    { "state": "IA", "stateName": "Iowa", "status": "needs_data" },
+    { "state": "ID", "stateName": "Idaho", "status": "needs_data" },
+    { "state": "IL", "stateName": "Illinois", "status": "needs_data" },
+    { "state": "IN", "stateName": "Indiana", "status": "needs_data" },
+    { "state": "KS", "stateName": "Kansas", "status": "needs_data" },
+    { "state": "KY", "stateName": "Kentucky", "status": "needs_data" },
+    { "state": "LA", "stateName": "Louisiana", "status": "needs_data" },
+    { "state": "MA", "stateName": "Massachusetts", "status": "needs_data" },
+    { "state": "MD", "stateName": "Maryland", "status": "needs_data" },
+    { "state": "ME", "stateName": "Maine", "status": "needs_data" },
+    { "state": "MI", "stateName": "Michigan", "status": "needs_data" },
+    { "state": "MN", "stateName": "Minnesota", "status": "needs_data" },
+    { "state": "MO", "stateName": "Missouri", "status": "needs_data" },
+    { "state": "MS", "stateName": "Mississippi", "status": "needs_data" },
+    { "state": "MT", "stateName": "Montana", "status": "needs_data" },
+    { "state": "NC", "stateName": "North Carolina", "status": "needs_data" },
+    { "state": "ND", "stateName": "North Dakota", "status": "needs_data" },
+    { "state": "NE", "stateName": "Nebraska", "status": "needs_data" },
+    { "state": "NH", "stateName": "New Hampshire", "status": "needs_data" },
+    { "state": "NJ", "stateName": "New Jersey", "status": "needs_data" },
+    { "state": "NM", "stateName": "New Mexico", "status": "needs_data" },
+    { "state": "NV", "stateName": "Nevada", "status": "needs_data" },
+    { "state": "NY", "stateName": "New York", "status": "needs_data" },
+    { "state": "OH", "stateName": "Ohio", "status": "needs_data" },
+    { "state": "OK", "stateName": "Oklahoma", "status": "needs_data" },
+    { "state": "OR", "stateName": "Oregon", "status": "needs_data" },
+    { "state": "PA", "stateName": "Pennsylvania", "status": "needs_data" },
+    { "state": "RI", "stateName": "Rhode Island", "status": "needs_data" },
+    { "state": "SC", "stateName": "South Carolina", "status": "needs_data" },
+    { "state": "SD", "stateName": "South Dakota", "status": "needs_data" },
+    { "state": "TN", "stateName": "Tennessee", "status": "needs_data" },
+    { "state": "TX", "stateName": "Texas", "status": "needs_data" },
+    { "state": "UT", "stateName": "Utah", "status": "needs_data" },
+    { "state": "VA", "stateName": "Virginia", "status": "needs_data" },
+    { "state": "VT", "stateName": "Vermont", "status": "needs_data" },
+    { "state": "WA", "stateName": "Washington", "status": "needs_data" },
+    { "state": "WI", "stateName": "Wisconsin", "status": "needs_data" },
+    { "state": "WV", "stateName": "West Virginia", "status": "needs_data" },
+    { "state": "WY", "stateName": "Wyoming", "status": "needs_data" }
+  ]
+}
