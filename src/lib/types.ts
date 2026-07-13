@@ -251,6 +251,8 @@ export type EquipmentRowSummary = {
   sourceUrl: string;
 };
 
+export type SecurityAffectedLocationUnit = "polling_location" | "voting_precinct";
+
 export type SecurityIncidentSummary = {
   id: string;
   state: string;
@@ -265,6 +267,7 @@ export type SecurityIncidentSummary = {
   eventTypeLabel: string;
   threatCount: number | null;
   affectedLocations: number | null;
+  affectedLocationUnit: SecurityAffectedLocationUnit;
   disruptionType: string;
   disruptionLabel: string;
   hoursExtended: number | null;
@@ -279,6 +282,68 @@ export type SecurityIncidentSummary = {
   sourceStatus: "official_county_record";
   confidence: "high" | "medium" | "low";
   caveat: string;
+};
+
+export type SecurityAffectedLocationUnitTotal = {
+  countComplete: boolean;
+  documentedCount: number | null;
+  knownCount: number;
+  unit: SecurityAffectedLocationUnit;
+};
+
+export type SecurityIncidentTotals = {
+  affectedLocationCountComplete: boolean;
+  affectedLocationUnits: SecurityAffectedLocationUnitTotal[];
+  affectedLocations: number | null;
+  countyCount: number;
+  documentedThreatCount: number | null;
+  knownAffectedLocations: number | null;
+  knownThreatCount: number;
+  rowCount: number;
+  stateCount: number;
+  threatCountComplete: boolean;
+};
+
+export type SecurityIncidentStateSummary = SecurityIncidentTotals & {
+  state: string;
+  stateName: string;
+};
+
+export type SecurityIncidentCoverageState = {
+  caveat?: string;
+  confidence?: string;
+  expectedRowCount?: number;
+  sourceAuthorities?: string[];
+  sourceUrls?: string[];
+  state: string;
+  stateName: string;
+  status: "partial" | "needs_data";
+};
+
+export type SecurityIncidentNationalContext = {
+  acquiredAt?: string;
+  acquisitionStatus?: string;
+  caveat: string;
+  confidence: string;
+  electionYear: number;
+  expectedRowCount: number | null;
+  localArtifact: string;
+  normalizationPath: string;
+  reportingGrain: string;
+  sha256?: string;
+  sourceAuthority: string;
+  sourceTitle: string;
+  sourceUrl: string;
+};
+
+export type NationalSecurityIncidentReport = {
+  caveat: string;
+  electionYear: number;
+  incidents: SecurityIncidentSummary[];
+  nationalContext: SecurityIncidentNationalContext[];
+  stateCoverage: SecurityIncidentCoverageState[];
+  stateSummaries: SecurityIncidentStateSummary[];
+  totals: SecurityIncidentTotals;
 };
 
 export type AdminSourceFamilyStatus = {

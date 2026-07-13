@@ -1,6 +1,5 @@
 "use client";
 
-import JSZip from "jszip";
 import {
   Activity,
   BarChart3,
@@ -31,6 +30,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
+import { rowsToCsv } from "@/lib/csv";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
 import type {
   AnalysisIndicator,
@@ -1226,12 +1226,8 @@ function summaryValue(value: unknown) {
   return "";
 }
 
-function csvEscape(value: unknown) {
-  return `"${String(value ?? "").replaceAll('"', '""')}"`;
-}
-
 function csvContent(headers: string[], rows: unknown[][]) {
-  return [headers, ...rows].map((row) => row.map(csvEscape).join(" - ")).join(" - ");
+  return rowsToCsv(headers, rows);
 }
 
 function downloadBlob(filename: string, content: BlobPart[], type: string) {
@@ -3465,6 +3461,7 @@ export function WorkspaceTabs({
     downloadTextFile(`${exportSlug}-import-summary.json`, jsonContent(importSummary), "application/json;charset=utf-8");
 
   const exportReviewPackage = async () => {
+    const { default: JSZip } = await import("jszip");
     const zip = new JSZip();
     const readme = [
       `Civic Result Maps review package for ${stateName} (${selectedStateCode}), 2024 President`,

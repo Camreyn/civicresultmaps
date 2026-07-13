@@ -18,6 +18,14 @@ import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
+import { activeMapSelection } from "@/lib/map-selection";
+import {
+  affectedLocationText,
+  securityCountExplanation,
+  securityIncidentSummaryText,
+  summarizeSecurityIncidents,
+  threatCountText,
+} from "@/lib/security-incident-summary";
 import { candidateNamesForYear } from "@/lib/state-year-results";
 import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, ReviewRowSummary, SecurityIncidentSummary, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
 type ResultsExplorerProps = {
@@ -500,10 +508,8 @@ const equipmentPalette = [
   "#9ca3af",
 ];
 const securityLegend = [
+  { color: "#f97316", label: "Loaded official county record" },
   { color: "#2c302e", label: "No official row" },
-  { color: "#fbbf24", label: "1 affected location" },
-  { color: "#f97316", label: "2-5 affected locations" },
-  { color: "#dc2626", label: "6+ affected locations" },
 ] as const;
 
 function methodShare(row: VoteMethodAggregate | undefined) {
@@ -536,33 +542,12 @@ function equipmentFill(row: EquipmentRowSummary | undefined, feature: GeoFeature
   return equipmentPalette[stableHash(label) % equipmentPalette.length];
 }
 
-function securityLocationCount(rows: SecurityIncidentSummary[]) {
-  return rows.reduce((sum, row) => sum + (row.affectedLocations ?? 0), 0);
-}
-
 function securityFill(rows: SecurityIncidentSummary[]) {
-  if (!rows.length) {
-    return "#2c302e";
-  }
-
-  const locations = securityLocationCount(rows);
-  if (locations >= 6) {
-    return "#dc2626";
-  }
-  if (locations >= 2) {
-    return "#f97316";
-  }
-  return "#fbbf24";
+  return rows.length ? "#f97316" : "#2c302e";
 }
 
 function securitySummary(rows: SecurityIncidentSummary[]) {
-  if (!rows.length) {
-    return "No official security incident row";
-  }
-
-  const locations = securityLocationCount(rows);
-  const locationLabel = locations === 1 ? "affected polling location" : "affected polling locations";
-  return `${rows.length} official event row${rows.length === 1 ? "" : "s"}; ${locations} ${locationLabel}`;
+  return securityIncidentSummaryText(rows);
 }
 
 function countyFill(
@@ -1024,8 +1009,11 @@ export function ResultsExplorer({
     ...Array.from(voteMethodByCounty.values()).map((row) => methodShare(row) ?? 0),
   );
 
-  const activeMapName =
-    pinnedMapName ?? selectedMapName ?? (stateLevelOnlyResults ? statewideResult?.jurisdictionName ?? null : null);
+  const activeMapName = activeMapSelection(
+    pinnedMapName,
+    selectedMapName,
+    stateLevelOnlyResults ? statewideResult?.jurisdictionName ?? null : null,
+  );
   const selectedMapResult = activeMapName
     ? mapResultsByName.get(normalizeName(activeMapName)) ?? resultsByName.get(normalizeName(activeMapName))
     : undefined;
@@ -1316,6 +1304,7 @@ export function ResultsExplorer({
   };
 
   const clearPinnedJurisdiction = () => {
+    setSelectedMapName(null);
     setPinnedMapName(null);
     updateExplorerUrl("fips", null);
   };
@@ -1329,7 +1318,7 @@ export function ResultsExplorer({
             <span>
               {activeGeoStatus === "ready"
                 ? mapMode === "security"
-                  ? `${activeFeatures.length} ${activeGeometrySource}, ${securityIncidents.length} official security event rows`
+                  ? `${activeFeatures.length} ${activeGeometrySource}, ${securityIncidents.length} loaded official county records`
                   : indicatorsEvaluated
                     ? `${activeFeatures.length} ${activeGeometrySource}, ${mapIndicators.length} advisory review flags`
                     : `${activeFeatures.length} ${activeGeometrySource}, advisory indicators not evaluated`
@@ -1367,7 +1356,7 @@ export function ResultsExplorer({
             ))}
           </div>
           <div className="map-readout">
-            <strong>{activeMapName ?? "Hover a boundary"}</strong>
+            <strong>{activeMapName ?? "Click or focus a boundary"}</strong>
             <span>{selectedMapReadout}</span>
           </div>
         </div>
@@ -1405,8 +1394,12 @@ export function ResultsExplorer({
           <div className="map-method-control equipment-map-note" data-tour="security-layer">
             <label>Security incidents</label>
             <span>
-              County shading shows partial, official-source Election Day incident records. An absent row does not show
-              that no incident occurred, and these records are not evidence of fraud or misconduct.
+              County shading shows partial, official-source Election Day incident records. Unshaded means no county
+              record is loaded, not that no incident occurred. {securityCountExplanation} These records are not
+              evidence of fraud or misconduct. {" "}
+              <a className="security-national-link" href="/security">
+                View the nationwide map and source report.
+              </a>
             </span>
           </div>
         )}
@@ -1562,6 +1555,7 @@ export function ResultsExplorer({
                 return (
                   <g key={`${selectedState}-${mapMode}-${name}-${featureIndex}`}>
                     <path
+                      aria-pressed={Boolean(isPinned)}
                       aria-label={`${name}${mapMode === "security" ? `, ${securitySummary(countySecurityIncidents)}` : row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
@@ -1582,14 +1576,24 @@ export function ResultsExplorer({
                         }
                         inspectJurisdiction(resultName);
                       }}
-                      onFocus={() => setSelectedMapName(resultName)}
+                      onBlur={() => {
+                        if (!pinnedMapName) setSelectedMapName(null);
+                      }}
+                      onFocus={() => {
+                        if (!pinnedMapName) setSelectedMapName(resultName);
+                      }}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
                           inspectJurisdiction(resultName);
                         }
                       }}
-                      onMouseEnter={() => setSelectedMapName(resultName)}
+                      onMouseEnter={() => {
+                        if (!pinnedMapName) setSelectedMapName(resultName);
+                      }}
+                      onMouseLeave={() => {
+                        if (!pinnedMapName) setSelectedMapName(null);
+                      }}
                       role="button"
                       stroke="#101112"
                       strokeWidth="1"
@@ -1634,7 +1638,7 @@ export function ResultsExplorer({
         </div>
         <div className="map-legend" aria-label="Map legend">
           {mapMode === "security" ? (
-            <div className="equipment-map-legend" aria-label="Affected polling locations legend">
+            <div className="equipment-map-legend" aria-label="Security incident record legend">
               {securityLegend.map((item) => (
                 <span className="equipment-legend-item" key={item.label}>
                   <i aria-hidden style={{ background: item.color }} />
@@ -1685,7 +1689,7 @@ export function ResultsExplorer({
           )}
           {mapMode === "security" && (
             <span className="legend-note">
-              Color intensity shows officially documented affected polling locations, not advisory flags or vote changes.
+              Orange shows a loaded official county record, not a comparable incident count, advisory flag, or vote change.
             </span>
           )}
           {usingSupplementalMap && (
@@ -1714,13 +1718,23 @@ export function ResultsExplorer({
             </Eli5>
           </div>
           <div>
-            <span className="section-label">Selected Jurisdiction</span>
-            <h3>{activeMapName ?? "Select a boundary"}</h3>
+            <div className="drawer-selection-header">
+              <div>
+                <span className="section-label">Selected Jurisdiction</span>
+                <h3>{activeMapName ?? "Select a boundary"}</h3>
+              </div>
+              {pinnedMapName && (
+                <button className="drawer-clear-selection" onClick={clearPinnedJurisdiction} type="button">
+                  <X aria-hidden size={14} />
+                  Clear selection
+                </button>
+              )}
+            </div>
             <p>
               {mapMode === "security"
                 ? selectedMapSecurityIncidents.length
-                  ? `${securitySummary(selectedMapSecurityIncidents)}. Open the official record below for scope and caveats.`
-                  : "No official security incident row is loaded for this county. This does not establish that no incident occurred."
+                  ? `${securitySummary(selectedMapSecurityIncidents)} Open the official record below for scope and caveats.`
+                  : "No official county record is loaded here. This does not establish that no incident occurred."
                 : selectedMapResult
                   ? `${selectedMapResult.winner} won by ${selectedMapResult.marginVotes.toLocaleString()} votes (${selectedMapResult.marginPct.toFixed(2)}%).`
                   : "Click a county, district, or reporting boundary to inspect vote totals, review indicators, and source provenance."}
@@ -1808,19 +1822,18 @@ export function ResultsExplorer({
           )}
           {mapMode === "security" && (
             <div className="drawer-indicators" aria-label="Official security incident records">
+              {selectedMapSecurityIncidents.length > 0 && (
+                <p className="security-count-note">
+                  {securityCountExplanation}
+                </p>
+              )}
               {selectedMapSecurityIncidents.length ? (
                 selectedMapSecurityIncidents.map((incident) => (
                   <article className="drawer-source" key={incident.id}>
                     <strong>{incident.eventTypeLabel} - {incident.eventDate}</strong>
                     <span>{incident.disruptionLabel}</span>
-                    <span>
-                      {incident.affectedLocations === null
-                        ? "Affected polling locations not stated"
-                        : `${incident.affectedLocations} affected polling location${incident.affectedLocations === 1 ? "" : "s"}`}
-                      {incident.threatCount === null
-                        ? "; exact threat count not stated"
-                        : `; ${incident.threatCount} threat${incident.threatCount === 1 ? "" : "s"} documented`}
-                    </span>
+                    <span>{affectedLocationText(summarizeSecurityIncidents([incident]))}</span>
+                    <span>{threatCountText(summarizeSecurityIncidents([incident]))}</span>
                     <span>{incident.sourceAuthority}: {incident.sourceTitle}</span>
                     <span>{incident.caveat}</span>
                     <a href={incident.sourceUrl} rel="noreferrer" target="_blank">

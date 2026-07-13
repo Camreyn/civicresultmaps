@@ -6,8 +6,18 @@ import {
   stateQuery,
   yearQuery,
 } from "@/lib/api";
+import { securityIncidentApiSchemaVersion } from "@/lib/api-version";
+import { summarizeSecurityIncidents } from "@/lib/security-incident-summary";
+
+const securityIncidentCacheHeaders = {
+  ...publicDataCacheHeaders,
+  "Cache-Control": "public, max-age=300",
+  "CDN-Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+  "Vercel-CDN-Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800",
+};
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const { searchParams } = new URL(request.url);
   const state = stateQuery.safeParse(searchParams.get("state") ?? "GA");
   const year = yearQuery.safeParse(searchParams.get("year") ?? "2024");
@@ -17,6 +27,12 @@ export async function GET(request: Request) {
     : null;
 
   if (!state.success || !year.success || limit === null) {
+    console.warn(JSON.stringify({
+      durationMs: Date.now() - startedAt,
+      level: "warning",
+      message: "security_incidents_invalid_query",
+      route: "/api/security-incidents",
+    }));
     return NextResponse.json(
       { error: "Invalid state, year, or limit query." },
       { headers: publicDataCacheHeaders, status: 400 },
@@ -24,22 +40,26 @@ export async function GET(request: Request) {
   }
 
   const rows = await listSecurityIncidents({ state: state.data, year: year.data, limit });
-  const threatCountComplete = rows.length > 0 && rows.every((row) => row.threatCount !== null);
-  const documentedThreatCount = threatCountComplete
-    ? rows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0)
-    : null;
-  const affectedLocations = rows.reduce((sum, row) => sum + (row.affectedLocations ?? 0), 0);
+  const totals = summarizeSecurityIncidents(rows);
+
+  console.log(JSON.stringify({
+    durationMs: Date.now() - startedAt,
+    level: "info",
+    message: "security_incidents_response",
+    route: "/api/security-incidents",
+    rowCount: totals.rowCount,
+    state: state.data,
+    year: year.data,
+  }));
 
   return NextResponse.json(
     apiEnvelope(rows, {
-      affectedLocations,
-      documentedThreatCount,
+      ...totals,
       limit,
-      rowCount: rows.length,
-      threatCountComplete,
+      schemaVersion: securityIncidentApiSchemaVersion,
       caveat:
-        "These are partial, official-source election-administration incident rows. They are separate from results and advisory indicators, are not evidence of fraud or misconduct, and an absent row does not establish that no incident occurred.",
+        "These are partial, official-source election-administration incident rows. Sources may report different affected units, such as polling locations and voting precincts; unlike units remain separate in affectedLocationUnits and are not combined as polling places. The rows are separate from results and advisory indicators, are not evidence of fraud or misconduct, and an absent row does not establish that no incident occurred.",
     }),
-    { headers: publicDataCacheHeaders },
+    { headers: securityIncidentCacheHeaders },
   );
 }

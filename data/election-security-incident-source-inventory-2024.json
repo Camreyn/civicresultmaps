@@ -15,14 +15,16 @@
       "sourceAuthority": "Federal Bureau of Investigation",
       "sourceTitle": "FBI Statement on Bomb Threats to Polling Locations",
       "sourceUrl": "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations",
-      "localArtifact": null,
+      "localArtifact": "data/fbi-2024-bomb-threats-polling-locations.html",
+      "sha256": "b74d999c467bf76a3b748be4d1e96b14f4c395cb083749f9c39697b788e8aa3f",
+      "acquiredAt": "2026-07-13",
       "electionYear": 2024,
       "reportingGrain": "multi-state",
       "normalizationPath": "inventory_only_no_county_join",
       "expectedRowCount": null,
-      "acquisitionStatus": "url_verified_local_download_blocked",
+      "acquisitionStatus": "manual_browser_archive_complete",
       "confidence": "high_for_national_context_only",
-      "caveat": "The FBI statement confirms bomb threats to polling locations in several states and says none had been determined credible at the time of publication, but it names no state or county. It cannot support a county map row by itself. The official page was verified, but its anti-bot challenge blocked a reproducible local download in this pass."
+      "caveat": "The FBI statement confirms bomb threats to polling locations in several states and says none had been determined credible at the time of publication, but it names no state or county. It cannot support a county map row by itself. A manual browser save of the official page was archived on 2026-07-13 after ordinary public access; companion presentation assets are omitted because the HTML contains the full statement and canonical URL."
     }
   ],
   "stateCoverage": [
@@ -56,7 +58,7 @@
       ],
       "expectedRowCount": 2,
       "confidence": "high_for_normalized_rows_partial_for_statewide_coverage",
-      "caveat": "Two county-level official records are normalized. This is not a statewide census of all threats, disruptions, corrections, litigation, or related administrative events."
+      "caveat": "Two county-level official records are normalized. Fulton reports five polling locations, while DeKalb reports six voting precincts; those source units are kept separate and are not summed as polling places. This is not a statewide census of all threats, disruptions, corrections, litigation, or related administrative events."
     },
     { "state": "HI", "stateName": "Hawaii", "status": "needs_data" },
     { "state": "IA", "stateName": "Iowa", "status": "needs_data" },

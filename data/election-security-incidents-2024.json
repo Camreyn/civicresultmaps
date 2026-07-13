@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "description": "Official-source county-level election security incident rows for the November 5, 2024 general election. These rows are administration context and are kept separate from results, turnout, and advisory indicators.",
   "electionYear": 2024,
   "reportingGrain": "county",
@@ -9,7 +9,10 @@
     "stateCount": 1,
     "completeThreatCountRows": 0,
     "knownThreatCountTotal": null,
-    "affectedPollingLocationsTotal": 11
+    "affectedLocationUnitTotals": {
+      "polling_location": 5,
+      "voting_precinct": 6
+    }
   },
   "caveat": "This is a partial official-source registry, not a complete census of Election Day threats. A displayed row documents an official county record; an absent row does not establish that no incident occurred. Incident rows are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
   "incidentRows": [
@@ -27,6 +30,7 @@
       "eventTypeLabel": "Bomb threats",
       "threatCount": null,
       "affectedLocations": 5,
+      "affectedLocationUnit": "polling_location",
       "disruptionType": "temporary_evacuation_and_extended_polling_hours",
       "disruptionLabel": "Temporary evacuations; polling hours extended",
       "hoursExtended": null,
@@ -60,6 +64,7 @@
       "eventTypeLabel": "Bomb threats",
       "threatCount": null,
       "affectedLocations": 6,
+      "affectedLocationUnit": "voting_precinct",
       "disruptionType": "temporary_voting_suspension",
       "disruptionLabel": "Voting temporarily suspended during police sweeps",
       "hoursExtended": null,
