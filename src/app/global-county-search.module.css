@@ -1,0 +1,236 @@
+.search {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  position: relative;
+  z-index: 20;
+}
+
+.label {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.controls {
+  align-items: stretch;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(190px, 1fr) minmax(130px, 180px);
+}
+
+.inputShell {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 9px;
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.inputShell:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.inputShell > svg {
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.inputShell input {
+  background: transparent;
+  border: 0;
+  color: var(--foreground);
+  min-height: 42px;
+  min-width: 0;
+  outline: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.inputShell input::placeholder {
+  color: var(--quiet);
+}
+
+.inputShell input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  padding: 0;
+  width: 28px;
+}
+
+.clear:hover,
+.clear:focus-visible {
+  background: var(--panel-hover);
+  color: var(--foreground);
+  outline: 1px solid var(--accent-line);
+}
+
+.stateLabel {
+  display: grid;
+  gap: 3px;
+}
+
+.stateLabel > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  left: 10px;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  position: absolute;
+  text-transform: uppercase;
+  top: 5px;
+  z-index: 1;
+}
+
+.stateLabel {
+  position: relative;
+}
+
+.stateLabel select {
+  appearance: none;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--foreground);
+  cursor: pointer;
+  min-height: 42px;
+  outline: 0;
+  padding: 14px 30px 2px 10px;
+}
+
+.stateLabel::after {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--muted);
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  right: 12px;
+  top: 20px;
+}
+
+.stateLabel select:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.menu {
+  background: #191c1a;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.48);
+  left: 0;
+  max-height: min(420px, 60vh);
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+}
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 5px;
+}
+
+.menu li {
+  border-radius: 6px;
+}
+
+.menu li + li {
+  margin-top: 2px;
+}
+
+.menu li.active,
+.menu li:hover {
+  background: var(--panel-hover);
+}
+
+.menu li button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--foreground);
+  cursor: pointer;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  min-height: 54px;
+  padding: 8px 10px;
+  text-align: left;
+  width: 100%;
+}
+
+.menu li button:focus-visible {
+  outline: 1px solid var(--accent);
+}
+
+.menu li button > span {
+  display: grid;
+  gap: 3px;
+}
+
+.menu strong {
+  font-size: 14px;
+}
+
+.menu small,
+.menu em {
+  color: var(--muted);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.menu em {
+  max-width: 35%;
+  text-align: right;
+}
+
+.message {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+  padding: 14px;
+}
+
+.error {
+  color: var(--red);
+}
+
+.srOnly {
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (max-width: 620px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .menu {
+    top: calc(100% + 4px);
+  }
+}

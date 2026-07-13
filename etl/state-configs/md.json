@@ -150,7 +150,7 @@
   "historicalBaselines": {
     "format": "historicalPresidentialCsv",
     "sourceId": "md-historical-presidential-baseline",
-    "warning": "Maryland historical baseline rows are official county/county-equivalent 2016 and 2020 General Election President results from Maryland State Board of Elections artifacts. Use them as contextual baseline rows for jurisdictionTag county flip joins, not as 2024 certified data. Baltimore City and Baltimore County are separate Census county-equivalent tags. Official 2012 county presidential baselines remain uncollected.",
+    "warning": "Maryland historical baseline rows are official county/county-equivalent 2016 and 2020 General Election President results from Maryland State Board of Elections artifacts. Use them as contextual baseline rows for jurisdictionTag county flip joins, not as 2024 certified data. The 2020 all-by-precinct source totals 3,037,031 votes, one more Other/write-in vote than the county/statewide package because Calvert County Other Write-Ins is 248 versus 247; the all-by-precinct value is preserved. Baltimore City and Baltimore County are separate Census county-equivalent tags. Official 2012 county presidential baselines remain uncollected.",
     "expected": {
       "rowCount": 48,
       "years": [

@@ -7,6 +7,30 @@ import { readFinalizedRootEntry } from "../../scripts/lib/ri-finalized-zip.mjs";
 import { jurisdictionTagForRow, resolveJurisdictionTag } from "../../src/lib/jurisdiction-tags.ts";
 import JSZip from "jszip";
 import test from "node:test";
+function parseCsvLine(line) {
+  const values = [];
+  let value = "";
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    if (character === '"') {
+      if (quoted && line[index + 1] === '"') {
+        value += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === "," && !quoted) {
+      values.push(value);
+      value = "";
+    } else {
+      value += character;
+    }
+  }
+  values.push(value);
+  return values;
+}
+
 
 test("canonical jurisdiction registry resolves known FIPS aliases", () => {
   const registry = JSON.parse(readFileSync("data/canonical-jurisdictions.json", "utf8"));
@@ -17,7 +41,7 @@ test("canonical jurisdiction registry resolves known FIPS aliases", () => {
   assert.equal(byTag.get("county:28065")?.aliases.includes("Jeff Davis County"), true);
   assert.equal(byTag.get("county:48283")?.aliases.includes("Lasalle County"), true);
   assert.equal(byTag.get("county:51510")?.displayName, "Alexandria city");
-  assert.equal(byTag.get("county:09190")?.displayName, "Western Connecticut Planning Region");
+  assert.equal(byTag.get("county:09190")?.displayName, "Western Connecticut Planning Region County");
   assert.equal(byTag.has("reporting:MO:KANSAS-CITY"), false);
   assert.equal(registry.jurisdictions.filter((row) => row.jurisdictionTag.startsWith("county:")).length, 3144);
 });
@@ -61,6 +85,7 @@ test("jurisdiction tag resolver handles known city/county and spelling ambiguiti
 
 test("jurisdiction tag schema and API surface are wired", () => {
   const schema = readFileSync("src/db/schema.ts", "utf8");
+
   const types = readFileSync("src/lib/types.ts", "utf8");
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
   const nativeImport = readFileSync("src/db/native-import.ts", "utf8");
@@ -94,6 +119,54 @@ test("jurisdiction tag schema and API surface are wired", () => {
   assert.match(backfill, /--confirm-plan=/);
   assert.match(backfill, /target\.jurisdiction_tag is null/);
   assert.match(nextConfig, /canonical-jurisdictions\.json/);
+});
+
+test("combined historical county artifacts resolve uniquely to canonical tags", () => {
+  const artifacts = [
+    { file: "data/de-historical-presidential-baseline.csv", rowsPerYear: 3, state: "DE" },
+    { file: "data/md-historical-presidential-baseline.csv", rowsPerYear: 24, state: "MD" },
+    { file: "data/mt-historical-presidential-baseline.csv", rowsPerYear: 56, state: "MT" },
+    { file: "data/nj-historical-presidential-baseline.csv", rowsPerYear: 21, state: "NJ" },
+    { file: "data/sc-historical-presidential-baseline.csv", rowsPerYear: 46, state: "SC" },
+    { file: "data/vt-historical-presidential-baseline.csv", rowsPerYear: 14, state: "VT" },
+    { file: "data/wa-historical-presidential-baseline.csv", rowsPerYear: 39, state: "WA" },
+  ];
+
+  for (const artifact of artifacts) {
+    const lines = readFileSync(artifact.file, "utf8").replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+    const headers = parseCsvLine(lines.shift());
+    const rows = lines.map((line) => {
+      const values = parseCsvLine(line);
+      return Object.fromEntries(headers.map((header, index) => [header, values[index]]));
+    });
+    const keys = new Set();
+    const tagsByYear = new Map();
+
+    for (const row of rows) {
+      const year = Number(row.election_year);
+      const resolution = resolveJurisdictionTag({
+        state: artifact.state,
+        jurisdictionName: row.jurisdiction_name,
+        level: row.source_level || "county",
+      });
+      assert.equal(resolution.reason, "matched", artifact.state + " " + year + " " + row.jurisdiction_name);
+      assert.match(resolution.jurisdictionTag, /^county:\d{5}$/);
+      if (row.jurisdiction_tag) {
+        assert.equal(row.jurisdiction_tag, resolution.jurisdictionTag);
+      }
+      const key = year + ":" + resolution.jurisdictionTag;
+      assert.equal(keys.has(key), false, "duplicate historical key " + artifact.state + " " + key);
+      keys.add(key);
+      const yearTags = tagsByYear.get(year) ?? new Set();
+      yearTags.add(resolution.jurisdictionTag);
+      tagsByYear.set(year, yearTags);
+    }
+
+    assert.deepEqual(Array.from(tagsByYear.keys()).sort(), [2016, 2020]);
+    assert.equal(tagsByYear.get(2016).size, artifact.rowsPerYear);
+    assert.equal(tagsByYear.get(2020).size, artifact.rowsPerYear);
+    assert.deepEqual(Array.from(tagsByYear.get(2016)).sort(), Array.from(tagsByYear.get(2020)).sort());
+  }
 });
 
 test("jurisdiction flip wave coordination stays explicit", () => {
@@ -236,5 +309,5 @@ test("jurisdiction tag resolver keeps county and city alias fixes explicit", () 
   assert.equal(byTag.get("county:40079")?.aliases.includes("Leflore County"), true);
   assert.match(resolver, /function hasCityMarker/);
   assert.match(resolver, /function hasCountyMarker/);
-  assert.match(resolver, /disambiguateAdministrativeKind\(Array\.from\(candidates\.values\(\)\), name, code\)/);
+  assert.match(resolver, /disambiguateAdministrativeKind\(Array\.from\(candidates\.values\(\)\), name, code, String\(input\.level \|\| ""\)\)/);
 });

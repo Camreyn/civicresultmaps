@@ -1,5 +1,8 @@
+import { sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
+  check,
   integer,
   jsonb,
   numeric,
@@ -26,6 +29,19 @@ export const sourceStatus = pgEnum("source_status", [
   "documented_exclusion",
 ]);
 
+export const publicDataRevisions = pgTable(
+  "public_data_revisions",
+  {
+    scope: text("scope").primaryKey().default("public"),
+    revision: bigint("revision", { mode: "bigint" }).notNull().default(sql`1`),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    reason: text("reason").notNull().default("migration"),
+  },
+  (table) => ({
+    scopeCheck: check("public_data_revisions_scope_check", sql`${table.scope} = 'public'`),
+    revisionCheck: check("public_data_revisions_revision_check", sql`${table.revision} >= 1`),
+  }),
+);
 export const states = pgTable("states", {
   id: uuid("id").primaryKey().defaultRandom(),
   code: text("code").notNull().unique(),
@@ -200,6 +216,12 @@ export const reviewRows = pgTable(
     jurisdictionTag: text("jurisdiction_tag"),
     localUnit: text("local_unit").notNull().default(""),
     level: text("level").notNull().default("local"),
+    demCandidate: text("dem_candidate"),
+    repCandidate: text("rep_candidate"),
+    demVotes: integer("dem_votes"),
+    repVotes: integer("rep_votes"),
+    demShare: numeric("dem_share", { precision: 8, scale: 4 }),
+    repShare: numeric("rep_share", { precision: 8, scale: 4 }),
     harrisVotes: integer("harris_votes"),
     trumpVotes: integer("trump_votes"),
     totalVotes: integer("total_votes"),

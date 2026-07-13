@@ -147,6 +147,12 @@ export type ReviewRowSummary = {
   jurisdictionTag?: string | null;
   localUnit: string;
   level: string;
+  demCandidate: string | null;
+  repCandidate: string | null;
+  demVotes: number | null;
+  repVotes: number | null;
+  demShare: number | null;
+  repShare: number | null;
   harrisVotes: number | null;
   trumpVotes: number | null;
   totalVotes: number | null;

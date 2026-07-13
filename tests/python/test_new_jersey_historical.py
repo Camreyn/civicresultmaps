@@ -6,7 +6,7 @@ from civic_etl.pipeline import build_staging_artifact, load_config, validate_con
 
 
 class NewJerseyHistoricalPipelineTests(unittest.TestCase):
-    def test_new_jersey_2020_historical_rows_are_tagged_and_loaded(self):
+    def test_new_jersey_2016_2020_historical_rows_are_loaded(self):
         rows = list(csv.DictReader(Path("data/nj-2020-historical-presidential-baseline.csv").read_text(encoding="utf-8").splitlines()))
         self.assertEqual(len(rows), 21)
         self.assertEqual({row["election_year"] for row in rows}, {"2020"})
@@ -19,13 +19,13 @@ class NewJerseyHistoricalPipelineTests(unittest.TestCase):
         native = artifact["native"]
 
         self.assertTrue(report.passed)
-        self.assertEqual(native["metrics"]["nativeHistoricalRows"], 21)
-        self.assertEqual(native["metrics"]["nativeHistoricalYears"], [2020])
-        self.assertEqual(len(native["historicalRows"]), 21)
-        self.assertIn("county:<GEOID>", native["metrics"]["nativeHistoricalWarning"])
+        self.assertEqual(native["metrics"]["nativeHistoricalRows"], 42)
+        self.assertEqual(native["metrics"]["nativeHistoricalYears"], [2016, 2020])
+        self.assertEqual(len(native["historicalRows"]), 42)
+        self.assertIn("jurisdictionTag county flip joins", native["metrics"]["nativeHistoricalWarning"])
 
-        atlantic = next(row for row in native["historicalRows"] if row["jurisdictionName"] == "Atlantic County")
-        self.assertEqual(atlantic["jurisdictionTag"], "county:34001")
+        atlantic = next(row for row in native["historicalRows"] if row["electionYear"] == 2020 and row["jurisdictionName"] == "Atlantic County")
+        self.assertEqual(atlantic["sourceLevel"], "county")
         self.assertEqual(atlantic["demVotes"], 73808)
         self.assertEqual(atlantic["repVotes"], 64438)
         self.assertEqual(atlantic["otherVotes"], 1785)

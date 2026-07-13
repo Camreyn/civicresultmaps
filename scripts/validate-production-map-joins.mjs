@@ -79,9 +79,6 @@ function featureName(feature) {
 
 function resultNameForFeature(state, name) {
   const normalized = normalizeName(name);
-  if (state === "HI" && normalized === "KALAWAO") {
-    return "Maui";
-  }
   if (state === "MS" && normalized === "JEFFERSONDAVIS") {
     return "Jeff Davis County";
   }
