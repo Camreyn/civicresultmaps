@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "sourceAuthority": "Pima County Recorder's Office",
+  "sourceTitle": "2024 General Election Early Voting After Action Report",
+  "sourceUrl": "https://www.recorder.pima.gov/PressRelease/2025/2024%20General%20Election%20EARLY%20VOTING%20After%20Action%20Report%20-%20PCRO%20-%20Final.pdf",
+  "publishedAt": "2025-01-21",
+  "acquiredAt": "2026-07-13",
+  "acquisitionMethod": "Structured extract from the official PDF text after direct download was blocked by the county site's anti-bot challenge",
+  "sourcePages": [
+    9
+  ],
+  "electionYear": 2024,
+  "reportingGrain": "county",
+  "normalizationPath": "scripts/build-security-incident-registry.mjs",
+  "expectedRowCount": 1,
+  "facts": {
+    "state": "AZ",
+    "county": "Pima County",
+    "eventDate": "2024-11-05",
+    "threatCount": 1,
+    "namedLocations": [
+      "240 N. Stone location"
+    ],
+    "response": "Tucson Police Bomb Squad and a K-9 unit checked the location and deemed it safe.",
+    "operationalImpact": "Staff were allowed to leave if concerned, but none did; the report does not describe a voting-site closure."
+  },
+  "caveat": "The official PDF was verified and its relevant passage was accessible, but direct scripted acquisition encountered an anti-bot challenge. This structured extract records only the fields used by the registry and points to the canonical official PDF."
+}

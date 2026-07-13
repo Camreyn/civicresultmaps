@@ -41,7 +41,9 @@ export function listSecurityIncidentStateSummaries(year = 2024): SecurityInciden
   const grouped = new Map<string, SecurityIncidentSummary[]>();
   for (const row of registryRows) {
     if (row.electionYear !== year) continue;
-    grouped.set(row.state, [...(grouped.get(row.state) ?? []), row]);
+    const stateRows = grouped.get(row.state);
+    if (stateRows) stateRows.push(row);
+    else grouped.set(row.state, [row]);
   }
 
   return Array.from(grouped.entries())

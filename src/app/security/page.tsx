@@ -11,7 +11,7 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "2024 Election Security Incident Explorer",
   description:
-    "Explore source-linked county records about November 2024 polling-place bomb threats, with explicit coverage limits and exportable reports.",
+    "Explore every county named in the published nationwide November 5, 2024 bomb-threat compilation, additional official county records, source limits, and exportable reports.",
   alternates: { canonical: "/security" },
 };
 
@@ -44,12 +44,13 @@ export default function SecurityPage() {
       <section className={baseStyles.hero} data-print-hide="true">
         <div className={baseStyles.eyebrow}>
           <ShieldAlert aria-hidden size={15} />
-          Official-source administration context
+          Source-linked administration context
         </div>
         <h1>2024 Election Security Incident Explorer</h1>
         <p>
-          See the county records currently loaded for November 2024 polling-place bomb threats, inspect every source,
-          and export a report without treating missing records as proof that no incident occurred.
+          See all 19 counties named in the published nationwide Election Day compilation, plus an additional official
+          Pima County record. Inspect source strength and export the complete mapped report without turning an unknown
+          county count into zero.
         </p>
         <p className={styles.heroQualifier}>
           This layer is separate from election results and advisory indicators. It does not allege fraud,

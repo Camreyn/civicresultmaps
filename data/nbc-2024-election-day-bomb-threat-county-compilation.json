@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "title": "Election Day bomb threats overwhelmingly targeted Democrat-leaning counties",
+  "sourceAuthority": "NBC News",
+  "sourceUrl": "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006",
+  "publishedAt": "2024-11-08T10:57:00-06:00",
+  "acquiredAt": "2026-07-13",
+  "acquisitionMethod": "Manual structured capture from the rendered article and embedded county table",
+  "reportingGrain": "county",
+  "normalizationPath": "scripts/build-security-incident-registry.mjs",
+  "nationalSummary": {
+    "reportedLocationCount": 67,
+    "reportedCountyCount": 19,
+    "reportedStateCount": 5,
+    "states": [
+      "AZ",
+      "GA",
+      "MI",
+      "PA",
+      "WI"
+    ]
+  },
+  "table": {
+    "columnLabel": "Threats",
+    "rowCount": 18,
+    "knownThreatCount": 66,
+    "rows": [
+      {
+        "state": "AZ",
+        "county": "Maricopa County",
+        "threatCount": 1
+      },
+      {
+        "state": "MI",
+        "county": "Wayne County",
+        "threatCount": 1
+      },
+      {
+        "state": "PA",
+        "county": "Philadelphia County",
+        "threatCount": 11
+      },
+      {
+        "state": "GA",
+        "county": "Fulton County",
+        "threatCount": 32
+      },
+      {
+        "state": "GA",
+        "county": "Gwinnett County",
+        "threatCount": 1
+      },
+      {
+        "state": "GA",
+        "county": "DeKalb County",
+        "threatCount": 5
+      },
+      {
+        "state": "WI",
+        "county": "Dane County",
+        "threatCount": 1
+      },
+      {
+        "state": "PA",
+        "county": "Chester County",
+        "threatCount": 1
+      },
+      {
+        "state": "PA",
+        "county": "York County",
+        "threatCount": 1
+      },
+      {
+        "state": "MI",
+        "county": "Genesee County",
+        "threatCount": 1
+      },
+      {
+        "state": "MI",
+        "county": "Washtenaw County",
+        "threatCount": 1
+      },
+      {
+        "state": "PA",
+        "county": "Luzerne County",
+        "threatCount": 1
+      },
+      {
+        "state": "MI",
+        "county": "Saginaw County",
+        "threatCount": 1
+      },
+      {
+        "state": "PA",
+        "county": "Centre County",
+        "threatCount": 1
+      },
+      {
+        "state": "PA",
+        "county": "Blair County",
+        "threatCount": 1
+      },
+      {
+        "state": "AZ",
+        "county": "Cochise County",
+        "threatCount": 1
+      },
+      {
+        "state": "AZ",
+        "county": "Navajo County",
+        "threatCount": 4
+      },
+      {
+        "state": "PA",
+        "county": "Clearfield County",
+        "threatCount": 1
+      }
+    ]
+  },
+  "additionalCountyMentions": [
+    {
+      "state": "WI",
+      "county": "Milwaukee County",
+      "threatCount": null,
+      "basis": "The article prose identifies voting locations in Milwaukee, while the accessible embedded table exposes 18 county rows and no separate Milwaukee count. No count is inferred."
+    }
+  ],
+  "caveat": "This is a structured capture of a supplemental news compilation, not an official incident roster. The article reports 67 locations in 19 counties, but its accessible embedded table exposes 18 county rows totaling 66 under a column labeled Threats. Milwaukee is named in the article prose without a separately exposed count. The normalized registry therefore maps Milwaukee with an unknown county count and preserves the article's 67-location national figure as context rather than forcing county totals to equal it."
+}

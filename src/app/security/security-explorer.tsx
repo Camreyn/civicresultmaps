@@ -24,6 +24,7 @@ import {
   securityCountExplanation,
   securityIncidentSummaryText,
   summarizeSecurityIncidents,
+  threatCountBasisText,
   threatCountText,
 } from "@/lib/security-incident-summary";
 import type { NationalSecurityIncidentReport, SecurityIncidentSummary } from "@/lib/types";
@@ -40,6 +41,7 @@ type SecurityExplorerProps = {
 type SourceManifestEntry = {
   authority: string;
   localArtifact: string;
+  tier: SecurityIncidentSummary["sourceTier"];
   title: string;
   url: string;
 };
@@ -51,7 +53,8 @@ function incidentFips(row: SecurityIncidentSummary) {
 }
 
 function incidentFill(rows: SecurityIncidentSummary[]) {
-  return rows.length ? "#f97316" : "url(#security-unknown)";
+  if (rows.some((row) => row.sourceTier === "official")) return "#f97316";
+  return rows.length ? "#fbbf24" : "url(#security-unknown)";
 }
 
 function formatDate(value: string) {
@@ -122,8 +125,8 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
   }, []);
 
   const stateOptions = useMemo(
-    () => [...report.stateCoverage].sort((left, right) => left.stateName.localeCompare(right.stateName)),
-    [report.stateCoverage],
+    () => [...report.stateSummaries].sort((left, right) => left.stateName.localeCompare(right.stateName)),
+    [report.stateSummaries],
   );
   const disruptionOptions = useMemo(
     () =>
@@ -147,6 +150,8 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           row.disruptionLabel,
           row.sourceAuthority,
           row.sourceTitle,
+          row.sourceTier,
+          ...row.namedLocations,
         ].join(" ").toLowerCase();
         return searchText.includes(deferredQuery);
       }),
@@ -157,7 +162,9 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     const grouped = new Map<string, SecurityIncidentSummary[]>();
     for (const row of report.incidents) {
       const fips = incidentFips(row);
-      grouped.set(fips, [...(grouped.get(fips) ?? []), row]);
+      const countyRows = grouped.get(fips);
+      if (countyRows) countyRows.push(row);
+      else grouped.set(fips, [row]);
     }
     return grouped;
   }, [report.incidents]);
@@ -165,7 +172,9 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     const grouped = new Map<string, SecurityIncidentSummary[]>();
     for (const row of filteredRows) {
       const fips = incidentFips(row);
-      grouped.set(fips, [...(grouped.get(fips) ?? []), row]);
+      const countyRows = grouped.get(fips);
+      if (countyRows) countyRows.push(row);
+      else grouped.set(fips, [row]);
     }
     return grouped;
   }, [filteredRows]);
@@ -185,21 +194,23 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       sources.set(row.sourceUrl, {
         authority: row.sourceAuthority,
         localArtifact: row.localArtifact,
+        tier: row.sourceTier,
         title: row.sourceTitle,
         url: row.sourceUrl,
       });
     }
     return Array.from(sources.values()).sort((left, right) => left.authority.localeCompare(right.authority));
   }, [filteredRows]);
-  const partialStateCount = report.stateCoverage.filter((state) => state.status === "partial").length;
-  const affectedMetric = !filteredTotals.rowCount
-    ? "No matching rows"
-    : affectedLocationText(filteredTotals);
+  const compilationContext = report.nationalContext.find(
+    (source) => source.sourceTier === "supplemental" && source.reportedLocationCount !== undefined,
+  );
   const threatMetric = !filteredTotals.rowCount
     ? "No matching rows"
     : filteredTotals.threatCountComplete
-      ? String(filteredTotals.documentedThreatCount ?? 0)
-      : "Not stated";
+      ? (filteredTotals.documentedThreatCount ?? 0).toLocaleString()
+      : filteredTotals.knownThreatCount > 0
+        ? `At least ${filteredTotals.knownThreatCount.toLocaleString()}`
+        : "Not published";
   const reportRows = filteredRows.slice(0, reportRowLimit);
   const reportRowsTruncated = reportRows.length < filteredRows.length;
 
@@ -228,7 +239,12 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         "Disruption",
         "Affected count",
         "Affected unit",
-        "Separate threat messages",
+        "Reported threats",
+        "Threat count basis",
+        "Threat count source URL",
+        "Threat count local artifact",
+        "Named locations",
+        "Record source tier",
         "Source authority",
         "Source title",
         "Source URL",
@@ -246,6 +262,11 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         row.affectedLocations,
         affectedLocationUnitLabel(row.affectedLocationUnit, row.affectedLocations ?? 2),
         row.threatCount,
+        row.threatCountBasis,
+        row.threatCountSourceUrl,
+        row.threatCountLocalArtifact,
+        row.namedLocations.join(" | "),
+        row.sourceTier,
         row.sourceAuthority,
         row.sourceTitle,
         row.sourceUrl,
@@ -360,29 +381,29 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
 
       <section className={baseStyles.metrics + " " + styles.securityMetrics} aria-label="Filtered security incident summary" data-print-hide="true">
         <article>
-          <span>States</span>
+          <span>Mapped states</span>
           <strong>{filteredTotals.stateCount.toLocaleString()}</strong>
-          <small>with matching loaded county records</small>
+          <small>with matching county records</small>
         </article>
         <article>
-          <span>County records</span>
+          <span>Mapped counties</span>
           <strong>{filteredTotals.countyCount.toLocaleString()}</strong>
-          <small>{filteredTotals.rowCount.toLocaleString()} official source row{filteredTotals.rowCount === 1 ? "" : "s"}</small>
+          <small>{filteredTotals.rowCount.toLocaleString()} source-linked row{filteredTotals.rowCount === 1 ? "" : "s"}</small>
         </article>
         <article className={baseStyles.metricWarn + " " + styles.textMetric}>
-          <span>Affected locations / precincts</span>
-          <strong>{affectedMetric}</strong>
-          <small>{filteredTotals.rowCount ? "source units are shown separately" : "no loaded records in this view"}</small>
+          <span>Published national compilation</span>
+          <strong>{compilationContext?.reportedLocationCount?.toLocaleString() ?? "Not stated"} locations</strong>
+          <small>in {compilationContext?.reportedCountyCount?.toLocaleString() ?? "an unstated number of"} counties; independent of filters</small>
         </article>
         <article className={styles.textMetric}>
-          <span>Separate threat messages</span>
+          <span>County-attributed reports</span>
           <strong>{threatMetric}</strong>
-          <small>{filteredTotals.rowCount ? "not interchangeable with affected locations" : "adjust filters to view loaded records"}</small>
+          <small>{filteredTotals.unknownThreatCountRows ? `exact count not published for ${filteredTotals.unknownThreatCountRows} mapped county row${filteredTotals.unknownThreatCountRows === 1 ? "" : "s"}` : "all matching rows publish a count"}</small>
         </article>
         <article>
-          <span>Nationwide registry coverage</span>
-          <strong>{partialStateCount} / {report.stateCoverage.length}</strong>
-          <small>nationwide status; independent of the active filters</small>
+          <span>Source strength</span>
+          <strong>{filteredTotals.officialRowCount} official / {filteredTotals.supplementalRowCount} supplemental</strong>
+          <small>supplemental rows fill published county gaps</small>
         </article>
       </section>
 
@@ -406,10 +427,11 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>Nationwide county view</span>
-            <h2>Loaded 2024 county bomb-threat records</h2>
+            <h2>Mapped November 5, 2024 bomb-threat counties</h2>
           </div>
           <div className={baseStyles.legend} aria-label="Map legend">
-            <span><i className={styles.legendMedium} />Loaded official county record</span>
+            <span><i className={styles.legendMedium} />Official county record</span>
+            <span><i className={styles.legendLow} />Supplemental compiled record</span>
             <span><i className={styles.legendFiltered} />Loaded, filtered out</span>
             <span><i className={styles.legendUnknown} />No loaded matching record</span>
           </div>
@@ -429,7 +451,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                 role="group"
                 viewBox="0 0 1000 620"
               >
-                <title id="security-map-title">2024 official-source county bomb-threat incident records</title>
+                <title id="security-map-title">2024 source-linked county bomb-threat incident records</title>
                 <desc id="security-map-description">
                   All 3,144 counties and county equivalents remain visible. Hatched counties have no loaded record matching
                   the current filters; this does not mean no incident occurred. Use Tab to enter the map, arrow keys to
@@ -450,8 +472,8 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                     const summary = matchingRows.length
                       ? securityIncidentSummaryText(matchingRows)
                       : loadedRows.length
-                        ? "Loaded official county record excluded by the current filters"
-                        : "No loaded official county record; this does not mean no incident occurred";
+                        ? "Loaded county record excluded by the current filters"
+                        : "No loaded county record; this does not mean no incident occurred";
                     return (
                       <path
                         aria-label={
@@ -529,13 +551,21 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                         return (
                           <article key={incident.id}>
                             <strong>{incident.eventTypeLabel} | {formatDate(incident.eventDate)}</strong>
+                            <span className={styles.contextBadge}>{incident.sourceTier === "official" ? "Official county record" : "Supplemental compilation"}</span>
                             <span>{incident.disruptionLabel}</span>
                             <span>{affectedLocationText(incidentTotals)}</span>
                             <span>{threatCountText(incidentTotals)}</span>
+                            <span>{threatCountBasisText(incident.threatCountBasis)}</span>
+                            {incident.namedLocations.length > 0 && <span>Named locations: {incident.namedLocations.join("; ")}</span>}
                             <small>{incident.sourceAuthority}</small>
                             <a href={incident.sourceUrl} rel="noreferrer" target="_blank">
-                              Open official source <ExternalLink aria-hidden size={13} />
+                              Open source <ExternalLink aria-hidden size={13} />
                             </a>
+                            {incident.threatCountSourceUrl && incident.threatCountSourceUrl !== incident.sourceUrl && (
+                              <a href={incident.threatCountSourceUrl} rel="noreferrer" target="_blank">
+                                Open threat-count source <ExternalLink aria-hidden size={13} />
+                              </a>
+                            )}
                           </article>
                         );
                       })}
@@ -543,7 +573,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                   </>
                 ) : (
                   <p>
-                    No official county record is loaded for this polygon. That is a data-coverage statement, not a claim
+                    No county record is loaded for this polygon. That is a data-coverage statement, not a claim
                     that no threat or disruption occurred.
                   </p>
                 )}
@@ -565,18 +595,18 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       <section className={baseStyles.tablePanel + " " + styles.contextPanel} data-print-hide="true">
         <header>
           <div>
-            <span className={baseStyles.sectionLabel}>National context - not county-mappable</span>
-            <h2>Federal source statements</h2>
+            <span className={baseStyles.sectionLabel}>National source context</span>
+            <h2>How the nationwide county list was assembled</h2>
             <p>
-              These sources can confirm broader context without creating a county point. A source must identify a
-              joinable jurisdiction before it appears as county shading.
+              Federal sources confirm the broader event but do not publish a complete county roster. The supplemental
+              compilation supplies the published county list, while official county records replace or add detail where available.
             </p>
           </div>
         </header>
         <div className={styles.sourceGrid}>
           {report.nationalContext.map((source) => (
             <article className={styles.sourceCard} key={source.sourceUrl}>
-              <span className={styles.contextBadge}>Context only</span>
+              <span className={styles.contextBadge}>{source.sourceTier === "supplemental" ? "Supplemental compilation" : "Official context"}</span>
               <h3>{source.sourceTitle}</h3>
               <strong>{source.sourceAuthority}</strong>
               <p>{source.caveat}</p>
@@ -586,7 +616,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                 <div><dt>Local archive</dt><dd><code>{source.localArtifact}</code></dd></div>
               </dl>
               <a href={source.sourceUrl} rel="noreferrer" target="_blank">
-                Open official source <ExternalLink aria-hidden size={14} />
+                Open source <ExternalLink aria-hidden size={14} />
               </a>
             </article>
           ))}
@@ -615,7 +645,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <strong>{stateFilter || "United States"}</strong>
           </div>
           <div>
-            <span>Loaded county records</span>
+            <span>Mapped counties</span>
             <strong>{filteredTotals.countyCount.toLocaleString()}</strong>
           </div>
           <div>
@@ -623,7 +653,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <strong>{affectedLocationText(filteredTotals)}</strong>
           </div>
           <div>
-            <span>Separate messages</span>
+            <span>Reported threats</span>
             <strong>{threatCountText(filteredTotals)}</strong>
           </div>
         </div>
@@ -637,7 +667,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                 <th>Date and event</th>
                 <th>Documented disruption</th>
                 <th>Counts</th>
-                <th>Official source</th>
+                <th>Record and count sources</th>
               </tr>
             </thead>
             <tbody>
@@ -662,9 +692,17 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                     </td>
                     <td>
                       <div className={styles.sourceCell}>
+                        <span className={styles.contextBadge}>{row.sourceTier === "official" ? "Official county record" : "Supplemental compiled record"}</span>
                         <strong>{row.sourceAuthority}</strong>
                         <span>{row.sourceTitle}</span>
-                        <a href={row.sourceUrl} rel="noreferrer" target="_blank">Official source <ExternalLink aria-hidden size={12} /></a>
+                        <span>{threatCountBasisText(row.threatCountBasis)}</span>
+                        {row.namedLocations.length > 0 && <span>Named: {row.namedLocations.join("; ")}</span>}
+                        <a href={row.sourceUrl} rel="noreferrer" target="_blank">Open source <ExternalLink aria-hidden size={12} /></a>
+                        {row.threatCountSourceUrl && row.threatCountSourceUrl !== row.sourceUrl && (
+                          <a href={row.threatCountSourceUrl} rel="noreferrer" target="_blank">
+                            Open threat-count source <ExternalLink aria-hidden size={12} />
+                          </a>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -689,23 +727,24 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           <div className={styles.sourceGrid}>
             {loadedSources.map((source) => (
               <article className={styles.sourceCard} key={source.url}>
+                <span className={styles.contextBadge}>{source.tier === "official" ? "Official" : "Supplemental"}</span>
                 <strong>{source.authority}</strong>
                 <h4>{source.title}</h4>
                 <code>{source.localArtifact}</code>
                 <a href={source.url} rel="noreferrer" target="_blank">
-                  Open official source <ExternalLink aria-hidden size={13} />
+                  Open source <ExternalLink aria-hidden size={13} />
                 </a>
               </article>
             ))}
             {report.nationalContext.map((source) => (
               <article className={styles.sourceCard} key={"report-" + source.sourceUrl}>
-                <span className={styles.contextBadge}>National context - not mapped</span>
+                <span className={styles.contextBadge}>{source.sourceTier === "supplemental" ? "Supplemental national context" : "Official national context"}</span>
                 <strong>{source.sourceAuthority}</strong>
                 <h4>{source.sourceTitle}</h4>
                 <p>{source.caveat}</p>
                 <code>{source.localArtifact}</code>
                 <a href={source.sourceUrl} rel="noreferrer" target="_blank">
-                  Open official source <ExternalLink aria-hidden size={13} />
+                  Open source <ExternalLink aria-hidden size={13} />
                 </a>
               </article>
             ))}
