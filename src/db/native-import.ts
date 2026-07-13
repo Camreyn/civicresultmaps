@@ -148,6 +148,28 @@ function numberOrNull(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
+export function chunkRows<T>(rows: T[], size = 1000) {
+  if (!Number.isInteger(size) || size <= 0) {
+    throw new Error("Native import chunk size must be a positive integer.");
+  }
+
+  const chunks: T[][] = [];
+  for (let index = 0; index < rows.length; index += size) {
+    chunks.push(rows.slice(index, index + size));
+  }
+  return chunks;
+}
+
+export function dedupeRowsLastWins<T>(
+  rows: T[],
+  keyForRow: (row: T) => string,
+) {
+  const rowsByKey = new Map<string, T>();
+  for (const row of rows) {
+    rowsByKey.set(keyForRow(row), row);
+  }
+  return Array.from(rowsByKey.values());
+}
 function titleCase(value: string) {
   return value
     .toLowerCase()
@@ -672,58 +694,108 @@ export async function promoteNativeStagingArtifact(path: string) {
     `;
   }
 
-  let storedResultRows = 0;
-  for (const row of native.resultRows) {
-    const code = jurisdictionCode(stateCode, row.jurisdictionName);
-    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionCode: code, jurisdictionName: row.jurisdictionName, level: row.level });
+  const resultJurisdictions = native.resultRows.map((row) => ({
+    code: jurisdictionCode(stateCode, row.jurisdictionName),
+    name: row.jurisdictionName,
+    level: row.level,
+  }));
+  const resultJurisdictionWrites = dedupeRowsLastWins(
+    resultJurisdictions,
+    (row) => [row.level, row.code].join("\u0000"),
+  );
+  for (const jurisdictionBatch of chunkRows(resultJurisdictionWrites)) {
     await sql`
       insert into jurisdictions (state_code, code, name, level)
-      values (${stateCode}, ${code}, ${row.jurisdictionName}, ${row.level})
-      on conflict (state_code, level, code) do update set name = excluded.name
+      select
+        ${stateCode},
+        incoming.code,
+        incoming.name,
+        incoming.level
+      from jsonb_to_recordset(${JSON.stringify(jurisdictionBatch)}::jsonb) as incoming (
+        code text,
+        name text,
+        level text
+      )
+      on conflict (state_code, level, code) do update set
+        name = excluded.name
     `;
-
-    for (const [candidate, votes] of Object.entries(row.votes) as [keyof typeof candidateParties, number][]) {
-      await sql`
-        insert into result_rows (
-          import_run_id,
-          contest_id,
-          state_code,
-          jurisdiction_code,
-          jurisdiction_name,
-          jurisdiction_tag,
-          level,
-          candidate_name,
-          party,
-          votes,
-          source_document_id
-        )
-        values (
-          ${importRun.id},
-          ${contest.id},
-          ${stateCode},
-          ${code},
-          ${row.jurisdictionName},
-          ${tag},
-          ${row.level},
-          ${candidate},
-          ${candidateParties[candidate]},
-          ${votes},
-          ${requiredSourceDocumentId(sourceIds, row.sourceId, "Native row")}
-        )
-        on conflict (contest_id, level, jurisdiction_code, candidate_name, party)
-        do update set
-          import_run_id = excluded.import_run_id,
-          jurisdiction_name = excluded.jurisdiction_name,
-          jurisdiction_tag = excluded.jurisdiction_tag,
-          votes = excluded.votes,
-          source_document_id = excluded.source_document_id
-      `;
-      storedResultRows += 1;
-    }
   }
 
+  const resultRecords = native.resultRows.flatMap((row) => {
+    const code = jurisdictionCode(stateCode, row.jurisdictionName);
+    const tag = jurisdictionTagForRow({
+      state: stateCode,
+      jurisdictionCode: code,
+      jurisdictionName: row.jurisdictionName,
+      level: row.level,
+    });
+    return (Object.entries(row.votes) as [keyof typeof candidateParties, number][]).map(
+      ([candidate, votes]) => ({
+        jurisdiction_code: code,
+        jurisdiction_name: row.jurisdictionName,
+        jurisdiction_tag: tag,
+        level: row.level,
+        candidate_name: candidate,
+        party: candidateParties[candidate],
+        votes,
+        source_document_id: requiredSourceDocumentId(sourceIds, row.sourceId, "Native row"),
+      }),
+    );
+  });
+  const resultWriteRecords = dedupeRowsLastWins(
+    resultRecords,
+    (row) => [row.level, row.jurisdiction_code, row.candidate_name, row.party].join("\u0000"),
+  );
+  for (const records of chunkRows(resultWriteRecords)) {
+    await sql`
+      insert into result_rows (
+        import_run_id,
+        contest_id,
+        state_code,
+        jurisdiction_code,
+        jurisdiction_name,
+        jurisdiction_tag,
+        level,
+        candidate_name,
+        party,
+        votes,
+        source_document_id
+      )
+      select
+        ${importRun.id}::uuid,
+        ${contest.id}::uuid,
+        ${stateCode},
+        incoming.jurisdiction_code,
+        incoming.jurisdiction_name,
+        incoming.jurisdiction_tag,
+        incoming.level,
+        incoming.candidate_name,
+        incoming.party,
+        incoming.votes,
+        incoming.source_document_id
+      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+        jurisdiction_code text,
+        jurisdiction_name text,
+        jurisdiction_tag text,
+        level text,
+        candidate_name text,
+        party text,
+        votes integer,
+        source_document_id uuid
+      )
+      on conflict (contest_id, level, jurisdiction_code, candidate_name, party)
+      do update set
+        import_run_id = excluded.import_run_id,
+        jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
+        votes = excluded.votes,
+        source_document_id = excluded.source_document_id
+    `;
+  }
+  const storedResultRows = resultRecords.length;
   const reviewTagsByYearAndJurisdictionCode = new Map<string, string>();
   const storedReviewRowsByYear: Record<string, number> = {};
+  const reviewRecords: Array<Record<string, unknown>> = [];
   let storedReviewRows = 0;
   let storedHistoricalReviewRows = 0;
   for (const [reviewYear, yearRows] of Array.from(reviewRowsByYear.entries()).sort(([left], [right]) => left - right)) {
@@ -748,79 +820,29 @@ export async function promoteNativeStagingArtifact(path: string) {
       if (tag) {
         reviewTagsByYearAndJurisdictionCode.set(tagKey, tag);
       }
-      await sql`
-        insert into review_rows (
-          import_run_id,
-          state_code,
-          election_year,
-          jurisdiction_code,
-          jurisdiction_name,
-          jurisdiction_tag,
-          local_unit,
-          level,
-          dem_candidate,
-          rep_candidate,
-          dem_votes,
-          rep_votes,
-          total_votes,
-          dem_share,
-          rep_share,
-          harris_votes,
-          trump_votes,
-          harris_share,
-          trump_share,
-          dem_dropoff,
-          rep_dropoff,
-          metrics,
-          source_document_id
-        )
-        values (
-          ${importRun.id},
-          ${stateCode},
-          ${reviewYear},
-          ${code},
-          ${row.county},
-          ${tag},
-          ${localUnit},
-          ${row.level ?? "local"},
-          ${row.demCandidate ?? null},
-          ${row.repCandidate ?? null},
-          ${numberOrNull(row.demVotes)},
-          ${numberOrNull(row.repVotes)},
-          ${numberOrNull(row.totalVotes)},
-          ${numberOrNull(row.demShare)},
-          ${numberOrNull(row.repShare)},
-          ${reviewYear === 2024 ? numberOrNull(row.harris ?? row.demVotes) : null},
-          ${reviewYear === 2024 ? numberOrNull(row.trump ?? row.repVotes) : null},
-          ${reviewYear === 2024 ? numberOrNull(row.harrisShare ?? row.demShare) : null},
-          ${reviewYear === 2024 ? numberOrNull(row.trumpShare ?? row.repShare) : null},
-          ${numberOrNull(row.demDropoff)},
-          ${numberOrNull(row.repDropoff)},
-          ${JSON.stringify(row)}::jsonb,
-          ${requiredSourceDocumentId(sourceIds, row.sourceId, "Native row")}
-        )
-        on conflict (state_code, election_year, jurisdiction_code, local_unit)
-        do update set
-          import_run_id = excluded.import_run_id,
-          jurisdiction_name = excluded.jurisdiction_name,
-          jurisdiction_tag = excluded.jurisdiction_tag,
-          level = excluded.level,
-          dem_candidate = excluded.dem_candidate,
-          rep_candidate = excluded.rep_candidate,
-          dem_votes = excluded.dem_votes,
-          rep_votes = excluded.rep_votes,
-          total_votes = excluded.total_votes,
-          dem_share = excluded.dem_share,
-          rep_share = excluded.rep_share,
-          harris_votes = excluded.harris_votes,
-          trump_votes = excluded.trump_votes,
-          harris_share = excluded.harris_share,
-          trump_share = excluded.trump_share,
-          dem_dropoff = excluded.dem_dropoff,
-          rep_dropoff = excluded.rep_dropoff,
-          metrics = excluded.metrics,
-          source_document_id = excluded.source_document_id
-      `;
+      reviewRecords.push({
+        election_year: reviewYear,
+        jurisdiction_code: code,
+        jurisdiction_name: row.county,
+        jurisdiction_tag: tag,
+        local_unit: localUnit,
+        level: row.level ?? "local",
+        dem_candidate: row.demCandidate ?? null,
+        rep_candidate: row.repCandidate ?? null,
+        dem_votes: numberOrNull(row.demVotes),
+        rep_votes: numberOrNull(row.repVotes),
+        total_votes: numberOrNull(row.totalVotes),
+        dem_share: numberOrNull(row.demShare),
+        rep_share: numberOrNull(row.repShare),
+        harris_votes: reviewYear === 2024 ? numberOrNull(row.harris ?? row.demVotes) : null,
+        trump_votes: reviewYear === 2024 ? numberOrNull(row.trump ?? row.repVotes) : null,
+        harris_share: reviewYear === 2024 ? numberOrNull(row.harrisShare ?? row.demShare) : null,
+        trump_share: reviewYear === 2024 ? numberOrNull(row.trumpShare ?? row.repShare) : null,
+        dem_dropoff: numberOrNull(row.demDropoff),
+        rep_dropoff: numberOrNull(row.repDropoff),
+        metrics: row,
+        source_document_id: requiredSourceDocumentId(sourceIds, row.sourceId, "Native row"),
+      });
       storedReviewRowsByYear[String(reviewYear)] = (storedReviewRowsByYear[String(reviewYear)] ?? 0) + 1;
       if (reviewYear === electionYear) {
         storedReviewRows += 1;
@@ -830,7 +852,113 @@ export async function promoteNativeStagingArtifact(path: string) {
     }
   }
 
+  const reviewWriteRecords = dedupeRowsLastWins(
+    reviewRecords,
+    (row) => [
+      row.election_year,
+      row.jurisdiction_code,
+      row.local_unit,
+    ].join("\u0000"),
+  );
+  for (const records of chunkRows(reviewWriteRecords)) {
+    await sql`
+      insert into review_rows (
+        import_run_id,
+        state_code,
+        election_year,
+        jurisdiction_code,
+        jurisdiction_name,
+        jurisdiction_tag,
+        local_unit,
+        level,
+        dem_candidate,
+        rep_candidate,
+        dem_votes,
+        rep_votes,
+        total_votes,
+        dem_share,
+        rep_share,
+        harris_votes,
+        trump_votes,
+        harris_share,
+        trump_share,
+        dem_dropoff,
+        rep_dropoff,
+        metrics,
+        source_document_id
+      )
+      select
+        ${importRun.id}::uuid,
+        ${stateCode},
+        incoming.election_year,
+        incoming.jurisdiction_code,
+        incoming.jurisdiction_name,
+        incoming.jurisdiction_tag,
+        incoming.local_unit,
+        incoming.level,
+        incoming.dem_candidate,
+        incoming.rep_candidate,
+        incoming.dem_votes,
+        incoming.rep_votes,
+        incoming.total_votes,
+        incoming.dem_share,
+        incoming.rep_share,
+        incoming.harris_votes,
+        incoming.trump_votes,
+        incoming.harris_share,
+        incoming.trump_share,
+        incoming.dem_dropoff,
+        incoming.rep_dropoff,
+        incoming.metrics,
+        incoming.source_document_id
+      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+        election_year integer,
+        jurisdiction_code text,
+        jurisdiction_name text,
+        jurisdiction_tag text,
+        local_unit text,
+        level text,
+        dem_candidate text,
+        rep_candidate text,
+        dem_votes integer,
+        rep_votes integer,
+        total_votes integer,
+        dem_share numeric,
+        rep_share numeric,
+        harris_votes integer,
+        trump_votes integer,
+        harris_share numeric,
+        trump_share numeric,
+        dem_dropoff numeric,
+        rep_dropoff numeric,
+        metrics jsonb,
+        source_document_id uuid
+      )
+      on conflict (state_code, election_year, jurisdiction_code, local_unit)
+      do update set
+        import_run_id = excluded.import_run_id,
+        jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
+        level = excluded.level,
+        dem_candidate = excluded.dem_candidate,
+        rep_candidate = excluded.rep_candidate,
+        dem_votes = excluded.dem_votes,
+        rep_votes = excluded.rep_votes,
+        total_votes = excluded.total_votes,
+        dem_share = excluded.dem_share,
+        rep_share = excluded.rep_share,
+        harris_votes = excluded.harris_votes,
+        trump_votes = excluded.trump_votes,
+        harris_share = excluded.harris_share,
+        trump_share = excluded.trump_share,
+        dem_dropoff = excluded.dem_dropoff,
+        rep_dropoff = excluded.rep_dropoff,
+        metrics = excluded.metrics,
+        source_document_id = excluded.source_document_id
+    `;
+  }
   const storedIndicatorRowsByYear: Record<string, number> = {};
+  const indicatorRecords: Array<Record<string, unknown>> = [];
   let storedIndicatorRows = 0;
   let storedHistoricalIndicatorRows = 0;
   for (const [reviewYear, yearRows] of Array.from(reviewRowsByYear.entries()).sort(([left], [right]) => left - right)) {
@@ -847,47 +975,20 @@ export async function promoteNativeStagingArtifact(path: string) {
           jurisdictionName: indicator.county || indicator.jurisdictionName,
           level: indicator.level,
         });
-      await sql`
-        insert into analysis_indicators (
-          state_code,
-          election_year,
-          jurisdiction_code,
-          jurisdiction_name,
-          jurisdiction_tag,
-          level,
-          indicator_type,
-          severity,
-          label,
-          summary,
-          detail,
-          metrics,
-          source_document_id
-        )
-        values (
-          ${stateCode},
-          ${reviewYear},
-          ${indicator.jurisdictionCode},
-          ${indicator.jurisdictionName},
-          ${tag},
-          ${indicator.level},
-          ${indicator.type},
-          ${indicator.severity},
-          ${indicator.label},
-          ${indicator.summary},
-          ${indicator.detail},
-          ${JSON.stringify(indicator.metrics)}::jsonb,
-          ${requiredSourceDocumentId(sourceIds, indicator.sourceId, "Calculated indicator")}
-        )
-        on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
-        do update set
-          jurisdiction_name = excluded.jurisdiction_name,
-          jurisdiction_tag = excluded.jurisdiction_tag,
-          severity = excluded.severity,
-          summary = excluded.summary,
-          detail = excluded.detail,
-          metrics = excluded.metrics,
-          source_document_id = excluded.source_document_id
-      `;
+      indicatorRecords.push({
+        election_year: reviewYear,
+        jurisdiction_code: indicator.jurisdictionCode,
+        jurisdiction_name: indicator.jurisdictionName,
+        jurisdiction_tag: tag,
+        level: indicator.level,
+        indicator_type: indicator.type,
+        severity: indicator.severity,
+        label: indicator.label,
+        summary: indicator.summary,
+        detail: indicator.detail,
+        metrics: indicator.metrics,
+        source_document_id: requiredSourceDocumentId(sourceIds, indicator.sourceId, "Calculated indicator"),
+      });
       storedIndicatorRowsByYear[String(reviewYear)] = (storedIndicatorRowsByYear[String(reviewYear)] ?? 0) + 1;
       if (reviewYear === electionYear) {
         storedIndicatorRows += 1;
@@ -897,11 +998,96 @@ export async function promoteNativeStagingArtifact(path: string) {
     }
   }
 
-  let storedTurnoutRows = 0;
-  for (const [index, row] of native.turnoutRows.entries()) {
+  const indicatorWriteRecords = dedupeRowsLastWins(
+    indicatorRecords,
+    (row) => [
+      row.election_year,
+      row.level,
+      row.jurisdiction_code,
+      row.indicator_type,
+      row.label,
+    ].join("\u0000"),
+  );
+  for (const records of chunkRows(indicatorWriteRecords)) {
+    await sql`
+      insert into analysis_indicators (
+        state_code,
+        election_year,
+        jurisdiction_code,
+        jurisdiction_name,
+        jurisdiction_tag,
+        level,
+        indicator_type,
+        severity,
+        label,
+        summary,
+        detail,
+        metrics,
+        source_document_id
+      )
+      select
+        ${stateCode},
+        incoming.election_year,
+        incoming.jurisdiction_code,
+        incoming.jurisdiction_name,
+        incoming.jurisdiction_tag,
+        incoming.level,
+        incoming.indicator_type,
+        incoming.severity,
+        incoming.label,
+        incoming.summary,
+        incoming.detail,
+        incoming.metrics,
+        incoming.source_document_id
+      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+        election_year integer,
+        jurisdiction_code text,
+        jurisdiction_name text,
+        jurisdiction_tag text,
+        level text,
+        indicator_type text,
+        severity numeric,
+        label text,
+        summary text,
+        detail text,
+        metrics jsonb,
+        source_document_id uuid
+      )
+      on conflict (state_code, election_year, level, jurisdiction_code, indicator_type, label)
+      do update set
+        jurisdiction_name = excluded.jurisdiction_name,
+        jurisdiction_tag = excluded.jurisdiction_tag,
+        severity = excluded.severity,
+        summary = excluded.summary,
+        detail = excluded.detail,
+        metrics = excluded.metrics,
+        source_document_id = excluded.source_document_id
+    `;
+  }
+  const turnoutRecords = native.turnoutRows.map((row, index) => {
     const localUnit = row.localUnit || `turnout-row-${index + 1}`;
-    const code = jurisdictionCode(stateCode, `${row.county}-${localUnit}`);
-    const tag = jurisdictionTagForRow({ state: stateCode, jurisdictionName: row.county, level: "county" });
+    return {
+      jurisdiction_code: jurisdictionCode(stateCode, `${row.county}-${localUnit}`),
+      jurisdiction_name: [row.county, localUnit].filter(Boolean).join(" / "),
+      jurisdiction_tag: jurisdictionTagForRow({
+        state: stateCode,
+        jurisdictionName: row.county,
+        level: "county",
+      }),
+      level: row.level ?? "local",
+      ballots_cast: row.ballotsCast,
+      registered_voters: numberOrNull(row.registeredVoters),
+      turnout_pct: numberOrNull(row.turnoutPct),
+      denominator_note: row.registrationDenominatorTiming ?? row.denominatorType ?? "Not recorded",
+      warning_required: Boolean(row.warningRequired),
+      source_document_id: requiredSourceDocumentId(sourceIds, row.sourceId, "Native row"),
+    };
+  });
+  const turnoutWriteRecords = dedupeRowsLastWins(
+    turnoutRecords,
+    (row) => [row.level, row.jurisdiction_code].join("\u0000"),
+  );
+  for (const records of chunkRows(turnoutWriteRecords)) {
     await sql`
       insert into turnout_rows (
         import_run_id,
@@ -918,20 +1104,31 @@ export async function promoteNativeStagingArtifact(path: string) {
         warning_required,
         source_document_id
       )
-      values (
-        ${importRun.id},
+      select
+        ${importRun.id}::uuid,
         ${stateCode},
         ${electionYear},
-        ${code},
-        ${[row.county, localUnit].filter(Boolean).join(" / ")},
-        ${tag},
-        ${row.level ?? "local"},
-        ${row.ballotsCast},
-        ${numberOrNull(row.registeredVoters)},
-        ${numberOrNull(row.turnoutPct)},
-        ${row.registrationDenominatorTiming ?? row.denominatorType ?? "Not recorded"},
-        ${Boolean(row.warningRequired)},
-        ${requiredSourceDocumentId(sourceIds, row.sourceId, "Native row")}
+        incoming.jurisdiction_code,
+        incoming.jurisdiction_name,
+        incoming.jurisdiction_tag,
+        incoming.level,
+        incoming.ballots_cast,
+        incoming.registered_voters,
+        incoming.turnout_pct,
+        incoming.denominator_note,
+        incoming.warning_required,
+        incoming.source_document_id
+      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+        jurisdiction_code text,
+        jurisdiction_name text,
+        jurisdiction_tag text,
+        level text,
+        ballots_cast integer,
+        registered_voters integer,
+        turnout_pct numeric,
+        denominator_note text,
+        warning_required boolean,
+        source_document_id uuid
       )
       on conflict (state_code, election_year, level, jurisdiction_code)
       do update set
@@ -945,14 +1142,47 @@ export async function promoteNativeStagingArtifact(path: string) {
         warning_required = excluded.warning_required,
         source_document_id = excluded.source_document_id
     `;
-    storedTurnoutRows += 1;
   }
-
-  let storedHistoricalRows = 0;
-  for (const [index, row] of historicalRows.entries()) {
+  const storedTurnoutRows = turnoutRecords.length;
+  const historicalRecords = historicalRows.map((row, index) => {
     const localUnit = row.localUnit || `historical-row-${index + 1}`;
     const code = jurisdictionCode(stateCode, row.jurisdictionName);
-    const tag = row.jurisdictionTag ?? jurisdictionTagForRow({ state: stateCode, jurisdictionCode: code, jurisdictionName: row.jurisdictionName, level: row.sourceLevel });
+    return {
+      election_year: row.electionYear,
+      source_id: row.sourceId,
+      source_level: row.sourceLevel,
+      row_method: row.rowMethod,
+      jurisdiction_code: code,
+      jurisdiction_name: row.jurisdictionName,
+      jurisdiction_tag: row.jurisdictionTag ?? jurisdictionTagForRow({
+        state: stateCode,
+        jurisdictionCode: code,
+        jurisdictionName: row.jurisdictionName,
+        level: row.sourceLevel,
+      }),
+      local_unit: localUnit,
+      dem_votes: numberOrNull(row.demVotes),
+      rep_votes: numberOrNull(row.repVotes),
+      other_votes: numberOrNull(row.otherVotes),
+      total_votes: numberOrNull(row.totalVotes),
+      metrics: row,
+      source_document_id: requiredSourceDocumentId(
+        sourceIds,
+        row.sourceDocumentId ?? row.sourceId,
+        "Historical result row",
+      ),
+    };
+  });
+  const historicalWriteRecords = dedupeRowsLastWins(
+    historicalRecords,
+    (row) => [
+      row.election_year,
+      row.source_id,
+      row.jurisdiction_code,
+      row.local_unit,
+    ].join("\u0000"),
+  );
+  for (const records of chunkRows(historicalWriteRecords)) {
     await sql`
       insert into historical_result_rows (
         import_run_id,
@@ -972,23 +1202,38 @@ export async function promoteNativeStagingArtifact(path: string) {
         metrics,
         source_document_id
       )
-      values (
-        ${importRun.id},
+      select
+        ${importRun.id}::uuid,
         ${stateCode},
-        ${row.electionYear},
-        ${row.sourceId},
-        ${row.sourceLevel},
-        ${row.rowMethod},
-        ${code},
-        ${row.jurisdictionName},
-        ${tag},
-        ${localUnit},
-        ${numberOrNull(row.demVotes)},
-        ${numberOrNull(row.repVotes)},
-        ${numberOrNull(row.otherVotes)},
-        ${numberOrNull(row.totalVotes)},
-        ${JSON.stringify(row)}::jsonb,
-        ${requiredSourceDocumentId(sourceIds, row.sourceDocumentId ?? row.sourceId, "Historical result row")}
+        incoming.election_year,
+        incoming.source_id,
+        incoming.source_level,
+        incoming.row_method,
+        incoming.jurisdiction_code,
+        incoming.jurisdiction_name,
+        incoming.jurisdiction_tag,
+        incoming.local_unit,
+        incoming.dem_votes,
+        incoming.rep_votes,
+        incoming.other_votes,
+        incoming.total_votes,
+        incoming.metrics,
+        incoming.source_document_id
+      from jsonb_to_recordset(${JSON.stringify(records)}::jsonb) as incoming (
+        election_year integer,
+        source_id text,
+        source_level text,
+        row_method text,
+        jurisdiction_code text,
+        jurisdiction_name text,
+        jurisdiction_tag text,
+        local_unit text,
+        dem_votes integer,
+        rep_votes integer,
+        other_votes integer,
+        total_votes integer,
+        metrics jsonb,
+        source_document_id uuid
       )
       on conflict (state_code, election_year, source_id, jurisdiction_code, local_unit)
       do update set
@@ -1004,9 +1249,8 @@ export async function promoteNativeStagingArtifact(path: string) {
         metrics = excluded.metrics,
         source_document_id = excluded.source_document_id
     `;
-    storedHistoricalRows += 1;
   }
-
+  const storedHistoricalRows = historicalRecords.length;
   const summary = {
     ...native.metrics,
     storedResultRows,
