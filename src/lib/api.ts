@@ -18,7 +18,7 @@ import {
   listTurnoutRows as uncachedListTurnoutRows,
 } from "./data-access";
 import { listVoteMethodRows as uncachedListVoteMethodRows } from "./vote-methods";
-import { publicApiSchemaVersion } from "./api-version";
+import { publicApiSchemaVersion, securityIncidentApiSchemaVersion } from "./api-version";
 import { listSecurityIncidents as uncachedListSecurityIncidents } from "./security-incidents";
 
 export const publicDataRevalidateSeconds = 15 * 60;
@@ -158,7 +158,7 @@ export const listResults = cachePublicData(
 
 export const listSecurityIncidents = cachePublicData(
   uncachedListSecurityIncidents,
-  "security-incidents",
+  `security-incidents-${securityIncidentApiSchemaVersion}`,
 );
 
 export const listSources = cachePublicData(
