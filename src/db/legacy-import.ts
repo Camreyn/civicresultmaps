@@ -2,6 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import { reviewPolicy } from "../lib/review-policy.ts";
 import { jurisdictionTagForRow } from "../lib/jurisdiction-tags.ts";
 import { getDatabaseUrl } from "./url.ts";
+import { bumpPublicDataRevision } from "./public-data-revision.ts";
 
 type LegacyCountyResult = {
   county: string;
@@ -546,6 +547,8 @@ export async function cleanupLegacyState(input: Pick<LegacyImportInput, "stateCo
     returning code
   `;
 
+  await bumpPublicDataRevision(sql, `legacy-cleanup:${input.stateCode}`);
+
   return {
     state: input.stateCode,
     deletedCapabilities: deletedCapabilities.length,
@@ -645,6 +648,8 @@ export async function refreshLegacyStateIndicators(input: LegacyImportInput) {
         source_document_id = excluded.source_document_id
     `;
   }
+
+  await bumpPublicDataRevision(sql, `legacy-indicators:${input.stateCode}:2024`);
 
   return {
     state: input.stateCode,
@@ -875,6 +880,8 @@ export async function refreshLegacyStateHistorical(input: LegacyImportInput) {
       })}::jsonb
     where id = ${importRun.id}
   `;
+
+  await bumpPublicDataRevision(sql, `legacy-historical:${input.stateCode}`);
 
   return {
     state: input.stateCode,
@@ -1425,6 +1432,8 @@ export async function importLegacyState(input: LegacyImportInput) {
       where id = ${importRun.id}
     `;
 
+    await bumpPublicDataRevision(sql, `legacy-import-failed:${input.stateCode}:2024`);
+
     throw new Error(
       `Import verification failed for ${input.stateCode}: stored ${storedCounties} counties and ${storedRows} rows, expected at least ${rows.length} counties and ${resultRows} rows.`,
     );
@@ -1451,6 +1460,8 @@ export async function importLegacyState(input: LegacyImportInput) {
       })}::jsonb
     where id = ${importRun.id}
   `;
+
+  await bumpPublicDataRevision(sql, `legacy-import:${input.stateCode}:2024`);
 
   return {
     state: input.stateCode,

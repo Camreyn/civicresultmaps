@@ -1,5 +1,8 @@
+import { sql } from "drizzle-orm";
 import {
+  bigint,
   boolean,
+  check,
   integer,
   jsonb,
   numeric,
@@ -26,6 +29,19 @@ export const sourceStatus = pgEnum("source_status", [
   "documented_exclusion",
 ]);
 
+export const publicDataRevisions = pgTable(
+  "public_data_revisions",
+  {
+    scope: text("scope").primaryKey().default("public"),
+    revision: bigint("revision", { mode: "bigint" }).notNull().default(sql`1`),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    reason: text("reason").notNull().default("migration"),
+  },
+  (table) => ({
+    scopeCheck: check("public_data_revisions_scope_check", sql`${table.scope} = 'public'`),
+    revisionCheck: check("public_data_revisions_revision_check", sql`${table.revision} >= 1`),
+  }),
+);
 export const states = pgTable("states", {
   id: uuid("id").primaryKey().defaultRandom(),
   code: text("code").notNull().unique(),

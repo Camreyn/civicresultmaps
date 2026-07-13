@@ -49,7 +49,7 @@ test("public API route contracts exist", () => {
 
 
 
-test("mutable public caches advance with every promoted import revision", () => {
+test("mutable public caches advance with the monotonic data revision", () => {
   const api = readFileSync("src/lib/api.ts", "utf8");
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
   const nativeImporter = readFileSync("src/db/native-import.ts", "utf8");
@@ -74,9 +74,9 @@ test("mutable public caches advance with every promoted import revision", () => 
     assert.match(api, new RegExp("export const " + exportName + " = cachePublicData"));
   }
   assert.match(dataAccess, /export async function getPublicDataRevision/);
-  assert.match(dataAccess, /count\(\*\)::int as \\"promotedCount\\"/);
-  assert.match(dataAccess, /max\(finished_at\)/);
-  assert.match(dataAccess, /where status = 'promoted'/);
+  assert.match(dataAccess, /readPublicDataRevision/);
+  assert.match(dataAccess, /public-data-revision/);
+  assert.doesNotMatch(dataAccess, /promotedCount/);
   assert.match(dataAccess, /catch \{\s+return null;/);
   assert.match(nativeImporter, /status = 'promoted'/);
   assert.match(nativeImporter, /finished_at = now\(\)/);

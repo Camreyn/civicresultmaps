@@ -1,8 +1,10 @@
 import { readFile } from "node:fs/promises";
-import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
+import type { NeonQueryFunction } from "@neondatabase/serverless";
 import { calculateAnalysisIndicators, type CandidateNeutralReviewRow } from "../lib/analysis-indicators.ts";
 import { reviewPolicy } from "../lib/review-policy.ts";
 import { jurisdictionTagForRow } from "../lib/jurisdiction-tags.ts";
+import { runNeonTransaction } from "./neon-transaction.ts";
+import { bumpPublicDataRevision } from "./public-data-revision.ts";
 
 type NativeSource = {
   id: string;
@@ -488,7 +490,6 @@ export async function promoteNativeStagingArtifact(path: string) {
   const artifact = JSON.parse(await readFile(path, "utf8")) as NativeArtifact;
   assertPromotable(artifact);
 
-  const sql = neon(databaseUrl);
   const stateCode = artifact.state.code.toUpperCase();
   const electionYear = artifact.election.year;
   const office = artifact.election.office.toLowerCase();
@@ -506,6 +507,9 @@ export async function promoteNativeStagingArtifact(path: string) {
     historicalRows: native.historicalReviewRows,
     knownSourceIds: artifactSourceIds,
   });
+  return runNeonTransaction(databaseUrl, async (sql) => {
+    await sql`select set_config('lock_timeout', '30s', true)`;
+    await sql`select pg_advisory_xact_lock(hashtextextended(${`crm-native-promotion:${stateCode}`}, 0))`;
   await sql`
     insert into states (code, name, authority)
     values (${stateCode}, ${artifact.state.name}, ${artifact.state.authority})
@@ -1145,10 +1149,13 @@ export async function promoteNativeStagingArtifact(path: string) {
     where id = ${importRun.id}
   `;
 
-  return {
-    state: stateCode,
-    electionYear,
-    ...summary,
-  };
+    await bumpPublicDataRevision(sql, `native-promotion:${stateCode}:${electionYear}`);
+
+    return {
+      state: stateCode,
+      electionYear,
+      ...summary,
+    };
+  });
 }
 

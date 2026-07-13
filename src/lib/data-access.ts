@@ -3,6 +3,7 @@ import { neon } from "@neondatabase/serverless";
 import { getDb, hasDatabase } from "@/db";
 import { getDatabaseUrl } from "@/db/url";
 import { contests, elections } from "@/db/schema";
+import { readPublicDataRevision } from "@/db/public-data-revision";
 import {
   getCoverage,
   seedElections,
@@ -83,24 +84,11 @@ export async function getPublicDataRevision(): Promise<string | null> {
   }
 
   try {
-    const sql = neon(getDatabaseUrl());
-    const [row] = (await sql.query(
-      "select count(*)::int as \"promotedCount\", coalesce(max(finished_at), max(started_at)) as \"latestPromotedAt\" from import_runs where status = 'promoted'",
-      [],
-    )) as Array<{
-      latestPromotedAt: Date | string | null;
-      promotedCount: number;
-    }>;
-    return [
-      "promoted",
-      row?.promotedCount ?? 0,
-      toIsoTimestamp(row?.latestPromotedAt ?? null) ?? "none",
-    ].join(":");
+    return await readPublicDataRevision(neon(getDatabaseUrl()));
   } catch {
     return null;
   }
 }
-
 function completenessStatus(input: {
   capabilities: CapabilitySummary;
   mapGeometrySourceCount: number;

@@ -1,5 +1,5 @@
 import { neon } from "@neondatabase/serverless";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { seedStarterData } from "@/db/starter-seed";
@@ -30,18 +30,19 @@ export async function POST(request: NextRequest) {
   );
 
   if (!schemaCheck?.exists) {
-    const migrationSql = readFileSync(
-      join(process.cwd(), "drizzle", "0000_fancy_secret_warriors.sql"),
-      "utf8",
-    );
-    const statements = migrationSql
-      .split("--> statement-breakpoint")
-      .map((statement) => statement.trim())
-      .filter(Boolean);
+    const migrationDirectory = join(process.cwd(), "drizzle");
+    const migrationFiles = readdirSync(migrationDirectory)
+      .filter((file) => /^\d+.*\.sql$/.test(file))
+      .sort();
 
-    for (const statement of statements) {
-      await sql.query(statement);
-    }
+    const statements = migrationFiles.flatMap((file) =>
+      readFileSync(join(migrationDirectory, file), "utf8")
+        .split("--> statement-breakpoint")
+        .map((statement) => statement.trim())
+        .filter(Boolean),
+    );
+
+    await sql.transaction(statements.map((statement) => sql.query(statement)));
   }
 
   await seedStarterData();
