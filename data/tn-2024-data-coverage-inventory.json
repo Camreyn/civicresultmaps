@@ -1,7 +1,7 @@
 {
   "state": "TN",
   "stateName": "Tennessee",
-  "checkedAt": "2026-07-03",
+  "checkedAt": "2026-07-12",
   "currentConfigStatus": {
     "turnoutOnly": false,
     "certifiedResults": true,
@@ -12,7 +12,7 @@
     "resultRows": 95,
     "reviewRows": 1859,
     "turnoutRows": 95,
-    "historicalBaselineRows": 95
+    "historicalBaselineRows": 190
   },
   "officialSourcesLoaded": [
     {
@@ -106,13 +106,30 @@
       "confidenceNotes": "Supplemental equipment context only. Do not use as votes, turnout, audit results, CVR availability, incident records, or proof of precinct-uniform equipment."
     },
     {
+      "id": "tn-2016-president-by-county-pdf",
+      "authority": "Tennessee Secretary of State",
+      "sourceUrl": "https://sos-tn-gov-files.s3.amazonaws.com/PresidentbyCountyNov2016.pdf",
+      "localArtifact": "data/tn-2016-president-by-county.pdf",
+      "electionYear": 2016,
+      "reportingGrain": "county",
+      "parserOrNormalizationPath": "scripts/normalize-tn-historical-presidential-baseline.mjs",
+      "expectedRowsOrTotals": {
+        "countyRows": 95,
+        "presidentialVotes": 2508027,
+        "trump": 1522925,
+        "clinton": 870695,
+        "other": 114407
+      },
+      "confidenceNotes": "Official county President PDF dated December 13, 2016. The historical normalizer asserts all 95 county rows and statewide candidate totals."
+    },
+    {
       "id": "tn-2020-general-by-county-pdf",
       "authority": "Tennessee Secretary of State",
       "sourceUrl": "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf",
       "localArtifact": "data/tn-2020-general-by-county.pdf",
       "electionYear": 2020,
       "reportingGrain": "county",
-      "parserOrNormalizationPath": "scripts/normalize-tn-sos-results.mjs",
+      "parserOrNormalizationPath": "scripts/normalize-tn-historical-presidential-baseline.mjs",
       "expectedRowsOrTotals": {
         "countyRows": 95,
         "presidentialVotes": 3053851,
@@ -156,16 +173,28 @@
     {
       "localArtifact": "data/tn-historical-presidential-baseline.csv",
       "parser": "historicalPresidentialCsv",
-      "sourceUrl": "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf",
-      "rowCount": 95,
+      "sourceUrls": [
+        "https://sos-tn-gov-files.s3.amazonaws.com/PresidentbyCountyNov2016.pdf",
+        "https://sos-tn-gov-files.tnsosfiles.com/Nov%202020%20General%20by%20County.pdf"
+      ],
+      "rowCount": 190,
       "electionYears": [
+        2016,
         2020
       ],
-      "totals": {
-        "trump": 1852475,
-        "biden": 1143711,
-        "other": 57665,
-        "total": 3053851
+      "totalsByYear": {
+        "2016": {
+          "democratic": 870695,
+          "republican": 1522925,
+          "other": 114407,
+          "total": 2508027
+        },
+        "2020": {
+          "democratic": 1143711,
+          "republican": 1852475,
+          "other": 57665,
+          "total": 3053851
+        }
       }
     }
   ],
@@ -182,10 +211,10 @@
       "needed": "Official statewide precinct boundary geometry or a county election-precinct crosswalk that joins the SOS precinct labels."
     },
     {
-      "id": "tn-historical-baseline-2012-2016",
-      "status": "partial_loaded_2020_official",
-      "loaded": "Official 2020 county presidential baseline rows are normalized from the Tennessee SOS 2020 General by County PDF.",
-      "needed": "Official Tennessee SOS county presidential artifacts for 2012 and 2016 normalized into historicalPresidentialCsv rows.",
+      "id": "tn-historical-baseline-2012",
+      "status": "partial_loaded_2016_2020_official",
+      "loaded": "Official 2016 and 2020 county presidential baseline rows are normalized from Tennessee SOS county PDFs.",
+      "needed": "Official Tennessee SOS county presidential artifacts for 2012 normalized into historicalPresidentialCsv rows.",
       "caveat": "Do not substitute secondary county tables without explicit caveats."
     },
     {
@@ -198,6 +227,6 @@
     "Tennessee review rows are precinct-level President-versus-U.S.-Senate comparisons from the official SOS precinct PDF and are advisory screening inputs only, not findings of fraud or misconduct.",
     "County map joins use Census county geometry; precinct boundary geometry is not loaded.",
     "Turnout remains EAC fallback until a Tennessee-native turnout/registration denominator artifact is collected and reconciled.",
-    "Official 2020 county historical baseline rows are loaded; official 2012 and 2016 county historical baseline rows remain uncollected."
+    "Official 2016 and 2020 county historical baseline rows are loaded; official 2012 county historical baseline rows remain uncollected."
   ]
 }

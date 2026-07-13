@@ -1,0 +1,285 @@
+{
+  "state": "AZ",
+  "electionYears": [
+    2016,
+    2020
+  ],
+  "checkedAt": "2026-07-12",
+  "generatedBy": "scripts/normalize_az_historical_review.py",
+  "reportingGrain": "county",
+  "rowCount": 30,
+  "rowCountsByYear": {
+    "2016": 15,
+    "2020": 15
+  },
+  "sourceArtifacts": [
+    {
+      "electionYear": 2016,
+      "authority": "Arizona Secretary of State",
+      "sourceUrl": "https://apps.azsos.gov/election/2016/General/Official%20Signed%20State%20Canvass.pdf",
+      "localFile": "data/az-2016-general-official-signed-state-canvass.pdf",
+      "format": "signed official canvass PDF",
+      "bytes": 9624192,
+      "sha256": "a765b3d03bcbdcaba4e3e869bd24cbb6dc2288841d7848eaa18b46e099ccaada"
+    },
+    {
+      "electionYear": 2020,
+      "authority": "Arizona Secretary of State",
+      "sourceUrl": "https://apps.azsos.gov/election/2020/resultsdetail_2020generalxml.zip",
+      "localFile": "data/az-2020-general-results-detail.xml.zip",
+      "format": "detailed election-result XML ZIP",
+      "member": "Results.Detail_2020General.xml",
+      "bytes": 1808603,
+      "sha256": "542f2e4d60463d6ad23b78e2de0f73759806945c6bcaedc6c0a7dd7aec422c06"
+    }
+  ],
+  "totalsByYear": {
+    "2016": {
+      "rowCount": 15,
+      "president": {
+        "dem": 1161167,
+        "rep": 1252401,
+        "other": 159597,
+        "total": 2573165
+      },
+      "comparison": {
+        "dem": 1031245,
+        "rep": 1359267,
+        "other": 140218,
+        "total": 2530730
+      }
+    },
+    "2020": {
+      "rowCount": 15,
+      "president": {
+        "dem": 1672143,
+        "rep": 1661686,
+        "other": 53497,
+        "total": 3387326
+      },
+      "comparison": {
+        "dem": 1716467,
+        "rep": 1637661,
+        "other": 1189,
+        "total": 3355317
+      }
+    }
+  },
+  "pdfVisualQa": {
+    "renderedPages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "dpi": 200,
+    "status": "passed",
+    "noOcrUsed": true,
+    "legibility": "All President pages 1-10 and U.S. Senate page 11 are sharp, aligned, and legible with no clipped columns.",
+    "textLayerSingleVoteCorrections": [
+      {
+        "candidate": "Anthony Camboni",
+        "county": "Apache",
+        "votes": 1
+      },
+      {
+        "candidate": "Anthony Camboni",
+        "county": "Coconino",
+        "votes": 1
+      },
+      {
+        "candidate": "Anthony Camboni",
+        "county": "Yuma",
+        "votes": 1
+      },
+      {
+        "candidate": "Ben Hartnell",
+        "county": "Navajo",
+        "votes": 1
+      },
+      {
+        "candidate": "Ben Hartnell",
+        "county": "Pima",
+        "votes": 1
+      },
+      {
+        "candidate": "Ben Hartnell",
+        "county": "Yavapai",
+        "votes": 1
+      },
+      {
+        "candidate": "Cherunda Fox",
+        "county": "Apache",
+        "votes": 1
+      },
+      {
+        "candidate": "Cherunda Fox",
+        "county": "Navajo",
+        "votes": 1
+      },
+      {
+        "candidate": "Darrell Castle",
+        "county": "Greenlee",
+        "votes": 1
+      },
+      {
+        "candidate": "Delano Steinacker",
+        "county": "Yuma",
+        "votes": 1
+      },
+      {
+        "candidate": "Gene Scott II",
+        "county": "Yuma",
+        "votes": 1
+      },
+      {
+        "candidate": "Joseph Maldonado",
+        "county": "Apache",
+        "votes": 1
+      },
+      {
+        "candidate": "Joseph Maldonado",
+        "county": "Coconino",
+        "votes": 1
+      },
+      {
+        "candidate": "Joseph Maldonado",
+        "county": "Navajo",
+        "votes": 1
+      },
+      {
+        "candidate": "Joseph Maldonado",
+        "county": "Pinal",
+        "votes": 1
+      },
+      {
+        "candidate": "Laurence Kotlikoff",
+        "county": "Cochise",
+        "votes": 1
+      },
+      {
+        "candidate": "Leonard Clark",
+        "county": "Pinal",
+        "votes": 1
+      },
+      {
+        "candidate": "Leonard Clark",
+        "county": "Yuma",
+        "votes": 1
+      },
+      {
+        "candidate": "Marshall Schoenke",
+        "county": "Coconino",
+        "votes": 1
+      },
+      {
+        "candidate": "Mike Smith",
+        "county": "Cochise",
+        "votes": 1
+      },
+      {
+        "candidate": "Mike Smith",
+        "county": "Yuma",
+        "votes": 1
+      },
+      {
+        "candidate": "Mitchell In-Albon",
+        "county": "Mohave",
+        "votes": 1
+      },
+      {
+        "candidate": "Robert L. Buchanan",
+        "county": "Navajo",
+        "votes": 1
+      },
+      {
+        "candidate": "Robert L. Buchanan",
+        "county": "Yavapai",
+        "votes": 1
+      },
+      {
+        "candidate": "Rocky Roque De La Fuente",
+        "county": "Navajo",
+        "votes": 1
+      },
+      {
+        "candidate": "Selena Lopez",
+        "county": "Coconino",
+        "votes": 1
+      },
+      {
+        "candidate": "Sheila Bilyeu",
+        "county": "Coconino",
+        "votes": 1
+      },
+      {
+        "candidate": "Sheila Bilyeu",
+        "county": "Pinal",
+        "votes": 1
+      },
+      {
+        "candidate": "Sheila Bilyeu",
+        "county": "Yuma",
+        "votes": 1
+      },
+      {
+        "candidate": "Sheila Samm Titile",
+        "county": "Pinal",
+        "votes": 1
+      },
+      {
+        "candidate": "Sydney Dudikoff",
+        "county": "Santa Cruz",
+        "votes": 1
+      },
+      {
+        "candidate": "Tom Hoefling",
+        "county": "Coconino",
+        "votes": 1
+      },
+      {
+        "candidate": "Tom Hoefling",
+        "county": "Mohave",
+        "votes": 1
+      },
+      {
+        "candidate": "Tom Hoefling",
+        "county": "Navajo",
+        "votes": 1
+      },
+      {
+        "candidate": "Tom Hoefling",
+        "county": "Yuma",
+        "votes": 1
+      },
+      {
+        "candidate": "Willie Felix Carter",
+        "county": "Coconino",
+        "votes": 1
+      },
+      {
+        "candidate": "Willie Felix Carter",
+        "county": "Navajo",
+        "votes": 1
+      },
+      {
+        "candidate": "Willie Felix Carter",
+        "county": "Pinal",
+        "votes": 1
+      }
+    ],
+    "notes": "Each correction is a printed one-vote cell visible in the rendered official page image but absent from the hidden text layer; every candidate row reconciles to its printed statewide total."
+  },
+  "caveats": [
+    "Historical advisory rows compare county-level President and U.S. Senate totals; they are not precinct-level scatter-plot inputs.",
+    "All non-major and write-in choices are retained in the candidate-neutral other buckets.",
+    "Advisory indicators are public-interest screening signals only, not findings of fraud or misconduct."
+  ]
+}

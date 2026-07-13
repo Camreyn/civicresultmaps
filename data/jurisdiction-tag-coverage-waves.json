@@ -565,7 +565,7 @@
                 "down_ballot_outliers"
               ]
             },
-            "caveat": "Historical baseline covers 2020 only; 2016/2012 remain. Statewide County=00 row is reconciliation-only. Baltimore City and Baltimore County are mapped from distinct official SBE files and Census GEOIDs, not guessed. Turnout remains EAC fallback. Worker branch lacks jurisdiction scripts; coordinator should rerun jurisdiction checks after integration.",
+            "caveat": "This worker snapshot originally covered 2020 only; the integrated package now covers official 2016 and 2020 rows, with 2012 remaining. The 2020 county/statewide reconciliation is one vote below the all-by-precinct source and the difference is documented without allocation. Baltimore City and Baltimore County resolve from distinct official labels and Census GEOIDs. Turnout remains EAC fallback.",
             "changedFiles": [
               "civic_etl/native.py",
               "etl/state-configs/md.json",
@@ -574,7 +574,7 @@
               "data/md-2020-general-county-results/*.csv",
               "data/md-2020-general-statewide.csv",
               "data/md-historical-presidential-baseline.csv",
-              "data/md-2020-historical-presidential-baseline-summary.json",
+              "data/md-historical-presidential-baseline-summary.json",
               "data/native-import-source-packages.json",
               "data/source-acquisition-tiers.json",
               "docs/native-import-source-packages.md"

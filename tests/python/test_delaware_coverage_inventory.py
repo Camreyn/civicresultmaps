@@ -40,11 +40,12 @@ class DelawareCoverageInventoryTests(unittest.TestCase):
 
     def test_inventory_records_loaded_sources_and_turnout_caveats(self):
         self.assertEqual(self.inventory["state"], "DE")
-        self.assertEqual(self.inventory["checkedAt"], "2026-07-02")
+        self.assertEqual(self.inventory["checkedAt"], "2026-07-12")
         self.assertFalse(self.inventory["productionChecked"])
         self.assertFalse(self.inventory["currentEtLStatus"]["turnoutOnly"])
         self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["reviewRows"], 529)
 
+        self.assertEqual(self.inventory["currentEtLStatus"]["expectedRows"]["historicalBaselineRows"], 6)
         findings = self.inventory["officialSourceFindings"]
         self.assertEqual(findings["certifiedResults"]["status"], "official_report_loaded_county_parser_active")
         self.assertEqual(findings["sameGrainComparisonContest"]["status"], "official_election_district_senate_review_loaded")
@@ -52,7 +53,9 @@ class DelawareCoverageInventoryTests(unittest.TestCase):
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialTotals"]["ageGroupPartyReportRegisteredVoters"], 788864)
         self.assertEqual(findings["stateNativeTurnout"]["observedOfficialTotals"]["eacFallbackRegisteredVoters"], 788441)
         self.assertEqual(findings["geometryAndCrosswalk"]["status"], "official_election_district_geometry_lead_identified_not_loaded")
-        self.assertEqual(findings["historicalBaselines"]["targetYears"], [2020, 2016, 2012])
+        self.assertEqual(findings["historicalBaselines"]["status"], "loaded_official_2016_2020_county_2012_pending")
+        self.assertEqual(findings["historicalBaselines"]["loadedYears"], [2016, 2020])
+        self.assertEqual(findings["historicalBaselines"]["targetYears"], [2016, 2020, 2012])
         self.assertIn("not evidence of fraud or misconduct", self.inventory["remainingRisks"][-1])
 
     def test_registries_request_matrix_and_agp_reconciliation(self):
@@ -70,11 +73,13 @@ class DelawareCoverageInventoryTests(unittest.TestCase):
         self.assertFalse(any(row["state"] == "DE" for row in native["sourceDiscoveryQueue"]))
         native_de = next(row for row in native["states"] if row["state"] == "DE")
         self.assertEqual(native_de["expected"]["localReviewRows"], 529)
+        self.assertEqual(native_de["expected"]["historicalBaselineRows"], 6)
         self.assertIn("AGP", turnout_status["nextAction"])
 
         self.assertEqual(self.request_rows["de-2024-certified-results-export"]["status"], "loaded_native_parser_active")
         self.assertEqual(self.request_rows["de-2024-comparison-results-export"]["status"], "loaded_native_review_active")
         self.assertEqual(self.request_rows["de-2024-turnout-agp-normalizer"]["status"], "reconciled_not_loaded_as_turnout")
+        self.assertEqual(self.request_rows["de-2024-historical-baselines"]["status"], "loaded_2016_2020_official_county_2012_pending")
         self.assertEqual(self.request_rows["de-2024-admin-audit-cvr-records"]["status"], "needs_records_request_and_scope_review")
 
         totals = reconciliation["totals"]

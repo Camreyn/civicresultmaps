@@ -306,7 +306,8 @@ function formatNumber(value: number | null | undefined) {
 }
 
 function expectedValue(sourcePackage: NativeSourcePackage | undefined, key: keyof NativeSourcePackage["expected"]) {
-  return sourcePackage?.expected[key] ?? null;
+  const value = sourcePackage?.expected[key];
+  return typeof value === "number" ? value : null;
 }
 
 function sourceDiscoveryStatusLabel(status: NativeSourceDiscoveryQueueEntry["currentStatus"]) {
@@ -457,9 +458,9 @@ export default async function ReadinessPage() {
             <ArrowLeft aria-hidden size={15} />
             Workspace
           </a>
-          <a className="topbar-link" href="/timeline">
+          <a className="topbar-link" href="/evidence">
             <Radar aria-hidden size={15} />
-            Timeline
+            Evidence
           </a>
           <span className="domain">civicresultmaps.org</span>
         </div>

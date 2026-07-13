@@ -3,7 +3,11 @@
 import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
 import { Activity, AlertTriangle, Download, FileSearch, Filter, PlusCircle, RadioTower, Search, ShieldQuestion } from "lucide-react";
-import type { SuspiciousEventCategory, SuspiciousEventSeverity, SuspiciousTimelineEvent } from "@/lib/suspicious-events";
+import type {
+  EvidenceRecordCategory,
+  EvidenceRecordPriority,
+  EvidenceTimelineEvent,
+} from "@/lib/evidence-events";
 
 type TimelineSummary = {
   byCategory: Record<string, number>;
@@ -15,18 +19,18 @@ type TimelineSummary = {
 
 type SuspiciousTimelineProps = {
   caveat: string;
-  events: SuspiciousTimelineEvent[];
+  events: EvidenceTimelineEvent[];
   summary: TimelineSummary;
 };
 
-const severityOptions: Array<{ label: string; value: "all" | SuspiciousEventSeverity }> = [
-  { label: "All severity", value: "all" },
-  { label: "Elevated", value: "elevated" },
-  { label: "Critical", value: "critical" },
-  { label: "Watch", value: "watch" },
+const severityOptions: Array<{ label: string; value: "all" | EvidenceRecordPriority }> = [
+  { label: "All review priorities", value: "all" },
+  { label: "Follow-up", value: "elevated" },
+  { label: "Priority", value: "critical" },
+  { label: "Source note", value: "watch" },
 ];
 
-const categoryOptions: Array<{ label: string; value: "all" | SuspiciousEventCategory }> = [
+const categoryOptions: Array<{ label: string; value: "all" | EvidenceRecordCategory }> = [
   { label: "All categories", value: "all" },
   { label: "Results", value: "results" },
   { label: "Machine logs", value: "machine_logs" },
@@ -59,7 +63,7 @@ function csvEscape(value: unknown) {
   return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
-function downloadCsv(filename: string, events: SuspiciousTimelineEvent[]) {
+function downloadCsv(filename: string, events: EvidenceTimelineEvent[]) {
   const headers = [
     "date",
     "phase",
@@ -73,7 +77,7 @@ function downloadCsv(filename: string, events: SuspiciousTimelineEvent[]) {
     "summary",
     "review_question",
     "evidence_needed",
-    "tampering_example",
+    "relevance",
     "alternate_explanation",
     "sources",
   ];
@@ -90,7 +94,7 @@ function downloadCsv(filename: string, events: SuspiciousTimelineEvent[]) {
     event.summary,
     event.reviewQuestion,
     event.evidenceNeeded,
-    event.tamperingExample,
+    event.relevance,
     event.alternateExplanation,
     event.sources.map((source) => [source.label, source.url, source.localArtifact].filter(Boolean).join(" | ")).join("; "),
   ]);
@@ -110,6 +114,18 @@ function statusLabel(value: string) {
   return value.replaceAll("_", " ");
 }
 
+function reviewPriorityLabel(value: EvidenceRecordPriority) {
+  if (value === "critical") {
+    return "priority";
+  }
+
+  if (value === "elevated") {
+    return "follow-up";
+  }
+
+  return "source note";
+}
+
 function dateLabel(value: string) {
   return new Date(`${value}T00:00:00`).toLocaleDateString("en-US", {
     day: "2-digit",
@@ -118,7 +134,7 @@ function dateLabel(value: string) {
   });
 }
 
-function EventIcon({ category }: { category: SuspiciousEventCategory }) {
+function EventIcon({ category }: { category: EvidenceRecordCategory }) {
   if (category === "machine_logs") {
     return <RadioTower aria-hidden size={18} />;
   }
@@ -139,8 +155,8 @@ function EventIcon({ category }: { category: SuspiciousEventCategory }) {
 }
 
 export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimelineProps) {
-  const [category, setCategory] = useState<"all" | SuspiciousEventCategory>("all");
-  const [severity, setSeverity] = useState<"all" | SuspiciousEventSeverity>("all");
+  const [category, setCategory] = useState<"all" | EvidenceRecordCategory>("all");
+  const [severity, setSeverity] = useState<"all" | EvidenceRecordPriority>("all");
   const [query, setQuery] = useState("");
   const timelineAdditionUrl = useMemo(() => buildTimelineAdditionUrl(), []);
 
@@ -158,7 +174,7 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
             event.summary,
             event.reviewQuestion,
             event.evidenceNeeded,
-            event.tamperingExample,
+            event.relevance,
             event.alternateExplanation,
             event.scope,
             event.sources.map((source) => [source.label, source.url, source.localArtifact].filter(Boolean).join(" ")).join(" "),
@@ -172,7 +188,7 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
   }, [category, events, query, severity]);
 
   const symptomExamples = useMemo(() => {
-    const examples = new Map<SuspiciousEventCategory, SuspiciousTimelineEvent>();
+    const examples = new Map<EvidenceRecordCategory, EvidenceTimelineEvent>();
     for (const event of events) {
       if (!examples.has(event.category)) {
         examples.set(event.category, event);
@@ -185,8 +201,8 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
     <>
       <section className="timeline-hero">
         <div>
-          <p className="section-label">Suspicious Event Timeline</p>
-          <h1>National evidence-gap timeline</h1>
+          <p className="section-label">Evidence &amp; Records Timeline</p>
+          <h1>National evidence and records timeline</h1>
           <p>{caveat}</p>
         </div>
         <div className="timeline-scanner" aria-hidden>
@@ -218,7 +234,7 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
           <strong>{summary.states.toLocaleString()}</strong>
         </article>
         <article>
-          <span>Elevated or critical</span>
+          <span>Follow-up or priority</span>
           <strong>{summary.elevated.toLocaleString()}</strong>
         </article>
         <article>
@@ -227,11 +243,11 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
         </article>
       </section>
 
-      <section className="timeline-symptom-guide" aria-label="Tracked symptom examples">
+      <section className="timeline-symptom-guide" aria-label="Tracked evidence categories">
         <div className="timeline-symptom-head">
           <div>
-            <p className="section-label">Symptom Examples</p>
-            <h2>What each tracked type could mean</h2>
+            <p className="section-label">Record categories</p>
+            <h2>What each tracked record can help reconcile</h2>
           </div>
           <span>Each example is a review hypothesis, not a conclusion.</span>
         </div>
@@ -240,11 +256,11 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
             <article className="timeline-symptom-card" key={event.category}>
               <strong>{statusLabel(event.category)}</strong>
               <div>
-                <span>One tampering scenario</span>
-                <p>{event.tamperingExample}</p>
+                <span>Why this record might matter</span>
+                <p>{event.relevance}</p>
               </div>
               <div>
-                <span>Other common explanations</span>
+                <span>Other explanations to check</span>
                 <p>{event.alternateExplanation}</p>
               </div>
             </article>
@@ -255,15 +271,15 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
       <section className="timeline-console">
         <div className="timeline-console-head">
           <div>
-            <h2>Review stream</h2>
-            <span>{filteredEvents.length.toLocaleString()} events visible</span>
+            <h2>Evidence and records stream</h2>
+            <span>{filteredEvents.length.toLocaleString()} records visible</span>
           </div>
           <div className="timeline-console-actions">
             <a href={timelineAdditionUrl} rel="noreferrer" target="_blank">
               <PlusCircle aria-hidden size={16} />
               Submit Timeline Addition
             </a>
-            <button type="button" onClick={() => downloadCsv("national-suspicious-event-timeline.csv", filteredEvents)}>
+            <button type="button" onClick={() => downloadCsv("national-evidence-records-timeline.csv", filteredEvents)}>
               <Download aria-hidden size={16} />
               Export CSV
             </button>
@@ -325,7 +341,7 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
                       {event.state} / {statusLabel(event.status)} / {statusLabel(event.category)}
                     </span>
                   </div>
-                  <span className={`timeline-severity timeline-severity-${event.severity}`}>{event.severity}</span>
+                  <span className={`timeline-severity timeline-severity-${event.severity}`}>{reviewPriorityLabel(event.severity)}</span>
                 </div>
                 <p>{event.reviewQuestion}</p>
                 <dl className="timeline-facts">
@@ -344,11 +360,11 @@ export function SuspiciousTimeline({ caveat, events, summary }: SuspiciousTimeli
                 </dl>
                 <div className="timeline-interpretation">
                   <article>
-                    <span>One tampering scenario</span>
-                    <p>{event.tamperingExample}</p>
+                    <span>Why this record might matter</span>
+                    <p>{event.relevance}</p>
                   </article>
                   <article>
-                    <span>Other common explanations</span>
+                    <span>Other explanations to check</span>
                     <p>{event.alternateExplanation}</p>
                   </article>
                 </div>

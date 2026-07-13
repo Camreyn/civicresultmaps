@@ -2954,6 +2954,181 @@ def _historical_baseline_rows(config: EtlConfig, sources: dict[str, SourceConfig
     }
 
 
+def _historical_review_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    section = config.raw.get("historicalReview", {})
+    if section.get("format") != "historicalReviewCsv":
+        return [], {"nativeHistoricalReviewRows": 0, "nativeHistoricalReviewYears": []}
+
+    source = sources[section["sourceId"]]
+    rows: list[dict[str, Any]] = []
+    with _artifact_path(source).open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required = {
+            "state",
+            "election_year",
+            "county",
+            "local_unit",
+            "level",
+            "dem_candidate",
+            "rep_candidate",
+            "dem_votes",
+            "rep_votes",
+            "other_votes",
+            "total_votes",
+            "comparison_contest",
+            "comparison_dem_candidate",
+            "comparison_rep_candidate",
+            "comparison_dem_votes",
+            "comparison_rep_votes",
+            "comparison_other_votes",
+            "coverage_mode",
+            "source_id",
+            "comparison_source_id",
+        }
+        missing = sorted(required.difference(set(reader.fieldnames or [])))
+        if missing:
+            raise ValueError(f"Historical review CSV missing columns: {', '.join(missing)}")
+
+        for index, row in enumerate(reader, start=2):
+            state = str(row.get("state") or "").strip().upper()
+            if state != config.code:
+                raise ValueError(f"Historical review row {index} has wrong state: {row.get('state')!r}")
+            election_year = int_text(row.get("election_year"))
+            county = _county_name(row.get("county"))
+            local_unit = str(row.get("local_unit") or "").strip()
+            level = str(row.get("level") or "local").strip().lower()
+            dem_candidate = str(row.get("dem_candidate") or "").strip()
+            rep_candidate = str(row.get("rep_candidate") or "").strip()
+            comparison_contest = str(row.get("comparison_contest") or "").strip()
+            comparison_dem_candidate = str(row.get("comparison_dem_candidate") or "").strip()
+            comparison_rep_candidate = str(row.get("comparison_rep_candidate") or "").strip()
+            if not election_year or not county or not local_unit:
+                raise ValueError(f"Historical review row {index} is missing year, county, or local_unit")
+            if not dem_candidate or not rep_candidate:
+                raise ValueError(f"Historical review row {index} is missing presidential candidate labels")
+
+            dem_votes = int_text(row.get("dem_votes"))
+            rep_votes = int_text(row.get("rep_votes"))
+            other_votes = int_text(row.get("other_votes"))
+            presidential_sum = dem_votes + rep_votes + other_votes
+            total_votes = int_text(row.get("total_votes")) if str(row.get("total_votes") or "").strip() else presidential_sum
+            comparison_dem_votes = int_text(row.get("comparison_dem_votes"))
+            comparison_rep_votes = int_text(row.get("comparison_rep_votes"))
+            comparison_other_votes = int_text(row.get("comparison_other_votes"))
+            comparison_total_votes = comparison_dem_votes + comparison_rep_votes + comparison_other_votes
+            vote_fields = {
+                "dem_votes": dem_votes,
+                "rep_votes": rep_votes,
+                "other_votes": other_votes,
+                "total_votes": total_votes,
+                "comparison_dem_votes": comparison_dem_votes,
+                "comparison_rep_votes": comparison_rep_votes,
+                "comparison_other_votes": comparison_other_votes,
+            }
+            negative_fields = [name for name, value in vote_fields.items() if value < 0]
+            if negative_fields:
+                raise ValueError(f"Historical review row {index} has negative votes in: {', '.join(negative_fields)}")
+            if total_votes <= 0 or total_votes != presidential_sum:
+                raise ValueError(
+                    f"Historical review row {index} total_votes must equal dem_votes + rep_votes + other_votes"
+                )
+
+            has_comparison = bool(comparison_contest)
+            if has_comparison and (
+                not comparison_dem_candidate
+                or not comparison_rep_candidate
+                or comparison_total_votes <= 0
+            ):
+                raise ValueError(f"Historical review row {index} has an incomplete comparison contest")
+            if not has_comparison and (
+                comparison_dem_candidate
+                or comparison_rep_candidate
+                or comparison_total_votes
+            ):
+                raise ValueError(
+                    f"Historical review row {index} has comparison values without comparison_contest"
+                )
+
+            jurisdiction_tag = (row.get("jurisdiction_tag") or "").strip() or None
+            if jurisdiction_tag and not re.fullmatch(r"county:\d{5}", jurisdiction_tag):
+                raise ValueError(f"Historical review row {index} has invalid jurisdiction_tag: {jurisdiction_tag!r}")
+            row_source_id = str(row.get("source_id") or source.id).strip()
+            comparison_source_id = str(row.get("comparison_source_id") or row_source_id).strip()
+            unknown_source_ids = [
+                source_id
+                for source_id in {row_source_id, comparison_source_id}
+                if source_id not in sources
+            ]
+            if unknown_source_ids:
+                raise ValueError(
+                    f"Historical review row {index} references unknown source ids: {', '.join(sorted(unknown_source_ids))}"
+                )
+            source_url = str(row.get("source_url") or sources[row_source_id].url).strip()
+            if source_url != sources[row_source_id].url:
+                raise ValueError(
+                    f"Historical review row {index} source_url does not match source_id {row_source_id}"
+                )
+            coverage_mode = str(row.get("coverage_mode") or "").strip() or (
+                "historicalComparison" if has_comparison else "voteShareOnly"
+            )
+            rows.append(
+                {
+                    "electionYear": election_year,
+                    "county": county,
+                    "jurisdictionTag": jurisdiction_tag,
+                    "localUnit": local_unit,
+                    "level": level,
+                    "demCandidate": dem_candidate,
+                    "repCandidate": rep_candidate,
+                    "demVotes": dem_votes,
+                    "repVotes": rep_votes,
+                    "otherVotes": other_votes,
+                    "totalVotes": total_votes,
+                    "demShare": pct(dem_votes, total_votes),
+                    "repShare": pct(rep_votes, total_votes),
+                    "demDropoff": pct(dem_votes - comparison_dem_votes, total_votes) if has_comparison else 0,
+                    "repDropoff": pct(rep_votes - comparison_rep_votes, total_votes) if has_comparison else 0,
+                    "comparisonContest": comparison_contest,
+                    "comparisonDemCandidate": comparison_dem_candidate,
+                    "comparisonRepCandidate": comparison_rep_candidate,
+                    "comparisonDemVotes": comparison_dem_votes,
+                    "comparisonRepVotes": comparison_rep_votes,
+                    "comparisonOtherVotes": comparison_other_votes,
+                    "comparisonDemCandidatePresent": bool(has_comparison and comparison_dem_candidate),
+                    "comparisonRepCandidatePresent": bool(has_comparison and comparison_rep_candidate),
+                    "coverageMode": coverage_mode,
+                    "sourceId": row_source_id,
+                    "comparisonSourceId": comparison_source_id,
+                    "sourceUrl": source_url,
+                }
+            )
+
+    expected = section.get("expected", {})
+    expected_rows = int_text(expected.get("rowCount"))
+    if expected_rows and len(rows) != expected_rows:
+        raise ValueError(f"Historical review expected {expected_rows} rows, got {len(rows)}")
+    years = sorted({row["electionYear"] for row in rows})
+    expected_years = sorted(int_text(value) for value in expected.get("years", []) if int_text(value))
+    if expected_years and years != expected_years:
+        raise ValueError(f"Historical review expected years {expected_years}, got {years}")
+    row_counts_by_year = {year: sum(1 for row in rows if row["electionYear"] == year) for year in years}
+    expected_counts = {int_text(year): int_text(count) for year, count in expected.get("rowCountsByYear", {}).items()}
+    mismatched_counts = {
+        year: {"actual": row_counts_by_year.get(year, 0), "expected": count}
+        for year, count in expected_counts.items()
+        if count and row_counts_by_year.get(year, 0) != count
+    }
+    if mismatched_counts:
+        raise ValueError(f"Historical review row-count reconciliation failed: {mismatched_counts}")
+
+    return rows, {
+        "nativeHistoricalReviewRows": len(rows),
+        "nativeHistoricalReviewYears": years,
+        "nativeHistoricalReviewRowsByYear": row_counts_by_year,
+        "nativeHistoricalReviewComparisonRows": sum(1 for row in rows if row["comparisonContest"]),
+        "nativeHistoricalReviewWarning": section.get("warning", ""),
+    }
+
 def _arizona_rows(config: EtlConfig, sources: dict[str, SourceConfig]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     section = config.raw["certifiedResults"]
     source = sources[section["sourceId"]]
@@ -7930,6 +8105,9 @@ def _assert_native_expected(config: EtlConfig, metrics: dict[str, Any]) -> None:
     expected_historical_rows = int_text(config.raw.get("expected", {}).get("historicalBaselineRows"))
     if expected_historical_rows and "nativeHistoricalRows" in metrics:
         checks["nativeHistoricalRows"] = expected_historical_rows
+    expected_historical_review_rows = int_text(config.raw.get("expected", {}).get("historicalReviewRows"))
+    if expected_historical_review_rows and "nativeHistoricalReviewRows" in metrics:
+        checks["nativeHistoricalReviewRows"] = expected_historical_review_rows
     mismatches = {
         key: {"actual": metrics.get(key), "expected": expected}
         for key, expected in checks.items()
@@ -7958,6 +8136,23 @@ def _with_historical_baselines(
     }
 
 
+def _with_historical_review(
+    config: EtlConfig,
+    sources: dict[str, SourceConfig],
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    section = config.raw.get("historicalReview", {})
+    if section.get("format") != "historicalReviewCsv":
+        return payload
+    if "historicalReviewRows" in payload:
+        return payload
+
+    historical_review_rows, historical_review_metrics = _historical_review_rows(config, sources)
+    return {
+        **payload,
+        "historicalReviewRows": historical_review_rows,
+        "metrics": {**payload.get("metrics", {}), **historical_review_metrics},
+    }
 def _build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
     turnout_format = config.raw.get("turnout", {}).get("format")
     if config.raw.get("turnoutOnly") and turnout_format in {"normalizedTurnoutCsv", "eacTurnoutCsv"}:
@@ -8642,5 +8837,6 @@ def build_native_payload(config: EtlConfig) -> dict[str, Any] | None:
 
     sources = _source_map(config)
     payload = _with_historical_baselines(config, sources, payload)
+    payload = _with_historical_review(config, sources, payload)
     _assert_native_expected(config, payload.get("metrics", {}))
     return payload

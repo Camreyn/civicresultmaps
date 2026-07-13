@@ -49,6 +49,42 @@ test("public API route contracts exist", () => {
 
 
 
+test("mutable public caches advance with the monotonic data revision", () => {
+  const api = readFileSync("src/lib/api.ts", "utf8");
+  const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
+  const nativeImporter = readFileSync("src/db/native-import.ts", "utf8");
+
+  assert.match(api, /cache\(uncachedGetPublicDataRevision\)/);
+  assert.match(api, /async \(_revision: string, \.\.\.args: Args\)/);
+  assert.match(api, /revision === null\s+\? loader\(\.\.\.args\)/);
+  for (const exportName of [
+    "getCoverageSummary",
+    "listCompletenessReport",
+    "listEquipmentRows",
+    "listHistoricalResultRows",
+    "listIndicators",
+    "listElections",
+    "listImportRuns",
+    "listReviewRows",
+    "listResults",
+    "listSources",
+    "listStates",
+    "listTurnoutRows",
+  ]) {
+    assert.match(api, new RegExp("export const " + exportName + " = cachePublicData"));
+  }
+  assert.match(dataAccess, /export async function getPublicDataRevision/);
+  assert.match(dataAccess, /readPublicDataRevision/);
+  assert.match(dataAccess, /public-data-revision/);
+  assert.doesNotMatch(dataAccess, /promotedCount/);
+  assert.match(dataAccess, /catch \{\s+return null;/);
+  assert.match(nativeImporter, /status = 'promoted'/);
+  assert.match(nativeImporter, /finished_at = now\(\)/);
+  assert.match(api, /"Cache-Control": "no-store"/);
+  assert.match(api, /"CDN-Cache-Control": "no-store"/);
+  assert.match(api, /"Vercel-CDN-Cache-Control": "no-store"/);
+});
+
 test("state links expose data-rich social previews", () => {
   const home = readFileSync("src/app/page.tsx", "utf8");
   const preview = readFileSync("src/lib/social-preview.ts", "utf8");
@@ -66,7 +102,7 @@ test("state links expose data-rich social previews", () => {
   assert.match(preview, /Advisory flags/);
   assert.match(preview, /Map-ready states/);
   assert.match(preview, /socialUrlPath/);
-  assert.match(preview, /map-v6/);
+  assert.match(preview, /map-v7/);
   assert.doesNotMatch(preview, /Data Preview/);
   assert.match(socialCard, /ImageResponse/);
   assert.match(socialCard, /1200/);
@@ -95,11 +131,15 @@ test("public year-filtered APIs default missing year to 2024", () => {
 
 test("map joins support repository GeoJSON county name variants", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+  const socialCard = readFileSync("src/app/api/social-card/route.tsx", "utf8");
+  const productionValidator = readFileSync("scripts/validate-production-map-joins.mjs", "utf8");
   assert.match(explorer, /county_name/);
   assert.match(explorer, /function featureName/);
   assert.match(explorer, /ak-house-districts\.geojson/);
   assert.match(explorer, /lon - 360/);
-  assert.match(explorer, /KALAWAO/);
+  assert.doesNotMatch(explorer, /state === "HI" && normalizeName\(name\) === "KALAWAO"/);
+  assert.doesNotMatch(socialCard, /state === "HI" && normalizeName\(name\) === "KALAWAO"/);
+  assert.doesNotMatch(productionValidator, /state === "HI" && normalized === "KALAWAO"/);
   assert.match(explorer, /KANSASCITY/);
   assert.match(explorer, /function coordinateBounds/);
   assert.match(explorer, /function longitudeScale/);
@@ -562,13 +602,13 @@ test("turnout collection inventory is available outside the app", () => {
   assert.match(inventoryDoc, /Wisconsin-Specific Request/);
 });
 
-test("indicator-dependent public reads are uncached", () => {
+test("indicator-dependent public reads use the promotion revision", () => {
   const api = readFileSync("src/lib/api.ts", "utf8");
 
-  assert.match(api, /export const listIndicators = uncachedListIndicators/);
-  assert.match(api, /export const listStates = uncachedListStates/);
-  assert.match(api, /export const listCompletenessReport = uncachedListCompletenessReport/);
-  assert.doesNotMatch(api, /\["public-data", "indicators"\]/);
+  assert.match(api, /export const listIndicators = cachePublicData/);
+  assert.match(api, /export const listStates = cachePublicData/);
+  assert.match(api, /export const listCompletenessReport = cachePublicData/);
+  assert.doesNotMatch(api, /export const listIndicators = uncachedListIndicators/);
 });
 
 test("statewide-only result rows remain visible in workspace and coverage", () => {
@@ -576,7 +616,9 @@ test("statewide-only result rows remain visible in workspace and coverage", () =
   const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
 
   assert.match(page, /level: "state"/);
-  assert.match(page, /cityTownResults\.length \? cityTownResults : townResults\.length \? townResults : stateResults/);
+  assert.match(page, /cityTownResults\.length/);
+  assert.match(page, /townResults\.length/);
+  assert.match(page, /stateResults/);
   assert.match(page, /results\[0\]\?\.level === "state"/);
   assert.match(dataAccess, /level: "state"/);
   assert.match(dataAccess, /cityTownResults\.length \? cityTownResults : stateResults/);

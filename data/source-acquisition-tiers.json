@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-07-11",
+  "checkedAt": "2026-07-12",
   "description": "Source acquisition tier registry for planning result, review, turnout, and method collection work. This classifies acquisition difficulty and scripting ROI; it does not replace loaded result or review data.",
   "tierDefinitions": [
     {
@@ -214,17 +214,21 @@
       "stateName": "Arizona",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical_admin_context",
       "tier": "tier_6_official_pdf_hostile",
-      "reportingGrain": "county",
+      "reportingGrain": "county_current_and_historical_review",
       "exportFormats": [
         "signed canvass PDF",
+        "official detailed XML ZIP",
+        "normalized CSV",
         "normalized local artifact",
         "script-blocked county result pages"
       ],
       "sourceUrls": [
         "https://azsos.gov/elections/election-information/2024-election-info",
         "https://azsos.gov/elections/results-data",
+        "https://apps.azsos.gov/election/2016/General/Official%20Signed%20State%20Canvass.pdf",
+        "https://apps.azsos.gov/election/2020/resultsdetail_2020generalxml.zip",
         "https://azsos.gov/elections/election-information/2024-election-information/litigation-info",
         "https://azsos.nextrequest.com/",
         "https://azsos.gov/elections/about-elections/county-election-officials-contact-information"
@@ -237,6 +241,9 @@
         "county President versus U.S. Senate rows",
         "county turnout",
         "state-native county turnout denominators from signed canvass",
+        "secondary 2012/2016/2020 county presidential baselines for context",
+        "official 2016 and 2020 county President-versus-U.S.-Senate historical advisory rows: 15 canonical county rows per year",
+        "retained historical advisory reconciliation with source hashes, statewide totals, and PDF visual QA",
         "official county hand-count audit status summary and document links",
         "Maricopa recount and statewide litigation source paths",
         "SOS public-records portal and county election-office request paths"
@@ -246,13 +253,14 @@
         "precinct boundary geometry",
         "statewide precinct/local reporting-unit export",
         "same-grain precinct U.S. Senate rows",
+        "reviewed official replacement for secondary 2012/2016 historical baseline other-vote semantics",
         "normalized CVR, ballot-image, tabulator-log, L&A, custody, audit-unit, incident, correction, recount, and litigation rows"
       ],
-      "parserStatus": "native county review package loaded; AZ admin/source inventory documents hand-count, recount/litigation, and records-request paths without normalizing electronic evidence rows",
+      "parserStatus": "native county review package loaded; scripts/normalize_az_historical_review.py deterministically generates 30 historicalReviewCsv county rows from the official 2016 signed canvass PDF and 2020 detailed XML ZIP, with exact statewide reconciliation and reviewed PDF text-layer corrections; AZ admin/source inventory documents hand-count, recount/litigation, and records-request paths without normalizing electronic evidence rows",
       "manualReviewBurden": "medium",
-      "confidence": "loaded",
-      "caveats": "Current rows are county-level advisory inputs, not precinct scatter plots. The 2026-07-01 AZ coverage inventory records official SOS hand-count status summaries, county canvass links, Maricopa recount/litigation links, and records-request paths, but no official statewide precinct/local President plus same-grain U.S. Senate export or normalized CVR/log/custody/audit-unit rows are loaded.",
-      "nextAction": "Use data/az-2024-admin-source-inventory.json and data/az-2024-data-coverage-inventory.json as the current AZ source-search records; next step is county-by-county manual collection or records requests for precinct/local President and U.S. Senate rows, precinct geometry/crosswalks, CVR/ballot-image/log/L&A/custody records, and detailed audit/recount/incident/correction rows."
+      "confidence": "loaded_with_caveat",
+      "caveats": "Current and historical review rows are county-level advisory inputs, not precinct scatter plots. The official historical package contains 15 canonical county President-versus-U.S.-Senate rows per year. In 2016, President reconciles to 1,161,167 Democratic, 1,252,401 Republican, 159,597 other, and 2,573,165 total votes; U.S. Senate reconciles to 1,031,245 Democratic, 1,359,267 Republican, 140,218 other, and 2,530,730 total votes. In 2020, President reconciles to 1,672,143 Democratic, 1,661,686 Republican, 53,497 other, and 3,387,326 total votes; U.S. Senate reconciles to 1,716,467 Democratic, 1,637,661 Republican, 1,189 other, and 3,355,317 total votes. The 2016 PDF parser records 38 printed one-vote cells absent from the text layer as reviewed fail-closed corrections, and every candidate row reconciles to the printed statewide total. The secondary contextual 2016 presidential baseline totals 31,492 votes more than the official candidate-row sum, entirely in unresolved other-vote semantics, so the two totals must not be silently combined or substituted. The 2026-07-01 AZ coverage inventory records official SOS hand-count status summaries, county canvass links, Maricopa recount/litigation links, and records-request paths, but no official statewide precinct/local President plus same-grain U.S. Senate export or normalized CVR/log/custody/audit-unit rows are loaded. Advisory indicators are review signals only, not findings of fraud or misconduct.",
+      "nextAction": "Use data/az-2024-admin-source-inventory.json and data/az-2024-data-coverage-inventory.json as the current AZ source-search records; next steps are county-by-county collection or records requests for precinct/local President and U.S. Senate rows, precinct geometry/crosswalks, CVR/ballot-image/log/L&A/custody records, detailed audit/recount/incident/correction rows, and a reviewed official replacement for the secondary historical-baseline other-vote semantics."
     },
     {
       "state": "CA",
@@ -518,9 +526,7 @@
         "DOE AGP state-native registered/voted reconciliation lead",
         "county geometry",
         "supplemental county equipment context",
-        "official 2020 county presidential historical baseline rows",
-        "official 2016 county presidential historical baselines",
-        "official 2020 county presidential historical baselines"
+        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags"
       ],
       "missingFields": [
         "active state-native turnout replacement",
@@ -579,16 +585,19 @@
       "stateName": "Georgia",
       "jurisdictionName": "Statewide",
       "scope": "statewide",
-      "dataFamily": "results_review_turnout",
+      "dataFamily": "results_review_turnout_historical",
       "tier": "tier_2_official_dashboard_endpoint",
-      "reportingGrain": "precinct",
+      "reportingGrain": "precinct_2024_county_historical_review",
       "exportFormats": [
-        "official media export JSON"
+        "official media export JSON",
+        "normalized CSV"
       ],
       "sourceUrls": [
         "https://results.sos.ga.gov/",
         "https://results.sos.ga.gov/results/public/Georgia",
-        "https://sos.ga.gov/page/historical-elections-results"
+        "https://sos.ga.gov/page/historical-elections-results",
+        "https://results.sos.ga.gov/cdn/results/Georgia/export-2016NovGen.json",
+        "https://results.sos.ga.gov/cdn/results/Georgia/export-2020NovGen.json"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -598,17 +607,18 @@
         "official 2012/2016/2020 county historical presidential baselines from Georgia SOS media exports",
         "county equipment context from Verified Voting Verifier",
         "official President vote-method candidate groupResults from SOS media export",
-        "documented turnout/registration exclusion review at data/ga-2024-turnout-vote-method-source-review.json"
+        "documented turnout/registration exclusion review at data/ga-2024-turnout-vote-method-source-review.json",
+        "official 2016 and 2020 county President-versus-U.S.-Senate historical advisory rows: 159 canonical county rows per year in data/ga-historical-review-rows.csv"
       ],
       "missingFields": [
         "state-native turnout denominator",
         "precinct boundary geometry",
         "normalized official audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export; official county historical baseline CSV generated from 2012/2016/2020 SOS media exports; scripts/report-ga-turnout-vote-method-source-review.mjs documents that SOS vote-method groupResults are candidate-result splits and not a turnout replacement",
+      "parserStatus": "native precinct President-versus-U.S.-House review package loaded from official media export; official county historical baseline CSV generated from 2012/2016/2020 SOS media exports; scripts/normalize-ga-historical-review.mjs generates 318 historicalReviewCsv county President-versus-U.S.-Senate rows for 2016 and 2020 with exact statewide reconciliation; scripts/report-ga-turnout-vote-method-source-review.mjs documents that SOS vote-method groupResults are candidate-result splits and not a turnout replacement",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings. Of 2,684 nonzero presidential precinct review rows, 2,637 have comparable two-party U.S. House rows, 8 have one-sided House comparison coverage, and 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts. Turnout remains EAC fallback and precinct geometry/admin evidence are not loaded. Historical rows are official county-level SOS media-export baselines for context only; the 2020 media export reports the original November general-election export total and should not be mixed with separate recount tables without reconciliation. The July 5, 2026 vote-method source review found official President groupResults by Election Day, Absentee by Mail, Provisional, and Advanced Voting, but no registered-voter denominator or election-level ballots-cast field; EAC turnout remains active.",
+      "caveats": "U.S. House is district-based and candidate-specific, so Georgia directional screens are low-confidence advisory context rather than candidate-benefit findings. Of 2,684 nonzero presidential precinct review rows, 2,637 have comparable two-party U.S. House rows, 8 have one-sided House comparison coverage, and 39 precinct keys aggregate more than one House district and are excluded from down-ballot dropoff calculations. County presidential candidate rows sum 19 votes higher than the statewide presidential contest total in minor-party/other rows, and 17 zero-total precinct entries are omitted from review charts. Turnout remains EAC fallback and precinct geometry/admin evidence are not loaded. Historical rows are official county-level SOS media-export baselines for context only; the 2020 media export reports the original November general-election export total and should not be mixed with separate recount tables without reconciliation. The historical advisory package contains 159 canonical county rows for each of 2016 and 2020. The 2016 rows reconcile to 4,092,373 presidential votes and 3,897,792 Senate votes; the 2020 rows reconcile to 4,998,482 presidential votes and 4,952,175 regular Senate votes. The 2020 comparison is the regular US Senate (Perdue) contest from the original November general election before the runoff; the Loeffler special election is excluded. The selected historical county contest options expose no precinct-result rows, and advisory signals can reflect candidate, contest, split-ticket, and participation differences rather than misconduct. The July 5, 2026 vote-method source review found official President groupResults by Election Day, Absentee by Mail, Provisional, and Advanced Voting, but no registered-voter denominator or election-level ballots-cast field; EAC turnout remains active.",
       "nextAction": "Use data/ga-2024-data-coverage-inventory.json as the current GA source-search record; next steps are state-native turnout denominators, precinct boundary geometry/crosswalks, and official audit/recount/CVR/incident/correction artifacts."
     },
     {
@@ -1471,7 +1481,7 @@
       "scope": "statewide",
       "dataFamily": "results_review_turnout_historical_admin_context",
       "tier": "tier_1_official_export_database",
-      "reportingGrain": "precinct_review_county_certified",
+      "reportingGrain": "precinct_review_county_certified_historical_review",
       "exportFormats": [
         "ZIP",
         "CSV"
@@ -1484,7 +1494,9 @@
         "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2024_11_05/voter_stats_20241105.zip",
         "https://www.ncsbe.gov/results-data/voter-history-data",
         "https://www.ncsbe.gov/results-data/voting-maps-redistricting",
-        "https://www.ncsbe.gov/about-elections/election-security/post-election-procedures-and-audits"
+        "https://www.ncsbe.gov/about-elections/election-security/post-election-procedures-and-audits",
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2016_11_08/results_pct_20161108.zip",
+        "https://s3.amazonaws.com/dl.ncsbe.gov/ENRS/2020_11_03/results_pct_20201103.zip"
       ],
       "exampleUrls": [],
       "availableFields": [
@@ -1497,18 +1509,20 @@
         "official 2024 post-election audit PDF lead",
         "official NCSBE 2024 voter_stats registered-voter denominator lead",
         "official NCSBE 2024 history_stats voter-history turnout lead",
-        "generated county turnout-denominator lead and source-review summary"
+        "generated county turnout-denominator lead and source-review summary",
+        "official 2016 county President-versus-U.S.-Senate historical advisory rows aggregated from all 3,209 source reporting-unit keys across 100 canonical county tags",
+        "official 2020 same-grain President-versus-U.S.-Senate historical advisory rows for 2,662 Real Precinct=Y county/precinct keys across 100 county tags"
       ],
       "missingFields": [
         "state-native turnout replacement semantics for history_stats voters versus ballots cast",
         "precinct boundary geometry normalized for map joins",
         "normalized audit/recount/CVR/incident/correction records"
       ],
-      "parserStatus": "native county certified package loaded; review rows filtered to official Real Precinct=Y rows; historicalPresidentialCsv loaded from official NCSBE 2012/2016/2020 precinct result ZIPs; scripts/normalize-nc-turnout.mjs generates NCSBE voter_stats/history_stats turnout-denominator lead rows and source-review summary, but active turnout remains EAC fallback pending numerator semantics review",
+      "parserStatus": "native county certified package loaded; 2024 review rows filtered to official Real Precinct=Y rows; historicalPresidentialCsv loaded from official NCSBE 2012/2016/2020 precinct result ZIPs; scripts/normalize-nc-historical-review.mjs generates 100 official 2016 county President-versus-U.S.-Senate rows from the source County field plus 2,662 official 2020 Real Precinct=Y rows, while reconciling the 2016 statewide totals, all 100 presidential baseline tuples, one signed source correction, and the 403 excluded 2020 Real Precinct=N keys; scripts/normalize-nc-turnout.mjs generates NCSBE voter_stats/history_stats turnout-denominator lead rows and source-review summary, but active turnout remains EAC fallback pending numerator semantics review",
       "manualReviewBurden": "medium",
       "confidence": "loaded",
-      "caveats": "Certified county totals aggregate all official reporting units, including early, absentee, provisional, and transfer rows. Review charts use only rows where the NCSBE Real Precinct field is Y, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; excluded non-real reporting units account for 1,775,402 presidential votes. NCSBE voter_stats_20241105.zip matches the active EAC registered-voter denominator at 7,854,464, but NCSBE history_stats_20241105.zip reports 5,705,861 voters who participated, 50,245 below EAC ballots cast and 18,126 below the NCSBE turnout overview ballots-cast figure. Historical baselines are county aggregates for context only.",
-      "nextAction": "Keep the Real Precinct=Y review coverage caveat visible; review NCSBE history_stats voter-participation semantics against ballots-cast/eligible-voter published totals before replacing EAC turnout; next upgrades are normalized precinct boundary geometry from the NCSBE shapefile folder and normalized audit/recount/CVR/incident/correction records."
+      "caveats": "Certified county totals aggregate all official reporting units, including early, absentee, provisional, and transfer rows. Review charts use only rows where the NCSBE Real Precinct field is Y, covering 2,658 precinct rows and 3,923,739 of 5,699,141 presidential votes; excluded non-real reporting units account for 1,775,402 presidential votes. NCSBE voter_stats_20241105.zip matches the active EAC registered-voter denominator at 7,854,464, but NCSBE history_stats_20241105.zip reports 5,705,861 voters who participated, 50,245 below EAC ballots cast and 18,126 below the NCSBE turnout overview ballots-cast figure. Historical baselines are county aggregates for context only. The 2016 historical advisory package aggregates all official reporting rows by the explicit County field into 100 county rows: 4,741,564 presidential votes and 4,691,133 U.S. Senate votes. All presidential county tuples match the official baseline; one signed -4 write-in source correction is retained before final nonnegative reconciliation, and no precinct-level claim is made. The 2020 package includes 2,662 Real Precinct=Y keys across 100 canonical county tags: 3,201,711 included presidential votes and 3,172,016 included U.S. Senate votes. It excludes and exactly reconciles 403 Real Precinct=N administrative keys totaling 2,323,091 presidential votes and 2,302,936 comparison votes.",
+      "nextAction": "Keep the 2024 and 2020 Real Precinct=Y review caveats visible and describe the 2016 historical screen as county-only aggregation, not precinct evidence; review NCSBE history_stats voter-participation semantics against ballots-cast/eligible-voter published totals before replacing EAC turnout; next upgrades are normalized precinct boundary geometry from the NCSBE shapefile folder and normalized audit/recount/CVR/incident/correction records."
     },
     {
       "state": "ND",
@@ -1721,9 +1735,7 @@
         "official county-by-county municipal U.S. Senate comparison rows identified as follow-up source leads",
         "official 2012/2016/2020 historical archive source leads",
         "official 2024 county post-election audit PDF links and county-official request paths",
-        "official 2020 county presidential historical baseline rows with county:<GEOID> jurisdiction tags",
-        "official 2016 county presidential historical baselines",
-        "official 2020 county presidential historical baselines"
+        "official 2016 and 2020 county presidential historical baseline rows that resolve to canonical county:<GEOID> tags"
       ],
       "missingFields": [
         "loaded municipal President-versus-U.S.-Senate review rows",
@@ -2323,7 +2335,6 @@
         "EAC fallback turnout rows",
         "county geometry",
         "county equipment context from Verified Voting Verifier",
-        "official 2020 county presidential historical baseline rows",
         "official 2016 and 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
@@ -2526,8 +2537,7 @@
         "certified canvass PDF retained as source-of-record reconciliation artifact",
         "county geometry",
         "equipment context",
-        "official 2020 county historical presidential baseline rows aggregated from SOS municipality export",
-        "official 2016 and 2020 county presidential historical baseline rows with county:<GEOID> tags"
+        "official 2016 and 2020 county presidential historical baseline rows aggregated from SOS municipality exports with county:<GEOID> tags"
       ],
       "missingFields": [
         "state-native turnout importer replacing EAC fallback",
@@ -2538,8 +2548,8 @@
       "parserStatus": "nativeVermontStaticElectionJson loads 14 county President rows and 283 town/reporting-district President-versus-U.S.-Senate review rows from official SOS static JSON after excluding the duplicated STATE WIDE summary row and reconciling to certified canvass totals; active turnout remains EAC fallback.; scripts/normalize-vt-historical-presidential-baseline.mjs loads official 2016/2020 archive CSV baselines.",
       "manualReviewBurden": "medium",
       "confidence": "loaded_with_caveat",
-      "caveats": "County result and town/reporting-district review rows are active and source-reconciled. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Active turnout remains EAC fallback because SOS JSON, SOS canvass cover-page, and EAC registered-voter totals differ. Town/reporting-district geometry, historical baselines, and normalized administration-context rows remain missing.",
-      "nextAction": "Resolve SOS turnout denominator timing before replacing EAC fallback; collect town/reporting-district geometry, official historical baselines, and normalized audit/CVR/recount/incident/correction/litigation context."
+      "caveats": "County result and town/reporting-district review rows are active and source-reconciled. U.S. Senate includes a major independent candidate, so dropoff fields are directional source-review inputs only. Active turnout remains EAC fallback because SOS JSON, SOS canvass cover-page, and EAC registered-voter totals differ. Official 2016 and 2020 county historical baselines are loaded; town/reporting-district geometry, official 2012 baselines, and normalized administration-context rows remain missing.",
+      "nextAction": "Resolve SOS turnout denominator timing before replacing EAC fallback; collect town/reporting-district geometry, the official 2012 county historical baseline, and normalized audit/CVR/recount/incident/correction/litigation context."
     },
     {
       "state": "WA",
@@ -2568,7 +2578,6 @@
         "county presidential totals",
         "participating precinct review rows",
         "county turnout fallback",
-        "official 2020 county presidential historical baseline rows",
         "official 2016 and 2020 county presidential historical baseline rows"
       ],
       "missingFields": [
@@ -2579,7 +2588,7 @@
       ],
       "parserStatus": "native participating precinct review package loaded; scripts/normalize-wa-historical-presidential-baseline.mjs downloads official 2016 and 2020 all-counties CSV exports and writes 78 historicalPresidentialCsv county baseline rows",
       "manualReviewBurden": "medium",
-      "confidence": "partial_with_2020_historical_loaded",
+      "confidence": "partial_with_2016_2020_historical_loaded",
       "caveats": "Participating precinct export is 5,309 presidential votes below certified county totals. Official 2016 and 2020 county presidential historical baselines are loaded from all-counties CSV exports; 2012 remains missing.",
       "nextAction": "Identify whether a complete statewide precinct package exists or keep participating-export caveat; collect state-native turnout denominator, precinct geometry, 2012 historical baseline, and administration-context artifacts."
     },

@@ -3,6 +3,7 @@ import path from "node:path";
 import { neon } from "@neondatabase/serverless";
 import coverage from "../src/lib/map-geometry-coverage.json" with { type: "json" };
 import { requireState } from "./state-metadata.mjs";
+import { bumpPublicDataRevision } from "./public-data-revision.mjs";
 
 const year = 2024;
 const dataDir = path.join(process.cwd(), "data");
@@ -209,6 +210,9 @@ async function main() {
     }
   }
 
+  if (!dryRun && records.length > 0) {
+    await bumpPublicDataRevision(sql, `map-geometry-promotion:${records.map((record) => record.state).join(",")}`);
+  }
   const remaining = dryRun ? missing : await statesWithMissingGeometrySources(sql);
 
   console.log(

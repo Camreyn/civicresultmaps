@@ -198,7 +198,11 @@ def build_staging_artifact(config: EtlConfig, report: ValidationReport) -> dict[
                 "timestampBasis": source.timestamp_basis,
                 "confidence": source.confidence,
                 "status": source.status,
-                "metadata": artifact_metadata(source.local_file),
+                "metadata": {
+                    **({"electionYear": source.raw["electionYear"]} if source.raw.get("electionYear") else {}),
+                    **source.raw.get("metadata", {}),
+                    **artifact_metadata(source.local_file),
+                },
             }
             for source in config.sources
         ],

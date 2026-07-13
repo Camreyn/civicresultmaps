@@ -123,11 +123,12 @@ def party_bucket(value: str) -> str:
     return "other"
 
 
-def historical_row(source: dict[str, object], county: str, votes: dict[str, int]) -> dict[str, object]:
+def historical_row(source: dict[str, object], county: str, source_display_name: str, votes: dict[str, int]) -> dict[str, object]:
     return {
         "state": "DE",
         "election_year": source["year"],
         "jurisdiction_name": county,
+        "source_display_name": source_display_name,
         "source_id": "de-historical-presidential-baseline",
         "source_level": "county",
         "jurisdiction_tag": COUNTY_TAGS[county],
@@ -161,7 +162,7 @@ def parse_2016(source: dict[str, object]) -> list[dict[str, object]]:
             totals[county][bucket] += votes
             totals[county]["total"] += votes
         index += 5
-    return [historical_row(source, county, totals[county]) for county in county_names]
+    return [historical_row(source, county, source_name, totals[county]) for county, source_name in zip(county_names, header[:3])]
 
 
 def parse_2020(source: dict[str, object]) -> list[dict[str, object]]:
@@ -189,7 +190,7 @@ def parse_2020(source: dict[str, object]) -> list[dict[str, object]]:
             votes = int_text(row[columns[column]])
             totals[county][bucket] += votes
             totals[county]["total"] += votes
-    return [historical_row(source, county, totals[county]) for county in county_names]
+    return [historical_row(source, county, source_name, totals[county]) for county, source_name in zip(county_names, source_columns)]
 
 
 def assert_summary(source: dict[str, object], rows: list[dict[str, object]]) -> dict[str, int]:
@@ -231,7 +232,7 @@ def main() -> None:
             }
         )
 
-    columns = ["state", "election_year", "jurisdiction_name", "jurisdiction_tag", "source_id", "source_level", "row_method", "dem_votes", "rep_votes", "other_votes", "total_votes", "source_url"]
+    columns = ["state", "election_year", "jurisdiction_name", "source_display_name", "jurisdiction_tag", "source_id", "source_level", "row_method", "dem_votes", "rep_votes", "other_votes", "total_votes", "source_url"]
     with OUTPUT_CSV.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=columns)
         writer.writeheader()

@@ -58,6 +58,62 @@
       "authority": "Wikipedia county presidential tables with state election office source footnotes",
       "timestampBasis": "County presidential tables for 2012, 2016, and 2020 pages downloaded June 20, 2026.",
       "confidence": "Secondary normalized historical baseline used for context only. Individual rows carry the per-year page URL, and the tables cite Arizona Secretary of State canvass sources where available.",
+      "metadata": {
+        "artifactRole": "deterministic_normalization_output",
+        "electionYears": [2012, 2016, 2020]
+      },
+      "status": "loaded"
+    },
+    {
+      "id": "az-2016-general-official-signed-state-canvass",
+      "category": "Official historical county presidential and U.S. Senate signed canvass",
+      "url": "https://apps.azsos.gov/election/2016/General/Official%20Signed%20State%20Canvass.pdf",
+      "localFile": "data/az-2016-general-official-signed-state-canvass.pdf",
+      "parser": "scripts/normalize_az_historical_review.py",
+      "authority": "Arizona Secretary of State",
+      "electionYear": 2016,
+      "metadata": {
+        "electionYear": 2016
+      },
+      "reportingGrain": "County",
+      "timestampBasis": "Official signed canvass certified December 5, 2016; report date/time November 29, 2016 3:03:33 PM.",
+      "confidence": "Official county President and U.S. Senate canvass tables. The layout-aware parser reconciles every candidate row to the printed statewide total; 38 printed one-vote cells absent from the PDF text layer are recorded as fail-closed visual corrections in the reconciliation artifact.",
+      "status": "loaded"
+    },
+    {
+      "id": "az-2020-general-results-detail-xml",
+      "category": "Official historical county and precinct detailed election results",
+      "url": "https://apps.azsos.gov/election/2020/resultsdetail_2020generalxml.zip",
+      "localFile": "data/az-2020-general-results-detail.xml.zip",
+      "parser": "scripts/normalize_az_historical_review.py",
+      "authority": "Arizona Secretary of State",
+      "electionYear": 2020,
+      "metadata": {
+        "electionYear": 2020
+      },
+      "reportingGrain": "State, county, and precinct XML; county rows selected for historical review",
+      "timestampBasis": "Official Arizona Secretary of State 2020 General Election detail XML; results timestamp November 24, 2020 12:58:30.96.",
+      "confidence": "Official detailed XML contains President contest key 3509 and U.S. Senate contest key 3579 with exact county choice totals for all 15 counties.",
+      "status": "loaded"
+    },
+    {
+      "id": "az-2016-2020-historical-advisory-county-review",
+      "category": "Normalized historical county presidential and U.S. Senate advisory-review rows",
+      "url": "https://apps.azsos.gov/election/2020/resultsdetail_2020generalxml.zip",
+      "localFile": "data/az-historical-review-rows.csv",
+      "parser": "historicalReviewCsv",
+      "authority": "Arizona Secretary of State",
+      "timestampBasis": "Generated July 12, 2026 by scripts/normalize_az_historical_review.py from the retained official 2016 signed canvass PDF and official 2020 detail XML ZIP.",
+      "confidence": "Deterministic 30-row candidate-neutral county President-versus-U.S.-Senate dataset: 15 canonical county rows for each of 2016 and 2020. Exact source hashes, statewide reconciliation, PDF visual QA, and text-layer corrections are recorded in data/az-historical-review-reconciliation.json.",
+      "metadata": {
+        "artifactRole": "deterministic_normalization_output",
+        "electionYears": [2016, 2020],
+        "officialInputSourceIds": [
+          "az-2016-general-official-signed-state-canvass",
+          "az-2020-general-results-detail-xml"
+        ],
+        "reconciliationArtifact": "data/az-historical-review-reconciliation.json"
+      },
       "status": "loaded"
     },
     {
@@ -119,17 +175,32 @@
       ]
     }
   },
+  "historicalReview": {
+    "format": "historicalReviewCsv",
+    "sourceId": "az-2016-2020-historical-advisory-county-review",
+    "evaluatedYears": [2016, 2020],
+    "warning": "Arizona historical advisory rows compare official county presidential and U.S. Senate totals for 2016 and 2020. They are county-level screening context, not precinct scatter-plot evidence. Candidate and contest differences, split-ticket voting, and participation differences can explain observed patterns; advisory indicators are not findings of fraud or misconduct.",
+    "expected": {
+      "rowCount": 30,
+      "years": [2016, 2020],
+      "rowCountsByYear": {
+        "2016": 15,
+        "2020": 15
+      }
+    }
+  },
   "expected": {
     "jurisdictions": 15,
     "resultRows": 15,
-    "sources": 6,
+    "sources": 9,
     "geometryFeatures": 15,
     "stateTotal": 3390161,
     "trump": 1770242,
     "harris": 1582860,
     "other": 37059,
     "reviewRows": 15,
-    "turnoutRows": 15
+    "turnoutRows": 15,
+    "historicalReviewRows": 30
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -159,13 +230,15 @@
       "No official statewide precinct/local reporting-unit President and same-grain U.S. Senate export was accessible or confirmed in the 2026-06-30 source check.",
       "Maricopa, Pima, and Yavapai county result pages blocked scripted access from this environment; county-by-county manual collection or public-records requests remain the next source step.",
       "The 2026-07-01 source pass identified official SOS hand-count audit summaries, county canvass links, Maricopa recount/litigation links, and records-request paths; these are administration context only and are not normalized audit/CVR/incident rows.",
-      "The 2026-07-06 source confirmation reviewed the submitted SOS 2024 Election Information page and kept the existing signed-canvass pipeline active."
+      "The 2026-07-06 source confirmation reviewed the submitted SOS 2024 Election Information page and kept the existing signed-canvass pipeline active.",
+      "Official 2016 and 2020 county President-versus-U.S.-Senate historical review rows are loaded. The official 2016 candidate-row sum is 31,492 below the secondary contextual baseline other/total field; advisory rows use the official candidate rows while the existing baseline remains contextual pending a reviewed replacement."
     ],
     "remainingGaps": [
       "precinct/local reporting-unit President rows",
       "same-grain precinct/local U.S. Senate comparison rows",
       "precinct boundary geometry",
-      "audit/recount/CVR/incident/correction records normalized for AZ"
+      "audit/recount/CVR/incident/correction records normalized for AZ",
+      "reviewed replacement of the secondary 2012/2016 historical baseline other-vote semantics"
     ],
     "adminSourceInventory": "data/az-2024-admin-source-inventory.json"
   }

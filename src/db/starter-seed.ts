@@ -1,4 +1,5 @@
-import { neon } from "@neondatabase/serverless";
+import { runNeonTransaction } from "./neon-transaction";
+import { bumpPublicDataRevision } from "./public-data-revision";
 import { getDatabaseUrl } from "./url";
 
 const states = [
@@ -128,11 +129,7 @@ export async function seedStarterData() {
     throw new Error("DATABASE_URL or POSTGRES_URL is required to seed starter data.");
   }
 
-  const sql = neon(databaseUrl);
-
-  await sql`begin`;
-
-  try {
+  return runNeonTransaction(databaseUrl, async (sql) => {
     const [election] = await sql`
       insert into elections (year, office, election_date, label)
       values (2024, 'president', '2024-11-05', '2024 President')
@@ -290,9 +287,6 @@ export async function seedStarterData() {
       }
     }
 
-    await sql`commit`;
-  } catch (error) {
-    await sql`rollback`;
-    throw error;
-  }
+    await bumpPublicDataRevision(sql, "starter-seed");
+  });
 }

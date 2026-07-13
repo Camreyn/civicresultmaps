@@ -4,6 +4,7 @@ import path from "node:path";
 import { neon } from "@neondatabase/serverless";
 import { getDatabaseUrl } from "../src/db/url.ts";
 import { getCanonicalJurisdictionRegistry, resolveJurisdictionTag } from "../src/lib/jurisdiction-tags.ts";
+import { bumpPublicDataRevisionSql, publicDataRevisionScope } from "./public-data-revision.mjs";
 
 const ALLOWED_YEARS = [2016, 2020, 2024];
 const apply = process.argv.includes("--apply");
@@ -336,13 +337,21 @@ async function applyPlan(manifest, planHash) {
   }
 
   const results = await sql.transaction(
-    (transaction) => chunks.map((chunk) => transaction.query(
-      updateSql(chunk.definition),
-      [JSON.stringify(chunk.rows), years, chunk.rows.length],
-    )),
+    (transaction) => [
+      ...chunks.map((chunk) => transaction.query(
+        updateSql(chunk.definition),
+        [JSON.stringify(chunk.rows), years, chunk.rows.length],
+      )),
+      transaction.query(
+        bumpPublicDataRevisionSql,
+        [publicDataRevisionScope, `jurisdiction-tag-backfill:${years.join(",")}`],
+      ),
+    ],
     { isolationLevel: "Serializable", readOnly: false },
   );
-  const updated = results.reduce((sum, result) => sum + Number(result[0]?.updated_rows ?? 0), 0);
+  const updated = results
+    .slice(0, chunks.length)
+    .reduce((sum, result) => sum + Number(result[0]?.updated_rows ?? 0), 0);
   if (updated !== manifest.rows.length) {
     throw new Error("Serializable backfill transaction returned " + updated + " rows; expected " + manifest.rows.length + ".");
   }

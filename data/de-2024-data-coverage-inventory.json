@@ -2,7 +2,7 @@
   "state": "DE",
   "stateName": "Delaware",
   "electionYear": 2024,
-  "checkedAt": "2026-07-02",
+  "checkedAt": "2026-07-12",
   "checkedBy": "Wave 17 Delaware state-data worker",
   "productionChecked": false,
   "repoDrift": [
@@ -21,6 +21,7 @@
       "resultRows": 3,
       "reviewRows": 529,
       "turnoutRows": 3,
+      "historicalBaselineRows": 6,
       "stateTotal": 511697,
       "trump": 214351,
       "harris": 289758,
@@ -106,23 +107,51 @@
       ]
     },
     "historicalBaselines": {
-      "status": "official_archive_leads_identified_not_loaded",
-      "targetYears": [
-        2020,
+      "status": "loaded_official_2016_2020_county_2012_pending",
+      "loadedYears": [
         2016,
+        2020
+      ],
+      "targetYears": [
+        2016,
+        2020,
         2012
       ],
+      "authority": "Delaware Department of Elections",
       "sourceUrls": [
-        "https://elections.delaware.gov/reports/GE2020.html",
-        "https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/election.txt",
-        "https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwres.txt",
         "https://elections.delaware.gov/elections/resultsarchive/elect16/elect16_general/data/stwoff_kns.txt",
-        "https://elections.delaware.gov/elections/resultsarchive/elect12/elect12_general/data/election.txt",
-        "https://elections.delaware.gov/elections/resultsarchive/elect12/elect12_general/data/stwres.txt",
-        "https://elections.delaware.gov/elections/resultsarchive/elect12/elect12_general/data/stwoff_kns.txt"
+        "https://elections.delaware.gov/reports/GE2020.html"
       ],
-      "parserNeeded": "Historical Delaware archive text parser for 2016 and 2012 plus a 2020 report/Power BI collector or request-produced export.",
-      "caveat": "Historical baseline rows are not loaded; official archive leads should be normalized before secondary sources are considered."
+      "localArtifacts": [
+        "data/de-2016-general-statewide-office-by-county.txt",
+        "data/de-2020-general-election-results-report.html",
+        "data/de-historical-presidential-baseline.csv",
+        "data/de-historical-presidential-baseline-summary.json"
+      ],
+      "parserNormalizationPath": "scripts/normalize-de-historical-presidential-baseline.py -> historicalPresidentialCsv",
+      "reportingGrain": "county",
+      "expectedRows": 6,
+      "jurisdictionTagMode": "county:<GEOID> tags populated in the normalized CSV",
+      "reconciliation": {
+        "byYear": {
+          "2016": {
+            "countyRows": 3,
+            "demVotes": 235603,
+            "repVotes": 185127,
+            "otherVotes": 20860,
+            "totalVotes": 441590
+          },
+          "2020": {
+            "countyRows": 3,
+            "demVotes": 296268,
+            "repVotes": 200603,
+            "otherVotes": 7139,
+            "totalVotes": 504010
+          }
+        },
+        "combinedTotalVotes": 945600
+      },
+      "caveats": "Official county historical context only. The 2016 source labels the New Castle County display column as Wilmington; the normalized row preserves the official source display name while resolving to county:10003. Official 2012 county baselines remain pending."
     },
     "auditRecountCvrIncidentCorrectionLitigation": {
       "status": "request_paths_documented_not_loaded",
@@ -163,7 +192,7 @@
   "remainingRisks": [
     "Active turnout remains EAC fallback; DOE AGP registered/voted rows are reconciliation context only until replacement semantics are reviewed.",
     "Election-district geometry and result-label crosswalks are source leads only, so map joins remain county-level.",
-    "Official 2012, 2016, and 2020 historical baseline rows are not loaded.",
+    "Official 2012 county historical baseline rows remain pending; official 2016 and 2020 county rows are loaded.",
     "No normalized 2024 audit, recount, CVR, incident, correction, or litigation rows are loaded.",
     "All advisory language must remain source-review context, not evidence of fraud or misconduct."
   ]

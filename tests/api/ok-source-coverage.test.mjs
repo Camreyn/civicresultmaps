@@ -23,7 +23,7 @@ test("oklahoma source coverage inventory preserves loaded sources and caveats", 
   assert.ok(sourceIds.has("ok-2024-precinct-level-results"));
   assert.ok(sourceIds.has("ok-2024-eac-turnout"));
   assert.ok(loadedIds.has("ok-2024-precinct-level-results"));
-  assert.equal(inventory.officialSourceFindings.historicalBaselines.status, "official_source_pages_identified_not_loaded");
+  assert.equal(inventory.officialSourceFindings.historicalBaselines.status, "official_2016_2020_loaded_2012_missing");
   assert.equal(inventory.officialSourceFindings.stateNativeTurnout.status, "denominator_lead_collected_eac_fallback_active");
   assert.ok(loadedIds.has("ok-2024-vrstats-registration-denominator-lead"));
   assert.match(inventory.officialSourceFindings.stateNativeTurnout.parserNormalizationPath, /collect-ok-vrstats-registration/);

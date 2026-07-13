@@ -116,37 +116,37 @@ const categorySymptomExamples: Record<
 > = {
   audit: {
     tamperingExample:
-      "Someone trying to harm an election could try to avoid or narrow an audit trail so a machine-count problem is harder to compare against paper evidence.",
+      "Audit records document the scope and method of an independent check and support comparison of machine-tabulated outcomes with paper evidence.",
     alternateExplanation:
       "Audit gaps can also come from aggregate-only publication, different retention rules, delayed local paperwork, or records that exist but have not been normalized yet.",
   },
   custody: {
     tamperingExample:
-      "Someone trying to harm an election could try to exploit weak custody records so ballot containers, equipment, or removable media cannot be cleanly traced.",
+      "Custody records help reconstruct who handled ballots, equipment, and removable media, when transfers occurred, and whether required documentation is complete.",
     alternateExplanation:
       "Custody gaps can also come from decentralized local recordkeeping, paper forms not yet digitized, clerical omissions, or records held by a different custodian.",
   },
   machine_logs: {
     tamperingExample:
-      "Someone trying to harm an election could try to change configuration, upload timing, or machine event records so electronic activity is hard to reconstruct.",
+      "Tabulator and election-management-system logs help reconstruct configuration, upload, adjudication, and event timing alongside other official records.",
     alternateExplanation:
       "Machine-log gaps can also come from vendor export limits, retention schedules, redaction review, fragmented county systems, or logs that require a formal request.",
   },
   paper_evidence: {
     tamperingExample:
-      "Someone trying to harm an election could try to make electronic ballot interpretations diverge from voter-mark evidence, then rely on missing CVRs or images to hide the mismatch.",
+      "Cast-vote records, ballot images where lawful, and retained paper records support comparison of electronic interpretations with voter-mark evidence.",
     alternateExplanation:
       "Paper-evidence gaps can also come from legal limits on ballot images or CVRs, privacy review, scanner settings, storage practices, or records that are obtainable only locally.",
   },
   records_request: {
     tamperingExample:
-      "Someone trying to harm an election could benefit when critical records are delayed, scattered, or routed through unclear custodians because independent checks take longer.",
+      "Request records document what was sought, which office holds it, response timing, fees or exemptions, and any remaining access gap.",
     alternateExplanation:
       "Records-request delays can also come from normal queue backlogs, fee estimates, custodian handoffs, legal review, holidays, or unclear public-records procedures.",
   },
   results: {
     tamperingExample:
-      "Someone trying to harm an election could try to alter or suppress local result rows so suspicious patterns are visible only after precinct, ward, or batch-level reconciliation.",
+      "Local result rows support reconciliation across precinct, ward, batch, county, and statewide publications and help document corrections or format changes.",
     alternateExplanation:
       "Result-localization gaps can also come from county-only publication, precinct consolidation, late corrected exports, formatting changes, or dashboards without bulk downloads.",
   },

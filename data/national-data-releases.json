@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "currentReleaseId": "2026-07-11-national-county-v1",
+  "releases": [
+    {
+      "id": "2026-07-11-national-county-v1",
+      "title": "National county presidential comparison release",
+      "publishedAt": "2026-07-11T00:00:00.000Z",
+      "status": "current",
+      "electionYears": [2016, 2020, 2024],
+      "geographyContract": "county:<five-digit Census GEOID>",
+      "geographyVintage": "2024 Census county and county-equivalent inventory",
+      "geographyVintageYear": 2024,
+      "historicalGeographyPolicy": "2016 and 2020 rows resolve to the current canonical county-equivalent inventory. Connecticut official town rows are reproducibly aggregated to the nine planning-region county equivalents adopted by the Census Bureau in 2022; those derived current-geography rows are not historical county reporting units.",
+      "dataSha256": "b068940760625cd005ba6ecd404cea5012ee1b172e9f57748bfd80a499876d97",
+      "archivePath": "/data/releases/2026-07-11-national-county-v1.zip",
+      "archiveSha256": "81d90d478272f0550590d60f22d4fc71f983cb1e247c4a8e1ce6d147e7b058a0",
+      "coverage": {
+        "registryCountyEquivalents": 3144,
+        "matchedCountyRowsByYear": {
+          "2016": 3114,
+          "2020": 3114,
+          "2024": 3114
+        },
+        "unavailableCountyEquivalents": 30,
+        "unavailableStates": ["AK"],
+        "intentionalNonGeographicRows": {
+          "2016": 2,
+          "2020": 2,
+          "2024": 0
+        }
+      },
+      "comparisonSummary": {
+        "2020-2024": {
+          "redToBlue": 0,
+          "blueToRed": 87,
+          "noFlip": 3027,
+          "matched": 3114
+        }
+      },
+      "changes": [
+        "Completed canonical FIPS joins for every available county and county-equivalent presidential row in 2016, 2020, and 2024.",
+        "Added permanent county profiles, national comparison APIs, confidence classifications, and a reproducible bulk release bundle.",
+        "Preserved Alaska as source-unavailable county geography rather than manufacturing county totals from non-comparable reporting units."
+      ],
+      "knownLimitations": [
+        "Alaska reports election results through election districts and precinct/reporting units that do not provide a reviewed county-equivalent crosswalk for these years; its 30 Census county equivalents remain unavailable.",
+        "Maine UOCAVA and Rhode Island Federal Precincts are intentional non-geographic historical rows and are excluded from county comparisons.",
+        "Connecticut 2016 and 2020 values are derived current-geography aggregates from official town rows to the nine planning regions adopted as Census county equivalents in 2022; they are not totals reported by those planning regions in those elections.",
+        "Turnout, equipment, vote-method, advisory, and administrative context have different reporting grains and should not be assumed to cover every county."
+      ],
+      "sourceArtifacts": [
+        "data/canonical-jurisdictions.json",
+        "data/jurisdiction-tag-coverage-waves.json",
+        "data/jurisdiction-tag-coverage-2016-waves.json",
+        "data/native-import-source-packages.json",
+        "data/source-acquisition-tiers.json",
+        "data/county-historical-aliases.json"
+      ]
+    }
+  ]
+}

@@ -41,6 +41,7 @@
     {
       "id": "ga-2012-official-results",
       "category": "Official historical presidential results export",
+      "electionYear": 2012,
       "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2012NovGen.json",
       "localFile": "data/ga-2012-official-results-export.json",
       "parser": "georgiaMediaExportJsonHistoricalSource",
@@ -51,24 +52,26 @@
     },
     {
       "id": "ga-2016-official-results",
-      "category": "Official historical presidential results export",
+      "category": "Official historical presidential and U.S. Senate results export",
+      "electionYear": 2016,
       "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2016NovGen.json",
       "localFile": "data/ga-2016-official-results-export.json",
       "parser": "georgiaMediaExportJsonHistoricalSource",
       "authority": "Georgia Secretary of State",
       "timestampBasis": "Official Georgia Secretary of State media export for the November 8, 2016 General Election, created January 8, 2025.",
-      "confidence": "Official county presidential rows retained as source artifact for contextual historical baseline normalization.",
+      "confidence": "Official county President and United States Senator, Isakson rows retained for historical baseline and same-grain advisory-review normalization. The selected county contest options contain no precinct-result rows.",
       "status": "loaded"
     },
     {
       "id": "ga-2020-official-results",
-      "category": "Official historical presidential results export",
+      "category": "Official historical presidential and U.S. Senate results export",
+      "electionYear": 2020,
       "url": "https://results.sos.ga.gov/cdn/results/Georgia/export-2020NovGen.json",
       "localFile": "data/ga-2020-official-results-export.json",
       "parser": "georgiaMediaExportJsonHistoricalSource",
       "authority": "Georgia Secretary of State",
       "timestampBasis": "Official Georgia Secretary of State media export for the November 3, 2020 General Election, created January 8, 2025.",
-      "confidence": "Official media-export county presidential rows retained as contextual historical baseline source. This artifact reports the original November general export total; do not mix it with separate recount result tables without an explicit reconciliation pass.",
+      "confidence": "Official media-export county President and regular US Senate (Perdue) rows retained for historical baseline and same-grain advisory-review normalization. This artifact reports the original November general election before the Senate runoff; the separate Loeffler special election is excluded, and the selected county contest options contain no precinct-result rows. Do not mix the presidential rows with separate recount result tables without an explicit reconciliation pass.",
       "status": "loaded"
     },
     {
@@ -80,6 +83,26 @@
       "authority": "Georgia Secretary of State",
       "timestampBasis": "County presidential rows normalized by scripts/collect-ga-historical-baseline.mjs from official Georgia SOS media exports for 2012, 2016, and 2020.",
       "confidence": "Official county-level historical presidential baselines used for context only. Individual rows carry the per-year SOS media-export URL.",
+      "metadata": {
+        "artifactRole": "deterministic_normalization_output",
+        "electionYears": [2012, 2016, 2020]
+      },
+      "status": "loaded"
+    },
+    {
+      "id": "ga-historical-review-rows",
+      "category": "Historical county presidential and U.S. Senate advisory-review rows",
+      "url": "https://results.sos.ga.gov/",
+      "localFile": "data/ga-historical-review-rows.csv",
+      "parser": "historicalReviewCsv",
+      "authority": "Georgia Secretary of State",
+      "timestampBasis": "County rows normalized July 12, 2026 by scripts/normalize-ga-historical-review.mjs from the official Georgia SOS November 2016 and November 2020 media exports.",
+      "confidence": "Official same-grain county President-versus-U.S.-Senate rows: 159 counties for each of 2016 and 2020. The 2020 rows use only the regular US Senate (Perdue) contest from the original November general export, before the runoff; the Loeffler special election is excluded. Selected county contest options expose no precinct-result rows, so these rows must not be described as precinct coverage.",
+      "metadata": {
+        "artifactRole": "deterministic_normalization_output",
+        "electionYears": [2016, 2020],
+        "officialInputSourceIds": ["ga-2016-official-results", "ga-2020-official-results"]
+      },
       "status": "loaded"
     },
     {
@@ -153,7 +176,7 @@
   "expected": {
     "jurisdictions": 159,
     "resultRows": 159,
-    "sources": 10,
+    "sources": 11,
     "stateTotal": 5250066,
     "trump": 2663117,
     "harris": 2548017,
@@ -163,7 +186,8 @@
     "comparableComparisonRows": 2637,
     "oneSidedComparisonRows": 8,
     "multiDistrictComparisonRows": 39,
-    "turnoutRows": 159
+    "turnoutRows": 159,
+    "historicalReviewRows": 318
   },
   "capabilities": {
     "sourcePlanner": true,
@@ -184,6 +208,22 @@
         2016,
         2020
       ]
+    }
+  },
+  "historicalReview": {
+    "format": "historicalReviewCsv",
+    "sourceId": "ga-historical-review-rows",
+    "warning": "Georgia historical advisory rows compare official county presidential results with official U.S. Senate results from the same county. The 2016 comparison is United States Senator, Isakson. The 2020 comparison is the regular US Senate (Perdue) contest from the original November general export, before the runoff; the Loeffler special election is excluded. Candidate and contest differences, split-ticket voting, and participation differences can explain observed patterns. The selected source options contain no precinct results, so this is county-only advisory context, not a finding of misconduct.",
+    "expected": {
+      "rowCount": 318,
+      "years": [
+        2016,
+        2020
+      ],
+      "rowCountsByYear": {
+        "2016": 159,
+        "2020": 159
+      }
     }
   }
 }

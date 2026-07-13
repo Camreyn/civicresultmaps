@@ -4,13 +4,13 @@ import "./globals.css";
 
 const siteUrl = "https://www.civicresultmaps.org";
 const siteDescription =
-  "Explore 2024 U.S. election result maps, state readiness, source provenance, review notes, and public data APIs from Civic Result Maps.";
+  "Explore source-linked 2016, 2020, and 2024 U.S. county election results, national flips, permanent county profiles, data confidence, releases, and public APIs.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: "Civic Result Maps",
   title: {
-    default: "Civic Result Maps | 2024 Election Result Maps and Source Data",
+    default: "Civic Result Maps | County Election Comparisons and Source Data",
     template: "%s | Civic Result Maps",
   },
   description: siteDescription,

@@ -58,12 +58,17 @@ type WorkspaceTabsProps = {
   coverage: CoverageSummary | null;
   countyLabel: string;
   electronicIntegrityStatus: ElectronicIntegrityStateSummary | undefined;
+  electionYear: 2016 | 2020 | 2024;
   electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
   sourceRecordsRequests: SourceRecordsRequestOperationSummary;
   equipmentRows: EquipmentRowSummary[];
   historicalRows: HistoricalResultRowSummary[];
+  initialFips?: string;
+  initialMapMode?: "winner" | "margin" | "volume" | "method" | "equipment";
+  initialTab?: string;
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
+  indicatorsEvaluated: boolean;
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   statewideResultRows: ResultRow[];
@@ -2397,12 +2402,17 @@ export function WorkspaceTabs({
   electronicIntegrityStatus,
   electronicIntegrityRequests,
   sourceRecordsRequests,
+  electionYear,
   coverage,
   countyLabel,
   equipmentRows,
   historicalRows,
+  initialFips,
+  initialMapMode,
+  initialTab,
   importRuns,
   indicators,
+  indicatorsEvaluated,
   reviewRows,
   results,
   statewideResultRows,
@@ -2414,7 +2424,10 @@ export function WorkspaceTabs({
   turnoutRows,
   voteMethodRows,
 }: WorkspaceTabsProps) {
-  const [activeTab, setActiveTab] = useState<TabKey>("map");
+  const requestedTab = initialTab && tabs.some((item) => item.key === initialTab)
+    ? initialTab as TabKey
+    : "map";
+  const [activeTab, setActiveTab] = useState<TabKey>(requestedTab);
   const [copiedElectronicDraft, setCopiedElectronicDraft] = useState(false);
   const [copiedSourceRecordsDraft, setCopiedSourceRecordsDraft] = useState(false);
   const [enabledScreeningGraphs, setEnabledScreeningGraphs] = useState<ScreeningGraphType[]>([
@@ -2448,9 +2461,18 @@ export function WorkspaceTabs({
   const selectTab = (tab: TabKey) => {
     setActiveTab(tab);
     const url = new URL(window.location.href);
+    if (tab !== "map") {
+      url.searchParams.set("year", "2024");
+      url.searchParams.delete("mode");
+      url.searchParams.delete("fips");
+    }
     url.searchParams.set("state", selectedStateCode);
     url.searchParams.set("tab", tab);
-    window.history.replaceState(null, "", url);
+    if (tab === activeTab) {
+      window.history.replaceState(null, "", url);
+      return;
+    }
+    window.location.assign(url);
   };
 
   const syncReviewTourStep = (step: TourStep) => {
@@ -3197,26 +3219,32 @@ export function WorkspaceTabs({
   ]);
   const reviewRowExportHeaders = [
     "jurisdiction",
+    "jurisdiction_tag",
     "local_unit",
     "level",
-    "harris_votes",
-    "trump_votes",
+    "dem_candidate",
+    "rep_candidate",
+    "dem_votes",
+    "rep_votes",
     "total_votes",
-    "harris_share",
-    "trump_share",
+    "dem_share",
+    "rep_share",
     "dem_dropoff",
     "rep_dropoff",
     "source",
   ];
   const reviewRowExportRows = reviewRows.map((row) => [
     row.jurisdictionName,
+    row.jurisdictionTag ?? "",
     row.localUnit,
     row.level,
-    row.harrisVotes ?? "",
-    row.trumpVotes ?? "",
+    row.demCandidate ?? "",
+    row.repCandidate ?? "",
+    row.demVotes ?? row.harrisVotes ?? "",
+    row.repVotes ?? row.trumpVotes ?? "",
     row.totalVotes ?? "",
-    row.harrisShare ?? "",
-    row.trumpShare ?? "",
+    row.demShare ?? row.harrisShare ?? "",
+    row.repShare ?? row.trumpShare ?? "",
     row.demDropoff ?? "",
     row.repDropoff ?? "",
     row.sourceId,
@@ -3525,8 +3553,12 @@ export function WorkspaceTabs({
           <div className="content-grid">
             <ResultsExplorer
               countyLabel={countyLabel}
+              electionYear={electionYear}
               equipmentRows={equipmentRows}
               indicators={indicators}
+              indicatorsEvaluated={indicatorsEvaluated}
+              initialFips={initialFips}
+              initialMapMode={initialMapMode}
               results={results}
               reviewRows={reviewRows}
               selectedState={selectedStateCode}

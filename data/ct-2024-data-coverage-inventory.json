@@ -251,8 +251,8 @@
     ],
     "caveat": "Planning regions are the current Census county-equivalent comparison geography and were not the historical election reporting units. Official 2012 rows remain uncollected."
   },
-  "sourceFindings": {
-    "0": {
+  "sourceFindings": [
+    {
       "topic": "certifiedPresidentResults",
       "status": "official_certified_sov_town_rows_loaded_current_planning_region_aggregate_reconciled",
       "reportingGrain": "169_towns_aggregated_to_9_current_planning_regions",
@@ -261,7 +261,7 @@
       "blocker": "No 2024 presidential result reconciliation blocker remains. Production promotion is a separate coordinator action; current-geography and turnout caveats remain.",
       "localArtifact": "data/ct-2024-statement-of-vote.pdf; data/ct-2024-statement-of-vote-president-town.csv; data/ct-2024-statement-of-vote-president-reconciliation.json; data/ct-current-planning-region-crosswalk.csv"
     },
-    "1": {
+    {
       "topic": "sameGrainComparisonContest",
       "status": "official_town_us_senate_loaded_with_cross_endorsement_caveat",
       "reportingGrain": "town",
@@ -270,7 +270,7 @@
       "blocker": "No parser blocker remains for town comparison rows; cross-endorsed ballot-line fusion caveat must remain visible.",
       "localArtifact": "data/ct-2024-ems-election-91-version-80741"
     },
-    "2": {
+    {
       "topic": "stateNativeTurnout",
       "status": "official_town_turnout_loaded_warning_required",
       "reportingGrain": "town",
@@ -279,14 +279,14 @@
       "blocker": "Rows remain warning-required until EMS field semantics and Statement-of-Vote/EAC differences are reviewed.",
       "localArtifact": "data/ct-2024-ems-election-91-version-80741"
     },
-    "3": {
+    {
       "topic": "precinctWardAvailability",
       "status": "precinct_labels_available_vote_rows_not_confirmed",
       "reportingGrain": "town_with_polling_place_labels",
       "expectedRowsOrTotals": "759 polling-place labels and precinct reporting-completeness rows are present in EMS Lookupdata/officePrecincts.",
       "blocker": "Static JSON townVotes was confirmed at town grain; precinct/ward candidate vote exports or CVR availability still need report-download review or records requests."
     },
-    "4": {
+    {
       "topic": "geometryAndCrosswalk",
       "status": "official_exact_town_to_current_planning_region_crosswalk_loaded",
       "reportingGrain": "town_to_current_planning_region_county_equivalent",
@@ -298,7 +298,7 @@
       "sourceLead": "Census TIGERweb Current WMS county-subdivision layer 22 with STATE='09'",
       "blocker": "No crosswalk blocker remains: the normalizer filters five placeholders and proves 169 exact EMS-to-Census BASENAME matches. Production promotion remains a separate coordinator decision."
     },
-    "5": {
+    {
       "topic": "historicalBaselines",
       "status": "official_2016_2020_loaded_current_planning_region_2012_missing",
       "targetYears": [
@@ -315,31 +315,23 @@
       "localArtifact": "data/ct-historical-presidential-baseline.csv",
       "blocker": "Official 2012 rows remain uncollected. Planning-region aggregation is current comparison geography, not the historical reporting unit."
     },
-    "6": {
+    {
       "topic": "postElectionAudit",
       "status": "official_linked_uconn_report_lead_not_loaded",
       "sourceLead": "UConn VoTeR post-election audit reports linked from the SOTS election-information page.",
       "blocker": "Audit selection/outcome rows are not normalized."
     },
-    "7": {
+    {
       "topic": "cvrAvailabilityAndRequestPaths",
       "status": "request_path_needed_not_loaded",
       "blocker": "No statewide CVR export or official CVR availability record was normalized in this pass; use SOTS and municipal records-request paths if precinct/ward or CVR-level evidence is needed."
     },
-    "8": {
+    {
       "topic": "recountsCorrectionsIncidentsLitigation",
       "status": "request_path_needed_not_loaded",
       "blocker": "No recount, correction, incident, or litigation artifact rows are loaded. This is a source-coverage gap only, not evidence of misconduct."
     },
-    "9": {
-      "topic": "equipmentContext",
-      "status": "county_equipment_context_loaded",
-      "sourceAuthority": "Verified Voting Verifier",
-      "localArtifact": "data/ct-2024-equipment-context.csv",
-      "expectedRowsOrTotals": "8 historical county context rows",
-      "caveat": "Equipment context is supplemental administration metadata and is not a vote, turnout, audit, or incident source."
-    },
-    "10": {
+    {
       "topic": "equipmentContext",
       "status": "county_equipment_context_loaded",
       "sourceAuthority": "Verified Voting Verifier",
@@ -347,7 +339,7 @@
       "expectedRowsOrTotals": "8 historical county context rows",
       "caveat": "Equipment context is supplemental administration metadata and is not a vote, turnout, audit, or incident source."
     }
-  },
+  ],
   "mapJoinImplications": [
     "Connecticut 2024 President results use certified Statement of Vote town rows and aggregate reproducibly to nine current Census planning-region county-equivalents for map and jurisdictionTag joins; EMS U.S. Senate review and turnout rows remain at town grain.",
     "The 169-row crosswalk exact-matches EMS names to Census BASENAME and derives each county:09110-through-county:09190 tag from Census COUNTY/GEOID. Retired eight-county EMS labels are not forced into current county-equivalent tags.",

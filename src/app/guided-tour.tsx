@@ -192,6 +192,7 @@ function cardPosition(target: Rect | null, cardHeight = 260) {
   };
 }
 
+const tourSessionKey = "civicresultmaps:guided-tour:v1";
 export function GuidedTour({ activeTab, onSelectTab, onStepChange, steps }: GuidedTourProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -200,6 +201,33 @@ export function GuidedTour({ activeTab, onSelectTab, onStepChange, steps }: Guid
   const cardRef = useRef<HTMLElement | null>(null);
   const activeStep = steps[stepIndex];
   const position = useMemo(() => cardPosition(targetRect, cardRect?.height), [cardRect?.height, targetRect]);
+
+  useEffect(() => {
+    try {
+      const saved = window.sessionStorage.getItem(tourSessionKey);
+      if (!saved) {
+        return;
+      }
+      window.sessionStorage.removeItem(tourSessionKey);
+      const payload = JSON.parse(saved) as { stepId?: string };
+      const restoredIndex = steps.findIndex((step) => step.id === payload.stepId);
+      if (restoredIndex >= 0) {
+        setStepIndex(restoredIndex);
+        setIsOpen(true);
+      }
+    } catch {
+      // Ignore unavailable or malformed session storage.
+    }
+  }, [steps]);
+
+  const closeTour = () => {
+    try {
+      window.sessionStorage.removeItem(tourSessionKey);
+    } catch {
+      // Closing the tour must not depend on storage access.
+    }
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     if (stepIndex <= steps.length - 1) {
@@ -222,6 +250,11 @@ export function GuidedTour({ activeTab, onSelectTab, onStepChange, steps }: Guid
       return;
     }
 
+    try {
+      window.sessionStorage.setItem(tourSessionKey, JSON.stringify({ stepId: activeStep.id }));
+    } catch {
+      // Navigation still works when session storage is unavailable.
+    }
     onSelectTab(activeStep.tab);
   }, [activeStep, activeTab, isOpen, onSelectTab]);
 
@@ -253,7 +286,7 @@ export function GuidedTour({ activeTab, onSelectTab, onStepChange, steps }: Guid
     const skipStep = () => {
       setStepIndex((current) => {
         if (current >= steps.length - 1) {
-          setIsOpen(false);
+          closeTour();
           return current;
         }
 
@@ -389,7 +422,7 @@ export function GuidedTour({ activeTab, onSelectTab, onStepChange, steps }: Guid
               <span>
                 Step {stepIndex + 1} of {steps.length}
               </span>
-              <button aria-label="Close tutorial" onClick={() => setIsOpen(false)} type="button">
+              <button aria-label="Close tutorial" onClick={closeTour} type="button">
                 <X aria-hidden size={15} />
               </button>
             </div>
@@ -425,7 +458,7 @@ export function GuidedTour({ activeTab, onSelectTab, onStepChange, steps }: Guid
                 Back
               </button>
               {stepIndex === steps.length - 1 ? (
-                <button onClick={() => setIsOpen(false)} type="button">
+                <button onClick={closeTour} type="button">
                   Finish
                 </button>
               ) : (

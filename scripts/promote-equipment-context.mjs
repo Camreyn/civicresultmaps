@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
 import { jurisdictionTagForRow } from "../src/lib/jurisdiction-tags.ts";
 import { requireState, stateCodes } from "./state-metadata.mjs";
+import { bumpPublicDataRevision } from "./public-data-revision.mjs";
 
 function getDatabaseUrl() {
   return (
@@ -311,6 +312,8 @@ async function promoteState(sql, registry, state, year) {
       summary = ${JSON.stringify({ source: "Verified Voting Verifier", storedEquipmentRows: rows.length })}::jsonb
     where id = ${importRun.id}
   `;
+
+  await bumpPublicDataRevision(sql, `equipment-promotion:${state}:${year}`);
 
   console.log(`Promoted ${rows.length} ${state} ${year} equipment context rows.`);
 }
