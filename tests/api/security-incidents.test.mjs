@@ -74,7 +74,7 @@ test("security incident API and server loader are wired", () => {
   assert.match(loader, /!requestedState \|\| row\.state === requestedState/);
   assert.match(loader, /listSecurityIncidentStateSummaries/);
   assert.match(loader, /getNationalSecurityIncidentReport/);
-  assert.match(api, /"security-incidents"/);
+  assert.match(api, /security-incidents-\$\{securityIncidentApiSchemaVersion\}/);
   assert.match(page, /securityIncidents={securityIncidents}/);
   assert.match(page, /href="\/security"/);
   assert.match(page, /securityIncidentStates={securityIncidentStateSummaries}/);
