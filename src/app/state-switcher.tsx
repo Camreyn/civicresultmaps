@@ -8,16 +8,19 @@ import {
   MapIcon,
   Search,
   Settings2,
+  ShieldAlert,
   UsersRound,
 } from "lucide-react";
 import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
-import type { CompletenessSummary, StateSummary } from "@/lib/types";
+import { affectedLocationText } from "@/lib/security-incident-summary";
+import type { CompletenessSummary, SecurityIncidentStateSummary, StateSummary } from "@/lib/types";
 
 type StateSwitcherProps = {
   completenessReport: CompletenessSummary[];
+  securityIncidentStates: SecurityIncidentStateSummary[];
   selectedState: string;
   states: StateSummary[];
 };
@@ -31,6 +34,7 @@ type StateFilter =
   | "missing-turnout"
   | "missing-review"
   | "has-result-map"
+  | "has-security-incidents"
   | "equipment-map-only"
   | "has-turnout"
   | "has-history";
@@ -45,6 +49,15 @@ type StateDataBadge = {
 };
 
 const stateListScrollStorageKey = "crm-state-list-scroll-top";
+const emptyStateCapabilities: StateSummary["capabilities"] = {
+  certifiedResults: false,
+  historicalBaseline: false,
+  map: false,
+  notes: "Security incident records are available independently of election-result coverage.",
+  reviewGraphs: false,
+  sourcePlanner: false,
+  turnout: false,
+};
 
 const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
   { label: "All states", value: "all" },
@@ -53,6 +66,7 @@ const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
   { label: "Results only", value: "results-only" },
   { label: "Needs sources", value: "needs-sources" },
   { label: "Result maps", value: "has-result-map" },
+  { label: "Loaded bomb-threat records", value: "has-security-incidents" },
   { label: "Equipment maps only", value: "equipment-map-only" },
   { label: "Missing turnout", value: "missing-turnout" },
   { label: "Missing review", value: "missing-review" },
@@ -252,11 +266,20 @@ function stateDataBadges(state: StateSummary, summary: CompletenessSummary | und
   ];
 }
 
-function stateMatchesFilter(state: StateSummary, summary: CompletenessSummary | undefined, filter: StateFilter) {
+function stateMatchesFilter(
+  state: StateSummary,
+  summary: CompletenessSummary | undefined,
+  filter: StateFilter,
+  securityIncidentStateCodes: Set<string>,
+) {
   if (filter === "all") {
     return true;
   }
 
+
+  if (filter === "has-security-incidents") {
+    return securityIncidentStateCodes.has(state.code);
+  }
   if (!summary) {
     return false;
   }
@@ -313,7 +336,12 @@ function stateMatchesFilter(state: StateSummary, summary: CompletenessSummary | 
   return summary.historicalRowCount > 0;
 }
 
-export function StateSwitcher({ completenessReport, selectedState, states }: StateSwitcherProps) {
+export function StateSwitcher({
+  completenessReport,
+  securityIncidentStates,
+  selectedState,
+  states,
+}: StateSwitcherProps) {
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState<StateFilter>("all");
   const stateListRef = useRef<HTMLDivElement>(null);
@@ -322,12 +350,38 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
     () => new Map(completenessReport.map((summary) => [summary.state, summary])),
     [completenessReport],
   );
+  const securityIncidentStateCodes = useMemo(
+    () => new Set(securityIncidentStates.map((summary) => summary.state)),
+    [securityIncidentStates],
+  );
+  const securitySummaryByState = useMemo(
+    () => new Map(securityIncidentStates.map((summary) => [summary.state, summary])),
+    [securityIncidentStates],
+  );
+  const filterableStates = useMemo(() => {
+    if (stateFilter !== "has-security-incidents") {
+      return states;
+    }
+
+    const knownCodes = new Set(states.map((state) => state.code));
+    const securityOnlyStates: StateSummary[] = securityIncidentStates
+      .filter((summary) => !knownCodes.has(summary.state))
+      .map((summary) => ({
+        authority: "Official county security records",
+        capabilities: emptyStateCapabilities,
+        code: summary.state,
+        countyLabel: "County",
+        name: summary.stateName,
+      }));
+
+    return [...states, ...securityOnlyStates].sort((left, right) => left.name.localeCompare(right.name));
+  }, [securityIncidentStates, stateFilter, states]);
   const filteredStates = useMemo(
     () =>
-      states.filter((state) => {
+      filterableStates.filter((state) => {
         const summary = completenessByState.get(state.code);
 
-        if (!stateMatchesFilter(state, summary, stateFilter)) {
+        if (!stateMatchesFilter(state, summary, stateFilter, securityIncidentStateCodes)) {
           return false;
         }
 
@@ -341,7 +395,7 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
           state.authority.toLowerCase().includes(normalizedQuery)
         );
       }),
-    [completenessByState, normalizedQuery, stateFilter, states],
+    [completenessByState, filterableStates, normalizedQuery, securityIncidentStateCodes, stateFilter],
   );
 
   useLayoutEffect(() => {
@@ -392,11 +446,19 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
         >
           {stateFilterOptions.map((option) => (
             <option key={option.value} value={option.value}>
-              {option.label}
+              {option.value === "has-security-incidents"
+                ? `${option.label} (${securityIncidentStates.length})`
+                : option.label}
             </option>
           ))}
         </select>
       </label>
+      {stateFilter === "has-security-incidents" && (
+        <p className="state-filter-note">
+          Shows states with at least one loaded official county record. This is not a complete list of every state
+          where threats may have occurred.
+        </p>
+      )}
       <label className="state-search" htmlFor="state-search">
         <Search aria-hidden size={16} />
         <input
@@ -412,7 +474,10 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
       <div className="state-list" data-count={filteredStates.length} onScroll={rememberStateListScroll} ref={stateListRef}>
         {filteredStates.map((state) => {
           const summary = completenessByState.get(state.code);
-          const status = stateStatus(summary, state);
+          const securitySummary = securitySummaryByState.get(state.code);
+          const status = stateFilter === "has-security-incidents"
+            ? { className: "status-partial", label: "Security" }
+            : stateStatus(summary, state);
           const badges = stateDataBadges(state, summary);
 
           return (
@@ -438,8 +503,23 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
               </div>
               <div className="state-meta-row">
                 <span>{state.authority}</span>
-                {summary?.sourceTier && <span className="state-tier">{summary.sourceTier.replaceAll("_", " ")}</span>}
+                {stateFilter !== "has-security-incidents" && summary?.sourceTier && (
+                  <span className="state-tier">{summary.sourceTier.replaceAll("_", " ")}</span>
+                )}
               </div>
+              {stateFilter === "has-security-incidents" && securitySummary ? (
+                <div
+                  aria-label={`${state.name}: ${securitySummary.countyCount} loaded county records; ${affectedLocationText(securitySummary)}`}
+                  className="state-security-summary"
+                >
+                  <ShieldAlert aria-hidden size={14} />
+                  <strong>
+                    {securitySummary.countyCount.toLocaleString()} loaded county{" "}
+                    {securitySummary.countyCount === 1 ? "record" : "records"}
+                  </strong>
+                  <span>{affectedLocationText(securitySummary)}</span>
+                </div>
+              ) : (
               <div
                 className="state-data-grid"
                 aria-label={`${state.name} data availability`}
@@ -461,6 +541,7 @@ export function StateSwitcher({ completenessReport, selectedState, states }: Sta
                   );
                 })}
               </div>
+              )}
             </Link>
           );
         })}

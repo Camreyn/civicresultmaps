@@ -8,6 +8,7 @@ import {
   GitCompareArrows,
   MapPin,
   Radar,
+  ShieldAlert,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { GlobalCountySearch } from "./global-county-search";
@@ -40,6 +41,7 @@ import {
   type SupportedPresidentialYear,
 } from "@/lib/api-version";
 import { buildStateSocialPreview } from "@/lib/social-preview";
+import { listSecurityIncidentStateSummaries } from "@/lib/security-incidents";
 import { historicalCountyRowsToResults } from "@/lib/state-year-results";
 
 const workspaceTabs = new Set([
@@ -56,6 +58,7 @@ const workspaceTabs = new Set([
   "contact",
 ]);
 const mapModes = new Set(["winner", "margin", "volume", "method", "equipment", "security"]);
+const securityIncidentStateSummaries = listSecurityIncidentStateSummaries(2024);
 
 type HomeProps = {
   searchParams?: Promise<{
@@ -312,6 +315,10 @@ export default async function Home({ searchParams }: HomeProps) {
             <GitCompareArrows aria-hidden size={15} />
             Compare
           </a>
+          <a className="topbar-link" href="/security">
+            <ShieldAlert aria-hidden size={15} />
+            Security
+          </a>
           <a className="topbar-link" href="/evidence">
             <Radar aria-hidden size={15} />
             Evidence
@@ -338,7 +345,12 @@ export default async function Home({ searchParams }: HomeProps) {
             <p className="section-label">States</p>
             <span>{states.length} loaded</span>
           </div>
-          <StateSwitcher completenessReport={completenessReport} selectedState={selectedStateCode} states={states} />
+          <StateSwitcher
+            completenessReport={completenessReport}
+            securityIncidentStates={securityIncidentStateSummaries}
+            selectedState={selectedStateCode}
+            states={states}
+          />
         </aside>
 
         <section className="main-panel">

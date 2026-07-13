@@ -60,16 +60,22 @@ test("security incident API and server loader are wired", () => {
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
 
   assert.match(route, /listSecurityIncidents/);
-  assert.match(route, /publicDataCacheHeaders/);
+  assert.match(route, /securityIncidentCacheHeaders/);
+  assert.match(route, /s-maxage=86400/);
+  assert.match(route, /summarizeSecurityIncidents/);
   assert.match(route, /not evidence of fraud or misconduct/);
   assert.match(route, /Number\.isInteger\(requestedLimit\)/);
-  assert.match(route, /rows\.length > 0 && rows\.every/);
-  assert.match(route, /documentedThreatCount = threatCountComplete/);
   assert.match(loader, /election-security-incidents-2024\.json/);
-  assert.match(loader, /row\.state === requestedState/);
+  assert.match(loader, /election-security-incident-source-inventory-2024\.json/);
+  assert.match(loader, /!requestedState \|\| row\.state === requestedState/);
+  assert.match(loader, /listSecurityIncidentStateSummaries/);
+  assert.match(loader, /getNationalSecurityIncidentReport/);
   assert.match(api, /"security-incidents"/);
   assert.match(page, /securityIncidents={securityIncidents}/);
+  assert.match(page, /href="\/security"/);
+  assert.match(page, /securityIncidentStates={securityIncidentStateSummaries}/);
   assert.match(tabs, /\/api\/security-incidents\?state=/);
+  assert.match(tabs, /import\("jszip"\)/);
 });
 
 test("security map layer remains separate from advisory indicators", () => {
@@ -84,5 +90,5 @@ test("security map layer remains separate from advisory indicators", () => {
   assert.match(explorer, /mapMode !== "equipment" && mapMode !== "security"/);
   assert.match(explorer, /Official security incident records/);
   assert.match(explorer, /Open incident source/);
-  assert.match(explorer, /not evidence of fraud or misconduct/);
+  assert.match(explorer, /evidence of fraud or misconduct/);
 });

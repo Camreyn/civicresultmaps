@@ -281,6 +281,60 @@ export type SecurityIncidentSummary = {
   caveat: string;
 };
 
+export type SecurityIncidentTotals = {
+  affectedLocationCountComplete: boolean;
+  affectedLocations: number | null;
+  countyCount: number;
+  documentedThreatCount: number | null;
+  knownAffectedLocations: number;
+  knownThreatCount: number;
+  rowCount: number;
+  stateCount: number;
+  threatCountComplete: boolean;
+};
+
+export type SecurityIncidentStateSummary = SecurityIncidentTotals & {
+  state: string;
+  stateName: string;
+};
+
+export type SecurityIncidentCoverageState = {
+  caveat?: string;
+  confidence?: string;
+  expectedRowCount?: number;
+  sourceAuthorities?: string[];
+  sourceUrls?: string[];
+  state: string;
+  stateName: string;
+  status: "partial" | "needs_data";
+};
+
+export type SecurityIncidentNationalContext = {
+  acquiredAt?: string;
+  acquisitionStatus?: string;
+  caveat: string;
+  confidence: string;
+  electionYear: number;
+  expectedRowCount: number | null;
+  localArtifact: string;
+  normalizationPath: string;
+  reportingGrain: string;
+  sha256?: string;
+  sourceAuthority: string;
+  sourceTitle: string;
+  sourceUrl: string;
+};
+
+export type NationalSecurityIncidentReport = {
+  caveat: string;
+  electionYear: number;
+  incidents: SecurityIncidentSummary[];
+  nationalContext: SecurityIncidentNationalContext[];
+  stateCoverage: SecurityIncidentCoverageState[];
+  stateSummaries: SecurityIncidentStateSummary[];
+  totals: SecurityIncidentTotals;
+};
+
 export type AdminSourceFamilyStatus = {
   status: "loaded" | "partial" | "candidate" | "needs_data" | "blocked" | "documented_exclusion";
   why?: string;

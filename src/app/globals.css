@@ -1040,6 +1040,14 @@ input {
   width: 100%;
 }
 
+.state-filter-note {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+  margin: -2px 2px 2px;
+}
+
+
 .state-search:focus-within {
   border-color: var(--accent-line);
   outline: 2px solid var(--accent-soft);
@@ -1187,6 +1195,30 @@ input {
   display: grid;
   gap: 5px;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.state-security-summary {
+  align-items: center;
+  background: rgba(130, 184, 255, 0.08);
+  border: 1px solid rgba(130, 184, 255, 0.24);
+  border-radius: 7px;
+  color: var(--blue);
+  display: grid;
+  gap: 3px 7px;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 8px;
+}
+
+.state-security-summary svg {
+  grid-row: 1 / span 2;
+}
+
+.state-security-summary strong {
+  font-size: 12px;
+}
+
+.state-security-summary span {
+  font-size: 11px;
 }
 
 .state-data-badge {
@@ -2211,6 +2243,19 @@ input {
   font-size: 13px;
 }
 
+.equipment-map-note {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.security-national-link {
+  color: var(--accent);
+  font-weight: 700;
+  margin-left: 4px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+
 .map-wrap {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
@@ -2450,6 +2495,40 @@ input {
   padding: 16px;
 }
 
+.drawer-selection-header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.drawer-selection-header > div {
+  display: grid;
+  gap: 4px;
+}
+
+.drawer-clear-selection {
+  align-items: center;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 12px;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 10px;
+}
+
+.drawer-clear-selection:hover,
+.drawer-clear-selection:focus-visible {
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+
 .jurisdiction-drawer h3 {
   font-size: 18px;
   margin: 0;
@@ -2511,6 +2590,15 @@ input {
   display: grid;
   gap: 10px;
 }
+
+.drawer-indicators .security-count-note {
+  background: rgba(240, 195, 106, 0.08);
+  border: 1px solid rgba(240, 195, 106, 0.28);
+  border-radius: 8px;
+  margin: 0;
+  padding: 10px 12px;
+}
+
 
 .drawer-indicators article strong {
   font-size: 13px;
