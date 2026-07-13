@@ -251,7 +251,12 @@ export type EquipmentRowSummary = {
   sourceUrl: string;
 };
 
-export type SecurityAffectedLocationUnit = "polling_location" | "voting_precinct";
+export type SecurityAffectedLocationUnit = "election_office" | "polling_location" | "voting_precinct";
+export type SecurityIncidentSourceTier = "official" | "supplemental";
+export type SecurityThreatCountBasis =
+  | "official_county_record"
+  | "supplemental_national_compilation"
+  | "not_separately_published";
 
 export type SecurityIncidentSummary = {
   id: string;
@@ -266,8 +271,12 @@ export type SecurityIncidentSummary = {
   eventType: "bomb_threat" | "security_threat";
   eventTypeLabel: string;
   threatCount: number | null;
+  threatCountBasis: SecurityThreatCountBasis;
+  threatCountSourceUrl: string | null;
+  threatCountLocalArtifact: string | null;
   affectedLocations: number | null;
   affectedLocationUnit: SecurityAffectedLocationUnit;
+  namedLocations: string[];
   disruptionType: string;
   disruptionLabel: string;
   hoursExtended: number | null;
@@ -279,7 +288,8 @@ export type SecurityIncidentSummary = {
   localArtifact: string;
   supportingLocalArtifacts: string[];
   normalizationPath: string;
-  sourceStatus: "official_county_record";
+  sourceTier: SecurityIncidentSourceTier;
+  sourceStatus: "official_county_record" | "supplemental_national_compilation";
   confidence: "high" | "medium" | "low";
   caveat: string;
 };
@@ -299,9 +309,12 @@ export type SecurityIncidentTotals = {
   documentedThreatCount: number | null;
   knownAffectedLocations: number | null;
   knownThreatCount: number;
+  officialRowCount: number;
   rowCount: number;
   stateCount: number;
+  supplementalRowCount: number;
   threatCountComplete: boolean;
+  unknownThreatCountRows: number;
 };
 
 export type SecurityIncidentStateSummary = SecurityIncidentTotals & {
@@ -332,8 +345,12 @@ export type SecurityIncidentNationalContext = {
   reportingGrain: string;
   sha256?: string;
   sourceAuthority: string;
+  sourceTier?: SecurityIncidentSourceTier;
   sourceTitle: string;
   sourceUrl: string;
+  reportedCountyCount?: number;
+  reportedLocationCount?: number;
+  reportedStateCount?: number;
 };
 
 export type NationalSecurityIncidentReport = {

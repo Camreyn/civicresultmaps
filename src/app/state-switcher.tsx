@@ -15,7 +15,7 @@ import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
-import { affectedLocationText } from "@/lib/security-incident-summary";
+import { threatCountText } from "@/lib/security-incident-summary";
 import type { CompletenessSummary, SecurityIncidentStateSummary, StateSummary } from "@/lib/types";
 
 type StateSwitcherProps = {
@@ -66,7 +66,7 @@ const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
   { label: "Results only", value: "results-only" },
   { label: "Needs sources", value: "needs-sources" },
   { label: "Result maps", value: "has-result-map" },
-  { label: "Loaded bomb-threat records", value: "has-security-incidents" },
+  { label: "States with mapped bomb threats", value: "has-security-incidents" },
   { label: "Equipment maps only", value: "equipment-map-only" },
   { label: "Missing turnout", value: "missing-turnout" },
   { label: "Missing review", value: "missing-review" },
@@ -367,7 +367,7 @@ export function StateSwitcher({
     const securityOnlyStates: StateSummary[] = securityIncidentStates
       .filter((summary) => !knownCodes.has(summary.state))
       .map((summary) => ({
-        authority: "Official county security records",
+        authority: "Source-linked county security records",
         capabilities: emptyStateCapabilities,
         code: summary.state,
         countyLabel: "County",
@@ -455,8 +455,8 @@ export function StateSwitcher({
       </label>
       {stateFilter === "has-security-incidents" && (
         <p className="state-filter-note">
-          Shows states with at least one loaded official county record. This is not a complete list of every state
-          where threats may have occurred.
+          Shows the five states in the published nationwide Election Day compilation. County rows identify whether
+          their source is an official record or the supplemental compilation.
         </p>
       )}
       <label className="state-search" htmlFor="state-search">
@@ -509,15 +509,14 @@ export function StateSwitcher({
               </div>
               {stateFilter === "has-security-incidents" && securitySummary ? (
                 <div
-                  aria-label={`${state.name}: ${securitySummary.countyCount} loaded county records; ${affectedLocationText(securitySummary)}`}
+                  aria-label={`${state.name}: ${securitySummary.countyCount} mapped counties; ${threatCountText(securitySummary)}`}
                   className="state-security-summary"
                 >
                   <ShieldAlert aria-hidden size={14} />
                   <strong>
-                    {securitySummary.countyCount.toLocaleString()} loaded county{" "}
-                    {securitySummary.countyCount === 1 ? "record" : "records"}
+                    {securitySummary.countyCount.toLocaleString()} mapped {securitySummary.countyCount === 1 ? "county" : "counties"}
                   </strong>
-                  <span>{affectedLocationText(securitySummary)}</span>
+                  <span>{threatCountText(securitySummary)}</span>
                 </div>
               ) : (
               <div

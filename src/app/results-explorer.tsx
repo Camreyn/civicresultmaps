@@ -24,6 +24,7 @@ import {
   securityCountExplanation,
   securityIncidentSummaryText,
   summarizeSecurityIncidents,
+  threatCountBasisText,
   threatCountText,
 } from "@/lib/security-incident-summary";
 import { candidateNamesForYear } from "@/lib/state-year-results";
@@ -509,7 +510,8 @@ const equipmentPalette = [
 ];
 const securityLegend = [
   { color: "#f97316", label: "Loaded official county record" },
-  { color: "#2c302e", label: "No official row" },
+  { color: "#fbbf24", label: "Loaded supplemental compiled record" },
+  { color: "#2c302e", label: "No loaded matching record" },
 ] as const;
 
 function methodShare(row: VoteMethodAggregate | undefined) {
@@ -543,7 +545,8 @@ function equipmentFill(row: EquipmentRowSummary | undefined, feature: GeoFeature
 }
 
 function securityFill(rows: SecurityIncidentSummary[]) {
-  return rows.length ? "#f97316" : "#2c302e";
+  if (rows.some((row) => row.sourceTier === "official")) return "#f97316";
+  return rows.length ? "#fbbf24" : "#2c302e";
 }
 
 function securitySummary(rows: SecurityIncidentSummary[]) {
@@ -969,8 +972,9 @@ export function ResultsExplorer({
   const securityIncidentsByTag = useMemo(() => {
     const rows = new Map<string, SecurityIncidentSummary[]>();
     for (const row of securityIncidents) {
-      const current = rows.get(row.jurisdictionTag) ?? [];
-      rows.set(row.jurisdictionTag, [...current, row]);
+      const current = rows.get(row.jurisdictionTag);
+      if (current) current.push(row);
+      else rows.set(row.jurisdictionTag, [row]);
     }
     return rows;
   }, [securityIncidents]);
@@ -978,8 +982,9 @@ export function ResultsExplorer({
     const rows = new Map<string, SecurityIncidentSummary[]>();
     for (const row of securityIncidents) {
       const key = normalizeName(row.county);
-      const current = rows.get(key) ?? [];
-      rows.set(key, [...current, row]);
+      const current = rows.get(key);
+      if (current) current.push(row);
+      else rows.set(key, [row]);
     }
     return rows;
   }, [securityIncidents]);
@@ -1318,7 +1323,7 @@ export function ResultsExplorer({
             <span>
               {activeGeoStatus === "ready"
                 ? mapMode === "security"
-                  ? `${activeFeatures.length} ${activeGeometrySource}, ${securityIncidents.length} loaded official county records`
+                  ? `${activeFeatures.length} ${activeGeometrySource}, ${securityIncidents.length} source-linked county records`
                   : indicatorsEvaluated
                     ? `${activeFeatures.length} ${activeGeometrySource}, ${mapIndicators.length} advisory review flags`
                     : `${activeFeatures.length} ${activeGeometrySource}, advisory indicators not evaluated`
@@ -1532,7 +1537,7 @@ export function ResultsExplorer({
                 {mapMode === "equipment"
                   ? "Verified Voting equipment area"
                   : mapMode === "security"
-                    ? "official security incident"
+                    ? "source-linked security incident"
                     : "county presidential result"} map
               </title>
               <g transform={mapTransform}>
@@ -1733,8 +1738,8 @@ export function ResultsExplorer({
             <p>
               {mapMode === "security"
                 ? selectedMapSecurityIncidents.length
-                  ? `${securitySummary(selectedMapSecurityIncidents)} Open the official record below for scope and caveats.`
-                  : "No official county record is loaded here. This does not establish that no incident occurred."
+                  ? `${securitySummary(selectedMapSecurityIncidents)} Open the source record below for scope and caveats.`
+                  : "No county record is loaded here. This does not establish that no incident occurred."
                 : selectedMapResult
                   ? `${selectedMapResult.winner} won by ${selectedMapResult.marginVotes.toLocaleString()} votes (${selectedMapResult.marginPct.toFixed(2)}%).`
                   : "Click a county, district, or reporting boundary to inspect vote totals, review indicators, and source provenance."}
@@ -1821,7 +1826,7 @@ export function ResultsExplorer({
             </>
           )}
           {mapMode === "security" && (
-            <div className="drawer-indicators" aria-label="Official security incident records">
+            <div className="drawer-indicators" aria-label="Source-linked security incident records">
               {selectedMapSecurityIncidents.length > 0 && (
                 <p className="security-count-note">
                   {securityCountExplanation}
@@ -1831,20 +1836,29 @@ export function ResultsExplorer({
                 selectedMapSecurityIncidents.map((incident) => (
                   <article className="drawer-source" key={incident.id}>
                     <strong>{incident.eventTypeLabel} - {incident.eventDate}</strong>
+                    <span>{incident.sourceTier === "official" ? "Official county record" : "Supplemental nationwide compilation"}</span>
                     <span>{incident.disruptionLabel}</span>
                     <span>{affectedLocationText(summarizeSecurityIncidents([incident]))}</span>
                     <span>{threatCountText(summarizeSecurityIncidents([incident]))}</span>
+                    <span>{threatCountBasisText(incident.threatCountBasis)}</span>
                     <span>{incident.sourceAuthority}: {incident.sourceTitle}</span>
+                    {incident.namedLocations.length > 0 && <span>Named locations: {incident.namedLocations.join("; ")}</span>}
                     <span>{incident.caveat}</span>
                     <a href={incident.sourceUrl} rel="noreferrer" target="_blank">
                       <ExternalLink aria-hidden size={14} />
                       Open incident source
                     </a>
+                    {incident.threatCountSourceUrl && incident.threatCountSourceUrl !== incident.sourceUrl && (
+                      <a href={incident.threatCountSourceUrl} rel="noreferrer" target="_blank">
+                        <ExternalLink aria-hidden size={14} />
+                        Open threat-count source
+                      </a>
+                    )}
                   </article>
                 ))
               ) : (
                 <span className="no-indicator">
-                  No official incident row is loaded for this county; nationwide collection remains partial.
+                  No incident row is loaded for this county; unknown coverage is not treated as no incident.
                 </span>
               )}
             </div>
