@@ -58,6 +58,7 @@ test("security incident API and server loader are wired", () => {
   const api = readFileSync("src/lib/api.ts", "utf8");
   const page = readFileSync("src/app/page.tsx", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+  const vercelIgnore = readFileSync(".vercelignore", "utf8");
 
   assert.match(route, /listSecurityIncidents/);
   assert.match(route, /securityIncidentCacheHeaders/);
@@ -76,6 +77,7 @@ test("security incident API and server loader are wired", () => {
   assert.match(page, /securityIncidentStates={securityIncidentStateSummaries}/);
   assert.match(tabs, /\/api\/security-incidents\?state=/);
   assert.match(tabs, /import\("jszip"\)/);
+  assert.match(vercelIgnore, /!data\/election-security-incident-source-inventory-2024\.json/);
 });
 
 test("security map layer remains separate from advisory indicators", () => {
