@@ -128,7 +128,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
               <h2>Find another county</h2>
               <p>Search the current canonical registry by name, alias, state, or FIPS.</p>
             </div>
-            <GlobalCountySearch defaultState={profile.state} label="County search" />
+            <GlobalCountySearch defaultState={profile.state} key={"county-profile-search-" + profile.state} label="County search" />
           </aside>
         </section>
 

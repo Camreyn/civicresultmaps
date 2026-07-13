@@ -6,6 +6,7 @@ import {
   CircleDashed,
   Database,
   GitCompareArrows,
+  MapPin,
   Radar,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
@@ -343,9 +344,26 @@ export default async function Home({ searchParams }: HomeProps) {
         <section className="main-panel">
           <NationalOverview report={completenessReport} year={2024} />
 
-          <div className="workspace-search-row">
-            <GlobalCountySearch defaultState={selectedStateCode} label="Jump to any county profile" />
-          </div>
+          <section aria-labelledby="county-profile-jump-title" className="workspace-county-jump">
+            <div className="workspace-county-jump-copy">
+              <span aria-hidden className="workspace-county-jump-icon"><MapPin size={18} /></span>
+              <div>
+                <div className="workspace-county-jump-heading">
+                  <p className="section-label">County profiles</p>
+                  <span>Separate page</span>
+                </div>
+                <h2 id="county-profile-jump-title">Open a county profile</h2>
+                <p>Search nationwide by county name or five-digit FIPS. This opens a separate county history page and does not filter the state map.</p>
+              </div>
+            </div>
+            <GlobalCountySearch
+              className="workspace-county-search"
+              defaultState={selectedStateCode}
+              key={"county-profile-search-" + selectedStateCode}
+              label="County or FIPS"
+              placeholder="Enter county name, alias, or five-digit FIPS"
+            />
+          </section>
 
           <div className="dashboard-head">
             <div>

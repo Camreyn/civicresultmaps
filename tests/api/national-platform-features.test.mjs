@@ -91,6 +91,9 @@ test("comparison, county profile, global search, and confidence surfaces are wir
   const guidedTour = readFileSync("src/app/guided-tour.tsx", "utf8");
 
   assert.match(home, /GlobalCountySearch/);
+  assert.match(home, /Open a county profile/);
+  assert.match(home, /does not filter the state map/);
+  assert.match(home, /key=\{"county-profile-search-" \+ selectedStateCode\}/);
   assert.match(home, /supportedPresidentialYears/);
   assert.match(home, /initialMapMode/);
   assert.match(home, /needsReview/);
@@ -100,6 +103,7 @@ test("comparison, county profile, global search, and confidence surfaces are wir
   assert.match(county, /2016/);
   assert.match(county, /2020/);
   assert.match(county, /2024/);
+  assert.match(county, /key=\{"county-profile-search-" \+ profile\.state\}/);
   assert.match(county, /not evidence or findings of fraud/);
   assert.match(search, /role="combobox"/);
   for (const level of ["exact", "derived", "partial", "proxy", "non_geographic", "unavailable"]) {
