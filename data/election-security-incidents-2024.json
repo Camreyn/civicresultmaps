@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "description": "Official-source county-level election security incident rows for the November 5, 2024 general election. These rows are administration context and are kept separate from results, turnout, and advisory indicators.",
+  "electionYear": 2024,
+  "reportingGrain": "county",
+  "normalizationPath": "src/lib/security-incidents.ts#listSecurityIncidents",
+  "expected": {
+    "rowCount": 2,
+    "stateCount": 1,
+    "completeThreatCountRows": 0,
+    "knownThreatCountTotal": null,
+    "affectedPollingLocationsTotal": 11
+  },
+  "caveat": "This is a partial official-source registry, not a complete census of Election Day threats. A displayed row documents an official county record; an absent row does not establish that no incident occurred. Incident rows are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
+  "incidentRows": [
+    {
+      "id": "ga-2024-general-fulton-bomb-threat-disruptions",
+      "state": "GA",
+      "stateName": "Georgia",
+      "electionYear": 2024,
+      "county": "Fulton County",
+      "jurisdictionCode": "13121",
+      "jurisdictionTag": "county:13121",
+      "reportingGrain": "county",
+      "eventDate": "2024-11-05",
+      "eventType": "bomb_threat",
+      "eventTypeLabel": "Bomb threats",
+      "threatCount": null,
+      "affectedLocations": 5,
+      "disruptionType": "temporary_evacuation_and_extended_polling_hours",
+      "disruptionLabel": "Temporary evacuations; polling hours extended",
+      "hoursExtended": null,
+      "sourceAuthority": "Fulton County Board of Registration and Elections",
+      "sourceTitle": "Approved Minutes, Special Meeting - November 5, 2024",
+      "sourcePublishedAt": "2024-11-05",
+      "sourceUrl": "https://fultoncountyga.gov/-/media/Departments/Registration-and-Elections/Previous-Meetings/BRE-Approved-Minutes/BRE-11524-Approved-Minutes-630p.pdf",
+      "supportingSourceUrls": [
+        "https://www.fultoncountyga.gov/news/2024/11/05/voting-hours-extended-at-five-fulton-county-polls"
+      ],
+      "localArtifact": "data/ga-2024-election-day-security-fulton-bre-minutes.pdf",
+      "supportingLocalArtifacts": [
+        "data/ga-2024-election-day-security-fulton.html"
+      ],
+      "normalizationPath": "src/lib/security-incidents.ts#listSecurityIncidents",
+      "sourceStatus": "official_county_record",
+      "confidence": "high",
+      "caveat": "The approved county board minutes say the department received several bomb threats and identify five polling locations whose hours were extended after disruptions. The official records do not provide one exact threat-message count, and the five locations received different extensions from 10 to 45 minutes, so threatCount and hoursExtended remain null. This row is administration context only and is not evidence of fraud or misconduct."
+    },
+    {
+      "id": "ga-2024-general-dekalb-bomb-threat-disruptions",
+      "state": "GA",
+      "stateName": "Georgia",
+      "electionYear": 2024,
+      "county": "DeKalb County",
+      "jurisdictionCode": "13089",
+      "jurisdictionTag": "county:13089",
+      "reportingGrain": "county",
+      "eventDate": "2024-11-05",
+      "eventType": "bomb_threat",
+      "eventTypeLabel": "Bomb threats",
+      "threatCount": null,
+      "affectedLocations": 6,
+      "disruptionType": "temporary_voting_suspension",
+      "disruptionLabel": "Voting temporarily suspended during police sweeps",
+      "hoursExtended": null,
+      "sourceAuthority": "DeKalb County Police Department",
+      "sourceTitle": "DeKalb County Police Find No Bombs at Six Voting Precincts that Received Threats",
+      "sourcePublishedAt": "2024-11-05T20:57:00-05:00",
+      "sourceUrl": "https://dekalbcountyga.gov/news/dekalb-county-police-find-no-bombs-six-voting-precincts-received-threats",
+      "supportingSourceUrls": [],
+      "localArtifact": "data/ga-2024-election-day-security-dekalb.html",
+      "supportingLocalArtifacts": [],
+      "normalizationPath": "src/lib/security-incidents.ts#listSecurityIncidents",
+      "sourceStatus": "official_county_record",
+      "confidence": "high",
+      "caveat": "The county's 8:20 p.m. update identifies six active voting precincts that received bomb threats and two additional locations that were not current polling places. This row counts six affected active precincts, but the source does not state whether they correspond to six distinct threat messages, so threatCount remains null. Voting was temporarily suspended and resumed after police sweeps; the page says an extension was being sought but does not confirm a final order, so hoursExtended remains null. This row is administration context only and is not evidence of fraud or misconduct."
+    }
+  ]
+}

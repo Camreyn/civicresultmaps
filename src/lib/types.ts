@@ -251,6 +251,36 @@ export type EquipmentRowSummary = {
   sourceUrl: string;
 };
 
+export type SecurityIncidentSummary = {
+  id: string;
+  state: string;
+  stateName: string;
+  electionYear: number;
+  county: string;
+  jurisdictionCode: string;
+  jurisdictionTag: string;
+  reportingGrain: "county";
+  eventDate: string;
+  eventType: "bomb_threat" | "security_threat";
+  eventTypeLabel: string;
+  threatCount: number | null;
+  affectedLocations: number | null;
+  disruptionType: string;
+  disruptionLabel: string;
+  hoursExtended: number | null;
+  sourceAuthority: string;
+  sourceTitle: string;
+  sourcePublishedAt: string;
+  sourceUrl: string;
+  supportingSourceUrls: string[];
+  localArtifact: string;
+  supportingLocalArtifacts: string[];
+  normalizationPath: string;
+  sourceStatus: "official_county_record";
+  confidence: "high" | "medium" | "low";
+  caveat: string;
+};
+
 export type AdminSourceFamilyStatus = {
   status: "loaded" | "partial" | "candidate" | "needs_data" | "blocked" | "documented_exclusion";
   why?: string;

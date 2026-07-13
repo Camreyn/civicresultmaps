@@ -47,6 +47,7 @@ import type {
   ImportRunSummary,
   ResultRow,
   ReviewRowSummary,
+  SecurityIncidentSummary,
   SourceSummary,
   StateSummary,
   TurnoutRowSummary,
@@ -62,9 +63,10 @@ type WorkspaceTabsProps = {
   electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
   sourceRecordsRequests: SourceRecordsRequestOperationSummary;
   equipmentRows: EquipmentRowSummary[];
+  securityIncidents: SecurityIncidentSummary[];
   historicalRows: HistoricalResultRowSummary[];
   initialFips?: string;
-  initialMapMode?: "winner" | "margin" | "volume" | "method" | "equipment";
+  initialMapMode?: "winner" | "margin" | "volume" | "method" | "equipment" | "security";
   initialTab?: string;
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
@@ -2406,6 +2408,7 @@ export function WorkspaceTabs({
   coverage,
   countyLabel,
   equipmentRows,
+  securityIncidents,
   historicalRows,
   initialFips,
   initialMapMode,
@@ -3555,6 +3558,7 @@ export function WorkspaceTabs({
               countyLabel={countyLabel}
               electionYear={electionYear}
               equipmentRows={equipmentRows}
+              securityIncidents={securityIncidents}
               indicators={indicators}
               indicatorsEvaluated={indicatorsEvaluated}
               initialFips={initialFips}
@@ -5921,6 +5925,10 @@ export function WorkspaceTabs({
                 <strong>{equipmentRows.length.toLocaleString()}</strong>
               </article>
               <article>
+                <span>Security incident rows</span>
+                <strong>{securityIncidents.length.toLocaleString()}</strong>
+              </article>
+              <article>
                 <span>Total votes</span>
                 <strong>{totalVotes.toLocaleString()}</strong>
               </article>
@@ -5959,6 +5967,10 @@ export function WorkspaceTabs({
               <li>
                 <strong>Equipment context</strong>
                 <code>/api/equipment?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
+              </li>
+              <li>
+                <strong>Security incidents</strong>
+                <code>/api/security-incidents?state={selectedStateCode}&amp;year=2024&amp;limit=500</code>
               </li>
               <li>
                 <strong>Admin source statuses</strong>

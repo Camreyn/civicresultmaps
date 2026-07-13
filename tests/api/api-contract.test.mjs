@@ -30,6 +30,7 @@ test("public API route contracts exist", () => {
     "src/app/api/historical-baselines/route.ts",
     "src/app/api/native-source-packages/route.ts",
     "src/app/api/equipment/route.ts",
+    "src/app/api/security-incidents/route.ts",
     "src/app/api/admin-sources/route.ts",
     "src/app/api/source-acquisition-tiers/route.ts",
   ];

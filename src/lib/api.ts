@@ -19,6 +19,7 @@ import {
 } from "./data-access";
 import { listVoteMethodRows as uncachedListVoteMethodRows } from "./vote-methods";
 import { publicApiSchemaVersion } from "./api-version";
+import { listSecurityIncidents as uncachedListSecurityIncidents } from "./security-incidents";
 
 export const publicDataRevalidateSeconds = 15 * 60;
 const publicDataCacheNamespace = "public-data-historical-advisory-2026-07-12";
@@ -153,6 +154,11 @@ export const listReviewRows = cachePublicData(
 export const listResults = cachePublicData(
   uncachedListResults,
   "results",
+);
+
+export const listSecurityIncidents = cachePublicData(
+  uncachedListSecurityIncidents,
+  "security-incidents",
 );
 
 export const listSources = cachePublicData(
