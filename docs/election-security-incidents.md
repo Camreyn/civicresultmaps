@@ -21,7 +21,7 @@ The initial normalized package contains two Georgia county rows:
 
 Neither county source provides an exact count of distinct threat messages, so normalized `threatCount` values remain null. The six documented DeKalb precincts are counted as affected locations only.
 
-The FBI's November 5 national statement is retained as inventory context only because it identifies neither a state nor a county and therefore cannot support a county map row.
+The FBI's November 5 national statement is retained as inventory context only because it identifies neither a state nor a county and therefore cannot support a county map row. The repository includes a hash-verified manual HTML archive of the official statement; companion presentation assets are omitted because the HTML contains the full statement and canonical source URL.
 
 ## Interpretation limits
 

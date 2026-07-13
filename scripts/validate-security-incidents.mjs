@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import { stateCodes } from "./state-metadata.mjs";
 
@@ -175,9 +176,24 @@ if (inventory.expected?.normalizedEventRows !== rows.length) {
 }
 
 for (const context of inventory.nationalContext ?? []) {
-  validateOfficialUrl(context.sourceUrl, `${context.sourceAuthority ?? "national context"} sourceUrl`);
+  const label = context.sourceAuthority ?? "National context";
+  validateOfficialUrl(context.sourceUrl, `${label} sourceUrl`);
   if (context.localArtifact === null && !/blocked/i.test(context.acquisitionStatus ?? "")) {
-    addError(`${context.sourceAuthority ?? "National context"} needs a local artifact or an explicit blocked acquisition status.`);
+    addError(`${label} needs a local artifact or an explicit blocked acquisition status.`);
+  }
+  if (context.localArtifact !== null) {
+    if (!/^[a-f0-9]{64}$/i.test(context.sha256 ?? "")) {
+      addError(`${label} local artifact needs a reviewed SHA-256.`);
+    }
+    try {
+      const artifact = await readFile(context.localArtifact);
+      const actualSha256 = createHash("sha256").update(artifact).digest("hex");
+      if (actualSha256 !== context.sha256?.toLowerCase()) {
+        addError(`${label} local artifact SHA-256 does not match ${context.localArtifact}.`);
+      }
+    } catch {
+      addError(`${label} local artifact does not exist: ${context.localArtifact}.`);
+    }
   }
 }
 

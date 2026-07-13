@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 
 const registry = JSON.parse(readFileSync("data/election-security-incidents-2024.json", "utf8"));
@@ -34,6 +35,21 @@ test("nationwide incident inventory is explicit about partial coverage", () => {
   assert.equal(inventory.stateCoverage.find((entry) => entry.state === "GA")?.status, "partial");
   assert.equal(inventory.stateCoverage.find((entry) => entry.state === "WI")?.status, "needs_data");
   assert.match(inventory.caveat, /does not establish that no incident occurred/i);
+});
+
+test("FBI national context has a verified local archive", () => {
+  const context = inventory.nationalContext.find((entry) => entry.sourceAuthority === "Federal Bureau of Investigation");
+  assert.ok(context);
+  assert.equal(context.acquisitionStatus, "manual_browser_archive_complete");
+  assert.ok(existsSync(context.localArtifact), `${context.localArtifact} should exist`);
+  assert.match(context.sha256, /^[a-f0-9]{64}$/);
+
+  const artifact = readFileSync(context.localArtifact);
+  assert.equal(createHash("sha256").update(artifact).digest("hex"), context.sha256);
+  const html = artifact.toString("utf8");
+  assert.match(html, /bomb threats to polling locations in several states/i);
+  assert.match(html, /None of the threats have been determined to be credible/i);
+  assert.match(html, /https:\/\/www\.fbi\.gov\/news\/press-releases\/fbi-statement-on-bomb-threats-to-polling-locations/);
 });
 
 test("security incident API and server loader are wired", () => {

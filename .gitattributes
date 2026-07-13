@@ -43,3 +43,6 @@
 
 # Keep the combined North Carolina historical advisory artifact deterministic.
 /data/nc-historical-review-rows.csv text eol=lf
+
+# Preserve the manually archived official FBI source bytes for hash verification.
+/data/fbi-2024-bomb-threats-polling-locations.html -text whitespace=-trailing-space
