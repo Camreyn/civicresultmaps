@@ -251,6 +251,8 @@ export type EquipmentRowSummary = {
   sourceUrl: string;
 };
 
+export type SecurityAffectedLocationUnit = "polling_location" | "voting_precinct";
+
 export type SecurityIncidentSummary = {
   id: string;
   state: string;
@@ -265,6 +267,7 @@ export type SecurityIncidentSummary = {
   eventTypeLabel: string;
   threatCount: number | null;
   affectedLocations: number | null;
+  affectedLocationUnit: SecurityAffectedLocationUnit;
   disruptionType: string;
   disruptionLabel: string;
   hoursExtended: number | null;
@@ -281,12 +284,20 @@ export type SecurityIncidentSummary = {
   caveat: string;
 };
 
+export type SecurityAffectedLocationUnitTotal = {
+  countComplete: boolean;
+  documentedCount: number | null;
+  knownCount: number;
+  unit: SecurityAffectedLocationUnit;
+};
+
 export type SecurityIncidentTotals = {
   affectedLocationCountComplete: boolean;
+  affectedLocationUnits: SecurityAffectedLocationUnitTotal[];
   affectedLocations: number | null;
   countyCount: number;
   documentedThreatCount: number | null;
-  knownAffectedLocations: number;
+  knownAffectedLocations: number | null;
   knownThreatCount: number;
   rowCount: number;
   stateCount: number;

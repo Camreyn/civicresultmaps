@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { securityIncidentApiSchemaVersion } from "../../src/lib/api-version.ts";
 import { rowsToCsv } from "../../src/lib/csv.ts";
 import { activeMapSelection } from "../../src/lib/map-selection.ts";
 import {
@@ -15,31 +16,37 @@ const registry = JSON.parse(readFileSync("data/election-security-incidents-2024.
 test("security totals keep affected places separate from threat messages", () => {
   const totals = summarizeSecurityIncidents(registry.incidentRows);
 
+  assert.equal(securityIncidentApiSchemaVersion, "2.0.0");
   assert.equal(totals.rowCount, 2);
   assert.equal(totals.stateCount, 1);
   assert.equal(totals.countyCount, 2);
-  assert.equal(totals.knownAffectedLocations, 11);
-  assert.equal(totals.affectedLocations, 11);
-  assert.equal(totals.affectedLocationCountComplete, true);
+  assert.equal(totals.knownAffectedLocations, null);
+  assert.equal(totals.affectedLocations, null);
+  assert.equal(totals.affectedLocationCountComplete, false);
+  assert.deepEqual(totals.affectedLocationUnits, [
+    { countComplete: true, documentedCount: 5, knownCount: 5, unit: "polling_location" },
+    { countComplete: true, documentedCount: 6, knownCount: 6, unit: "voting_precinct" },
+  ]);
   assert.equal(totals.documentedThreatCount, null);
   assert.equal(totals.threatCountComplete, false);
-  assert.equal(affectedLocationText(totals), "11 polling places affected");
+  assert.equal(affectedLocationText(totals), "5 polling locations affected; 6 voting precincts affected");
   assert.equal(threatCountText(totals), "Separate threat messages not specified by the official source");
-  assert.match(securityIncidentSummaryText(registry.incidentRows), /11 polling places affected/);
+  assert.match(securityIncidentSummaryText(registry.incidentRows), /5 polling locations affected; 6 voting precincts affected/);
+  assert.doesNotMatch(securityIncidentSummaryText(registry.incidentRows), /11 polling places/);
   assert.match(securityIncidentSummaryText(registry.incidentRows), /separate threat messages not specified/i);
 });
 
 test("partial affected-place totals are labeled as a known minimum", () => {
   const rows = [
     registry.incidentRows[0],
-    { ...registry.incidentRows[1], affectedLocations: null },
+    { ...registry.incidentRows[0], affectedLocations: null, id: "partial-second-row" },
   ];
   const totals = summarizeSecurityIncidents(rows);
 
   assert.equal(totals.affectedLocationCountComplete, false);
   assert.equal(totals.affectedLocations, null);
   assert.equal(totals.knownAffectedLocations, 5);
-  assert.equal(affectedLocationText(totals), "At least 5 known polling places affected");
+  assert.equal(affectedLocationText(totals), "At least 5 known polling locations affected");
 });
 
 test("a pinned map selection wins over hover previews", () => {
@@ -83,6 +90,9 @@ test("national explorer is static, source-linked, and browser-only after load", 
   assert.match(explorer, /source\.sourceUrl/);
   assert.doesNotMatch(explorer, /\/api\/security-incidents/);
   assert.match(explorer, /No matching rows/);
+  assert.match(explorer, /Affected locations \/ precincts/);
+  assert.match(explorer, /reportRowsTruncated/);
+  assert.match(explorer, /Nationwide registry coverage/);
   assert.match(sidebar, /has-security-incidents/);
   assert.match(sidebar, /Loaded bomb-threat records/);
   assert.match(sidebar, /securityOnlyStates/);

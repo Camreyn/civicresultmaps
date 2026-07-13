@@ -20,6 +20,7 @@ import {
 } from "@/lib/national-county-map";
 import {
   affectedLocationText,
+  affectedLocationUnitLabel,
   securityCountExplanation,
   securityIncidentSummaryText,
   summarizeSecurityIncidents,
@@ -30,6 +31,7 @@ import baseStyles from "../compare/compare.module.css";
 import styles from "./security.module.css";
 
 const expectedCountyFeatureCount = 3144;
+const reportRowLimit = 500;
 
 type SecurityExplorerProps = {
   report: NationalSecurityIncidentReport;
@@ -49,11 +51,7 @@ function incidentFips(row: SecurityIncidentSummary) {
 }
 
 function incidentFill(rows: SecurityIncidentSummary[]) {
-  if (!rows.length) return "url(#security-unknown)";
-  const locations = summarizeSecurityIncidents(rows).knownAffectedLocations;
-  if (locations >= 6) return "#dc2626";
-  if (locations >= 2) return "#f97316";
-  return "#fbbf24";
+  return rows.length ? "#f97316" : "url(#security-unknown)";
 }
 
 function formatDate(value: string) {
@@ -196,15 +194,14 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
   const partialStateCount = report.stateCoverage.filter((state) => state.status === "partial").length;
   const affectedMetric = !filteredTotals.rowCount
     ? "No matching rows"
-    : filteredTotals.affectedLocationCountComplete
-      ? String(filteredTotals.affectedLocations ?? 0)
-      : "At least " + filteredTotals.knownAffectedLocations;
+    : affectedLocationText(filteredTotals);
   const threatMetric = !filteredTotals.rowCount
     ? "No matching rows"
     : filteredTotals.threatCountComplete
       ? String(filteredTotals.documentedThreatCount ?? 0)
       : "Not stated";
-  const reportRows = filteredRows.slice(0, 500);
+  const reportRows = filteredRows.slice(0, reportRowLimit);
+  const reportRowsTruncated = reportRows.length < filteredRows.length;
 
   function moveMapFocus(fips: string, change: number) {
     const currentIndex = mapFeatures.findIndex((entry) => entry.fips === fips);
@@ -229,7 +226,8 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         "Event date",
         "Event",
         "Disruption",
-        "Affected polling places",
+        "Affected count",
+        "Affected unit",
         "Separate threat messages",
         "Source authority",
         "Source title",
@@ -246,6 +244,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         row.eventTypeLabel,
         row.disruptionLabel,
         row.affectedLocations,
+        affectedLocationUnitLabel(row.affectedLocationUnit, row.affectedLocations ?? 2),
         row.threatCount,
         row.sourceAuthority,
         row.sourceTitle,
@@ -370,16 +369,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           <strong>{filteredTotals.countyCount.toLocaleString()}</strong>
           <small>{filteredTotals.rowCount.toLocaleString()} official source row{filteredTotals.rowCount === 1 ? "" : "s"}</small>
         </article>
-        <article className={baseStyles.metricWarn}>
-          <span>Polling places affected</span>
+        <article className={baseStyles.metricWarn + " " + styles.textMetric}>
+          <span>Affected locations / precincts</span>
           <strong>{affectedMetric}</strong>
-          <small>
-            {!filteredTotals.rowCount
-              ? "no loaded records in this view"
-              : filteredTotals.affectedLocationCountComplete
-                ? "complete for shown rows"
-                : "known minimum for shown rows"}
-          </small>
+          <small>{filteredTotals.rowCount ? "source units are shown separately" : "no loaded records in this view"}</small>
         </article>
         <article className={styles.textMetric}>
           <span>Separate threat messages</span>
@@ -387,9 +380,9 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           <small>{filteredTotals.rowCount ? "not interchangeable with affected locations" : "adjust filters to view loaded records"}</small>
         </article>
         <article>
-          <span>Registry coverage</span>
+          <span>Nationwide registry coverage</span>
           <strong>{partialStateCount} / {report.stateCoverage.length}</strong>
-          <small>states with partial loaded county coverage</small>
+          <small>nationwide status; independent of the active filters</small>
         </article>
       </section>
 
@@ -413,12 +406,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>Nationwide county view</span>
-            <h2>Loaded 2024 polling-place bomb-threat records</h2>
+            <h2>Loaded 2024 county bomb-threat records</h2>
           </div>
           <div className={baseStyles.legend} aria-label="Map legend">
-            <span><i className={styles.legendHigh} />6+ affected places</span>
-            <span><i className={styles.legendMedium} />2-5 affected places</span>
-            <span><i className={styles.legendLow} />1 or count unspecified</span>
+            <span><i className={styles.legendMedium} />Loaded official county record</span>
             <span><i className={styles.legendFiltered} />Loaded, filtered out</span>
             <span><i className={styles.legendUnknown} />No loaded matching record</span>
           </div>
@@ -628,7 +619,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <strong>{filteredTotals.countyCount.toLocaleString()}</strong>
           </div>
           <div>
-            <span>Affected places</span>
+            <span>Affected locations / precincts</span>
             <strong>{affectedLocationText(filteredTotals)}</strong>
           </div>
           <div>
@@ -687,6 +678,12 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             </tbody>
           </table>
         </div>
+        {reportRowsTruncated && (
+          <p className={styles.reportLimitNote}>
+            The printable table shows the first {reportRowLimit.toLocaleString()} of {filteredRows.length.toLocaleString()} matching rows.
+            CSV and Sources JSON exports include all matching rows.
+          </p>
+        )}
         <div className={styles.sourceManifest}>
           <h3>Sources included in this filtered report</h3>
           <div className={styles.sourceGrid}>

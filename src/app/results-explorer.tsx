@@ -508,10 +508,8 @@ const equipmentPalette = [
   "#9ca3af",
 ];
 const securityLegend = [
+  { color: "#f97316", label: "Loaded official county record" },
   { color: "#2c302e", label: "No official row" },
-  { color: "#fbbf24", label: "1 affected location" },
-  { color: "#f97316", label: "2-5 affected locations" },
-  { color: "#dc2626", label: "6+ affected locations" },
 ] as const;
 
 function methodShare(row: VoteMethodAggregate | undefined) {
@@ -544,23 +542,8 @@ function equipmentFill(row: EquipmentRowSummary | undefined, feature: GeoFeature
   return equipmentPalette[stableHash(label) % equipmentPalette.length];
 }
 
-function securityLocationCount(rows: SecurityIncidentSummary[]) {
-  return summarizeSecurityIncidents(rows).knownAffectedLocations;
-}
-
 function securityFill(rows: SecurityIncidentSummary[]) {
-  if (!rows.length) {
-    return "#2c302e";
-  }
-
-  const locations = securityLocationCount(rows);
-  if (locations >= 6) {
-    return "#dc2626";
-  }
-  if (locations >= 2) {
-    return "#f97316";
-  }
-  return "#fbbf24";
+  return rows.length ? "#f97316" : "#2c302e";
 }
 
 function securitySummary(rows: SecurityIncidentSummary[]) {
@@ -1655,7 +1638,7 @@ export function ResultsExplorer({
         </div>
         <div className="map-legend" aria-label="Map legend">
           {mapMode === "security" ? (
-            <div className="equipment-map-legend" aria-label="Affected polling locations legend">
+            <div className="equipment-map-legend" aria-label="Security incident record legend">
               {securityLegend.map((item) => (
                 <span className="equipment-legend-item" key={item.label}>
                   <i aria-hidden style={{ background: item.color }} />
@@ -1706,7 +1689,7 @@ export function ResultsExplorer({
           )}
           {mapMode === "security" && (
             <span className="legend-note">
-              Color intensity shows officially documented affected polling locations, not advisory flags or vote changes.
+              Orange shows a loaded official county record, not a comparable incident count, advisory flag, or vote change.
             </span>
           )}
           {usingSupplementalMap && (

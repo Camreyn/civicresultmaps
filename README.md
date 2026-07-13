@@ -24,7 +24,7 @@ patterns, generated state registries, and validation expectations.
 - `GET /api/results?state=WI&year=2024&level=county`
 - `GET /api/sources?state=WI&year=2024`
 - `GET /api/coverage?state=WI&year=2024`
-- `GET /api/security-incidents?state=GA&year=2024`
+- `GET /api/security-incidents?state=GA&year=2024` (unit-aware response schema `2.0.0`)
 
 Public reads are enabled. Admin writes, source updates, and production data
 promotion are intentionally private and CI-gated.

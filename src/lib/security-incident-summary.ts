@@ -1,24 +1,55 @@
-import type { SecurityIncidentSummary, SecurityIncidentTotals } from "./types";
+import type {
+  SecurityAffectedLocationUnit,
+  SecurityAffectedLocationUnitTotal,
+  SecurityIncidentSummary,
+  SecurityIncidentTotals,
+} from "./types";
 
 export const securityCountExplanation =
-  "The source identifies how many polling places were affected. It does not say how many separate threat messages were received. One message can name several places, so these numbers are not interchangeable.";
+  "Official sources may use different units, such as polling locations or voting precincts. This report keeps those counts separate instead of treating them as interchangeable. The sources also do not say how many separate threat messages were received; one message can name multiple places.";
+
+const affectedLocationLabels: Record<SecurityAffectedLocationUnit, { plural: string; singular: string }> = {
+  polling_location: { plural: "polling locations", singular: "polling location" },
+  voting_precinct: { plural: "voting precincts", singular: "voting precinct" },
+};
 
 function plural(value: number, singular: string, pluralForm = `${singular}s`) {
   return value === 1 ? singular : pluralForm;
 }
 
 export function summarizeSecurityIncidents(rows: SecurityIncidentSummary[]): SecurityIncidentTotals {
-  const affectedLocationCountComplete = rows.length > 0 && rows.every((row) => row.affectedLocations !== null);
+  const affectedRowsByUnit = new Map<SecurityAffectedLocationUnit, SecurityIncidentSummary[]>();
+  for (const row of rows) {
+    affectedRowsByUnit.set(
+      row.affectedLocationUnit,
+      [...(affectedRowsByUnit.get(row.affectedLocationUnit) ?? []), row],
+    );
+  }
+
+  const affectedLocationUnits: SecurityAffectedLocationUnitTotal[] = Array.from(affectedRowsByUnit.entries())
+    .map(([unit, unitRows]) => {
+      const countComplete = unitRows.every((row) => row.affectedLocations !== null);
+      const knownCount = unitRows.reduce((sum, row) => sum + (row.affectedLocations ?? 0), 0);
+      return {
+        countComplete,
+        documentedCount: countComplete ? knownCount : null,
+        knownCount,
+        unit,
+      };
+    })
+    .sort((left, right) => left.unit.localeCompare(right.unit));
+  const comparableUnit = affectedLocationUnits.length === 1 ? affectedLocationUnits[0] : null;
+  const affectedLocationCountComplete = Boolean(comparableUnit?.countComplete);
   const threatCountComplete = rows.length > 0 && rows.every((row) => row.threatCount !== null);
-  const knownAffectedLocations = rows.reduce((sum, row) => sum + (row.affectedLocations ?? 0), 0);
   const knownThreatCount = rows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
 
   return {
     affectedLocationCountComplete,
-    affectedLocations: affectedLocationCountComplete ? knownAffectedLocations : null,
+    affectedLocationUnits,
+    affectedLocations: affectedLocationCountComplete ? comparableUnit?.documentedCount ?? null : null,
     countyCount: new Set(rows.map((row) => row.jurisdictionTag)).size,
     documentedThreatCount: threatCountComplete ? knownThreatCount : null,
-    knownAffectedLocations,
+    knownAffectedLocations: comparableUnit?.knownCount ?? null,
     knownThreatCount,
     rowCount: rows.length,
     stateCount: new Set(rows.map((row) => row.state)).size,
@@ -26,16 +57,29 @@ export function summarizeSecurityIncidents(rows: SecurityIncidentSummary[]): Sec
   };
 }
 
+export function affectedLocationUnitLabel(unit: SecurityAffectedLocationUnit, count = 2) {
+  const labels = affectedLocationLabels[unit];
+  return count === 1 ? labels.singular : labels.plural;
+}
+
+function affectedLocationUnitText(total: SecurityAffectedLocationUnitTotal) {
+  if (total.countComplete && total.documentedCount !== null) {
+    return `${total.documentedCount.toLocaleString()} ${affectedLocationUnitLabel(total.unit, total.documentedCount)} affected`;
+  }
+
+  if (total.knownCount > 0) {
+    return `At least ${total.knownCount.toLocaleString()} known ${affectedLocationUnitLabel(total.unit, total.knownCount)} affected`;
+  }
+
+  return `Number of affected ${affectedLocationUnitLabel(total.unit)} not specified`;
+}
+
 export function affectedLocationText(totals: SecurityIncidentTotals) {
-  if (totals.affectedLocationCountComplete && totals.affectedLocations !== null) {
-    return `${totals.affectedLocations.toLocaleString()} ${plural(totals.affectedLocations, "polling place")} affected`;
+  if (totals.affectedLocationUnits.length) {
+    return totals.affectedLocationUnits.map(affectedLocationUnitText).join("; ");
   }
 
-  if (totals.knownAffectedLocations > 0) {
-    return `At least ${totals.knownAffectedLocations.toLocaleString()} known ${plural(totals.knownAffectedLocations, "polling place")} affected`;
-  }
-
-  return "Number of affected polling places not specified";
+  return "Number of affected polling locations or voting precincts not specified";
 }
 
 export function threatCountText(totals: SecurityIncidentTotals) {

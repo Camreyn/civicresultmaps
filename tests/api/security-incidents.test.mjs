@@ -18,11 +18,13 @@ test("security incident registry contains official county-tagged rows", () => {
   assert.equal(registry.expected.knownThreatCountTotal, null);
   assert.deepEqual(new Set(registry.incidentRows.map((row) => row.state)), new Set(["GA"]));
   assert.ok(registry.incidentRows.every((row) => row.threatCount === null));
+  assert.deepEqual(registry.expected.affectedLocationUnitTotals, { polling_location: 5, voting_precinct: 6 });
 
   for (const row of registry.incidentRows) {
     assert.match(row.jurisdictionTag, /^county:\d{5}$/);
     assert.equal(row.jurisdictionTag, `county:${row.jurisdictionCode}`);
     assert.equal(row.sourceStatus, "official_county_record");
+    assert.match(row.affectedLocationUnit, /^(polling_location|voting_precinct)$/);
     assert.match(new URL(row.sourceUrl).hostname, /\.gov$/);
     assert.ok(existsSync(row.localArtifact), `${row.localArtifact} should exist`);
     assert.match(row.caveat, /not evidence of fraud or misconduct/i);
@@ -64,6 +66,7 @@ test("security incident API and server loader are wired", () => {
   assert.match(route, /securityIncidentCacheHeaders/);
   assert.match(route, /s-maxage=86400/);
   assert.match(route, /summarizeSecurityIncidents/);
+  assert.match(route, /schemaVersion: securityIncidentApiSchemaVersion/);
   assert.match(route, /not evidence of fraud or misconduct/);
   assert.match(route, /Number\.isInteger\(requestedLimit\)/);
   assert.match(loader, /election-security-incidents-2024\.json/);

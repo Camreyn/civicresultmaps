@@ -6,6 +6,7 @@ import {
   stateQuery,
   yearQuery,
 } from "@/lib/api";
+import { securityIncidentApiSchemaVersion } from "@/lib/api-version";
 import { summarizeSecurityIncidents } from "@/lib/security-incident-summary";
 
 const securityIncidentCacheHeaders = {
@@ -55,8 +56,9 @@ export async function GET(request: Request) {
     apiEnvelope(rows, {
       ...totals,
       limit,
+      schemaVersion: securityIncidentApiSchemaVersion,
       caveat:
-        "These are partial, official-source election-administration incident rows. They are separate from results and advisory indicators, are not evidence of fraud or misconduct, and an absent row does not establish that no incident occurred.",
+        "These are partial, official-source election-administration incident rows. Sources may report different affected units, such as polling locations and voting precincts; unlike units remain separate in affectedLocationUnits and are not combined as polling places. The rows are separate from results and advisory indicators, are not evidence of fraud or misconduct, and an absent row does not establish that no incident occurred.",
     }),
     { headers: securityIncidentCacheHeaders },
   );

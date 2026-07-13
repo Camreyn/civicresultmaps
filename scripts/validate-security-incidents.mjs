@@ -7,6 +7,7 @@ const inventory = JSON.parse(await readFile("data/election-security-incident-sou
 const errors = [];
 const expectedStates = new Set(stateCodes());
 const allowedCoverageStatuses = new Set(["loaded", "partial", "needs_data"]);
+const allowedAffectedLocationUnits = new Set(["polling_location", "voting_precinct"]);
 const officialHostPattern = /(^|\.)(gov|mil)$/i;
 
 function addError(message) {
@@ -27,7 +28,7 @@ function validateOfficialUrl(value, label) {
   }
 }
 
-if (registry.electionYear !== 2024 || registry.reportingGrain !== "county") {
+if (registry.schemaVersion !== 2 || registry.electionYear !== 2024 || registry.reportingGrain !== "county") {
   addError("Incident registry must describe county-grain 2024 rows.");
 }
 if (!Array.isArray(registry.incidentRows)) {
@@ -55,6 +56,7 @@ for (const row of registry.incidentRows ?? []) {
     "eventDate",
     "eventType",
     "disruptionType",
+    "affectedLocationUnit",
     "sourceAuthority",
     "sourceTitle",
     "sourceUrl",
@@ -88,6 +90,9 @@ for (const row of registry.incidentRows ?? []) {
   }
   if (row.affectedLocations !== null && (!Number.isInteger(row.affectedLocations) || row.affectedLocations < 1)) {
     addError(`${label} affectedLocations must be null or a positive integer.`);
+  }
+  if (!allowedAffectedLocationUnits.has(row.affectedLocationUnit)) {
+    addError(`${label} has unsupported affectedLocationUnit ${row.affectedLocationUnit}.`);
   }
   if (row.hoursExtended !== null && (!Number.isFinite(row.hoursExtended) || row.hoursExtended <= 0)) {
     addError(`${label} hoursExtended must be null or a positive number.`);
@@ -126,9 +131,18 @@ const knownThreatCountTotal = threatCountComplete
 if (registry.expected?.knownThreatCountTotal !== knownThreatCountTotal) {
   addError("Registry expected.knownThreatCountTotal must be null unless every row has an exact threat count.");
 }
-const affectedPollingLocationsTotal = rows.reduce((sum, row) => sum + (row.affectedLocations ?? 0), 0);
-if (registry.expected?.affectedPollingLocationsTotal !== affectedPollingLocationsTotal) {
-  addError("Registry expected.affectedPollingLocationsTotal does not match normalized rows.");
+const affectedLocationUnitTotals = Object.fromEntries(
+  Array.from(allowedAffectedLocationUnits)
+    .map((unit) => [
+      unit,
+      rows
+        .filter((row) => row.affectedLocationUnit === unit)
+        .reduce((sum, row) => sum + (row.affectedLocations ?? 0), 0),
+    ])
+    .filter(([, total]) => total > 0),
+);
+if (JSON.stringify(registry.expected?.affectedLocationUnitTotals) !== JSON.stringify(affectedLocationUnitTotals)) {
+  addError("Registry expected.affectedLocationUnitTotals must preserve source-specific affected units.");
 }
 
 if (!Array.isArray(inventory.stateCoverage)) {
