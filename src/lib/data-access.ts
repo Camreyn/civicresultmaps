@@ -77,6 +77,30 @@ function toIsoTimestamp(value: Date | string | null) {
   return value instanceof Date ? value.toISOString() : value;
 }
 
+export async function getPublicDataRevision(): Promise<string | null> {
+  if (!hasDatabase()) {
+    return "seed-data";
+  }
+
+  try {
+    const sql = neon(getDatabaseUrl());
+    const [row] = (await sql.query(
+      "select count(*)::int as \"promotedCount\", coalesce(max(finished_at), max(started_at)) as \"latestPromotedAt\" from import_runs where status = 'promoted'",
+      [],
+    )) as Array<{
+      latestPromotedAt: Date | string | null;
+      promotedCount: number;
+    }>;
+    return [
+      "promoted",
+      row?.promotedCount ?? 0,
+      toIsoTimestamp(row?.latestPromotedAt ?? null) ?? "none",
+    ].join(":");
+  } catch {
+    return null;
+  }
+}
+
 function completenessStatus(input: {
   capabilities: CapabilitySummary;
   mapGeometrySourceCount: number;

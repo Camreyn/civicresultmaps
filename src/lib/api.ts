@@ -1,8 +1,10 @@
+import { cache } from "react";
 import { z } from "zod";
 import { unstable_cache } from "next/cache";
 import {
   currentDataSource,
   getCoverageSummary as uncachedGetCoverageSummary,
+  getPublicDataRevision as uncachedGetPublicDataRevision,
   listCompletenessReport as uncachedListCompletenessReport,
   listEquipmentRows as uncachedListEquipmentRows,
   listElections as uncachedListElections,
@@ -19,15 +21,32 @@ import { listVoteMethodRows as uncachedListVoteMethodRows } from "./vote-methods
 import { publicApiSchemaVersion } from "./api-version";
 
 export const publicDataRevalidateSeconds = 15 * 60;
-export const publicDataStaleSeconds = 24 * 60 * 60;
 const publicDataCacheNamespace = "public-data-historical-advisory-2026-07-12";
+const currentPublicDataRevision = cache(uncachedGetPublicDataRevision);
+
+function cachePublicData<Args extends unknown[], Result>(
+  loader: (...args: Args) => Promise<Result>,
+  key: string,
+) {
+  const cachedLoader = unstable_cache(
+    async (_revision: string, ...args: Args) => loader(...args),
+    [publicDataCacheNamespace, key],
+    { revalidate: publicDataRevalidateSeconds },
+  );
+  return async (...args: Args) => {
+    const revision = await currentPublicDataRevision();
+    return revision === null
+      ? loader(...args)
+      : cachedLoader(revision, ...args);
+  };
+}
 
 export const publicDataCacheHeaders = {
-  "Cache-Control": `public, max-age=0, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
+  "Cache-Control": "no-store",
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Expose-Headers": "Content-Disposition, X-Data-Sha256, X-Pagination-Limit, X-Pagination-Offset, X-Release-Id, X-Total-Count",
-  "CDN-Cache-Control": `public, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
-  "Vercel-CDN-Cache-Control": `public, s-maxage=${publicDataRevalidateSeconds}, stale-while-revalidate=${publicDataStaleSeconds}`,
+  "CDN-Cache-Control": "no-store",
+  "Vercel-CDN-Cache-Control": "no-store",
 };
 
 export const publicApiErrorHeaders = {
@@ -91,60 +110,64 @@ export function apiErrorEnvelope(
   };
 }
 
-export const getCoverageSummary = unstable_cache(
+export const getCoverageSummary = cachePublicData(
   uncachedGetCoverageSummary,
-  [publicDataCacheNamespace, "coverage-summary"],
-  { revalidate: publicDataRevalidateSeconds },
+  "coverage-summary",
 );
 
-export const listCompletenessReport = uncachedListCompletenessReport;
+export const listCompletenessReport = cachePublicData(
+  uncachedListCompletenessReport,
+  "completeness-report",
+);
 
-export const listEquipmentRows = unstable_cache(
+export const listEquipmentRows = cachePublicData(
   uncachedListEquipmentRows,
-  [publicDataCacheNamespace, "equipment-rows"],
-  { revalidate: publicDataRevalidateSeconds },
+  "equipment-rows",
 );
 
-export const listHistoricalResultRows = unstable_cache(
+export const listHistoricalResultRows = cachePublicData(
   uncachedListHistoricalResultRows,
-  [publicDataCacheNamespace, "historical-result-rows"],
-  { revalidate: publicDataRevalidateSeconds },
+  "historical-result-rows",
 );
 
-export const listIndicators = uncachedListIndicators;
+export const listIndicators = cachePublicData(
+  uncachedListIndicators,
+  "indicators",
+);
 
-export const listElections = unstable_cache(
+export const listElections = cachePublicData(
   uncachedListElections,
-  [publicDataCacheNamespace, "elections"],
-  { revalidate: publicDataRevalidateSeconds },
+  "elections",
 );
 
-export const listImportRuns = unstable_cache(
+export const listImportRuns = cachePublicData(
   uncachedListImportRuns,
-  [publicDataCacheNamespace, "import-runs"],
-  { revalidate: publicDataRevalidateSeconds },
+  "import-runs",
 );
 
-export const listReviewRows = uncachedListReviewRows;
+export const listReviewRows = cachePublicData(
+  uncachedListReviewRows,
+  "review-rows",
+);
 
-export const listResults = unstable_cache(
+export const listResults = cachePublicData(
   uncachedListResults,
-  [publicDataCacheNamespace, "results"],
-  { revalidate: publicDataRevalidateSeconds },
+  "results",
 );
 
-export const listSources = unstable_cache(
+export const listSources = cachePublicData(
   uncachedListSources,
-  [publicDataCacheNamespace, "sources"],
-  { revalidate: publicDataRevalidateSeconds },
+  "sources",
 );
 
-export const listStates = uncachedListStates;
+export const listStates = cachePublicData(
+  uncachedListStates,
+  "states",
+);
 
-export const listTurnoutRows = unstable_cache(
+export const listTurnoutRows = cachePublicData(
   uncachedListTurnoutRows,
-  [publicDataCacheNamespace, "turnout-rows"],
-  { revalidate: publicDataRevalidateSeconds },
+  "turnout-rows",
 );
 
 export const listVoteMethodRows = unstable_cache(
