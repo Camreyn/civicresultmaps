@@ -1,19 +1,26 @@
 {
-  "schemaVersion": 2,
-  "description": "Nationwide coverage inventory for November 5, 2024 general-election bomb-threat records, including official context, official county records, and a visibly labeled supplemental nationwide county compilation.",
+  "schemaVersion": 3,
+  "description": "Nationwide source inventory for November 2024 election-period bomb threats, centered on the Brennan Center's later 227-threat tracker with official federal context and reviewed county detail.",
   "electionYear": 2024,
-  "reportingGrain": "county",
+  "reportingGrain": "mixed_county_and_statewide_unspecified",
+  "reportingWindow": {
+    "start": "2024-11-05",
+    "end": "2024-11-09"
+  },
   "normalizationPath": "scripts/build-security-incident-registry.mjs",
   "expected": {
     "configuredStates": 51,
-    "statesWithNormalizedRows": 5,
-    "normalizedEventRows": 20,
-    "publishedCompilationLocationCount": 67,
-    "publishedCompilationCountyCount": 19,
-    "mappedCompilationCountyCount": 19,
-    "additionalOfficialCountyRows": 1
+    "statesWithNormalizedRows": 9,
+    "normalizedEventRows": 111,
+    "mappedCountyCount": 109,
+    "statewideUnspecifiedRowCount": 2,
+    "knownThreatCountMinimum": 227,
+    "trackerRowCount": 110,
+    "trackerCountyCount": 108,
+    "trackerThreatCount": 227,
+    "additionalEarlierCompilationCountyRows": 1
   },
-  "caveat": "The map includes every county named by the published nationwide Election Day compilation plus one additional official Pima County record. Supplemental records remain visibly distinct from official county records. The FBI did not publish a complete national county or site roster, so this inventory cannot establish that no other incident occurred.",
+  "caveat": "The later Brennan Center tracker documents at least 227 threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
   "nationalContext": [
     {
       "sourceAuthority": "Federal Bureau of Investigation",
@@ -48,7 +55,8 @@
       "reportedLocationCount": 67,
       "reportedCountyCount": 19,
       "reportedStateCount": 5,
-      "caveat": "The congressional letter states that at least 67 polling locations in 19 counties across Arizona, Georgia, Michigan, Pennsylvania, and Wisconsin received threats. Its footnote attributes that figure to NBC News and Reuters rather than to a disclosed federal incident roster, so it is national context and a cross-check, not the county normalization source."
+      "caveat": "The congressional letter states that at least 67 polling locations in 19 counties across Arizona, Georgia, Michigan, Pennsylvania, and Wisconsin received threats. Its footnote attributes that figure to NBC News and Reuters rather than to a disclosed federal incident roster, so it is national context and a cross-check, not the county normalization source.",
+      "scopeLabel": "Earlier Election Day snapshot"
     },
     {
       "sourceAuthority": "NBC News",
@@ -67,7 +75,33 @@
       "reportedLocationCount": 67,
       "reportedCountyCount": 19,
       "reportedStateCount": 5,
-      "caveat": "This is a structured capture of a supplemental news compilation, not an official incident roster. The article reports 67 locations in 19 counties, but its accessible embedded table exposes 18 county rows totaling 66 under a column labeled Threats. Milwaukee is named in the article prose without a separately exposed count. The normalized registry therefore maps Milwaukee with an unknown county count and preserves the article's 67-location national figure as context rather than forcing county totals to equal it."
+      "caveat": "This is a structured capture of a supplemental news compilation, not an official incident roster. The article reports 67 locations in 19 counties, but its accessible embedded table exposes 18 county rows totaling 66 under a column labeled Threats. Milwaukee is named in the article prose without a separately exposed count. The normalized registry therefore maps Milwaukee with an unknown county count and preserves the article's 67-location national figure as context rather than forcing county totals to equal it.",
+      "scopeLabel": "Earlier Election Day snapshot"
+    },
+    {
+      "sourceAuthority": "Brennan Center for Justice",
+      "sourceTitle": "2024 Election Bomb Threat Tracker",
+      "sourceUrl": "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
+      "localArtifact": "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
+      "sha256": "42571714a54cdbc13a54589506d4ecaf0203cb84afe4e5254a0742ad9a09d7db",
+      "acquiredAt": "2026-07-13",
+      "electionYear": 2024,
+      "reportingGrain": "multi-state county and statewide-unspecified tracker",
+      "reportingWindow": {
+        "start": "2024-11-05",
+        "end": "2024-11-09"
+      },
+      "normalizationPath": "scripts/extract-brennan-security-tracker.mjs",
+      "expectedRowCount": 110,
+      "acquisitionStatus": "download_complete_text_layer_normalized",
+      "sourceTier": "supplemental",
+      "confidence": "high_for_tracker_transcription_medium_for_underlying_completeness",
+      "reportedThreatCount": 227,
+      "reportedCountyCount": 108,
+      "reportedStateCount": 9,
+      "statewideUnspecifiedThreatCount": 66,
+      "scopeLabel": "Later election-period tracker",
+      "caveat": "The Brennan Center says this tracker is based on its research of publicly available information and may not be exhaustive. It is a later public-source compilation, not an official FBI roster. Statewide-unspecified rows are retained in totals without assigning them to a county."
     }
   ],
   "stateCoverage": [
@@ -91,29 +125,41 @@
       "stateName": "Arizona",
       "status": "partial",
       "sourceAuthorities": [
-        "NBC News",
+        "Brennan Center for Justice",
         "Pima County Recorder's Office"
       ],
       "sourceUrls": [
-        "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006",
-        "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf",
-        "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations",
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
         "https://www.recorder.pima.gov/PressRelease/2025/2024%20General%20Election%20EARLY%20VOTING%20After%20Action%20Report%20-%20PCRO%20-%20Final.pdf"
       ],
       "localArtifacts": [
-        "data/nbc-2024-election-day-bomb-threat-county-compilation.json",
-        "data/us-2024-election-day-bomb-threats-senate-letter.pdf",
-        "data/fbi-2024-bomb-threats-polling-locations.html",
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
         "data/az-2024-election-day-security-pima-source-extract.json"
       ],
-      "expectedRowCount": 4,
-      "confidence": "mixed_official_and_supplemental_national_compilation",
-      "caveat": "Every AZ county named in the published nationwide Election Day compilation is mapped. 1 row(s) have a county-level official record; the remaining row(s) rely on the visibly labeled supplemental compilation. The FBI did not publish a complete county or site roster."
+      "expectedRowCount": 10,
+      "mappedCountyCount": 10,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "mixed_official_detail_and_public_source_tracker",
+      "caveat": "10 county row(s) are mapped for Arizona. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "CA",
       "stateName": "California",
-      "status": "needs_data"
+      "status": "partial",
+      "sourceAuthorities": [
+        "Brennan Center for Justice"
+      ],
+      "sourceUrls": [
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf"
+      ],
+      "localArtifacts": [
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
+      ],
+      "expectedRowCount": 6,
+      "mappedCountyCount": 6,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "public_source_tracker",
+      "caveat": "6 county row(s) are mapped for California. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "CO",
@@ -145,29 +191,25 @@
       "stateName": "Georgia",
       "status": "partial",
       "sourceAuthorities": [
+        "Brennan Center for Justice",
         "DeKalb County Police Department",
-        "Fulton County Board of Registration and Elections",
-        "NBC News"
+        "Fulton County Board of Registration and Elections"
       ],
       "sourceUrls": [
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
         "https://dekalbcountyga.gov/news/dekalb-county-police-find-no-bombs-six-voting-precincts-received-threats",
-        "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006",
-        "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf",
-        "https://fultoncountyga.gov/-/media/Departments/Registration-and-Elections/Previous-Meetings/BRE-Approved-Minutes/BRE-11524-Approved-Minutes-630p.pdf",
-        "https://www.fultoncountyga.gov/news/2024/11/05/voting-hours-extended-at-five-fulton-county-polls",
-        "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations"
+        "https://fultoncountyga.gov/-/media/Departments/Registration-and-Elections/Previous-Meetings/BRE-Approved-Minutes/BRE-11524-Approved-Minutes-630p.pdf"
       ],
       "localArtifacts": [
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
         "data/ga-2024-election-day-security-dekalb.html",
-        "data/nbc-2024-election-day-bomb-threat-county-compilation.json",
-        "data/us-2024-election-day-bomb-threats-senate-letter.pdf",
-        "data/ga-2024-election-day-security-fulton-bre-minutes.pdf",
-        "data/ga-2024-election-day-security-fulton.html",
-        "data/fbi-2024-bomb-threats-polling-locations.html"
+        "data/ga-2024-election-day-security-fulton-bre-minutes.pdf"
       ],
-      "expectedRowCount": 3,
-      "confidence": "mixed_official_and_supplemental_national_compilation",
-      "caveat": "Every GA county named in the published nationwide Election Day compilation is mapped. 2 row(s) have a county-level official record; the remaining row(s) rely on the visibly labeled supplemental compilation. The FBI did not publish a complete county or site roster."
+      "expectedRowCount": 5,
+      "mappedCountyCount": 4,
+      "statewideUnspecifiedThreatCount": 19,
+      "confidence": "mixed_official_detail_and_public_source_tracker",
+      "caveat": "4 county row(s) are mapped for Georgia. 19 additional threats are retained only at statewide-unspecified grain. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "HI",
@@ -217,7 +259,21 @@
     {
       "state": "MD",
       "stateName": "Maryland",
-      "status": "needs_data"
+      "status": "partial",
+      "sourceAuthorities": [
+        "Brennan Center for Justice"
+      ],
+      "sourceUrls": [
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf"
+      ],
+      "localArtifacts": [
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
+      ],
+      "expectedRowCount": 15,
+      "mappedCountyCount": 15,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "public_source_tracker",
+      "caveat": "15 county row(s) are mapped for Maryland. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "ME",
@@ -229,26 +285,38 @@
       "stateName": "Michigan",
       "status": "partial",
       "sourceAuthorities": [
-        "NBC News"
+        "Brennan Center for Justice"
       ],
       "sourceUrls": [
-        "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006",
-        "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf",
-        "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations"
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf"
       ],
       "localArtifacts": [
-        "data/nbc-2024-election-day-bomb-threat-county-compilation.json",
-        "data/us-2024-election-day-bomb-threats-senate-letter.pdf",
-        "data/fbi-2024-bomb-threats-polling-locations.html"
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
       ],
       "expectedRowCount": 4,
-      "confidence": "mixed_official_and_supplemental_national_compilation",
-      "caveat": "Every MI county named in the published nationwide Election Day compilation is mapped. 0 row(s) have a county-level official record; the remaining row(s) rely on the visibly labeled supplemental compilation. The FBI did not publish a complete county or site roster."
+      "mappedCountyCount": 4,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "public_source_tracker",
+      "caveat": "4 county row(s) are mapped for Michigan. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "MN",
       "stateName": "Minnesota",
-      "status": "needs_data"
+      "status": "partial",
+      "sourceAuthorities": [
+        "Brennan Center for Justice"
+      ],
+      "sourceUrls": [
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf"
+      ],
+      "localArtifacts": [
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
+      ],
+      "expectedRowCount": 1,
+      "mappedCountyCount": 0,
+      "statewideUnspecifiedThreatCount": 47,
+      "confidence": "public_source_tracker",
+      "caveat": "0 county row(s) are mapped for Minnesota. 47 additional threats are retained only at statewide-unspecified grain. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "MO",
@@ -318,31 +386,43 @@
     {
       "state": "OR",
       "stateName": "Oregon",
-      "status": "needs_data"
+      "status": "partial",
+      "sourceAuthorities": [
+        "Brennan Center for Justice"
+      ],
+      "sourceUrls": [
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf"
+      ],
+      "localArtifacts": [
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
+      ],
+      "expectedRowCount": 36,
+      "mappedCountyCount": 36,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "public_source_tracker",
+      "caveat": "36 county row(s) are mapped for Oregon. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "PA",
       "stateName": "Pennsylvania",
       "status": "partial",
       "sourceAuthorities": [
-        "NBC News",
+        "Brennan Center for Justice",
         "Chester County District Attorney's Office"
       ],
       "sourceUrls": [
-        "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006",
-        "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf",
-        "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations",
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
         "https://www.chesco.org/DocumentCenter/View/77834/2024_1105-News-Release-Bomb-Threat-Received-At-Chester-County-Government-Services-Center"
       ],
       "localArtifacts": [
-        "data/nbc-2024-election-day-bomb-threat-county-compilation.json",
-        "data/us-2024-election-day-bomb-threats-senate-letter.pdf",
-        "data/fbi-2024-bomb-threats-polling-locations.html",
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
         "data/pa-2024-election-day-security-chester.pdf"
       ],
-      "expectedRowCount": 7,
-      "confidence": "mixed_official_and_supplemental_national_compilation",
-      "caveat": "Every PA county named in the published nationwide Election Day compilation is mapped. 1 row(s) have a county-level official record; the remaining row(s) rely on the visibly labeled supplemental compilation. The FBI did not publish a complete county or site roster."
+      "expectedRowCount": 32,
+      "mappedCountyCount": 32,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "mixed_official_detail_and_public_source_tracker",
+      "caveat": "32 county row(s) are mapped for Pennsylvania. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "RI",
@@ -394,21 +474,22 @@
       "stateName": "Wisconsin",
       "status": "partial",
       "sourceAuthorities": [
+        "Brennan Center for Justice",
         "NBC News"
       ],
       "sourceUrls": [
-        "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006",
-        "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf",
-        "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations"
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
+        "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006"
       ],
       "localArtifacts": [
-        "data/nbc-2024-election-day-bomb-threat-county-compilation.json",
-        "data/us-2024-election-day-bomb-threats-senate-letter.pdf",
-        "data/fbi-2024-bomb-threats-polling-locations.html"
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
+        "data/nbc-2024-election-day-bomb-threat-county-compilation.json"
       ],
       "expectedRowCount": 2,
-      "confidence": "mixed_official_and_supplemental_national_compilation",
-      "caveat": "Every WI county named in the published nationwide Election Day compilation is mapped. 0 row(s) have a county-level official record; the remaining row(s) rely on the visibly labeled supplemental compilation. The FBI did not publish a complete county or site roster."
+      "mappedCountyCount": 2,
+      "statewideUnspecifiedThreatCount": 0,
+      "confidence": "public_source_tracker",
+      "caveat": "2 county row(s) are mapped for Wisconsin. The Brennan Center tracker is not an FBI roster and may not be exhaustive."
     },
     {
       "state": "WV",

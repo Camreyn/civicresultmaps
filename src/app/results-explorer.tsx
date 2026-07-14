@@ -509,9 +509,10 @@ const equipmentPalette = [
   "#9ca3af",
 ];
 const securityLegend = [
-  { color: "#f97316", label: "Loaded official county record" },
-  { color: "#fbbf24", label: "Loaded supplemental compiled record" },
-  { color: "#2c302e", label: "No loaded matching record" },
+  { color: "#f97316", label: "Loaded official county detail" },
+  { color: "#fbbf24", label: "Later public-source tracker" },
+  { color: "#c084fc", label: "Earlier Election Day compilation" },
+  { color: "#2c302e", label: "No loaded matching county record" },
 ] as const;
 
 function methodShare(row: VoteMethodAggregate | undefined) {
@@ -546,7 +547,15 @@ function equipmentFill(row: EquipmentRowSummary | undefined, feature: GeoFeature
 
 function securityFill(rows: SecurityIncidentSummary[]) {
   if (rows.some((row) => row.sourceTier === "official")) return "#f97316";
+  if (rows.some((row) => row.sourceStatus === "supplemental_earlier_compilation")) return "#c084fc";
   return rows.length ? "#fbbf24" : "#2c302e";
+}
+
+function securitySourceLabel(row: SecurityIncidentSummary) {
+  if (row.sourceTier === "official") return "Official county record";
+  if (row.sourceStatus === "research_compilation") return "Later public-source tracker";
+  if (row.sourceStatus === "supplemental_earlier_compilation") return "Earlier Election Day compilation";
+  return "Supplemental compilation";
 }
 
 function securitySummary(rows: SecurityIncidentSummary[]) {
@@ -972,6 +981,7 @@ export function ResultsExplorer({
   const securityIncidentsByTag = useMemo(() => {
     const rows = new Map<string, SecurityIncidentSummary[]>();
     for (const row of securityIncidents) {
+      if (row.reportingGrain !== "county") continue;
       const current = rows.get(row.jurisdictionTag);
       if (current) current.push(row);
       else rows.set(row.jurisdictionTag, [row]);
@@ -981,6 +991,7 @@ export function ResultsExplorer({
   const securityIncidentsByCounty = useMemo(() => {
     const rows = new Map<string, SecurityIncidentSummary[]>();
     for (const row of securityIncidents) {
+      if (row.reportingGrain !== "county") continue;
       const key = normalizeName(row.county);
       const current = rows.get(key);
       if (current) current.push(row);
@@ -988,6 +999,16 @@ export function ResultsExplorer({
     }
     return rows;
   }, [securityIncidents]);
+  const statewideSecurityIncidents = useMemo(
+    () => securityIncidents.filter((row) => row.reportingGrain === "statewide_unspecified"),
+    [securityIncidents],
+  );
+  const statewideSecurityTotals = useMemo(
+    () => summarizeSecurityIncidents(statewideSecurityIncidents),
+    [statewideSecurityIncidents],
+  );
+  const statewideSecuritySource = statewideSecurityIncidents[0];
+  const countySecurityIncidentCount = securityIncidents.length - statewideSecurityIncidents.length;
   const equipmentLegend = useMemo(() => {
     const groups = new Map<string, { color: string; count: number; label: string; warnings: number }>();
     for (const row of equipmentRows) {
@@ -1043,7 +1064,11 @@ export function ResultsExplorer({
     : [];
   const selectedMapReadout =
     mapMode === "security"
-      ? securitySummary(selectedMapSecurityIncidents)
+      ? selectedMapSecurityIncidents.length
+        ? securitySummary(selectedMapSecurityIncidents)
+        : statewideSecurityTotals.rowCount
+          ? `${threatCountText(statewideSecurityTotals)} reported at state level; county not specified`
+          : "No loaded county record"
       : mapMode === "equipment"
       ? selectedMapEquipment
         ? equipmentGroupLabel(selectedMapEquipment)
@@ -1323,7 +1348,7 @@ export function ResultsExplorer({
             <span>
               {activeGeoStatus === "ready"
                 ? mapMode === "security"
-                  ? `${activeFeatures.length} ${activeGeometrySource}, ${securityIncidents.length} source-linked county records`
+                  ? `${activeFeatures.length} ${activeGeometrySource}, ${countySecurityIncidentCount} county records${statewideSecurityIncidents.length ? ` plus ${statewideSecurityIncidents.length} statewide-only record${statewideSecurityIncidents.length === 1 ? "" : "s"}` : ""}`
                   : indicatorsEvaluated
                     ? `${activeFeatures.length} ${activeGeometrySource}, ${mapIndicators.length} advisory review flags`
                     : `${activeFeatures.length} ${activeGeometrySource}, advisory indicators not evaluated`
@@ -1739,7 +1764,9 @@ export function ResultsExplorer({
               {mapMode === "security"
                 ? selectedMapSecurityIncidents.length
                   ? `${securitySummary(selectedMapSecurityIncidents)} Open the source record below for scope and caveats.`
-                  : "No county record is loaded here. This does not establish that no incident occurred."
+                  : statewideSecurityTotals.rowCount
+                    ? `No county record is loaded here. ${threatCountText(statewideSecurityTotals)} were reported only at the state level and are not assigned to this county.`
+                    : "No county record is loaded here. This does not establish that no incident occurred."
                 : selectedMapResult
                   ? `${selectedMapResult.winner} won by ${selectedMapResult.marginVotes.toLocaleString()} votes (${selectedMapResult.marginPct.toFixed(2)}%).`
                   : "Click a county, district, or reporting boundary to inspect vote totals, review indicators, and source provenance."}
@@ -1827,16 +1854,33 @@ export function ResultsExplorer({
           )}
           {mapMode === "security" && (
             <div className="drawer-indicators" aria-label="Source-linked security incident records">
-              {selectedMapSecurityIncidents.length > 0 && (
+              {(selectedMapSecurityIncidents.length > 0 || statewideSecurityTotals.rowCount > 0) && (
                 <p className="security-count-note">
                   {securityCountExplanation}
                 </p>
+              )}
+              {statewideSecuritySource && (
+                <article className="drawer-source">
+                  <strong>Statewide count - county not specified</strong>
+                  <span>{threatCountText(statewideSecurityTotals)}</span>
+                  <span>
+                    These threats are included in state and national totals but are not assigned to this or any other
+                    county polygon.
+                  </span>
+                  <span>
+                    {statewideSecuritySource.sourceAuthority}: {statewideSecuritySource.sourceTitle}
+                  </span>
+                  <a href={statewideSecuritySource.sourceUrl} rel="noreferrer" target="_blank">
+                    <ExternalLink aria-hidden size={14} />
+                    Open statewide count source
+                  </a>
+                </article>
               )}
               {selectedMapSecurityIncidents.length ? (
                 selectedMapSecurityIncidents.map((incident) => (
                   <article className="drawer-source" key={incident.id}>
                     <strong>{incident.eventTypeLabel} - {incident.eventDate}</strong>
-                    <span>{incident.sourceTier === "official" ? "Official county record" : "Supplemental nationwide compilation"}</span>
+                    <span>{securitySourceLabel(incident)}</span>
                     <span>{incident.disruptionLabel}</span>
                     <span>{affectedLocationText(summarizeSecurityIncidents([incident]))}</span>
                     <span>{threatCountText(summarizeSecurityIncidents([incident]))}</span>
@@ -1854,6 +1898,14 @@ export function ResultsExplorer({
                         Open threat-count source
                       </a>
                     )}
+                    {incident.supportingSourceUrls
+                      .filter((url) => url !== incident.sourceUrl && url !== incident.threatCountSourceUrl)
+                      .map((url, index) => (
+                        <a href={url} key={url} rel="noreferrer" target="_blank">
+                          <ExternalLink aria-hidden size={14} />
+                          Open cited public report {index + 1}
+                        </a>
+                      ))}
                   </article>
                 ))
               ) : (

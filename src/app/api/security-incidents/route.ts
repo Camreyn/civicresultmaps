@@ -58,7 +58,7 @@ export async function GET(request: Request) {
       limit,
       schemaVersion: securityIncidentApiSchemaVersion,
       caveat:
-        "These source-linked election-administration rows map all counties named in the published nationwide November 5 compilation plus one additional official Pima County record. Official county rows and supplemental compiled rows are labeled separately. Reported threats and affected places are different measures, unknown counts are not treated as zero, and the rows are not evidence of fraud or misconduct.",
+        "These source-linked election-administration rows use the later Brennan Center 227-threat public-source tracker, retain statewide counts whose counties were not named, and preserve one additional earlier county mention with an unknown count. The tracker is not an FBI roster and may not be exhaustive. Reported threats and affected places remain different measures, and the rows are not evidence of fraud or misconduct.",
     }),
     { headers: securityIncidentCacheHeaders },
   );

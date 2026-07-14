@@ -1,33 +1,65 @@
-# Election Security Incident Layer
+# November 2024 election security incidents
 
-The Security map mode displays source-linked county records for documented November 5, 2024 election security incidents. It maps every county named in the published nationwide Election Day compilation and adds Pima County from a separate official after-action report. It is an election-administration context layer, not a result, turnout, or advisory-indicator layer.
+The Security layer presents source-linked administration context for bomb threats reported during the November 2024 election period. It is separate from election results, turnout, and advisory indicators.
 
-## Data contract
+## What the 227 figure means
 
-- Normalized rows: `data/election-security-incidents-2024.json`
-- Nationwide coverage inventory: `data/election-security-incident-source-inventory-2024.json`
-- Loader: `src/lib/security-incidents.ts`
-- Source capture: `data/nbc-2024-election-day-bomb-threat-county-compilation.json`
-- Reproducible normalization: `npm run security-incidents:build`
-- Public API: `GET /api/security-incidents?state=GA&year=2024`
-- Validation: `npm run validate:security-incidents`
-- API response schema: `meta.schemaVersion = 3.0.0`
+The broadest reproducible source currently loaded is the Brennan Center for Justice's *2024 Election Bomb Threat Tracker*, last updated March 28, 2025. It records at least 227 threats reported from November 5 through November 9, 2024 across nine states.
 
-Rows join to county geometry by `jurisdictionTag` using the canonical `county:<GEOID>` contract. The map uses normalized county names only as a fallback when a geometry or result row lacks a tag. API schema 3.0.0 adds `sourceTier`, `sourceStatus`, `namedLocations`, `threatCountBasis`, and count-source provenance. Mixed source units make the legacy aggregate fields `affectedLocations` and `knownAffectedLocations` null; clients must read `affectedLocationUnits` and must not treat an unknown count as zero.
+The 227 figure is not an official FBI count or roster. The tracker was assembled from publicly available reports and says it may not be exhaustive. The FBI's November 5 statement confirms threats occurred in several states but publishes neither a national count nor a state, county, or site list.
 
-## Coverage and source tiers
+The earlier Election Day snapshot remains in the source inventory for comparison. A Senate letter and NBC News reported at least 67 polling locations in 19 counties across five states. That is a narrower, earlier snapshot, not the source of the later 227 total.
 
-The normalized package contains 20 county rows across Arizona, Georgia, Michigan, Pennsylvania, and Wisconsin:
+## Loaded geography
 
-- All 19 counties named by the NBC News nationwide compilation are mapped. The accessible embedded table exposes 18 rows totaling 66 under a `Threats` column; the article prose also names Milwaukee but does not expose a separate Milwaukee count. Milwaukee is mapped with a null count rather than an inference.
-- Four rows have county-level official records: Fulton, DeKalb, Chester, and Pima.
-- Sixteen rows rely on the visibly labeled supplemental nationwide compilation because this review did not locate a qualifying county-level official incident artifact.
-- Pima is an additional official county record outside the 19-county compilation. Its official PDF was verified, but direct scripted download was blocked by an anti-bot challenge, so a structured extract records the relevant page and canonical URL.
+The normalized registry contains:
 
-The source-reported threat count and the number of disrupted places remain separate. For example, the compilation reports 32 threats for Fulton while county records identify five polling locations whose hours were extended; DeKalb's compiled count is five while the official update identifies six active voting precincts. These figures describe different source scopes and are not added together.
+- 110 rows from the later tracker, totaling 227 threats.
+- 108 tracker rows with named counties and canonical county GEOIDs.
+- Two tracker rows totaling 66 threats whose counties were not specified: 19 in Georgia and 47 in Minnesota.
+- One additional Milwaukee County row retained from the earlier 67-location compilation because the earlier article names Milwaukee but does not publish a separate Milwaukee count.
+- 111 total normalized rows, 109 mapped counties, nine states, a known minimum of 227 threats, and one county row with no separately published count.
 
-The FBI's November 5 national statement is retained as context because it identifies neither a state nor a county. A December 11 Senate letter repeats a figure of at least 67 polling locations in 19 counties across five states, but cites NBC News and Reuters rather than a disclosed federal roster. Both the Senate PDF and the structured NBC table capture are hash-verified in the inventory.
+Statewide-unspecified counts remain in state and national totals, reports, and exports. They are never assigned to a county polygon. An unknown county count is never converted to zero.
+
+## Source and normalization path
+
+Primary and supplemental context is recorded in data/election-security-incident-source-inventory-2024.json. The later tracker PDF is archived at data/us-2024-election-bomb-threat-tracker-brennan-center.pdf with a reviewed SHA-256.
+
+The reproducible pipeline is:
+
+1. scripts/extract-brennan-security-tracker.mjs extracts the PDF text layer, preserves each row's cited public URLs, and joins named counties to public/data/national-counties.geojson.
+2. data/brennan-2024-election-bomb-threat-tracker.json stores the normalized tracker capture and hard-checks 110 rows, nine states, 108 counties, two statewide-unspecified rows, and 227 threats.
+3. scripts/build-security-incident-registry.mjs overlays reviewed official county detail for Pima, DeKalb, Fulton, and Chester Counties and retains the earlier Milwaukee mention.
+4. scripts/validate-security-incidents.mjs checks geography grain, totals, source tiers, local artifacts, hashes, caveats, and tracker-to-registry correspondence.
+
+Run:
+
+~~~powershell
+npm run security-incidents:build
+npm run validate:security-incidents
+npm run test:security-incidents
+~~~
+
+Do not hand-edit the generated tracker capture or registry when the extraction or builder should be corrected instead.
+
+## Website behavior
+
+- The nationwide Security explorer maps county-attributed rows across the full 3,144-county geometry.
+- Filters, pinned county inspection, CSV, source JSON, map SVG, and print/PDF reports operate in the browser.
+- Reports include statewide-unspecified rows and their sources even though those rows are not drawn on the county map.
+- State Security map mode shows statewide-only totals in the jurisdiction drawer, including Minnesota where no county was named.
+- The state selector's “States with bomb-threat records” filter includes all nine states.
+- Source labels distinguish official county detail, the later public-source tracker, and the earlier Election Day compilation.
+
+The national page is statically generated and county geometry is cached in the browser. Expanding the registry does not add a per-request database query or server-side geometry computation, keeping Vercel Fluid CPU use effectively unchanged.
+
+## API
+
+GET /api/security-incidents?state=<STATE>&year=2024&limit=<N> returns API schema 4.0.0. Mixed-grain totals include countyRowCount, statewideUnspecifiedRowCount, and statewideUnspecifiedThreatCount.
 
 ## Interpretation limits
 
-The registry covers the full published 19-county Election Day compilation plus one additional official county record; it is not an official federal census or a complete site-by-site roster. A supplemental row says a county appeared in the published compilation, not that every site, closure, or unique email is known. An absent row does not establish that no incident occurred. The layer does not indicate altered votes or an incorrect outcome and is not evidence of fraud or misconduct.
+“Threats,” “polling locations,” “precincts,” “election offices,” and “facilities” are not interchangeable units. One message can name multiple places, and different sources may count messages, locations, or affected election units differently. The UI keeps those units separate and explains when a county is named but its exact count was not published.
+
+An absent county row means only that no matching county record is loaded. It does not establish that no incident occurred. These records do not show that votes were altered or that an election outcome was incorrect, and they are not evidence of fraud or misconduct.

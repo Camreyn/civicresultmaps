@@ -22,6 +22,7 @@ function sortedRows(rows: SecurityIncidentSummary[]) {
     (a, b) =>
       a.state.localeCompare(b.state)
       || a.eventDate.localeCompare(b.eventDate)
+      || a.reportingGrain.localeCompare(b.reportingGrain)
       || a.county.localeCompare(b.county),
   );
 }
@@ -61,6 +62,7 @@ export function getNationalSecurityIncidentReport(year = 2024): NationalSecurity
     caveat: string;
     electionYear: number;
     nationalContext: SecurityIncidentNationalContext[];
+    reportingWindow: { end: string; start: string };
     stateCoverage: SecurityIncidentCoverageState[];
   };
 
@@ -69,6 +71,7 @@ export function getNationalSecurityIncidentReport(year = 2024): NationalSecurity
     electionYear: year,
     incidents,
     nationalContext: inventory.electionYear === year ? inventory.nationalContext : [],
+    reportingWindow: inventory.reportingWindow,
     stateCoverage: inventory.electionYear === year ? inventory.stateCoverage : [],
     stateSummaries: listSecurityIncidentStateSummaries(year),
     totals: summarizeSecurityIncidents(incidents),
