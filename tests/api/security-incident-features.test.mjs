@@ -11,6 +11,11 @@ import {
   threatCountBasisText,
   threatCountText,
 } from "../../src/lib/security-incident-summary.ts";
+import {
+  buildSecurityElectionOverlay,
+  securityElectionResultText,
+  summarizeSecurityElectionWinner,
+} from "../../src/lib/security-result-overlay.ts";
 
 const registry = JSON.parse(readFileSync("data/election-security-incidents-2024.json", "utf8"));
 
@@ -96,6 +101,122 @@ test("a pinned map selection wins over hover previews", () => {
   assert.equal(activeMapSelection(null, null, "Statewide"), "Statewide");
 });
 
+test("security election overlay joins only canonical incident county FIPS", () => {
+  const fulton = registry.incidentRows.find((row) => row.jurisdictionTag === "county:13121");
+  const pima = registry.incidentRows.find((row) => row.jurisdictionTag === "county:04019");
+  const statewide = registry.incidentRows.find((row) => row.reportingGrain === "statewide_unspecified");
+  assert.ok(fulton);
+  assert.ok(pima);
+  assert.ok(statewide);
+
+  const coverage = {
+    canonicalTaggedRows: 3,
+    comparableRows: 2,
+    duplicateTags: 0,
+    invalidCanonicalTags: 0,
+    nonGeographicRows: 0,
+    rawJurisdictions: 3,
+    unresolvedRows: 0,
+  };
+  const snapshot = ({ fips, state, winner }) => ({
+    fips,
+    jurisdictionTag: `county:${fips}`,
+    state,
+    snapshot: {
+      caveat: winner === "unavailable" ? "Result is not loaded." : null,
+      confidence: "exact",
+      demCandidate: "Kamala Harris",
+      demMarginPct: winner === "blue" ? 12.5 : null,
+      demMarginVotes: winner === "blue" ? 125 : null,
+      demSharePct: winner === "unavailable" ? null : 55,
+      demVotes: winner === "unavailable" ? null : 550,
+      otherVotes: winner === "unavailable" ? null : 50,
+      repCandidate: "Donald Trump",
+      repSharePct: winner === "unavailable" ? null : 42.5,
+      repVotes: winner === "unavailable" ? null : 425,
+      sourceAuthority: "Official election office",
+      sourceConfidence: "certified",
+      sourceId: `${state.toLowerCase()}-2024-president`,
+      sourceUrl: `https://example.gov/${state.toLowerCase()}`,
+      totalVotes: winner === "unavailable" ? null : 1025,
+      turnout: null,
+      winner,
+      year: 2024,
+    },
+  });
+  const dataset = {
+    coverage,
+    family: "results",
+    snapshots: [
+      snapshot({ fips: "13121", state: "GA", winner: "blue" }),
+      snapshot({ fips: "04019", state: "AZ", winner: "unavailable" }),
+      snapshot({ fips: "01001", state: "AL", winner: "red" }),
+    ],
+    source: "database",
+    stateCoverage: {},
+    year: 2024,
+  };
+  const malformedCounty = {
+    ...fulton,
+    id: "malformed-county-tag",
+    jurisdictionCode: "1312",
+    jurisdictionTag: "county:1312",
+  };
+
+  const overlay = buildSecurityElectionOverlay(
+    [fulton, pima, statewide, malformedCounty],
+    dataset,
+  );
+
+  assert.equal(overlay.year, 2024);
+  assert.equal(overlay.dataSource, "database");
+  assert.equal(overlay.incidentCountyCount, 2);
+  assert.equal(overlay.rows.length, 2);
+  assert.equal(overlay.matchedCountyCount, 1);
+  assert.deepEqual(overlay.rows.map((row) => row.fips), ["04019", "13121"]);
+  assert.ok(!overlay.rows.some((row) => row.fips === "01001"));
+
+  const fultonResult = overlay.rows.find((row) => row.fips === "13121");
+  const pimaResult = overlay.rows.find((row) => row.fips === "04019");
+  assert.ok(fultonResult);
+  assert.ok(pimaResult);
+  assert.equal(fultonResult.sourceAuthority, "Official election office");
+  assert.equal(fultonResult.sourceUrl, "https://example.gov/ga");
+  assert.deepEqual(summarizeSecurityElectionWinner(fultonResult), {
+    candidate: "Kamala Harris",
+    marginPct: 12.5,
+    marginVotes: 125,
+    party: "Democratic",
+    runnerUpCandidate: "Donald Trump",
+    runnerUpVotes: 425,
+    winnerVotes: 550,
+  });
+  assert.match(securityElectionResultText(fultonResult), /Kamala Harris won for the Democratic Party/);
+  assert.equal(
+    securityElectionResultText(pimaResult),
+    "No joined 2024 presidential county result",
+  );
+
+  const redResult = {
+    ...fultonResult,
+    demMarginPct: -8,
+    demMarginVotes: -80,
+    winner: "red",
+  };
+  assert.equal(summarizeSecurityElectionWinner(redResult).party, "Republican");
+  assert.match(securityElectionResultText(redResult), /Donald Trump won for the Republican Party/);
+
+  const tiedResult = {
+    ...fultonResult,
+    demMarginPct: 0,
+    demMarginVotes: 0,
+    repVotes: 550,
+    winner: "tie",
+  };
+  assert.equal(summarizeSecurityElectionWinner(tiedResult).party, "Tie");
+  assert.match(securityElectionResultText(tiedResult), /tied at 550 votes/);
+});
+
 test("CSV exports use commas, CRLF rows, quoting, and empty null cells", () => {
   const csv = rowsToCsv(
     ["State", "County", "Note", "Count"],
@@ -114,9 +235,10 @@ test("CSV exports use commas, CRLF rows, quoting, and empty null cells", () => {
   assert.ok(!csv.includes(" - "));
 });
 
-test("national explorer is static, source-linked, mixed-grain, and browser-only after load", () => {
+test("national explorer is static, source-linked, mixed-grain, and carries a compact election overlay", () => {
   const page = readFileSync("src/app/security/page.tsx", "utf8");
   const explorer = readFileSync("src/app/security/security-explorer.tsx", "utf8");
+  const socialCard = readFileSync("src/app/api/social-card/route.tsx", "utf8");
   const sidebar = readFileSync("src/app/state-switcher.tsx", "utf8");
   const stateExplorer = readFileSync("src/app/results-explorer.tsx", "utf8");
 
@@ -125,6 +247,15 @@ test("national explorer is static, source-linked, mixed-grain, and browser-only 
   assert.match(page, /at least 227 threats/i);
   assert.match(page, /66 additional threats reported only at statewide/i);
   assert.match(page, /not an official FBI roster/i);
+  assert.match(page, /loadNationalYearDataset\(2024\)/);
+  assert.match(page, /buildSecurityElectionOverlay/);
+  assert.match(page, /openGraph:/);
+  assert.match(page, /twitter:/);
+  assert.match(page, /summary_large_image/);
+  assert.match(page, /view=security/);
+  assert.match(page, /width: 1200/);
+  assert.match(page, /height: 630/);
+  assert.match(page, /separate datasets/i);
   assert.match(explorer, /\/data\/national-counties\.geojson/);
   assert.match(explorer, /expectedCountyFeatureCount = 3144/);
   assert.match(explorer, /cache: "force-cache"/);
@@ -133,6 +264,17 @@ test("national explorer is static, source-linked, mixed-grain, and browser-only 
   assert.match(explorer, /National source context/);
   assert.match(explorer, /source\.sourceUrl/);
   assert.doesNotMatch(explorer, /\/api\/security-incidents/);
+  assert.doesNotMatch(explorer, /\/api\/results/);
+  assert.match(explorer, /aria-pressed=\{mapLayer === "winner"\}/);
+  assert.match(explorer, /params\.set\("layer", mapLayer\)/);
+  assert.match(explorer, /security-result-unavailable/);
+  assert.match(explorer, /incidentOutlineStroke/);
+  assert.match(explorer, /2024 presidential winners in mapped threat counties/);
+  assert.match(explorer, /Open result source/);
+  assert.match(explorer, /missing results are not treated as zero/i);
+  assert.match(explorer, /electionOverlay\.matchedCountyCount/);
+  assert.match(explorer, /resultRows: electionOverlay\.rows\.filter/);
+  assert.match(explorer, /Shade thresholds: under 5, 5-14\.99, 15-29\.99, and 30\+ points/);
   assert.match(explorer, /Later public-source tracker/);
   assert.match(explorer, /At least \{trackerContext\?\.reportedThreatCount/);
   assert.match(explorer, /County not specified/);
@@ -155,6 +297,14 @@ test("national explorer is static, source-linked, mixed-grain, and browser-only 
   assert.match(explorer, /Threats with no county named/);
   assert.match(explorer, /States with matching records/);
   assert.match(explorer, /Source strength/);
+  assert.match(socialCard, /params\.get\("view"\) === "security"/);
+  assert.match(socialCard, /buildSecuritySocialCard/);
+  assert.match(socialCard, /Bomb-threat incident explorer/);
+  assert.match(socialCard, /mapped counties/);
+  assert.match(socialCard, /without county/);
+  assert.match(socialCard, /Separate datasets/);
+  assert.match(socialCard, /fraud, misconduct, altered votes, or an incorrect outcome/);
+  assert.match(socialCard, /County-attributed incident record/);
   assert.match(sidebar, /has-security-incidents/);
   assert.match(sidebar, /States with bomb-threat records/);
   assert.match(sidebar, /nine states in the later 227-threat public-source tracker/);

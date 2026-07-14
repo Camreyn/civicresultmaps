@@ -38,6 +38,193 @@
   line-height: 1.08;
 }
 
+.overlayWarning {
+  align-items: flex-start;
+  background: rgba(240, 195, 106, 0.07);
+  border: 1px solid rgba(240, 195, 106, 0.28);
+  border-radius: 10px;
+  color: var(--gold);
+  display: flex;
+  gap: 11px;
+  padding: 13px 15px;
+}
+
+.overlayWarning div {
+  display: grid;
+  gap: 4px;
+}
+
+.overlayWarning p,
+.mapQualifier {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.mapQualifier {
+  margin-top: 7px;
+  max-width: 720px;
+}
+
+.mapHeaderTools {
+  align-items: flex-end;
+  display: grid;
+  flex: 0 1 640px;
+  gap: 9px;
+  justify-items: end;
+}
+
+.layerToggle {
+  background: #111312;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  display: inline-flex;
+  overflow: hidden;
+}
+
+.layerToggle button {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 900;
+  min-height: 32px;
+  padding: 0 11px;
+}
+
+.layerToggle button + button {
+  border-left: 1px solid var(--line);
+}
+
+.layerToggle button:hover,
+.layerToggle button:focus-visible {
+  color: var(--foreground);
+}
+
+.layerToggle button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #061111;
+}
+
+.overlayCoverage {
+  color: var(--quiet);
+  font-family: var(--font-code);
+  font-size: 9px;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.legendBlue { background: #4f95e8; }
+.legendRed { background: #d65b5f; }
+.legendTie { background: #f0c36a; }
+.legendBlueMargin { background: linear-gradient(90deg, #bddbff, #294f79); }
+.legendRedMargin { background: linear-gradient(90deg, #ffc9c3, #6f383c); }
+.legendResultMissing { background: repeating-linear-gradient(135deg, #202625 0 3px, #718079 3px 4px); }
+.legendOfficialOutline { background: transparent; border: 2px solid #f97316 !important; }
+.legendTrackerOutline { background: transparent; border: 2px solid #fbbf24 !important; }
+.legendEarlierOutline { background: transparent; border: 2px solid #c084fc !important; }
+
+.marginThresholds {
+  color: var(--quiet) !important;
+  white-space: normal !important;
+}
+
+.electionDetail {
+  background: rgba(17, 19, 18, 0.78);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+}
+
+.electionDetailHeader {
+  display: grid;
+  gap: 5px;
+}
+
+.electionDetailHeader > span {
+  color: var(--quiet);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.electionDetailHeader > strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.electionWinnerBlue { color: #82b8ff; }
+.electionWinnerRed { color: #ff9f91; }
+.electionWinnerNeutral { color: var(--gold); }
+
+.electionMetrics {
+  display: grid;
+  gap: 7px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+}
+
+.electionMetrics > div {
+  background: #0d0f0e;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 7px;
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px;
+}
+
+.electionMetrics dt,
+.electionMetrics dd,
+.electionMetrics small {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.electionMetrics dt,
+.electionMetrics small {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.electionMetrics dd {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.electionSource {
+  display: grid;
+  gap: 5px;
+}
+
+.electionSource span {
+  color: var(--quiet);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.electionSource a {
+  align-items: center;
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 800;
+  gap: 5px;
+  width: fit-content;
+}
+
+.electionCaveat {
+  border-left: 2px solid var(--gold);
+  padding-left: 8px;
+}
+
 .legendHigh {
   background: #dc2626;
 }
@@ -447,6 +634,11 @@
     grid-column: auto;
   }
 
+  .mapHeaderTools {
+    align-items: start;
+    justify-items: start;
+  }
+
   .reportSummary {
     grid-template-columns: 1fr 1fr;
   }
@@ -487,6 +679,16 @@
     justify-content: center;
   }
 
+  .layerToggle {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .layerToggle button {
+    padding: 7px;
+  }
+
   .securityMetrics,
   .reportSummary {
     grid-template-columns: 1fr;
@@ -505,6 +707,10 @@
   .sourceGrid {
     grid-template-columns: 1fr;
     padding: 13px;
+  }
+
+  .electionMetrics {
+    grid-template-columns: 1fr;
   }
 }
 

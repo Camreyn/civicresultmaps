@@ -1,6 +1,6 @@
 # November 2024 election security incidents
 
-The Security layer presents source-linked administration context for bomb threats reported during the November 2024 election period. It is separate from election results, turnout, and advisory indicators.
+The Security layer presents source-linked administration context for bomb threats reported during the November 2024 election period. Incident records remain separate from election results, turnout, and advisory indicators. The national explorer can optionally shade the mapped incident counties by the 2024 presidential winner or margin; that county-FIPS overlay is geographic context and does not imply a relationship between the datasets.
 
 ## What the 227 figure means
 
@@ -54,13 +54,17 @@ Do not hand-edit the generated tracker capture or registry when the extraction o
 ## Website behavior
 
 - The nationwide Security explorer maps county-attributed rows across the full 3,144-county geometry.
+- Its map-layer control switches among incident-source fill, 2024 presidential winner fill, and 2024 presidential margin fill. In result modes, the incident source tier remains visible as a separate county outline.
+- Result joins require the same canonical `county:<GEOID>` tag used by the incident registry and national result dataset. Statewide-only and ambiguous units are never forced onto a county; unavailable result joins remain explicitly unshaded and are not treated as zero.
+- County inspection shows the joined vote totals, shares, winner, margin, source authority, source URL, confidence, and result caveat alongside the separate incident records.
 - Filters, pinned county inspection, shareable report URLs, compact state/date summaries, CSV, source JSON, map SVG, and print/PDF reports operate in the browser.
 - Reports include statewide-unspecified rows and their sources even though those rows are not drawn on the county map.
 - State Security map mode shows statewide-only totals in the jurisdiction drawer, including Minnesota where no county was named.
 - The state selector's “States with bomb-threat records” filter includes all nine states.
 - Source labels distinguish official county detail, the later public-source tracker, and the earlier Election Day compilation.
+- `/security` publishes page-specific Open Graph and Twitter metadata pointing to a 1,200-by-630 security preview card. The card repeats the separate-datasets interpretation limit and the mapped-versus-statewide counts.
 
-The national page is statically generated and county geometry is cached in the browser. Expanding the registry does not add a per-request database query or server-side geometry computation, keeping Vercel Fluid CPU use effectively unchanged.
+The national page is statically generated and county geometry is cached in the browser. At build time, the page loads the national 2024 presidential dataset once and sends only the compact projection for canonical incident-county FIPS codes to the client. This adds no per-request result query or server-side geometry computation. Builds using the limited seed fallback show an explicit overlay-coverage warning.
 
 ## API
 
