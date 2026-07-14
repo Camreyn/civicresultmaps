@@ -4,23 +4,46 @@ import { stateCodes } from "./state-metadata.mjs";
 
 const registry = JSON.parse(await readFile("data/election-security-incidents-2024.json", "utf8"));
 const inventory = JSON.parse(await readFile("data/election-security-incident-source-inventory-2024.json", "utf8"));
+const tracker = JSON.parse(await readFile("data/brennan-2024-election-bomb-threat-tracker.json", "utf8"));
 const errors = [];
 const expectedStates = new Set(stateCodes());
 const allowedCoverageStatuses = new Set(["loaded", "partial", "needs_data"]);
-const allowedAffectedLocationUnits = new Set(["election_office", "polling_location", "voting_precinct"]);
+const allowedAffectedLocationUnits = new Set([
+  "election_facility",
+  "election_office",
+  "polling_location",
+  "voting_precinct",
+]);
 const allowedSourceTiers = new Set(["official", "supplemental"]);
-const allowedSourceStatuses = new Set(["official_county_record", "supplemental_national_compilation"]);
+const allowedSourceStatuses = new Set([
+  "official_county_record",
+  "research_compilation",
+  "supplemental_earlier_compilation",
+  "supplemental_national_compilation",
+]);
 const allowedThreatCountBases = new Set([
   "official_county_record",
+  "research_tracker_compilation",
   "supplemental_national_compilation",
   "not_separately_published",
 ]);
 const officialHostPattern = /(^|\.)(gov|mil)$/i;
 const officialNonGovHosts = new Set(["chesco.org", "www.chesco.org"]);
-const supplementalHosts = new Set(["nbcnews.com", "www.nbcnews.com"]);
+const supplementalHosts = new Set([
+  "brennancenter.org",
+  "www.brennancenter.org",
+  "nbcnews.com",
+  "www.nbcnews.com",
+]);
 
 function addError(message) {
   errors.push(message);
+}
+
+function expectEqual(actual, expected, label) {
+  if (actual !== expected) {
+    addError(`${label}: expected ${expected}; found ${actual}.`);
+  }
 }
 
 function sourceHost(value, label) {
@@ -39,6 +62,7 @@ function sourceHost(value, label) {
 function isOfficialHost(host) {
   return officialHostPattern.test(host) || officialNonGovHosts.has(host);
 }
+
 function validatePrimarySourceUrl(value, tier, label) {
   const host = sourceHost(value, label);
   if (!host) return;
@@ -50,18 +74,53 @@ function validatePrimarySourceUrl(value, tier, label) {
   }
 }
 
-function validateKnownSourceUrl(value, label) {
+function validateReviewedSourceUrl(value, label) {
   const host = sourceHost(value, label);
   if (host && !isOfficialHost(host) && !supplementalHosts.has(host)) {
     addError(`${label} must use a reviewed official or supplemental host; received ${host}.`);
   }
 }
 
-if (registry.schemaVersion !== 3 || registry.electionYear !== 2024 || registry.reportingGrain !== "county") {
-  addError("Incident registry must describe county-grain 2024 rows.");
+async function validateArtifact(localArtifact, label, expectedSha256) {
+  if (!localArtifact) {
+    addError(`${label} needs a local artifact.`);
+    return;
+  }
+  try {
+    const artifact = await readFile(localArtifact);
+    if (expectedSha256 !== undefined) {
+      if (!/^[a-f0-9]{64}$/i.test(expectedSha256 ?? "")) {
+        addError(`${label} needs a reviewed SHA-256.`);
+        return;
+      }
+      const actualSha256 = createHash("sha256").update(artifact).digest("hex");
+      if (actualSha256 !== expectedSha256.toLowerCase()) {
+        addError(`${label} SHA-256 does not match ${localArtifact}.`);
+      }
+    }
+  } catch {
+    addError(`${label} local artifact does not exist: ${localArtifact}.`);
+  }
+}
+
+if (
+  registry.schemaVersion !== 4
+  || registry.electionYear !== 2024
+  || registry.reportingGrain !== "mixed_county_and_statewide_unspecified"
+) {
+  addError("Incident registry must describe mixed county and statewide-unspecified 2024 rows.");
+}
+if (
+  registry.reportingWindow?.start !== "2024-11-05"
+  || registry.reportingWindow?.end !== "2024-11-09"
+) {
+  addError("Incident registry must preserve the November 5-9, 2024 reporting window.");
 }
 if (!Array.isArray(registry.incidentRows)) {
   addError("incidentRows must be an array.");
+}
+if (!/not an official FBI roster/i.test(registry.caveat ?? "") || !/may not be exhaustive/i.test(registry.caveat ?? "")) {
+  addError("Registry caveat must identify the tracker as non-FBI and potentially non-exhaustive.");
 }
 if (!/not evidence of fraud, misconduct/i.test(registry.caveat ?? "")) {
   addError("Registry caveat must keep incidents separate from fraud or misconduct claims.");
@@ -80,14 +139,17 @@ for (const row of registry.incidentRows ?? []) {
     "state",
     "stateName",
     "county",
-    "jurisdictionCode",
     "jurisdictionTag",
+    "reportingGrain",
     "eventDate",
     "eventType",
+    "eventTypeLabel",
     "disruptionType",
+    "disruptionLabel",
     "affectedLocationUnit",
     "sourceAuthority",
     "sourceTitle",
+    "sourcePublishedAt",
     "sourceUrl",
     "localArtifact",
     "normalizationPath",
@@ -95,7 +157,7 @@ for (const row of registry.incidentRows ?? []) {
     "sourceStatus",
     "threatCountBasis",
     "confidence",
-    "caveat"
+    "caveat",
   ]) {
     if (!row[field]) {
       addError(`${label} is missing ${field}.`);
@@ -105,17 +167,39 @@ for (const row of registry.incidentRows ?? []) {
   if (!expectedStates.has(row.state)) {
     addError(`${label} has unsupported state ${row.state}.`);
   }
-  if (row.electionYear !== 2024 || row.reportingGrain !== "county") {
-    addError(`${label} must be a county-grain 2024 row.`);
+  if (row.electionYear !== 2024) {
+    addError(`${label} must be a 2024 row.`);
   }
-  if (!/^county:\d{5}$/.test(row.jurisdictionTag ?? "")) {
-    addError(`${label} must use a county:<GEOID> jurisdictionTag.`);
+  if (row.reportingGrain === "county") {
+    if (!/^\d{5}$/.test(row.jurisdictionCode ?? "")) {
+      addError(`${label} county row needs a five-digit jurisdictionCode.`);
+    }
+    if (!/^county:\d{5}$/.test(row.jurisdictionTag ?? "")) {
+      addError(`${label} county row must use a county:<GEOID> jurisdictionTag.`);
+    }
+    if (row.jurisdictionTag !== `county:${row.jurisdictionCode}`) {
+      addError(`${label} jurisdictionCode and jurisdictionTag do not match.`);
+    }
+  } else if (row.reportingGrain === "statewide_unspecified") {
+    if (row.jurisdictionCode !== null) {
+      addError(`${label} statewide-unspecified row must have a null jurisdictionCode.`);
+    }
+    if (row.jurisdictionTag !== `state:${row.state}:unspecified`) {
+      addError(`${label} statewide-unspecified row must use state:<STATE>:unspecified.`);
+    }
+    if (row.county !== "County not specified") {
+      addError(`${label} statewide-unspecified row must not claim a county.`);
+    }
+  } else {
+    addError(`${label} has unsupported reportingGrain ${row.reportingGrain}.`);
   }
-  if (row.jurisdictionTag !== `county:${row.jurisdictionCode}`) {
-    addError(`${label} jurisdictionCode and jurisdictionTag do not match.`);
-  }
-  if (!/^2024-11-\d{2}$/.test(row.eventDate ?? "")) {
-    addError(`${label} eventDate must be in November 2024.`);
+
+  if (
+    !/^2024-11-\d{2}$/.test(row.eventDate ?? "")
+    || row.eventDate < registry.reportingWindow.start
+    || row.eventDate > registry.reportingWindow.end
+  ) {
+    addError(`${label} eventDate must fall inside the reporting window.`);
   }
   if (row.threatCount !== null && (!Number.isInteger(row.threatCount) || row.threatCount < 1)) {
     addError(`${label} threatCount must be null or a positive integer.`);
@@ -124,10 +208,18 @@ for (const row of registry.incidentRows ?? []) {
     addError(`${label} has unsupported threatCountBasis ${row.threatCountBasis}.`);
   }
   if (row.threatCount !== null && (!row.threatCountSourceUrl || !row.threatCountLocalArtifact)) {
-    addError(`${label} needs a threat count source URL and local artifact when threatCount is known.`);
+    addError(`${label} needs a threat-count source URL and local artifact when threatCount is known.`);
   }
   if (row.threatCount === null && row.threatCountBasis !== "not_separately_published") {
     addError(`${label} with an unknown threatCount must use not_separately_published.`);
+  }
+  if (row.threatCountBasis === "research_tracker_compilation") {
+    const host = sourceHost(row.threatCountSourceUrl, `${label} threatCountSourceUrl`);
+    if (host && !supplementalHosts.has(host)) {
+      addError(`${label} research tracker count must point to the reviewed tracker host.`);
+    }
+  } else if (row.threatCountSourceUrl) {
+    validateReviewedSourceUrl(row.threatCountSourceUrl, `${label} threatCountSourceUrl`);
   }
   if (row.affectedLocations !== null && (!Number.isInteger(row.affectedLocations) || row.affectedLocations < 1)) {
     addError(`${label} affectedLocations must be null or a positive integer.`);
@@ -138,14 +230,20 @@ for (const row of registry.incidentRows ?? []) {
   if (!Array.isArray(row.namedLocations) || row.namedLocations.some((name) => typeof name !== "string" || !name.trim())) {
     addError(`${label} namedLocations must be an array of non-empty strings.`);
   }
+  if (!Array.isArray(row.supportingSourceUrls)) {
+    addError(`${label} supportingSourceUrls must be an array.`);
+  }
   if (!allowedSourceTiers.has(row.sourceTier) || !allowedSourceStatuses.has(row.sourceStatus)) {
     addError(`${label} has unsupported source tier or status.`);
   }
   if (row.sourceTier === "official" && row.sourceStatus !== "official_county_record") {
     addError(`${label} official rows must use official_county_record status.`);
   }
-  if (row.sourceTier === "supplemental" && row.sourceStatus !== "supplemental_national_compilation") {
-    addError(`${label} supplemental rows must use supplemental_national_compilation status.`);
+  if (row.sourceTier === "supplemental" && row.sourceStatus === "official_county_record") {
+    addError(`${label} supplemental rows cannot use official_county_record status.`);
+  }
+  if (row.sourceStatus === "research_compilation" && row.threatCountBasis !== "research_tracker_compilation") {
+    addError(`${label} research compilation row must use research_tracker_compilation.`);
   }
   if (row.hoursExtended !== null && (!Number.isFinite(row.hoursExtended) || row.hoursExtended <= 0)) {
     addError(`${label} hoursExtended must be null or a positive number.`);
@@ -153,12 +251,14 @@ for (const row of registry.incidentRows ?? []) {
   if (!/not evidence of fraud or misconduct/i.test(row.caveat ?? "")) {
     addError(`${label} caveat must say the row is not evidence of fraud or misconduct.`);
   }
+
   validatePrimarySourceUrl(row.sourceUrl, row.sourceTier, `${label} sourceUrl`);
-  if (row.threatCountSourceUrl) validateKnownSourceUrl(row.threatCountSourceUrl, `${label} threatCountSourceUrl`);
   for (const [index, url] of (row.supportingSourceUrls ?? []).entries()) {
-    validateKnownSourceUrl(url, `${label} supportingSourceUrls[${index}]`);
+    sourceHost(url, `${label} supportingSourceUrls[${index}]`);
   }
-  for (const artifact of [row.localArtifact, row.threatCountLocalArtifact, ...(row.supportingLocalArtifacts ?? [])].filter(Boolean)) {
+  for (const artifact of new Set(
+    [row.localArtifact, row.threatCountLocalArtifact, ...(row.supportingLocalArtifacts ?? [])].filter(Boolean),
+  )) {
     try {
       await access(artifact);
     } catch {
@@ -168,30 +268,46 @@ for (const row of registry.incidentRows ?? []) {
 }
 
 const rows = registry.incidentRows ?? [];
-if (registry.expected?.rowCount !== rows.length) {
-  addError(`Registry expected.rowCount is ${registry.expected?.rowCount}; found ${rows.length}.`);
-}
-if (registry.expected?.stateCount !== new Set(rows.map((row) => row.state)).size) {
-  addError("Registry expected.stateCount does not match normalized rows.");
-}
-if (registry.expected?.countyCount !== new Set(rows.map((row) => row.jurisdictionTag)).size) {
-  addError("Registry expected.countyCount does not match normalized rows.");
-}
+const countyRows = rows.filter((row) => row.reportingGrain === "county");
+const statewideRows = rows.filter((row) => row.reportingGrain === "statewide_unspecified");
 const completeThreatCountRows = rows.filter((row) => row.threatCount !== null).length;
-if (registry.expected?.completeThreatCountRows !== completeThreatCountRows) {
-  addError("Registry expected.completeThreatCountRows does not match normalized rows.");
-}
-const unknownThreatCountRows = rows.length - completeThreatCountRows;
-if (registry.expected?.unknownThreatCountRows !== unknownThreatCountRows) {
-  addError("Registry expected.unknownThreatCountRows does not match normalized rows.");
-}
 const knownThreatCountMinimum = rows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
-if (registry.expected?.knownThreatCountMinimum !== knownThreatCountMinimum) {
-  addError("Registry expected.knownThreatCountMinimum does not match normalized rows.");
+const statewideUnspecifiedThreatCount = statewideRows.reduce((sum, row) => sum + row.threatCount, 0);
+expectEqual(rows.length, 111, "Normalized incident row count");
+expectEqual(new Set(rows.map((row) => row.state)).size, 9, "Normalized state count");
+expectEqual(countyRows.length, 109, "County row count");
+expectEqual(new Set(countyRows.map((row) => row.jurisdictionTag)).size, 109, "Mapped county count");
+expectEqual(statewideRows.length, 2, "Statewide-unspecified row count");
+expectEqual(statewideUnspecifiedThreatCount, 66, "Statewide-unspecified threat count");
+expectEqual(completeThreatCountRows, 110, "Rows with published threat counts");
+expectEqual(rows.length - completeThreatCountRows, 1, "Rows without a published count");
+expectEqual(knownThreatCountMinimum, 227, "Known threat-count minimum");
+
+for (const [field, actual] of Object.entries({
+  rowCount: rows.length,
+  stateCount: new Set(rows.map((row) => row.state)).size,
+  countyCount: new Set(countyRows.map((row) => row.jurisdictionTag)).size,
+  countyRowCount: countyRows.length,
+  statewideUnspecifiedRowCount: statewideRows.length,
+  statewideUnspecifiedThreatCount,
+  completeThreatCountRows,
+  unknownThreatCountRows: rows.length - completeThreatCountRows,
+  knownThreatCountMinimum,
+})) {
+  expectEqual(registry.expected?.[field], actual, `Registry expected.${field}`);
 }
-if (registry.expected?.publishedCompilationLocationCount !== 67 || registry.expected?.publishedCompilationCountyCount !== 19) {
-  addError("Registry must preserve the sourced 67-location, 19-county published compilation headline.");
+
+const earlierRows = rows.filter((row) => row.sourceStatus === "supplemental_earlier_compilation");
+expectEqual(earlierRows.length, 1, "Additional earlier-compilation county rows");
+if (earlierRows[0]?.county !== "Milwaukee County" || earlierRows[0]?.threatCount !== null) {
+  addError("The additional earlier-compilation row must retain Milwaukee with an unknown count.");
 }
+expectEqual(
+  registry.expected?.additionalEarlierCompilationCountyRows,
+  earlierRows.length,
+  "Registry expected.additionalEarlierCompilationCountyRows",
+);
+
 const affectedLocationUnitTotals = Object.fromEntries(
   Array.from(allowedAffectedLocationUnits)
     .map((unit) => [
@@ -206,8 +322,97 @@ if (JSON.stringify(registry.expected?.affectedLocationUnitTotals) !== JSON.strin
   addError("Registry expected.affectedLocationUnitTotals must preserve source-specific affected units.");
 }
 
+if (
+  tracker.schemaVersion !== 1
+  || tracker.electionYear !== 2024
+  || !Array.isArray(tracker.rows)
+  || tracker.reportingWindow?.start !== "2024-11-05"
+  || tracker.reportingWindow?.end !== "2024-11-09"
+) {
+  addError("Tracker capture must be a schema-1 November 5-9, 2024 artifact.");
+}
+if (!/not an official FBI roster/i.test(tracker.caveat ?? "") || !/may not be exhaustive/i.test(tracker.caveat ?? "")) {
+  addError("Tracker caveat must identify the compilation as non-FBI and potentially non-exhaustive.");
+}
+const trackerRows = tracker.rows ?? [];
+const trackerCountyRows = trackerRows.filter((row) => row.reportingGrain === "county");
+const trackerStatewideRows = trackerRows.filter((row) => row.reportingGrain === "statewide_unspecified");
+const trackerThreatCount = trackerRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
+expectEqual(trackerRows.length, 110, "Tracker row count");
+expectEqual(new Set(trackerRows.map((row) => row.state)).size, 9, "Tracker state count");
+expectEqual(trackerCountyRows.length, 108, "Tracker county row count");
+expectEqual(new Set(trackerCountyRows.map((row) => row.jurisdictionTag)).size, 108, "Tracker county count");
+expectEqual(trackerStatewideRows.length, 2, "Tracker statewide-unspecified row count");
+expectEqual(trackerThreatCount, 227, "Tracker threat count");
+for (const [field, actual] of Object.entries({
+  rowCount: trackerRows.length,
+  stateCount: new Set(trackerRows.map((row) => row.state)).size,
+  countyRowCount: trackerCountyRows.length,
+  countyCount: new Set(trackerCountyRows.map((row) => row.jurisdictionTag)).size,
+  statewideUnspecifiedRowCount: trackerStatewideRows.length,
+  reportedThreatCount: trackerThreatCount,
+})) {
+  expectEqual(tracker.expected?.[field], actual, `Tracker expected.${field}`);
+}
+validatePrimarySourceUrl(tracker.sourceUrl, "supplemental", "Tracker sourceUrl");
+await validateArtifact(tracker.localArtifact, "Tracker", tracker.sha256);
+
+const registryTrackerKeys = new Set(
+  rows
+    .filter((row) => row.threatCountBasis === "research_tracker_compilation")
+    .map((row) => [row.state, row.eventDate, row.jurisdictionTag, row.threatCount].join("|")),
+);
+for (const trackerRow of trackerRows) {
+  const label = `Tracker row ${trackerRow.state} ${trackerRow.sourceCounty}`;
+  if (!expectedStates.has(trackerRow.state)) {
+    addError(`${label} has unsupported state.`);
+  }
+  if (!Number.isInteger(trackerRow.threatCount) || trackerRow.threatCount < 1) {
+    addError(`${label} must contain a positive threatCount.`);
+  }
+  if (!Array.isArray(trackerRow.sourceUrls) || trackerRow.sourceUrls.length === 0) {
+    addError(`${label} must preserve at least one underlying public source URL.`);
+  }
+  for (const [index, url] of (trackerRow.sourceUrls ?? []).entries()) {
+    sourceHost(url, `${label} sourceUrls[${index}]`);
+  }
+  if (trackerRow.reportingGrain === "county") {
+    if (!/^county:\d{5}$/.test(trackerRow.jurisdictionTag ?? "")) {
+      addError(`${label} must resolve to a canonical county tag.`);
+    }
+  } else if (
+    trackerRow.reportingGrain !== "statewide_unspecified"
+    || trackerRow.jurisdictionCode !== null
+    || trackerRow.jurisdictionTag !== `state:${trackerRow.state}:unspecified`
+  ) {
+    addError(`${label} has invalid statewide-unspecified geography.`);
+  }
+  const key = [trackerRow.state, trackerRow.eventDate, trackerRow.jurisdictionTag, trackerRow.threatCount].join("|");
+  if (!registryTrackerKeys.has(key)) {
+    addError(`${label} does not have a matching normalized registry row.`);
+  }
+}
+
 if (!Array.isArray(inventory.stateCoverage)) {
   addError("Source inventory stateCoverage must be an array.");
+}
+if (
+  inventory.schemaVersion !== 3
+  || inventory.reportingGrain !== "mixed_county_and_statewide_unspecified"
+  || inventory.reportingWindow?.start !== "2024-11-05"
+  || inventory.reportingWindow?.end !== "2024-11-09"
+) {
+  addError("Source inventory must describe the mixed-grain November 5-9 reporting window.");
+}
+if (!/not an official FBI roster/i.test(inventory.caveat ?? "") || !/may not be exhaustive/i.test(inventory.caveat ?? "")) {
+  addError("Inventory caveat must identify the tracker as non-FBI and potentially non-exhaustive.");
+}
+
+const rowsByState = new Map();
+for (const row of rows) {
+  const stateRows = rowsByState.get(row.state) ?? [];
+  stateRows.push(row);
+  rowsByState.set(row.state, stateRows);
 }
 const inventoryStates = new Set();
 for (const entry of inventory.stateCoverage ?? []) {
@@ -221,9 +426,25 @@ for (const entry of inventory.stateCoverage ?? []) {
   if (!allowedCoverageStatuses.has(entry.status)) {
     addError(`${entry.state} has invalid source inventory status ${entry.status}.`);
   }
+  const stateRows = rowsByState.get(entry.state) ?? [];
+  if (stateRows.length > 0) {
+    expectEqual(entry.expectedRowCount, stateRows.length, `${entry.state} inventory expectedRowCount`);
+    expectEqual(
+      entry.mappedCountyCount,
+      new Set(stateRows.filter((row) => row.reportingGrain === "county").map((row) => row.jurisdictionTag)).size,
+      `${entry.state} inventory mappedCountyCount`,
+    );
+    expectEqual(
+      entry.statewideUnspecifiedThreatCount,
+      stateRows
+        .filter((row) => row.reportingGrain === "statewide_unspecified")
+        .reduce((sum, row) => sum + row.threatCount, 0),
+      `${entry.state} inventory statewideUnspecifiedThreatCount`,
+    );
+  }
   if (entry.status !== "needs_data") {
     for (const url of entry.sourceUrls ?? []) {
-      validateKnownSourceUrl(url, `${entry.state} inventory sourceUrl`);
+      validateReviewedSourceUrl(url, `${entry.state} inventory sourceUrl`);
     }
     for (const artifact of entry.localArtifacts ?? []) {
       try {
@@ -240,20 +461,20 @@ for (const state of expectedStates) {
     addError(`Missing source inventory coverage entry for ${state}.`);
   }
 }
-if (inventoryStates.size !== expectedStates.size) {
-  addError(`Source inventory must contain ${expectedStates.size} configured states; found ${inventoryStates.size}.`);
-}
-if (inventory.expected?.configuredStates !== expectedStates.size) {
-  addError("Source inventory expected.configuredStates does not match state metadata.");
-}
-if (inventory.expected?.normalizedEventRows !== rows.length) {
-  addError("Source inventory expected.normalizedEventRows does not match the registry.");
-}
-if (inventory.expected?.statesWithNormalizedRows !== new Set(rows.map((row) => row.state)).size) {
-  addError("Source inventory expected.statesWithNormalizedRows does not match the registry.");
-}
-if (inventory.expected?.mappedCompilationCountyCount !== 19 || inventory.expected?.additionalOfficialCountyRows !== 1) {
-  addError("Source inventory must distinguish 19 compiled counties from the additional official Pima row.");
+expectEqual(inventoryStates.size, expectedStates.size, "Source inventory configured-state count");
+for (const [field, actual] of Object.entries({
+  configuredStates: expectedStates.size,
+  statesWithNormalizedRows: rowsByState.size,
+  normalizedEventRows: rows.length,
+  mappedCountyCount: new Set(countyRows.map((row) => row.jurisdictionTag)).size,
+  statewideUnspecifiedRowCount: statewideRows.length,
+  knownThreatCountMinimum,
+  trackerRowCount: trackerRows.length,
+  trackerCountyCount: new Set(trackerCountyRows.map((row) => row.jurisdictionTag)).size,
+  trackerThreatCount,
+  additionalEarlierCompilationCountyRows: earlierRows.length,
+})) {
+  expectEqual(inventory.expected?.[field], actual, `Inventory expected.${field}`);
 }
 
 for (const context of inventory.nationalContext ?? []) {
@@ -263,24 +484,36 @@ for (const context of inventory.nationalContext ?? []) {
     addError(`${label} needs a local artifact or an explicit blocked acquisition status.`);
   }
   if (context.localArtifact !== null) {
-    if (!/^[a-f0-9]{64}$/i.test(context.sha256 ?? "")) {
-      addError(`${label} local artifact needs a reviewed SHA-256.`);
-    }
-    try {
-      const artifact = await readFile(context.localArtifact);
-      const actualSha256 = createHash("sha256").update(artifact).digest("hex");
-      if (actualSha256 !== context.sha256?.toLowerCase()) {
-        addError(`${label} local artifact SHA-256 does not match ${context.localArtifact}.`);
-      }
-    } catch {
-      addError(`${label} local artifact does not exist: ${context.localArtifact}.`);
-    }
+    await validateArtifact(context.localArtifact, label, context.sha256);
   }
+}
+
+const trackerContext = (inventory.nationalContext ?? []).find(
+  (context) => context.sourceUrl === tracker.sourceUrl,
+);
+if (!trackerContext) {
+  addError("Source inventory must include the Brennan Center tracker as national context.");
+} else {
+  expectEqual(trackerContext.reportedThreatCount, 227, "Tracker context reportedThreatCount");
+  expectEqual(trackerContext.reportedCountyCount, 108, "Tracker context reportedCountyCount");
+  expectEqual(trackerContext.reportedStateCount, 9, "Tracker context reportedStateCount");
+  expectEqual(trackerContext.statewideUnspecifiedThreatCount, 66, "Tracker context statewideUnspecifiedThreatCount");
+  if (trackerContext.sha256 !== tracker.sha256) {
+    addError("Tracker context SHA-256 must match the extracted tracker capture.");
+  }
+}
+const fbiContext = (inventory.nationalContext ?? []).find(
+  (context) => context.sourceAuthority === "Federal Bureau of Investigation",
+);
+if (!fbiContext || fbiContext.reportedThreatCount !== undefined || fbiContext.reportedCountyCount !== undefined) {
+  addError("FBI context must not claim a national count or county roster that the statement does not publish.");
 }
 
 if (errors.length) {
   console.error(errors.join("\n"));
   process.exitCode = 1;
 } else {
-  console.log(`Validated ${rows.length} security incident rows and ${inventoryStates.size} state coverage entries.`);
+  console.log(
+    `Validated ${rows.length} security incident rows, ${trackerThreatCount} tracker threats, and ${inventoryStates.size} state coverage entries.`,
+  );
 }

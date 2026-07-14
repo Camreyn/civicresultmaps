@@ -251,10 +251,16 @@ export type EquipmentRowSummary = {
   sourceUrl: string;
 };
 
-export type SecurityAffectedLocationUnit = "election_office" | "polling_location" | "voting_precinct";
+export type SecurityAffectedLocationUnit =
+  | "election_facility"
+  | "election_office"
+  | "polling_location"
+  | "voting_precinct";
 export type SecurityIncidentSourceTier = "official" | "supplemental";
+export type SecurityIncidentReportingGrain = "county" | "statewide_unspecified";
 export type SecurityThreatCountBasis =
   | "official_county_record"
+  | "research_tracker_compilation"
   | "supplemental_national_compilation"
   | "not_separately_published";
 
@@ -264,9 +270,9 @@ export type SecurityIncidentSummary = {
   stateName: string;
   electionYear: number;
   county: string;
-  jurisdictionCode: string;
+  jurisdictionCode: string | null;
   jurisdictionTag: string;
-  reportingGrain: "county";
+  reportingGrain: SecurityIncidentReportingGrain;
   eventDate: string;
   eventType: "bomb_threat" | "security_threat";
   eventTypeLabel: string;
@@ -289,7 +295,11 @@ export type SecurityIncidentSummary = {
   supportingLocalArtifacts: string[];
   normalizationPath: string;
   sourceTier: SecurityIncidentSourceTier;
-  sourceStatus: "official_county_record" | "supplemental_national_compilation";
+  sourceStatus:
+    | "official_county_record"
+    | "research_compilation"
+    | "supplemental_earlier_compilation"
+    | "supplemental_national_compilation";
   confidence: "high" | "medium" | "low";
   caveat: string;
 };
@@ -306,12 +316,15 @@ export type SecurityIncidentTotals = {
   affectedLocationUnits: SecurityAffectedLocationUnitTotal[];
   affectedLocations: number | null;
   countyCount: number;
+  countyRowCount: number;
   documentedThreatCount: number | null;
   knownAffectedLocations: number | null;
   knownThreatCount: number;
   officialRowCount: number;
   rowCount: number;
   stateCount: number;
+  statewideUnspecifiedRowCount: number;
+  statewideUnspecifiedThreatCount: number;
   supplementalRowCount: number;
   threatCountComplete: boolean;
   unknownThreatCountRows: number;
@@ -326,11 +339,13 @@ export type SecurityIncidentCoverageState = {
   caveat?: string;
   confidence?: string;
   expectedRowCount?: number;
+  mappedCountyCount?: number;
   sourceAuthorities?: string[];
   sourceUrls?: string[];
   state: string;
   stateName: string;
   status: "partial" | "needs_data";
+  statewideUnspecifiedThreatCount?: number;
 };
 
 export type SecurityIncidentNationalContext = {
@@ -342,15 +357,19 @@ export type SecurityIncidentNationalContext = {
   expectedRowCount: number | null;
   localArtifact: string;
   normalizationPath: string;
+  reportedCountyCount?: number;
+  reportedLocationCount?: number;
+  reportedStateCount?: number;
+  reportedThreatCount?: number;
   reportingGrain: string;
+  reportingWindow?: { end: string; start: string };
+  scopeLabel?: string;
   sha256?: string;
   sourceAuthority: string;
   sourceTier?: SecurityIncidentSourceTier;
   sourceTitle: string;
   sourceUrl: string;
-  reportedCountyCount?: number;
-  reportedLocationCount?: number;
-  reportedStateCount?: number;
+  statewideUnspecifiedThreatCount?: number;
 };
 
 export type NationalSecurityIncidentReport = {
@@ -358,6 +377,7 @@ export type NationalSecurityIncidentReport = {
   electionYear: number;
   incidents: SecurityIncidentSummary[];
   nationalContext: SecurityIncidentNationalContext[];
+  reportingWindow: { end: string; start: string };
   stateCoverage: SecurityIncidentCoverageState[];
   stateSummaries: SecurityIncidentStateSummary[];
   totals: SecurityIncidentTotals;

@@ -1,48 +1,22 @@
-import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 
 const registryPath = "data/election-security-incidents-2024.json";
 const inventoryPath = "data/election-security-incident-source-inventory-2024.json";
-const compilationPath = "data/nbc-2024-election-day-bomb-threat-county-compilation.json";
-const pimaExtractPath = "data/az-2024-election-day-security-pima-source-extract.json";
+const trackerPath = "data/brennan-2024-election-bomb-threat-tracker.json";
 const senateArtifact = "data/us-2024-election-day-bomb-threats-senate-letter.pdf";
-const chesterArtifact = "data/pa-2024-election-day-security-chester.pdf";
 const fbiArtifact = "data/fbi-2024-bomb-threats-polling-locations.html";
 
-const nbcUrl = "https://www.nbcnews.com/tech/security/election-day-bomb-threats-overwhelmingly-targeted-democrat-leaning-rcna179006";
-const senateUrl = "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf";
-const fbiUrl = "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations";
+const senateUrl =
+  "https://www.warnock.senate.gov/wp-content/uploads/2024/12/12.11.2024-Letter-to-ODNI-CISA-FBI-re-Election-Interference.pdf";
+const fbiUrl =
+  "https://www.fbi.gov/news/press-releases/fbi-statement-on-bomb-threats-to-polling-locations";
 
-const stateNames = {
-  AZ: "Arizona",
-  GA: "Georgia",
-  MI: "Michigan",
-  PA: "Pennsylvania",
-  WI: "Wisconsin",
-};
-
-const countyFips = {
-  "AZ|Cochise County": "04003",
-  "AZ|Maricopa County": "04013",
-  "AZ|Navajo County": "04017",
-  "AZ|Pima County": "04019",
-  "GA|DeKalb County": "13089",
-  "GA|Fulton County": "13121",
-  "GA|Gwinnett County": "13135",
-  "MI|Genesee County": "26049",
-  "MI|Saginaw County": "26145",
-  "MI|Washtenaw County": "26161",
-  "MI|Wayne County": "26163",
-  "PA|Blair County": "42013",
-  "PA|Centre County": "42027",
-  "PA|Chester County": "42029",
-  "PA|Clearfield County": "42033",
-  "PA|Luzerne County": "42079",
-  "PA|Philadelphia County": "42101",
-  "PA|York County": "42133",
-  "WI|Dane County": "55025",
-  "WI|Milwaukee County": "55079",
-};
+const officialRowIds = new Map([
+  ["GA|DeKalb County", "ga-2024-general-dekalb-bomb-threat-disruptions"],
+  ["GA|Fulton County", "ga-2024-general-fulton-bomb-threat-disruptions"],
+  ["PA|Chester County", "pa-2024-general-chester-bomb-threat-disruption"],
+  ["AZ|Pima County", "az-2024-general-pima-bomb-threat-response"],
+]);
 
 const namedLocations = {
   "GA|Fulton County": [
@@ -62,11 +36,6 @@ const namedLocations = {
   ],
 };
 
-const retainedOfficialIds = new Set([
-  "ga-2024-general-fulton-bomb-threat-disruptions",
-  "ga-2024-general-dekalb-bomb-threat-disruptions",
-]);
-
 function slug(value) {
   return value
     .toLowerCase()
@@ -79,200 +48,153 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
-async function sha256(path) {
-  return createHash("sha256").update(await readFile(path)).digest("hex");
-}
-
 const registry = JSON.parse(await readFile(registryPath, "utf8"));
 const inventory = JSON.parse(await readFile(inventoryPath, "utf8"));
-const compilation = JSON.parse(await readFile(compilationPath, "utf8"));
-const pimaExtract = JSON.parse(await readFile(pimaExtractPath, "utf8"));
-const retainedOfficialRows = new Map(
-  registry.incidentRows
-    .filter((row) => retainedOfficialIds.has(row.id))
-    .map((row) => [row.id, row]),
-);
+const tracker = JSON.parse(await readFile(trackerPath, "utf8"));
+const retainedRows = new Map(registry.incidentRows.map((row) => [row.id, row]));
 
-function officialGeorgiaRow(id, threatCount) {
-  const row = retainedOfficialRows.get(id);
-  if (!row) throw new Error(`Missing retained official row ${id}.`);
-  const key = `${row.state}|${row.county}`;
-  const countyCaveat = row.county === "Fulton County"
-    ? "The official county minutes document several threats and five polling locations whose hours were extended after evacuations, but they do not publish an exact threat-message count. The separate nationwide compilation reports 32 threats in Fulton County. The threat count and affected-location count describe different scopes and are not added together. The five locations received different extensions from 10 to 45 minutes, so hoursExtended remains null. This row is administration context only and is not evidence of fraud or misconduct."
-    : "The official county update identifies six active voting precincts that received bomb threats and two additional locations that were not current polling places, but it does not publish an exact threat-message count for the county. The separate nationwide compilation reports five threats in DeKalb County. Those source scopes differ, so the threat and affected-precinct counts are preserved without forcing them to match. Voting was temporarily suspended and resumed after police sweeps; the page says an extension was being sought but does not confirm a final order, so hoursExtended remains null. This row is administration context only and is not evidence of fraud or misconduct.";
+function officialCaveat(key, threatCount) {
+  if (key === "GA|Fulton County") {
+    return `The official county minutes document several threats and five polling locations whose hours were extended after evacuations. The later Brennan Center tracker attributes ${threatCount} threats to Fulton County. Threat messages and affected polling places are different measures and are not added together. The five locations received different extensions from 10 to 45 minutes, so hoursExtended remains null. The tracker is a public-source compilation, not an FBI roster, and may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct.`;
+  }
+  if (key === "GA|DeKalb County") {
+    return `The official county update identifies six active voting precincts that received bomb threats and two additional locations that were not current polling places. The later Brennan Center tracker attributes ${threatCount} threats to DeKalb County. Those source units differ, so threat messages and affected precincts are preserved separately. Voting was temporarily suspended and resumed after police sweeps; the page says an extension was being sought but does not confirm a final order, so hoursExtended remains null. The tracker is a public-source compilation, not an FBI roster, and may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct.`;
+  }
+  if (key === "PA|Chester County") {
+    return `The official county release documents one emailed threat to the Government Services Center, an evacuation and K-9 sweep, and the temporary redirection of two polling places located in the building. The later Brennan Center tracker attributes ${threatCount} threat to Chester County. Locations and threat messages are different measures and are not added together. The tracker is a public-source compilation, not an FBI roster, and may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct.`;
+  }
+  return `The official Pima County after-action report documents an Election Day email naming the 240 N. Stone location and says police checked and cleared the site without a reported polling-place closure. The later Brennan Center tracker attributes ${threatCount} threats to Pima County based on multiple public reports, so the tracker count is shown separately from the one event detailed in the official extract. The tracker is not an FBI roster and may not be exhaustive. Direct scripted acquisition of the county PDF remained blocked, so the repository retains a structured official-source extract with the canonical URL. This row is administration context only and is not evidence of fraud or misconduct.`;
+}
+
+function officialRow(sourceRow) {
+  const key = `${sourceRow.state}|${sourceRow.county}`;
+  const id = officialRowIds.get(key);
+  const row = id ? retainedRows.get(id) : null;
+  if (!row) throw new Error(`Missing retained official row for ${key}.`);
 
   return {
     ...row,
-    threatCount,
-    threatCountBasis: "supplemental_national_compilation",
-    threatCountSourceUrl: nbcUrl,
-    threatCountLocalArtifact: compilationPath,
-    normalizationPath: "scripts/build-security-incident-registry.mjs",
-    sourceTier: "official",
-    namedLocations: namedLocations[key] ?? [],
-    supportingSourceUrls: unique([...row.supportingSourceUrls, nbcUrl, senateUrl]),
-    supportingLocalArtifacts: unique([...row.supportingLocalArtifacts, compilationPath, senateArtifact]),
-    caveat: countyCaveat,
-  };
-}
-
-function chesterRow(threatCount) {
-  return {
-    id: "pa-2024-general-chester-bomb-threat-disruption",
-    state: "PA",
-    stateName: "Pennsylvania",
-    electionYear: 2024,
-    county: "Chester County",
-    jurisdictionCode: "42029",
-    jurisdictionTag: "county:42029",
     reportingGrain: "county",
-    eventDate: "2024-11-05",
-    eventType: "bomb_threat",
-    eventTypeLabel: "Bomb threat",
-    threatCount,
-    threatCountBasis: "supplemental_national_compilation",
-    threatCountSourceUrl: nbcUrl,
-    threatCountLocalArtifact: compilationPath,
-    affectedLocations: 2,
-    affectedLocationUnit: "polling_location",
-    namedLocations: [
-      "Chester County Government Services Center",
-      "Precinct 280 (West Goshen S-2)",
-      "Precinct 286 (West Goshen S-4)",
-    ],
-    disruptionType: "temporary_evacuation_relocation_and_extended_polling_hours",
-    disruptionLabel: "Building evacuated; two polling places redirected; voting extended to 10 p.m.",
-    hoursExtended: 2,
-    sourceAuthority: "Chester County District Attorney's Office",
-    sourceTitle: "Bomb Threat Received at Chester County Government Services Center",
-    sourcePublishedAt: "2024-11-05",
-    sourceUrl: "https://www.chesco.org/DocumentCenter/View/77834/2024_1105-News-Release-Bomb-Threat-Received-At-Chester-County-Government-Services-Center",
-    supportingSourceUrls: [nbcUrl, senateUrl],
-    localArtifact: chesterArtifact,
-    supportingLocalArtifacts: [compilationPath, senateArtifact],
+    threatCount: sourceRow.threatCount,
+    threatCountBasis: "research_tracker_compilation",
+    threatCountSourceUrl: tracker.sourceUrl,
+    threatCountLocalArtifact: tracker.localArtifact,
+    namedLocations: namedLocations[key] ?? row.namedLocations ?? [],
+    supportingSourceUrls: unique([
+      ...row.supportingSourceUrls,
+      tracker.sourceUrl,
+      ...sourceRow.sourceUrls,
+    ]),
+    supportingLocalArtifacts: unique([
+      ...row.supportingLocalArtifacts,
+      tracker.localArtifact,
+    ]),
     normalizationPath: "scripts/build-security-incident-registry.mjs",
     sourceTier: "official",
     sourceStatus: "official_county_record",
-    confidence: "high",
-    caveat: "The county release documents one emailed threat to the Government Services Center, an evacuation and K-9 sweep, and the temporary redirection of two polling places located in the building. The nationwide compilation reports one threat for Chester County. The location and threat counts are different measures and are not added together. This row is administration context only and is not evidence of fraud or misconduct.",
+    caveat: officialCaveat(key, sourceRow.threatCount),
   };
 }
 
-function supplementalRow(sourceRow) {
-  const key = `${sourceRow.state}|${sourceRow.county}`;
-  const jurisdictionCode = countyFips[key];
-  if (!jurisdictionCode) throw new Error(`Missing reviewed county FIPS for ${key}.`);
-  const philadelphia = key === "PA|Philadelphia County";
-  const exactCountPublished = sourceRow.threatCount !== null;
+function trackerRow(sourceRow) {
+  const isCounty = sourceRow.reportingGrain === "county";
+  const geography = isCounty ? sourceRow.county : "County not specified";
+  const afterElectionDay = sourceRow.eventDate !== "2024-11-05";
 
   return {
-    id: `${sourceRow.state.toLowerCase()}-2024-general-${slug(sourceRow.county)}-bomb-threat-compilation`,
+    id: isCounty
+      ? `${sourceRow.state.toLowerCase()}-2024-${sourceRow.eventDate.slice(5)}-${slug(sourceRow.county)}-bomb-threat-tracker`
+      : `${sourceRow.state.toLowerCase()}-2024-${sourceRow.eventDate.slice(5)}-statewide-unspecified-bomb-threat-tracker`,
     state: sourceRow.state,
-    stateName: stateNames[sourceRow.state],
+    stateName: sourceRow.stateName,
     electionYear: 2024,
-    county: sourceRow.county,
-    jurisdictionCode,
-    jurisdictionTag: `county:${jurisdictionCode}`,
-    reportingGrain: "county",
-    eventDate: "2024-11-05",
+    county: geography,
+    jurisdictionCode: sourceRow.jurisdictionCode,
+    jurisdictionTag: sourceRow.jurisdictionTag,
+    reportingGrain: sourceRow.reportingGrain,
+    eventDate: sourceRow.eventDate,
     eventType: "bomb_threat",
     eventTypeLabel: sourceRow.threatCount === 1 ? "Bomb threat" : "Bomb threats",
     threatCount: sourceRow.threatCount,
-    threatCountBasis: exactCountPublished
-      ? "supplemental_national_compilation"
-      : "not_separately_published",
-    threatCountSourceUrl: exactCountPublished ? nbcUrl : null,
-    threatCountLocalArtifact: exactCountPublished ? compilationPath : null,
+    threatCountBasis: "research_tracker_compilation",
+    threatCountSourceUrl: tracker.sourceUrl,
+    threatCountLocalArtifact: tracker.localArtifact,
     affectedLocations: null,
-    affectedLocationUnit: "polling_location",
+    affectedLocationUnit: "election_facility",
     namedLocations: [],
-    disruptionType: philadelphia
-      ? "temporary_closure_and_extended_polling_hours_reported"
-      : "threat_reported_disruption_detail_not_separately_published",
-    disruptionLabel: philadelphia
-      ? "Temporary closure and extended polling hours reported; exact site count not published in the compilation"
-      : "Threat reported; county-level disruption detail not separately published in the compilation",
+    disruptionType: isCounty
+      ? afterElectionDay
+        ? "post_election_counting_period_threat_disruption_detail_varies"
+        : "election_day_threat_disruption_detail_varies"
+      : "statewide_threats_counties_not_specified",
+    disruptionLabel: isCounty
+      ? afterElectionDay
+        ? "Threat documented during post-election counting; facility-level disruption varies by cited source"
+        : "Election Day threat documented; facility-level disruption varies by cited source"
+      : "Threats documented statewide; counties and facilities not specified in the tracker",
     hoursExtended: null,
-    sourceAuthority: "NBC News",
-    sourceTitle: compilation.title,
-    sourcePublishedAt: compilation.publishedAt,
-    sourceUrl: nbcUrl,
-    supportingSourceUrls: [senateUrl, fbiUrl],
-    localArtifact: compilationPath,
-    supportingLocalArtifacts: [senateArtifact, fbiArtifact],
+    sourceAuthority: tracker.sourceAuthority,
+    sourceTitle: tracker.sourceTitle,
+    sourcePublishedAt: tracker.lastUpdated,
+    sourceUrl: tracker.sourceUrl,
+    supportingSourceUrls: sourceRow.sourceUrls,
+    localArtifact: tracker.localArtifact,
+    supportingLocalArtifacts: [],
     normalizationPath: "scripts/build-security-incident-registry.mjs",
     sourceTier: "supplemental",
-    sourceStatus: "supplemental_national_compilation",
+    sourceStatus: "research_compilation",
     confidence: "medium",
-    caveat: exactCountPublished
-      ? `NBC News' nationwide compilation lists ${sourceRow.threatCount} ${sourceRow.threatCount === 1 ? "threat" : "threats"} for ${sourceRow.county}. No qualifying county-level official incident artifact was found in this review, so the row is visibly labeled supplemental and does not claim an exact list of sites, closures, or unique emails. This row is administration context only and is not evidence of fraud or misconduct.`
-      : `NBC News names voting locations in ${sourceRow.county} in its nationwide compilation, but the accessible embedded table does not expose a separate county count. The county is mapped without inferring a number of locations or messages. No qualifying county-level official incident artifact was found in this review. This row is administration context only and is not evidence of fraud or misconduct.`,
+    caveat: isCounty
+      ? `The Brennan Center's later public-source tracker attributes ${sourceRow.threatCount} ${sourceRow.threatCount === 1 ? "threat" : "threats"} to ${sourceRow.county} on ${sourceRow.eventDate}. The tracker links its underlying public reports but does not provide a verified site-by-site federal roster for this row and says its data may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct.`
+      : `The Brennan Center's later public-source tracker attributes ${sourceRow.threatCount} threats to ${sourceRow.stateName} on ${sourceRow.eventDate} without naming counties. The count is included in state and national totals but is not painted onto a county polygon. The tracker is not an FBI roster and says its data may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct.`,
   };
 }
 
-const compilationRows = [
-  ...compilation.table.rows,
-  ...compilation.additionalCountyMentions,
-];
-const incidentRows = compilationRows.map((sourceRow) => {
-  const key = `${sourceRow.state}|${sourceRow.county}`;
-  if (key === "GA|Fulton County") {
-    return officialGeorgiaRow("ga-2024-general-fulton-bomb-threat-disruptions", sourceRow.threatCount);
-  }
-  if (key === "GA|DeKalb County") {
-    return officialGeorgiaRow("ga-2024-general-dekalb-bomb-threat-disruptions", sourceRow.threatCount);
-  }
-  if (key === "PA|Chester County") {
-    return chesterRow(sourceRow.threatCount);
-  }
-  return supplementalRow(sourceRow);
+const incidentRows = tracker.rows.map((sourceRow) => {
+  const key = sourceRow.county ? `${sourceRow.state}|${sourceRow.county}` : null;
+  return key && officialRowIds.has(key) ? officialRow(sourceRow) : trackerRow(sourceRow);
 });
 
+const milwaukee = retainedRows.get("wi-2024-general-milwaukee-bomb-threat-compilation");
+if (!milwaukee) throw new Error("Missing retained Milwaukee compilation row.");
 incidentRows.push({
-  id: "az-2024-general-pima-bomb-threat-response",
-  state: "AZ",
-  stateName: "Arizona",
-  electionYear: 2024,
-  county: "Pima County",
-  jurisdictionCode: "04019",
-  jurisdictionTag: "county:04019",
+  ...milwaukee,
+  threatCount: null,
+  threatCountBasis: "not_separately_published",
+  threatCountSourceUrl: null,
+  threatCountLocalArtifact: null,
   reportingGrain: "county",
-  eventDate: "2024-11-05",
-  eventType: "bomb_threat",
-  eventTypeLabel: "Bomb threat",
-  threatCount: 1,
-  threatCountBasis: "official_county_record",
-  threatCountSourceUrl: pimaExtract.sourceUrl,
-  threatCountLocalArtifact: pimaExtractPath,
-  affectedLocations: 1,
-  affectedLocationUnit: "election_office",
-  namedLocations: pimaExtract.facts.namedLocations,
-  disruptionType: "law_enforcement_sweep_no_closure_reported",
-  disruptionLabel: "Bomb squad and K-9 sweep; location cleared; no closure reported",
-  hoursExtended: null,
-  sourceAuthority: pimaExtract.sourceAuthority,
-  sourceTitle: pimaExtract.sourceTitle,
-  sourcePublishedAt: pimaExtract.publishedAt,
-  sourceUrl: pimaExtract.sourceUrl,
-  supportingSourceUrls: [],
-  localArtifact: pimaExtractPath,
-  supportingLocalArtifacts: [],
+  sourceTier: "supplemental",
+  sourceStatus: "supplemental_earlier_compilation",
   normalizationPath: "scripts/build-security-incident-registry.mjs",
-  sourceTier: "official",
-  sourceStatus: "official_county_record",
-  confidence: "high",
-  caveat: "The official after-action report documents one Election Day email threat specifically naming the 240 N. Stone location. Police checked and cleared the site; staff could leave but none did, and the report does not describe a polling-place closure. Direct scripted PDF acquisition was blocked by the county site's anti-bot challenge, so the repository retains a structured source extract with the canonical official URL. This row is administration context only and is not evidence of fraud or misconduct.",
+  supportingSourceUrls: unique([...milwaukee.supportingSourceUrls, senateUrl, fbiUrl]),
+  supportingLocalArtifacts: unique([
+    ...milwaukee.supportingLocalArtifacts,
+    senateArtifact,
+    fbiArtifact,
+  ]),
+  caveat:
+    "The earlier NBC News Election Day compilation names Milwaukee County but does not expose a separate Milwaukee threat count in its accessible table. Milwaukee is not a county row in the later Brennan Center 227-threat tracker, so it remains mapped as an additional published county mention with an unknown count rather than being silently dropped or counted as zero. This row is administration context only and is not evidence of fraud or misconduct.",
 });
 
-incidentRows.sort((left, right) =>
-  left.state.localeCompare(right.state)
-  || left.county.localeCompare(right.county)
-  || left.id.localeCompare(right.id),
+incidentRows.sort(
+  (left, right) =>
+    left.state.localeCompare(right.state)
+    || left.eventDate.localeCompare(right.eventDate)
+    || left.reportingGrain.localeCompare(right.reportingGrain)
+    || left.county.localeCompare(right.county)
+    || left.id.localeCompare(right.id),
 );
 
+const countyRows = incidentRows.filter((row) => row.reportingGrain === "county");
+const statewideRows = incidentRows.filter((row) => row.reportingGrain === "statewide_unspecified");
 const knownThreatCountMinimum = incidentRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0);
+const statewideUnspecifiedThreatCount = statewideRows.reduce(
+  (sum, row) => sum + (row.threatCount ?? 0),
+  0,
+);
 const affectedLocationUnitTotals = Object.fromEntries(
-  ["election_office", "polling_location", "voting_precinct"]
+  ["election_facility", "election_office", "polling_location", "voting_precinct"]
     .map((unit) => [
       unit,
       incidentRows
@@ -283,23 +205,31 @@ const affectedLocationUnitTotals = Object.fromEntries(
 );
 
 const nextRegistry = {
-  schemaVersion: 3,
-  description: "County-level November 5, 2024 election security incident rows combining official county records with a visibly labeled supplemental nationwide compilation where no county artifact was publicly available.",
+  schemaVersion: 4,
+  description:
+    "November 2024 election-period bomb-threat records normalized from the Brennan Center's later 227-threat public-source tracker, enriched with reviewed official county records and one additional earlier county mention whose count was not published.",
   electionYear: 2024,
-  reportingGrain: "county",
+  reportingGrain: "mixed_county_and_statewide_unspecified",
+  reportingWindow: tracker.reportingWindow,
   normalizationPath: "scripts/build-security-incident-registry.mjs",
   expected: {
     rowCount: incidentRows.length,
     stateCount: new Set(incidentRows.map((row) => row.state)).size,
-    countyCount: new Set(incidentRows.map((row) => row.jurisdictionTag)).size,
+    countyCount: new Set(countyRows.map((row) => row.jurisdictionTag)).size,
+    countyRowCount: countyRows.length,
+    statewideUnspecifiedRowCount: statewideRows.length,
+    statewideUnspecifiedThreatCount,
     completeThreatCountRows: incidentRows.filter((row) => row.threatCount !== null).length,
     unknownThreatCountRows: incidentRows.filter((row) => row.threatCount === null).length,
     knownThreatCountMinimum,
-    publishedCompilationLocationCount: compilation.nationalSummary.reportedLocationCount,
-    publishedCompilationCountyCount: compilation.nationalSummary.reportedCountyCount,
+    trackerRowCount: tracker.expected.rowCount,
+    trackerCountyCount: tracker.expected.countyCount,
+    trackerThreatCount: tracker.expected.reportedThreatCount,
+    additionalEarlierCompilationCountyRows: 1,
     affectedLocationUnitTotals,
   },
-  caveat: "All 19 counties named in the published nationwide Election Day compilation are mapped, and Pima County is added from a separate official record. This is still not an official federal census or a complete site-by-site roster: the FBI did not publish one, supplemental county rows are labeled, and an unknown count is never treated as zero. Incident rows are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
+  caveat:
+    "The later Brennan Center tracker documents at least 227 threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
   incidentRows,
 };
 
@@ -312,80 +242,84 @@ for (const row of incidentRows) {
 
 const stateCoverage = inventory.stateCoverage.map((entry) => {
   const rows = rowsByState.get(entry.state);
-  if (!rows) return entry;
+  if (!rows) return { ...entry, status: "needs_data" };
+  const mappedRows = rows.filter((row) => row.reportingGrain === "county");
+  const unallocatedRows = rows.filter((row) => row.reportingGrain === "statewide_unspecified");
   return {
     state: entry.state,
     stateName: entry.stateName,
     status: "partial",
     sourceAuthorities: unique(rows.map((row) => row.sourceAuthority)),
-    sourceUrls: unique(rows.flatMap((row) => [row.sourceUrl, ...row.supportingSourceUrls])),
-    localArtifacts: unique(rows.flatMap((row) => [row.localArtifact, ...row.supportingLocalArtifacts])),
+    sourceUrls: unique(rows.flatMap((row) => [row.sourceUrl, row.threatCountSourceUrl])),
+    localArtifacts: unique(
+      rows.flatMap((row) => [row.localArtifact, row.threatCountLocalArtifact]),
+    ),
     expectedRowCount: rows.length,
-    confidence: "mixed_official_and_supplemental_national_compilation",
-    caveat: `Every ${entry.state} county named in the published nationwide Election Day compilation is mapped. ${rows.filter((row) => row.sourceTier === "official").length} row(s) have a county-level official record; the remaining row(s) rely on the visibly labeled supplemental compilation. The FBI did not publish a complete county or site roster.`,
+    mappedCountyCount: new Set(mappedRows.map((row) => row.jurisdictionTag)).size,
+    statewideUnspecifiedThreatCount: unallocatedRows.reduce(
+      (sum, row) => sum + (row.threatCount ?? 0),
+      0,
+    ),
+    confidence: rows.some((row) => row.sourceTier === "official")
+      ? "mixed_official_detail_and_public_source_tracker"
+      : "public_source_tracker",
+    caveat: `${mappedRows.length} county row(s) are mapped for ${entry.stateName}. ${unallocatedRows.length ? `${unallocatedRows.reduce((sum, row) => sum + (row.threatCount ?? 0), 0)} additional threats are retained only at statewide-unspecified grain. ` : ""}The Brennan Center tracker is not an FBI roster and may not be exhaustive.`,
   };
 });
 
-const fbiContext = inventory.nationalContext.find(
-  (context) => context.sourceAuthority === "Federal Bureau of Investigation",
-);
-if (!fbiContext) throw new Error("Missing retained FBI national context record.");
+const retainedNationalContext = inventory.nationalContext
+  .filter((context) => context.sourceAuthority !== tracker.sourceAuthority)
+  .map((context) => ({
+    ...context,
+    scopeLabel: context.reportedLocationCount === 67
+      ? "Earlier Election Day snapshot"
+      : context.scopeLabel,
+  }));
 
 const nextInventory = {
-  schemaVersion: 2,
-  description: "Nationwide coverage inventory for November 5, 2024 general-election bomb-threat records, including official context, official county records, and a visibly labeled supplemental nationwide county compilation.",
+  schemaVersion: 3,
+  description:
+    "Nationwide source inventory for November 2024 election-period bomb threats, centered on the Brennan Center's later 227-threat tracker with official federal context and reviewed county detail.",
   electionYear: 2024,
-  reportingGrain: "county",
+  reportingGrain: "mixed_county_and_statewide_unspecified",
+  reportingWindow: tracker.reportingWindow,
   normalizationPath: "scripts/build-security-incident-registry.mjs",
   expected: {
     configuredStates: stateCoverage.length,
     statesWithNormalizedRows: rowsByState.size,
     normalizedEventRows: incidentRows.length,
-    publishedCompilationLocationCount: compilation.nationalSummary.reportedLocationCount,
-    publishedCompilationCountyCount: compilation.nationalSummary.reportedCountyCount,
-    mappedCompilationCountyCount: compilationRows.length,
-    additionalOfficialCountyRows: 1,
+    mappedCountyCount: new Set(countyRows.map((row) => row.jurisdictionTag)).size,
+    statewideUnspecifiedRowCount: statewideRows.length,
+    knownThreatCountMinimum,
+    trackerRowCount: tracker.expected.rowCount,
+    trackerCountyCount: tracker.expected.countyCount,
+    trackerThreatCount: tracker.expected.reportedThreatCount,
+    additionalEarlierCompilationCountyRows: 1,
   },
-  caveat: "The map includes every county named by the published nationwide Election Day compilation plus one additional official Pima County record. Supplemental records remain visibly distinct from official county records. The FBI did not publish a complete national county or site roster, so this inventory cannot establish that no other incident occurred.",
+  caveat: nextRegistry.caveat,
   nationalContext: [
-    { ...fbiContext, sourceTier: "official" },
+    ...retainedNationalContext,
     {
-      sourceAuthority: "United States Senate",
-      sourceTitle: "Letter to ODNI, CISA, and FBI Regarding Election Interference",
-      sourceUrl: senateUrl,
-      localArtifact: senateArtifact,
-      sha256: await sha256(senateArtifact),
-      acquiredAt: "2026-07-13",
+      sourceAuthority: tracker.sourceAuthority,
+      sourceTitle: tracker.sourceTitle,
+      sourceUrl: tracker.sourceUrl,
+      localArtifact: tracker.localArtifact,
+      sha256: tracker.sha256,
+      acquiredAt: tracker.acquiredAt,
       electionYear: 2024,
-      reportingGrain: "multi-state",
-      normalizationPath: "inventory_context_and_compilation_crosscheck",
-      expectedRowCount: 19,
-      acquisitionStatus: "download_complete",
-      sourceTier: "official",
-      confidence: "high_for_congressional_statement_medium_for_underlying_compilation",
-      reportedLocationCount: 67,
-      reportedCountyCount: 19,
-      reportedStateCount: 5,
-      caveat: "The congressional letter states that at least 67 polling locations in 19 counties across Arizona, Georgia, Michigan, Pennsylvania, and Wisconsin received threats. Its footnote attributes that figure to NBC News and Reuters rather than to a disclosed federal incident roster, so it is national context and a cross-check, not the county normalization source.",
-    },
-    {
-      sourceAuthority: compilation.sourceAuthority,
-      sourceTitle: compilation.title,
-      sourceUrl: compilation.sourceUrl,
-      localArtifact: compilationPath,
-      sha256: await sha256(compilationPath),
-      acquiredAt: compilation.acquiredAt,
-      electionYear: 2024,
-      reportingGrain: "multi-state county compilation",
-      normalizationPath: "scripts/build-security-incident-registry.mjs",
-      expectedRowCount: 19,
-      acquisitionStatus: "manual_browser_structured_capture_complete",
+      reportingGrain: "multi-state county and statewide-unspecified tracker",
+      reportingWindow: tracker.reportingWindow,
+      normalizationPath: tracker.normalizationPath,
+      expectedRowCount: tracker.expected.rowCount,
+      acquisitionStatus: "download_complete_text_layer_normalized",
       sourceTier: "supplemental",
-      confidence: "medium",
-      reportedLocationCount: compilation.nationalSummary.reportedLocationCount,
-      reportedCountyCount: compilation.nationalSummary.reportedCountyCount,
-      reportedStateCount: compilation.nationalSummary.reportedStateCount,
-      caveat: compilation.caveat,
+      confidence: "high_for_tracker_transcription_medium_for_underlying_completeness",
+      reportedThreatCount: tracker.expected.reportedThreatCount,
+      reportedCountyCount: tracker.expected.countyCount,
+      reportedStateCount: tracker.expected.stateCount,
+      statewideUnspecifiedThreatCount,
+      scopeLabel: "Later election-period tracker",
+      caveat: tracker.caveat,
     },
   ],
   stateCoverage,
@@ -393,4 +327,6 @@ const nextInventory = {
 
 await writeFile(registryPath, JSON.stringify(nextRegistry, null, 2) + "\n");
 await writeFile(inventoryPath, JSON.stringify(nextInventory, null, 2) + "\n");
-console.log(`Built ${incidentRows.length} county rows across ${rowsByState.size} states.`);
+console.log(
+  `Built ${incidentRows.length} rows across ${rowsByState.size} states: ${countyRows.length} county rows and ${statewideRows.length} statewide-unspecified rows, with at least ${knownThreatCountMinimum} documented threats.`,
+);

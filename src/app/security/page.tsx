@@ -11,7 +11,7 @@ export const dynamic = "force-static";
 export const metadata: Metadata = {
   title: "2024 Election Security Incident Explorer",
   description:
-    "Explore every county named in the published nationwide November 5, 2024 bomb-threat compilation, additional official county records, source limits, and exportable reports.",
+    "Explore the later nationwide 227-threat public-source tracker for the November 2024 election period, mapped county records, statewide-unallocated counts, source limits, and exportable reports.",
   alternates: { canonical: "/security" },
 };
 
@@ -48,13 +48,14 @@ export default function SecurityPage() {
         </div>
         <h1>2024 Election Security Incident Explorer</h1>
         <p>
-          See all 19 counties named in the published nationwide Election Day compilation, plus an additional official
-          Pima County record. Inspect source strength and export the complete mapped report without turning an unknown
-          county count into zero.
+          Explore the Brennan Center&apos;s later tracker of at least 227 threats reported from November 5 through
+          November 9, 2024. The map shows 109 source-linked counties; 66 additional threats reported only at statewide
+          grain remain in the totals without being assigned to a county.
         </p>
         <p className={styles.heroQualifier}>
-          This layer is separate from election results and advisory indicators. It does not allege fraud,
-          misconduct, altered votes, or an incorrect outcome.
+          The tracker compiles public reports, may not be exhaustive, and is not an official FBI roster. This layer is
+          separate from election results and advisory indicators and does not allege fraud, misconduct, altered votes,
+          or an incorrect outcome.
         </p>
       </section>
 

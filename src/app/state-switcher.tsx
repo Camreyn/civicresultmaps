@@ -66,7 +66,7 @@ const stateFilterOptions: Array<{ label: string; value: StateFilter }> = [
   { label: "Results only", value: "results-only" },
   { label: "Needs sources", value: "needs-sources" },
   { label: "Result maps", value: "has-result-map" },
-  { label: "States with mapped bomb threats", value: "has-security-incidents" },
+  { label: "States with bomb-threat records", value: "has-security-incidents" },
   { label: "Equipment maps only", value: "equipment-map-only" },
   { label: "Missing turnout", value: "missing-turnout" },
   { label: "Missing review", value: "missing-review" },
@@ -367,7 +367,7 @@ export function StateSwitcher({
     const securityOnlyStates: StateSummary[] = securityIncidentStates
       .filter((summary) => !knownCodes.has(summary.state))
       .map((summary) => ({
-        authority: "Source-linked county security records",
+        authority: "Source-linked election security records",
         capabilities: emptyStateCapabilities,
         code: summary.state,
         countyLabel: "County",
@@ -455,8 +455,8 @@ export function StateSwitcher({
       </label>
       {stateFilter === "has-security-incidents" && (
         <p className="state-filter-note">
-          Shows the five states in the published nationwide Election Day compilation. County rows identify whether
-          their source is an official record or the supplemental compilation.
+          Shows the nine states in the later 227-threat public-source tracker. Named counties are mapped; threats
+          reported only at the state level remain in the totals without being assigned to a county.
         </p>
       )}
       <label className="state-search" htmlFor="state-search">
@@ -509,7 +509,7 @@ export function StateSwitcher({
               </div>
               {stateFilter === "has-security-incidents" && securitySummary ? (
                 <div
-                  aria-label={`${state.name}: ${securitySummary.countyCount} mapped counties; ${threatCountText(securitySummary)}`}
+                  aria-label={`${state.name}: ${securitySummary.countyCount} mapped counties; ${securitySummary.statewideUnspecifiedThreatCount} threats with county not specified; ${threatCountText(securitySummary)}`}
                   className="state-security-summary"
                 >
                   <ShieldAlert aria-hidden size={14} />
@@ -517,6 +517,11 @@ export function StateSwitcher({
                     {securitySummary.countyCount.toLocaleString()} mapped {securitySummary.countyCount === 1 ? "county" : "counties"}
                   </strong>
                   <span>{threatCountText(securitySummary)}</span>
+                  {securitySummary.statewideUnspecifiedThreatCount > 0 && (
+                    <span>
+                      {securitySummary.statewideUnspecifiedThreatCount.toLocaleString()} threat{securitySummary.statewideUnspecifiedThreatCount === 1 ? "" : "s"} with county not specified
+                    </span>
+                  )}
                 </div>
               ) : (
               <div

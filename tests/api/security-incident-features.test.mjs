@@ -14,36 +14,65 @@ import {
 
 const registry = JSON.parse(readFileSync("data/election-security-incidents-2024.json", "utf8"));
 
-test("security totals keep affected places separate from threat messages", () => {
+test("security totals preserve county, statewide, affected-place, and threat-message units", () => {
   const totals = summarizeSecurityIncidents(registry.incidentRows);
 
-  assert.equal(securityIncidentApiSchemaVersion, "3.0.0");
-  assert.equal(totals.rowCount, 20);
-  assert.equal(totals.stateCount, 5);
-  assert.equal(totals.countyCount, 20);
+  assert.equal(securityIncidentApiSchemaVersion, "4.0.0");
+  assert.equal(totals.rowCount, 111);
+  assert.equal(totals.stateCount, 9);
+  assert.equal(totals.countyCount, 109);
+  assert.equal(totals.countyRowCount, 109);
+  assert.equal(totals.statewideUnspecifiedRowCount, 2);
+  assert.equal(totals.statewideUnspecifiedThreatCount, 66);
   assert.equal(totals.knownAffectedLocations, null);
   assert.equal(totals.affectedLocations, null);
   assert.equal(totals.affectedLocationCountComplete, false);
   assert.deepEqual(totals.affectedLocationUnits, [
+    { countComplete: false, documentedCount: null, knownCount: 0, unit: "election_facility" },
     { countComplete: true, documentedCount: 1, knownCount: 1, unit: "election_office" },
     { countComplete: false, documentedCount: null, knownCount: 7, unit: "polling_location" },
     { countComplete: true, documentedCount: 6, knownCount: 6, unit: "voting_precinct" },
   ]);
   assert.equal(totals.documentedThreatCount, null);
   assert.equal(totals.threatCountComplete, false);
-  assert.equal(totals.knownThreatCount, 67);
+  assert.equal(totals.knownThreatCount, 227);
   assert.equal(totals.unknownThreatCountRows, 1);
   assert.equal(totals.officialRowCount, 4);
-  assert.equal(totals.supplementalRowCount, 16);
-  assert.equal(affectedLocationText(totals), "1 election office affected; At least 7 known polling locations affected; 6 voting precincts affected");
-  assert.equal(threatCountText(totals), "At least 67 reported threats; exact count not published for 1 mapped county row");
-  assert.match(securityIncidentSummaryText(registry.incidentRows), /4 official and 16 supplemental records/);
-  assert.doesNotMatch(securityIncidentSummaryText(registry.incidentRows), /11 polling places/);
-  assert.match(securityIncidentSummaryText(registry.incidentRows), /exact count not published/i);
+  assert.equal(totals.supplementalRowCount, 107);
   assert.equal(
-    threatCountBasisText("supplemental_national_compilation"),
-    "Threat count source: supplemental nationwide compilation",
+    affectedLocationText(totals),
+    "Number of affected election facilities not specified; 1 election office affected; At least 7 known polling locations affected; 6 voting precincts affected",
   );
+  assert.equal(
+    threatCountText(totals),
+    "At least 227 reported threats documented; 1 additional record has no published count",
+  );
+  assert.match(securityIncidentSummaryText(registry.incidentRows), /4 official and 107 supplemental records/);
+  assert.match(securityIncidentSummaryText(registry.incidentRows), /1 additional record has no published count/i);
+  assert.equal(
+    threatCountBasisText("research_tracker_compilation"),
+    "Threat count source: later public-source tracker",
+  );
+  assert.equal(
+    threatCountBasisText("not_separately_published"),
+    "Threat count source: exact county count not separately published",
+  );
+});
+
+test("statewide-only threats remain totals without county tags", () => {
+  const statewideRows = registry.incidentRows.filter((row) => row.reportingGrain === "statewide_unspecified");
+  const totals = summarizeSecurityIncidents(statewideRows);
+
+  assert.equal(totals.rowCount, 2);
+  assert.equal(totals.countyCount, 0);
+  assert.equal(totals.countyRowCount, 0);
+  assert.equal(totals.stateCount, 2);
+  assert.equal(totals.statewideUnspecifiedThreatCount, 66);
+  assert.equal(totals.documentedThreatCount, 66);
+  assert.equal(threatCountText(totals), "66 reported threats documented in loaded rows");
+  assert.ok(statewideRows.every((row) => row.jurisdictionCode === null));
+  assert.ok(statewideRows.every((row) => /^state:[A-Z]{2}:unspecified$/.test(row.jurisdictionTag)));
+  assert.ok(statewideRows.every((row) => !row.jurisdictionTag.startsWith("county:")));
 });
 
 test("partial affected-place totals are labeled as a known minimum", () => {
@@ -85,7 +114,7 @@ test("CSV exports use commas, CRLF rows, quoting, and empty null cells", () => {
   assert.ok(!csv.includes(" - "));
 });
 
-test("national explorer is static, source-linked, and browser-only after load", () => {
+test("national explorer is static, source-linked, mixed-grain, and browser-only after load", () => {
   const page = readFileSync("src/app/security/page.tsx", "utf8");
   const explorer = readFileSync("src/app/security/security-explorer.tsx", "utf8");
   const sidebar = readFileSync("src/app/state-switcher.tsx", "utf8");
@@ -93,6 +122,9 @@ test("national explorer is static, source-linked, and browser-only after load", 
 
   assert.match(page, /dynamic = "force-static"/);
   assert.match(page, /getNationalSecurityIncidentReport\(2024\)/);
+  assert.match(page, /at least 227 threats/i);
+  assert.match(page, /66 additional threats reported only at statewide/i);
+  assert.match(page, /not an official FBI roster/i);
   assert.match(explorer, /\/data\/national-counties\.geojson/);
   assert.match(explorer, /expectedCountyFeatureCount = 3144/);
   assert.match(explorer, /cache: "force-cache"/);
@@ -101,23 +133,31 @@ test("national explorer is static, source-linked, and browser-only after load", 
   assert.match(explorer, /National source context/);
   assert.match(explorer, /source\.sourceUrl/);
   assert.doesNotMatch(explorer, /\/api\/security-incidents/);
-  assert.match(explorer, /No matching rows/);
-  assert.match(explorer, /Published national compilation/);
-  assert.match(explorer, /Source strength/);
-  assert.match(explorer, /Supplemental compiled record/);
+  assert.match(explorer, /Later public-source tracker/);
+  assert.match(explorer, /At least \{trackerContext\?\.reportedThreatCount/);
+  assert.match(explorer, /County not specified/);
+  assert.match(explorer, /not drawn on counties/);
+  assert.match(explorer, /row\.reportingGrain !== "county"/);
+  assert.match(explorer, /incidentFips\(row\) \?\? ""/);
+  assert.match(explorer, /Geography level/);
+  assert.match(explorer, /Open cited public report/);
   assert.match(explorer, /Threat count source URL/);
   assert.match(explorer, /Open threat-count source/);
   assert.match(explorer, /threatCountBasisText/);
   assert.match(explorer, /reportRowsTruncated/);
-  assert.match(explorer, /Mapped states/);
+  assert.match(explorer, /States with matching records/);
+  assert.match(explorer, /Source strength/);
   assert.match(sidebar, /has-security-incidents/);
-  assert.match(sidebar, /States with mapped bomb threats/);
-  assert.match(sidebar, /securityOnlyStates/);
-  assert.match(sidebar, /Source-linked county security records/);
+  assert.match(sidebar, /States with bomb-threat records/);
+  assert.match(sidebar, /nine states in the later 227-threat public-source tracker/);
+  assert.match(sidebar, /statewideUnspecifiedThreatCount/);
+  assert.match(sidebar, /Source-linked election security records/);
   assert.match(sidebar, /state-security-summary/);
   assert.match(stateExplorer, /if \(!pinnedMapName\) setSelectedMapName/);
   assert.match(stateExplorer, /drawer-clear-selection/);
-  assert.match(stateExplorer, /Loaded supplemental compiled record/);
+  assert.match(stateExplorer, /Later public-source tracker/);
+  assert.match(stateExplorer, /Statewide count - county not specified/);
+  assert.match(stateExplorer, /Open statewide count source/);
   assert.match(stateExplorer, /Open threat-count source/);
   assert.match(stateExplorer, /threatCountBasisText/);
 });

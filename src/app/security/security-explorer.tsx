@@ -46,14 +46,29 @@ type SourceManifestEntry = {
   url: string;
 };
 
-function incidentFips(row: SecurityIncidentSummary) {
+function incidentFips(row: SecurityIncidentSummary): string | null {
+  if (row.reportingGrain !== "county") return null;
   return row.jurisdictionTag.startsWith("county:")
     ? row.jurisdictionTag.slice("county:".length)
     : row.jurisdictionCode;
 }
 
+function incidentSourceLabel(row: SecurityIncidentSummary) {
+  if (row.sourceTier === "official") return "Official county record";
+  if (row.sourceStatus === "research_compilation") return "Later public-source tracker";
+  if (row.sourceStatus === "supplemental_earlier_compilation") return "Earlier Election Day compilation";
+  return "Supplemental compilation";
+}
+
+function contextSourceLabel(source: NationalSecurityIncidentReport["nationalContext"][number]) {
+  if (source.sourceTier === "official") return "Official context";
+  if (source.reportedThreatCount !== undefined) return "Later public-source tracker";
+  return source.scopeLabel ?? "Supplemental context";
+}
+
 function incidentFill(rows: SecurityIncidentSummary[]) {
   if (rows.some((row) => row.sourceTier === "official")) return "#f97316";
+  if (rows.some((row) => row.sourceStatus === "supplemental_earlier_compilation")) return "#c084fc";
   return rows.length ? "#fbbf24" : "url(#security-unknown)";
 }
 
@@ -145,12 +160,14 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           row.state,
           row.stateName,
           row.county,
-          row.jurisdictionCode,
+          row.jurisdictionCode ?? "",
+          row.reportingGrain,
           row.eventTypeLabel,
           row.disruptionLabel,
           row.sourceAuthority,
           row.sourceTitle,
           row.sourceTier,
+          row.sourceStatus,
           ...row.namedLocations,
         ].join(" ").toLowerCase();
         return searchText.includes(deferredQuery);
@@ -162,6 +179,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     const grouped = new Map<string, SecurityIncidentSummary[]>();
     for (const row of report.incidents) {
       const fips = incidentFips(row);
+      if (!fips) continue;
       const countyRows = grouped.get(fips);
       if (countyRows) countyRows.push(row);
       else grouped.set(fips, [row]);
@@ -172,6 +190,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     const grouped = new Map<string, SecurityIncidentSummary[]>();
     for (const row of filteredRows) {
       const fips = incidentFips(row);
+      if (!fips) continue;
       const countyRows = grouped.get(fips);
       if (countyRows) countyRows.push(row);
       else grouped.set(fips, [row]);
@@ -201,16 +220,14 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     }
     return Array.from(sources.values()).sort((left, right) => left.authority.localeCompare(right.authority));
   }, [filteredRows]);
-  const compilationContext = report.nationalContext.find(
-    (source) => source.sourceTier === "supplemental" && source.reportedLocationCount !== undefined,
+  const trackerContext = report.nationalContext.find(
+    (source) => source.reportedThreatCount !== undefined,
   );
   const threatMetric = !filteredTotals.rowCount
     ? "No matching rows"
-    : filteredTotals.threatCountComplete
-      ? (filteredTotals.documentedThreatCount ?? 0).toLocaleString()
-      : filteredTotals.knownThreatCount > 0
-        ? `At least ${filteredTotals.knownThreatCount.toLocaleString()}`
-        : "Not published";
+    : filteredTotals.knownThreatCount > 0
+      ? `At least ${filteredTotals.knownThreatCount.toLocaleString()}`
+      : "No published count";
   const reportRows = filteredRows.slice(0, reportRowLimit);
   const reportRowsTruncated = reportRows.length < filteredRows.length;
 
@@ -232,7 +249,8 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     const csv = rowsToCsv(
       [
         "State",
-        "County",
+        "Geography level",
+        "County or area",
         "County FIPS",
         "Event date",
         "Event",
@@ -254,8 +272,9 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       ],
       filteredRows.map((row) => [
         row.state,
+        row.reportingGrain,
         row.county,
-        incidentFips(row),
+        incidentFips(row) ?? "",
         row.eventDate,
         row.eventTypeLabel,
         row.disruptionLabel,
@@ -343,13 +362,13 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           </select>
         </label>
         <label>
-          <span>County, FIPS, or source</span>
+          <span>County, state, FIPS, or source</span>
           <span className={baseStyles.searchInput}>
             <Search aria-hidden size={16} />
             <input
-              aria-label="Search county, FIPS, or source"
+              aria-label="Search county, state, FIPS, or source"
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="e.g. Fulton, 13121, or police"
+              placeholder="e.g. Fulton, Minnesota, or 13121"
               type="search"
               value={query}
             />
@@ -381,29 +400,37 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
 
       <section className={baseStyles.metrics + " " + styles.securityMetrics} aria-label="Filtered security incident summary" data-print-hide="true">
         <article>
-          <span>Mapped states</span>
+          <span>States with matching records</span>
           <strong>{filteredTotals.stateCount.toLocaleString()}</strong>
-          <small>with matching county records</small>
+          <small>{filteredTotals.countyCount.toLocaleString()} mapped counties in the current filters</small>
         </article>
         <article>
-          <span>Mapped counties</span>
-          <strong>{filteredTotals.countyCount.toLocaleString()}</strong>
-          <small>{filteredTotals.rowCount.toLocaleString()} source-linked row{filteredTotals.rowCount === 1 ? "" : "s"}</small>
+          <span>Matching loaded rows</span>
+          <strong>{threatMetric}</strong>
+          <small>
+            {filteredTotals.unknownThreatCountRows
+              ? `${filteredTotals.unknownThreatCountRows.toLocaleString()} county record names a county but gives no number, so it is mapped but not added to the total`
+              : "Every matching row includes a reported count"}
+          </small>
         </article>
         <article className={baseStyles.metricWarn + " " + styles.textMetric}>
-          <span>Published national compilation</span>
-          <strong>{compilationContext?.reportedLocationCount?.toLocaleString() ?? "Not stated"} locations</strong>
-          <small>in {compilationContext?.reportedCountyCount?.toLocaleString() ?? "an unstated number of"} counties; independent of filters</small>
+          <span>Later public-source tracker</span>
+          <strong>At least {trackerContext?.reportedThreatCount?.toLocaleString() ?? "227"} threats</strong>
+          <small>
+            {formatDate(report.reportingWindow.start)} through {formatDate(report.reportingWindow.end)}; independent of filters
+          </small>
         </article>
         <article className={styles.textMetric}>
-          <span>County-attributed reports</span>
-          <strong>{threatMetric}</strong>
-          <small>{filteredTotals.unknownThreatCountRows ? `exact count not published for ${filteredTotals.unknownThreatCountRows} mapped county row${filteredTotals.unknownThreatCountRows === 1 ? "" : "s"}` : "all matching rows publish a count"}</small>
+          <span>County not specified</span>
+          <strong>{filteredTotals.statewideUnspecifiedThreatCount.toLocaleString()} threats</strong>
+          <small>
+            {filteredTotals.statewideUnspecifiedRowCount.toLocaleString()} state-level record{filteredTotals.statewideUnspecifiedRowCount === 1 ? "" : "s"} kept in totals but not drawn on counties
+          </small>
         </article>
         <article>
           <span>Source strength</span>
           <strong>{filteredTotals.officialRowCount} official / {filteredTotals.supplementalRowCount} supplemental</strong>
-          <small>supplemental rows fill published county gaps</small>
+          <small>official detail and clearly labeled public-source compilations</small>
         </article>
       </section>
 
@@ -426,12 +453,13 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       <section className={baseStyles.mapPanel} data-print-hide="true">
         <header>
           <div>
-            <span className={baseStyles.sectionLabel}>Nationwide county view</span>
-            <h2>Mapped November 5, 2024 bomb-threat counties</h2>
+            <span className={baseStyles.sectionLabel}>Nationwide election-period county view</span>
+            <h2>Mapped November 5-9, 2024 bomb-threat counties</h2>
           </div>
           <div className={baseStyles.legend} aria-label="Map legend">
-            <span><i className={styles.legendMedium} />Official county record</span>
-            <span><i className={styles.legendLow} />Supplemental compiled record</span>
+            <span><i className={styles.legendMedium} />Official county detail</span>
+            <span><i className={styles.legendLow} />Later public-source tracker</span>
+            <span><i className={styles.legendEarlier} />Earlier Election Day compilation</span>
             <span><i className={styles.legendFiltered} />Loaded, filtered out</span>
             <span><i className={styles.legendUnknown} />No loaded matching record</span>
           </div>
@@ -453,9 +481,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
               >
                 <title id="security-map-title">2024 source-linked county bomb-threat incident records</title>
                 <desc id="security-map-description">
-                  All 3,144 counties and county equivalents remain visible. Hatched counties have no loaded record matching
-                  the current filters; this does not mean no incident occurred. Use Tab to enter the map, arrow keys to
-                  move through FIPS order, and Enter or Space to pin a county.
+                  All 3,144 counties and county equivalents remain visible. Only county-attributed records are colored;
+                  66 threats reported without a county remain in totals and the report. Hatched counties have no loaded
+                  record matching the current filters; this does not mean no incident occurred. Use Tab to enter the map,
+                  arrow keys to move through FIPS order, and Enter or Space to pin a county.
                 </desc>
                 <defs>
                   <pattern height="8" id="security-unknown" patternUnits="userSpaceOnUse" width="8">
@@ -551,7 +580,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                         return (
                           <article key={incident.id}>
                             <strong>{incident.eventTypeLabel} | {formatDate(incident.eventDate)}</strong>
-                            <span className={styles.contextBadge}>{incident.sourceTier === "official" ? "Official county record" : "Supplemental compilation"}</span>
+                            <span className={styles.contextBadge}>{incidentSourceLabel(incident)}</span>
                             <span>{incident.disruptionLabel}</span>
                             <span>{affectedLocationText(incidentTotals)}</span>
                             <span>{threatCountText(incidentTotals)}</span>
@@ -596,22 +625,27 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>National source context</span>
-            <h2>How the nationwide county list was assembled</h2>
+            <h2>Where the 227 figure and mapped counties come from</h2>
             <p>
-              Federal sources confirm the broader event but do not publish a complete county roster. The supplemental
-              compilation supplies the published county list, while official county records replace or add detail where available.
+              The FBI confirms threats occurred but does not publish a national count or county roster. The 227 figure
+              comes from the Brennan Center&apos;s later tracker of public reports, which says it may not be exhaustive
+              and is not an official FBI list. Its 66 threats without a named county stay in totals but are not placed on
+              county polygons; reviewed official county records add detail where available.
             </p>
           </div>
         </header>
         <div className={styles.sourceGrid}>
           {report.nationalContext.map((source) => (
             <article className={styles.sourceCard} key={source.sourceUrl}>
-              <span className={styles.contextBadge}>{source.sourceTier === "supplemental" ? "Supplemental compilation" : "Official context"}</span>
+              <span className={styles.contextBadge}>{contextSourceLabel(source)}</span>
               <h3>{source.sourceTitle}</h3>
               <strong>{source.sourceAuthority}</strong>
               <p>{source.caveat}</p>
               <dl>
                 <div><dt>Reporting grain</dt><dd>{source.reportingGrain}</dd></div>
+                {source.reportedThreatCount !== undefined && (
+                  <div><dt>Reported threats</dt><dd>At least {source.reportedThreatCount.toLocaleString()}</dd></div>
+                )}
                 <div><dt>Acquisition</dt><dd>{source.acquisitionStatus ?? "Recorded"}</dd></div>
                 <div><dt>Local archive</dt><dd><code>{source.localArtifact}</code></dd></div>
               </dl>
@@ -631,7 +665,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>Exportable, source-linked report</span>
-            <h2>2024 county security incident report</h2>
+            <h2>November 2024 election-period bomb-threat report</h2>
             <p aria-live="polite">
               {generatedAt
                 ? "Generated " + new Date(generatedAt).toLocaleString() + " from the current filters."
@@ -647,6 +681,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           <div>
             <span>Mapped counties</span>
             <strong>{filteredTotals.countyCount.toLocaleString()}</strong>
+          </div>
+          <div>
+            <span>County not specified</span>
+            <strong>{filteredTotals.statewideUnspecifiedThreatCount.toLocaleString()} threats</strong>
           </div>
           <div>
             <span>Affected locations / precincts</span>
@@ -673,14 +711,25 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <tbody>
               {reportRows.map((row) => {
                 const rowTotals = summarizeSecurityIncidents([row]);
+                const fips = incidentFips(row);
+                const citedUrls = row.supportingSourceUrls.filter(
+                  (url) => url !== row.sourceUrl && url !== row.threatCountSourceUrl,
+                );
                 return (
-                  <tr className={selectedFips === incidentFips(row) ? baseStyles.selectedRow : undefined} key={row.id}>
+                  <tr className={fips && selectedFips === fips ? baseStyles.selectedRow : undefined} key={row.id}>
                     <td><span className={baseStyles.stateCode}>{row.state}</span></td>
                     <td>
-                      <button className={baseStyles.countyButton} onClick={() => setSelectedFips(incidentFips(row))} type="button">
-                        <strong>{row.county}</strong>
-                        <span className={baseStyles.mono}>{incidentFips(row)}</span>
-                      </button>
+                      {fips ? (
+                        <button className={baseStyles.countyButton} onClick={() => setSelectedFips(fips)} type="button">
+                          <strong>{row.county}</strong>
+                          <span className={baseStyles.mono}>{fips}</span>
+                        </button>
+                      ) : (
+                        <div className={styles.sourceCell}>
+                          <strong>{row.county}</strong>
+                          <span>Statewide only - not assigned to a county polygon</span>
+                        </div>
+                      )}
                     </td>
                     <td><strong>{formatDate(row.eventDate)}</strong><br /><span>{row.eventTypeLabel}</span></td>
                     <td>{row.disruptionLabel}</td>
@@ -692,7 +741,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                     </td>
                     <td>
                       <div className={styles.sourceCell}>
-                        <span className={styles.contextBadge}>{row.sourceTier === "official" ? "Official county record" : "Supplemental compiled record"}</span>
+                        <span className={styles.contextBadge}>{incidentSourceLabel(row)}</span>
                         <strong>{row.sourceAuthority}</strong>
                         <span>{row.sourceTitle}</span>
                         <span>{threatCountBasisText(row.threatCountBasis)}</span>
@@ -703,6 +752,11 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                             Open threat-count source <ExternalLink aria-hidden size={12} />
                           </a>
                         )}
+                        {citedUrls.map((url, index) => (
+                          <a href={url} key={url} rel="noreferrer" target="_blank">
+                            Open cited public report {index + 1} <ExternalLink aria-hidden size={12} />
+                          </a>
+                        ))}
                       </div>
                     </td>
                   </tr>
@@ -710,7 +764,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
               })}
               {reportRows.length === 0 && (
                 <tr>
-                  <td className={baseStyles.emptyRows} colSpan={6}>No loaded county records match these filters.</td>
+                  <td className={baseStyles.emptyRows} colSpan={6}>No loaded records match these filters.</td>
                 </tr>
               )}
             </tbody>
@@ -748,7 +802,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                 </a>
               </article>
             ))}
-            {loadedSources.length === 0 && <p>No county sources match the current filters.</p>}
+            {loadedSources.length === 0 && <p>No incident sources match the current filters.</p>}
           </div>
         </div>
         <footer className={styles.reportCaveat}>
