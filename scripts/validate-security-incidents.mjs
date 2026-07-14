@@ -17,6 +17,7 @@ const allowedAffectedLocationUnits = new Set([
 const allowedSourceTiers = new Set(["official", "supplemental"]);
 const allowedSourceStatuses = new Set([
   "official_county_record",
+  "official_state_record",
   "research_compilation",
   "supplemental_earlier_compilation",
   "supplemental_national_compilation",
@@ -28,7 +29,12 @@ const allowedThreatCountBases = new Set([
   "not_separately_published",
 ]);
 const officialHostPattern = /(^|\.)(gov|mil)$/i;
-const officialNonGovHosts = new Set(["chesco.org", "www.chesco.org"]);
+const officialNonGovHosts = new Set([
+  "chesco.org",
+  "www.chesco.org",
+  "pacourts.us",
+  "www.pacourts.us",
+]);
 const supplementalHosts = new Set([
   "brennancenter.org",
   "www.brennancenter.org",
@@ -104,7 +110,7 @@ async function validateArtifact(localArtifact, label, expectedSha256) {
 }
 
 if (
-  registry.schemaVersion !== 4
+  registry.schemaVersion !== 5
   || registry.electionYear !== 2024
   || registry.reportingGrain !== "mixed_county_and_statewide_unspecified"
 ) {
@@ -236,11 +242,19 @@ for (const row of registry.incidentRows ?? []) {
   if (!allowedSourceTiers.has(row.sourceTier) || !allowedSourceStatuses.has(row.sourceStatus)) {
     addError(`${label} has unsupported source tier or status.`);
   }
-  if (row.sourceTier === "official" && row.sourceStatus !== "official_county_record") {
-    addError(`${label} official rows must use official_county_record status.`);
+  if (row.sourceTier === "official") {
+    const expectedOfficialStatus = row.reportingGrain === "county"
+      ? "official_county_record"
+      : "official_state_record";
+    if (row.sourceStatus !== expectedOfficialStatus) {
+      addError(`${label} official ${row.reportingGrain} row must use ${expectedOfficialStatus} status.`);
+    }
   }
-  if (row.sourceTier === "supplemental" && row.sourceStatus === "official_county_record") {
-    addError(`${label} supplemental rows cannot use official_county_record status.`);
+  if (
+    row.sourceTier === "supplemental"
+    && (row.sourceStatus === "official_county_record" || row.sourceStatus === "official_state_record")
+  ) {
+    addError(`${label} supplemental rows cannot use an official-record status.`);
   }
   if (row.sourceStatus === "research_compilation" && row.threatCountBasis !== "research_tracker_compilation") {
     addError(`${label} research compilation row must use research_tracker_compilation.`);
@@ -293,6 +307,7 @@ for (const [field, actual] of Object.entries({
   completeThreatCountRows,
   unknownThreatCountRows: rows.length - completeThreatCountRows,
   knownThreatCountMinimum,
+  officialRowCount: rows.filter((row) => row.sourceTier === "official").length,
 })) {
   expectEqual(registry.expected?.[field], actual, `Registry expected.${field}`);
 }
@@ -397,7 +412,7 @@ if (!Array.isArray(inventory.stateCoverage)) {
   addError("Source inventory stateCoverage must be an array.");
 }
 if (
-  inventory.schemaVersion !== 3
+  inventory.schemaVersion !== 4
   || inventory.reportingGrain !== "mixed_county_and_statewide_unspecified"
   || inventory.reportingWindow?.start !== "2024-11-05"
   || inventory.reportingWindow?.end !== "2024-11-09"
@@ -441,6 +456,15 @@ for (const entry of inventory.stateCoverage ?? []) {
         .reduce((sum, row) => sum + row.threatCount, 0),
       `${entry.state} inventory statewideUnspecifiedThreatCount`,
     );
+    const expectedSourceAuthorities = new Set(stateRows.flatMap((row) => [
+      row.sourceAuthority,
+      row.threatCountSourceUrl === tracker.sourceUrl ? tracker.sourceAuthority : null,
+    ]).filter(Boolean));
+    for (const authority of expectedSourceAuthorities) {
+      if (!entry.sourceAuthorities?.includes(authority)) {
+        addError(`${entry.state} inventory is missing source authority: ${authority}.`);
+      }
+    }
   }
   if (entry.status !== "needs_data") {
     for (const url of entry.sourceUrls ?? []) {
@@ -469,12 +493,59 @@ for (const [field, actual] of Object.entries({
   mappedCountyCount: new Set(countyRows.map((row) => row.jurisdictionTag)).size,
   statewideUnspecifiedRowCount: statewideRows.length,
   knownThreatCountMinimum,
+  officialRowCount: rows.filter((row) => row.sourceTier === "official").length,
+  reviewedOfficialSourceCount: inventory.reviewedOfficialSources?.length ?? 0,
   trackerRowCount: trackerRows.length,
   trackerCountyCount: new Set(trackerCountyRows.map((row) => row.jurisdictionTag)).size,
   trackerThreatCount,
   additionalEarlierCompilationCountyRows: earlierRows.length,
 })) {
   expectEqual(inventory.expected?.[field], actual, `Inventory expected.${field}`);
+}
+
+if (!Array.isArray(inventory.reviewedOfficialSources)) {
+  addError("Source inventory reviewedOfficialSources must be an array.");
+} else {
+  expectEqual(inventory.reviewedOfficialSources.length, 2, "Reviewed official source count");
+  for (const source of inventory.reviewedOfficialSources) {
+    const label = source.sourceAuthority ?? "Reviewed official source";
+    if (
+      source.electionYear !== 2024
+      || source.sourceTier !== "official"
+      || source.expectedRowCount !== 1
+      || !source.normalizationPath
+      || !source.caveat
+    ) {
+      addError(`${label} needs complete official-source provenance metadata.`);
+    }
+    validatePrimarySourceUrl(source.sourceUrl, "official", `${label} sourceUrl`);
+    await validateArtifact(source.localArtifact, label, source.sha256);
+  }
+}
+
+const minnesotaStatewide = rows.find(
+  (row) => row.state === "MN" && row.reportingGrain === "statewide_unspecified",
+);
+if (
+  !minnesotaStatewide
+  || minnesotaStatewide.threatCount !== 47
+  || minnesotaStatewide.sourceStatus !== "official_state_record"
+  || minnesotaStatewide.jurisdictionCode !== null
+  || !/does not publish an exact count or name the counties/i.test(minnesotaStatewide.caveat)
+) {
+  addError("Minnesota must retain all 47 tracker threats at statewide-unspecified grain with the official state-source limitation.");
+}
+
+const philadelphia = rows.find((row) => row.county === "Philadelphia County");
+if (
+  !philadelphia
+  || philadelphia.threatCount !== 10
+  || philadelphia.affectedLocations !== 6
+  || philadelphia.affectedLocationUnit !== "polling_location"
+  || philadelphia.namedLocations?.length !== 6
+  || philadelphia.sourceStatus !== "official_county_record"
+) {
+  addError("Philadelphia must preserve 10 tracker threats separately from six polling locations named in the official court record.");
 }
 
 for (const context of inventory.nationalContext ?? []) {

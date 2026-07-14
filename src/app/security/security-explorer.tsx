@@ -9,6 +9,7 @@ import {
   LoaderCircle,
   Printer,
   Search,
+  Share2,
   X,
 } from "lucide-react";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
@@ -27,14 +28,22 @@ import {
   threatCountBasisText,
   threatCountText,
 } from "@/lib/security-incident-summary";
+import {
+  securityElectionResultText,
+  summarizeSecurityElectionWinner,
+  type SecurityElectionOverlay,
+  type SecurityElectionOverlayRow,
+} from "@/lib/security-result-overlay";
 import type { NationalSecurityIncidentReport, SecurityIncidentSummary } from "@/lib/types";
 import baseStyles from "../compare/compare.module.css";
 import styles from "./security.module.css";
 
 const expectedCountyFeatureCount = 3144;
 const reportRowLimit = 500;
+type SecurityMapLayer = "security" | "winner" | "margin";
 
 type SecurityExplorerProps = {
+  electionOverlay: SecurityElectionOverlay;
   report: NationalSecurityIncidentReport;
 };
 
@@ -54,7 +63,9 @@ function incidentFips(row: SecurityIncidentSummary): string | null {
 }
 
 function incidentSourceLabel(row: SecurityIncidentSummary) {
-  if (row.sourceTier === "official") return "Official county record";
+  if (row.sourceTier === "official") {
+    return row.reportingGrain === "county" ? "Official county record" : "Official state record";
+  }
   if (row.sourceStatus === "research_compilation") return "Later public-source tracker";
   if (row.sourceStatus === "supplemental_earlier_compilation") return "Earlier Election Day compilation";
   return "Supplemental compilation";
@@ -70,6 +81,41 @@ function incidentFill(rows: SecurityIncidentSummary[]) {
   if (rows.some((row) => row.sourceTier === "official")) return "#f97316";
   if (rows.some((row) => row.sourceStatus === "supplemental_earlier_compilation")) return "#c084fc";
   return rows.length ? "#fbbf24" : "url(#security-unknown)";
+}
+
+function incidentOutlineStroke(rows: SecurityIncidentSummary[]) {
+  if (rows.some((row) => row.sourceTier === "official")) return "#f97316";
+  if (rows.some((row) => row.sourceStatus === "supplemental_earlier_compilation")) return "#c084fc";
+  return "#fbbf24";
+}
+
+function winnerFill(row: SecurityElectionOverlayRow | undefined) {
+  if (!row || row.winner === "unavailable") return "url(#security-result-unavailable)";
+  if (row.winner === "blue") return "#4f95e8";
+  if (row.winner === "red") return "#d65b5f";
+  return "#f0c36a";
+}
+
+function marginFill(row: SecurityElectionOverlayRow | undefined) {
+  if (!row || row.winner === "unavailable") return "url(#security-result-unavailable)";
+  if (row.winner === "tie") return "#f0c36a";
+  const margin = Math.abs(row.demMarginPct ?? 0);
+  const shade = margin >= 30 ? 3 : margin >= 15 ? 2 : margin >= 5 ? 1 : 0;
+  const blue = ["#bddbff", "#82b8ff", "#4f95e8", "#294f79"];
+  const red = ["#ffc9c3", "#ff9f91", "#d65b5f", "#6f383c"];
+  return row.winner === "blue" ? blue[shade] : red[shade];
+}
+
+function electionFill(row: SecurityElectionOverlayRow | undefined, layer: SecurityMapLayer) {
+  return layer === "margin" ? marginFill(row) : winnerFill(row);
+}
+
+function formatNumber(value: number | null) {
+  return value == null ? "Not available" : value.toLocaleString("en-US");
+}
+
+function formatPercent(value: number | null) {
+  return value == null ? "Not available" : `${value.toFixed(2)}%`;
 }
 
 function formatDate(value: string) {
@@ -91,7 +137,25 @@ function downloadText(filename: string, content: string, type: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
-export function SecurityExplorer({ report }: SecurityExplorerProps) {
+async function copyText(value: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.setAttribute("readonly", "");
+  textarea.style.opacity = "0";
+  textarea.style.position = "fixed";
+  textarea.value = value;
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  if (!copied) throw new Error("Clipboard copy was not available.");
+}
+
+export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerProps) {
   const [features, setFeatures] = useState<NationalCountyFeature[]>([]);
   const [geometryStatus, setGeometryStatus] = useState<"error" | "loading" | "ready">("loading");
   const [geometryError, setGeometryError] = useState("");
@@ -99,8 +163,11 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
   const [disruptionFilter, setDisruptionFilter] = useState("");
   const [query, setQuery] = useState("");
   const [selectedFips, setSelectedFips] = useState<string | null>(null);
+  const [mapLayer, setMapLayer] = useState<SecurityMapLayer>("security");
   const [focusedFips, setFocusedFips] = useState<string | null>(null);
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [filtersHydrated, setFiltersHydrated] = useState(false);
+  const [shareStatus, setShareStatus] = useState("");
   const pathRefs = useRef(new Map<string, SVGPathElement>());
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const reportRef = useRef<HTMLElement | null>(null);
@@ -150,6 +217,49 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       ).sort((left, right) => left[1].localeCompare(right[1])),
     [report.incidents],
   );
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedState = (params.get("state") ?? "").toUpperCase();
+    const requestedDisruption = params.get("disruption") ?? "";
+    const requestedQuery = (params.get("q") ?? "").slice(0, 160);
+    const requestedLayer = params.get("layer");
+    setStateFilter(stateOptions.some((state) => state.state === requestedState) ? requestedState : "");
+    setDisruptionFilter(
+      disruptionOptions.some(([value]) => value === requestedDisruption) ? requestedDisruption : "",
+    );
+    setQuery(requestedQuery);
+    setMapLayer(requestedLayer === "winner" || requestedLayer === "margin" ? requestedLayer : "security");
+    setFiltersHydrated(true);
+
+    if (params.get("report") === "1") {
+      setGeneratedAt(new Date().toISOString());
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => reportRef.current?.scrollIntoView({ block: "start" }));
+      });
+    }
+  }, [disruptionOptions, stateOptions]);
+
+  useEffect(() => {
+    if (!filtersHydrated) return;
+    const params = new URLSearchParams(window.location.search);
+    if (stateFilter) params.set("state", stateFilter);
+    else params.delete("state");
+    if (disruptionFilter) params.set("disruption", disruptionFilter);
+    else params.delete("disruption");
+    if (query.trim()) params.set("q", query.trim());
+    else params.delete("q");
+    if (generatedAt) params.set("report", "1");
+    else params.delete("report");
+    if (mapLayer === "security") params.delete("layer");
+    else params.set("layer", mapLayer);
+    const search = params.toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      window.location.pathname + (search ? `?${search}` : "") + window.location.hash,
+    );
+  }, [disruptionFilter, filtersHydrated, generatedAt, mapLayer, query, stateFilter]);
+
   const filteredRows = useMemo(
     () =>
       report.incidents.filter((row) => {
@@ -175,6 +285,35 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     [deferredQuery, disruptionFilter, report.incidents, stateFilter],
   );
   const filteredTotals = useMemo(() => summarizeSecurityIncidents(filteredRows), [filteredRows]);
+  const reportStateSummaries = useMemo(() => {
+    const grouped = new Map<string, SecurityIncidentSummary[]>();
+    for (const row of filteredRows) {
+      const rows = grouped.get(row.state);
+      if (rows) rows.push(row);
+      else grouped.set(row.state, [row]);
+    }
+    return Array.from(grouped.entries())
+      .map(([state, rows]) => ({
+        ...summarizeSecurityIncidents(rows),
+        state,
+        stateName: rows[0]?.stateName ?? state,
+      }))
+      .sort((left, right) => left.stateName.localeCompare(right.stateName));
+  }, [filteredRows]);
+  const reportDateSummaries = useMemo(() => {
+    const grouped = new Map<string, SecurityIncidentSummary[]>();
+    for (const row of filteredRows) {
+      const rows = grouped.get(row.eventDate);
+      if (rows) rows.push(row);
+      else grouped.set(row.eventDate, [row]);
+    }
+    return Array.from(grouped.entries())
+      .map(([eventDate, rows]) => ({
+        ...summarizeSecurityIncidents(rows),
+        eventDate,
+      }))
+      .sort((left, right) => left.eventDate.localeCompare(right.eventDate));
+  }, [filteredRows]);
   const allRowsByFips = useMemo(() => {
     const grouped = new Map<string, SecurityIncidentSummary[]>();
     for (const row of report.incidents) {
@@ -197,6 +336,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     }
     return grouped;
   }, [filteredRows]);
+  const electionRowsByFips = useMemo(
+    () => new Map(electionOverlay.rows.map((row) => [row.fips, row])),
+    [electionOverlay.rows],
+  );
   const mapFeatures = useMemo(() => buildNationalCountyMapFeatures(features), [features]);
   const featureByFips = useMemo(
     () => new Map(features.map((feature) => [feature.properties.GEOID, feature])),
@@ -206,6 +349,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
   const detailFeature = detailFips ? featureByFips.get(detailFips) : undefined;
   const detailRows = detailFips ? allRowsByFips.get(detailFips) ?? [] : [];
   const detailMatchesFilters = detailFips ? filteredRowsByFips.has(detailFips) : false;
+  const detailElectionResult = detailFips ? electionRowsByFips.get(detailFips) : undefined;
+  const detailElectionSummary = detailElectionResult
+    ? summarizeSecurityElectionWinner(detailElectionResult)
+    : null;
   const activeMapFips = focusedFips ?? selectedFips ?? mapFeatures[0]?.fips ?? null;
   const loadedSources = useMemo(() => {
     const sources = new Map<string, SourceManifestEntry>();
@@ -230,6 +377,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       : "No published count";
   const reportRows = filteredRows.slice(0, reportRowLimit);
   const reportRowsTruncated = reportRows.length < filteredRows.length;
+  const selectedStateName =
+    stateOptions.find((state) => state.state === stateFilter)?.stateName
+    || stateFilter
+    || "United States";
 
   function moveMapFocus(fips: string, change: number) {
     const currentIndex = mapFeatures.findIndex((entry) => entry.fips === fips);
@@ -242,7 +393,25 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
 
   function generateReport() {
     setGeneratedAt(new Date().toISOString());
+    setShareStatus("");
     window.requestAnimationFrame(() => reportRef.current?.scrollIntoView({ block: "start" }));
+  }
+
+  async function copyReportLink() {
+    const params = new URLSearchParams();
+    if (stateFilter) params.set("state", stateFilter);
+    if (disruptionFilter) params.set("disruption", disruptionFilter);
+    if (query.trim()) params.set("q", query.trim());
+    if (mapLayer !== "security") params.set("layer", mapLayer);
+    params.set("report", "1");
+    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+    try {
+      await copyText(url);
+      setShareStatus("Filtered report link copied.");
+    } catch {
+      setShareStatus("Copy failed. Choose Generate report, then copy the address bar URL.");
+    }
   }
 
   function exportCsv() {
@@ -309,10 +478,24 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             disruption: disruptionFilter || null,
             query: query.trim() || null,
             state: stateFilter || null,
+            layer: mapLayer,
           },
           generatedAt: generated,
+          electionOverlay: {
+            dataSource: electionOverlay.dataSource,
+            incidentCountyCount: electionOverlay.incidentCountyCount,
+            matchedCountyCount: electionOverlay.matchedCountyCount,
+            year: electionOverlay.year,
+            resultRows: electionOverlay.rows.filter((resultRow) =>
+              filteredRows.some((incidentRow) => incidentFips(incidentRow) === resultRow.fips),
+            ),
+          },
           incidents: filteredRows,
           nationalContext: report.nationalContext,
+          summaries: {
+            byDate: reportDateSummaries,
+            byState: reportStateSummaries,
+          },
           sources: loadedSources,
           stateCoverage: report.stateCoverage,
           totals: filteredTotals,
@@ -332,7 +515,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     clone.setAttribute("width", "1000");
     clone.setAttribute("height", "620");
     downloadText(
-      "security-incidents-2024-national-map.svg",
+      `security-incidents-2024-${mapLayer}-map.svg`,
       '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone),
       "image/svg+xml;charset=utf-8",
     );
@@ -344,7 +527,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <label>
           <span>State</span>
           <select onChange={(event) => setStateFilter(event.target.value)} value={stateFilter}>
-            <option value="">All states and DC</option>
+            <option value="">All loaded states</option>
             {stateOptions.map((state) => (
               <option key={state.state} value={state.state}>
                 {state.stateName} ({state.state})
@@ -367,6 +550,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <Search aria-hidden size={16} />
             <input
               aria-label="Search county, state, FIPS, or source"
+              maxLength={160}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="e.g. Fulton, Minnesota, or 13121"
               type="search"
@@ -378,6 +562,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           <button onClick={generateReport} type="button">
             <FileText aria-hidden size={15} />
             Generate report
+          </button>
+          <button onClick={() => void copyReportLink()} type="button">
+            <Share2 aria-hidden size={15} />
+            Copy report link
           </button>
           <button onClick={exportCsv} type="button">
             <Download aria-hidden size={15} />
@@ -395,6 +583,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <Printer aria-hidden size={15} />
             Print / save PDF
           </button>
+          {shareStatus && <span className={styles.shareStatus} role="status">{shareStatus}</span>}
         </div>
       </section>
 
@@ -443,6 +632,21 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         </div>
       </aside>
 
+      {(electionOverlay.dataSource === "seed_fallback"
+        || electionOverlay.matchedCountyCount < electionOverlay.incidentCountyCount) && (
+        <aside className={styles.overlayWarning} data-print-hide="true" role="status">
+          <AlertTriangle aria-hidden size={18} />
+          <div>
+            <strong>Election overlay coverage is limited in this build</strong>
+            <p>
+              {electionOverlay.matchedCountyCount.toLocaleString()} of {electionOverlay.incidentCountyCount.toLocaleString()} mapped
+              incident counties have a joined 2024 presidential result. Missing joins remain unshaded and are never treated as zero.
+              {electionOverlay.dataSource === "seed_fallback" ? " This build is using the limited seed fallback rather than the production result database." : ""}
+            </p>
+          </div>
+        </aside>
+      )}
+
       {geometryStatus === "error" && (
         <div className={baseStyles.error} data-print-hide="true" role="alert">
           <AlertTriangle aria-hidden size={18} />
@@ -454,14 +658,51 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>Nationwide election-period county view</span>
-            <h2>Mapped November 5-9, 2024 bomb-threat counties</h2>
+            <h2>
+              {mapLayer === "security"
+                ? "Mapped November 5-9, 2024 bomb-threat counties"
+                : mapLayer === "winner"
+                  ? "2024 presidential winners in mapped threat counties"
+                  : "2024 presidential margins in mapped threat counties"}
+            </h2>
+            <p className={styles.mapQualifier}>
+              Election shading and incident outlines are independent county-level context. Their overlap does not imply
+              a relationship, cause, fraud, misconduct, altered votes, or an incorrect outcome.
+            </p>
           </div>
-          <div className={baseStyles.legend} aria-label="Map legend">
-            <span><i className={styles.legendMedium} />Official county detail</span>
-            <span><i className={styles.legendLow} />Later public-source tracker</span>
-            <span><i className={styles.legendEarlier} />Earlier Election Day compilation</span>
-            <span><i className={styles.legendFiltered} />Loaded, filtered out</span>
-            <span><i className={styles.legendUnknown} />No loaded matching record</span>
+          <div className={styles.mapHeaderTools}>
+            <div className={styles.layerToggle} role="group" aria-label="Map data layer">
+              <button aria-pressed={mapLayer === "security"} onClick={() => setMapLayer("security")} type="button">Incident sources</button>
+              <button aria-pressed={mapLayer === "winner"} onClick={() => setMapLayer("winner")} type="button">2024 winner</button>
+              <button aria-pressed={mapLayer === "margin"} onClick={() => setMapLayer("margin")} type="button">2024 margin</button>
+            </div>
+            <div className={baseStyles.legend} aria-label="Map legend">
+              {mapLayer === "security" ? (
+                <>
+                  <span><i className={styles.legendMedium} />Official county detail</span>
+                  <span><i className={styles.legendLow} />Later public-source tracker</span>
+                  <span><i className={styles.legendEarlier} />Earlier Election Day compilation</span>
+                </>
+              ) : (
+                <>
+                  <span><i className={mapLayer === "margin" ? styles.legendBlueMargin : styles.legendBlue} />Democratic {mapLayer === "margin" ? "margin" : "winner"}</span>
+                  <span><i className={mapLayer === "margin" ? styles.legendRedMargin : styles.legendRed} />Republican {mapLayer === "margin" ? "margin" : "winner"}</span>
+                  <span><i className={styles.legendTie} />Tie</span>
+                  <span><i className={styles.legendResultMissing} />Result unavailable</span>
+                  <span><i className={styles.legendOfficialOutline} />Official incident outline</span>
+                  <span><i className={styles.legendTrackerOutline} />Tracker incident outline</span>
+                  <span><i className={styles.legendEarlierOutline} />Earlier compilation outline</span>
+                  {mapLayer === "margin" && (
+                    <span className={styles.marginThresholds}>Shade thresholds: under 5, 5-14.99, 15-29.99, and 30+ points</span>
+                  )}
+                </>
+              )}
+              <span><i className={styles.legendFiltered} />Loaded, filtered out</span>
+              <span><i className={styles.legendUnknown} />No loaded matching record</span>
+            </div>
+            <span className={styles.overlayCoverage}>
+              {electionOverlay.matchedCountyCount.toLocaleString()} / {electionOverlay.incidentCountyCount.toLocaleString()} mapped incident counties joined to canonical 2024 results
+            </span>
           </div>
         </header>
         <div className={baseStyles.mapLayout}>
@@ -479,73 +720,107 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                 role="group"
                 viewBox="0 0 1000 620"
               >
-                <title id="security-map-title">2024 source-linked county bomb-threat incident records</title>
+                <title id="security-map-title">
+                  {mapLayer === "security" ? "2024 source-linked county bomb-threat incident records" : `2024 presidential ${mapLayer} overlay with source-linked county incident outlines`}
+                </title>
                 <desc id="security-map-description">
-                  All 3,144 counties and county equivalents remain visible. Only county-attributed records are colored;
-                  66 threats reported without a county remain in totals and the report. Hatched counties have no loaded
-                  record matching the current filters; this does not mean no incident occurred. Use Tab to enter the map,
-                  arrow keys to move through FIPS order, and Enter or Space to pin a county.
+                  All 3,144 counties and county equivalents remain visible. Only county-attributed incident records are
+                  mapped; 66 threats reported without a county remain in totals and the report. In election modes, fill
+                  shows the joined 2024 presidential winner or margin and the colored outline retains incident source
+                  status. Hatched counties have no loaded matching record. Use Tab to enter the map, arrow keys to move
+                  through FIPS order, and Enter or Space to pin a county.
                 </desc>
                 <defs>
                   <pattern height="8" id="security-unknown" patternUnits="userSpaceOnUse" width="8">
                     <rect fill="#252a28" height="8" width="8" />
                     <path d="M-2 2 L2 -2 M0 8 L8 0 M6 10 L10 6" stroke="#363c39" strokeWidth="1" />
                   </pattern>
+                  <pattern height="8" id="security-result-unavailable" patternUnits="userSpaceOnUse" width="8">
+                    <rect fill="#202625" height="8" width="8" />
+                    <path d="M-2 6 L6 -2 M2 10 L10 2" stroke="#718079" strokeWidth="1.2" />
+                  </pattern>
                 </defs>
                 <g>
                   {mapFeatures.map(({ feature, fips, path }) => {
                     const matchingRows = filteredRowsByFips.get(fips) ?? [];
                     const loadedRows = allRowsByFips.get(fips) ?? [];
+                    const electionRow = electionRowsByFips.get(fips);
                     const isSelected = selectedFips === fips;
                     const outsideSelectedState = Boolean(stateFilter && feature.properties.STATE !== stateFilter);
-                    const summary = matchingRows.length
+                    const incidentSummary = matchingRows.length
                       ? securityIncidentSummaryText(matchingRows)
                       : loadedRows.length
                         ? "Loaded county record excluded by the current filters"
                         : "No loaded county record; this does not mean no incident occurred";
+                    const electionSummary = electionRow
+                      ? securityElectionResultText(electionRow)
+                      : "No joined 2024 presidential county result";
+                    const summary = mapLayer === "security"
+                      ? incidentSummary
+                      : `${electionSummary}; ${incidentSummary}`;
+                    const fill = matchingRows.length
+                      ? mapLayer === "security"
+                        ? incidentFill(matchingRows)
+                        : electionFill(electionRow, mapLayer)
+                      : loadedRows.length
+                        ? "#5c4a38"
+                        : "url(#security-unknown)";
+                    const opacity = outsideSelectedState ? 0.18 : matchingRows.length ? 1 : loadedRows.length ? 0.55 : 0.9;
                     return (
-                      <path
-                        aria-label={
-                          feature.properties.NAME + ", " + feature.properties.STATE + ", FIPS " + fips + ": " + summary
-                        }
-                        aria-pressed={isSelected}
-                        className={isSelected ? baseStyles.selectedShape : baseStyles.mapShape}
-                        d={path}
-                        fill={matchingRows.length ? incidentFill(matchingRows) : loadedRows.length ? "#5c4a38" : "url(#security-unknown)"}
-                        fillRule="evenodd"
-                        key={fips}
-                        onClick={() => setSelectedFips(fips)}
-                        onFocus={() => setFocusedFips(fips)}
-                        onKeyDown={(event) => {
-                          if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
-                            event.preventDefault();
-                            moveMapFocus(fips, -1);
-                          } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
-                            event.preventDefault();
-                            moveMapFocus(fips, 1);
-                          } else if (event.key === "Home") {
-                            event.preventDefault();
-                            moveMapFocus(fips, -mapFeatures.length);
-                          } else if (event.key === "End") {
-                            event.preventDefault();
-                            moveMapFocus(fips, mapFeatures.length);
-                          } else if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault();
-                            setSelectedFips(fips);
-                          }
-                        }}
-                        opacity={outsideSelectedState ? 0.18 : matchingRows.length ? 1 : loadedRows.length ? 0.55 : 0.9}
-                        ref={(node) => {
-                          if (node) pathRefs.current.set(fips, node);
-                          else pathRefs.current.delete(fips);
-                        }}
-                        role="button"
-                        stroke={isSelected ? "#f4f1ea" : "#101312"}
-                        strokeWidth={isSelected ? 1.8 : 0.55}
-                        tabIndex={activeMapFips === fips ? 0 : -1}
-                      >
-                        <title>{feature.properties.NAME}, {feature.properties.STATE}: {summary}</title>
-                      </path>
+                      <g key={fips}>
+                        {mapLayer !== "security" && loadedRows.length > 0 && (
+                          <path
+                            aria-hidden="true"
+                            d={path}
+                            fill="none"
+                            opacity={outsideSelectedState ? 0.18 : matchingRows.length ? 0.98 : 0.5}
+                            pointerEvents="none"
+                            stroke={matchingRows.length ? incidentOutlineStroke(matchingRows) : "#5c4a38"}
+                            strokeDasharray={matchingRows.length ? undefined : "4 3"}
+                            strokeLinejoin="round"
+                            strokeWidth={3.2}
+                          />
+                        )}
+                        <path
+                          aria-label={feature.properties.NAME + ", " + feature.properties.STATE + ", FIPS " + fips + ": " + summary}
+                          aria-pressed={isSelected}
+                          className={isSelected ? baseStyles.selectedShape : baseStyles.mapShape}
+                          d={path}
+                          fill={fill}
+                          fillRule="evenodd"
+                          onClick={() => setSelectedFips(fips)}
+                          onFocus={() => setFocusedFips(fips)}
+                          onKeyDown={(event) => {
+                            if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                              event.preventDefault();
+                              moveMapFocus(fips, -1);
+                            } else if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                              event.preventDefault();
+                              moveMapFocus(fips, 1);
+                            } else if (event.key === "Home") {
+                              event.preventDefault();
+                              moveMapFocus(fips, -mapFeatures.length);
+                            } else if (event.key === "End") {
+                              event.preventDefault();
+                              moveMapFocus(fips, mapFeatures.length);
+                            } else if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              setSelectedFips(fips);
+                            }
+                          }}
+                          opacity={opacity}
+                          ref={(node) => {
+                            if (node) pathRefs.current.set(fips, node);
+                            else pathRefs.current.delete(fips);
+                          }}
+                          role="button"
+                          stroke={isSelected ? "#f4f1ea" : "#101312"}
+                          strokeWidth={isSelected ? 1.8 : 0.55}
+                          tabIndex={activeMapFips === fips ? 0 : -1}
+                        >
+                          <title>{feature.properties.NAME}, {feature.properties.STATE}: {summary}</title>
+                        </path>
+                      </g>
                     );
                   })}
                 </g>
@@ -569,6 +844,77 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
                 </div>
                 <h3>{detailFeature.properties.NAME}, {detailFeature.properties.STATE}</h3>
                 {selectedFips && <p className={styles.pinnedNote}>Pinned selection - hovering elsewhere will not replace these details.</p>}
+                {detailElectionResult && detailElectionSummary ? (
+                  <section className={styles.electionDetail} aria-label="2024 presidential result">
+                    <div className={styles.electionDetailHeader}>
+                      <span>{detailElectionResult.year} presidential result</span>
+                      <strong
+                        className={
+                          detailElectionSummary.party === "Democratic"
+                            ? styles.electionWinnerBlue
+                            : detailElectionSummary.party === "Republican"
+                              ? styles.electionWinnerRed
+                              : styles.electionWinnerNeutral
+                        }
+                      >
+                        {detailElectionSummary.party === "Tie"
+                          ? "Major-party tie"
+                          : detailElectionSummary.party === "Unavailable"
+                            ? "Result unavailable"
+                            : `${detailElectionSummary.candidate} · ${detailElectionSummary.party}`}
+                      </strong>
+                    </div>
+                    {detailElectionSummary.party !== "Unavailable" && (
+                      <p>
+                        {detailElectionSummary.party === "Tie"
+                          ? `The major-party candidates each received ${formatNumber(detailElectionSummary.winnerVotes)} votes.`
+                          : `Won by ${formatNumber(detailElectionSummary.marginVotes)} votes${detailElectionSummary.marginPct == null ? "" : ` (${detailElectionSummary.marginPct.toFixed(2)} percentage points)`}.`}
+                      </p>
+                    )}
+                    <dl className={styles.electionMetrics}>
+                      <div>
+                        <dt>{detailElectionResult.demCandidate}</dt>
+                        <dd>{formatNumber(detailElectionResult.demVotes)}</dd>
+                        <small>{formatPercent(detailElectionResult.demSharePct)}</small>
+                      </div>
+                      <div>
+                        <dt>{detailElectionResult.repCandidate}</dt>
+                        <dd>{formatNumber(detailElectionResult.repVotes)}</dd>
+                        <small>{formatPercent(detailElectionResult.repSharePct)}</small>
+                      </div>
+                      <div>
+                        <dt>Other candidates</dt>
+                        <dd>{formatNumber(detailElectionResult.otherVotes)}</dd>
+                        <small>{formatNumber(detailElectionResult.totalVotes)} total votes</small>
+                      </div>
+                    </dl>
+                    <div className={styles.electionSource}>
+                      <span>
+                        {detailElectionResult.sourceAuthority ?? "Result source authority not available"}
+                        {` · ${detailElectionResult.confidence} confidence`}
+                      </span>
+                      {detailElectionResult.sourceUrl && (
+                        <a href={detailElectionResult.sourceUrl} rel="noreferrer" target="_blank">
+                          Open result source <ExternalLink aria-hidden size={13} />
+                        </a>
+                      )}
+                    </div>
+                    {detailElectionResult.caveat && (
+                      <p className={styles.electionCaveat}>{detailElectionResult.caveat}</p>
+                    )}
+                  </section>
+                ) : (
+                  <section className={styles.electionDetail} aria-label="2024 presidential result">
+                    <div className={styles.electionDetailHeader}>
+                      <span>2024 presidential result</span>
+                      <strong className={styles.electionWinnerNeutral}>Not joined</strong>
+                    </div>
+                    <p>
+                      No canonical county-FIPS presidential result is available in this build for this polygon.
+                      Missing results are not treated as zero.
+                    </p>
+                  </section>
+                )}
                 {detailRows.length ? (
                   <>
                     {!detailMatchesFilters && (
@@ -630,7 +976,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
               The FBI confirms threats occurred but does not publish a national count or county roster. The 227 figure
               comes from the Brennan Center&apos;s later tracker of public reports, which says it may not be exhaustive
               and is not an official FBI list. Its 66 threats without a named county stay in totals but are not placed on
-              county polygons; reviewed official county records add detail where available.
+              county polygons; reviewed official state and county records add detail where available.
             </p>
           </div>
         </header>
@@ -676,7 +1022,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <div className={styles.reportSummary}>
           <div>
             <span>Scope</span>
-            <strong>{stateFilter || "United States"}</strong>
+            <strong>{selectedStateName}</strong>
           </div>
           <div>
             <span>Mapped counties</span>
@@ -696,6 +1042,74 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           </div>
         </div>
         <p className={styles.reportExplanation}>{securityCountExplanation}</p>
+        <div className={styles.reportBreakdown}>
+          <section aria-labelledby="security-state-summary-heading" className={styles.breakdownPanel}>
+            <header>
+              <h3 id="security-state-summary-heading">Summary by state</h3>
+              <p>Threat totals stay separate from the number of mapped counties.</p>
+            </header>
+            <div className={styles.summaryTableWrap}>
+              <table aria-label="Security incident summary by state" className={styles.summaryTable}>
+                <thead>
+                  <tr>
+                    <th>State</th>
+                    <th>Rows</th>
+                    <th>Mapped counties</th>
+                    <th>Reported threats</th>
+                    <th>Threats with no county named</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportStateSummaries.map((summary) => (
+                    <tr key={summary.state}>
+                      <td><strong>{summary.stateName}</strong><br /><span>{summary.state}</span></td>
+                      <td>{summary.rowCount.toLocaleString()}</td>
+                      <td>{summary.countyCount.toLocaleString()}</td>
+                      <td>{summary.threatCountComplete ? summary.knownThreatCount.toLocaleString() : `At least ${summary.knownThreatCount.toLocaleString()}`}</td>
+                      <td>{summary.statewideUnspecifiedThreatCount.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                  {reportStateSummaries.length === 0 && (
+                    <tr><td colSpan={5}>No matching state records.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section aria-labelledby="security-date-summary-heading" className={styles.breakdownPanel}>
+            <header>
+              <h3 id="security-date-summary-heading">Summary by report date</h3>
+              <p>Dates reflect the tracker row date, not a claim that every message arrived at the same time.</p>
+            </header>
+            <div className={styles.summaryTableWrap}>
+              <table aria-label="Security incident summary by date" className={styles.summaryTable}>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>States</th>
+                    <th>Rows</th>
+                    <th>Reported threats</th>
+                    <th>Threats with no county named</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportDateSummaries.map((summary) => (
+                    <tr key={summary.eventDate}>
+                      <td><strong>{formatDate(summary.eventDate)}</strong></td>
+                      <td>{summary.stateCount.toLocaleString()}</td>
+                      <td>{summary.rowCount.toLocaleString()}</td>
+                      <td>{summary.threatCountComplete ? summary.knownThreatCount.toLocaleString() : `At least ${summary.knownThreatCount.toLocaleString()}`}</td>
+                      <td>{summary.statewideUnspecifiedThreatCount.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                  {reportDateSummaries.length === 0 && (
+                    <tr><td colSpan={5}>No matching dated records.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
         <div className={baseStyles.tableWrap}>
           <table className={styles.reportTable}>
             <thead>

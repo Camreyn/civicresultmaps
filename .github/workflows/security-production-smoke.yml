@@ -1,0 +1,26 @@
+name: Security incident production smoke
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.ref == 'main' &&
+      github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify national, Georgia, and Minnesota security reports
+        run: node scripts/verify-security-incidents-deployment.mjs --base-url=https://civicresultmaps.org

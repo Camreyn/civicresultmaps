@@ -30,6 +30,9 @@ jobs:
       - name: API contract tests
         run: npm run test:api
 
+      - name: Security incident tests
+        run: npm run test:security-incidents
+
       - name: ETL tests
         run: npm run test:etl
 
@@ -105,8 +108,16 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy preview
+        id: deploy-preview
         if: steps.vercel-secrets.outputs.available == 'true'
-        run: npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        shell: bash
+        run: |
+          preview_url="$(npx vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})"
+          echo "url=$preview_url" >> "$GITHUB_OUTPUT"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Smoke-test security incident preview
+        if: steps.vercel-secrets.outputs.available == 'true'
+        run: node scripts/verify-security-incidents-deployment.mjs --base-url=${{ steps.deploy-preview.outputs.url }}

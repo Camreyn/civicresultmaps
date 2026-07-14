@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 4,
-  "description": "November 2024 election-period bomb-threat records normalized from the Brennan Center's later 227-threat public-source tracker, enriched with reviewed official county records and one additional earlier county mention whose count was not published.",
+  "schemaVersion": 5,
+  "description": "November 2024 election-period bomb-threat records normalized from the Brennan Center's later 227-threat public-source tracker, enriched with reviewed official state and county records and one additional earlier county mention whose count was not published.",
   "electionYear": 2024,
   "reportingGrain": "mixed_county_and_statewide_unspecified",
   "reportingWindow": {
@@ -18,17 +18,18 @@
     "completeThreatCountRows": 110,
     "unknownThreatCountRows": 1,
     "knownThreatCountMinimum": 227,
+    "officialRowCount": 6,
     "trackerRowCount": 110,
     "trackerCountyCount": 108,
     "trackerThreatCount": 227,
     "additionalEarlierCompilationCountyRows": 1,
     "affectedLocationUnitTotals": {
       "election_office": 1,
-      "polling_location": 7,
+      "polling_location": 13,
       "voting_precinct": 6
     }
   },
-  "caveat": "The later Brennan Center tracker documents at least 227 threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
+  "caveat": "The later Brennan Center tracker documents at least 227 threats from November 5 through November 9, 2024 using publicly available sources and says it may not be exhaustive. It is not an official FBI roster. Two tracker rows contain 66 threats whose counties were not specified; they remain in totals without being assigned to county polygons. Reviewed official records confirm Minnesota's broad statewide scope but do not publish its county list, and add Philadelphia facility detail without changing tracker threat totals. Milwaukee is retained from an earlier published Election Day compilation with an unknown count. Incident records are not evidence of fraud, misconduct, altered votes, or an incorrect election outcome.",
   "incidentRows": [
     {
       "id": "az-2024-11-05-cochise-bomb-threat-tracker",
@@ -841,7 +842,7 @@
       "sourceTier": "supplemental",
       "sourceStatus": "research_compilation",
       "confidence": "medium",
-      "caveat": "The Brennan Center's later public-source tracker attributes 19 threats to Georgia on 2024-11-05 without naming counties. The count is included in state and national totals but is not painted onto a county polygon. The tracker is not an FBI roster and says its data may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct."
+      "caveat": "The Brennan Center's later public-source tracker derives this 19-threat Georgia row as the remainder of a reported statewide total after subtracting threats assigned to Clayton, DeKalb, Fulton, and Gwinnett Counties. The underlying statewide report does not identify counties for the remainder, so it stays in state and national totals without being painted onto county polygons. The tracker is not an FBI roster and may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct."
     },
     {
       "id": "md-2024-11-08-allegany-bomb-threat-tracker",
@@ -1583,22 +1584,25 @@
       "affectedLocationUnit": "election_facility",
       "namedLocations": [],
       "disruptionType": "statewide_threats_counties_not_specified",
-      "disruptionLabel": "Threats documented statewide; counties and facilities not specified in the tracker",
+      "disruptionLabel": "Official state statement confirms emailed threats across more than half of Minnesota counties; exact counties not published",
       "hoursExtended": null,
-      "sourceAuthority": "Brennan Center for Justice",
-      "sourceTitle": "2024 Election Bomb Threat Tracker",
-      "sourcePublishedAt": "2025-03-28",
-      "sourceUrl": "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
+      "sourceAuthority": "Office of the Minnesota Secretary of State",
+      "sourceTitle": "Statement on Bomb Threats to County Election Offices",
+      "sourcePublishedAt": "2024-11-12",
+      "sourceUrl": "https://www.sos.mn.gov/about-the-office/news-room/statement-on-bomb-threats-to-county-election-offices/",
       "supportingSourceUrls": [
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
         "https://www.cbsnews.com/minnesota/news/election-bomb-threats-minnesota-similar-threats-nationwide/"
       ],
-      "localArtifact": "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
-      "supportingLocalArtifacts": [],
+      "localArtifact": "data/mn-sos-2024-bomb-threats-county-election-offices.html",
+      "supportingLocalArtifacts": [
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
+      ],
       "normalizationPath": "scripts/build-security-incident-registry.mjs",
-      "sourceTier": "supplemental",
-      "sourceStatus": "research_compilation",
+      "sourceTier": "official",
+      "sourceStatus": "official_state_record",
       "confidence": "medium",
-      "caveat": "The Brennan Center's later public-source tracker attributes 47 threats to Minnesota on 2024-11-08 without naming counties. The count is included in state and national totals but is not painted onto a county polygon. The tracker is not an FBI roster and says its data may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct."
+      "caveat": "The Minnesota Secretary of State confirms that election offices in over half of the state's counties received emailed bomb threats beginning November 8, but the official statement does not publish an exact count or name the counties. The 47-threat count comes from the later Brennan Center public-source tracker. Because no authoritative county list is published, all 47 remain at statewide-unspecified grain and are not painted onto county polygons. The tracker is not an FBI roster and may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct."
     },
     {
       "id": "or-2024-11-08-baker-bomb-threat-tracker",
@@ -3830,7 +3834,7 @@
       "caveat": "The Brennan Center's later public-source tracker attributes 1 threat to Perry County on 2024-11-05. The tracker links its underlying public reports but does not provide a verified site-by-site federal roster for this row and says its data may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct."
     },
     {
-      "id": "pa-2024-11-05-philadelphia-bomb-threat-tracker",
+      "id": "pa-2024-general-philadelphia-bomb-threat-order",
       "state": "PA",
       "stateName": "Pennsylvania",
       "electionYear": 2024,
@@ -3845,27 +3849,36 @@
       "threatCountBasis": "research_tracker_compilation",
       "threatCountSourceUrl": "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
       "threatCountLocalArtifact": "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
-      "affectedLocations": null,
-      "affectedLocationUnit": "election_facility",
-      "namedLocations": [],
-      "disruptionType": "election_day_threat_disruption_detail_varies",
-      "disruptionLabel": "Election Day threat documented; facility-level disruption varies by cited source",
+      "affectedLocations": 6,
+      "affectedLocationUnit": "polling_location",
+      "namedLocations": [
+        "Ji's Cafe Dining Room",
+        "Mummers Museum",
+        "Capitolo Recreation Center",
+        "St. Maron's Church",
+        "Columbus Square Recreation Center",
+        "Hawthorne Recreation Center"
+      ],
+      "disruptionType": "election_day_threats_polling_hours_extended",
+      "disruptionLabel": "Six polling locations named; one address received a court-ordered voting extension",
       "hoursExtended": null,
-      "sourceAuthority": "Brennan Center for Justice",
-      "sourceTitle": "2024 Election Bomb Threat Tracker",
-      "sourcePublishedAt": "2025-03-28",
-      "sourceUrl": "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
+      "sourceAuthority": "First Judicial District of Pennsylvania",
+      "sourceTitle": "Election Day order concerning polling divisions at 1013 Ellsworth Street",
+      "sourcePublishedAt": "2024-11-05",
+      "sourceUrl": "https://www.pacourts.us/Storage/media/pdfs/20241107/153927-nov.5%2C2024-order.pdf",
       "supportingSourceUrls": [
-        "https://www.pacourts.us/Storage/media/pdfs/20241107/153927-nov.5,2024-order.pdf",
+        "https://www.brennancenter.org/sites/default/files/2025-03/bcj-2024-election-bomb-threat-tracker_0.pdf",
         "https://www.nbcphiladelphia.com/decision-2024/polling-place-in-west-chester-pa-evacuated-due-to-bomb-threat-official-says/4020027/"
       ],
-      "localArtifact": "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf",
-      "supportingLocalArtifacts": [],
+      "localArtifact": "data/pa-2024-election-day-security-philadelphia-order.pdf",
+      "supportingLocalArtifacts": [
+        "data/us-2024-election-bomb-threat-tracker-brennan-center.pdf"
+      ],
       "normalizationPath": "scripts/build-security-incident-registry.mjs",
-      "sourceTier": "supplemental",
-      "sourceStatus": "research_compilation",
+      "sourceTier": "official",
+      "sourceStatus": "official_county_record",
       "confidence": "medium",
-      "caveat": "The Brennan Center's later public-source tracker attributes 10 threats to Philadelphia County on 2024-11-05. The tracker links its underlying public reports but does not provide a verified site-by-site federal roster for this row and says its data may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct."
+      "caveat": "The official Philadelphia court record and attached threat email name 6 polling locations. The order kept polling divisions at 1013 Ellsworth Street open until 8:23 p.m.; it does not establish that every named location closed or independently establish the later Brennan Center tracker's 10-threat count. Threat messages and affected locations are different measures and are not added together. The tracker is not an FBI roster and may not be exhaustive. This row is administration context only and is not evidence of fraud or misconduct."
     },
     {
       "id": "pa-2024-11-05-schuylkill-bomb-threat-tracker",

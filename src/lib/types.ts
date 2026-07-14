@@ -297,6 +297,7 @@ export type SecurityIncidentSummary = {
   sourceTier: SecurityIncidentSourceTier;
   sourceStatus:
     | "official_county_record"
+    | "official_state_record"
     | "research_compilation"
     | "supplemental_earlier_compilation"
     | "supplemental_national_compilation";
