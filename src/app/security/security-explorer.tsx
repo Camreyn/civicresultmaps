@@ -9,6 +9,7 @@ import {
   LoaderCircle,
   Printer,
   Search,
+  Share2,
   X,
 } from "lucide-react";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
@@ -54,7 +55,9 @@ function incidentFips(row: SecurityIncidentSummary): string | null {
 }
 
 function incidentSourceLabel(row: SecurityIncidentSummary) {
-  if (row.sourceTier === "official") return "Official county record";
+  if (row.sourceTier === "official") {
+    return row.reportingGrain === "county" ? "Official county record" : "Official state record";
+  }
   if (row.sourceStatus === "research_compilation") return "Later public-source tracker";
   if (row.sourceStatus === "supplemental_earlier_compilation") return "Earlier Election Day compilation";
   return "Supplemental compilation";
@@ -91,6 +94,24 @@ function downloadText(filename: string, content: string, type: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
+async function copyText(value: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.setAttribute("readonly", "");
+  textarea.style.opacity = "0";
+  textarea.style.position = "fixed";
+  textarea.value = value;
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  if (!copied) throw new Error("Clipboard copy was not available.");
+}
+
 export function SecurityExplorer({ report }: SecurityExplorerProps) {
   const [features, setFeatures] = useState<NationalCountyFeature[]>([]);
   const [geometryStatus, setGeometryStatus] = useState<"error" | "loading" | "ready">("loading");
@@ -101,6 +122,8 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
   const [selectedFips, setSelectedFips] = useState<string | null>(null);
   const [focusedFips, setFocusedFips] = useState<string | null>(null);
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
+  const [filtersHydrated, setFiltersHydrated] = useState(false);
+  const [shareStatus, setShareStatus] = useState("");
   const pathRefs = useRef(new Map<string, SVGPathElement>());
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const reportRef = useRef<HTMLElement | null>(null);
@@ -150,6 +173,45 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       ).sort((left, right) => left[1].localeCompare(right[1])),
     [report.incidents],
   );
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedState = (params.get("state") ?? "").toUpperCase();
+    const requestedDisruption = params.get("disruption") ?? "";
+    const requestedQuery = (params.get("q") ?? "").slice(0, 160);
+    setStateFilter(stateOptions.some((state) => state.state === requestedState) ? requestedState : "");
+    setDisruptionFilter(
+      disruptionOptions.some(([value]) => value === requestedDisruption) ? requestedDisruption : "",
+    );
+    setQuery(requestedQuery);
+    setFiltersHydrated(true);
+
+    if (params.get("report") === "1") {
+      setGeneratedAt(new Date().toISOString());
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => reportRef.current?.scrollIntoView({ block: "start" }));
+      });
+    }
+  }, [disruptionOptions, stateOptions]);
+
+  useEffect(() => {
+    if (!filtersHydrated) return;
+    const params = new URLSearchParams(window.location.search);
+    if (stateFilter) params.set("state", stateFilter);
+    else params.delete("state");
+    if (disruptionFilter) params.set("disruption", disruptionFilter);
+    else params.delete("disruption");
+    if (query.trim()) params.set("q", query.trim());
+    else params.delete("q");
+    if (generatedAt) params.set("report", "1");
+    else params.delete("report");
+    const search = params.toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      window.location.pathname + (search ? `?${search}` : "") + window.location.hash,
+    );
+  }, [disruptionFilter, filtersHydrated, generatedAt, query, stateFilter]);
+
   const filteredRows = useMemo(
     () =>
       report.incidents.filter((row) => {
@@ -175,6 +237,35 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
     [deferredQuery, disruptionFilter, report.incidents, stateFilter],
   );
   const filteredTotals = useMemo(() => summarizeSecurityIncidents(filteredRows), [filteredRows]);
+  const reportStateSummaries = useMemo(() => {
+    const grouped = new Map<string, SecurityIncidentSummary[]>();
+    for (const row of filteredRows) {
+      const rows = grouped.get(row.state);
+      if (rows) rows.push(row);
+      else grouped.set(row.state, [row]);
+    }
+    return Array.from(grouped.entries())
+      .map(([state, rows]) => ({
+        ...summarizeSecurityIncidents(rows),
+        state,
+        stateName: rows[0]?.stateName ?? state,
+      }))
+      .sort((left, right) => left.stateName.localeCompare(right.stateName));
+  }, [filteredRows]);
+  const reportDateSummaries = useMemo(() => {
+    const grouped = new Map<string, SecurityIncidentSummary[]>();
+    for (const row of filteredRows) {
+      const rows = grouped.get(row.eventDate);
+      if (rows) rows.push(row);
+      else grouped.set(row.eventDate, [row]);
+    }
+    return Array.from(grouped.entries())
+      .map(([eventDate, rows]) => ({
+        ...summarizeSecurityIncidents(rows),
+        eventDate,
+      }))
+      .sort((left, right) => left.eventDate.localeCompare(right.eventDate));
+  }, [filteredRows]);
   const allRowsByFips = useMemo(() => {
     const grouped = new Map<string, SecurityIncidentSummary[]>();
     for (const row of report.incidents) {
@@ -230,6 +321,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
       : "No published count";
   const reportRows = filteredRows.slice(0, reportRowLimit);
   const reportRowsTruncated = reportRows.length < filteredRows.length;
+  const selectedStateName =
+    stateOptions.find((state) => state.state === stateFilter)?.stateName
+    || stateFilter
+    || "United States";
 
   function moveMapFocus(fips: string, change: number) {
     const currentIndex = mapFeatures.findIndex((entry) => entry.fips === fips);
@@ -242,7 +337,24 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
 
   function generateReport() {
     setGeneratedAt(new Date().toISOString());
+    setShareStatus("");
     window.requestAnimationFrame(() => reportRef.current?.scrollIntoView({ block: "start" }));
+  }
+
+  async function copyReportLink() {
+    const params = new URLSearchParams();
+    if (stateFilter) params.set("state", stateFilter);
+    if (disruptionFilter) params.set("disruption", disruptionFilter);
+    if (query.trim()) params.set("q", query.trim());
+    params.set("report", "1");
+    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+
+    try {
+      await copyText(url);
+      setShareStatus("Filtered report link copied.");
+    } catch {
+      setShareStatus("Copy failed. Choose Generate report, then copy the address bar URL.");
+    }
   }
 
   function exportCsv() {
@@ -313,6 +425,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           generatedAt: generated,
           incidents: filteredRows,
           nationalContext: report.nationalContext,
+          summaries: {
+            byDate: reportDateSummaries,
+            byState: reportStateSummaries,
+          },
           sources: loadedSources,
           stateCoverage: report.stateCoverage,
           totals: filteredTotals,
@@ -344,7 +460,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <label>
           <span>State</span>
           <select onChange={(event) => setStateFilter(event.target.value)} value={stateFilter}>
-            <option value="">All states and DC</option>
+            <option value="">All loaded states</option>
             {stateOptions.map((state) => (
               <option key={state.state} value={state.state}>
                 {state.stateName} ({state.state})
@@ -367,6 +483,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <Search aria-hidden size={16} />
             <input
               aria-label="Search county, state, FIPS, or source"
+              maxLength={160}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="e.g. Fulton, Minnesota, or 13121"
               type="search"
@@ -378,6 +495,10 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           <button onClick={generateReport} type="button">
             <FileText aria-hidden size={15} />
             Generate report
+          </button>
+          <button onClick={() => void copyReportLink()} type="button">
+            <Share2 aria-hidden size={15} />
+            Copy report link
           </button>
           <button onClick={exportCsv} type="button">
             <Download aria-hidden size={15} />
@@ -395,6 +516,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
             <Printer aria-hidden size={15} />
             Print / save PDF
           </button>
+          {shareStatus && <span className={styles.shareStatus} role="status">{shareStatus}</span>}
         </div>
       </section>
 
@@ -630,7 +752,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
               The FBI confirms threats occurred but does not publish a national count or county roster. The 227 figure
               comes from the Brennan Center&apos;s later tracker of public reports, which says it may not be exhaustive
               and is not an official FBI list. Its 66 threats without a named county stay in totals but are not placed on
-              county polygons; reviewed official county records add detail where available.
+              county polygons; reviewed official state and county records add detail where available.
             </p>
           </div>
         </header>
@@ -676,7 +798,7 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
         <div className={styles.reportSummary}>
           <div>
             <span>Scope</span>
-            <strong>{stateFilter || "United States"}</strong>
+            <strong>{selectedStateName}</strong>
           </div>
           <div>
             <span>Mapped counties</span>
@@ -696,6 +818,74 @@ export function SecurityExplorer({ report }: SecurityExplorerProps) {
           </div>
         </div>
         <p className={styles.reportExplanation}>{securityCountExplanation}</p>
+        <div className={styles.reportBreakdown}>
+          <section aria-labelledby="security-state-summary-heading" className={styles.breakdownPanel}>
+            <header>
+              <h3 id="security-state-summary-heading">Summary by state</h3>
+              <p>Threat totals stay separate from the number of mapped counties.</p>
+            </header>
+            <div className={styles.summaryTableWrap}>
+              <table aria-label="Security incident summary by state" className={styles.summaryTable}>
+                <thead>
+                  <tr>
+                    <th>State</th>
+                    <th>Rows</th>
+                    <th>Mapped counties</th>
+                    <th>Reported threats</th>
+                    <th>Threats with no county named</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportStateSummaries.map((summary) => (
+                    <tr key={summary.state}>
+                      <td><strong>{summary.stateName}</strong><br /><span>{summary.state}</span></td>
+                      <td>{summary.rowCount.toLocaleString()}</td>
+                      <td>{summary.countyCount.toLocaleString()}</td>
+                      <td>{summary.threatCountComplete ? summary.knownThreatCount.toLocaleString() : `At least ${summary.knownThreatCount.toLocaleString()}`}</td>
+                      <td>{summary.statewideUnspecifiedThreatCount.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                  {reportStateSummaries.length === 0 && (
+                    <tr><td colSpan={5}>No matching state records.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section aria-labelledby="security-date-summary-heading" className={styles.breakdownPanel}>
+            <header>
+              <h3 id="security-date-summary-heading">Summary by report date</h3>
+              <p>Dates reflect the tracker row date, not a claim that every message arrived at the same time.</p>
+            </header>
+            <div className={styles.summaryTableWrap}>
+              <table aria-label="Security incident summary by date" className={styles.summaryTable}>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>States</th>
+                    <th>Rows</th>
+                    <th>Reported threats</th>
+                    <th>Threats with no county named</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportDateSummaries.map((summary) => (
+                    <tr key={summary.eventDate}>
+                      <td><strong>{formatDate(summary.eventDate)}</strong></td>
+                      <td>{summary.stateCount.toLocaleString()}</td>
+                      <td>{summary.rowCount.toLocaleString()}</td>
+                      <td>{summary.threatCountComplete ? summary.knownThreatCount.toLocaleString() : `At least ${summary.knownThreatCount.toLocaleString()}`}</td>
+                      <td>{summary.statewideUnspecifiedThreatCount.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                  {reportDateSummaries.length === 0 && (
+                    <tr><td colSpan={5}>No matching dated records.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
         <div className={baseStyles.tableWrap}>
           <table className={styles.reportTable}>
             <thead>

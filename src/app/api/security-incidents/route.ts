@@ -19,7 +19,7 @@ const securityIncidentCacheHeaders = {
 export async function GET(request: Request) {
   const startedAt = Date.now();
   const { searchParams } = new URL(request.url);
-  const state = stateQuery.safeParse(searchParams.get("state") ?? "GA");
+  const state = stateQuery.optional().safeParse(searchParams.get("state") ?? undefined);
   const year = yearQuery.safeParse(searchParams.get("year") ?? "2024");
   const requestedLimit = Number(searchParams.get("limit") ?? 5000);
   const limit = Number.isInteger(requestedLimit)
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     message: "security_incidents_response",
     route: "/api/security-incidents",
     rowCount: totals.rowCount,
-    state: state.data,
+    state: state.data ?? null,
     year: year.data,
   }));
 

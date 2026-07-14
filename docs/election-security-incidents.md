@@ -22,15 +22,22 @@ The normalized registry contains:
 
 Statewide-unspecified counts remain in state and national totals, reports, and exports. They are never assigned to a county polygon. An unknown county count is never converted to zero.
 
+### Follow-up on the 66 statewide-only threats
+
+- Minnesota: the archived November 12 statement from the Minnesota Secretary of State confirms emailed threats to election offices in over half of the state's counties, but it publishes neither the exact 47-threat count nor a county list. The 47 count therefore remains sourced to the later tracker and all 47 remain statewide-unspecified.
+- Georgia: the tracker's 19 statewide-unspecified threats are the arithmetic remainder of a reported statewide total after subtracting the threats assigned to Clayton, DeKalb, Fulton, and Gwinnett Counties. The underlying statewide report does not name counties for that remainder, so none of the 19 are reassigned to county polygons.
+
+These are source limitations, not zeroes and not invitations to infer geography.
+
 ## Source and normalization path
 
-Primary and supplemental context is recorded in data/election-security-incident-source-inventory-2024.json. The later tracker PDF is archived at data/us-2024-election-bomb-threat-tracker-brennan-center.pdf with a reviewed SHA-256.
+Primary and supplemental context is recorded in data/election-security-incident-source-inventory-2024.json. The later tracker PDF is archived at data/us-2024-election-bomb-threat-tracker-brennan-center.pdf with a reviewed SHA-256. The official Minnesota statement is archived at data/mn-sos-2024-bomb-threats-county-election-offices.html. The official Philadelphia court order is archived at data/pa-2024-election-day-security-philadelphia-order.pdf; it names six polling locations and documents an extension at one address, but it does not independently establish the tracker's 10-threat count.
 
 The reproducible pipeline is:
 
 1. scripts/extract-brennan-security-tracker.mjs extracts the PDF text layer, preserves each row's cited public URLs, and joins named counties to public/data/national-counties.geojson.
 2. data/brennan-2024-election-bomb-threat-tracker.json stores the normalized tracker capture and hard-checks 110 rows, nine states, 108 counties, two statewide-unspecified rows, and 227 threats.
-3. scripts/build-security-incident-registry.mjs overlays reviewed official county detail for Pima, DeKalb, Fulton, and Chester Counties and retains the earlier Milwaukee mention.
+3. scripts/build-security-incident-registry.mjs overlays reviewed official detail for Pima, DeKalb, Fulton, Chester, and Philadelphia Counties, adds the Minnesota state statement without inventing county assignments, and retains the earlier Milwaukee mention.
 4. scripts/validate-security-incidents.mjs checks geography grain, totals, source tiers, local artifacts, hashes, caveats, and tracker-to-registry correspondence.
 
 Run:
@@ -39,6 +46,7 @@ Run:
 npm run security-incidents:build
 npm run validate:security-incidents
 npm run test:security-incidents
+node scripts/verify-security-incidents-deployment.mjs --base-url=http://localhost:3000 --attempts=1
 ~~~
 
 Do not hand-edit the generated tracker capture or registry when the extraction or builder should be corrected instead.
@@ -46,7 +54,7 @@ Do not hand-edit the generated tracker capture or registry when the extraction o
 ## Website behavior
 
 - The nationwide Security explorer maps county-attributed rows across the full 3,144-county geometry.
-- Filters, pinned county inspection, CSV, source JSON, map SVG, and print/PDF reports operate in the browser.
+- Filters, pinned county inspection, shareable report URLs, compact state/date summaries, CSV, source JSON, map SVG, and print/PDF reports operate in the browser.
 - Reports include statewide-unspecified rows and their sources even though those rows are not drawn on the county map.
 - State Security map mode shows statewide-only totals in the jurisdiction drawer, including Minnesota where no county was named.
 - The state selector's “States with bomb-threat records” filter includes all nine states.
@@ -56,7 +64,9 @@ The national page is statically generated and county geometry is cached in the b
 
 ## API
 
-GET /api/security-incidents?state=<STATE>&year=2024&limit=<N> returns API schema 4.0.0. Mixed-grain totals include countyRowCount, statewideUnspecifiedRowCount, and statewideUnspecifiedThreatCount.
+GET /api/security-incidents?year=2024&limit=<N> returns all loaded states using API schema 4.1.0. The optional state=<STATE> parameter narrows the same response to one state. Mixed-grain totals include countyRowCount, statewideUnspecifiedRowCount, and statewideUnspecifiedThreatCount.
+
+Preview deployments and successful production deployments run cached smoke requests against the national, Georgia, and Minnesota totals. These checks run only during deployment and do not add per-request application compute.
 
 ## Interpretation limits
 

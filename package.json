@@ -72,6 +72,7 @@
     "security-incidents:extract": "node scripts/extract-brennan-security-tracker.mjs",
     "security-incidents:build": "npm run security-incidents:extract && node scripts/build-security-incident-registry.mjs",
     "validate:security-incidents": "node scripts/validate-security-incidents.mjs",
+    "smoke:security-incidents": "node scripts/verify-security-incidents-deployment.mjs",
     "validate:source-packages": "node scripts/validate-native-source-packages.mjs",
     "validate:turnout-packages": "node scripts/validate-turnout-source-packages.mjs",
     "validate:equipment-production": "node scripts/validate-production-equipment.mjs",
