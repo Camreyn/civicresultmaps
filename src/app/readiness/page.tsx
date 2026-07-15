@@ -15,6 +15,17 @@ import type { AdminSourceStatusSummary, CompletenessSummary } from "@/lib/types"
 const selectedYear = 2024;
 export const dynamic = "force-dynamic";
 
+const dashboardFilterOptions: Array<{ description: string; key: DashboardFilterKey; label: string }> = [
+  { description: "Show every state in the 50-state completion dashboard.", key: "all", label: "All states" },
+  { description: "States missing review rows or subcounty rows needed for review graphs.", key: "needs-review-rows", label: "Needs review rows" },
+  { description: "States missing turnout denominator rows or turnout source packages.", key: "missing-turnout", label: "Missing turnout" },
+  { description: "States missing historical baselines for 2012, 2016, 2020, or 2024 comparison work.", key: "missing-history", label: "Missing history" },
+  { description: "States without validated county/local geometry for map joins.", key: "missing-geometry", label: "Missing geometry" },
+  { description: "States still using legacy, mixed, or seed fallback source lineage.", key: "legacy-mixed", label: "Legacy/mixed" },
+  { description: "States whose official acquisition tier is not classified yet.", key: "unknown-source-tier", label: "Unknown source tier" },
+  { description: "States with review-ready or complete tracked data families.", key: "review-ready", label: "Review ready" },
+];
+
 const readinessGuideCards = [
   {
     title: "Start with the chips",
@@ -40,6 +51,30 @@ type ReadinessTask = {
 };
 
 type ChecklistStatus = "good" | "warn" | "missing";
+
+type DashboardFilterKey =
+  | "all"
+  | "needs-review-rows"
+  | "missing-turnout"
+  | "missing-history"
+  | "missing-geometry"
+  | "legacy-mixed"
+  | "unknown-source-tier"
+  | "review-ready";
+
+type DashboardFilterState = {
+  active: DashboardFilterKey;
+};
+
+type ReadinessDashboardRow = CompletenessSummary & {
+  adminSource?: AdminSourceStatusSummary;
+  sourceAcquisitionPrimary?: SourceAcquisitionTierRow;
+  sourceAcquisitionRows: SourceAcquisitionTierRow[];
+  sourceDiscovery?: NativeSourceDiscoveryQueueEntry;
+  taskSummary: ReturnType<typeof taskSummary>;
+  tasks: ReadinessTask[];
+  turnoutSource?: TurnoutSourceStatus;
+};
 
 type DetailChecklistItem = {
   label: string;
@@ -283,6 +318,42 @@ function taskSummary(tasks: ReadinessTask[]) {
   return { high, low, medium };
 }
 
+function hasTask(state: ReadinessDashboardRow, key: string) {
+  return state.tasks.some((task) => task.key === key);
+}
+
+function matchesDashboardFilter(state: ReadinessDashboardRow, filter: DashboardFilterKey) {
+  if (filter === "all") {
+    return true;
+  }
+
+  if (filter === "needs-review-rows") {
+    return state.reviewRowCount === 0 || hasTask(state, "review") || hasTask(state, "subcounty-review");
+  }
+
+  if (filter === "missing-turnout") {
+    return state.turnoutRowCount === 0 || hasTask(state, "turnout") || state.turnoutSource?.status === "blocked" || state.turnoutSource?.status === "needs_data";
+  }
+
+  if (filter === "missing-history") {
+    return state.historicalRowCount === 0 || hasTask(state, "historical");
+  }
+
+  if (filter === "missing-geometry") {
+    return !state.capabilities.map || state.mapGeometrySourceCount === 0 || hasTask(state, "map");
+  }
+
+  if (filter === "legacy-mixed") {
+    return state.sourceTier === "legacy_bundle" || state.sourceTier === "mixed" || state.sourceTier === "seed_fallback";
+  }
+
+  if (filter === "unknown-source-tier") {
+    return !state.sourceAcquisitionPrimary || state.sourceAcquisitionPrimary.tier === "unknown";
+  }
+
+  return state.status === "review_ready" || state.status === "complete" || state.tasks.length === 0;
+}
+
 function numericMetric(state: CompletenessSummary, key: string) {
   const value = state.latestNativeImportSummary?.[key] ?? state.latestImportSummary?.[key];
   return typeof value === "number" ? value : 0;
@@ -403,7 +474,17 @@ function stateChecklist(
   ];
 }
 
-export default async function ReadinessPage() {
+export default async function ReadinessPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ filter?: string }>;
+}) {
+  const query = await searchParams;
+  const requestedFilter = query?.filter;
+  const activeFilter: DashboardFilterKey = dashboardFilterOptions.some((option) => option.key === requestedFilter)
+    ? (requestedFilter as DashboardFilterKey)
+    : "all";
+  const dashboardFilterState: DashboardFilterState = { active: activeFilter };
   const report = await listCompletenessReport({ year: selectedYear });
   const turnoutSources = listTurnoutSourceStatuses({ year: selectedYear });
   const adminSources = listAdminSourceStatuses({ year: selectedYear });
@@ -432,8 +513,10 @@ export default async function ReadinessPage() {
       const summary = taskSummary(tasks);
       return { ...state, adminSource, sourceAcquisitionPrimary, sourceAcquisitionRows: sourceAcquisitionRowsForState, sourceDiscovery, taskSummary: summary, tasks, turnoutSource };
     })
-    .sort((a, b) => b.taskSummary.high - a.taskSummary.high || b.taskSummary.medium - a.taskSummary.medium || a.name.localeCompare(b.name));
+    .sort((a, b) => b.taskSummary.high - a.taskSummary.high || b.taskSummary.medium - a.taskSummary.medium || a.name.localeCompare(b.name)) as ReadinessDashboardRow[];
 
+  const visibleRows = rows.filter((state) => matchesDashboardFilter(state, dashboardFilterState.active));
+  const activeFilterLabel = dashboardFilterOptions.find((option) => option.key === dashboardFilterState.active)?.label ?? "All states";
   const statesComplete = rows.filter((state) => state.tasks.length === 0).length;
   const statesMissingHistorical = rows.filter((state) => state.tasks.some((task) => task.key === "historical")).length;
   const statesMissingReview = rows.filter((state) => state.tasks.some((task) => task.key === "review")).length;
@@ -838,7 +921,7 @@ export default async function ReadinessPage() {
         <div className="readiness-panel-head">
           <div>
             <h2>State Work Queue</h2>
-            <span>Sorted by highest-impact missing data first</span>
+            <span>Sorted by highest-impact missing data first. Showing {visibleRows.length} of {rows.length}: {activeFilterLabel}</span>
           </div>
           <div className="readiness-legend" aria-label="Priority legend">
             <span className="task-pill task-high">High</span>
@@ -847,6 +930,20 @@ export default async function ReadinessPage() {
           </div>
         </div>
 
+        <nav className="readiness-filter-bar" aria-label="Completion dashboard filters">
+          {dashboardFilterOptions.map((option) => (
+            <a
+              aria-current={dashboardFilterState.active === option.key ? "page" : undefined}
+              className={`readiness-filter-link ${dashboardFilterState.active === option.key ? "active" : ""}`}
+              href={option.key === "all" ? "/readiness" : `/readiness?filter=${option.key}`}
+              key={option.key}
+              title={option.description}
+            >
+              {option.label}
+            </a>
+          ))}
+        </nav>
+
         <div className="readiness-table-wrap">
           <table className="readiness-table">
             <thead>
@@ -854,15 +951,15 @@ export default async function ReadinessPage() {
                 <th>State</th>
                 <th>Map Package</th>
                 <th>Lineage</th>
-                <th>Parser Counts</th>
-                <th>Loaded Data</th>
+                <th>Results / Review Rows</th>
+                <th>Comparison / Turnout / History / Geometry / Flags / Sources / Caveats</th>
                 <th>Missing Work</th>
                 <th>Latest Import</th>
                 <th>Open</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((state) => (
+              {visibleRows.map((state) => (
                 <tr key={state.state}>
                   <td>
                     <strong>{state.name}</strong>
@@ -886,10 +983,10 @@ export default async function ReadinessPage() {
                         Results {numericMetric(state, "nativeResultRows") || "-"}
                       </span>
                       <span className={`coverage-chip ${numericMetric(state, "nativeReviewRows") ? "coverage-good" : "coverage-missing"}`}>
-                        Review {numericMetric(state, "nativeReviewRows") || "-"}
+                        Review rows {numericMetric(state, "nativeReviewRows") || "-"}
                       </span>
                       <span className={`coverage-chip ${numericMetric(state, "nativeComparisonRows") ? "coverage-good" : "coverage-warn"}`}>
-                        Compare {numericMetric(state, "nativeComparisonRows") || "-"}
+                        Comparison contest {numericMetric(state, "nativeComparisonRows") || "-"}
                       </span>
                       <span className={`coverage-chip ${numericMetric(state, "nativeTurnoutRows") ? "coverage-good" : "coverage-warn"}`}>
                         Turnout rows {numericMetric(state, "nativeTurnoutRows") || "-"}
@@ -915,11 +1012,15 @@ export default async function ReadinessPage() {
                     </div>
                   </td>
                   <td className="readiness-counts">
-                    <span>Jurisdictions: {state.resultJurisdictions.toLocaleString()}</span>
-                    <span>Review rows: {state.reviewRowCount.toLocaleString()}</span>
-                    <span>Turnout rows: {state.turnoutRowCount.toLocaleString()}</span>
-                    <span>Historical rows: {state.historicalRowCount.toLocaleString()}</span>
-                    <span>Equipment rows: {state.equipmentRowCount.toLocaleString()}</span>
+                    <span>Results: {state.resultRows.toLocaleString()} rows / {state.resultJurisdictions.toLocaleString()} jurisdictions</span>
+                    <span>Comparison contest: {formatNumber(numericMetric(state, "nativeComparisonRows"))}</span>
+                    <span>Turnout: {state.turnoutRowCount.toLocaleString()} rows</span>
+                    <span>Historical baselines: {state.historicalRowCount.toLocaleString()} rows</span>
+                    <span>Geometry: {state.mapGeometrySourceCount.toLocaleString()} source records</span>
+                    <span>Equipment/Admin: {state.equipmentRowCount.toLocaleString()} equipment rows</span>
+                    <span>Advisory flags: {state.indicatorCount.toLocaleString()} total / {state.countyIndicatorCount.toLocaleString()} county</span>
+                    <span>Source URLs: {Math.max(state.sourceCount - state.sourcesMissingUrls, 0).toLocaleString()} linked / {state.sourceCount.toLocaleString()} records</span>
+                    <span>Caveats: {state.gaps.length ? state.gaps.join("; ") : state.tasks.length ? state.tasks.map((task) => task.label).join("; ") : "No tracked caveats"}</span>
                   </td>
                   <td>
                     {state.tasks.length ? (
@@ -929,6 +1030,9 @@ export default async function ReadinessPage() {
                             {task.label}
                           </span>
                         ))}
+                        <a className="readiness-source-action" href={`/?state=${state.state}&tab=planner`}>
+                          What source would improve this?
+                        </a>
                       </div>
                     ) : (
                       <span className="available">No tracked gaps</span>
@@ -962,7 +1066,7 @@ export default async function ReadinessPage() {
         </div>
 
         <div className="readiness-detail-list">
-          {rows.map((state) => {
+          {visibleRows.map((state) => {
             const sourcePackage = getNativeSourcePackage(state.state);
             const checklist = stateChecklist(state, sourcePackage, state.turnoutSource);
             return (

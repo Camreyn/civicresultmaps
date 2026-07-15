@@ -32,6 +32,12 @@ import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
 import { rowsToCsv } from "@/lib/csv";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
+import {
+  workspaceSectionState,
+  type WorkspaceLayoutManifestV1,
+  type WorkspaceSectionId,
+  type WorkspaceTabId,
+} from "@/lib/workspace-layout";
 import type {
   AnalysisIndicator,
   AdminSourceStatusSummary,
@@ -71,6 +77,7 @@ type WorkspaceTabsProps = {
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
   indicatorsEvaluated: boolean;
+  layoutManifest: WorkspaceLayoutManifestV1;
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   statewideResultRows: ResultRow[];
@@ -83,27 +90,20 @@ type WorkspaceTabsProps = {
   voteMethodRows: VoteMethodRowSummary[];
 };
 
-type TabKey =
-  | "map"
-  | "review"
-  | "history"
-  | "electronic"
-  | "planner"
-  | "data"
-  | "methodology"
-  | "exports"
-  | "imports"
-  | "support"
-  | "contact";
+type TabKey = WorkspaceTabId;
 type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
 type ReviewView = "overview" | "tools" | "screening" | "indicators" | "methodology";
 type ChartQualityStatus = "ready" | "acknowledgement_required" | "blocked";
 type QualityBadgeStatus = "ready" | "partial" | "proxy" | "missing" | "blocked";
+type GraphReadinessStatus = "ready" | "partial" | "proxy" | "blocked";
 type ChartQualityDiagnostic = {
   acknowledgementKey: string;
+  actionHref?: string;
+  actionLabel?: string;
   checked: string[];
   issues: string[];
+  readiness: GraphReadinessStatus;
   rowCount: number;
   status: ChartQualityStatus;
   summary: string;
@@ -127,13 +127,61 @@ type EvidenceReviewDimension = {
 type FlagExplanation = {
   auditContext: string;
   denominatorContext: string;
+  formulaThreshold: string;
   jurisdiction: string;
   label: string;
   missingEvidence: string[];
+  nextReviewAction: string;
+  normalExplanations: string;
   priority: string;
   scope: string;
   sourceContext: string;
   summary: string;
+  whyItAppeared: string;
+};
+type GuidedWorkflowCard = {
+  body: string;
+  key: string;
+  label: string;
+};
+type SourceDrawerPayload = {
+  authority: string;
+  caveats: string[];
+  category: string;
+  confidence: string;
+  endpoint: string;
+  localArtifact: string;
+  parser: string;
+  reportIssueHref: string;
+  sourceId: string;
+  sourceUrl: string;
+  status: string;
+  title: string;
+};
+type ExportPacketManifest = {
+  caveats: DataNoteSection[];
+  generatedAt: string;
+  indicatorSummary: {
+    flaggedAreas: number;
+    flaggedCountyCount: number;
+    indicatorCount: number;
+    indicatorTypes: string[];
+  };
+  issueLinks: {
+    dataIssue: string;
+    recordsResponse: string;
+    reviewIssue: string;
+    sourceRecordsResponse: string;
+  };
+  missingDataChecklist: DataNoteSection[];
+  readinessSummary: {
+    blockerCount: number;
+    label: string;
+    scorePct: number;
+  };
+  state: string;
+  stateName: string;
+  year: number;
 };
 type StateDataNoteOverride = Partial<Pick<DataNoteSection, "detail" | "evidence" | "status" | "why">> & {
   key: DataNoteSection["key"];
@@ -208,6 +256,14 @@ const reviewViewOptions: Array<{ key: ReviewView; label: string; summary: string
   { key: "methodology", label: "Methodology", summary: "How each advisory flag is calculated" },
 ];
 
+const reviewViewBySectionId = {
+  overview: "overview",
+  "evidence-tools": "tools",
+  screening: "screening",
+  indicators: "indicators",
+  methodology: "methodology",
+} as const;
+
 const flagMethodologyGuides: FlagMethodologyGuide[] = [
   {
     alternativeExplanations:
@@ -254,6 +310,34 @@ const reviewerChecklist: ReviewerChecklistItem[] = [
   { item: "Consider normal explanations such as geography, demographics, vote method, contest differences, and reporting-unit grouping." },
   { item: "Compare against historical baselines, nearby jurisdictions, or official canvass notes when those records are available." },
   { item: "Save the exact state, jurisdiction, chart/table name, source document, and date reviewed." },
+];
+
+const guidedWorkflowCards: GuidedWorkflowCard[] = [
+  {
+    body: "Start in Data Notes and Review Center, check readiness badges, inspect sources, then compare any advisory flags against normal explanations and missing evidence.",
+    key: "review-state-workflow",
+    label: "Review a state",
+  },
+  {
+    body: "Use Electronic Integrity or Source Records request drafts, verify the custodian, then send the request outside the app. Drafts are source-availability requests, not allegations.",
+    key: "public-records-request-workflow",
+    label: "Submit a public-records request",
+  },
+  {
+    body: "When an office replies, submit the response, file list, fee note, denial, redirect, or portal link through the GitHub response form for maintainer review.",
+    key: "government-response-workflow",
+    label: "Submit a government response",
+  },
+  {
+    body: "Use Report Data Issue or the Source Drawer issue link when a URL, artifact, parser, status, caveat, sourceId, or displayed row needs correction.",
+    key: "source-correction-workflow",
+    label: "Report a data/source issue",
+  },
+  {
+    body: "Use the Review Packet ZIP in Exports to share normalized CSV/JSON, sources, caveats, readiness, indicator summaries, missing-data checklists, and issue links.",
+    key: "review-packet-workflow",
+    label: "Export a review packet",
+  },
 ];
 
 const glossaryEntries: GlossaryEntry[] = [
@@ -723,6 +807,14 @@ const tourFeatureRegistry: TourFeature[] = [
         target: "[data-tour='reviewer-checklist']",
         title: "Use the reviewer checklist",
       },
+      {
+        body: "Guided Workflows keeps the main reviewer paths in the tour: review a state, request records, submit government responses, report source corrections, and export a review packet.",
+        fallbackTarget: "[data-tour='methodology']",
+        id: "guided-workflows",
+        tab: "methodology",
+        target: "[data-tour='guided-workflows']",
+        title: "Follow guided workflows",
+      },
     ],
   },
   {
@@ -735,6 +827,14 @@ const tourFeatureRegistry: TourFeature[] = [
         tab: "exports",
         target: "[data-tour='exports']",
         title: "Export data or use the API",
+      },
+      {
+        body: "Use Export a review packet when a reviewer needs the shareable ZIP with CSV/JSON data, source manifest, caveats, readiness summary, indicator summary, missing-data checklist, and issue links.",
+        fallbackTarget: "[data-tour='exports']",
+        id: "export-review-packet",
+        tab: "exports",
+        target: "[data-tour='export-review-packet']",
+        title: "Export a review packet",
       },
     ],
   },
@@ -1153,6 +1253,33 @@ function buildEvidenceReadinessDimensions(input: {
   return { blockerCount, dimensions, label: readinessGateLabel(totalScore, blockerCount), score: totalScore };
 }
 
+function flagFormulaThreshold(type: string) {
+  if (type === "vote_share_pattern") {
+    return "Pearson correlation between local candidate vote count and vote share; current threshold is absolute r >= 0.35 with at least 8 local rows.";
+  }
+
+  if (type.includes("down_ballot_outlier")) {
+    return "Local rows are counted when same-party presidential-versus-comparison difference is at least 15 percent and the candidate has at least 100 votes.";
+  }
+
+  if (type.includes("down_ballot")) {
+    return "Average same-party presidential-versus-comparison-contest gap across imported local rows; current threshold is 6 percent.";
+  }
+
+  return "See the Review Guide for the current advisory calculation and threshold for this flag type.";
+}
+
+function flagNormalExplanations(type: string) {
+  if (type.includes("down_ballot")) {
+    return "Split-ticket voting, comparison-contest strength, incumbency, undervotes, uncontested races, district boundaries, and missing same-grain rows can create ordinary gaps.";
+  }
+
+  if (type === "vote_share_pattern") {
+    return "Population density, campus or military populations, urban/rural geography, vote method mix, reporting-unit size, and source grouping can produce vote-share structure.";
+  }
+
+  return "Check geography, demographics, source row definitions, vote method, turnout denominator timing, recount or canvass notes, and missing source families before escalating.";
+}
 function buildFlagExplanation(input: {
   dataNotes: DataNoteSection[];
   indicator: AnalysisIndicator;
@@ -1181,9 +1308,12 @@ function buildFlagExplanation(input: {
   return {
     auditContext: auditContextSummary(input.indicator),
     denominatorContext: denominatorContextSummary(input.indicator),
+    formulaThreshold: flagFormulaThreshold(input.indicator.type),
     jurisdiction: input.indicator.jurisdictionName,
     label: input.indicator.label,
     missingEvidence,
+    nextReviewAction: missingEvidence[0] ?? "Open the linked source record, confirm the row family, and compare against official context before sharing this advisory prompt.",
+    normalExplanations: flagNormalExplanations(input.indicator.type),
     priority: severityBucket(input.indicator.severity),
     scope: indicatorScopeLabel(input.indicator),
     sourceContext: relatedSources.length
@@ -1192,6 +1322,7 @@ function buildFlagExplanation(input: {
         ? `Source IDs ${relatedSourceIds.join(" - ")} are not present in the selected state's source list.`
         : "No related review-row source ID is available for this indicator.",
     summary: `${input.indicator.summary} ${indicatorExplanation(input.indicator.type)}`,
+    whyItAppeared: input.indicator.detail || input.indicator.summary,
   };
 }
 function severityBucket(severity: number) {
@@ -1303,20 +1434,36 @@ function percentDelta(storedShare: number | null, votes: number | null, totalVot
 
 function chartStatusLabel(status: ChartQualityStatus) {
   if (status === "ready") {
-    return "Automated check passed";
+    return "Ready";
   }
 
   if (status === "blocked") {
-    return "Chart unavailable";
+    return "Blocked";
   }
 
-  return "Acknowledgement required";
+  return "Partial";
+}
+
+
+function graphReadinessFromChartStatus(status: ChartQualityStatus): GraphReadinessStatus {
+  if (status === "ready") {
+    return "ready";
+  }
+
+  if (status === "blocked") {
+    return "blocked";
+  }
+
+  return "partial";
 }
 
 function staticChartDiagnostic(input: {
   acknowledgementKey: string;
+  actionHref?: string;
+  actionLabel?: string;
   checked?: string[];
   issues: string[];
+  readiness?: GraphReadinessStatus;
   rowCount: number;
   status?: ChartQualityStatus;
   summary: string;
@@ -1325,8 +1472,11 @@ function staticChartDiagnostic(input: {
   const status = input.status ?? (input.rowCount <= 0 ? "blocked" : input.issues.length ? "acknowledgement_required" : "ready");
   return {
     acknowledgementKey: input.acknowledgementKey,
+    actionHref: input.actionHref,
+    actionLabel: input.actionLabel,
     checked: input.checked ?? [],
     issues: input.issues,
+    readiness: input.readiness ?? graphReadinessFromChartStatus(status),
     rowCount: input.rowCount,
     status,
     summary: input.summary,
@@ -1353,7 +1503,7 @@ function qualityBadgeLabel(status: QualityBadgeStatus) {
   return "Missing";
 }
 
-function QualityBadge({ detail, status }: { detail: string; status: QualityBadgeStatus }) {
+function QualityBadge({ detail, status }: { detail: string; status: QualityBadgeStatus | GraphReadinessStatus }) {
   return (
     <span className={`quality-badge ${status}`} title={detail}>
       {qualityBadgeLabel(status)}
@@ -2160,8 +2310,11 @@ function buildVoteShareScatterDiagnostic(input: {
 
   return {
     acknowledgementKey: `scatter:${input.stateCode}:${input.jurisdictionName}:${input.rows.length}:${input.scatterRows.length}`,
+    actionHref: `/?state=${input.stateCode}&tab=data`,
+    actionLabel: "What source would improve this?",
     checked,
     issues,
+    readiness: graphReadinessFromChartStatus(status),
     rowCount: input.scatterRows.length,
     status,
     summary:
@@ -2238,8 +2391,11 @@ function buildDropoffDiagnostic(input: {
 
   return {
     acknowledgementKey: `dropoff:${input.stateCode}:${input.jurisdictionName}:${drawableRows.length}`,
+    actionHref: `/?state=${input.stateCode}&tab=planner`,
+    actionLabel: "What source would improve this?",
     checked,
     issues,
+    readiness: graphReadinessFromChartStatus(status),
     rowCount: drawableRows.length,
     status,
     summary:
@@ -2251,18 +2407,31 @@ function buildDropoffDiagnostic(input: {
 }
 
 function ChartQualityNotice({ diagnostic }: { diagnostic: ChartQualityDiagnostic }) {
+  const blockingReason = diagnostic.issues[0] ?? diagnostic.summary;
+
   return (
     <div className={`chart-quality-notice ${diagnostic.status}`} role="status">
-      <div>
-        <span>{chartStatusLabel(diagnostic.status)}</span>
-        <strong>{diagnostic.summary}</strong>
+      <div className="chart-quality-head">
+        <div>
+          <span>{chartStatusLabel(diagnostic.status)}</span>
+          <strong>{diagnostic.summary}</strong>
+        </div>
+        <QualityBadge detail={blockingReason} status={diagnostic.readiness} />
       </div>
       {diagnostic.issues.length > 0 && (
-        <ul>
-          {diagnostic.issues.map((issue) => (
-            <li key={issue}>{issue}</li>
-          ))}
-        </ul>
+        <div className="chart-blocking-reason">
+          <strong>Blocking reason</strong>
+          <ul>
+            {diagnostic.issues.map((issue) => (
+              <li key={issue}>{issue}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {diagnostic.actionHref && (
+        <a className="secondary-link" href={diagnostic.actionHref}>
+          {diagnostic.actionLabel ?? "What source would improve this?"}
+        </a>
       )}
       {diagnostic.checked.length > 0 && (
         <details>
@@ -2312,20 +2481,58 @@ function ChartGate({
   );
 }
 
+function dataGapBannerLabel(note: DataNoteSection) {
+  if (note.key === "results") {
+    return "statewide-only or missing certified result rows";
+  }
+
+  if (note.key === "map") {
+    return "partial-geometry or missing geometry";
+  }
+
+  if (note.key === "review") {
+    return "missing review rows or missing flags";
+  }
+
+  if (note.key === "sources") {
+    return "blocked by source gaps";
+  }
+
+  if (note.key === "history") {
+    return "legacy-only or missing historical baselines";
+  }
+
+  return `${note.label.toLowerCase()} source/status gap`;
+}
+
+function dataGapActionTab(note: DataNoteSection) {
+  if (note.key === "sources" || note.key === "map" || note.key === "results") {
+    return "data";
+  }
+
+  if (note.key === "review" || note.key === "history") {
+    return "review";
+  }
+
+  return "planner";
+}
 function DataNotesPanel({
   dataIssueUrl,
   isCollapsed,
   notes,
   onToggle,
+  stateCode,
   stateName,
 }: {
   dataIssueUrl: string;
   isCollapsed: boolean;
   notes: DataNoteSection[];
   onToggle: () => void;
+  stateCode: string;
   stateName: string;
 }) {
-  const limitedCount = notes.filter((note) => note.status !== "ready").length;
+  const dataGapBanners = notes.filter((note) => note.status !== "ready");
+  const limitedCount = dataGapBanners.length;
 
   return (
     <aside
@@ -2363,6 +2570,19 @@ function DataNotesPanel({
             </a>
           </div>
         </div>
+        {dataGapBanners.length > 0 && (
+          <div className="data-gap-banner-list" aria-label="Map and data gap status banners">
+            {dataGapBanners.map((note) => (
+              <article className={`data-gap-banner ${note.status}`} key={note.key}>
+                <strong>{dataGapBannerLabel(note)}</strong>
+                <span>{note.why}</span>
+                <a href={`/?state=${stateCode}&tab=${dataGapActionTab(note)}`}>
+                  View source/status area
+                </a>
+              </article>
+            ))}
+          </div>
+        )}
         <div className="data-note-grid">
           {notes.map((note) => (
             <article className={`data-note-card ${note.status}`} key={note.key}>
@@ -2382,6 +2602,19 @@ function DataNotesPanel({
       </section>
     </aside>
   );
+}
+
+function layoutSectionProps(
+  manifest: WorkspaceLayoutManifestV1,
+  tabId: WorkspaceTabId,
+  sectionId: WorkspaceSectionId,
+) {
+  const state = workspaceSectionState(manifest, tabId, sectionId);
+  return {
+    "data-layout-section": `${tabId}:${sectionId}`,
+    hidden: !state.visible,
+    style: { order: state.order },
+  };
 }
 
 function dateLabel(value: string | null) {
@@ -2412,6 +2645,7 @@ export function WorkspaceTabs({
   importRuns,
   indicators,
   indicatorsEvaluated,
+  layoutManifest,
   reviewRows,
   results,
   statewideResultRows,
@@ -2423,7 +2657,23 @@ export function WorkspaceTabs({
   turnoutRows,
   voteMethodRows,
 }: WorkspaceTabsProps) {
-  const requestedTab = initialTab && tabs.some((item) => item.key === initialTab)
+  const layoutTabs = useMemo(
+    () => layoutManifest.tabs
+      .filter((tab) => tab.visible)
+      .map((tab) => tabs.find((item) => item.key === tab.id))
+      .filter((tab): tab is (typeof tabs)[number] => Boolean(tab)),
+    [layoutManifest],
+  );
+  const layoutReviewViewOptions = useMemo(() => {
+    const reviewSections = layoutManifest.tabs.find((tab) => tab.id === "review")?.sections ?? [];
+    return reviewSections
+      .filter((section) => section.visible && section.id in reviewViewBySectionId)
+      .map((section) => reviewViewOptions.find(
+        (option) => option.key === reviewViewBySectionId[section.id as keyof typeof reviewViewBySectionId],
+      ))
+      .filter((option): option is (typeof reviewViewOptions)[number] => Boolean(option));
+  }, [layoutManifest]);
+  const requestedTab = initialTab && layoutTabs.some((item) => item.key === initialTab)
     ? initialTab as TabKey
     : "map";
   const [activeTab, setActiveTab] = useState<TabKey>(requestedTab);
@@ -2447,17 +2697,24 @@ export function WorkspaceTabs({
   const [isDataNotesCollapsed, setIsDataNotesCollapsed] = useState(true);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
-  const [reviewView, setReviewView] = useState<ReviewView>("overview");
+  const [reviewView, setReviewView] = useState<ReviewView>(() => layoutReviewViewOptions[0]?.key ?? "overview");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab") as TabKey | null;
-    if (tab && tabs.some((item) => item.key === tab)) {
+    if (tab && layoutTabs.some((item) => item.key === tab)) {
       setActiveTab(tab);
     }
-  }, []);
+  }, [layoutTabs]);
 
-  const selectTab = (tab: TabKey) => {
+  useEffect(() => {
+    if (!layoutReviewViewOptions.some((option) => option.key === reviewView) && layoutReviewViewOptions[0]) {
+      setReviewView(layoutReviewViewOptions[0].key);
+    }
+  }, [layoutReviewViewOptions, reviewView]);
+
+  const selectTab = (requested: TabKey) => {
+    const tab = layoutTabs.some((item) => item.key === requested) ? requested : "map";
     setActiveTab(tab);
     const url = new URL(window.location.href);
     if (tab !== "map") {
@@ -2475,7 +2732,7 @@ export function WorkspaceTabs({
   };
 
   const syncReviewTourStep = (step: TourStep) => {
-    if (step.reviewView && reviewViewOptions.some((option) => option.key === step.reviewView)) {
+    if (step.reviewView && layoutReviewViewOptions.some((option) => option.key === step.reviewView)) {
       setReviewView(step.reviewView as ReviewView);
     }
   };
@@ -2971,6 +3228,8 @@ export function WorkspaceTabs({
   ].filter(Boolean) as string[];
   const flagMixDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `flag-mix:${selectedStateCode}:${groupedIndicatorCounts.length}:${reviewRows.length}:${results.length}` ,
+    actionHref: `/?state=${selectedStateCode}&tab=planner`,
+    actionLabel: "What source would improve this?",
     checked: reviewCompletenessIssues.length ? [] : ["Flag mix uses the currently loaded advisory indicators for this state."],
     issues: reviewCompletenessIssues,
     rowCount: groupedIndicatorCounts.length,
@@ -2983,6 +3242,8 @@ export function WorkspaceTabs({
   });
   const historicalContextDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `history-context:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
+    actionHref: `/?state=${selectedStateCode}&tab=data`,
+    actionLabel: "What source would improve this?",
     checked: [`${filteredHistoricalRows.length.toLocaleString()} historical baseline rows are loaded for the enabled years.`],
     issues: [
       "Historical baseline charts are context views, not a complete audit or ballot-accounting record.",
@@ -2995,12 +3256,15 @@ export function WorkspaceTabs({
   });
   const klimekProxyDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `klimek-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
+    actionHref: `/?state=${selectedStateCode}&tab=data`,
+    actionLabel: "What source would improve this?",
     checked: [`${historicalRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
     issues: [
       "This is a proxy graph, not a complete Klimek fingerprint.",
       "It uses county vote volume because true turnout percentages are not imported for these historical rows.",
       "Do not interpret it as a complete turnout-fingerprint test.",
     ],
+    readiness: "proxy",
     rowCount: historicalRowsByYear.reduce((sum, yearGroup) => sum + yearGroup.rows.length, 0),
     status: historicalRowsByYear.length ? "acknowledgement_required" : "blocked",
     summary: "This Klimek-style view uses proxy inputs. Read the limits before viewing the fingerprint panels.",
@@ -3008,11 +3272,14 @@ export function WorkspaceTabs({
   });
   const shpilkinProxyDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `shpilkin-proxy:${selectedStateCode}:${filteredHistoricalRows.length}:${enabledHistoricalYears.join(" - ")}` ,
+    actionHref: `/?state=${selectedStateCode}&tab=data`,
+    actionLabel: "What source would improve this?",
     checked: [`${shpilkinRowsByYear.length.toLocaleString()} enabled year panels can be drawn.`],
     issues: [
       "This groups county vote volume by vote-share buckets, not precinct-level or ballot-level distributions.",
       "It does not replace turnout-based review or official source reconciliation when those data are missing.",
     ],
+    readiness: "proxy",
     rowCount: shpilkinRowsByYear.reduce((sum, yearGroup) => sum + yearGroup.buckets.length, 0),
     status: shpilkinRowsByYear.length ? "acknowledgement_required" : "blocked",
     summary: "This Shpilkin-style diagnostic uses limited county-level inputs. Read the limits before viewing the bucket charts.",
@@ -3020,6 +3287,8 @@ export function WorkspaceTabs({
   });
   const voteMethodDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `vote-method:${selectedStateCode}:${voteMethodRows.length}:${voteMethodUnavailableRows}` ,
+    actionHref: `/?state=${selectedStateCode}&tab=data`,
+    actionLabel: "What source would improve this?",
     checked: voteMethodRows.length ? [`${voteMethodRows.length.toLocaleString()} participation-method rows are loaded.`] : [],
     issues: [
       "EAC participation-method rows describe how voters cast ballots; they do not split candidate votes by method.",
@@ -3032,6 +3301,8 @@ export function WorkspaceTabs({
   });
   const equipmentContextDiagnostic = staticChartDiagnostic({
     acknowledgementKey: `equipment-context:${selectedStateCode}:${equipmentRows.length}:${equipmentDiagnostics.length}` ,
+    actionHref: `/?state=${selectedStateCode}&tab=data`,
+    actionLabel: "What source would improve this?",
     checked: equipmentRows.length ? [`${equipmentRows.length.toLocaleString()} equipment-context rows are loaded.`] : [],
     issues: [
       "Equipment charts are administration context only; they do not prove causation for vote patterns.",
@@ -3403,6 +3674,64 @@ export function WorkspaceTabs({
     year: 2024,
   };
 
+  const reviewPacketManifest: ExportPacketManifest = {
+    caveats: dataNoteSections,
+    generatedAt: new Date().toISOString(),
+    indicatorSummary: {
+      flaggedAreas: flaggedAreaCount,
+      flaggedCountyCount,
+      indicatorCount: indicators.length,
+      indicatorTypes,
+    },
+    issueLinks: {
+      dataIssue: dataIssueUrl,
+      recordsResponse: recordsResponseUrl,
+      reviewIssue: reviewIssueUrl,
+      sourceRecordsResponse: sourceRecordsResponseUrl,
+    },
+    missingDataChecklist: dataNoteSections.filter((note) => note.status !== "ready"),
+    readinessSummary: {
+      blockerCount: evidenceReadiness.blockerCount,
+      label: evidenceReadiness.label,
+      scorePct: evidenceReadinessScorePct,
+    },
+    state: selectedStateCode,
+    stateName,
+    year: 2024,
+  };
+
+  const reviewPacketMarkdown = [
+    `# ${stateName} (${selectedStateCode}) 2024 Review Packet`,
+    "",
+    "Advisory flags and screening charts are review prompts only. This package does not assert fraud, tampering, misconduct, intent, or causation.",
+    "",
+    "## Readiness Summary",
+    `- Status: ${reviewPacketManifest.readinessSummary.label}`,
+    `- Score: ${reviewPacketManifest.readinessSummary.scorePct}%`,
+    `- Blockers: ${reviewPacketManifest.readinessSummary.blockerCount}`,
+    "",
+    "## Indicator Summary",
+    `- Advisory indicators: ${indicators.length}`,
+    `- Flagged counties: ${flaggedCountyCount}`,
+    `- Flagged areas: ${flaggedAreaCount}`,
+    `- Indicator types: ${indicatorTypes.join(", ") || "none"}`,
+    "",
+    "## Missing Data Checklist",
+    ...(reviewPacketManifest.missingDataChecklist.length
+      ? reviewPacketManifest.missingDataChecklist.map((note) => `- ${note.label}: ${qualityBadgeLabel(note.status)} - ${note.why}`)
+      : ["- No tracked readiness gaps in the current dashboard payload."]),
+    "",
+    "## Caveats",
+    ...dataNoteSections.map((note) => `- ${note.label}: ${note.detail} ${note.why}`),
+    "",
+    "## Issue Links",
+    `- Data issue: ${dataIssueUrl}`,
+    `- Review issue: ${reviewIssueUrl}`,
+    `- Records response: ${recordsResponseUrl}`,
+    `- Source records response: ${sourceRecordsResponseUrl}`,
+    "",
+  ].join("\n");
+
   const exportResults = () =>
     downloadCsv(
       `${exportSlug}-results.csv`,
@@ -3466,7 +3795,8 @@ export function WorkspaceTabs({
     const readme = [
       `Civic Result Maps review package for ${stateName} (${selectedStateCode}), 2024 President`,
       "",
-      "Use these normalized files with the source manifest. Advisory flags and screening charts are triage prompts, not proof by themselves.",
+      "Use these normalized files with the source manifest, caveats, readiness summary, indicator summary, missing-data checklist, and issue links.",
+      "Advisory flags and screening charts are triage prompts, not proof by themselves.",
       "",
       "Included files:",
       "- results.csv",
@@ -3480,13 +3810,18 @@ export function WorkspaceTabs({
       "- coverage.csv",
       "- source-manifest.json",
       "- import-summary.json",
+      "- review-packet-manifest.json",
+      "- caveats.json",
+      "- readiness-summary.json",
+      "- indicator-summary.json",
+      "- missing-data-checklist.json",
+      "- issue-links.json",
+      "- SUMMARY.md",
       "",
-      "Data notes:",
-      ...dataNoteSections.map((note) => `- ${note.label}: ${qualityBadgeLabel(note.status)}. ${note.why}`),
-      "",
-    ].join(" - ");
+    ].join("\n");
 
     zip.file("README.txt", readme);
+    zip.file("SUMMARY.md", reviewPacketMarkdown);
     zip.file("results.csv", csvContent(resultExportHeaders, resultExportRows));
     zip.file("review-indicators.csv", csvContent(indicatorExportHeaders, indicatorExportRows));
     zip.file("review-rows.csv", csvContent(reviewRowExportHeaders, reviewRowExportRows));
@@ -3498,6 +3833,12 @@ export function WorkspaceTabs({
     zip.file("coverage.csv", csvContent(coverageExportHeaders, coverageExportRows));
     zip.file("source-manifest.json", jsonContent(sourceManifest));
     zip.file("import-summary.json", jsonContent(importSummary));
+    zip.file("review-packet-manifest.json", jsonContent(reviewPacketManifest));
+    zip.file("caveats.json", jsonContent(reviewPacketManifest.caveats));
+    zip.file("readiness-summary.json", jsonContent(reviewPacketManifest.readinessSummary));
+    zip.file("indicator-summary.json", jsonContent(reviewPacketManifest.indicatorSummary));
+    zip.file("missing-data-checklist.json", jsonContent(reviewPacketManifest.missingDataChecklist));
+    zip.file("issue-links.json", jsonContent(reviewPacketManifest.issueLinks));
     const blob = await zip.generateAsync({ type: "blob" });
     downloadBlob(`${exportSlug}-review-package.zip`, [blob], "application/zip");
   };
@@ -3524,7 +3865,7 @@ export function WorkspaceTabs({
     <section className="workspace-tabs" data-tour="workspace" aria-label={`${stateName} workspace`}>
       <nav className="tab-bar" data-tour="tab-bar" aria-label="Workspace sections">
         <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
-        {tabs.map((tab) => {
+        {layoutTabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <button
@@ -3551,6 +3892,7 @@ export function WorkspaceTabs({
           {activeTab === "map" && (
         <div className="tab-panel-content">
           <div className="content-grid">
+            <div {...layoutSectionProps(layoutManifest, "map", "results-map")}>
             <ResultsExplorer
               countyLabel={countyLabel}
               electionYear={electionYear}
@@ -3566,8 +3908,18 @@ export function WorkspaceTabs({
               sources={sources}
               voteMethodRows={voteMethodRows}
             />
-            <div className="detail-stack">
-              <section className="panel" aria-label="Provenance">
+            </div>
+            <div
+              className="detail-stack"
+              style={{
+                order: Math.min(
+                  workspaceSectionState(layoutManifest, "map", "source-provenance").order,
+                  workspaceSectionState(layoutManifest, "map", "coverage-context").order,
+                  workspaceSectionState(layoutManifest, "map", "state-snapshot").order,
+                ),
+              }}
+            >
+              <section className="panel" aria-label="Provenance" {...layoutSectionProps(layoutManifest, "map", "source-provenance")}>
                 <div className="panel-header">
                   <div>
                     <h2>Source Provenance</h2>
@@ -3596,7 +3948,7 @@ export function WorkspaceTabs({
                 </ul>
               </section>
 
-              <section className="panel" aria-label="Coverage flags">
+              <section className="panel" aria-label="Coverage flags" {...layoutSectionProps(layoutManifest, "map", "coverage-context")}>
                 <div className="panel-header">
                   <div>
                     <h2>Coverage</h2>
@@ -3625,7 +3977,7 @@ export function WorkspaceTabs({
                 </ul>
               </section>
 
-              <section className="panel" aria-label="Statewide vote breakdown">
+              <section className="panel" aria-label="Statewide vote breakdown" {...layoutSectionProps(layoutManifest, "map", "state-snapshot")}>
                 <div className="panel-header">
                   <div>
                     <h2>State Snapshot</h2>
@@ -3695,7 +4047,7 @@ export function WorkspaceTabs({
               </div>
             </div>
             <div className="review-subnav" data-tour="review-subnav" role="tablist" aria-label="Review Center views">
-              {reviewViewOptions.map((option) => (
+              {layoutReviewViewOptions.map((option) => (
                 <button
                   aria-selected={reviewView === option.key}
                   className="review-subnav-button"
@@ -3900,6 +4252,18 @@ export function WorkspaceTabs({
                           <p>{explanation.summary}</p>
                           <dl>
                             <div>
+                              <dt>Why it appeared</dt>
+                              <dd>{explanation.whyItAppeared}</dd>
+                            </div>
+                            <div>
+                              <dt>Formula / threshold</dt>
+                              <dd>{explanation.formulaThreshold}</dd>
+                            </div>
+                            <div>
+                              <dt>Normal explanations to check</dt>
+                              <dd>{explanation.normalExplanations}</dd>
+                            </div>
+                            <div>
                               <dt>Source context</dt>
                               <dd>{explanation.sourceContext}</dd>
                             </div>
@@ -3912,8 +4276,12 @@ export function WorkspaceTabs({
                               <dd>{explanation.auditContext}</dd>
                             </div>
                             <div>
-                              <dt>Still needed</dt>
+                              <dt>Missing evidence</dt>
                               <dd>{explanation.missingEvidence.slice(0, 3).join(" - ")}</dd>
+                            </div>
+                            <div>
+                              <dt>Next review action</dt>
+                              <dd>{explanation.nextReviewAction}</dd>
                             </div>
                           </dl>
                         </article>
@@ -4474,7 +4842,7 @@ export function WorkspaceTabs({
       )}
       {activeTab === "history" && (
         <div className="tab-panel-content">
-          <section className="panel">
+          <section className="panel layout-section-container">
             <div className="panel-header">
               <div>
                 <h2>Historical Baselines</h2>
@@ -4502,6 +4870,7 @@ export function WorkspaceTabs({
             </div>
             {historicalRows.length ? (
               <>
+                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
                 <div className="history-controls" aria-label="Historical year toggles">
                   <span>Show years</span>
                   {historicalYears.map((year) => (
@@ -4570,6 +4939,8 @@ export function WorkspaceTabs({
                     </article>
                   ))}
                 </div>
+                </div>
+                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-charts")}>
                 <div className="history-chart-grid" data-tour="history-charts">
                   {enabledHistoricalGraphs.includes("share") && (
                     <article className="history-chart-card">
@@ -4874,9 +5245,10 @@ export function WorkspaceTabs({
                     historical API for the full selected-state extract.
                   </div>
                 )}
+                </div>
               </>
             ) : (
-              <div className="empty-panel">
+              <div className="empty-panel" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
                 <strong>No historical baseline rows loaded for {stateName}</strong>
                 <span>
                   The importer looks for historicalBaseline.series rows in the legacy state bundle. Current repo data
@@ -4891,7 +5263,7 @@ export function WorkspaceTabs({
 
       {activeTab === "electronic" && (
         <div className="tab-panel-content">
-          <section className="panel electronic-integrity-panel" data-tour="electronic-integrity">
+          <section className="panel electronic-integrity-panel layout-section-container" data-tour="electronic-integrity">
             {requestGuideOpen && (
               <div
                 aria-labelledby="request-guide-title"
@@ -4963,6 +5335,7 @@ export function WorkspaceTabs({
                 </div>
               </div>
             )}
+            <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "integrity-context")}>
             <div className="panel-header">
               <div>
                 <h2>Electronic Integrity</h2>
@@ -5041,8 +5414,9 @@ export function WorkspaceTabs({
                 input unless row-level data supports it.
               </span>
             </div>
+            </div>
             {sourceRecordsRequestRows.length > 0 && (
-              <div className="source-records-request-section" data-tour="source-records-request-draft">
+              <div className="source-records-request-section" data-tour="source-records-request-draft" {...layoutSectionProps(layoutManifest, "electronic", "source-records-request")}>
                 <div className="planner-note source-records-separation">
                   <strong>Separate source-records requests</strong>
                   <span>
@@ -5131,7 +5505,9 @@ export function WorkspaceTabs({
                   </table>
                 </div>
               </div>
-            )}            {electronicIntegrityStatus ? (
+            )}
+            <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "cvr-requests")}>
+            {electronicIntegrityStatus ? (
               <>
                 <div className="admin-source-grid" aria-label={`${stateName} electronic integrity status`}>
                   <article className={`admin-source-card ${electronicQualityStatus(electronicIntegrityStatus.overallStatus)}`}>
@@ -5280,13 +5656,14 @@ export function WorkspaceTabs({
                 <span>Start by registering certified results, local reporting-unit results, CVR availability, audit output, and custody/log sources.</span>
               </div>
             )}
+            </div>
           </section>
         </div>
       )}
 
       {activeTab === "planner" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="source-planner">
+          <section className="panel" data-tour="source-planner" {...layoutSectionProps(layoutManifest, "planner", "source-plan")}>
             <div className="panel-header">
               <div>
                 <h2>Source Planner</h2>
@@ -5392,8 +5769,8 @@ export function WorkspaceTabs({
 
       {activeTab === "data" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="data-sources">
-            <div className="panel-header">
+          <section className="panel layout-section-container" data-tour="data-sources">
+            <div className="panel-header" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               <div>
                 <h2>Data & Sources</h2>
                 <span>{sources.length} source document records</span>
@@ -5413,7 +5790,7 @@ export function WorkspaceTabs({
                 <FileCheck2 aria-hidden size={18} />
               </div>
             </div>
-            <div className="source-links-panel" data-tour="source-links">
+            <div className="source-links-panel" data-tour="source-links" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               <div>
                 <strong>Official Source Links</strong>
                 <span>
@@ -5448,7 +5825,7 @@ export function WorkspaceTabs({
                 ))}
               </ul>
             </div>
-            <div className="vote-method-panel" data-tour="vote-method-summary">
+            <div className="vote-method-panel" data-tour="vote-method-summary" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
               <div className="vote-method-head">
                 <div>
                   <strong>Vote Methods</strong>
@@ -5539,7 +5916,7 @@ export function WorkspaceTabs({
                 </div>
               )}
             </div>
-            <div className="vote-method-caveat" data-tour="candidate-method-note">
+            <div className="vote-method-caveat" data-tour="candidate-method-note" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
               <div>
                 <strong>Candidate by Method</strong>
                 <span>
@@ -5549,7 +5926,7 @@ export function WorkspaceTabs({
               </div>
               <span className="pending">Source required</span>
             </div>
-            <div className="vote-method-panel" data-tour="equipment-context">
+            <div className="vote-method-panel" data-tour="equipment-context" {...layoutSectionProps(layoutManifest, "data", "equipment-context")}>
               <div className="vote-method-head">
                 <div>
                   <strong>Equipment Context</strong>
@@ -5692,7 +6069,7 @@ export function WorkspaceTabs({
                 </div>
               )}
             </div>
-            <div className="source-card-grid">
+            <div className="source-card-grid" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               {sources.map((source) => (
                 <article className="source-card" key={source.id}>
                   <span>{source.category}</span>
@@ -5724,8 +6101,8 @@ export function WorkspaceTabs({
 
       {activeTab === "methodology" && (
         <div className="tab-panel-content methodology-grid">
-          <section className="panel text-panel" data-tour="methodology">
-            <div className="panel-header">
+          <section className="panel text-panel layout-section-container" data-tour="methodology">
+            <div className="panel-header" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
               <div>
                 <h2>Review Guide</h2>
                 <span>How to review this release responsibly</span>
@@ -5738,7 +6115,7 @@ export function WorkspaceTabs({
                 <BookOpen aria-hidden size={18} />
               </div>
             </div>
-            <div className="responsible-review-panel" data-tour="reviewer-checklist">
+            <div className="responsible-review-panel" data-tour="reviewer-checklist" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
               <article>
                 <span className="section-label">How to Review Responsibly</span>
                 <strong>Use this site to find records worth checking, not to make claims by itself.</strong>
@@ -5760,7 +6137,21 @@ export function WorkspaceTabs({
                 </ul>
               </article>
             </div>
-            <div className="glossary-panel">
+            <div className="guided-workflow-panel" data-tour="guided-workflows" {...layoutSectionProps(layoutManifest, "methodology", "guided-workflows")}>
+              <div>
+                <span className="section-label">Guided Workflows</span>
+                <strong>Common reviewer paths</strong>
+              </div>
+              <div className="guided-workflow-grid">
+                {guidedWorkflowCards.map((workflow) => (
+                  <article data-tour={workflow.key} key={workflow.key}>
+                    <strong>{workflow.label}</strong>
+                    <p>{workflow.body}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <div className="glossary-panel" {...layoutSectionProps(layoutManifest, "methodology", "glossary")}>
               <div>
                 <span className="section-label">Glossary</span>
                 <strong>Terms used across charts, tables, and source notes</strong>
@@ -5774,7 +6165,7 @@ export function WorkspaceTabs({
                 ))}
               </dl>
             </div>
-            <div className="method-list">
+            <div className="method-list" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
               {methodologyGuides.map((guide) => {
                 return (
                   <details className="methodology-card" key={guide.id}>
@@ -5819,7 +6210,7 @@ export function WorkspaceTabs({
                 );
               })}
             </div>
-            <div className="validation-list">
+            <div className="validation-list" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
               {validationChecks.map((check) => (
                 <article className={check.passed ? "validation-pass" : "validation-warn"} key={check.label}>
                   {check.passed ? <CheckCircle2 aria-hidden size={17} /> : <TriangleAlert aria-hidden size={17} />}
@@ -5836,7 +6227,7 @@ export function WorkspaceTabs({
 
       {activeTab === "exports" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="exports">
+          <section className="panel layout-section-container" data-tour="exports">
             <div className="panel-header">
               <div>
                 <h2>Exports & API</h2>
@@ -5850,57 +6241,57 @@ export function WorkspaceTabs({
                 <Database aria-hidden size={18} />
               </div>
             </div>
-            <div className="export-grid">
-              <button onClick={exportResults} type="button">
+            <div className="export-grid" style={{ order: Math.min(workspaceSectionState(layoutManifest, "exports", "downloads").order, workspaceSectionState(layoutManifest, "exports", "review-packet").order) }}>
+              <button onClick={exportResults} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Results CSV
               </button>
-              <button onClick={exportIndicators} type="button">
+              <button onClick={exportIndicators} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Review CSV
               </button>
-              <button disabled={!reviewRows.length} onClick={exportReviewRows} type="button">
+              <button disabled={!reviewRows.length} onClick={exportReviewRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Review Rows CSV
               </button>
-              <button disabled={!turnoutRows.length} onClick={exportTurnoutRows} type="button">
+              <button disabled={!turnoutRows.length} onClick={exportTurnoutRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Turnout CSV
               </button>
-              <button disabled={!historicalRows.length} onClick={exportHistoricalRows} type="button">
+              <button disabled={!historicalRows.length} onClick={exportHistoricalRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Historical Rows CSV
               </button>
-              <button onClick={exportSources} type="button">
+              <button onClick={exportSources} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Sources CSV
               </button>
-              <button onClick={exportCoverage} type="button">
+              <button onClick={exportCoverage} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Coverage CSV
               </button>
-              <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button">
+              <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Vote Methods CSV
               </button>
-              <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button">
+              <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Equipment CSV
               </button>
-              <button onClick={exportSourceManifest} type="button">
+              <button onClick={exportSourceManifest} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Source Manifest JSON
               </button>
-              <button onClick={exportImportSummary} type="button">
+              <button onClick={exportImportSummary} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Import Summary JSON
               </button>
-              <button onClick={exportReviewPackage} type="button">
+              <button data-tour="export-review-packet" onClick={exportReviewPackage} type="button" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
                 <Download aria-hidden size={16} />
-                All Files ZIP
+                Review Packet ZIP (All Files ZIP)
               </button>
             </div>
-            <div className="export-summary-grid">
+            <div className="export-summary-grid" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
               <article>
                 <span>Rows</span>
                 <strong>{results.length}</strong>
@@ -5930,7 +6321,7 @@ export function WorkspaceTabs({
                 <strong>{totalVotes.toLocaleString()}</strong>
               </article>
             </div>
-            <ul className="api-list">
+            <ul className="api-list" {...layoutSectionProps(layoutManifest, "exports", "api-links")}>
               <li className="api-helper">
                 <Eli5>
                   Each API row is like a vending-machine button. Change the state code or limit in the URL, and the app
@@ -5996,7 +6387,7 @@ export function WorkspaceTabs({
 
       {activeTab === "imports" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="import-runs">
+          <section className="panel" data-tour="import-runs" {...layoutSectionProps(layoutManifest, "imports", "import-history")}>
             <div className="panel-header">
               <div>
                 <h2>Import Runs</h2>
@@ -6038,7 +6429,7 @@ export function WorkspaceTabs({
 
       {activeTab === "support" && (
         <div className="tab-panel-content support-grid">
-          <section className="panel support-panel">
+          <section className="panel support-panel" {...layoutSectionProps(layoutManifest, "support", "support-actions")}>
             <div className="panel-header">
               <div>
                 <h2>Support Civic Result Maps</h2>
@@ -6078,7 +6469,7 @@ export function WorkspaceTabs({
 
       {activeTab === "contact" && (
         <div className="tab-panel-content contact-grid">
-          <section className="panel contact-panel">
+          <section className="panel contact-panel" {...layoutSectionProps(layoutManifest, "contact", "contact-options")}>
             <div className="panel-header">
               <div>
                 <h2>Contact</h2>
@@ -6109,6 +6500,7 @@ export function WorkspaceTabs({
           isCollapsed={isDataNotesCollapsed}
           notes={dataNoteSections}
           onToggle={() => setIsDataNotesCollapsed((value) => !value)}
+          stateCode={selectedStateCode}
           stateName={stateName}
         />
       </div>

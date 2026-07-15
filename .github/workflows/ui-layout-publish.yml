@@ -1,0 +1,47 @@
+name: Publish UI layout
+
+on:
+  workflow_dispatch:
+    inputs:
+      publication_id:
+        description: Immutable UI layout publication UUID
+        required: true
+        type: string
+      environment:
+        description: Protected target environment
+        required: true
+        type: choice
+        options:
+          - preview
+          - production
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-layout-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: ui-layout-${{ inputs.environment }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Publish immutable layout envelope
+        run: npm run ui-layout:publish
+        env:
+          UI_LAYOUT_ENVIRONMENT: ${{ inputs.environment }}
+          UI_LAYOUT_PUBLICATION_ID: ${{ inputs.publication_id }}
+          DATABASE_URL: ${{ secrets.UI_LAYOUT_DATABASE_URL }}
+          VERCEL_ACCESS_TOKEN: ${{ secrets.VERCEL_ACCESS_TOKEN }}
+          VERCEL_EDGE_CONFIG_ID: ${{ secrets.VERCEL_EDGE_CONFIG_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}

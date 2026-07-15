@@ -3,6 +3,7 @@ import {
   bigint,
   boolean,
   check,
+  index,
   integer,
   jsonb,
   numeric,
@@ -10,9 +11,12 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
+import type { WorkspaceLayoutManifestV1 } from "../lib/workspace-layout";
 
 export const importStatus = pgEnum("import_status", [
   "staged",
@@ -28,6 +32,86 @@ export const sourceStatus = pgEnum("source_status", [
   "superseded",
   "documented_exclusion",
 ]);
+
+export const uiLayoutEnvironment = pgEnum("ui_layout_environment", ["preview", "production"]);
+export const uiLayoutChannel = pgEnum("ui_layout_channel", ["candidate", "stable"]);
+export const uiLayoutPublicationAction = pgEnum("ui_layout_publication_action", ["stage", "promote", "rollback"]);
+export const uiLayoutPublicationStatus = pgEnum("ui_layout_publication_status", [
+  "requested",
+  "dispatched",
+  "publishing",
+  "published",
+  "failed",
+]);
+
+export const uiLayoutRevisions = pgTable(
+  "ui_layout_revisions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    schemaVersion: integer("schema_version").notNull(),
+    registryVersion: integer("registry_version").notNull(),
+    manifest: jsonb("manifest").$type<WorkspaceLayoutManifestV1>().notNull(),
+    manifestDigest: text("manifest_digest").notNull(),
+    parentRevisionId: uuid("parent_revision_id").references((): AnyPgColumn => uiLayoutRevisions.id),
+    changeSummary: text("change_summary").notNull(),
+    actorId: text("actor_id").notNull(),
+    actorEmail: text("actor_email").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    createdAtIndex: index("ui_layout_revisions_created_at_idx").on(table.createdAt),
+    digestIndex: index("ui_layout_revisions_manifest_digest_idx").on(table.manifestDigest),
+    schemaVersionCheck: check("ui_layout_revisions_schema_version_check", sql`${table.schemaVersion} = 1`),
+    registryVersionCheck: check("ui_layout_revisions_registry_version_check", sql`${table.registryVersion} = 1`),
+    parentRevisionUnique: unique("ui_layout_revisions_parent_revision_unique")
+      .on(table.parentRevisionId)
+      .nullsNotDistinct(),
+  }),
+);
+
+export const uiLayoutPublications = pgTable(
+  "ui_layout_publications",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    revisionId: uuid("revision_id").notNull().references(() => uiLayoutRevisions.id),
+    environment: uiLayoutEnvironment("environment").notNull(),
+    channel: uiLayoutChannel("channel").notNull(),
+    action: uiLayoutPublicationAction("action").notNull(),
+    status: uiLayoutPublicationStatus("status").notNull().default("requested"),
+    idempotencyKey: text("idempotency_key").notNull().unique(),
+    actorId: text("actor_id").notNull(),
+    actorEmail: text("actor_email").notNull(),
+    workflowRunId: text("workflow_run_id"),
+    edgeDigest: text("edge_digest"),
+    failureCode: text("failure_code"),
+    failureMessage: text("failure_message"),
+    requestedAt: timestamp("requested_at", { withTimezone: true }).notNull().defaultNow(),
+    dispatchedAt: timestamp("dispatched_at", { withTimezone: true }),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+  },
+  (table) => ({
+    requestedAtIndex: index("ui_layout_publications_requested_at_idx").on(table.requestedAt),
+    revisionIndex: index("ui_layout_publications_revision_id_idx").on(table.revisionId),
+  }),
+);
+
+export const uiLayoutAuditEvents = pgTable(
+  "ui_layout_audit_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    action: text("action").notNull(),
+    actorId: text("actor_id").notNull(),
+    actorEmail: text("actor_email").notNull(),
+    revisionId: uuid("revision_id").references(() => uiLayoutRevisions.id),
+    publicationId: uuid("publication_id").references(() => uiLayoutPublications.id),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    createdAtIndex: index("ui_layout_audit_events_created_at_idx").on(table.createdAt),
+  }),
+);
 
 export const publicDataRevisions = pgTable(
   "public_data_revisions",

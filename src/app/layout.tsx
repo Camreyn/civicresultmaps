@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { SiteFooter } from "./site-footer";
 import "./globals.css";
 
 const siteUrl = "https://www.civicresultmaps.org";
@@ -62,6 +63,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
+        <SiteFooter />
         <Analytics />
       </body>
     </html>

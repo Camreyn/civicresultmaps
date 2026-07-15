@@ -13,6 +13,31 @@ test("project is branded for Civic Result Maps", () => {
   assert.match(packageJson.description, /Civic Result Maps/);
 });
 
+
+test("README links graph calculation documentation", () => {
+  const readme = readFileSync("README.md", "utf8");
+  const graphDocs = readFileSync("docs/review-graph-calculations.md", "utf8");
+  const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
+
+  assert.match(readme, /docs\/review-graph-calculations\.md/);
+  assert.match(readme, /advisory review signals/);
+  assert.match(readme, /does not assert fraud,\s*tampering, or misconduct/);
+  assert.match(graphDocs, /Vote-Share By Vote-Count Scatterplot/);
+  assert.match(graphDocs, /Presidential-Versus-Comparison Drop-Off Histogram/);
+  assert.match(graphDocs, /Ticket-Splitting Proxy/);
+  assert.match(graphDocs, /Vote-Share Pattern/);
+  assert.match(graphDocs, /Average Down-Ballot Difference/);
+  assert.match(graphDocs, /Down-Ballot Outliers/);
+  assert.match(graphDocs, /Klimek-Style Proxy Fingerprints/);
+  assert.match(graphDocs, /Shpilkin-Style Vote-Share Diagnostics/);
+  assert.match(graphDocs, /EAC Datasets, Codebooks, and Surveys/);
+  assert.match(graphDocs, /NIST Voting Program/);
+  assert.match(graphDocs, /Statistical detection of systematic election irregularities/);
+  assert.match(graphDocs, /Statistical anomalies in 2011-2012 Russian elections/);
+  assert.match(graphDocs, /not findings of fraud, tampering, misconduct, or intent/);
+  assert.match(tabs, /return rowsToCsv\(headers, rows\)/);
+});
+
 test("public API route contracts exist", () => {
   const expectedRoutes = [
     "src/app/api/states/route.ts",
@@ -188,6 +213,19 @@ test("public completeness report exists for national readiness", () => {
   assert.match(readiness, /Comparison \/ turnout ready/);
   assert.match(readiness, /coverage-chip/);
   assert.match(readiness, /State Work Queue/);
+  assert.match(readiness, /DashboardFilterKey/);
+  assert.match(readiness, /Needs review rows/);
+  assert.match(readiness, /Missing turnout/);
+  assert.match(readiness, /Missing history/);
+  assert.match(readiness, /Missing geometry/);
+  assert.match(readiness, /Legacy\/mixed/);
+  assert.match(readiness, /Unknown source tier/);
+  assert.match(readiness, /Review ready/);
+  assert.match(readiness, /Results \/ Review Rows/);
+  assert.match(readiness, /Comparison \/ Turnout \/ History \/ Geometry \/ Flags \/ Sources \/ Caveats/);
+  assert.match(readiness, /Advisory flags/);
+  assert.match(readiness, /Source URLs/);
+  assert.match(readiness, /What source would improve this\?/);
   assert.match(readiness, /State Import Details/);
   assert.match(readiness, /Native Source Package/);
   assert.match(readiness, /Expected Totals/);
@@ -215,6 +253,11 @@ test("source URLs remain first-class in explorer UX", () => {
 
   assert.match(explorer, /table-source-link/);
   assert.match(explorer, /Open source/);
+  assert.match(explorer, /SourceDrawerPayload/);
+  assert.match(explorer, /Source Drawer/);
+  assert.match(explorer, /source not linked/);
+  assert.match(explorer, /Related API endpoint/);
+  assert.match(explorer, /Report source issue/);
   assert.match(tabs, /Official Source Links/);
   assert.match(tabs, /Source URL missing/);
 });
@@ -263,6 +306,17 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /Data Notes/);
   assert.match(tabs, /Why this is missing or limited/);
   assert.match(tabs, /Review Guide/);
+  assert.match(tabs, /Guided Workflows/);
+  assert.match(tabs, /Review a state/);
+  assert.match(tabs, /Submit a public-records request/);
+  assert.match(tabs, /Submit a government response/);
+  assert.match(tabs, /Report a data\/source issue/);
+  assert.match(tabs, /Export a review packet/);
+  assert.match(tabs, /data-gap-banner/);
+  assert.match(tabs, /statewide-only/);
+  assert.match(tabs, /partial-geometry/);
+  assert.match(tabs, /missing review rows or missing flags/);
+  assert.match(tabs, /blocked by source gaps/);
   assert.match(tabs, /How to Review Responsibly/);
   assert.match(tabs, /Reviewer Checklist/);
   assert.match(tabs, /Glossary/);
@@ -276,6 +330,14 @@ test("review indicators explain advisory meaning", () => {
   assert.match(tabs, /Source Manifest JSON/);
   assert.match(tabs, /Import Summary JSON/);
   assert.match(tabs, /All Files ZIP/);
+  assert.match(tabs, /Review Packet ZIP/);
+  assert.match(tabs, /review-packet-manifest\.json/);
+  assert.match(tabs, /caveats\.json/);
+  assert.match(tabs, /readiness-summary\.json/);
+  assert.match(tabs, /indicator-summary\.json/);
+  assert.match(tabs, /missing-data-checklist\.json/);
+  assert.match(tabs, /issue-links\.json/);
+  assert.match(tabs, /SUMMARY\.md/);
   assert.match(tabs, /exportReviewPackage/);
   assert.match(tabs, /indicatorExplanation/);
   assert.match(tabs, /flagMethodologyGuides/);
