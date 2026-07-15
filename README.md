@@ -8,6 +8,13 @@ older `Camreyn/wisconsin-2024-election-mapper` project remains the legacy static
 GitHub Pages app and a source of migration knowledge for state configs, parser
 patterns, generated state registries, and validation expectations.
 
+## Documentation
+
+- [System topology](docs/system-topology.md) - Obsidian-ready Mermaid maps of
+  the product, API, runtime, data model, ETL, validation, and deployment paths.
+- [UI/UX README](docs/ui-ux/README.md) - information architecture, journeys,
+  interaction states, responsive behavior, accessibility, and design ownership.
+
 ## Stack
 
 - Next.js App Router and React for the frontend and public read API.
