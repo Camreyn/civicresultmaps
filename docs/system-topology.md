@@ -24,6 +24,10 @@ This is a subsystem-level topology. The many state-specific configs, collectors,
 normalizers, parsers, and tests are shown as repeated component families so the
 map remains readable.
 
+For product-facing information architecture, user journeys, interaction states,
+responsive behavior, accessibility, and design ownership, see the
+[UI/UX README](ui-ux/README.md).
+
 > [!tip] Obsidian
 > Open this note in Reading view; each Mermaid block is a separate level of detail.
 

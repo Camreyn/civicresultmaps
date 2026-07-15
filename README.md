@@ -12,6 +12,8 @@ patterns, generated state registries, and validation expectations.
 
 - [System topology](docs/system-topology.md) - Obsidian-ready Mermaid maps of
   the product, API, runtime, data model, ETL, validation, and deployment paths.
+- [UI/UX README](docs/ui-ux/README.md) - information architecture, journeys,
+  interaction states, responsive behavior, accessibility, and design ownership.
 
 ## Stack
 
