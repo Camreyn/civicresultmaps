@@ -27,6 +27,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Workspace layout contract tests
+        run: npm run test:layout
+
       - name: API contract tests
         run: npm run test:api
 
@@ -62,6 +65,12 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Workspace layout browser tests
+        run: npm run test:e2e
 
   vercel-preview:
     if: github.event_name == 'pull_request'

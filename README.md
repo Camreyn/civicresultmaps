@@ -20,6 +20,8 @@ patterns, generated state registries, and validation expectations.
   the product, API, runtime, data model, ETL, validation, and deployment paths.
 - [Developer playbook](docs/developer/index.md) - managed-thread coordination,
   state worker standards, ETL acceptance criteria, and common commands.
+- [Workspace layout operations](docs/developer/ui-layout-operations.md) - private
+  editor setup, protected rollout, fallback, rollback, and privacy procedures.
 - [Review graph calculations](docs/review-graph-calculations.md) - how map,
   Review Center, historical, vote-method, and equipment charts are calculated,
   with implementation and source references.

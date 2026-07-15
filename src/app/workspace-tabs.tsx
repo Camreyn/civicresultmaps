@@ -32,6 +32,12 @@ import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
 import { rowsToCsv } from "@/lib/csv";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
+import {
+  workspaceSectionState,
+  type WorkspaceLayoutManifestV1,
+  type WorkspaceSectionId,
+  type WorkspaceTabId,
+} from "@/lib/workspace-layout";
 import type {
   AnalysisIndicator,
   AdminSourceStatusSummary,
@@ -71,6 +77,7 @@ type WorkspaceTabsProps = {
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
   indicatorsEvaluated: boolean;
+  layoutManifest: WorkspaceLayoutManifestV1;
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   statewideResultRows: ResultRow[];
@@ -83,18 +90,7 @@ type WorkspaceTabsProps = {
   voteMethodRows: VoteMethodRowSummary[];
 };
 
-type TabKey =
-  | "map"
-  | "review"
-  | "history"
-  | "electronic"
-  | "planner"
-  | "data"
-  | "methodology"
-  | "exports"
-  | "imports"
-  | "support"
-  | "contact";
+type TabKey = WorkspaceTabId;
 type ScreeningGraphType = "voteShareScatter" | "dropoffHistogram";
 type HistoricalGraphType = "share" | "margin" | "movement" | "klimek" | "shpilkin";
 type ReviewView = "overview" | "tools" | "screening" | "indicators" | "methodology";
@@ -259,6 +255,14 @@ const reviewViewOptions: Array<{ key: ReviewView; label: string; summary: string
   { key: "indicators", label: "Indicators", summary: "Search, filter, and inspect advisory rows" },
   { key: "methodology", label: "Methodology", summary: "How each advisory flag is calculated" },
 ];
+
+const reviewViewBySectionId = {
+  overview: "overview",
+  "evidence-tools": "tools",
+  screening: "screening",
+  indicators: "indicators",
+  methodology: "methodology",
+} as const;
 
 const flagMethodologyGuides: FlagMethodologyGuide[] = [
   {
@@ -2600,6 +2604,19 @@ function DataNotesPanel({
   );
 }
 
+function layoutSectionProps(
+  manifest: WorkspaceLayoutManifestV1,
+  tabId: WorkspaceTabId,
+  sectionId: WorkspaceSectionId,
+) {
+  const state = workspaceSectionState(manifest, tabId, sectionId);
+  return {
+    "data-layout-section": `${tabId}:${sectionId}`,
+    hidden: !state.visible,
+    style: { order: state.order },
+  };
+}
+
 function dateLabel(value: string | null) {
   if (!value) {
     return "Not finished";
@@ -2628,6 +2645,7 @@ export function WorkspaceTabs({
   importRuns,
   indicators,
   indicatorsEvaluated,
+  layoutManifest,
   reviewRows,
   results,
   statewideResultRows,
@@ -2639,7 +2657,23 @@ export function WorkspaceTabs({
   turnoutRows,
   voteMethodRows,
 }: WorkspaceTabsProps) {
-  const requestedTab = initialTab && tabs.some((item) => item.key === initialTab)
+  const layoutTabs = useMemo(
+    () => layoutManifest.tabs
+      .filter((tab) => tab.visible)
+      .map((tab) => tabs.find((item) => item.key === tab.id))
+      .filter((tab): tab is (typeof tabs)[number] => Boolean(tab)),
+    [layoutManifest],
+  );
+  const layoutReviewViewOptions = useMemo(() => {
+    const reviewSections = layoutManifest.tabs.find((tab) => tab.id === "review")?.sections ?? [];
+    return reviewSections
+      .filter((section) => section.visible && section.id in reviewViewBySectionId)
+      .map((section) => reviewViewOptions.find(
+        (option) => option.key === reviewViewBySectionId[section.id as keyof typeof reviewViewBySectionId],
+      ))
+      .filter((option): option is (typeof reviewViewOptions)[number] => Boolean(option));
+  }, [layoutManifest]);
+  const requestedTab = initialTab && layoutTabs.some((item) => item.key === initialTab)
     ? initialTab as TabKey
     : "map";
   const [activeTab, setActiveTab] = useState<TabKey>(requestedTab);
@@ -2663,17 +2697,24 @@ export function WorkspaceTabs({
   const [isDataNotesCollapsed, setIsDataNotesCollapsed] = useState(true);
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
-  const [reviewView, setReviewView] = useState<ReviewView>("overview");
+  const [reviewView, setReviewView] = useState<ReviewView>(() => layoutReviewViewOptions[0]?.key ?? "overview");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab") as TabKey | null;
-    if (tab && tabs.some((item) => item.key === tab)) {
+    if (tab && layoutTabs.some((item) => item.key === tab)) {
       setActiveTab(tab);
     }
-  }, []);
+  }, [layoutTabs]);
 
-  const selectTab = (tab: TabKey) => {
+  useEffect(() => {
+    if (!layoutReviewViewOptions.some((option) => option.key === reviewView) && layoutReviewViewOptions[0]) {
+      setReviewView(layoutReviewViewOptions[0].key);
+    }
+  }, [layoutReviewViewOptions, reviewView]);
+
+  const selectTab = (requested: TabKey) => {
+    const tab = layoutTabs.some((item) => item.key === requested) ? requested : "map";
     setActiveTab(tab);
     const url = new URL(window.location.href);
     if (tab !== "map") {
@@ -2691,7 +2732,7 @@ export function WorkspaceTabs({
   };
 
   const syncReviewTourStep = (step: TourStep) => {
-    if (step.reviewView && reviewViewOptions.some((option) => option.key === step.reviewView)) {
+    if (step.reviewView && layoutReviewViewOptions.some((option) => option.key === step.reviewView)) {
       setReviewView(step.reviewView as ReviewView);
     }
   };
@@ -3824,7 +3865,7 @@ export function WorkspaceTabs({
     <section className="workspace-tabs" data-tour="workspace" aria-label={`${stateName} workspace`}>
       <nav className="tab-bar" data-tour="tab-bar" aria-label="Workspace sections">
         <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
-        {tabs.map((tab) => {
+        {layoutTabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <button
@@ -3851,6 +3892,7 @@ export function WorkspaceTabs({
           {activeTab === "map" && (
         <div className="tab-panel-content">
           <div className="content-grid">
+            <div {...layoutSectionProps(layoutManifest, "map", "results-map")}>
             <ResultsExplorer
               countyLabel={countyLabel}
               electionYear={electionYear}
@@ -3866,8 +3908,18 @@ export function WorkspaceTabs({
               sources={sources}
               voteMethodRows={voteMethodRows}
             />
-            <div className="detail-stack">
-              <section className="panel" aria-label="Provenance">
+            </div>
+            <div
+              className="detail-stack"
+              style={{
+                order: Math.min(
+                  workspaceSectionState(layoutManifest, "map", "source-provenance").order,
+                  workspaceSectionState(layoutManifest, "map", "coverage-context").order,
+                  workspaceSectionState(layoutManifest, "map", "state-snapshot").order,
+                ),
+              }}
+            >
+              <section className="panel" aria-label="Provenance" {...layoutSectionProps(layoutManifest, "map", "source-provenance")}>
                 <div className="panel-header">
                   <div>
                     <h2>Source Provenance</h2>
@@ -3896,7 +3948,7 @@ export function WorkspaceTabs({
                 </ul>
               </section>
 
-              <section className="panel" aria-label="Coverage flags">
+              <section className="panel" aria-label="Coverage flags" {...layoutSectionProps(layoutManifest, "map", "coverage-context")}>
                 <div className="panel-header">
                   <div>
                     <h2>Coverage</h2>
@@ -3925,7 +3977,7 @@ export function WorkspaceTabs({
                 </ul>
               </section>
 
-              <section className="panel" aria-label="Statewide vote breakdown">
+              <section className="panel" aria-label="Statewide vote breakdown" {...layoutSectionProps(layoutManifest, "map", "state-snapshot")}>
                 <div className="panel-header">
                   <div>
                     <h2>State Snapshot</h2>
@@ -3995,7 +4047,7 @@ export function WorkspaceTabs({
               </div>
             </div>
             <div className="review-subnav" data-tour="review-subnav" role="tablist" aria-label="Review Center views">
-              {reviewViewOptions.map((option) => (
+              {layoutReviewViewOptions.map((option) => (
                 <button
                   aria-selected={reviewView === option.key}
                   className="review-subnav-button"
@@ -4790,7 +4842,7 @@ export function WorkspaceTabs({
       )}
       {activeTab === "history" && (
         <div className="tab-panel-content">
-          <section className="panel">
+          <section className="panel layout-section-container">
             <div className="panel-header">
               <div>
                 <h2>Historical Baselines</h2>
@@ -4818,6 +4870,7 @@ export function WorkspaceTabs({
             </div>
             {historicalRows.length ? (
               <>
+                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
                 <div className="history-controls" aria-label="Historical year toggles">
                   <span>Show years</span>
                   {historicalYears.map((year) => (
@@ -4886,6 +4939,8 @@ export function WorkspaceTabs({
                     </article>
                   ))}
                 </div>
+                </div>
+                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-charts")}>
                 <div className="history-chart-grid" data-tour="history-charts">
                   {enabledHistoricalGraphs.includes("share") && (
                     <article className="history-chart-card">
@@ -5190,9 +5245,10 @@ export function WorkspaceTabs({
                     historical API for the full selected-state extract.
                   </div>
                 )}
+                </div>
               </>
             ) : (
-              <div className="empty-panel">
+              <div className="empty-panel" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
                 <strong>No historical baseline rows loaded for {stateName}</strong>
                 <span>
                   The importer looks for historicalBaseline.series rows in the legacy state bundle. Current repo data
@@ -5207,7 +5263,7 @@ export function WorkspaceTabs({
 
       {activeTab === "electronic" && (
         <div className="tab-panel-content">
-          <section className="panel electronic-integrity-panel" data-tour="electronic-integrity">
+          <section className="panel electronic-integrity-panel layout-section-container" data-tour="electronic-integrity">
             {requestGuideOpen && (
               <div
                 aria-labelledby="request-guide-title"
@@ -5279,6 +5335,7 @@ export function WorkspaceTabs({
                 </div>
               </div>
             )}
+            <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "integrity-context")}>
             <div className="panel-header">
               <div>
                 <h2>Electronic Integrity</h2>
@@ -5357,8 +5414,9 @@ export function WorkspaceTabs({
                 input unless row-level data supports it.
               </span>
             </div>
+            </div>
             {sourceRecordsRequestRows.length > 0 && (
-              <div className="source-records-request-section" data-tour="source-records-request-draft">
+              <div className="source-records-request-section" data-tour="source-records-request-draft" {...layoutSectionProps(layoutManifest, "electronic", "source-records-request")}>
                 <div className="planner-note source-records-separation">
                   <strong>Separate source-records requests</strong>
                   <span>
@@ -5447,7 +5505,9 @@ export function WorkspaceTabs({
                   </table>
                 </div>
               </div>
-            )}            {electronicIntegrityStatus ? (
+            )}
+            <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "cvr-requests")}>
+            {electronicIntegrityStatus ? (
               <>
                 <div className="admin-source-grid" aria-label={`${stateName} electronic integrity status`}>
                   <article className={`admin-source-card ${electronicQualityStatus(electronicIntegrityStatus.overallStatus)}`}>
@@ -5596,13 +5656,14 @@ export function WorkspaceTabs({
                 <span>Start by registering certified results, local reporting-unit results, CVR availability, audit output, and custody/log sources.</span>
               </div>
             )}
+            </div>
           </section>
         </div>
       )}
 
       {activeTab === "planner" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="source-planner">
+          <section className="panel" data-tour="source-planner" {...layoutSectionProps(layoutManifest, "planner", "source-plan")}>
             <div className="panel-header">
               <div>
                 <h2>Source Planner</h2>
@@ -5708,8 +5769,8 @@ export function WorkspaceTabs({
 
       {activeTab === "data" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="data-sources">
-            <div className="panel-header">
+          <section className="panel layout-section-container" data-tour="data-sources">
+            <div className="panel-header" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               <div>
                 <h2>Data & Sources</h2>
                 <span>{sources.length} source document records</span>
@@ -5729,7 +5790,7 @@ export function WorkspaceTabs({
                 <FileCheck2 aria-hidden size={18} />
               </div>
             </div>
-            <div className="source-links-panel" data-tour="source-links">
+            <div className="source-links-panel" data-tour="source-links" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               <div>
                 <strong>Official Source Links</strong>
                 <span>
@@ -5764,7 +5825,7 @@ export function WorkspaceTabs({
                 ))}
               </ul>
             </div>
-            <div className="vote-method-panel" data-tour="vote-method-summary">
+            <div className="vote-method-panel" data-tour="vote-method-summary" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
               <div className="vote-method-head">
                 <div>
                   <strong>Vote Methods</strong>
@@ -5855,7 +5916,7 @@ export function WorkspaceTabs({
                 </div>
               )}
             </div>
-            <div className="vote-method-caveat" data-tour="candidate-method-note">
+            <div className="vote-method-caveat" data-tour="candidate-method-note" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
               <div>
                 <strong>Candidate by Method</strong>
                 <span>
@@ -5865,7 +5926,7 @@ export function WorkspaceTabs({
               </div>
               <span className="pending">Source required</span>
             </div>
-            <div className="vote-method-panel" data-tour="equipment-context">
+            <div className="vote-method-panel" data-tour="equipment-context" {...layoutSectionProps(layoutManifest, "data", "equipment-context")}>
               <div className="vote-method-head">
                 <div>
                   <strong>Equipment Context</strong>
@@ -6008,7 +6069,7 @@ export function WorkspaceTabs({
                 </div>
               )}
             </div>
-            <div className="source-card-grid">
+            <div className="source-card-grid" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               {sources.map((source) => (
                 <article className="source-card" key={source.id}>
                   <span>{source.category}</span>
@@ -6040,8 +6101,8 @@ export function WorkspaceTabs({
 
       {activeTab === "methodology" && (
         <div className="tab-panel-content methodology-grid">
-          <section className="panel text-panel" data-tour="methodology">
-            <div className="panel-header">
+          <section className="panel text-panel layout-section-container" data-tour="methodology">
+            <div className="panel-header" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
               <div>
                 <h2>Review Guide</h2>
                 <span>How to review this release responsibly</span>
@@ -6054,7 +6115,7 @@ export function WorkspaceTabs({
                 <BookOpen aria-hidden size={18} />
               </div>
             </div>
-            <div className="responsible-review-panel" data-tour="reviewer-checklist">
+            <div className="responsible-review-panel" data-tour="reviewer-checklist" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
               <article>
                 <span className="section-label">How to Review Responsibly</span>
                 <strong>Use this site to find records worth checking, not to make claims by itself.</strong>
@@ -6076,7 +6137,7 @@ export function WorkspaceTabs({
                 </ul>
               </article>
             </div>
-            <div className="guided-workflow-panel" data-tour="guided-workflows">
+            <div className="guided-workflow-panel" data-tour="guided-workflows" {...layoutSectionProps(layoutManifest, "methodology", "guided-workflows")}>
               <div>
                 <span className="section-label">Guided Workflows</span>
                 <strong>Common reviewer paths</strong>
@@ -6090,7 +6151,7 @@ export function WorkspaceTabs({
                 ))}
               </div>
             </div>
-            <div className="glossary-panel">
+            <div className="glossary-panel" {...layoutSectionProps(layoutManifest, "methodology", "glossary")}>
               <div>
                 <span className="section-label">Glossary</span>
                 <strong>Terms used across charts, tables, and source notes</strong>
@@ -6104,7 +6165,7 @@ export function WorkspaceTabs({
                 ))}
               </dl>
             </div>
-            <div className="method-list">
+            <div className="method-list" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
               {methodologyGuides.map((guide) => {
                 return (
                   <details className="methodology-card" key={guide.id}>
@@ -6149,7 +6210,7 @@ export function WorkspaceTabs({
                 );
               })}
             </div>
-            <div className="validation-list">
+            <div className="validation-list" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
               {validationChecks.map((check) => (
                 <article className={check.passed ? "validation-pass" : "validation-warn"} key={check.label}>
                   {check.passed ? <CheckCircle2 aria-hidden size={17} /> : <TriangleAlert aria-hidden size={17} />}
@@ -6166,7 +6227,7 @@ export function WorkspaceTabs({
 
       {activeTab === "exports" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="exports">
+          <section className="panel layout-section-container" data-tour="exports">
             <div className="panel-header">
               <div>
                 <h2>Exports & API</h2>
@@ -6180,57 +6241,57 @@ export function WorkspaceTabs({
                 <Database aria-hidden size={18} />
               </div>
             </div>
-            <div className="export-grid">
-              <button onClick={exportResults} type="button">
+            <div className="export-grid" style={{ order: Math.min(workspaceSectionState(layoutManifest, "exports", "downloads").order, workspaceSectionState(layoutManifest, "exports", "review-packet").order) }}>
+              <button onClick={exportResults} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Results CSV
               </button>
-              <button onClick={exportIndicators} type="button">
+              <button onClick={exportIndicators} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Review CSV
               </button>
-              <button disabled={!reviewRows.length} onClick={exportReviewRows} type="button">
+              <button disabled={!reviewRows.length} onClick={exportReviewRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Review Rows CSV
               </button>
-              <button disabled={!turnoutRows.length} onClick={exportTurnoutRows} type="button">
+              <button disabled={!turnoutRows.length} onClick={exportTurnoutRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Turnout CSV
               </button>
-              <button disabled={!historicalRows.length} onClick={exportHistoricalRows} type="button">
+              <button disabled={!historicalRows.length} onClick={exportHistoricalRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Historical Rows CSV
               </button>
-              <button onClick={exportSources} type="button">
+              <button onClick={exportSources} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Sources CSV
               </button>
-              <button onClick={exportCoverage} type="button">
+              <button onClick={exportCoverage} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Coverage CSV
               </button>
-              <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button">
+              <button disabled={!voteMethodRows.length} onClick={exportVoteMethods} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Vote Methods CSV
               </button>
-              <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button">
+              <button disabled={!equipmentRows.length} onClick={exportEquipmentRows} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Equipment CSV
               </button>
-              <button onClick={exportSourceManifest} type="button">
+              <button onClick={exportSourceManifest} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Source Manifest JSON
               </button>
-              <button onClick={exportImportSummary} type="button">
+              <button onClick={exportImportSummary} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Import Summary JSON
               </button>
-              <button data-tour="export-review-packet" onClick={exportReviewPackage} type="button">
+              <button data-tour="export-review-packet" onClick={exportReviewPackage} type="button" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
                 <Download aria-hidden size={16} />
                 Review Packet ZIP (All Files ZIP)
               </button>
             </div>
-            <div className="export-summary-grid">
+            <div className="export-summary-grid" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
               <article>
                 <span>Rows</span>
                 <strong>{results.length}</strong>
@@ -6260,7 +6321,7 @@ export function WorkspaceTabs({
                 <strong>{totalVotes.toLocaleString()}</strong>
               </article>
             </div>
-            <ul className="api-list">
+            <ul className="api-list" {...layoutSectionProps(layoutManifest, "exports", "api-links")}>
               <li className="api-helper">
                 <Eli5>
                   Each API row is like a vending-machine button. Change the state code or limit in the URL, and the app
@@ -6326,7 +6387,7 @@ export function WorkspaceTabs({
 
       {activeTab === "imports" && (
         <div className="tab-panel-content">
-          <section className="panel" data-tour="import-runs">
+          <section className="panel" data-tour="import-runs" {...layoutSectionProps(layoutManifest, "imports", "import-history")}>
             <div className="panel-header">
               <div>
                 <h2>Import Runs</h2>
@@ -6368,7 +6429,7 @@ export function WorkspaceTabs({
 
       {activeTab === "support" && (
         <div className="tab-panel-content support-grid">
-          <section className="panel support-panel">
+          <section className="panel support-panel" {...layoutSectionProps(layoutManifest, "support", "support-actions")}>
             <div className="panel-header">
               <div>
                 <h2>Support Civic Result Maps</h2>
@@ -6408,7 +6469,7 @@ export function WorkspaceTabs({
 
       {activeTab === "contact" && (
         <div className="tab-panel-content contact-grid">
-          <section className="panel contact-panel">
+          <section className="panel contact-panel" {...layoutSectionProps(layoutManifest, "contact", "contact-options")}>
             <div className="panel-header">
               <div>
                 <h2>Contact</h2>

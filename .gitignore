@@ -16,3 +16,12 @@ __pycache__/
 .tools/
 data/nv-clark-2024-general-cvr.zip
 .vercel
+
+# Local test and generated workspace artifacts
+/playwright-report/
+/test-results/
+/blob-report/
+/tmp/
+/outputs/
+*.bak
+*.backup

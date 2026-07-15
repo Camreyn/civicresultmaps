@@ -6365,3 +6365,43 @@ td {
     grid-template-columns: 1fr;
   }
 }
+
+/* Production workspace layout controls. Data Notes intentionally stays outside this system. */
+[data-layout-section][hidden] {
+  display: none !important;
+}
+
+.layout-section-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-section-container > [data-layout-section],
+.layout-section-stack {
+  min-width: 0;
+}
+
+.layout-section-stack {
+  display: grid;
+}
+
+.layout-preview-banner {
+  align-items: center;
+  background: #f0c36a;
+  color: #251b08;
+  display: flex;
+  font-size: 13px;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 9px 18px;
+}
+
+.layout-preview-banner button {
+  background: #251b08;
+  border: 0;
+  border-radius: 6px;
+  color: #fff6df;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 7px 10px;
+}

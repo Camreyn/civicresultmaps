@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/evidence", changeFrequency: "weekly", priority: 0.7 },
     { path: "/releases", changeFrequency: "weekly", priority: 0.75 },
     { path: "/developers", changeFrequency: "monthly", priority: 0.65 },
+    { path: "/privacy", changeFrequency: "yearly", priority: 0.35 },
   ] as const;
   const staticRoutes: MetadataRoute.Sitemap = staticRouteConfig.map((route) => ({
     url: siteUrl + route.path,

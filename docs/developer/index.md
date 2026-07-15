@@ -10,6 +10,8 @@ The project does not assert fraud. It exposes data quality, reconciliation, prov
 
 For historical 2016/2020 review-row eligibility, candidate-neutral fields, indicator thresholds, broad-signal warnings, and promotion rules, read [`docs/historical-advisory-indicators.md`](../historical-advisory-indicators.md).
 
+For the private workspace layout editor, immutable revision model, protected Vercel rollout, rollback, and privacy controls, read [`docs/developer/ui-layout-operations.md`](ui-layout-operations.md).
+
 ## Coordinator Protocol
 
 When coordinating state workers:

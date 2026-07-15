@@ -15,6 +15,8 @@ import { GlobalCountySearch } from "./global-county-search";
 import { NationalOverview } from "./national-overview";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
+import { resolveVisibleWorkspaceTab } from "@/lib/workspace-layout";
+import { resolveWorkspaceLayout } from "@/lib/workspace-layout-runtime";
 import {
   getCoverageSummary,
   listAdminSourceStatuses,
@@ -44,19 +46,6 @@ import { buildStateSocialPreview } from "@/lib/social-preview";
 import { listSecurityIncidentStateSummaries } from "@/lib/security-incidents";
 import { historicalCountyRowsToResults } from "@/lib/state-year-results";
 
-const workspaceTabs = new Set([
-  "map",
-  "review",
-  "history",
-  "electronic",
-  "planner",
-  "data",
-  "methodology",
-  "exports",
-  "imports",
-  "support",
-  "contact",
-]);
 const mapModes = new Set(["winner", "margin", "volume", "method", "equipment", "security"]);
 const securityIncidentStateSummaries = listSecurityIncidentStateSummaries(2024);
 
@@ -168,8 +157,10 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
 
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
+  const layoutResolution = await resolveWorkspaceLayout();
+  const layoutManifest = layoutResolution.envelope.manifest;
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
-  const activeTab = workspaceTabs.has(params?.tab ?? "") ? params?.tab ?? "map" : "map";
+  const activeTab = resolveVisibleWorkspaceTab(layoutManifest, params?.tab);
   const requestedYear = parseYear(params?.year);
   const selectedYear = activeTab === "map" ? requestedYear : 2024;
   const requestedMapMode = mapModes.has(params?.mode ?? "")
@@ -302,6 +293,14 @@ export default async function Home({ searchParams }: HomeProps) {
 
   return (
     <main className="app-shell">
+      {layoutResolution.source === "draft" && (
+        <aside className="layout-preview-banner" role="status">
+          <span><strong>Draft layout preview</strong> Revision {layoutResolution.envelope.revisionId.slice(0, 8)} is visible only in this authenticated browser.</span>
+          <form action="/admin/layout/preview/exit" method="post">
+            <button type="submit">Exit preview</button>
+          </form>
+        </aside>
+      )}
       <header className="topbar">
         <div className="brand">
           <BrandMark />
@@ -449,6 +448,7 @@ export default async function Home({ searchParams }: HomeProps) {
             importRuns={importRuns}
             indicators={indicators}
             indicatorsEvaluated={indicatorsEvaluated}
+            layoutManifest={layoutManifest}
             initialFips={initialFips}
             initialMapMode={initialMapMode}
             initialTab={activeTab}

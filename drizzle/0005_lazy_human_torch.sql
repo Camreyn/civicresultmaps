@@ -1,0 +1,1 @@
+ALTER TABLE "ui_layout_revisions" ADD CONSTRAINT "ui_layout_revisions_parent_revision_unique" UNIQUE NULLS NOT DISTINCT("parent_revision_id");
