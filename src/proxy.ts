@@ -1,6 +1,7 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import type { NextFetchEvent, NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { isPrivateAdminPath } from "@/lib/ui-layout-admin-policy";
 import {
   isLayoutVisitorId,
   LAYOUT_VISITOR_COOKIE,
@@ -52,7 +53,7 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
     return NextResponse.redirect(secureUrl, 308);
   }
 
-  if (authenticatedProxy) {
+  if (authenticatedProxy && isPrivateAdminPath(request.nextUrl.pathname)) {
     const response = await authenticatedProxy(request, event);
     if (response) return response;
   }
