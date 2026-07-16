@@ -1,6 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
+import * as uiLayoutV3Schema from "./ui-layout-v3-schema";
 import { getDatabaseUrl } from "./url";
 
 type Database = ReturnType<typeof createDb>;
@@ -14,7 +15,7 @@ function createDb() {
     throw new Error("DATABASE_URL or POSTGRES_URL is not configured.");
   }
 
-  return drizzle(neon(databaseUrl), { schema });
+  return drizzle(neon(databaseUrl), { schema: { ...schema, ...uiLayoutV3Schema } });
 }
 
 export function getDb() {

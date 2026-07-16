@@ -16,7 +16,7 @@ import {
   uuid,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import type { WorkspaceLayoutManifestV1 } from "../lib/workspace-layout";
+import type { WorkspaceLayoutManifest } from "../lib/workspace-layout-v2";
 
 export const importStatus = pgEnum("import_status", [
   "staged",
@@ -50,7 +50,7 @@ export const uiLayoutRevisions = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     schemaVersion: integer("schema_version").notNull(),
     registryVersion: integer("registry_version").notNull(),
-    manifest: jsonb("manifest").$type<WorkspaceLayoutManifestV1>().notNull(),
+    manifest: jsonb("manifest").$type<WorkspaceLayoutManifest>().notNull(),
     manifestDigest: text("manifest_digest").notNull(),
     parentRevisionId: uuid("parent_revision_id").references((): AnyPgColumn => uiLayoutRevisions.id),
     changeSummary: text("change_summary").notNull(),
@@ -61,8 +61,8 @@ export const uiLayoutRevisions = pgTable(
   (table) => ({
     createdAtIndex: index("ui_layout_revisions_created_at_idx").on(table.createdAt),
     digestIndex: index("ui_layout_revisions_manifest_digest_idx").on(table.manifestDigest),
-    schemaVersionCheck: check("ui_layout_revisions_schema_version_check", sql`${table.schemaVersion} = 1`),
-    registryVersionCheck: check("ui_layout_revisions_registry_version_check", sql`${table.registryVersion} = 1`),
+    schemaVersionCheck: check("ui_layout_revisions_schema_version_check", sql`${table.schemaVersion} in (1, 2)`),
+    registryVersionCheck: check("ui_layout_revisions_registry_version_check", sql`${table.registryVersion} in (1, 2)`),
     parentRevisionUnique: unique("ui_layout_revisions_parent_revision_unique")
       .on(table.parentRevisionId)
       .nullsNotDistinct(),

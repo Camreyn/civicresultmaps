@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SiteFooter } from "./site-footer";
 import "./globals.css";
 
+import "./workspace-layout-v2.css";
 const siteUrl = "https://www.civicresultmaps.org";
 const siteDescription =
   "Explore source-linked 2016, 2020, and 2024 U.S. county election results, national flips, permanent county profiles, data confidence, releases, and public APIs.";

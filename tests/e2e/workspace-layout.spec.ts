@@ -22,13 +22,13 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
 
   const workspace = page.getByRole("region", { name: /Washington workspace/i });
   await expect(workspace).toBeVisible();
-  await expect(workspace.getByRole("button", { name: "Map", exact: true })).toBeVisible();
-  await expect(workspace.getByRole("button", { name: "Review Center", exact: true })).toBeVisible();
-  await expect(workspace.getByRole("button", { name: "Data & Sources", exact: true })).toBeVisible();
+  await expect(workspace.getByRole("tab", { name: "Map", exact: true })).toBeVisible();
+  await expect(workspace.getByRole("tab", { name: "Review Center", exact: true })).toBeVisible();
+  await expect(workspace.getByRole("tab", { name: "Data & Sources", exact: true })).toBeVisible();
   await workspace.getByRole("button", { name: /^Data Notes/ }).click();
   await expect(page.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
 
-  await workspace.getByRole("button", { name: "History", exact: true }).click();
+  await workspace.getByRole("tab", { name: "History", exact: true }).click();
   await expect(page).toHaveURL(/tab=history/);
   await expect(page.getByRole("heading", { name: "Historical Baselines", exact: true })).toBeVisible();
 

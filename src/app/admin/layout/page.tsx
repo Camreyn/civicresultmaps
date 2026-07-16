@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { Metadata, Route } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { LayoutEditor, type LayoutPublicationSummary, type LayoutRevisionSummary } from "./layout-editor";
+import { LayoutEditor, type LayoutAssetSummary, type LayoutPublicationSummary, type LayoutRevisionSummary, type LayoutTemplateSummary } from "./layout-editor";
 import styles from "./layout-editor.module.css";
 import { readLayoutAdmin } from "@/lib/ui-layout-auth";
 import {
@@ -10,7 +10,11 @@ import {
   listLayoutPublications,
   listLayoutRevisions,
 } from "@/lib/ui-layout-repository";
-import { embeddedWorkspaceLayoutManifest } from "@/lib/workspace-layout";
+import {
+  embeddedWorkspaceLayoutManifestV2,
+  toWorkspaceLayoutManifestV2,
+} from "@/lib/workspace-layout-v2";
+import { listLayoutAssets, listLayoutTemplates } from "@/lib/ui-layout-v3-repository";
 import { WORKSPACE_LAYOUT_DRAFT_COOKIE } from "@/lib/workspace-layout-runtime";
 
 export const dynamic = "force-dynamic";
@@ -48,15 +52,17 @@ export default async function LayoutAdminPage() {
       <main className={styles.page}>
         <section className={styles.setupCard}>
           <h1>Layout database unavailable</h1>
-          <p>Configure <code>DATABASE_URL</code> or <code>POSTGRES_URL</code>, then apply migration 0004 and 0005 in the preview database.</p>
+          <p>Configure <code>DATABASE_URL</code> or <code>POSTGRES_URL</code>, then apply layout migrations through 0006 in the preview database.</p>
         </section>
       </main>
     );
   }
 
-  const [revisionRows, publicationRows, cookieStore] = await Promise.all([
+  const [revisionRows, publicationRows, assetRows, templateRows, cookieStore] = await Promise.all([
     listLayoutRevisions(),
     listLayoutPublications(),
+    listLayoutAssets(),
+    listLayoutTemplates(),
     cookies(),
   ]);
   const revisions: LayoutRevisionSummary[] = revisionRows.map((revision) => ({
@@ -64,7 +70,7 @@ export default async function LayoutAdminPage() {
     changeSummary: revision.changeSummary,
     createdAt: revision.createdAt.toISOString(),
     id: revision.id,
-    manifest: revision.manifest,
+    manifest: toWorkspaceLayoutManifestV2(revision.manifest),
     manifestDigest: revision.manifestDigest,
     parentRevisionId: revision.parentRevisionId,
   }));
@@ -79,6 +85,24 @@ export default async function LayoutAdminPage() {
     revisionId: publication.revisionId,
     status: publication.status,
   }));
+  const assets: LayoutAssetSummary[] = assetRows.map((asset) => ({
+    alt: asset.alt,
+    contentType: asset.contentType,
+    height: asset.height,
+    id: asset.id,
+    pathname: asset.pathname,
+    sizeBytes: asset.sizeBytes,
+    url: asset.url,
+    width: asset.width,
+  }));
+  const templates: LayoutTemplateSummary[] = templateRows.map((template) => ({
+    actorEmail: template.actorEmail,
+    description: template.description,
+    id: template.id,
+    manifest: template.manifest,
+    name: template.name,
+    updatedAt: template.updatedAt.toISOString(),
+  }));
   const latest = revisions[0];
 
   return (
@@ -90,19 +114,21 @@ export default async function LayoutAdminPage() {
           <span>Signed in as {admin.actor.email}. Build responsive layouts with protected public-interest trust surfaces.</span>
         </div>
         <div className={styles.statusRow}>
-          <span>Schema v1</span>
-          <span>Builder controls v2</span>
+          <span>Schema v2</span>
+          <span>Builder controls v3</span>
           <span>{process.env.EDGE_CONFIG ? "Edge Config connected" : "Embedded runtime fallback"}</span>
         </div>
       </header>
       <LayoutEditor
         activeDraftRevisionId={cookieStore.get(WORKSPACE_LAYOUT_DRAFT_COOKIE)?.value}
-        baseManifest={latest?.manifest ?? embeddedWorkspaceLayoutManifest}
+        assets={assets}
+        baseManifest={latest?.manifest ?? embeddedWorkspaceLayoutManifestV2}
         parentRevisionId={latest?.id ?? null}
         publications={publications}
         publisherEnabled={process.env.UI_LAYOUT_PUBLISH_WORKFLOW_ENABLED === "true"}
         requestKey={randomUUID()}
         revisions={revisions}
+        templates={templates}
       />
     </main>
   );
