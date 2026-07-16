@@ -2,9 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   cloneWorkspaceLayoutManifest,
+  createWorkspaceCustomBlock,
   embeddedWorkspaceLayoutManifest,
+  inspectWorkspaceLayoutManifest,
   resolveVisibleWorkspaceTab,
   validateWorkspaceLayoutManifest,
+  workspaceCustomBlocks,
+  workspaceLayoutSettings,
   workspaceLayoutRegistry,
   workspaceSectionState,
 } from "../../src/lib/workspace-layout.ts";
@@ -31,6 +35,7 @@ test("layout manifests may reorder registered tabs and sections", () => {
   assert.equal(result.ok && result.value.tabs[0].id, "contact");
   assert.deepEqual(workspaceSectionState(manifest, "review", "methodology"), {
     order: 0,
+    presentation: undefined,
     visible: true,
   });
 });
@@ -86,4 +91,106 @@ test("hidden and unknown requested tabs fall back to Map", () => {
   assert.equal(resolveVisibleWorkspaceTab(manifest, "history"), "map");
   assert.equal(resolveVisibleWorkspaceTab(manifest, "not-a-tab"), "map");
   assert.equal(resolveVisibleWorkspaceTab(manifest), "map");
+});
+test("legacy schema-v1 manifests remain valid without optional builder settings", () => {
+  const manifest = cloneWorkspaceLayoutManifest();
+  delete manifest.settings;
+  manifest.tabs.forEach((tab) => {
+    delete tab.settings;
+    tab.sections.forEach((section) => { delete section.presentation; });
+  });
+
+  assert.equal(validateWorkspaceLayoutManifest(manifest).ok, true);
+  assert.deepEqual(workspaceLayoutSettings(manifest), {
+    contentWidth: "wide",
+    defaultTab: "map",
+    notesDefault: "collapsed",
+    tabStyle: "bar",
+    theme: "civic",
+  });
+});
+
+test("approved custom blocks and responsive presentation settings validate", () => {
+  const manifest = cloneWorkspaceLayoutManifest();
+  manifest.settings = {
+    contentWidth: "full",
+    defaultTab: "history",
+    notesDefault: "expanded",
+    tabStyle: "pills",
+    theme: "warm",
+  };
+  const history = manifest.tabs.find((tab) => tab.id === "history");
+  assert.ok(history);
+  history.settings = { density: "spacious", notesPosition: "below" };
+  history.sections[0].presentation = {
+    density: "compact",
+    emphasis: "prominent",
+    surface: "accent",
+  };
+  const narrative = createWorkspaceCustomBlock("narrative", 7);
+  narrative.presentation.span = { desktop: 6, mobile: 12, tablet: 6 };
+  history.sections.push(narrative);
+
+  const result = validateWorkspaceLayoutManifest(manifest);
+  assert.equal(result.ok, true);
+  assert.equal(workspaceCustomBlocks(manifest, "history")[0].id, "custom-narrative-7");
+  assert.equal(workspaceSectionState(manifest, "history", "historical-summary").presentation.surface, "accent");
+  assert.equal(resolveVisibleWorkspaceTab(manifest), "history");
+});
+
+test("custom blocks are supplemental, bounded, and restricted to safe links", () => {
+  const unsafeLink = cloneWorkspaceLayoutManifest();
+  const history = unsafeLink.tabs.find((tab) => tab.id === "history");
+  assert.ok(history);
+  const linkList = createWorkspaceCustomBlock("link-list", 8);
+  linkList.items[0].href = "//example.invalid/escape";
+  history.sections.push(linkList);
+  const unsafeResult = validateWorkspaceLayoutManifest(unsafeLink);
+  assert.equal(unsafeResult.ok, false);
+  assert.match(unsafeResult.errors.join(" "), /must use \/, https:\/\//);
+
+  const interleaved = cloneWorkspaceLayoutManifest();
+  interleaved.tabs
+    .find((tab) => tab.id === "history")
+    .sections.unshift(createWorkspaceCustomBlock("callout", 9));
+  const orderResult = validateWorkspaceLayoutManifest(interleaved);
+  assert.equal(orderResult.ok, false);
+  assert.match(orderResult.errors.join(" "), /must appear before custom blocks/);
+
+  const invalidSpan = cloneWorkspaceLayoutManifest();
+  invalidSpan.tabs.find((tab) => tab.id === "history").sections[0].presentation = {
+    span: { desktop: 5 },
+  };
+  const spanResult = validateWorkspaceLayoutManifest(invalidSpan);
+  assert.equal(spanResult.ok, false);
+  assert.match(spanResult.errors.join(" "), /desktop span must be 4, 6, 8, or 12/);
+});
+
+test("visible tabs retain a visible production section and defaults stay visible", () => {
+  const manifest = cloneWorkspaceLayoutManifest();
+  const history = manifest.tabs.find((tab) => tab.id === "history");
+  assert.ok(history);
+  history.sections.forEach((section) => { section.visible = false; });
+  history.sections.push(createWorkspaceCustomBlock("narrative", 10));
+  manifest.settings.defaultTab = "history";
+
+  const result = validateWorkspaceLayoutManifest(manifest);
+  assert.equal(result.ok, false);
+  assert.match(result.errors.join(" "), /must retain at least one visible production section/);
+
+  history.visible = false;
+  const hiddenDefaultResult = validateWorkspaceLayoutManifest(manifest);
+  assert.equal(hiddenDefaultResult.ok, false);
+  assert.match(hiddenDefaultResult.errors.join(" "), /defaultTab must reference a visible tab/);
+});
+
+test("pre-publish inspection identifies editorial review and protected surfaces", () => {
+  const manifest = cloneWorkspaceLayoutManifest();
+  manifest.tabs
+    .find((tab) => tab.id === "history")
+    .sections.push(createWorkspaceCustomBlock("callout", 11));
+
+  const issues = inspectWorkspaceLayoutManifest(manifest);
+  assert.equal(issues.some((issue) => issue.id.startsWith("editorial-history-") && issue.severity === "warning"), true);
+  assert.equal(issues.some((issue) => issue.id === "required-surfaces" && issue.severity === "info"), true);
 });

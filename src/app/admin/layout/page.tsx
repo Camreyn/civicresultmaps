@@ -87,11 +87,11 @@ export default async function LayoutAdminPage() {
         <div>
           <p>Private administration</p>
           <h1>Workspace layout control room</h1>
-          <span>Signed in as {admin.actor.email}. Public content and caveats remain code-owned.</span>
+          <span>Signed in as {admin.actor.email}. Build responsive layouts with protected public-interest trust surfaces.</span>
         </div>
         <div className={styles.statusRow}>
           <span>Schema v1</span>
-          <span>Registry v1</span>
+          <span>Builder controls v2</span>
           <span>{process.env.EDGE_CONFIG ? "Edge Config connected" : "Embedded runtime fallback"}</span>
         </div>
       </header>

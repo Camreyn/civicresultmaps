@@ -1,14 +1,35 @@
 # Workspace Layout Operations
 
-The workspace layout system lets an allowlisted operator change tab and section order or visibility without redeploying application code. It does not make copy, components, data, permissions, or caveats editable.
+The workspace layout system is a constrained production page builder for allowlisted operators. It can reshape the public workspace without a code deployment while keeping election data, verified production behavior, source caveats, permissions, and required trust surfaces code-owned.
+
+## Builder capabilities
+
+| Scope | Editable controls |
+| --- | --- |
+| Workspace | Theme, tab style, content width, default tab, and the initial Data Notes state |
+| Tab | Order, visibility where allowed, section spacing, and Data Notes position |
+| Production component | Order, visibility where allowed, surface, emphasis, and Results Map height |
+| Approved custom block | Add, reorder, hide, delete, edit content, set density, surface, emphasis, and responsive width |
+| Review workflow | Desktop/tablet/mobile preview, before/after/split comparison, undo, redo, validation, immutable save, draft preview, and protected publication |
+
+The approved custom component library contains Narrative, Callout, Metric strip, Link list, and Divider.
+
+The canvas is a production-shaped preview with representative fixtures. It mirrors navigation, content hierarchy, responsive widths, hidden states, and the fixed Data Notes surface; it does not duplicate live election queries inside the admin page. Use **Draft preview** after saving to inspect the exact public runtime with real data before publication.
+
+Production component width and internal spacing remain tied to their tested application layouts. Responsive 12-column width controls apply to approved custom blocks: desktop supports 4, 6, 8, or 12 columns; tablet supports 6 or 12; mobile is always 12.
 
 ## Safety boundaries
 
-- The registry in `src/lib/workspace-layout.ts` is the code-owned list of allowed tabs and sections.
+- The registry in `src/lib/workspace-layout.ts` is the code-owned list of allowed tabs and production sections.
 - Map, Review Center, Data & Sources, and Review Guide are required tabs.
-- Results Map and Source Provenance are required sections.
-- Data Notes stays outside the manifest and cannot be hidden or reordered.
+- Results Map and Source Provenance are required production sections.
+- Every visible tab must retain at least one visible production section.
+- Data Notes remains a fixed trust surface. Operators may change its initial open state and side/below placement, but not its source-driven content or remove it.
+- Custom blocks are supplemental, always follow production components, and are limited to 12 per tab.
+- Custom text is escaped. Links accept only safe internal paths, HTTPS URLs, and email links; protocol-relative links such as `//example.com` are rejected.
+- Verified labels, data queries, interactions, source caveats, and authorization remain code-owned.
 - Every manifest is validated against the exact registry and protected by a SHA-256 digest.
+- Invalid editor state blocks saving.
 - Runtime precedence is authorized draft preview, enabled candidate, stable, then the embedded default.
 - Missing, malformed, stale, or tampered remote data fails closed to the next safe source.
 
@@ -16,7 +37,7 @@ The workspace layout system lets an allowlisted operator change tab and section 
 
 | Surface | Responsibility |
 | --- | --- |
-| `/admin/layout` | Clerk-protected reorder, visibility, revision, preview, and publication UI |
+| `/admin/layout` | Clerk-protected page builder, validation, immutable revisions, preview, and publication requests |
 | Neon tables | Immutable revisions, idempotent publication requests, and audit events |
 | Vercel Edge Config | `workspaceLayoutStable` and `workspaceLayoutCandidate` envelopes |
 | Vercel Flags | Browser-stable evaluation of `workspace-layout-candidate` |
@@ -43,7 +64,7 @@ Set these application environment variables:
 | --- | --- |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk browser configuration |
 | `CLERK_SECRET_KEY` | Clerk server authentication |
-| `UI_LAYOUT_ADMIN_EMAILS` | Comma-separated, lowercase or mixed-case verified email allowlist |
+| `UI_LAYOUT_ADMIN_EMAILS` | Comma-separated verified email allowlist; matching is case-insensitive |
 
 Authorization is checked on the page and again in every Server Action. A signed-in user needs at least one verified Clerk email that matches the allowlist.
 
@@ -75,15 +96,26 @@ The application dispatch token is separate. Configure `UI_LAYOUT_GITHUB_TOKEN`, 
 
 Keep `UI_LAYOUT_PUBLISH_WORKFLOW_ENABLED=false` until the workflow and protected environments exist on the selected publish ref. Recorded requests remain safely queued while dispatch is disabled. Set it to `true` only after a preview publication has succeeded.
 
-## Operator workflow
+## Builder workflow
 
-1. Open `/admin/layout` and reorder tabs or sections by dragging or using the arrow buttons.
-2. Add a change summary and save. This creates a new immutable child revision; concurrent stale edits are rejected.
-3. Use **Draft preview** to set an eight-hour, HTTP-only admin cookie and inspect the revision on the public workspace. The banner provides an exit action.
-4. Request **Stage candidate** in preview. The protected workflow disables the candidate flag, writes only `workspaceLayoutCandidate`, reads the resulting Edge Config digest, and records the outcome.
-5. Enable a small candidate rollout in Vercel Flags and observe the preview deployment. The `crm_layout_visitor` HTTP-only cookie keeps evaluation consistent for a browser.
-6. Request **Promote stable** after review. The publisher disables the candidate flag first, then writes the same envelope to stable and candidate so there is no stale candidate waiting behind the flag.
-7. Repeat the protected production request and approval only after preview verification passes.
+1. Open `/admin/layout` and choose a tab in the left Structure pane.
+2. Drag tabs or components with the six-dot handle. Keyboard-accessible Earlier/Later controls are available in the inspector.
+3. Select a component or its gear to configure it in the right Inspector pane.
+4. Add approved blocks from the Component Library. Custom blocks stay after production components.
+5. Switch among Desktop, Tablet, and Mobile, then use Before, After, or Compare.
+6. Use Undo or Redo while editing. **Reset saved** restores the currently loaded saved manifest.
+7. Resolve all blocking pre-publish checks and review warnings about hidden surfaces or custom editorial copy.
+8. Enter a change summary and select **Save immutable revision**.
+
+Saving creates a child revision; it does not overwrite or publish the active layout.
+
+## Exact-runtime review and publication
+
+1. Select **Draft preview** beside a saved revision. This sets an eight-hour HTTP-only admin cookie and uses the real public renderer. The public banner provides an exit action.
+2. Request **Stage candidate** in preview. The protected workflow disables candidate exposure, writes only `workspaceLayoutCandidate`, reads back the Edge Config digest, and records the result.
+3. Enable a limited candidate rollout in Vercel Flags and inspect the preview deployment. The `crm_layout_visitor` HTTP-only cookie keeps evaluation stable for a browser.
+4. Request **Promote stable** only after draft and candidate review pass.
+5. Repeat the protected production request and approval after preview verification.
 
 The workflow accepts only a publication UUID and target environment. It reloads the immutable revision and action from Neon rather than accepting a manifest or action from workflow input.
 

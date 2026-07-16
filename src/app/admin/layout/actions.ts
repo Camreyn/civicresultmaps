@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireLayoutAdmin } from "@/lib/ui-layout-auth";
+import type { LayoutActionState } from "./layout-action-state";
 import {
   createLayoutPublication,
   createLayoutRevision,
@@ -23,14 +24,6 @@ import {
   WORKSPACE_LAYOUT_DRAFT_COOKIE,
   WORKSPACE_LAYOUT_DRAFT_MAX_AGE,
 } from "@/lib/workspace-layout-runtime";
-
-export type LayoutActionState = {
-  kind: "idle" | "success" | "error" | "conflict";
-  message: string;
-  revisionId?: string;
-};
-
-export const initialLayoutActionState: LayoutActionState = { kind: "idle", message: "" };
 
 export async function saveLayoutRevisionAction(
   _previous: LayoutActionState,

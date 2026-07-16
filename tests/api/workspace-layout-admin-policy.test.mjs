@@ -47,19 +47,28 @@ test("server authorization filters Clerk emails by verified status", () => {
   assert.match(exitRoute, /await requireLayoutAdmin\(\)/);
 });
 
-test("layout editor exposes an in-context preview with direct manipulation controls", () => {
-  const editor = readFileSync("src/app/admin/layout/layout-editor.tsx", "utf8");
+test("layout editor exposes a responsive constrained page builder", () => {
+  const editor = readFileSync("src/app/admin/layout/layout-editor-v2.tsx", "utf8");
+  const canvas = readFileSync("src/app/admin/layout/layout-builder-canvas.tsx", "utf8");
+  const inspector = readFileSync("src/app/admin/layout/layout-builder-inspector.tsx", "utf8");
+  const sidebar = readFileSync("src/app/admin/layout/layout-builder-sidebar.tsx", "utf8");
   const css = readFileSync("src/app/admin/layout/layout-editor.module.css", "utf8");
 
-  assert.match(editor, /function PreviewTabBar/);
-  assert.match(editor, /function PreviewWorkspaceBody/);
-  assert.match(editor, /GripVertical/);
-  assert.match(editor, /Settings2/);
-  assert.match(editor, /<dialog/);
-  assert.match(editor, /showModal\(\)/);
-  assert.match(editor, /Data Notes/);
-  assert.match(editor, /changes only order and visibility/);
-  assert.match(css, /\.workspacePreview/);
-  assert.match(css, /\.settingsDialog::backdrop/);
-  assert.match(css, /\.hiddenElement::after/);
+  assert.match(editor, /DragDropProvider/);
+  assert.match(editor, /undo/);
+  assert.match(editor, /redo/);
+  assert.match(editor, /Before - saved revision/);
+  assert.match(editor, /Pre-publish checks/);
+  assert.match(canvas, /ProductionFixture/);
+  assert.match(canvas, /GripVertical/);
+  assert.match(canvas, /Settings2/);
+  assert.match(canvas, /Data Notes/);
+  assert.match(sidebar, /workspaceComponentLibrary/);
+  assert.match(sidebar, /Approved components/);
+  assert.match(inspector, /Responsive placement/);
+  assert.match(inspector, /Verified labels, data queries, source caveats/);
+  assert.match(css, /\.builderGrid/);
+  assert.match(css, /\.canvasGrid/);
+  assert.match(css, /\.compareGrid/);
+  assert.match(css, /\.inspectorPanel/);
 });
