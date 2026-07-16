@@ -46,3 +46,20 @@ test("server authorization filters Clerk emails by verified status", () => {
   assert.equal(actions.match(/await requireLayoutAdmin\(\)/g)?.length, 4);
   assert.match(exitRoute, /await requireLayoutAdmin\(\)/);
 });
+
+test("layout editor exposes an in-context preview with direct manipulation controls", () => {
+  const editor = readFileSync("src/app/admin/layout/layout-editor.tsx", "utf8");
+  const css = readFileSync("src/app/admin/layout/layout-editor.module.css", "utf8");
+
+  assert.match(editor, /function PreviewTabBar/);
+  assert.match(editor, /function PreviewWorkspaceBody/);
+  assert.match(editor, /GripVertical/);
+  assert.match(editor, /Settings2/);
+  assert.match(editor, /<dialog/);
+  assert.match(editor, /showModal\(\)/);
+  assert.match(editor, /Data Notes/);
+  assert.match(editor, /changes only order and visibility/);
+  assert.match(css, /\.workspacePreview/);
+  assert.match(css, /\.settingsDialog::backdrop/);
+  assert.match(css, /\.hiddenElement::after/);
+});

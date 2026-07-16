@@ -6,13 +6,16 @@ import {
   ArrowDown,
   ArrowUp,
   Eye,
+  EyeOff,
   GripVertical,
   LockKeyhole,
   RotateCcw,
   Save,
   Send,
+  Settings2,
+  X,
 } from "lucide-react";
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import {
   initialLayoutActionState,
   requestLayoutPublicationAction,
@@ -66,6 +69,10 @@ const registryByTab = new Map<WorkspaceTabId, WorkspaceTabRegistryEntry>(
   workspaceLayoutRegistry.map((tab) => [tab.id, tab]),
 );
 
+type SettingsTarget =
+  | { kind: "tab"; tabId: WorkspaceTabId }
+  | { kind: "section"; sectionId: WorkspaceSectionId; tabId: WorkspaceTabId };
+
 function moveItem<T>(items: T[], from: number, to: number) {
   if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) return items;
   const result = [...items];
@@ -74,22 +81,24 @@ function moveItem<T>(items: T[], from: number, to: number) {
   return result;
 }
 
-function SortableItem({
+function SortablePreviewItem({
   children,
   dragId,
   group,
+  hidden,
   index,
   label,
-  last,
-  onMove,
+  onSettings,
+  variant,
 }: {
   children: React.ReactNode;
   dragId: string;
   group: string;
+  hidden: boolean;
   index: number;
   label: string;
-  last: boolean;
-  onMove: (delta: -1 | 1) => void;
+  onSettings: () => void;
+  variant: "section" | "tab";
 }) {
   const { handleRef, isDragSource, ref } = useSortable({
     id: dragId,
@@ -98,21 +107,229 @@ function SortableItem({
     type: group,
     accept: group,
   });
+
   return (
-    <li className={`${styles.sortableItem} ${isDragSource ? styles.dragging : ""}`} ref={ref}>
-      <div className={styles.rowControls}>
-        <button aria-label={`Drag ${label}`} className={styles.dragHandle} ref={handleRef} type="button">
+    <li
+      className={[
+        styles.previewSortable,
+        variant === "tab" ? styles.tabItem : styles.sectionItem,
+        hidden ? styles.hiddenElement : "",
+        isDragSource ? styles.dragging : "",
+      ].join(" ")}
+      ref={ref}
+    >
+      {children}
+      <div className={styles.elementTools}>
+        <button
+          aria-label={"Configure " + label}
+          onClick={onSettings}
+          title={"Configure " + label}
+          type="button"
+        >
+          <Settings2 aria-hidden size={16} />
+        </button>
+        <button
+          aria-label={"Drag " + label + " to a new position"}
+          className={styles.dragHandle}
+          ref={handleRef}
+          title={"Drag " + label}
+          type="button"
+        >
           <GripVertical aria-hidden size={18} />
         </button>
-        <button aria-label={`Move ${label} up`} disabled={index === 0} onClick={() => onMove(-1)} type="button">
-          <ArrowUp aria-hidden size={15} />
-        </button>
-        <button aria-label={`Move ${label} down`} disabled={last} onClick={() => onMove(1)} type="button">
-          <ArrowDown aria-hidden size={15} />
-        </button>
       </div>
-      {children}
     </li>
+  );
+}
+
+function SectionPreviewContent({ sectionId }: { sectionId: WorkspaceSectionId }) {
+  if (sectionId === "results-map") {
+    return (
+      <div className={styles.mapPreview} aria-hidden>
+        <div className={styles.mapShape} />
+        <div className={styles.mapLegend}><i /><i /><i /><i /></div>
+      </div>
+    );
+  }
+
+  if (["historical-summary", "historical-charts", "indicators", "screening"].includes(sectionId)) {
+    return (
+      <div className={styles.chartPreview} aria-hidden>
+        <i /><i /><i /><i /><i />
+      </div>
+    );
+  }
+
+  if (["source-provenance", "source-plan", "source-records-request", "cvr-requests", "downloads", "api-links", "import-history"].includes(sectionId)) {
+    return (
+      <div className={styles.rowsPreview} aria-hidden>
+        <i /><i /><i />
+      </div>
+    );
+  }
+
+  if (["review-packet", "support-actions", "contact-options", "guided-workflows", "evidence-tools"].includes(sectionId)) {
+    return (
+      <div className={styles.actionsPreview} aria-hidden>
+        <i /><i /><i />
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.textPreview} aria-hidden>
+      <i /><i /><i />
+    </div>
+  );
+}
+
+function PreviewTabBar({
+  activeTabId,
+  manifest,
+  onSelect,
+  onSettings,
+}: {
+  activeTabId: WorkspaceTabId;
+  manifest: WorkspaceLayoutManifestV1;
+  onSelect: (tabId: WorkspaceTabId) => void;
+  onSettings: (target: SettingsTarget) => void;
+}) {
+  return (
+    <ol aria-label="Workspace tabs" className={styles.previewTabBar}>
+      {manifest.tabs.map((tab, tabIndex) => {
+        const registry = registryByTab.get(tab.id)!;
+        return (
+          <SortablePreviewItem
+            dragId={"tab:" + tab.id}
+            group="layout-tabs"
+            hidden={!tab.visible}
+            index={tabIndex}
+            key={tab.id}
+            label={registry.label}
+            onSettings={() => onSettings({ kind: "tab", tabId: tab.id })}
+            variant="tab"
+          >
+            <button
+              aria-pressed={activeTabId === tab.id}
+              className={[
+                styles.previewTabButton,
+                activeTabId === tab.id ? styles.activeTabButton : "",
+              ].join(" ")}
+              onClick={() => onSelect(tab.id)}
+              type="button"
+            >
+              <span>{registry.label}</span>
+              {!tab.visible && (
+                <small className={styles.hiddenBadge}><EyeOff aria-hidden size={11} /> Hidden</small>
+              )}
+            </button>
+          </SortablePreviewItem>
+        );
+      })}
+    </ol>
+  );
+}
+
+function PreviewSectionList({
+  onSettings,
+  registry,
+  tab,
+}: {
+  onSettings: (target: SettingsTarget) => void;
+  registry: WorkspaceTabRegistryEntry;
+  tab: WorkspaceLayoutManifestV1["tabs"][number];
+}) {
+  return (
+    <ol aria-label={registry.label + " sections"} className={styles.previewSectionList}>
+      {tab.sections.map((section, sectionIndex) => {
+        const sectionRegistry = registry.sections.find((item) => item.id === section.id)!;
+        return (
+          <SortablePreviewItem
+            dragId={"section:" + tab.id + ":" + section.id}
+            group={"layout-sections-" + tab.id}
+            hidden={!section.visible}
+            index={sectionIndex}
+            key={section.id}
+            label={sectionRegistry.label}
+            onSettings={() => onSettings({
+              kind: "section",
+              sectionId: section.id,
+              tabId: tab.id,
+            })}
+            variant="section"
+          >
+            <article aria-label={sectionRegistry.label + " preview"} className={styles.previewSection}>
+              <header>
+                <div>
+                  <span>Section {sectionIndex + 1}</span>
+                  <h3>{sectionRegistry.label}</h3>
+                </div>
+                <div className={styles.previewBadges}>
+                  {!section.visible && (
+                    <small className={styles.hiddenBadge}><EyeOff aria-hidden size={11} /> Hidden</small>
+                  )}
+                  {sectionRegistry.required && (
+                    <small className={styles.requiredBadge}><LockKeyhole aria-hidden size={11} /> Required</small>
+                  )}
+                </div>
+              </header>
+              <SectionPreviewContent sectionId={section.id} />
+            </article>
+          </SortablePreviewItem>
+        );
+      })}
+    </ol>
+  );
+}
+
+function PreviewWorkspaceBody({
+  onSettings,
+  registry,
+  tab,
+}: {
+  onSettings: (target: SettingsTarget) => void;
+  registry: WorkspaceTabRegistryEntry;
+  tab: WorkspaceLayoutManifestV1["tabs"][number];
+}) {
+  return (
+    <>
+      {!tab.visible && (
+        <p className={styles.hiddenWarning} role="status">
+          <EyeOff aria-hidden size={15} />
+          This tab is hidden from the public site. It remains here so you can inspect, move, or restore it.
+        </p>
+      )}
+
+      <div className={styles.previewWorkspaceBody}>
+        <main className={styles.previewMain}>
+          <div className={styles.previewContext}>
+            <div>
+              <span>Selected tab</span>
+              <h3>{registry.label}</h3>
+            </div>
+            <small>{tab.sections.filter((section) => section.visible).length} visible sections</small>
+          </div>
+          <PreviewSectionList onSettings={onSettings} registry={registry} tab={tab} />
+        </main>
+
+        <aside className={styles.previewNotes} aria-label="Fixed Data Notes preview">
+          <div className={styles.previewNotesHeading}>
+            <span>Fixed panel</span>
+            <LockKeyhole aria-label="Locked in place" size={14} />
+          </div>
+          <h3>Data Notes</h3>
+          <p>Source caveats and coverage notes stay visible beside every workspace tab.</p>
+          <div className={styles.previewNoteCard}>
+            <strong>Source coverage</strong>
+            <span>Official-source context</span>
+          </div>
+          <div className={styles.previewNoteCard}>
+            <strong>Reporting grain</strong>
+            <span>Jurisdiction details</span>
+          </div>
+        </aside>
+      </div>
+    </>
   );
 }
 
@@ -126,6 +343,10 @@ export function LayoutEditor({
   revisions,
 }: LayoutEditorProps) {
   const [manifest, setManifest] = useState(() => cloneWorkspaceLayoutManifest(baseManifest));
+  const [activeTabId, setActiveTabId] = useState<WorkspaceTabId>(
+    () => baseManifest.tabs.find((tab) => tab.visible)?.id ?? baseManifest.tabs[0]?.id ?? "map",
+  );
+  const [settingsTarget, setSettingsTarget] = useState<SettingsTarget | null>(null);
   const [changeSummary, setChangeSummary] = useState("");
   const [selectedRevisionId, setSelectedRevisionId] = useState(parentRevisionId ?? revisions[0]?.id ?? "");
   const [environment, setEnvironment] = useState<"preview" | "production">("preview");
@@ -134,7 +355,52 @@ export function LayoutEditor({
     requestLayoutPublicationAction,
     initialLayoutActionState,
   );
+  const settingsDialogRef = useRef<HTMLDialogElement>(null);
   const dirty = useMemo(() => JSON.stringify(manifest) !== JSON.stringify(baseManifest), [baseManifest, manifest]);
+  const activeTab = manifest.tabs.find((tab) => tab.id === activeTabId) ?? manifest.tabs[0]!;
+  const activeRegistry = registryByTab.get(activeTab.id)!;
+  const settingsDetails = useMemo(() => {
+    if (!settingsTarget) return null;
+    const tabIndex = manifest.tabs.findIndex((tab) => tab.id === settingsTarget.tabId);
+    const tab = manifest.tabs[tabIndex];
+    const tabRegistry = registryByTab.get(settingsTarget.tabId);
+    if (!tab || !tabRegistry) return null;
+
+    if (settingsTarget.kind === "tab") {
+      return {
+        cannotHideLast: false,
+        index: tabIndex,
+        itemCount: manifest.tabs.length,
+        label: tabRegistry.label,
+        required: Boolean(tabRegistry.required),
+        target: settingsTarget,
+        visible: tab.visible,
+      };
+    }
+
+    const sectionIndex = tab.sections.findIndex((section) => section.id === settingsTarget.sectionId);
+    const section = tab.sections[sectionIndex];
+    const sectionRegistry = tabRegistry.sections.find((item) => item.id === settingsTarget.sectionId);
+    if (!section || !sectionRegistry) return null;
+    const visibleCount = tab.sections.filter((item) => item.visible).length;
+
+    return {
+      cannotHideLast: tab.visible && section.visible && visibleCount === 1,
+      index: sectionIndex,
+      itemCount: tab.sections.length,
+      label: sectionRegistry.label,
+      required: Boolean(sectionRegistry.required),
+      target: settingsTarget,
+      visible: section.visible,
+    };
+  }, [manifest, settingsTarget]);
+
+  useEffect(() => {
+    const dialog = settingsDialogRef.current;
+    if (!dialog) return;
+    if (settingsTarget && !dialog.open) dialog.showModal();
+    if (!settingsTarget && dialog.open) dialog.close();
+  }, [settingsTarget]);
 
   function moveTab(index: number, delta: -1 | 1) {
     setManifest((current) => ({ ...current, tabs: moveItem(current.tabs, index, index + delta) }));
@@ -196,19 +462,42 @@ export function LayoutEditor({
     }
   }
 
+  function moveSettingsTarget(delta: -1 | 1) {
+    if (!settingsDetails) return;
+    if (settingsDetails.target.kind === "tab") {
+      moveTab(settingsDetails.index, delta);
+      return;
+    }
+    moveSection(settingsDetails.target.tabId, settingsDetails.index, delta);
+  }
+
+  function toggleSettingsTarget() {
+    if (!settingsDetails) return;
+    if (settingsDetails.target.kind === "tab") {
+      toggleTab(settingsDetails.target.tabId);
+      return;
+    }
+    toggleSection(settingsDetails.target.tabId, settingsDetails.target.sectionId);
+  }
+
   return (
     <div className={styles.editorShell}>
       <section className={styles.editorPanel}>
         <div className={styles.panelHeading}>
           <div>
-            <p>Workspace manifest</p>
-            <h2>Order and visibility</h2>
-            <span>Drag rows or use the arrow buttons. Text, icons, and content remain locked in code.</span>
+            <p>Visual workspace editor</p>
+            <h2>Arrange the live workspace</h2>
+            <span>Select a tab to inspect its sections. Use each six-dot handle to move it or the gear to change its settings.</span>
           </div>
           <button
             className={styles.secondaryButton}
             disabled={!dirty}
-            onClick={() => setManifest(cloneWorkspaceLayoutManifest(embeddedWorkspaceLayoutManifest))}
+            onClick={() => {
+              const resetManifest = cloneWorkspaceLayoutManifest(embeddedWorkspaceLayoutManifest);
+              setManifest(resetManifest);
+              setActiveTabId(resetManifest.tabs.find((tab) => tab.visible)?.id ?? "map");
+              setSettingsTarget(null);
+            }}
             type="button"
           >
             <RotateCcw aria-hidden size={15} /> Reset default
@@ -217,73 +506,114 @@ export function LayoutEditor({
 
         <div className={styles.fixedNotice}>
           <LockKeyhole aria-hidden size={17} />
-          <span><strong>Data Notes is fixed.</strong> It stays outside the editable manifest so caveats cannot be hidden or reordered away.</span>
+          <span><strong>Safety rails stay active.</strong> Required tabs and sections remain visible, and Data Notes stays fixed beside the workspace.</span>
         </div>
 
         <DragDropProvider onDragEnd={handleDragEnd}>
-          <ol className={styles.tabList}>
-            {manifest.tabs.map((tab, tabIndex) => {
-              const registry = registryByTab.get(tab.id)!;
-              return (
-                <SortableItem
-                  dragId={`tab:${tab.id}`}
-                  group="layout-tabs"
-                  index={tabIndex}
-                  key={tab.id}
-                  label={registry.label}
-                  last={tabIndex === manifest.tabs.length - 1}
-                  onMove={(delta) => moveTab(tabIndex, delta)}
-                >
-                  <div className={styles.itemBody}>
-                    <div className={styles.itemHeading}>
-                      <label>
-                        <input
-                          checked={tab.visible}
-                          disabled={Boolean(registry.required)}
-                          onChange={() => toggleTab(tab.id)}
-                          type="checkbox"
-                        />
-                        <strong>{registry.label}</strong>
-                      </label>
-                      {registry.required && <span className={styles.requiredBadge}><LockKeyhole size={12} /> Required</span>}
-                    </div>
-                    <ol className={styles.sectionList}>
-                      {tab.sections.map((section, sectionIndex) => {
-                        const sectionRegistry = registry.sections.find((item) => item.id === section.id)!;
-                        const visibleCount = tab.sections.filter((item) => item.visible).length;
-                        const cannotHideLast = tab.visible && section.visible && visibleCount === 1;
-                        return (
-                          <SortableItem
-                            dragId={`section:${tab.id}:${section.id}`}
-                            group={`layout-sections-${tab.id}`}
-                            index={sectionIndex}
-                            key={section.id}
-                            label={sectionRegistry.label}
-                            last={sectionIndex === tab.sections.length - 1}
-                            onMove={(delta) => moveSection(tab.id, sectionIndex, delta)}
-                          >
-                            <div className={styles.sectionBody}>
-                              <label>
-                                <input
-                                  checked={section.visible}
-                                  disabled={Boolean(sectionRegistry.required) || cannotHideLast}
-                                  onChange={() => toggleSection(tab.id, section.id)}
-                                  type="checkbox"
-                                />
-                                <span>{sectionRegistry.label}</span>
-                              </label>
-                              {sectionRegistry.required && <LockKeyhole aria-label="Required section" size={13} />}
-                            </div>
-                          </SortableItem>
-                        );
-                      })}
-                    </ol>
-                  </div>
-                </SortableItem>
-              );
-            })}
-          </ol>
+          <div aria-label="Workspace layout preview" className={styles.workspacePreview}>
+            <header className={styles.previewChrome}>
+              <div className={styles.previewBrand}>
+                <span>CivicResultMaps</span>
+                <strong>Public workspace preview</strong>
+              </div>
+              <div className={styles.previewFilters} aria-label="Example production context">
+                <span>2024 General</span>
+                <span>United States</span>
+              </div>
+            </header>
+            <PreviewTabBar
+              activeTabId={activeTab.id}
+              manifest={manifest}
+              onSelect={setActiveTabId}
+              onSettings={setSettingsTarget}
+            />
+            <PreviewWorkspaceBody
+              onSettings={setSettingsTarget}
+              registry={activeRegistry}
+              tab={activeTab}
+            />
+          </div>
         </DragDropProvider>
+
+        <dialog
+          aria-labelledby={settingsDetails ? "layout-settings-title" : undefined}
+          className={styles.settingsDialog}
+          onCancel={(event) => {
+            event.preventDefault();
+            setSettingsTarget(null);
+          }}
+          onClose={() => setSettingsTarget(null)}
+          ref={settingsDialogRef}
+        >
+          {settingsDetails && (
+            <div className={styles.settingsCard}>
+              <header className={styles.settingsHeader}>
+                <div>
+                  <span>{settingsDetails.target.kind === "tab" ? "Tab settings" : "Section settings"}</span>
+                  <h2 id="layout-settings-title">{settingsDetails.label}</h2>
+                </div>
+                <button aria-label="Close settings" onClick={() => setSettingsTarget(null)} type="button">
+                  <X aria-hidden size={18} />
+                </button>
+              </header>
+
+              <div className={styles.settingsBody}>
+                <label className={styles.visibilitySetting}>
+                  <div>
+                    <strong>Show on the public site</strong>
+                    <span>Hidden items remain visible in this editor so they can be restored.</span>
+                  </div>
+                  <input
+                    checked={settingsDetails.visible}
+                    disabled={settingsDetails.required || settingsDetails.cannotHideLast}
+                    onChange={toggleSettingsTarget}
+                    type="checkbox"
+                  />
+                  <span aria-hidden className={styles.toggleControl}><i /></span>
+                </label>
+
+                {(settingsDetails.required || settingsDetails.cannotHideLast) && (
+                  <div className={styles.lockedSetting}>
+                    <LockKeyhole aria-hidden size={16} />
+                    <span>
+                      {settingsDetails.required
+                        ? "This element is required and cannot be hidden."
+                        : "A visible tab must keep at least one visible section."}
+                    </span>
+                  </div>
+                )}
+
+                <div className={styles.positionSetting}>
+                  <div>
+                    <strong>Position</strong>
+                    <span>Move it one place at a time, or close this window and use the six-dot handle.</span>
+                  </div>
+                  <div>
+                    <button disabled={settingsDetails.index === 0} onClick={() => moveSettingsTarget(-1)} type="button">
+                      <ArrowUp aria-hidden size={15} /> Earlier
+                    </button>
+                    <button
+                      disabled={settingsDetails.index === settingsDetails.itemCount - 1}
+                      onClick={() => moveSettingsTarget(1)}
+                      type="button"
+                    >
+                      <ArrowDown aria-hidden size={15} /> Later
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.codeOwnedNotice}>
+                  <LockKeyhole aria-hidden size={15} />
+                  <span>Its label, icon, text, and data remain code-owned. This editor changes only order and visibility.</span>
+                </div>
+              </div>
+
+              <footer className={styles.settingsFooter}>
+                <button onClick={() => setSettingsTarget(null)} type="button">Done</button>
+              </footer>
+            </div>
+          )}
+        </dialog>
 
         <form action={saveAction} className={styles.saveForm}>
           <input name="manifest" type="hidden" value={JSON.stringify(manifest)} />
