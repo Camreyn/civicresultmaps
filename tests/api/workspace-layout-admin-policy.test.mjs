@@ -2,9 +2,19 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  isPrivateAdminPath,
   parseLayoutAdminAllowlist,
   selectAuthorizedLayoutAdminEmail,
 } from "../../src/lib/ui-layout-admin-policy.ts";
+
+test("Clerk middleware is scoped to private admin routes", () => {
+  assert.equal(isPrivateAdminPath("/"), false);
+  assert.equal(isPrivateAdminPath("/api/states"), false);
+  assert.equal(isPrivateAdminPath("/administrator"), false);
+  assert.equal(isPrivateAdminPath("/admin"), true);
+  assert.equal(isPrivateAdminPath("/admin/layout"), true);
+  assert.equal(isPrivateAdminPath("/admin/sign-in"), true);
+});
 
 test("layout admin allowlist is normalized and fails closed", () => {
   assert.deepEqual([...parseLayoutAdminAllowlist(undefined)], []);

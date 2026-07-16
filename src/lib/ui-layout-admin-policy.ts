@@ -7,6 +7,10 @@ export function parseLayoutAdminAllowlist(value: string | undefined) {
   );
 }
 
+export function isPrivateAdminPath(pathname: string) {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
 export function selectAuthorizedLayoutAdminEmail(
   verifiedEmails: string[],
   allowlistValue: string | undefined,
