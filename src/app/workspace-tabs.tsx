@@ -25,14 +25,17 @@ import {
   TriangleAlert,
   X,
 } from "lucide-react";
-import type { ComponentType, SVGProps } from "react";
+import type { ComponentType, CSSProperties, SVGProps } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
+import { WorkspaceLayoutBlock } from "./workspace-layout-blocks";
 import { rowsToCsv } from "@/lib/csv";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
 import {
+  workspaceCustomBlocks,
+  workspaceLayoutSettings,
   workspaceSectionState,
   type WorkspaceLayoutManifestV1,
   type WorkspaceSectionId,
@@ -2610,10 +2613,20 @@ function layoutSectionProps(
   sectionId: WorkspaceSectionId,
 ) {
   const state = workspaceSectionState(manifest, tabId, sectionId);
+  const span = state.presentation?.span;
   return {
+    "data-layout-density": state.presentation?.density ?? "comfortable",
+    "data-layout-emphasis": state.presentation?.emphasis ?? "standard",
+    "data-layout-map-height": state.presentation?.mapHeight,
     "data-layout-section": `${tabId}:${sectionId}`,
+    "data-layout-surface": state.presentation?.surface ?? "panel",
     hidden: !state.visible,
-    style: { order: state.order },
+    style: {
+      "--layout-span-desktop": span?.desktop ?? 12,
+      "--layout-span-mobile": span?.mobile ?? 12,
+      "--layout-span-tablet": span?.tablet ?? 12,
+      order: state.order,
+    } as CSSProperties,
   };
 }
 
@@ -2657,6 +2670,7 @@ export function WorkspaceTabs({
   turnoutRows,
   voteMethodRows,
 }: WorkspaceTabsProps) {
+  const layoutSettings = workspaceLayoutSettings(layoutManifest);
   const layoutTabs = useMemo(
     () => layoutManifest.tabs
       .filter((tab) => tab.visible)
@@ -2694,10 +2708,16 @@ export function WorkspaceTabs({
   ]);
   const [acknowledgedChartKeys, setAcknowledgedChartKeys] = useState<string[]>([]);
   const [requestGuideOpen, setRequestGuideOpen] = useState(false);
-  const [isDataNotesCollapsed, setIsDataNotesCollapsed] = useState(true);
+  const [isDataNotesCollapsed, setIsDataNotesCollapsed] = useState(
+    () => layoutSettings.notesDefault !== "expanded",
+  );
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
   const [reviewView, setReviewView] = useState<ReviewView>(() => layoutReviewViewOptions[0]?.key ?? "overview");
+  const activeLayoutTab = layoutManifest.tabs.find((tab) => tab.id === activeTab);
+  const activeLayoutDensity = activeLayoutTab?.settings?.density ?? "comfortable";
+  const activeNotesPosition = activeLayoutTab?.settings?.notesPosition ?? "side";
+  const activeCustomBlocks = workspaceCustomBlocks(layoutManifest, activeTab);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -3862,8 +3882,19 @@ export function WorkspaceTabs({
     trend ? scatterY(clamp(trend.intercept + trend.slope * x, 0, 100)) : null;
 
   return (
-    <section className="workspace-tabs" data-tour="workspace" aria-label={`${stateName} workspace`}>
-      <nav className="tab-bar" data-tour="tab-bar" aria-label="Workspace sections">
+    <section
+      aria-label={`${stateName} workspace`}
+      className="workspace-tabs"
+      data-layout-content-width={layoutSettings.contentWidth}
+      data-layout-theme={layoutSettings.theme}
+      data-tour="workspace"
+    >
+      <nav
+        aria-label="Workspace sections"
+        className="tab-bar"
+        data-layout-tab-style={layoutSettings.tabStyle}
+        data-tour="tab-bar"
+      >
         <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
         {layoutTabs.map((tab) => {
           const Icon = tab.icon;
@@ -3887,7 +3918,11 @@ export function WorkspaceTabs({
           );
         })}
       </nav>
-      <div className={`workspace-body ${isDataNotesCollapsed ? "notes-collapsed" : ""}`}>
+      <div
+        className={`workspace-body ${isDataNotesCollapsed ? "notes-collapsed" : ""}`}
+        data-layout-density={activeLayoutDensity}
+        data-layout-notes-position={activeNotesPosition}
+      >
         <main className="workspace-main">
           {activeTab === "map" && (
         <div className="tab-panel-content">
@@ -6494,6 +6529,13 @@ export function WorkspaceTabs({
           </section>
         </div>
       )}
+          {activeCustomBlocks.length > 0 && (
+            <div aria-label="Custom workspace sections" className="workspace-custom-grid">
+              {activeCustomBlocks.map((block) => (
+                <WorkspaceLayoutBlock item={block} key={block.id} order={block.order} />
+              ))}
+            </div>
+          )}
         </main>
         <DataNotesPanel
           dataIssueUrl={dataIssueUrl}

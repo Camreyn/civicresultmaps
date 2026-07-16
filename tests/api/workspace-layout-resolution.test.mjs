@@ -55,6 +55,13 @@ test("invalid stable data fails closed to the embedded manifest", () => {
 test("manifest digests are stable across JSON object key order", () => {
   const manifest = cloneWorkspaceLayoutManifest();
   const reordered = {
+    settings: {
+      theme: manifest.settings.theme,
+      tabStyle: manifest.settings.tabStyle,
+      notesDefault: manifest.settings.notesDefault,
+      defaultTab: manifest.settings.defaultTab,
+      contentWidth: manifest.settings.contentWidth,
+    },
     tabs: manifest.tabs.map((tab) => ({
       sections: tab.sections.map((section) => ({ visible: section.visible, id: section.id })),
       visible: tab.visible,
@@ -66,6 +73,7 @@ test("manifest digests are stable across JSON object key order", () => {
 
   assert.equal(workspaceLayoutDigest(manifest), workspaceLayoutDigest(reordered));
 });
+
 test("envelopes detect digest tampering", () => {
   const value = envelope("revision-1");
   value.manifest.tabs[0].sections.reverse();
