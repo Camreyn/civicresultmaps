@@ -15,7 +15,8 @@ import { GlobalCountySearch } from "./global-county-search";
 import { NationalOverview } from "./national-overview";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
-import { resolveVisibleWorkspaceTab } from "@/lib/workspace-layout";
+import { toWorkspaceLayoutManifestV2 } from "@/lib/workspace-layout-v2";
+import { resolveVisibleWorkspaceTabV2 } from "@/lib/workspace-layout-v2-runtime";
 import { resolveWorkspaceLayout } from "@/lib/workspace-layout-runtime";
 import {
   getCoverageSummary,
@@ -158,9 +159,9 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const layoutResolution = await resolveWorkspaceLayout();
-  const layoutManifest = layoutResolution.envelope.manifest;
+  const layoutManifest = toWorkspaceLayoutManifestV2(layoutResolution.envelope.manifest);
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
-  const activeTab = resolveVisibleWorkspaceTab(layoutManifest, params?.tab);
+  const activeTab = resolveVisibleWorkspaceTabV2(layoutManifest, params?.tab);
   const requestedYear = parseYear(params?.year);
   const selectedYear = activeTab === "map" ? requestedYear : 2024;
   const requestedMapMode = mapModes.has(params?.mode ?? "")

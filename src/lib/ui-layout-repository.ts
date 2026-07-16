@@ -8,13 +8,10 @@ import {
   uiLayoutPublications,
   uiLayoutRevisions,
 } from "../db/schema";
-import { workspaceLayoutDigest } from "./workspace-layout-digest";
-import {
-  WORKSPACE_LAYOUT_REGISTRY_VERSION,
-  WORKSPACE_LAYOUT_SCHEMA_VERSION,
-  validateWorkspaceLayoutManifest,
-  type WorkspaceLayoutManifestV1,
-} from "./workspace-layout";
+import { uiLayoutRevisionAssets } from "../db/ui-layout-v3-schema";
+import { validateWorkspaceLayoutManifestAny, workspaceLayoutDigest } from "./workspace-layout-digest";
+import type { WorkspaceLayoutManifest } from "./workspace-layout-v2";
+import { collectLayoutAssetIds } from "./ui-layout-v3-repository";
 
 export type LayoutActor = {
   id: string;
@@ -59,10 +56,10 @@ export async function getLayoutRevision(revisionId: string) {
 export async function createLayoutRevision(input: {
   actor: LayoutActor;
   changeSummary: string;
-  manifest: WorkspaceLayoutManifestV1;
+  manifest: WorkspaceLayoutManifest;
   parentRevisionId: string | null;
 }) {
-  const validation = validateWorkspaceLayoutManifest(input.manifest);
+  const validation = validateWorkspaceLayoutManifestAny(input.manifest);
   if (!validation.ok) {
     throw new Error(validation.errors.join(" "));
   }
@@ -85,12 +82,15 @@ export async function createLayoutRevision(input: {
   const id = randomUUID();
   const auditId = randomUUID();
   const manifestDigest = workspaceLayoutDigest(validation.value);
+  const assetIds = validation.value.schemaVersion === 2
+    ? collectLayoutAssetIds(validation.value)
+    : [];
   try {
     await db.batch([
       db.insert(uiLayoutRevisions).values({
         id,
-        schemaVersion: WORKSPACE_LAYOUT_SCHEMA_VERSION,
-        registryVersion: WORKSPACE_LAYOUT_REGISTRY_VERSION,
+        schemaVersion: validation.value.schemaVersion,
+        registryVersion: validation.value.registryVersion,
         manifest: validation.value,
         manifestDigest,
         parentRevisionId: input.parentRevisionId,
@@ -106,6 +106,11 @@ export async function createLayoutRevision(input: {
         revisionId: id,
         metadata: { changeSummary, manifestDigest, parentRevisionId: input.parentRevisionId },
       }),
+      ...assetIds.map((assetId) => db.insert(uiLayoutRevisionAssets).values({
+        assetId,
+        id: randomUUID(),
+        revisionId: id,
+      })),
     ]);
   } catch (error) {
     if (isUniqueViolation(error)) {

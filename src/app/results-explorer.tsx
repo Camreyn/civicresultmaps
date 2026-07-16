@@ -2102,6 +2102,7 @@ export function ResultsExplorer({
               <label className="sort-select-label" htmlFor="result-sort">
                 <ArrowDownAZ aria-hidden size={16} />
                 <select
+                  aria-label="Sort results"
                   className="sort-select"
                   id="result-sort"
                   onChange={(event) => setSortKey(event.target.value as SortKey)}

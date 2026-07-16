@@ -72,3 +72,20 @@ test("layout editor exposes a responsive constrained page builder", () => {
   assert.match(css, /\.compareGrid/);
   assert.match(css, /\.inspectorPanel/);
 });
+
+test("builder v3 exposes responsive rows, rich content, media, and publication controls", () => {
+  const editor = readFileSync("src/app/admin/layout/layout-editor-v3.tsx", "utf8");
+  const richText = readFileSync("src/app/admin/layout/layout-rich-text-editor.tsx", "utf8");
+  const runtime = readFileSync("src/lib/workspace-layout-v2-runtime.ts", "utf8");
+  const css = readFileSync("src/app/admin/layout/layout-editor-v3.module.css", "utf8");
+
+  assert.match(editor, /workspaceCustomRows|createWorkspaceCustomNodeV2/);
+  assert.match(editor, /desktop.*tablet.*mobile/s);
+  assert.match(editor, /layout-media\//);
+  assert.match(editor, /name="publicationAction"/);
+  assert.match(editor, /VisibilityInspector/);
+  assert.match(richText, /LexicalComposer/);
+  assert.match(runtime, /workspaceCustomRowsV2/);
+  assert.match(css, /\.columns/);
+  assert.match(css, /\.inspector/);
+});

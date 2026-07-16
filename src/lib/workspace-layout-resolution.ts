@@ -2,15 +2,13 @@ import {
   createWorkspaceLayoutEnvelope,
   validateWorkspaceLayoutEnvelope,
 } from "./workspace-layout-digest.ts";
-import {
-  embeddedWorkspaceLayoutManifest,
-  type WorkspaceLayoutEnvelopeV1,
-} from "./workspace-layout.ts";
+import { embeddedWorkspaceLayoutManifest } from "./workspace-layout.ts";
+import type { WorkspaceLayoutEnvelope } from "./workspace-layout-v2.ts";
 
 export type WorkspaceLayoutSource = "draft" | "candidate" | "stable" | "embedded";
 
 export type WorkspaceLayoutResolution = {
-  envelope: WorkspaceLayoutEnvelopeV1;
+  envelope: WorkspaceLayoutEnvelope;
   fallbacks: string[];
   source: WorkspaceLayoutSource;
 };

@@ -6,26 +6,28 @@ The workspace layout system is a constrained production page builder for allowli
 
 | Scope | Editable controls |
 | --- | --- |
-| Workspace | Theme, tab style, content width, default tab, and the initial Data Notes state |
-| Tab | Order, visibility where allowed, section spacing, and Data Notes position |
-| Production component | Order, visibility where allowed, surface, emphasis, and Results Map height |
-| Approved custom block | Add, reorder, hide, delete, edit content, set density, surface, emphasis, and responsive width |
-| Review workflow | Desktop/tablet/mobile preview, before/after/split comparison, undo, redo, validation, immutable save, draft preview, and protected publication |
+| Workspace | Theme, accent, spacing, type scale, corners, shadows, tab style, content width, default tab, and initial Data Notes state |
+| Tab | Visibility where allowed, density, Data Notes position, and a responsive row/column hierarchy |
+| Production component | Move between columns, responsive width, visibility where allowed, surface, emphasis, density, and allowlisted variants |
+| Approved content block | Add, drag, hide, delete, format rich text, manage media, configure links/items, and attach visibility rules |
+| Review workflow | Desktop/tablet/mobile preview, undo, redo, validation, immutable save, reusable templates, draft preview, and protected publication |
 
-The approved custom component library contains Narrative, Callout, Metric strip, Link list, and Divider.
+The approved content library contains Heading, Rich text, Narrative, Callout, Metric strip, Link list, Button group, Image, Video, Accordion, and Divider. Images use the linked Vercel Blob store; video blocks accept only YouTube or Vimeo IDs.
 
 The canvas is a production-shaped preview with representative fixtures. It mirrors navigation, content hierarchy, responsive widths, hidden states, and the fixed Data Notes surface; it does not duplicate live election queries inside the admin page. Use **Draft preview** after saving to inspect the exact public runtime with real data before publication.
 
-Production component width and internal spacing remain tied to their tested application layouts. Responsive 12-column width controls apply to approved custom blocks: desktop supports 4, 6, 8, or 12 columns; tablet supports 6 or 12; mobile is always 12.
+Rows use a responsive 12-column grid. Desktop spans are 3, 4, 6, 8, 9, or 12; tablet spans are 6 or 12; mobile is always 12. Production behavior remains code-owned even when its position, presentation, or allowlisted variant changes.
 
 ## Safety boundaries
 
-- The registry in `src/lib/workspace-layout.ts` is the code-owned list of allowed tabs and production sections.
+- The registries in `src/lib/workspace-layout.ts` and `src/lib/workspace-layout-v2.ts` are the code-owned lists of allowed tabs and production components.
 - Map, Review Center, Data & Sources, and Review Guide are required tabs.
 - Results Map and Source Provenance are required production sections.
 - Every visible tab must retain at least one visible production section.
-- Data Notes remains a fixed trust surface. Operators may change its initial open state and side/below placement, but not its source-driven content or remove it.
-- Custom blocks are supplemental, always follow production components, and are limited to 12 per tab.
+- Data Notes remains a fixed trust surface. Operators may change its initial open state and side, below, or drawer placement, but not its source-driven content or remove it.
+- Custom blocks are supplemental, can share rows with production components, and are limited to 12 per tab and 20 rows per tab.
+- Required production components cannot use data-dependent visibility rules.
+- Visibility rules use only allowlisted public state, year, capability, data-availability, and validation facts; viewport rules are CSS-safe and mobile remains stacked.
 - Custom text is escaped. Links accept only safe internal paths, HTTPS URLs, and email links; protocol-relative links such as `//example.com` are rejected.
 - Verified labels, data queries, interactions, source caveats, and authorization remain code-owned.
 - Every manifest is validated against the exact registry and protected by a SHA-256 digest.
@@ -38,7 +40,8 @@ Production component width and internal spacing remain tied to their tested appl
 | Surface | Responsibility |
 | --- | --- |
 | `/admin/layout` | Clerk-protected page builder, validation, immutable revisions, preview, and publication requests |
-| Neon tables | Immutable revisions, idempotent publication requests, and audit events |
+| Neon tables | Immutable revisions, idempotent publication requests, audit events, shared templates, managed assets, and immutable asset references |
+| Vercel Blob | Public `layout-media/` images with authenticated uploads, MIME/size limits, and stored dimensions/alt text |
 | Vercel Edge Config | `workspaceLayoutStable` and `workspaceLayoutCandidate` envelopes |
 | Vercel Flags | Browser-stable evaluation of `workspace-layout-candidate` |
 | GitHub Actions | Protected, serialized Edge Config publisher with environment approvals |
@@ -54,7 +57,7 @@ Configure `DATABASE_URL` or `POSTGRES_URL`, then apply all checked-in Drizzle mi
 npm run db:push
 ```
 
-The layout schema is introduced by `drizzle/0004_uneven_hellcat.sql` and completed by `drizzle/0005_lazy_human_torch.sql`. Apply migrations separately to preview and production databases before enabling the editor there.
+The immutable revision schema is introduced by migrations 0004 and 0005. Migration `drizzle/0006_broad_quicksilver.sql` enables schema v2 and adds managed assets, shared templates, and immutable asset-reference tables. Apply migrations separately to preview and production databases before enabling Builder v3 there.
 
 ### 2. Configure private administration
 
@@ -65,6 +68,7 @@ Set these application environment variables:
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk browser configuration |
 | `CLERK_SECRET_KEY` | Clerk server authentication |
 | `UI_LAYOUT_ADMIN_EMAILS` | Comma-separated verified email allowlist; matching is case-insensitive |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob upload token, normally injected by the linked Blob store |
 
 Authorization is checked on the page and again in every Server Action. A signed-in user needs at least one verified Clerk email that matches the allowlist.
 
@@ -98,14 +102,14 @@ Keep `UI_LAYOUT_PUBLISH_WORKFLOW_ENABLED=false` until the workflow and protected
 
 ## Builder workflow
 
-1. Open `/admin/layout` and choose a tab in the left Structure pane.
-2. Drag tabs or components with the six-dot handle. Keyboard-accessible Earlier/Later controls are available in the inspector.
-3. Select a component or its gear to configure it in the right Inspector pane.
-4. Add approved blocks from the Component Library. Custom blocks stay after production components.
-5. Switch among Desktop, Tablet, and Mobile, then use Before, After, or Compare.
-6. Use Undo or Redo while editing. **Reset saved** restores the currently loaded saved manifest.
-7. Resolve all blocking pre-publish checks and review warnings about hidden surfaces or custom editorial copy.
-8. Enter a change summary and select **Save immutable revision**.
+1. Open `/admin/layout` and choose a fixed production tab in the left Build pane.
+2. Add rows and columns, then drag components by the six-dot handle or move whole rows with the arrow controls.
+3. Select a row, column, component, or its gear to configure it in the right inspector.
+4. Add approved content blocks, choose production variants, or start from a built-in/shared template.
+5. Switch among Desktop, Tablet, and Mobile and set each column span at the active breakpoint.
+6. Use Undo or Redo while editing. **Reset** restores the currently loaded saved manifest.
+7. Resolve blocking validation, verify rich text/media alt text and visibility rules, then save an optional reusable template.
+8. Enter a change summary and select **Save revision**. Saving never publishes the active layout.
 
 Saving creates a child revision; it does not overwrite or publish the active layout.
 

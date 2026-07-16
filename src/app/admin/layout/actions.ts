@@ -14,7 +14,7 @@ import {
   updateLayoutPublication,
   type LayoutPublicationEnvironment,
 } from "@/lib/ui-layout-repository";
-import { validateWorkspaceLayoutManifest } from "@/lib/workspace-layout";
+import { validateWorkspaceLayoutManifestAny } from "@/lib/workspace-layout-digest";
 import {
   isWorkspaceLayoutPublicationAction,
   isWorkspaceLayoutPublicationEnvironment,
@@ -33,7 +33,7 @@ export async function saveLayoutRevisionAction(
     const actor = await requireLayoutAdmin();
     const rawManifest = String(formData.get("manifest") ?? "");
     const manifest = JSON.parse(rawManifest) as unknown;
-    const validation = validateWorkspaceLayoutManifest(manifest);
+    const validation = validateWorkspaceLayoutManifestAny(manifest);
     if (!validation.ok) return { kind: "error", message: validation.errors.join(" ") };
     const parentValue = String(formData.get("parentRevisionId") ?? "").trim();
     const revision = await createLayoutRevision({

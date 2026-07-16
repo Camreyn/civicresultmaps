@@ -30,17 +30,26 @@ import { useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
-import { WorkspaceLayoutBlock } from "./workspace-layout-blocks";
+import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
 import { rowsToCsv } from "@/lib/csv";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
 import {
-  workspaceCustomBlocks,
-  workspaceLayoutSettings,
-  workspaceSectionState,
-  type WorkspaceLayoutManifestV1,
   type WorkspaceSectionId,
   type WorkspaceTabId,
 } from "@/lib/workspace-layout";
+import {
+  workspaceAccentForeground,
+  workspaceViewportVisibilityAttributes,
+  type WorkspaceLayoutManifestV2,
+  type WorkspaceVisibilityContext,
+} from "@/lib/workspace-layout-v2";
+import {
+  reviewViewConfigurationV2,
+  workspaceCustomRowsV2 as workspaceCustomRows,
+  workspaceLayoutSettingsV2 as workspaceLayoutSettings,
+  workspaceProductionNodeV2,
+  workspaceSectionStateV2 as workspaceSectionState,
+} from "@/lib/workspace-layout-v2-runtime";
 import type {
   AnalysisIndicator,
   AdminSourceStatusSummary,
@@ -80,7 +89,7 @@ type WorkspaceTabsProps = {
   importRuns: ImportRunSummary[];
   indicators: AnalysisIndicator[];
   indicatorsEvaluated: boolean;
-  layoutManifest: WorkspaceLayoutManifestV1;
+  layoutManifest: WorkspaceLayoutManifestV2;
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   statewideResultRows: ResultRow[];
@@ -2607,17 +2616,54 @@ function DataNotesPanel({
   );
 }
 
-function layoutSectionProps(
-  manifest: WorkspaceLayoutManifestV1,
+function SourceProvenanceList({ sources }: { sources: SourceSummary[] }) {
+  return (
+    <ul className="source-list">
+      {sources.map((source) => (
+        <li key={source.id}>
+          <strong>{source.title}</strong>
+          <span>{source.confidence}</span>
+          <span className="mono">{source.parser}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function SourceProvenanceDetails({
+  initiallyOpen,
+  sources,
+}: {
+  initiallyOpen: boolean;
+  sources: SourceSummary[];
+}) {
+  const [open, setOpen] = useState(initiallyOpen);
+  return (
+    <details className="source-provenance-details" onToggle={(event) => setOpen(event.currentTarget.open)} open={open}>
+      <summary>Source records</summary>
+      <SourceProvenanceList sources={sources} />
+    </details>
+  );
+}
+
+function buildLayoutSectionProps(
+  manifest: WorkspaceLayoutManifestV2,
   tabId: WorkspaceTabId,
   sectionId: WorkspaceSectionId,
+  context: WorkspaceVisibilityContext,
 ) {
-  const state = workspaceSectionState(manifest, tabId, sectionId);
+  const state = workspaceSectionState(manifest, tabId, sectionId, context);
   const span = state.presentation?.span;
   return {
+    ...workspaceViewportVisibilityAttributes(state.visibility),
     "data-layout-density": state.presentation?.density ?? "comfortable",
+    "data-layout-coverage-variant": state.config?.coverageVariant,
+    "data-layout-legend-position": state.config?.legendPosition,
+    "data-layout-provenance-initial": state.config?.provenanceInitialState,
+    "data-layout-provenance-variant": state.config?.provenanceVariant,
+    "data-layout-snapshot-variant": state.config?.snapshotVariant,
     "data-layout-emphasis": state.presentation?.emphasis ?? "standard",
-    "data-layout-map-height": state.presentation?.mapHeight,
+    "data-layout-map-composition": state.config?.mapComposition,
     "data-layout-section": `${tabId}:${sectionId}`,
     "data-layout-surface": state.presentation?.surface ?? "panel",
     hidden: !state.visible,
@@ -2679,11 +2725,10 @@ export function WorkspaceTabs({
     [layoutManifest],
   );
   const layoutReviewViewOptions = useMemo(() => {
-    const reviewSections = layoutManifest.tabs.find((tab) => tab.id === "review")?.sections ?? [];
-    return reviewSections
-      .filter((section) => section.visible && section.id in reviewViewBySectionId)
-      .map((section) => reviewViewOptions.find(
-        (option) => option.key === reviewViewBySectionId[section.id as keyof typeof reviewViewBySectionId],
+    const reviewConfiguration = reviewViewConfigurationV2(layoutManifest);
+    return reviewConfiguration.viewOrder
+      .map((sectionId) => reviewViewOptions.find(
+        (option) => option.key === reviewViewBySectionId[sectionId as keyof typeof reviewViewBySectionId],
       ))
       .filter((option): option is (typeof reviewViewOptions)[number] => Boolean(option));
   }, [layoutManifest]);
@@ -2717,7 +2762,33 @@ export function WorkspaceTabs({
   const activeLayoutTab = layoutManifest.tabs.find((tab) => tab.id === activeTab);
   const activeLayoutDensity = activeLayoutTab?.settings?.density ?? "comfortable";
   const activeNotesPosition = activeLayoutTab?.settings?.notesPosition ?? "side";
-  const activeCustomBlocks = workspaceCustomBlocks(layoutManifest, activeTab);
+  const layoutVisibilityContext = useMemo(() => ({
+    capabilities: booleanCapabilityFacts(selectedState?.capabilities ?? coverage?.capabilities),
+    data: {
+      equipment: equipmentRows.length > 0,
+      historical: historicalRows.length > 0,
+      indicators: indicators.length > 0,
+      results: results.length > 0,
+      review: reviewRows.length > 0,
+      sources: sources.length > 0,
+      turnout: turnoutRows.length > 0,
+    },
+    state: selectedStateCode,
+    validation: coverage?.validation.errors.length
+      ? "failed" as const
+      : coverage?.validation.warnings.length
+        ? "warning" as const
+        : coverage?.validation.passed ? "passed" as const : "unknown" as const,
+    year: electionYear,
+  }), [coverage, electionYear, equipmentRows.length, historicalRows.length, indicators.length, results.length, reviewRows.length, selectedState?.capabilities, selectedStateCode, sources.length, turnoutRows.length]);
+  const layoutSectionProps = (
+    manifest: WorkspaceLayoutManifestV2,
+    tabId: WorkspaceTabId,
+    sectionId: WorkspaceSectionId,
+  ) => buildLayoutSectionProps(manifest, tabId, sectionId, layoutVisibilityContext);
+
+  const activeCustomRows = workspaceCustomRows(layoutManifest, activeTab, layoutVisibilityContext);
+  const mapProvenanceConfig = workspaceProductionNodeV2(layoutManifest, "map", "source-provenance")?.config;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -3886,26 +3957,40 @@ export function WorkspaceTabs({
       aria-label={`${stateName} workspace`}
       className="workspace-tabs"
       data-layout-content-width={layoutSettings.contentWidth}
+      data-layout-radius={layoutSettings.radius}
+      data-layout-shadow={layoutSettings.shadow}
+      data-layout-spacing={layoutSettings.spacingScale}
       data-layout-theme={layoutSettings.theme}
+      data-layout-type-scale={layoutSettings.typeScale}
       data-tour="workspace"
+      style={{
+        "--workspace-accent": layoutSettings.accentColor ?? "#16a579",
+        "--workspace-accent-foreground": workspaceAccentForeground(layoutSettings.accentColor),
+      } as CSSProperties}
     >
-      <nav
-        aria-label="Workspace sections"
+      <div
         className="tab-bar"
         data-layout-tab-style={layoutSettings.tabStyle}
         data-tour="tab-bar"
       >
         <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
+        <nav
+          aria-label="Workspace sections"
+          className="workspace-tab-list"
+          role="tablist"
+        >
         {layoutTabs.map((tab) => {
           const Icon = tab.icon;
           return (
             <button
               aria-selected={activeTab === tab.key}
+              id={`workspace-tab-${tab.key}`}
               className="tab-button"
               data-tour={`tab-${tab.key}`}
               key={tab.key}
               onClick={() => selectTab(tab.key)}
               type="button"
+              role="tab"
             >
               <Icon aria-hidden size={16} />
               <span>{tab.label}</span>
@@ -3918,12 +4003,17 @@ export function WorkspaceTabs({
           );
         })}
       </nav>
+      </div>
       <div
         className={`workspace-body ${isDataNotesCollapsed ? "notes-collapsed" : ""}`}
         data-layout-density={activeLayoutDensity}
         data-layout-notes-position={activeNotesPosition}
       >
-        <main className="workspace-main">
+        <main
+          aria-labelledby={`workspace-tab-${activeTab}`}
+          className="workspace-main"
+          role="tabpanel"
+        >
           {activeTab === "map" && (
         <div className="tab-panel-content">
           <div className="content-grid">
@@ -3972,15 +4062,11 @@ export function WorkspaceTabs({
                     <FileCheck2 aria-hidden size={18} />
                   </div>
                 </div>
-                <ul className="source-list">
-                  {sources.map((source) => (
-                    <li key={source.id}>
-                      <strong>{source.title}</strong>
-                      <span>{source.confidence}</span>
-                      <span className="mono">{source.parser}</span>
-                    </li>
-                  ))}
-                </ul>
+                {mapProvenanceConfig?.provenanceVariant === "accordion" ? (
+                  <SourceProvenanceDetails initiallyOpen={mapProvenanceConfig.provenanceInitialState !== "collapsed"} sources={sources} />
+                ) : (
+                  <SourceProvenanceList sources={sources} />
+                )}
               </section>
 
               <section className="panel" aria-label="Coverage flags" {...layoutSectionProps(layoutManifest, "map", "coverage-context")}>
@@ -4081,7 +4167,13 @@ export function WorkspaceTabs({
                 <BarChart3 aria-hidden size={18} />
               </div>
             </div>
-            <div className="review-subnav" data-tour="review-subnav" role="tablist" aria-label="Review Center views">
+            <div
+              aria-label="Review Center views"
+              className="review-subnav"
+              data-layout-navigation={reviewViewConfigurationV2(layoutManifest).navigationStyle}
+              data-tour="review-subnav"
+              role="tablist"
+            >
               {layoutReviewViewOptions.map((option) => (
                 <button
                   aria-selected={reviewView === option.key}
@@ -6529,10 +6621,29 @@ export function WorkspaceTabs({
           </section>
         </div>
       )}
-          {activeCustomBlocks.length > 0 && (
+          {activeCustomRows.length > 0 && (
             <div aria-label="Custom workspace sections" className="workspace-custom-grid">
-              {activeCustomBlocks.map((block) => (
-                <WorkspaceLayoutBlock item={block} key={block.id} order={block.order} />
+              {activeCustomRows.map((row) => (
+                <div
+                  className="workspace-custom-row"
+                  data-align={row.align ?? "stretch"}
+                  data-gap={row.gap ?? "medium"}
+                  key={row.rowId}
+                >
+                  {row.columns.map((column) => (
+                    <div
+                      className="workspace-custom-column"
+                      key={column.columnId}
+                      style={{
+                        "--layout-span-desktop": column.span.desktop,
+                        "--layout-span-mobile": column.span.mobile,
+                        "--layout-span-tablet": column.span.tablet,
+                      } as CSSProperties}
+                    >
+                      {column.items.map((block) => <WorkspaceLayoutBlockV2 item={block} key={block.id} />)}
+                    </div>
+                  ))}
+                </div>
               ))}
             </div>
           )}
@@ -6548,4 +6659,15 @@ export function WorkspaceTabs({
       </div>
     </section>
   );
+}
+function booleanCapabilityFacts(value: StateSummary["capabilities"] | undefined) {
+  if (!value) return undefined;
+  return {
+    certifiedResults: value.certifiedResults,
+    historicalBaseline: value.historicalBaseline,
+    map: value.map,
+    reviewGraphs: value.reviewGraphs,
+    sourcePlanner: value.sourcePlanner,
+    turnout: value.turnout,
+  } satisfies Record<string, boolean>;
 }
