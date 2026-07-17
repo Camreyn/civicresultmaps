@@ -31,6 +31,7 @@ export default defineConfig({
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "",
           POSTGRES_URL: "",
           UI_LAYOUT_ADMIN_EMAILS: "",
+          UI_LAYOUT_TEST_HARNESS: "true",
         },
         reuseExistingServer: false,
         timeout: 180_000,

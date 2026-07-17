@@ -2,6 +2,8 @@
 
 The workspace layout system is a constrained production page builder for allowlisted operators. It can reshape the public workspace without a code deployment while keeping election data, verified production behavior, source caveats, permissions, and required trust surfaces code-owned.
 
+For the grouped schema, named-draft collaboration model, scheduler, and staged deployment sequence, see [Workspace Builder v4](workspace-builder-v4.md).
+
 ## Builder capabilities
 
 | Scope | Editable controls |
@@ -10,7 +12,7 @@ The workspace layout system is a constrained production page builder for allowli
 | Tab | Visibility where allowed, density, Data Notes position, and a responsive row/column hierarchy |
 | Production component | Move between columns, responsive width, visibility where allowed, surface, emphasis, density, and allowlisted variants |
 | Approved content block | Add, drag, hide, delete, format rich text, manage media, configure links/items, and attach visibility rules |
-| Review workflow | Desktop/tablet/mobile preview, undo, redo, validation, immutable save, reusable templates, draft preview, and protected publication |
+| Review workflow | Desktop/tablet/mobile Before/After/Compare, finite undo/redo, named autosaved drafts, recovery, structured revision diff, immutable save, reusable workspace/group templates, draft preview, and protected immediate or scheduled publication |
 
 The approved content library contains Heading, Rich text, Narrative, Callout, Metric strip, Link list, Button group, Image, Video, Accordion, and Divider. Images use the linked Vercel Blob store; video blocks accept only YouTube or Vimeo IDs.
 
@@ -40,10 +42,11 @@ Rows use a responsive 12-column grid. Desktop spans are 3, 4, 6, 8, 9, or 12; ta
 | Surface | Responsibility |
 | --- | --- |
 | `/admin/layout` | Clerk-protected page builder, validation, immutable revisions, preview, and publication requests |
-| Neon tables | Immutable revisions, idempotent publication requests, audit events, shared templates, managed assets, and immutable asset references |
+| Neon tables | Immutable revisions, versioned named drafts, idempotent/scheduled publication requests, audit events, shared workspace/group templates, managed assets, and immutable asset references |
 | Vercel Blob | Public `layout-media/` images with authenticated uploads, MIME/size limits, and stored dimensions/alt text |
 | Vercel Edge Config | `workspaceLayoutStable` and `workspaceLayoutCandidate` envelopes |
-| Vercel Flags | Browser-stable evaluation of `workspace-layout-candidate` |
+| Vercel Flags | Browser-stable evaluation of `workspace-layout-candidate`, `workspace-builder-v4`, and `workspace-layout-runtime-v3` |
+| Vercel Cron | Authenticated five-minute dispatch of due scheduled publication requests |
 | GitHub Actions | Protected, serialized Edge Config publisher with environment approvals |
 | Public runtime | Validates envelopes and resolves draft → candidate → stable → embedded |
 
@@ -57,7 +60,7 @@ Configure `DATABASE_URL` or `POSTGRES_URL`, then apply all checked-in Drizzle mi
 npm run db:push
 ```
 
-The immutable revision schema is introduced by migrations 0004 and 0005. Migration `drizzle/0006_broad_quicksilver.sql` enables schema v2 and adds managed assets, shared templates, and immutable asset-reference tables. Apply migrations separately to preview and production databases before enabling Builder v3 there.
+The immutable revision schema is introduced by migrations 0004 and 0005. Migration `drizzle/0006_broad_quicksilver.sql` enables schema v2 and adds managed assets, shared templates, and immutable asset-reference tables. Migration `drizzle/0007_sudden_agent_brand.sql` enables schema v3, named drafts, group templates, asset references, and scheduled-publication state. Apply migrations separately to preview and production databases; migration 0007 must be explicitly approved for each existing database before Builder v4 is enabled there.
 
 ### 2. Configure private administration
 
@@ -69,12 +72,14 @@ Set these application environment variables:
 | `CLERK_SECRET_KEY` | Clerk server authentication |
 | `UI_LAYOUT_ADMIN_EMAILS` | Comma-separated verified email allowlist; matching is case-insensitive |
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob upload token, normally injected by the linked Blob store |
+| `CRON_SECRET` | Secret Vercel uses to authenticate the scheduled-publication cron request |
+| `UI_LAYOUT_SCHEDULER_ENABLED` | Fail-closed scheduler switch; leave `false` until migration 0007 and protected dispatch are ready |
 
 Authorization is checked on the page and again in every Server Action. A signed-in user needs at least one verified Clerk email that matches the allowlist.
 
 ### 3. Link Edge Config and Flags
 
-Create or select an Edge Config store and link it to each Vercel environment so the application receives `EDGE_CONFIG`. Configure the `workspace-layout-candidate` flag with the default value set to `false`. Set `FLAGS_SECRET` to protect the Flags discovery endpoint.
+Create or select an Edge Config store and link it to each Vercel environment so the application receives `EDGE_CONFIG`. Configure `workspace-layout-candidate`, `workspace-builder-v4`, and `workspace-layout-runtime-v3` with production defaults set to `false`. Set `FLAGS_SECRET` to protect the Flags discovery endpoint. Builder v4 and the public v3 runtime are separate flags so the editor can be accepted before visitors receive the new runtime.
 
 No Edge Config item has to exist at first. The application uses the embedded manifest until a stable envelope is published.
 
@@ -102,14 +107,14 @@ Keep `UI_LAYOUT_PUBLISH_WORKFLOW_ENABLED=false` until the workflow and protected
 
 ## Builder workflow
 
-1. Open `/admin/layout` and choose a fixed production tab in the left Build pane.
-2. Add rows and columns, then drag components by the six-dot handle or move whole rows with the arrow controls.
-3. Select a row, column, component, or its gear to configure it in the right inspector.
-4. Add approved content blocks, choose production variants, or start from a built-in/shared template.
-5. Switch among Desktop, Tablet, and Mobile and set each column span at the active breakpoint.
-6. Use Undo or Redo while editing. **Reset** restores the currently loaded saved manifest.
-7. Resolve blocking validation, verify rich text/media alt text and visibility rules, then save an optional reusable template.
-8. Enter a change summary and select **Save revision**. Saving never publishes the active layout.
+1. Open `/admin/layout`, create or load a named draft, and choose a tab in the workspace tree.
+2. Add groups, rows, and columns, then drag unlocked items with their handles.
+3. Select a group, row, column, component, or gear to configure it in the right inspector.
+4. Add approved content blocks, choose production variants, or start from a built-in/shared group or workspace template.
+5. Switch among Desktop, Tablet, and Mobile and inspect Before, After, or Compare while setting constrained spans and heights.
+6. Use Undo or Redo while editing. **Reset** restores the last autosaved draft baseline; local recovery survives refreshes and interrupted sessions.
+7. Resolve blocking validation and contrast checks, verify rich text/media alt text and visibility rules, then review the structured revision difference.
+8. Enter a change summary and select **Save revision**. Draft autosave and immutable revision save are separate; neither publishes the active layout.
 
 Saving creates a child revision; it does not overwrite or publish the active layout.
 
@@ -118,8 +123,9 @@ Saving creates a child revision; it does not overwrite or publish the active lay
 1. Select **Draft preview** beside a saved revision. This sets an eight-hour HTTP-only admin cookie and uses the real public renderer. The public banner provides an exit action.
 2. Request **Stage candidate** in preview. The protected workflow disables candidate exposure, writes only `workspaceLayoutCandidate`, reads back the Edge Config digest, and records the result.
 3. Enable a limited candidate rollout in Vercel Flags and inspect the preview deployment. The `crm_layout_visitor` HTTP-only cookie keeps evaluation stable for a browser.
-4. Request **Promote stable** only after draft and candidate review pass.
-5. Repeat the protected production request and approval after preview verification.
+4. To release later, enter the desired local date/time. The scheduler stores UTC, retries bounded dispatch failures, and never bypasses protected GitHub environment approval. Pending schedules can be cancelled from the editor.
+5. Request **Promote stable** only after draft and candidate review pass.
+6. Repeat the protected production request and approval after preview verification.
 
 The workflow accepts only a publication UUID and target environment. It reloads the immutable revision and action from Neon rather than accepting a manifest or action from workflow input.
 
@@ -141,6 +147,7 @@ If workflow dispatch is unavailable, leave the request queued. Do not hand-edit 
 | Clerk unconfigured | Public site works; admin route shows setup guidance |
 | Database unconfigured | Public site works; authorized admin route shows database guidance |
 | Publisher disabled | Request is audited and queued without external mutation |
+| Cron secret missing or invalid | Scheduler request returns 401 and no publication state changes |
 
 Application layout logs include only source, revision ID, and fallback reasons. They do not include the raw rollout visitor ID.
 

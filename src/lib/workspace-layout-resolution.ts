@@ -3,12 +3,12 @@ import {
   validateWorkspaceLayoutEnvelope,
 } from "./workspace-layout-digest.ts";
 import { embeddedWorkspaceLayoutManifest } from "./workspace-layout.ts";
-import type { WorkspaceLayoutEnvelope } from "./workspace-layout-v2.ts";
+import type { WorkspaceLayoutEnvelopeAny } from "./workspace-layout-v3.ts";
 
 export type WorkspaceLayoutSource = "draft" | "candidate" | "stable" | "embedded";
 
 export type WorkspaceLayoutResolution = {
-  envelope: WorkspaceLayoutEnvelope;
+  envelope: WorkspaceLayoutEnvelopeAny;
   fallbacks: string[];
   source: WorkspaceLayoutSource;
 };

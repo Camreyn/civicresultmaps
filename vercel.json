@@ -2,5 +2,11 @@
   "framework": "nextjs",
   "github": {
     "silent": false
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/ui-layout-publications",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }

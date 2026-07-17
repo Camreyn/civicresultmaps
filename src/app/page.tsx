@@ -15,7 +15,10 @@ import { GlobalCountySearch } from "./global-county-search";
 import { NationalOverview } from "./national-overview";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
-import { toWorkspaceLayoutManifestV2 } from "@/lib/workspace-layout-v2";
+import {
+  toWorkspaceLayoutManifestV3,
+  workspaceLayoutManifestAnyToV2,
+} from "@/lib/workspace-layout-v3";
 import { resolveVisibleWorkspaceTabV2 } from "@/lib/workspace-layout-v2-runtime";
 import { resolveWorkspaceLayout } from "@/lib/workspace-layout-runtime";
 import {
@@ -159,7 +162,8 @@ export async function generateMetadata({ searchParams }: HomeProps): Promise<Met
 export default async function Home({ searchParams }: HomeProps) {
   const params = await searchParams;
   const layoutResolution = await resolveWorkspaceLayout();
-  const layoutManifest = toWorkspaceLayoutManifestV2(layoutResolution.envelope.manifest);
+  const layoutManifestV3 = toWorkspaceLayoutManifestV3(layoutResolution.envelope.manifest);
+  const layoutManifest = workspaceLayoutManifestAnyToV2(layoutResolution.envelope.manifest);
   const selectedState = (params?.state ?? "WA").slice(0, 2).toUpperCase();
   const activeTab = resolveVisibleWorkspaceTabV2(layoutManifest, params?.tab);
   const requestedYear = parseYear(params?.year);
@@ -450,6 +454,7 @@ export default async function Home({ searchParams }: HomeProps) {
             indicators={indicators}
             indicatorsEvaluated={indicatorsEvaluated}
             layoutManifest={layoutManifest}
+            layoutManifestV3={layoutResolution.runtimeV3Enabled ? layoutManifestV3 : undefined}
             initialFips={initialFips}
             initialMapMode={initialMapMode}
             initialTab={activeTab}
