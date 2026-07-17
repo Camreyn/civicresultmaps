@@ -1,0 +1,30 @@
+{
+  "name": "civic-layout-control",
+  "version": "0.1.0",
+  "description": "Safely inspect, preview, and edit CivicResultMaps layout drafts from Codex.",
+  "author": {
+    "name": "CivicResultMaps",
+    "url": "https://civicresultmaps.org"
+  },
+  "homepage": "https://civicresultmaps.org/admin/layout",
+  "repository": "https://github.com/Camreyn/civicresultmaps",
+  "license": "MIT",
+  "keywords": ["layout", "ui", "editor", "civicresultmaps"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Civic Layout Control",
+    "shortDescription": "Safely edit named layout drafts",
+    "longDescription": "Inspect, validate, preview, and save constrained changes to CivicResultMaps layout drafts. Immutable revisions require explicit review, and production publishing is intentionally unavailable.",
+    "developerName": "CivicResultMaps",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://civicresultmaps.org",
+    "defaultPrompt": [
+      "Inspect the current CivicResultMaps layout drafts and explain what is editable.",
+      "Preview a safer, clearer layout change without saving it.",
+      "Apply the layout changes I approved to the named draft."
+    ],
+    "brandColor": "#35C7A3"
+  }
+}

@@ -22,6 +22,8 @@ patterns, generated state registries, and validation expectations.
   state worker standards, ETL acceptance criteria, and common commands.
 - [Workspace layout operations](docs/developer/ui-layout-operations.md) - private
   editor setup, protected rollout, fallback, rollback, and privacy procedures.
+- [Layout agent tooling](docs/developer/layout-agent-tooling.md) - guarded MCP
+  tools and a Codex plugin for inspecting, previewing, and editing named drafts.
 - [Review graph calculations](docs/review-graph-calculations.md) - how map,
   Review Center, historical, vote-method, and equipment charts are calculated,
   with implementation and source references.

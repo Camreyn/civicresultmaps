@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "civic-layout-control": {
+      "type": "http",
+      "url": "https://civicresultmaps.org/api/admin/layout-agent/mcp",
+      "bearer_token_env_var": "CIVIC_LAYOUT_AGENT_TOKEN"
+    }
+  }
+}
