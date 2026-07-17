@@ -9,6 +9,7 @@ import {
   LockKeyhole,
   Plus,
   Settings2,
+  Trash2,
 } from "lucide-react";
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 import type { WorkspaceTabId } from "@/lib/workspace-layout";
@@ -35,6 +36,7 @@ import styles from "./layout-editor-v4.module.css";
 type CanvasCallbacks = {
   onAddColumn: (rowId: string) => void;
   onAddRow: (groupId: string) => void;
+  onRemoveNode: (nodeId: string) => void;
   onResizeColumn: (columnId: string, delta: -1 | 1) => void;
   onSelect: (selection: LayoutSelection, event?: ReactMouseEvent) => void;
 };
@@ -164,6 +166,7 @@ export function LayoutV4Canvas({
   manifest,
   onAddColumn,
   onAddRow,
+  onRemoveNode,
   onResizeColumn,
   onSelect,
   readOnly = false,
@@ -220,7 +223,7 @@ export function LayoutV4Canvas({
         <div className={base.rows}>
           {tab.groups.map((group, groupIndex) => (
             <SortableGroup
-              callbacks={{ onAddColumn, onAddRow, onResizeColumn, onSelect }}
+              callbacks={{ onAddColumn, onAddRow, onRemoveNode, onResizeColumn, onSelect }}
               group={group}
               index={groupIndex}
               key={group.id}
@@ -499,6 +502,18 @@ function SortableNode({
           {!node.visible && <EyeOff size={13} />}
           {locked && <LockKeyhole size={12} />}
           <button aria-label={`Configure ${label}`} onClick={(event) => callbacks.onSelect({ columnId: column.id, groupId: group.id, kind: "node", nodeId: node.id, rowId: row.id, tabId }, event)} type="button"><Settings2 size={15} /></button>
+          {node.kind === "custom" && (
+            <button
+              aria-label={"Delete " + label}
+              className={styles.nodeDelete}
+              disabled={locked}
+              onClick={() => callbacks.onRemoveNode(node.id)}
+              title={locked ? "Unlock this content block before deleting it" : "Delete content block"}
+              type="button"
+            >
+              <Trash2 size={15} />
+            </button>
+          )}
         </div>
       )}
       <div

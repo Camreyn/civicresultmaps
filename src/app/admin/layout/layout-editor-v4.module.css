@@ -266,6 +266,9 @@
   color: #ffb7b7 !important;
 }
 
+.nodeDelete { color: #ffb7b7 !important; }
+.nodeDelete:disabled { cursor: not-allowed !important; opacity: 0.42; }
+
 .inlineGrid {
   display: grid;
   gap: 0.45rem;
