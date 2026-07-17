@@ -2,7 +2,8 @@ import "server-only";
 
 import { createClient } from "@vercel/edge-config";
 import { cookies } from "next/headers";
-import { workspaceLayoutCandidate } from "@/flags";
+import { evaluate } from "flags/next";
+import { workspaceLayoutCandidate, workspaceLayoutRuntimeV3 } from "@/flags";
 import { readLayoutAdmin } from "./ui-layout-auth";
 import { getLayoutRevision } from "./ui-layout-repository";
 import { createWorkspaceLayoutEnvelope } from "./workspace-layout-digest";
@@ -59,15 +60,19 @@ async function readEdgeLayouts() {
 export async function resolveWorkspaceLayout() {
   const [draft, edgeLayouts] = await Promise.all([readDraftEnvelope(), readEdgeLayouts()]);
   let candidateEnabled = false;
-  if (edgeLayouts.candidate !== undefined) {
-    try {
-      candidateEnabled = await workspaceLayoutCandidate();
-    } catch (error) {
-      console.error(JSON.stringify({
-        event: "workspace_layout_flag_failed",
-        message: error instanceof Error ? error.message : "Unknown flag evaluation error",
-      }));
-    }
+  let runtimeV3Enabled = process.env.NODE_ENV === "development" && !process.env.VERCEL;
+  try {
+    const evaluated = await evaluate({
+      candidate: workspaceLayoutCandidate,
+      runtimeV3: workspaceLayoutRuntimeV3,
+    });
+    candidateEnabled = edgeLayouts.candidate !== undefined && evaluated.candidate;
+    runtimeV3Enabled = evaluated.runtimeV3;
+  } catch (error) {
+    console.error(JSON.stringify({
+      event: "workspace_layout_flag_failed",
+      message: error instanceof Error ? error.message : "Unknown flag evaluation error",
+    }));
   }
 
   const resolution = resolveWorkspaceLayoutCandidates({
@@ -81,6 +86,7 @@ export async function resolveWorkspaceLayout() {
     source: resolution.source,
     revisionId: resolution.envelope.revisionId,
     fallbacks: resolution.fallbacks,
+    runtime: runtimeV3Enabled ? "v3" : "compatibility",
   }));
-  return resolution;
+  return { ...resolution, runtimeV3Enabled };
 }

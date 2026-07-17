@@ -7,7 +7,8 @@ import {
   createLayoutTemplate,
   deleteLayoutTemplate,
 } from "@/lib/ui-layout-v3-repository";
-import { validateWorkspaceLayoutManifestV2 } from "@/lib/workspace-layout-v2";
+import { validateWorkspaceLayoutManifestAny } from "@/lib/workspace-layout-digest";
+import { toWorkspaceLayoutManifestV3 } from "@/lib/workspace-layout-v3";
 
 export async function saveLayoutTemplateAction(
   _previous: LayoutActionState,
@@ -16,12 +17,12 @@ export async function saveLayoutTemplateAction(
   try {
     const actor = await requireLayoutAdmin();
     const manifest = JSON.parse(String(formData.get("manifest") ?? "")) as unknown;
-    const validation = validateWorkspaceLayoutManifestV2(manifest);
+    const validation = validateWorkspaceLayoutManifestAny(manifest);
     if (!validation.ok) return { kind: "error", message: validation.errors.join(" ") };
     const template = await createLayoutTemplate({
       actor,
       description: String(formData.get("description") ?? ""),
-      manifest: validation.value,
+      manifest: toWorkspaceLayoutManifestV3(validation.value),
       name: String(formData.get("name") ?? ""),
     });
     revalidatePath("/admin/layout");

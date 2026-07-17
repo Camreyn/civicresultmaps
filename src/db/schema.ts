@@ -16,7 +16,7 @@ import {
   uuid,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import type { WorkspaceLayoutManifest } from "../lib/workspace-layout-v2";
+import type { WorkspaceLayoutManifestAny } from "../lib/workspace-layout-v3";
 
 export const importStatus = pgEnum("import_status", [
   "staged",
@@ -38,10 +38,13 @@ export const uiLayoutChannel = pgEnum("ui_layout_channel", ["candidate", "stable
 export const uiLayoutPublicationAction = pgEnum("ui_layout_publication_action", ["stage", "promote", "rollback"]);
 export const uiLayoutPublicationStatus = pgEnum("ui_layout_publication_status", [
   "requested",
+  "scheduled",
   "dispatched",
   "publishing",
+  "retrying",
   "published",
   "failed",
+  "cancelled",
 ]);
 
 export const uiLayoutRevisions = pgTable(
@@ -50,7 +53,7 @@ export const uiLayoutRevisions = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     schemaVersion: integer("schema_version").notNull(),
     registryVersion: integer("registry_version").notNull(),
-    manifest: jsonb("manifest").$type<WorkspaceLayoutManifest>().notNull(),
+    manifest: jsonb("manifest").$type<WorkspaceLayoutManifestAny>().notNull(),
     manifestDigest: text("manifest_digest").notNull(),
     parentRevisionId: uuid("parent_revision_id").references((): AnyPgColumn => uiLayoutRevisions.id),
     changeSummary: text("change_summary").notNull(),
@@ -61,7 +64,7 @@ export const uiLayoutRevisions = pgTable(
   (table) => ({
     createdAtIndex: index("ui_layout_revisions_created_at_idx").on(table.createdAt),
     digestIndex: index("ui_layout_revisions_manifest_digest_idx").on(table.manifestDigest),
-    schemaVersionCheck: check("ui_layout_revisions_schema_version_check", sql`${table.schemaVersion} in (1, 2)`),
+    schemaVersionCheck: check("ui_layout_revisions_schema_version_check", sql`${table.schemaVersion} in (1, 2, 3)`),
     registryVersionCheck: check("ui_layout_revisions_registry_version_check", sql`${table.registryVersion} in (1, 2)`),
     parentRevisionUnique: unique("ui_layout_revisions_parent_revision_unique")
       .on(table.parentRevisionId)
@@ -78,6 +81,15 @@ export const uiLayoutPublications = pgTable(
     channel: uiLayoutChannel("channel").notNull(),
     action: uiLayoutPublicationAction("action").notNull(),
     status: uiLayoutPublicationStatus("status").notNull().default("requested"),
+    scheduledFor: timestamp("scheduled_for", { withTimezone: true }),
+    nextAttemptAt: timestamp("next_attempt_at", { withTimezone: true }),
+    attemptCount: integer("attempt_count").notNull().default(0),
+    maxAttempts: integer("max_attempts").notNull().default(3),
+    claimedAt: timestamp("claimed_at", { withTimezone: true }),
+    claimToken: text("claim_token"),
+    lastAttemptAt: timestamp("last_attempt_at", { withTimezone: true }),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+    cancellationReason: text("cancellation_reason"),
     idempotencyKey: text("idempotency_key").notNull().unique(),
     actorId: text("actor_id").notNull(),
     actorEmail: text("actor_email").notNull(),
@@ -91,8 +103,11 @@ export const uiLayoutPublications = pgTable(
     completedAt: timestamp("completed_at", { withTimezone: true }),
   },
   (table) => ({
+    attemptsCheck: check("ui_layout_publications_attempts_check", sql`${table.attemptCount} >= 0`),
+    maxAttemptsCheck: check("ui_layout_publications_max_attempts_check", sql`${table.maxAttempts} between 1 and 10`),
     requestedAtIndex: index("ui_layout_publications_requested_at_idx").on(table.requestedAt),
     revisionIndex: index("ui_layout_publications_revision_id_idx").on(table.revisionId),
+    scheduleIndex: index("ui_layout_publications_schedule_idx").on(table.status, table.nextAttemptAt),
   }),
 );
 

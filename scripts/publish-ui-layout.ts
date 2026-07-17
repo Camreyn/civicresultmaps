@@ -45,6 +45,9 @@ async function main() {
     console.info(JSON.stringify({ event: "ui_layout_publish_noop", publicationId, environment }));
     return;
   }
+  if (row.publication.status === "cancelled") {
+    throw new Error("Cancelled publication requests cannot be published.");
+  }
 
   await recordStatus("publishing", row.revision.id, { startedAt: new Date() });
   try {

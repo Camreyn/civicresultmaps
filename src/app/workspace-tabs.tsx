@@ -31,6 +31,7 @@ import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
 import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
+import { WorkspaceLayoutGroupsV3 } from "./workspace-layout-v3-groups";
 import { rowsToCsv } from "@/lib/csv";
 import { equipmentClusterDiagnostics } from "@/lib/equipment-diagnostics";
 import {
@@ -50,6 +51,11 @@ import {
   workspaceProductionNodeV2,
   workspaceSectionStateV2 as workspaceSectionState,
 } from "@/lib/workspace-layout-v2-runtime";
+import type { WorkspaceLayoutManifestV3 } from "@/lib/workspace-layout-v3";
+import {
+  workspaceLayoutSettingsV3,
+  workspaceRuntimeGroupsV3,
+} from "@/lib/workspace-layout-v3-runtime";
 import type {
   AnalysisIndicator,
   AdminSourceStatusSummary,
@@ -90,6 +96,7 @@ type WorkspaceTabsProps = {
   indicators: AnalysisIndicator[];
   indicatorsEvaluated: boolean;
   layoutManifest: WorkspaceLayoutManifestV2;
+  layoutManifestV3?: WorkspaceLayoutManifestV3;
   reviewRows: ReviewRowSummary[];
   results: ResultRow[];
   statewideResultRows: ResultRow[];
@@ -2705,6 +2712,7 @@ export function WorkspaceTabs({
   indicators,
   indicatorsEvaluated,
   layoutManifest,
+  layoutManifestV3,
   reviewRows,
   results,
   statewideResultRows,
@@ -2717,6 +2725,8 @@ export function WorkspaceTabs({
   voteMethodRows,
 }: WorkspaceTabsProps) {
   const layoutSettings = workspaceLayoutSettings(layoutManifest);
+  const layoutV3Settings = layoutManifestV3 ? workspaceLayoutSettingsV3(layoutManifestV3) : undefined;
+  const layoutDesignSettings = layoutV3Settings ?? layoutSettings;
   const layoutTabs = useMemo(
     () => layoutManifest.tabs
       .filter((tab) => tab.visible)
@@ -2788,6 +2798,9 @@ export function WorkspaceTabs({
   ) => buildLayoutSectionProps(manifest, tabId, sectionId, layoutVisibilityContext);
 
   const activeCustomRows = workspaceCustomRows(layoutManifest, activeTab, layoutVisibilityContext);
+  const activeLayoutGroups = layoutManifestV3
+    ? workspaceRuntimeGroupsV3(layoutManifestV3, activeTab, layoutVisibilityContext)
+    : [];
   const mapProvenanceConfig = workspaceProductionNodeV2(layoutManifest, "map", "source-provenance")?.config;
 
   useEffect(() => {
@@ -3956,21 +3969,28 @@ export function WorkspaceTabs({
     <section
       aria-label={`${stateName} workspace`}
       className="workspace-tabs"
-      data-layout-content-width={layoutSettings.contentWidth}
-      data-layout-radius={layoutSettings.radius}
-      data-layout-shadow={layoutSettings.shadow}
-      data-layout-spacing={layoutSettings.spacingScale}
-      data-layout-theme={layoutSettings.theme}
-      data-layout-type-scale={layoutSettings.typeScale}
+      data-layout-content-width={layoutDesignSettings.contentWidth}
+      data-layout-heading-style={layoutV3Settings?.headingStyle}
+      data-layout-motion={layoutV3Settings?.motion}
+      data-layout-radius={layoutDesignSettings.radius}
+      data-layout-shadow={layoutDesignSettings.shadow}
+      data-layout-spacing={layoutDesignSettings.spacingScale}
+      data-layout-theme={layoutDesignSettings.theme}
+      data-layout-type-scale={layoutDesignSettings.typeScale}
       data-tour="workspace"
       style={{
-        "--workspace-accent": layoutSettings.accentColor ?? "#16a579",
-        "--workspace-accent-foreground": workspaceAccentForeground(layoutSettings.accentColor),
+        "--accent": layoutManifestV3 ? layoutDesignSettings.accentColor : undefined,
+        "--background": layoutV3Settings?.backgroundColor,
+        "--foreground": layoutV3Settings?.textColor,
+        "--muted": layoutV3Settings?.mutedTextColor,
+        "--panel": layoutV3Settings?.surfaceColor,
+        "--workspace-accent": layoutDesignSettings.accentColor ?? "#35c7a3",
+        "--workspace-accent-foreground": workspaceAccentForeground(layoutDesignSettings.accentColor),
       } as CSSProperties}
     >
       <div
         className="tab-bar"
-        data-layout-tab-style={layoutSettings.tabStyle}
+        data-layout-tab-style={layoutDesignSettings.tabStyle}
         data-tour="tab-bar"
       >
         <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
@@ -6621,7 +6641,8 @@ export function WorkspaceTabs({
           </section>
         </div>
       )}
-          {activeCustomRows.length > 0 && (
+          {layoutManifestV3 && activeLayoutGroups.length > 0 && <WorkspaceLayoutGroupsV3 groups={activeLayoutGroups} />}
+          {!layoutManifestV3 && activeCustomRows.length > 0 && (
             <div aria-label="Custom workspace sections" className="workspace-custom-grid">
               {activeCustomRows.map((row) => (
                 <div

@@ -13,9 +13,13 @@ import {
   flattenWorkspaceNodes,
   isSafeWorkspaceBlobUrl,
   isWorkspaceCustomNodeV2,
-  validateWorkspaceLayoutManifestV2,
   type WorkspaceLayoutManifestV2,
 } from "./workspace-layout-v2";
+import {
+  flattenWorkspaceNodesV3,
+  validateWorkspaceLayoutManifestV3,
+  type WorkspaceLayoutManifestV3,
+} from "./workspace-layout-v3";
 import type { LayoutActor } from "./ui-layout-repository";
 
 export type LayoutAssetInput = {
@@ -96,10 +100,10 @@ export async function listLayoutTemplates(limit = 40) {
 export async function createLayoutTemplate(input: {
   actor: LayoutActor;
   description: string;
-  manifest: WorkspaceLayoutManifestV2;
+  manifest: WorkspaceLayoutManifestV3;
   name: string;
 }) {
-  const validation = validateWorkspaceLayoutManifestV2(input.manifest);
+  const validation = validateWorkspaceLayoutManifestV3(input.manifest);
   if (!validation.ok) throw new Error(validation.errors.join(" "));
   const name = input.name.trim();
   if (name.length < 3 || name.length > 80) throw new Error("Template name must be between 3 and 80 characters.");
@@ -134,7 +138,10 @@ export async function deleteLayoutTemplate(templateId: string) {
   return template ?? null;
 }
 
-export async function syncLayoutRevisionAssets(revisionId: string, manifest: WorkspaceLayoutManifestV2) {
+export async function syncLayoutRevisionAssets(
+  revisionId: string,
+  manifest: WorkspaceLayoutManifestV2 | WorkspaceLayoutManifestV3,
+) {
   const assetIds = collectLayoutAssetIds(manifest);
   if (!assetIds.length) return;
   await getDb().insert(uiLayoutRevisionAssets).values(assetIds.map((assetId) => ({
@@ -144,10 +151,13 @@ export async function syncLayoutRevisionAssets(revisionId: string, manifest: Wor
   }))).onConflictDoNothing();
 }
 
-export function collectLayoutAssetIds(manifest: WorkspaceLayoutManifestV2) {
-  return [...new Set(manifest.tabs.flatMap((tab) => flattenWorkspaceNodes(tab)
+export function collectLayoutAssetIds(manifest: WorkspaceLayoutManifestV2 | WorkspaceLayoutManifestV3) {
+  const nodes = manifest.schemaVersion === 3
+    ? manifest.tabs.flatMap(flattenWorkspaceNodesV3)
+    : manifest.tabs.flatMap(flattenWorkspaceNodes);
+  return [...new Set(nodes
     .filter(isWorkspaceCustomNodeV2)
-    .flatMap((node) => node.asset?.assetId ? [node.asset.assetId] : [])))];
+    .flatMap((node) => node.asset?.assetId ? [node.asset.assetId] : []))];
 }
 
 function validateAssetInput(input: LayoutAssetInput) {

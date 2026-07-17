@@ -9,16 +9,28 @@ import {
   WORKSPACE_LAYOUT_REGISTRY_VERSION_V2,
   WORKSPACE_LAYOUT_SCHEMA_VERSION_V2,
   validateWorkspaceLayoutManifestV2,
-  type WorkspaceLayoutEnvelope,
   type WorkspaceLayoutEnvelopeV2,
-  type WorkspaceLayoutManifest,
   type WorkspaceLayoutManifestV2,
 } from "./workspace-layout-v2.ts";
+import {
+  WORKSPACE_LAYOUT_REGISTRY_VERSION_V3,
+  WORKSPACE_LAYOUT_SCHEMA_VERSION_V3,
+  validateWorkspaceLayoutManifestV3,
+  type WorkspaceLayoutEnvelopeAny,
+  type WorkspaceLayoutEnvelopeV3,
+  type WorkspaceLayoutManifestAny,
+  type WorkspaceLayoutManifestV3,
+} from "./workspace-layout-v3.ts";
 
-export function workspaceLayoutDigest(manifest: WorkspaceLayoutManifest) {
+export function workspaceLayoutDigest(manifest: WorkspaceLayoutManifestAny) {
   return createHash("sha256").update(stableJsonStringify(manifest)).digest("hex");
 }
 
+export function createWorkspaceLayoutEnvelope(input: {
+  manifest: WorkspaceLayoutManifestV3;
+  publishedAt?: string;
+  revisionId: string;
+}): WorkspaceLayoutEnvelopeV3;
 export function createWorkspaceLayoutEnvelope(input: {
   manifest: WorkspaceLayoutManifestV2;
   publishedAt?: string;
@@ -30,15 +42,15 @@ export function createWorkspaceLayoutEnvelope(input: {
   revisionId: string;
 }): WorkspaceLayoutEnvelopeV1;
 export function createWorkspaceLayoutEnvelope(input: {
-  manifest: WorkspaceLayoutManifest;
+  manifest: WorkspaceLayoutManifestAny;
   publishedAt?: string;
   revisionId: string;
-}): WorkspaceLayoutEnvelope;
+}): WorkspaceLayoutEnvelopeAny;
 export function createWorkspaceLayoutEnvelope(input: {
-  manifest: WorkspaceLayoutManifest;
+  manifest: WorkspaceLayoutManifestAny;
   publishedAt?: string;
   revisionId: string;
-}): WorkspaceLayoutEnvelope {
+}): WorkspaceLayoutEnvelopeAny {
   return {
     schemaVersion: input.manifest.schemaVersion,
     registryVersion: input.manifest.registryVersion,
@@ -46,11 +58,11 @@ export function createWorkspaceLayoutEnvelope(input: {
     manifestDigest: workspaceLayoutDigest(input.manifest),
     publishedAt: input.publishedAt ?? new Date().toISOString(),
     manifest: input.manifest,
-  } as WorkspaceLayoutEnvelope;
+  } as WorkspaceLayoutEnvelopeAny;
 }
 
 export type WorkspaceLayoutEnvelopeValidationResult =
-  | { ok: true; value: WorkspaceLayoutEnvelope }
+  | { ok: true; value: WorkspaceLayoutEnvelopeAny }
   | { ok: false; errors: string[] };
 
 export function validateWorkspaceLayoutEnvelope(value: unknown): WorkspaceLayoutEnvelopeValidationResult {
@@ -61,7 +73,7 @@ export function validateWorkspaceLayoutEnvelope(value: unknown): WorkspaceLayout
   const errors: string[] = [];
   const versionPair = layoutVersionPair(value.manifest);
   if (!versionPair) {
-    errors.push(`Envelope manifest schemaVersion must be ${WORKSPACE_LAYOUT_SCHEMA_VERSION} or ${WORKSPACE_LAYOUT_SCHEMA_VERSION_V2}.`);
+    errors.push(`Envelope manifest schemaVersion must be ${WORKSPACE_LAYOUT_SCHEMA_VERSION}, ${WORKSPACE_LAYOUT_SCHEMA_VERSION_V2}, or ${WORKSPACE_LAYOUT_SCHEMA_VERSION_V3}.`);
   } else {
     if (value.schemaVersion !== versionPair.schemaVersion) {
       errors.push(`Envelope schemaVersion must match manifest schemaVersion ${versionPair.schemaVersion}.`);
@@ -89,14 +101,17 @@ export function validateWorkspaceLayoutEnvelope(value: unknown): WorkspaceLayout
 
   return errors.length
     ? { ok: false, errors }
-    : { ok: true, value: value as WorkspaceLayoutEnvelope };
+    : { ok: true, value: value as WorkspaceLayoutEnvelopeAny };
 }
 
 export type WorkspaceLayoutManifestValidationResult =
-  | { ok: true; value: WorkspaceLayoutManifest }
+  | { ok: true; value: WorkspaceLayoutManifestAny }
   | { ok: false; errors: string[] };
 
 export function validateWorkspaceLayoutManifestAny(value: unknown): WorkspaceLayoutManifestValidationResult {
+  if (isRecord(value) && value.schemaVersion === WORKSPACE_LAYOUT_SCHEMA_VERSION_V3) {
+    return validateWorkspaceLayoutManifestV3(value);
+  }
   if (isRecord(value) && value.schemaVersion === WORKSPACE_LAYOUT_SCHEMA_VERSION_V2) {
     return validateWorkspaceLayoutManifestV2(value);
   }
@@ -109,6 +124,9 @@ export function stableJsonStringify(value: unknown) {
 
 function layoutVersionPair(value: unknown) {
   if (!isRecord(value)) return null;
+  if (value.schemaVersion === WORKSPACE_LAYOUT_SCHEMA_VERSION_V3 && value.registryVersion === WORKSPACE_LAYOUT_REGISTRY_VERSION_V3) {
+    return { registryVersion: WORKSPACE_LAYOUT_REGISTRY_VERSION_V3, schemaVersion: WORKSPACE_LAYOUT_SCHEMA_VERSION_V3 };
+  }
   if (value.schemaVersion === WORKSPACE_LAYOUT_SCHEMA_VERSION_V2 && value.registryVersion === WORKSPACE_LAYOUT_REGISTRY_VERSION_V2) {
     return { registryVersion: WORKSPACE_LAYOUT_REGISTRY_VERSION_V2, schemaVersion: WORKSPACE_LAYOUT_SCHEMA_VERSION_V2 };
   }

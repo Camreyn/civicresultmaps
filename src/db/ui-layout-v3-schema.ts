@@ -11,7 +11,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
-import type { WorkspaceLayoutManifestV2 } from "../lib/workspace-layout-v2";
+import type { WorkspaceLayoutManifestAny } from "../lib/workspace-layout-v3";
 import { uiLayoutRevisions } from "./schema";
 
 export const uiLayoutAssets = pgTable(
@@ -45,7 +45,7 @@ export const uiLayoutTemplates = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull(),
     description: text("description").notNull().default(""),
-    manifest: jsonb("manifest").$type<WorkspaceLayoutManifestV2>().notNull(),
+    manifest: jsonb("manifest").$type<WorkspaceLayoutManifestAny>().notNull(),
     isShared: boolean("is_shared").notNull().default(true),
     actorId: text("actor_id").notNull(),
     actorEmail: text("actor_email").notNull(),
