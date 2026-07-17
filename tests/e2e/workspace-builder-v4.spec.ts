@@ -29,6 +29,12 @@ test("workspace builder v4 supports live tokens, finite undo, responsive compari
   await expect(page.getByRole("button", { name: /New group/ }).first()).toBeVisible();
   await expect(undo).toBeEnabled();
 
+  await page.getByRole("button", { name: "Delete Rich text" }).click();
+  await expect(page.getByRole("button", { name: /New group/ })).toHaveCount(0);
+  await expect(page.getByText("Deleted content block. Use Undo to restore it.")).toBeVisible();
+  await undo.click();
+  await expect(page.getByRole("button", { name: /New group/ }).first()).toBeVisible();
+
   await page.getByRole("button", { name: /mobile/i }).first().click();
   await expect.poll(async () => (await after.boundingBox())?.width ?? 999).toBeLessThanOrEqual(392);
 

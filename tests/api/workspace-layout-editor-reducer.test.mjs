@@ -8,12 +8,14 @@ import {
   moveWorkspaceGroupV3,
   moveWorkspaceRowV3,
   moveWorkspaceNodeV3,
+  removeWorkspaceNodeV3,
   setWorkspaceNodeLockV3,
   workspaceLayoutEditorReducer,
 } from "../../src/lib/workspace-layout-editor-reducer.ts";
 import {
   cloneWorkspaceLayoutManifestV3,
   embeddedWorkspaceLayoutManifestV3,
+  validateWorkspaceLayoutManifestV3,
 } from "../../src/lib/workspace-layout-v3.ts";
 import { createWorkspaceCustomNodeV2 } from "../../src/lib/workspace-layout-v2.ts";
 
@@ -84,6 +86,52 @@ test("only custom components duplicate", () => {
   const duplicated = duplicateWorkspaceNodeV3(manifest, custom.id);
   assert.equal(duplicated.tabs.find((tab) => tab.id === "map").groups[0].rows[0].columns[0].items.length, column.items.length + 1);
 });
+
+test("deleting a sole custom block prunes its empty containers and remains undoable", () => {
+  const manifest = cloneWorkspaceLayoutManifestV3();
+  const map = manifest.tabs.find((tab) => tab.id === "map");
+  const custom = createWorkspaceCustomNodeV2("rich-text", "custom-delete-test");
+  map.groups.push({
+    id: "custom-delete-group",
+    name: "Delete test",
+    rows: [{
+      columns: [{
+        id: "custom-delete-column",
+        items: [custom],
+        span: { desktop: 12, mobile: 12, tablet: 12 },
+      }],
+      id: "custom-delete-row",
+    }],
+  });
+
+  let state = createWorkspaceLayoutEditorState(manifest);
+  state = commit(state, (current) => removeWorkspaceNodeV3(current, custom.id));
+  assert.equal(
+    state.present.tabs.find((tab) => tab.id === "map").groups.some((group) => group.id === "custom-delete-group"),
+    false,
+  );
+  assert.equal(validateWorkspaceLayoutManifestV3(state.present).ok, true);
+  assert.equal(state.past.length, 1);
+
+  state = workspaceLayoutEditorReducer(state, { type: "undo" });
+  assert.equal(
+    state.present.tabs.find((tab) => tab.id === "map").groups.some((group) => group.id === "custom-delete-group"),
+    true,
+  );
+});
+
+test("production and locked content cannot be deleted", () => {
+  const manifest = cloneWorkspaceLayoutManifestV3();
+  const map = manifest.tabs.find((tab) => tab.id === "map");
+  const production = map.groups[0].rows[0].columns[0].items[0];
+  assert.deepEqual(removeWorkspaceNodeV3(manifest, production.id), manifest);
+
+  const custom = createWorkspaceCustomNodeV2("callout", "custom-locked-delete-test");
+  custom.locked = true;
+  map.groups[0].rows[0].columns[0].items.push(custom);
+  assert.deepEqual(removeWorkspaceNodeV3(manifest, custom.id), manifest);
+});
+
 test("invalid drag destinations never remove source content", () => {
   const manifest = cloneWorkspaceLayoutManifestV3();
   const map = manifest.tabs.find((tab) => tab.id === "map");

@@ -59,7 +59,6 @@ import {
   mapNodes,
   nodeLabel,
   removeCustomColumn,
-  removeCustomNode,
   removeCustomRow,
   requiredProductionNode,
   resizeColumn,
@@ -92,6 +91,7 @@ import {
   moveWorkspaceNodeV3,
   moveWorkspaceRowV3,
   removeWorkspaceGroupV3,
+  removeWorkspaceNodeV3,
   setWorkspaceNodeLockV3,
   workspaceLayoutEditorReducer,
 } from "@/lib/workspace-layout-editor-reducer";
@@ -127,6 +127,14 @@ const customBlocks: Array<{ description: string; id: WorkspaceCustomBlockKindV2;
   { description: "Expandable detail rows", id: "accordion", label: "Accordion" },
   { description: "A visual section break", id: "divider", label: "Divider" },
 ];
+
+function removeLayoutSelection(manifest: WorkspaceLayoutManifestV3, selection: LayoutSelection) {
+  if (selection.kind === "node") return removeWorkspaceNodeV3(manifest, selection.nodeId);
+  if (selection.kind === "row") return removeCustomRow(manifest, selection.rowId);
+  if (selection.kind === "column") return removeCustomColumn(manifest, selection.columnId);
+  if (selection.kind === "group") return removeWorkspaceGroupV3(manifest, selection.groupId);
+  return manifest;
+}
 
 type RecoverySnapshot = {
   draftId: string | null;
@@ -184,6 +192,8 @@ export function LayoutEditorV4({
   const activeGroupId = selection.kind !== "workspace" && "groupId" in selection
     ? selection.groupId
     : activeTab?.groups[0]?.id;
+  const removal = useMemo(() => removeLayoutSelection(manifest, selection), [manifest, selection]);
+  const canRemove = JSON.stringify(removal) !== JSON.stringify(manifest);
 
   function commit(
     updater: (current: WorkspaceLayoutManifestV3) => WorkspaceLayoutManifestV3,
@@ -250,10 +260,24 @@ export function LayoutEditorV4({
   }
 
   function removeSelection() {
-    if (selection.kind === "node") commit((current) => removeCustomNode(current, selection.nodeId));
-    if (selection.kind === "row") commit((current) => removeCustomRow(current, selection.rowId));
-    if (selection.kind === "column") commit((current) => removeCustomColumn(current, selection.columnId));
-    if (selection.kind === "group") commit((current) => removeWorkspaceGroupV3(current, selection.groupId));
+    if (!canRemove) return;
+    commit(() => removal);
+    setSelection({ kind: "workspace" });
+    setSelectedNodeIds(new Set());
+    setOperationNotice("Deleted " + (selection.kind === "node" ? "content block" : selection.kind) + ". Use Undo to restore it.");
+  }
+
+  function removeNode(nodeId: string) {
+    const next = removeWorkspaceNodeV3(manifest, nodeId);
+    if (JSON.stringify(next) === JSON.stringify(manifest)) return;
+    commit(() => next);
+    if (selection.kind === "node" && selection.nodeId === nodeId) setSelection({ kind: "workspace" });
+    setSelectedNodeIds((current) => {
+      const copy = new Set(current);
+      copy.delete(nodeId);
+      return copy;
+    });
+    setOperationNotice("Deleted content block. Use Undo to restore it.");
   }
 
   function copySelectionSettings() {
@@ -480,6 +504,7 @@ export function LayoutEditorV4({
         event.preventDefault();
         void persistDraft();
       } else if (event.key === "Delete" || event.key === "Backspace") {
+        if (canRemove) event.preventDefault();
         removeSelection();
       } else if (event.key === "Escape") {
         setSelection({ kind: "workspace" });
@@ -561,14 +586,14 @@ export function LayoutEditorV4({
           <section aria-labelledby="layout-v4-stage-heading" className={base.stage}>
             <div className={base.stageHeader}><div><span>Production-shaped preview</span><h2 id="layout-v4-stage-heading">{activeTab ? tabLabel(activeTab.id) : "Workspace"}</h2></div><button disabled={!activeTab} onClick={() => addGroup()} type="button"><Plus size={15} /> Add group</button></div>
             <div className={compareMode === "split" ? base.compareGrid : base.canvasStage}>
-              {(compareMode === "baseline" || compareMode === "split") && <LayoutV4Canvas activeTabId={activeTabId} label={compareMode === "split" ? "Before" : "Before - saved draft"} manifest={editor.baseline} onAddColumn={() => undefined} onAddRow={() => undefined} onResizeColumn={() => undefined} onSelect={() => undefined} readOnly selectedNodeIds={new Set()} selection={{ kind: "workspace" }} viewport={viewport} />}
-              {(compareMode === "draft" || compareMode === "split") && <LayoutV4Canvas activeTabId={activeTabId} label={compareMode === "split" ? "After" : "After - current draft"} manifest={manifest} onAddColumn={(rowId) => commit((current) => appendColumn(current, rowId))} onAddRow={(groupId) => commit((current) => appendRow(current, groupId))} onResizeColumn={(columnId, delta) => commit((current) => resizeColumn(current, columnId, viewport, delta))} onSelect={handleSelection} selectedNodeIds={selectedNodeIds} selection={selection} viewport={viewport} />}
+              {(compareMode === "baseline" || compareMode === "split") && <LayoutV4Canvas activeTabId={activeTabId} label={compareMode === "split" ? "Before" : "Before - saved draft"} manifest={editor.baseline} onAddColumn={() => undefined} onAddRow={() => undefined} onRemoveNode={() => undefined} onResizeColumn={() => undefined} onSelect={() => undefined} readOnly selectedNodeIds={new Set()} selection={{ kind: "workspace" }} viewport={viewport} />}
+              {(compareMode === "draft" || compareMode === "split") && <LayoutV4Canvas activeTabId={activeTabId} label={compareMode === "split" ? "After" : "After - current draft"} manifest={manifest} onAddColumn={(rowId) => commit((current) => appendColumn(current, rowId))} onAddRow={(groupId) => commit((current) => appendRow(current, groupId))} onRemoveNode={removeNode} onResizeColumn={(columnId, delta) => commit((current) => resizeColumn(current, columnId, viewport, delta))} onSelect={handleSelection} selectedNodeIds={selectedNodeIds} selection={selection} viewport={viewport} />}
             </div>
           </section>
 
           <aside className={base.inspector}>
             <div className={base.inspectorHeader}><Settings2 size={17} /><div><span>Configure</span><strong>{selectionLabel(manifest, selection)}</strong></div><button aria-label="Inspect workspace" onClick={() => handleSelection({ kind: "workspace" })} type="button"><X size={15} /></button></div>
-            <LayoutV4Inspector assets={allAssets} clipboard={clipboard} closeHistoryGroup={() => dispatch({ type: "close-group" })} commit={commit} manifest={manifest} onCopy={copySelectionSettings} onDuplicate={duplicateSelection} onPaste={pasteSelectionSettings} onRemove={removeSelection} onSaveGroupTemplate={(name, description) => void saveGroupTemplate(name, description)} onUploadImage={uploadImage} selection={selection} uploading={uploading} viewport={viewport} />
+            <LayoutV4Inspector assets={allAssets} canRemove={canRemove} clipboard={clipboard} closeHistoryGroup={() => dispatch({ type: "close-group" })} commit={commit} manifest={manifest} onCopy={copySelectionSettings} onDuplicate={duplicateSelection} onPaste={pasteSelectionSettings} onRemove={removeSelection} onSaveGroupTemplate={(name, description) => void saveGroupTemplate(name, description)} onUploadImage={uploadImage} selection={selection} uploading={uploading} viewport={viewport} />
             <div className={base.inspectorBody}><fieldset><legend>Accessibility checks</legend><ul className={styles.contrastList}>{contrast.map((item) => <li data-valid={item.ok} key={item.label}><span>{item.label}</span><strong>{item.ratio.toFixed(2)}:1 / {item.threshold}:1</strong></li>)}</ul></fieldset></div>
           </aside>
         </div>

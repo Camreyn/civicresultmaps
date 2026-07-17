@@ -263,17 +263,6 @@ export function appendColumn(manifest: WorkspaceLayoutManifestV3, rowId: string)
   }));
 }
 
-export function removeCustomNode(manifest: WorkspaceLayoutManifestV3, nodeId: string) {
-  const source = findNodeLocation(manifest, nodeId);
-  if (!source || source.node.kind !== "custom" || source.node.locked
-    || source.group.locked || source.row.locked || source.column.locked
-    || source.column.items.length <= 1) return manifest;
-  return updateColumn(manifest, source.column.id, (column) => ({
-    ...column,
-    items: column.items.filter((item) => item.id !== nodeId),
-  }));
-}
-
 export function removeCustomRow(manifest: WorkspaceLayoutManifestV3, rowId: string) {
   const row = findRow(manifest, rowId);
   if (!row || row.locked || !rowIsCustomOnly(row)) return manifest;

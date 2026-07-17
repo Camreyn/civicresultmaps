@@ -59,6 +59,7 @@ type Commit = (
 export function LayoutV4Inspector({
   assets,
   clipboard,
+  canRemove,
   closeHistoryGroup,
   commit,
   manifest,
@@ -74,6 +75,7 @@ export function LayoutV4Inspector({
 }: {
   assets: LayoutAssetSummary[];
   clipboard: LayoutSettingsClipboard | null;
+  canRemove: boolean;
   closeHistoryGroup: () => void;
   commit: Commit;
   manifest: WorkspaceLayoutManifestV3;
@@ -135,7 +137,7 @@ export function LayoutV4Inspector({
       {selection.kind !== "workspace" && selection.kind !== "tab" && (
         <div className={styles.inspectorActions}>
           <button onClick={onDuplicate} type="button"><Copy size={13} /> Duplicate</button>
-          <button className={styles.dangerButton} onClick={onRemove} type="button"><Trash2 size={13} /> Delete</button>
+          <button className={styles.dangerButton} disabled={!canRemove} onClick={onRemove} title={canRemove ? "Delete this selection" : "Only unlocked custom content can be deleted"} type="button"><Trash2 size={13} /> Delete {selection.kind === "node" ? "block" : selection.kind}</button>
         </div>
       )}
       <p className={styles.shortcutHint}>Shortcuts: Ctrl/Cmd+Z undo, Shift+Ctrl/Cmd+Z redo, Ctrl/Cmd+D duplicate, Delete remove custom content, Ctrl/Cmd+S save the named draft.</p>

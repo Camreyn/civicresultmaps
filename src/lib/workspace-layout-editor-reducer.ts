@@ -198,6 +198,34 @@ export function moveWorkspaceNodeV3(
   });
 }
 
+export function removeWorkspaceNodeV3(manifest: WorkspaceLayoutManifestV3, nodeId: string) {
+  const source = findNodeLocation(manifest, nodeId);
+  if (!source || source.node.kind !== "custom" || isWorkspaceNodeLockedV3(source.node)
+    || source.group.locked || source.row.locked || source.column.locked) {
+    return manifest;
+  }
+
+  const tab = manifest.tabs.find((candidate) => candidate.id === source.tabId);
+  if (!tab) return manifest;
+
+  const groups = tab.groups.flatMap((group) => {
+    if (group.id !== source.group.id) return [group];
+    const rows = group.rows.flatMap((row) => {
+      if (row.id !== source.row.id) return [row];
+      const columns = row.columns.flatMap((column) => {
+        if (column.id !== source.column.id) return [column];
+        const items = column.items.filter((node) => node.id !== nodeId);
+        return items.length ? [{ ...column, items }] : [];
+      });
+      return columns.length ? [{ ...row, columns }] : [];
+    });
+    return rows.length ? [{ ...group, rows }] : [];
+  });
+
+  if (!groups.length || groups.every((group) => group.rows.length === 0)) return manifest;
+  return mapTab(manifest, source.tabId, (current) => ({ ...current, groups }));
+}
+
 export function duplicateWorkspaceNodeV3(manifest: WorkspaceLayoutManifestV3, nodeId: string) {
   const location = findNodeLocation(manifest, nodeId);
   if (!location || location.node.kind !== "custom" || location.node.locked
