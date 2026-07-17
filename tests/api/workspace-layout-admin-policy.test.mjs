@@ -84,8 +84,15 @@ test("builder v3 exposes responsive rows, rich content, media, and publication c
   assert.match(editor, /layout-media\//);
   assert.match(editor, /name="publicationAction"/);
   assert.match(editor, /VisibilityInspector/);
+  assert.match(editor, /aria-label="Comparison mode"/);
+  assert.match(editor, /Before - saved revision/);
+  assert.match(editor, /workspace:accent-color/);
+  assert.match(editor, /--preview-accent/);
   assert.match(richText, /LexicalComposer/);
   assert.match(runtime, /workspaceCustomRowsV2/);
   assert.match(css, /\.columns/);
+  assert.match(css, /--preview-background: #101112/);
+  assert.match(css, /var\(--preview-accent\)/);
+  assert.match(css, /\.compareGrid/);
   assert.match(css, /\.inspector/);
 });
