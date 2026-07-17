@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Columns2,
   Columns3,
   Copy,
   Eye,
@@ -66,6 +67,14 @@ import {
   type WorkspaceVisibilityConditionV1,
 } from "@/lib/workspace-layout-v2";
 import type { WorkspaceTabId } from "@/lib/workspace-layout";
+import {
+  closeWorkspaceLayoutHistoryGroup,
+  commitWorkspaceLayoutHistory,
+  createWorkspaceLayoutHistory,
+  redoWorkspaceLayoutHistory,
+  undoWorkspaceLayoutHistory,
+} from "@/lib/workspace-layout-history";
+import type { BuilderCompareMode } from "./layout-builder-types";
 import styles from "./layout-editor-v3.module.css";
 
 export type LayoutRevisionSummary = {
@@ -155,11 +164,12 @@ export function LayoutEditor({
   revisions,
   templates,
 }: LayoutEditorProps) {
-  const [history, setHistory] = useState(() => ({ entries: [cloneWorkspaceLayoutManifestV2(baseManifest)], index: 0 }));
+  const [history, setHistory] = useState(() => createWorkspaceLayoutHistory(baseManifest));
   const manifest = history.entries[history.index];
   const [activeTabId, setActiveTabId] = useState<WorkspaceTabId>(() => manifest.settings.defaultTab);
   const [selection, setSelection] = useState<Selection>({ kind: "workspace" });
   const [viewport, setViewport] = useState<Viewport>("desktop");
+  const [compareMode, setCompareMode] = useState<BuilderCompareMode>("draft");
   const [changeSummary, setChangeSummary] = useState("");
   const [environment, setEnvironment] = useState<"preview" | "production">("preview");
   const [selectedRevisionId, setSelectedRevisionId] = useState(parentRevisionId ?? revisions[0]?.id ?? "");
@@ -184,13 +194,11 @@ export function LayoutEditor({
     : undefined;
   const allAssets = [...sessionAssets, ...assets.filter((asset) => !sessionAssets.some((item) => item.id === asset.id))];
 
-  function commit(updater: (current: WorkspaceLayoutManifestV2) => WorkspaceLayoutManifestV2) {
-    setHistory((current) => {
-      const present = current.entries[current.index];
-      const next = updater(cloneWorkspaceLayoutManifestV2(present));
-      if (JSON.stringify(next) === JSON.stringify(present)) return current;
-      return { entries: [...current.entries.slice(0, current.index + 1), next], index: current.index + 1 };
-    });
+  function commit(
+    updater: (current: WorkspaceLayoutManifestV2) => WorkspaceLayoutManifestV2,
+    groupKey?: string,
+  ) {
+    setHistory((current) => commitWorkspaceLayoutHistory(current, updater, groupKey));
   }
 
   function updateTab(tabId: WorkspaceTabId, updater: (tab: WorkspaceLayoutTabV2) => WorkspaceLayoutTabV2) {
@@ -363,10 +371,10 @@ export function LayoutEditor({
     <section className={styles.editor}>
       <header className={styles.toolbar}>
         <div className={styles.toolbarGroup}>
-          <button disabled={history.index === 0} onClick={() => setHistory((current) => ({ ...current, index: current.index - 1 }))} type="button"><Undo2 size={16} /> Undo</button>
-          <button disabled={history.index === history.entries.length - 1} onClick={() => setHistory((current) => ({ ...current, index: current.index + 1 }))} type="button"><Redo2 size={16} /> Redo</button>
+          <button disabled={history.index === 0} onClick={() => setHistory(undoWorkspaceLayoutHistory)} type="button"><Undo2 size={16} /> Undo</button>
+          <button disabled={history.index === history.entries.length - 1} onClick={() => setHistory(redoWorkspaceLayoutHistory)} type="button"><Redo2 size={16} /> Redo</button>
           <button disabled={!dirty} onClick={() => {
-            setHistory({ entries: [cloneWorkspaceLayoutManifestV2(baseManifest)], index: 0 });
+            setHistory(createWorkspaceLayoutHistory(baseManifest));
             setSelection({ kind: "workspace" });
           }} type="button"><RotateCcw size={16} /> Reset</button>
         </div>
@@ -375,6 +383,11 @@ export function LayoutEditor({
             const Icon = mode === "desktop" ? Laptop : mode === "tablet" ? Tablet : Smartphone;
             return <button aria-pressed={viewport === mode} key={mode} onClick={() => setViewport(mode)} type="button"><Icon size={16} /><span>{mode}</span></button>;
           })}
+        </div>
+        <div aria-label="Comparison mode" className={styles.segmented} role="group">
+          <button aria-pressed={compareMode === "baseline"} onClick={() => setCompareMode("baseline")} type="button">Before</button>
+          <button aria-pressed={compareMode === "draft"} onClick={() => setCompareMode("draft")} type="button">After</button>
+          <button aria-pressed={compareMode === "split"} onClick={() => setCompareMode("split")} type="button"><Columns2 size={16} /> Compare</button>
         </div>
         <div className={styles.toolbarStatus}>
           <span>{dirty ? "Unsaved changes" : "Up to date"}</span>
@@ -437,74 +450,89 @@ export function LayoutEditor({
         <main className={styles.stage}>
           <div className={styles.stageHeader}>
             <div><span>Live-layout preview</span><h2>{workspaceLayoutRegistryV2.find((tab) => tab.id === activeTabId)?.label}</h2></div>
-            <button onClick={addRow} type="button"><Plus size={15} /> Add row</button>
+            <button disabled={compareMode === "baseline"} onClick={addRow} type="button"><Plus size={15} /> Add row</button>
           </div>
-          <div className={`${styles.viewport} ${styles[viewport]}`} data-layout-accent={manifest.settings.accentColor} data-layout-theme={manifest.settings.theme}>
-            <div className={styles.sitePreviewHeader}>
-              <div className={styles.previewBrand}><span>CR</span><strong>Civic Result Maps</strong></div>
-              <div className={styles.previewMetrics}><span>Jurisdictions <strong>39</strong></span><span>Sources <strong>12</strong></span><span>Validation <strong>Pass</strong></span></div>
-            </div>
-            <div className={styles.previewTabs}>{manifest.tabs.filter((tab) => tab.visible).map((tab) => <span className={tab.id === activeTabId ? styles.activePreviewTab : ""} key={tab.id}>{workspaceLayoutRegistryV2.find((item) => item.id === tab.id)?.label}</span>)}</div>
-            <div className={styles.rows}>
-              {activeTab.rows.map((row, rowIndex) => (
-                <section
-                  aria-label={`Layout row ${rowIndex + 1}`}
-                  className={styles.row}
-                  data-selected={selection.kind === "row" && selection.rowId === row.id}
-                  key={row.id}
-                  onClick={() => setSelection({ kind: "row", rowId: row.id, tabId: activeTabId })}
-                  onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setSelection({ kind: "row", rowId: row.id, tabId: activeTabId }); }}
-                  tabIndex={0}
-                >
-                  <div className={styles.rowControls}>
-                    <span>Row {rowIndex + 1}</span>
-                    <button aria-label="Move row up" disabled={rowIndex === 0} onClick={(event) => { event.stopPropagation(); moveRow(row.id, -1); }} type="button"><ArrowUp size={13} /></button>
-                    <button aria-label="Move row down" disabled={rowIndex === activeTab.rows.length - 1} onClick={(event) => { event.stopPropagation(); moveRow(row.id, 1); }} type="button"><ArrowDown size={13} /></button>
-                    <button onClick={(event) => { event.stopPropagation(); addColumn(row.id); }} type="button"><Columns3 size={13} /> Column</button>
-                  </div>
-                  <div className={styles.columns} data-gap={row.gap ?? "medium"}>
-                    {row.columns.map((column) => (
-                      <div
-                        aria-label={`Column ${column.id.slice(-4)}`}
-                        className={styles.column}
-                        data-empty={column.items.length === 0}
-                        data-selected={(selection.kind === "column" || selection.kind === "node") && selection.columnId === column.id}
-                        key={column.id}
-                        onClick={(event) => { event.stopPropagation(); setSelection({ columnId: column.id, kind: "column", rowId: row.id, tabId: activeTabId }); }}
-                        onDragOver={(event) => event.preventDefault()}
-                        onDrop={(event) => {
-                          event.preventDefault();
-                          if (draggedNodeId) moveNode(draggedNodeId, column.id);
-                          setDraggedNodeId(null);
-                        }}
-                        onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setSelection({ columnId: column.id, kind: "column", rowId: row.id, tabId: activeTabId }); }}
-                        style={{ "--builder-span": column.span[viewport] } as CSSProperties}
-                        tabIndex={0}
-                      >
-                        {column.items.map((node) => (
-                          <BuilderNode
-                            key={node.id}
-                            node={node}
-                            onDragEnd={() => setDraggedNodeId(null)}
-                            onDragStart={() => setDraggedNodeId(node.id)}
-                            onSelect={() => setSelection({ columnId: column.id, kind: "node", nodeId: node.id, rowId: row.id, tabId: activeTabId })}
-                            selected={selection.kind === "node" && selection.nodeId === node.id}
-                          />
-                        ))}
-                        {!column.items.length && <button className={styles.emptyColumn} onClick={(event) => { event.stopPropagation(); addBlock("rich-text", { columnId: column.id, rowId: row.id }); }} type="button"><Plus size={15} /> Drop or add content</button>}
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ))}
-              {!activeTab.rows.length && <button className={styles.emptyCanvas} onClick={addRow} type="button"><Plus /> Add the first row</button>}
-            </div>
+          <div className={compareMode === "split" ? styles.compareGrid : styles.canvasStage}>
+            {compareMode === "baseline" && (
+              <BuilderCanvas
+                activeTabId={activeTabId}
+                draggedNodeId={draggedNodeId}
+                label="Before - saved revision"
+                manifest={baseManifest}
+                onAddBlock={addBlock}
+                onAddColumn={addColumn}
+                onAddRow={addRow}
+                onMoveNode={moveNode}
+                onMoveRow={moveRow}
+                onSelect={setSelection}
+                onSetDraggedNodeId={setDraggedNodeId}
+                readOnly
+                selection={selection}
+                viewport={viewport}
+              />
+            )}
+            {compareMode === "draft" && (
+              <BuilderCanvas
+                activeTabId={activeTabId}
+                draggedNodeId={draggedNodeId}
+                label="After - current draft"
+                manifest={manifest}
+                onAddBlock={addBlock}
+                onAddColumn={addColumn}
+                onAddRow={addRow}
+                onMoveNode={moveNode}
+                onMoveRow={moveRow}
+                onSelect={setSelection}
+                onSetDraggedNodeId={setDraggedNodeId}
+                selection={selection}
+                viewport={viewport}
+              />
+            )}
+            {compareMode === "split" && (
+              <>
+                <BuilderCanvas
+                  activeTabId={activeTabId}
+                  draggedNodeId={draggedNodeId}
+                  label="Before"
+                  manifest={baseManifest}
+                  onAddBlock={addBlock}
+                  onAddColumn={addColumn}
+                  onAddRow={addRow}
+                  onMoveNode={moveNode}
+                  onMoveRow={moveRow}
+                  onSelect={setSelection}
+                  onSetDraggedNodeId={setDraggedNodeId}
+                  readOnly
+                  selection={selection}
+                  viewport={viewport}
+                />
+                <BuilderCanvas
+                  activeTabId={activeTabId}
+                  draggedNodeId={draggedNodeId}
+                  label="After"
+                  manifest={manifest}
+                  onAddBlock={addBlock}
+                  onAddColumn={addColumn}
+                  onAddRow={addRow}
+                  onMoveNode={moveNode}
+                  onMoveRow={moveRow}
+                  onSelect={setSelection}
+                  onSetDraggedNodeId={setDraggedNodeId}
+                  selection={selection}
+                  viewport={viewport}
+                />
+              </>
+            )}
           </div>
         </main>
 
         <aside className={styles.inspector}>
           <div className={styles.inspectorHeader}><Settings2 size={17} /><div><span>Configure</span><strong>{selectionLabel(selection, selectedNode)}</strong></div><button aria-label="Inspect workspace" onClick={() => setSelection({ kind: "workspace" })} type="button"><X size={15} /></button></div>
-          {selection.kind === "workspace" && <WorkspaceInspector manifest={manifest} onChange={(settings) => commit((current) => ({ ...current, settings }))} />}
+          {selection.kind === "workspace" && <WorkspaceInspector
+            manifest={manifest}
+            onChange={(settings, groupKey) => commit((current) => ({ ...current, settings }), groupKey)}
+            onFinishChange={() => setHistory(closeWorkspaceLayoutHistoryGroup)}
+          />}
           {selection.kind === "tab" && <TabInspector tab={activeTab} required={workspaceLayoutRegistryV2.find((tab) => tab.id === activeTab.id)?.required ?? false} onChange={(tab) => updateTab(activeTab.id, () => tab)} />}
           {selection.kind === "row" && selectedRow && <RowInspector row={selectedRow} onChange={(row) => updateRow(row.id, () => row)} />}
           {selection.kind === "column" && selectedColumn && <ColumnInspector column={selectedColumn} viewport={viewport} onChange={(column) => updateRow(selection.rowId, (row) => ({ ...row, columns: row.columns.map((item) => item.id === column.id ? column : item) }))} />}
@@ -574,22 +602,164 @@ export function LayoutEditor({
   );
 }
 
-function BuilderNode({ node, onDragEnd, onDragStart, onSelect, selected }: {
+type BuilderCanvasProps = {
+  activeTabId: WorkspaceTabId;
+  draggedNodeId: string | null;
+  label: string;
+  manifest: WorkspaceLayoutManifestV2;
+  onAddBlock: (component: WorkspaceCustomBlockKindV2, destination?: { columnId: string; rowId: string }) => void;
+  onAddColumn: (rowId: string) => void;
+  onAddRow: () => void;
+  onMoveNode: (nodeId: string, destinationColumnId: string) => void;
+  onMoveRow: (rowId: string, delta: -1 | 1) => void;
+  onSelect: (selection: Selection) => void;
+  onSetDraggedNodeId: (nodeId: string | null) => void;
+  readOnly?: boolean;
+  selection: Selection;
+  viewport: Viewport;
+};
+
+function BuilderCanvas({
+  activeTabId,
+  draggedNodeId,
+  label,
+  manifest,
+  onAddBlock,
+  onAddColumn,
+  onAddRow,
+  onMoveNode,
+  onMoveRow,
+  onSelect,
+  onSetDraggedNodeId,
+  readOnly = false,
+  selection,
+  viewport,
+}: BuilderCanvasProps) {
+  const activeTab = manifest.tabs.find((tab) => tab.id === activeTabId) ?? manifest.tabs[0];
+  const previewStyle = {
+    "--preview-accent": manifest.settings.accentColor ?? "#16a579",
+  } as CSSProperties;
+
+  return (
+    <section className={styles.canvasFrame}>
+      <span className={styles.canvasLabel}>{label}</span>
+      <div
+        aria-label={`${label}, ${workspaceLayoutRegistryV2.find((tab) => tab.id === activeTab.id)?.label ?? activeTab.id} preview`}
+        className={`${styles.viewport} ${styles[viewport]}`}
+        data-layout-content-width={manifest.settings.contentWidth}
+        data-layout-radius={manifest.settings.radius}
+        data-layout-shadow={manifest.settings.shadow}
+        data-layout-spacing={manifest.settings.spacingScale}
+        data-layout-tab-style={manifest.settings.tabStyle}
+        data-layout-theme={manifest.settings.theme}
+        data-layout-type-scale={manifest.settings.typeScale}
+        data-read-only={readOnly}
+        role="region"
+        style={previewStyle}
+      >
+        <div className={styles.sitePreviewHeader}>
+          <div className={styles.previewBrand}><span>CR</span><strong>Civic Result Maps</strong></div>
+          <div className={styles.previewMetrics}><span>Jurisdictions <strong>39</strong></span><span>Sources <strong>12</strong></span><span>Validation <strong>Pass</strong></span></div>
+        </div>
+        <div className={styles.previewTabs}>{manifest.tabs.filter((tab) => tab.visible).map((tab) => <span className={tab.id === activeTabId ? styles.activePreviewTab : ""} key={tab.id}>{workspaceLayoutRegistryV2.find((item) => item.id === tab.id)?.label}</span>)}</div>
+        <div className={styles.rows}>
+          {activeTab.rows.map((row, rowIndex) => (
+            <section
+              aria-label={`Layout row ${rowIndex + 1}`}
+              className={styles.row}
+              data-selected={!readOnly && selection.kind === "row" && selection.rowId === row.id}
+              key={row.id}
+              onClick={readOnly ? undefined : () => onSelect({ kind: "row", rowId: row.id, tabId: activeTabId })}
+              onKeyDown={readOnly ? undefined : (event) => {
+                if (event.key === "Enter" || event.key === " ") onSelect({ kind: "row", rowId: row.id, tabId: activeTabId });
+              }}
+              tabIndex={readOnly ? undefined : 0}
+            >
+              {!readOnly && <div className={styles.rowControls}>
+                <span>Row {rowIndex + 1}</span>
+                <button aria-label="Move row up" disabled={rowIndex === 0} onClick={(event) => { event.stopPropagation(); onMoveRow(row.id, -1); }} type="button"><ArrowUp size={13} /></button>
+                <button aria-label="Move row down" disabled={rowIndex === activeTab.rows.length - 1} onClick={(event) => { event.stopPropagation(); onMoveRow(row.id, 1); }} type="button"><ArrowDown size={13} /></button>
+                <button onClick={(event) => { event.stopPropagation(); onAddColumn(row.id); }} type="button"><Columns3 size={13} /> Column</button>
+              </div>}
+              <div className={styles.columns} data-gap={row.gap ?? "medium"}>
+                {row.columns.map((column) => (
+                  <div
+                    aria-label={`Column ${column.id.slice(-4)}`}
+                    className={styles.column}
+                    data-empty={column.items.length === 0}
+                    data-selected={!readOnly && (selection.kind === "column" || selection.kind === "node") && selection.columnId === column.id}
+                    key={column.id}
+                    onClick={readOnly ? undefined : (event) => {
+                      event.stopPropagation();
+                      onSelect({ columnId: column.id, kind: "column", rowId: row.id, tabId: activeTabId });
+                    }}
+                    onDragOver={readOnly ? undefined : (event) => event.preventDefault()}
+                    onDrop={readOnly ? undefined : (event) => {
+                      event.preventDefault();
+                      if (draggedNodeId) onMoveNode(draggedNodeId, column.id);
+                      onSetDraggedNodeId(null);
+                    }}
+                    onKeyDown={readOnly ? undefined : (event) => {
+                      if (event.key === "Enter" || event.key === " ") onSelect({ columnId: column.id, kind: "column", rowId: row.id, tabId: activeTabId });
+                    }}
+                    style={{ "--builder-span": column.span[viewport] } as CSSProperties}
+                    tabIndex={readOnly ? undefined : 0}
+                  >
+                    {column.items.map((node) => (
+                      <BuilderNode
+                        key={node.id}
+                        node={node}
+                        onDragEnd={() => onSetDraggedNodeId(null)}
+                        onDragStart={() => onSetDraggedNodeId(node.id)}
+                        onSelect={() => onSelect({ columnId: column.id, kind: "node", nodeId: node.id, rowId: row.id, tabId: activeTabId })}
+                        readOnly={readOnly}
+                        selected={!readOnly && selection.kind === "node" && selection.nodeId === node.id}
+                      />
+                    ))}
+                    {!column.items.length && (readOnly
+                      ? <div className={styles.emptyColumn}>Empty column</div>
+                      : <button className={styles.emptyColumn} onClick={(event) => { event.stopPropagation(); onAddBlock("rich-text", { columnId: column.id, rowId: row.id }); }} type="button"><Plus size={15} /> Drop or add content</button>)}
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+          {!activeTab.rows.length && (readOnly
+            ? <div className={styles.emptyCanvas}>No rows in this tab</div>
+            : <button className={styles.emptyCanvas} onClick={onAddRow} type="button"><Plus /> Add the first row</button>)}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BuilderNode({ node, onDragEnd, onDragStart, onSelect, readOnly = false, selected }: {
   node: WorkspaceLayoutNodeV2;
   onDragEnd: () => void;
   onDragStart: () => void;
   onSelect: () => void;
+  readOnly?: boolean;
   selected: boolean;
 }) {
   const label = isWorkspaceProductionNodeV2(node) ? productionLabel(node) : customLabel(node);
   return (
-    <article className={styles.builderNode} data-kind={node.kind} data-selected={selected} data-visible={node.visible} draggable onDragEnd={onDragEnd} onDragStart={onDragStart} onClick={(event) => { event.stopPropagation(); onSelect(); }}>
-      <div className={styles.nodeToolbar}>
+    <article
+      className={styles.builderNode}
+      data-kind={node.kind}
+      data-read-only={readOnly}
+      data-selected={selected}
+      data-visible={node.visible}
+      draggable={!readOnly}
+      onClick={readOnly ? undefined : (event) => { event.stopPropagation(); onSelect(); }}
+      onDragEnd={readOnly ? undefined : onDragEnd}
+      onDragStart={readOnly ? undefined : onDragStart}
+    >
+      {!readOnly && <div className={styles.nodeToolbar}>
         <button aria-label={`Drag ${label}`} className={styles.dragHandle} type="button"><GripVertical size={16} /></button>
         <span>{node.kind === "production" ? "Production" : "Content"}</span>
         {!node.visible && <EyeOff size={13} />}
         <button aria-label={`Configure ${label}`} onClick={onSelect} type="button"><Settings2 size={15} /></button>
-      </div>
+      </div>}
       <div className={styles.nodePreview}>
         <strong>{label}</strong>
         {isWorkspaceProductionNodeV2(node) ? <ProductionSketch node={node} /> : <CustomSketch node={node} />}
@@ -613,9 +783,13 @@ function CustomSketch({ node }: { node: WorkspaceCustomNodeV2 }) {
   return <p>{node.body || node.document?.blocks[0]?.children.map((child) => child.text).join("") || "Configure this content with the gear."}</p>;
 }
 
-function WorkspaceInspector({ manifest, onChange }: { manifest: WorkspaceLayoutManifestV2; onChange: (settings: WorkspaceLayoutManifestV2["settings"]) => void }) {
+function WorkspaceInspector({ manifest, onChange, onFinishChange }: {
+  manifest: WorkspaceLayoutManifestV2;
+  onChange: (settings: WorkspaceLayoutManifestV2["settings"], groupKey?: string) => void;
+  onFinishChange: () => void;
+}) {
   const settings = manifest.settings;
-  const update = <K extends keyof typeof settings>(key: K, value: typeof settings[K]) => onChange({ ...settings, [key]: value });
+  const update = <K extends keyof typeof settings>(key: K, value: typeof settings[K], groupKey?: string) => onChange({ ...settings, [key]: value }, groupKey);
   return <div className={styles.inspectorBody}>
     <fieldset><legend>Design system</legend>
       <Select label="Theme" value={settings.theme} onChange={(value) => update("theme", value as typeof settings.theme)} options={["civic", "warm", "high-contrast"]} />
@@ -625,7 +799,7 @@ function WorkspaceInspector({ manifest, onChange }: { manifest: WorkspaceLayoutM
       <Select label="Corners" value={settings.radius} onChange={(value) => update("radius", value as typeof settings.radius)} options={["square", "subtle", "rounded"]} />
       <Select label="Shadows" value={settings.shadow} onChange={(value) => update("shadow", value as typeof settings.shadow)} options={["none", "subtle", "raised"]} />
       <Select label="Tab style" value={settings.tabStyle} onChange={(value) => update("tabStyle", value as typeof settings.tabStyle)} options={["bar", "pills"]} />
-      <label>Accent color<input aria-label="Accent color" type="color" value={settings.accentColor ?? "#18a77a"} onChange={(event) => update("accentColor", event.target.value)} /></label>
+      <label>Accent color<input aria-label="Accent color" type="color" value={settings.accentColor ?? "#16a579"} onBlur={onFinishChange} onChange={(event) => update("accentColor", event.target.value, "workspace:accent-color")} /></label>
     </fieldset>
     <fieldset><legend>Defaults</legend>
       <Select label="Default tab" value={settings.defaultTab} onChange={(value) => update("defaultTab", value as WorkspaceTabId)} options={manifest.tabs.filter((tab) => tab.visible).map((tab) => tab.id)} />

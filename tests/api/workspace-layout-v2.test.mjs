@@ -12,6 +12,13 @@ import {
 } from "../../src/lib/workspace-layout-v2.ts";
 import { embeddedWorkspaceLayoutManifest } from "../../src/lib/workspace-layout.ts";
 import {
+  closeWorkspaceLayoutHistoryGroup,
+  commitWorkspaceLayoutHistory,
+  createWorkspaceLayoutHistory,
+  redoWorkspaceLayoutHistory,
+  undoWorkspaceLayoutHistory,
+} from "../../src/lib/workspace-layout-history.ts";
+import {
   createWorkspaceLayoutEnvelope,
   validateWorkspaceLayoutEnvelope,
 } from "../../src/lib/workspace-layout-digest.ts";
@@ -19,6 +26,37 @@ import {
   workspaceCustomRowsV2,
   workspaceSectionStateV2,
 } from "../../src/lib/workspace-layout-v2-runtime.ts";
+
+test("continuous color updates are one undoable history action", () => {
+  let history = createWorkspaceLayoutHistory(embeddedWorkspaceLayoutManifestV2);
+  history = commitWorkspaceLayoutHistory(history, (manifest) => ({
+    ...manifest,
+    settings: { ...manifest.settings, accentColor: "#123456" },
+  }), "workspace:accent-color");
+  history = commitWorkspaceLayoutHistory(history, (manifest) => ({
+    ...manifest,
+    settings: { ...manifest.settings, accentColor: "#abcdef" },
+  }), "workspace:accent-color");
+
+  assert.equal(history.entries.length, 2);
+  assert.equal(history.index, 1);
+  assert.equal(history.entries[history.index].settings.accentColor, "#abcdef");
+
+  history = closeWorkspaceLayoutHistoryGroup(history);
+  history = undoWorkspaceLayoutHistory(history);
+  assert.equal(history.index, 0);
+  assert.equal(history.entries[history.index].settings.accentColor, undefined);
+
+  history = redoWorkspaceLayoutHistory(history);
+  assert.equal(history.index, 1);
+  assert.equal(history.entries[history.index].settings.accentColor, "#abcdef");
+
+  history = commitWorkspaceLayoutHistory(history, (manifest) => ({
+    ...manifest,
+    settings: { ...manifest.settings, accentColor: "#fedcba" },
+  }), "workspace:accent-color");
+  assert.equal(history.entries.length, 3);
+});
 
 test("the embedded v2 manifest and every starter template are structurally valid", () => {
   assert.equal(validateWorkspaceLayoutManifestV2(embeddedWorkspaceLayoutManifestV2).ok, true);
