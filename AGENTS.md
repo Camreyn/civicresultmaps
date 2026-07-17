@@ -177,3 +177,12 @@ Use neutral branch prefixes that describe the work, not the agent or tool that c
 - `hotfix/<topic>` for urgent fixes
 
 Do not create new public branches with agent/tool names in the branch path. This repository is public, and GitHub does not support hiding individual branches in a public repository. Treat every pushed branch, draft PR branch, and branch name as public. Keep private or exploratory work local in worktrees until it is ready for a PR, and delete remote branches after their PRs are merged or closed.
+
+## GitHub CLI Authentication
+
+The GitHub CLI is already authorized in the user's normal Windows console. If
+`gh auth status` fails from a sandboxed or in-process shell, retry the relevant
+`gh` command in a separate console outside the sandbox before asking the user to
+authenticate again. Do not start a new login unless the separate-console check
+also fails. The user has explicitly authorized this separate-console fallback
+for repository publishing tasks.

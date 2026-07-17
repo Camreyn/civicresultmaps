@@ -4,6 +4,8 @@ The workspace layout system is a constrained production page builder for allowli
 
 For the grouped schema, named-draft collaboration model, scheduler, and staged deployment sequence, see [Workspace Builder v4](workspace-builder-v4.md).
 
+For guarded LLM access to named drafts through MCP and the Codex plugin, see [Layout Agent Tooling](layout-agent-tooling.md).
+
 ## Builder capabilities
 
 | Scope | Editable controls |
@@ -42,6 +44,7 @@ Rows use a responsive 12-column grid. Desktop spans are 3, 4, 6, 8, 9, or 12; ta
 | Surface | Responsibility |
 | --- | --- |
 | `/admin/layout` | Clerk-protected page builder, validation, immutable revisions, preview, and publication requests |
+| `/api/admin/layout-agent/mcp` | Token-protected, draft-first LLM tools with constrained operations and no publication capability |
 | Neon tables | Immutable revisions, versioned named drafts, idempotent/scheduled publication requests, audit events, shared workspace/group templates, managed assets, and immutable asset references |
 | Vercel Blob | Public `layout-media/` images with authenticated uploads, MIME/size limits, and stored dimensions/alt text |
 | Vercel Edge Config | `workspaceLayoutStable` and `workspaceLayoutCandidate` envelopes |

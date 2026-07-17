@@ -12,6 +12,8 @@ For historical 2016/2020 review-row eligibility, candidate-neutral fields, indic
 
 For the private workspace layout editor, immutable revision model, protected Vercel rollout, rollback, and privacy controls, read [`docs/developer/ui-layout-operations.md`](ui-layout-operations.md).
 
+For the guarded layout MCP endpoint, constrained LLM operation vocabulary, authentication, and Codex plugin, read [`docs/developer/layout-agent-tooling.md`](layout-agent-tooling.md).
+
 ## Coordinator Protocol
 
 When coordinating state workers:
