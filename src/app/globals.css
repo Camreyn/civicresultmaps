@@ -6606,3 +6606,204 @@ td {
     grid-column: span var(--layout-span-mobile, 12);
   }
 }
+
+/* Primary navigation hierarchy and responsive state rail. */
+.workspace {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.state-rail {
+  width: clamp(260px, 23vw, 340px);
+  transition: width 180ms ease;
+}
+
+.state-rail-heading {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.state-rail-heading .section-label {
+  margin: 0;
+}
+
+.state-rail-collapse-button,
+.state-rail-mobile-close {
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+
+.state-rail-collapse-button:hover,
+.state-rail-collapse-button:focus-visible,
+.state-rail-mobile-close:hover,
+.state-rail-mobile-close:focus-visible {
+  border-color: var(--accent-line);
+  color: var(--accent);
+  outline: 0;
+}
+
+.state-rail-mobile-trigger,
+.state-rail-backdrop,
+.state-rail-mobile-close,
+.state-rail-collapsed-summary {
+  display: none;
+}
+
+.state-rail.is-collapsed {
+  width: 64px;
+}
+
+.state-rail.is-collapsed .sidebar-header {
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.state-rail.is-collapsed .state-rail-heading,
+.state-rail.is-collapsed .state-rail-content {
+  display: none;
+}
+
+.state-rail.is-collapsed .state-rail-collapsed-summary {
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding: 12px 6px;
+  width: 100%;
+}
+
+.state-rail-collapsed-summary:hover,
+.state-rail-collapsed-summary:focus-visible {
+  border-color: var(--accent-line);
+  color: var(--accent);
+  outline: 0;
+}
+
+.state-rail-collapsed-summary span {
+  color: var(--quiet);
+  font-size: 10px;
+}
+
+.review-direction-notice {
+  border-top: 0;
+}
+
+.review-direction-notice summary {
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.review-direction-notice summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.review-direction-notice-body {
+  display: grid;
+  gap: 8px;
+  padding-top: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .state-rail {
+    transition: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .state-rail-mobile-trigger {
+    align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--foreground);
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 14px;
+    width: 100%;
+  }
+
+  .state-rail-mobile-trigger span {
+    flex: 1;
+    text-align: left;
+  }
+
+  .state-rail-mobile-trigger strong {
+    color: var(--accent);
+    font-family: var(--font-code);
+    font-size: 12px;
+  }
+
+  .state-rail-backdrop {
+    background: rgba(3, 8, 12, 0.72);
+    border: 0;
+    display: block;
+    inset: 0;
+    position: fixed;
+    z-index: 79;
+  }
+
+  .sidebar.state-rail,
+  .sidebar.state-rail.is-collapsed {
+    background: var(--background);
+    border-right: 1px solid var(--line);
+    box-shadow: 24px 0 60px rgba(0, 0, 0, 0.38);
+    height: 100dvh;
+    inset: 0 auto 0 0;
+    overflow-y: auto;
+    padding: 18px;
+    position: fixed;
+    top: 0;
+    transform: translateX(-105%);
+    transition:
+      transform 180ms ease,
+      visibility 180ms ease;
+    visibility: hidden;
+    width: min(92vw, 380px);
+    z-index: 80;
+  }
+
+  .sidebar.state-rail.is-mobile-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .state-rail.is-collapsed .sidebar-header {
+    justify-content: space-between;
+  }
+
+  .state-rail.is-collapsed .state-rail-heading,
+  .state-rail.is-collapsed .state-rail-content {
+    display: grid;
+  }
+
+  .state-rail-collapse-button,
+  .state-rail-collapsed-summary {
+    display: none !important;
+  }
+
+  .state-rail-mobile-close {
+    display: inline-flex;
+  }
+
+  .state-rail .state-list {
+    max-height: none;
+  }
+}

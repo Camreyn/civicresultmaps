@@ -25,6 +25,25 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
   await expect(workspace.getByRole("tab", { name: "Map", exact: true })).toBeVisible();
   await expect(workspace.getByRole("tab", { name: "Review Center", exact: true })).toBeVisible();
   await expect(workspace.getByRole("tab", { name: "Data & Sources", exact: true })).toBeVisible();
+  const moreSections = workspace.locator('summary[aria-label="More workspace sections"]');
+  await expect(moreSections).toBeVisible();
+  await moreSections.click();
+  await expect(workspace.getByRole("button", { name: "Support", exact: true })).toBeVisible();
+  await moreSections.click();
+
+  const stateRail = page.getByRole("complementary", { name: "State coverage" });
+  await page.locator(".state-rail-collapse-button").click();
+  await expect(stateRail).toHaveClass(/is-collapsed/);
+  await page.locator(".state-rail-collapse-button").click();
+  await expect(stateRail).not.toHaveClass(/is-collapsed/);
+
+  await expect(page.getByLabel("Sort results")).toHaveValue("jurisdiction");
+  const jurisdictionNames = await page
+    .getByRole("region", { name: "WA county results table" })
+    .locator("tbody tr td:first-child")
+    .allTextContents();
+  expect(jurisdictionNames.length).toBeGreaterThan(0);
+  expect(jurisdictionNames).toEqual([...jurisdictionNames].sort((left, right) => left.localeCompare(right)));
   await workspace.getByRole("button", { name: /^Data Notes/ }).click();
   await expect(page.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
 
@@ -37,6 +56,33 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
   expect(cookie?.httpOnly).toBe(true);
   expect(cookie?.sameSite).toBe("Lax");
   expect(cookie?.value).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+});
+
+test("workspace navigation and state selector adapt on small screens", async ({ page }) => {
+  await page.setViewportSize({ height: 844, width: 390 });
+  await page.goto("/?state=WA&tab=map");
+
+  const stateTrigger = page.getByRole("button", { name: /Choose a state/i });
+  await expect(stateTrigger).toBeVisible();
+  await stateTrigger.click();
+
+  const stateRail = page.getByRole("complementary", { name: "State coverage" });
+  await expect(stateRail).toHaveClass(/is-mobile-open/);
+  await stateRail.getByRole("button", { name: "Close state selector" }).click();
+  await expect(stateRail).not.toHaveClass(/is-mobile-open/);
+
+  const workspaceSection = page.getByLabel("Workspace section", { exact: true });
+  await expect(workspaceSection).toBeVisible();
+  await workspaceSection.selectOption("support");
+  await expect(page).toHaveURL(/tab=support/);
+  await expect(workspaceSection).toHaveValue("support");
+
+  await workspaceSection.selectOption("review");
+  await expect(page).toHaveURL(/tab=review/);
+  const reviewView = page.getByLabel("Review Center view", { exact: true });
+  await expect(reviewView).toBeVisible();
+  await reviewView.selectOption("indicators");
+  await expect(reviewView).toHaveValue("indicators");
 });
 
 test("layout administration fails safely when Clerk is not configured", async ({ page }) => {

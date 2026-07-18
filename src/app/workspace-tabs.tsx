@@ -5,6 +5,7 @@ import {
   BarChart3,
   BellRing,
   BookOpen,
+  ChevronDown,
   CheckCircle2,
   Copy,
   Database,
@@ -17,6 +18,7 @@ import {
   ListChecks,
   Mail,
   MapIcon,
+  MoreHorizontal,
   Megaphone,
   Search,
   Send,
@@ -265,6 +267,22 @@ const tabs: Array<{ icon: ComponentType<SVGProps<SVGSVGElement> & { size?: numbe
   { icon: GitBranch, key: "imports", label: "Import Runs" },
   { icon: HeartHandshake, key: "support", label: "Support" },
   { icon: Mail, key: "contact", label: "Contact" },
+];
+
+const primaryWorkspaceTabOrder: TabKey[] = ["map", "review", "history", "data"];
+const secondaryWorkspaceTabGroups: Array<{ label: string; tabKeys: TabKey[] }> = [
+  {
+    label: "Learn & investigate",
+    tabKeys: ["methodology", "electronic", "planner"],
+  },
+  {
+    label: "Use the data",
+    tabKeys: ["exports", "imports"],
+  },
+  {
+    label: "Help",
+    tabKeys: ["support", "contact"],
+  },
 ];
 
 const reviewViewOptions: Array<{ key: ReviewView; label: string; summary: string }> = [
@@ -2734,6 +2752,32 @@ export function WorkspaceTabs({
       .filter((tab): tab is (typeof tabs)[number] => Boolean(tab)),
     [layoutManifest],
   );
+  const workspaceNavigation = useMemo(() => {
+    const tabByKey = new Map(layoutTabs.map((tab) => [tab.key, tab] as const));
+    const primary = primaryWorkspaceTabOrder
+      .map((key) => tabByKey.get(key))
+      .filter((tab): tab is (typeof tabs)[number] => Boolean(tab));
+    const groups = secondaryWorkspaceTabGroups
+      .map((group) => ({
+        label: group.label,
+        tabs: group.tabKeys
+          .map((key) => tabByKey.get(key))
+          .filter((tab): tab is (typeof tabs)[number] => Boolean(tab)),
+      }))
+      .filter((group) => group.tabs.length > 0);
+    const assignedKeys = new Set([...primary.map((tab) => tab.key), ...groups.flatMap((group) => group.tabs.map((tab) => tab.key))]);
+    const ungrouped = layoutTabs.filter((tab) => !assignedKeys.has(tab.key));
+
+    if (ungrouped.length) {
+      groups.push({ label: "More", tabs: ungrouped });
+    }
+
+    return {
+      all: [...primary, ...groups.flatMap((group) => group.tabs)],
+      groups,
+      primary,
+    };
+  }, [layoutTabs]);
   const layoutReviewViewOptions = useMemo(() => {
     const reviewConfiguration = reviewViewConfigurationV2(layoutManifest);
     return reviewConfiguration.viewOrder
@@ -2746,6 +2790,9 @@ export function WorkspaceTabs({
     ? initialTab as TabKey
     : "map";
   const [activeTab, setActiveTab] = useState<TabKey>(requestedTab);
+  const activeSecondaryTab = workspaceNavigation.groups
+    .flatMap((group) => group.tabs)
+    .find((tab) => tab.key === activeTab);
   const [copiedElectronicDraft, setCopiedElectronicDraft] = useState(false);
   const [copiedSourceRecordsDraft, setCopiedSourceRecordsDraft] = useState(false);
   const [enabledScreeningGraphs, setEnabledScreeningGraphs] = useState<ScreeningGraphType[]>([
@@ -2849,15 +2896,20 @@ export function WorkspaceTabs({
 
   const filteredIndicators = useMemo(() => {
     const query = reviewQuery.trim().toLowerCase();
-    return indicators.filter((indicator) => {
-      const typeMatches = reviewType === "all" || indicator.type === reviewType;
-      const queryMatches =
-        !query ||
-        indicator.jurisdictionName.toLowerCase().includes(query) ||
-        indicator.label.toLowerCase().includes(query) ||
-        indicator.summary.toLowerCase().includes(query);
-      return typeMatches && queryMatches;
-    });
+    return indicators
+      .filter((indicator) => {
+        const typeMatches = reviewType === "all" || indicator.type === reviewType;
+        const queryMatches =
+          !query ||
+          indicator.jurisdictionName.toLowerCase().includes(query) ||
+          indicator.label.toLowerCase().includes(query) ||
+          indicator.summary.toLowerCase().includes(query);
+        return typeMatches && queryMatches;
+      })
+      .sort(
+        (left, right) =>
+          right.severity - left.severity || left.jurisdictionName.localeCompare(right.jurisdictionName),
+      );
   }, [indicators, reviewQuery, reviewType]);
 
   const countyIndicators = useMemo(() => indicators.filter((indicator) => indicator.level === "county"), [indicators]);
@@ -3222,6 +3274,36 @@ export function WorkspaceTabs({
   const sourceRecordsRequestRows = sourceRecordsRequests.requests;
   const sourceRecordsRequestQueueCount = sourceRecordsRequestRows.length;
   const totalRecordsRequestQueueCount = electronicRequestQueueCount + sourceRecordsRequestQueueCount;
+
+  const renderWorkspaceTabButton = (
+    tab: (typeof tabs)[number],
+    presentation: "menu" | "tab" = "tab",
+  ) => {
+    const Icon = tab.icon;
+    const selected = activeTab === tab.key;
+    return (
+      <button
+        aria-current={presentation === "menu" && selected ? "page" : undefined}
+        aria-selected={presentation === "tab" ? selected : undefined}
+        className="tab-button"
+        data-tour={`tab-${tab.key}`}
+        id={`workspace-tab-${tab.key}`}
+        key={tab.key}
+        onClick={() => selectTab(tab.key)}
+        role={presentation === "tab" ? "tab" : undefined}
+        type="button"
+      >
+        <Icon aria-hidden size={16} />
+        <span>{tab.label}</span>
+        {tab.key === "electronic" && totalRecordsRequestQueueCount > 0 && (
+          <span className="tab-alert-badge" aria-label={`${totalRecordsRequestQueueCount} records requests need review`}>
+            {totalRecordsRequestQueueCount}
+          </span>
+        )}
+      </button>
+    );
+  };
+
   const sourceRecordsDraftFiles = sourceRecordsRequests.summary.draftFiles;
   const sourceRecordsStateDraft = sourceRecordsDraftFiles.find((draft) => draft.state === selectedStateCode);
   const sourceRecordsRequestStatusCounts = sourceRecordsRequestRows.reduce<Record<string, number>>((counts, request) => {
@@ -3994,35 +4076,48 @@ export function WorkspaceTabs({
         data-tour="tab-bar"
       >
         <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
-        <nav
-          aria-label="Workspace sections"
-          className="workspace-tab-list"
-          role="tablist"
-        >
-        {layoutTabs.map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <button
-              aria-selected={activeTab === tab.key}
-              id={`workspace-tab-${tab.key}`}
-              className="tab-button"
-              data-tour={`tab-${tab.key}`}
-              key={tab.key}
-              onClick={() => selectTab(tab.key)}
-              type="button"
-              role="tab"
-            >
-              <Icon aria-hidden size={16} />
-              <span>{tab.label}</span>
-              {tab.key === "electronic" && totalRecordsRequestQueueCount > 0 && (
-                <span className="tab-alert-badge" aria-label={`${totalRecordsRequestQueueCount} records requests need review`}>
-                  {totalRecordsRequestQueueCount}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
+        <nav aria-label="Workspace sections" className="workspace-tab-list">
+          <div className="workspace-primary-tabs" role="tablist">
+            {workspaceNavigation.primary.map((tab) => renderWorkspaceTabButton(tab))}
+          </div>
+          {workspaceNavigation.groups.length > 0 && (
+            <details className={`workspace-more-menu ${activeSecondaryTab ? "is-active" : ""}`}>
+              <summary
+                aria-label={
+                  activeSecondaryTab
+                    ? `More workspace sections. Current section: ${activeSecondaryTab.label}`
+                    : "More workspace sections"
+                }
+              >
+                <MoreHorizontal aria-hidden size={16} />
+                <span>{activeSecondaryTab ? `More: ${activeSecondaryTab.label}` : "More"}</span>
+                <ChevronDown aria-hidden className="workspace-more-chevron" size={14} />
+              </summary>
+              <div className="workspace-more-panel">
+                {workspaceNavigation.groups.map((group) => (
+                  <div className="workspace-more-group" key={group.label}>
+                    <span className="workspace-more-group-label">{group.label}</span>
+                    {group.tabs.map((tab) => renderWorkspaceTabButton(tab, "menu"))}
+                  </div>
+                ))}
+              </div>
+            </details>
+          )}
+        </nav>
+        <label className="workspace-tab-select">
+          <span>Workspace section</span>
+          <select
+            aria-label="Workspace section"
+            onChange={(event) => selectTab(event.target.value as TabKey)}
+            value={activeTab}
+          >
+            {workspaceNavigation.all.map((tab) => (
+              <option key={tab.key} value={tab.key}>
+                {tab.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
       <div
         className={`workspace-body ${isDataNotesCollapsed ? "notes-collapsed" : ""}`}
@@ -4187,6 +4282,20 @@ export function WorkspaceTabs({
                 <BarChart3 aria-hidden size={18} />
               </div>
             </div>
+            <label className="review-view-select">
+              <span>Review view</span>
+              <select
+                aria-label="Review Center view"
+                onChange={(event) => setReviewView(event.target.value as ReviewView)}
+                value={reviewView}
+              >
+                {layoutReviewViewOptions.map((option) => (
+                  <option key={option.key} value={option.key}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
             <div
               aria-label="Review Center views"
               className="review-subnav"
@@ -4289,8 +4398,8 @@ export function WorkspaceTabs({
                     </div>
                     <div className="review-action-stack">
                       <button onClick={() => setReviewView("tools")} type="button">Evidence Tools<span>Explain readiness, source gaps, and top flags.</span></button>
-                      <button onClick={() => setReviewView("screening")} type="button">Screening<span>Review charts, caveats, and ticket-splitting proxy.</span></button>
                       <button onClick={() => setReviewView("indicators")} type="button">Indicators<span>Search, filter, and inspect advisory rows.</span></button>
+                      <button onClick={() => setReviewView("screening")} type="button">Screening<span>Review charts, caveats, and ticket-splitting proxy.</span></button>
                       <button onClick={() => setReviewView("methodology")} type="button">Methodology<span>Check formulas, thresholds, and common explanations.</span></button>
                     </div>
                   </article>
