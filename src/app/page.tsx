@@ -13,6 +13,7 @@ import {
 import { BrandMark } from "./brand-mark";
 import { GlobalCountySearch } from "./global-county-search";
 import { NationalOverview } from "./national-overview";
+import { StateRail } from "./state-rail";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
 import {
@@ -344,18 +345,14 @@ export default async function Home({ searchParams }: HomeProps) {
       </header>
 
       <div className="workspace">
-        <aside className="sidebar" data-tour="state-sidebar" aria-label="State coverage">
-          <div className="sidebar-header">
-            <p className="section-label">States</p>
-            <span>{states.length} loaded</span>
-          </div>
+        <StateRail loadedCount={states.length} selectedState={selectedStateCode}>
           <StateSwitcher
             completenessReport={completenessReport}
             securityIncidentStates={securityIncidentStateSummaries}
             selectedState={selectedStateCode}
             states={states}
           />
-        </aside>
+        </StateRail>
 
         <section className="main-panel">
           <NationalOverview report={completenessReport} year={2024} />

@@ -667,7 +667,7 @@ export function ResultsExplorer({
   const [pinnedMapName, setPinnedMapName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [showFlaggedOnly, setShowFlaggedOnly] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey>("margin");
+  const [sortKey, setSortKey] = useState<SortKey>("jurisdiction");
   const [isPanning, setIsPanning] = useState(false);
   const mapWrapRef = useRef<HTMLDivElement | null>(null);
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
@@ -2069,24 +2069,6 @@ export function ResultsExplorer({
         </div>
         {results.length > 0 ? (
           <>
-            <div className="review-direction-notice" role="note">
-              <strong>About the directional review column</strong>
-              <p>
-                The column below is not a finding that interference occurred, and it does not prove that any candidate
-                actually received extra votes. It is a rough advisory screen from the loaded review indicators. For
-                down-ballot comparison flags, the app compares same-party presidential votes against a comparison race
-                such as U.S. Senate or Governor, then labels the direction with the larger relative gap. Governor-only
-                comparisons are marked low confidence because they can mostly reflect ordinary race-specific ticket
-                splitting. When the comparison is U.S. House, the column names presidential-over-House dropoff direction
-                instead of candidate benefit because House races are district- and candidate-specific controls.
-              </p>
-              <p>
-                That direction can be affected by split-ticket voting, incumbency, local candidate strength, undervotes,
-                uncontested races, one-sided comparison races, reporting-unit definitions, missing comparison rows, or ordinary political geography.
-                Treat it as "if this pattern needs review, this is the side the math points toward," not as a causal claim
-                or a conclusion.
-              </p>
-            </div>
             <div className="table-tools">
               <label className="table-search" htmlFor="result-search">
                 <Search aria-hidden size={16} />
@@ -2108,10 +2090,10 @@ export function ResultsExplorer({
                   onChange={(event) => setSortKey(event.target.value as SortKey)}
                   value={sortKey}
                 >
-                  <option value="margin">Margin</option>
-                  <option value="total">Total votes</option>
-                  <option value="jurisdiction">Jurisdiction</option>
-                  <option value="winner">Winner</option>
+                  <option value="jurisdiction">Jurisdiction A-Z</option>
+                  <option value="margin">Margin (high to low)</option>
+                  <option value="total">Total votes (high to low)</option>
+                  <option value="winner">Winner A-Z</option>
                 </select>
               </label>
               <label className="toggle-label" htmlFor="flagged-only">
@@ -2124,6 +2106,26 @@ export function ResultsExplorer({
                 Flagged only
               </label>
             </div>
+            <details className="review-direction-notice">
+              <summary>About the directional review column</summary>
+              <div className="review-direction-notice-body">
+                <p>
+                  The column below is not a finding that interference occurred, and it does not prove that any candidate
+                  actually received extra votes. It is a rough advisory screen from the loaded review indicators. For
+                  down-ballot comparison flags, the app compares same-party presidential votes against a comparison race
+                  such as U.S. Senate or Governor, then labels the direction with the larger relative gap. Governor-only
+                  comparisons are marked low confidence because they can mostly reflect ordinary race-specific ticket
+                  splitting. When the comparison is U.S. House, the column names presidential-over-House dropoff direction
+                  instead of candidate benefit because House races are district- and candidate-specific controls.
+                </p>
+                <p>
+                  That direction can be affected by split-ticket voting, incumbency, local candidate strength, undervotes,
+                  uncontested races, one-sided comparison races, reporting-unit definitions, missing comparison rows, or ordinary political geography.
+                  Treat it as "if this pattern needs review, this is the side the math points toward," not as a causal claim
+                  or a conclusion.
+                </p>
+              </div>
+            </details>
             {pinnedMapName && pinnedMapResult && (
               <div className="selected-result-callout" role="status">
                 <div>
