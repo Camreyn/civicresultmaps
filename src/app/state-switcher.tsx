@@ -13,13 +13,20 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { ComponentType, SVGProps } from "react";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
 import { threatCountText } from "@/lib/security-incident-summary";
 import type { CompletenessSummary, SecurityIncidentStateSummary, StateSummary } from "@/lib/types";
+import {
+  workspaceContextChangeEvent,
+  workspaceNavigationContextFromSearchParams,
+  workspaceStateHref,
+  type WorkspaceNavigationContext,
+} from "@/lib/workspace-navigation";
 
 type StateSwitcherProps = {
   completenessReport: CompletenessSummary[];
+  navigationContext: WorkspaceNavigationContext;
   securityIncidentStates: SecurityIncidentStateSummary[];
   selectedState: string;
   states: StateSummary[];
@@ -338,12 +345,14 @@ function stateMatchesFilter(
 
 export function StateSwitcher({
   completenessReport,
+  navigationContext,
   securityIncidentStates,
   selectedState,
   states,
 }: StateSwitcherProps) {
   const [query, setQuery] = useState("");
   const [stateFilter, setStateFilter] = useState<StateFilter>("all");
+  const [liveNavigationContext, setLiveNavigationContext] = useState(navigationContext);
   const stateListRef = useRef<HTMLDivElement>(null);
   const normalizedQuery = query.trim().toLowerCase();
   const completenessByState = useMemo(
@@ -397,6 +406,24 @@ export function StateSwitcher({
       }),
     [completenessByState, filterableStates, normalizedQuery, securityIncidentStateCodes, stateFilter],
   );
+
+  useEffect(() => {
+    const syncNavigationContext = () => {
+      setLiveNavigationContext(workspaceNavigationContextFromSearchParams(
+        new URL(window.location.href).searchParams,
+        navigationContext,
+      ));
+    };
+
+    syncNavigationContext();
+    window.addEventListener(workspaceContextChangeEvent, syncNavigationContext);
+    window.addEventListener("popstate", syncNavigationContext);
+
+    return () => {
+      window.removeEventListener(workspaceContextChangeEvent, syncNavigationContext);
+      window.removeEventListener("popstate", syncNavigationContext);
+    };
+  }, [navigationContext]);
 
   useLayoutEffect(() => {
     const list = stateListRef.current;
@@ -483,7 +510,7 @@ export function StateSwitcher({
           return (
             <Link
               aria-pressed={state.code === selectedState}
-              href={`/?state=${state.code}`}
+              href={workspaceStateHref(liveNavigationContext, state.code)}
               className="state-button"
               key={state.code}
               scroll={false}

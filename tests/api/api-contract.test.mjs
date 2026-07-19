@@ -99,6 +99,8 @@ test("mutable public caches advance with the monotonic data revision", () => {
   ]) {
     assert.match(api, new RegExp("export const " + exportName + " = cachePublicData"));
   }
+  assert.match(api, /listReviewRows[\s\S]*?\{ persistent: false \}/);
+  assert.match(api, /options\.persistent === false[\s\S]*?return cache\(loader\)/);
   assert.match(dataAccess, /export async function getPublicDataRevision/);
   assert.match(dataAccess, /readPublicDataRevision/);
   assert.match(dataAccess, /public-data-revision/);

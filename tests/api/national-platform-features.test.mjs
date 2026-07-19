@@ -89,12 +89,13 @@ test("comparison, county profile, global search, and confidence surfaces are wir
   const confidence = readFileSync("src/lib/data-confidence.ts", "utf8");
   const resultsExplorer = readFileSync("src/app/results-explorer.tsx", "utf8");
   const guidedTour = readFileSync("src/app/guided-tour.tsx", "utf8");
+  const workspaceContext = readFileSync("src/app/workspace-context-bar.tsx", "utf8");
 
   assert.match(home, /GlobalCountySearch/);
   assert.match(home, /Open a county profile/);
   assert.match(home, /does not filter the state map/);
   assert.match(home, /key=\{"county-profile-search-" \+ selectedStateCode\}/);
-  assert.match(home, /supportedPresidentialYears/);
+  assert.match(workspaceContext, /supportedPresidentialYears/);
   assert.match(home, /initialMapMode/);
   assert.match(home, /needsReview/);
   assert.match(compare, /National geometry contains/);

@@ -29,6 +29,7 @@ import {
 } from "@/lib/security-incident-summary";
 import { candidateNamesForYear } from "@/lib/state-year-results";
 import type { AnalysisIndicator, EquipmentRowSummary, ResultRow, ReviewRowSummary, SecurityIncidentSummary, SourceSummary, VoteMethodRowSummary } from "@/lib/types";
+import { notifyWorkspaceContextChange, type WorkspaceMapMode } from "@/lib/workspace-navigation";
 type ResultsExplorerProps = {
   countyLabel: string;
   electionYear: 2016 | 2020 | 2024;
@@ -46,8 +47,23 @@ type ResultsExplorerProps = {
 };
 
 type SortKey = "jurisdiction" | "winner" | "total" | "margin";
-type MapMode = "winner" | "margin" | "volume" | "method" | "equipment" | "security";
+type MapMode = WorkspaceMapMode;
 type MapPan = { x: number; y: number };
+
+function updateExplorerUrl(key: "fips" | "mode", value: string | null) {
+  const url = new URL(window.location.href);
+  if (value) {
+    url.searchParams.set(key, value);
+  } else {
+    url.searchParams.delete(key);
+  }
+  window.history.replaceState(null, "", url);
+  notifyWorkspaceContextChange(
+    key === "mode"
+      ? { mode: value as MapMode | null }
+      : { fips: value },
+  );
+}
 
 type GeoFeature = {
   geometry: {
@@ -768,6 +784,7 @@ export function ResultsExplorer({
       equipmentRows.length > 0
     ) {
       setMapMode("equipment");
+      updateExplorerUrl("mode", "equipment");
     }
   }, [electionYear, equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, features.length, geoStatus, mapMode, results.length, stateLevelOnlyResults]);
 
@@ -1240,12 +1257,14 @@ export function ResultsExplorer({
       equipmentRows.length > 0
     ) {
       setMapMode("equipment");
+      updateExplorerUrl("mode", "equipment");
     }
   }, [equipmentFeatures.length, equipmentGeoStatus, equipmentRows.length, mapMode, resultBoundaryGeometryUnavailable, supplementalMapAvailable]);
 
   useEffect(() => {
     if (mapMode === "security" && securityIncidents.length === 0) {
       setMapMode("winner");
+      updateExplorerUrl("mode", "winner");
     }
   }, [mapMode, securityIncidents.length]);
 
@@ -1384,16 +1403,6 @@ export function ResultsExplorer({
         suppressMapClickRef.current = false;
       }, 0);
     }
-  };
-
-  const updateExplorerUrl = (key: "fips" | "mode", value: string | null) => {
-    const url = new URL(window.location.href);
-    if (value) {
-      url.searchParams.set(key, value);
-    } else {
-      url.searchParams.delete(key);
-    }
-    window.history.replaceState(null, "", url);
   };
 
   const selectMapMode = (mode: MapMode) => {

@@ -44,7 +44,6 @@ import {
 import { summarizeIndicatorEvaluation } from "@/lib/analysis-indicators";
 import {
   isSupportedPresidentialYear,
-  supportedPresidentialYears,
   type SupportedPresidentialYear,
 } from "@/lib/api-version";
 import { buildStateSocialPreview } from "@/lib/social-preview";
@@ -244,6 +243,17 @@ export default async function Home({ searchParams }: HomeProps) {
         : townResults.length
           ? townResults
           : stateResults;
+  const availableResultFips = new Set(results.flatMap((row) => {
+    const taggedFips = row.jurisdictionTag?.match(/^county:(\d{5})$/)?.[1];
+    const codeFips = row.level === "county" && /^\d{5}$/.test(row.jurisdictionCode)
+      ? row.jurisdictionCode
+      : undefined;
+    const fips = taggedFips ?? codeFips;
+    return fips ? [fips] : [];
+  }));
+  const validatedInitialFips = initialFips && availableResultFips.has(initialFips)
+    ? initialFips
+    : undefined;
   const statewideResultRows = results[0]?.level === "state"
     ? results
     : Array.from(
@@ -348,6 +358,13 @@ export default async function Home({ searchParams }: HomeProps) {
         <StateRail loadedCount={states.length} selectedState={selectedStateCode}>
           <StateSwitcher
             completenessReport={completenessReport}
+            navigationContext={{
+              fips: validatedInitialFips,
+              mode: initialMapMode,
+              state: selectedStateCode,
+              tab: activeTab,
+              year: selectedYear,
+            }}
             securityIncidentStates={securityIncidentStateSummaries}
             selectedState={selectedStateCode}
             states={states}
@@ -382,17 +399,6 @@ export default async function Home({ searchParams }: HomeProps) {
             <div>
               <p className="section-label">{selectedYear} President</p>
               <h1>{selected?.name ?? selectedStateCode}</h1>
-              <nav className="year-switcher" aria-label="Presidential result year">
-                {supportedPresidentialYears.map((year) => (
-                  <a
-                    aria-current={year === selectedYear ? "page" : undefined}
-                    href={"/?state=" + selectedStateCode + "&year=" + year + "&tab=map"}
-                    key={year}
-                  >
-                    {year}
-                  </a>
-                ))}
-              </nav>
             </div>
             <div className="head-status">
               {coveragePassed ? (
@@ -452,7 +458,7 @@ export default async function Home({ searchParams }: HomeProps) {
             indicatorsEvaluated={indicatorsEvaluated}
             layoutManifest={layoutManifest}
             layoutManifestV3={layoutResolution.runtimeV3Enabled ? layoutManifestV3 : undefined}
-            initialFips={initialFips}
+            initialFips={validatedInitialFips}
             initialMapMode={initialMapMode}
             initialTab={activeTab}
             reviewRows={reviewRows}
@@ -462,6 +468,7 @@ export default async function Home({ searchParams }: HomeProps) {
             selectedStateCode={selectedStateCode}
             sourceRecordsRequests={sourceRecordsRequests}
             sources={sources}
+            states={states}
             statewideResultRows={statewideResultRows}
             totalVotes={totalVotes}
             turnoutRows={turnoutRows}
