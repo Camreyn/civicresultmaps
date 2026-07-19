@@ -18,6 +18,12 @@ test("schema-v2 design tokens reach the public workspace at desktop and mobile w
   await expect(workspace).toHaveAttribute("data-layout-type-scale", "standard");
   await expect(workspace.getByRole("tab", { name: "Map", exact: true })).toBeVisible();
 
+  const productionNodes = workspace.locator('[data-layout-node-kind="production"]');
+  await expect(productionNodes).toHaveCount(4);
+  await expect(page.locator('[data-layout-section="map:results-map"]')).toHaveCount(1);
+  expect(await productionNodes.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-layout-component"))))
+    .toEqual(["results-map", "source-provenance", "coverage-context", "state-snapshot"]);
+
   const accessibility = await new AxeBuilder({ page }).include(".workspace-tabs").analyze();
   expect(accessibility.violations
     .filter((violation) => violation.impact === "critical")
@@ -29,6 +35,38 @@ test("schema-v2 design tokens reach the public workspace at desktop and mobile w
   const box = await workspace.boundingBox();
   expect(box?.width ?? 999).toBeLessThanOrEqual(390);
   await expect(page.locator("[data-nextjs-dialog], .nextjs-error-overlay, #webpack-dev-server-client-overlay")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test("schema-v3 renderer keeps multi-segment production content in one manifest slot", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  page.on("pageerror", (error) => errors.push(error.message));
+
+  await page.goto("/?state=WA&tab=data");
+  const workspace = page.getByRole("region", { name: /Washington workspace/i });
+  const productionNodes = workspace.locator('[data-layout-node-kind="production"]');
+  await expect(productionNodes).toHaveCount(3);
+  await expect(productionNodes.nth(0)).toHaveAttribute("data-layout-component", "source-provenance");
+  await expect(productionNodes.nth(0).locator('[data-layout-section="data:source-provenance"]')).toHaveCount(3);
+  expect(errors).toEqual([]);
+});
+
+test("schema-v3 renderer preserves the Electronic layout when source requests are empty", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") errors.push(message.text());
+  });
+  page.on("pageerror", (error) => errors.push(error.message));
+
+  await page.goto("/?state=WA&tab=electronic");
+  const workspace = page.getByRole("region", { name: /Washington workspace/i });
+  const productionNodes = workspace.locator('[data-layout-node-kind="production"]');
+  await expect(productionNodes).toHaveCount(3);
+  await expect(workspace.locator('[data-layout-component="source-records-request"]')).toBeVisible();
+  await expect(workspace.locator('[data-layout-empty-state="source-records-request"]')).toBeVisible();
   expect(errors).toEqual([]);
 });
 

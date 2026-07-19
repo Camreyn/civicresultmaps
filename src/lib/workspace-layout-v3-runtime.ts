@@ -1,6 +1,5 @@
 import {
   evaluateWorkspaceVisibility,
-  isWorkspaceCustomNodeV2,
   type WorkspaceVisibilityContext,
 } from "./workspace-layout-v2.ts";
 import {
@@ -25,7 +24,7 @@ export type WorkspaceRuntimeGroupV3 = {
     align: "start" | "center" | "stretch";
     columns: Array<{
       id: string;
-      items: Array<Extract<WorkspaceLayoutNodeV3, { kind: "custom" }>>;
+      items: WorkspaceLayoutNodeV3[];
       span: { desktop: number; mobile: number; tablet: number };
     }>;
     gap: "small" | "medium" | "large";
@@ -47,7 +46,7 @@ export function workspaceRuntimeGroupsV3(
   return tab.groups.flatMap((group) => {
     const rows = group.rows.flatMap((row) => {
       const columns = row.columns.flatMap((column) => {
-        const items = column.items.filter((node) => isVisibleCustomNode(node, context));
+        const items = column.items.filter((node) => isVisibleWorkspaceNode(node, context));
         return items.length ? [{ id: column.id, items, span: column.span }] : [];
       });
       return columns.length ? [{
@@ -88,11 +87,10 @@ export function workspaceProductionGroupIdV3(
   return undefined;
 }
 
-function isVisibleCustomNode(
+function isVisibleWorkspaceNode(
   node: WorkspaceLayoutNodeV3,
   context?: WorkspaceVisibilityContext,
-): node is Extract<WorkspaceLayoutNodeV3, { kind: "custom" }> {
-  return isWorkspaceCustomNodeV2(node)
-    && node.visible
+): boolean {
+  return node.visible
     && (!context || evaluateWorkspaceVisibility(node.visibility, context));
 }

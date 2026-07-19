@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { evaluate } from "flags/next";
 import { workspaceLayoutCandidate, workspaceLayoutRuntimeV3 } from "@/flags";
 import { readLayoutAdmin } from "./ui-layout-auth";
+import { getLayoutDraft } from "./ui-layout-v4-repository";
 import { getLayoutRevision } from "./ui-layout-repository";
 import { createWorkspaceLayoutEnvelope } from "./workspace-layout-digest";
 import { resolveWorkspaceLayoutCandidates } from "./workspace-layout-resolution";
@@ -24,13 +25,26 @@ function getEdgeConfigClient() {
 }
 
 async function readDraftEnvelope() {
-  const revisionId = (await cookies()).get(WORKSPACE_LAYOUT_DRAFT_COOKIE)?.value;
-  if (!revisionId || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(revisionId)) {
-    return undefined;
-  }
+  const value = (await cookies()).get(WORKSPACE_LAYOUT_DRAFT_COOKIE)?.value;
+  if (!value) return undefined;
   const admin = await readLayoutAdmin();
   if (admin.status !== "ready") return undefined;
-  const revision = await getLayoutRevision(revisionId);
+
+  const [kind, id] = value.includes(":") ? value.split(":", 2) : ["revision", value];
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
+    return undefined;
+  }
+  if (kind === "draft") {
+    const draft = await getLayoutDraft(id);
+    if (!draft || draft.archivedAt) return undefined;
+    return createWorkspaceLayoutEnvelope({
+      manifest: draft.manifest,
+      publishedAt: draft.updatedAt.toISOString(),
+      revisionId: draft.id,
+    });
+  }
+  if (kind !== "revision") return undefined;
+  const revision = await getLayoutRevision(id);
   if (!revision) return undefined;
   return createWorkspaceLayoutEnvelope({
     manifest: revision.manifest,
@@ -81,6 +95,9 @@ export async function resolveWorkspaceLayout() {
     candidateEnabled,
     stable: edgeLayouts.stable,
   });
+  if (resolution.source === "draft" && resolution.envelope.schemaVersion === 3) {
+    runtimeV3Enabled = true;
+  }
   console.info(JSON.stringify({
     event: "workspace_layout_resolved",
     source: resolution.source,

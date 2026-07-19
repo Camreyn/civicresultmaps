@@ -27,8 +27,8 @@ import {
   TriangleAlert,
   X,
 } from "lucide-react";
-import type { ComponentType, CSSProperties, SVGProps } from "react";
-import { useEffect, useMemo, useState } from "react";
+import type { ComponentType, CSSProperties, ReactNode, SVGProps } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
@@ -54,7 +54,10 @@ import {
   workspaceProductionNodeV2,
   workspaceSectionStateV2 as workspaceSectionState,
 } from "@/lib/workspace-layout-v2-runtime";
-import type { WorkspaceLayoutManifestV3 } from "@/lib/workspace-layout-v3";
+import type {
+  WorkspaceLayoutManifestV3,
+  WorkspaceProductionNodeV3,
+} from "@/lib/workspace-layout-v3";
 import {
   workspaceLayoutSettingsV3,
   workspaceRuntimeGroupsV3,
@@ -4067,6 +4070,23 @@ export function WorkspaceTabs({
   const trendY = (trend: { intercept: number; slope: number } | null, x: number) =>
     trend ? scatterY(clamp(trend.intercept + trend.slope * x, 0, 100)) : null;
 
+  const capturedProduction = new Map<string, ReactNode[]>();
+  const captureProduction = (component: string, content: ReactNode) => {
+    const captured = capturedProduction.get(component);
+    if (captured) {
+      captured.push(content);
+    } else {
+      capturedProduction.set(component, [content]);
+    }
+    return content;
+  };
+  const renderCapturedProduction = (node: WorkspaceProductionNodeV3) => {
+    const content = capturedProduction.get(node.component);
+    return content?.length
+      ? <>{content.map((item, index) => <Fragment key={`${node.id}-${index}`}>{item}</Fragment>)}</>
+      : null;
+  };
+
   return (
     <section
       aria-label={`${stateName} workspace`}
@@ -4163,10 +4183,13 @@ export function WorkspaceTabs({
           className="workspace-main"
           role="tabpanel"
         >
+          {(() => {
+            const legacyContent = (
+              <>
           {activeTab === "map" && (
         <div className="tab-panel-content">
           <div className="content-grid">
-            <div {...layoutSectionProps(layoutManifest, "map", "results-map")}>
+            {captureProduction("results-map", (<div {...layoutSectionProps(layoutManifest, "map", "results-map")}>
             <ResultsExplorer
               countyLabel={countyLabel}
               electionYear={electionYear}
@@ -4182,7 +4205,7 @@ export function WorkspaceTabs({
               sources={sources}
               voteMethodRows={voteMethodRows}
             />
-            </div>
+            </div>))}
             <div
               className="detail-stack"
               style={{
@@ -4193,7 +4216,7 @@ export function WorkspaceTabs({
                 ),
               }}
             >
-              <section className="panel" aria-label="Provenance" {...layoutSectionProps(layoutManifest, "map", "source-provenance")}>
+              {captureProduction("source-provenance", (<section className="panel" aria-label="Provenance" {...layoutSectionProps(layoutManifest, "map", "source-provenance")}>
                 <div className="panel-header">
                   <div>
                     <h2>Source Provenance</h2>
@@ -4216,9 +4239,9 @@ export function WorkspaceTabs({
                 ) : (
                   <SourceProvenanceList sources={sources} />
                 )}
-              </section>
+              </section>))}
 
-              <section className="panel" aria-label="Coverage flags" {...layoutSectionProps(layoutManifest, "map", "coverage-context")}>
+              {captureProduction("coverage-context", (<section className="panel" aria-label="Coverage flags" {...layoutSectionProps(layoutManifest, "map", "coverage-context")}>
                 <div className="panel-header">
                   <div>
                     <h2>Coverage</h2>
@@ -4245,9 +4268,9 @@ export function WorkspaceTabs({
                       </li>
                     ))}
                 </ul>
-              </section>
+              </section>))}
 
-              <section className="panel" aria-label="Statewide vote breakdown" {...layoutSectionProps(layoutManifest, "map", "state-snapshot")}>
+              {captureProduction("state-snapshot", (<section className="panel" aria-label="Statewide vote breakdown" {...layoutSectionProps(layoutManifest, "map", "state-snapshot")}>
                 <div className="panel-header">
                   <div>
                     <h2>State Snapshot</h2>
@@ -4287,13 +4310,13 @@ export function WorkspaceTabs({
                     </div>
                   ))}
                 </div>
-              </section>
+              </section>))}
             </div>
           </div>
         </div>
       )}
 
-      {activeTab === "review" && (
+      {activeTab === "review" && captureProduction("review-center", (
         <div className="tab-panel-content">
           <section className="panel review-center-panel" data-tour="review-panel">
             <div className="panel-header review-center-header">
@@ -5129,11 +5152,11 @@ export function WorkspaceTabs({
             )}
           </section>
         </div>
-      )}
+      ))}
       {activeTab === "history" && (
         <div className="tab-panel-content">
           <section className="panel layout-section-container">
-            <div className="panel-header">
+            {captureProduction("historical-summary", (<div className="panel-header">
               <div>
                 <h2>Historical Baselines</h2>
                 <span>
@@ -5157,10 +5180,10 @@ export function WorkspaceTabs({
                 />
                 <History aria-hidden size={18} />
               </div>
-            </div>
+            </div>))}
             {historicalRows.length ? (
               <>
-                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
+                {captureProduction("historical-summary", (<div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
                 <div className="history-controls" aria-label="Historical year toggles">
                   <span>Show years</span>
                   {historicalYears.map((year) => (
@@ -5229,8 +5252,8 @@ export function WorkspaceTabs({
                     </article>
                   ))}
                 </div>
-                </div>
-                <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-charts")}>
+                </div>))}
+                {captureProduction("historical-charts", (<div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "history", "historical-charts")}>
                 <div className="history-chart-grid" data-tour="history-charts">
                   {enabledHistoricalGraphs.includes("share") && (
                     <article className="history-chart-card">
@@ -5535,16 +5558,18 @@ export function WorkspaceTabs({
                     historical API for the full selected-state extract.
                   </div>
                 )}
-                </div>
+                </div>))}
               </>
             ) : (
-              <div className="empty-panel" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
+              <>
+              {captureProduction("historical-summary", (<div className="empty-panel" {...layoutSectionProps(layoutManifest, "history", "historical-summary")}>
                 <strong>No historical baseline rows loaded for {stateName}</strong>
                 <span>
                   The importer looks for historicalBaseline.series rows in the legacy state bundle. Current repo data
                   only exposes populated historical series for a subset of states.
                 </span>
-              </div>
+              </div>))}
+              </>
             )}
           </section>
         </div>
@@ -5554,7 +5579,7 @@ export function WorkspaceTabs({
       {activeTab === "electronic" && (
         <div className="tab-panel-content">
           <section className="panel electronic-integrity-panel layout-section-container" data-tour="electronic-integrity">
-            {requestGuideOpen && (
+            {requestGuideOpen && captureProduction("integrity-context", (
               <div
                 aria-labelledby="request-guide-title"
                 aria-modal="true"
@@ -5624,8 +5649,8 @@ export function WorkspaceTabs({
                   </div>
                 </div>
               </div>
-            )}
-            <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "integrity-context")}>
+            ))}
+            {captureProduction("integrity-context", (<div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "integrity-context")}>
             <div className="panel-header">
               <div>
                 <h2>Electronic Integrity</h2>
@@ -5704,8 +5729,8 @@ export function WorkspaceTabs({
                 input unless row-level data supports it.
               </span>
             </div>
-            </div>
-            {sourceRecordsRequestRows.length > 0 && (
+            </div>))}
+            {captureProduction("source-records-request", (
               <div className="source-records-request-section" data-tour="source-records-request-draft" {...layoutSectionProps(layoutManifest, "electronic", "source-records-request")}>
                 <div className="planner-note source-records-separation">
                   <strong>Separate source-records requests</strong>
@@ -5768,7 +5793,8 @@ export function WorkspaceTabs({
                     </div>
                   </div>
                 )}
-                <div className="table-wrap">
+                {sourceRecordsRequestRows.length > 0 ? (
+                  <div className="table-wrap">
                   <table>
                     <thead>
                       <tr>
@@ -5793,10 +5819,16 @@ export function WorkspaceTabs({
                       ))}
                     </tbody>
                   </table>
-                </div>
+                  </div>
+                ) : (
+                  <div className="planner-note" data-layout-empty-state="source-records-request">
+                    <strong>No separate source-records requests are queued</strong>
+                    <span>This area will list prepared requests when the source inventory identifies a records gap.</span>
+                  </div>
+                )}
               </div>
-            )}
-            <div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "cvr-requests")}>
+            ))}
+            {captureProduction("cvr-requests", (<div className="layout-section-stack" {...layoutSectionProps(layoutManifest, "electronic", "cvr-requests")}>
             {electronicIntegrityStatus ? (
               <>
                 <div className="admin-source-grid" aria-label={`${stateName} electronic integrity status`}>
@@ -5946,12 +5978,12 @@ export function WorkspaceTabs({
                 <span>Start by registering certified results, local reporting-unit results, CVR availability, audit output, and custody/log sources.</span>
               </div>
             )}
-            </div>
+            </div>))}
           </section>
         </div>
       )}
 
-      {activeTab === "planner" && (
+      {activeTab === "planner" && captureProduction("source-plan", (
         <div className="tab-panel-content">
           <section className="panel" data-tour="source-planner" {...layoutSectionProps(layoutManifest, "planner", "source-plan")}>
             <div className="panel-header">
@@ -6055,12 +6087,12 @@ export function WorkspaceTabs({
             </div>
           </section>
         </div>
-      )}
+      ))}
 
       {activeTab === "data" && (
         <div className="tab-panel-content">
           <section className="panel layout-section-container" data-tour="data-sources">
-            <div className="panel-header" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
+            {captureProduction("source-provenance", (<div className="panel-header" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               <div>
                 <h2>Data & Sources</h2>
                 <span>{sources.length} source document records</span>
@@ -6079,8 +6111,8 @@ export function WorkspaceTabs({
                 </a>
                 <FileCheck2 aria-hidden size={18} />
               </div>
-            </div>
-            <div className="source-links-panel" data-tour="source-links" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
+            </div>))}
+            {captureProduction("source-provenance", (<div className="source-links-panel" data-tour="source-links" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               <div>
                 <strong>Official Source Links</strong>
                 <span>
@@ -6114,8 +6146,8 @@ export function WorkspaceTabs({
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="vote-method-panel" data-tour="vote-method-summary" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
+            </div>))}
+            {captureProduction("vote-methods", (<div className="vote-method-panel" data-tour="vote-method-summary" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
               <div className="vote-method-head">
                 <div>
                   <strong>Vote Methods</strong>
@@ -6205,8 +6237,8 @@ export function WorkspaceTabs({
                   <span>Current normalized EAC method coverage is available for MI, MN, OH, PA, and WI.</span>
                 </div>
               )}
-            </div>
-            <div className="vote-method-caveat" data-tour="candidate-method-note" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
+            </div>))}
+            {captureProduction("vote-methods", (<div className="vote-method-caveat" data-tour="candidate-method-note" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
               <div>
                 <strong>Candidate by Method</strong>
                 <span>
@@ -6215,8 +6247,8 @@ export function WorkspaceTabs({
                 </span>
               </div>
               <span className="pending">Source required</span>
-            </div>
-            <div className="vote-method-panel" data-tour="equipment-context" {...layoutSectionProps(layoutManifest, "data", "equipment-context")}>
+            </div>))}
+            {captureProduction("equipment-context", (<div className="vote-method-panel" data-tour="equipment-context" {...layoutSectionProps(layoutManifest, "data", "equipment-context")}>
               <div className="vote-method-head">
                 <div>
                   <strong>Equipment Context</strong>
@@ -6358,8 +6390,8 @@ export function WorkspaceTabs({
                   <span>Use the admin source status endpoint to confirm whether the Verifier source is loaded or blocked for this state.</span>
                 </div>
               )}
-            </div>
-            <div className="source-card-grid" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
+            </div>))}
+            {captureProduction("source-provenance", (<div className="source-card-grid" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
               {sources.map((source) => (
                 <article className="source-card" key={source.id}>
                   <span>{source.category}</span>
@@ -6384,7 +6416,7 @@ export function WorkspaceTabs({
                   )}
                 </article>
               ))}
-            </div>
+            </div>))}
           </section>
         </div>
       )}
@@ -6392,7 +6424,7 @@ export function WorkspaceTabs({
       {activeTab === "methodology" && (
         <div className="tab-panel-content methodology-grid">
           <section className="panel text-panel layout-section-container" data-tour="methodology">
-            <div className="panel-header" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
+            {captureProduction("introduction", (<div className="panel-header" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
               <div>
                 <h2>Review Guide</h2>
                 <span>How to review this release responsibly</span>
@@ -6404,8 +6436,8 @@ export function WorkspaceTabs({
                 </Eli5>
                 <BookOpen aria-hidden size={18} />
               </div>
-            </div>
-            <div className="responsible-review-panel" data-tour="reviewer-checklist" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
+            </div>))}
+            {captureProduction("responsible-review", (<div className="responsible-review-panel" data-tour="reviewer-checklist" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
               <article>
                 <span className="section-label">How to Review Responsibly</span>
                 <strong>Use this site to find records worth checking, not to make claims by itself.</strong>
@@ -6426,8 +6458,8 @@ export function WorkspaceTabs({
                   ))}
                 </ul>
               </article>
-            </div>
-            <div className="guided-workflow-panel" data-tour="guided-workflows" {...layoutSectionProps(layoutManifest, "methodology", "guided-workflows")}>
+            </div>))}
+            {captureProduction("guided-workflows", (<div className="guided-workflow-panel" data-tour="guided-workflows" {...layoutSectionProps(layoutManifest, "methodology", "guided-workflows")}>
               <div>
                 <span className="section-label">Guided Workflows</span>
                 <strong>Common reviewer paths</strong>
@@ -6440,8 +6472,8 @@ export function WorkspaceTabs({
                   </article>
                 ))}
               </div>
-            </div>
-            <div className="glossary-panel" {...layoutSectionProps(layoutManifest, "methodology", "glossary")}>
+            </div>))}
+            {captureProduction("glossary", (<div className="glossary-panel" {...layoutSectionProps(layoutManifest, "methodology", "glossary")}>
               <div>
                 <span className="section-label">Glossary</span>
                 <strong>Terms used across charts, tables, and source notes</strong>
@@ -6454,8 +6486,8 @@ export function WorkspaceTabs({
                   </div>
                 ))}
               </dl>
-            </div>
-            <div className="method-list" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
+            </div>))}
+            {captureProduction("introduction", (<div className="method-list" {...layoutSectionProps(layoutManifest, "methodology", "introduction")}>
               {methodologyGuides.map((guide) => {
                 return (
                   <details className="methodology-card" key={guide.id}>
@@ -6499,8 +6531,8 @@ export function WorkspaceTabs({
                   </details>
                 );
               })}
-            </div>
-            <div className="validation-list" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
+            </div>))}
+            {captureProduction("responsible-review", (<div className="validation-list" {...layoutSectionProps(layoutManifest, "methodology", "responsible-review")}>
               {validationChecks.map((check) => (
                 <article className={check.passed ? "validation-pass" : "validation-warn"} key={check.label}>
                   {check.passed ? <CheckCircle2 aria-hidden size={17} /> : <TriangleAlert aria-hidden size={17} />}
@@ -6510,7 +6542,7 @@ export function WorkspaceTabs({
                   </div>
                 </article>
               ))}
-            </div>
+            </div>))}
           </section>
         </div>
       )}
@@ -6518,7 +6550,7 @@ export function WorkspaceTabs({
       {activeTab === "exports" && (
         <div className="tab-panel-content">
           <section className="panel layout-section-container" data-tour="exports">
-            <div className="panel-header">
+            {captureProduction("review-packet", (<div className="panel-header">
               <div>
                 <h2>Exports & API</h2>
                 <span>Download selected state data or use public read endpoints</span>
@@ -6530,8 +6562,8 @@ export function WorkspaceTabs({
                 </Eli5>
                 <Database aria-hidden size={18} />
               </div>
-            </div>
-            <div className="export-grid" style={{ order: Math.min(workspaceSectionState(layoutManifest, "exports", "downloads").order, workspaceSectionState(layoutManifest, "exports", "review-packet").order) }}>
+            </div>))}
+            {captureProduction("downloads", (<div className="export-grid" style={{ order: Math.min(workspaceSectionState(layoutManifest, "exports", "downloads").order, workspaceSectionState(layoutManifest, "exports", "review-packet").order) }}>
               <button onClick={exportResults} type="button" {...layoutSectionProps(layoutManifest, "exports", "downloads")}>
                 <Download aria-hidden size={16} />
                 Results CSV
@@ -6576,12 +6608,14 @@ export function WorkspaceTabs({
                 <Download aria-hidden size={16} />
                 Import Summary JSON
               </button>
+            </div>))}
+            {captureProduction("review-packet", (<div className="export-grid">
               <button data-tour="export-review-packet" onClick={exportReviewPackage} type="button" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
                 <Download aria-hidden size={16} />
                 Review Packet ZIP (All Files ZIP)
               </button>
-            </div>
-            <div className="export-summary-grid" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
+            </div>))}
+            {captureProduction("review-packet", (<div className="export-summary-grid" {...layoutSectionProps(layoutManifest, "exports", "review-packet")}>
               <article>
                 <span>Rows</span>
                 <strong>{results.length}</strong>
@@ -6610,8 +6644,8 @@ export function WorkspaceTabs({
                 <span>Total votes</span>
                 <strong>{totalVotes.toLocaleString()}</strong>
               </article>
-            </div>
-            <ul className="api-list" {...layoutSectionProps(layoutManifest, "exports", "api-links")}>
+            </div>))}
+            {captureProduction("api-links", (<ul className="api-list" {...layoutSectionProps(layoutManifest, "exports", "api-links")}>
               <li className="api-helper">
                 <Eli5>
                   Each API row is like a vending-machine button. Change the state code or limit in the URL, and the app
@@ -6670,12 +6704,12 @@ export function WorkspaceTabs({
                 <strong>Completeness</strong>
                 <code>/api/completeness?year=2024</code>
               </li>
-            </ul>
+            </ul>))}
           </section>
         </div>
       )}
 
-      {activeTab === "imports" && (
+      {activeTab === "imports" && captureProduction("import-history", (
         <div className="tab-panel-content">
           <section className="panel" data-tour="import-runs" {...layoutSectionProps(layoutManifest, "imports", "import-history")}>
             <div className="panel-header">
@@ -6715,9 +6749,9 @@ export function WorkspaceTabs({
             </ul>
           </section>
         </div>
-      )}
+      ))}
 
-      {activeTab === "support" && (
+      {activeTab === "support" && captureProduction("support-actions", (
         <div className="tab-panel-content support-grid">
           <section className="panel support-panel" {...layoutSectionProps(layoutManifest, "support", "support-actions")}>
             <div className="panel-header">
@@ -6755,9 +6789,9 @@ export function WorkspaceTabs({
             </div>
           </section>
         </div>
-      )}
+      ))}
 
-      {activeTab === "contact" && (
+      {activeTab === "contact" && captureProduction("contact-options", (
         <div className="tab-panel-content contact-grid">
           <section className="panel contact-panel" {...layoutSectionProps(layoutManifest, "contact", "contact-options")}>
             <div className="panel-header">
@@ -6783,9 +6817,28 @@ export function WorkspaceTabs({
             </div>
           </section>
         </div>
-      )}
-          {layoutManifestV3 && activeLayoutGroups.length > 0 && <WorkspaceLayoutGroupsV3 groups={activeLayoutGroups} />}
-          {!layoutManifestV3 && activeCustomRows.length > 0 && (
+      ))}
+              </>
+            );
+            const productionNodes = activeLayoutGroups.flatMap((group) => group.rows.flatMap(
+              (row) => row.columns.flatMap((column) => column.items.filter(
+                (node): node is WorkspaceProductionNodeV3 => node.kind === "production",
+              )),
+            ));
+            const rendererComplete = Boolean(layoutManifestV3)
+              && productionNodes.every((node) => capturedProduction.has(node.component));
+            if (layoutManifestV3 && rendererComplete) {
+              return (
+                <WorkspaceLayoutGroupsV3
+                  groups={activeLayoutGroups}
+                  renderProduction={renderCapturedProduction}
+                />
+              );
+            }
+            return (
+              <>
+                {legacyContent}
+          {activeCustomRows.length > 0 && (
             <div aria-label="Custom workspace sections" className="workspace-custom-grid">
               {activeCustomRows.map((row) => (
                 <div
@@ -6811,6 +6864,9 @@ export function WorkspaceTabs({
               ))}
             </div>
           )}
+              </>
+            );
+          })()}
         </main>
         <DataNotesPanel
           dataIssueUrl={dataIssueUrl}
