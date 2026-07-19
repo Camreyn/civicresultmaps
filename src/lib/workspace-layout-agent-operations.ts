@@ -173,7 +173,7 @@ const productionConfigKeysByComponent: Record<string, readonly string[]> = {
   "coverage-context": ["coverageVariant"],
   "results-map": ["legendPosition", "mapComposition"],
   "review-center": ["navigationStyle"],
-  "source-provenance": ["provenanceVariant"],
+  "source-provenance": ["provenanceInitialState", "provenanceVariant"],
   "state-snapshot": ["snapshotVariant"],
 };
 

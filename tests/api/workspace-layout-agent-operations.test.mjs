@@ -209,6 +209,58 @@ test("layout agent protects required production components and contrast rules", 
   );
 });
 
+test("layout agent scopes provenance initial state configuration to source provenance", () => {
+  const mapTab = embeddedWorkspaceLayoutManifestV3.tabs.find((tab) => tab.id === "map");
+  const sourceProvenance = flattenWorkspaceNodesV3(mapTab)
+    .find((node) => node.kind === "production" && node.component === "source-provenance");
+  assert.ok(sourceProvenance);
+
+  const collapsed = applyWorkspaceLayoutAgentOperations(embeddedWorkspaceLayoutManifestV3, [{
+    nodeId: sourceProvenance.id,
+    operationId: "collapse-map-provenance",
+    patch: {
+      config: {
+        provenanceInitialState: "collapsed",
+        provenanceVariant: "accordion",
+      },
+    },
+    type: "update_block",
+  }]);
+  const collapsedNode = flattenWorkspaceNodesV3(collapsed.manifest.tabs.find((tab) => tab.id === "map"))
+    .find((node) => node.id === sourceProvenance.id);
+  assert.equal(collapsedNode?.kind, "production");
+  assert.equal(collapsedNode?.config?.provenanceInitialState, "collapsed");
+  assert.equal(collapsedNode?.config?.provenanceVariant, "accordion");
+  assert.equal(validateWorkspaceLayoutManifestV3(collapsed.manifest).ok, true);
+
+  const initialStateOnly = applyWorkspaceLayoutAgentOperations(embeddedWorkspaceLayoutManifestV3, [{
+    nodeId: sourceProvenance.id,
+    operationId: "preserve-provenance-variant",
+    patch: { config: { provenanceInitialState: "collapsed" } },
+    type: "update_block",
+  }]);
+  const preservedNode = flattenWorkspaceNodesV3(initialStateOnly.manifest.tabs.find((tab) => tab.id === "map"))
+    .find((node) => node.id === sourceProvenance.id);
+  assert.equal(preservedNode?.config?.provenanceInitialState, "collapsed");
+  assert.equal(preservedNode?.config?.provenanceVariant, sourceProvenance.config?.provenanceVariant);
+
+  const unrelatedProductionNodes = embeddedWorkspaceLayoutManifestV3.tabs
+    .flatMap((tab) => flattenWorkspaceNodesV3(tab))
+    .filter((node) => node.kind === "production" && node.component !== "source-provenance");
+  assert.ok(unrelatedProductionNodes.length > 0);
+  for (const [index, node] of unrelatedProductionNodes.entries()) {
+    assert.throws(
+      () => applyWorkspaceLayoutAgentOperations(embeddedWorkspaceLayoutManifestV3, [{
+        nodeId: node.id,
+        operationId: `reject-provenance-${index}`,
+        patch: { config: { provenanceInitialState: "collapsed" } },
+        type: "update_block",
+      }]),
+      /does not support configuration: provenanceInitialState/i,
+    );
+  }
+});
+
 test("layout agent operation failures identify their batch position", () => {
   assert.throws(
     () => applyWorkspaceLayoutAgentOperations(embeddedWorkspaceLayoutManifestV3, [{
