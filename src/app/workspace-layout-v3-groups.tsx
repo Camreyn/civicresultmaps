@@ -1,14 +1,16 @@
 import type { CSSProperties, ReactNode } from "react";
 import type { WorkspaceProductionNodeV3 } from "@/lib/workspace-layout-v3";
 import type { WorkspaceRuntimeGroupV3 } from "@/lib/workspace-layout-v3-runtime";
+import type { WorkspaceNavigationContext } from "@/lib/workspace-navigation";
 import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
 
 type WorkspaceLayoutGroupsV3Props = {
   groups: WorkspaceRuntimeGroupV3[];
+  navigationContext: WorkspaceNavigationContext;
   renderProduction: (node: WorkspaceProductionNodeV3) => ReactNode | null;
 };
 
-export function WorkspaceLayoutGroupsV3({ groups, renderProduction }: WorkspaceLayoutGroupsV3Props) {
+export function WorkspaceLayoutGroupsV3({ groups, navigationContext, renderProduction }: WorkspaceLayoutGroupsV3Props) {
   const landmarks = groups.filter((group) => Boolean(group.heading));
 
   return (
@@ -81,6 +83,7 @@ export function WorkspaceLayoutGroupsV3({ groups, renderProduction }: WorkspaceL
                                 rowId: row.id,
                                 span: column.span,
                               }}
+                              navigationContext={navigationContext}
                             />
                           )}
                     </div>

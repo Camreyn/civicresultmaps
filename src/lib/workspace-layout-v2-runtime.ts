@@ -4,6 +4,7 @@ import {
   evaluateWorkspaceVisibility,
   findProductionNode,
   flattenWorkspaceNodes,
+  workspaceReviewViewIdsV2,
   isWorkspaceCustomNodeV2,
   type WorkspaceCustomNodeV2,
   type WorkspaceLayoutManifestV2,
@@ -165,12 +166,24 @@ export function workspaceNodeStyleV2(
 
 export function reviewViewConfigurationV2(manifest: WorkspaceLayoutManifestV2) {
   const node = workspaceProductionNodeV2(manifest, "review", "review-center");
-  const viewOrder = node?.config?.viewOrder ?? ["overview", "evidence-tools", "screening", "indicators", "methodology"];
-  const visible = new Set(node?.config?.visibleViews ?? viewOrder);
+  const known = new Set<string>(workspaceReviewViewIdsV2);
+  const requestedOrder = node?.config?.viewOrder ?? workspaceReviewViewIdsV2;
+  const viewOrder = Array.from(new Set(requestedOrder.filter((view) => known.has(view))));
+  for (const view of workspaceReviewViewIdsV2) {
+    if (!viewOrder.includes(view)) viewOrder.push(view);
+  }
+  const visible = new Set(
+    (node?.config?.visibleViews ?? viewOrder).filter((view) => known.has(view)),
+  );
+  if (visible.size === 0) visible.add("overview");
+  const orderedVisibleViews = viewOrder.filter((view) => visible.has(view));
+  const requestedDefault = node?.config?.defaultView;
   return {
-    defaultView: node?.config?.defaultView ?? "overview",
+    defaultView: requestedDefault && visible.has(requestedDefault)
+      ? requestedDefault
+      : orderedVisibleViews[0] ?? "overview",
     navigationStyle: node?.config?.navigationStyle ?? "tabs",
-    viewOrder: viewOrder.filter((view) => visible.has(view)),
+    viewOrder: orderedVisibleViews,
   };
 }
 

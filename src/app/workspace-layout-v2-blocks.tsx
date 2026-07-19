@@ -7,12 +7,14 @@ import {
   type WorkspaceRichTextInlineV1,
 } from "@/lib/workspace-layout-v2";
 import type { WorkspaceRuntimeCustomNode } from "@/lib/workspace-layout-v2-runtime";
+import { contextualizeWorkspaceHref, type WorkspaceNavigationContext } from "@/lib/workspace-navigation";
 
 type WorkspaceLayoutBlockV2Props = {
   item: WorkspaceRuntimeCustomNode;
+  navigationContext?: WorkspaceNavigationContext;
 };
 
-export function WorkspaceLayoutBlockV2({ item }: WorkspaceLayoutBlockV2Props) {
+export function WorkspaceLayoutBlockV2({ item, navigationContext }: WorkspaceLayoutBlockV2Props) {
   const attributes = workspaceLayoutItemAttributesV2(item);
   const label = item.title || blockLabel(item);
 
@@ -58,7 +60,7 @@ export function WorkspaceLayoutBlockV2({ item }: WorkspaceLayoutBlockV2Props) {
         <ul>
           {item.items?.map((link, index) => (
             <li key={`${link.label}-${index}`}>
-              <a href={link.href}>{link.label}</a>
+              <a href={workspaceBlockHref(link.href, navigationContext)}>{link.label}</a>
             </li>
           ))}
         </ul>
@@ -125,17 +127,20 @@ export function WorkspaceLayoutBlockV2({ item }: WorkspaceLayoutBlockV2Props) {
       {...attributes}
     >
       {item.title && <h2>{item.title}</h2>}
-      {item.document ? <WorkspaceRichText blocks={item.document.blocks} /> : item.body && <p>{item.body}</p>}
+      {item.document ? <WorkspaceRichText blocks={item.document.blocks} navigationContext={navigationContext} /> : item.body && <p>{item.body}</p>}
     </section>
   );
 }
 
-function WorkspaceRichText({ blocks }: { blocks: WorkspaceRichTextBlockV1[] }) {
+function WorkspaceRichText({ blocks, navigationContext }: {
+  blocks: WorkspaceRichTextBlockV1[];
+  navigationContext?: WorkspaceNavigationContext;
+}) {
   const content: ReactNode[] = [];
   for (let index = 0; index < blocks.length; index += 1) {
     const block = blocks[index];
     if (block.type !== "list-item") {
-      content.push(renderRichBlock(block, index));
+      content.push(renderRichBlock(block, index, navigationContext));
       continue;
     }
     const ordered = Boolean(block.ordered);
@@ -145,28 +150,37 @@ function WorkspaceRichText({ blocks }: { blocks: WorkspaceRichTextBlockV1[] }) {
       index += 1;
     }
     const children = items.map((item, itemIndex) => (
-      <li key={itemIndex}>{item.children.map((child, childIndex) => renderInline(child, childIndex))}</li>
+      <li key={itemIndex}>{item.children.map((child, childIndex) => renderInline(child, childIndex, navigationContext))}</li>
     ));
     content.push(ordered ? <ol key={`list-${index}`}>{children}</ol> : <ul key={`list-${index}`}>{children}</ul>);
   }
   return <div className="workspace-rich-text">{content}</div>;
 }
 
-function renderRichBlock(block: WorkspaceRichTextBlockV1, index: number) {
-  const children = block.children.map((child, childIndex) => renderInline(child, childIndex));
+function renderRichBlock(
+  block: WorkspaceRichTextBlockV1,
+  index: number,
+  navigationContext?: WorkspaceNavigationContext,
+) {
+  const children = block.children.map((child, childIndex) => renderInline(child, childIndex, navigationContext));
   if (block.type === "heading") {
     return block.level === 3 ? <h3 key={index}>{children}</h3> : <h2 key={index}>{children}</h2>;
   }
   return <p key={index}>{children}</p>;
 }
 
-function renderInline(item: WorkspaceRichTextInlineV1, index: number) {
+function renderInline(item: WorkspaceRichTextInlineV1, index: number, navigationContext?: WorkspaceNavigationContext) {
   let child: ReactNode = item.text;
   if (item.marks?.includes("code")) child = <code>{child}</code>;
   if (item.marks?.includes("bold")) child = <strong>{child}</strong>;
   if (item.marks?.includes("italic")) child = <em>{child}</em>;
-  if (item.href) child = <a href={item.href}>{child}</a>;
+  if (item.href) child = <a href={workspaceBlockHref(item.href, navigationContext)}>{child}</a>;
   return <span key={index}>{child}</span>;
+}
+
+function workspaceBlockHref(href: string | undefined, navigationContext?: WorkspaceNavigationContext) {
+  if (!href) return undefined;
+  return navigationContext ? contextualizeWorkspaceHref(href, navigationContext) : href;
 }
 
 function workspaceLayoutItemAttributesV2(item: WorkspaceRuntimeCustomNode) {

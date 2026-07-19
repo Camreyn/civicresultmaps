@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 import type { WorkspaceTabId } from "@/lib/workspace-layout";
-import { workspaceLayoutRegistryV2 } from "@/lib/workspace-layout-v2";
+import { workspaceLayoutRegistryV2, workspaceReviewViewIdsV2 } from "@/lib/workspace-layout-v2";
 import type {
   WorkspaceLayoutColumnV3,
   WorkspaceLayoutGroupV3,
@@ -32,6 +32,14 @@ import type {
 } from "./layout-editor-v4-types";
 import base from "./layout-editor-v3.module.css";
 import styles from "./layout-editor-v4.module.css";
+
+const reviewSketchLabels: Record<(typeof workspaceReviewViewIdsV2)[number], string> = {
+  overview: "Overview",
+  "evidence-tools": "Evidence Tools",
+  indicators: "Indicators",
+  screening: "Screening",
+  methodology: "Methodology",
+};
 
 type CanvasCallbacks = {
   onAddColumn: (rowId: string) => void;
@@ -537,7 +545,19 @@ function SortableNode({
 function ProductionSketch({ node }: { node: Extract<WorkspaceLayoutNodeV3, { kind: "production" }> }) {
   if (node.component === "results-map") return <div className={base.mapSketch}><span /><i /><i /><i /></div>;
   if (node.component === "state-snapshot") return <div className={base.metricSketch}><span>Candidate A</span><b /><span>Candidate B</span><b /></div>;
-  if (node.component === "review-center") return <div className={base.pillSketch}><span>Overview</span><span>Tools</span><span>Indicators</span></div>;
+  if (node.component === "source-provenance") return (
+    <div className={base.pillSketch}>
+      <span>{node.config?.provenanceVariant ?? "expanded"}</span>
+      <span>{node.config?.provenanceInitialState ?? "expanded"}</span>
+    </div>
+  );
+  if (node.component === "review-center") {
+    const visible = new Set(node.config?.visibleViews ?? workspaceReviewViewIdsV2);
+    const order = (node.config?.viewOrder ?? workspaceReviewViewIdsV2)
+      .filter((view): view is (typeof workspaceReviewViewIdsV2)[number] => workspaceReviewViewIdsV2.includes(view as (typeof workspaceReviewViewIdsV2)[number]))
+      .filter((view) => visible.has(view));
+    return <div className={base.pillSketch}>{order.map((view) => <span key={view}>{reviewSketchLabels[view]}</span>)}</div>;
+  }
   if (["historical-charts", "screening", "indicators"].includes(node.component)) return <div className={base.metricSketch}><span>Baseline</span><b /><span>Current</span><b /></div>;
   return <div className={base.textSketch}><span /><span /><span /></div>;
 }

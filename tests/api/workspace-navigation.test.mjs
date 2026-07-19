@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  contextualizeWorkspaceHref,
   workspaceNavigationContextFromSearchParams,
   workspaceNavigationHref,
   workspaceStateHref,
@@ -49,4 +50,26 @@ test("live URL context does not resurrect a cleared geography or map layer", () 
       year: 2024,
     },
   );
+});
+
+test("custom workspace links inherit state context and discard map-only context for secondary tabs", () => {
+  const href = contextualizeWorkspaceHref("/?tab=data&view=sources&fips=01001#catalog", mapContext);
+  const url = new URL(href, "https://civicresultmaps.local");
+  assert.equal(url.pathname, "/");
+  assert.equal(url.searchParams.get("state"), "WA");
+  assert.equal(url.searchParams.get("year"), "2024");
+  assert.equal(url.searchParams.get("tab"), "data");
+  assert.equal(url.searchParams.get("view"), "sources");
+  assert.equal(url.searchParams.has("fips"), false);
+  assert.equal(url.searchParams.has("mode"), false);
+  assert.equal(url.hash, "#catalog");
+});
+
+test("bare workspace links retain map context while external and non-workspace paths remain unchanged", () => {
+  assert.equal(
+    contextualizeWorkspaceHref("/", mapContext),
+    "/?state=WA&year=2020&tab=map&mode=margin&fips=53033",
+  );
+  assert.equal(contextualizeWorkspaceHref("/developers", mapContext), "/developers");
+  assert.equal(contextualizeWorkspaceHref("https://example.com", mapContext), "https://example.com");
 });

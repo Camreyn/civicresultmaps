@@ -119,6 +119,36 @@ export function workspaceStateHref(context: WorkspaceNavigationContext, state: s
   });
 }
 
+export function contextualizeWorkspaceHref(href: string, context: WorkspaceNavigationContext) {
+  if (!href.startsWith("/") || href.startsWith("//") || href.startsWith("/\\")) return href;
+  const url = new URL(href, "https://civicresultmaps.local");
+  if (url.pathname !== "/") return href;
+
+  const params = new URLSearchParams(url.searchParams);
+  const tab = normalizeTab(params.get("tab"), context.tab);
+  const state = normalizeState(params.get("state"), context.state);
+  const year = tab === "map"
+    ? normalizeYear(params.get("year"), context.year)
+    : 2024;
+  params.set("state", state);
+  params.set("year", String(year));
+  params.set("tab", tab);
+
+  if (tab === "map") {
+    const mode = params.has("mode") ? normalizeMapMode(params.get("mode")) : context.mode;
+    const fips = params.has("fips") ? normalizeFips(params.get("fips")) : context.fips;
+    if (mode && (year === 2024 || historicalMapModes.has(mode))) params.set("mode", mode);
+    else params.delete("mode");
+    if (fips) params.set("fips", fips);
+    else params.delete("fips");
+  } else {
+    params.delete("mode");
+    params.delete("fips");
+  }
+
+  return `/?${params.toString()}${url.hash}`;
+}
+
 export function notifyWorkspaceContextChange(detail: WorkspaceContextChangeDetail) {
   if (typeof window === "undefined") {
     return;
