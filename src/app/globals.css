@@ -6726,6 +6726,10 @@ td {
 }
 
 @media (max-width: 980px) {
+  .topbar {
+    position: static;
+  }
+
   .workspace {
     grid-template-columns: minmax(0, 1fr);
   }
