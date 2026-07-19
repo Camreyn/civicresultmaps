@@ -28,7 +28,12 @@ const currentPublicDataRevision = cache(uncachedGetPublicDataRevision);
 function cachePublicData<Args extends unknown[], Result>(
   loader: (...args: Args) => Promise<Result>,
   key: string,
+  options: { persistent?: boolean } = {},
 ) {
+  if (options.persistent === false) {
+    return cache(loader);
+  }
+
   const cachedLoader = unstable_cache(
     async (_revision: string, ...args: Args) => loader(...args),
     [publicDataCacheNamespace, key],
@@ -146,9 +151,12 @@ export const listImportRuns = cachePublicData(
   "import-runs",
 );
 
+// Metric-rich review payloads can exceed Next.js's 2 MB Data Cache item limit.
+// Keep the public response complete and query this bounded, state-scoped data directly.
 export const listReviewRows = cachePublicData(
   uncachedListReviewRows,
   "review-rows",
+  { persistent: false },
 );
 
 export const listResults = cachePublicData(

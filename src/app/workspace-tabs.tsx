@@ -32,6 +32,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
+import { WorkspaceContextBar } from "./workspace-context-bar";
 import { WorkspaceLayoutBlockV2 } from "./workspace-layout-v2-blocks";
 import { WorkspaceLayoutGroupsV3 } from "./workspace-layout-v3-groups";
 import { rowsToCsv } from "@/lib/csv";
@@ -106,6 +107,7 @@ type WorkspaceTabsProps = {
   selectedState: StateSummary | undefined;
   selectedStateCode: string;
   sources: SourceSummary[];
+  states: StateSummary[];
   totalVotes: number;
   turnoutRows: TurnoutRowSummary[];
   voteMethodRows: VoteMethodRowSummary[];
@@ -2738,6 +2740,7 @@ export function WorkspaceTabs({
   selectedState,
   selectedStateCode,
   sources,
+  states,
   totalVotes,
   turnoutRows,
   voteMethodRows,
@@ -2849,6 +2852,23 @@ export function WorkspaceTabs({
     ? workspaceRuntimeGroupsV3(layoutManifestV3, activeTab, layoutVisibilityContext)
     : [];
   const mapProvenanceConfig = workspaceProductionNodeV2(layoutManifest, "map", "source-provenance")?.config;
+  const contextGeographies = useMemo(() => {
+    const geographies = new Map<string, string>();
+
+    for (const row of results) {
+      const taggedFips = row.jurisdictionTag?.match(/^county:(\d{5})$/)?.[1];
+      const fips = taggedFips
+        ?? (row.level === "county" && /^\d{5}$/.test(row.jurisdictionCode)
+          ? row.jurisdictionCode
+          : undefined);
+      if (fips && !geographies.has(fips)) {
+        geographies.set(fips, row.jurisdictionName);
+      }
+    }
+
+    return Array.from(geographies, ([code, name]) => ({ code, name }))
+      .sort((left, right) => left.name.localeCompare(right.name));
+  }, [results]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -4070,6 +4090,20 @@ export function WorkspaceTabs({
         "--workspace-accent-foreground": workspaceAccentForeground(layoutDesignSettings.accentColor),
       } as CSSProperties}
     >
+      <WorkspaceContextBar
+        activeTab={activeTab}
+        countyLabel={countyLabel}
+        electionYear={electionYear}
+        equipmentAvailable={equipmentRows.length > 0}
+        geographies={contextGeographies}
+        initialFips={initialFips}
+        initialMapMode={initialMapMode}
+        securityAvailable={securityIncidents.length > 0}
+        selectedStateCode={selectedStateCode}
+        selectedStateName={stateName}
+        states={states}
+        voteMethodAvailable={voteMethodRows.length > 0}
+      />
       <div
         className="tab-bar"
         data-layout-tab-style={layoutDesignSettings.tabStyle}

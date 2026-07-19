@@ -18,10 +18,17 @@ test.afterEach(async ({ page }) => {
 });
 test("public workspace uses the safe embedded layout and durable visitor cookie", async ({ page, context, baseURL }) => {
   await context.addCookies([{ name: "crm_layout_visitor", value: "malformed", url: baseURL! }]);
-  await page.goto("/?state=WA&tab=map");
+  await page.goto("/?state=WA&year=2024&tab=map&mode=margin&fips=53033");
 
   const workspace = page.getByRole("region", { name: /Washington workspace/i });
   await expect(workspace).toBeVisible();
+  const workspaceContext = page.getByRole("region", { name: "Election workspace context" });
+  await expect(workspaceContext).toBeVisible();
+  await expect(workspaceContext.getByLabel("Workspace state")).toHaveValue("WA");
+  await expect(workspaceContext.getByLabel("Workspace election year")).toHaveValue("2024");
+  await expect(workspaceContext.getByText("President", { exact: true })).toBeVisible();
+  await expect(workspaceContext.getByLabel("Workspace geography")).toHaveValue("53033");
+  await expect(workspaceContext.getByLabel("Workspace map layer")).toHaveValue("margin");
   await expect(workspace.getByRole("tab", { name: "Map", exact: true })).toBeVisible();
   await expect(workspace.getByRole("tab", { name: "Review Center", exact: true })).toBeVisible();
   await expect(workspace.getByRole("tab", { name: "Data & Sources", exact: true })).toBeVisible();
@@ -32,6 +39,13 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
   await moreSections.click();
 
   const stateRail = page.getByRole("complementary", { name: "State coverage" });
+  const firstStateLink = stateRail.locator("a.state-button").first();
+  await expect(firstStateLink).toHaveAttribute("href", /^\/\?state=[A-Z]{2}&year=2024&tab=map&mode=margin$/);
+  await workspace.getByRole("button", { name: "Winner", exact: true }).click();
+  await expect(page).toHaveURL(/mode=winner/);
+  await expect(workspaceContext.getByLabel("Workspace map layer")).toHaveValue("winner");
+  await expect(firstStateLink).toHaveAttribute("href", /^\/\?state=[A-Z]{2}&year=2024&tab=map&mode=winner$/);
+
   await page.locator(".state-rail-collapse-button").click();
   await expect(stateRail).toHaveClass(/is-collapsed/);
   await page.locator(".state-rail-collapse-button").click();
@@ -60,7 +74,10 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
 
 test("workspace navigation and state selector adapt on small screens", async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });
-  await page.goto("/?state=WA&tab=map");
+  await page.goto("/?state=WA&year=2024&tab=map&mode=margin&fips=53033");
+  await expect(page.getByRole("region", { name: "Election workspace context" })).toBeVisible();
+  await expect(page.getByLabel("Workspace state")).toHaveValue("WA");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   const stateTrigger = page.getByRole("button", { name: /Choose a state/i });
   await expect(stateTrigger).toBeVisible();
@@ -70,6 +87,14 @@ test("workspace navigation and state selector adapt on small screens", async ({ 
   await expect(stateRail).toHaveClass(/is-mobile-open/);
   await stateRail.getByRole("button", { name: "Close state selector" }).click();
   await expect(stateRail).not.toHaveClass(/is-mobile-open/);
+
+  const electionYear = page.getByLabel("Workspace election year", { exact: true });
+  await electionYear.selectOption("2020");
+  await expect(page).toHaveURL(/state=WA&year=2020&tab=map&mode=margin/);
+  await expect(page).not.toHaveURL(/fips=/);
+  await expect(electionYear).toHaveValue("2020");
+  await expect(page.getByLabel("Workspace geography", { exact: true })).toHaveValue("");
+  await expect(page.getByLabel("Workspace map layer", { exact: true })).toHaveValue("margin");
 
   const workspaceSection = page.getByLabel("Workspace section", { exact: true });
   await expect(workspaceSection).toBeVisible();
@@ -83,6 +108,24 @@ test("workspace navigation and state selector adapt on small screens", async ({ 
   await expect(reviewView).toBeVisible();
   await reviewView.selectOption("indicators");
   await expect(reviewView).toHaveValue("indicators");
+});
+
+test("workspace removes an unmatched deep-link geography", async ({ page }) => {
+  await page.goto("/?state=WA&year=2024&tab=map&fips=99999");
+
+  await expect(page.getByLabel("Workspace geography", { exact: true })).toHaveValue("");
+  await expect(page).not.toHaveURL(/fips=/);
+  await expect(page.getByRole("region", { name: /Washington workspace/i })).toBeVisible();
+});
+
+test("workspace synchronizes automatic map-layer fallbacks", async ({ page }) => {
+  await page.goto("/?state=WA&year=2024&tab=map&mode=security");
+
+  const workspaceContext = page.getByRole("region", { name: "Election workspace context" });
+  await expect(page).toHaveURL(/mode=winner/);
+  await expect(workspaceContext.getByLabel("Workspace map layer")).toHaveValue("winner");
+  await expect(page.getByRole("complementary", { name: "State coverage" }).locator("a.state-button").first())
+    .toHaveAttribute("href", /^\/\?state=[A-Z]{2}&year=2024&tab=map&mode=winner$/);
 });
 
 test("layout administration fails safely when Clerk is not configured", async ({ page }) => {
