@@ -32,6 +32,7 @@ import styles from "./layout-editor-v4.module.css";
 
 export function LayoutV4Operations({
   activeDraftRevisionId,
+  activeNamedDraft,
   dirty,
   errors,
   manifest,
@@ -43,6 +44,7 @@ export function LayoutV4Operations({
   testMode = false,
 }: {
   activeDraftRevisionId?: string;
+  activeNamedDraft?: { id: string; name: string; version: number };
   dirty: boolean;
   errors: string[];
   manifest: WorkspaceLayoutManifestV3;
@@ -104,6 +106,15 @@ export function LayoutV4Operations({
 
       <section className={base.operationCard}>
         <div><Send size={18} /><span><strong>Preview, schedule, and publish</strong><small>Every release uses the protected GitHub workflow and production approval gate.</small></span></div>
+        {activeNamedDraft && (
+          <form action={startLayoutDraftPreviewAction}>
+            <input name="draftId" type="hidden" value={activeNamedDraft.id} />
+            <p className={styles.noticeText}>
+              Preview the saved version {activeNamedDraft.version} of <strong>{activeNamedDraft.name}</strong>.
+            </p>
+            <button disabled={testMode} type="submit"><MonitorSmartphone size={16} /> Open named draft preview</button>
+          </form>
+        )}
         <form action={startLayoutDraftPreviewAction}>
           <label>Saved revision<select name="revisionId" onChange={(event) => setSelectedRevisionId(event.target.value)} value={selectedRevisionId}>{revisions.map((revision) => <option key={revision.id} value={revision.id}>{revision.changeSummary} - {new Date(revision.createdAt).toLocaleString()}</option>)}</select></label>
           <button disabled={testMode || !selectedRevisionId} type="submit"><MonitorSmartphone size={16} /> Open revision preview</button>

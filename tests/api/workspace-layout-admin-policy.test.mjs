@@ -99,6 +99,9 @@ test("builder v3 exposes responsive rows, rich content, media, and publication c
 
 test("builder v4 exposes grouped editing, recovery, scheduling, and safety controls", () => {
   const editor = readFileSync("src/app/admin/layout/layout-editor-v4.tsx", "utf8");
+  const operations = readFileSync("src/app/admin/layout/layout-editor-v4-operations.tsx", "utf8");
+  const actions = readFileSync("src/app/admin/layout/actions.ts", "utf8");
+  const workspaceRuntime = readFileSync("src/lib/workspace-layout-runtime.ts", "utf8");
   const canvas = readFileSync("src/app/admin/layout/layout-editor-v4-canvas.tsx", "utf8");
   const inspector = readFileSync("src/app/admin/layout/layout-editor-v4-inspector.tsx", "utf8");
   const scheduler = readFileSync("src/lib/ui-layout-scheduler.ts", "utf8");
@@ -113,6 +116,10 @@ test("builder v4 exposes grouped editing, recovery, scheduling, and safety contr
   assert.match(editor, /RECOVERY_KEY/);
   assert.match(editor, /saveLayoutDraftAction/);
   assert.match(editor, /workspaceStarterGroupTemplatesV3/);
+  assert.match(operations, /Open named draft preview/);
+  assert.match(actions, /draft:\$\{draft\.id\}/);
+  assert.match(workspaceRuntime, /getLayoutDraft/);
+  assert.match(workspaceRuntime, /source === "draft"/);
   assert.match(canvas, /layout-group/);
   assert.match(canvas, /layout-row/);
   assert.match(canvas, /layout-column/);

@@ -1,7 +1,43 @@
 .workspace-layout-groups {
   display: grid;
   gap: 24px;
-  margin-top: 22px;
+}
+
+.workspace-layout-local-nav {
+  align-items: center;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  padding: 10px 14px;
+}
+
+.workspace-layout-local-nav > span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workspace-layout-local-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.workspace-layout-local-nav a {
+  color: var(--foreground);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  text-underline-offset: 3px;
 }
 
 .workspace-layout-group {
@@ -101,6 +137,58 @@
   grid-column: span var(--layout-span-desktop, 12);
   grid-template-columns: minmax(0, 1fr);
   min-width: 0;
+}
+
+.workspace-layout-node {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.workspace-layout-node[data-layout-node-kind="production"][data-layout-surface="panel"] {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  box-shadow: var(--shadow);
+  padding: var(--layout-node-padding, 18px);
+}
+
+.workspace-layout-node[data-layout-node-kind="production"]:has(> .panel),
+.workspace-layout-node[data-layout-node-kind="production"]:has(> .tab-panel-content) {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+.workspace-layout-node[data-layout-height="compact"] {
+  min-height: 0;
+}
+
+.workspace-layout-node[data-layout-height="standard"] {
+  min-height: 300px;
+}
+
+.workspace-layout-node[data-layout-height="tall"] {
+  min-height: 480px;
+}
+
+.workspace-layout-node[data-layout-density="compact"] {
+  --layout-node-padding: 12px;
+}
+
+.workspace-layout-node[data-layout-density="spacious"] {
+  --layout-node-padding: 24px;
+}
+
+.workspace-layout-node[data-layout-surface="muted"] > [data-layout-section],
+.workspace-layout-node[data-layout-surface="muted"] > .workspace-custom-block {
+  background: color-mix(in srgb, var(--panel) 84%, var(--muted));
+}
+
+.workspace-layout-node[data-layout-emphasis="prominent"] > [data-layout-section],
+.workspace-layout-node[data-layout-emphasis="prominent"] > .workspace-custom-block {
+  border-color: var(--accent);
 }
 
 .workspace-custom-column > .workspace-custom-block {

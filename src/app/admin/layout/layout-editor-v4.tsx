@@ -599,7 +599,19 @@ export function LayoutEditorV4({
         </div>
       </DragDropProvider>
 
-      <LayoutV4Operations activeDraftRevisionId={activeDraftRevisionId} dirty={dirty} errors={errors} manifest={manifest} parentRevisionId={parentRevisionId} publications={publications} publisherEnabled={publisherEnabled} requestKey={requestKey} revisions={revisions} testMode={testMode} />
+      <LayoutV4Operations
+        activeDraftRevisionId={activeDraftRevisionId}
+        activeNamedDraft={activeDraft ? { id: activeDraft.id, name: activeDraft.name, version: activeDraft.version } : undefined}
+        dirty={dirty}
+        errors={errors}
+        manifest={manifest}
+        parentRevisionId={parentRevisionId}
+        publications={publications}
+        publisherEnabled={publisherEnabled}
+        requestKey={requestKey}
+        revisions={revisions}
+        testMode={testMode}
+      />
     </section>
   );
 

@@ -58,7 +58,7 @@ test("weak design-token contrast and unknown fields fail closed", () => {
   assert.match(shape.errors.join(" "), /unsupported fields/i);
 });
 
-test("starter groups remain custom-only and public runtime projection keeps headings", () => {
+test("runtime projection retains production and custom nodes in manifest order", () => {
   assert.equal(workspaceStarterGroupTemplatesV3.every((template) => isWorkspaceGroupCustomOnlyV3(template.group)), true);
   const manifest = cloneWorkspaceLayoutManifestV3();
   const group = structuredClone(workspaceStarterGroupTemplatesV3[0].group);
@@ -66,6 +66,16 @@ test("starter groups remain custom-only and public runtime projection keeps head
   manifest.tabs.find((tab) => tab.id === "map").groups.push(group);
   const runtime = workspaceRuntimeGroupsV3(manifest, "map", { state: "WA", year: 2024 });
   assert.equal(runtime.some((item) => item.heading === "How to read this view"), true);
+  assert.deepEqual(
+    runtime[0].rows[0].columns.flatMap((column) => column.items.map((node) => node.component)),
+    ["results-map", "source-provenance", "coverage-context", "state-snapshot"],
+  );
+  assert.equal(
+    runtime.at(-1).rows.flatMap((row) => row.columns.flatMap((column) => column.items)).every(
+      (node) => node.kind === "custom",
+    ),
+    true,
+  );
 });
 
 test("schema v3 envelopes retain version metadata and detect tampering", () => {

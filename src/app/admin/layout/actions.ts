@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireLayoutAdmin } from "@/lib/ui-layout-auth";
+import { getLayoutDraft } from "@/lib/ui-layout-v4-repository";
 import type { LayoutActionState } from "./layout-action-state";
 import {
   createLayoutPublication,
@@ -56,9 +57,18 @@ export async function saveLayoutRevisionAction(
 
 export async function startLayoutDraftPreviewAction(formData: FormData) {
   await requireLayoutAdmin();
-  const revisionId = String(formData.get("revisionId") ?? "");
-  if (!(await getLayoutRevision(revisionId))) throw new Error("Layout revision not found.");
-  (await cookies()).set(WORKSPACE_LAYOUT_DRAFT_COOKIE, revisionId, {
+  const draftId = String(formData.get("draftId") ?? "").trim();
+  const revisionId = String(formData.get("revisionId") ?? "").trim();
+  let previewTarget: string;
+  if (draftId) {
+    const draft = await getLayoutDraft(draftId);
+    if (!draft || draft.archivedAt) throw new Error("Named layout draft not found.");
+    previewTarget = `draft:${draft.id}`;
+  } else {
+    if (!(await getLayoutRevision(revisionId))) throw new Error("Layout revision not found.");
+    previewTarget = `revision:${revisionId}`;
+  }
+  (await cookies()).set(WORKSPACE_LAYOUT_DRAFT_COOKIE, previewTarget, {
     httpOnly: true,
     maxAge: WORKSPACE_LAYOUT_DRAFT_MAX_AGE,
     path: "/",
