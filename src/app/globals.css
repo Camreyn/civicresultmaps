@@ -6156,6 +6156,15 @@ td {
   border-color: var(--accent);
 }
 
+.workspace-context-notices {
+  display: grid;
+  gap: 8px;
+}
+
+.workspace-context-notices .historical-map-note {
+  margin: 0;
+}
+
 .historical-map-note {
   margin: 0 0 16px;
   padding: 12px 14px;
@@ -6610,6 +6619,7 @@ td {
 /* Primary navigation hierarchy and responsive state rail. */
 .workspace {
   grid-template-columns: auto minmax(0, 1fr);
+  padding-top: clamp(12px, 1.5vw, 20px);
 }
 
 .state-rail {
@@ -6814,4 +6824,18 @@ td {
   .state-rail .state-list {
     max-height: none;
   }
+}
+.workspace-supporting-tools {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.workspace-supporting-tools .workspace-county-jump {
+  margin: 0;
+  max-width: none;
+}
+
+.workspace-supporting-tools .national-overview {
+  margin-bottom: 0;
 }

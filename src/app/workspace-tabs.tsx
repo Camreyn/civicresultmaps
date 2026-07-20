@@ -97,6 +97,7 @@ type WorkspaceTabsProps = {
   equipmentRows: EquipmentRowSummary[];
   securityIncidents: SecurityIncidentSummary[];
   historicalRows: HistoricalResultRowSummary[];
+  historicalBroadSignalWarning?: string;
   initialFips?: string;
   initialMapMode?: "winner" | "margin" | "volume" | "method" | "equipment" | "security";
   initialTab?: string;
@@ -2730,6 +2731,7 @@ export function WorkspaceTabs({
   equipmentRows,
   securityIncidents,
   historicalRows,
+  historicalBroadSignalWarning,
   initialFips,
   initialMapMode,
   initialTab,
@@ -4141,6 +4143,22 @@ export function WorkspaceTabs({
         states={states}
         voteMethodAvailable={voteMethodRows.length > 0}
       />
+      {activeTab === "map" && electionYear !== 2024 && (
+        <div className="workspace-context-notices">
+          <p className="historical-map-note">
+            Historical mode shows canonical county presidential rows. {indicatorsEvaluated
+              ? "Same-year advisory indicators are overlaid from loaded President-versus-comparison-contest rows."
+              : "Advisory indicators are not evaluated for this state-year because same-grain comparison rows are not loaded."}{" "}
+            Vote methods, equipment, and administration records remain 2024 context and are not overlaid.
+          </p>
+          {historicalBroadSignalWarning && (
+            <p className="historical-map-note historical-map-warning" role="status">
+              <strong>Broad-signal caution.</strong>{" "}
+              {historicalBroadSignalWarning}
+            </p>
+          )}
+        </div>
+      )}
       <div
         className="tab-bar"
         data-layout-tab-style={layoutDesignSettings.tabStyle}

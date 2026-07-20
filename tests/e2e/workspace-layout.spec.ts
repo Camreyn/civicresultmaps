@@ -29,6 +29,26 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
   await expect(workspaceContext.getByText("President", { exact: true })).toBeVisible();
   await expect(workspaceContext.getByLabel("Workspace geography")).toHaveValue("53033");
   await expect(workspaceContext.getByLabel("Workspace map layer")).toHaveValue("margin");
+  await expect(workspaceContext.getByRole("heading", { level: 1, name: /Washington/i })).toBeVisible();
+  await expect(workspaceContext.locator(".workspace-context-control")).toHaveCount(5);
+  await expect(workspaceContext.locator(".workspace-context-readonly")).toHaveText("President");
+
+  const mapPanel = page.locator('[aria-label="WA county map"]');
+  const supportingTools = page.getByRole("region", { name: "Additional workspace tools" });
+  await expect(mapPanel).toBeVisible();
+  await expect(supportingTools).toBeVisible();
+  const [contextBounds, mapBounds, supportingBounds] = await Promise.all([
+    workspaceContext.boundingBox(),
+    mapPanel.boundingBox(),
+    supportingTools.boundingBox(),
+  ]);
+  if (!contextBounds || !mapBounds || !supportingBounds) {
+    throw new Error("Expected workspace priority surfaces to have measurable bounds.");
+  }
+  expect(contextBounds.y).toBeLessThan(mapBounds.y);
+  expect(mapBounds.y).toBeLessThan(supportingBounds.y);
+  expect(mapBounds.y).toBeLessThan(page.viewportSize()?.height ?? 720);
+
   await expect(workspace.getByRole("tab", { name: "Map", exact: true })).toBeVisible();
   await expect(workspace.getByRole("tab", { name: "Review Center", exact: true })).toBeVisible();
   await expect(workspace.getByRole("tab", { name: "Data & Sources", exact: true })).toBeVisible();
