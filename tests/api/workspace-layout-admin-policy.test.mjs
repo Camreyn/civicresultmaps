@@ -126,6 +126,9 @@ test("builder v4 exposes grouped editing, recovery, scheduling, and safety contr
   assert.match(canvas, /layout-node/);
   assert.match(inspector, /Live design tokens/);
   assert.match(inspector, /Accessibility checks|Visibility rules/);
+  assert.match(inspector, /Default view/);
+  assert.match(inspector, /View order and visibility/);
+  assert.match(inspector, /Initial state/);
   assert.match(scheduler, /claimDueLayoutPublications/);
   assert.match(scheduler, /workspaceLayoutRetryDelayMinutes/);
   assert.match(cron, /CRON_SECRET/);

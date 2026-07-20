@@ -28,7 +28,9 @@ import {
   X,
 } from "lucide-react";
 import type { ComponentType, CSSProperties, ReactNode, SVGProps } from "react";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { WorkspaceGuidedLinks } from "./workspace-guided-links";
+import { WorkspaceSourceCatalog } from "./workspace-source-catalog";
 import { Eli5 } from "./eli5";
 import { GuidedTour, type TourStep } from "./guided-tour";
 import { ResultsExplorer } from "./results-explorer";
@@ -293,8 +295,8 @@ const secondaryWorkspaceTabGroups: Array<{ label: string; tabKeys: TabKey[] }> =
 const reviewViewOptions: Array<{ key: ReviewView; label: string; summary: string }> = [
   { key: "overview", label: "Overview", summary: "Status, readiness, top flags, and next actions" },
   { key: "tools", label: "Evidence Tools", summary: "Readiness gaps and flag explainability" },
-  { key: "screening", label: "Screening", summary: "Charts, ticket-splitting proxy, and caveats" },
   { key: "indicators", label: "Indicators", summary: "Search, filter, and inspect advisory rows" },
+  { key: "screening", label: "Screening", summary: "Charts, ticket-splitting proxy, and caveats" },
   { key: "methodology", label: "Methodology", summary: "How each advisory flag is calculated" },
 ];
 
@@ -2784,14 +2786,18 @@ export function WorkspaceTabs({
       primary,
     };
   }, [layoutTabs]);
+  const layoutReviewConfiguration = useMemo(() => reviewViewConfigurationV2(layoutManifest), [layoutManifest]);
   const layoutReviewViewOptions = useMemo(() => {
-    const reviewConfiguration = reviewViewConfigurationV2(layoutManifest);
+    const reviewConfiguration = layoutReviewConfiguration;
     return reviewConfiguration.viewOrder
       .map((sectionId) => reviewViewOptions.find(
         (option) => option.key === reviewViewBySectionId[sectionId as keyof typeof reviewViewBySectionId],
       ))
       .filter((option): option is (typeof reviewViewOptions)[number] => Boolean(option));
-  }, [layoutManifest]);
+  }, [layoutReviewConfiguration]);
+  const layoutDefaultReviewView = reviewViewBySectionId[
+    layoutReviewConfiguration.defaultView as keyof typeof reviewViewBySectionId
+  ] ?? "overview";
   const requestedTab = initialTab && layoutTabs.some((item) => item.key === initialTab)
     ? initialTab as TabKey
     : "map";
@@ -2821,7 +2827,8 @@ export function WorkspaceTabs({
   );
   const [reviewQuery, setReviewQuery] = useState("");
   const [reviewType, setReviewType] = useState("all");
-  const [reviewView, setReviewView] = useState<ReviewView>(() => layoutReviewViewOptions[0]?.key ?? "overview");
+  const [reviewView, setReviewView] = useState<ReviewView>(() => layoutDefaultReviewView);
+  const previousLayoutDefaultReviewView = useRef(layoutDefaultReviewView);
   const activeLayoutTab = layoutManifest.tabs.find((tab) => tab.id === activeTab);
   const activeLayoutDensity = activeLayoutTab?.settings?.density ?? "comfortable";
   const activeNotesPosition = activeLayoutTab?.settings?.notesPosition ?? "side";
@@ -2855,6 +2862,14 @@ export function WorkspaceTabs({
     ? workspaceRuntimeGroupsV3(layoutManifestV3, activeTab, layoutVisibilityContext)
     : [];
   const mapProvenanceConfig = workspaceProductionNodeV2(layoutManifest, "map", "source-provenance")?.config;
+  const dataProvenanceConfig = workspaceProductionNodeV2(layoutManifest, "data", "source-provenance")?.config;
+  const workspaceNavigationContext = {
+    fips: initialFips,
+    mode: initialMapMode,
+    state: selectedStateCode,
+    tab: activeTab,
+    year: electionYear,
+  } as const;
   const contextGeographies = useMemo(() => {
     const geographies = new Map<string, string>();
 
@@ -2882,10 +2897,12 @@ export function WorkspaceTabs({
   }, [layoutTabs]);
 
   useEffect(() => {
-    if (!layoutReviewViewOptions.some((option) => option.key === reviewView) && layoutReviewViewOptions[0]) {
-      setReviewView(layoutReviewViewOptions[0].key);
+    const defaultChanged = previousLayoutDefaultReviewView.current !== layoutDefaultReviewView;
+    previousLayoutDefaultReviewView.current = layoutDefaultReviewView;
+    if (defaultChanged || !layoutReviewViewOptions.some((option) => option.key === reviewView)) {
+      setReviewView(layoutDefaultReviewView);
     }
-  }, [layoutReviewViewOptions, reviewView]);
+  }, [layoutDefaultReviewView, layoutReviewViewOptions, reviewView]);
 
   const selectTab = (requested: TabKey) => {
     const tab = layoutTabs.some((item) => item.key === requested) ? requested : "map";
@@ -4173,6 +4190,14 @@ export function WorkspaceTabs({
           </select>
         </label>
       </div>
+      <WorkspaceGuidedLinks
+        activeTab={activeTab}
+        fips={initialFips}
+        mode={initialMapMode}
+        state={selectedStateCode}
+        visibleTabs={workspaceNavigation.all.map((tab) => tab.key)}
+        year={electionYear}
+      />
       <div
         className={`workspace-body ${isDataNotesCollapsed ? "notes-collapsed" : ""}`}
         data-layout-density={activeLayoutDensity}
@@ -6112,40 +6137,13 @@ export function WorkspaceTabs({
                 <FileCheck2 aria-hidden size={18} />
               </div>
             </div>))}
-            {captureProduction("source-provenance", (<div className="source-links-panel" data-tour="source-links" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
-              <div>
-                <strong>Official Source Links</strong>
-                <span>
-                  Every imported source record for {stateName} should include an auditable URL or documented
-                  artifact reference.
-                </span>
-                <Eli5>
-                  These are links back to the original paperwork. A missing URL is like a recipe without the cookbook
-                  page number: the data may exist, but it is harder to audit.
-                </Eli5>
-              </div>
-              {sourcesWithoutUrls.length > 0 && (
-                <p className="source-warning">
-                  {sourcesWithoutUrls.length} source record{sourcesWithoutUrls.length === 1 ? "" : "s"} missing a URL.
-                </p>
-              )}
-              <ul>
-                {sources.map((source) => (
-                  <li key={`${source.id}-link`}>
-                    <div>
-                      <strong>{source.category}</strong>
-                      <span>{source.title}</span>
-                    </div>
-                    {source.sourceUrl ? (
-                      <a href={source.sourceUrl} rel="noreferrer" target="_blank">
-                        Open official source
-                      </a>
-                    ) : (
-                      <span className="pending">URL missing</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
+            {captureProduction("source-provenance", (<div className="source-catalog-panel" data-tour="source-links" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
+              <WorkspaceSourceCatalog
+                initiallyOpen={dataProvenanceConfig?.provenanceInitialState !== "collapsed"}
+                sources={sources}
+                stateName={stateName}
+                variant={dataProvenanceConfig?.provenanceVariant ?? "expanded"}
+              />
             </div>))}
             {captureProduction("vote-methods", (<div className="vote-method-panel" data-tour="vote-method-summary" {...layoutSectionProps(layoutManifest, "data", "vote-methods")}>
               <div className="vote-method-head">
@@ -6390,32 +6388,6 @@ export function WorkspaceTabs({
                   <span>Use the admin source status endpoint to confirm whether the Verifier source is loaded or blocked for this state.</span>
                 </div>
               )}
-            </div>))}
-            {captureProduction("source-provenance", (<div className="source-card-grid" {...layoutSectionProps(layoutManifest, "data", "source-provenance")}>
-              {sources.map((source) => (
-                <article className="source-card" key={source.id}>
-                  <span>{source.category}</span>
-                  <strong>{source.title}</strong>
-                  <p>{source.confidence}</p>
-                  <dl>
-                    <dt>Authority</dt>
-                    <dd>{source.authority}</dd>
-                    <dt>Parser</dt>
-                    <dd>{source.parser}</dd>
-                    <dt>Artifact</dt>
-                    <dd>{source.localArtifact || "Not recorded"}</dd>
-                    <dt>Status</dt>
-                    <dd>{source.status}</dd>
-                  </dl>
-                  {source.sourceUrl ? (
-                    <a href={source.sourceUrl} rel="noreferrer" target="_blank">
-                      Open source
-                    </a>
-                  ) : (
-                    <span className="pending">Source URL missing</span>
-                  )}
-                </article>
-              ))}
             </div>))}
           </section>
         </div>
@@ -6831,6 +6803,7 @@ export function WorkspaceTabs({
               return (
                 <WorkspaceLayoutGroupsV3
                   groups={activeLayoutGroups}
+                  navigationContext={workspaceNavigationContext}
                   renderProduction={renderCapturedProduction}
                 />
               );
@@ -6857,7 +6830,7 @@ export function WorkspaceTabs({
                         "--layout-span-tablet": column.span.tablet,
                       } as CSSProperties}
                     >
-                      {column.items.map((block) => <WorkspaceLayoutBlockV2 item={block} key={block.id} />)}
+                      {column.items.map((block) => <WorkspaceLayoutBlockV2 item={block} key={block.id} navigationContext={workspaceNavigationContext} />)}
                     </div>
                   ))}
                 </div>

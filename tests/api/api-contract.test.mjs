@@ -251,6 +251,7 @@ test("public completeness report exists for national readiness", () => {
 
 test("source URLs remain first-class in explorer UX", () => {
   const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+  const catalog = readFileSync("src/app/workspace-source-catalog.tsx", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
 
   assert.match(explorer, /table-source-link/);
@@ -260,8 +261,10 @@ test("source URLs remain first-class in explorer UX", () => {
   assert.match(explorer, /source not linked/);
   assert.match(explorer, /Related API endpoint/);
   assert.match(explorer, /Report source issue/);
-  assert.match(tabs, /Official Source Links/);
-  assert.match(tabs, /Source URL missing/);
+  assert.match(tabs, /WorkspaceSourceCatalog/);
+  assert.match(catalog, /Search sources/);
+  assert.match(catalog, /Open official source/);
+  assert.match(catalog, /Official source URL missing/);
 });
 
 test("state switcher shows compact data availability", () => {

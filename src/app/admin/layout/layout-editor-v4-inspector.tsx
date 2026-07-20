@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  ArrowDown,
+  ArrowUp,
   Copy,
   FileImage,
   LoaderCircle,
@@ -16,9 +18,11 @@ import {
   workspaceVisibilityCapabilityKeys,
   workspaceVisibilityDataKeys,
   workspaceLayoutRegistryV2,
+  workspaceReviewViewIdsV2,
   type WorkspaceCustomNodeV2,
   type WorkspaceLayoutDesktopSpanV2,
   type WorkspaceLayoutTabletSpanV2,
+  type WorkspaceProductionConfigV2,
   type WorkspaceVisibilityConditionV1,
 } from "@/lib/workspace-layout-v2";
 import {
@@ -55,6 +59,14 @@ type Commit = (
   updater: (manifest: WorkspaceLayoutManifestV3) => WorkspaceLayoutManifestV3,
   groupKey?: string,
 ) => void;
+const reviewViewEditorLabels: Record<(typeof workspaceReviewViewIdsV2)[number], string> = {
+  overview: "Overview",
+  "evidence-tools": "Evidence Tools",
+  indicators: "Indicators",
+  screening: "Screening",
+  methodology: "Methodology",
+};
+
 
 export function LayoutV4Inspector({
   assets,
@@ -335,11 +347,91 @@ function ProductionSettings({ node, update }: {
       </>}
       {node.component === "coverage-context" && <Select label="Coverage" value={config.coverageVariant ?? "list"} onChange={(value) => setConfig({ coverageVariant: value as "list" | "cards" | "compact" })} options={["list", "cards", "compact"]} />}
       {node.component === "state-snapshot" && <Select label="Snapshot" value={config.snapshotVariant ?? "bars"} onChange={(value) => setConfig({ snapshotVariant: value as "bars" | "metrics" | "table" })} options={["bars", "metrics", "table"]} />}
-      {node.component === "source-provenance" && <Select label="Provenance" value={config.provenanceVariant ?? "expanded"} onChange={(value) => setConfig({ provenanceVariant: value as "summary" | "expanded" | "accordion" })} options={["summary", "expanded", "accordion"]} />}
-      {node.component === "review-center" && <Select label="Navigation" value={config.navigationStyle ?? "tabs"} onChange={(value) => setConfig({ navigationStyle: value as "tabs" | "pills" | "sidebar" })} options={["tabs", "pills", "sidebar"]} />}
+      {node.component === "source-provenance" && <>
+        <Select label="Provenance" value={config.provenanceVariant ?? "expanded"} onChange={(value) => setConfig({ provenanceVariant: value as "summary" | "expanded" | "accordion" })} options={["summary", "expanded", "accordion"]} />
+        <Select label="Initial state" value={config.provenanceInitialState ?? "expanded"} onChange={(value) => setConfig({ provenanceInitialState: value as "collapsed" | "expanded" })} options={["expanded", "collapsed"]} />
+      </>}
+      {node.component === "review-center" && <>
+        <Select label="Navigation" value={config.navigationStyle ?? "tabs"} onChange={(value) => setConfig({ navigationStyle: value as "tabs" | "pills" | "sidebar" })} options={["tabs", "pills", "sidebar"]} />
+        <ReviewCenterSettings config={config} setConfig={setConfig} />
+      </>}
       <p className={styles.noticeText}>The editor changes presentation only. Data, source labels, calculations, and trust-surface behavior remain code-owned.</p>
     </fieldset>
   );
+}
+
+function ReviewCenterSettings({ config, setConfig }: {
+  config: WorkspaceProductionConfigV2;
+  setConfig: (patch: Partial<WorkspaceProductionConfigV2>) => void;
+}) {
+  const order = Array.from(new Set(
+    (config.viewOrder ?? workspaceReviewViewIdsV2).filter(isReviewViewEditorId),
+  ));
+  for (const view of workspaceReviewViewIdsV2) {
+    if (!order.includes(view)) order.push(view);
+  }
+  const visibleViews = (config.visibleViews ?? order).filter(isReviewViewEditorId);
+  const visible = new Set(visibleViews);
+  const defaultView = config.defaultView && visible.has(config.defaultView as typeof order[number])
+    ? config.defaultView
+    : order.find((view) => visible.has(view)) ?? "overview";
+
+  const moveView = (view: typeof order[number], offset: -1 | 1) => {
+    const index = order.indexOf(view);
+    const destination = index + offset;
+    if (index < 0 || destination < 0 || destination >= order.length) return;
+    const next = [...order];
+    [next[index], next[destination]] = [next[destination], next[index]];
+    setConfig({ viewOrder: next });
+  };
+  const setViewVisible = (view: typeof order[number], checked: boolean) => {
+    const nextVisible = checked
+      ? order.filter((candidate) => candidate === view || visible.has(candidate))
+      : order.filter((candidate) => candidate !== view && visible.has(candidate));
+    if (nextVisible.length === 0) return;
+    setConfig({
+      defaultView: nextVisible.includes(defaultView as typeof order[number]) ? defaultView : nextVisible[0],
+      visibleViews: nextVisible,
+    });
+  };
+
+  return (
+    <div className={styles.reviewViewSettings}>
+      <Select
+        label="Default view"
+        onChange={(value) => setConfig({ defaultView: value })}
+        options={order.filter((view) => visible.has(view))}
+        value={defaultView}
+      />
+      <div>
+        <span>View order and visibility</span>
+        <small>Keep at least one view visible. Arrows change the public subnavigation order.</small>
+      </div>
+      <ol>
+        {order.map((view, index) => (
+          <li key={view}>
+            <label>
+              <input
+                checked={visible.has(view)}
+                disabled={visible.has(view) && visible.size === 1}
+                onChange={(event) => setViewVisible(view, event.target.checked)}
+                type="checkbox"
+              />
+              <span>{reviewViewEditorLabels[view]}</span>
+            </label>
+            <div>
+              <button aria-label={`Move ${reviewViewEditorLabels[view]} earlier`} disabled={index === 0} onClick={() => moveView(view, -1)} type="button"><ArrowUp size={14} /></button>
+              <button aria-label={`Move ${reviewViewEditorLabels[view]} later`} disabled={index === order.length - 1} onClick={() => moveView(view, 1)} type="button"><ArrowDown size={14} /></button>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function isReviewViewEditorId(value: string): value is (typeof workspaceReviewViewIdsV2)[number] {
+  return workspaceReviewViewIdsV2.includes(value as (typeof workspaceReviewViewIdsV2)[number]);
 }
 
 function CustomSettings({ assets, node, onUploadImage, update, uploading }: {

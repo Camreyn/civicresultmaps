@@ -172,7 +172,7 @@ const productionConfigSchema = z.object({
 const productionConfigKeysByComponent: Record<string, readonly string[]> = {
   "coverage-context": ["coverageVariant"],
   "results-map": ["legendPosition", "mapComposition"],
-  "review-center": ["navigationStyle"],
+  "review-center": ["defaultView", "navigationStyle", "viewOrder", "visibleViews"],
   "source-provenance": ["provenanceInitialState", "provenanceVariant"],
   "state-snapshot": ["snapshotVariant"],
 };

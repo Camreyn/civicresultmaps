@@ -224,7 +224,7 @@ export type WorkspaceLayoutV2ValidationResult =
 const tabIds = workspaceLayoutRegistry.map((tab) => tab.id) as [WorkspaceTabId, ...WorkspaceTabId[]];
 const desktopSpans = [3, 4, 6, 8, 9, 12] as const;
 const tabletSpans = [6, 12] as const;
-const reviewViewIds = ["overview", "evidence-tools", "screening", "indicators", "methodology"] as const;
+export const workspaceReviewViewIdsV2 = ["overview", "evidence-tools", "indicators", "screening", "methodology"] as const;
 const idSchema = z.string().regex(/^[a-z][a-z0-9-]{2,95}$/);
 const safeHrefSchema = z.string().max(240).refine(isSafeWorkspaceHrefV2, "Link must use /, https://, or mailto:.");
 
@@ -524,7 +524,7 @@ export function upgradeWorkspaceLayoutManifestV1(manifest: WorkspaceLayoutManife
       const visibleViews = legacyTab.sections
         .filter((section) => !("kind" in section) && section.visible)
         .map((section) => section.id)
-        .filter((id): id is typeof reviewViewIds[number] => reviewViewIds.includes(id as typeof reviewViewIds[number]));
+        .filter((id): id is typeof workspaceReviewViewIdsV2[number] => workspaceReviewViewIdsV2.includes(id as typeof workspaceReviewViewIdsV2[number]));
       reviewNode.config = {
         ...reviewNode.config,
         defaultView: visibleViews[0] ?? "overview",
@@ -779,6 +779,7 @@ function inspectStructuralRules(manifest: WorkspaceLayoutManifestV2) {
     const unknown = nodes.filter((node) => node.kind === "production"
       && !registry.components.some((component) => component.id === node.component));
     if (unknown.length) errors.push(`Tab ${tab.id} contains unsupported production components: ${unknown.map((node) => node.component).join(", ")}.`);
+    if (tab.id === "review") errors.push(...inspectReviewConfiguration(tab));
     if (tab.visible && !nodes.some((node) => node.kind === "production" && node.visible && !node.visibility)) {
       errors.push(`Visible tab ${tab.id} must retain an unconditional production component.`);
     }
@@ -789,6 +790,29 @@ function inspectStructuralRules(manifest: WorkspaceLayoutManifestV2) {
   if (!manifest.tabs.find((tab) => tab.id === manifest.settings.defaultTab)?.visible) {
     errors.push("settings.defaultTab must reference a visible tab.");
   }
+  return errors;
+}
+
+function inspectReviewConfiguration(tab: WorkspaceLayoutTabV2) {
+  const errors: string[] = [];
+  const reviewNode = flattenWorkspaceNodes(tab)
+    .find((node): node is WorkspaceProductionNodeV2 => node.kind === "production" && node.component === "review-center");
+  if (!reviewNode) return errors;
+  const knownViews = new Set<string>(workspaceReviewViewIdsV2);
+  const viewOrder = reviewNode.config?.viewOrder ?? [...workspaceReviewViewIdsV2];
+  const visibleViews = reviewNode.config?.visibleViews ?? [...viewOrder];
+  const defaultView = reviewNode.config?.defaultView ?? "overview";
+
+  if (new Set(viewOrder).size !== viewOrder.length) errors.push("Review viewOrder cannot contain duplicates.");
+  if (viewOrder.some((view) => !knownViews.has(view))) errors.push("Review viewOrder contains an unsupported view.");
+  if (workspaceReviewViewIdsV2.some((view) => !viewOrder.includes(view))) {
+    errors.push("Review viewOrder must include every review view exactly once.");
+  }
+  if (visibleViews.length === 0) errors.push("Review visibleViews must retain at least one view.");
+  if (new Set(visibleViews).size !== visibleViews.length) errors.push("Review visibleViews cannot contain duplicates.");
+  if (visibleViews.some((view) => !knownViews.has(view))) errors.push("Review visibleViews contains an unsupported view.");
+  if (!knownViews.has(defaultView)) errors.push("Review defaultView is unsupported.");
+  else if (!visibleViews.includes(defaultView)) errors.push("Review defaultView must reference a visible view.");
   return errors;
 }
 
@@ -851,8 +875,8 @@ function productionNode(tabId: WorkspaceTabId, component: WorkspaceProductionCom
             ? {
               defaultView: "overview",
               navigationStyle: "tabs",
-              viewOrder: [...reviewViewIds],
-              visibleViews: [...reviewViewIds],
+              viewOrder: [...workspaceReviewViewIdsV2],
+              visibleViews: [...workspaceReviewViewIdsV2],
             }
             : undefined;
   return {

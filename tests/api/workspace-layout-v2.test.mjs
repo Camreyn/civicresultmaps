@@ -23,6 +23,7 @@ import {
   validateWorkspaceLayoutEnvelope,
 } from "../../src/lib/workspace-layout-digest.ts";
 import {
+  reviewViewConfigurationV2,
   workspaceCustomRowsV2,
   workspaceSectionStateV2,
 } from "../../src/lib/workspace-layout-v2-runtime.ts";
@@ -190,4 +191,42 @@ test("v2 envelopes retain version metadata and detect tampering", () => {
   const tampered = structuredClone(envelope);
   tampered.manifest.settings.theme = "warm";
   assert.equal(validateWorkspaceLayoutEnvelope(tampered).ok, false);
+});
+
+test("review configuration validates known ordered views and honors the configured default", () => {
+  const manifest = cloneWorkspaceLayoutManifestV2(embeddedWorkspaceLayoutManifestV2);
+  const reviewNode = manifest.tabs.find((tab) => tab.id === "review").rows
+    .flatMap((row) => row.columns).flatMap((column) => column.items)
+    .find((node) => node.kind === "production" && node.component === "review-center");
+  reviewNode.config = {
+    ...reviewNode.config,
+    defaultView: "indicators",
+    viewOrder: ["overview", "evidence-tools", "indicators", "screening", "methodology"],
+    visibleViews: ["overview", "indicators", "methodology"],
+  };
+  assert.equal(validateWorkspaceLayoutManifestV2(manifest).ok, true);
+  assert.deepEqual(reviewViewConfigurationV2(manifest), {
+    defaultView: "indicators",
+    navigationStyle: "tabs",
+    viewOrder: ["overview", "indicators", "methodology"],
+  });
+});
+
+test("review configuration rejects unknown, duplicate, empty, and hidden defaults", () => {
+  const invalidConfigs = [
+    { viewOrder: ["overview", "evidence-tools", "indicators", "screening", "unknown"] },
+    { viewOrder: ["overview", "evidence-tools", "indicators", "screening", "screening"] },
+    { visibleViews: [] },
+    { defaultView: "screening", visibleViews: ["overview", "indicators"] },
+  ];
+  for (const config of invalidConfigs) {
+    const manifest = cloneWorkspaceLayoutManifestV2(embeddedWorkspaceLayoutManifestV2);
+    const reviewNode = manifest.tabs.find((tab) => tab.id === "review").rows
+      .flatMap((row) => row.columns).flatMap((column) => column.items)
+      .find((node) => node.kind === "production" && node.component === "review-center");
+    reviewNode.config = { ...reviewNode.config, ...config };
+    const validation = validateWorkspaceLayoutManifestV2(manifest);
+    assert.equal(validation.ok, false);
+    assert.match(validation.errors.join(" "), /review/i);
+  }
 });

@@ -277,3 +277,30 @@ test("layout agent operation failures identify their batch position", () => {
     },
   );
 });
+
+test("layout agent can configure Review Center defaults, order, and visibility", () => {
+  const reviewTab = embeddedWorkspaceLayoutManifestV3.tabs.find((tab) => tab.id === "review");
+  const reviewCenter = flattenWorkspaceNodesV3(reviewTab)
+    .find((node) => node.kind === "production" && node.component === "review-center");
+  assert.ok(reviewCenter);
+  const result = applyWorkspaceLayoutAgentOperations(embeddedWorkspaceLayoutManifestV3, [{
+    nodeId: reviewCenter.id,
+    operationId: "configure-review-navigation",
+    patch: {
+      config: {
+        defaultView: "indicators",
+        navigationStyle: "pills",
+        viewOrder: ["overview", "evidence-tools", "indicators", "screening", "methodology"],
+        visibleViews: ["overview", "evidence-tools", "indicators", "methodology"],
+      },
+    },
+    type: "update_block",
+  }]);
+  const configured = flattenWorkspaceNodesV3(result.manifest.tabs.find((tab) => tab.id === "review"))
+    .find((node) => node.id === reviewCenter.id);
+  assert.equal(configured?.kind, "production");
+  assert.equal(configured?.config?.defaultView, "indicators");
+  assert.equal(configured?.config?.navigationStyle, "pills");
+  assert.deepEqual(configured?.config?.visibleViews, ["overview", "evidence-tools", "indicators", "methodology"]);
+  assert.equal(validateWorkspaceLayoutManifestV3(result.manifest).ok, true);
+});
