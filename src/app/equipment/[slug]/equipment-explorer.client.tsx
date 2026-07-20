@@ -48,7 +48,7 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
   const [selectedId, setSelectedId] = useState(
     () => system.components.find((component) => component.sceneNodeName !== null)?.id ?? system.components[0].id,
   );
-  const [exploded, setExploded] = useState(false);
+  const [explosion, setExplosion] = useState(0);
   const [view, setView] = useState<ViewName>("isometric");
   const [viewerState, setViewerState] = useState<"closed" | "open" | "unsupported" | "failed">("closed");
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -66,8 +66,10 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
   const relatedChanges = system.configurationChanges.filter((record) => record.componentIds.includes(selected.id));
   const relatedFindings = system.findings.filter((record) => record.componentIds.includes(selected.id));
   const relatedPower = system.power.filter((record) => record.componentId === selected.id);
+  const technicalSpecifications = selected.technicalSpecifications;
   const selectedSourceIds = new Set([
     ...selected.sourceIds,
+    ...technicalSpecifications.flatMap((record) => record.sourceIds),
     ...relatedVersions.flatMap((record) => record.sourceIds),
     ...relatedChanges.flatMap((record) => record.sourceIds),
     ...relatedFindings.flatMap((record) => record.sourceIds),
@@ -78,6 +80,8 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
   function openViewer() {
     setViewerState(webGl2Available() ? "open" : "unsupported");
   }
+
+  const exploded = explosion > 0.01;
 
   const fallback = (
     <div className={styles.sceneFallback} role="status">
@@ -121,12 +125,29 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
                 <button onClick={openViewer} type="button"><Expand aria-hidden size={14} /> Open 3D view</button>
               ) : (
                 <>
-                  <button aria-pressed={exploded} onClick={() => setExploded((value) => !value)} type="button"><Layers3 aria-hidden size={14} /> {exploded ? "Assembled" : "Exploded"}</button>
+                  <button aria-pressed={exploded} onClick={() => setExplosion((value) => value > 0.01 ? 0 : 1)} type="button"><Layers3 aria-hidden size={14} /> {exploded ? "Assembled" : "Exploded"}</button>
                   <button onClick={() => setView(view === "isometric" ? "front" : view === "front" ? "top" : "isometric")} type="button"><Rotate3d aria-hidden size={14} /> {view}</button>
                   <button onClick={() => setViewerState("closed")} type="button">Close 3D</button>
                 </>
               )}
             </div>
+          </div>
+          <div className={styles.viewerEvidenceBar}>
+            <div><strong>Reference:</strong> {system.scene.referenceConfiguration}</div>
+            {viewerState === "open" && (
+              <label className={styles.explosionControl}>
+                <span>Explosion distance {Math.round(explosion * 100)}%</span>
+                <input
+                  aria-label="Explosion distance"
+                  max="100"
+                  min="0"
+                  onChange={(event) => setExplosion(Number(event.target.value) / 100)}
+                  step="1"
+                  type="range"
+                  value={Math.round(explosion * 100)}
+                />
+              </label>
+            )}
           </div>
           {viewerState === "closed" && (
             <div className={styles.scenePrompt}>
@@ -140,7 +161,7 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
           {viewerState === "open" && (
             <ViewerErrorBoundary fallback={fallback}>
               <Scene
-                exploded={exploded}
+                explosion={explosion}
                 onError={() => setViewerState("failed")}
                 onSelect={setSelectedId}
                 reducedMotion={reducedMotion}
@@ -161,6 +182,47 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
           {relatedVersions.map((record) => <p className={styles.versionLine} key={record.id}><strong>{record.label}:</strong> {record.value}</p>)}
           {relatedChanges.length > 0 && <p><strong>Linked configuration changes:</strong> {relatedChanges.map((record) => record.changeId).join(", ")}</p>}
           {relatedFindings.length > 0 && <p><strong>Linked findings:</strong> {relatedFindings.map((record) => record.title).join("; ")}</p>}
+          {relatedPower.map((record) => (
+            <div className={styles.powerEvidence} key={record.id}>
+              <strong>Power evidence</strong>
+              <span>{record.supplyType ?? "Supply type not publicly established"}</span>
+              <small>
+                {[record.manufacturer, record.model, record.capacity, record.runtime].filter(Boolean).join(" • ")
+                  || "Manufacturer, model, capacity, and runtime remain unresolved."}
+              </small>
+            </div>
+          ))}
+          <h4>Hardware and interfaces</h4>
+          {technicalSpecifications.length > 0 ? (
+            <div className={styles.specList}>
+              {technicalSpecifications.map((specification) => {
+                const specificationSources = sources.filter((source) => specification.sourceIds.includes(source.id));
+                return (
+                  <section className={styles.specRecord} key={specification.id}>
+                    <div className={styles.specHeader}>
+                      <span>{label(specification.category)}</span>
+                      <small>{label(specification.knowledgeStatus)}</small>
+                    </div>
+                    <strong>{specification.label}</strong>
+                    <p className={specification.value === null ? styles.specUnknown : styles.specValue}>
+                      {specification.value ?? "Not publicly established"}
+                    </p>
+                    <span className={styles.specContext}>{specification.modelContext}</span>
+                    <p className={styles.specCaveat}>{specification.caveat}</p>
+                    <div className={styles.specSources} aria-label={`Sources for ${specification.label}`}>
+                      {specificationSources.map((source) => (
+                        <a href={source.url} key={source.id} rel="noreferrer" target="_blank">
+                          {source.publisher} <ExternalLink aria-hidden size={11} />
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          ) : (
+            <p className={styles.noSpecifications}>No component-level CPU, memory, port, modem, storage, or battery specification has been established for this selection in the reviewed artifacts.</p>
+          )}
           <div className={styles.caveatBox}>{selected.caveat}</div>
           <h4>Sources for this selection</h4>
           <ul className={styles.componentSources}>

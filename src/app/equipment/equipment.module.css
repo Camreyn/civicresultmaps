@@ -381,7 +381,7 @@
 
 .metrics {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
   margin-top: 38px;
 }
@@ -446,6 +446,42 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+}
+
+.viewerEvidenceBar {
+  min-height: 46px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--equipment-border);
+  background: rgba(4, 20, 23, 0.74);
+  color: #8baaa7;
+  font-size: 0.68rem;
+  line-height: 1.42;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.viewerEvidenceBar > div {
+  max-width: 62%;
+}
+
+.viewerEvidenceBar strong {
+  color: #cbe3e0;
+}
+
+.explosionControl {
+  width: min(220px, 42%);
+  color: #91b4b0;
+  font-size: 0.64rem;
+  display: grid;
+  gap: 4px;
+}
+
+.explosionControl input {
+  width: 100%;
+  accent-color: var(--equipment-accent);
+  cursor: ew-resize;
 }
 
 .componentRailHead span,
@@ -591,6 +627,8 @@
 
 .componentDetail {
   padding: 19px;
+  max-height: 760px;
+  overflow-y: auto;
 }
 
 .componentDetail h4 {
@@ -602,6 +640,129 @@
   padding: 9px 10px;
   border-left: 2px solid var(--equipment-accent);
   background: rgba(103, 217, 204, 0.05);
+}
+
+.powerEvidence {
+  margin-top: 12px;
+  padding: 11px 12px;
+  border: 1px solid rgba(232, 127, 179, 0.2);
+  border-radius: 12px;
+  background: rgba(232, 127, 179, 0.055);
+  display: grid;
+  gap: 4px;
+}
+
+.powerEvidence strong {
+  color: #f0b9d3;
+  font-size: 0.68rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.powerEvidence span {
+  color: #e3efed;
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.powerEvidence small {
+  color: #8eaaa7;
+  font-size: 0.66rem;
+  line-height: 1.45;
+}
+
+.specList {
+  display: grid;
+  gap: 9px;
+}
+
+.specRecord {
+  padding: 11px 12px;
+  border: 1px solid rgba(154, 211, 205, 0.13);
+  border-radius: 13px;
+  background: rgba(3, 18, 20, 0.48);
+}
+
+.specHeader {
+  margin-bottom: 8px;
+  color: #80aaa6;
+  font-size: 0.61rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.specHeader small {
+  color: #77d7cc;
+  font: inherit;
+}
+
+.specRecord > strong {
+  color: #e8f5f3;
+  font-size: 0.76rem;
+}
+
+.specValue,
+.specUnknown,
+.specCaveat {
+  margin: 5px 0 0 !important;
+}
+
+.specValue,
+.specUnknown {
+  color: #d7e9e6 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem !important;
+  line-height: 1.48 !important;
+}
+
+.specUnknown {
+  color: #e2c88f !important;
+}
+
+.specContext {
+  display: block;
+  margin-top: 6px;
+  color: #7f9e9b;
+  font-size: 0.61rem;
+  line-height: 1.35;
+}
+
+.specCaveat {
+  color: #8da6a3 !important;
+  font-size: 0.64rem !important;
+  line-height: 1.45 !important;
+}
+
+.specSources {
+  margin-top: 7px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.specSources a {
+  gap: 3px;
+  padding: 3px 6px;
+  border: 1px solid rgba(103, 217, 204, 0.15);
+  border-radius: 999px;
+  color: #79dcd1;
+  font-size: 0.59rem;
+  line-height: 1.3;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.noSpecifications {
+  margin-top: 0 !important;
+  padding: 11px 12px;
+  border: 1px dashed rgba(240, 185, 90, 0.22);
+  border-radius: 12px;
+  color: #b8aa8e !important;
+  font-size: 0.7rem !important;
 }
 
 .caveatBox {
@@ -801,7 +962,8 @@
 }
 
 .shell a:focus-visible,
-.shell button:focus-visible {
+.shell button:focus-visible,
+.shell input:focus-visible {
   outline: 3px solid rgba(103, 217, 204, 0.72);
   outline-offset: 3px;
 }
@@ -867,6 +1029,7 @@
 
   .componentDetail {
     grid-column: auto;
+    max-height: none;
   }
 
   .componentButtons {
@@ -894,6 +1057,17 @@
     align-items: flex-start;
     padding: 11px;
     flex-direction: column;
+  }
+
+  .viewerEvidenceBar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .viewerEvidenceBar > div,
+  .explosionControl {
+    width: 100%;
+    max-width: none;
   }
 
   .scenePrompt,

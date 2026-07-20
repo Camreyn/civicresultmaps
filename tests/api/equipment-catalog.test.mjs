@@ -23,7 +23,7 @@ assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
 assert.equal(claim.editorial.state, "approved");
 assert.equal(catalog.systems.length, 3);
-assert.equal(sourcePackage.sources.length, 38);
+assert.equal(sourcePackage.sources.length, 44);
 assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
 const sourceIds = new Set(sourcePackage.sources.map((source) => source.id));
@@ -45,7 +45,9 @@ assert.equal(system.coverage.componentCount, 9);
 assert.equal(system.coverage.sourcedComponentCount, 9);
 assert.equal(system.coverage.configurationChangeCount, 6);
 assert.equal(system.coverage.deploymentObservationCount, 4);
-assert.equal(system.coverage.confirmedPowerRecordCount, 0);
+assert.equal(system.coverage.confirmedPowerRecordCount, 1);
+assert.equal(system.coverage.technicalSpecificationCount, 7);
+assert.equal(system.coverage.unknownTechnicalSpecificationCount, 3);
 assert.match(system.certification.caveat, /certified configuration/i);
 assert.equal(system.editorialState, "approved");
 assert.ok(system.sourceRevisionIds.length > 0);
@@ -58,14 +60,25 @@ for (const component of system.components) {
   assert.ok(component.sourceRevisionIds.length > 0, `${component.id} must pin immutable source revisions`);
   for (const sourceId of component.sourceIds) assert.ok(sourceIds.has(sourceId));
   assert.ok(component.caveat.length > 20);
+  for (const specification of component.technicalSpecifications) {
+    assert.ok(specification.sourceIds.length > 0, `${specification.id} must be source-linked`);
+    assert.ok(specification.sourceRevisionIds.length > 0, `${specification.id} must pin source revisions`);
+    assert.ok(specification.caveat.length > 20);
+    if (specification.knowledgeStatus === "not_publicly_established") {
+      assert.equal(specification.value, null, `${specification.id} must preserve its unknown value`);
+    } else {
+      assert.ok(specification.value.length > 0);
+    }
+  }
 }
 
 const power = system.power[0];
-assert.equal(power.knowledgeStatus, "not_publicly_confirmed");
-for (const field of ["supplyType", "manufacturer", "model", "capacity", "runtime"]) {
-  assert.equal(power[field], null, `unknown power field ${field} must stay null`);
+assert.equal(power.knowledgeStatus, "documented_partial");
+assert.equal(power.supplyType, "battery backup");
+for (const field of ["manufacturer", "model", "capacity", "runtime"]) {
+  assert.equal(power[field], null, `unresolved power field ${field} must stay null`);
 }
-assert.match(power.caveat, /not proof/i);
+assert.match(power.caveat, /must not be expanded/i);
 
 for (const deployment of system.deployments) {
   assert.equal(deployment.scopeKind, "jurisdiction_deployment_observation");
@@ -98,6 +111,8 @@ assert.equal(clearAccess.coverage.sourcedComponentCount, 9);
 assert.equal(clearAccess.coverage.configurationChangeCount, 3);
 assert.equal(clearAccess.coverage.deploymentObservationCount, 0);
 assert.equal(clearAccess.coverage.confirmedPowerRecordCount, 1);
+assert.equal(clearAccess.coverage.technicalSpecificationCount, 8);
+assert.equal(clearAccess.coverage.unknownTechnicalSpecificationCount, 2);
 assert.equal(clearAccess.power[0].knowledgeStatus, "confirmed");
 assert.match(clearAccess.power[0].model, /PR1500RT2U/);
 assert.match(clearAccess.power[0].model, /SMT2200C/);
@@ -110,16 +125,28 @@ assert.ok(clearAccess.findings.some((finding) => finding.publicStatus === "not_f
 
 const imageCastX = catalog.systems.find((entry) => entry.slug === "dominion-democracy-suite-517-imagecast-x");
 assert.ok(imageCastX, "ImageCast X pilot must be in the generated catalog");
-assert.equal(imageCastX.coverage.componentCount, 9);
-assert.equal(imageCastX.coverage.sourcedComponentCount, 9);
+assert.equal(imageCastX.coverage.componentCount, 12);
+assert.equal(imageCastX.coverage.sourcedComponentCount, 12);
 assert.equal(imageCastX.coverage.configurationChangeCount, 4);
 assert.equal(imageCastX.coverage.deploymentObservationCount, 0);
-assert.equal(imageCastX.coverage.confirmedPowerRecordCount, 1);
-assert.equal(imageCastX.coverage.sourceCount, 8);
-assert.match(imageCastX.power[0].model, /SMT-1500/);
-assert.match(imageCastX.power[0].model, /PR1500LCD-VTVM/);
-assert.equal(imageCastX.power[0].capacity, null);
-assert.equal(imageCastX.power[0].runtime, null);
+assert.equal(imageCastX.coverage.confirmedPowerRecordCount, 2);
+assert.equal(imageCastX.coverage.sourceCount, 10);
+assert.equal(imageCastX.coverage.technicalSpecificationCount, 11);
+const icxUps = imageCastX.power.find((record) => record.id === "icx-certified-ups-options");
+assert.match(icxUps.model, /SMT-1500/);
+assert.match(icxUps.model, /PR1500LCD-VTVM/);
+assert.equal(icxUps.capacity, null);
+assert.equal(icxUps.runtime, null);
+assert.equal(
+  imageCastX.components.find((component) => component.id === "icx-sid21-compute-board")
+    ?.technicalSpecifications.find((record) => record.id === "icx-sid21-cpu")?.value,
+  "Intel Atom Z3735F",
+);
+assert.equal(
+  imageCastX.components.find((component) => component.id === "icx-sid21-io-panel")
+    ?.technicalSpecifications.find((record) => record.id === "icx-sid21-usb")?.value,
+  "4 × USB 2.0",
+);
 assert.equal(imageCastX.components.find((component) => component.id === "icx-prime-ssd")?.sceneNodeName, null);
 assert.ok(imageCastX.findings.some((finding) => finding.publicStatus === "restart_procedure_documented"));
 assert.ok(imageCastX.findings.some((finding) => finding.publicStatus === "documentation_and_ssd_firmware_update_path_recorded"));
@@ -137,6 +164,8 @@ const nodeNames = new Set((gltf.nodes ?? []).map((node) => node.name));
 for (const mapping of system.scene.nodes) assert.ok(nodeNames.has(mapping.nodeName));
 assert.equal(system.scene.geometryFidelity, "illustrative_not_to_scale");
 assert.equal(system.scene.assetLicense, "Apache-2.0");
+assert.ok(system.scene.referenceSourceIds.includes("ess-ds200-one-sheet"));
+assert.match(system.scene.referenceNote, /internal board positions/i);
 
 const clearAccessGlb = await readFile("public/equipment/clear-ballot-clearvote-25-clearaccess/orthographic-pilot.glb");
 assert.equal(clearAccessGlb.readUInt32LE(0), 0x46546c67, "ClearAccess asset must use the glTF binary magic");
@@ -178,9 +207,12 @@ assert.match(explorer, /dynamic\(/);
 assert.match(explorer, /ssr: false/);
 assert.match(explorer, /getContext\("webgl2"/);
 assert.match(explorer, /aria-live="polite"/);
+assert.match(explorer, /Explosion distance/);
+assert.match(explorer, /technicalSpecifications/);
 assert.match(scene, /frameloop="demand"/);
 assert.match(scene, /orthographic/);
 assert.match(scene, /webglcontextlost/);
+assert.match(scene, /mappedEntryFor/);
 assert.match(workspace, /equipmentExplorerEnabled &&/);
 assert.match(workspace, /equipment-catalog-link/);
 assert.match(workspace, /Component catalog/);

@@ -63,7 +63,7 @@
         "id": "icx-touchscreen-bmd",
         "name": "ImageCast X touchscreen BMD computer",
         "category": "interface_compute",
-        "description": "The certified configuration lists Avalue Classic 15-inch and 21-inch tablet options and an Avalue Prime 21-inch option with steel or aluminum chassis.",
+        "description": "The certified configuration lists Avalue Classic 15-inch and 21-inch tablet options and an Avalue Prime 21-inch option. The reference scene uses the documented SID-21V-Z37-A1R Classic 21.5-inch profile.",
         "evidenceStatus": "certified_component_options",
         "scopeKind": "certified_configuration",
         "modelNumbers": [
@@ -80,15 +80,278 @@
         "sourceIds": [
           "eac-dsuite-517-scope",
           "provv-dsuite-517-test-plan",
-          "provv-dsuite-517-test-report"
+          "provv-dsuite-517-test-report",
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
         ],
         "sourceRevisionIds": [
           "eac-dsuite-517-scope@2026-07-20",
           "provv-dsuite-517-test-plan@2026-07-20",
-          "provv-dsuite-517-test-report@2026-07-20"
+          "provv-dsuite-517-test-report@2026-07-20",
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
         ],
         "sceneNodeName": "ICX_Touchscreen",
-        "caveat": "The models and chassis are permitted alternatives. The sources do not establish which option a jurisdiction selected or the dimensions and internal layout of a particular unit."
+        "caveat": "The models and chassis are permitted alternatives. The reference scene depicts the SID-21V-Z37-A1R hardware family and must not be read as the Prime variant or as evidence of a jurisdiction's selected hardware.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-display",
+            "category": "display",
+            "label": "Display and touch panel",
+            "value": "21.5-inch, 1920 × 1080, projected-capacitive touch",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R (ICX Classic reference)",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual",
+              "co-dvs-517-icx-maintenance-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20",
+              "co-dvs-517-icx-maintenance-manual@2026-07-20"
+            ],
+            "caveat": "The manufacturer specification is tied to the named SID-21V model family. It is not transferred to the 15-inch Classic or 21-inch Prime alternatives."
+          }
+        ]
+      },
+      {
+        "id": "icx-sid21-compute-board",
+        "name": "SID-21V compute board profile",
+        "category": "compute",
+        "description": "The Avalue SID-21V-Z37-A1R manual identifies the processor, memory, and eMMC storage used by the Classic 21.5-inch hardware profile.",
+        "evidenceStatus": "documented_model_family",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [
+          "SID-21V-Z37-A1R"
+        ],
+        "hardwareRevisions": [
+          "Manual revision 1.0"
+        ],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Compute_Board",
+        "caveat": "The scene makes this documented hardware profile selectable, but its board outline and placement are illustrative. The profile must not be transferred to ICX Prime or a particular fielded unit.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-cpu",
+            "category": "processor",
+            "label": "CPU",
+            "value": "Intel Atom Z3735F",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "This is the COTS manufacturer specification for the named SID-21V model family, not a live inventory of a jurisdiction unit."
+          },
+          {
+            "id": "icx-sid21-memory",
+            "category": "memory",
+            "label": "RAM",
+            "value": "2 GB DDR3L",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "This is the COTS manufacturer specification for the named SID-21V model family."
+          },
+          {
+            "id": "icx-sid21-storage",
+            "category": "storage",
+            "label": "Internal storage",
+            "value": "32 GB eMMC",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "This eMMC specification belongs to the SID-21V Classic profile and is not the source-supported ICX Prime SSD advisory component."
+          }
+        ]
+      },
+      {
+        "id": "icx-sid21-io-panel",
+        "name": "SID-21V connector panel",
+        "category": "ports_and_interfaces",
+        "description": "The SID-21V manufacturer manual identifies the model-family connector set. The certified scope separately describes allowed system communications use.",
+        "evidenceStatus": "documented_model_family",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [
+          "SID-21V-Z37-A1R"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "eac-dsuite-517-scope"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "eac-dsuite-517-scope@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_IO_Panel",
+        "caveat": "Connector presence is a model-family specification. It does not establish port occupation, enabled services, cabling, or jurisdiction use; the scene location is illustrative.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-usb",
+            "category": "usb",
+            "label": "USB ports",
+            "value": "4 × USB 2.0",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "The manual states the physical connector count; it does not establish which ports are occupied or enabled in a fielded election configuration."
+          },
+          {
+            "id": "icx-sid21-ethernet",
+            "category": "ethernet",
+            "label": "Ethernet",
+            "value": "1 × 10/100 RJ-45 Ethernet",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "Physical connector presence does not establish an enabled election network connection or field use."
+          },
+          {
+            "id": "icx-sid21-other-io",
+            "category": "other_io",
+            "label": "Other documented I/O",
+            "value": "1 × HDMI, 1 × headphone jack, 1 × smart-card reader, 1 × microSD slot",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "These are hardware-family connectors and peripherals, not proof of a connected accessory or inserted media."
+          },
+          {
+            "id": "icx-cellular-certified-scope",
+            "category": "cellular",
+            "label": "Cellular modem",
+            "value": "No WAN modem or WAN wireless use listed in the Democracy Suite 5.17 certified-system table",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "Democracy Suite 5.17 certified configuration",
+            "sourceIds": [
+              "eac-dsuite-517-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-dsuite-517-scope@2026-07-20"
+            ],
+            "caveat": "This is a system-scope communications statement, not a teardown-based assertion that every ICX chassis lacks every radio component."
+          }
+        ]
+      },
+      {
+        "id": "icx-sid21-internal-battery",
+        "name": "SID-21V optional internal battery",
+        "category": "power",
+        "description": "The Avalue manual documents an optional rechargeable battery and its hinged top-cover installation path for the SID-21V-Z37-A1R profile.",
+        "evidenceStatus": "documented_optional_model_component",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [
+          "ACC-BAT-3S1P-01R"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Internal_Battery",
+        "caveat": "The component is optional. Its source-supported cover area guides the scene, but the simplified cell-pack geometry is illustrative and no field installation or battery condition is established.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-battery-pack",
+            "category": "power",
+            "label": "Battery pack",
+            "value": "ACC-BAT-3S1P-01R; rechargeable Li-ion; 10.8 V nominal",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Optional SID-21V-Z37-A1R battery",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "A documented optional accessory is not presumed installed in every certified or fielded ICX."
+          },
+          {
+            "id": "icx-sid21-battery-capacity",
+            "category": "power",
+            "label": "Battery capacity",
+            "value": "2,400 mAh typical; 2,215 mAh minimum at the documented test conditions",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "ACC-BAT-3S1P-01R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "Capacity is a manufacturer specification, not runtime under an election workload or a measure of any unit's current battery health."
+          },
+          {
+            "id": "icx-sid21-battery-runtime-gap",
+            "category": "power",
+            "label": "Election-workload runtime",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "ACC-BAT-3S1P-01R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual",
+              "co-dvs-517-icx-maintenance-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20",
+              "co-dvs-517-icx-maintenance-manual@2026-07-20"
+            ],
+            "caveat": "The reviewed manuals provide electrical capacity and storage guidance but not a source-supported election-workload runtime."
+          }
+        ]
       },
       {
         "id": "icx-ballot-printer",
@@ -577,6 +840,26 @@
     ],
     "power": [
       {
+        "id": "icx-sid21-optional-battery",
+        "componentId": "icx-sid21-internal-battery",
+        "knowledgeStatus": "documented_partial",
+        "supplyType": "optional internal rechargeable Li-ion battery",
+        "manufacturer": null,
+        "model": "ACC-BAT-3S1P-01R",
+        "capacity": "2,400 mAh typical; 2,215 mAh minimum",
+        "runtime": null,
+        "description": "The SID-21V manual documents the optional battery model, chemistry, voltage, capacity, connector locations, and installation path. It does not publish an election-workload runtime.",
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
+        ],
+        "caveat": "This is an optional model-family component, not evidence that a particular certified or fielded ICX contains the battery or that its present capacity matches the specification."
+      },
+      {
         "id": "icx-certified-ups-options",
         "componentId": "icx-external-ups",
         "knowledgeStatus": "confirmed",
@@ -603,7 +886,21 @@
       "assetLicense": "Apache-2.0",
       "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-imagecast-x-model.mjs",
       "geometryFidelity": "illustrative_not_to_scale",
-      "description": "An original navigational schematic of externally supported component categories. Shapes, dimensions, scale, cabling, and placement are illustrative; the source-supported SSD is deliberately omitted because public records do not establish its geometry or location.",
+      "description": "An original, drawing-informed navigational schematic of the Avalue SID-21V-Z37-A1R ICX Classic reference configuration and its supported peripherals. The Prime SSD remains omitted because public records do not establish its model or placement.",
+      "referenceConfiguration": "ICX Classic with Avalue SID-21V-Z37-A1R 21.5-inch terminal, rear arm, tabletop base, ballot printer, and external UPS",
+      "referenceSourceIds": [
+        "co-dvs-517-avalue-sid21-manual",
+        "co-dvs-517-icx-maintenance-manual",
+        "eac-dsuite-517-scope",
+        "provv-dsuite-517-test-plan"
+      ],
+      "referenceSourceRevisionIds": [
+        "co-dvs-517-avalue-sid21-manual@2026-07-20",
+        "co-dvs-517-icx-maintenance-manual@2026-07-20",
+        "eac-dsuite-517-scope@2026-07-20",
+        "provv-dsuite-517-test-plan@2026-07-20"
+      ],
+      "referenceNote": "The terminal silhouette follows the Avalue mechanical drawing. The compute-board and connector-panel shapes and their separation paths are illustrative; the optional battery cover area follows the manual, but no unit-level installation is asserted.",
       "camera": {
         "position": [
           7,
@@ -633,6 +930,36 @@
             0,
             0.8,
             0
+          ]
+        },
+        {
+          "componentId": "icx-sid21-compute-board",
+          "nodeName": "ICX_Compute_Board",
+          "color": "#f0b95a",
+          "explodedOffset": [
+            0,
+            0.1,
+            -1.15
+          ]
+        },
+        {
+          "componentId": "icx-sid21-io-panel",
+          "nodeName": "ICX_IO_Panel",
+          "color": "#ff8c69",
+          "explodedOffset": [
+            1.35,
+            0.1,
+            -0.35
+          ]
+        },
+        {
+          "componentId": "icx-sid21-internal-battery",
+          "nodeName": "ICX_Internal_Battery",
+          "color": "#e87fb3",
+          "explodedOffset": [
+            -1.2,
+            0.2,
+            -0.7
           ]
         },
         {
@@ -699,7 +1026,7 @@
     },
     "caveats": [
       "Certified and tested component alternatives are not evidence that all listed options are installed together or that a jurisdiction selected a particular option.",
-      "The original 3D schematic is a selection aid, not a product likeness, teardown, engineering drawing, wiring diagram, or representation of exact dimensions and placement.",
+      "The 3D reference follows the SID-21V mechanical outline but remains a selection aid, not vendor CAD, a teardown, a wiring diagram, or proof of exact internal placement.",
       "The SSD component category is source-supported, but its model, firmware number, physical location, and internal geometry remain unknown and are not visualized.",
       "The UPS alternatives are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
       "Advisory notices are time-, version-, scenario-, and sometimes jurisdiction-scoped. They do not prove an election incident, altered votes, fraud, misconduct, or an incorrect outcome."
@@ -707,7 +1034,7 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 1,
+    "revision": 2,
     "createdOn": "2026-07-20",
     "updatedOn": "2026-07-20",
     "reviewedOn": "2026-07-20",
@@ -719,6 +1046,8 @@
       "dvs-icx-touchscreen-advisory@2026-07-20",
       "eac-dsuite-517-record@2026-07-20",
       "eac-dsuite-517-scope@2026-07-20",
+      "co-dvs-517-avalue-sid21-manual@2026-07-20",
+      "co-dvs-517-icx-maintenance-manual@2026-07-20",
       "provv-dsuite-517-test-plan@2026-07-20",
       "provv-dsuite-517-test-report@2026-07-20",
       "provv-dsuite-eco-100936-analysis@2026-07-20"

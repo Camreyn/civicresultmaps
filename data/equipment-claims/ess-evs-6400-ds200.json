@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-19",
+  "reviewedOn": "2026-07-20",
   "system": {
     "id": "ess-evs-6400-ds200",
     "slug": "ess-evs-6400-ds200",
@@ -52,13 +52,85 @@
         ],
         "sourceIds": [
           "eac-evs-6400-scope",
-          "provv-evs-6400-test-report"
+          "provv-evs-6400-test-report",
+          "ess-ds200-one-sheet"
         ],
         "sceneNodeName": "DS200_Shell",
         "caveat": "Washington's state-approved configuration also lists hardware 1.3.13. No source in this pilot identifies the hardware revision of a particular county unit.",
         "sourceRevisionIds": [
           "eac-evs-6400-scope@2026-07-19",
-          "provv-evs-6400-test-report@2026-07-19"
+          "provv-evs-6400-test-report@2026-07-19",
+          "ess-ds200-one-sheet@2026-07-20"
+        ],
+        "technicalSpecifications": [
+          {
+            "id": "ds200-cellular-certified-scope",
+            "category": "cellular",
+            "label": "Cellular modem",
+            "value": "No WAN modem or WAN wireless use listed in the EVS 6.4.0.0 certified-system table",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "EVS 6.4.0.0 certified configuration",
+            "sourceIds": [
+              "eac-evs-6400-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19"
+            ],
+            "caveat": "This is a certified-system communications-use statement. It does not prove the physical absence of every connector or service component inside every DS200 unit."
+          },
+          {
+            "id": "ds200-ethernet-certified-scope",
+            "category": "ethernet",
+            "label": "Ethernet / LAN",
+            "value": "No LAN TCP/IP or LAN wireless use listed in the EVS 6.4.0.0 certified-system table",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "EVS 6.4.0.0 certified configuration",
+            "sourceIds": [
+              "eac-evs-6400-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19"
+            ],
+            "caveat": "This establishes permitted certified-system communications use, not a teardown-based count of physical RJ-45 connectors."
+          },
+          {
+            "id": "ds200-usb-port-count-gap",
+            "category": "usb",
+            "label": "Physical USB port count",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "DS200",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "Reviewed certification artifacts identify removable media and system components but do not publish a DS200 physical USB-connector count."
+          },
+          {
+            "id": "ds200-memory-capacity-gap",
+            "category": "memory",
+            "label": "Installed RAM",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "DS200",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "No reviewed artifact publishes the installed RAM technology or capacity for the certified DS200 configurations."
+          }
         ]
       },
       {
@@ -103,6 +175,42 @@
         "sourceRevisionIds": [
           "eac-eco-ess-1042-approval@2026-07-19",
           "provv-eco-ess-1042-analysis@2026-07-19"
+        ],
+        "technicalSpecifications": [
+          {
+            "id": "ds200-processor-core-count",
+            "category": "processor",
+            "label": "Processor architecture",
+            "value": "Quad-core processor",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "approved_change",
+            "modelContext": "DS200 hardware configuration 1.3.11",
+            "sourceIds": [
+              "provv-eco-ess-1042-analysis",
+              "eac-eco-ess-1042-approval"
+            ],
+            "sourceRevisionIds": [
+              "provv-eco-ess-1042-analysis@2026-07-19",
+              "eac-eco-ess-1042-approval@2026-07-19"
+            ],
+            "caveat": "The approved change identifies the core count but not the processor manufacturer, model, clock speed, or the configuration of a particular fielded unit."
+          },
+          {
+            "id": "ds200-processor-model-gap",
+            "category": "processor",
+            "label": "Exact CPU model",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "DS200 hardware configuration 1.3.11",
+            "sourceIds": [
+              "provv-eco-ess-1042-analysis"
+            ],
+            "sourceRevisionIds": [
+              "provv-eco-ess-1042-analysis@2026-07-19"
+            ],
+            "caveat": "The reviewed ECO analysis does not name an exact processor part number."
+          }
         ]
       },
       {
@@ -235,25 +343,45 @@
       },
       {
         "id": "ds200-power-backup",
-        "name": "Internal power and backup supply",
+        "name": "Battery backup and internal power",
         "category": "power",
-        "description": "No reviewed public source in the pilot identifies a DS200 internal battery, UPS model, capacity, runtime, or county-level backup-power topology.",
-        "evidenceStatus": "not_publicly_confirmed",
-        "scopeKind": "unknown",
+        "description": "The ES&S one-sheet states that the DS200 has battery backup. The reviewed sources do not identify its battery chemistry, manufacturer, model, capacity, runtime, or internal placement.",
+        "evidenceStatus": "manufacturer_documented_partial",
+        "scopeKind": "manufacturer_product_documentation",
         "modelNumbers": [],
         "hardwareRevisions": [],
         "versionObservationIds": [],
         "sourceIds": [
           "eac-evs-6400-scope",
           "provv-evs-6400-test-report",
-          "wa-evs-6400-staff-report"
+          "wa-evs-6400-staff-report",
+          "ess-ds200-one-sheet"
         ],
         "sceneNodeName": null,
-        "caveat": "The EVS 6.4.0.0 scope names UPS options for central-count devices, not the DS200. Those records must not be transferred to this device.",
+        "caveat": "Battery-backup presence is manufacturer-documented, but no reviewed source supports a battery model, capacity, runtime, chemistry, or scene placement. Central-count UPS models must not be transferred to the DS200.",
         "sourceRevisionIds": [
           "eac-evs-6400-scope@2026-07-19",
           "provv-evs-6400-test-report@2026-07-19",
-          "wa-evs-6400-staff-report@2026-07-19"
+          "wa-evs-6400-staff-report@2026-07-19",
+          "ess-ds200-one-sheet@2026-07-20"
+        ],
+        "technicalSpecifications": [
+          {
+            "id": "ds200-battery-backup-presence",
+            "category": "power",
+            "label": "Backup supply",
+            "value": "Battery backup documented; model, chemistry, capacity, and runtime not stated",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "manufacturer_product",
+            "modelContext": "DS200",
+            "sourceIds": [
+              "ess-ds200-one-sheet"
+            ],
+            "sourceRevisionIds": [
+              "ess-ds200-one-sheet@2026-07-20"
+            ],
+            "caveat": "The one-sheet confirms battery-backup presence only. It does not disclose a battery part number or unit-level condition."
+          }
         ]
       }
     ],
@@ -562,25 +690,27 @@
     ],
     "power": [
       {
-        "id": "ds200-power-evidence-gap",
+        "id": "ds200-power-documentation",
         "componentId": "ds200-power-backup",
-        "knowledgeStatus": "not_publicly_confirmed",
-        "supplyType": null,
+        "knowledgeStatus": "documented_partial",
+        "supplyType": "battery backup",
         "manufacturer": null,
         "model": null,
         "capacity": null,
         "runtime": null,
-        "description": "The reviewed EAC scope lists UPS options for DS450, DS850, and DS950 central-count devices but does not list a DS200 UPS. No official pilot source identifies DS200 backup-power hardware or county power topology.",
+        "description": "The ES&S one-sheet confirms DS200 battery backup. The certification and state records reviewed here do not publish the battery manufacturer, model, chemistry, capacity, runtime, condition, or jurisdiction power topology.",
         "sourceIds": [
           "eac-evs-6400-scope",
           "provv-evs-6400-test-report",
-          "wa-evs-6400-staff-report"
+          "wa-evs-6400-staff-report",
+          "ess-ds200-one-sheet"
         ],
-        "caveat": "Absence from these public records is not proof that a DS200 has no battery or that a jurisdiction uses no external backup power.",
+        "caveat": "Confirmed battery-backup presence must not be expanded into an inferred model, runtime, internal location, service condition, or claim about external site power.",
         "sourceRevisionIds": [
           "eac-evs-6400-scope@2026-07-19",
           "provv-evs-6400-test-report@2026-07-19",
-          "wa-evs-6400-staff-report@2026-07-19"
+          "wa-evs-6400-staff-report@2026-07-19",
+          "ess-ds200-one-sheet@2026-07-20"
         ]
       }
     ],
@@ -655,7 +785,15 @@
       "assetLicense": "Apache-2.0",
       "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-equipment-model.mjs",
       "geometryFidelity": "illustrative_not_to_scale",
-      "description": "An original navigational schematic. Shapes and internal placement are illustrative; source-backed claims live in the component records and source panel.",
+      "description": "An original, photo-informed navigational schematic of the DS200 cabinet, scanner deck, raised protective lid, display, ballot compartments, and selected source-supported internal categories. It is not a teardown or dimensional reproduction.",
+      "referenceConfiguration": "DS200 open poll-place configuration with ballot cabinet, raised protective cover, scanner deck, and tilted display",
+      "referenceSourceIds": [
+        "ess-ds200-one-sheet"
+      ],
+      "referenceSourceRevisionIds": [
+        "ess-ds200-one-sheet@2026-07-20"
+      ],
+      "referenceNote": "External proportions and features follow the official ES&S one-sheet. Internal board positions and all explosion paths remain illustrative because no reviewed public teardown or engineering drawing establishes them.",
       "camera": {
         "position": [
           6,
@@ -751,17 +889,17 @@
     },
     "caveats": [
       "Certified configuration is not the same as field deployment. A county system-version record does not establish the components, firmware, hardware revision, or change orders installed on each unit.",
-      "The original 3D schematic is a selection aid, not a teardown, engineering drawing, or representation of exact dimensions or internal placement.",
+      "The photo-informed 3D schematic is a selection aid, not vendor CAD, a teardown, an engineering drawing, or proof of exact dimensions or internal placement.",
       "Public findings are presented with version and source scope. A missing advisory listing is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
-      "No reviewed official source in this pilot establishes DS200 backup-power hardware, runtime, or county-level power topology."
+      "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
     ]
   },
   "editorial": {
     "state": "approved",
-    "revision": 1,
+    "revision": 2,
     "createdOn": "2026-07-19",
-    "updatedOn": "2026-07-19",
-    "reviewedOn": "2026-07-19",
+    "updatedOn": "2026-07-20",
+    "reviewedOn": "2026-07-20",
     "reviewedBy": "project_editorial_review",
     "publishedOn": null,
     "sourceRevisionIds": [
@@ -778,6 +916,7 @@
       "eac-eco-ess-983-record@2026-07-19",
       "eac-evs-6400-record@2026-07-19",
       "eac-evs-6400-scope@2026-07-19",
+      "ess-ds200-one-sheet@2026-07-20",
       "provv-eco-ess-1035-analysis@2026-07-19",
       "provv-eco-ess-1042-analysis@2026-07-19",
       "provv-eco-ess-1044-analysis@2026-07-19",

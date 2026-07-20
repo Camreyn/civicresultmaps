@@ -100,6 +100,18 @@ The explorer must not present a value as simply "latest firmware." Use one of th
 
 Every version record carries `assertionScope`, `fieldStatus`, an observation date, exact source revision IDs, and a caveat. Certified and documented values must retain `fieldStatus: not_established` unless separate field evidence exists.
 
+## Hardware and interface specifications
+
+Component-level CPU, RAM, storage, battery, USB, Ethernet, cellular, display, and other interface facts live in `technicalSpecifications`. Each specification must include:
+
+- a stable ID, category, label, and exact `modelContext`;
+- `knowledgeStatus` of `confirmed`, `documented_partial`, or `not_publicly_established`;
+- an assertion scope that distinguishes a certified configuration, approved change, documented model family, manufacturer product statement, or evidence gap;
+- source IDs and immutable source-revision IDs; and
+- a caveat that prevents transfer to another model alternative, a fielded unit, or a live configuration.
+
+An unresolved value is stored as `null`, never a guess or a value silently borrowed from a nearby model. Manufacturer-family maximums and configurable options are labeled partial; they are not presented as installed capacity. Physical connector presence is kept separate from certified communications use, port occupation, enabled services, and field cabling. A Wi-Fi option is not described as a cellular modem.
+
 ## Adding a dossier
 
 1. Prefer an EAC certification page, certificate/scope, VSTL test plan, and final test report.
@@ -107,7 +119,7 @@ Every version record carries `assertionScope`, `fieldStatus`, an observation dat
 3. Archive each source under `data/equipment-sources/` and register its hash, byte length, dates, URL, authority, section, and caveat.
 4. Add a claim under `data/equipment-claims/` with exact `sourceIds` and `sourceRevisionIds` on every record.
 5. Preserve unknown model, firmware, runtime, deployment, or internal-placement fields rather than borrowing details from another configuration.
-6. Build an original schematic only for source-supported component categories.
+6. Build an original schematic only for source-supported component categories. Record the exact external photo, manual, or drawing reference in the scene metadata.
 7. Rebuild and validate the catalog.
 
 ```powershell
@@ -119,12 +131,15 @@ npm run typecheck
 
 ## 3D fidelity and accessibility
 
-The GLB files are original CivicResultMaps navigation schematics. They are not vendor CAD, product likenesses, teardowns, wiring diagrams, bills of materials, or representations of exact dimensions and placement.
+The GLB files are original CivicResultMaps navigation schematics. Their rough external outlines may be informed by an official product photo, manual, or mechanical drawing named in `referenceConfiguration` and pinned through `referenceSourceIds` and `referenceSourceRevisionIds`. They are not vendor CAD, exact replicas, teardowns, wiring diagrams, bills of materials, or representations of exact dimensions and placement.
 
 - The accessible DOM component list is always the source of truth.
 - 3D is opt-in and dynamically loaded.
 - A no-WebGL fallback retains every source-linked component and finding.
 - A component with known existence but unknown placement may be listed without a scene node.
+- A selectable scene node may be a composite group with multiple original child meshes, but it still maps to exactly one evidence record.
+- Explosion offsets and simplified internal shapes are illustrative unless a cited source specifically establishes placement.
+- A reference configuration must not imply that all certified alternatives appear together or that a jurisdiction fielded the depicted alternative.
 - Every scene mapping must resolve to exactly one GLB node.
 
 ## Publication gates

@@ -30,7 +30,8 @@ test("renders confirmed ClearAccess UPS options without inventing runtime", asyn
   expect(response.status()).toBe(200);
   const payload = await response.json();
   expect(payload.data.system.coverage.confirmedPowerRecordCount).toBe(1);
-  expect(payload.data.sources).toHaveLength(4);
+  expect(payload.data.system.coverage.technicalSpecificationCount).toBe(8);
+  expect(payload.data.sources).toHaveLength(7);
 });
 
 test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ page }) => {
@@ -56,6 +57,10 @@ test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ pa
 
   await page.getByRole("button", { name: "Exploded" }).click();
   await expect(page.getByRole("button", { name: "Assembled" })).toBeVisible();
+  const explosionDistance = page.getByLabel("Explosion distance");
+  await explosionDistance.fill("55");
+  await expect(explosionDistance).toHaveValue("55");
+  await expect(page.getByText("Explosion distance 55%")).toBeVisible();
 });
 
 test("preserves the source-linked fallback when WebGL 2 is unavailable", async ({ browser }) => {
@@ -88,18 +93,25 @@ test("renders ImageCast X advisory and internal-component evidence boundaries", 
   await expect(page.getByRole("heading", { name: "ICX Prime solid-state drive", level: 3 })).toBeVisible();
   await expect(page.getByText(/not placed in the 3D scene/)).toBeVisible();
   await expect(page.getByText("SMT-1500; SMT-1500C; PR1500LCD; PR1500LCD-VTVM", { exact: true })).toBeVisible();
-  await expect(page.getByText("Not specified in reviewed source", { exact: true })).toHaveCount(2);
+  await expect(page.getByText("Not specified in reviewed source", { exact: true })).toHaveCount(3);
   await expect(page.getByRole("heading", { name: "Straight-party and split-ticket selection review advisory" })).toBeVisible();
   const response = await request.get("/api/v1/equipment-systems/dominion-democracy-suite-517-imagecast-x");
   expect(response.status()).toBe(200);
   const payload = await response.json();
-  expect(payload.data.system.coverage.sourceCount).toBe(8);
-  expect(payload.data.sources).toHaveLength(8);
+  expect(payload.data.system.coverage.sourceCount).toBe(10);
+  expect(payload.data.sources).toHaveLength(10);
+
+  await page.getByRole("button", { name: /SID-21V compute board profile/ }).click();
+  await expect(page.getByRole("heading", { name: "SID-21V compute board profile", level: 3 })).toBeVisible();
+  await expect(page.getByText("Intel Atom Z3735F", { exact: true })).toBeVisible();
+  await expect(page.getByText("2 GB DDR3L", { exact: true })).toBeVisible();
+  await expect(page.getByText("32 GB eMMC", { exact: true })).toBeVisible();
 });
 
-test("retains DS200 unknown-power and deployment evidence boundaries", async ({ page }) => {
+test("retains DS200 partial-power and deployment evidence boundaries", async ({ page }) => {
   await page.goto(ds200Path);
   await expect(page.getByRole("heading", { name: "DS200 power / backup supply" })).toBeVisible();
+  await expect(page.getByText(/confirms DS200 battery backup/)).toBeVisible();
   await expect(page.getByText("Jefferson County, Washington", { exact: true })).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
 });

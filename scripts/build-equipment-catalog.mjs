@@ -12,11 +12,14 @@ function collectSourceIds(system) {
   return unique([
     ...(system.certification?.sourceIds ?? []),
     ...(system.components ?? []).flatMap((record) => record.sourceIds ?? []),
+    ...(system.components ?? []).flatMap((record) =>
+      (record.technicalSpecifications ?? []).flatMap((specification) => specification.sourceIds ?? [])),
     ...(system.versionObservations ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.configurationChanges ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.findings ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.power ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceIds ?? []),
+    ...(system.scene?.referenceSourceIds ?? []),
   ]);
 }
 
@@ -24,31 +27,53 @@ function collectSourceRevisionIds(system) {
   return unique([
     ...(system.certification?.sourceRevisionIds ?? []),
     ...(system.components ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
+    ...(system.components ?? []).flatMap((record) =>
+      (record.technicalSpecifications ?? []).flatMap((specification) => specification.sourceRevisionIds ?? [])),
     ...(system.versionObservations ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.configurationChanges ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.findings ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.power ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
+    ...(system.scene?.referenceSourceRevisionIds ?? []),
   ]);
 }
 
 function withCoverage(system, editorial) {
-  const sourceIds = collectSourceIds(system);
-  const sourceRevisionIds = collectSourceRevisionIds(system);
-  return {
+  const normalizedSystem = {
     ...system,
+    components: system.components.map((component) => ({
+      ...component,
+      technicalSpecifications: component.technicalSpecifications ?? [],
+    })),
+  };
+  const technicalSpecifications = normalizedSystem.components.flatMap(
+    (component) => component.technicalSpecifications,
+  );
+  const sourceIds = collectSourceIds(normalizedSystem);
+  const sourceRevisionIds = collectSourceRevisionIds(normalizedSystem);
+  return {
+    ...normalizedSystem,
     claimRevision: editorial.revision,
     editorialState: editorial.state,
     sourceIds,
     sourceRevisionIds,
     coverage: {
-      componentCount: system.components.length,
-      sourcedComponentCount: system.components.filter((component) => component.sourceIds.length > 0).length,
-      configurationChangeCount: system.configurationChanges.length,
-      deploymentObservationCount: system.deployments.length,
-      findingCount: system.findings.length,
-      powerRecordCount: system.power.length,
-      confirmedPowerRecordCount: system.power.filter((record) => record.knowledgeStatus === "confirmed").length,
+      componentCount: normalizedSystem.components.length,
+      sourcedComponentCount: normalizedSystem.components.filter((component) => component.sourceIds.length > 0).length,
+      technicalSpecificationCount: technicalSpecifications.length,
+      establishedTechnicalSpecificationCount: technicalSpecifications.filter(
+        (record) => record.knowledgeStatus !== "not_publicly_established",
+      ).length,
+      unknownTechnicalSpecificationCount: technicalSpecifications.filter(
+        (record) => record.knowledgeStatus === "not_publicly_established",
+      ).length,
+      configurationChangeCount: normalizedSystem.configurationChanges.length,
+      deploymentObservationCount: normalizedSystem.deployments.length,
+      findingCount: normalizedSystem.findings.length,
+      powerRecordCount: normalizedSystem.power.length,
+      confirmedPowerRecordCount: normalizedSystem.power.filter(
+        (record) => ["confirmed", "documented_partial"].includes(record.knowledgeStatus),
+      ).length,
       sourceCount: sourceIds.length,
       sourceRevisionCount: sourceRevisionIds.length,
     },

@@ -12,6 +12,240 @@
   },
   "sources": [
     {
+      "id": "dell-optiplex-5250-specifications",
+      "publisher": "Dell Technologies",
+      "authorityLevel": "manufacturer_primary",
+      "title": "OptiPlex 5250 All-in-One Technical Specifications",
+      "url": "https://i.dell.com/sites/csdocuments/Shared-Content_data-Sheets_Documents/en/OptiPlex-5250-All-in-One-Technical-Specifications.pdf",
+      "localArtifact": "data/equipment-sources/dell-optiplex-5250-specifications.pdf",
+      "documentType": "manufacturer_technical_specification_pdf",
+      "publishedOn": "2017-02-13",
+      "pageOrSection": "Pages 1-3",
+      "caveat": "The manufacturer sheet describes the OptiPlex 5250 product family and its configurable options. Pro V&V separately identifies that model as a ClearAccess option; the sheet does not establish the exact processor, memory, storage, wireless option, or port occupation of a certified or fielded ClearAccess unit.",
+      "sha256": "8561b5309bea351dcedaf1d08b35b5f07fb1fbca2b64b6432667d20977cdd654",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://i.dell.com/sites/csdocuments/Shared-Content_data-Sheets_Documents/en/OptiPlex-5250-All-in-One-Technical-Specifications.pdf",
+      "currentReviewedRevisionId": "dell-optiplex-5250-specifications@2026-07-20",
+      "latestRetrievedRevisionId": "dell-optiplex-5250-specifications@2026-07-20",
+      "revisions": [
+        {
+          "id": "dell-optiplex-5250-specifications@2026-07-20",
+          "localArtifact": "data/equipment-sources/dell-optiplex-5250-specifications.pdf",
+          "sha256": "8561b5309bea351dcedaf1d08b35b5f07fb1fbca2b64b6432667d20977cdd654",
+          "byteLength": 552820,
+          "publishedOn": "2017-02-13",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://i.dell.com/sites/csdocuments/Shared-Content_data-Sheets_Documents/en/OptiPlex-5250-All-in-One-Technical-Specifications.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 1-3",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "ess-ds200-one-sheet",
+      "publisher": "Election Systems & Software",
+      "authorityLevel": "manufacturer_primary",
+      "title": "DS200 Poll Place Scanner and Tabulator One-Sheet",
+      "url": "https://www.essvote.com/storage/2024/07/DS200_One-Sheet.pdf",
+      "localArtifact": "data/equipment-sources/ess-ds200-one-sheet.pdf",
+      "documentType": "manufacturer_product_one_sheet_pdf",
+      "publishedOn": "2024-06-26",
+      "pageOrSection": "Pages 1-2",
+      "caveat": "The manufacturer one-sheet supports the DS200 external appearance and named features, including battery backup. It is not a dimensional drawing, component bill of materials, certified version record, or source for the battery manufacturer, capacity, runtime, or internal component placement.",
+      "sha256": "a26ae54b61b92dbbaa6e97300bd703fdc01c57f1f0766469339e1332b63ca4e5",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.essvote.com/storage/2024/07/DS200_One-Sheet.pdf",
+      "currentReviewedRevisionId": "ess-ds200-one-sheet@2026-07-20",
+      "latestRetrievedRevisionId": "ess-ds200-one-sheet@2026-07-20",
+      "revisions": [
+        {
+          "id": "ess-ds200-one-sheet@2026-07-20",
+          "localArtifact": "data/equipment-sources/ess-ds200-one-sheet.pdf",
+          "sha256": "a26ae54b61b92dbbaa6e97300bd703fdc01c57f1f0766469339e1332b63ca4e5",
+          "byteLength": 841983,
+          "publishedOn": "2024-06-26",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.essvote.com/storage/2024/07/DS200_One-Sheet.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 1-2",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "clearballot-clearaccess-reference-photo",
+      "publisher": "Clear Ballot Group",
+      "authorityLevel": "manufacturer_primary",
+      "title": "ClearAccess official product reference image",
+      "url": "https://www.clearballot.com/hs-fs/hubfs/ClearAccessStormKeypad.png?height=1500&name=ClearAccessStormKeypad.png&width=2000",
+      "localArtifact": "data/equipment-sources/clearballot-clearaccess-reference.png",
+      "documentType": "manufacturer_product_image_png",
+      "publishedOn": null,
+      "pageOrSection": "ClearAccessStormKeypad product image",
+      "caveat": "The official image supports a portrait Elo touchscreen, headphones, and accessible keypad as an external appearance reference only. It does not show the full certified component set, internal placement, ports, printer, UPS, or dimensional scale.",
+      "sha256": "baed0a3acf052caf79bafb84b87787bb974115b1203640e7ec27b0c9bbef6a0e",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.clearballot.com/hs-fs/hubfs/ClearAccessStormKeypad.png?height=1500&name=ClearAccessStormKeypad.png&width=2000",
+      "currentReviewedRevisionId": "clearballot-clearaccess-reference-photo@2026-07-20",
+      "latestRetrievedRevisionId": "clearballot-clearaccess-reference-photo@2026-07-20",
+      "revisions": [
+        {
+          "id": "clearballot-clearaccess-reference-photo@2026-07-20",
+          "localArtifact": "data/equipment-sources/clearballot-clearaccess-reference.png",
+          "sha256": "baed0a3acf052caf79bafb84b87787bb974115b1203640e7ec27b0c9bbef6a0e",
+          "byteLength": 334649,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.clearballot.com/hs-fs/hubfs/ClearAccessStormKeypad.png?height=1500&name=ClearAccessStormKeypad.png&width=2000",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ClearAccessStormKeypad product image",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "co-dvs-517-avalue-sid21-manual",
+      "publisher": "Colorado Secretary of State; Avalue Technology, Inc.",
+      "authorityLevel": "state_election_office_hosted_manufacturer_primary",
+      "title": "Avalue SID-21V-Z37-A1R User Manual",
+      "url": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/AvalueSID21VZ37UserManual.pdf",
+      "localArtifact": "data/equipment-sources/co-avalue-sid21-user-manual.pdf",
+      "documentType": "manufacturer_hardware_user_manual_pdf",
+      "publishedOn": "2016-04-20",
+      "pageOrSection": "Pages 8-10, 12-14, and 22-23",
+      "caveat": "The manual documents the Avalue SID-21V-Z37-A1R COTS hardware family used as an ImageCast X option. Its Android 4.4 example environment is not the certified Democracy Suite 5.17 software environment, and optional hardware in the manual is not assumed installed in every certified or fielded unit.",
+      "sha256": "2fc9d9fd422c196708bac17ef3b0d235767e67f375cba7dd2dfa1ba3d56142f2",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/AvalueSID21VZ37UserManual.pdf",
+      "currentReviewedRevisionId": "co-dvs-517-avalue-sid21-manual@2026-07-20",
+      "latestRetrievedRevisionId": "co-dvs-517-avalue-sid21-manual@2026-07-20",
+      "revisions": [
+        {
+          "id": "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "localArtifact": "data/equipment-sources/co-avalue-sid21-user-manual.pdf",
+          "sha256": "2fc9d9fd422c196708bac17ef3b0d235767e67f375cba7dd2dfa1ba3d56142f2",
+          "byteLength": 2092925,
+          "publishedOn": "2016-04-20",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/AvalueSID21VZ37UserManual.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 8-10, 12-14, and 22-23",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "co-dvs-517-icx-maintenance-manual",
+      "publisher": "Colorado Secretary of State; Dominion Voting Systems",
+      "authorityLevel": "state_election_office_hosted_manufacturer_primary",
+      "title": "Democracy Suite ImageCast X System Maintenance Manual 5.17-CO::4",
+      "url": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-09-ICXSystemMaintenanceManual517CO.pdf",
+      "localArtifact": "data/equipment-sources/co-icx-517-maintenance-manual.pdf",
+      "documentType": "state_hosted_system_maintenance_manual_pdf",
+      "publishedOn": "2023-05-02",
+      "pageOrSection": "Pages 7-19 and 25-28",
+      "caveat": "The maintenance manual identifies supported ICX hardware variants, build checks, battery care, and service procedures for the Colorado-certified configuration. It does not establish which variant or optional battery a particular jurisdiction fielded.",
+      "sha256": "8dcf7aa62bce757a7ad1f1dc6b01d8607842de7e8dc120c9997c0a025b17eda0",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-09-ICXSystemMaintenanceManual517CO.pdf",
+      "currentReviewedRevisionId": "co-dvs-517-icx-maintenance-manual@2026-07-20",
+      "latestRetrievedRevisionId": "co-dvs-517-icx-maintenance-manual@2026-07-20",
+      "revisions": [
+        {
+          "id": "co-dvs-517-icx-maintenance-manual@2026-07-20",
+          "localArtifact": "data/equipment-sources/co-icx-517-maintenance-manual.pdf",
+          "sha256": "8dcf7aa62bce757a7ad1f1dc6b01d8607842de7e8dc120c9997c0a025b17eda0",
+          "byteLength": 523433,
+          "publishedOn": "2023-05-02",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-09-ICXSystemMaintenanceManual517CO.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 7-19 and 25-28",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "clearballot-clearaccess-product-page",
+      "publisher": "Clear Ballot Group",
+      "authorityLevel": "manufacturer_primary",
+      "title": "ClearAccess product page",
+      "url": "https://www.clearballot.com/products/clear-access",
+      "localArtifact": "data/equipment-sources/clearballot-clearaccess-product.html",
+      "documentType": "manufacturer_product_page_html",
+      "publishedOn": null,
+      "pageOrSection": "Accessible interface and versatile configurations",
+      "caveat": "The current manufacturer product page supports the external product concept and available case or tabletop configurations. It is not a certified bill of materials, dimensional drawing, firmware record, or field-deployment record.",
+      "sha256": "7082393fed9ac136b7ae33a8a7022920bbd9bd545442c094348a283c9d7a4d82",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.clearballot.com/products/clear-access",
+      "currentReviewedRevisionId": "clearballot-clearaccess-product-page@2026-07-20",
+      "latestRetrievedRevisionId": "clearballot-clearaccess-product-page@2026-07-20",
+      "revisions": [
+        {
+          "id": "clearballot-clearaccess-product-page@2026-07-20",
+          "localArtifact": "data/equipment-sources/clearballot-clearaccess-product.html",
+          "sha256": "7082393fed9ac136b7ae33a8a7022920bbd9bd545442c094348a283c9d7a4d82",
+          "byteLength": 42125,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.clearballot.com/products/clear-access",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Accessible interface and versatile configurations",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "dvs-icx-prime-ssd-advisory",
       "publisher": "Dominion Voting Systems",
       "authorityLevel": "manufacturer_primary_eac_hosted",

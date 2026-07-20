@@ -104,6 +104,7 @@ export default async function EquipmentSystemPage({ params }: PageProps) {
 
         <section className={styles.metrics} aria-label="Dossier coverage">
           <article><span>Components</span><strong>{system.coverage.componentCount}</strong><small>all source-linked</small></article>
+          <article><span>Hardware facts</span><strong>{system.coverage.technicalSpecificationCount}</strong><small>{system.coverage.unknownTechnicalSpecificationCount} explicit unknowns</small></article>
           <article><span>Change records</span><strong>{system.coverage.configurationChangeCount}</strong><small>field status kept separate</small></article>
           <article><span>Findings/statuses</span><strong>{system.coverage.findingCount}</strong><small>version-scoped</small></article>
           <article><span>Archived sources</span><strong>{system.coverage.sourceCount}</strong><small>local hash verified</small></article>

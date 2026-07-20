@@ -114,6 +114,7 @@ for (const claim of claims) {
     error(`${label} needs at least one source-linked component.`);
   }
   const componentById = new Map();
+  const technicalSpecificationIds = new Set();
   for (const component of system.components ?? []) {
     if (componentById.has(component.id)) error(`${label} has duplicate component ${component.id}.`);
     componentById.set(component.id, component);
@@ -121,6 +122,36 @@ for (const claim of claims) {
     requireNonEmpty(component.caveat, `${label} component ${component.id} caveat`);
     if (component.evidenceStatus === "not_publicly_confirmed" && component.sceneNodeName !== null) {
       error(`${label} unknown component ${component.id} must not be placed in the 3D scene.`);
+    }
+    for (const specification of component.technicalSpecifications ?? []) {
+      const specificationLabel = `${label} technical specification ${specification.id}`;
+      if (technicalSpecificationIds.has(specification.id)) {
+        error(`${label} has duplicate technical specification ${specification.id}.`);
+      }
+      technicalSpecificationIds.add(specification.id);
+      requireNonEmpty(specification.id, `${specificationLabel} id`);
+      requireNonEmpty(specification.category, `${specificationLabel} category`);
+      requireNonEmpty(specification.label, `${specificationLabel} label`);
+      requireNonEmpty(specification.modelContext, `${specificationLabel} modelContext`);
+      requireNonEmpty(specification.caveat, `${specificationLabel} caveat`);
+      requireSourceIds(specification, specificationLabel, sourceById, revisionById);
+      if (!["confirmed", "documented_partial", "not_publicly_established"].includes(specification.knowledgeStatus)) {
+        error(`${specificationLabel} has an invalid knowledgeStatus.`);
+      }
+      if (![
+        "approved_change",
+        "certified_configuration",
+        "documented_model_family",
+        "evidence_gap",
+        "manufacturer_product",
+      ].includes(specification.assertionScope)) {
+        error(`${specificationLabel} has an invalid assertionScope.`);
+      }
+      if (specification.knowledgeStatus === "not_publicly_established") {
+        if (specification.value !== null) error(`${specificationLabel} must keep an unknown value null.`);
+      } else {
+        requireNonEmpty(specification.value, `${specificationLabel} value`);
+      }
     }
   }
 
@@ -179,6 +210,10 @@ for (const claim of claims) {
       for (const field of ["supplyType", "manufacturer", "model"]) {
         requireNonEmpty(power[field], `${label} power ${power.id} ${field}`);
       }
+    } else if (power.knowledgeStatus === "documented_partial") {
+      requireNonEmpty(power.supplyType, `${label} power ${power.id} supplyType`);
+    } else {
+      error(`${label} power ${power.id} has an invalid knowledgeStatus.`);
     }
   }
 
@@ -197,6 +232,17 @@ for (const claim of claims) {
     error(`${label} scene must be labeled illustrative_not_to_scale.`);
   }
   if (scene.assetLicense !== "Apache-2.0") error(`${label} scene asset needs its Apache-2.0 license.`);
+  requireSourceIds(
+    {
+      sourceIds: scene.referenceSourceIds,
+      sourceRevisionIds: scene.referenceSourceRevisionIds,
+    },
+    `${label} scene reference`,
+    sourceById,
+    revisionById,
+  );
+  requireNonEmpty(scene.referenceConfiguration, `${label} scene referenceConfiguration`);
+  requireNonEmpty(scene.referenceNote, `${label} scene referenceNote`);
   const assetPath = `public${scene.assetUrl}`;
   let glbNodeNames = [];
   try {
@@ -209,6 +255,13 @@ for (const claim of claims) {
     if (sceneComponents.has(node.componentId)) error(`${label} scene maps component ${node.componentId} more than once.`);
     sceneComponents.add(node.componentId);
     if (!componentById.has(node.componentId)) error(`${label} scene has unknown component ${node.componentId}.`);
+    if (
+      !Array.isArray(node.explodedOffset)
+      || node.explodedOffset.length !== 3
+      || node.explodedOffset.some((value) => typeof value !== "number" || !Number.isFinite(value))
+    ) {
+      error(`${label} scene node ${node.nodeName} needs a finite three-number explodedOffset.`);
+    }
     const matches = glbNodeNames.filter((name) => name === node.nodeName).length;
     if (matches !== 1) error(`${label} scene node ${node.nodeName} must occur exactly once; found ${matches}.`);
   }
@@ -247,5 +300,6 @@ if (errors.length) {
 console.log(
   `Validated ${catalog.systems.length} equipment system${catalog.systems.length === 1 ? "" : "s"}, ${sourcePackage.sources.length} archived sources, `
     + `${catalog.systems.reduce((sum, system) => sum + system.components.length, 0)} components, and `
+    + `${catalog.systems.reduce((sum, system) => sum + system.coverage.technicalSpecificationCount, 0)} technical specifications, and `
     + `${catalog.systems.reduce((sum, system) => sum + system.configurationChanges.length, 0)} configuration changes.`,
 );
