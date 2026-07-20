@@ -69,12 +69,16 @@ function highlightComponent(root: Object3D, selected: boolean) {
 
 function SchematicModel({
   explosion,
+  hiddenComponentIds,
+  isolatedComponentId,
   onSelect,
   reducedMotion,
   scene,
   selectedComponentId,
 }: {
   explosion: number;
+  hiddenComponentIds: ReadonlySet<string>;
+  isolatedComponentId: string | null;
   onSelect: (componentId: string) => void;
   reducedMotion: boolean;
   scene: EquipmentScene;
@@ -121,10 +125,14 @@ function SchematicModel({
   useEffect(() => {
     for (const entry of scene.nodes) {
       const object = model.getObjectByName(entry.nodeName);
-      if (object) highlightComponent(object, entry.componentId === selectedComponentId);
+      if (!object) continue;
+      object.visible = isolatedComponentId !== null
+        ? entry.componentId === isolatedComponentId
+        : !hiddenComponentIds.has(entry.componentId);
+      highlightComponent(object, entry.componentId === selectedComponentId);
     }
     invalidate();
-  }, [invalidate, model, scene.nodes, selectedComponentId]);
+  }, [hiddenComponentIds, invalidate, isolatedComponentId, model, scene.nodes, selectedComponentId]);
 
   useEffect(() => {
     const bounded = Math.max(0, Math.min(1, explosion));
@@ -185,6 +193,8 @@ function SchematicModel({
 
 export function EquipmentOrthographicScene({
   explosion,
+  hiddenComponentIds,
+  isolatedComponentId,
   onError,
   onSelect,
   reducedMotion,
@@ -193,6 +203,8 @@ export function EquipmentOrthographicScene({
   view,
 }: {
   explosion: number;
+  hiddenComponentIds: ReadonlySet<string>;
+  isolatedComponentId: string | null;
   onError: () => void;
   onSelect: (componentId: string) => void;
   reducedMotion: boolean;
@@ -226,6 +238,8 @@ export function EquipmentOrthographicScene({
         <Suspense fallback={null}>
           <SchematicModel
             explosion={explosion}
+            hiddenComponentIds={hiddenComponentIds}
+            isolatedComponentId={isolatedComponentId}
             onSelect={onSelect}
             reducedMotion={reducedMotion}
             scene={scene}

@@ -139,6 +139,9 @@ The GLB files are original CivicResultMaps navigation schematics. Their rough ex
 - A component with known existence but unknown placement may be listed without a scene node.
 - A selectable scene node may be a composite group with multiple original child meshes, but it still maps to exactly one evidence record.
 - Explosion offsets and simplified internal shapes are illustrative unless a cited source specifically establishes placement.
+- Hide and isolate controls change only the local scene presentation. They do not remove a component, claim, or source from the dossier.
+- Component hardware cards omit null/unknown specifications and explicit statements that a network capability is absent. Those records remain preserved in the catalog for review and validation.
+- A component-list network badge requires a positively documented Ethernet, Wi-Fi, cellular, Bluetooth, or other network capability. The badge describes capability only, not an enabled connection, field use, or attached network.
 - A reference configuration must not imply that all certified alternatives appear together or that a jurisdiction fielded the depicted alternative.
 - Every scene mapping must resolve to exactly one GLB node.
 

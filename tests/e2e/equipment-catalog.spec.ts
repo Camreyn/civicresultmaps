@@ -21,7 +21,17 @@ test("renders confirmed ClearAccess UPS options without inventing runtime", asyn
   await expect(page.getByText("PR1500RT2U; SMT2200C; SRT1500RMXLA", { exact: true })).toBeVisible();
   await expect(page.getByText("Not specified in reviewed source", { exact: true })).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "No reviewed deployment observation in this dossier" })).toBeVisible();
-  await expect(page.locator("[aria-label='Equipment components'] button")).toHaveCount(9);
+  await expect(page.locator("[data-component-select='true']")).toHaveCount(9);
+
+  const networkBadge = page.getByRole("img", { name: "Network connectivity capability" });
+  await expect(networkBadge).toHaveCount(1);
+  await networkBadge.hover();
+  await expect(page.getByRole("tooltip", { name: /Ethernet/ })).toBeVisible();
+
+  await page.locator("[data-component-select='true']").filter({ hasText: "All-in-one touchscreen computer" }).click();
+  const componentDetail = page.locator("article[class*='componentDetail']");
+  await expect(componentDetail.getByText("Cellular modem", { exact: true })).toHaveCount(0);
+  await expect(componentDetail.getByText("Not publicly established", { exact: true })).toHaveCount(0);
 
   const accessibility = await new AxeBuilder({ page }).analyze();
   expect(accessibility.violations.filter(({ impact }) => impact === "serious" || impact === "critical")).toEqual([]);
@@ -42,7 +52,7 @@ test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ pa
   expect(initialResources.filter((url) => url.endsWith(".glb"))).toHaveLength(0);
   const initialChunkCount = initialResources.filter((url) => url.includes("/_next/static/chunks/")).length;
 
-  await page.getByRole("button", { name: /External uninterruptible power supply/ }).click();
+  await page.locator("[data-component-select='true']").filter({ hasText: "External uninterruptible power supply" }).click();
   await page.getByRole("button", { name: /Open 3D view/ }).click();
   await expect(page.locator("canvas")).toBeVisible();
   await expect(page.getByRole("heading", { name: "External uninterruptible power supply", level: 3 })).toBeVisible();
@@ -61,6 +71,21 @@ test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ pa
   await explosionDistance.fill("55");
   await expect(explosionDistance).toHaveValue("55");
   await expect(page.getByText("Explosion distance 55%")).toBeVisible();
+
+  await page.getByRole("button", { name: "Isolate External uninterruptible power supply" }).click();
+  await expect(page.getByText(/1 of 9 modeled components visible/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Stop isolating External uninterruptible power supply" })).toHaveAttribute("aria-pressed", "true");
+  await page.locator("[data-component-select='true']").filter({ hasText: "Ballot printer" }).click();
+  await expect(page.getByRole("button", { name: "Stop isolating Ballot printer" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText(/isolating Ballot printer/)).toBeVisible();
+
+  await page.getByRole("button", { name: "Show all", exact: true }).click();
+  await expect(page.getByText(/9 of 9 modeled components visible/)).toBeVisible();
+  await page.getByRole("button", { name: "Hide Ballot printer" }).click();
+  await expect(page.getByText(/8 of 9 modeled components visible/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Show Ballot printer" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Show all", exact: true }).click();
+  await expect(page.getByText(/9 of 9 modeled components visible/)).toBeVisible();
 });
 
 test("preserves the source-linked fallback when WebGL 2 is unavailable", async ({ browser }) => {
@@ -79,7 +104,7 @@ test("preserves the source-linked fallback when WebGL 2 is unavailable", async (
   await page.goto(clearAccessPath);
   await page.getByRole("button", { name: /Open 3D view/ }).click();
   await expect(page.getByText("3D view unavailable")).toBeVisible();
-  await expect(page.locator("[aria-label='Equipment components'] button")).toHaveCount(9);
+  await expect(page.locator("[data-component-select='true']")).toHaveCount(9);
   await context.close();
 });
 
@@ -101,11 +126,17 @@ test("renders ImageCast X advisory and internal-component evidence boundaries", 
   expect(payload.data.system.coverage.sourceCount).toBe(10);
   expect(payload.data.sources).toHaveLength(10);
 
-  await page.getByRole("button", { name: /SID-21V compute board profile/ }).click();
+  await page.locator("[data-component-select='true']").filter({ hasText: "SID-21V compute board profile" }).click();
   await expect(page.getByRole("heading", { name: "SID-21V compute board profile", level: 3 })).toBeVisible();
   await expect(page.getByText("Intel Atom Z3735F", { exact: true })).toBeVisible();
   await expect(page.getByText("2 GB DDR3L", { exact: true })).toBeVisible();
   await expect(page.getByText("32 GB eMMC", { exact: true })).toBeVisible();
+
+  await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(1);
+  await page.locator("[data-component-select='true']").filter({ hasText: "SID-21V connector panel" }).click();
+  const componentDetail = page.locator("article[class*='componentDetail']");
+  await expect(componentDetail.getByText("1 × 10/100 RJ-45 Ethernet", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText("Cellular modem", { exact: true })).toHaveCount(0);
 });
 
 test("retains DS200 partial-power and deployment evidence boundaries", async ({ page }) => {
@@ -114,6 +145,9 @@ test("retains DS200 partial-power and deployment evidence boundaries", async ({ 
   await expect(page.getByText(/confirms DS200 battery backup/)).toBeVisible();
   await expect(page.getByText("Jefferson County, Washington", { exact: true })).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
+  await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(0);
+  const componentDetail = page.locator("article[class*='componentDetail']");
+  await expect(componentDetail.getByRole("heading", { name: "Hardware and interfaces" })).toHaveCount(0);
 });
 
 
