@@ -26,7 +26,23 @@ test("renders confirmed ClearAccess UPS options without inventing runtime", asyn
   const networkBadge = page.getByRole("img", { name: "Network connectivity capability" });
   await expect(networkBadge).toHaveCount(1);
   await networkBadge.hover();
-  await expect(page.getByRole("tooltip", { name: /Ethernet/ })).toBeVisible();
+  const networkTooltip = page.getByRole("tooltip", { name: /Ethernet/ });
+  await expect(networkTooltip).toBeVisible();
+  await expect(networkTooltip).toHaveAttribute("data-overlay-root", "document-body");
+  expect(await networkTooltip.evaluate((element) => element.parentElement === document.body)).toBe(true);
+
+  const componentRail = page.locator("div[class*='componentRail']").first();
+  const [componentRailBox, networkTooltipBox] = await Promise.all([
+    componentRail.boundingBox(),
+    networkTooltip.boundingBox(),
+  ]);
+  expect(componentRailBox).not.toBeNull();
+  expect(networkTooltipBox).not.toBeNull();
+  expect(networkTooltipBox!.x).toBeGreaterThan(componentRailBox!.x + componentRailBox!.width);
+
+  await page.mouse.move(0, 0);
+  await networkBadge.focus();
+  await expect(networkTooltip).toBeVisible();
 
   await page.locator("[data-component-select='true']").filter({ hasText: "All-in-one touchscreen computer" }).click();
   const componentDetail = page.locator("article[class*='componentDetail']");

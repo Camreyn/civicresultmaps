@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Component, useEffect, useState, type ReactNode } from "react";
+import { Component, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { Box, Expand, ExternalLink, Eye, EyeOff, Focus, Layers3, Network, Rotate3d } from "lucide-react";
 
 import type { EquipmentComponent, EquipmentSource, EquipmentSystem } from "@/lib/equipment-catalog";
@@ -69,6 +70,121 @@ function networkCapabilitySummary(component: EquipmentComponent) {
   return capabilities
     ? `${capabilities}. Capability only; not proof of an enabled or field-used connection.`
     : "";
+}
+
+type TooltipPosition = { left: number; top: number };
+
+function networkTooltipPosition(anchor: HTMLElement): TooltipPosition {
+  const anchorRect = anchor.getBoundingClientRect();
+  const railRect = anchor.closest(`.${styles.componentRail}`)?.getBoundingClientRect() ?? anchorRect;
+  const viewportPadding = 12;
+  const gap = 10;
+  const tooltipWidth = Math.max(1, Math.min(280, window.innerWidth - viewportPadding * 2));
+  const roomToRight = window.innerWidth - railRect.right - gap - viewportPadding;
+  const roomToLeft = railRect.left - gap - viewportPadding;
+
+  if (roomToRight >= tooltipWidth) {
+    return { left: railRect.right + gap, top: anchorRect.top - 4 };
+  }
+
+  if (roomToLeft >= tooltipWidth) {
+    return { left: railRect.left - tooltipWidth - gap, top: anchorRect.top - 4 };
+  }
+
+  return {
+    left: Math.min(
+      Math.max(viewportPadding, anchorRect.left),
+      window.innerWidth - tooltipWidth - viewportPadding,
+    ),
+    top: anchorRect.bottom + 8,
+  };
+}
+
+function NetworkCapabilityBadge({ componentId, summary }: { componentId: string; summary: string }) {
+  const anchorRef = useRef<HTMLSpanElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<TooltipPosition | null>(null);
+  const tooltipId = `network-capability-${componentId}`;
+
+  function showTooltip() {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+    setPosition(networkTooltipPosition(anchor));
+  }
+
+  function hideTooltip() {
+    setPosition(null);
+  }
+
+  useLayoutEffect(() => {
+    const tooltip = tooltipRef.current;
+    if (!position || !tooltip) return;
+
+    const viewportPadding = 12;
+    const rect = tooltip.getBoundingClientRect();
+    const nextLeft = Math.min(
+      Math.max(viewportPadding, position.left),
+      window.innerWidth - rect.width - viewportPadding,
+    );
+    const nextTop = Math.min(
+      Math.max(viewportPadding, position.top),
+      window.innerHeight - rect.height - viewportPadding,
+    );
+
+    if (Math.abs(nextLeft - position.left) > 0.5 || Math.abs(nextTop - position.top) > 0.5) {
+      setPosition({ left: nextLeft, top: nextTop });
+    }
+  }, [position]);
+
+  const tooltipOpen = position !== null;
+
+  useEffect(() => {
+    if (!tooltipOpen) return;
+
+    const repositionTooltip = () => {
+      const anchor = anchorRef.current;
+      if (anchor) setPosition(networkTooltipPosition(anchor));
+    };
+    window.addEventListener("resize", repositionTooltip);
+    window.addEventListener("scroll", repositionTooltip, true);
+    return () => {
+      window.removeEventListener("resize", repositionTooltip);
+      window.removeEventListener("scroll", repositionTooltip, true);
+    };
+  }, [tooltipOpen]);
+
+  return (
+    <>
+      <span
+        aria-describedby={position ? tooltipId : undefined}
+        aria-label="Network connectivity capability"
+        className={styles.networkCapability}
+        onBlur={hideTooltip}
+        onFocus={showTooltip}
+        onPointerEnter={showTooltip}
+        onPointerLeave={hideTooltip}
+        ref={anchorRef}
+        role="img"
+        tabIndex={0}
+      >
+        <Network aria-hidden size={14} />
+      </span>
+      {position && createPortal(
+        <div
+          className={styles.networkTooltipPortal}
+          data-overlay-root="document-body"
+          id={tooltipId}
+          ref={tooltipRef}
+          role="tooltip"
+          style={{ left: position.left, top: position.top }}
+        >
+          <strong>Network capability</strong>
+          {summary}
+        </div>,
+        document.body,
+      )}
+    </>
+  );
 }
 
 export function EquipmentExplorer({ sources, system }: { sources: EquipmentSource[]; system: EquipmentSystem }) {
@@ -186,7 +302,6 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
               const modeled = component.sceneNodeName !== null;
               const visible = !modeled || componentIsVisible(component.id);
               const networkSummary = networkCapabilitySummary(component);
-              const networkTooltipId = `network-capability-${component.id}`;
               const componentButtonClass = [
                 selected.id === component.id ? styles.componentButtonActive : styles.componentButton,
                 modeled && !visible ? styles.componentButtonHidden : "",
@@ -207,20 +322,7 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
                     </button>
                     <div className={styles.componentUtilities}>
                       {networkSummary && (
-                        <span
-                          aria-describedby={networkTooltipId}
-                          aria-label="Network connectivity capability"
-                          className={styles.networkCapability}
-                          role="img"
-                          tabIndex={0}
-                          title={`Network connectivity capability: ${networkSummary}`}
-                        >
-                          <Network aria-hidden size={14} />
-                          <span className={styles.networkTooltip} id={networkTooltipId} role="tooltip">
-                            <strong>Network capability</strong>
-                            {networkSummary}
-                          </span>
-                        </span>
+                        <NetworkCapabilityBadge componentId={component.id} summary={networkSummary} />
                       )}
                       {modeled && (
                         <>
