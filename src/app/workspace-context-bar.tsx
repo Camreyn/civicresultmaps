@@ -138,7 +138,9 @@ export function WorkspaceContextBar({
         <SlidersHorizontal aria-hidden size={18} />
         <div>
           <span>Current context</span>
-          <strong>{selectedStateName} · {electionYear} President</strong>
+          <h1>
+            {selectedStateName} · <small>{electionYear} President</small>
+          </h1>
         </div>
       </div>
 
@@ -175,9 +177,11 @@ export function WorkspaceContextBar({
           </select>
         </label>
 
-        <div className="workspace-context-readonly">
+        <div className="workspace-context-control">
           <span>Contest</span>
-          <strong>President</strong>
+          <div className="workspace-context-readonly">
+            <strong>President</strong>
+          </div>
         </div>
 
         <label className="workspace-context-control is-wide">

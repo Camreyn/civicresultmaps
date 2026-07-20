@@ -335,17 +335,15 @@
   flex: 0 0 auto;
 }
 
-.workspace-context-summary div,
-.workspace-context-control,
-.workspace-context-readonly {
+.workspace-context-summary > div,
+.workspace-context-control {
   display: grid;
   gap: 5px;
   min-width: 0;
 }
 
-.workspace-context-summary span,
-.workspace-context-control span,
-.workspace-context-readonly span {
+.workspace-context-summary > div > span,
+.workspace-context-control > span {
   color: var(--quiet);
   font-size: 10px;
   font-weight: 850;
@@ -353,10 +351,17 @@
   text-transform: uppercase;
 }
 
-.workspace-context-summary strong {
+.workspace-context-summary h1 {
+  font-size: 15px;
+  margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.workspace-context-summary h1 small {
+  color: var(--muted);
+  font: inherit;
 }
 
 .workspace-context-controls {
@@ -391,8 +396,8 @@
 }
 
 .workspace-context-readonly {
-  align-content: center;
-  gap: 1px;
+  align-items: center;
+  display: flex;
   padding: 5px 11px;
 }
 
