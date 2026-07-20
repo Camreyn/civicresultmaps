@@ -1,0 +1,1514 @@
+{
+  "schemaVersion": 2,
+  "reviewedOn": "2026-07-20",
+  "methodology": {
+    "title": "Election equipment catalog evidence policy",
+    "description": "The pilot records what an official source actually establishes and keeps certified configurations, state approvals, jurisdiction deployment observations, historical configuration changes, and unknown field details in separate scopes.",
+    "changeControlSourceIds": [
+      "eac-changes-certified-systems",
+      "eac-program-manual-v3"
+    ],
+    "caveat": "An EAC engineering change order documents an approved change to one or more certified configurations. It does not establish that a particular jurisdiction installed the change, and a VSTL record is not a unit-level service or repair history."
+  },
+  "sources": [
+    {
+      "id": "dvs-icx-prime-ssd-advisory",
+      "publisher": "Dominion Voting Systems",
+      "authorityLevel": "manufacturer_primary_eac_hosted",
+      "title": "ImageCast X Solid State Flash Drive Customer Advisory Notice",
+      "url": "https://www.eac.gov/sites/default/files/2024-09/2024-AUG-16_FINAL_CAN_ICX%20Prime%20SSD.pdf",
+      "localArtifact": "data/equipment-sources/eac-icx-prime-ssd-advisory.pdf",
+      "documentType": "manufacturer_advisory_pdf",
+      "publishedOn": "2024-08-16",
+      "pageOrSection": "Page 1",
+      "caveat": "The advisory describes a bounded project-file installation or removal condition and a remediation path. It is not evidence that the condition occurred in an election or affected voted paper records.",
+      "sha256": "43b4e87d82b79d978f5e7f62938c10c2269df1045874704addb6b1f899a75cdd",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2024-09/2024-AUG-16_FINAL_CAN_ICX%20Prime%20SSD.pdf",
+      "currentReviewedRevisionId": "dvs-icx-prime-ssd-advisory@2026-07-20",
+      "latestRetrievedRevisionId": "dvs-icx-prime-ssd-advisory@2026-07-20",
+      "revisions": [
+        {
+          "id": "dvs-icx-prime-ssd-advisory@2026-07-20",
+          "localArtifact": "data/equipment-sources/eac-icx-prime-ssd-advisory.pdf",
+          "sha256": "43b4e87d82b79d978f5e7f62938c10c2269df1045874704addb6b1f899a75cdd",
+          "byteLength": 126792,
+          "publishedOn": "2024-08-16",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2024-09/2024-AUG-16_FINAL_CAN_ICX%20Prime%20SSD.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "dvs-icx-straight-party-advisory",
+      "publisher": "Dominion Voting Systems",
+      "authorityLevel": "manufacturer_primary_eac_hosted",
+      "title": "Straight Party Voting on the ImageCast X Customer Advisory Notice",
+      "url": "https://www.eac.gov/sites/default/files/2024-11/2024-SEPT-26_DVS_5.17_CAN_Straight_Party_Voting_on_the_ImageCast_X_508.pdf",
+      "localArtifact": "data/equipment-sources/eac-icx-straight-party-advisory.pdf",
+      "documentType": "manufacturer_advisory_pdf",
+      "publishedOn": "2024-09-26",
+      "pageOrSection": "Page 1",
+      "caveat": "The advisory describes a specific interaction sequence and review recommendation. It does not quantify field occurrence, establish an election outcome effect, or document a software resolution.",
+      "sha256": "74310d93548a352f616cc8e05d929f512211538b74858784a7cdd1e8841f0b98",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2024-11/2024-SEPT-26_DVS_5.17_CAN_Straight_Party_Voting_on_the_ImageCast_X_508.pdf",
+      "currentReviewedRevisionId": "dvs-icx-straight-party-advisory@2026-07-20",
+      "latestRetrievedRevisionId": "dvs-icx-straight-party-advisory@2026-07-20",
+      "revisions": [
+        {
+          "id": "dvs-icx-straight-party-advisory@2026-07-20",
+          "localArtifact": "data/equipment-sources/eac-icx-straight-party-advisory.pdf",
+          "sha256": "74310d93548a352f616cc8e05d929f512211538b74858784a7cdd1e8841f0b98",
+          "byteLength": 69679,
+          "publishedOn": "2024-09-26",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2024-11/2024-SEPT-26_DVS_5.17_CAN_Straight_Party_Voting_on_the_ImageCast_X_508.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "dvs-icx-touchscreen-advisory",
+      "publisher": "Dominion Voting Systems",
+      "authorityLevel": "manufacturer_primary_eac_hosted",
+      "title": "ImageCast X Touch Screen Responsiveness Product Advisory Notice",
+      "url": "https://www.eac.gov/sites/default/files/2024-09/2024-MAY-20-FINAL-PAN-ICX-Touchscreen-Initialization%20%28003%29.pdf",
+      "localArtifact": "data/equipment-sources/eac-icx-touchscreen-advisory.pdf",
+      "documentType": "manufacturer_advisory_pdf",
+      "publishedOn": "2024-05-20",
+      "pageOrSection": "Page 1",
+      "caveat": "This manufacturer advisory is hosted on the EAC certification record and is scoped to named versions and jurisdictions; it is not a quantified incidence report or evidence about every ICX unit.",
+      "sha256": "0b434ff891c31e7a950cfc1d774db63628f7152f916ca52c8cad6c88f462a25d",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2024-09/2024-MAY-20-FINAL-PAN-ICX-Touchscreen-Initialization%20%28003%29.pdf",
+      "currentReviewedRevisionId": "dvs-icx-touchscreen-advisory@2026-07-20",
+      "latestRetrievedRevisionId": "dvs-icx-touchscreen-advisory@2026-07-20",
+      "revisions": [
+        {
+          "id": "dvs-icx-touchscreen-advisory@2026-07-20",
+          "localArtifact": "data/equipment-sources/eac-icx-touchscreen-advisory.pdf",
+          "sha256": "0b434ff891c31e7a950cfc1d774db63628f7152f916ca52c8cad6c88f462a25d",
+          "byteLength": 70723,
+          "publishedOn": "2024-05-20",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2024-09/2024-MAY-20-FINAL-PAN-ICX-Touchscreen-Initialization%20%28003%29.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-changes-certified-systems",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "Changes to Certified Systems",
+      "url": "https://www.eac.gov/testing-and-certification/changes-certified-systems",
+      "localArtifact": "data/equipment-sources/eac-changes-certified-systems.html",
+      "sha256": "2b6b3da672392f5dc55890497692cf05ab9cb348aa615d18008f1bd9ec0f4f58",
+      "documentType": "official_guidance_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Change orders and modifications",
+      "caveat": "Program guidance defines certification change control; it is not evidence of field installation.",
+      "canonicalUrl": "https://www.eac.gov/testing-and-certification/changes-certified-systems",
+      "currentReviewedRevisionId": "eac-changes-certified-systems@2026-07-19",
+      "latestRetrievedRevisionId": "eac-changes-certified-systems@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-changes-certified-systems@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-changes-certified-systems.html",
+          "sha256": "2b6b3da672392f5dc55890497692cf05ab9cb348aa615d18008f1bd9ec0f4f58",
+          "byteLength": 61375,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/testing-and-certification/changes-certified-systems",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Change orders and modifications",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-clearvote-25-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ClearVote 2.5 certification record",
+      "url": "https://www.eac.gov/voting-equipment/clearvote-25",
+      "localArtifact": "data/equipment-sources/eac-clearvote-25.html",
+      "sha256": "f0e494dfe35a71a91ecff1231c49bc458efb0bed67b8e690c4411826bb6a46e3",
+      "documentType": "official_certification_record_html",
+      "publishedOn": "2025-11-24",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Certification record and public attachments",
+      "caveat": "This record establishes certification of the evaluated ClearVote 2.5 configuration, not deployment or the configuration of a fielded unit.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/clearvote-25",
+      "currentReviewedRevisionId": "eac-clearvote-25-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-clearvote-25-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-clearvote-25-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-clearvote-25.html",
+          "sha256": "f0e494dfe35a71a91ecff1231c49bc458efb0bed67b8e690c4411826bb6a46e3",
+          "byteLength": 69195,
+          "publishedOn": "2025-11-24",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/clearvote-25",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Certification record and public attachments",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-clearvote-25-scope",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ClearVote 2.5 Certificate and Scope of Conformance",
+      "url": "https://www.eac.gov/sites/default/files/2025-11/Certificate_and_Scope_of_Conformance_CBG_CV_2.5.pdf",
+      "localArtifact": "data/equipment-sources/eac-clearvote-25-certificate-scope.pdf",
+      "sha256": "c651bd3f0812b0ee03dfb149ac67e838ed0c159a150547c258ee8cf41112b212",
+      "documentType": "official_scope_pdf",
+      "publishedOn": "2025-11-19",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Pages 17-25: proprietary versions, COTS software, and COTS hardware",
+      "caveat": "The scope lists permitted components and versions in the certified configuration; it does not identify which option a jurisdiction selected.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2025-11/Certificate_and_Scope_of_Conformance_CBG_CV_2.5.pdf",
+      "currentReviewedRevisionId": "eac-clearvote-25-scope@2026-07-19",
+      "latestRetrievedRevisionId": "eac-clearvote-25-scope@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-clearvote-25-scope@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-clearvote-25-certificate-scope.pdf",
+          "sha256": "c651bd3f0812b0ee03dfb149ac67e838ed0c159a150547c258ee8cf41112b212",
+          "byteLength": 1540498,
+          "publishedOn": "2025-11-19",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2025-11/Certificate_and_Scope_of_Conformance_CBG_CV_2.5.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 17-25: proprietary versions, COTS software, and COTS hardware",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-dsuite-517-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "Democracy Suite 5.17",
+      "url": "https://www.eac.gov/voting-equipment/democracy-suite-517",
+      "localArtifact": "data/equipment-sources/eac-democracy-suite-517.html",
+      "documentType": "official_certification_record_html",
+      "publishedOn": "2024-11-04",
+      "pageOrSection": "Certification summary, testing documents, certification media, and advisory notices",
+      "caveat": "The EAC record establishes certification metadata and linked public documents; it does not establish a jurisdiction deployment, field configuration, or unit inspection.",
+      "sha256": "37837c0f9f6a5ad9340e7925b842e5bf941b1f66f666711674c1908a4d464de0",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/democracy-suite-517",
+      "currentReviewedRevisionId": "eac-dsuite-517-record@2026-07-20",
+      "latestRetrievedRevisionId": "eac-dsuite-517-record@2026-07-20",
+      "revisions": [
+        {
+          "id": "eac-dsuite-517-record@2026-07-20",
+          "localArtifact": "data/equipment-sources/eac-democracy-suite-517.html",
+          "sha256": "37837c0f9f6a5ad9340e7925b842e5bf941b1f66f666711674c1908a4d464de0",
+          "byteLength": 69768,
+          "publishedOn": "2024-11-04",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/democracy-suite-517",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Certification summary, testing documents, certification media, and advisory notices",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-dsuite-517-scope",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "Democracy Suite 5.17 Certificate and Scope of Certification",
+      "url": "https://www.eac.gov/sites/default/files/voting_system/files/D-Suite%205.17%20Certificate%20and%20Scope%20SIGNED.pdf",
+      "localArtifact": "data/equipment-sources/eac-dsuite-517-certificate-scope.pdf",
+      "documentType": "official_scope_pdf",
+      "publishedOn": "2023-03-16",
+      "pageOrSection": "Certificate page 1; scope pages 1-3, 7, and 10-13",
+      "caveat": "The certificate applies only to the evaluated configuration. The scope date shows March 15, while the certificate and EAC record use March 16, 2023; this dossier preserves that document-level discrepancy.",
+      "sha256": "f34bb9ad218dc68639e19bd4f9bed5de0d63c0af0f061eb59eb486db6c5eb36e",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/voting_system/files/D-Suite%205.17%20Certificate%20and%20Scope%20SIGNED.pdf",
+      "currentReviewedRevisionId": "eac-dsuite-517-scope@2026-07-20",
+      "latestRetrievedRevisionId": "eac-dsuite-517-scope@2026-07-20",
+      "revisions": [
+        {
+          "id": "eac-dsuite-517-scope@2026-07-20",
+          "localArtifact": "data/equipment-sources/eac-dsuite-517-certificate-scope.pdf",
+          "sha256": "f34bb9ad218dc68639e19bd4f9bed5de0d63c0af0f061eb59eb486db6c5eb36e",
+          "byteLength": 1021978,
+          "publishedOn": "2023-03-16",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/voting_system/files/D-Suite%205.17%20Certificate%20and%20Scope%20SIGNED.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Certificate page 1; scope pages 1-3, 7, and 10-13",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1035-approval",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ES&S ECO 1035 approval",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201035%20Approval%2002-14-2020.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1035-approval.pdf",
+      "sha256": "498e55e1c337f9b2d270d2a72d487708cb706b18a39e7bb0080ef83d8f76b5c0",
+      "documentType": "official_change_approval_pdf",
+      "publishedOn": "2020-02-14",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Approval letter",
+      "caveat": "Approval of a certified-system change is not a field installation record.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201035%20Approval%2002-14-2020.pdf",
+      "currentReviewedRevisionId": "eac-eco-ess-1035-approval@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1035-approval@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1035-approval@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1035-approval.pdf",
+          "sha256": "498e55e1c337f9b2d270d2a72d487708cb706b18a39e7bb0080ef83d8f76b5c0",
+          "byteLength": 56809,
+          "publishedOn": "2020-02-14",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201035%20Approval%2002-14-2020.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Approval letter",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1035-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS-1035 engineering change record",
+      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1035",
+      "localArtifact": "data/equipment-sources/eac-eco-ess-1035.html",
+      "sha256": "bc83d6c6eea445319419067fb5983c4e97f69d0d729bd867d78bdf0c33aa734a",
+      "documentType": "official_change_record_html",
+      "publishedOn": "2020-02-14",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "ECO metadata, analysis, and approval attachments",
+      "caveat": "Historical DS200 component change; do not infer current firmware or board revision.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1035",
+      "currentReviewedRevisionId": "eac-eco-ess-1035-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1035-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1035-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-eco-ess-1035.html",
+          "sha256": "bc83d6c6eea445319419067fb5983c4e97f69d0d729bd867d78bdf0c33aa734a",
+          "byteLength": 62184,
+          "publishedOn": "2020-02-14",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1035",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ECO metadata, analysis, and approval attachments",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1042-approval",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS ECO 1042 approval",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201042%20Approval%209.13.19.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1042-approval.pdf",
+      "sha256": "592e01e31f0b44c5594aa47695ac3ea4d5d1a132f4ba23dd9d02b5327a6da14e",
+      "documentType": "official_change_approval_pdf",
+      "publishedOn": "2019-09-13",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Approval letter",
+      "caveat": "Approval of a certified-system change is not a field installation record.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201042%20Approval%209.13.19.pdf",
+      "currentReviewedRevisionId": "eac-eco-ess-1042-approval@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1042-approval@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1042-approval@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1042-approval.pdf",
+          "sha256": "592e01e31f0b44c5594aa47695ac3ea4d5d1a132f4ba23dd9d02b5327a6da14e",
+          "byteLength": 56718,
+          "publishedOn": "2019-09-13",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201042%20Approval%209.13.19.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Approval letter",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1042-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS-1042 engineering change record",
+      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1042",
+      "localArtifact": "data/equipment-sources/eac-eco-ess-1042.html",
+      "sha256": "bedebf2dc991441d438fe1b3301469cca8f90252ec8dcaf1c7cdcb0fc7fd6222",
+      "documentType": "official_change_record_html",
+      "publishedOn": "2019-09-13",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "ECO metadata, analysis, and approval attachments",
+      "caveat": "Historical DS200 hardware 1.3.11 change; field deployment and EVS 6.4 inclusion are not established by this record.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1042",
+      "currentReviewedRevisionId": "eac-eco-ess-1042-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1042-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1042-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-eco-ess-1042.html",
+          "sha256": "bedebf2dc991441d438fe1b3301469cca8f90252ec8dcaf1c7cdcb0fc7fd6222",
+          "byteLength": 62334,
+          "publishedOn": "2019-09-13",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1042",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ECO metadata, analysis, and approval attachments",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1044-approval",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS ECO 1044 approval",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201044%20Approval%209.13.19.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1044-approval.pdf",
+      "sha256": "d5e4332acfa8d833cb8b3430d04ef9118a53433060ff357b057d85d2a403b352",
+      "documentType": "official_change_approval_pdf",
+      "publishedOn": "2019-09-13",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Approval letter",
+      "caveat": "Approval of a certified-system change is not a field installation record.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201044%20Approval%209.13.19.pdf",
+      "currentReviewedRevisionId": "eac-eco-ess-1044-approval@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1044-approval@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1044-approval@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1044-approval.pdf",
+          "sha256": "d5e4332acfa8d833cb8b3430d04ef9118a53433060ff357b057d85d2a403b352",
+          "byteLength": 56719,
+          "publishedOn": "2019-09-13",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201044%20Approval%209.13.19.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Approval letter",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1044-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS-1044 engineering change record",
+      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1044",
+      "localArtifact": "data/equipment-sources/eac-eco-ess-1044.html",
+      "sha256": "a184649320b35fea20e7425533c4c97c0c44cdf46384d991ce294ff8dee43623",
+      "documentType": "official_change_record_html",
+      "publishedOn": "2019-09-13",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "ECO metadata, analysis, and approval attachments",
+      "caveat": "Historical ballot-box accessory change; field adoption is unknown.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1044",
+      "currentReviewedRevisionId": "eac-eco-ess-1044-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1044-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1044-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-eco-ess-1044.html",
+          "sha256": "a184649320b35fea20e7425533c4c97c0c44cdf46384d991ce294ff8dee43623",
+          "byteLength": 61772,
+          "publishedOn": "2019-09-13",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1044",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ECO metadata, analysis, and approval attachments",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1055-approval",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ES&S ECO 1055 approval",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201055%20Approval%2012-19-2019.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1055-approval.pdf",
+      "sha256": "f01d25ccd320d3712910e1b666e5df390471c35df7f25d70f6f2011d85595fbc",
+      "documentType": "official_change_approval_pdf",
+      "publishedOn": "2019-12-19",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Approval letter",
+      "caveat": "Approval of a certified-system change is not a field installation record.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201055%20Approval%2012-19-2019.pdf",
+      "currentReviewedRevisionId": "eac-eco-ess-1055-approval@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1055-approval@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1055-approval@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1055-approval.pdf",
+          "sha256": "f01d25ccd320d3712910e1b666e5df390471c35df7f25d70f6f2011d85595fbc",
+          "byteLength": 56727,
+          "publishedOn": "2019-12-19",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201055%20Approval%2012-19-2019.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Approval letter",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1055-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS-1055 engineering change record",
+      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1055",
+      "localArtifact": "data/equipment-sources/eac-eco-ess-1055.html",
+      "sha256": "2b84f8b40b6b38bbbb1cbd18672a52eedc3a2400552011414ca9efc5e5fde9a4",
+      "documentType": "official_change_record_html",
+      "publishedOn": "2019-12-19",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "ECO metadata, analysis, and approval attachments",
+      "caveat": "Historical ballot-box/trolley option; field adoption is unknown.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1055",
+      "currentReviewedRevisionId": "eac-eco-ess-1055-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1055-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1055-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-eco-ess-1055.html",
+          "sha256": "2b84f8b40b6b38bbbb1cbd18672a52eedc3a2400552011414ca9efc5e5fde9a4",
+          "byteLength": 62231,
+          "publishedOn": "2019-12-19",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1055",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ECO metadata, analysis, and approval attachments",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1165-approval",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ECO ESS 1165 approval letter",
+      "url": "https://www.eac.gov/sites/default/files/2024-05/ECO_ESS_1165_Approval_Letter.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1165-approval.pdf",
+      "sha256": "70f52edf82918db862eb299ac102963d97c66019c84ebb614dce78b2cd1ec50e",
+      "documentType": "official_change_approval_pdf",
+      "publishedOn": "2024-05-15",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Approval letter",
+      "caveat": "Approval of a certified-system change is not a field installation record.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2024-05/ECO_ESS_1165_Approval_Letter.pdf",
+      "currentReviewedRevisionId": "eac-eco-ess-1165-approval@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1165-approval@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1165-approval@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1165-approval.pdf",
+          "sha256": "70f52edf82918db862eb299ac102963d97c66019c84ebb614dce78b2cd1ec50e",
+          "byteLength": 219437,
+          "publishedOn": "2024-05-15",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2024-05/ECO_ESS_1165_Approval_Letter.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Approval letter",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-1165-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS-1165 engineering change record",
+      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1165",
+      "localArtifact": "data/equipment-sources/eac-eco-ess-1165.html",
+      "sha256": "857f26b6988a1aab79114e811e91ab108857200d8fc80a697f08a195947e5c97",
+      "documentType": "official_change_record_html",
+      "publishedOn": "2024-05-15",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "ECO metadata, analysis, and approval attachments",
+      "caveat": "The approved change applies to listed certified systems including EVS 6.4.0.0; installation by a particular jurisdiction remains unknown.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1165",
+      "currentReviewedRevisionId": "eac-eco-ess-1165-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-1165-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-1165-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-eco-ess-1165.html",
+          "sha256": "857f26b6988a1aab79114e811e91ab108857200d8fc80a697f08a195947e5c97",
+          "byteLength": 62290,
+          "publishedOn": "2024-05-15",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-1165",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ECO metadata, analysis, and approval attachments",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-ess-983-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "ESS-983 engineering change record",
+      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-983",
+      "localArtifact": "data/equipment-sources/eac-eco-ess-983.html",
+      "sha256": "25e91beda5cb0b21ac22329d4847abfb25ee1272dad434245fd21831d27ca61f",
+      "documentType": "official_change_record_html",
+      "publishedOn": "2018-12-14",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "ECO metadata and attachment",
+      "caveat": "Historical DS200 family change; field deployment and EVS 6.4 inclusion are not established by this record.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-983",
+      "currentReviewedRevisionId": "eac-eco-ess-983-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-ess-983-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-ess-983-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-eco-ess-983.html",
+          "sha256": "25e91beda5cb0b21ac22329d4847abfb25ee1272dad434245fd21831d27ca61f",
+          "byteLength": 61442,
+          "publishedOn": "2018-12-14",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders/ess-983",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ECO metadata and attachment",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-eco-index",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "Engineering Change Orders",
+      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders",
+      "localArtifact": "data/equipment-sources/eac-engineering-change-orders.html",
+      "sha256": "4fe152aa1eecdefa43c7cdc7240182ed54f4ed6dd26b1d70fc409e1ead8bb4b5",
+      "documentType": "official_registry_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Public ECO registry",
+      "caveat": "The archived first registry page is discovery context; individual ECO records and attachments support the catalog claims.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders",
+      "currentReviewedRevisionId": "eac-eco-index@2026-07-19",
+      "latestRetrievedRevisionId": "eac-eco-index@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-eco-index@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-engineering-change-orders.html",
+          "sha256": "4fe152aa1eecdefa43c7cdc7240182ed54f4ed6dd26b1d70fc409e1ead8bb4b5",
+          "byteLength": 117800,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Public ECO registry",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-evs-6400-record",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "EVS 6.4.0.0 certification record",
+      "url": "https://www.eac.gov/voting-equipment/evs-6400",
+      "localArtifact": "data/equipment-sources/eac-evs-6400.html",
+      "sha256": "5ad71e34c04a2ccbfc1b57aa4cadbf44ab1a27247afa5d985793ec7eab820b7c",
+      "documentType": "official_certification_record_html",
+      "publishedOn": "2023-08-18",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Certification record and public attachments",
+      "caveat": "This is a certification record for the evaluated configuration, not a field inventory.",
+      "canonicalUrl": "https://www.eac.gov/voting-equipment/evs-6400",
+      "currentReviewedRevisionId": "eac-evs-6400-record@2026-07-19",
+      "latestRetrievedRevisionId": "eac-evs-6400-record@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-evs-6400-record@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-evs-6400.html",
+          "sha256": "5ad71e34c04a2ccbfc1b57aa4cadbf44ab1a27247afa5d985793ec7eab820b7c",
+          "byteLength": 65196,
+          "publishedOn": "2023-08-18",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/voting-equipment/evs-6400",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Certification record and public attachments",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-evs-6400-scope",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "EVS 6.4.0.0 Certificate and Scope of Conformance",
+      "url": "https://www.eac.gov/sites/default/files/2023-08/ES%26S%20EVS%206.4.0.0%20Certificate%20and%20Scope%20of%20Conformance%20Signed%20%282%29.pdf",
+      "localArtifact": "data/equipment-sources/eac-evs-6400-certificate-scope.pdf",
+      "sha256": "18ac832291345ff96e5bfe8bd63ede7d1af2ed9a4387b8bf47f0b9fb2564ebae",
+      "documentType": "official_scope_pdf",
+      "publishedOn": "2023-08-18",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Pages 1-10, especially proprietary components on pages 6-7",
+      "caveat": "The scope applies only to EVS 6.4.0.0 in its evaluated configuration and expressly does not establish election readiness or field operation.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2023-08/ES%26S%20EVS%206.4.0.0%20Certificate%20and%20Scope%20of%20Conformance%20Signed%20%282%29.pdf",
+      "currentReviewedRevisionId": "eac-evs-6400-scope@2026-07-19",
+      "latestRetrievedRevisionId": "eac-evs-6400-scope@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-evs-6400-scope@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-evs-6400-certificate-scope.pdf",
+          "sha256": "18ac832291345ff96e5bfe8bd63ede7d1af2ed9a4387b8bf47f0b9fb2564ebae",
+          "byteLength": 1659956,
+          "publishedOn": "2023-08-18",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2023-08/ES%26S%20EVS%206.4.0.0%20Certificate%20and%20Scope%20of%20Conformance%20Signed%20%282%29.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 1-10, especially proprietary components on pages 6-7",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-program-manual-v3",
+      "publisher": "U.S. Election Assistance Commission",
+      "authorityLevel": "federal_official",
+      "title": "Voting System Testing and Certification Program Manual, Version 3.0",
+      "url": "https://www.eac.gov/sites/default/files/TestingCertification/Testing_and_Certification_Program_Manual_Version_3_020421.pdf",
+      "localArtifact": "data/equipment-sources/eac-testing-certification-program-manual-v3.pdf",
+      "sha256": "87c2e3aba912e2c6673ca10b6c302893836a713a2d3610b79aa0102f097812a7",
+      "documentType": "official_program_manual_pdf",
+      "publishedOn": "2021-02-04",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Sections 3.4.3 and 3.5",
+      "caveat": "The manual governs EAC certification changes; state and local deployment records remain separate.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/TestingCertification/Testing_and_Certification_Program_Manual_Version_3_020421.pdf",
+      "currentReviewedRevisionId": "eac-program-manual-v3@2026-07-19",
+      "latestRetrievedRevisionId": "eac-program-manual-v3@2026-07-19",
+      "revisions": [
+        {
+          "id": "eac-program-manual-v3@2026-07-19",
+          "localArtifact": "data/equipment-sources/eac-testing-certification-program-manual-v3.pdf",
+          "sha256": "87c2e3aba912e2c6673ca10b6c302893836a713a2d3610b79aa0102f097812a7",
+          "byteLength": 676480,
+          "publishedOn": "2021-02-04",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/TestingCertification/Testing_and_Certification_Program_Manual_Version_3_020421.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Sections 3.4.3 and 3.5",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-clearvote-25-test-plan",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ClearVote 2.5 Certification Test Plan, Version 01",
+      "url": "https://www.eac.gov/sites/default/files/2024-08/ClearVote%202.5%20Test%20Plan%20TP-01-01-CBG-07-01.01.pdf",
+      "localArtifact": "data/equipment-sources/provv-clearvote-25-test-plan.pdf",
+      "sha256": "dbdb0ca284db563934475d51c36f6f70b91afee7a12d92e7d0175cb1642b1b98",
+      "documentType": "vstl_test_plan_pdf",
+      "publishedOn": "2024-08-02",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Pages 4-12 and 27-30: submitted changes, system equipment, and known-field-issue scope",
+      "caveat": "The test plan records the submitted certification configuration and pre-certification changes; it is not a service history or deployment inventory.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2024-08/ClearVote%202.5%20Test%20Plan%20TP-01-01-CBG-07-01.01.pdf",
+      "currentReviewedRevisionId": "provv-clearvote-25-test-plan@2026-07-19",
+      "latestRetrievedRevisionId": "provv-clearvote-25-test-plan@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-clearvote-25-test-plan@2026-07-19",
+          "localArtifact": "data/equipment-sources/provv-clearvote-25-test-plan.pdf",
+          "sha256": "dbdb0ca284db563934475d51c36f6f70b91afee7a12d92e7d0175cb1642b1b98",
+          "byteLength": 1173498,
+          "publishedOn": "2024-08-02",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2024-08/ClearVote%202.5%20Test%20Plan%20TP-01-01-CBG-07-01.01.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 4-12 and 27-30: submitted changes, system equipment, and known-field-issue scope",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-clearvote-25-test-report",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ClearVote 2.5 Certification Test Report, Revision 03",
+      "url": "https://www.eac.gov/sites/default/files/2025-09/ClearVote%202.5%20Test%20Report%20TR-01-01-CBG-07-01.03.pdf",
+      "localArtifact": "data/equipment-sources/provv-clearvote-25-test-report.pdf",
+      "sha256": "7a3b939ee136136c20350f120d74fe0659ac4030736c68d4aa7a266fa8fc434a",
+      "documentType": "vstl_test_report_pdf",
+      "publishedOn": "2025-09-26",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Pages 35-37: anomalies, deficiencies, resolutions, and certification recommendation",
+      "caveat": "Reported findings are limited to the certification test campaign and do not establish field incidence or the absence of other defects.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2025-09/ClearVote%202.5%20Test%20Report%20TR-01-01-CBG-07-01.03.pdf",
+      "currentReviewedRevisionId": "provv-clearvote-25-test-report@2026-07-19",
+      "latestRetrievedRevisionId": "provv-clearvote-25-test-report@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-clearvote-25-test-report@2026-07-19",
+          "localArtifact": "data/equipment-sources/provv-clearvote-25-test-report.pdf",
+          "sha256": "7a3b939ee136136c20350f120d74fe0659ac4030736c68d4aa7a266fa8fc434a",
+          "byteLength": 1248710,
+          "publishedOn": "2025-09-26",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2025-09/ClearVote%202.5%20Test%20Report%20TR-01-01-CBG-07-01.03.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 35-37: anomalies, deficiencies, resolutions, and certification recommendation",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-dsuite-517-test-plan",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "Democracy Suite 5.17 Test Plan, TP-01-01-DVS-50-01.01",
+      "url": "https://www.eac.gov/sites/default/files/voting_system/files/Dominion%20Voting%20Systems%20D-Suite%205.17%20Test%20Plan-Rev.%2001.pdf",
+      "localArtifact": "data/equipment-sources/provv-dsuite-517-test-plan.pdf",
+      "documentType": "vstl_test_plan_pdf",
+      "publishedOn": "2022-12-02",
+      "pageOrSection": "Revision 01; test-plan pages 13-17, 22-23, and 37-38",
+      "caveat": "The plan records submitted and planned test configurations. It is not the final certification scope and does not establish field installation or current device state.",
+      "sha256": "9f38b17fec258a03aaed33a4dcabc455889a01723cdb0ebaa1aa12d304294fe4",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/voting_system/files/Dominion%20Voting%20Systems%20D-Suite%205.17%20Test%20Plan-Rev.%2001.pdf",
+      "currentReviewedRevisionId": "provv-dsuite-517-test-plan@2026-07-20",
+      "latestRetrievedRevisionId": "provv-dsuite-517-test-plan@2026-07-20",
+      "revisions": [
+        {
+          "id": "provv-dsuite-517-test-plan@2026-07-20",
+          "localArtifact": "data/equipment-sources/provv-dsuite-517-test-plan.pdf",
+          "sha256": "9f38b17fec258a03aaed33a4dcabc455889a01723cdb0ebaa1aa12d304294fe4",
+          "byteLength": 908113,
+          "publishedOn": "2022-12-02",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/voting_system/files/Dominion%20Voting%20Systems%20D-Suite%205.17%20Test%20Plan-Rev.%2001.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Revision 01; test-plan pages 13-17, 22-23, and 37-38",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-dsuite-517-test-report",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "Democracy Suite 5.17 Test Report, TR-01-01-DVS-50-01.03",
+      "url": "https://www.eac.gov/sites/default/files/voting_system/files/Dominion%20Voting%20Systems%20D-Suite%205.17%20Test%20Report-Rev.%2003.pdf",
+      "localArtifact": "data/equipment-sources/provv-dsuite-517-test-report.pdf",
+      "documentType": "vstl_test_report_pdf",
+      "publishedOn": "2023-03-15",
+      "pageOrSection": "Revision 03; report pages 31-41 and final certified configuration",
+      "caveat": "The report describes the certification campaign and evaluated configuration. Its findings do not establish the condition of every fielded unit or all later operating circumstances.",
+      "sha256": "b99cbefa3381f7a4f1b9acde1f9bb80a95156a7b5e7cdb212af9ccfeb3cd1e6b",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/voting_system/files/Dominion%20Voting%20Systems%20D-Suite%205.17%20Test%20Report-Rev.%2003.pdf",
+      "currentReviewedRevisionId": "provv-dsuite-517-test-report@2026-07-20",
+      "latestRetrievedRevisionId": "provv-dsuite-517-test-report@2026-07-20",
+      "revisions": [
+        {
+          "id": "provv-dsuite-517-test-report@2026-07-20",
+          "localArtifact": "data/equipment-sources/provv-dsuite-517-test-report.pdf",
+          "sha256": "b99cbefa3381f7a4f1b9acde1f9bb80a95156a7b5e7cdb212af9ccfeb3cd1e6b",
+          "byteLength": 1062318,
+          "publishedOn": "2023-03-15",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/voting_system/files/Dominion%20Voting%20Systems%20D-Suite%205.17%20Test%20Report-Rev.%2003.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Revision 03; report pages 31-41 and final certified configuration",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-dsuite-eco-100936-analysis",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "DVS ECO 100936 Analysis Rev. 00",
+      "url": "https://www.eac.gov/sites/default/files/2024-09/DVS%20ECO%20100936%20Analysis%2000.pdf",
+      "localArtifact": "data/equipment-sources/provv-dsuite-eco-100936-analysis.pdf",
+      "documentType": "vstl_change_analysis_pdf",
+      "publishedOn": "2024-09-24",
+      "pageOrSection": "Page 1",
+      "caveat": "The VSTL analysis records a documentation and SSD-firmware update path affecting D-Suite 5.17. It does not establish adoption by a jurisdiction or disclose the SSD firmware version in this artifact.",
+      "sha256": "ff494c1b8a85e6d66942d316ea8491a4c52c219862b520efd2c27811e9719a1b",
+      "retrievedOn": "2026-07-20",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2024-09/DVS%20ECO%20100936%20Analysis%2000.pdf",
+      "currentReviewedRevisionId": "provv-dsuite-eco-100936-analysis@2026-07-20",
+      "latestRetrievedRevisionId": "provv-dsuite-eco-100936-analysis@2026-07-20",
+      "revisions": [
+        {
+          "id": "provv-dsuite-eco-100936-analysis@2026-07-20",
+          "localArtifact": "data/equipment-sources/provv-dsuite-eco-100936-analysis.pdf",
+          "sha256": "ff494c1b8a85e6d66942d316ea8491a4c52c219862b520efd2c27811e9719a1b",
+          "byteLength": 314357,
+          "publishedOn": "2024-09-24",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2024-09/DVS%20ECO%20100936%20Analysis%2000.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-eco-ess-1035-analysis",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ES&S ECO 1035 Analysis Form",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201035%20Analysis%20Form.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1035-analysis.pdf",
+      "sha256": "4ce50831e8ee00a7230dd99e6660917938b67e207aa3c097c8ecdbc57b0b1237",
+      "documentType": "vstl_change_analysis_pdf",
+      "publishedOn": "2020-02-14",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Page 1 overview and affected systems",
+      "caveat": "The analysis describes an FPGA-code change for identified certified configurations, not an installed-field inventory.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201035%20Analysis%20Form.pdf",
+      "currentReviewedRevisionId": "provv-eco-ess-1035-analysis@2026-07-19",
+      "latestRetrievedRevisionId": "provv-eco-ess-1035-analysis@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-eco-ess-1035-analysis@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1035-analysis.pdf",
+          "sha256": "4ce50831e8ee00a7230dd99e6660917938b67e207aa3c097c8ecdbc57b0b1237",
+          "byteLength": 339922,
+          "publishedOn": "2020-02-14",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201035%20Analysis%20Form.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1 overview and affected systems",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-eco-ess-1042-analysis",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ESS ECO 1042 Analysis",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ESS%20ECO%201042%20Analysis.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1042-analysis.pdf",
+      "sha256": "11f20564ec1065f2aa8ec3bff17b9a24d0d55d36a83e651ddc01ae25d92fdef4",
+      "documentType": "vstl_change_analysis_pdf",
+      "publishedOn": "2019-09-13",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Page 1 overview and affected systems",
+      "caveat": "The analysis identifies components changed in DS200 hardware configuration 1.3.11; it does not identify a jurisdiction's installed revision.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ESS%20ECO%201042%20Analysis.pdf",
+      "currentReviewedRevisionId": "provv-eco-ess-1042-analysis@2026-07-19",
+      "latestRetrievedRevisionId": "provv-eco-ess-1042-analysis@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-eco-ess-1042-analysis@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1042-analysis.pdf",
+          "sha256": "11f20564ec1065f2aa8ec3bff17b9a24d0d55d36a83e651ddc01ae25d92fdef4",
+          "byteLength": 628112,
+          "publishedOn": "2019-09-13",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ESS%20ECO%201042%20Analysis.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1 overview and affected systems",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-eco-ess-1044-analysis",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ESS ECO 1044 Analysis",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ESS%20ECO%201044%20Analysis.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1044-analysis.pdf",
+      "sha256": "c1699ca92f55477de8446f4b5505aa6497afaa19b5743db68c18f5df1a89a799",
+      "documentType": "vstl_change_analysis_pdf",
+      "publishedOn": "2019-09-13",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Page 1 analysis",
+      "caveat": "The analysis is configuration-change evidence, not proof that the accessory was deployed.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ESS%20ECO%201044%20Analysis.pdf",
+      "currentReviewedRevisionId": "provv-eco-ess-1044-analysis@2026-07-19",
+      "latestRetrievedRevisionId": "provv-eco-ess-1044-analysis@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-eco-ess-1044-analysis@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1044-analysis.pdf",
+          "sha256": "c1699ca92f55477de8446f4b5505aa6497afaa19b5743db68c18f5df1a89a799",
+          "byteLength": 497474,
+          "publishedOn": "2019-09-13",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ESS%20ECO%201044%20Analysis.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1 analysis",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-eco-ess-1055-analysis",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ES&S ECO 1055 Analysis",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201055%20Analysis.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1055-analysis.pdf",
+      "sha256": "32b4c4b21362589254aa53efc2b8ddb113712883c8a03939b8468c40437839ae",
+      "documentType": "vstl_change_analysis_pdf",
+      "publishedOn": "2019-12-19",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Page 1 analysis",
+      "caveat": "The analysis is configuration-change evidence, not proof that the option was deployed.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201055%20Analysis.pdf",
+      "currentReviewedRevisionId": "provv-eco-ess-1055-analysis@2026-07-19",
+      "latestRetrievedRevisionId": "provv-eco-ess-1055-analysis@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-eco-ess-1055-analysis@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1055-analysis.pdf",
+          "sha256": "32b4c4b21362589254aa53efc2b8ddb113712883c8a03939b8468c40437839ae",
+          "byteLength": 511095,
+          "publishedOn": "2019-12-19",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%201055%20Analysis.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1 analysis",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-eco-ess-1165-analysis",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ES&S ECO 1165 Analysis Rev. 01",
+      "url": "https://www.eac.gov/sites/default/files/2024-05/ES%26S_ECO_1165_Analysis_Rev_01.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-1165-analysis.pdf",
+      "sha256": "54ded58752af1888f3aacd0c08434df5a2301bb91b9d185f8f9c16e933c4ebf8",
+      "documentType": "vstl_change_analysis_pdf",
+      "publishedOn": "2024-05-15",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Page 1 analysis and affected systems",
+      "caveat": "Pro V&V reviewed and functionally tested the tote-bin security gasketing change; this does not prove local installation.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2024-05/ES%26S_ECO_1165_Analysis_Rev_01.pdf",
+      "currentReviewedRevisionId": "provv-eco-ess-1165-analysis@2026-07-19",
+      "latestRetrievedRevisionId": "provv-eco-ess-1165-analysis@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-eco-ess-1165-analysis@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-1165-analysis.pdf",
+          "sha256": "54ded58752af1888f3aacd0c08434df5a2301bb91b9d185f8f9c16e933c4ebf8",
+          "byteLength": 262230,
+          "publishedOn": "2024-05-15",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2024-05/ES%26S_ECO_1165_Analysis_Rev_01.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1 analysis and affected systems",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-eco-ess-983-analysis",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ES&S ECO 983 analysis",
+      "url": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%20983.pdf",
+      "localArtifact": "data/equipment-sources/eco-ess-983-analysis.pdf",
+      "sha256": "32020f43cd6abb908ce3f60dd5b6dc294d2322eadb94b50edf43fc46017232f7",
+      "documentType": "vstl_change_analysis_pdf",
+      "publishedOn": "2018-12-14",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "DS200 hardware 1.3.10.0 seal-area change",
+      "caveat": "Historical certified-configuration evidence, not proof of installation on a current unit.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%20983.pdf",
+      "currentReviewedRevisionId": "provv-eco-ess-983-analysis@2026-07-19",
+      "latestRetrievedRevisionId": "provv-eco-ess-983-analysis@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-eco-ess-983-analysis@2026-07-19",
+          "localArtifact": "data/equipment-sources/eco-ess-983-analysis.pdf",
+          "sha256": "32020f43cd6abb908ce3f60dd5b6dc294d2322eadb94b50edf43fc46017232f7",
+          "byteLength": 2503040,
+          "publishedOn": "2018-12-14",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/eoc-documents/ES%26S%20ECO%20983.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "DS200 hardware 1.3.10.0 seal-area change",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "provv-evs-6400-test-report",
+      "publisher": "Pro V&V, Inc.",
+      "authorityLevel": "eac_accredited_vstl",
+      "title": "ES&S EVS 6.4.0.0 Certification Test Report TR-01-01-ESS-2023-01.03",
+      "url": "https://www.eac.gov/sites/default/files/2023-08/ESS%20EVS6400%20Test%20Report%2001%20Rev%2003.pdf",
+      "localArtifact": "data/equipment-sources/provv-evs-6400-test-report.pdf",
+      "sha256": "cfc04d88fd4be79cb793eb18ab940b01be1295426c14d43062081acd69a6ba84",
+      "documentType": "vstl_test_report_pdf",
+      "publishedOn": "2023-08-15",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Sections 3.2, 3.3, and Tables 4-1 through 4-3",
+      "caveat": "Test results describe the submitted test campaign. They are not a statement about every fielded unit or later operating conditions.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/2023-08/ESS%20EVS6400%20Test%20Report%2001%20Rev%2003.pdf",
+      "currentReviewedRevisionId": "provv-evs-6400-test-report@2026-07-19",
+      "latestRetrievedRevisionId": "provv-evs-6400-test-report@2026-07-19",
+      "revisions": [
+        {
+          "id": "provv-evs-6400-test-report@2026-07-19",
+          "localArtifact": "data/equipment-sources/provv-evs-6400-test-report.pdf",
+          "sha256": "cfc04d88fd4be79cb793eb18ab940b01be1295426c14d43062081acd69a6ba84",
+          "byteLength": 1308247,
+          "publishedOn": "2023-08-15",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/2023-08/ESS%20EVS6400%20Test%20Report%2001%20Rev%2003.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Sections 3.2, 3.3, and Tables 4-1 through 4-3",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "wa-2025-county-system-table",
+      "publisher": "Washington Office of the Secretary of State",
+      "authorityLevel": "state_official",
+      "title": "Voting systems used by county",
+      "url": "https://www.sos.wa.gov/elections/data-research/election-technology/voting-systems-county",
+      "localArtifact": "data/equipment-sources/wa-voting-systems-by-county.html",
+      "sha256": "42c21aae5aee6a8e1f3469b8c025fe49697764dfaec78c7f19afb1a384ce0291",
+      "documentType": "state_deployment_table_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "County table and November 2025 version note",
+      "caveat": "The table identifies county-level EVS system versions used in the November 2025 general election. It does not identify DS200 unit counts, component revisions, firmware installed on each device, or backup power.",
+      "canonicalUrl": "https://www.sos.wa.gov/elections/data-research/election-technology/voting-systems-county",
+      "currentReviewedRevisionId": "wa-2025-county-system-table@2026-07-19",
+      "latestRetrievedRevisionId": "wa-2025-county-system-table@2026-07-19",
+      "revisions": [
+        {
+          "id": "wa-2025-county-system-table@2026-07-19",
+          "localArtifact": "data/equipment-sources/wa-voting-systems-by-county.html",
+          "sha256": "42c21aae5aee6a8e1f3469b8c025fe49697764dfaec78c7f19afb1a384ce0291",
+          "byteLength": 202475,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.sos.wa.gov/elections/data-research/election-technology/voting-systems-county",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "County table and November 2025 version note",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "wa-evs-6400-application",
+      "publisher": "Washington Office of the Secretary of State",
+      "authorityLevel": "state_official",
+      "title": "Amended Vendor Application for EVS 6.4.0.0 Certification",
+      "url": "https://www.sos.wa.gov/sites/default/files/2023-12/Amended%20Certification%20Application%20EVS%206400.pdf",
+      "localArtifact": "data/equipment-sources/wa-evs-6400-certification-application.pdf",
+      "sha256": "10f6716ce5cf0cc564625cf9e7023ae23056339f9aa5cbeb3f7752a93ad6cc16",
+      "documentType": "state_certification_application_pdf",
+      "publishedOn": "2023-11-28",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Page 1 hardware list",
+      "caveat": "The application identifies the configuration submitted for Washington certification, not a county unit inventory.",
+      "canonicalUrl": "https://www.sos.wa.gov/sites/default/files/2023-12/Amended%20Certification%20Application%20EVS%206400.pdf",
+      "currentReviewedRevisionId": "wa-evs-6400-application@2026-07-19",
+      "latestRetrievedRevisionId": "wa-evs-6400-application@2026-07-19",
+      "revisions": [
+        {
+          "id": "wa-evs-6400-application@2026-07-19",
+          "localArtifact": "data/equipment-sources/wa-evs-6400-certification-application.pdf",
+          "sha256": "10f6716ce5cf0cc564625cf9e7023ae23056339f9aa5cbeb3f7752a93ad6cc16",
+          "byteLength": 213436,
+          "publishedOn": "2023-11-28",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.sos.wa.gov/sites/default/files/2023-12/Amended%20Certification%20Application%20EVS%206400.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1 hardware list",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "wa-evs-6400-staff-report",
+      "publisher": "Washington Office of the Secretary of State",
+      "authorityLevel": "state_official",
+      "title": "Report on the Examination of ES&S EVS 6.4.0.0",
+      "url": "https://www.sos.wa.gov/sites/default/files/2023-12/ES%26S%20EVS%206.4.0.0%20staff%20report.pdf",
+      "localArtifact": "data/equipment-sources/wa-evs-6400-staff-report.pdf",
+      "sha256": "d5be815af919e039722c8965cd3523499218068c99ccbab4160b784a8e38dc56",
+      "documentType": "state_staff_report_pdf",
+      "publishedOn": "2023-11-30",
+      "retrievedOn": "2026-07-19",
+      "pageOrSection": "Pages 3-6",
+      "caveat": "The report describes Washington certification examination and states that detailed technical specifications were supplied in the EAC Technical Data Package; it is not a public internal bill of materials.",
+      "canonicalUrl": "https://www.sos.wa.gov/sites/default/files/2023-12/ES%26S%20EVS%206.4.0.0%20staff%20report.pdf",
+      "currentReviewedRevisionId": "wa-evs-6400-staff-report@2026-07-19",
+      "latestRetrievedRevisionId": "wa-evs-6400-staff-report@2026-07-19",
+      "revisions": [
+        {
+          "id": "wa-evs-6400-staff-report@2026-07-19",
+          "localArtifact": "data/equipment-sources/wa-evs-6400-staff-report.pdf",
+          "sha256": "d5be815af919e039722c8965cd3523499218068c99ccbab4160b784a8e38dc56",
+          "byteLength": 220421,
+          "publishedOn": "2023-11-30",
+          "retrievedOn": "2026-07-19",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.sos.wa.gov/sites/default/files/2023-12/ES%26S%20EVS%206.4.0.0%20staff%20report.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Pages 3-6",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    }
+  ],
+  "editorialPolicy": {
+    "lifecycle": [
+      "draft",
+      "in_review",
+      "approved",
+      "published",
+      "superseded",
+      "withdrawn"
+    ],
+    "publicProductionState": "published",
+    "stagingStates": [
+      "approved",
+      "published"
+    ],
+    "changedSourceRule": "A changed archived artifact requires claim review; a hash change alone is not an equipment change.",
+    "fieldedVersionRule": "A fielded version requires a dated official jurisdiction inventory, acceptance, inspection, or equivalent direct record."
+  }
+}

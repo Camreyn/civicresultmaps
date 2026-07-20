@@ -10,7 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "release:verify": "node scripts/verify-national-data-release.mjs",
-    "test": "npm run test:layout && npm run test:api && npm run test:security-incidents && npm run test:etl",
+    "test": "npm run test:layout && npm run test:api && npm run test:security-incidents && npm run test:equipment-catalog && npm run test:etl",
     "test:api": "node tests/api/api-contract.test.mjs && node tests/api/seed-script.test.mjs && node tests/api/legacy-import.test.mjs && node tests/api/native-import.test.mjs && node tests/api/ak-source-coverage.test.mjs && node tests/api/ar-source-coverage.test.mjs && node tests/api/ne-canvass-voting-statistics.test.mjs && node tests/api/ne-source-coverage.test.mjs && node tests/api/turnout-normalizer.test.mjs && node tests/api/vote-method-normalizer.test.mjs && node tests/api/wi-audit-normalizer.test.mjs && node tests/api/wi-review-completion.test.mjs && node tests/api/wi-remaining-data-status.test.mjs && node tests/api/wi-remaining-collection.test.mjs && node tests/api/swing-state-parity.test.mjs && node tests/api/mo-source-coverage.test.mjs && node tests/api/nv-source-coverage.test.mjs && node tests/api/electronic-integrity.test.mjs && node tests/api/source-records-requests.test.mjs && node tests/api/evidence-review-tools.test.mjs && node tests/api/ok-source-coverage.test.mjs && node tests/api/tn-source-coverage.test.mjs && node --experimental-strip-types tests/api/jurisdiction-tags.test.mjs && node --experimental-strip-types tests/api/national-county-comparison.test.mjs && node --experimental-strip-types tests/api/county-profile.test.mjs && node tests/api/national-compare-geometry.test.mjs && node tests/api/national-platform-features.test.mjs && node --experimental-strip-types tests/api/analysis-indicators.test.mjs && node tests/api/historical-indicators.test.mjs && node tests/api/ga-historical-review.test.mjs && node tests/api/nc-historical-review.test.mjs && node --experimental-strip-types tests/api/historical-promotion.test.mjs && node --experimental-strip-types tests/api/public-data-revision.test.mjs && node --experimental-strip-types tests/api/native-batching.test.mjs",
     "test:security-incidents": "node tests/api/security-incidents.test.mjs && node --experimental-strip-types tests/api/security-incident-features.test.mjs",
     "test:etl": "python -m unittest discover -s tests/python",
@@ -198,7 +198,17 @@
     "etl:validate:dc": "npm run etl:prepare:dc && python -m civic_etl.cli validate --config etl/state-configs/dc.json",
     "etl:import:dc": "npm run etl:prepare:dc && python -m civic_etl.cli import --config etl/state-configs/dc.json --out .etl/staging",
     "test:layout": "node --experimental-strip-types tests/api/workspace-layout.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v2.test.mjs && node --experimental-strip-types tests/api/workspace-layout-v3.test.mjs && node --experimental-strip-types tests/api/workspace-layout-editor-reducer.test.mjs && node --experimental-strip-types tests/api/workspace-layout-contrast.test.mjs && node --experimental-strip-types tests/api/workspace-layout-diff.test.mjs && node --experimental-strip-types tests/api/workspace-layout-scheduler-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-resolution.test.mjs && node --experimental-strip-types tests/api/workspace-layout-publisher-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-visitor.test.mjs && node --experimental-strip-types tests/api/workspace-layout-admin-policy.test.mjs && node --experimental-strip-types tests/api/workspace-layout-agent-operations.test.mjs && node --experimental-strip-types tests/api/workspace-layout-agent-mcp.test.mjs && node --experimental-strip-types tests/api/workspace-source-catalog.test.mjs && node --experimental-strip-types tests/api/workspace-navigation.test.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "equipment:model:build": "node scripts/build-equipment-model.mjs && node scripts/build-clearaccess-model.mjs && node scripts/build-imagecast-x-model.mjs",
+    "equipment:catalog:build": "npm run equipment:model:build && node scripts/build-equipment-catalog.mjs",
+    "equipment:catalog:coverage": "node scripts/report-equipment-catalog-coverage.mjs",
+    "equipment:evidence:migrate": "node scripts/migrate-equipment-evidence-v2.mjs",
+    "equipment:sources:refresh": "node scripts/refresh-equipment-sources.mjs",
+    "equipment:sources:review": "node scripts/review-equipment-source-revision.mjs",
+    "equipment:claims:state": "node scripts/set-equipment-claim-editorial-state.mjs",
+    "validate:equipment-editorial": "node scripts/validate-equipment-editorial-workflow.mjs",
+    "validate:equipment-catalog": "node scripts/validate-equipment-catalog.mjs",
+    "test:equipment-catalog": "npm run validate:equipment-editorial && npm run validate:equipment-catalog && node tests/api/equipment-catalog.test.mjs && node --experimental-strip-types tests/api/equipment-explorer-config.test.mts && node tests/api/equipment-editorial-state.test.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.18",
@@ -210,6 +220,7 @@
     "@lexical/react": "^0.48.0",
     "@lexical/rich-text": "^0.48.0",
     "@neondatabase/serverless": "^1.0.2",
+    "@react-three/fiber": "9.6.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.6.1",
     "@vercel/edge-config": "^1.4.3",
@@ -222,6 +233,7 @@
     "pdf-parse": "^2.4.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "three": "0.185.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -230,6 +242,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@types/three": "0.185.1",
     "drizzle-kit": "^0.30.1",
     "eslint": "^9.17.0",
     "eslint-config-next": "^16.1.5",

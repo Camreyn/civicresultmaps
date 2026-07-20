@@ -1,0 +1,621 @@
+{
+  "schemaVersion": 2,
+  "reviewedOn": "2026-07-19",
+  "system": {
+    "id": "clear-ballot-clearvote-25-clearaccess",
+    "slug": "clear-ballot-clearvote-25-clearaccess",
+    "status": "pilot",
+    "manufacturer": "Clear Ballot Group, Inc.",
+    "systemName": "ClearVote",
+    "systemVersion": "2.5",
+    "deviceName": "ClearAccess",
+    "displayName": "Clear Ballot ClearVote 2.5 / ClearAccess",
+    "deviceRole": "Accessible touchscreen ballot-marking configuration",
+    "summary": "A source-linked dossier for the ClearAccess ballot-marking configuration within EAC-certified ClearVote 2.5, including named COTS components, explicit external UPS options, certified software observations, and Pro V&V test findings.",
+    "certification": {
+      "certificationId": "CBG-CV-25",
+      "standard": "VVSG 1.0",
+      "certifiedOn": "2025-11-19",
+      "vstl": "Pro V&V, Inc.",
+      "scopeKind": "certified_configuration",
+      "sourceIds": [
+        "eac-clearvote-25-record",
+        "eac-clearvote-25-scope",
+        "provv-clearvote-25-test-report"
+      ],
+      "caveat": "EAC certification applies only to the evaluated ClearVote 2.5 certified configuration. It does not establish which permitted ClearAccess options a jurisdiction selected or what is installed in a particular fielded unit.",
+      "sourceRevisionIds": [
+        "eac-clearvote-25-record@2026-07-19",
+        "eac-clearvote-25-scope@2026-07-19",
+        "provv-clearvote-25-test-report@2026-07-19"
+      ]
+    },
+    "components": [
+      {
+        "id": "clearaccess-software",
+        "name": "ClearAccess software",
+        "category": "software",
+        "description": "The certified scope lists proprietary ClearAccess software version 2.5.6 and its configured COTS software environment.",
+        "evidenceStatus": "certified_component",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [
+          "clearaccess-software-256",
+          "clearaccess-windows-10-iot-2021"
+        ],
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-report"
+        ],
+        "sceneNodeName": "ClearAccess_Software",
+        "caveat": "These are versions in the certified configuration, not a live reading from a deployed workstation and not a claim that 2.5.6 is the newest product-family release.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-touchscreen-computer",
+        "name": "All-in-one touchscreen computer",
+        "category": "interface_compute",
+        "description": "The certified scope permits ELO 15-inch EloPOS and E-Series or X-Series all-in-one touchscreens, plus a Dell OptiPlex 5250 option, for ClearAccess.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "EPS15E2",
+          "ESY15E2",
+          "ESY20X2",
+          "Dell OptiPlex 5250"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-plan"
+        ],
+        "sceneNodeName": "Touchscreen_AIO",
+        "caveat": "The listed computers are permitted alternatives. The sources do not establish that every ClearAccess setup contains every model or identify a jurisdiction's selected model.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-ballot-printer",
+        "name": "Ballot printer",
+        "category": "printer",
+        "description": "The certified scope lists Oki Data B432dn and Lexmark MS521dn or MS531dw laser-printer options for ClearAccess.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Oki Data B432dn",
+          "Lexmark MS521dn",
+          "Lexmark MS531dw"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-plan"
+        ],
+        "sceneNodeName": "Ballot_Printer",
+        "caveat": "These are certified alternatives, not evidence that all three printers are present in one configuration or that a particular jurisdiction uses one of them.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-ups",
+        "name": "External uninterruptible power supply",
+        "category": "power",
+        "description": "The certified scope lists CyberPower PR1500RT2U and APC SMT2200C or SRT1500RMXLA UPS models for ClearAccess.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "CyberPower PR1500RT2U",
+          "APC SMT2200C",
+          "APC SRT1500RMXLA"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-plan"
+        ],
+        "sceneNodeName": "External_UPS",
+        "caveat": "The source confirms permitted UPS models but does not state battery capacity, runtime under a ClearAccess load, field topology, maintenance condition, or the option selected by a jurisdiction.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-accessible-keypad",
+        "name": "Accessible keypad",
+        "category": "assistive_input",
+        "description": "The reviewed scope and test plan list Storm EZ Access keypad models as accessible input devices for ClearAccess.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "EZ08-22000",
+          "EZ08-22200",
+          "EZ08-22201"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-plan"
+        ],
+        "sceneNodeName": "Accessible_Keypad",
+        "caveat": "The records list approved or evaluated keypad alternatives; they do not identify the model connected to a particular unit.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-barcode-scanner",
+        "name": "Barcode scanner",
+        "category": "scanner_peripheral",
+        "description": "The certified scope lists Zebra DS457-SR and ELO UM600149 barcode-scanner options for ClearAccess.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Zebra DS457-SR",
+          "ELO UM600149"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-plan"
+        ],
+        "sceneNodeName": "Barcode_Scanner",
+        "caveat": "The sources establish certified alternatives, not the scanner attached to a fielded ClearAccess configuration.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-assistive-accessories",
+        "name": "Sip-and-puff and audio accessories",
+        "category": "assistive_accessory",
+        "description": "The Pro V&V physical configuration audit lists Origin Instruments BZ2 and BZ2U sip-and-puff devices and Samson SASR350 headphones with the ClearAccess test components.",
+        "evidenceStatus": "vstl_tested_component_options",
+        "scopeKind": "certification_test_configuration",
+        "modelNumbers": [
+          "Origin Instruments BZ2",
+          "Origin Instruments BZ2U",
+          "Samson SASR350"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-clearvote-25-test-plan"
+        ],
+        "sceneNodeName": "Assistive_Accessories",
+        "caveat": "The test-plan PCA documents components submitted for evaluation. It does not establish that these accessories are packaged with or connected to every deployed setup.",
+        "sourceRevisionIds": [
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-esd-emi-controls",
+        "name": "ESD and EMI control materials",
+        "category": "electromagnetic_controls",
+        "description": "The certified scope lists copper tape, acrylic and polyimide films, and named ferrite parts under ClearAccess COTS hardware.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "TM-36-COPP-1M-3",
+          "CV-1180-1.4-1",
+          "CV-1210-2.0",
+          "CV-1211-2.0",
+          "CV-1212-2.0",
+          "Wurth 742-416-33S",
+          "Laird 28A2029-0A2",
+          "Takachi TFT152613N"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-report"
+        ],
+        "sceneNodeName": "ESD_EMI_Controls",
+        "caveat": "The schematic marker is only a selection aid. The public scope does not establish the exact quantity, placement, routing, or physical appearance of these materials in a particular setup.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-transport-case",
+        "name": "Transportation and setup case",
+        "category": "case",
+        "description": "The test plan lists case models 62311-1-1 and 62312-1-1 for the ClearAccess touchscreen, printer, headphones, keypad, and associated cables.",
+        "evidenceStatus": "vstl_tested_component_options",
+        "scopeKind": "certification_test_configuration",
+        "modelNumbers": [
+          "62311-1-1",
+          "62312-1-1"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-clearvote-25-test-plan"
+        ],
+        "sceneNodeName": "Setup_Case",
+        "caveat": "A tested transportation option does not establish a jurisdiction's storage, transport, setup, or chain-of-custody procedure.",
+        "sourceRevisionIds": [
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      }
+    ],
+    "versionObservations": [
+      {
+        "id": "clearaccess-software-256",
+        "componentId": "clearaccess-software",
+        "versionType": "software",
+        "value": "2.5.6",
+        "label": "EAC-certified ClearAccess software",
+        "scopeKind": "certified_configuration",
+        "observedOn": "2025-11-19",
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-report"
+        ],
+        "caveat": "This is the software version in the certified ClearVote 2.5 configuration, not a live device reading or a claim about the newest ClearVote release.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-report@2026-07-19"
+        ],
+        "assertionScope": "certified",
+        "approvalScope": null,
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "CBG-CV-25",
+          "jurisdiction": null,
+          "observedOn": "2025-11-19"
+        }
+      },
+      {
+        "id": "clearaccess-windows-10-iot-2021",
+        "componentId": "clearaccess-software",
+        "versionType": "operating_system",
+        "value": "Windows 10 IoT Enterprise LTSC 2021",
+        "label": "Certified COTS operating-system environment",
+        "scopeKind": "certified_configuration",
+        "observedOn": "2025-11-19",
+        "sourceIds": [
+          "eac-clearvote-25-scope"
+        ],
+        "caveat": "The scope lists the certified software environment; it does not establish patch state or configuration on a fielded computer.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19"
+        ],
+        "assertionScope": "certified",
+        "approvalScope": null,
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "CBG-CV-25",
+          "jurisdiction": null,
+          "observedOn": "2025-11-19"
+        }
+      }
+    ],
+    "configurationChanges": [
+      {
+        "id": "clearvote-25-sw-10275",
+        "changeId": "SW-10275",
+        "componentIds": [
+          "clearaccess-software"
+        ],
+        "submittedOn": "2024-08-02",
+        "eacApprovedOn": "2025-11-19",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "included_in_certified_25_configuration",
+        "description": "ClearAccess automatically rolls the system log when more than 1,000 log entries are present to reduce performance risk.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "provv-clearvote-25-test-plan",
+          "eac-clearvote-25-scope"
+        ],
+        "caveat": "The change appears in the submitted ClearVote 2.5 certification modification set. It does not establish installation on a particular fielded unit.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearvote-25-sw-10691",
+        "changeId": "SW-10691",
+        "componentIds": [
+          "clearaccess-software"
+        ],
+        "submittedOn": "2024-08-02",
+        "eacApprovedOn": "2025-11-19",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "included_in_certified_25_configuration",
+        "description": "ClearAccess and ClearCast received minor libssl and OpenSSL version updates in the submitted modification set.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "provv-clearvote-25-test-plan",
+          "eac-clearvote-25-scope"
+        ],
+        "caveat": "This is certification configuration history, not evidence of a field update, patch installation date, or current exposure on any unit.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearvote-25-deficiency-556",
+        "changeId": "TR-DEF-556",
+        "componentIds": [
+          "clearaccess-software",
+          "clearaccess-touchscreen-computer"
+        ],
+        "submittedOn": "2025-09-22",
+        "eacApprovedOn": "2025-11-19",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "resolved_during_certification_campaign",
+        "description": "The ClearAccess 2.5.5 write-in controls did not meet specified touch-area dimensions; the report records the corrected 2.5.6 interface.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "provv-clearvote-25-test-report",
+          "eac-clearvote-25-scope"
+        ],
+        "caveat": "This is a test-campaign deficiency and resolution, not evidence that version 2.5.5 was used in a public election.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-report@2026-07-19"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "id": "clearaccess-ui-size-deficiency",
+        "findingType": "resolved_test_deficiency",
+        "title": "ClearAccess 2.5.5 write-in controls were undersized",
+        "affectedSystemVersions": [
+          "ClearAccess 2.5.5"
+        ],
+        "componentIds": [
+          "clearaccess-software",
+          "clearaccess-touchscreen-computer"
+        ],
+        "publicStatus": "resolved_in_clearaccess_2_5_6",
+        "description": "Pro V&V reported that the write-in menu button dimensions and spacing in ClearAccess 2.5.5 did not meet the cited VVSG requirement and documented corrected dimensions and keyboard options in 2.5.6.",
+        "sourceIds": [
+          "provv-clearvote-25-test-report"
+        ],
+        "caveat": "This is a certification-test finding with a reported resolution. It is not evidence that the deficient build was deployed in an election.",
+        "sourceRevisionIds": [
+          "provv-clearvote-25-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearaccess-cve-2022-0778-update",
+        "findingType": "certification_change_note",
+        "title": "OpenSSL libraries updated in the submitted modification set",
+        "affectedSystemVersions": [
+          "ClearAccess before certified 2.5.6",
+          "ClearCast before certified 2.5.3"
+        ],
+        "componentIds": [
+          "clearaccess-software"
+        ],
+        "publicStatus": "update_recorded_for_cve_2022_0778",
+        "description": "The Pro V&V test plan identifies the ClearAccess and ClearCast libssl/OpenSSL update as a bug change addressing CVE-2022-0778.",
+        "sourceIds": [
+          "provv-clearvote-25-test-plan",
+          "eac-clearvote-25-scope"
+        ],
+        "caveat": "The record describes the submitted certified configuration. It is not a field vulnerability scan, a current security assessment, or evidence of exploitation.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearvote-25-test-campaign-findings",
+        "findingType": "test_campaign_result",
+        "title": "One anomaly and multiple deficiencies were documented during testing",
+        "affectedSystemVersions": [
+          "ClearVote 2.5 test campaign"
+        ],
+        "componentIds": [],
+        "publicStatus": "certified_after_documented_resolutions",
+        "description": "The final Pro V&V report describes one ClearMark anomaly with no determined root cause and lists test deficiencies with reported corrective actions before recommending certification of the submitted system.",
+        "sourceIds": [
+          "provv-clearvote-25-test-report",
+          "eac-clearvote-25-record"
+        ],
+        "caveat": "This system-level summary is not a claim that ClearAccess caused the ClearMark anomaly, that findings occurred in the field, or that no other defects exist.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-record@2026-07-19",
+          "provv-clearvote-25-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "clearvote-25-precertification-field-status",
+        "findingType": "historical_scope_note",
+        "title": "The modification had not been fielded when the 2024 test plan was written",
+        "affectedSystemVersions": [
+          "ClearVote 2.5 submitted modification"
+        ],
+        "componentIds": [],
+        "publicStatus": "not_fielded_as_of_2024_08_02_test_plan",
+        "description": "The Pro V&V test plan stated that the ClearVote 2.5 modification had not been fielded for use as of the plan date.",
+        "sourceIds": [
+          "provv-clearvote-25-test-plan"
+        ],
+        "caveat": "This is a historical pre-certification statement. Do not infer that ClearVote 2.5 remained undeployed after certification or is not deployed today.",
+        "sourceRevisionIds": [
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      }
+    ],
+    "power": [
+      {
+        "id": "clearaccess-certified-ups-options",
+        "componentId": "clearaccess-ups",
+        "knowledgeStatus": "confirmed",
+        "supplyType": "external uninterruptible power supply",
+        "manufacturer": "CyberPower; APC",
+        "model": "PR1500RT2U; SMT2200C; SRT1500RMXLA",
+        "capacity": null,
+        "runtime": null,
+        "description": "The certified ClearVote 2.5 scope names three external UPS options for ClearAccess. The reviewed sources do not provide a ClearAccess load-specific capacity or runtime claim.",
+        "sourceIds": [
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-plan"
+        ],
+        "caveat": "Confirmed means the models appear in the certified configuration, not that every jurisdiction uses one, that all are used together, or that battery health and runtime are known for a fielded setup.",
+        "sourceRevisionIds": [
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ]
+      }
+    ],
+    "deployments": [],
+    "scene": {
+      "assetUrl": "/equipment/clear-ballot-clearvote-25-clearaccess/orthographic-pilot.glb",
+      "assetLicense": "Apache-2.0",
+      "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-clearaccess-model.mjs",
+      "geometryFidelity": "illustrative_not_to_scale",
+      "description": "An original navigational schematic of the certified component categories. Shapes, scale, cabling, and placement are illustrative; source-backed claims live in the component records and source panel.",
+      "camera": {
+        "position": [
+          7,
+          5,
+          8
+        ],
+        "zoom": 72,
+        "near": 0.1,
+        "far": 100
+      },
+      "nodes": [
+        {
+          "componentId": "clearaccess-software",
+          "nodeName": "ClearAccess_Software",
+          "color": "#33c6b5",
+          "explodedOffset": [
+            0,
+            0.3,
+            0.65
+          ]
+        },
+        {
+          "componentId": "clearaccess-touchscreen-computer",
+          "nodeName": "Touchscreen_AIO",
+          "color": "#78a6ff",
+          "explodedOffset": [
+            0,
+            0.75,
+            0
+          ]
+        },
+        {
+          "componentId": "clearaccess-ballot-printer",
+          "nodeName": "Ballot_Printer",
+          "color": "#f0b95a",
+          "explodedOffset": [
+            1.2,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "componentId": "clearaccess-ups",
+          "nodeName": "External_UPS",
+          "color": "#e87fb3",
+          "explodedOffset": [
+            -1.15,
+            -0.15,
+            0.2
+          ]
+        },
+        {
+          "componentId": "clearaccess-accessible-keypad",
+          "nodeName": "Accessible_Keypad",
+          "color": "#d1e8e5",
+          "explodedOffset": [
+            0.7,
+            -0.25,
+            0.75
+          ]
+        },
+        {
+          "componentId": "clearaccess-barcode-scanner",
+          "nodeName": "Barcode_Scanner",
+          "color": "#ff8c69",
+          "explodedOffset": [
+            -0.7,
+            0.3,
+            0.75
+          ]
+        },
+        {
+          "componentId": "clearaccess-assistive-accessories",
+          "nodeName": "Assistive_Accessories",
+          "color": "#a68cf2",
+          "explodedOffset": [
+            -1.1,
+            0.8,
+            0.5
+          ]
+        },
+        {
+          "componentId": "clearaccess-esd-emi-controls",
+          "nodeName": "ESD_EMI_Controls",
+          "color": "#ef6f6c",
+          "explodedOffset": [
+            0,
+            1.15,
+            -0.25
+          ]
+        },
+        {
+          "componentId": "clearaccess-transport-case",
+          "nodeName": "Setup_Case",
+          "color": "#53676d",
+          "explodedOffset": [
+            0,
+            -0.85,
+            -0.6
+          ]
+        }
+      ]
+    },
+    "caveats": [
+      "Certified component alternatives are not evidence that all listed options are installed together or that a jurisdiction selected a particular model.",
+      "The original 3D schematic is a selection aid, not a teardown, engineering drawing, wiring diagram, or representation of exact dimensions and placement.",
+      "The UPS models are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
+      "Test findings are time- and version-scoped. They do not prove a field incident, exploitation, altered votes, fraud, misconduct, or an incorrect election outcome."
+    ]
+  },
+  "editorial": {
+    "state": "approved",
+    "revision": 1,
+    "createdOn": "2026-07-19",
+    "updatedOn": "2026-07-19",
+    "reviewedOn": "2026-07-19",
+    "reviewedBy": "project_editorial_review",
+    "publishedOn": null,
+    "sourceRevisionIds": [
+      "eac-clearvote-25-record@2026-07-19",
+      "eac-clearvote-25-scope@2026-07-19",
+      "provv-clearvote-25-test-plan@2026-07-19",
+      "provv-clearvote-25-test-report@2026-07-19"
+    ],
+    "reviewNotes": [
+      "Approved for feature-gated staging. Public production activation remains a separate review decision."
+    ]
+  }
+}

@@ -1,4 +1,4 @@
-import { currentNationalReleaseId, publicApiSchemaVersion } from "./api-version";
+import { currentNationalReleaseId, equipmentCatalogApiSchemaVersion, publicApiSchemaVersion } from "./api-version";
 
 const envelopeMeta = {
   type: "object",
@@ -41,6 +41,7 @@ export function buildOpenApiDocument() {
       { name: "Comparisons", description: "Canonical county election comparisons" },
       { name: "Counties", description: "County registry, search, and profiles" },
       { name: "Releases", description: "Immutable release metadata and bulk downloads" },
+      { name: "Equipment", description: "Source-linked certified configurations, change records, and evidence gaps" },
       { name: "Platform", description: "Existing state, source, and coverage endpoints" },
     ],
     paths: {
@@ -187,6 +188,36 @@ export function buildOpenApiDocument() {
               },
             },
             "404": { ...errorResponse, description: "Unknown release." },
+          },
+        },
+      },
+      "/api/v1/equipment-systems": {
+        get: {
+          tags: ["Equipment"],
+          operationId: "listEquipmentSystems",
+          summary: "List reviewed election-equipment system dossiers",
+          description: "Feature-gated pilot. Certified configurations and jurisdiction deployment observations remain separate evidence scopes.",
+          responses: {
+            "200": {
+              description: "Reviewed equipment-system summaries.",
+              content: { "application/json": { schema: { $ref: "#/components/schemas/EquipmentSystemListEnvelope" } } },
+            },
+            "404": { ...errorResponse, description: "The equipment catalog pilot is not enabled." },
+          },
+        },
+      },
+      "/api/v1/equipment-systems/{slug}": {
+        get: {
+          tags: ["Equipment"],
+          operationId: "getEquipmentSystem",
+          summary: "Get one source-linked equipment dossier",
+          parameters: [{ name: "slug", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            "200": {
+              description: "Equipment system, component/version/change/finding/power/deployment records, and source manifest.",
+              content: { "application/json": { schema: { $ref: "#/components/schemas/EquipmentSystemDetailEnvelope" } } },
+            },
+            "404": { ...errorResponse, description: "Pilot disabled or equipment system not found." },
           },
         },
       },
@@ -524,6 +555,133 @@ export function buildOpenApiDocument() {
           properties: {
             data: { $ref: "#/components/schemas/CountyProfile" },
             meta: { $ref: "#/components/schemas/EnvelopeMeta" },
+          },
+        },
+        EquipmentSystemSummary: {
+          type: "object",
+          required: ["slug", "displayName", "manufacturer", "systemName", "systemVersion", "deviceName", "deviceRole", "status", "summary", "certification", "claimRevision", "editorialState", "coverage"],
+          properties: {
+            slug: { type: "string" },
+            displayName: { type: "string" },
+            manufacturer: { type: "string" },
+            systemName: { type: "string" },
+            systemVersion: { type: "string" },
+            deviceName: { type: "string" },
+            deviceRole: { type: "string" },
+            status: { type: "string", enum: ["pilot"] },
+            summary: { type: "string" },
+            certification: { type: "object", additionalProperties: true },
+            claimRevision: { type: "integer", minimum: 1 },
+            editorialState: { type: "string", enum: ["approved", "published"] },
+            coverage: { type: "object", additionalProperties: { type: "integer" } },
+          },
+          additionalProperties: true,
+        },
+        EquipmentSourceRevision: {
+          type: "object",
+          required: ["id", "localArtifact", "sha256", "byteLength", "publishedOn", "retrievedOn", "retrievedAt", "retrievalPrecision", "resolvedUrl", "http", "supersedesRevisionId", "contentStatus", "pageOrSection", "archiveStatus"],
+          properties: {
+            id: { type: "string" },
+            localArtifact: { type: "string" },
+            sha256: { type: "string", pattern: "^[a-f0-9]{64}$" },
+            byteLength: { type: "integer", minimum: 1 },
+            publishedOn: { type: ["string", "null"], format: "date" },
+            retrievedOn: { type: "string", format: "date" },
+            retrievedAt: { type: ["string", "null"], format: "date-time" },
+            retrievalPrecision: { type: "string", enum: ["date", "timestamp"] },
+            resolvedUrl: { type: "string", format: "uri" },
+            http: { type: "object", additionalProperties: { type: ["string", "null"] } },
+            supersedesRevisionId: { type: ["string", "null"] },
+            contentStatus: { type: "string", enum: ["baseline", "content_changed"] },
+            pageOrSection: { type: "string" },
+            archiveStatus: { type: "string", enum: ["verified", "pending_review", "rejected"] },
+          },
+          additionalProperties: false,
+        },
+        EquipmentSourceRevisionComparison: {
+          type: "object",
+          required: ["id", "fromRevisionId", "toRevisionId", "detectedAt", "kind", "machineSummary", "editorialImpact", "reviewState"],
+          properties: {
+            id: { type: "string" },
+            fromRevisionId: { type: "string" },
+            toRevisionId: { type: "string" },
+            detectedAt: { type: "string", format: "date-time" },
+            kind: { type: "string", enum: ["unchanged", "metadata_changed", "content_changed", "unavailable", "retrieval_error"] },
+            machineSummary: { type: "string" },
+            editorialImpact: { type: "string", enum: ["none", "requires_claim_review"] },
+            reviewState: { type: "string", enum: ["pending", "approved", "rejected"] },
+            reviewNote: { type: ["string", "null"] },
+            reviewedAt: { type: ["string", "null"], format: "date-time" },
+            reviewedBy: { type: ["string", "null"] },
+          },
+          additionalProperties: false,
+        },
+        EquipmentSource: {
+          type: "object",
+          required: ["id", "publisher", "authorityLevel", "title", "url", "canonicalUrl", "localArtifact", "sha256", "documentType", "retrievedOn", "pageOrSection", "caveat", "currentReviewedRevisionId", "latestRetrievedRevisionId", "revisions", "revisionComparisons"],
+          properties: {
+            id: { type: "string" },
+            publisher: { type: "string" },
+            authorityLevel: { type: "string" },
+            title: { type: "string" },
+            url: { type: "string", format: "uri" },
+            canonicalUrl: { type: "string", format: "uri" },
+            localArtifact: { type: "string" },
+            sha256: { type: "string", pattern: "^[a-f0-9]{64}$" },
+            documentType: { type: "string" },
+            publishedOn: { type: ["string", "null"], format: "date" },
+            retrievedOn: { type: "string", format: "date" },
+            pageOrSection: { type: "string" },
+            caveat: { type: "string" },
+            currentReviewedRevisionId: { type: "string" },
+            latestRetrievedRevisionId: { type: "string" },
+            revisions: { type: "array", items: { $ref: "#/components/schemas/EquipmentSourceRevision" } },
+            revisionComparisons: { type: "array", items: { $ref: "#/components/schemas/EquipmentSourceRevisionComparison" } },
+          },
+          additionalProperties: false,
+        },
+        EquipmentSystem: {
+          allOf: [
+            { $ref: "#/components/schemas/EquipmentSystemSummary" },
+            {
+              type: "object",
+              required: ["components", "versionObservations", "configurationChanges", "findings", "power", "deployments", "scene", "caveats", "sourceIds", "sourceRevisionIds"],
+              properties: {
+                components: { type: "array", items: { type: "object", additionalProperties: true } },
+                versionObservations: { type: "array", items: { type: "object", additionalProperties: true } },
+                configurationChanges: { type: "array", items: { type: "object", additionalProperties: true } },
+                findings: { type: "array", items: { type: "object", additionalProperties: true } },
+                power: { type: "array", items: { type: "object", additionalProperties: true } },
+                deployments: { type: "array", items: { type: "object", additionalProperties: true } },
+                scene: { type: "object", additionalProperties: true },
+                caveats: { type: "array", items: { type: "string" } },
+                sourceIds: { type: "array", items: { type: "string" } },
+                sourceRevisionIds: { type: "array", items: { type: "string" } },
+              },
+            },
+          ],
+        },
+        EquipmentSystemListEnvelope: {
+          type: "object",
+          required: ["data", "meta"],
+          properties: {
+            data: { type: "array", items: { $ref: "#/components/schemas/EquipmentSystemSummary" } },
+            meta: { allOf: [{ $ref: "#/components/schemas/EnvelopeMeta" }, { type: "object", properties: { schemaVersion: { type: "string", example: equipmentCatalogApiSchemaVersion } } }] },
+          },
+        },
+        EquipmentSystemDetailEnvelope: {
+          type: "object",
+          required: ["data", "meta"],
+          properties: {
+            data: {
+              type: "object",
+              required: ["system", "sources"],
+              properties: {
+                system: { $ref: "#/components/schemas/EquipmentSystem" },
+                sources: { type: "array", items: { $ref: "#/components/schemas/EquipmentSource" } },
+              },
+            },
+            meta: { allOf: [{ $ref: "#/components/schemas/EnvelopeMeta" }, { type: "object", properties: { schemaVersion: { type: "string", example: equipmentCatalogApiSchemaVersion } } }] },
           },
         },
         NationalDataRelease: {

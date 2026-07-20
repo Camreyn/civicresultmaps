@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  ...(process.platform === "win32"
+    ? {
+        // Next's logical-core fan-out can terminate page-data child processes on Windows.
+        // This retains full static generation while keeping worker creation predictable.
+        experimental: { cpus: 4 },
+      }
+    : {}),
   images: {
     remotePatterns: [
       {

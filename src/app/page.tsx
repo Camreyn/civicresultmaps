@@ -16,6 +16,8 @@ import { NationalOverview } from "./national-overview";
 import { StateRail } from "./state-rail";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
+import { equipmentCatalogMetadata } from "@/lib/equipment-catalog";
+import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import {
   toWorkspaceLayoutManifestV3,
   workspaceLayoutManifestAnyToV2,
@@ -451,6 +453,7 @@ export default async function Home({ searchParams }: HomeProps) {
             electionYear={selectedYear}
             electronicIntegrityStatus={electronicIntegrityArtifacts.states[0]}
             electronicIntegrityRequests={electronicIntegrityRequests}
+            equipmentExplorerEnabled={isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady })}
             equipmentRows={equipmentRows}
             historicalRows={historicalRows}
             importRuns={importRuns}

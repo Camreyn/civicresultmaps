@@ -49,3 +49,7 @@
 /data/nbc-2024-election-day-bomb-threat-county-compilation.json text eol=crlf
 /data/mn-sos-2024-bomb-threats-county-election-offices.html -text whitespace=-trailing-space
 /data/pa-2024-election-day-security-philadelphia-order.pdf -text -diff
+
+# Preserve archived election-equipment evidence and generated 3D assets byte-for-byte.
+/data/equipment-sources/** -text whitespace=-trailing-space,-space-before-tab
+/public/equipment/**/*.glb -text -diff

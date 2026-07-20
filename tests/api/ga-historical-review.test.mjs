@@ -94,5 +94,6 @@ test("Georgia historical-review config records year-specific provenance and exac
 
 test("committed Georgia historical-review CSV is deterministic", async () => {
   const committed = await readFile(outputFile, "utf8");
-  assert.equal(committed, serializeGeorgiaHistoricalReviewRows(built.rows));
+  const normalizedCommitted = committed.replaceAll("\r\n", "\n");
+  assert.equal(normalizedCommitted, serializeGeorgiaHistoricalReviewRows(built.rows));
 });

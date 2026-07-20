@@ -31,6 +31,9 @@ patterns, generated state registries, and validation expectations.
   source package status, state caveats, and remaining data gaps.
 - [Turnout collection inventory](docs/turnout-collection-inventory.md) - turnout
   source status and denominator caveats.
+- [Election equipment evidence workflow](docs/equipment-evidence-workflow.md) -
+  immutable source revisions, evidence scopes, editorial states, schematic fidelity,
+  and staging-to-production gates.
 
 ## Stack
 
