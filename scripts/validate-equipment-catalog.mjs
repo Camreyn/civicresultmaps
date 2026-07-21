@@ -66,6 +66,40 @@ async function validateArtifact(source) {
   }
 }
 
+async function validatePngEvidenceAsset(record, label) {
+  if (!/^\/equipment\/.+\.png$/.test(record.assetUrl ?? "")) {
+    error(`${label} must use a local PNG under /equipment/.`);
+    return;
+  }
+  if (!Number.isInteger(record.width) || record.width <= 0) {
+    error(`${label} width must be a positive integer.`);
+  }
+  if (!Number.isInteger(record.height) || record.height <= 0) {
+    error(`${label} height must be a positive integer.`);
+  }
+  if (!/^[a-f0-9]{64}$/.test(record.assetSha256 ?? "")) {
+    error(`${label} needs a SHA-256 digest.`);
+  }
+  const assetPath = `public${record.assetUrl}`;
+  try {
+    const asset = await readFile(assetPath);
+    const digest = createHash("sha256").update(asset).digest("hex");
+    if (digest !== record.assetSha256) error(`${label} SHA-256 does not match ${assetPath}.`);
+    const pngSignature = "89504e470d0a1a0a";
+    if (asset.subarray(0, 8).toString("hex") !== pngSignature || asset.length < 24) {
+      error(`${label} is not a valid PNG asset.`);
+    } else {
+      const width = asset.readUInt32BE(16);
+      const height = asset.readUInt32BE(20);
+      if (width !== record.width || height !== record.height) {
+        error(`${label} declared dimensions do not match ${assetPath}.`);
+      }
+    }
+  } catch {
+    error(`${label} asset does not exist: ${assetPath}.`);
+  }
+}
+
 function readGlbNodeNames(buffer, label) {
   if (buffer.length < 20 || buffer.readUInt32LE(0) !== 0x46546c67 || buffer.readUInt32LE(4) !== 2) {
     error(`${label} is not a glTF 2.0 binary asset.`);
@@ -354,6 +388,146 @@ for (const claim of claims) {
     }
     if (!Array.isArray(deployment.componentsConfirmed) || deployment.componentsConfirmed.length !== 0) {
       error(`${label} deployment ${deployment.id} must not infer confirmed components.`);
+    }
+  }
+
+  const networkEvidence = system.networkEvidence;
+  if (!networkEvidence) {
+    error(`${label} needs a network-evidence record.`);
+  } else {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(networkEvidence.reviewedOn ?? "")) {
+      error(`${label} network evidence needs an ISO review date.`);
+    }
+    requireNonEmpty(networkEvidence.summary, `${label} network evidence summary`);
+    requireNonEmpty(networkEvidence.publicationBoundary, `${label} network evidence publicationBoundary`);
+
+    const configurationIds = new Set();
+    if (!Array.isArray(networkEvidence.configurations) || networkEvidence.configurations.length === 0) {
+      error(`${label} needs at least one network configuration.`);
+    }
+    for (const configuration of networkEvidence.configurations ?? []) {
+      const configurationLabel = `${label} network configuration ${configuration.id ?? "unknown"}`;
+      requireNonEmpty(configuration.id, `${configurationLabel} id`);
+      if (configurationIds.has(configuration.id)) error(`${label} has duplicate network configuration ${configuration.id}.`);
+      configurationIds.add(configuration.id);
+      requireNonEmpty(configuration.title, `${configurationLabel} title`);
+      requireNonEmpty(configuration.description, `${configurationLabel} description`);
+      requireNonEmpty(configuration.topologyKind, `${configurationLabel} topologyKind`);
+      requireNonEmpty(configuration.sensitiveDetailsWithheld, `${configurationLabel} sensitiveDetailsWithheld`);
+      requireNonEmpty(configuration.caveat, `${configurationLabel} caveat`);
+      requireSourceIds(configuration, configurationLabel, sourceById, revisionById);
+      if (!["expected", "documented", "observed"].includes(configuration.evidenceLayer)) {
+        error(`${configurationLabel} has an invalid evidenceLayer.`);
+      }
+      if (![
+        "certified_configuration",
+        "vstl_test_configuration",
+        "manufacturer_product_policy",
+        "state_certification_documentation",
+        "documented_model_family",
+        "jurisdiction_deployment_observation",
+        "field_observation",
+      ].includes(configuration.assertionScope)) {
+        error(`${configurationLabel} has an invalid assertionScope.`);
+      }
+      if (!["confirmed", "documented_partial", "not_publicly_established", "conflicting"].includes(configuration.knowledgeStatus)) {
+        error(`${configurationLabel} has an invalid knowledgeStatus.`);
+      }
+      if (![
+        "standalone_local_peripherals",
+        "closed_wired_lan",
+        "conditional_closed_wired_lan",
+        "results_transmission_service",
+        "optional_cellular_hardware_context",
+        "physical_network_capability_only",
+      ].includes(configuration.topologyKind)) {
+        error(`${configurationLabel} has an invalid topologyKind.`);
+      }
+      if (configuration.evidenceLayer === "observed") {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(configuration.observedOn ?? "")) {
+          error(`${configurationLabel} observed layer needs an ISO observation date.`);
+        }
+        requireNonEmpty(configuration.assertedFor?.jurisdiction, `${configurationLabel} observed jurisdiction`);
+      } else if (configuration.observedOn !== null || configuration.assertedFor !== null) {
+        error(`${configurationLabel} must keep observation fields null outside the observed layer.`);
+      }
+
+      const nodeIds = new Set();
+      if (!Array.isArray(configuration.nodes) || configuration.nodes.length === 0) {
+        error(`${configurationLabel} needs at least one topology node.`);
+      }
+      for (const node of configuration.nodes ?? []) {
+        const nodeLabel = `${configurationLabel} node ${node.id ?? "unknown"}`;
+        requireNonEmpty(node.id, `${nodeLabel} id`);
+        if (nodeIds.has(node.id)) error(`${configurationLabel} has duplicate node ${node.id}.`);
+        nodeIds.add(node.id);
+        requireNonEmpty(node.label, `${nodeLabel} label`);
+        requireNonEmpty(node.role, `${nodeLabel} role`);
+        requireNonEmpty(node.details, `${nodeLabel} details`);
+        if (typeof node.optional !== "boolean") error(`${nodeLabel} needs a boolean optional value.`);
+        if (node.componentId !== null && !componentById.has(node.componentId)) {
+          error(`${nodeLabel} references unknown component ${node.componentId}.`);
+        }
+      }
+
+      const linkIds = new Set();
+      for (const link of configuration.links ?? []) {
+        const linkLabel = `${configurationLabel} link ${link.id ?? "unknown"}`;
+        requireNonEmpty(link.id, `${linkLabel} id`);
+        if (linkIds.has(link.id)) error(`${configurationLabel} has duplicate link ${link.id}.`);
+        linkIds.add(link.id);
+        if (!nodeIds.has(link.from)) error(`${linkLabel} has unknown from node ${link.from}.`);
+        if (!nodeIds.has(link.to)) error(`${linkLabel} has unknown to node ${link.to}.`);
+        requireNonEmpty(link.medium, `${linkLabel} medium`);
+        requireNonEmpty(link.purpose, `${linkLabel} purpose`);
+        if (!["one_way", "bidirectional", "not_specified"].includes(link.direction)) {
+          error(`${linkLabel} has an invalid direction.`);
+        }
+        if (!["confirmed", "documented_partial", "not_publicly_established"].includes(link.knowledgeStatus)) {
+          error(`${linkLabel} has an invalid knowledgeStatus.`);
+        }
+      }
+
+      for (const control of configuration.controls ?? []) {
+        const controlLabel = `${configurationLabel} control ${control.id ?? "unknown"}`;
+        requireNonEmpty(control.id, `${controlLabel} id`);
+        requireNonEmpty(control.label, `${controlLabel} label`);
+        requireNonEmpty(control.description, `${controlLabel} description`);
+        if (!["documented", "not_publicly_established"].includes(control.status)) {
+          error(`${controlLabel} has an invalid status.`);
+        }
+      }
+    }
+
+    const networkImageIds = new Set();
+    if (!Array.isArray(networkEvidence.sourceImages) || networkEvidence.sourceImages.length === 0) {
+      error(`${label} needs at least one network source image.`);
+    }
+    for (const sourceImage of networkEvidence.sourceImages ?? []) {
+      const sourceImageLabel = `${label} network source image ${sourceImage.id ?? "unknown"}`;
+      requireNonEmpty(sourceImage.id, `${sourceImageLabel} id`);
+      if (networkImageIds.has(sourceImage.id)) error(`${label} has duplicate network source image ${sourceImage.id}.`);
+      networkImageIds.add(sourceImage.id);
+      requireNonEmpty(sourceImage.alt, `${sourceImageLabel} alt`);
+      requireNonEmpty(sourceImage.caption, `${sourceImageLabel} caption`);
+      requireNonEmpty(sourceImage.kind, `${sourceImageLabel} kind`);
+      requireNonEmpty(sourceImage.pageOrSection, `${sourceImageLabel} pageOrSection`);
+      requireNonEmpty(sourceImage.derivativeNote, `${sourceImageLabel} derivativeNote`);
+      requireNonEmpty(sourceImage.caveat, `${sourceImageLabel} caveat`);
+      requireSourceIds(sourceImage, sourceImageLabel, sourceById, revisionById);
+      await validatePngEvidenceAsset(sourceImage, sourceImageLabel);
+    }
+
+    const gapIds = new Set();
+    for (const gap of networkEvidence.gaps ?? []) {
+      const gapLabel = `${label} network gap ${gap.id ?? "unknown"}`;
+      requireNonEmpty(gap.id, `${gapLabel} id`);
+      if (gapIds.has(gap.id)) error(`${label} has duplicate network gap ${gap.id}.`);
+      gapIds.add(gap.id);
+      requireNonEmpty(gap.label, `${gapLabel} label`);
+      requireNonEmpty(gap.description, `${gapLabel} description`);
+      requireNonEmpty(gap.caveat, `${gapLabel} caveat`);
+      requireSourceIds(gap, gapLabel, sourceById, revisionById);
     }
   }
 

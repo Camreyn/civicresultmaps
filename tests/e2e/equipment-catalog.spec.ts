@@ -73,7 +73,7 @@ test("renders confirmed ClearAccess UPS options without inventing runtime", asyn
   const payload = await response.json();
   expect(payload.data.system.coverage.confirmedPowerRecordCount).toBe(1);
   expect(payload.data.system.coverage.technicalSpecificationCount).toBe(8);
-  expect(payload.data.sources).toHaveLength(7);
+  expect(payload.data.sources).toHaveLength(8);
 });
 
 test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ page }) => {
@@ -201,8 +201,8 @@ test("renders ImageCast X advisory and internal-component evidence boundaries", 
   const response = await request.get("/api/v1/equipment-systems/dominion-democracy-suite-517-imagecast-x");
   expect(response.status()).toBe(200);
   const payload = await response.json();
-  expect(payload.data.system.coverage.sourceCount).toBe(11);
-  expect(payload.data.sources).toHaveLength(11);
+  expect(payload.data.system.coverage.sourceCount).toBe(12);
+  expect(payload.data.sources).toHaveLength(12);
 
   await page.locator("[data-component-select='true']").filter({ hasText: "SID-21V compute board profile" }).click();
   await expect(page.getByRole("heading", { name: "SID-21V compute board profile", level: 3 })).toBeVisible();
@@ -259,11 +259,42 @@ test("retains DS200 partial-power and deployment evidence boundaries", async ({ 
   await expect(componentDetail.getByText("No CVSS assigned", { exact: true })).toBeVisible();
 });
 
+test("keeps network topology claims source-bounded and interactive", async ({ page }) => {
+  await page.goto(clearCountPath);
+  const networkEvidence = page.locator("[data-network-evidence]");
+  await expect(networkEvidence.getByRole("heading", { name: "Documented paths, controls, and unknowns" })).toBeVisible();
+  await expect(networkEvidence.getByText("1 sourced configuration view", { exact: true })).toBeVisible();
+  await expect(networkEvidence.getByText("No field-observed topology collected", { exact: true })).toBeVisible();
+  await expect(networkEvidence.getByText("Operational details withheld", { exact: true })).toBeVisible();
+
+  const countServerNode = networkEvidence.getByRole("button", { name: /CountServer/ });
+  await countServerNode.click();
+  await expect(countServerNode).toHaveAttribute("aria-pressed", "true");
+  await expect(networkEvidence.getByText("The Ubuntu CountServer hosts ClearCount software, its database, and election reports.", { exact: true })).toBeVisible();
+
+  await networkEvidence.getByRole("button", { name: /Expand: Exact ClearVote 2.5 scope text/ }).click();
+  const sourceDialog = page.getByRole("dialog", { name: /Exact ClearVote 2.5 scope text/ });
+  await expect(sourceDialog).toBeVisible();
+  await expect(sourceDialog.getByRole("img", { name: /ClearVote 2.5 certification scope page/ })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(sourceDialog).toHaveCount(0);
+
+  await page.goto(ds200Path);
+  const ds200NetworkEvidence = page.locator("[data-network-evidence]");
+  const certifiedPath = ds200NetworkEvidence.getByRole("button", { name: /EVS 6.4.0.0 Regional Results test path/ });
+  const optionalCellular = ds200NetworkEvidence.getByRole("button", { name: /Historical optional cellular hardware context/ });
+  await expect(certifiedPath).toHaveAttribute("aria-pressed", "true");
+  await optionalCellular.click();
+  await expect(optionalCellular).toHaveAttribute("aria-pressed", "true");
+  await expect(ds200NetworkEvidence.getByRole("button", { name: /MultiTech MTSMC-LVW3/ })).toBeVisible();
+  await expect(ds200NetworkEvidence.getByText(/not evidence that EVS 6.4.0.0 certified/)).toBeVisible();
+});
+
 test("renders central tabulators as three separate sourced systems", async ({ page, request }) => {
   await page.goto(clearCountPath);
   await expect(page.getByRole("heading", { name: "Clear Ballot ClearVote 2.5 / ClearCount" })).toBeVisible();
   await expect(page.locator("[data-component-select='true']")).toHaveCount(7);
-  await expect(page.getByText("CountServer", { exact: true })).toBeVisible();
+  await expect(page.locator("[data-component-select='true']").filter({ hasText: "CountServer" })).toHaveCount(1);
   await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(1);
 
   await page.goto(imageCastCentralPath);

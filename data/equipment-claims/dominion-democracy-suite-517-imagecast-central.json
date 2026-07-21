@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-20",
+  "reviewedOn": "2026-07-21",
   "system": {
     "id": "dominion-democracy-suite-517-imagecast-central",
     "slug": "dominion-democracy-suite-517-imagecast-central",
@@ -375,6 +375,94 @@
         "caveat": "The minimum is a documented Colorado configuration requirement, not a measured runtime or battery-health observation at a field installation."
       }
     ],
+    "networkEvidence": {
+      "reviewedOn": "2026-07-21",
+      "summary": "Colorado's exact 5.17-CO technical data connects the ImageCast Central scanner locally to an ICC workstation by USB and describes ICC workstations using a Gigabit Ethernet port on a closed LAN to the EMS data-center network. The ICC user guide makes additional central-repository infrastructure conditional and requires election computers to remain isolated from the Internet and other networks.",
+      "publicationBoundary": "This view publishes only the documented system roles, connection media, conditionality, and isolation controls. It omits addressing, credentials, database identifiers, cryptographic keys, switch settings, hostnames, and jurisdiction cable routes.",
+      "configurations": [
+        {
+          "id": "icc-517co-conditional-closed-lan",
+          "title": "ICC workstation with conditional closed data-center LAN",
+          "evidenceLayer": "expected",
+          "assertionScope": "state_certification_documentation",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "conditional_closed_wired_lan",
+          "description": "A COTS scanner attaches directly to its ICC workstation. Where the additional central ballot-scan repository or data center is used, ICC workstations connect through isolated network infrastructure to EMS storage and services.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            { "id": "icc-scanner", "label": "ICC central scanner", "role": "Ballot image capture", "componentId": "icc-central-scanner", "optional": false, "details": "The certified configuration permits multiple named COTS scanner alternatives." },
+            { "id": "icc-workstation", "label": "ICC workstation", "role": "Image processing and central-count client", "componentId": "icc-workstation", "optional": false, "details": "The workstation hosts the ICC application and provides the scanner's local computer interface." },
+            { "id": "icc-closed-lan", "label": "Isolated LAN infrastructure", "role": "Conditional closed Ethernet transport", "componentId": "icc-optional-isolated-lan", "optional": true, "details": "The ICC user guide calls for high-speed network infrastructure only when an additional central repository or data center is used." },
+            { "id": "icc-ems-data-center", "label": "EMS data center", "role": "Central result and ballot-image services", "componentId": null, "optional": true, "details": "The system overview describes the closed LAN as connecting ICC workstations to the EMS data-center network." }
+          ],
+          "links": [
+            { "id": "icc-scanner-usb", "from": "icc-scanner", "to": "icc-workstation", "medium": "USB interface", "direction": "one_way", "purpose": "Deliver scanner-captured ballot images to the ICC workstation", "knowledgeStatus": "confirmed" },
+            { "id": "icc-workstation-lan", "from": "icc-workstation", "to": "icc-closed-lan", "medium": "Gigabit Ethernet", "direction": "bidirectional", "purpose": "Connect an ICC workstation to the closed EMS data-center network when the additional repository configuration is used", "knowledgeStatus": "documented_partial" },
+            { "id": "icc-lan-data-center", "from": "icc-closed-lan", "to": "icc-ems-data-center", "medium": "Closed local area network", "direction": "bidirectional", "purpose": "Store and exchange results and ballot-image data within the election system boundary", "knowledgeStatus": "documented_partial" }
+          ],
+          "controls": [
+            { "id": "icc-internet-isolation", "label": "Internet isolation", "status": "documented", "description": "The 5.17-CO ICC guide requires election computers to be isolated from any Internet connection." },
+            { "id": "icc-other-network-isolation", "label": "Other-network isolation", "status": "documented", "description": "The election computing network must be isolated from jurisdiction computers and networks not used for election operations." },
+            { "id": "icc-field-switch-state", "label": "Field switch state", "status": "not_publicly_established", "description": "The selected switch, ports, addressing, and enabled services for any jurisdiction installation are not established here." }
+          ],
+          "sensitiveDetailsWithheld": "No addresses, credentials, keys, database names, hostnames, switch settings, or site-specific network diagrams are collected or displayed.",
+          "sourceIds": ["co-dvs-517-system-overview", "co-dvs-517-icc-user-guide", "provv-dsuite-517-test-plan"],
+          "sourceRevisionIds": ["co-dvs-517-system-overview@2026-07-21", "co-dvs-517-icc-user-guide@2026-07-20", "provv-dsuite-517-test-plan@2026-07-20"],
+          "caveat": "The documents describe permitted 5.17-CO architectures. They do not establish that a particular jurisdiction uses the optional repository, which COTS alternatives it selected, or the live state of a network."
+        }
+      ],
+      "sourceImages": [
+        {
+          "id": "icc-dvs-517-high-level-block-diagram",
+          "assetUrl": "/equipment/network-evidence/dvs-517-system-block-diagram.png",
+          "assetSha256": "e556f3f0d2cb52c77be4bb6b54561ed76c08a13cb01af5035b6e52eddd480cd2",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_topology_diagram",
+          "alt": "Democracy Suite 5.17-CO high-level block diagram showing EMS services, ImageCast devices, secure electronic transfers, and physical result transfers.",
+          "caption": "Democracy Suite 5.17-CO high-level system block diagram",
+          "pageOrSection": "Colorado system-overview PDF page 21, Figure 2-3",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "The source itself warns that not all depicted components apply to every jurisdiction, and its disclaimer excludes modem and transmission functionality from the 5.17-CO campaign.",
+          "sourceIds": ["co-dvs-517-system-overview"],
+          "sourceRevisionIds": ["co-dvs-517-system-overview@2026-07-21"]
+        },
+        {
+          "id": "icc-dvs-517-workstation-network-page",
+          "assetUrl": "/equipment/network-evidence/dvs-517-icc-network.png",
+          "assetSha256": "c7675e73b62ccb2e21d86a06f6561b3c0cda7b162264e9826a09e3e4f51aa052",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_document_page",
+          "alt": "Democracy Suite 5.17-CO system overview page describing the ICC scanner USB connection, workstation specifications, and closed Gigabit Ethernet LAN connection to the EMS data center.",
+          "caption": "Exact 5.17-CO ICC workstation and closed-LAN description",
+          "pageOrSection": "Colorado system-overview PDF page 68, document page 60",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "This technical-data statement is not a jurisdiction inventory and does not resolve the conditional repository language in the ICC user guide for a particular deployment.",
+          "sourceIds": ["co-dvs-517-system-overview"],
+          "sourceRevisionIds": ["co-dvs-517-system-overview@2026-07-21"]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "icc-repository-selection-gap",
+          "label": "Additional repository selection",
+          "description": "The reviewed dossier does not establish whether a jurisdiction uses the optional additional central ballot-scan repository or data-center configuration.",
+          "sourceIds": ["co-dvs-517-icc-user-guide", "co-dvs-517-system-overview"],
+          "sourceRevisionIds": ["co-dvs-517-icc-user-guide@2026-07-20", "co-dvs-517-system-overview@2026-07-21"],
+          "caveat": "The module preserves the conditional language instead of forcing one topology onto every ICC installation."
+        },
+        {
+          "id": "icc-field-topology-gap",
+          "label": "Field-observed network topology",
+          "description": "No dated jurisdiction diagram, switch inventory, interface state, or authorized inspection was collected.",
+          "sourceIds": ["co-dvs-517-icc-user-guide"],
+          "sourceRevisionIds": ["co-dvs-517-icc-user-guide@2026-07-20"],
+          "caveat": "A documented system architecture is not a live network observation."
+        }
+      ]
+    },
     "deployments": [],
     "scene": {
       "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-central/orthographic-pilot.glb",
@@ -480,21 +568,23 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 1,
+    "revision": 2,
     "createdOn": "2026-07-20",
-    "updatedOn": "2026-07-20",
-    "reviewedOn": "2026-07-20",
+    "updatedOn": "2026-07-21",
+    "reviewedOn": "2026-07-21",
     "reviewedBy": "project_editorial_review",
     "publishedOn": null,
     "sourceRevisionIds": [
       "co-dvs-517-icc-user-guide@2026-07-20",
+      "co-dvs-517-system-overview@2026-07-21",
       "eac-dsuite-517-record@2026-07-20",
       "eac-dsuite-517-scope@2026-07-20",
       "provv-dsuite-517-test-plan@2026-07-20",
       "provv-dsuite-517-test-report@2026-07-20"
     ],
     "reviewNotes": [
-      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision."
+      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision.",
+      "Added exact 5.17-CO network documentation while retaining the conditional repository and no-field-observation boundaries."
     ]
   }
 }

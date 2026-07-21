@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-20",
+  "reviewedOn": "2026-07-21",
   "system": {
     "id": "ess-evs-6400-ds950",
     "slug": "ess-evs-6400-ds950",
@@ -415,6 +415,92 @@
         "caveat": "The sources do not state a DS950 workload runtime or establish option selection, battery age, capacity, or condition."
       }
     ],
+    "networkEvidence": {
+      "reviewedOn": "2026-07-21",
+      "summary": "The EVS 6.4.0.0 Pro V&V report states that DS950, DS850, and DS450 results were transmitted to the EMS through a closed local area network during accuracy testing. The EAC scope includes the central tabulator, Electionware infrastructure, and a minimum-1-Gb network switch, but it does not establish a jurisdiction's live switch, port, or addressing configuration.",
+      "publicationBoundary": "This view publishes only the laboratory-supported closed-LAN result path and its source limits. It excludes IP addresses, credentials, keys, database details, switch settings, VLANs, hostnames, device identifiers, and site-specific routing.",
+      "configurations": [
+        {
+          "id": "ds950-6400-closed-lan-test-path",
+          "title": "EVS 6.4.0.0 central-tabulator closed-LAN test path",
+          "evidenceLayer": "expected",
+          "assertionScope": "vstl_test_configuration",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "closed_wired_lan",
+          "description": "Pro V&V tested DS950 result transmission over a closed LAN to the EMS. The EAC scope separately lists a minimum-1-Gb switch among certified COTS hardware. The public passages support the system-level path but not every physical connector or a field installation.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            { "id": "ds950-tabulator", "label": "DS950", "role": "High-speed central scanner and tabulator", "componentId": "ds950-shell", "optional": false, "details": "The DS950 generated central-count result data in the exact-version accuracy test." },
+            { "id": "ds950-closed-switch", "label": "Closed-LAN switch", "role": "Central-count Ethernet interconnect", "componentId": null, "optional": false, "details": "The EAC scope lists a D-Link DSG-1005G network switch with a 1-GB minimum, but jurisdiction selection and use are not established." },
+            { "id": "ds950-ems", "label": "Electionware EMS", "role": "Central result consolidation", "componentId": null, "optional": false, "details": "The test report says the transmitted central-tabulator results were compiled in Electionware." }
+          ],
+          "links": [
+            { "id": "ds950-tabulator-lan", "from": "ds950-tabulator", "to": "ds950-closed-switch", "medium": "Closed local area network", "direction": "one_way", "purpose": "Transmit central-tabulator result data", "knowledgeStatus": "documented_partial" },
+            { "id": "ds950-lan-ems", "from": "ds950-closed-switch", "to": "ds950-ems", "medium": "Closed local area network", "direction": "one_way", "purpose": "Deliver transmitted result data to the EMS for compilation", "knowledgeStatus": "confirmed" }
+          ],
+          "controls": [
+            { "id": "ds950-closed-lan", "label": "Closed LAN", "status": "documented", "description": "The VSTL report explicitly identifies the DS950 central-tabulator result path as a closed local area network." },
+            { "id": "ds950-public-network", "label": "Public-network path", "status": "not_publicly_established", "description": "The reviewed DS950 accuracy-test passage does not describe a public-network transmission path." },
+            { "id": "ds950-field-network-state", "label": "Field network state", "status": "not_publicly_established", "description": "No jurisdiction switch, port, address, enabled-service, or cable record is established in this dossier." }
+          ],
+          "sensitiveDetailsWithheld": "No addresses, credentials, keys, database identifiers, switch settings, VLANs, hostnames, device identifiers, or site routing is collected or displayed.",
+          "sourceIds": ["eac-evs-6400-scope", "provv-evs-6400-test-report"],
+          "sourceRevisionIds": ["eac-evs-6400-scope@2026-07-19", "provv-evs-6400-test-report@2026-07-19"],
+          "caveat": "A VSTL accuracy-test topology is not proof that a jurisdiction connected a DS950, used the listed switch, or transmitted results over a network in a particular election."
+        }
+      ],
+      "sourceImages": [
+        {
+          "id": "ds950-evs-6400-system-diagram",
+          "assetUrl": "/equipment/network-evidence/evs-6400-system-diagram.png",
+          "assetSha256": "d68f37906c6b91ec937c6f77952d44aded6c97bb17fb07e256e88aa82d51f412",
+          "width": 1055,
+          "height": 690,
+          "kind": "source_topology_diagram",
+          "alt": "EVS 6.4.0.0 certification system diagram showing election-data management, equipment configuration, central tabulation devices, and results-consolidation infrastructure.",
+          "caption": "EVS 6.4.0.0 certified-system overview diagram",
+          "pageOrSection": "EAC scope PDF page 4, document page 3",
+          "derivativeNote": "Rendered at 135 DPI, rotated for readability, and cropped to the diagram boundary; diagram content was not edited.",
+          "caveat": "The system-level figure contains many EVS components and paths. It does not prove that every component or connection is present in a DS950 deployment.",
+          "sourceIds": ["eac-evs-6400-scope"],
+          "sourceRevisionIds": ["eac-evs-6400-scope@2026-07-19"]
+        },
+        {
+          "id": "ds950-evs-6400-transmission-test-page",
+          "assetUrl": "/equipment/network-evidence/evs-6400-transmission-test.png",
+          "assetSha256": "71296be17326a584587a366a530559e8d9f9eb3280b93a757486912b583a9736",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_document_page",
+          "alt": "Pro V and V EVS 6.4.0.0 test-report page stating that DS950, DS850, and DS450 results were transmitted to the EMS through a closed local area network.",
+          "caption": "Pro V&V EVS 6.4.0.0 central-tabulator closed-LAN test statement",
+          "pageOrSection": "Pro V&V test-report PDF page 30, report page 25",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "This is evidence of a laboratory test configuration and successful result transfer, not a jurisdiction deployment record.",
+          "sourceIds": ["provv-evs-6400-test-report"],
+          "sourceRevisionIds": ["provv-evs-6400-test-report@2026-07-19"]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "ds950-interface-map-gap",
+          "label": "Physical interface and switch map",
+          "description": "The reviewed public pages do not enumerate the occupied DS950 connector, switch port assignments, addressing, VLANs, or enabled services for the test or a field installation.",
+          "sourceIds": ["eac-evs-6400-scope", "provv-evs-6400-test-report"],
+          "sourceRevisionIds": ["eac-evs-6400-scope@2026-07-19", "provv-evs-6400-test-report@2026-07-19"],
+          "caveat": "System-level closed-LAN evidence must not be expanded into unreported operational details."
+        },
+        {
+          "id": "ds950-field-topology-gap",
+          "label": "Field-observed topology",
+          "description": "No dated jurisdiction network diagram, interface inspection, or switch inventory was collected for a particular DS950.",
+          "sourceIds": ["provv-evs-6400-test-report"],
+          "sourceRevisionIds": ["provv-evs-6400-test-report@2026-07-19"],
+          "caveat": "A laboratory path is not a live observation."
+        }
+      ]
+    },
     "deployments": [],
     "scene": {
       "assetUrl": "/equipment/ess-evs-6400-ds950/orthographic-pilot.glb",
@@ -580,10 +666,10 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 1,
+    "revision": 2,
     "createdOn": "2026-07-20",
-    "updatedOn": "2026-07-20",
-    "reviewedOn": "2026-07-20",
+    "updatedOn": "2026-07-21",
+    "reviewedOn": "2026-07-21",
     "reviewedBy": "project_editorial_review",
     "publishedOn": null,
     "sourceRevisionIds": [
@@ -594,7 +680,8 @@
       "provv-evs-6400-test-report@2026-07-19"
     ],
     "reviewNotes": [
-      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision."
+      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision.",
+      "Added the exact-version closed-LAN VSTL test path without inferring a field switch or operational network configuration."
     ]
   }
 }

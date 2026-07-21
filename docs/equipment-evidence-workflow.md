@@ -114,6 +114,22 @@ An unresolved value is stored as `null`, never a guess or a value silently borro
 
 Hardware that is not present by default is modeled as its own component with `optionality: "optional"`. Its component card and scene node must not be merged into the base machine, and its sources must directly establish both the option and its equipment-family scope.
 
+## Network configuration evidence
+
+Network evidence lives in `networkEvidence` and preserves three different layers:
+
+- `expected` records a certified or otherwise explicitly evaluated configuration.
+- `documented` records vendor, state, or test-lab context that is relevant but does not establish a live installation.
+- `observed` requires a dated, jurisdiction-specific official record or authorized inspection. It must identify the observation date and jurisdiction while omitting sensitive operational values.
+
+A physical Ethernet, USB, Wi-Fi, Bluetooth, or cellular interface is capability evidence only. It does not establish that the interface was enabled, cabled, assigned an address, attached to a network, or used during an election. Likewise, a system-level transmission test does not make every named machine a direct network endpoint unless the source says so.
+
+Each configuration must include source-bounded nodes, paths, controls, immutable source revisions, a topology classification, and a caveat. Unknown peers, field switch state, enabled services, optional deployment choices, and exact endpoint roles remain explicit evidence gaps. Vendor diagrams that show multiple deployment alternatives must retain the vendor's applicability warning.
+
+Rendered source pages and diagrams live under `public/equipment/network-evidence/`. Every image carries a local asset hash, dimensions, page or section, derivative note, source IDs, source-revision IDs, alt text, and scope caveat. Rendering a page for legibility does not convert it into an original topology claim.
+
+Do not collect or publish site-specific IP addresses, hostnames, credentials, keys, certificates, APNs, SIM identifiers, database names, switch configurations, firewall rules, VPN secrets, or similarly actionable operational details. Public diagrams may describe roles and bounded paths while withholding those values.
+
 ## Component vulnerability reviews
 
 A component `securityReview` is permitted only when product identity and applicability limits remain explicit. In this catalog, "all public vulnerabilities" means all exact-product-applicable records found in the archived NVD CVE API responses, the reviewed CISA Known Exploited Vulnerabilities catalog, and the manufacturer's reviewed security-advisory set on the stated review date. It is not a guarantee that undisclosed, unindexed, differently named, or firmware-dependent vulnerabilities do not exist.

@@ -7,6 +7,26 @@ export type EquipmentSource = EquipmentCatalog["sources"][number];
 export type EquipmentScene = EquipmentSystem["scene"];
 export type EquipmentSceneNode = EquipmentScene["nodes"][number];
 export type EquipmentReferenceImage = EquipmentScene["referenceImages"][number];
+export type EquipmentNetworkEvidence = EquipmentSystem["networkEvidence"];
+export type EquipmentNetworkConfiguration = EquipmentNetworkEvidence["configurations"][number];
+export type EquipmentNetworkNode = EquipmentNetworkConfiguration["nodes"][number];
+export type EquipmentNetworkSourceImage = EquipmentNetworkEvidence["sourceImages"][number];
+
+export type EquipmentEvidenceImage = {
+  id: string;
+  alt: string;
+  assetUrl: string;
+  assetSha256: string;
+  width: number;
+  height: number;
+  kind: string;
+  caption: string;
+  pageOrSection: string;
+  derivativeNote: string;
+  caveat: string;
+  sourceIds: readonly string[];
+  sourceRevisionIds: readonly string[];
+};
 
 export type EquipmentSecuritySourceReview = {
   id: string;

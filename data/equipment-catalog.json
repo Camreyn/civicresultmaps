@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedOn": "2026-07-20",
+  "generatedOn": "2026-07-21",
   "status": "reviewed_pilot",
   "editorialState": "staging_review",
   "productionRequirement": "published",
@@ -47,7 +47,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "Catalog version 2026.07.16",
+          "pageOrSection": "Catalog version 2026.07.16; 1,647 records",
           "archiveStatus": "verified"
         }
       ],
@@ -210,6 +210,45 @@
       "revisionComparisons": []
     },
     {
+      "id": "clearballot-security",
+      "publisher": "Clear Ballot Group",
+      "authorityLevel": "manufacturer_primary",
+      "title": "Protecting Elections: Security",
+      "url": "https://www.clearballot.com/security",
+      "localArtifact": "data/equipment-sources/clearballot-security.html",
+      "sha256": "52c1f6999bcf4b3ffc1022ee0c5e66fdeb637f0c10736745013bda34b79aa025",
+      "documentType": "manufacturer_security_page_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "Closed Network section",
+      "caveat": "The current manufacturer page states a product-wide security policy for certified Clear Ballot products. It does not identify the wiring, switch configuration, enabled interfaces, or deployment state of a particular ClearAccess or ClearCount unit and is not substituted for the exact ClearVote 2.5 certification record.",
+      "canonicalUrl": "https://www.clearballot.com/security",
+      "currentReviewedRevisionId": "clearballot-security@2026-07-21",
+      "latestRetrievedRevisionId": "clearballot-security@2026-07-21",
+      "revisions": [
+        {
+          "id": "clearballot-security@2026-07-21",
+          "localArtifact": "data/equipment-sources/clearballot-security.html",
+          "sha256": "52c1f6999bcf4b3ffc1022ee0c5e66fdeb637f0c10736745013bda34b79aa025",
+          "byteLength": 47604,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.clearballot.com/security",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Closed Network section",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "co-dvs-517-avalue-sid21-manual",
       "publisher": "Colorado Secretary of State; Avalue Technology, Inc.",
       "authorityLevel": "state_election_office_hosted_manufacturer_primary",
@@ -321,6 +360,45 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "Pages 7-19 and 25-28",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "co-dvs-517-system-overview",
+      "publisher": "Colorado Secretary of State; Dominion Voting Systems",
+      "authorityLevel": "state_election_office_hosted_vendor_manual",
+      "title": "Democracy Suite System Overview 5.17-CO::3",
+      "url": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-02-DSSystemOverview517CO.pdf",
+      "localArtifact": "data/equipment-sources/co-dvs-517-system-overview.pdf",
+      "sha256": "2e2490ce02b5e9e73a396672c61b2beb6795355944cf1692c7c96dbd4bcf4971",
+      "documentType": "state_election_office_hosted_vendor_system_overview_pdf",
+      "publishedOn": "2023-04-18",
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "PDF pages 9, 21, 47, 67-68, and 77",
+      "caveat": "This vendor-authored Colorado technical-data document describes Democracy Suite 5.17-CO. Its own disclaimer excludes modem and transmission functionality from that certification campaign, and its high-level diagram warns that not every depicted component applies to every jurisdiction. It does not establish a field installation or live network configuration.",
+      "canonicalUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-02-DSSystemOverview517CO.pdf",
+      "currentReviewedRevisionId": "co-dvs-517-system-overview@2026-07-21",
+      "latestRetrievedRevisionId": "co-dvs-517-system-overview@2026-07-21",
+      "revisions": [
+        {
+          "id": "co-dvs-517-system-overview@2026-07-21",
+          "localArtifact": "data/equipment-sources/co-dvs-517-system-overview.pdf",
+          "sha256": "2e2490ce02b5e9e73a396672c61b2beb6795355944cf1692c7c96dbd4bcf4971",
+          "byteLength": 7385740,
+          "publishedOn": "2023-04-18",
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-02-DSSystemOverview517CO.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF pages 9, 21, 47, 67-68, and 77",
           "archiveStatus": "verified"
         }
       ],
@@ -1295,7 +1373,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "PDF page 13",
+          "pageOrSection": "PDF page 13; DS200 SocketModem dial-up, GPRS, CDMA, and reference-guide records",
           "archiveStatus": "verified"
         }
       ],
@@ -1568,7 +1646,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "MTSMC-LVW3 ordering-revision rows",
+          "pageOrSection": "MTSMC-LVW3, R1, R2, and R4 rows",
           "archiveStatus": "verified"
         }
       ],
@@ -1607,7 +1685,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "Page 1",
+          "pageOrSection": "Page 1; affected SocketModem Cell list and suggested action plan",
           "archiveStatus": "verified"
         }
       ],
@@ -1646,7 +1724,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "Security-advisory index",
+          "pageOrSection": "Security-advisory index and linked advisory list",
           "archiveStatus": "verified"
         }
       ],
@@ -1685,7 +1763,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "Nine official advisory PDFs linked from the index",
+          "pageOrSection": "Nine linked advisory PDFs covering ten CVEs; applicable-product tables and not-affected determinations",
           "archiveStatus": "verified"
         }
       ],
@@ -1724,7 +1802,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "PDF pages 2 and 63-64",
+          "pageOrSection": "PDF pages 2 and 63-64; supported SocketModem families and firmware-update procedure",
           "archiveStatus": "verified"
         }
       ],
@@ -1763,7 +1841,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "SocketModem Cell table",
+          "pageOrSection": "SocketModem Cell table; MTSMC-LVW3 family row",
           "archiveStatus": "verified"
         }
       ],
@@ -1802,7 +1880,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "Eleven raw NVD CVE API 2.0 responses",
+          "pageOrSection": "Eleven CVE API 2.0 keyword responses for exact model and radio-module aliases",
           "archiveStatus": "verified"
         }
       ],
@@ -2270,7 +2348,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "PDF page 16, attached Pro V&V report page 12",
+          "pageOrSection": "PDF page 16, attached Pro V&V report page 12, Table 2-2",
           "archiveStatus": "verified"
         }
       ],
@@ -3167,6 +3245,143 @@
           ]
         }
       ],
+      "networkEvidence": {
+        "reviewedOn": "2026-07-21",
+        "summary": "The reviewed ClearVote 2.5 record identifies the ClearAccess station and its local peripherals, while Clear Ballot's current security policy says certified products are never attached to modems, the Internet, Wi-Fi, or Bluetooth. The exact port occupation and field wiring of a particular station are not established.",
+        "publicationBoundary": "This public view records device roles, connection media, evidence scope, and isolation controls. It intentionally excludes IP addresses, credentials, keys, access codes, APNs, SIM identifiers, serial numbers, and site-specific routing details.",
+        "configurations": [
+          {
+            "id": "clearaccess-certified-boundary",
+            "title": "Certified station boundary and local peripherals",
+            "evidenceLayer": "expected",
+            "assertionScope": "certified_configuration",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "standalone_local_peripherals",
+            "description": "ClearAccess is represented as a touchscreen ballot-marking station with a ballot printer and accessibility inputs. The reviewed sources support local peripheral relationships and a product-level communications boundary, not a field-observed network.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "clearaccess-station",
+                "label": "ClearAccess station",
+                "role": "Ballot-marking workstation",
+                "componentId": "clearaccess-touchscreen-computer",
+                "optional": false,
+                "details": "Certified alternatives include named all-in-one touchscreen computers running ClearAccess software."
+              },
+              {
+                "id": "clearaccess-printer",
+                "label": "Ballot printer",
+                "role": "Local paper-ballot output",
+                "componentId": "clearaccess-ballot-printer",
+                "optional": false,
+                "details": "The printer is a local ClearAccess peripheral; the selected certified model and occupied connector are jurisdiction-specific."
+              },
+              {
+                "id": "clearaccess-accessibility",
+                "label": "Accessibility inputs",
+                "role": "Local voter input and audio accessories",
+                "componentId": "clearaccess-accessible-keypad",
+                "optional": false,
+                "details": "The dossier separately identifies the accessible keypad and other assistive accessories."
+              }
+            ],
+            "links": [
+              {
+                "id": "clearaccess-print-link",
+                "from": "clearaccess-station",
+                "to": "clearaccess-printer",
+                "medium": "Local wired peripheral connection",
+                "direction": "one_way",
+                "purpose": "Print the voter-reviewed paper ballot",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "clearaccess-input-link",
+                "from": "clearaccess-accessibility",
+                "to": "clearaccess-station",
+                "medium": "Local assistive-device connection",
+                "direction": "one_way",
+                "purpose": "Provide accessible navigation and selection input",
+                "knowledgeStatus": "documented_partial"
+              }
+            ],
+            "controls": [
+              {
+                "id": "clearaccess-communications-boundary",
+                "label": "Manufacturer communications boundary",
+                "status": "documented",
+                "description": "Clear Ballot states that certified products are never attached to modems, the Internet, Wi-Fi, or Bluetooth."
+              },
+              {
+                "id": "clearaccess-field-port-state",
+                "label": "Field port state",
+                "status": "not_publicly_established",
+                "description": "The exact enabled interfaces, occupied connectors, and jurisdiction cabling were not established by the reviewed public record."
+              }
+            ],
+            "sensitiveDetailsWithheld": "No addresses, credentials, cryptographic material, access codes, or site-specific configuration values are collected or displayed.",
+            "sourceIds": [
+              "eac-clearvote-25-scope",
+              "clearballot-security"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19",
+              "clearballot-security@2026-07-21"
+            ],
+            "caveat": "A product-level communications policy and a certified component list do not prove the state of a particular port, cable, station, polling place, or election deployment."
+          }
+        ],
+        "sourceImages": [
+          {
+            "id": "clearaccess-clearvote-25-system-diagrams",
+            "assetUrl": "/equipment/network-evidence/clearvote-25-system-diagrams.png",
+            "assetSha256": "8e4edb8e355984e09c36431fc82177554cd94371554c023030dcdbf22e893c07",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_topology_diagram",
+            "alt": "ClearVote 2.5 certification page showing system components and relationships, including ClearAccess, ClearCount, ClearCast, and ClearDesign.",
+            "caption": "ClearVote 2.5 system components and component-relationship diagrams",
+            "pageOrSection": "EAC scope PDF page 8, document page 6",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "The suite-level diagram shows product and data relationships. It is not a cable map and does not establish that ClearAccess is attached to a network in a field deployment.",
+            "sourceIds": [
+              "eac-clearvote-25-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19"
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "id": "clearaccess-port-map-gap",
+            "label": "Exact port and cable map",
+            "description": "The reviewed ClearVote 2.5 public certification attachments do not provide an installation-specific ClearAccess port-occupation or cable-routing record.",
+            "sourceIds": [
+              "eac-clearvote-25-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19"
+            ],
+            "caveat": "This is a public-evidence gap, not evidence that an undocumented connection exists."
+          },
+          {
+            "id": "clearaccess-field-network-gap",
+            "label": "Field-observed configuration",
+            "description": "No dated, unit-level or polling-place network inspection was collected for this dossier.",
+            "sourceIds": [
+              "eac-clearvote-25-scope",
+              "clearballot-security"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19",
+              "clearballot-security@2026-07-21"
+            ],
+            "caveat": "Certified and manufacturer evidence must not be presented as a live observation."
+          }
+        ]
+      },
       "deployments": [],
       "scene": {
         "assetUrl": "/equipment/clear-ballot-clearvote-25-clearaccess/orthographic-pilot.glb",
@@ -3318,11 +3533,12 @@
         "The UPS models are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Test findings are time- and version-scoped. They do not prove a field incident, exploitation, altered votes, fraud, misconduct, or an incorrect election outcome."
       ],
-      "claimRevision": 3,
+      "claimRevision": 4,
       "editorialState": "approved",
       "sourceIds": [
         "clearballot-clearaccess-product-page",
         "clearballot-clearaccess-reference-photo",
+        "clearballot-security",
         "dell-optiplex-5250-specifications",
         "eac-clearvote-25-record",
         "eac-clearvote-25-scope",
@@ -3332,6 +3548,7 @@
       "sourceRevisionIds": [
         "clearballot-clearaccess-product-page@2026-07-20",
         "clearballot-clearaccess-reference-photo@2026-07-20",
+        "clearballot-security@2026-07-21",
         "dell-optiplex-5250-specifications@2026-07-20",
         "eac-clearvote-25-record@2026-07-19",
         "eac-clearvote-25-scope@2026-07-19",
@@ -3349,11 +3566,14 @@
         "findingCount": 4,
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
-        "sourceCount": 7,
-        "sourceRevisionCount": 7,
+        "sourceCount": 8,
+        "sourceRevisionCount": 8,
         "componentSecurityReviewCount": 0,
         "exactApplicableVulnerabilityCount": 0,
-        "nonCveAdvisoryCount": 0
+        "nonCveAdvisoryCount": 0,
+        "networkConfigurationCount": 1,
+        "networkSourceImageCount": 1,
+        "fieldObservedNetworkConfigurationCount": 0
       }
     },
     {
@@ -3751,6 +3971,204 @@
           "caveat": "A certified option is not evidence that every installation uses it or that a field battery retains its original capacity."
         }
       ],
+      "networkEvidence": {
+        "reviewedOn": "2026-07-21",
+        "summary": "The ClearVote 2.5 EAC scope documents ClearCount as a wired, closed, isolated Ethernet system linking the CountServer, ScanStations, and CountStations through a certified switch alternative. COTS scanners attach to ScanStations; field cabling and switch settings remain installation-specific.",
+        "publicationBoundary": "The module publishes only source-supported roles, media, direction, and isolation controls. It excludes IP addressing, credentials, keys, switch-management values, VLAN details, hostnames, serial numbers, and site diagrams.",
+        "configurations": [
+          {
+            "id": "clearcount-certified-closed-lan",
+            "title": "Certified closed wired ClearCount LAN",
+            "evidenceLayer": "expected",
+            "assertionScope": "certified_configuration",
+            "knowledgeStatus": "confirmed",
+            "topologyKind": "closed_wired_lan",
+            "description": "One CountServer is shared by one or more ScanStations and CountStations over a network switch. Each COTS scanner is paired locally with a ScanStation, while tabulation results and card images are stored in the central election database on the CountServer.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "clearcount-scanner",
+                "label": "Central scanner",
+                "role": "Ballot image capture",
+                "componentId": "clearcount-central-scanner",
+                "optional": false,
+                "details": "A certified COTS scanner alternative is paired with each ScanStation."
+              },
+              {
+                "id": "clearcount-scanstation",
+                "label": "ScanStation",
+                "role": "Ballot scanning and tabulation client",
+                "componentId": "clearcount-scanstation",
+                "optional": false,
+                "details": "One or more Windows ScanStations execute the Tabulator application from the CountServer."
+              },
+              {
+                "id": "clearcount-switch",
+                "label": "Network switch",
+                "role": "Closed Ethernet interconnect",
+                "componentId": "clearcount-network-switch",
+                "optional": false,
+                "details": "The certified scope lists several permitted switch alternatives; jurisdiction selection is not established."
+              },
+              {
+                "id": "clearcount-server",
+                "label": "CountServer",
+                "role": "Election database and application host",
+                "componentId": "clearcount-countserver",
+                "optional": false,
+                "details": "The Ubuntu CountServer hosts ClearCount software, its database, and election reports."
+              },
+              {
+                "id": "clearcount-countstation",
+                "label": "CountStation",
+                "role": "Administration, adjudication, and reporting client",
+                "componentId": "clearcount-countstation",
+                "optional": false,
+                "details": "One or more browser-based CountStations connect to the CountServer through the switch."
+              }
+            ],
+            "links": [
+              {
+                "id": "clearcount-scanner-usb",
+                "from": "clearcount-scanner",
+                "to": "clearcount-scanstation",
+                "medium": "Local scanner interface / USB cabling",
+                "direction": "one_way",
+                "purpose": "Deliver captured ballot images to the paired ScanStation",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "clearcount-scanstation-ethernet",
+                "from": "clearcount-scanstation",
+                "to": "clearcount-switch",
+                "medium": "Wired Ethernet",
+                "direction": "bidirectional",
+                "purpose": "Run the server-hosted tabulation workflow and send results and card images",
+                "knowledgeStatus": "confirmed"
+              },
+              {
+                "id": "clearcount-server-ethernet",
+                "from": "clearcount-switch",
+                "to": "clearcount-server",
+                "medium": "Wired Ethernet",
+                "direction": "bidirectional",
+                "purpose": "Provide application, database, and report services to ClearCount clients",
+                "knowledgeStatus": "confirmed"
+              },
+              {
+                "id": "clearcount-countstation-ethernet",
+                "from": "clearcount-countstation",
+                "to": "clearcount-switch",
+                "medium": "Wired Ethernet",
+                "direction": "bidirectional",
+                "purpose": "Provide administration, adjudication, consolidation, and reporting access",
+                "knowledgeStatus": "confirmed"
+              }
+            ],
+            "controls": [
+              {
+                "id": "clearcount-isolation",
+                "label": "Closed and isolated",
+                "status": "documented",
+                "description": "The exact 2.5 scope says the ClearCount network is not connected to other systems or the Internet."
+              },
+              {
+                "id": "clearcount-no-wireless-modem",
+                "label": "No modem or wireless attachment",
+                "status": "documented",
+                "description": "Clear Ballot's current security policy says certified products are never attached to modems, Wi-Fi, or Bluetooth."
+              },
+              {
+                "id": "clearcount-encrypted-traffic",
+                "label": "Encrypted traffic policy",
+                "status": "documented",
+                "description": "The manufacturer states that traffic on its certified-product closed network is encrypted using NIST-recommended algorithms."
+              }
+            ],
+            "sensitiveDetailsWithheld": "No addresses, credentials, cryptographic material, hostnames, switch settings, VLANs, or site-specific cable routes are collected or shown.",
+            "sourceIds": [
+              "eac-clearvote-25-scope",
+              "provv-clearvote-25-test-plan",
+              "clearballot-security"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19",
+              "provv-clearvote-25-test-plan@2026-07-19",
+              "clearballot-security@2026-07-21"
+            ],
+            "caveat": "This is the certified architecture, not proof that a jurisdiction selected every alternative, used the maximum number of stations, or installed a particular switch or cabling layout."
+          }
+        ],
+        "sourceImages": [
+          {
+            "id": "clearcount-clearvote-25-system-diagrams",
+            "assetUrl": "/equipment/network-evidence/clearvote-25-system-diagrams.png",
+            "assetSha256": "8e4edb8e355984e09c36431fc82177554cd94371554c023030dcdbf22e893c07",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_topology_diagram",
+            "alt": "ClearVote 2.5 certification diagram showing the CountServer, network switch, ScanStations and scanners, and CountStation within the ClearCount product area.",
+            "caption": "ClearVote 2.5 system diagram with the ClearCount server, switch, and station topology",
+            "pageOrSection": "EAC scope PDF page 8, document page 6",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "The diagram establishes certified system relationships, not the number, placement, make, port assignment, or operational state of equipment at a particular site.",
+            "sourceIds": [
+              "eac-clearvote-25-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19"
+            ]
+          },
+          {
+            "id": "clearcount-clearvote-25-network-scope-page",
+            "assetUrl": "/equipment/network-evidence/clearvote-25-clearcount-scope.png",
+            "assetSha256": "54f2a8bd74f88c865245fdea2183943e9f074225e73a690aef1b6622de2465d0",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_document_page",
+            "alt": "ClearVote 2.5 certification scope page describing ClearCount as a wired, closed, isolated network with CountServer, ScanStations, network switch, and CountStations.",
+            "caption": "Exact ClearVote 2.5 scope text for the ClearCount closed Ethernet architecture",
+            "pageOrSection": "EAC scope PDF page 5, document page 3",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "The page is a certification description and does not document a jurisdiction's live switch configuration or cable installation.",
+            "sourceIds": [
+              "eac-clearvote-25-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19"
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "id": "clearcount-switch-config-gap",
+            "label": "Switch and addressing configuration",
+            "description": "The reviewed public package does not establish selected switch model, port occupation, addressing, management settings, cable routes, or the number of active stations for a jurisdiction.",
+            "sourceIds": [
+              "eac-clearvote-25-scope",
+              "provv-clearvote-25-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19",
+              "provv-clearvote-25-test-plan@2026-07-19"
+            ],
+            "caveat": "Those details require a dated jurisdiction record or authorized inspection and should not be inferred from the certified alternatives."
+          },
+          {
+            "id": "clearcount-field-observation-gap",
+            "label": "Field-observed topology",
+            "description": "No dated jurisdiction installation diagram, network inventory, or unit-level observation was collected for this dossier.",
+            "sourceIds": [
+              "eac-clearvote-25-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19"
+            ],
+            "caveat": "Absence of field evidence is reported as a gap, not as a claim about actual operation."
+          }
+        ]
+      },
       "deployments": [],
       "scene": {
         "assetUrl": "/equipment/clear-ballot-clearvote-25-clearcount/orthographic-pilot.glb",
@@ -3882,11 +4300,12 @@
         "The 3D scene is a navigation aid, not a wiring diagram, teardown, exact installation, or claim about a jurisdiction's selected hardware.",
         "A certification change or test finding is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
       ],
-      "claimRevision": 1,
+      "claimRevision": 2,
       "editorialState": "approved",
       "sourceIds": [
         "clearballot-clearcount-product-page",
         "clearballot-clearcount-reference-photo",
+        "clearballot-security",
         "eac-clearvote-25-record",
         "eac-clearvote-25-scope",
         "provv-clearvote-25-test-plan",
@@ -3895,6 +4314,7 @@
       "sourceRevisionIds": [
         "clearballot-clearcount-product-page@2026-07-20",
         "clearballot-clearcount-reference-photo@2026-07-20",
+        "clearballot-security@2026-07-21",
         "eac-clearvote-25-record@2026-07-19",
         "eac-clearvote-25-scope@2026-07-19",
         "provv-clearvote-25-test-plan@2026-07-19",
@@ -3911,11 +4331,14 @@
         "findingCount": 1,
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
-        "sourceCount": 6,
-        "sourceRevisionCount": 6,
+        "sourceCount": 7,
+        "sourceRevisionCount": 7,
         "componentSecurityReviewCount": 0,
         "exactApplicableVulnerabilityCount": 0,
-        "nonCveAdvisoryCount": 0
+        "nonCveAdvisoryCount": 0,
+        "networkConfigurationCount": 1,
+        "networkSourceImageCount": 2,
+        "fieldObservedNetworkConfigurationCount": 0
       }
     },
     {
@@ -4303,6 +4726,187 @@
           "caveat": "The minimum is a documented Colorado configuration requirement, not a measured runtime or battery-health observation at a field installation."
         }
       ],
+      "networkEvidence": {
+        "reviewedOn": "2026-07-21",
+        "summary": "Colorado's exact 5.17-CO technical data connects the ImageCast Central scanner locally to an ICC workstation by USB and describes ICC workstations using a Gigabit Ethernet port on a closed LAN to the EMS data-center network. The ICC user guide makes additional central-repository infrastructure conditional and requires election computers to remain isolated from the Internet and other networks.",
+        "publicationBoundary": "This view publishes only the documented system roles, connection media, conditionality, and isolation controls. It omits addressing, credentials, database identifiers, cryptographic keys, switch settings, hostnames, and jurisdiction cable routes.",
+        "configurations": [
+          {
+            "id": "icc-517co-conditional-closed-lan",
+            "title": "ICC workstation with conditional closed data-center LAN",
+            "evidenceLayer": "expected",
+            "assertionScope": "state_certification_documentation",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "conditional_closed_wired_lan",
+            "description": "A COTS scanner attaches directly to its ICC workstation. Where the additional central ballot-scan repository or data center is used, ICC workstations connect through isolated network infrastructure to EMS storage and services.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "icc-scanner",
+                "label": "ICC central scanner",
+                "role": "Ballot image capture",
+                "componentId": "icc-central-scanner",
+                "optional": false,
+                "details": "The certified configuration permits multiple named COTS scanner alternatives."
+              },
+              {
+                "id": "icc-workstation",
+                "label": "ICC workstation",
+                "role": "Image processing and central-count client",
+                "componentId": "icc-workstation",
+                "optional": false,
+                "details": "The workstation hosts the ICC application and provides the scanner's local computer interface."
+              },
+              {
+                "id": "icc-closed-lan",
+                "label": "Isolated LAN infrastructure",
+                "role": "Conditional closed Ethernet transport",
+                "componentId": "icc-optional-isolated-lan",
+                "optional": true,
+                "details": "The ICC user guide calls for high-speed network infrastructure only when an additional central repository or data center is used."
+              },
+              {
+                "id": "icc-ems-data-center",
+                "label": "EMS data center",
+                "role": "Central result and ballot-image services",
+                "componentId": null,
+                "optional": true,
+                "details": "The system overview describes the closed LAN as connecting ICC workstations to the EMS data-center network."
+              }
+            ],
+            "links": [
+              {
+                "id": "icc-scanner-usb",
+                "from": "icc-scanner",
+                "to": "icc-workstation",
+                "medium": "USB interface",
+                "direction": "one_way",
+                "purpose": "Deliver scanner-captured ballot images to the ICC workstation",
+                "knowledgeStatus": "confirmed"
+              },
+              {
+                "id": "icc-workstation-lan",
+                "from": "icc-workstation",
+                "to": "icc-closed-lan",
+                "medium": "Gigabit Ethernet",
+                "direction": "bidirectional",
+                "purpose": "Connect an ICC workstation to the closed EMS data-center network when the additional repository configuration is used",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "icc-lan-data-center",
+                "from": "icc-closed-lan",
+                "to": "icc-ems-data-center",
+                "medium": "Closed local area network",
+                "direction": "bidirectional",
+                "purpose": "Store and exchange results and ballot-image data within the election system boundary",
+                "knowledgeStatus": "documented_partial"
+              }
+            ],
+            "controls": [
+              {
+                "id": "icc-internet-isolation",
+                "label": "Internet isolation",
+                "status": "documented",
+                "description": "The 5.17-CO ICC guide requires election computers to be isolated from any Internet connection."
+              },
+              {
+                "id": "icc-other-network-isolation",
+                "label": "Other-network isolation",
+                "status": "documented",
+                "description": "The election computing network must be isolated from jurisdiction computers and networks not used for election operations."
+              },
+              {
+                "id": "icc-field-switch-state",
+                "label": "Field switch state",
+                "status": "not_publicly_established",
+                "description": "The selected switch, ports, addressing, and enabled services for any jurisdiction installation are not established here."
+              }
+            ],
+            "sensitiveDetailsWithheld": "No addresses, credentials, keys, database names, hostnames, switch settings, or site-specific network diagrams are collected or displayed.",
+            "sourceIds": [
+              "co-dvs-517-system-overview",
+              "co-dvs-517-icc-user-guide",
+              "provv-dsuite-517-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-system-overview@2026-07-21",
+              "co-dvs-517-icc-user-guide@2026-07-20",
+              "provv-dsuite-517-test-plan@2026-07-20"
+            ],
+            "caveat": "The documents describe permitted 5.17-CO architectures. They do not establish that a particular jurisdiction uses the optional repository, which COTS alternatives it selected, or the live state of a network."
+          }
+        ],
+        "sourceImages": [
+          {
+            "id": "icc-dvs-517-high-level-block-diagram",
+            "assetUrl": "/equipment/network-evidence/dvs-517-system-block-diagram.png",
+            "assetSha256": "e556f3f0d2cb52c77be4bb6b54561ed76c08a13cb01af5035b6e52eddd480cd2",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_topology_diagram",
+            "alt": "Democracy Suite 5.17-CO high-level block diagram showing EMS services, ImageCast devices, secure electronic transfers, and physical result transfers.",
+            "caption": "Democracy Suite 5.17-CO high-level system block diagram",
+            "pageOrSection": "Colorado system-overview PDF page 21, Figure 2-3",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "The source itself warns that not all depicted components apply to every jurisdiction, and its disclaimer excludes modem and transmission functionality from the 5.17-CO campaign.",
+            "sourceIds": [
+              "co-dvs-517-system-overview"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-system-overview@2026-07-21"
+            ]
+          },
+          {
+            "id": "icc-dvs-517-workstation-network-page",
+            "assetUrl": "/equipment/network-evidence/dvs-517-icc-network.png",
+            "assetSha256": "c7675e73b62ccb2e21d86a06f6561b3c0cda7b162264e9826a09e3e4f51aa052",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_document_page",
+            "alt": "Democracy Suite 5.17-CO system overview page describing the ICC scanner USB connection, workstation specifications, and closed Gigabit Ethernet LAN connection to the EMS data center.",
+            "caption": "Exact 5.17-CO ICC workstation and closed-LAN description",
+            "pageOrSection": "Colorado system-overview PDF page 68, document page 60",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "This technical-data statement is not a jurisdiction inventory and does not resolve the conditional repository language in the ICC user guide for a particular deployment.",
+            "sourceIds": [
+              "co-dvs-517-system-overview"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-system-overview@2026-07-21"
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "id": "icc-repository-selection-gap",
+            "label": "Additional repository selection",
+            "description": "The reviewed dossier does not establish whether a jurisdiction uses the optional additional central ballot-scan repository or data-center configuration.",
+            "sourceIds": [
+              "co-dvs-517-icc-user-guide",
+              "co-dvs-517-system-overview"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-icc-user-guide@2026-07-20",
+              "co-dvs-517-system-overview@2026-07-21"
+            ],
+            "caveat": "The module preserves the conditional language instead of forcing one topology onto every ICC installation."
+          },
+          {
+            "id": "icc-field-topology-gap",
+            "label": "Field-observed network topology",
+            "description": "No dated jurisdiction diagram, switch inventory, interface state, or authorized inspection was collected.",
+            "sourceIds": [
+              "co-dvs-517-icc-user-guide"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-icc-user-guide@2026-07-20"
+            ],
+            "caveat": "A documented system architecture is not a live network observation."
+          }
+        ]
+      },
       "deployments": [],
       "scene": {
         "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-central/orthographic-pilot.glb",
@@ -4433,10 +5037,11 @@
         "The 3D scene is a navigation aid, not a teardown, wiring diagram, exact installation, or unit inventory.",
         "A certification change or test result is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
       ],
-      "claimRevision": 1,
+      "claimRevision": 2,
       "editorialState": "approved",
       "sourceIds": [
         "co-dvs-517-icc-user-guide",
+        "co-dvs-517-system-overview",
         "eac-dsuite-517-record",
         "eac-dsuite-517-scope",
         "provv-dsuite-517-test-plan",
@@ -4444,6 +5049,7 @@
       ],
       "sourceRevisionIds": [
         "co-dvs-517-icc-user-guide@2026-07-20",
+        "co-dvs-517-system-overview@2026-07-21",
         "eac-dsuite-517-record@2026-07-20",
         "eac-dsuite-517-scope@2026-07-20",
         "provv-dsuite-517-test-plan@2026-07-20",
@@ -4460,11 +5066,14 @@
         "findingCount": 1,
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
-        "sourceCount": 5,
-        "sourceRevisionCount": 5,
+        "sourceCount": 6,
+        "sourceRevisionCount": 6,
         "componentSecurityReviewCount": 0,
         "exactApplicableVulnerabilityCount": 0,
-        "nonCveAdvisoryCount": 0
+        "nonCveAdvisoryCount": 0,
+        "networkConfigurationCount": 1,
+        "networkSourceImageCount": 2,
+        "fieldObservedNetworkConfigurationCount": 0
       }
     },
     {
@@ -5366,6 +5975,180 @@
           "caveat": "Confirmed means the UPS models appear in the reviewed certified or test configuration, not that all are used together, that a jurisdiction selected one, or that battery health and runtime are known."
         }
       ],
+      "networkEvidence": {
+        "reviewedOn": "2026-07-21",
+        "summary": "The certified ICX hardware profile includes a physical 10/100 RJ-45 interface on the SID-21V platform, but the Democracy Suite 5.17 test plan says the evaluated system does not use public networks, does not support transmission over public networks, and uses no wireless technology. No external network peer or field connection is established for this ICX dossier.",
+        "publicationBoundary": "The module distinguishes physical interface capability from an enabled or used connection. It excludes addresses, credentials, keys, activation-card contents, port settings, hostnames, and site-specific topology.",
+        "configurations": [
+          {
+            "id": "icx-517-physical-interface-boundary",
+            "title": "ICX physical Ethernet capability with certified communications boundary",
+            "evidenceLayer": "expected",
+            "assertionScope": "vstl_test_configuration",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "physical_network_capability_only",
+            "description": "The SID-21V hardware exposes an RJ-45 interface, while the exact 5.17 test-plan boundary excludes public-network transmission and wireless use. The reviewed record does not identify a certified external peer for the ICX port or show that it is connected in a jurisdiction.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "icx-station",
+                "label": "ImageCast X station",
+                "role": "Accessible ballot-marking platform",
+                "componentId": "icx-touchscreen-bmd",
+                "optional": false,
+                "details": "The station includes the certified ICX application and one of the permitted hardware configurations."
+              },
+              {
+                "id": "icx-rj45-interface",
+                "label": "SID-21V RJ-45 interface",
+                "role": "Physical 10/100 Ethernet capability",
+                "componentId": "icx-sid21-io-panel",
+                "optional": false,
+                "details": "Connector presence is documented; enabled state, peer, service, and field use are not established."
+              },
+              {
+                "id": "icx-election-media",
+                "label": "Election and activation media",
+                "role": "Physical configuration and session transfer",
+                "componentId": "icx-election-media",
+                "optional": false,
+                "details": "The certified system uses physical media and activation cards for election configuration and voter-session workflows."
+              }
+            ],
+            "links": [
+              {
+                "id": "icx-rj45-capability-link",
+                "from": "icx-rj45-interface",
+                "to": "icx-station",
+                "medium": "Internal connection to a 10/100 RJ-45 physical interface",
+                "direction": "bidirectional",
+                "purpose": "Expose hardware network capability without establishing an attached external network",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "icx-physical-media-link",
+                "from": "icx-election-media",
+                "to": "icx-station",
+                "medium": "Physical election media and activation cards",
+                "direction": "one_way",
+                "purpose": "Load election configuration and activate voting sessions without treating physical transfer as a network connection",
+                "knowledgeStatus": "documented_partial"
+              }
+            ],
+            "controls": [
+              {
+                "id": "icx-no-public-network",
+                "label": "No public-network use in evaluated system",
+                "status": "documented",
+                "description": "Pro V&V states that Democracy Suite 5.17 does not utilize public networks."
+              },
+              {
+                "id": "icx-no-public-transmission",
+                "label": "No public-network transmission",
+                "status": "documented",
+                "description": "The test plan states that the evaluated 5.17 system does not support transmission over public networks."
+              },
+              {
+                "id": "icx-no-wireless",
+                "label": "No wireless technology",
+                "status": "documented",
+                "description": "The 5.17 test plan states that no wireless technology is utilized in the system."
+              },
+              {
+                "id": "icx-external-peer",
+                "label": "External Ethernet peer",
+                "status": "not_publicly_established",
+                "description": "No external device, service, or network attached to the ICX RJ-45 port is established in the reviewed record."
+              }
+            ],
+            "sensitiveDetailsWithheld": "No addressing, credentials, keys, activation-card contents, port configuration, hostnames, or jurisdiction topology is collected or shown.",
+            "sourceIds": [
+              "eac-dsuite-517-scope",
+              "provv-dsuite-517-test-plan",
+              "co-dvs-517-system-overview",
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "eac-dsuite-517-scope@2026-07-20",
+              "provv-dsuite-517-test-plan@2026-07-20",
+              "co-dvs-517-system-overview@2026-07-21",
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "An RJ-45 connector is capability evidence only. It does not prove that Ethernet is enabled, cabled, assigned an address, attached to a network, or used during an election."
+          }
+        ],
+        "sourceImages": [
+          {
+            "id": "icx-dvs-517-high-level-block-diagram",
+            "assetUrl": "/equipment/network-evidence/dvs-517-system-block-diagram.png",
+            "assetSha256": "e556f3f0d2cb52c77be4bb6b54561ed76c08a13cb01af5035b6e52eddd480cd2",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_topology_diagram",
+            "alt": "Democracy Suite 5.17-CO high-level block diagram showing ImageCast X among EMS services, ImageCast devices, and physical or secure-electronic transfers.",
+            "caption": "Democracy Suite 5.17-CO high-level system block diagram",
+            "pageOrSection": "Colorado system-overview PDF page 21, Figure 2-3",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "The page says not every depicted component applies to every jurisdiction, and the document disclaimer excludes modem and transmission functionality from the 5.17-CO campaign.",
+            "sourceIds": [
+              "co-dvs-517-system-overview"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-system-overview@2026-07-21"
+            ]
+          },
+          {
+            "id": "icx-dvs-517-network-boundary-page",
+            "assetUrl": "/equipment/network-evidence/dvs-517-network-boundary.png",
+            "assetSha256": "c54b8ff1cf8c91117ce8885c03cd5fd1a6de54748ab31c04bbf495b825f3726c",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_document_page",
+            "alt": "Pro V and V Democracy Suite 5.17 test-plan page stating that public networks and public-network transmission are not used and that no wireless technology is utilized.",
+            "caption": "Pro V&V 5.17 public-network and wireless boundary statements",
+            "pageOrSection": "Pro V&V test-plan PDF page 43, report page 38",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "The statements define the evaluated system boundary. They do not constitute an inspection of a particular ICX unit or jurisdiction installation.",
+            "sourceIds": [
+              "provv-dsuite-517-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "provv-dsuite-517-test-plan@2026-07-20"
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "id": "icx-rj45-use-gap",
+            "label": "RJ-45 enabled state and peer",
+            "description": "The reviewed public record does not identify an enabled service, external peer, cable, or field use for the physical ICX Ethernet interface.",
+            "sourceIds": [
+              "eac-dsuite-517-scope",
+              "co-dvs-517-avalue-sid21-manual",
+              "provv-dsuite-517-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "eac-dsuite-517-scope@2026-07-20",
+              "co-dvs-517-avalue-sid21-manual@2026-07-20",
+              "provv-dsuite-517-test-plan@2026-07-20"
+            ],
+            "caveat": "The gap must not be converted into an assumption that the port is either active or disabled."
+          },
+          {
+            "id": "icx-field-network-gap",
+            "label": "Field-observed configuration",
+            "description": "No dated unit-level interface inspection or polling-place network diagram was collected.",
+            "sourceIds": [
+              "provv-dsuite-517-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "provv-dsuite-517-test-plan@2026-07-20"
+            ],
+            "caveat": "Certified boundary evidence is not a live observation."
+          }
+        ]
+      },
       "deployments": [],
       "scene": {
         "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-x/orthographic-pilot.glb",
@@ -5540,11 +6323,12 @@
         "The UPS alternatives are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Advisory notices are time-, version-, scenario-, and sometimes jurisdiction-scoped. They do not prove an election incident, altered votes, fraud, misconduct, or an incorrect outcome."
       ],
-      "claimRevision": 3,
+      "claimRevision": 4,
       "editorialState": "approved",
       "sourceIds": [
         "co-dvs-517-avalue-sid21-manual",
         "co-dvs-517-icx-maintenance-manual",
+        "co-dvs-517-system-overview",
         "dvs-icx-prime-ssd-advisory",
         "dvs-icx-straight-party-advisory",
         "dvs-icx-touchscreen-advisory",
@@ -5558,6 +6342,7 @@
       "sourceRevisionIds": [
         "co-dvs-517-avalue-sid21-manual@2026-07-20",
         "co-dvs-517-icx-maintenance-manual@2026-07-20",
+        "co-dvs-517-system-overview@2026-07-21",
         "dvs-icx-prime-ssd-advisory@2026-07-20",
         "dvs-icx-straight-party-advisory@2026-07-20",
         "dvs-icx-touchscreen-advisory@2026-07-20",
@@ -5579,11 +6364,14 @@
         "findingCount": 4,
         "powerRecordCount": 2,
         "confirmedPowerRecordCount": 2,
-        "sourceCount": 11,
-        "sourceRevisionCount": 11,
+        "sourceCount": 12,
+        "sourceRevisionCount": 12,
         "componentSecurityReviewCount": 0,
         "exactApplicableVulnerabilityCount": 0,
-        "nonCveAdvisoryCount": 0
+        "nonCveAdvisoryCount": 0,
+        "networkConfigurationCount": 1,
+        "networkSourceImageCount": 2,
+        "fieldObservedNetworkConfigurationCount": 0
       }
     },
     {
@@ -6681,6 +7469,312 @@
           ]
         }
       ],
+      "networkEvidence": {
+        "reviewedOn": "2026-07-21",
+        "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint. Older records separately document optional DS200 cellular hardware families without proving EVS 6.4 certification, firmware, activation, or field use.",
+        "publicationBoundary": "The module publishes roles, high-level paths, connection media when established, and evidence boundaries. It excludes IP addresses, credentials, VPN parameters, keys, APNs, SIM identifiers, carrier accounts, device identifiers, and jurisdiction routing details.",
+        "configurations": [
+          {
+            "id": "ds200-6400-regional-results-test-path",
+            "title": "EVS 6.4.0.0 Regional Results test path",
+            "evidenceLayer": "expected",
+            "assertionScope": "vstl_test_configuration",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "results_transmission_service",
+            "description": "Pro V&V tested DS200 results transmitted by the separate Regional Results application through a VPN to the EMS. The source establishes the end-to-end result workflow but not a direct DS200 network session or the local handoff medium from the tabulator to the Regional Results client.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "ds200-tabulator",
+                "label": "DS200",
+                "role": "Polling-place scanner and tabulator",
+                "componentId": "ds200-scanner-tabulator",
+                "optional": false,
+                "details": "The DS200 produces result data used in the tested Regional Results workflow."
+              },
+              {
+                "id": "ds200-regional-client",
+                "label": "Regional Results client",
+                "role": "Regional sending-site application",
+                "componentId": null,
+                "optional": true,
+                "details": "The EAC scope describes Regional Results as a standalone application deployed at regional sending sites."
+              },
+              {
+                "id": "ds200-customer-network",
+                "label": "Customer-dedicated VPN path",
+                "role": "Encrypted unofficial-results transport",
+                "componentId": null,
+                "optional": true,
+                "details": "Pro V&V reports a VPN test; the EAC scope describes a customer-dedicated network."
+              },
+              {
+                "id": "ds200-ems",
+                "label": "Electionware EMS",
+                "role": "Central results destination",
+                "componentId": null,
+                "optional": false,
+                "details": "The test transmitted correct result files to the EMS for compilation."
+              }
+            ],
+            "links": [
+              {
+                "id": "ds200-results-handoff",
+                "from": "ds200-tabulator",
+                "to": "ds200-regional-client",
+                "medium": "Result-data handoff; local medium not established in the reviewed passage",
+                "direction": "one_way",
+                "purpose": "Make DS200 result data available to Regional Results",
+                "knowledgeStatus": "not_publicly_established"
+              },
+              {
+                "id": "ds200-vpn-send",
+                "from": "ds200-regional-client",
+                "to": "ds200-customer-network",
+                "medium": "Virtual private network over a customer-dedicated network",
+                "direction": "one_way",
+                "purpose": "Transmit encrypted unofficial results collection files",
+                "knowledgeStatus": "confirmed"
+              },
+              {
+                "id": "ds200-vpn-receive",
+                "from": "ds200-customer-network",
+                "to": "ds200-ems",
+                "medium": "Virtual private network",
+                "direction": "one_way",
+                "purpose": "Deliver transmitted result files to the central EMS",
+                "knowledgeStatus": "confirmed"
+              }
+            ],
+            "controls": [
+              {
+                "id": "ds200-encrypted-results",
+                "label": "Encrypted unofficial result files",
+                "status": "documented",
+                "description": "The EAC scope states that Regional Results securely transmits encrypted unofficial results collection files."
+              },
+              {
+                "id": "ds200-dedicated-network",
+                "label": "Customer-dedicated network",
+                "status": "documented",
+                "description": "The certified Regional Results description specifies a customer-dedicated network."
+              },
+              {
+                "id": "ds200-direct-network-session",
+                "label": "Direct DS200 network session",
+                "status": "not_publicly_established",
+                "description": "The reviewed exact-version passages do not make the DS200 itself the VPN endpoint or identify a direct scanner-to-network connection."
+              }
+            ],
+            "sensitiveDetailsWithheld": "No addresses, credentials, VPN settings, keys, APNs, SIM data, carrier accounts, or site-specific routing information are collected or shown.",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "A successful VSTL system test is not evidence that a jurisdiction enabled Regional Results, used the same network design, or transmitted results in a particular election."
+          },
+          {
+            "id": "ds200-historical-optional-cellular-context",
+            "title": "Historical optional cellular hardware context",
+            "evidenceLayer": "documented",
+            "assertionScope": "documented_model_family",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "optional_cellular_hardware_context",
+            "description": "Separate historical certification and VSTL records identify optional DS200 modem carrier-board configurations using MultiTech C2 and MTSMC-LVW3 products. These alternatives are shown as historical component context, not as EVS 6.4.0.0 certification or proof of a fielded modem.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "ds200-historical-unit",
+                "label": "DS200 hardware family",
+                "role": "Historical scanner/tabulator context",
+                "componentId": "ds200-scanner-tabulator",
+                "optional": false,
+                "details": "The records apply to earlier EVS campaigns and named DS200 hardware revisions, not the field status of this 6.4 dossier."
+              },
+              {
+                "id": "ds200-modem-board",
+                "label": "Optional modem carrier board",
+                "role": "Internal optional modem interface",
+                "componentId": "ds200-optional-cellular-modem",
+                "optional": true,
+                "details": "The carrier-board component is separately identified and must not be treated as present in every DS200."
+              },
+              {
+                "id": "ds200-c2",
+                "label": "MultiTech C2 modem",
+                "role": "Historical optional cellular alternative",
+                "componentId": "ds200-multitech-c2-modem",
+                "optional": true,
+                "details": "A Florida EVS 4.5.0.0 addendum names the C2 profile; firmware and field status remain unresolved."
+              },
+              {
+                "id": "ds200-lvw3",
+                "label": "MultiTech MTSMC-LVW3",
+                "role": "Historical optional LTE alternative",
+                "componentId": "ds200-multitech-lvw3-modem",
+                "optional": true,
+                "details": "A Pro V&V EVS 5.3.4.1 hardware table names MTSMC-LVW3; ordering revision and firmware are not identified."
+              },
+              {
+                "id": "ds200-carrier-service",
+                "label": "Cellular carrier service",
+                "role": "Optional external transport context",
+                "componentId": null,
+                "optional": true,
+                "details": "Carrier, account, APN, activation state, and election use are not established by the reviewed records."
+              }
+            ],
+            "links": [
+              {
+                "id": "ds200-c2-board-link",
+                "from": "ds200-modem-board",
+                "to": "ds200-c2",
+                "medium": "Internal modem-board interface",
+                "direction": "bidirectional",
+                "purpose": "Host the historical C2 modem alternative",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "ds200-lvw3-board-link",
+                "from": "ds200-modem-board",
+                "to": "ds200-lvw3",
+                "medium": "Internal Universal Socket modem interface",
+                "direction": "bidirectional",
+                "purpose": "Host the historical MTSMC-LVW3 modem alternative",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "ds200-c2-cellular-link",
+                "from": "ds200-c2",
+                "to": "ds200-carrier-service",
+                "medium": "Cellular capability; activation profile not established",
+                "direction": "bidirectional",
+                "purpose": "Historical optional results-transmission capability",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "ds200-lvw3-cellular-link",
+                "from": "ds200-lvw3",
+                "to": "ds200-carrier-service",
+                "medium": "Verizon LTE capability; activation profile not established",
+                "direction": "bidirectional",
+                "purpose": "Historical optional results-transmission capability",
+                "knowledgeStatus": "documented_partial"
+              }
+            ],
+            "controls": [
+              {
+                "id": "ds200-alternate-not-simultaneous",
+                "label": "Alternative components",
+                "status": "documented",
+                "description": "The C2 and MTSMC-LVW3 records describe different historical alternatives and are not presented as simultaneously installed."
+              },
+              {
+                "id": "ds200-modem-firmware-gap",
+                "label": "Modem firmware",
+                "status": "not_publicly_established",
+                "description": "Neither historical DS200 record establishes installed modem firmware for a fielded unit."
+              },
+              {
+                "id": "ds200-modem-field-state",
+                "label": "Activation and field use",
+                "status": "not_publicly_established",
+                "description": "No carrier activation, SIM, APN, network session, or election use is established for a particular DS200."
+              }
+            ],
+            "sensitiveDetailsWithheld": "Carrier credentials, APNs, SIM and subscriber identifiers, device identifiers, keys, addresses, and account data are neither collected nor displayed.",
+            "sourceIds": [
+              "fl-evs-4500-v4-modem-report",
+              "provv-evs-5341-modem-hardware-table",
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "fl-evs-4500-v4-modem-report@2026-07-20",
+              "provv-evs-5341-modem-hardware-table@2026-07-20",
+              "multitech-universal-socket-guide@2026-07-20"
+            ],
+            "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem."
+          }
+        ],
+        "sourceImages": [
+          {
+            "id": "ds200-evs-6400-system-diagram",
+            "assetUrl": "/equipment/network-evidence/evs-6400-system-diagram.png",
+            "assetSha256": "d68f37906c6b91ec937c6f77952d44aded6c97bb17fb07e256e88aa82d51f412",
+            "width": 1055,
+            "height": 690,
+            "kind": "source_topology_diagram",
+            "alt": "EVS 6.4.0.0 certification system diagram showing election-data management, equipment configuration, voting and tabulation devices, and results consolidation infrastructure.",
+            "caption": "EVS 6.4.0.0 certified-system overview diagram",
+            "pageOrSection": "EAC scope PDF page 4, document page 3",
+            "derivativeNote": "Rendered at 135 DPI, rotated for readability, and cropped to the diagram boundary; diagram content was not edited.",
+            "caveat": "The system-level figure contains many EVS components and paths. It does not prove that every component or connection is present in a DS200 deployment.",
+            "sourceIds": [
+              "eac-evs-6400-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19"
+            ]
+          },
+          {
+            "id": "ds200-evs-6400-transmission-test-page",
+            "assetUrl": "/equipment/network-evidence/evs-6400-transmission-test.png",
+            "assetSha256": "71296be17326a584587a366a530559e8d9f9eb3280b93a757486912b583a9736",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_document_page",
+            "alt": "Pro V and V EVS 6.4.0.0 test-report page describing DS200 results transmitted through Regional Results over a VPN and central-tabulator results transmitted over a closed LAN.",
+            "caption": "Pro V&V EVS 6.4.0.0 result-transmission accuracy-test statement",
+            "pageOrSection": "Pro V&V test-report PDF page 30, report page 25",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "This is evidence of a laboratory test configuration and successful result transfer, not a field deployment or direct DS200 network-session record.",
+            "sourceIds": [
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "provv-evs-6400-test-report@2026-07-19"
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "id": "ds200-local-handoff-gap",
+            "label": "DS200-to-Regional Results handoff",
+            "description": "The reviewed exact-version passages do not identify whether the local result handoff used removable media or another mechanism, and they do not establish the DS200 as the VPN endpoint.",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "The module leaves the local medium unresolved instead of drawing a direct network link."
+          },
+          {
+            "id": "ds200-field-network-gap",
+            "label": "Field configuration and modem state",
+            "description": "No dated jurisdiction network diagram, interface inspection, modem inventory, firmware reading, carrier activation record, or transmission log was collected for a particular DS200.",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "fl-evs-4500-v4-modem-report",
+              "provv-evs-5341-modem-hardware-table"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "fl-evs-4500-v4-modem-report@2026-07-20",
+              "provv-evs-5341-modem-hardware-table@2026-07-20"
+            ],
+            "caveat": "Optional and historical records must not be presented as field evidence."
+          }
+        ]
+      },
       "deployments": [
         {
           "id": "wa-jefferson-evs-6400-2025",
@@ -6895,7 +7989,7 @@
         "Public findings and modem vulnerability reviews are presented with exact product, firmware, date, and source scope. A zero-match catalog review is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
         "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
       ],
-      "claimRevision": 5,
+      "claimRevision": 6,
       "editorialState": "approved",
       "sourceIds": [
         "cisa-kev-catalog",
@@ -6992,7 +8086,10 @@
         "sourceRevisionCount": 38,
         "componentSecurityReviewCount": 3,
         "exactApplicableVulnerabilityCount": 0,
-        "nonCveAdvisoryCount": 1
+        "nonCveAdvisoryCount": 1,
+        "networkConfigurationCount": 2,
+        "networkSourceImageCount": 2,
+        "fieldObservedNetworkConfigurationCount": 0
       }
     },
     {
@@ -7428,6 +8525,168 @@
           "caveat": "The sources do not state a DS950 workload runtime or establish option selection, battery age, capacity, or condition."
         }
       ],
+      "networkEvidence": {
+        "reviewedOn": "2026-07-21",
+        "summary": "The EVS 6.4.0.0 Pro V&V report states that DS950, DS850, and DS450 results were transmitted to the EMS through a closed local area network during accuracy testing. The EAC scope includes the central tabulator, Electionware infrastructure, and a minimum-1-Gb network switch, but it does not establish a jurisdiction's live switch, port, or addressing configuration.",
+        "publicationBoundary": "This view publishes only the laboratory-supported closed-LAN result path and its source limits. It excludes IP addresses, credentials, keys, database details, switch settings, VLANs, hostnames, device identifiers, and site-specific routing.",
+        "configurations": [
+          {
+            "id": "ds950-6400-closed-lan-test-path",
+            "title": "EVS 6.4.0.0 central-tabulator closed-LAN test path",
+            "evidenceLayer": "expected",
+            "assertionScope": "vstl_test_configuration",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "closed_wired_lan",
+            "description": "Pro V&V tested DS950 result transmission over a closed LAN to the EMS. The EAC scope separately lists a minimum-1-Gb switch among certified COTS hardware. The public passages support the system-level path but not every physical connector or a field installation.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "ds950-tabulator",
+                "label": "DS950",
+                "role": "High-speed central scanner and tabulator",
+                "componentId": "ds950-shell",
+                "optional": false,
+                "details": "The DS950 generated central-count result data in the exact-version accuracy test."
+              },
+              {
+                "id": "ds950-closed-switch",
+                "label": "Closed-LAN switch",
+                "role": "Central-count Ethernet interconnect",
+                "componentId": null,
+                "optional": false,
+                "details": "The EAC scope lists a D-Link DSG-1005G network switch with a 1-GB minimum, but jurisdiction selection and use are not established."
+              },
+              {
+                "id": "ds950-ems",
+                "label": "Electionware EMS",
+                "role": "Central result consolidation",
+                "componentId": null,
+                "optional": false,
+                "details": "The test report says the transmitted central-tabulator results were compiled in Electionware."
+              }
+            ],
+            "links": [
+              {
+                "id": "ds950-tabulator-lan",
+                "from": "ds950-tabulator",
+                "to": "ds950-closed-switch",
+                "medium": "Closed local area network",
+                "direction": "one_way",
+                "purpose": "Transmit central-tabulator result data",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "ds950-lan-ems",
+                "from": "ds950-closed-switch",
+                "to": "ds950-ems",
+                "medium": "Closed local area network",
+                "direction": "one_way",
+                "purpose": "Deliver transmitted result data to the EMS for compilation",
+                "knowledgeStatus": "confirmed"
+              }
+            ],
+            "controls": [
+              {
+                "id": "ds950-closed-lan",
+                "label": "Closed LAN",
+                "status": "documented",
+                "description": "The VSTL report explicitly identifies the DS950 central-tabulator result path as a closed local area network."
+              },
+              {
+                "id": "ds950-public-network",
+                "label": "Public-network path",
+                "status": "not_publicly_established",
+                "description": "The reviewed DS950 accuracy-test passage does not describe a public-network transmission path."
+              },
+              {
+                "id": "ds950-field-network-state",
+                "label": "Field network state",
+                "status": "not_publicly_established",
+                "description": "No jurisdiction switch, port, address, enabled-service, or cable record is established in this dossier."
+              }
+            ],
+            "sensitiveDetailsWithheld": "No addresses, credentials, keys, database identifiers, switch settings, VLANs, hostnames, device identifiers, or site routing is collected or displayed.",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "A VSTL accuracy-test topology is not proof that a jurisdiction connected a DS950, used the listed switch, or transmitted results over a network in a particular election."
+          }
+        ],
+        "sourceImages": [
+          {
+            "id": "ds950-evs-6400-system-diagram",
+            "assetUrl": "/equipment/network-evidence/evs-6400-system-diagram.png",
+            "assetSha256": "d68f37906c6b91ec937c6f77952d44aded6c97bb17fb07e256e88aa82d51f412",
+            "width": 1055,
+            "height": 690,
+            "kind": "source_topology_diagram",
+            "alt": "EVS 6.4.0.0 certification system diagram showing election-data management, equipment configuration, central tabulation devices, and results-consolidation infrastructure.",
+            "caption": "EVS 6.4.0.0 certified-system overview diagram",
+            "pageOrSection": "EAC scope PDF page 4, document page 3",
+            "derivativeNote": "Rendered at 135 DPI, rotated for readability, and cropped to the diagram boundary; diagram content was not edited.",
+            "caveat": "The system-level figure contains many EVS components and paths. It does not prove that every component or connection is present in a DS950 deployment.",
+            "sourceIds": [
+              "eac-evs-6400-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19"
+            ]
+          },
+          {
+            "id": "ds950-evs-6400-transmission-test-page",
+            "assetUrl": "/equipment/network-evidence/evs-6400-transmission-test.png",
+            "assetSha256": "71296be17326a584587a366a530559e8d9f9eb3280b93a757486912b583a9736",
+            "width": 1148,
+            "height": 1485,
+            "kind": "source_document_page",
+            "alt": "Pro V and V EVS 6.4.0.0 test-report page stating that DS950, DS850, and DS450 results were transmitted to the EMS through a closed local area network.",
+            "caption": "Pro V&V EVS 6.4.0.0 central-tabulator closed-LAN test statement",
+            "pageOrSection": "Pro V&V test-report PDF page 30, report page 25",
+            "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+            "caveat": "This is evidence of a laboratory test configuration and successful result transfer, not a jurisdiction deployment record.",
+            "sourceIds": [
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "provv-evs-6400-test-report@2026-07-19"
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "id": "ds950-interface-map-gap",
+            "label": "Physical interface and switch map",
+            "description": "The reviewed public pages do not enumerate the occupied DS950 connector, switch port assignments, addressing, VLANs, or enabled services for the test or a field installation.",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "System-level closed-LAN evidence must not be expanded into unreported operational details."
+          },
+          {
+            "id": "ds950-field-topology-gap",
+            "label": "Field-observed topology",
+            "description": "No dated jurisdiction network diagram, interface inspection, or switch inventory was collected for a particular DS950.",
+            "sourceIds": [
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "A laboratory path is not a live observation."
+          }
+        ]
+      },
       "deployments": [],
       "scene": {
         "assetUrl": "/equipment/ess-evs-6400-ds950/orthographic-pilot.glb",
@@ -7590,7 +8849,7 @@
         "Certified UPS alternatives do not establish which model or battery condition applies at a jurisdiction.",
         "A certification change, ECO, or test result is not evidence of field occurrence, misconduct, or an election outcome effect."
       ],
-      "claimRevision": 1,
+      "claimRevision": 2,
       "editorialState": "approved",
       "sourceIds": [
         "eac-evs-6400-record",
@@ -7621,7 +8880,10 @@
         "sourceRevisionCount": 5,
         "componentSecurityReviewCount": 0,
         "exactApplicableVulnerabilityCount": 0,
-        "nonCveAdvisoryCount": 0
+        "nonCveAdvisoryCount": 0,
+        "networkConfigurationCount": 1,
+        "networkSourceImageCount": 2,
+        "fieldObservedNetworkConfigurationCount": 0
       }
     }
   ]

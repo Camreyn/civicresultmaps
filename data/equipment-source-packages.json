@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-20",
+  "reviewedOn": "2026-07-21",
   "methodology": {
     "title": "Election equipment catalog evidence policy",
     "description": "The pilot records what an official source actually establishes and keeps certified configurations, state approvals, jurisdiction deployment observations, historical configuration changes, and unknown field details in separate scopes.",
@@ -2469,6 +2469,78 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "PDF page 16, attached Pro V&V report page 12, Table 2-2",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "co-dvs-517-system-overview",
+      "publisher": "Colorado Secretary of State; Dominion Voting Systems",
+      "authorityLevel": "state_election_office_hosted_vendor_manual",
+      "title": "Democracy Suite System Overview 5.17-CO::3",
+      "url": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-02-DSSystemOverview517CO.pdf",
+      "localArtifact": "data/equipment-sources/co-dvs-517-system-overview.pdf",
+      "sha256": "2e2490ce02b5e9e73a396672c61b2beb6795355944cf1692c7c96dbd4bcf4971",
+      "documentType": "state_election_office_hosted_vendor_system_overview_pdf",
+      "publishedOn": "2023-04-18",
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "PDF pages 9, 21, 47, 67-68, and 77",
+      "caveat": "This vendor-authored Colorado technical-data document describes Democracy Suite 5.17-CO. Its own disclaimer excludes modem and transmission functionality from that certification campaign, and its high-level diagram warns that not every depicted component applies to every jurisdiction. It does not establish a field installation or live network configuration.",
+      "canonicalUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-02-DSSystemOverview517CO.pdf",
+      "currentReviewedRevisionId": "co-dvs-517-system-overview@2026-07-21",
+      "latestRetrievedRevisionId": "co-dvs-517-system-overview@2026-07-21",
+      "revisions": [
+        {
+          "id": "co-dvs-517-system-overview@2026-07-21",
+          "localArtifact": "data/equipment-sources/co-dvs-517-system-overview.pdf",
+          "sha256": "2e2490ce02b5e9e73a396672c61b2beb6795355944cf1692c7c96dbd4bcf4971",
+          "byteLength": 7385740,
+          "publishedOn": "2023-04-18",
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.coloradosos.gov/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/2-02-DSSystemOverview517CO.pdf",
+          "http": { "etag": null, "lastModified": null },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF pages 9, 21, 47, 67-68, and 77",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "clearballot-security",
+      "publisher": "Clear Ballot Group",
+      "authorityLevel": "manufacturer_primary",
+      "title": "Protecting Elections: Security",
+      "url": "https://www.clearballot.com/security",
+      "localArtifact": "data/equipment-sources/clearballot-security.html",
+      "sha256": "52c1f6999bcf4b3ffc1022ee0c5e66fdeb637f0c10736745013bda34b79aa025",
+      "documentType": "manufacturer_security_page_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "Closed Network section",
+      "caveat": "The current manufacturer page states a product-wide security policy for certified Clear Ballot products. It does not identify the wiring, switch configuration, enabled interfaces, or deployment state of a particular ClearAccess or ClearCount unit and is not substituted for the exact ClearVote 2.5 certification record.",
+      "canonicalUrl": "https://www.clearballot.com/security",
+      "currentReviewedRevisionId": "clearballot-security@2026-07-21",
+      "latestRetrievedRevisionId": "clearballot-security@2026-07-21",
+      "revisions": [
+        {
+          "id": "clearballot-security@2026-07-21",
+          "localArtifact": "data/equipment-sources/clearballot-security.html",
+          "sha256": "52c1f6999bcf4b3ffc1022ee0c5e66fdeb637f0c10736745013bda34b79aa025",
+          "byteLength": 47604,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.clearballot.com/security",
+          "http": { "etag": null, "lastModified": null },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Closed Network section",
           "archiveStatus": "verified"
         }
       ],

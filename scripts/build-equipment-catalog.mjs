@@ -31,6 +31,9 @@ function collectSourceIds(system) {
     ...(system.findings ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.power ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceIds ?? []),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) => record.sourceIds ?? []),
+    ...(system.networkEvidence?.sourceImages ?? []).flatMap((record) => record.sourceIds ?? []),
+    ...(system.networkEvidence?.gaps ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.scene?.referenceSourceIds ?? []),
     ...(system.scene?.referenceImages ?? []).flatMap((record) => record.sourceIds ?? []),
   ]);
@@ -49,6 +52,9 @@ function collectSourceRevisionIds(system) {
     ...(system.findings ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.power ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
+    ...(system.networkEvidence?.sourceImages ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
+    ...(system.networkEvidence?.gaps ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.scene?.referenceSourceRevisionIds ?? []),
     ...(system.scene?.referenceImages ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
   ]);
@@ -101,6 +107,11 @@ function withCoverage(system, editorial) {
       componentSecurityReviewCount: securityReviews.length,
       exactApplicableVulnerabilityCount: vulnerabilities.length,
       nonCveAdvisoryCount: nonCveAdvisories.length,
+      networkConfigurationCount: normalizedSystem.networkEvidence.configurations.length,
+      networkSourceImageCount: normalizedSystem.networkEvidence.sourceImages.length,
+      fieldObservedNetworkConfigurationCount: normalizedSystem.networkEvidence.configurations.filter(
+        (record) => record.evidenceLayer === "observed",
+      ).length,
     },
   };
 }

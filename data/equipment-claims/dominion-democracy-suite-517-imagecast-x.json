@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-20",
+  "reviewedOn": "2026-07-21",
   "system": {
     "id": "dominion-democracy-suite-517-imagecast-x",
     "slug": "dominion-democracy-suite-517-imagecast-x",
@@ -880,6 +880,93 @@
         "caveat": "Confirmed means the UPS models appear in the reviewed certified or test configuration, not that all are used together, that a jurisdiction selected one, or that battery health and runtime are known."
       }
     ],
+    "networkEvidence": {
+      "reviewedOn": "2026-07-21",
+      "summary": "The certified ICX hardware profile includes a physical 10/100 RJ-45 interface on the SID-21V platform, but the Democracy Suite 5.17 test plan says the evaluated system does not use public networks, does not support transmission over public networks, and uses no wireless technology. No external network peer or field connection is established for this ICX dossier.",
+      "publicationBoundary": "The module distinguishes physical interface capability from an enabled or used connection. It excludes addresses, credentials, keys, activation-card contents, port settings, hostnames, and site-specific topology.",
+      "configurations": [
+        {
+          "id": "icx-517-physical-interface-boundary",
+          "title": "ICX physical Ethernet capability with certified communications boundary",
+          "evidenceLayer": "expected",
+          "assertionScope": "vstl_test_configuration",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "physical_network_capability_only",
+          "description": "The SID-21V hardware exposes an RJ-45 interface, while the exact 5.17 test-plan boundary excludes public-network transmission and wireless use. The reviewed record does not identify a certified external peer for the ICX port or show that it is connected in a jurisdiction.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            { "id": "icx-station", "label": "ImageCast X station", "role": "Accessible ballot-marking platform", "componentId": "icx-touchscreen-bmd", "optional": false, "details": "The station includes the certified ICX application and one of the permitted hardware configurations." },
+            { "id": "icx-rj45-interface", "label": "SID-21V RJ-45 interface", "role": "Physical 10/100 Ethernet capability", "componentId": "icx-sid21-io-panel", "optional": false, "details": "Connector presence is documented; enabled state, peer, service, and field use are not established." },
+            { "id": "icx-election-media", "label": "Election and activation media", "role": "Physical configuration and session transfer", "componentId": "icx-election-media", "optional": false, "details": "The certified system uses physical media and activation cards for election configuration and voter-session workflows." }
+          ],
+          "links": [
+            { "id": "icx-rj45-capability-link", "from": "icx-rj45-interface", "to": "icx-station", "medium": "Internal connection to a 10/100 RJ-45 physical interface", "direction": "bidirectional", "purpose": "Expose hardware network capability without establishing an attached external network", "knowledgeStatus": "documented_partial" },
+            { "id": "icx-physical-media-link", "from": "icx-election-media", "to": "icx-station", "medium": "Physical election media and activation cards", "direction": "one_way", "purpose": "Load election configuration and activate voting sessions without treating physical transfer as a network connection", "knowledgeStatus": "documented_partial" }
+          ],
+          "controls": [
+            { "id": "icx-no-public-network", "label": "No public-network use in evaluated system", "status": "documented", "description": "Pro V&V states that Democracy Suite 5.17 does not utilize public networks." },
+            { "id": "icx-no-public-transmission", "label": "No public-network transmission", "status": "documented", "description": "The test plan states that the evaluated 5.17 system does not support transmission over public networks." },
+            { "id": "icx-no-wireless", "label": "No wireless technology", "status": "documented", "description": "The 5.17 test plan states that no wireless technology is utilized in the system." },
+            { "id": "icx-external-peer", "label": "External Ethernet peer", "status": "not_publicly_established", "description": "No external device, service, or network attached to the ICX RJ-45 port is established in the reviewed record." }
+          ],
+          "sensitiveDetailsWithheld": "No addressing, credentials, keys, activation-card contents, port configuration, hostnames, or jurisdiction topology is collected or shown.",
+          "sourceIds": ["eac-dsuite-517-scope", "provv-dsuite-517-test-plan", "co-dvs-517-system-overview", "co-dvs-517-avalue-sid21-manual"],
+          "sourceRevisionIds": ["eac-dsuite-517-scope@2026-07-20", "provv-dsuite-517-test-plan@2026-07-20", "co-dvs-517-system-overview@2026-07-21", "co-dvs-517-avalue-sid21-manual@2026-07-20"],
+          "caveat": "An RJ-45 connector is capability evidence only. It does not prove that Ethernet is enabled, cabled, assigned an address, attached to a network, or used during an election."
+        }
+      ],
+      "sourceImages": [
+        {
+          "id": "icx-dvs-517-high-level-block-diagram",
+          "assetUrl": "/equipment/network-evidence/dvs-517-system-block-diagram.png",
+          "assetSha256": "e556f3f0d2cb52c77be4bb6b54561ed76c08a13cb01af5035b6e52eddd480cd2",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_topology_diagram",
+          "alt": "Democracy Suite 5.17-CO high-level block diagram showing ImageCast X among EMS services, ImageCast devices, and physical or secure-electronic transfers.",
+          "caption": "Democracy Suite 5.17-CO high-level system block diagram",
+          "pageOrSection": "Colorado system-overview PDF page 21, Figure 2-3",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "The page says not every depicted component applies to every jurisdiction, and the document disclaimer excludes modem and transmission functionality from the 5.17-CO campaign.",
+          "sourceIds": ["co-dvs-517-system-overview"],
+          "sourceRevisionIds": ["co-dvs-517-system-overview@2026-07-21"]
+        },
+        {
+          "id": "icx-dvs-517-network-boundary-page",
+          "assetUrl": "/equipment/network-evidence/dvs-517-network-boundary.png",
+          "assetSha256": "c54b8ff1cf8c91117ce8885c03cd5fd1a6de54748ab31c04bbf495b825f3726c",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_document_page",
+          "alt": "Pro V and V Democracy Suite 5.17 test-plan page stating that public networks and public-network transmission are not used and that no wireless technology is utilized.",
+          "caption": "Pro V&V 5.17 public-network and wireless boundary statements",
+          "pageOrSection": "Pro V&V test-plan PDF page 43, report page 38",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "The statements define the evaluated system boundary. They do not constitute an inspection of a particular ICX unit or jurisdiction installation.",
+          "sourceIds": ["provv-dsuite-517-test-plan"],
+          "sourceRevisionIds": ["provv-dsuite-517-test-plan@2026-07-20"]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "icx-rj45-use-gap",
+          "label": "RJ-45 enabled state and peer",
+          "description": "The reviewed public record does not identify an enabled service, external peer, cable, or field use for the physical ICX Ethernet interface.",
+          "sourceIds": ["eac-dsuite-517-scope", "co-dvs-517-avalue-sid21-manual", "provv-dsuite-517-test-plan"],
+          "sourceRevisionIds": ["eac-dsuite-517-scope@2026-07-20", "co-dvs-517-avalue-sid21-manual@2026-07-20", "provv-dsuite-517-test-plan@2026-07-20"],
+          "caveat": "The gap must not be converted into an assumption that the port is either active or disabled."
+        },
+        {
+          "id": "icx-field-network-gap",
+          "label": "Field-observed configuration",
+          "description": "No dated unit-level interface inspection or polling-place network diagram was collected.",
+          "sourceIds": ["provv-dsuite-517-test-plan"],
+          "sourceRevisionIds": ["provv-dsuite-517-test-plan@2026-07-20"],
+          "caveat": "Certified boundary evidence is not a live observation."
+        }
+      ]
+    },
     "deployments": [],
     "scene": {
       "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-x/orthographic-pilot.glb",
@@ -1057,10 +1144,10 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 3,
+    "revision": 4,
     "createdOn": "2026-07-20",
-    "updatedOn": "2026-07-20",
-    "reviewedOn": "2026-07-20",
+    "updatedOn": "2026-07-21",
+    "reviewedOn": "2026-07-21",
     "reviewedBy": "project_editorial_review",
     "publishedOn": null,
     "sourceRevisionIds": [
@@ -1071,6 +1158,7 @@
       "eac-dsuite-517-scope@2026-07-20",
       "co-dvs-517-avalue-sid21-manual@2026-07-20",
       "co-dvs-517-icx-maintenance-manual@2026-07-20",
+      "co-dvs-517-system-overview@2026-07-21",
       "provv-dsuite-517-test-plan@2026-07-20",
       "provv-dsuite-517-test-report@2026-07-20",
       "provv-dsuite-eco-100936-analysis@2026-07-20",
@@ -1078,7 +1166,8 @@
     ],
     "reviewNotes": [
       "Approved for feature-gated staging. Public production activation remains a separate review decision.",
-      "Certification-era manufacturer naming is preserved separately from the current EAC ownership note."
+      "Certification-era manufacturer naming is preserved separately from the current EAC ownership note.",
+      "Added network-boundary evidence that distinguishes the ICX physical RJ-45 capability from an enabled or field-used connection."
     ]
   }
 }

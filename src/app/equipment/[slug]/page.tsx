@@ -20,6 +20,7 @@ import {
 } from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import { EquipmentExplorer } from "./equipment-explorer.client";
+import { EquipmentNetworkEvidencePanel } from "./equipment-network-evidence.client";
 import styles from "../equipment.module.css";
 
 export const dynamic = "force-dynamic";
@@ -116,6 +117,8 @@ export default async function EquipmentSystemPage({ params }: PageProps) {
         </section>
 
         <EquipmentExplorer sources={sources} system={system} />
+
+        <EquipmentNetworkEvidencePanel evidence={system.networkEvidence} sources={sources} />
 
         <section className={styles.dossierSection} aria-labelledby="version-heading">
           <div className={styles.sectionHead}>

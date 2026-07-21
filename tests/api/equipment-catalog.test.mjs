@@ -14,6 +14,7 @@ const [
   scene,
   gallery,
   lightbox,
+  networkEvidence,
   workspace,
 ] = await Promise.all([
   readFile("data/equipment-catalog.json", "utf8").then(JSON.parse),
@@ -28,6 +29,7 @@ const [
   readFile("src/app/equipment/[slug]/equipment-orthographic-scene.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-reference-gallery.client.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-reference-lightbox.client.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/equipment-network-evidence.client.tsx", "utf8"),
   readFile("src/app/workspace-tabs.tsx", "utf8"),
 ]);
 
@@ -39,7 +41,7 @@ assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
 assert.equal(claim.editorial.state, "approved");
 assert.equal(catalog.systems.length, 6);
-assert.equal(sourcePackage.sources.length, 64);
+assert.equal(sourcePackage.sources.length, 66);
 assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
 const sourceIds = new Set(sourcePackage.sources.map((source) => source.id));
@@ -204,7 +206,7 @@ assert.equal(imageCastX.coverage.sourcedComponentCount, 12);
 assert.equal(imageCastX.coverage.configurationChangeCount, 4);
 assert.equal(imageCastX.coverage.deploymentObservationCount, 0);
 assert.equal(imageCastX.coverage.confirmedPowerRecordCount, 2);
-assert.equal(imageCastX.coverage.sourceCount, 11);
+assert.equal(imageCastX.coverage.sourceCount, 12);
 assert.equal(imageCastX.coverage.technicalSpecificationCount, 11);
 const icxUps = imageCastX.power.find((record) => record.id === "icx-certified-ups-options");
 assert.match(icxUps.model, /SMT-1500/);
@@ -233,7 +235,7 @@ const clearCount = catalog.systems.find((entry) => entry.slug === "clear-ballot-
 assert.ok(clearCount, "ClearCount must be a separate central-tabulation dossier");
 assert.equal(clearCount.coverage.componentCount, 7);
 assert.equal(clearCount.coverage.configurationChangeCount, 1);
-assert.equal(clearCount.coverage.sourceCount, 6);
+assert.equal(clearCount.coverage.sourceCount, 7);
 assert.ok(clearCount.components.some((component) => component.id === "clearcount-central-scanner"));
 assert.ok(clearCount.components.some((component) => component.id === "clearcount-countserver"));
 assert.ok(clearCount.components.some((component) => component.id === "clearcount-network-switch"));
@@ -242,7 +244,7 @@ assert.equal(clearCount.versionObservations[0].value, "ClearCount 2.5.8");
 const imageCastCentral = catalog.systems.find((entry) => entry.slug === "dominion-democracy-suite-517-imagecast-central");
 assert.ok(imageCastCentral, "ImageCast Central must be a separate central-tabulation dossier");
 assert.equal(imageCastCentral.coverage.componentCount, 7);
-assert.equal(imageCastCentral.coverage.sourceCount, 5);
+assert.equal(imageCastCentral.coverage.sourceCount, 6);
 const iccNetwork = imageCastCentral.components.find((component) => component.id === "icc-optional-isolated-lan");
 assert.equal(iccNetwork.optionality, "optional");
 assert.match(iccNetwork.technicalSpecifications[0].value, /100 Mbps/);
@@ -305,6 +307,33 @@ for (const dossier of catalog.systems) {
     assert.ok(dossierNodeNames.has(mapping.nodeName), `${dossier.slug} is missing ${mapping.nodeName}`);
   }
   assert.ok(dossier.scene.referenceImages.length > 0, `${dossier.slug} needs a sourced reference image`);
+  assert.ok(dossier.networkEvidence.configurations.length > 0, `${dossier.slug} needs network configurations`);
+  assert.ok(dossier.networkEvidence.sourceImages.length > 0, `${dossier.slug} needs network source images`);
+  assert.equal(dossier.coverage.networkConfigurationCount, dossier.networkEvidence.configurations.length);
+  assert.equal(dossier.coverage.networkSourceImageCount, dossier.networkEvidence.sourceImages.length);
+  assert.equal(dossier.coverage.fieldObservedNetworkConfigurationCount, 0);
+  assert.match(dossier.networkEvidence.publicationBoundary, /excludes|omits/i);
+  for (const configuration of dossier.networkEvidence.configurations) {
+    assert.ok(["expected", "documented", "observed"].includes(configuration.evidenceLayer));
+    assert.ok(configuration.nodes.length > 0);
+    assert.ok(configuration.sensitiveDetailsWithheld.length > 40);
+    assert.ok(configuration.sourceIds.every((sourceId) => sourceIds.has(sourceId)));
+    for (const link of configuration.links) {
+      assert.ok(configuration.nodes.some((node) => node.id === link.from));
+      assert.ok(configuration.nodes.some((node) => node.id === link.to));
+    }
+  }
+  for (const sourceImage of dossier.networkEvidence.sourceImages) {
+    assert.match(sourceImage.assetUrl, /^\/equipment\/.+\.png$/);
+    assert.match(sourceImage.assetSha256, /^[a-f0-9]{64}$/);
+    assert.ok(sourceImage.width > 0);
+    assert.ok(sourceImage.height > 0);
+    assert.ok(sourceImage.alt.length > 20);
+    assert.ok(sourceImage.caption.length > 20);
+    assert.ok(sourceImage.caveat.length > 20);
+    assert.ok(sourceImage.derivativeNote.length > 20);
+    assert.ok(sourceImage.sourceIds.every((sourceId) => sourceIds.has(sourceId)));
+  }
   for (const referenceImage of dossier.scene.referenceImages) {
     assert.match(referenceImage.assetUrl, /^\/equipment\/.+\.png$/);
     assert.match(referenceImage.assetSha256, /^[a-f0-9]{64}$/);
@@ -341,6 +370,8 @@ assert.match(detailPage, /Archived source manifest/);
 assert.match(detailPage, /system.deviceName/);
 assert.match(detailPage, /deploymentSourceIds/);
 assert.match(detailPage, /No reviewed deployment observation/);
+assert.match(detailPage, /EquipmentNetworkEvidencePanel/);
+assert.match(detailPage, /system\.networkEvidence/);
 assert.doesNotMatch(detailPage, /DS200 power \/ backup supply/);
 assert.doesNotMatch(detailPage, /Washington system-level observations/);
 assert.match(explorer, /dynamic\(/);
@@ -368,6 +399,12 @@ assert.match(gallery, /EquipmentReferenceLightbox/);
 assert.match(lightbox, /createPortal/);
 assert.match(lightbox, /aria-modal="true"/);
 assert.match(lightbox, /document\.body\.style\.overflow/);
+assert.match(networkEvidence, /Network configuration evidence/);
+assert.match(networkEvidence, /Physical port capability is not treated as an active connection/);
+assert.match(networkEvidence, /Select a node/);
+assert.match(networkEvidence, /Operational details withheld/);
+assert.match(networkEvidence, /EquipmentReferenceLightbox/);
+assert.match(networkEvidence, /No field-observed topology collected/);
 assert.match(workspace, /equipmentExplorerEnabled &&/);
 assert.match(workspace, /equipment-catalog-link/);
 assert.match(workspace, /Component catalog/);

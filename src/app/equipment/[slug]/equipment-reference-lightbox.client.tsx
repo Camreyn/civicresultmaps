@@ -5,7 +5,7 @@ import { ExternalLink, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-import type { EquipmentReferenceImage, EquipmentSource } from "@/lib/equipment-catalog";
+import type { EquipmentEvidenceImage, EquipmentSource } from "@/lib/equipment-catalog";
 import styles from "../equipment.module.css";
 
 export function EquipmentReferenceLightbox({
@@ -13,7 +13,7 @@ export function EquipmentReferenceLightbox({
   onClose,
   sources,
 }: {
-  image: EquipmentReferenceImage;
+  image: EquipmentEvidenceImage;
   onClose: () => void;
   sources: EquipmentSource[];
 }) {
@@ -98,7 +98,7 @@ export function EquipmentReferenceLightbox({
         </div>
         <div className={styles.referenceLightboxMeta}>
           <p>{image.caveat}</p>
-          <span>{image.pageOrSection} · {image.derivativeNote}</span>
+          <span>{image.pageOrSection} - {image.derivativeNote}</span>
           <div className={styles.referenceSourceLinks}>
             {sources.map((source) => (
               <a href={source.url} key={source.id} rel="noreferrer" target="_blank">

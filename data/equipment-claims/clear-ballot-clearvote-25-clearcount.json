@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-20",
+  "reviewedOn": "2026-07-21",
   "system": {
     "id": "clear-ballot-clearvote-25-clearcount",
     "slug": "clear-ballot-clearvote-25-clearcount",
@@ -386,6 +386,96 @@
         "caveat": "A certified option is not evidence that every installation uses it or that a field battery retains its original capacity."
       }
     ],
+    "networkEvidence": {
+      "reviewedOn": "2026-07-21",
+      "summary": "The ClearVote 2.5 EAC scope documents ClearCount as a wired, closed, isolated Ethernet system linking the CountServer, ScanStations, and CountStations through a certified switch alternative. COTS scanners attach to ScanStations; field cabling and switch settings remain installation-specific.",
+      "publicationBoundary": "The module publishes only source-supported roles, media, direction, and isolation controls. It excludes IP addressing, credentials, keys, switch-management values, VLAN details, hostnames, serial numbers, and site diagrams.",
+      "configurations": [
+        {
+          "id": "clearcount-certified-closed-lan",
+          "title": "Certified closed wired ClearCount LAN",
+          "evidenceLayer": "expected",
+          "assertionScope": "certified_configuration",
+          "knowledgeStatus": "confirmed",
+          "topologyKind": "closed_wired_lan",
+          "description": "One CountServer is shared by one or more ScanStations and CountStations over a network switch. Each COTS scanner is paired locally with a ScanStation, while tabulation results and card images are stored in the central election database on the CountServer.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            { "id": "clearcount-scanner", "label": "Central scanner", "role": "Ballot image capture", "componentId": "clearcount-central-scanner", "optional": false, "details": "A certified COTS scanner alternative is paired with each ScanStation." },
+            { "id": "clearcount-scanstation", "label": "ScanStation", "role": "Ballot scanning and tabulation client", "componentId": "clearcount-scanstation", "optional": false, "details": "One or more Windows ScanStations execute the Tabulator application from the CountServer." },
+            { "id": "clearcount-switch", "label": "Network switch", "role": "Closed Ethernet interconnect", "componentId": "clearcount-network-switch", "optional": false, "details": "The certified scope lists several permitted switch alternatives; jurisdiction selection is not established." },
+            { "id": "clearcount-server", "label": "CountServer", "role": "Election database and application host", "componentId": "clearcount-countserver", "optional": false, "details": "The Ubuntu CountServer hosts ClearCount software, its database, and election reports." },
+            { "id": "clearcount-countstation", "label": "CountStation", "role": "Administration, adjudication, and reporting client", "componentId": "clearcount-countstation", "optional": false, "details": "One or more browser-based CountStations connect to the CountServer through the switch." }
+          ],
+          "links": [
+            { "id": "clearcount-scanner-usb", "from": "clearcount-scanner", "to": "clearcount-scanstation", "medium": "Local scanner interface / USB cabling", "direction": "one_way", "purpose": "Deliver captured ballot images to the paired ScanStation", "knowledgeStatus": "documented_partial" },
+            { "id": "clearcount-scanstation-ethernet", "from": "clearcount-scanstation", "to": "clearcount-switch", "medium": "Wired Ethernet", "direction": "bidirectional", "purpose": "Run the server-hosted tabulation workflow and send results and card images", "knowledgeStatus": "confirmed" },
+            { "id": "clearcount-server-ethernet", "from": "clearcount-switch", "to": "clearcount-server", "medium": "Wired Ethernet", "direction": "bidirectional", "purpose": "Provide application, database, and report services to ClearCount clients", "knowledgeStatus": "confirmed" },
+            { "id": "clearcount-countstation-ethernet", "from": "clearcount-countstation", "to": "clearcount-switch", "medium": "Wired Ethernet", "direction": "bidirectional", "purpose": "Provide administration, adjudication, consolidation, and reporting access", "knowledgeStatus": "confirmed" }
+          ],
+          "controls": [
+            { "id": "clearcount-isolation", "label": "Closed and isolated", "status": "documented", "description": "The exact 2.5 scope says the ClearCount network is not connected to other systems or the Internet." },
+            { "id": "clearcount-no-wireless-modem", "label": "No modem or wireless attachment", "status": "documented", "description": "Clear Ballot's current security policy says certified products are never attached to modems, Wi-Fi, or Bluetooth." },
+            { "id": "clearcount-encrypted-traffic", "label": "Encrypted traffic policy", "status": "documented", "description": "The manufacturer states that traffic on its certified-product closed network is encrypted using NIST-recommended algorithms." }
+          ],
+          "sensitiveDetailsWithheld": "No addresses, credentials, cryptographic material, hostnames, switch settings, VLANs, or site-specific cable routes are collected or shown.",
+          "sourceIds": ["eac-clearvote-25-scope", "provv-clearvote-25-test-plan", "clearballot-security"],
+          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19", "provv-clearvote-25-test-plan@2026-07-19", "clearballot-security@2026-07-21"],
+          "caveat": "This is the certified architecture, not proof that a jurisdiction selected every alternative, used the maximum number of stations, or installed a particular switch or cabling layout."
+        }
+      ],
+      "sourceImages": [
+        {
+          "id": "clearcount-clearvote-25-system-diagrams",
+          "assetUrl": "/equipment/network-evidence/clearvote-25-system-diagrams.png",
+          "assetSha256": "8e4edb8e355984e09c36431fc82177554cd94371554c023030dcdbf22e893c07",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_topology_diagram",
+          "alt": "ClearVote 2.5 certification diagram showing the CountServer, network switch, ScanStations and scanners, and CountStation within the ClearCount product area.",
+          "caption": "ClearVote 2.5 system diagram with the ClearCount server, switch, and station topology",
+          "pageOrSection": "EAC scope PDF page 8, document page 6",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "The diagram establishes certified system relationships, not the number, placement, make, port assignment, or operational state of equipment at a particular site.",
+          "sourceIds": ["eac-clearvote-25-scope"],
+          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19"]
+        },
+        {
+          "id": "clearcount-clearvote-25-network-scope-page",
+          "assetUrl": "/equipment/network-evidence/clearvote-25-clearcount-scope.png",
+          "assetSha256": "54f2a8bd74f88c865245fdea2183943e9f074225e73a690aef1b6622de2465d0",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_document_page",
+          "alt": "ClearVote 2.5 certification scope page describing ClearCount as a wired, closed, isolated network with CountServer, ScanStations, network switch, and CountStations.",
+          "caption": "Exact ClearVote 2.5 scope text for the ClearCount closed Ethernet architecture",
+          "pageOrSection": "EAC scope PDF page 5, document page 3",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "The page is a certification description and does not document a jurisdiction's live switch configuration or cable installation.",
+          "sourceIds": ["eac-clearvote-25-scope"],
+          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19"]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "clearcount-switch-config-gap",
+          "label": "Switch and addressing configuration",
+          "description": "The reviewed public package does not establish selected switch model, port occupation, addressing, management settings, cable routes, or the number of active stations for a jurisdiction.",
+          "sourceIds": ["eac-clearvote-25-scope", "provv-clearvote-25-test-plan"],
+          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19", "provv-clearvote-25-test-plan@2026-07-19"],
+          "caveat": "Those details require a dated jurisdiction record or authorized inspection and should not be inferred from the certified alternatives."
+        },
+        {
+          "id": "clearcount-field-observation-gap",
+          "label": "Field-observed topology",
+          "description": "No dated jurisdiction installation diagram, network inventory, or unit-level observation was collected for this dossier.",
+          "sourceIds": ["eac-clearvote-25-scope"],
+          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19"],
+          "caveat": "Absence of field evidence is reported as a gap, not as a claim about actual operation."
+        }
+      ]
+    },
     "deployments": [],
     "scene": {
       "assetUrl": "/equipment/clear-ballot-clearvote-25-clearcount/orthographic-pilot.glb",
@@ -520,22 +610,24 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 1,
+    "revision": 2,
     "createdOn": "2026-07-20",
-    "updatedOn": "2026-07-20",
-    "reviewedOn": "2026-07-20",
+    "updatedOn": "2026-07-21",
+    "reviewedOn": "2026-07-21",
     "reviewedBy": "project_editorial_review",
     "publishedOn": null,
     "sourceRevisionIds": [
       "clearballot-clearcount-product-page@2026-07-20",
       "clearballot-clearcount-reference-photo@2026-07-20",
+      "clearballot-security@2026-07-21",
       "eac-clearvote-25-record@2026-07-19",
       "eac-clearvote-25-scope@2026-07-19",
       "provv-clearvote-25-test-plan@2026-07-19",
       "provv-clearvote-25-test-report@2026-07-19"
     ],
     "reviewNotes": [
-      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision."
+      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision.",
+      "Added the exact certified ClearCount closed-LAN topology and source-page previews without publishing operational settings."
     ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-20",
+  "reviewedOn": "2026-07-21",
   "system": {
     "id": "ess-evs-6400-ds200",
     "slug": "ess-evs-6400-ds200",
@@ -1081,6 +1081,127 @@
         ]
       }
     ],
+    "networkEvidence": {
+      "reviewedOn": "2026-07-21",
+      "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint. Older records separately document optional DS200 cellular hardware families without proving EVS 6.4 certification, firmware, activation, or field use.",
+      "publicationBoundary": "The module publishes roles, high-level paths, connection media when established, and evidence boundaries. It excludes IP addresses, credentials, VPN parameters, keys, APNs, SIM identifiers, carrier accounts, device identifiers, and jurisdiction routing details.",
+      "configurations": [
+        {
+          "id": "ds200-6400-regional-results-test-path",
+          "title": "EVS 6.4.0.0 Regional Results test path",
+          "evidenceLayer": "expected",
+          "assertionScope": "vstl_test_configuration",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "results_transmission_service",
+          "description": "Pro V&V tested DS200 results transmitted by the separate Regional Results application through a VPN to the EMS. The source establishes the end-to-end result workflow but not a direct DS200 network session or the local handoff medium from the tabulator to the Regional Results client.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            { "id": "ds200-tabulator", "label": "DS200", "role": "Polling-place scanner and tabulator", "componentId": "ds200-scanner-tabulator", "optional": false, "details": "The DS200 produces result data used in the tested Regional Results workflow." },
+            { "id": "ds200-regional-client", "label": "Regional Results client", "role": "Regional sending-site application", "componentId": null, "optional": true, "details": "The EAC scope describes Regional Results as a standalone application deployed at regional sending sites." },
+            { "id": "ds200-customer-network", "label": "Customer-dedicated VPN path", "role": "Encrypted unofficial-results transport", "componentId": null, "optional": true, "details": "Pro V&V reports a VPN test; the EAC scope describes a customer-dedicated network." },
+            { "id": "ds200-ems", "label": "Electionware EMS", "role": "Central results destination", "componentId": null, "optional": false, "details": "The test transmitted correct result files to the EMS for compilation." }
+          ],
+          "links": [
+            { "id": "ds200-results-handoff", "from": "ds200-tabulator", "to": "ds200-regional-client", "medium": "Result-data handoff; local medium not established in the reviewed passage", "direction": "one_way", "purpose": "Make DS200 result data available to Regional Results", "knowledgeStatus": "not_publicly_established" },
+            { "id": "ds200-vpn-send", "from": "ds200-regional-client", "to": "ds200-customer-network", "medium": "Virtual private network over a customer-dedicated network", "direction": "one_way", "purpose": "Transmit encrypted unofficial results collection files", "knowledgeStatus": "confirmed" },
+            { "id": "ds200-vpn-receive", "from": "ds200-customer-network", "to": "ds200-ems", "medium": "Virtual private network", "direction": "one_way", "purpose": "Deliver transmitted result files to the central EMS", "knowledgeStatus": "confirmed" }
+          ],
+          "controls": [
+            { "id": "ds200-encrypted-results", "label": "Encrypted unofficial result files", "status": "documented", "description": "The EAC scope states that Regional Results securely transmits encrypted unofficial results collection files." },
+            { "id": "ds200-dedicated-network", "label": "Customer-dedicated network", "status": "documented", "description": "The certified Regional Results description specifies a customer-dedicated network." },
+            { "id": "ds200-direct-network-session", "label": "Direct DS200 network session", "status": "not_publicly_established", "description": "The reviewed exact-version passages do not make the DS200 itself the VPN endpoint or identify a direct scanner-to-network connection." }
+          ],
+          "sensitiveDetailsWithheld": "No addresses, credentials, VPN settings, keys, APNs, SIM data, carrier accounts, or site-specific routing information are collected or shown.",
+          "sourceIds": ["eac-evs-6400-scope", "provv-evs-6400-test-report"],
+          "sourceRevisionIds": ["eac-evs-6400-scope@2026-07-19", "provv-evs-6400-test-report@2026-07-19"],
+          "caveat": "A successful VSTL system test is not evidence that a jurisdiction enabled Regional Results, used the same network design, or transmitted results in a particular election."
+        },
+        {
+          "id": "ds200-historical-optional-cellular-context",
+          "title": "Historical optional cellular hardware context",
+          "evidenceLayer": "documented",
+          "assertionScope": "documented_model_family",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "optional_cellular_hardware_context",
+          "description": "Separate historical certification and VSTL records identify optional DS200 modem carrier-board configurations using MultiTech C2 and MTSMC-LVW3 products. These alternatives are shown as historical component context, not as EVS 6.4.0.0 certification or proof of a fielded modem.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            { "id": "ds200-historical-unit", "label": "DS200 hardware family", "role": "Historical scanner/tabulator context", "componentId": "ds200-scanner-tabulator", "optional": false, "details": "The records apply to earlier EVS campaigns and named DS200 hardware revisions, not the field status of this 6.4 dossier." },
+            { "id": "ds200-modem-board", "label": "Optional modem carrier board", "role": "Internal optional modem interface", "componentId": "ds200-optional-cellular-modem", "optional": true, "details": "The carrier-board component is separately identified and must not be treated as present in every DS200." },
+            { "id": "ds200-c2", "label": "MultiTech C2 modem", "role": "Historical optional cellular alternative", "componentId": "ds200-multitech-c2-modem", "optional": true, "details": "A Florida EVS 4.5.0.0 addendum names the C2 profile; firmware and field status remain unresolved." },
+            { "id": "ds200-lvw3", "label": "MultiTech MTSMC-LVW3", "role": "Historical optional LTE alternative", "componentId": "ds200-multitech-lvw3-modem", "optional": true, "details": "A Pro V&V EVS 5.3.4.1 hardware table names MTSMC-LVW3; ordering revision and firmware are not identified." },
+            { "id": "ds200-carrier-service", "label": "Cellular carrier service", "role": "Optional external transport context", "componentId": null, "optional": true, "details": "Carrier, account, APN, activation state, and election use are not established by the reviewed records." }
+          ],
+          "links": [
+            { "id": "ds200-c2-board-link", "from": "ds200-modem-board", "to": "ds200-c2", "medium": "Internal modem-board interface", "direction": "bidirectional", "purpose": "Host the historical C2 modem alternative", "knowledgeStatus": "documented_partial" },
+            { "id": "ds200-lvw3-board-link", "from": "ds200-modem-board", "to": "ds200-lvw3", "medium": "Internal Universal Socket modem interface", "direction": "bidirectional", "purpose": "Host the historical MTSMC-LVW3 modem alternative", "knowledgeStatus": "documented_partial" },
+            { "id": "ds200-c2-cellular-link", "from": "ds200-c2", "to": "ds200-carrier-service", "medium": "Cellular capability; activation profile not established", "direction": "bidirectional", "purpose": "Historical optional results-transmission capability", "knowledgeStatus": "documented_partial" },
+            { "id": "ds200-lvw3-cellular-link", "from": "ds200-lvw3", "to": "ds200-carrier-service", "medium": "Verizon LTE capability; activation profile not established", "direction": "bidirectional", "purpose": "Historical optional results-transmission capability", "knowledgeStatus": "documented_partial" }
+          ],
+          "controls": [
+            { "id": "ds200-alternate-not-simultaneous", "label": "Alternative components", "status": "documented", "description": "The C2 and MTSMC-LVW3 records describe different historical alternatives and are not presented as simultaneously installed." },
+            { "id": "ds200-modem-firmware-gap", "label": "Modem firmware", "status": "not_publicly_established", "description": "Neither historical DS200 record establishes installed modem firmware for a fielded unit." },
+            { "id": "ds200-modem-field-state", "label": "Activation and field use", "status": "not_publicly_established", "description": "No carrier activation, SIM, APN, network session, or election use is established for a particular DS200." }
+          ],
+          "sensitiveDetailsWithheld": "Carrier credentials, APNs, SIM and subscriber identifiers, device identifiers, keys, addresses, and account data are neither collected nor displayed.",
+          "sourceIds": ["fl-evs-4500-v4-modem-report", "provv-evs-5341-modem-hardware-table", "multitech-universal-socket-guide"],
+          "sourceRevisionIds": ["fl-evs-4500-v4-modem-report@2026-07-20", "provv-evs-5341-modem-hardware-table@2026-07-20", "multitech-universal-socket-guide@2026-07-20"],
+          "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem."
+        }
+      ],
+      "sourceImages": [
+        {
+          "id": "ds200-evs-6400-system-diagram",
+          "assetUrl": "/equipment/network-evidence/evs-6400-system-diagram.png",
+          "assetSha256": "d68f37906c6b91ec937c6f77952d44aded6c97bb17fb07e256e88aa82d51f412",
+          "width": 1055,
+          "height": 690,
+          "kind": "source_topology_diagram",
+          "alt": "EVS 6.4.0.0 certification system diagram showing election-data management, equipment configuration, voting and tabulation devices, and results consolidation infrastructure.",
+          "caption": "EVS 6.4.0.0 certified-system overview diagram",
+          "pageOrSection": "EAC scope PDF page 4, document page 3",
+          "derivativeNote": "Rendered at 135 DPI, rotated for readability, and cropped to the diagram boundary; diagram content was not edited.",
+          "caveat": "The system-level figure contains many EVS components and paths. It does not prove that every component or connection is present in a DS200 deployment.",
+          "sourceIds": ["eac-evs-6400-scope"],
+          "sourceRevisionIds": ["eac-evs-6400-scope@2026-07-19"]
+        },
+        {
+          "id": "ds200-evs-6400-transmission-test-page",
+          "assetUrl": "/equipment/network-evidence/evs-6400-transmission-test.png",
+          "assetSha256": "71296be17326a584587a366a530559e8d9f9eb3280b93a757486912b583a9736",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_document_page",
+          "alt": "Pro V and V EVS 6.4.0.0 test-report page describing DS200 results transmitted through Regional Results over a VPN and central-tabulator results transmitted over a closed LAN.",
+          "caption": "Pro V&V EVS 6.4.0.0 result-transmission accuracy-test statement",
+          "pageOrSection": "Pro V&V test-report PDF page 30, report page 25",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "This is evidence of a laboratory test configuration and successful result transfer, not a field deployment or direct DS200 network-session record.",
+          "sourceIds": ["provv-evs-6400-test-report"],
+          "sourceRevisionIds": ["provv-evs-6400-test-report@2026-07-19"]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "ds200-local-handoff-gap",
+          "label": "DS200-to-Regional Results handoff",
+          "description": "The reviewed exact-version passages do not identify whether the local result handoff used removable media or another mechanism, and they do not establish the DS200 as the VPN endpoint.",
+          "sourceIds": ["eac-evs-6400-scope", "provv-evs-6400-test-report"],
+          "sourceRevisionIds": ["eac-evs-6400-scope@2026-07-19", "provv-evs-6400-test-report@2026-07-19"],
+          "caveat": "The module leaves the local medium unresolved instead of drawing a direct network link."
+        },
+        {
+          "id": "ds200-field-network-gap",
+          "label": "Field configuration and modem state",
+          "description": "No dated jurisdiction network diagram, interface inspection, modem inventory, firmware reading, carrier activation record, or transmission log was collected for a particular DS200.",
+          "sourceIds": ["eac-evs-6400-scope", "fl-evs-4500-v4-modem-report", "provv-evs-5341-modem-hardware-table"],
+          "sourceRevisionIds": ["eac-evs-6400-scope@2026-07-19", "fl-evs-4500-v4-modem-report@2026-07-20", "provv-evs-5341-modem-hardware-table@2026-07-20"],
+          "caveat": "Optional and historical records must not be presented as field evidence."
+        }
+      ]
+    },
     "deployments": [
       {
         "id": "wa-jefferson-evs-6400-2025",
@@ -1298,10 +1419,10 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 5,
+    "revision": 6,
     "createdOn": "2026-07-19",
-    "updatedOn": "2026-07-20",
-    "reviewedOn": "2026-07-20",
+    "updatedOn": "2026-07-21",
+    "reviewedOn": "2026-07-21",
     "reviewedBy": "project_editorial_review",
     "publishedOn": null,
     "sourceRevisionIds": [
@@ -1346,7 +1467,8 @@
     ],
     "reviewNotes": [
       "Approved for feature-gated staging. Public production activation remains a separate review decision.",
-      "Historical DS200 modem identities and dated public-vulnerability coverage are separately scoped; no modem firmware or field deployment is inferred."
+      "Historical DS200 modem identities and dated public-vulnerability coverage are separately scoped; no modem firmware or field deployment is inferred.",
+      "Added exact-version Regional Results/VPN test evidence and a separately labeled historical optional-cellular topology without publishing operational configuration values."
     ]
   }
 }
