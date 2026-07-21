@@ -114,6 +114,18 @@ An unresolved value is stored as `null`, never a guess or a value silently borro
 
 Hardware that is not present by default is modeled as its own component with `optionality: "optional"`. Its component card and scene node must not be merged into the base machine, and its sources must directly establish both the option and its equipment-family scope.
 
+## Component vulnerability reviews
+
+A component `securityReview` is permitted only when product identity and applicability limits remain explicit. In this catalog, "all public vulnerabilities" means all exact-product-applicable records found in the archived NVD CVE API responses, the reviewed CISA Known Exploited Vulnerabilities catalog, and the manufacturer's reviewed security-advisory set on the stated review date. It is not a guarantee that undisclosed, unindexed, differently named, or firmware-dependent vulnerabilities do not exist.
+
+- Record the exact model, model-family limitation, query terms, catalog revision, review date, and immutable source revisions.
+- Keep unknown installed firmware as `null` with `firmwareStatus: not_publicly_established`. A current manufacturer family table does not establish historic or fielded firmware.
+- Rank applicable records by CISA KEV status first, numeric CVSS score second, and source-assigned severity third. Never invent a CVSS score or severity.
+- A zero-match review uses `no_exact_product_matches_found`; the interface must say that this is a dated search result, not that the product has no vulnerabilities.
+- If identity is unresolved, use `exact_product_review_not_possible` and do not attach nearby product-family CVEs.
+- Keep service-continuity notices, firmware-update bulletins without a security classification, and other non-CVE records in `nonCveAdvisories`. They must not receive an invented CVSS score or be mixed into the ranked vulnerability list.
+- Do not transfer an advisory from a similarly named gateway, router, modem, radio module, or ordering revision unless a primary source establishes product applicability.
+
 ## Adding a dossier
 
 1. Prefer an EAC certification page, certificate/scope, VSTL test plan, and final test report.

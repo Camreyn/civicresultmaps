@@ -8,6 +8,73 @@ export type EquipmentScene = EquipmentSystem["scene"];
 export type EquipmentSceneNode = EquipmentScene["nodes"][number];
 export type EquipmentReferenceImage = EquipmentScene["referenceImages"][number];
 
+export type EquipmentSecuritySourceReview = {
+  id: string;
+  catalog: string;
+  queryTerms: string[];
+  resultStatus:
+    | "applicable_product_matches_found"
+    | "no_applicable_product_matches"
+    | "no_catalog_matches"
+    | "no_exact_product_matches";
+  exactMatchCount: number;
+  sourceIds: string[];
+  sourceRevisionIds: string[];
+  caveat: string;
+};
+
+export type EquipmentSecurityVulnerability = {
+  id: string;
+  title: string;
+  description: string;
+  severity: "critical" | "high" | "medium" | "low" | "unknown";
+  cvssScore: number | null;
+  cvssVersion: string | null;
+  cisaKev: boolean;
+  affectedFirmware: string[];
+  fixedFirmware: string[];
+  sourceIds: string[];
+  sourceRevisionIds: string[];
+  caveat: string;
+};
+
+export type EquipmentNonCveAdvisory = {
+  id: string;
+  kind: string;
+  title: string;
+  publishedOn: string | null;
+  cvssScore: null;
+  cisaKev: false;
+  securitySeverity: null;
+  operationalImpact: string;
+  affectedFirmware: string | null;
+  fixedFirmware: string | null;
+  description: string;
+  sourceIds: string[];
+  sourceRevisionIds: string[];
+  caveat: string;
+};
+
+export type EquipmentSecurityReview = {
+  reviewedOn: string;
+  productIdentityStatus:
+    | "component_identity_unresolved"
+    | "exact_model_historical_scope"
+    | "exact_model_family_historical_scope";
+  firmwareStatus: "not_publicly_established" | "documented" | "certified" | "fielded";
+  firmwareVersion: string | null;
+  overallStatus:
+    | "exact_product_review_not_possible"
+    | "no_exact_product_matches_found"
+    | "applicable_vulnerabilities_found";
+  coverageDefinition: string;
+  rankingMethod: string;
+  sourcesReviewed: EquipmentSecuritySourceReview[];
+  vulnerabilities: EquipmentSecurityVulnerability[];
+  nonCveAdvisories: EquipmentNonCveAdvisory[];
+  caveat: string;
+};
+
 export type EquipmentSystemSummary = Pick<
   EquipmentSystem,
   | "certification"
@@ -74,4 +141,10 @@ export function sourcesForEquipmentRecord(
 ) {
   const requested = new Set<string>(sourceIds);
   return sources.filter((source) => requested.has(source.id));
+}
+
+export function securityReviewForEquipmentComponent(
+  component: EquipmentComponent,
+): EquipmentSecurityReview | null {
+  return component.securityReview as EquipmentSecurityReview | null;
 }

@@ -1133,6 +1133,286 @@
   align-items: center;
 }
 
+.securityReview {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(121, 158, 255, 0.24);
+  border-radius: 15px;
+  background: linear-gradient(145deg, rgba(20, 33, 57, 0.72), rgba(5, 22, 27, 0.78));
+}
+
+.securityReviewHead,
+.securityReviewHead > div,
+.securitySubhead,
+.securityCoverage > section > div,
+.nonCveTopline,
+.securityLinks {
+  display: flex;
+  align-items: center;
+}
+
+.securityReviewHead {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.securityReviewHead > div {
+  min-width: 0;
+  gap: 8px;
+}
+
+.securityReviewHead svg {
+  flex: 0 0 auto;
+  color: #aebfff;
+}
+
+.securityReviewHead span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.securityReviewHead small,
+.securityFacts span,
+.securityFacts small,
+.securityReviewHead time {
+  color: #869ea7;
+  font-size: 0.59rem;
+  line-height: 1.35;
+}
+
+.securityReviewHead span > small,
+.securityFacts span {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.securityReviewHead strong {
+  overflow-wrap: anywhere;
+  color: #d7e1ff;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.securityReviewHead time {
+  flex: 0 0 auto;
+}
+
+.securityFacts {
+  margin-top: 11px;
+  display: grid;
+  gap: 6px;
+}
+
+.securityFacts > div {
+  padding: 9px 10px;
+  border: 1px solid rgba(121, 158, 255, 0.13);
+  border-radius: 10px;
+  background: rgba(2, 14, 19, 0.38);
+  display: grid;
+  gap: 3px;
+}
+
+.securityFacts strong {
+  overflow-wrap: anywhere;
+  color: #e4ebff;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.securityDefinition,
+.securityMethod,
+.securityCaveat {
+  margin: 10px 0 0 !important;
+  font-size: 0.65rem !important;
+  line-height: 1.5 !important;
+}
+
+.securityDefinition,
+.securityMethod {
+  color: #9db4ba !important;
+}
+
+.securityCaveat {
+  padding: 9px 10px;
+  border-left: 2px solid #efb95a;
+  background: rgba(99, 67, 14, 0.1);
+  color: #c9b995 !important;
+}
+
+.vulnerabilityPanel,
+.securityCoverage,
+.nonCvePanel {
+  margin-top: 13px;
+}
+
+.securitySubhead {
+  gap: 6px;
+}
+
+.securitySubhead svg {
+  color: #f29a7e;
+}
+
+.securitySubhead h4,
+.securityCoverage > h4,
+.nonCvePanel > h4 {
+  margin: 0 0 7px;
+  color: #e7f1ef;
+  font-size: 0.7rem;
+}
+
+.securityEmpty {
+  padding: 10px;
+  border: 1px dashed rgba(121, 158, 255, 0.24);
+  border-radius: 11px;
+  background: rgba(8, 21, 32, 0.42);
+}
+
+.securityEmpty strong {
+  color: #dbe4ff;
+  font-size: 0.69rem;
+  line-height: 1.4;
+}
+
+.securityEmpty p,
+.securityCoverage p,
+.nonCvePanel p,
+.vulnerabilityRecord p {
+  margin: 5px 0 0 !important;
+  color: #91a9ad !important;
+  font-size: 0.63rem !important;
+  line-height: 1.48 !important;
+}
+
+.vulnerabilityList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.vulnerabilityRecord {
+  padding: 10px;
+  border: 1px solid rgba(236, 120, 103, 0.2);
+  border-radius: 11px;
+  background: rgba(57, 20, 19, 0.13);
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.vulnerabilityRank {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+}
+
+.vulnerabilityRank span,
+.vulnerabilityRank em,
+.nonCveTopline span {
+  width: fit-content;
+  padding: 3px 5px;
+  border: 1px solid rgba(239, 139, 112, 0.25);
+  border-radius: 999px;
+  color: #f4af9a;
+  font-size: 0.55rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.vulnerabilityRank strong {
+  color: #f0d0c8;
+  font-size: 0.63rem;
+}
+
+.vulnerabilityRecord h5 {
+  margin: 0;
+  color: #eef5f4;
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.vulnerabilityRecord small,
+.securityCoverage small,
+.nonCvePanel small {
+  display: block;
+  margin-top: 6px;
+  color: #81999c;
+  font-size: 0.59rem;
+  line-height: 1.45;
+}
+
+.securityCoverage,
+.nonCvePanel {
+  display: grid;
+  gap: 7px;
+}
+
+.securityCoverage > section,
+.nonCvePanel > section {
+  padding: 9px 10px;
+  border: 1px solid rgba(154, 211, 205, 0.12);
+  border-radius: 11px;
+  background: rgba(2, 15, 18, 0.36);
+}
+
+.securityCoverage > section > div:first-child,
+.nonCveTopline {
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.securityCoverage > section > div:first-child strong,
+.nonCvePanel > section > strong {
+  color: #dcecea;
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.securityCoverage > section > div:first-child span {
+  flex: 0 0 auto;
+  color: #8eddd4;
+  font-size: 0.59rem;
+}
+
+.nonCvePanel > section {
+  border-color: rgba(240, 185, 90, 0.2);
+  background: rgba(91, 59, 10, 0.08);
+}
+
+.nonCveTopline {
+  margin-bottom: 7px;
+}
+
+.nonCveTopline span {
+  border-color: rgba(240, 185, 90, 0.24);
+  color: #e7c27e;
+}
+
+.securityLinks {
+  margin-top: 7px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.securityLinks a {
+  gap: 3px;
+  padding: 3px 6px;
+  border: 1px solid rgba(121, 158, 255, 0.17);
+  border-radius: 999px;
+  color: #aebfff;
+  font-size: 0.57rem;
+  line-height: 1.3;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
 .noSpecifications {
   margin-top: 0 !important;
   padding: 11px 12px;

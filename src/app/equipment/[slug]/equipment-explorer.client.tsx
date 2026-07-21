@@ -5,6 +5,7 @@ import { Component, useEffect, useLayoutEffect, useRef, useState, type ReactNode
 import { createPortal } from "react-dom";
 import {
   Box,
+  Bug,
   Expand,
   ExternalLink,
   Eye,
@@ -15,11 +16,18 @@ import {
   Network,
   Rotate3d,
   RotateCcw,
+  ShieldAlert,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
 
-import type { EquipmentComponent, EquipmentSource, EquipmentSystem } from "@/lib/equipment-catalog";
+import {
+  securityReviewForEquipmentComponent,
+  type EquipmentComponent,
+  type EquipmentSecurityVulnerability,
+  type EquipmentSource,
+  type EquipmentSystem,
+} from "@/lib/equipment-catalog";
 import styles from "../equipment.module.css";
 import type { EquipmentCameraCommand } from "./equipment-orthographic-scene";
 import { EquipmentReferenceGallery } from "./equipment-reference-gallery.client";
@@ -59,6 +67,25 @@ function webGl2Available() {
 
 function label(value: string) {
   return value.replaceAll("_", " ");
+}
+
+const VULNERABILITY_SEVERITY_ORDER = new Map([
+  ["critical", 0],
+  ["high", 1],
+  ["medium", 2],
+  ["low", 3],
+  ["unknown", 4],
+]);
+
+function compareVulnerabilities(
+  left: EquipmentSecurityVulnerability,
+  right: EquipmentSecurityVulnerability,
+) {
+  if (left.cisaKev !== right.cisaKev) return left.cisaKev ? -1 : 1;
+  const scoreDifference = (right.cvssScore ?? -1) - (left.cvssScore ?? -1);
+  if (scoreDifference !== 0) return scoreDifference;
+  return (VULNERABILITY_SEVERITY_ORDER.get(left.severity) ?? 99)
+    - (VULNERABILITY_SEVERITY_ORDER.get(right.severity) ?? 99);
 }
 
 const NETWORK_CATEGORIES = new Set(["bluetooth", "cellular", "ethernet", "network", "wifi", "wireless"]);
@@ -219,6 +246,10 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
   const [hiddenComponentIds, setHiddenComponentIds] = useState<Set<string>>(() => new Set());
   const [isolatedComponentId, setIsolatedComponentId] = useState<string | null>(null);
   const selected = system.components.find((component) => component.id === selectedId) ?? system.components[0];
+  const securityReview = securityReviewForEquipmentComponent(selected);
+  const rankedVulnerabilities = securityReview
+    ? [...securityReview.vulnerabilities].sort(compareVulnerabilities)
+    : [];
   const modeledComponents = system.components.filter((component) => component.sceneNodeName !== null);
   const componentIsVisible = (componentId: string) => (
     isolatedComponentId !== null
@@ -249,6 +280,9 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
     ...relatedChanges.flatMap((record) => record.sourceIds),
     ...relatedFindings.flatMap((record) => record.sourceIds),
     ...relatedPower.flatMap((record) => record.sourceIds),
+    ...(securityReview?.sourcesReviewed ?? []).flatMap((record) => record.sourceIds),
+    ...(securityReview?.vulnerabilities ?? []).flatMap((record) => record.sourceIds),
+    ...(securityReview?.nonCveAdvisories ?? []).flatMap((record) => record.sourceIds),
   ]);
   const selectedSources = sources.filter((source) => selectedSourceIds.has(source.id));
 
@@ -534,6 +568,141 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
                 })}
               </div>
             </>
+          )}
+          {securityReview && (
+            <section className={styles.securityReview} aria-label={`Public vulnerability review for ${selected.name}`}>
+              <div className={styles.securityReviewHead}>
+                <div>
+                  <ShieldAlert aria-hidden size={18} />
+                  <span>
+                    <small>Public vulnerability review</small>
+                    <strong>{label(securityReview.overallStatus)}</strong>
+                  </span>
+                </div>
+                <time dateTime={securityReview.reviewedOn}>Reviewed {securityReview.reviewedOn}</time>
+              </div>
+
+              <div className={styles.securityFacts}>
+                <div>
+                  <span>Firmware</span>
+                  <strong>{securityReview.firmwareVersion ?? "Not publicly established"}</strong>
+                  <small>{label(securityReview.firmwareStatus)}</small>
+                </div>
+                <div>
+                  <span>Exact public matches</span>
+                  <strong>{rankedVulnerabilities.length}</strong>
+                  <small>{rankedVulnerabilities.filter((record) => record.cisaKev).length} in CISA KEV</small>
+                </div>
+                <div>
+                  <span>Identity basis</span>
+                  <strong>{label(securityReview.productIdentityStatus)}</strong>
+                  <small>Applicability is model and firmware dependent</small>
+                </div>
+              </div>
+
+              <p className={styles.securityDefinition}>{securityReview.coverageDefinition}</p>
+
+              <div className={styles.vulnerabilityPanel}>
+                <div className={styles.securitySubhead}>
+                  <Bug aria-hidden size={15} />
+                  <h4>Ranked vulnerabilities</h4>
+                </div>
+                {securityReview.overallStatus === "exact_product_review_not_possible" ? (
+                  <div className={styles.securityEmpty}>
+                    <strong>Exact-product review blocked by unresolved identity</strong>
+                    <p>The component model and installed firmware must be identified before a responsible vulnerability list can be assigned.</p>
+                  </div>
+                ) : rankedVulnerabilities.length === 0 ? (
+                  <div className={styles.securityEmpty}>
+                    <strong>No exact-product matches found in the reviewed public sources</strong>
+                    <p>This is a dated search result, not a finding that the product has no vulnerabilities.</p>
+                  </div>
+                ) : (
+                  <ol className={styles.vulnerabilityList}>
+                    {rankedVulnerabilities.map((vulnerability) => {
+                      const vulnerabilitySources = sources.filter((source) => vulnerability.sourceIds.includes(source.id));
+                      return (
+                        <li className={styles.vulnerabilityRecord} key={vulnerability.id}>
+                          <div className={styles.vulnerabilityRank}>
+                            <span>{label(vulnerability.severity)}</span>
+                            <strong>{vulnerability.cvssScore === null ? "No CVSS" : `CVSS ${vulnerability.cvssScore}`}</strong>
+                            {vulnerability.cisaKev && <em>CISA KEV</em>}
+                          </div>
+                          <div>
+                            <h5>{vulnerability.id}: {vulnerability.title}</h5>
+                            <p>{vulnerability.description}</p>
+                            <small>{vulnerability.caveat}</small>
+                            <div className={styles.securityLinks}>
+                              {vulnerabilitySources.map((source) => (
+                                <a href={source.url} key={source.id} rel="noreferrer" target="_blank">
+                                  {source.publisher} <ExternalLink aria-hidden size={11} />
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                )}
+              </div>
+
+              {securityReview.sourcesReviewed.length > 0 && (
+                <div className={styles.securityCoverage}>
+                  <h4>Coverage checked</h4>
+                  {securityReview.sourcesReviewed.map((reviewedSource) => {
+                    const coverageSources = sources.filter((source) => reviewedSource.sourceIds.includes(source.id));
+                    return (
+                      <section key={reviewedSource.id}>
+                        <div>
+                          <strong>{reviewedSource.catalog}</strong>
+                          <span>{reviewedSource.exactMatchCount} exact matches</span>
+                        </div>
+                        <p><strong>Queries:</strong> {reviewedSource.queryTerms.join("; ")}</p>
+                        <small>{reviewedSource.caveat}</small>
+                        <div className={styles.securityLinks}>
+                          {coverageSources.map((source) => (
+                            <a href={source.url} key={source.id} rel="noreferrer" target="_blank">
+                              {source.title} <ExternalLink aria-hidden size={11} />
+                            </a>
+                          ))}
+                        </div>
+                      </section>
+                    );
+                  })}
+                </div>
+              )}
+
+              {securityReview.nonCveAdvisories.length > 0 && (
+                <div className={styles.nonCvePanel}>
+                  <h4>Other vendor advisories</h4>
+                  {securityReview.nonCveAdvisories.map((advisory) => {
+                    const advisorySources = sources.filter((source) => advisory.sourceIds.includes(source.id));
+                    return (
+                      <section key={advisory.id}>
+                        <div className={styles.nonCveTopline}>
+                          <span>Non-CVE</span>
+                          <span>No CVSS assigned</span>
+                        </div>
+                        <strong>{advisory.title}</strong>
+                        <p>{advisory.description}</p>
+                        <small>{advisory.caveat}</small>
+                        <div className={styles.securityLinks}>
+                          {advisorySources.map((source) => (
+                            <a href={source.url} key={source.id} rel="noreferrer" target="_blank">
+                              {source.title} <ExternalLink aria-hidden size={11} />
+                            </a>
+                          ))}
+                        </div>
+                      </section>
+                    );
+                  })}
+                </div>
+              )}
+
+              <p className={styles.securityMethod}><strong>Ranking method:</strong> {securityReview.rankingMethod}</p>
+              <p className={styles.securityCaveat}>{securityReview.caveat}</p>
+            </section>
           )}
           <div className={styles.caveatBox}>{selected.caveat}</div>
           <h4>Sources for this selection</h4>

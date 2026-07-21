@@ -39,7 +39,7 @@ assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
 assert.equal(claim.editorial.state, "approved");
 assert.equal(catalog.systems.length, 6);
-assert.equal(sourcePackage.sources.length, 53);
+assert.equal(sourcePackage.sources.length, 64);
 assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
 const sourceIds = new Set(sourcePackage.sources.map((source) => source.id));
@@ -57,13 +57,17 @@ for (const source of sourcePackage.sources) {
 
 const system = catalog.systems.find((entry) => entry.slug === "ess-evs-6400-ds200");
 assert.ok(system, "DS200 pilot must remain in the generated catalog");
-assert.equal(system.coverage.componentCount, 10);
-assert.equal(system.coverage.sourcedComponentCount, 10);
+assert.equal(system.coverage.componentCount, 12);
+assert.equal(system.coverage.sourcedComponentCount, 12);
 assert.equal(system.coverage.configurationChangeCount, 6);
 assert.equal(system.coverage.deploymentObservationCount, 4);
 assert.equal(system.coverage.confirmedPowerRecordCount, 1);
-assert.equal(system.coverage.technicalSpecificationCount, 8);
+assert.equal(system.coverage.technicalSpecificationCount, 13);
 assert.equal(system.coverage.unknownTechnicalSpecificationCount, 3);
+assert.equal(system.coverage.componentSecurityReviewCount, 3);
+assert.equal(system.coverage.exactApplicableVulnerabilityCount, 0);
+assert.equal(system.coverage.nonCveAdvisoryCount, 1);
+assert.equal(system.coverage.sourceCount, 38);
 assert.match(system.certification.caveat, /certified configuration/i);
 assert.equal(system.editorialState, "approved");
 assert.ok(system.sourceRevisionIds.length > 0);
@@ -86,12 +90,24 @@ for (const component of system.components) {
       assert.ok(specification.value.length > 0);
     }
   }
+  if (component.securityReview !== null) {
+    assert.match(component.securityReview.reviewedOn, /^\d{4}-\d{2}-\d{2}$/);
+    assert.equal(component.securityReview.firmwareVersion, null);
+    assert.equal(component.securityReview.firmwareStatus, "not_publicly_established");
+    for (const reviewedSource of component.securityReview.sourcesReviewed) {
+      assert.ok(reviewedSource.queryTerms.length > 0);
+      assert.ok(reviewedSource.sourceIds.length > 0);
+      assert.ok(reviewedSource.sourceRevisionIds.length > 0);
+      assert.equal(reviewedSource.exactMatchCount, 0);
+    }
+  }
 }
 
 const ds200Modem = components.get("ds200-optional-cellular-modem");
 assert.ok(ds200Modem, "DS200 optional cellular board must remain a distinct component");
 assert.equal(ds200Modem.optionality, "optional");
 assert.equal(ds200Modem.sceneNodeName, "Optional_Cellular_Modem");
+assert.equal(ds200Modem.securityReview.overallStatus, "exact_product_review_not_possible");
 const ds200Cellular = ds200Modem.technicalSpecifications
   .find((record) => record.id === "ds200-optional-cellular-capability");
 assert.ok(ds200Cellular, "DS200 optional cellular capability must remain explicitly scoped");
@@ -105,6 +121,30 @@ assert.equal(
   false,
   "optional cellular hardware must not be merged into the base scanner assembly",
 );
+
+const c2Modem = components.get("ds200-multitech-c2-modem");
+assert.ok(c2Modem, "the historically approved C2 modem must be a separate component");
+assert.deepEqual(c2Modem.modelNumbers, ["MTSMC-C2-N3-R.1"]);
+assert.equal(c2Modem.optionality, "optional");
+assert.equal(c2Modem.sceneNodeName, null);
+assert.equal(c2Modem.securityReview.overallStatus, "no_exact_product_matches_found");
+assert.equal(c2Modem.securityReview.vulnerabilities.length, 0);
+assert.equal(c2Modem.securityReview.sourcesReviewed.length, 3);
+assert.ok(c2Modem.sourceIds.includes("fl-evs-4500-v4-modem-report"));
+
+const lteModem = components.get("ds200-multitech-lvw3-modem");
+assert.ok(lteModem, "the historically tested LTE modem must be a separate component");
+assert.deepEqual(lteModem.modelNumbers, ["MTSMC-LVW3"]);
+assert.equal(lteModem.optionality, "optional");
+assert.equal(lteModem.sceneNodeName, null);
+assert.equal(lteModem.securityReview.overallStatus, "no_exact_product_matches_found");
+assert.equal(lteModem.securityReview.vulnerabilities.length, 0);
+assert.equal(lteModem.securityReview.nonCveAdvisories.length, 1);
+assert.equal(lteModem.securityReview.nonCveAdvisories[0].cvssScore, null);
+assert.equal(lteModem.securityReview.nonCveAdvisories[0].securitySeverity, null);
+assert.ok(lteModem.sourceIds.includes("provv-evs-5341-modem-hardware-table"));
+assert.ok(system.sourceIds.includes("nvd-modem-query-review"));
+assert.ok(system.sourceIds.includes("cisa-kev-catalog"));
 
 const power = system.power[0];
 assert.equal(power.knowledgeStatus, "documented_partial");
@@ -311,6 +351,8 @@ assert.match(explorer, /referenceImages\.length/);
 assert.match(explorer, /EquipmentReferenceGallery/);
 assert.match(explorer, /optionality/);
 assert.match(explorer, /Optional component/);
+assert.match(explorer, /Ranked vulnerabilities/);
+assert.match(explorer, /No exact-product matches found/);
 assert.match(scene, /frameloop="demand"/);
 assert.match(scene, /orthographic/);
 assert.match(scene, /webglcontextlost/);

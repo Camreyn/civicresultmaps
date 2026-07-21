@@ -15,6 +15,45 @@
   },
   "sources": [
     {
+      "id": "cisa-kev-catalog",
+      "publisher": "Cybersecurity and Infrastructure Security Agency",
+      "authorityLevel": "federal_known_exploited_vulnerability_catalog",
+      "title": "Known Exploited Vulnerabilities Catalog",
+      "url": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+      "localArtifact": "data/equipment-sources/cisa-known-exploited-vulnerabilities-2026-07-16.json",
+      "sha256": "41d27023a5912a49ca2b06370550fa6da50e35794c269766a6332618d82f243e",
+      "documentType": "federal_vulnerability_catalog_json",
+      "publishedOn": "2026-07-16",
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Catalog version 2026.07.16; 1,647 records",
+      "caveat": "No reviewed catalog record matched MultiTech, Telit, SocketModem, MTSMC, or LE910 terms. KEV contains vulnerabilities known to be exploited in the wild; absence from KEV does not mean a product has no vulnerabilities or that exploitation has never occurred.",
+      "canonicalUrl": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+      "currentReviewedRevisionId": "cisa-kev-catalog@2026-07-20",
+      "latestRetrievedRevisionId": "cisa-kev-catalog@2026-07-20",
+      "revisions": [
+        {
+          "id": "cisa-kev-catalog@2026-07-20",
+          "localArtifact": "data/equipment-sources/cisa-known-exploited-vulnerabilities-2026-07-16.json",
+          "sha256": "41d27023a5912a49ca2b06370550fa6da50e35794c269766a6332618d82f243e",
+          "byteLength": 1552342,
+          "publishedOn": "2026-07-16",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Catalog version 2026.07.16",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "clearballot-clearaccess-product-page",
       "publisher": "Clear Ballot Group",
       "authorityLevel": "manufacturer_primary",
@@ -1224,6 +1263,45 @@
       "revisionComparisons": []
     },
     {
+      "id": "eac-unity-3200-document-report",
+      "publisher": "U.S. Election Assistance Commission; SysTest Labs",
+      "authorityLevel": "federal_certification_record",
+      "title": "ES&S Unity 3.2.0.0 Document Report",
+      "url": "https://www.eac.gov/sites/default/files/document_library/files/775.PDF",
+      "localArtifact": "data/equipment-sources/eac-unity-3200-document-report.pdf",
+      "sha256": "a896d01387f1814df269337543c976595775dbce9a1bd355975221d0ea79e989",
+      "documentType": "vstl_document_inventory_pdf",
+      "publishedOn": "2007-06-21",
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "PDF page 13; DS200 SocketModem dial-up, GPRS, CDMA, and reference-guide records",
+      "caveat": "This document inventory establishes that Multi-Tech SocketModem documentation was reviewed for the older Unity 3.2.0.0 DS200 project. It does not identify a precise ordering part, radio firmware, later certified configuration, or field installation.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/document_library/files/775.PDF",
+      "currentReviewedRevisionId": "eac-unity-3200-document-report@2026-07-20",
+      "latestRetrievedRevisionId": "eac-unity-3200-document-report@2026-07-20",
+      "revisions": [
+        {
+          "id": "eac-unity-3200-document-report@2026-07-20",
+          "localArtifact": "data/equipment-sources/eac-unity-3200-document-report.pdf",
+          "sha256": "a896d01387f1814df269337543c976595775dbce9a1bd355975221d0ea79e989",
+          "byteLength": 184804,
+          "publishedOn": "2007-06-21",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/document_library/files/775.PDF",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF page 13",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "ess-ds200-one-sheet",
       "publisher": "Election Systems & Software",
       "authorityLevel": "manufacturer_primary",
@@ -1413,6 +1491,318 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "Are modems installed in poll place tabulators nationwide?; How do we know modems aren't in machines where they are not permitted?",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "fl-evs-4500-v4-modem-report",
+      "publisher": "Florida Department of State, Division of Elections",
+      "authorityLevel": "state_election_office",
+      "title": "ES&S EVS Release 4.5.0.0 Version 4 Test Report Addendum (Revision 1)",
+      "url": "https://files.floridados.gov/media/695182/ess-evs-release-4500-version-4-revision-1-test-report.pdf",
+      "localArtifact": "data/equipment-sources/fl-evs-4500-v4-modem-report.pdf",
+      "sha256": "c8fee19d7bfdda6aa80c75d36f3e9bae7482b7c6a81581ae8ba5cf5d3bd9d7ae",
+      "documentType": "state_voting_system_qualification_report_pdf",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Cover and report pages 1-4; June 2015 addendum for ECO 920",
+      "caveat": "The report identifies a MultiTech MTSMC-C2-N3.R1 Verizon C2 modem only for Florida EVS 4.5.0.0 Version 4 with DS200 hardware 1.2 or 1.3. It does not establish EVS 6.4.0.0 certification, current deployment, or the modem firmware installed in a field unit.",
+      "canonicalUrl": "https://files.floridados.gov/media/695182/ess-evs-release-4500-version-4-revision-1-test-report.pdf",
+      "currentReviewedRevisionId": "fl-evs-4500-v4-modem-report@2026-07-20",
+      "latestRetrievedRevisionId": "fl-evs-4500-v4-modem-report@2026-07-20",
+      "revisions": [
+        {
+          "id": "fl-evs-4500-v4-modem-report@2026-07-20",
+          "localArtifact": "data/equipment-sources/fl-evs-4500-v4-modem-report.pdf",
+          "sha256": "c8fee19d7bfdda6aa80c75d36f3e9bae7482b7c6a81581ae8ba5cf5d3bd9d7ae",
+          "byteLength": 786340,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://files.floridados.gov/media/695182/ess-evs-release-4500-version-4-revision-1-test-report.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Cover and report pages 1-4; June 2015 addendum for ECO 920",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "multitech-eol-products",
+      "publisher": "Multi-Tech Systems, Inc.",
+      "authorityLevel": "manufacturer_primary",
+      "title": "MultiTech End-of-Life Products",
+      "url": "https://multitech.com/eol-products/",
+      "localArtifact": "data/equipment-sources/multitech-eol-products.html",
+      "sha256": "c31d6a4b6609d1f777d6e407d721e1b57c7d5f2a77298aa6858fb40956639c61",
+      "documentType": "manufacturer_product_lifecycle_page_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "MTSMC-LVW3, R1, R2, and R4 rows",
+      "caveat": "The lifecycle table distinguishes several MTSMC-LVW3 ordering revisions. The Pro V&V hardware table names only MTSMC-LVW3, so no lifecycle row is treated as the exact revision installed in an evaluated or fielded DS200.",
+      "canonicalUrl": "https://multitech.com/eol-products/",
+      "currentReviewedRevisionId": "multitech-eol-products@2026-07-20",
+      "latestRetrievedRevisionId": "multitech-eol-products@2026-07-20",
+      "revisions": [
+        {
+          "id": "multitech-eol-products@2026-07-20",
+          "localArtifact": "data/equipment-sources/multitech-eol-products.html",
+          "sha256": "c31d6a4b6609d1f777d6e407d721e1b57c7d5f2a77298aa6858fb40956639c61",
+          "byteLength": 981097,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://multitech.com/eol-products/",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "MTSMC-LVW3 ordering-revision rows",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "multitech-lvw3-update-bulletin",
+      "publisher": "Multi-Tech Systems, Inc.",
+      "authorityLevel": "manufacturer_primary",
+      "title": "Verizon LTE Cat 1 Update Notice PB 031219-00",
+      "url": "https://multitech.com/wp-content/uploads/PB-031219-00_Verizon-Update-Notice.pdf",
+      "localArtifact": "data/equipment-sources/multitech-lvw3-verizon-update-2019.pdf",
+      "sha256": "b2f646c6e26210723bec0b31cf446dc1bb18679ce568945d6d8d43e53f2ef407",
+      "documentType": "manufacturer_product_bulletin_pdf",
+      "publishedOn": "2019-03-12",
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Page 1; affected SocketModem Cell list and suggested action plan",
+      "caveat": "The bulletin says an urgent software patch may apply to named Verizon LTE Cat 1 products, including MTSMC-LVW3 variants, for service continuity. It does not identify a CVE, assign CVSS severity, publish a firmware version, or establish whether a historically evaluated DS200 modem was affected or patched.",
+      "canonicalUrl": "https://multitech.com/wp-content/uploads/PB-031219-00_Verizon-Update-Notice.pdf",
+      "currentReviewedRevisionId": "multitech-lvw3-update-bulletin@2026-07-20",
+      "latestRetrievedRevisionId": "multitech-lvw3-update-bulletin@2026-07-20",
+      "revisions": [
+        {
+          "id": "multitech-lvw3-update-bulletin@2026-07-20",
+          "localArtifact": "data/equipment-sources/multitech-lvw3-verizon-update-2019.pdf",
+          "sha256": "b2f646c6e26210723bec0b31cf446dc1bb18679ce568945d6d8d43e53f2ef407",
+          "byteLength": 370834,
+          "publishedOn": "2019-03-12",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://multitech.com/wp-content/uploads/PB-031219-00_Verizon-Update-Notice.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Page 1",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "multitech-security-advisories-index",
+      "publisher": "Multi-Tech Systems, Inc.",
+      "authorityLevel": "manufacturer_primary",
+      "title": "MultiTech Security Advisories",
+      "url": "https://multitech.com/security/",
+      "localArtifact": "data/equipment-sources/multitech-security-advisories-index.html",
+      "sha256": "b5857bf640bc558f8d33c323637f527a589d48ba6226c18dca150dd43a703492",
+      "documentType": "manufacturer_security_advisory_index_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Security-advisory index and linked advisory list",
+      "caveat": "This is a point-in-time manufacturer index. Its absence of an exact model is not proof that the product has no vulnerability, and later advisories may change the result.",
+      "canonicalUrl": "https://multitech.com/security/",
+      "currentReviewedRevisionId": "multitech-security-advisories-index@2026-07-20",
+      "latestRetrievedRevisionId": "multitech-security-advisories-index@2026-07-20",
+      "revisions": [
+        {
+          "id": "multitech-security-advisories-index@2026-07-20",
+          "localArtifact": "data/equipment-sources/multitech-security-advisories-index.html",
+          "sha256": "b5857bf640bc558f8d33c323637f527a589d48ba6226c18dca150dd43a703492",
+          "byteLength": 474660,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://multitech.com/security/",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Security-advisory index",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "multitech-security-advisory-bundle",
+      "publisher": "Multi-Tech Systems, Inc.",
+      "authorityLevel": "manufacturer_primary",
+      "title": "MultiTech security advisories linked from the reviewed index",
+      "url": "https://multitech.com/security/",
+      "localArtifact": "data/equipment-sources/multitech-security-advisories-2026-07-20.zip",
+      "sha256": "b2ea2e73d876b1c530ba67562270a7f3fbc96efb2c18b0568e4874dc0a7e145f",
+      "documentType": "manufacturer_security_advisory_pdf_bundle",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Nine linked advisory PDFs covering ten CVEs; applicable-product tables and not-affected determinations",
+      "caveat": "The reviewed advisories either identify other MultiTech product families or state that MultiTech products are not affected. None expressly identifies MTSMC-C2, MTSMC-LVW3, CE910, or LE910. This exclusion is bounded to the archived advisory set and does not establish that those modem families are vulnerability-free.",
+      "canonicalUrl": "https://multitech.com/security/",
+      "currentReviewedRevisionId": "multitech-security-advisory-bundle@2026-07-20",
+      "latestRetrievedRevisionId": "multitech-security-advisory-bundle@2026-07-20",
+      "revisions": [
+        {
+          "id": "multitech-security-advisory-bundle@2026-07-20",
+          "localArtifact": "data/equipment-sources/multitech-security-advisories-2026-07-20.zip",
+          "sha256": "b2ea2e73d876b1c530ba67562270a7f3fbc96efb2c18b0568e4874dc0a7e145f",
+          "byteLength": 1447553,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://multitech.com/security/",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Nine official advisory PDFs linked from the index",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "multitech-universal-socket-guide",
+      "publisher": "Multi-Tech Systems, Inc.",
+      "authorityLevel": "manufacturer_primary",
+      "title": "Universal SocketModem Developer Guide S000342, Version W",
+      "url": "https://multitech.com/wp-content/uploads/s000342.pdf",
+      "localArtifact": "data/equipment-sources/multitech-universal-socket-guide.pdf",
+      "sha256": "59bdb4f77c516b793a191b77a5501e297b864c5108c4b1afbc1bb0017cd51283",
+      "documentType": "manufacturer_developer_guide_pdf",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "PDF pages 2 and 63-64; supported SocketModem families and firmware-update procedure",
+      "caveat": "The guide describes the MTSMC-C2 product family and a serial-port update process requiring MultiTech assistance. It does not publish the firmware installed in a DS200 or transfer a product-family option to another modem revision.",
+      "canonicalUrl": "https://multitech.com/wp-content/uploads/s000342.pdf",
+      "currentReviewedRevisionId": "multitech-universal-socket-guide@2026-07-20",
+      "latestRetrievedRevisionId": "multitech-universal-socket-guide@2026-07-20",
+      "revisions": [
+        {
+          "id": "multitech-universal-socket-guide@2026-07-20",
+          "localArtifact": "data/equipment-sources/multitech-universal-socket-guide.pdf",
+          "sha256": "59bdb4f77c516b793a191b77a5501e297b864c5108c4b1afbc1bb0017cd51283",
+          "byteLength": 1561985,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://multitech.com/wp-content/uploads/s000342.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF pages 2 and 63-64",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "multitech-verizon-fota",
+      "publisher": "Multi-Tech Systems, Inc.",
+      "authorityLevel": "manufacturer_primary",
+      "title": "Verizon Firmware Over the Air Requirements",
+      "url": "https://multitech.com/verizon-firmware-over-the-air-fota/",
+      "localArtifact": "data/equipment-sources/multitech-verizon-fota.html",
+      "sha256": "d24c0dbeb1601a15b3725954054c8b59fd6728dc80ad8882aea07df39123636b",
+      "documentType": "manufacturer_support_page_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "SocketModem Cell table; MTSMC-LVW3 family row",
+      "caveat": "The current table maps the MTSMC-LVW3 family to a Telit LE910-NA1 radio for FOTA planning. The Pro V&V table does not identify the DS200 modem ordering revision, so this current family mapping is not proof of the radio module or firmware installed in the historically evaluated units.",
+      "canonicalUrl": "https://multitech.com/verizon-firmware-over-the-air-fota/",
+      "currentReviewedRevisionId": "multitech-verizon-fota@2026-07-20",
+      "latestRetrievedRevisionId": "multitech-verizon-fota@2026-07-20",
+      "revisions": [
+        {
+          "id": "multitech-verizon-fota@2026-07-20",
+          "localArtifact": "data/equipment-sources/multitech-verizon-fota.html",
+          "sha256": "d24c0dbeb1601a15b3725954054c8b59fd6728dc80ad8882aea07df39123636b",
+          "byteLength": 462238,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://multitech.com/verizon-firmware-over-the-air-fota/",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "SocketModem Cell table",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "nvd-modem-query-review",
+      "publisher": "National Institute of Standards and Technology, National Vulnerability Database",
+      "authorityLevel": "federal_vulnerability_catalog",
+      "title": "NVD CVE API exact-product modem query responses",
+      "url": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+      "localArtifact": "data/equipment-sources/nvd-modem-query-responses-2026-07-20.zip",
+      "sha256": "830caaab82882993c9f8536177c46f2683e8b87e10fb05306c26ff22c7b8df40",
+      "documentType": "federal_api_response_bundle_zip",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Eleven CVE API 2.0 keyword responses for exact model and radio-module aliases",
+      "caveat": "Every archived query returned zero keyword matches at review time. NVD keyword matching is not a complete product security assessment and cannot rule out unindexed, differently named, undisclosed, or firmware-dependent vulnerabilities.",
+      "canonicalUrl": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+      "currentReviewedRevisionId": "nvd-modem-query-review@2026-07-20",
+      "latestRetrievedRevisionId": "nvd-modem-query-review@2026-07-20",
+      "revisions": [
+        {
+          "id": "nvd-modem-query-review@2026-07-20",
+          "localArtifact": "data/equipment-sources/nvd-modem-query-responses-2026-07-20.zip",
+          "sha256": "830caaab82882993c9f8536177c46f2683e8b87e10fb05306c26ff22c7b8df40",
+          "byteLength": 2618,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Eleven raw NVD CVE API 2.0 responses",
           "archiveStatus": "verified"
         }
       ],
@@ -1848,6 +2238,45 @@
       "revisionComparisons": []
     },
     {
+      "id": "provv-evs-5341-modem-hardware-table",
+      "publisher": "Pro V&V, Inc.; Minnesota Judicial Branch record mirrored by Democracy Docket",
+      "authorityLevel": "court_record_mirror_supplemental",
+      "title": "EVS 5.3.4.1 Test Report hardware-components table, court-filed Exhibit A",
+      "url": "https://www.democracydocket.com/wp-content/uploads/2022/11/24-sos-affadvit.pdf",
+      "localArtifact": "data/equipment-sources/mn-court-evs-5341-provv-exhibit.pdf",
+      "sha256": "d34fe0f7927dd2c64307922be9f365424958279f67c25dac20e9449cd0723ff6",
+      "documentType": "court_filed_vstl_report_exhibit_pdf",
+      "publishedOn": "2022-10-13",
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "PDF page 16, attached Pro V&V report page 12, Table 2-2",
+      "caveat": "The court-filed exhibit contains a Pro V&V report naming MTSMC-LVW3 test units for DS200 hardware 1.2 and 1.3. It is hosted by a supplemental mirror, identifies no ordering revision or firmware, and does not establish EVS 6.4.0.0 certification or field deployment.",
+      "canonicalUrl": "https://www.democracydocket.com/wp-content/uploads/2022/11/24-sos-affadvit.pdf",
+      "currentReviewedRevisionId": "provv-evs-5341-modem-hardware-table@2026-07-20",
+      "latestRetrievedRevisionId": "provv-evs-5341-modem-hardware-table@2026-07-20",
+      "revisions": [
+        {
+          "id": "provv-evs-5341-modem-hardware-table@2026-07-20",
+          "localArtifact": "data/equipment-sources/mn-court-evs-5341-provv-exhibit.pdf",
+          "sha256": "d34fe0f7927dd2c64307922be9f365424958279f67c25dac20e9449cd0723ff6",
+          "byteLength": 4830709,
+          "publishedOn": "2022-10-13",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.democracydocket.com/wp-content/uploads/2022/11/24-sos-affadvit.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF page 16, attached Pro V&V report page 12",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "provv-evs-6400-test-report",
       "publisher": "Pro V&V, Inc.",
       "authorityLevel": "eac_accredited_vstl",
@@ -2136,6 +2565,7 @@
             "eac-clearvote-25-scope@2026-07-19",
             "provv-clearvote-25-test-report@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -2318,7 +2748,8 @@
               ],
               "caveat": "The reviewed immutable artifacts establish the Elo model alternatives and an external reference image but do not provide a safely attributable exact CPU, installed RAM, or storage configuration for those certified variants."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "clearaccess-ballot-printer",
@@ -2344,6 +2775,7 @@
             "eac-clearvote-25-scope@2026-07-19",
             "provv-clearvote-25-test-plan@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -2370,6 +2802,7 @@
             "eac-clearvote-25-scope@2026-07-19",
             "provv-clearvote-25-test-plan@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -2396,6 +2829,7 @@
             "eac-clearvote-25-scope@2026-07-19",
             "provv-clearvote-25-test-plan@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -2421,6 +2855,7 @@
             "eac-clearvote-25-scope@2026-07-19",
             "provv-clearvote-25-test-plan@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -2445,6 +2880,7 @@
           "sourceRevisionIds": [
             "provv-clearvote-25-test-plan@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -2476,6 +2912,7 @@
             "eac-clearvote-25-scope@2026-07-19",
             "provv-clearvote-25-test-report@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -2499,6 +2936,7 @@
           "sourceRevisionIds": [
             "provv-clearvote-25-test-plan@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         }
       ],
@@ -2912,7 +3350,10 @@
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
         "sourceCount": 7,
-        "sourceRevisionCount": 7
+        "sourceRevisionCount": 7,
+        "componentSecurityReviewCount": 0,
+        "exactApplicableVulnerabilityCount": 0,
+        "nonCveAdvisoryCount": 0
       }
     },
     {
@@ -2986,7 +3427,8 @@
               ],
               "caveat": "This is the certified software version in the federal scope, not a field-observed installation."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "clearcount-central-scanner",
@@ -3018,6 +3460,7 @@
           ],
           "sceneNodeName": "ClearCount_Central_Scanner",
           "caveat": "The certified list contains alternatives, not a requirement to use all models. The manufacturer photo does not identify its pictured scanner, so the schematic depicts only a generic photo-informed central-scanner form.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -3067,7 +3510,8 @@
               ],
               "caveat": "The scope identifies the certified operating-system platform, not the patch state or field configuration of a particular workstation."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "clearcount-countserver",
@@ -3112,7 +3556,8 @@
               ],
               "caveat": "This is the certified platform listed for ClearCount 2.5, not a field patch-level observation."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "clearcount-countstation",
@@ -3145,6 +3590,7 @@
           ],
           "sceneNodeName": "ClearCount_CountStation",
           "caveat": "The schematic uses a generic monitor-and-stand form. It does not identify which certified desktop or laptop alternative is installed.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -3192,7 +3638,8 @@
               ],
               "caveat": "This describes the evaluated architecture, not proof of a particular field installation or a claim about every physical port."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "clearcount-ups",
@@ -3214,6 +3661,7 @@
           ],
           "sceneNodeName": "ClearCount_UPS",
           "caveat": "The scope names the UPS model but does not publish a ClearCount workload runtime, battery condition, or jurisdiction selection.",
+          "securityReview": null,
           "technicalSpecifications": []
         }
       ],
@@ -3464,7 +3912,10 @@
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
         "sourceCount": 6,
-        "sourceRevisionCount": 6
+        "sourceRevisionCount": 6,
+        "componentSecurityReviewCount": 0,
+        "exactApplicableVulnerabilityCount": 0,
+        "nonCveAdvisoryCount": 0
       }
     },
     {
@@ -3527,6 +3978,7 @@
           ],
           "sceneNodeName": "ICC_Central_Scanner",
           "caveat": "These are certified alternatives, not components used together. The scene and gallery show representative scanner forms and do not identify the selected model at a jurisdiction.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -3583,7 +4035,8 @@
               ],
               "caveat": "This is the evaluated operating-system platform, not a live patch-level reading or evidence for a particular field workstation."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "icc-application",
@@ -3626,7 +4079,8 @@
               ],
               "caveat": "This is the application version in the final certified configuration, not a field-observed installation or a claim that it is the newest later release."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "icc-ibutton-reader",
@@ -3651,6 +4105,7 @@
           ],
           "sceneNodeName": "ICC_iButton_Reader",
           "caveat": "The models are named auxiliary equipment. The source does not establish that the schematic location or cable arrangement matches a particular installation.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -3677,6 +4132,7 @@
           ],
           "sceneNodeName": "ICC_Media_Reader",
           "caveat": "The listed readers are alternatives. Their presence, attached port, and media contents at a particular jurisdiction are not established.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -3715,7 +4171,8 @@
               ],
               "caveat": "The guide states a conditional capability and isolation rule. It does not establish cabling, port occupation, enabled services, or field use elsewhere."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "icc-ups",
@@ -3737,6 +4194,7 @@
           ],
           "sceneNodeName": "ICC_UPS",
           "caveat": "The guide establishes a Colorado-approved model and minimum operating requirement, not the battery age, health, or actual runtime at a particular site.",
+          "securityReview": null,
           "technicalSpecifications": []
         }
       ],
@@ -4003,7 +4461,10 @@
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
         "sourceCount": 5,
-        "sourceRevisionCount": 5
+        "sourceRevisionCount": 5,
+        "componentSecurityReviewCount": 0,
+        "exactApplicableVulnerabilityCount": 0,
+        "nonCveAdvisoryCount": 0
       }
     },
     {
@@ -4063,6 +4524,7 @@
           ],
           "sceneNodeName": "ICX_Application",
           "caveat": "These are source-scoped certification and test observations, not a live device reading and not a claim about the newest Democracy Suite or ImageCast X release.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -4118,7 +4580,8 @@
               ],
               "caveat": "The manufacturer specification is tied to the named SID-21V model family. It is not transferred to the 15-inch Classic or 21-inch Prime alternatives."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "icx-sid21-compute-board",
@@ -4193,7 +4656,8 @@
               ],
               "caveat": "This eMMC specification belongs to the SID-21V Classic profile and is not the source-supported ICX Prime SSD advisory component."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "icx-sid21-io-panel",
@@ -4282,7 +4746,8 @@
               ],
               "caveat": "This is a system-scope communications statement, not a teardown-based assertion that every ICX chassis lacks every radio component."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "icx-sid21-internal-battery",
@@ -4357,7 +4822,8 @@
               ],
               "caveat": "The reviewed manuals provide electrical capacity and storage guidance but not a source-supported election-workload runtime."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "icx-ballot-printer",
@@ -4388,6 +4854,7 @@
           ],
           "sceneNodeName": "ICX_Ballot_Printer",
           "caveat": "These are certified alternatives, not evidence that all printers appear together or that a particular jurisdiction uses a named model.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -4415,6 +4882,7 @@
           ],
           "sceneNodeName": "ICX_External_UPS",
           "caveat": "The sources confirm permitted UPS alternatives but do not provide ICX load-specific capacity or runtime, field topology, battery condition, maintenance status, or a jurisdiction selection.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -4442,6 +4910,7 @@
           ],
           "sceneNodeName": "ICX_ATI",
           "caveat": "The records identify certified or tested interface options; they do not establish which interface is connected to a fielded device.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -4473,6 +4942,7 @@
           ],
           "sceneNodeName": "ICX_Assistive_Accessories",
           "caveat": "Listed alternatives do not establish that every accessory is supplied, connected, or used with every deployed ImageCast X setup.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -4502,6 +4972,7 @@
           ],
           "sceneNodeName": "ICX_Election_Media",
           "caveat": "This groups source-listed removable media for navigation. It does not describe a jurisdiction's activation, programming, storage, or chain-of-custody procedure.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -4528,6 +4999,7 @@
           ],
           "sceneNodeName": "ICX_Physical_Accessories",
           "caveat": "Optional accessories are not evidence of a jurisdiction's storage or setup procedure. The dual-bay charger is not represented as proof of an internal or external backup-power topology.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -4550,6 +5022,7 @@
           ],
           "sceneNodeName": null,
           "caveat": "The records establish the component category but do not disclose a source-supported SSD model, firmware number, physical placement, cabling, or board-level arrangement, so it is not placed in the 3D scene.",
+          "securityReview": null,
           "technicalSpecifications": []
         }
       ],
@@ -5107,7 +5580,10 @@
         "powerRecordCount": 2,
         "confirmedPowerRecordCount": 2,
         "sourceCount": 11,
-        "sourceRevisionCount": 11
+        "sourceRevisionCount": 11,
+        "componentSecurityReviewCount": 0,
+        "exactApplicableVulnerabilityCount": 0,
+        "nonCveAdvisoryCount": 0
       }
     },
     {
@@ -5120,7 +5596,7 @@
       "deviceName": "DS200",
       "displayName": "ES&S EVS 6.4.0.0 / DS200",
       "deviceRole": "Polling-place digital scanner and tabulator",
-      "summary": "A source-linked pilot dossier for the DS200 within the EAC-certified EVS 6.4.0.0 configuration, with historical EAC change records and a separately labeled Washington deployment observation.",
+      "summary": "A source-linked pilot dossier for the DS200 within the EAC-certified EVS 6.4.0.0 configuration, with historical change records, separately scoped optional modem models and vulnerability reviews, and a labeled Washington deployment observation.",
       "certification": {
         "certificationId": "ESSEVS6400",
         "standard": "VVSG 1.0",
@@ -5240,14 +5716,15 @@
               ],
               "caveat": "No reviewed artifact publishes the installed RAM technology or capacity for the certified DS200 configurations."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "ds200-optional-cellular-modem",
-          "name": "Optional cellular modem board",
+          "name": "Optional modem carrier board",
           "category": "cellular",
           "optionality": "optional",
-          "description": "ES&S states that modem components are not resident by default and that a separate board is installed only where cellular transmission is permitted; Rhode Island's 2021 procedure documents post-poll cellular transmission.",
+          "description": "ES&S states that modem components are not resident by default and that a separate board is installed only where cellular transmission is permitted; Rhode Island's 2021 procedure documents post-poll cellular transmission. Exact historical modem modules are listed as separate evidence records below.",
           "evidenceStatus": "documented_optional_model_component",
           "scopeKind": "manufacturer_hardware_documentation",
           "modelNumbers": [],
@@ -5262,7 +5739,7 @@
             "ri-ds200-pollworker-manual-2021@2026-07-20"
           ],
           "sceneNodeName": "Optional_Cellular_Modem",
-          "caveat": "The sources establish an optional separate board and one jurisdiction's documented procedure, but not the board manufacturer, modem model, radio bands, firmware, antenna, exact placement, or presence in every DS200.",
+          "caveat": "The sources establish an optional separate board and one jurisdiction's documented procedure, but not this carrier board's manufacturer, part number, radio module, firmware, antenna, exact placement, or presence in every DS200. The scene shape is symbolic.",
           "technicalSpecifications": [
             {
               "id": "ds200-optional-cellular-capability",
@@ -5282,7 +5759,332 @@
               ],
               "caveat": "This does not mean every DS200 contains a modem, that EVS 6.4.0.0 permits WAN use, or that cellular transmission was enabled or used in an unlisted jurisdiction."
             }
-          ]
+          ],
+          "securityReview": {
+            "reviewedOn": "2026-07-20",
+            "productIdentityStatus": "component_identity_unresolved",
+            "firmwareStatus": "not_publicly_established",
+            "firmwareVersion": null,
+            "overallStatus": "exact_product_review_not_possible",
+            "coverageDefinition": "All publicly indexed, exact-product-applicable records found in the reviewed NVD, CISA KEV, and manufacturer security-advisory sources as of the review date.",
+            "rankingMethod": "Known exploitation in CISA KEV ranks first, then numeric CVSS score, then a source-assigned severity. No score or severity is invented when a source does not publish one.",
+            "sourcesReviewed": [],
+            "vulnerabilities": [],
+            "nonCveAdvisories": [],
+            "caveat": "An exact-product vulnerability review cannot be performed until the carrier board and installed modem module are identified. An empty list here is an evidence gap, not a claim of no vulnerabilities."
+          }
+        },
+        {
+          "id": "ds200-multitech-c2-modem",
+          "name": "MultiTech Verizon C2 cellular modem",
+          "category": "cellular",
+          "optionality": "optional",
+          "description": "Florida's June 2015 qualification addendum identifies a MultiTech Verizon C2 modem evaluated as an optional DS200 result-transmission component.",
+          "evidenceStatus": "historical_state_approved_model_component",
+          "scopeKind": "historical_state_approval",
+          "modelNumbers": [
+            "MTSMC-C2-N3-R.1"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "fl-evs-4500-v4-modem-report",
+            "eac-unity-3200-document-report",
+            "multitech-universal-socket-guide"
+          ],
+          "sourceRevisionIds": [
+            "fl-evs-4500-v4-modem-report@2026-07-20",
+            "eac-unity-3200-document-report@2026-07-20",
+            "multitech-universal-socket-guide@2026-07-20"
+          ],
+          "sceneNodeName": null,
+          "caveat": "This model is established only for Florida EVS 4.5.0.0 Version 4 and DS200 hardware 1.2 or 1.3. The public record does not establish EVS 6.4.0.0 certification, Rhode Island fielding, a current installed unit, radio firmware, antenna installation, or exact internal placement.",
+          "technicalSpecifications": [
+            {
+              "id": "ds200-c2-network-profile",
+              "category": "cellular",
+              "label": "Carrier and radio family",
+              "value": "Verizon CDMA2000 1xRTT / C2 wireless modem",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "approved_change",
+              "modelContext": "Florida EVS 4.5.0.0 Version 4; DS200 hardware 1.2 and 1.3",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ],
+              "caveat": "This is a historical state-approved configuration, not proof that a modem was installed or enabled in another DS200 configuration or jurisdiction."
+            },
+            {
+              "id": "ds200-c2-firmware-update-path",
+              "category": "firmware",
+              "label": "Documented firmware update path",
+              "value": "Non-UIP C2 SocketModem firmware can be updated through the serial port with MultiTech assistance",
+              "knowledgeStatus": "documented_partial",
+              "assertionScope": "manufacturer_product",
+              "modelContext": "MultiTech MTSMC-C2 product family",
+              "sourceIds": [
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "multitech-universal-socket-guide@2026-07-20"
+              ],
+              "caveat": "The guide describes an update method, not the firmware version installed in the Florida test modem or any fielded DS200."
+            }
+          ],
+          "securityReview": {
+            "reviewedOn": "2026-07-20",
+            "productIdentityStatus": "exact_model_historical_scope",
+            "firmwareStatus": "not_publicly_established",
+            "firmwareVersion": null,
+            "overallStatus": "no_exact_product_matches_found",
+            "coverageDefinition": "All publicly indexed, exact-product-applicable records found in the reviewed NVD, CISA KEV, and manufacturer security-advisory sources as of the review date.",
+            "rankingMethod": "Known exploitation in CISA KEV ranks first, then numeric CVSS score, then a source-assigned severity. No score or severity is invented when a source does not publish one.",
+            "sourcesReviewed": [
+              {
+                "id": "ds200-c2-nvd-review",
+                "catalog": "NIST National Vulnerability Database",
+                "queryTerms": [
+                  "MTSMC-C2",
+                  "MTSMC-C2-N3.R1",
+                  "MultiTech SocketModem",
+                  "CE910",
+                  "Telit CE910"
+                ],
+                "resultStatus": "no_exact_product_matches",
+                "exactMatchCount": 0,
+                "sourceIds": [
+                  "nvd-modem-query-review"
+                ],
+                "sourceRevisionIds": [
+                  "nvd-modem-query-review@2026-07-20"
+                ],
+                "caveat": "Zero keyword matches does not rule out differently named, unindexed, undisclosed, or firmware-dependent vulnerabilities."
+              },
+              {
+                "id": "ds200-c2-cisa-kev-review",
+                "catalog": "CISA Known Exploited Vulnerabilities",
+                "queryTerms": [
+                  "MultiTech",
+                  "Telit",
+                  "SocketModem",
+                  "MTSMC",
+                  "CE910"
+                ],
+                "resultStatus": "no_catalog_matches",
+                "exactMatchCount": 0,
+                "sourceIds": [
+                  "cisa-kev-catalog"
+                ],
+                "sourceRevisionIds": [
+                  "cisa-kev-catalog@2026-07-20"
+                ],
+                "caveat": "KEV is a list of vulnerabilities known to be exploited in the wild, not an inventory of every vulnerability."
+              },
+              {
+                "id": "ds200-c2-multitech-advisory-review",
+                "catalog": "MultiTech security advisories",
+                "queryTerms": [
+                  "MTSMC-C2",
+                  "MTSMC-C2-N3.R1",
+                  "SocketModem"
+                ],
+                "resultStatus": "no_applicable_product_matches",
+                "exactMatchCount": 0,
+                "sourceIds": [
+                  "multitech-security-advisories-index",
+                  "multitech-security-advisory-bundle"
+                ],
+                "sourceRevisionIds": [
+                  "multitech-security-advisories-index@2026-07-20",
+                  "multitech-security-advisory-bundle@2026-07-20"
+                ],
+                "caveat": "The archived advisories name other product families or state that MultiTech products are not affected; the result is bounded to the reviewed advisory set."
+              }
+            ],
+            "vulnerabilities": [],
+            "nonCveAdvisories": [],
+            "caveat": "No exact-product-applicable public vulnerability record was found in the reviewed sources. This does not mean the modem has no vulnerability; the installed firmware is unknown and public catalogs may be incomplete."
+          }
+        },
+        {
+          "id": "ds200-multitech-lvw3-modem",
+          "name": "MultiTech Verizon 4G LTE modem",
+          "category": "cellular",
+          "optionality": "optional",
+          "description": "A court-filed copy of a Pro V&V EVS 5.3.4.1 test report identifies MTSMC-LVW3 Verizon 4G modem test units with DS200 hardware 1.2 and 1.3.",
+          "evidenceStatus": "historical_vstl_tested_model_component",
+          "scopeKind": "historical_test_configuration",
+          "modelNumbers": [
+            "MTSMC-LVW3"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "provv-evs-5341-modem-hardware-table",
+            "multitech-verizon-fota",
+            "multitech-eol-products",
+            "multitech-lvw3-update-bulletin"
+          ],
+          "sourceRevisionIds": [
+            "provv-evs-5341-modem-hardware-table@2026-07-20",
+            "multitech-verizon-fota@2026-07-20",
+            "multitech-eol-products@2026-07-20",
+            "multitech-lvw3-update-bulletin@2026-07-20"
+          ],
+          "sceneNodeName": null,
+          "caveat": "The Pro V&V table establishes the base model string in an EVS 5.3.4.1 test configuration, not EVS 6.4.0.0 certification or field use. It does not identify the ordering revision, installed Telit radio variant, radio firmware, patch state, antenna, or exact placement.",
+          "technicalSpecifications": [
+            {
+              "id": "ds200-lvw3-network-profile",
+              "category": "cellular",
+              "label": "Carrier and radio family",
+              "value": "Verizon 4G LTE Category 1 SocketModem",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "documented_model_family",
+              "modelContext": "MTSMC-LVW3; EVS 5.3.4.1 Pro V&V test hardware",
+              "sourceIds": [
+                "provv-evs-5341-modem-hardware-table",
+                "multitech-lvw3-update-bulletin"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-5341-modem-hardware-table@2026-07-20",
+                "multitech-lvw3-update-bulletin@2026-07-20"
+              ],
+              "caveat": "The sources establish the test-hardware model and manufacturer product family, not a live connection, installed firmware, or a fielded DS200 modem."
+            },
+            {
+              "id": "ds200-lvw3-current-radio-mapping",
+              "category": "cellular",
+              "label": "Current product-family radio mapping",
+              "value": "Telit LE910-NA1 in MultiTech's current MTSMC-LVW3 family table",
+              "knowledgeStatus": "documented_partial",
+              "assertionScope": "manufacturer_product",
+              "modelContext": "Current MultiTech MTSMC-LVW3 product-family FOTA table",
+              "sourceIds": [
+                "multitech-verizon-fota"
+              ],
+              "sourceRevisionIds": [
+                "multitech-verizon-fota@2026-07-20"
+              ],
+              "caveat": "The historical Pro V&V table omits the ordering revision. This current family mapping is not proof that either evaluated DS200 test modem contained an LE910-NA1 radio."
+            },
+            {
+              "id": "ds200-lvw3-ordering-revisions",
+              "category": "lifecycle",
+              "label": "Documented ordering variants",
+              "value": "MTSMC-LVW3 base, R1, R2, and R4 variants appear in the manufacturer lifecycle table",
+              "knowledgeStatus": "documented_partial",
+              "assertionScope": "manufacturer_product",
+              "modelContext": "MTSMC-LVW3 product family",
+              "sourceIds": [
+                "multitech-eol-products"
+              ],
+              "sourceRevisionIds": [
+                "multitech-eol-products@2026-07-20"
+              ],
+              "caveat": "The exact ordering revision used in the Pro V&V test units is not stated, so no listed lifecycle date is assigned to those units."
+            }
+          ],
+          "securityReview": {
+            "reviewedOn": "2026-07-20",
+            "productIdentityStatus": "exact_model_family_historical_scope",
+            "firmwareStatus": "not_publicly_established",
+            "firmwareVersion": null,
+            "overallStatus": "no_exact_product_matches_found",
+            "coverageDefinition": "All publicly indexed, exact-product-applicable records found in the reviewed NVD, CISA KEV, and manufacturer security-advisory sources as of the review date.",
+            "rankingMethod": "Known exploitation in CISA KEV ranks first, then numeric CVSS score, then a source-assigned severity. No score or severity is invented when a source does not publish one.",
+            "sourcesReviewed": [
+              {
+                "id": "ds200-lvw3-nvd-review",
+                "catalog": "NIST National Vulnerability Database",
+                "queryTerms": [
+                  "MTSMC-LVW3",
+                  "Telit LE910",
+                  "Telit LE910-SV1",
+                  "Telit LE910-NA1",
+                  "LE910-SV1",
+                  "LE910-NA1"
+                ],
+                "resultStatus": "no_exact_product_matches",
+                "exactMatchCount": 0,
+                "sourceIds": [
+                  "nvd-modem-query-review"
+                ],
+                "sourceRevisionIds": [
+                  "nvd-modem-query-review@2026-07-20"
+                ],
+                "caveat": "Zero keyword matches does not rule out differently named, unindexed, undisclosed, or firmware-dependent vulnerabilities."
+              },
+              {
+                "id": "ds200-lvw3-cisa-kev-review",
+                "catalog": "CISA Known Exploited Vulnerabilities",
+                "queryTerms": [
+                  "MultiTech",
+                  "Telit",
+                  "SocketModem",
+                  "MTSMC",
+                  "LE910"
+                ],
+                "resultStatus": "no_catalog_matches",
+                "exactMatchCount": 0,
+                "sourceIds": [
+                  "cisa-kev-catalog"
+                ],
+                "sourceRevisionIds": [
+                  "cisa-kev-catalog@2026-07-20"
+                ],
+                "caveat": "KEV is a list of vulnerabilities known to be exploited in the wild, not an inventory of every vulnerability."
+              },
+              {
+                "id": "ds200-lvw3-multitech-advisory-review",
+                "catalog": "MultiTech security advisories",
+                "queryTerms": [
+                  "MTSMC-LVW3",
+                  "LE910",
+                  "SocketModem"
+                ],
+                "resultStatus": "no_applicable_product_matches",
+                "exactMatchCount": 0,
+                "sourceIds": [
+                  "multitech-security-advisories-index",
+                  "multitech-security-advisory-bundle"
+                ],
+                "sourceRevisionIds": [
+                  "multitech-security-advisories-index@2026-07-20",
+                  "multitech-security-advisory-bundle@2026-07-20"
+                ],
+                "caveat": "The archived advisories name other product families or state that MultiTech products are not affected; the result is bounded to the reviewed advisory set."
+              }
+            ],
+            "vulnerabilities": [],
+            "nonCveAdvisories": [
+              {
+                "id": "mtsmc-lvw3-verizon-2019-update",
+                "kind": "vendor_operational_service_continuity_bulletin",
+                "title": "Verizon LTE Cat 1 software patch bulletin",
+                "publishedOn": "2019-03-12",
+                "cvssScore": null,
+                "cisaKev": false,
+                "securitySeverity": null,
+                "operationalImpact": "urgent_update_recommended",
+                "affectedFirmware": null,
+                "fixedFirmware": null,
+                "description": "MultiTech reported an urgent software-patch need for listed Verizon LTE Cat 1 products, possibly including MTSMC-LVW3 variants, to support future network updates and uninterrupted operation.",
+                "sourceIds": [
+                  "multitech-lvw3-update-bulletin"
+                ],
+                "sourceRevisionIds": [
+                  "multitech-lvw3-update-bulletin@2026-07-20"
+                ],
+                "caveat": "The bulletin is not a CVE or security advisory, assigns no CVSS score, and does not establish the firmware or patch state of the Pro V&V DS200 test modems or any fielded unit."
+              }
+            ],
+            "caveat": "No exact-product-applicable public vulnerability record was found in the reviewed sources. This does not mean the modem has no vulnerability; the exact ordering revision and installed firmware are unknown and public catalogs may be incomplete."
+          }
         },
         {
           "id": "ds200-scanner-path",
@@ -5304,6 +6106,7 @@
             "eac-evs-6400-scope@2026-07-19",
             "provv-evs-6400-test-report@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -5363,7 +6166,8 @@
               ],
               "caveat": "The reviewed ECO analysis does not name an exact processor part number."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "ds200-processor-module",
@@ -5387,6 +6191,7 @@
             "eac-eco-ess-1042-approval@2026-07-19",
             "provv-eco-ess-1042-analysis@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -5411,6 +6216,7 @@
             "provv-eco-ess-1035-analysis@2026-07-19",
             "provv-eco-ess-1042-analysis@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -5448,6 +6254,7 @@
             "eac-evs-6400-scope@2026-07-19",
             "provv-evs-6400-test-report@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -5472,6 +6279,7 @@
             "eac-eco-ess-1165-approval@2026-07-19",
             "provv-eco-ess-1165-analysis@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -5496,6 +6304,7 @@
             "eac-eco-ess-983-record@2026-07-19",
             "provv-eco-ess-983-analysis@2026-07-19"
           ],
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -5539,7 +6348,8 @@
               ],
               "caveat": "The one-sheet confirms battery-backup presence only. It does not disclose a battery part number or unit-level condition."
             }
-          ]
+          ],
+          "securityReview": null
         }
       ],
       "versionObservations": [
@@ -6082,12 +6892,13 @@
       "caveats": [
         "Certified configuration is not the same as field deployment. A county system-version record does not establish the components, firmware, hardware revision, or change orders installed on each unit.",
         "The photo-informed 3D schematic is a selection aid, not vendor CAD, a teardown, an engineering drawing, or proof of exact dimensions or internal placement.",
-        "Public findings are presented with version and source scope. A missing advisory listing is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
+        "Public findings and modem vulnerability reviews are presented with exact product, firmware, date, and source scope. A zero-match catalog review is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
         "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
       ],
-      "claimRevision": 4,
+      "claimRevision": 5,
       "editorialState": "approved",
       "sourceIds": [
+        "cisa-kev-catalog",
         "eac-eco-ess-1035-approval",
         "eac-eco-ess-1035-record",
         "eac-eco-ess-1042-approval",
@@ -6101,15 +6912,25 @@
         "eac-eco-ess-983-record",
         "eac-evs-6400-record",
         "eac-evs-6400-scope",
+        "eac-unity-3200-document-report",
         "ess-ds200-one-sheet",
         "ess-ds200-reference-photo",
         "ess-election-security-faqs",
+        "fl-evs-4500-v4-modem-report",
+        "multitech-eol-products",
+        "multitech-lvw3-update-bulletin",
+        "multitech-security-advisories-index",
+        "multitech-security-advisory-bundle",
+        "multitech-universal-socket-guide",
+        "multitech-verizon-fota",
+        "nvd-modem-query-review",
         "provv-eco-ess-1035-analysis",
         "provv-eco-ess-1042-analysis",
         "provv-eco-ess-1044-analysis",
         "provv-eco-ess-1055-analysis",
         "provv-eco-ess-1165-analysis",
         "provv-eco-ess-983-analysis",
+        "provv-evs-5341-modem-hardware-table",
         "provv-evs-6400-test-report",
         "ri-ds200-pollworker-manual-2021",
         "wa-2025-county-system-table",
@@ -6117,6 +6938,7 @@
         "wa-evs-6400-staff-report"
       ],
       "sourceRevisionIds": [
+        "cisa-kev-catalog@2026-07-20",
         "eac-eco-ess-1035-approval@2026-07-19",
         "eac-eco-ess-1035-record@2026-07-19",
         "eac-eco-ess-1042-approval@2026-07-19",
@@ -6130,15 +6952,25 @@
         "eac-eco-ess-983-record@2026-07-19",
         "eac-evs-6400-record@2026-07-19",
         "eac-evs-6400-scope@2026-07-19",
+        "eac-unity-3200-document-report@2026-07-20",
         "ess-ds200-one-sheet@2026-07-20",
         "ess-ds200-reference-photo@2026-07-20",
         "ess-election-security-faqs@2026-07-20",
+        "fl-evs-4500-v4-modem-report@2026-07-20",
+        "multitech-eol-products@2026-07-20",
+        "multitech-lvw3-update-bulletin@2026-07-20",
+        "multitech-security-advisories-index@2026-07-20",
+        "multitech-security-advisory-bundle@2026-07-20",
+        "multitech-universal-socket-guide@2026-07-20",
+        "multitech-verizon-fota@2026-07-20",
+        "nvd-modem-query-review@2026-07-20",
         "provv-eco-ess-1035-analysis@2026-07-19",
         "provv-eco-ess-1042-analysis@2026-07-19",
         "provv-eco-ess-1044-analysis@2026-07-19",
         "provv-eco-ess-1055-analysis@2026-07-19",
         "provv-eco-ess-1165-analysis@2026-07-19",
         "provv-eco-ess-983-analysis@2026-07-19",
+        "provv-evs-5341-modem-hardware-table@2026-07-20",
         "provv-evs-6400-test-report@2026-07-19",
         "ri-ds200-pollworker-manual-2021@2026-07-20",
         "wa-2025-county-system-table@2026-07-19",
@@ -6146,18 +6978,21 @@
         "wa-evs-6400-staff-report@2026-07-19"
       ],
       "coverage": {
-        "componentCount": 10,
-        "sourcedComponentCount": 10,
-        "technicalSpecificationCount": 8,
-        "establishedTechnicalSpecificationCount": 5,
+        "componentCount": 12,
+        "sourcedComponentCount": 12,
+        "technicalSpecificationCount": 13,
+        "establishedTechnicalSpecificationCount": 10,
         "unknownTechnicalSpecificationCount": 3,
         "configurationChangeCount": 6,
         "deploymentObservationCount": 4,
         "findingCount": 4,
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
-        "sourceCount": 27,
-        "sourceRevisionCount": 27
+        "sourceCount": 38,
+        "sourceRevisionCount": 38,
+        "componentSecurityReviewCount": 3,
+        "exactApplicableVulnerabilityCount": 0,
+        "nonCveAdvisoryCount": 1
       }
     },
     {
@@ -6253,7 +7088,8 @@
               ],
               "caveat": "This establishes an access-control feature, not a connector count or the sealed condition of a field unit."
             }
-          ]
+          ],
+          "securityReview": null
         },
         {
           "id": "ds950-input-feeder",
@@ -6275,6 +7111,7 @@
           ],
           "sceneNodeName": "DS950_Input_Feeder",
           "caveat": "The source supports the external feeder category and form, not exact dimensions or internal transport parts.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6297,6 +7134,7 @@
           ],
           "sceneNodeName": "DS950_Scanner_Path",
           "caveat": "The optical function is certified, but the illustrative path is not a teardown or engineering drawing.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6321,6 +7159,7 @@
           ],
           "sceneNodeName": "DS950_Sorting_Trays",
           "caveat": "The change record is not evidence of a jam, field update, unit condition, or exact output geometry.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6343,6 +7182,7 @@
           ],
           "sceneNodeName": "DS950_Display",
           "caveat": "The sources do not establish the exact panel model, resolution, connector, or internal placement.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6363,6 +7203,7 @@
           ],
           "sceneNodeName": "DS950_Motherboard",
           "caveat": "The scope does not publish the board model, processor, DRAM capacity, TPM version, layout, or field history.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6383,6 +7224,7 @@
           ],
           "sceneNodeName": "DS950_M2_Storage",
           "caveat": "The scope does not publish manufacturer, model, interface subtype, capacity, firmware, data, or field history.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6403,6 +7245,7 @@
           ],
           "sceneNodeName": "DS950_Smart_Card_Reader",
           "caveat": "The public scope does not identify the reader model, placement, selected source, or field installation.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6427,6 +7270,7 @@
           ],
           "sceneNodeName": "DS950_Central_Count_Cart",
           "caveat": "Certification identifies the cart option but does not prove its use or setup at a jurisdiction.",
+          "securityReview": null,
           "technicalSpecifications": []
         },
         {
@@ -6452,6 +7296,7 @@
           ],
           "sceneNodeName": "DS950_UPS",
           "caveat": "The sources do not establish jurisdiction selection, workload runtime, battery health, or replacement history.",
+          "securityReview": null,
           "technicalSpecifications": []
         }
       ],
@@ -6773,7 +7618,10 @@
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
         "sourceCount": 5,
-        "sourceRevisionCount": 5
+        "sourceRevisionCount": 5,
+        "componentSecurityReviewCount": 0,
+        "exactApplicableVulnerabilityCount": 0,
+        "nonCveAdvisoryCount": 0
       }
     }
   ]

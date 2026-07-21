@@ -215,19 +215,40 @@ test("retains DS200 partial-power and deployment evidence boundaries", async ({ 
   await expect(page.getByText(/confirms DS200 battery backup/)).toBeVisible();
   await expect(page.getByText("Jefferson County, Washington", { exact: true })).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
-  const networkBadge = page.getByRole("img", { name: "Network connectivity capability" });
-  await expect(networkBadge).toHaveCount(1);
-  await networkBadge.hover();
+  await expect(page.locator("[data-component-select='true']")).toHaveCount(12);
+  await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(3);
+  const carrierItem = page.locator("li[class*='componentItem']").filter({ hasText: "Optional modem carrier board" });
+  const carrierNetworkBadge = carrierItem.getByRole("img", { name: "Network connectivity capability" });
+  await carrierNetworkBadge.hover();
   await expect(page.getByRole("tooltip", { name: /Rhode Island documents transmission/ })).toBeVisible();
-  const modemButton = page.locator("[data-component-select='true']").filter({ hasText: "Optional cellular modem board" });
-  await expect(modemButton.getByText("Optional", { exact: true })).toBeVisible();
-  await modemButton.click();
+  const carrierButton = page.locator("[data-component-select='true']").filter({ hasText: "Optional modem carrier board" });
+  await expect(carrierButton.getByText("Optional", { exact: true })).toBeVisible();
+  await carrierButton.click();
   const componentDetail = page.locator("article[class*='componentDetail']");
   await expect(componentDetail.getByText("Optional component", { exact: true })).toBeVisible();
   await expect(componentDetail.getByRole("heading", { name: "Hardware and interfaces" })).toBeVisible();
   await expect(componentDetail.getByText("Optional cellular transmission", { exact: true })).toBeVisible();
   await expect(componentDetail.getByText(/Separate modem board installed only where permitted/)).toBeVisible();
+  await expect(componentDetail.getByText("Exact-product review blocked by unresolved identity", { exact: true })).toBeVisible();
   await expect(componentDetail.getByText("No WAN modem or WAN wireless use listed", { exact: false })).toHaveCount(0);
+
+  const c2Button = page.locator("[data-component-select='true']").filter({ hasText: "MultiTech Verizon C2 cellular modem" });
+  await c2Button.click();
+  await expect(componentDetail.getByText(/Models:\s*MTSMC-C2-N3-R\.1$/)).toBeVisible();
+  await expect(componentDetail.getByRole("heading", { name: "Ranked vulnerabilities" })).toBeVisible();
+  await expect(componentDetail.getByText("No exact-product matches found in the reviewed public sources", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText("Not publicly established", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText("NIST National Vulnerability Database", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText("0 exact matches", { exact: true })).toHaveCount(3);
+
+  const lteButton = page.locator("[data-component-select='true']").filter({ hasText: "MultiTech Verizon 4G LTE modem" });
+  await lteButton.click();
+  await expect(componentDetail.getByText(/Models:\s*MTSMC-LVW3$/)).toBeVisible();
+  await expect(componentDetail.getByText("Telit LE910-NA1 in MultiTech's current MTSMC-LVW3 family table", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByRole("heading", { name: "Other vendor advisories" })).toBeVisible();
+  await expect(componentDetail.getByText("Verizon LTE Cat 1 software patch bulletin", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText("Non-CVE", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText("No CVSS assigned", { exact: true })).toBeVisible();
 });
 
 test("renders central tabulators as three separate sourced systems", async ({ page, request }) => {

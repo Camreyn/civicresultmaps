@@ -8,12 +8,24 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))].sort();
 }
 
+function securityReviewRecords(component) {
+  const review = component.securityReview;
+  if (!review) return [];
+  return [
+    ...(review.sourcesReviewed ?? []),
+    ...(review.vulnerabilities ?? []),
+    ...(review.nonCveAdvisories ?? []),
+  ];
+}
+
 function collectSourceIds(system) {
   return unique([
     ...(system.certification?.sourceIds ?? []),
     ...(system.components ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.components ?? []).flatMap((record) =>
       (record.technicalSpecifications ?? []).flatMap((specification) => specification.sourceIds ?? [])),
+    ...(system.components ?? []).flatMap((record) =>
+      securityReviewRecords(record).flatMap((securityRecord) => securityRecord.sourceIds ?? [])),
     ...(system.versionObservations ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.configurationChanges ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.findings ?? []).flatMap((record) => record.sourceIds ?? []),
@@ -30,6 +42,8 @@ function collectSourceRevisionIds(system) {
     ...(system.components ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.components ?? []).flatMap((record) =>
       (record.technicalSpecifications ?? []).flatMap((specification) => specification.sourceRevisionIds ?? [])),
+    ...(system.components ?? []).flatMap((record) =>
+      securityReviewRecords(record).flatMap((securityRecord) => securityRecord.sourceRevisionIds ?? [])),
     ...(system.versionObservations ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.configurationChanges ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.findings ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
@@ -45,6 +59,7 @@ function withCoverage(system, editorial) {
     ...system,
     components: system.components.map((component) => ({
       ...component,
+      securityReview: component.securityReview ?? null,
       technicalSpecifications: component.technicalSpecifications ?? [],
     })),
   };
@@ -53,6 +68,11 @@ function withCoverage(system, editorial) {
   );
   const sourceIds = collectSourceIds(normalizedSystem);
   const sourceRevisionIds = collectSourceRevisionIds(normalizedSystem);
+  const securityReviews = normalizedSystem.components
+    .map((component) => component.securityReview)
+    .filter(Boolean);
+  const vulnerabilities = securityReviews.flatMap((review) => review.vulnerabilities ?? []);
+  const nonCveAdvisories = securityReviews.flatMap((review) => review.nonCveAdvisories ?? []);
   return {
     ...normalizedSystem,
     claimRevision: editorial.revision,
@@ -78,6 +98,9 @@ function withCoverage(system, editorial) {
       ).length,
       sourceCount: sourceIds.length,
       sourceRevisionCount: sourceRevisionIds.length,
+      componentSecurityReviewCount: securityReviews.length,
+      exactApplicableVulnerabilityCount: vulnerabilities.length,
+      nonCveAdvisoryCount: nonCveAdvisories.length,
     },
   };
 }

@@ -39,6 +39,23 @@ function requireSourceIds(record, label, sourceById, revisionById) {
   }
 }
 
+const vulnerabilitySeverityOrder = new Map([
+  ["critical", 0],
+  ["high", 1],
+  ["medium", 2],
+  ["low", 3],
+  ["unknown", 4],
+]);
+
+function compareVulnerabilities(left, right) {
+  if (left.cisaKev !== right.cisaKev) return left.cisaKev ? -1 : 1;
+  const leftScore = left.cvssScore ?? -1;
+  const rightScore = right.cvssScore ?? -1;
+  if (leftScore !== rightScore) return rightScore - leftScore;
+  return (vulnerabilitySeverityOrder.get(left.severity) ?? 99)
+    - (vulnerabilitySeverityOrder.get(right.severity) ?? 99);
+}
+
 async function validateArtifact(source) {
   try {
     const artifact = await readFile(source.localArtifact);
@@ -155,6 +172,115 @@ for (const claim of claims) {
         if (specification.value !== null) error(`${specificationLabel} must keep an unknown value null.`);
       } else {
         requireNonEmpty(specification.value, `${specificationLabel} value`);
+      }
+    }
+
+    const securityReview = component.securityReview;
+    if (securityReview) {
+      const securityLabel = `${label} component ${component.id} security review`;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(securityReview.reviewedOn ?? "")) {
+        error(`${securityLabel} needs an ISO review date.`);
+      }
+      if (![
+        "component_identity_unresolved",
+        "exact_model_historical_scope",
+        "exact_model_family_historical_scope",
+      ].includes(securityReview.productIdentityStatus)) {
+        error(`${securityLabel} has an invalid productIdentityStatus.`);
+      }
+      if (![
+        "exact_product_review_not_possible",
+        "no_exact_product_matches_found",
+        "applicable_vulnerabilities_found",
+      ].includes(securityReview.overallStatus)) {
+        error(`${securityLabel} has an invalid overallStatus.`);
+      }
+      if (![
+        "not_publicly_established",
+        "documented",
+        "certified",
+        "fielded",
+      ].includes(securityReview.firmwareStatus)) {
+        error(`${securityLabel} has an invalid firmwareStatus.`);
+      }
+      if (securityReview.firmwareStatus === "not_publicly_established") {
+        if (securityReview.firmwareVersion !== null) {
+          error(`${securityLabel} must keep an unresolved firmware version null.`);
+        }
+      } else {
+        requireNonEmpty(securityReview.firmwareVersion, `${securityLabel} firmwareVersion`);
+      }
+      requireNonEmpty(securityReview.coverageDefinition, `${securityLabel} coverageDefinition`);
+      requireNonEmpty(securityReview.rankingMethod, `${securityLabel} rankingMethod`);
+      requireNonEmpty(securityReview.caveat, `${securityLabel} caveat`);
+
+      const reviewSources = securityReview.sourcesReviewed ?? [];
+      if (securityReview.productIdentityStatus !== "component_identity_unresolved" && reviewSources.length === 0) {
+        error(`${securityLabel} needs reviewed vulnerability sources for an identified product.`);
+      }
+      for (const reviewedSource of reviewSources) {
+        const reviewedSourceLabel = `${securityLabel} source review ${reviewedSource.id}`;
+        requireNonEmpty(reviewedSource.id, `${reviewedSourceLabel} id`);
+        requireNonEmpty(reviewedSource.catalog, `${reviewedSourceLabel} catalog`);
+        requireNonEmpty(reviewedSource.caveat, `${reviewedSourceLabel} caveat`);
+        requireSourceIds(reviewedSource, reviewedSourceLabel, sourceById, revisionById);
+        if (!Array.isArray(reviewedSource.queryTerms) || reviewedSource.queryTerms.length === 0) {
+          error(`${reviewedSourceLabel} needs the exact reviewed query terms.`);
+        }
+        if (!Number.isInteger(reviewedSource.exactMatchCount) || reviewedSource.exactMatchCount < 0) {
+          error(`${reviewedSourceLabel} needs a non-negative exactMatchCount.`);
+        }
+        if (![
+          "no_applicable_product_matches",
+          "no_catalog_matches",
+          "no_exact_product_matches",
+          "applicable_product_matches_found",
+        ].includes(reviewedSource.resultStatus)) {
+          error(`${reviewedSourceLabel} has an invalid resultStatus.`);
+        }
+      }
+
+      const vulnerabilities = securityReview.vulnerabilities ?? [];
+      const rankedVulnerabilities = [...vulnerabilities].sort(compareVulnerabilities);
+      if (JSON.stringify(vulnerabilities) !== JSON.stringify(rankedVulnerabilities)) {
+        error(`${securityLabel} vulnerabilities must be ranked by KEV status, CVSS score, then severity.`);
+      }
+      for (const vulnerability of vulnerabilities) {
+        const vulnerabilityLabel = `${securityLabel} vulnerability ${vulnerability.id}`;
+        requireNonEmpty(vulnerability.id, `${vulnerabilityLabel} id`);
+        requireNonEmpty(vulnerability.title, `${vulnerabilityLabel} title`);
+        requireNonEmpty(vulnerability.description, `${vulnerabilityLabel} description`);
+        requireNonEmpty(vulnerability.caveat, `${vulnerabilityLabel} caveat`);
+        requireSourceIds(vulnerability, vulnerabilityLabel, sourceById, revisionById);
+        if (!vulnerabilitySeverityOrder.has(vulnerability.severity)) {
+          error(`${vulnerabilityLabel} has an invalid severity.`);
+        }
+        if (vulnerability.cvssScore !== null
+          && (typeof vulnerability.cvssScore !== "number" || vulnerability.cvssScore < 0 || vulnerability.cvssScore > 10)) {
+          error(`${vulnerabilityLabel} CVSS score must be null or between 0 and 10.`);
+        }
+        if (typeof vulnerability.cisaKev !== "boolean") {
+          error(`${vulnerabilityLabel} needs a boolean cisaKev value.`);
+        }
+      }
+      if (securityReview.overallStatus === "no_exact_product_matches_found" && vulnerabilities.length !== 0) {
+        error(`${securityLabel} cannot contain vulnerabilities while reporting no exact-product matches.`);
+      }
+      if (securityReview.overallStatus === "applicable_vulnerabilities_found" && vulnerabilities.length === 0) {
+        error(`${securityLabel} must contain vulnerabilities when reporting applicable matches.`);
+      }
+
+      for (const advisory of securityReview.nonCveAdvisories ?? []) {
+        const advisoryLabel = `${securityLabel} non-CVE advisory ${advisory.id}`;
+        requireNonEmpty(advisory.id, `${advisoryLabel} id`);
+        requireNonEmpty(advisory.kind, `${advisoryLabel} kind`);
+        requireNonEmpty(advisory.title, `${advisoryLabel} title`);
+        requireNonEmpty(advisory.description, `${advisoryLabel} description`);
+        requireNonEmpty(advisory.caveat, `${advisoryLabel} caveat`);
+        requireSourceIds(advisory, advisoryLabel, sourceById, revisionById);
+        if (advisory.cvssScore !== null || advisory.securitySeverity !== null || advisory.cisaKev !== false) {
+          error(`${advisoryLabel} must not be presented as a scored CVE or KEV record.`);
+        }
       }
     }
   }
@@ -348,6 +474,24 @@ for (const system of catalog.systems ?? []) {
   }
   if (system.coverage?.sourcedComponentCount !== system.coverage?.componentCount) {
     error(`${system.slug} generated coverage reports an unsourced component.`);
+  }
+  const securityReviews = system.components.filter((component) => component.securityReview !== null);
+  const vulnerabilityCount = securityReviews.reduce(
+    (sum, component) => sum + component.securityReview.vulnerabilities.length,
+    0,
+  );
+  const nonCveAdvisoryCount = securityReviews.reduce(
+    (sum, component) => sum + component.securityReview.nonCveAdvisories.length,
+    0,
+  );
+  if (system.coverage?.componentSecurityReviewCount !== securityReviews.length) {
+    error(`${system.slug} generated security-review coverage is stale.`);
+  }
+  if (system.coverage?.exactApplicableVulnerabilityCount !== vulnerabilityCount) {
+    error(`${system.slug} generated vulnerability coverage is stale.`);
+  }
+  if (system.coverage?.nonCveAdvisoryCount !== nonCveAdvisoryCount) {
+    error(`${system.slug} generated non-CVE advisory coverage is stale.`);
   }
 }
 
