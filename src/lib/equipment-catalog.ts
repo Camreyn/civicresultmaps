@@ -6,6 +6,7 @@ export type EquipmentComponent = EquipmentSystem["components"][number];
 export type EquipmentSource = EquipmentCatalog["sources"][number];
 export type EquipmentScene = EquipmentSystem["scene"];
 export type EquipmentSceneNode = EquipmentScene["nodes"][number];
+export type EquipmentReferenceImage = EquipmentScene["referenceImages"][number];
 
 export type EquipmentSystemSummary = Pick<
   EquipmentSystem,

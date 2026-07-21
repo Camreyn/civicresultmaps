@@ -120,7 +120,8 @@ An unresolved value is stored as `null`, never a guess or a value silently borro
 4. Add a claim under `data/equipment-claims/` with exact `sourceIds` and `sourceRevisionIds` on every record.
 5. Preserve unknown model, firmware, runtime, deployment, or internal-placement fields rather than borrowing details from another configuration.
 6. Build an original schematic only for source-supported component categories. Record the exact external photo, manual, or drawing reference in the scene metadata.
-7. Rebuild and validate the catalog.
+7. Add at least one local reference image with its own immutable source revision, asset hash, pixel dimensions, page or section, derivation note, and scope caveat.
+8. Rebuild and validate the catalog.
 
 ```powershell
 npm run equipment:catalog:build
@@ -135,6 +136,7 @@ The GLB files are original CivicResultMaps navigation schematics. Their rough ex
 
 - The accessible DOM component list is always the source of truth.
 - 3D is opt-in and dynamically loaded.
+- Pointer drag rotates the scene, wheel or pinch changes orthographic zoom, and keyboard-operable zoom, preset, and reset buttons provide equivalent camera controls.
 - A no-WebGL fallback retains every source-linked component and finding.
 - A component with known existence but unknown placement may be listed without a scene node.
 - A selectable scene node may be a composite group with multiple original child meshes, but it still maps to exactly one evidence record.
@@ -142,6 +144,8 @@ The GLB files are original CivicResultMaps navigation schematics. Their rough ex
 - Hide and isolate controls change only the local scene presentation. They do not remove a component, claim, or source from the dossier.
 - Component hardware cards omit null/unknown specifications and explicit statements that a network capability is absent. Those records remain preserved in the catalog for review and validation.
 - A component-list network badge requires a positively documented Ethernet, Wi-Fi, cellular, Bluetooth, or other network capability. The badge describes capability only, not an enabled connection, field use, or attached network.
+- Reference-gallery assets are local, hash-validated copies or explicitly described derivatives of archived sources. Expanded images retain their source link, page or section, derivation note, and scope caveat.
+- A product-family or older-version photograph is labeled as context and must not be presented as the exact certified alternative, installed field configuration, or teardown.
 - A reference configuration must not imply that all certified alternatives appear together or that a jurisdiction fielded the depicted alternative.
 - Every scene mapping must resolve to exactly one GLB node.
 

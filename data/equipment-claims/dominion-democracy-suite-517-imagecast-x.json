@@ -892,15 +892,38 @@
         "co-dvs-517-avalue-sid21-manual",
         "co-dvs-517-icx-maintenance-manual",
         "eac-dsuite-517-scope",
-        "provv-dsuite-517-test-plan"
+        "provv-dsuite-517-test-plan",
+        "sf-icx-usability-test-report-510"
       ],
       "referenceSourceRevisionIds": [
         "co-dvs-517-avalue-sid21-manual@2026-07-20",
         "co-dvs-517-icx-maintenance-manual@2026-07-20",
         "eac-dsuite-517-scope@2026-07-20",
-        "provv-dsuite-517-test-plan@2026-07-20"
+        "provv-dsuite-517-test-plan@2026-07-20",
+        "sf-icx-usability-test-report-510@2026-07-20"
       ],
       "referenceNote": "The terminal silhouette follows the Avalue mechanical drawing. The compute-board and connector-panel shapes and their separation paths are illustrative; the optional battery cover area follows the manual, but no unit-level installation is asserted.",
+      "referenceImages": [
+        {
+          "id": "icx-variants-usability-test-photo",
+          "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-x/reference-icx-variants.png",
+          "assetSha256": "a9b0898c52729f8a33e6ca9f8a91acc58c7c42a5fcf902ea647d6037d04de497",
+          "width": 392,
+          "height": 263,
+          "alt": "Three ImageCast X terminals in voting booths, including portrait displays and an external printer",
+          "caption": "Actual-device photograph from an official usability report: ICX 21, ICX 15, and ICX 12.2.",
+          "kind": "official_test_report_photo",
+          "sourceIds": [
+            "sf-icx-usability-test-report-510"
+          ],
+          "sourceRevisionIds": [
+            "sf-icx-usability-test-report-510@2026-07-20"
+          ],
+          "pageOrSection": "PDF page 7, report page 4, Figure 2-1",
+          "derivativeNote": "Exact embedded image extracted from Figure 2-1; no crop or content alteration.",
+          "caveat": "This photograph is from an older 5.0 usability-test context and shows multiple ICX sizes. It does not establish the exact 5.17 hardware alternative, accessories, software, or field installation represented by the schematic."
+        }
+      ],
       "camera": {
         "position": [
           7,
@@ -1034,7 +1057,7 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 2,
+    "revision": 3,
     "createdOn": "2026-07-20",
     "updatedOn": "2026-07-20",
     "reviewedOn": "2026-07-20",
@@ -1050,7 +1073,8 @@
       "co-dvs-517-icx-maintenance-manual@2026-07-20",
       "provv-dsuite-517-test-plan@2026-07-20",
       "provv-dsuite-517-test-report@2026-07-20",
-      "provv-dsuite-eco-100936-analysis@2026-07-20"
+      "provv-dsuite-eco-100936-analysis@2026-07-20",
+      "sf-icx-usability-test-report-510@2026-07-20"
     ],
     "reviewNotes": [
       "Approved for feature-gated staging. Public production activation remains a separate review decision.",

@@ -660,6 +660,27 @@
         "provv-clearvote-25-test-plan@2026-07-19"
       ],
       "referenceNote": "The touchscreen, keypad, and headphone silhouette follows the official product image. The image does not establish which Elo model is pictured, and the printer, UPS, port locations, cabling, and explosion paths remain illustrative.",
+      "referenceImages": [
+        {
+          "id": "clearaccess-official-product-photo",
+          "assetUrl": "/equipment/clear-ballot-clearvote-25-clearaccess/reference-clearaccess.png",
+          "assetSha256": "baed0a3acf052caf79bafb84b87787bb974115b1203640e7ec27b0c9bbef6a0e",
+          "width": 2000,
+          "height": 1500,
+          "alt": "ClearAccess portrait touchscreen shown with headphones and an accessible tactile keypad",
+          "caption": "Manufacturer product image: ClearAccess touchscreen, headphones, and accessible keypad.",
+          "kind": "manufacturer_product_photo",
+          "sourceIds": [
+            "clearballot-clearaccess-reference-photo"
+          ],
+          "sourceRevisionIds": [
+            "clearballot-clearaccess-reference-photo@2026-07-20"
+          ],
+          "pageOrSection": "ClearAccessStormKeypad product image",
+          "derivativeNote": "Exact local copy of the archived manufacturer image; no crop or content alteration.",
+          "caveat": "External appearance reference only; the image does not establish the pictured Elo model, certified component alternatives, printer, UPS, port occupation, or a particular fielded setup."
+        }
+      ],
       "camera": {
         "position": [
           7,
@@ -772,7 +793,7 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 2,
+    "revision": 3,
     "createdOn": "2026-07-19",
     "updatedOn": "2026-07-20",
     "reviewedOn": "2026-07-20",

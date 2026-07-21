@@ -143,6 +143,7 @@ for (const claim of claims) {
         "certified_configuration",
         "documented_model_family",
         "evidence_gap",
+        "jurisdiction_deployment_observation",
         "manufacturer_product",
       ].includes(specification.assertionScope)) {
         error(`${specificationLabel} has an invalid assertionScope.`);
@@ -243,6 +244,62 @@ for (const claim of claims) {
   );
   requireNonEmpty(scene.referenceConfiguration, `${label} scene referenceConfiguration`);
   requireNonEmpty(scene.referenceNote, `${label} scene referenceNote`);
+  const referenceImageIds = new Set();
+  const sceneReferenceSourceIds = new Set(scene.referenceSourceIds ?? []);
+  for (const referenceImage of scene.referenceImages ?? []) {
+    const referenceImageLabel = `${label} reference image ${referenceImage.id ?? "unknown"}`;
+    requireNonEmpty(referenceImage.id, `${referenceImageLabel} id`);
+    if (referenceImageIds.has(referenceImage.id)) {
+      error(`${label} has duplicate reference image ${referenceImage.id}.`);
+    }
+    referenceImageIds.add(referenceImage.id);
+    requireNonEmpty(referenceImage.alt, `${referenceImageLabel} alt`);
+    requireNonEmpty(referenceImage.caption, `${referenceImageLabel} caption`);
+    requireNonEmpty(referenceImage.kind, `${referenceImageLabel} kind`);
+    requireNonEmpty(referenceImage.pageOrSection, `${referenceImageLabel} pageOrSection`);
+    requireNonEmpty(referenceImage.derivativeNote, `${referenceImageLabel} derivativeNote`);
+    requireNonEmpty(referenceImage.caveat, `${referenceImageLabel} caveat`);
+    requireSourceIds(referenceImage, referenceImageLabel, sourceById, revisionById);
+    for (const sourceId of referenceImage.sourceIds ?? []) {
+      if (!sceneReferenceSourceIds.has(sourceId)) {
+        error(`${referenceImageLabel} source ${sourceId} must also be included in the scene reference sources.`);
+      }
+    }
+    if (!/^\/equipment\/.+\.png$/.test(referenceImage.assetUrl ?? "")) {
+      error(`${referenceImageLabel} must use a local PNG under /equipment/.`);
+      continue;
+    }
+    if (!Number.isInteger(referenceImage.width) || referenceImage.width <= 0) {
+      error(`${referenceImageLabel} width must be a positive integer.`);
+    }
+    if (!Number.isInteger(referenceImage.height) || referenceImage.height <= 0) {
+      error(`${referenceImageLabel} height must be a positive integer.`);
+    }
+    if (!/^[a-f0-9]{64}$/.test(referenceImage.assetSha256 ?? "")) {
+      error(`${referenceImageLabel} needs a SHA-256 digest.`);
+    }
+    const referenceAssetPath = `public${referenceImage.assetUrl}`;
+    try {
+      const referenceAsset = await readFile(referenceAssetPath);
+      const digest = createHash("sha256").update(referenceAsset).digest("hex");
+      if (digest !== referenceImage.assetSha256) {
+        error(`${referenceImageLabel} SHA-256 does not match ${referenceAssetPath}.`);
+      }
+      const pngSignature = "89504e470d0a1a0a";
+      if (referenceAsset.subarray(0, 8).toString("hex") !== pngSignature || referenceAsset.length < 24) {
+        error(`${referenceImageLabel} is not a valid PNG asset.`);
+      } else {
+        const width = referenceAsset.readUInt32BE(16);
+        const height = referenceAsset.readUInt32BE(20);
+        if (width !== referenceImage.width || height !== referenceImage.height) {
+          error(`${referenceImageLabel} declared dimensions do not match ${referenceAssetPath}.`);
+        }
+      }
+    } catch {
+      error(`${referenceImageLabel} asset does not exist: ${referenceAssetPath}.`);
+    }
+  }
+  if (referenceImageIds.size === 0) error(`${label} needs at least one sourced reference image.`);
   const assetPath = `public${scene.assetUrl}`;
   let glbNodeNames = [];
   try {

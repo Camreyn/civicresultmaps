@@ -3,10 +3,26 @@
 import dynamic from "next/dynamic";
 import { Component, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Box, Expand, ExternalLink, Eye, EyeOff, Focus, Layers3, Network, Rotate3d } from "lucide-react";
+import {
+  Box,
+  Expand,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Focus,
+  Images,
+  Layers3,
+  Network,
+  Rotate3d,
+  RotateCcw,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
 
 import type { EquipmentComponent, EquipmentSource, EquipmentSystem } from "@/lib/equipment-catalog";
 import styles from "../equipment.module.css";
+import type { EquipmentCameraCommand } from "./equipment-orthographic-scene";
+import { EquipmentReferenceGallery } from "./equipment-reference-gallery.client";
 
 const Scene = dynamic(
   () => import("./equipment-orthographic-scene").then((module) => module.EquipmentOrthographicScene),
@@ -193,6 +209,11 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
   );
   const [explosion, setExplosion] = useState(0);
   const [view, setView] = useState<ViewName>("isometric");
+  const [cameraCommand, setCameraCommand] = useState<EquipmentCameraCommand>({
+    revision: 0,
+    type: "reset",
+  });
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [viewerState, setViewerState] = useState<"closed" | "open" | "unsupported" | "failed">("closed");
   const [reducedMotion, setReducedMotion] = useState(false);
   const [hiddenComponentIds, setHiddenComponentIds] = useState<Set<string>>(() => new Set());
@@ -233,6 +254,15 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
 
   function openViewer() {
     setViewerState(webGl2Available() ? "open" : "unsupported");
+  }
+
+  function issueCameraCommand(type: EquipmentCameraCommand["type"]) {
+    setCameraCommand((current) => ({ revision: current.revision + 1, type }));
+  }
+
+  function resetCamera() {
+    setView("isometric");
+    issueCameraCommand("reset");
   }
 
   function setComponentVisibility(componentId: string, visible: boolean) {
@@ -360,12 +390,24 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
           <div className={styles.viewerToolbar}>
             <div><Box aria-hidden size={15} /><span>{system.scene.geometryFidelity.replaceAll("_", " ")}</span></div>
             <div>
+              <button
+                aria-controls="equipment-reference-gallery"
+                aria-expanded={galleryOpen}
+                aria-pressed={galleryOpen}
+                onClick={() => setGalleryOpen((open) => !open)}
+                type="button"
+              >
+                <Images aria-hidden size={14} /> Photos {system.scene.referenceImages.length}
+              </button>
               {viewerState !== "open" ? (
                 <button onClick={openViewer} type="button"><Expand aria-hidden size={14} /> Open 3D view</button>
               ) : (
                 <>
                   <button aria-pressed={exploded} onClick={() => setExplosion((value) => value > 0.01 ? 0 : 1)} type="button"><Layers3 aria-hidden size={14} /> {exploded ? "Assembled" : "Exploded"}</button>
-                  <button onClick={() => setView(view === "isometric" ? "front" : view === "front" ? "top" : "isometric")} type="button"><Rotate3d aria-hidden size={14} /> {view}</button>
+                  <button onClick={() => setView(view === "isometric" ? "front" : view === "front" ? "top" : "isometric")} title="Cycle camera preset" type="button"><Rotate3d aria-hidden size={14} /> {view}</button>
+                  <button aria-label="Zoom out" onClick={() => issueCameraCommand("zoom_out")} title="Zoom out" type="button"><ZoomOut aria-hidden size={14} /></button>
+                  <button aria-label="Zoom in" onClick={() => issueCameraCommand("zoom_in")} title="Zoom in" type="button"><ZoomIn aria-hidden size={14} /></button>
+                  <button onClick={resetCamera} type="button"><RotateCcw aria-hidden size={14} /> Reset</button>
                   <button onClick={() => setViewerState("closed")} type="button">Close 3D</button>
                 </>
               )}
@@ -397,30 +439,40 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
               </label>
             )}
           </div>
-          {viewerState === "closed" && (
-            <div className={styles.scenePrompt}>
-              <Box aria-hidden size={48} />
-              <strong>2D evidence view is active</strong>
-              <p>Open the lightweight local 3D schematic when useful. It is opt-in on every screen size.</p>
-            </div>
-          )}
-          {viewerState === "unsupported" && fallback}
-          {viewerState === "failed" && fallback}
-          {viewerState === "open" && (
-            <ViewerErrorBoundary fallback={fallback}>
-              <Scene
-                explosion={explosion}
-                hiddenComponentIds={hiddenComponentIds}
-                isolatedComponentId={isolatedComponentId}
-                onError={() => setViewerState("failed")}
-                onSelect={selectComponent}
-                reducedMotion={reducedMotion}
-                scene={system.scene}
-                selectedComponentId={selected.id}
-                view={view}
+          <div className={styles.viewerStage}>
+            {viewerState === "closed" && (
+              <div className={styles.scenePrompt}>
+                <Box aria-hidden size={48} />
+                <strong>2D evidence view is active</strong>
+                <p>Open the lightweight local 3D schematic when useful. It is opt-in on every screen size.</p>
+              </div>
+            )}
+            {viewerState === "unsupported" && fallback}
+            {viewerState === "failed" && fallback}
+            {viewerState === "open" && (
+              <ViewerErrorBoundary fallback={fallback}>
+                <Scene
+                  cameraCommand={cameraCommand}
+                  explosion={explosion}
+                  hiddenComponentIds={hiddenComponentIds}
+                  isolatedComponentId={isolatedComponentId}
+                  onError={() => setViewerState("failed")}
+                  onSelect={selectComponent}
+                  reducedMotion={reducedMotion}
+                  scene={system.scene}
+                  selectedComponentId={selected.id}
+                  view={view}
+                />
+              </ViewerErrorBoundary>
+            )}
+            {galleryOpen && (
+              <EquipmentReferenceGallery
+                images={system.scene.referenceImages}
+                onClose={() => setGalleryOpen(false)}
+                sources={sources}
               />
-            </ViewerErrorBoundary>
-          )}
+            )}
+          </div>
         </div>
 
         <article className={styles.componentDetail} aria-live="polite">

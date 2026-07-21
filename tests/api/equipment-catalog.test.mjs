@@ -1,7 +1,21 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const [catalog, sourcePackage, claim, apiList, apiDetail, openApi, indexPage, detailPage, explorer, scene, workspace] = await Promise.all([
+const [
+  catalog,
+  sourcePackage,
+  claim,
+  apiList,
+  apiDetail,
+  openApi,
+  indexPage,
+  detailPage,
+  explorer,
+  scene,
+  gallery,
+  lightbox,
+  workspace,
+] = await Promise.all([
   readFile("data/equipment-catalog.json", "utf8").then(JSON.parse),
   readFile("data/equipment-source-packages.json", "utf8").then(JSON.parse),
   readFile("data/equipment-claims/ess-evs-6400-ds200.json", "utf8").then(JSON.parse),
@@ -12,6 +26,8 @@ const [catalog, sourcePackage, claim, apiList, apiDetail, openApi, indexPage, de
   readFile("src/app/equipment/[slug]/page.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-explorer.client.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-orthographic-scene.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/equipment-reference-gallery.client.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/equipment-reference-lightbox.client.tsx", "utf8"),
   readFile("src/app/workspace-tabs.tsx", "utf8"),
 ]);
 
@@ -23,7 +39,7 @@ assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
 assert.equal(claim.editorial.state, "approved");
 assert.equal(catalog.systems.length, 3);
-assert.equal(sourcePackage.sources.length, 44);
+assert.equal(sourcePackage.sources.length, 48);
 assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
 const sourceIds = new Set(sourcePackage.sources.map((source) => source.id));
@@ -46,7 +62,7 @@ assert.equal(system.coverage.sourcedComponentCount, 9);
 assert.equal(system.coverage.configurationChangeCount, 6);
 assert.equal(system.coverage.deploymentObservationCount, 4);
 assert.equal(system.coverage.confirmedPowerRecordCount, 1);
-assert.equal(system.coverage.technicalSpecificationCount, 7);
+assert.equal(system.coverage.technicalSpecificationCount, 8);
 assert.equal(system.coverage.unknownTechnicalSpecificationCount, 3);
 assert.match(system.certification.caveat, /certified configuration/i);
 assert.equal(system.editorialState, "approved");
@@ -71,6 +87,14 @@ for (const component of system.components) {
     }
   }
 }
+
+const ds200Cellular = components.get("ds200-scanner-tabulator")
+  ?.technicalSpecifications.find((record) => record.id === "ds200-cellular-jurisdiction-documented");
+assert.ok(ds200Cellular, "DS200 optional cellular capability must remain explicitly scoped");
+assert.equal(ds200Cellular.assertionScope, "jurisdiction_deployment_observation");
+assert.match(ds200Cellular.value, /optional|Rhode Island/i);
+assert.ok(ds200Cellular.sourceIds.includes("ess-election-security-faqs"));
+assert.ok(ds200Cellular.sourceIds.includes("ri-ds200-pollworker-manual-2021"));
 
 const power = system.power[0];
 assert.equal(power.knowledgeStatus, "documented_partial");
@@ -130,7 +154,7 @@ assert.equal(imageCastX.coverage.sourcedComponentCount, 12);
 assert.equal(imageCastX.coverage.configurationChangeCount, 4);
 assert.equal(imageCastX.coverage.deploymentObservationCount, 0);
 assert.equal(imageCastX.coverage.confirmedPowerRecordCount, 2);
-assert.equal(imageCastX.coverage.sourceCount, 10);
+assert.equal(imageCastX.coverage.sourceCount, 11);
 assert.equal(imageCastX.coverage.technicalSpecificationCount, 11);
 const icxUps = imageCastX.power.find((record) => record.id === "icx-certified-ups-options");
 assert.match(icxUps.model, /SMT-1500/);
@@ -184,6 +208,24 @@ const imageCastNodeNames = new Set((imageCastGltf.nodes ?? []).map((node) => nod
 for (const mapping of imageCastX.scene.nodes) assert.ok(imageCastNodeNames.has(mapping.nodeName));
 assert.ok(!imageCastNodeNames.has("ICX_Prime_SSD"), "unsupported SSD geometry must remain absent");
 
+for (const dossier of catalog.systems) {
+  assert.ok(dossier.scene.referenceImages.length > 0, `${dossier.slug} needs a sourced reference image`);
+  for (const referenceImage of dossier.scene.referenceImages) {
+    assert.match(referenceImage.assetUrl, /^\/equipment\/.+\.png$/);
+    assert.match(referenceImage.assetSha256, /^[a-f0-9]{64}$/);
+    assert.ok(referenceImage.width > 0);
+    assert.ok(referenceImage.height > 0);
+    assert.ok(referenceImage.alt.length > 20);
+    assert.ok(referenceImage.caption.length > 20);
+    assert.ok(referenceImage.caveat.length > 20);
+    assert.ok(referenceImage.derivativeNote.length > 20);
+    for (const sourceId of referenceImage.sourceIds) {
+      assert.ok(dossier.scene.referenceSourceIds.includes(sourceId));
+      assert.ok(sourceIds.has(sourceId));
+    }
+  }
+}
+
 assert.match(apiList, /listEquipmentSystems/);
 assert.match(apiList, /equipment_catalog_disabled/);
 assert.match(apiDetail, /sourcesForEquipmentSystem/);
@@ -209,10 +251,21 @@ assert.match(explorer, /getContext\("webgl2"/);
 assert.match(explorer, /aria-live="polite"/);
 assert.match(explorer, /Explosion distance/);
 assert.match(explorer, /technicalSpecifications/);
+assert.match(explorer, /issueCameraCommand/);
+assert.match(explorer, /referenceImages\.length/);
+assert.match(explorer, /EquipmentReferenceGallery/);
 assert.match(scene, /frameloop="demand"/);
 assert.match(scene, /orthographic/);
 assert.match(scene, /webglcontextlost/);
 assert.match(scene, /mappedEntryFor/);
+assert.match(scene, /OrbitControls/);
+assert.match(scene, /zoomToCursor/);
+assert.match(scene, /wheel or pinch to zoom/);
+assert.match(gallery, /unoptimized/);
+assert.match(gallery, /EquipmentReferenceLightbox/);
+assert.match(lightbox, /createPortal/);
+assert.match(lightbox, /aria-modal="true"/);
+assert.match(lightbox, /document\.body\.style\.overflow/);
 assert.match(workspace, /equipmentExplorerEnabled &&/);
 assert.match(workspace, /equipment-catalog-link/);
 assert.match(workspace, /Component catalog/);

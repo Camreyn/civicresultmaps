@@ -20,6 +20,7 @@ function collectSourceIds(system) {
     ...(system.power ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.scene?.referenceSourceIds ?? []),
+    ...(system.scene?.referenceImages ?? []).flatMap((record) => record.sourceIds ?? []),
   ]);
 }
 
@@ -35,6 +36,7 @@ function collectSourceRevisionIds(system) {
     ...(system.power ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.scene?.referenceSourceRevisionIds ?? []),
+    ...(system.scene?.referenceImages ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
   ]);
 }
 

@@ -5,6 +5,8 @@ const clearAccessPath = "/equipment/clear-ballot-clearvote-25-clearaccess";
 const ds200Path = "/equipment/ess-evs-6400-ds200";
 const imageCastXPath = "/equipment/dominion-democracy-suite-517-imagecast-x";
 
+test.describe.configure({ mode: "serial" });
+
 test("lists three source-linked equipment dossiers", async ({ page }) => {
   await page.goto("/equipment");
   await expect(page.getByRole("link", { name: /Open source-linked dossier/ })).toHaveCount(3);
@@ -70,8 +72,13 @@ test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ pa
 
   await page.locator("[data-component-select='true']").filter({ hasText: "External uninterruptible power supply" }).click();
   await page.getByRole("button", { name: /Open 3D view/ }).click();
-  await expect(page.locator("canvas")).toBeVisible();
+  const canvas = page.locator("canvas");
+  await expect(canvas).toBeVisible();
   await expect(page.getByRole("heading", { name: "External uninterruptible power supply", level: 3 })).toBeVisible();
+  await expect(page.getByText(/Drag to rotate \| wheel or pinch to zoom/)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Zoom out" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Zoom in" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reset" })).toBeVisible();
 
   await expect.poll(() => page.evaluate(() =>
     performance.getEntriesByType("resource").some((entry) => entry.name.includes(".glb")),
@@ -80,6 +87,26 @@ test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ pa
     performance.getEntriesByType("resource").map((entry) => entry.name),
   );
   expect(viewerResources.filter((url) => url.includes("/_next/static/chunks/")).length).toBeGreaterThan(initialChunkCount);
+
+  await canvas.scrollIntoViewIfNeeded();
+  await expect(canvas).toBeInViewport();
+  const initialCameraRevision = await canvas.getAttribute("data-camera-revision");
+  const canvasBox = await canvas.boundingBox();
+  expect(canvasBox).not.toBeNull();
+  await page.mouse.move(canvasBox!.x + canvasBox!.width / 2, canvasBox!.y + canvasBox!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(canvasBox!.x + canvasBox!.width / 2 + 90, canvasBox!.y + canvasBox!.height / 2 - 35, { steps: 8 });
+  await page.mouse.up();
+  await expect.poll(() => canvas.getAttribute("data-camera-revision")).not.toBe(initialCameraRevision);
+  const rotatedPosition = await canvas.getAttribute("data-camera-position");
+  const zoomBeforeWheel = await canvas.getAttribute("data-camera-zoom");
+  await page.mouse.wheel(0, -420);
+  await expect.poll(() => canvas.getAttribute("data-camera-zoom")).not.toBe(zoomBeforeWheel);
+  const zoomBeforeButton = await canvas.getAttribute("data-camera-zoom");
+  await page.getByRole("button", { name: "Zoom in" }).click();
+  await expect.poll(() => canvas.getAttribute("data-camera-zoom")).not.toBe(zoomBeforeButton);
+  await page.getByRole("button", { name: "Reset" }).click();
+  await expect.poll(() => canvas.getAttribute("data-camera-position")).not.toBe(rotatedPosition);
 
   await page.getByRole("button", { name: "Exploded" }).click();
   await expect(page.getByRole("button", { name: "Assembled" })).toBeVisible();
@@ -102,6 +129,27 @@ test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ pa
   await expect(page.getByRole("button", { name: "Show Ballot printer" })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "Show all", exact: true }).click();
   await expect(page.getByText(/9 of 9 modeled components visible/)).toBeVisible();
+});
+
+test("opens a sourced reference-photo sidebar and expanded image dialog", async ({ page }) => {
+  await page.goto(clearAccessPath);
+  const photoButton = page.getByRole("button", { name: "Photos 1" });
+  await expect(photoButton).toHaveAttribute("aria-expanded", "false");
+  await photoButton.click();
+  await expect(photoButton).toHaveAttribute("aria-expanded", "true");
+
+  const gallery = page.getByRole("complementary", { name: "Reference photos" });
+  await expect(gallery).toBeVisible();
+  await expect(gallery.getByRole("img", { name: /ClearAccess portrait touchscreen/ })).toBeVisible();
+  await expect(gallery.getByRole("link", { name: "View source" })).toHaveAttribute("href", /clearballot\.com/);
+  await gallery.getByRole("button", { name: /Expand: Manufacturer product image/ }).click();
+
+  const dialog = page.getByRole("dialog", { name: /Manufacturer product image/ });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("img", { name: /ClearAccess portrait touchscreen/ })).toBeVisible();
+  await expect(dialog.getByRole("link", { name: /Clear Ballot Group/ })).toHaveAttribute("href", /clearballot\.com/);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
 });
 
 test("preserves the source-linked fallback when WebGL 2 is unavailable", async ({ browser }) => {
@@ -139,8 +187,8 @@ test("renders ImageCast X advisory and internal-component evidence boundaries", 
   const response = await request.get("/api/v1/equipment-systems/dominion-democracy-suite-517-imagecast-x");
   expect(response.status()).toBe(200);
   const payload = await response.json();
-  expect(payload.data.system.coverage.sourceCount).toBe(10);
-  expect(payload.data.sources).toHaveLength(10);
+  expect(payload.data.system.coverage.sourceCount).toBe(11);
+  expect(payload.data.sources).toHaveLength(11);
 
   await page.locator("[data-component-select='true']").filter({ hasText: "SID-21V compute board profile" }).click();
   await expect(page.getByRole("heading", { name: "SID-21V compute board profile", level: 3 })).toBeVisible();
@@ -161,9 +209,15 @@ test("retains DS200 partial-power and deployment evidence boundaries", async ({ 
   await expect(page.getByText(/confirms DS200 battery backup/)).toBeVisible();
   await expect(page.getByText("Jefferson County, Washington", { exact: true })).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
-  await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(0);
+  const networkBadge = page.getByRole("img", { name: "Network connectivity capability" });
+  await expect(networkBadge).toHaveCount(1);
+  await networkBadge.hover();
+  await expect(page.getByRole("tooltip", { name: /Rhode Island's 2021 procedure/ })).toBeVisible();
   const componentDetail = page.locator("article[class*='componentDetail']");
-  await expect(componentDetail.getByRole("heading", { name: "Hardware and interfaces" })).toHaveCount(0);
+  await expect(componentDetail.getByRole("heading", { name: "Hardware and interfaces" })).toBeVisible();
+  await expect(componentDetail.getByText("Cellular modem option", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText(/Separate modem board is optional/)).toBeVisible();
+  await expect(componentDetail.getByText("No WAN modem or WAN wireless use listed", { exact: false })).toHaveCount(0);
 });
 
 

@@ -8,15 +8,66 @@ import {
   OrthographicCamera,
   type Object3D,
 } from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 import type { EquipmentScene } from "@/lib/equipment-catalog";
 import styles from "../equipment.module.css";
 
 type ViewName = "front" | "isometric" | "top";
+export type EquipmentCameraCommand = {
+  revision: number;
+  type: "reset" | "zoom_in" | "zoom_out";
+};
 
-function CameraRig({ scene, view }: { scene: EquipmentScene; view: ViewName }) {
-  const { camera, invalidate } = useThree();
+function syncCameraDataset(element: HTMLCanvasElement, camera: OrthographicCamera) {
+  const nextRevision = Number(element.dataset.cameraRevision ?? "0") + 1;
+  element.dataset.cameraRevision = String(nextRevision);
+  element.dataset.cameraPosition = camera.position
+    .toArray()
+    .map((value) => value.toFixed(4))
+    .join(",");
+  element.dataset.cameraZoom = camera.zoom.toFixed(4);
+}
+
+function CameraRig({
+  cameraCommand,
+  scene,
+  view,
+}: {
+  cameraCommand: EquipmentCameraCommand;
+  scene: EquipmentScene;
+  view: ViewName;
+}) {
+  const { camera, gl, invalidate } = useThree();
+  const controlsRef = useRef<OrbitControls | null>(null);
+
+  useEffect(() => {
+    if (!(camera instanceof OrthographicCamera)) return;
+    const controls = new OrbitControls(camera, gl.domElement);
+    controls.enableDamping = false;
+    controls.enablePan = false;
+    controls.enableRotate = true;
+    controls.enableZoom = true;
+    controls.zoomToCursor = true;
+    controls.minZoom = scene.camera.zoom * 0.45;
+    controls.maxZoom = scene.camera.zoom * 2.5;
+    controls.target.set(0, 0.45, 0);
+    const renderOnChange = () => {
+      syncCameraDataset(gl.domElement, camera);
+      invalidate();
+    };
+    controls.addEventListener("change", renderOnChange);
+    controls.update();
+    renderOnChange();
+    controlsRef.current = controls;
+
+    return () => {
+      controls.removeEventListener("change", renderOnChange);
+      controls.dispose();
+      controlsRef.current = null;
+    };
+  }, [camera, gl.domElement, invalidate, scene.camera.zoom]);
 
   useEffect(() => {
     if (!(camera instanceof OrthographicCamera)) return;
@@ -29,10 +80,38 @@ function CameraRig({ scene, view }: { scene: EquipmentScene; view: ViewName }) {
     camera.zoom = scene.camera.zoom;
     camera.near = scene.camera.near;
     camera.far = scene.camera.far;
-    camera.lookAt(0, 0.45, 0);
+    const target = controlsRef.current?.target;
+    target?.set(0, 0.45, 0);
+    if (target) camera.lookAt(target);
+    else camera.lookAt(0, 0.45, 0);
     camera.updateProjectionMatrix();
+    controlsRef.current?.update();
+    syncCameraDataset(gl.domElement, camera);
     invalidate();
-  }, [camera, invalidate, scene.camera, view]);
+  }, [camera, gl.domElement, invalidate, scene.camera, view]);
+
+  useEffect(() => {
+    if (!(camera instanceof OrthographicCamera)) return;
+    if (cameraCommand.type === "reset") {
+      camera.position.set(...(scene.camera.position as [number, number, number]));
+      camera.zoom = scene.camera.zoom;
+      camera.near = scene.camera.near;
+      camera.far = scene.camera.far;
+      const target = controlsRef.current?.target;
+      target?.set(0, 0.45, 0);
+      if (target) camera.lookAt(target);
+      else camera.lookAt(0, 0.45, 0);
+    } else {
+      const factor = cameraCommand.type === "zoom_in" ? 1.2 : 1 / 1.2;
+      const minimum = scene.camera.zoom * 0.45;
+      const maximum = scene.camera.zoom * 2.5;
+      camera.zoom = Math.max(minimum, Math.min(maximum, camera.zoom * factor));
+    }
+    camera.updateProjectionMatrix();
+    controlsRef.current?.update();
+    syncCameraDataset(gl.domElement, camera);
+    invalidate();
+  }, [camera, cameraCommand, gl.domElement, invalidate, scene.camera]);
 
   return null;
 }
@@ -192,6 +271,7 @@ function SchematicModel({
 }
 
 export function EquipmentOrthographicScene({
+  cameraCommand,
   explosion,
   hiddenComponentIds,
   isolatedComponentId,
@@ -202,6 +282,7 @@ export function EquipmentOrthographicScene({
   selectedComponentId,
   view,
 }: {
+  cameraCommand: EquipmentCameraCommand;
   explosion: number;
   hiddenComponentIds: ReadonlySet<string>;
   isolatedComponentId: string | null;
@@ -234,7 +315,7 @@ export function EquipmentOrthographicScene({
         <directionalLight intensity={2.15} position={[4, 7, 6]} />
         <directionalLight color="#5ee2d1" intensity={0.72} position={[-5, 2, -3]} />
         <gridHelper args={[12, 24, "#244b4d", "#143033"]} position={[0, -1.72, 0]} />
-        <CameraRig scene={scene} view={view} />
+        <CameraRig cameraCommand={cameraCommand} scene={scene} view={view} />
         <Suspense fallback={null}>
           <SchematicModel
             explosion={explosion}
@@ -248,7 +329,7 @@ export function EquipmentOrthographicScene({
         </Suspense>
       </Canvas>
       <p className={styles.canvasCaption}>
-        Photo/manual-informed outline • {Math.round(explosion * 100)}% exploded • not to scale
+        Drag to rotate | wheel or pinch to zoom | {Math.round(explosion * 100)}% exploded | not to scale
       </p>
     </div>
   );

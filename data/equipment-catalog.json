@@ -1146,6 +1146,84 @@
       "revisionComparisons": []
     },
     {
+      "id": "ess-ds200-reference-photo",
+      "publisher": "Election Systems & Software",
+      "authorityLevel": "manufacturer_primary",
+      "title": "DS200 Full Front Screen official product photograph",
+      "url": "https://www.essvote.com/storage/2018/12/DS200-Full-Front-Screen.png",
+      "localArtifact": "data/equipment-sources/ess-ds200-reference-photo.png",
+      "sha256": "a68d0646ca2707ccdcf735f57d3b0b65e3021bec0a480bc8af8b0d517c412dda",
+      "documentType": "manufacturer_product_image_png",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Original 1280 x 854 product photograph linked from the DS200 product page",
+      "caveat": "The manufacturer photograph supports the DS200's external appearance only. It is not a dimensional drawing, teardown, certified version record, internal component map, or field-unit inventory.",
+      "canonicalUrl": "https://www.essvote.com/storage/2018/12/DS200-Full-Front-Screen.png",
+      "currentReviewedRevisionId": "ess-ds200-reference-photo@2026-07-20",
+      "latestRetrievedRevisionId": "ess-ds200-reference-photo@2026-07-20",
+      "revisions": [
+        {
+          "id": "ess-ds200-reference-photo@2026-07-20",
+          "localArtifact": "data/equipment-sources/ess-ds200-reference-photo.png",
+          "sha256": "a68d0646ca2707ccdcf735f57d3b0b65e3021bec0a480bc8af8b0d517c412dda",
+          "byteLength": 430127,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.essvote.com/storage/2018/12/DS200-Full-Front-Screen.png",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Original 1280 x 854 product photograph linked from the DS200 product page",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "ess-election-security-faqs",
+      "publisher": "Election Systems & Software",
+      "authorityLevel": "manufacturer_primary",
+      "title": "Election Security Frequently Asked Questions",
+      "url": "https://www.essvote.com/faqs/",
+      "localArtifact": "data/equipment-sources/ess-faqs.html",
+      "sha256": "055a7cec69e43312a024b377abf6cad3ad70186b39e5c1043e235458158c161a",
+      "documentType": "manufacturer_faq_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Are modems installed in poll place tabulators nationwide?; How do we know modems aren't in machines where they are not permitted?",
+      "caveat": "The current manufacturer FAQ describes optional modem-board use by jurisdiction and is not a certification record, bill of materials for a particular unit, or proof that a modem was enabled or used in any unlisted jurisdiction.",
+      "canonicalUrl": "https://www.essvote.com/faqs/",
+      "currentReviewedRevisionId": "ess-election-security-faqs@2026-07-20",
+      "latestRetrievedRevisionId": "ess-election-security-faqs@2026-07-20",
+      "revisions": [
+        {
+          "id": "ess-election-security-faqs@2026-07-20",
+          "localArtifact": "data/equipment-sources/ess-faqs.html",
+          "sha256": "055a7cec69e43312a024b377abf6cad3ad70186b39e5c1043e235458158c161a",
+          "byteLength": 125057,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.essvote.com/faqs/",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Are modems installed in poll place tabulators nationwide?; How do we know modems aren't in machines where they are not permitted?",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "provv-clearvote-25-test-plan",
       "publisher": "Pro V&V, Inc.",
       "authorityLevel": "eac_accredited_vstl",
@@ -1608,6 +1686,84 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "Sections 3.2, 3.3, and Tables 4-1 through 4-3",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "ri-ds200-pollworker-manual-2021",
+      "publisher": "Rhode Island Board of Elections",
+      "authorityLevel": "state_election_office",
+      "title": "Poll Worker Manual 2021",
+      "url": "https://elections.ri.gov/sites/g/files/xkgbur756/files/publications/Election_Publications/Pollworker_Training/Poll-worker-Manual-2021.pdf",
+      "localArtifact": "data/equipment-sources/ri-ds200-pollworker-manual-2021.pdf",
+      "sha256": "a5738b52d5a49525dcb9a0acb80abaf359cfd4f8b016b23cef2cad75ddea4d0e",
+      "documentType": "state_poll_worker_manual_pdf",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "PDF pages 82-83, Step 5 through Step 7",
+      "caveat": "The manual directly documents Rhode Island's 2021 DS200 post-poll transmission procedure. It does not establish that every DS200, every jurisdiction, or the EVS 6.4.0.0 certified configuration contains or permits a cellular modem.",
+      "canonicalUrl": "https://elections.ri.gov/sites/g/files/xkgbur756/files/publications/Election_Publications/Pollworker_Training/Poll-worker-Manual-2021.pdf",
+      "currentReviewedRevisionId": "ri-ds200-pollworker-manual-2021@2026-07-20",
+      "latestRetrievedRevisionId": "ri-ds200-pollworker-manual-2021@2026-07-20",
+      "revisions": [
+        {
+          "id": "ri-ds200-pollworker-manual-2021@2026-07-20",
+          "localArtifact": "data/equipment-sources/ri-ds200-pollworker-manual-2021.pdf",
+          "sha256": "a5738b52d5a49525dcb9a0acb80abaf359cfd4f8b016b23cef2cad75ddea4d0e",
+          "byteLength": 5946616,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://elections.ri.gov/sites/g/files/xkgbur756/files/publications/Election_Publications/Pollworker_Training/Poll-worker-Manual-2021.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF pages 82-83, Step 5 through Step 7",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "sf-icx-usability-test-report-510",
+      "publisher": "San Francisco Department of Elections; SLI Compliance",
+      "authorityLevel": "local_election_office_hosted_vstl_report",
+      "title": "Usability Test Report of ImageCast X 5.0 with 36 Participants for VVSG 1.0",
+      "url": "https://sfelections.sfgov.org/sites/default/files/Documents/GetInvolved/AgendasMinutes/20210528_VAAC_SD_ICX_UsabilityTestReport_5.10_CA.pdf",
+      "localArtifact": "data/equipment-sources/sf-icx-usability-test-report-510.pdf",
+      "sha256": "838754693ea1dcd90c4f8d8944e63347af7fccf4de4692af538f60b70223ee6e",
+      "documentType": "local_election_office_hosted_usability_test_report_pdf",
+      "publishedOn": "2021-06-11",
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "PDF page 7, report page 4, Figure 2-1",
+      "caveat": "Figure 2-1 is an actual-device reference photograph for the ICX 21, ICX 15, and ICX 12.2 in an older 5.0 usability-test context. It does not establish the exact hardware alternative, accessories, software, or field installation for Democracy Suite 5.17.",
+      "canonicalUrl": "https://sfelections.sfgov.org/sites/default/files/Documents/GetInvolved/AgendasMinutes/20210528_VAAC_SD_ICX_UsabilityTestReport_5.10_CA.pdf",
+      "currentReviewedRevisionId": "sf-icx-usability-test-report-510@2026-07-20",
+      "latestRetrievedRevisionId": "sf-icx-usability-test-report-510@2026-07-20",
+      "revisions": [
+        {
+          "id": "sf-icx-usability-test-report-510@2026-07-20",
+          "localArtifact": "data/equipment-sources/sf-icx-usability-test-report-510.pdf",
+          "sha256": "838754693ea1dcd90c4f8d8944e63347af7fccf4de4692af538f60b70223ee6e",
+          "byteLength": 2409680,
+          "publishedOn": "2021-06-11",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://sfelections.sfgov.org/sites/default/files/Documents/GetInvolved/AgendasMinutes/20210528_VAAC_SD_ICX_UsabilityTestReport_5.10_CA.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF page 7, report page 4, Figure 2-1",
           "archiveStatus": "verified"
         }
       ],
@@ -2399,6 +2555,27 @@
           "provv-clearvote-25-test-plan@2026-07-19"
         ],
         "referenceNote": "The touchscreen, keypad, and headphone silhouette follows the official product image. The image does not establish which Elo model is pictured, and the printer, UPS, port locations, cabling, and explosion paths remain illustrative.",
+        "referenceImages": [
+          {
+            "id": "clearaccess-official-product-photo",
+            "assetUrl": "/equipment/clear-ballot-clearvote-25-clearaccess/reference-clearaccess.png",
+            "assetSha256": "baed0a3acf052caf79bafb84b87787bb974115b1203640e7ec27b0c9bbef6a0e",
+            "width": 2000,
+            "height": 1500,
+            "alt": "ClearAccess portrait touchscreen shown with headphones and an accessible tactile keypad",
+            "caption": "Manufacturer product image: ClearAccess touchscreen, headphones, and accessible keypad.",
+            "kind": "manufacturer_product_photo",
+            "sourceIds": [
+              "clearballot-clearaccess-reference-photo"
+            ],
+            "sourceRevisionIds": [
+              "clearballot-clearaccess-reference-photo@2026-07-20"
+            ],
+            "pageOrSection": "ClearAccessStormKeypad product image",
+            "derivativeNote": "Exact local copy of the archived manufacturer image; no crop or content alteration.",
+            "caveat": "External appearance reference only; the image does not establish the pictured Elo model, certified component alternatives, printer, UPS, port occupation, or a particular fielded setup."
+          }
+        ],
         "camera": {
           "position": [
             7,
@@ -2508,7 +2685,7 @@
         "The UPS models are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Test findings are time- and version-scoped. They do not prove a field incident, exploitation, altered votes, fraud, misconduct, or an incorrect election outcome."
       ],
-      "claimRevision": 2,
+      "claimRevision": 3,
       "editorialState": "approved",
       "sourceIds": [
         "clearballot-clearaccess-product-page",
@@ -3442,15 +3619,38 @@
           "co-dvs-517-avalue-sid21-manual",
           "co-dvs-517-icx-maintenance-manual",
           "eac-dsuite-517-scope",
-          "provv-dsuite-517-test-plan"
+          "provv-dsuite-517-test-plan",
+          "sf-icx-usability-test-report-510"
         ],
         "referenceSourceRevisionIds": [
           "co-dvs-517-avalue-sid21-manual@2026-07-20",
           "co-dvs-517-icx-maintenance-manual@2026-07-20",
           "eac-dsuite-517-scope@2026-07-20",
-          "provv-dsuite-517-test-plan@2026-07-20"
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "sf-icx-usability-test-report-510@2026-07-20"
         ],
         "referenceNote": "The terminal silhouette follows the Avalue mechanical drawing. The compute-board and connector-panel shapes and their separation paths are illustrative; the optional battery cover area follows the manual, but no unit-level installation is asserted.",
+        "referenceImages": [
+          {
+            "id": "icx-variants-usability-test-photo",
+            "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-x/reference-icx-variants.png",
+            "assetSha256": "a9b0898c52729f8a33e6ca9f8a91acc58c7c42a5fcf902ea647d6037d04de497",
+            "width": 392,
+            "height": 263,
+            "alt": "Three ImageCast X terminals in voting booths, including portrait displays and an external printer",
+            "caption": "Actual-device photograph from an official usability report: ICX 21, ICX 15, and ICX 12.2.",
+            "kind": "official_test_report_photo",
+            "sourceIds": [
+              "sf-icx-usability-test-report-510"
+            ],
+            "sourceRevisionIds": [
+              "sf-icx-usability-test-report-510@2026-07-20"
+            ],
+            "pageOrSection": "PDF page 7, report page 4, Figure 2-1",
+            "derivativeNote": "Exact embedded image extracted from Figure 2-1; no crop or content alteration.",
+            "caveat": "This photograph is from an older 5.0 usability-test context and shows multiple ICX sizes. It does not establish the exact 5.17 hardware alternative, accessories, software, or field installation represented by the schematic."
+          }
+        ],
         "camera": {
           "position": [
             7,
@@ -3581,7 +3781,7 @@
         "The UPS alternatives are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Advisory notices are time-, version-, scenario-, and sometimes jurisdiction-scoped. They do not prove an election incident, altered votes, fraud, misconduct, or an incorrect outcome."
       ],
-      "claimRevision": 2,
+      "claimRevision": 3,
       "editorialState": "approved",
       "sourceIds": [
         "co-dvs-517-avalue-sid21-manual",
@@ -3593,7 +3793,8 @@
         "eac-dsuite-517-scope",
         "provv-dsuite-517-test-plan",
         "provv-dsuite-517-test-report",
-        "provv-dsuite-eco-100936-analysis"
+        "provv-dsuite-eco-100936-analysis",
+        "sf-icx-usability-test-report-510"
       ],
       "sourceRevisionIds": [
         "co-dvs-517-avalue-sid21-manual@2026-07-20",
@@ -3605,7 +3806,8 @@
         "eac-dsuite-517-scope@2026-07-20",
         "provv-dsuite-517-test-plan@2026-07-20",
         "provv-dsuite-517-test-report@2026-07-20",
-        "provv-dsuite-eco-100936-analysis@2026-07-20"
+        "provv-dsuite-eco-100936-analysis@2026-07-20",
+        "sf-icx-usability-test-report-510@2026-07-20"
       ],
       "coverage": {
         "componentCount": 12,
@@ -3618,8 +3820,8 @@
         "findingCount": 4,
         "powerRecordCount": 2,
         "confirmedPowerRecordCount": 2,
-        "sourceCount": 10,
-        "sourceRevisionCount": 10
+        "sourceCount": 11,
+        "sourceRevisionCount": 11
       }
     },
     {
@@ -3684,6 +3886,24 @@
             "ess-ds200-one-sheet@2026-07-20"
           ],
           "technicalSpecifications": [
+            {
+              "id": "ds200-cellular-jurisdiction-documented",
+              "category": "cellular",
+              "label": "Cellular modem option",
+              "value": "Separate modem board is optional where permitted; Rhode Island's 2021 procedure documents cellular transmission after polls close",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "jurisdiction_deployment_observation",
+              "modelContext": "DS200 model family; Rhode Island 2021 deployment procedure",
+              "sourceIds": [
+                "ess-election-security-faqs",
+                "ri-ds200-pollworker-manual-2021"
+              ],
+              "sourceRevisionIds": [
+                "ess-election-security-faqs@2026-07-20",
+                "ri-ds200-pollworker-manual-2021@2026-07-20"
+              ],
+              "caveat": "This establishes optional DS200 cellular capability and one jurisdiction's documented procedure. It does not mean every DS200 contains a modem, that EVS 6.4.0.0 permits WAN use, or that a modem was enabled or used in an unlisted jurisdiction."
+            },
             {
               "id": "ds200-cellular-certified-scope",
               "category": "cellular",
@@ -4415,12 +4635,35 @@
         "description": "An original, photo-informed navigational schematic of the DS200 cabinet, scanner deck, raised protective lid, display, ballot compartments, and selected source-supported internal categories. It is not a teardown or dimensional reproduction.",
         "referenceConfiguration": "DS200 open poll-place configuration with ballot cabinet, raised protective cover, scanner deck, and tilted display",
         "referenceSourceIds": [
-          "ess-ds200-one-sheet"
+          "ess-ds200-one-sheet",
+          "ess-ds200-reference-photo"
         ],
         "referenceSourceRevisionIds": [
-          "ess-ds200-one-sheet@2026-07-20"
+          "ess-ds200-one-sheet@2026-07-20",
+          "ess-ds200-reference-photo@2026-07-20"
         ],
         "referenceNote": "External proportions and features follow the official ES&S one-sheet. Internal board positions and all explosion paths remain illustrative because no reviewed public teardown or engineering drawing establishes them.",
+        "referenceImages": [
+          {
+            "id": "ds200-official-front-product-photo",
+            "assetUrl": "/equipment/ess-evs-6400-ds200/reference-ds200-front.png",
+            "assetSha256": "a68d0646ca2707ccdcf735f57d3b0b65e3021bec0a480bc8af8b0d517c412dda",
+            "width": 1280,
+            "height": 854,
+            "alt": "Front view of an open ES&S DS200 scanner and ballot container on casters",
+            "caption": "Manufacturer product photograph: DS200 open in its poll-place configuration.",
+            "kind": "manufacturer_product_photo",
+            "sourceIds": [
+              "ess-ds200-reference-photo"
+            ],
+            "sourceRevisionIds": [
+              "ess-ds200-reference-photo@2026-07-20"
+            ],
+            "pageOrSection": "Original 1280 x 854 product photograph",
+            "derivativeNote": "Exact local copy of the archived manufacturer image; no crop or content alteration.",
+            "caveat": "External appearance reference only; the photograph does not establish dimensions, internal components, certified software, modem installation, or a particular fielded unit."
+          }
+        ],
         "camera": {
           "position": [
             6,
@@ -4520,7 +4763,7 @@
         "Public findings are presented with version and source scope. A missing advisory listing is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
         "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
       ],
-      "claimRevision": 2,
+      "claimRevision": 3,
       "editorialState": "approved",
       "sourceIds": [
         "eac-eco-ess-1035-approval",
@@ -4537,6 +4780,8 @@
         "eac-evs-6400-record",
         "eac-evs-6400-scope",
         "ess-ds200-one-sheet",
+        "ess-ds200-reference-photo",
+        "ess-election-security-faqs",
         "provv-eco-ess-1035-analysis",
         "provv-eco-ess-1042-analysis",
         "provv-eco-ess-1044-analysis",
@@ -4544,6 +4789,7 @@
         "provv-eco-ess-1165-analysis",
         "provv-eco-ess-983-analysis",
         "provv-evs-6400-test-report",
+        "ri-ds200-pollworker-manual-2021",
         "wa-2025-county-system-table",
         "wa-evs-6400-application",
         "wa-evs-6400-staff-report"
@@ -4563,6 +4809,8 @@
         "eac-evs-6400-record@2026-07-19",
         "eac-evs-6400-scope@2026-07-19",
         "ess-ds200-one-sheet@2026-07-20",
+        "ess-ds200-reference-photo@2026-07-20",
+        "ess-election-security-faqs@2026-07-20",
         "provv-eco-ess-1035-analysis@2026-07-19",
         "provv-eco-ess-1042-analysis@2026-07-19",
         "provv-eco-ess-1044-analysis@2026-07-19",
@@ -4570,6 +4818,7 @@
         "provv-eco-ess-1165-analysis@2026-07-19",
         "provv-eco-ess-983-analysis@2026-07-19",
         "provv-evs-6400-test-report@2026-07-19",
+        "ri-ds200-pollworker-manual-2021@2026-07-20",
         "wa-2025-county-system-table@2026-07-19",
         "wa-evs-6400-application@2026-07-19",
         "wa-evs-6400-staff-report@2026-07-19"
@@ -4577,16 +4826,16 @@
       "coverage": {
         "componentCount": 9,
         "sourcedComponentCount": 9,
-        "technicalSpecificationCount": 7,
-        "establishedTechnicalSpecificationCount": 4,
+        "technicalSpecificationCount": 8,
+        "establishedTechnicalSpecificationCount": 5,
         "unknownTechnicalSpecificationCount": 3,
         "configurationChangeCount": 6,
         "deploymentObservationCount": 4,
         "findingCount": 4,
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
-        "sourceCount": 24,
-        "sourceRevisionCount": 24
+        "sourceCount": 27,
+        "sourceRevisionCount": 27
       }
     }
   ]
