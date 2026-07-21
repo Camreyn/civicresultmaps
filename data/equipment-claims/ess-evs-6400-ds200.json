@@ -64,24 +64,6 @@
         ],
         "technicalSpecifications": [
           {
-            "id": "ds200-cellular-jurisdiction-documented",
-            "category": "cellular",
-            "label": "Cellular modem option",
-            "value": "Separate modem board is optional where permitted; Rhode Island's 2021 procedure documents cellular transmission after polls close",
-            "knowledgeStatus": "confirmed",
-            "assertionScope": "jurisdiction_deployment_observation",
-            "modelContext": "DS200 model family; Rhode Island 2021 deployment procedure",
-            "sourceIds": [
-              "ess-election-security-faqs",
-              "ri-ds200-pollworker-manual-2021"
-            ],
-            "sourceRevisionIds": [
-              "ess-election-security-faqs@2026-07-20",
-              "ri-ds200-pollworker-manual-2021@2026-07-20"
-            ],
-            "caveat": "This establishes optional DS200 cellular capability and one jurisdiction's documented procedure. It does not mean every DS200 contains a modem, that EVS 6.4.0.0 permits WAN use, or that a modem was enabled or used in an unlisted jurisdiction."
-          },
-          {
             "id": "ds200-cellular-certified-scope",
             "category": "cellular",
             "label": "Cellular modem",
@@ -148,6 +130,48 @@
               "provv-evs-6400-test-report@2026-07-19"
             ],
             "caveat": "No reviewed artifact publishes the installed RAM technology or capacity for the certified DS200 configurations."
+          }
+        ]
+      },
+      {
+        "id": "ds200-optional-cellular-modem",
+        "name": "Optional cellular modem board",
+        "category": "cellular",
+        "optionality": "optional",
+        "description": "ES&S states that modem components are not resident by default and that a separate board is installed only where cellular transmission is permitted; Rhode Island's 2021 procedure documents post-poll cellular transmission.",
+        "evidenceStatus": "documented_optional_model_component",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "ess-election-security-faqs",
+          "ri-ds200-pollworker-manual-2021"
+        ],
+        "sourceRevisionIds": [
+          "ess-election-security-faqs@2026-07-20",
+          "ri-ds200-pollworker-manual-2021@2026-07-20"
+        ],
+        "sceneNodeName": "Optional_Cellular_Modem",
+        "caveat": "The sources establish an optional separate board and one jurisdiction's documented procedure, but not the board manufacturer, modem model, radio bands, firmware, antenna, exact placement, or presence in every DS200.",
+        "technicalSpecifications": [
+          {
+            "id": "ds200-optional-cellular-capability",
+            "category": "cellular",
+            "label": "Optional cellular transmission",
+            "value": "Separate modem board installed only where permitted; Rhode Island documents transmission after polls close",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "jurisdiction_deployment_observation",
+            "modelContext": "DS200 model family; Rhode Island 2021 deployment procedure",
+            "sourceIds": [
+              "ess-election-security-faqs",
+              "ri-ds200-pollworker-manual-2021"
+            ],
+            "sourceRevisionIds": [
+              "ess-election-security-faqs@2026-07-20",
+              "ri-ds200-pollworker-manual-2021@2026-07-20"
+            ],
+            "caveat": "This does not mean every DS200 contains a modem, that EVS 6.4.0.0 permits WAN use, or that cellular transmission was enabled or used in an unlisted jurisdiction."
           }
         ]
       },
@@ -807,13 +831,15 @@
       "referenceConfiguration": "DS200 open poll-place configuration with ballot cabinet, raised protective cover, scanner deck, and tilted display",
       "referenceSourceIds": [
         "ess-ds200-one-sheet",
-        "ess-ds200-reference-photo"
+        "ess-ds200-reference-photo",
+        "ess-election-security-faqs"
       ],
       "referenceSourceRevisionIds": [
         "ess-ds200-one-sheet@2026-07-20",
-        "ess-ds200-reference-photo@2026-07-20"
+        "ess-ds200-reference-photo@2026-07-20",
+        "ess-election-security-faqs@2026-07-20"
       ],
-      "referenceNote": "External proportions and features follow the official ES&S one-sheet. Internal board positions and all explosion paths remain illustrative because no reviewed public teardown or engineering drawing establishes them.",
+      "referenceNote": "External proportions and features follow the official ES&S one-sheet. The optional modem board is a symbolic board-shaped marker because the reviewed sources do not establish its model, dimensions, or placement. Other internal board positions and all explosion paths remain illustrative.",
       "referenceImages": [
         {
           "id": "ds200-official-front-product-photo",
@@ -854,6 +880,16 @@
             0,
             0.55,
             0
+          ]
+        },
+        {
+          "componentId": "ds200-optional-cellular-modem",
+          "nodeName": "Optional_Cellular_Modem",
+          "color": "#33c6b5",
+          "explodedOffset": [
+            1.45,
+            0.8,
+            -0.45
           ]
         },
         {
@@ -937,7 +973,7 @@
   },
   "editorial": {
     "state": "approved",
-    "revision": 3,
+    "revision": 4,
     "createdOn": "2026-07-19",
     "updatedOn": "2026-07-20",
     "reviewedOn": "2026-07-20",

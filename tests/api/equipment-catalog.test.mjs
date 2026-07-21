@@ -38,8 +38,8 @@ assert.equal(catalog.productionRequirement, "published");
 assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
 assert.equal(claim.editorial.state, "approved");
-assert.equal(catalog.systems.length, 3);
-assert.equal(sourcePackage.sources.length, 48);
+assert.equal(catalog.systems.length, 6);
+assert.equal(sourcePackage.sources.length, 53);
 assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
 const sourceIds = new Set(sourcePackage.sources.map((source) => source.id));
@@ -57,8 +57,8 @@ for (const source of sourcePackage.sources) {
 
 const system = catalog.systems.find((entry) => entry.slug === "ess-evs-6400-ds200");
 assert.ok(system, "DS200 pilot must remain in the generated catalog");
-assert.equal(system.coverage.componentCount, 9);
-assert.equal(system.coverage.sourcedComponentCount, 9);
+assert.equal(system.coverage.componentCount, 10);
+assert.equal(system.coverage.sourcedComponentCount, 10);
 assert.equal(system.coverage.configurationChangeCount, 6);
 assert.equal(system.coverage.deploymentObservationCount, 4);
 assert.equal(system.coverage.confirmedPowerRecordCount, 1);
@@ -88,13 +88,23 @@ for (const component of system.components) {
   }
 }
 
-const ds200Cellular = components.get("ds200-scanner-tabulator")
-  ?.technicalSpecifications.find((record) => record.id === "ds200-cellular-jurisdiction-documented");
+const ds200Modem = components.get("ds200-optional-cellular-modem");
+assert.ok(ds200Modem, "DS200 optional cellular board must remain a distinct component");
+assert.equal(ds200Modem.optionality, "optional");
+assert.equal(ds200Modem.sceneNodeName, "Optional_Cellular_Modem");
+const ds200Cellular = ds200Modem.technicalSpecifications
+  .find((record) => record.id === "ds200-optional-cellular-capability");
 assert.ok(ds200Cellular, "DS200 optional cellular capability must remain explicitly scoped");
 assert.equal(ds200Cellular.assertionScope, "jurisdiction_deployment_observation");
 assert.match(ds200Cellular.value, /optional|Rhode Island/i);
 assert.ok(ds200Cellular.sourceIds.includes("ess-election-security-faqs"));
 assert.ok(ds200Cellular.sourceIds.includes("ri-ds200-pollworker-manual-2021"));
+assert.equal(
+  components.get("ds200-scanner-tabulator").technicalSpecifications
+    .some((record) => record.id === "ds200-cellular-jurisdiction-documented"),
+  false,
+  "optional cellular hardware must not be merged into the base scanner assembly",
+);
 
 const power = system.power[0];
 assert.equal(power.knowledgeStatus, "documented_partial");
@@ -179,6 +189,41 @@ assert.ok(imageCastX.findings.some((finding) => finding.publicStatus === "none_r
 assert.ok(imageCastX.versionObservations.some((observation) => observation.value === "5.17.17.1" && observation.assertionScope === "certified"));
 assert.ok(imageCastX.versionObservations.some((observation) => observation.value === "5.17.13.1" && observation.assertionScope === "documented"));
 
+const clearCount = catalog.systems.find((entry) => entry.slug === "clear-ballot-clearvote-25-clearcount");
+assert.ok(clearCount, "ClearCount must be a separate central-tabulation dossier");
+assert.equal(clearCount.coverage.componentCount, 7);
+assert.equal(clearCount.coverage.configurationChangeCount, 1);
+assert.equal(clearCount.coverage.sourceCount, 6);
+assert.ok(clearCount.components.some((component) => component.id === "clearcount-central-scanner"));
+assert.ok(clearCount.components.some((component) => component.id === "clearcount-countserver"));
+assert.ok(clearCount.components.some((component) => component.id === "clearcount-network-switch"));
+assert.equal(clearCount.versionObservations[0].value, "ClearCount 2.5.8");
+
+const imageCastCentral = catalog.systems.find((entry) => entry.slug === "dominion-democracy-suite-517-imagecast-central");
+assert.ok(imageCastCentral, "ImageCast Central must be a separate central-tabulation dossier");
+assert.equal(imageCastCentral.coverage.componentCount, 7);
+assert.equal(imageCastCentral.coverage.sourceCount, 5);
+const iccNetwork = imageCastCentral.components.find((component) => component.id === "icc-optional-isolated-lan");
+assert.equal(iccNetwork.optionality, "optional");
+assert.match(iccNetwork.technicalSpecifications[0].value, /100 Mbps/);
+assert.equal(imageCastCentral.power[0].model, "SMC1500 Smart-UPS");
+assert.match(imageCastCentral.power[0].runtime, /15 minutes/);
+assert.ok(imageCastCentral.versionObservations.some((observation) => observation.value === "5.17.15.1"));
+assert.ok(imageCastCentral.versionObservations.some((observation) => observation.value === "1.0.1074"));
+
+const ds950 = catalog.systems.find((entry) => entry.slug === "ess-evs-6400-ds950");
+assert.ok(ds950, "DS950 must be a separate central-tabulation dossier");
+assert.equal(ds950.coverage.componentCount, 10);
+assert.equal(ds950.coverage.configurationChangeCount, 2);
+assert.equal(ds950.coverage.sourceCount, 5);
+assert.ok(ds950.components.some((component) => component.id === "ds950-motherboard"));
+assert.ok(ds950.components.some((component) => component.id === "ds950-m2-storage"));
+assert.ok(ds950.components.some((component) => component.id === "ds950-smart-card-reader"));
+assert.ok(ds950.configurationChanges.some((change) => change.changeId === "ECO 1151"));
+assert.ok(ds950.versionObservations.some((observation) => observation.value === "4.3.0.0"));
+assert.ok(ds950.versionObservations.some((observation) => observation.value === "C60_20221215_0300"));
+assert.equal(ds950.power[0].model, "OR1500PFCLCD; CP1500PFCLCD");
+
 const glb = await readFile("public/equipment/ess-evs-6400-ds200/orthographic-pilot.glb");
 assert.equal(glb.readUInt32LE(0), 0x46546c67, "asset must use the glTF binary magic");
 assert.equal(glb.readUInt32LE(4), 2, "asset must use glTF 2.0");
@@ -189,7 +234,8 @@ for (const mapping of system.scene.nodes) assert.ok(nodeNames.has(mapping.nodeNa
 assert.equal(system.scene.geometryFidelity, "illustrative_not_to_scale");
 assert.equal(system.scene.assetLicense, "Apache-2.0");
 assert.ok(system.scene.referenceSourceIds.includes("ess-ds200-one-sheet"));
-assert.match(system.scene.referenceNote, /internal board positions/i);
+assert.ok(system.scene.referenceSourceIds.includes("ess-election-security-faqs"));
+assert.match(system.scene.referenceNote, /optional modem board/i);
 
 const clearAccessGlb = await readFile("public/equipment/clear-ballot-clearvote-25-clearaccess/orthographic-pilot.glb");
 assert.equal(clearAccessGlb.readUInt32LE(0), 0x46546c67, "ClearAccess asset must use the glTF binary magic");
@@ -209,6 +255,15 @@ for (const mapping of imageCastX.scene.nodes) assert.ok(imageCastNodeNames.has(m
 assert.ok(!imageCastNodeNames.has("ICX_Prime_SSD"), "unsupported SSD geometry must remain absent");
 
 for (const dossier of catalog.systems) {
+  const dossierGlb = await readFile(`public${dossier.scene.assetUrl}`);
+  assert.equal(dossierGlb.readUInt32LE(0), 0x46546c67, `${dossier.slug} must use the glTF binary magic`);
+  assert.equal(dossierGlb.readUInt32LE(4), 2, `${dossier.slug} must use glTF 2.0`);
+  const dossierJsonLength = dossierGlb.readUInt32LE(12);
+  const dossierGltf = JSON.parse(dossierGlb.subarray(20, 20 + dossierJsonLength).toString("utf8").trimEnd());
+  const dossierNodeNames = new Set((dossierGltf.nodes ?? []).map((node) => node.name));
+  for (const mapping of dossier.scene.nodes) {
+    assert.ok(dossierNodeNames.has(mapping.nodeName), `${dossier.slug} is missing ${mapping.nodeName}`);
+  }
   assert.ok(dossier.scene.referenceImages.length > 0, `${dossier.slug} needs a sourced reference image`);
   for (const referenceImage of dossier.scene.referenceImages) {
     assert.match(referenceImage.assetUrl, /^\/equipment\/.+\.png$/);
@@ -254,6 +309,8 @@ assert.match(explorer, /technicalSpecifications/);
 assert.match(explorer, /issueCameraCommand/);
 assert.match(explorer, /referenceImages\.length/);
 assert.match(explorer, /EquipmentReferenceGallery/);
+assert.match(explorer, /optionality/);
+assert.match(explorer, /Optional component/);
 assert.match(scene, /frameloop="demand"/);
 assert.match(scene, /orthographic/);
 assert.match(scene, /webglcontextlost/);

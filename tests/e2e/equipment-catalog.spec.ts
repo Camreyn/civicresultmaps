@@ -4,16 +4,22 @@ import { expect, test } from "@playwright/test";
 const clearAccessPath = "/equipment/clear-ballot-clearvote-25-clearaccess";
 const ds200Path = "/equipment/ess-evs-6400-ds200";
 const imageCastXPath = "/equipment/dominion-democracy-suite-517-imagecast-x";
+const clearCountPath = "/equipment/clear-ballot-clearvote-25-clearcount";
+const imageCastCentralPath = "/equipment/dominion-democracy-suite-517-imagecast-central";
+const ds950Path = "/equipment/ess-evs-6400-ds950";
 
 test.describe.configure({ mode: "serial" });
 
-test("lists three source-linked equipment dossiers", async ({ page }) => {
+test("lists six source-linked equipment dossiers", async ({ page }) => {
   await page.goto("/equipment");
-  await expect(page.getByRole("link", { name: /Open source-linked dossier/ })).toHaveCount(3);
-  await expect(page.getByText("3 reviewed dossiers")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Open source-linked dossier/ })).toHaveCount(6);
+  await expect(page.getByText("6 reviewed dossiers")).toBeVisible();
   await expect(page.getByText("Clear Ballot ClearVote 2.5 / ClearAccess")).toBeVisible();
+  await expect(page.getByText("Clear Ballot ClearVote 2.5 / ClearCount")).toBeVisible();
   await expect(page.getByText("ES&S EVS 6.4.0.0 / DS200")).toBeVisible();
+  await expect(page.getByText("ES&S EVS 6.4.0.0 / DS950")).toBeVisible();
   await expect(page.getByText("Dominion Democracy Suite 5.17 / ImageCast X")).toBeVisible();
+  await expect(page.getByText("Dominion Democracy Suite 5.17 / ImageCast Central")).toBeVisible();
 });
 
 test("renders confirmed ClearAccess UPS options without inventing runtime", async ({ page, request }) => {
@@ -212,12 +218,45 @@ test("retains DS200 partial-power and deployment evidence boundaries", async ({ 
   const networkBadge = page.getByRole("img", { name: "Network connectivity capability" });
   await expect(networkBadge).toHaveCount(1);
   await networkBadge.hover();
-  await expect(page.getByRole("tooltip", { name: /Rhode Island's 2021 procedure/ })).toBeVisible();
+  await expect(page.getByRole("tooltip", { name: /Rhode Island documents transmission/ })).toBeVisible();
+  const modemButton = page.locator("[data-component-select='true']").filter({ hasText: "Optional cellular modem board" });
+  await expect(modemButton.getByText("Optional", { exact: true })).toBeVisible();
+  await modemButton.click();
   const componentDetail = page.locator("article[class*='componentDetail']");
+  await expect(componentDetail.getByText("Optional component", { exact: true })).toBeVisible();
   await expect(componentDetail.getByRole("heading", { name: "Hardware and interfaces" })).toBeVisible();
-  await expect(componentDetail.getByText("Cellular modem option", { exact: true })).toBeVisible();
-  await expect(componentDetail.getByText(/Separate modem board is optional/)).toBeVisible();
+  await expect(componentDetail.getByText("Optional cellular transmission", { exact: true })).toBeVisible();
+  await expect(componentDetail.getByText(/Separate modem board installed only where permitted/)).toBeVisible();
   await expect(componentDetail.getByText("No WAN modem or WAN wireless use listed", { exact: false })).toHaveCount(0);
+});
+
+test("renders central tabulators as three separate sourced systems", async ({ page, request }) => {
+  await page.goto(clearCountPath);
+  await expect(page.getByRole("heading", { name: "Clear Ballot ClearVote 2.5 / ClearCount" })).toBeVisible();
+  await expect(page.locator("[data-component-select='true']")).toHaveCount(7);
+  await expect(page.getByText("CountServer", { exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(1);
+
+  await page.goto(imageCastCentralPath);
+  await expect(page.getByRole("heading", { name: "Dominion Democracy Suite 5.17 / ImageCast Central" })).toBeVisible();
+  await expect(page.locator("[data-component-select='true']")).toHaveCount(7);
+  const optionalLan = page.locator("[data-component-select='true']").filter({ hasText: "Optional isolated network infrastructure" });
+  await expect(optionalLan.getByText("Optional", { exact: true })).toBeVisible();
+  await optionalLan.click();
+  await expect(page.getByText("100 Mbps infrastructure when an additional central repository/data center is used; isolated from the Internet and all other networks", { exact: true })).toBeVisible();
+  await expect(page.getByText("900 W / 1500 VA", { exact: true })).toBeVisible();
+
+  await page.goto(ds950Path);
+  await expect(page.getByRole("heading", { name: "ES&S EVS 6.4.0.0 / DS950" })).toBeVisible();
+  await expect(page.locator("[data-component-select='true']")).toHaveCount(10);
+  await expect(page.getByText("Certified DS950 firmware:", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Orthographic component").getByText("4.3.0.0", { exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(0);
+
+  for (const path of [clearCountPath, imageCastCentralPath, ds950Path]) {
+    const response = await request.get(`/api/v1/equipment-systems/${path.split("/").at(-1)}`);
+    expect(response.status()).toBe(200);
+  }
 });
 
 

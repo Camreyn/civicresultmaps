@@ -1,0 +1,600 @@
+{
+  "schemaVersion": 2,
+  "reviewedOn": "2026-07-20",
+  "system": {
+    "id": "ess-evs-6400-ds950",
+    "slug": "ess-evs-6400-ds950",
+    "status": "pilot",
+    "manufacturer": "Election Systems & Software, LLC",
+    "systemName": "EVS",
+    "systemVersion": "6.4.0.0",
+    "deviceName": "DS950",
+    "displayName": "ES&S EVS 6.4.0.0 / DS950",
+    "deviceRole": "High-speed central-count scanner and tabulator",
+    "summary": "A separate source-linked dossier for the certified DS950 central-count scanner/tabulator, including firmware and hardware revisions, documented motherboard and storage changes, output-transport firmware, central-count cart, and certified UPS alternatives.",
+    "certification": {
+      "certificationId": "ESSEVS6400",
+      "standard": "VVSG 1.0",
+      "certifiedOn": "2023-08-18",
+      "vstl": "Pro V&V, Inc.",
+      "scopeKind": "certified_configuration",
+      "sourceIds": [
+        "eac-evs-6400-record",
+        "eac-evs-6400-scope",
+        "provv-evs-6400-test-report"
+      ],
+      "sourceRevisionIds": [
+        "eac-evs-6400-record@2026-07-19",
+        "eac-evs-6400-scope@2026-07-19",
+        "provv-evs-6400-test-report@2026-07-19"
+      ],
+      "caveat": "EAC certification applies only to the evaluated EVS 6.4.0.0 certified configuration. It does not establish the firmware, hardware, accessory selection, condition, or maintenance history of a particular field unit."
+    },
+    "components": [
+      {
+        "id": "ds950-shell",
+        "name": "DS950 scanner and tabulator assembly",
+        "category": "device",
+        "description": "The certified scope describes a central scanner/tabulator that scans both sides of ballots or vote-summary cards in any of four orientations.",
+        "evidenceStatus": "certified_component",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "DS950"
+        ],
+        "hardwareRevisions": [
+          "1.1"
+        ],
+        "versionObservationIds": [
+          "ds950-certified-firmware-4300"
+        ],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report",
+          "ess-ds950-product-page"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19",
+          "ess-ds950-product-page@2026-07-20"
+        ],
+        "sceneNodeName": "DS950_Shell",
+        "caveat": "The certified revision and firmware are configuration records, not unit-level observations.",
+        "technicalSpecifications": [
+          {
+            "id": "ds950-certified-firmware-spec",
+            "category": "firmware",
+            "label": "Certified DS950 firmware",
+            "value": "4.3.0.0",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "EVS 6.4.0.0 DS950 hardware 1.1",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "This is the certified configuration version, not a field reading or a claim about later releases."
+          },
+          {
+            "id": "ds950-protected-usb-access",
+            "category": "usb",
+            "label": "Protected USB access",
+            "value": "Manufacturer states USB ports are behind clear lockable, sealable doors",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "manufacturer_product",
+            "modelContext": "DS950 manufacturer product family",
+            "sourceIds": [
+              "ess-ds950-product-page"
+            ],
+            "sourceRevisionIds": [
+              "ess-ds950-product-page@2026-07-20"
+            ],
+            "caveat": "This establishes an access-control feature, not a connector count or the sealed condition of a field unit."
+          }
+        ]
+      },
+      {
+        "id": "ds950-input-feeder",
+        "name": "Ballot input feeder",
+        "category": "paper_input",
+        "description": "The manufacturer photograph shows a purpose-built input feeder above the scanner body for central-count ballot batches.",
+        "evidenceStatus": "manufacturer_documented_partial",
+        "scopeKind": "manufacturer_product_documentation",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "ess-ds950-product-page",
+          "ess-ds950-reference-photo"
+        ],
+        "sourceRevisionIds": [
+          "ess-ds950-product-page@2026-07-20",
+          "ess-ds950-reference-photo@2026-07-20"
+        ],
+        "sceneNodeName": "DS950_Input_Feeder",
+        "caveat": "The source supports the external feeder category and form, not exact dimensions or internal transport parts."
+      },
+      {
+        "id": "ds950-scanner-path",
+        "name": "Dual-sided scanner path",
+        "category": "scanner",
+        "description": "The certified scope establishes simultaneous front-and-back scanning and four-orientation ballot handling.",
+        "evidenceStatus": "certified_component",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "sceneNodeName": "DS950_Scanner_Path",
+        "caveat": "The optical function is certified, but the illustrative path is not a teardown or engineering drawing."
+      },
+      {
+        "id": "ds950-sorting-trays",
+        "name": "Output transport and sorting trays",
+        "category": "paper_output",
+        "description": "The output section receives processed ballots; baseline ECO 1151 records transporter-board firmware affecting when the output tray begins to lower.",
+        "evidenceStatus": "historical_change_record",
+        "scopeKind": "historical_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [
+          "ds950-transporter-firmware-c60"
+        ],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "ess-ds950-reference-photo"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "ess-ds950-reference-photo@2026-07-20"
+        ],
+        "sceneNodeName": "DS950_Sorting_Trays",
+        "caveat": "The change record is not evidence of a jam, field update, unit condition, or exact output geometry."
+      },
+      {
+        "id": "ds950-display",
+        "name": "Operator display",
+        "category": "display",
+        "description": "The manufacturer photograph shows an integrated operator-facing display on the DS950 enclosure.",
+        "evidenceStatus": "manufacturer_documented_partial",
+        "scopeKind": "manufacturer_product_documentation",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "ess-ds950-product-page",
+          "ess-ds950-reference-photo"
+        ],
+        "sourceRevisionIds": [
+          "ess-ds950-product-page@2026-07-20",
+          "ess-ds950-reference-photo@2026-07-20"
+        ],
+        "sceneNodeName": "DS950_Display",
+        "caveat": "The sources do not establish the exact panel model, resolution, connector, or internal placement."
+      },
+      {
+        "id": "ds950-motherboard",
+        "name": "Kontron motherboard with DRAM and TPM capabilities",
+        "category": "compute",
+        "description": "The EVS 6.4.0.0 scope records an updated Kontron motherboard with DRAM and TPM capabilities.",
+        "evidenceStatus": "approved_change_for_evs_6400",
+        "scopeKind": "certified_configuration_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19"
+        ],
+        "sceneNodeName": "DS950_Motherboard",
+        "caveat": "The scope does not publish the board model, processor, DRAM capacity, TPM version, layout, or field history."
+      },
+      {
+        "id": "ds950-m2-storage",
+        "name": "M.2 storage device",
+        "category": "storage",
+        "description": "The EVS 6.4.0.0 scope records an M.2 hard drive added to the DS950 configuration.",
+        "evidenceStatus": "approved_change_for_evs_6400",
+        "scopeKind": "certified_configuration_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19"
+        ],
+        "sceneNodeName": "DS950_M2_Storage",
+        "caveat": "The scope does not publish manufacturer, model, interface subtype, capacity, firmware, data, or field history."
+      },
+      {
+        "id": "ds950-smart-card-reader",
+        "name": "Smart-card reader",
+        "category": "authentication_accessory",
+        "description": "The EVS 6.4.0.0 scope records a second-source smart-card reader for the DS950.",
+        "evidenceStatus": "approved_change_for_evs_6400",
+        "scopeKind": "certified_configuration_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19"
+        ],
+        "sceneNodeName": "DS950_Smart_Card_Reader",
+        "caveat": "The public scope does not identify the reader model, placement, selected source, or field installation."
+      },
+      {
+        "id": "ds950-central-count-cart",
+        "name": "Central Count Cart",
+        "category": "support_cart",
+        "description": "The certified system includes metal Central Count Cart model 7898 for the DS450, DS850, and DS950.",
+        "evidenceStatus": "certified_component",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "7898"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "sceneNodeName": "DS950_Central_Count_Cart",
+        "caveat": "Certification identifies the cart option but does not prove its use or setup at a jurisdiction."
+      },
+      {
+        "id": "ds950-ups",
+        "name": "External uninterruptible power supply",
+        "category": "power",
+        "description": "The certified COTS hardware table names two CyberPower UPS alternatives that include the DS950.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "CyberPower OR1500PFCLCD",
+          "CyberPower CP1500PFCLCD"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "sceneNodeName": "DS950_UPS",
+        "caveat": "The sources do not establish jurisdiction selection, workload runtime, battery health, or replacement history."
+      }
+    ],
+    "versionObservations": [
+      {
+        "id": "ds950-certified-firmware-4300",
+        "componentId": "ds950-shell",
+        "label": "Certified DS950 firmware",
+        "value": "4.3.0.0",
+        "assertionScope": "certified",
+        "fieldStatus": "not_established",
+        "observedOn": "2023-08-18",
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "caveat": "This is the certified configuration version, not a field reading or unit update record."
+      },
+      {
+        "id": "ds950-transporter-firmware-c60",
+        "componentId": "ds950-sorting-trays",
+        "label": "Certified baseline DATAWIN transporter firmware",
+        "value": "C60_20221215_0300",
+        "assertionScope": "certified",
+        "fieldStatus": "not_established",
+        "observedOn": "2023-08-18",
+        "sourceIds": [
+          "eac-evs-6400-scope"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19"
+        ],
+        "caveat": "This is the firmware named in certified baseline ECO 1151, not a live readout or service record."
+      }
+    ],
+    "configurationChanges": [
+      {
+        "id": "ds950-evs-6400-hardware-modification",
+        "changeId": "EVS 6.4.0.0 DS950 hardware modification set",
+        "componentIds": [
+          "ds950-motherboard",
+          "ds950-m2-storage",
+          "ds950-smart-card-reader"
+        ],
+        "submittedOn": "2023-01-24",
+        "eacApprovedOn": "2023-08-18",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "included_in_certified_evs_6400_configuration",
+        "description": "The scope records an updated Kontron motherboard with DRAM/TPM capabilities, updated PC power supply, second-source smart-card reader, and M.2 hard drive.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "caveat": "This groups certification modifications and is not a claim that one field service event installed them together."
+      },
+      {
+        "id": "ds950-eco-1151",
+        "changeId": "ECO 1151",
+        "componentIds": [
+          "ds950-sorting-trays"
+        ],
+        "submittedOn": "2023-02-21",
+        "eacApprovedOn": "2023-08-18",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "baseline_eco_certified_with_evs_6400",
+        "description": "ECO 1151 updates DATAWIN transporter firmware so the output tray begins lowering sooner, providing more opportunity for incoming ballots to lay flat if a jam occurs.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-evs-6400-scope"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19"
+        ],
+        "caveat": "The de minimis ECO is certification history, not evidence of a jam, field update, or election impact."
+      }
+    ],
+    "findings": [
+      {
+        "id": "ds950-evs-6400-test-campaign",
+        "findingType": "vstl_test_campaign_result",
+        "title": "No anomalies reported in the EVS 6.4.0.0 certification campaign",
+        "affectedSystemVersions": [
+          "EVS 6.4.0.0 certified configuration"
+        ],
+        "componentIds": [
+          "ds950-shell",
+          "ds950-scanner-path",
+          "ds950-sorting-trays"
+        ],
+        "publicStatus": "none_reported_in_test_campaign",
+        "description": "Pro V&V reported no anomalies during EVS 6.4.0.0 testing and recommended certification after the system met applicable VVSG 1.0 requirements.",
+        "sourceIds": [
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "caveat": "A bounded test result is not evidence that every fielded DS950 is defect-free or a claim about misconduct or outcomes."
+      }
+    ],
+    "power": [
+      {
+        "id": "ds950-certified-ups-options",
+        "componentId": "ds950-ups",
+        "knowledgeStatus": "confirmed",
+        "supplyType": "external uninterruptible power supply",
+        "manufacturer": "CyberPower",
+        "model": "OR1500PFCLCD; CP1500PFCLCD",
+        "capacity": null,
+        "runtime": null,
+        "description": "The certified COTS hardware table names two CyberPower UPS alternatives that apply to the DS950.",
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "caveat": "The sources do not state a DS950 workload runtime or establish option selection, battery age, capacity, or condition."
+      }
+    ],
+    "deployments": [],
+    "scene": {
+      "assetUrl": "/equipment/ess-evs-6400-ds950/orthographic-pilot.glb",
+      "assetLicense": "Apache-2.0",
+      "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-tabulator-models.mjs",
+      "geometryFidelity": "illustrative_not_to_scale",
+      "description": "An original photo-informed DS950 schematic separating the enclosure, feeder, scanner path, output trays, display, documented internal categories, cart, and UPS.",
+      "referenceConfiguration": "DS950 manufacturer product form on the certified Central Count Cart category",
+      "referenceSourceIds": [
+        "ess-ds950-product-page",
+        "ess-ds950-reference-photo",
+        "eac-evs-6400-scope",
+        "provv-evs-6400-test-report"
+      ],
+      "referenceSourceRevisionIds": [
+        "ess-ds950-product-page@2026-07-20",
+        "ess-ds950-reference-photo@2026-07-20",
+        "eac-evs-6400-scope@2026-07-19",
+        "provv-evs-6400-test-report@2026-07-19"
+      ],
+      "referenceNote": "External proportions follow the manufacturer photograph. Internal forms, placement, scale, ports, cabling, paper path, and explosion offsets remain illustrative because no public teardown establishes them.",
+      "referenceImages": [
+        {
+          "id": "ds950-official-product-photo",
+          "assetUrl": "/equipment/ess-evs-6400-ds950/reference-ds950.png",
+          "assetSha256": "c1660e87080f10910a69fbdb797db8e050d6ee32d5cfbd26215b9de6cacf4ba3",
+          "width": 1280,
+          "height": 854,
+          "alt": "Official product photograph of an ES&S DS950 high-speed scanner and tabulator on its wheeled support cart",
+          "caption": "Manufacturer catalog photograph of the DS950 central-count scanner and tabulator.",
+          "kind": "manufacturer_product_photo",
+          "sourceIds": [
+            "ess-ds950-reference-photo"
+          ],
+          "sourceRevisionIds": [
+            "ess-ds950-reference-photo@2026-07-20"
+          ],
+          "pageOrSection": "Original 1280 x 854 catalog photograph",
+          "derivativeNote": "Local PNG conversion of the archived manufacturer JPEG at its original dimensions; no crop or content alteration.",
+          "caveat": "External appearance only; the photograph does not establish dimensions, internal placement, firmware, accessories, or field configuration."
+        }
+      ],
+      "camera": {
+        "position": [
+          6.5,
+          5.5,
+          7.5
+        ],
+        "zoom": 60,
+        "near": 0.1,
+        "far": 100
+      },
+      "nodes": [
+        {
+          "componentId": "ds950-shell",
+          "nodeName": "DS950_Shell",
+          "color": "#8ca3a8",
+          "explodedOffset": [
+            0,
+            0.5,
+            0
+          ]
+        },
+        {
+          "componentId": "ds950-input-feeder",
+          "nodeName": "DS950_Input_Feeder",
+          "color": "#d4d9d8",
+          "explodedOffset": [
+            0,
+            1.25,
+            -0.2
+          ]
+        },
+        {
+          "componentId": "ds950-scanner-path",
+          "nodeName": "DS950_Scanner_Path",
+          "color": "#33c6b5",
+          "explodedOffset": [
+            0,
+            0.65,
+            -0.5
+          ]
+        },
+        {
+          "componentId": "ds950-sorting-trays",
+          "nodeName": "DS950_Sorting_Trays",
+          "color": "#53676d",
+          "explodedOffset": [
+            0,
+            -0.3,
+            1
+          ]
+        },
+        {
+          "componentId": "ds950-display",
+          "nodeName": "DS950_Display",
+          "color": "#78a6ff",
+          "explodedOffset": [
+            0,
+            1.2,
+            0.8
+          ]
+        },
+        {
+          "componentId": "ds950-motherboard",
+          "nodeName": "DS950_Motherboard",
+          "color": "#f0b95a",
+          "explodedOffset": [
+            1.35,
+            0.2,
+            0.2
+          ]
+        },
+        {
+          "componentId": "ds950-m2-storage",
+          "nodeName": "DS950_M2_Storage",
+          "color": "#e87fb3",
+          "explodedOffset": [
+            -1.35,
+            0.25,
+            0.25
+          ]
+        },
+        {
+          "componentId": "ds950-smart-card-reader",
+          "nodeName": "DS950_Smart_Card_Reader",
+          "color": "#ff8c69",
+          "explodedOffset": [
+            1.25,
+            0.65,
+            0.7
+          ]
+        },
+        {
+          "componentId": "ds950-central-count-cart",
+          "nodeName": "DS950_Central_Count_Cart",
+          "color": "#344247",
+          "explodedOffset": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "componentId": "ds950-ups",
+          "nodeName": "DS950_UPS",
+          "color": "#e87fb3",
+          "explodedOffset": [
+            -1.25,
+            -0.75,
+            -0.2
+          ]
+        }
+      ]
+    },
+    "caveats": [
+      "The DS950 is a separate central-count machine and must not inherit DS200 component claims.",
+      "The 3D scene is a navigation aid, not a teardown, wiring diagram, engineering drawing, installation, or unit inventory.",
+      "Unpublished motherboard, processor, memory, TPM, storage, and port-count details are not guessed.",
+      "Certified UPS alternatives do not establish which model or battery condition applies at a jurisdiction.",
+      "A certification change, ECO, or test result is not evidence of field occurrence, misconduct, or an election outcome effect."
+    ]
+  },
+  "editorial": {
+    "state": "approved",
+    "revision": 1,
+    "createdOn": "2026-07-20",
+    "updatedOn": "2026-07-20",
+    "reviewedOn": "2026-07-20",
+    "reviewedBy": "project_editorial_review",
+    "publishedOn": null,
+    "sourceRevisionIds": [
+      "eac-evs-6400-record@2026-07-19",
+      "eac-evs-6400-scope@2026-07-19",
+      "ess-ds950-product-page@2026-07-20",
+      "ess-ds950-reference-photo@2026-07-20",
+      "provv-evs-6400-test-report@2026-07-19"
+    ],
+    "reviewNotes": [
+      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision."
+    ]
+  }
+}

@@ -112,6 +112,8 @@ Component-level CPU, RAM, storage, battery, USB, Ethernet, cellular, display, an
 
 An unresolved value is stored as `null`, never a guess or a value silently borrowed from a nearby model. Manufacturer-family maximums and configurable options are labeled partial; they are not presented as installed capacity. Physical connector presence is kept separate from certified communications use, port occupation, enabled services, and field cabling. A Wi-Fi option is not described as a cellular modem.
 
+Hardware that is not present by default is modeled as its own component with `optionality: "optional"`. Its component card and scene node must not be merged into the base machine, and its sources must directly establish both the option and its equipment-family scope.
+
 ## Adding a dossier
 
 1. Prefer an EAC certification page, certificate/scope, VSTL test plan, and final test report.
@@ -139,6 +141,8 @@ The GLB files are original CivicResultMaps navigation schematics. Their rough ex
 - Pointer drag rotates the scene, wheel or pinch changes orthographic zoom, and keyboard-operable zoom, preset, and reset buttons provide equivalent camera controls.
 - A no-WebGL fallback retains every source-linked component and finding.
 - A component with known existence but unknown placement may be listed without a scene node.
+- An optional component is labeled in both the component rail and detail card. Its scene shape may be symbolic when the source establishes existence but not exact model, dimensions, or placement.
+- A central-tabulation dossier may represent a multi-box system (scanner, workstation, server, closed network, and power equipment) rather than implying that every tabulator is one enclosure.
 - A selectable scene node may be a composite group with multiple original child meshes, but it still maps to exactly one evidence record.
 - Explosion offsets and simplified internal shapes are illustrative unless a cited source specifically establishes placement.
 - Hide and isolate controls change only the local scene presentation. They do not remove a component, claim, or source from the dossier.

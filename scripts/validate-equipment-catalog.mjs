@@ -118,6 +118,9 @@ for (const claim of claims) {
   for (const component of system.components ?? []) {
     if (componentById.has(component.id)) error(`${label} has duplicate component ${component.id}.`);
     componentById.set(component.id, component);
+    if ("optionality" in component && component.optionality !== "optional") {
+      error(`${label} component ${component.id} has an invalid optionality value.`);
+    }
     requireSourceIds(component, `${label} component ${component.id}`, sourceById, revisionById);
     requireNonEmpty(component.caveat, `${label} component ${component.id} caveat`);
     if (component.evidenceStatus === "not_publicly_confirmed" && component.sceneNodeName !== null) {

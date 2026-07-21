@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 2,
+  "reviewedOn": "2026-07-20",
+  "system": {
+    "id": "dominion-democracy-suite-517-imagecast-central",
+    "slug": "dominion-democracy-suite-517-imagecast-central",
+    "status": "pilot",
+    "manufacturer": "Dominion Voting Systems Corp.",
+    "systemName": "Democracy Suite",
+    "systemVersion": "5.17",
+    "deviceName": "ImageCast Central",
+    "displayName": "Dominion Democracy Suite 5.17 / ImageCast Central",
+    "deviceRole": "Central-count ballot scanning and tabulation system",
+    "summary": "A separate source-linked dossier for the ImageCast Central configuration: a certified COTS high-speed scanner, workstation, ICC application, removable-media accessories, optional isolated network infrastructure, and documented backup power.",
+    "certification": {
+      "certificationId": "DVS-DemSuite5.17",
+      "standard": "VVSG 1.0",
+      "certifiedOn": "2023-03-16",
+      "vstl": "Pro V&V, Inc.",
+      "scopeKind": "certified_configuration",
+      "sourceIds": [
+        "eac-dsuite-517-record",
+        "eac-dsuite-517-scope",
+        "provv-dsuite-517-test-report"
+      ],
+      "sourceRevisionIds": [
+        "eac-dsuite-517-record@2026-07-20",
+        "eac-dsuite-517-scope@2026-07-20",
+        "provv-dsuite-517-test-report@2026-07-20"
+      ],
+      "caveat": "EAC certification applies only to the evaluated Democracy Suite 5.17 certified configuration. It does not establish which scanner or workstation alternative a jurisdiction selected, the condition of a field unit, or an installation's network configuration."
+    },
+    "components": [
+      {
+        "id": "icc-central-scanner",
+        "name": "Central-count COTS scanner",
+        "category": "central_scanner",
+        "description": "ImageCast Central pairs one supported commercial high-speed scanner with the ICC workstation and ballot-processing application.",
+        "evidenceStatus": "certified_alternatives",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Canon DR-G2140",
+          "Canon DR-G1130",
+          "Canon DR-M160 II",
+          "Canon DR-M260",
+          "InoTec HiPro 821"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [
+          "icc-hipro-firmware-101074"
+        ],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report",
+          "co-dvs-517-icc-user-guide"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20",
+          "co-dvs-517-icc-user-guide@2026-07-20"
+        ],
+        "sceneNodeName": "ICC_Central_Scanner",
+        "caveat": "These are certified alternatives, not components used together. The scene and gallery show representative scanner forms and do not identify the selected model at a jurisdiction."
+      },
+      {
+        "id": "icc-workstation",
+        "name": "ICC client workstation",
+        "category": "workstation",
+        "description": "The ICC application runs on a certified desktop or all-in-one workstation paired with the selected scanner.",
+        "evidenceStatus": "certified_alternatives",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Dell Precision 3460 XE",
+          "Dell Precision 3450 XE",
+          "Dell Precision 3440 XE",
+          "Dell OptiPlex 5270 AIO",
+          "Dell OptiPlex 3050 AIO",
+          "Dell OptiPlex 7440 AIO",
+          "Dell OptiPlex 9030 AIO",
+          "Dell OptiPlex 9020 AIO",
+          "Dell OptiPlex 9010 AIO",
+          "Dell OptiPlex XE4",
+          "Dell OptiPlex XE3",
+          "Dell OptiPlex 7070",
+          "Dell OptiPlex 7060",
+          "Dell OptiPlex 7050"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICC_Workstation",
+        "caveat": "Workstation alternatives vary by scanner configuration. The certification documents do not establish which processor, memory, storage, display, or connector occupation exists in a particular installation.",
+        "technicalSpecifications": [
+          {
+            "id": "icc-workstation-operating-system",
+            "category": "operating_system",
+            "label": "Certified workstation operating system",
+            "value": "Windows 10 Professional, 64-bit",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "Democracy Suite 5.17 ImageCast Central workstation",
+            "sourceIds": [
+              "eac-dsuite-517-scope",
+              "provv-dsuite-517-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-dsuite-517-scope@2026-07-20",
+              "provv-dsuite-517-test-report@2026-07-20"
+            ],
+            "caveat": "This is the evaluated operating-system platform, not a live patch-level reading or evidence for a particular field workstation."
+          }
+        ]
+      },
+      {
+        "id": "icc-application",
+        "name": "ImageCast Central application",
+        "category": "software",
+        "description": "The proprietary ICC application controls ballot image capture, interpretation, batch acceptance, and central-count tabulation.",
+        "evidenceStatus": "certified_component",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [
+          "icc-certified-application-517151"
+        ],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICC_Application",
+        "caveat": "The certified version is not a live field reading. The schematic screen is symbolic and does not reproduce a proprietary user interface.",
+        "technicalSpecifications": [
+          {
+            "id": "icc-certified-application-version",
+            "category": "software",
+            "label": "Certified ICC application",
+            "value": "5.17.15.1",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "Democracy Suite 5.17 ImageCast Central",
+            "sourceIds": [
+              "eac-dsuite-517-scope",
+              "provv-dsuite-517-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-dsuite-517-scope@2026-07-20",
+              "provv-dsuite-517-test-report@2026-07-20"
+            ],
+            "caveat": "This is the application version in the final certified configuration, not a field-observed installation or a claim that it is the newest later release."
+          }
+        ]
+      },
+      {
+        "id": "icc-ibutton-reader",
+        "name": "iButton reader and adapter",
+        "category": "authentication_accessory",
+        "description": "Certified auxiliary hardware includes the Dallas Maxim iButton reader/writer and its 1-Wire USB adapter.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Dallas Maxim DS9490R#",
+          "Dallas Maxim DS1402-RP8+"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICC_iButton_Reader",
+        "caveat": "The models are named auxiliary equipment. The source does not establish that the schematic location or cable arrangement matches a particular installation."
+      },
+      {
+        "id": "icc-media-reader",
+        "name": "CompactFlash media reader",
+        "category": "removable_media",
+        "description": "Certified auxiliary hardware includes USB CompactFlash reader alternatives used with election media.",
+        "evidenceStatus": "certified_alternatives",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Lexar Professional USB 3.0 Dual-Slot Card Reader",
+          "Kingston USB 3.0 High-Speed Media Reader",
+          "Hoodman Steel USB3"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICC_Media_Reader",
+        "caveat": "The listed readers are alternatives. Their presence, attached port, and media contents at a particular jurisdiction are not established."
+      },
+      {
+        "id": "icc-optional-isolated-lan",
+        "name": "Optional isolated network infrastructure",
+        "category": "network",
+        "optionality": "optional",
+        "description": "Colorado's 5.17-CO guide calls for high-speed network infrastructure only when an additional central ballot scan repository or data center is used, and requires election computers to remain isolated from the Internet and other networks.",
+        "evidenceStatus": "documented_optional_model_component",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-icc-user-guide"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-icc-user-guide@2026-07-20"
+        ],
+        "sceneNodeName": "ICC_Optional_Isolated_LAN",
+        "caveat": "This is a conditional 5.17-CO infrastructure requirement, not evidence that every ICC installation is networked or that any ICC is connected to the Internet.",
+        "technicalSpecifications": [
+          {
+            "id": "icc-optional-isolated-ethernet",
+            "category": "ethernet",
+            "label": "Conditional central-repository network",
+            "value": "100 Mbps infrastructure when an additional central repository/data center is used; isolated from the Internet and all other networks",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Colorado Democracy Suite 5.17-CO ImageCast Central",
+            "sourceIds": [
+              "co-dvs-517-icc-user-guide"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-icc-user-guide@2026-07-20"
+            ],
+            "caveat": "The guide states a conditional capability and isolation rule. It does not establish cabling, port occupation, enabled services, or field use elsewhere."
+          }
+        ]
+      },
+      {
+        "id": "icc-ups",
+        "name": "External uninterruptible power supply",
+        "category": "power",
+        "description": "Colorado's 5.17-CO guide identifies an approved APC UPS and a minimum backup duration for the central scanner and workstation.",
+        "evidenceStatus": "documented_model_family",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [
+          "APC SMC1500 Smart-UPS"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-icc-user-guide"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-icc-user-guide@2026-07-20"
+        ],
+        "sceneNodeName": "ICC_UPS",
+        "caveat": "The guide establishes a Colorado-approved model and minimum operating requirement, not the battery age, health, or actual runtime at a particular site."
+      }
+    ],
+    "versionObservations": [
+      {
+        "id": "icc-certified-application-517151",
+        "componentId": "icc-application",
+        "label": "Certified ICC application",
+        "value": "5.17.15.1",
+        "assertionScope": "certified",
+        "fieldStatus": "not_established",
+        "observedOn": "2023-03-16",
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "This is the final certified application version, not a field reading or evidence of a jurisdiction's current installed version."
+      },
+      {
+        "id": "icc-hipro-firmware-101074",
+        "componentId": "icc-central-scanner",
+        "label": "Certified HiPro firmware support",
+        "value": "1.0.1074",
+        "assertionScope": "certified",
+        "fieldStatus": "not_established",
+        "observedOn": "2023-03-16",
+        "sourceIds": [
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "This version applies only to the InoTec HiPro scanner alternative and is not a firmware claim for the Canon alternatives or a field-observed scanner."
+      }
+    ],
+    "configurationChanges": [
+      {
+        "id": "icc-hipro-firmware-support-change",
+        "changeId": "D-Suite 5.17 ICC HiPro support",
+        "componentIds": [
+          "icc-central-scanner",
+          "icc-application"
+        ],
+        "submittedOn": "2022-12-02",
+        "eacApprovedOn": "2023-03-16",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "included_in_certified_517_configuration",
+        "description": "The Pro V&V report records an ICC application update to support InoTec HiPro firmware version 1.0.1074.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "provv-dsuite-517-test-plan",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "This is certification configuration history. It does not establish that a jurisdiction selected the HiPro alternative or installed the firmware on a field scanner."
+      }
+    ],
+    "findings": [
+      {
+        "id": "icc-dsuite-517-test-campaign",
+        "findingType": "vstl_test_campaign_result",
+        "title": "No anomalies or deficiencies reported in the 5.17 certification campaign",
+        "affectedSystemVersions": [
+          "Democracy Suite 5.17 certified configuration"
+        ],
+        "componentIds": [
+          "icc-central-scanner",
+          "icc-workstation",
+          "icc-application"
+        ],
+        "publicStatus": "none_reported_in_test_campaign",
+        "description": "Pro V&V reported no anomalies and no deficiencies during the Democracy Suite 5.17 certification campaign; ICC accuracy and integration testing met the stated requirements.",
+        "sourceIds": [
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "A bounded certification-test result is not evidence that every fielded unit is defect-free, and it is not a claim about later versions, operations, misconduct, or election outcomes."
+      }
+    ],
+    "power": [
+      {
+        "id": "icc-colorado-approved-ups",
+        "componentId": "icc-ups",
+        "knowledgeStatus": "confirmed",
+        "supplyType": "external uninterruptible power supply",
+        "manufacturer": "APC",
+        "model": "SMC1500 Smart-UPS",
+        "capacity": "900 W / 1500 VA",
+        "runtime": "Minimum 15 minutes required by the 5.17-CO guide",
+        "description": "The Colorado guide names the APC SMC1500 and requires enough backup power to complete and save a ballot batch before graceful shutdown.",
+        "sourceIds": [
+          "co-dvs-517-icc-user-guide"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-icc-user-guide@2026-07-20"
+        ],
+        "caveat": "The minimum is a documented Colorado configuration requirement, not a measured runtime or battery-health observation at a field installation."
+      }
+    ],
+    "deployments": [],
+    "scene": {
+      "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-central/orthographic-pilot.glb",
+      "assetLicense": "Apache-2.0",
+      "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-tabulator-models.mjs",
+      "geometryFidelity": "illustrative_not_to_scale",
+      "description": "An original schematic separating the ICC scanner, workstation, application, authentication and media accessories, conditional isolated network, and UPS.",
+      "referenceConfiguration": "ImageCast Central scanner-and-workstation arrangement informed by the official 5.17-CO scanner reference page",
+      "referenceSourceIds": [
+        "co-dvs-517-icc-user-guide",
+        "eac-dsuite-517-scope",
+        "provv-dsuite-517-test-report"
+      ],
+      "referenceSourceRevisionIds": [
+        "co-dvs-517-icc-user-guide@2026-07-20",
+        "eac-dsuite-517-scope@2026-07-20",
+        "provv-dsuite-517-test-report@2026-07-20"
+      ],
+      "referenceNote": "The scanner outline is informed by the official guide's scanner photographs. Component shapes, scale, placement, cabling, ports, and the simultaneous arrangement of alternatives are illustrative.",
+      "referenceImages": [
+        {
+          "id": "icc-certified-scanner-reference-page",
+          "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-central/reference-icc-certified-scanners.png",
+          "assetSha256": "60691f00aa5a138b3f385a5edd7a49edde541f7cace7c0d02b8151b4291bbe3a",
+          "width": 1224,
+          "height": 1584,
+          "alt": "Official ImageCast Central guide page showing the Canon DR-G1130 and Canon DR-G2140 scanner alternatives",
+          "caption": "Colorado-hosted 5.17-CO guide page with photographs of two certified Canon scanner alternatives.",
+          "kind": "state_hosted_vendor_manual_page",
+          "sourceIds": [
+            "co-dvs-517-icc-user-guide"
+          ],
+          "sourceRevisionIds": [
+            "co-dvs-517-icc-user-guide@2026-07-20"
+          ],
+          "pageOrSection": "PDF page 69",
+          "derivativeNote": "Full-page 144 DPI PNG render of PDF page 69 using the local Poppler renderer; no crop or content alteration.",
+          "caveat": "The page shows certified alternatives and does not establish which scanner model a jurisdiction selected or the condition of a field unit."
+        }
+      ],
+      "camera": {
+        "position": [
+          7,
+          5.5,
+          8
+        ],
+        "zoom": 65,
+        "near": 0.1,
+        "far": 100
+      },
+      "nodes": [
+        {
+          "componentId": "icc-central-scanner",
+          "nodeName": "ICC_Central_Scanner",
+          "color": "#d4d9d8",
+          "explodedOffset": [0, 0.7, 0]
+        },
+        {
+          "componentId": "icc-workstation",
+          "nodeName": "ICC_Workstation",
+          "color": "#657478",
+          "explodedOffset": [0, 1.25, -0.5]
+        },
+        {
+          "componentId": "icc-application",
+          "nodeName": "ICC_Application",
+          "color": "#78a6ff",
+          "explodedOffset": [0, 1.55, 0.25]
+        },
+        {
+          "componentId": "icc-ibutton-reader",
+          "nodeName": "ICC_iButton_Reader",
+          "color": "#f0b95a",
+          "explodedOffset": [-1.2, 0.25, 0.7]
+        },
+        {
+          "componentId": "icc-media-reader",
+          "nodeName": "ICC_Media_Reader",
+          "color": "#e87fb3",
+          "explodedOffset": [1.2, 0.25, 0.7]
+        },
+        {
+          "componentId": "icc-optional-isolated-lan",
+          "nodeName": "ICC_Optional_Isolated_LAN",
+          "color": "#33c6b5",
+          "explodedOffset": [-1.25, -0.65, 0.2]
+        },
+        {
+          "componentId": "icc-ups",
+          "nodeName": "ICC_UPS",
+          "color": "#e87fb3",
+          "explodedOffset": [1.25, -0.65, -0.2]
+        }
+      ]
+    },
+    "caveats": [
+      "ImageCast Central is a COTS scanner-and-workstation system, not one proprietary enclosure.",
+      "Certified scanner and workstation alternatives are listed separately and must not be read as an instruction to combine every option.",
+      "The optional network component is conditional and isolated; it is not evidence of Internet connectivity or field use.",
+      "The 3D scene is a navigation aid, not a teardown, wiring diagram, exact installation, or unit inventory.",
+      "A certification change or test result is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
+    ]
+  },
+  "editorial": {
+    "state": "approved",
+    "revision": 1,
+    "createdOn": "2026-07-20",
+    "updatedOn": "2026-07-20",
+    "reviewedOn": "2026-07-20",
+    "reviewedBy": "project_editorial_review",
+    "publishedOn": null,
+    "sourceRevisionIds": [
+      "co-dvs-517-icc-user-guide@2026-07-20",
+      "eac-dsuite-517-record@2026-07-20",
+      "eac-dsuite-517-scope@2026-07-20",
+      "provv-dsuite-517-test-plan@2026-07-20",
+      "provv-dsuite-517-test-report@2026-07-20"
+    ],
+    "reviewNotes": [
+      "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision."
+    ]
+  }
+}

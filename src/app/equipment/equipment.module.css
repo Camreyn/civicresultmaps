@@ -560,6 +560,29 @@
   font-weight: 760;
 }
 
+.componentNameLine,
+.componentScopeBadges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.optionalBadge {
+  width: fit-content;
+  padding: 3px 6px;
+  border: 1px solid rgba(240, 185, 90, 0.38);
+  border-radius: 999px;
+  background: rgba(240, 185, 90, 0.1);
+  color: #f5ca7c;
+  font-size: 0.57rem !important;
+  font-style: normal;
+  font-weight: 850 !important;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
 .componentButton small,
 .componentButtonActive small {
   color: #769c98;

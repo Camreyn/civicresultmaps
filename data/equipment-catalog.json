@@ -93,6 +93,84 @@
       "revisionComparisons": []
     },
     {
+      "id": "clearballot-clearcount-product-page",
+      "publisher": "Clear Ballot Group",
+      "authorityLevel": "manufacturer_primary",
+      "title": "ClearCount product page",
+      "url": "https://www.clearballot.com/products/clear-count",
+      "localArtifact": "data/equipment-sources/clearballot-clearcount-product-page.html",
+      "sha256": "847bf04e801a77dbac0c4dc6b1da286af0d4377b18b8684899a9fbb1081e2b1a",
+      "documentType": "manufacturer_product_page_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Product overview, tabulation and reporting sections",
+      "caveat": "The current manufacturer page describes the ClearCount product family and user-facing functions. It does not establish the exact ClearVote 2.5 certified COTS alternatives, software installed on a fielded system, or a particular jurisdiction deployment.",
+      "canonicalUrl": "https://www.clearballot.com/products/clear-count",
+      "currentReviewedRevisionId": "clearballot-clearcount-product-page@2026-07-20",
+      "latestRetrievedRevisionId": "clearballot-clearcount-product-page@2026-07-20",
+      "revisions": [
+        {
+          "id": "clearballot-clearcount-product-page@2026-07-20",
+          "localArtifact": "data/equipment-sources/clearballot-clearcount-product-page.html",
+          "sha256": "847bf04e801a77dbac0c4dc6b1da286af0d4377b18b8684899a9fbb1081e2b1a",
+          "byteLength": 37843,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.clearballot.com/products/clear-count",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Product overview, tabulation and reporting sections",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "clearballot-clearcount-reference-photo",
+      "publisher": "Clear Ballot Group",
+      "authorityLevel": "manufacturer_primary",
+      "title": "ClearCount central scanner and laptop product photograph",
+      "url": "https://www.clearballot.com/hubfs/ClearCount%20Hero%20Photo_0-2.jpg",
+      "localArtifact": "data/equipment-sources/clearballot-clearcount-reference-photo.jpg",
+      "sha256": "3a200921253c25ecd5cd93d89545f71de3aa416e3954f49599ebfbe8faa9c570",
+      "documentType": "manufacturer_product_image_jpeg",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "ClearCount hero product photograph, original 2000 x 1333 image",
+      "caveat": "The photograph supports the external appearance of a ClearCount scanner-and-laptop arrangement only. It does not identify the pictured scanner or laptop model, establish that it is a ClearVote 2.5 certified alternative, or depict the CountServer, CountStation, switch, UPS, and all cabling.",
+      "canonicalUrl": "https://www.clearballot.com/hubfs/ClearCount%20Hero%20Photo_0-2.jpg",
+      "currentReviewedRevisionId": "clearballot-clearcount-reference-photo@2026-07-20",
+      "latestRetrievedRevisionId": "clearballot-clearcount-reference-photo@2026-07-20",
+      "revisions": [
+        {
+          "id": "clearballot-clearcount-reference-photo@2026-07-20",
+          "localArtifact": "data/equipment-sources/clearballot-clearcount-reference-photo.jpg",
+          "sha256": "3a200921253c25ecd5cd93d89545f71de3aa416e3954f49599ebfbe8faa9c570",
+          "byteLength": 250286,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.clearballot.com/hubfs/ClearCount%20Hero%20Photo_0-2.jpg",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "ClearCount hero product photograph, original 2000 x 1333 image",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "co-dvs-517-avalue-sid21-manual",
       "publisher": "Colorado Secretary of State; Avalue Technology, Inc.",
       "authorityLevel": "state_election_office_hosted_manufacturer_primary",
@@ -126,6 +204,45 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "Pages 8-10, 12-14, and 22-23",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "co-dvs-517-icc-user-guide",
+      "publisher": "Colorado Secretary of State; Dominion Voting Systems",
+      "authorityLevel": "state_election_office_hosted_vendor_manual",
+      "title": "Democracy Suite ImageCast Central User Guide 5.17-CO::4",
+      "url": "https://www.sos.state.co.us/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/UGICCUserGuide5-17CO.pdf",
+      "localArtifact": "data/equipment-sources/co-dvs-517-icc-user-guide.pdf",
+      "sha256": "f164b0eda2039470c9817217029366e3096aea67ee2b5795c480023b0672c7fa",
+      "documentType": "state_election_office_hosted_vendor_user_guide_pdf",
+      "publishedOn": "2023-05-02",
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "PDF pages 6, 39, and 69-71; system parts, power/network requirements, and scanner photographs",
+      "caveat": "The guide documents Colorado's 5.17-CO ImageCast Central procedures and photographs scanner alternatives. It does not establish which alternative a jurisdiction selected, a unit-level inventory, or applicability outside the named configuration.",
+      "canonicalUrl": "https://www.sos.state.co.us/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/UGICCUserGuide5-17CO.pdf",
+      "currentReviewedRevisionId": "co-dvs-517-icc-user-guide@2026-07-20",
+      "latestRetrievedRevisionId": "co-dvs-517-icc-user-guide@2026-07-20",
+      "revisions": [
+        {
+          "id": "co-dvs-517-icc-user-guide@2026-07-20",
+          "localArtifact": "data/equipment-sources/co-dvs-517-icc-user-guide.pdf",
+          "sha256": "f164b0eda2039470c9817217029366e3096aea67ee2b5795c480023b0672c7fa",
+          "byteLength": 3755112,
+          "publishedOn": "2023-05-02",
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.sos.state.co.us/pubs/elections/VotingSystems/DVS-DemocracySuite517/documentation/UGICCUserGuide5-17CO.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF pages 6, 39, and 69-71; system parts, power/network requirements, and scanner photographs",
           "archiveStatus": "verified"
         }
       ],
@@ -1179,6 +1296,84 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "Original 1280 x 854 product photograph linked from the DS200 product page",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "ess-ds950-product-page",
+      "publisher": "Election Systems & Software",
+      "authorityLevel": "manufacturer_primary",
+      "title": "DS950 high-speed scanner and tabulator product page",
+      "url": "https://www.essvote.com/products/ds950/",
+      "localArtifact": "data/equipment-sources/ess-ds950-product-page.html",
+      "sha256": "001a17e5b579bc94a0efd15871c1d0c8565aa58dd135df03344163687e62fba3",
+      "documentType": "manufacturer_product_page_html",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "High-speed scanner and tabulator overview and security sections",
+      "caveat": "The current manufacturer page describes the DS950 product family and may reflect a later marketed configuration. It is used for model-family functions and external appearance, not to override the EVS 6.4.0.0 certified firmware, hardware revision, or communications table.",
+      "canonicalUrl": "https://www.essvote.com/products/ds950/",
+      "currentReviewedRevisionId": "ess-ds950-product-page@2026-07-20",
+      "latestRetrievedRevisionId": "ess-ds950-product-page@2026-07-20",
+      "revisions": [
+        {
+          "id": "ess-ds950-product-page@2026-07-20",
+          "localArtifact": "data/equipment-sources/ess-ds950-product-page.html",
+          "sha256": "001a17e5b579bc94a0efd15871c1d0c8565aa58dd135df03344163687e62fba3",
+          "byteLength": 134130,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.essvote.com/products/ds950/",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "High-speed scanner and tabulator overview and security sections",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "ess-ds950-reference-photo",
+      "publisher": "Election Systems & Software",
+      "authorityLevel": "manufacturer_primary",
+      "title": "DS950 official catalog photograph",
+      "url": "https://www.essvote.com/storage/2022/01/DS950_catalog_image.jpg",
+      "localArtifact": "data/equipment-sources/ess-ds950-reference-photo.jpg",
+      "sha256": "0b6b919d9c91b8447f56c866174ce647c816a16c88dbc73d5c4c0497796e6c59",
+      "documentType": "manufacturer_product_image_jpeg",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-20",
+      "pageOrSection": "Original 1280 x 854 catalog photograph linked from the DS950 product page",
+      "caveat": "The manufacturer photograph supports DS950 external appearance only. It does not establish exact dimensions, internal placement, the EVS 6.4.0.0 certified revision, a selected UPS, or a particular fielded unit.",
+      "canonicalUrl": "https://www.essvote.com/storage/2022/01/DS950_catalog_image.jpg",
+      "currentReviewedRevisionId": "ess-ds950-reference-photo@2026-07-20",
+      "latestRetrievedRevisionId": "ess-ds950-reference-photo@2026-07-20",
+      "revisions": [
+        {
+          "id": "ess-ds950-reference-photo@2026-07-20",
+          "localArtifact": "data/equipment-sources/ess-ds950-reference-photo.jpg",
+          "sha256": "0b6b919d9c91b8447f56c866174ce647c816a16c88dbc73d5c4c0497796e6c59",
+          "byteLength": 90235,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-20",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.essvote.com/storage/2022/01/DS950_catalog_image.jpg",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "Original 1280 x 854 catalog photograph linked from the DS950 product page",
           "archiveStatus": "verified"
         }
       ],
@@ -2721,6 +2916,1097 @@
       }
     },
     {
+      "id": "clear-ballot-clearvote-25-clearcount",
+      "slug": "clear-ballot-clearvote-25-clearcount",
+      "status": "pilot",
+      "manufacturer": "Clear Ballot Group",
+      "systemName": "ClearVote",
+      "systemVersion": "2.5",
+      "deviceName": "ClearCount",
+      "displayName": "Clear Ballot ClearVote 2.5 / ClearCount",
+      "deviceRole": "Central-count scanning, tabulation, adjudication, and reporting system",
+      "summary": "A separate source-linked dossier for the ClearCount 2.5 central-count system, which uses a CountServer, ScanStations paired with certified COTS scanners, CountStations, a closed wired network, and an external UPS.",
+      "certification": {
+        "certificationId": "CBG-CV-25",
+        "standard": "VVSG 1.0",
+        "certifiedOn": "2025-11-19",
+        "vstl": "Pro V&V, Inc.",
+        "scopeKind": "certified_configuration",
+        "sourceIds": [
+          "eac-clearvote-25-record",
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-clearvote-25-record@2026-07-19",
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-report@2026-07-19"
+        ],
+        "caveat": "EAC certification applies only to the evaluated ClearVote 2.5 certified configuration. It does not establish which COTS alternatives a jurisdiction selected, their present condition, or the configuration of a particular installation."
+      },
+      "components": [
+        {
+          "id": "clearcount-application",
+          "name": "ClearCount tabulation application",
+          "category": "tabulation_software",
+          "description": "ClearCount provides central-count ballot tabulation, image processing, adjudication, election reporting, and consolidation of supported precinct-tabulator results.",
+          "evidenceStatus": "certified_component",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [
+            "clearcount-certified-version-258"
+          ],
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "provv-clearvote-25-test-plan",
+            "clearballot-clearcount-product-page"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "provv-clearvote-25-test-plan@2026-07-19",
+            "clearballot-clearcount-product-page@2026-07-20"
+          ],
+          "sceneNodeName": "ClearCount_Application",
+          "caveat": "The certified version is not a field reading. The schematic screen is symbolic and does not reproduce a proprietary user interface.",
+          "technicalSpecifications": [
+            {
+              "id": "clearcount-certified-software-258",
+              "category": "software",
+              "label": "Certified ClearCount version",
+              "value": "2.5.8",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "certified_configuration",
+              "modelContext": "ClearVote 2.5 certified configuration",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ],
+              "caveat": "This is the certified software version in the federal scope, not a field-observed installation."
+            }
+          ]
+        },
+        {
+          "id": "clearcount-central-scanner",
+          "name": "Central-count COTS scanner",
+          "category": "central_scanner",
+          "description": "One supported commercial scanner is paired with each ScanStation to capture ballot images for ClearCount tabulation.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Fujitsu fi-6400",
+            "Fujitsu fi-6800",
+            "Fujitsu fi-7180",
+            "Fujitsu/Ricoh fi-7800",
+            "Fujitsu/Ricoh fi-7600",
+            "Fujitsu/Ricoh fi-7900",
+            "Ricoh fi-8950"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "provv-clearvote-25-test-plan",
+            "clearballot-clearcount-reference-photo"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "provv-clearvote-25-test-plan@2026-07-19",
+            "clearballot-clearcount-reference-photo@2026-07-20"
+          ],
+          "sceneNodeName": "ClearCount_Central_Scanner",
+          "caveat": "The certified list contains alternatives, not a requirement to use all models. The manufacturer photo does not identify its pictured scanner, so the schematic depicts only a generic photo-informed central-scanner form.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "clearcount-scanstation",
+          "name": "ScanStation computer",
+          "category": "workstation",
+          "description": "A Windows laptop or desktop ScanStation runs an instance of the Tabulator application and controls its paired scanner.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Dell OptiPlex XE4 SFF",
+            "Dell Latitude 5580",
+            "Dell Latitude 5590",
+            "Dell Latitude 5500",
+            "Dell Latitude 5511",
+            "Dell Latitude 5521",
+            "Dell Latitude 5540",
+            "Dell Latitude 5550",
+            "Lenovo ThinkPad E14 G-series"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "provv-clearvote-25-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "provv-clearvote-25-test-plan@2026-07-19"
+          ],
+          "sceneNodeName": "ClearCount_ScanStation",
+          "caveat": "These are certified COTS alternatives. The source does not establish which model, processor, memory, storage, or connector occupation exists at a particular installation.",
+          "technicalSpecifications": [
+            {
+              "id": "clearcount-scanstation-os",
+              "category": "operating_system",
+              "label": "ScanStation operating system",
+              "value": "Windows 10 IoT Enterprise LTSC 2021",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "certified_configuration",
+              "modelContext": "ClearCount 2.5 ScanStation",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ],
+              "caveat": "The scope identifies the certified operating-system platform, not the patch state or field configuration of a particular workstation."
+            }
+          ]
+        },
+        {
+          "id": "clearcount-countserver",
+          "name": "CountServer",
+          "category": "server",
+          "description": "The CountServer hosts the ClearCount election database, web server, shared application files, and reports for connected client stations.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Dell PowerEdge T140",
+            "Dell PowerEdge T150",
+            "Dell PowerEdge R440",
+            "Dell PowerEdge R450",
+            "Dell PowerEdge T440"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "provv-clearvote-25-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "provv-clearvote-25-test-plan@2026-07-19"
+          ],
+          "sceneNodeName": "ClearCount_CountServer",
+          "caveat": "The certified alternatives do not establish the selected model, installed processor, memory, storage, or current patch state in a jurisdiction.",
+          "technicalSpecifications": [
+            {
+              "id": "clearcount-server-os",
+              "category": "operating_system",
+              "label": "CountServer platform",
+              "value": "Ubuntu 20.04.5 LTS",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "certified_configuration",
+              "modelContext": "ClearCount 2.5 CountServer",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ],
+              "caveat": "This is the certified platform listed for ClearCount 2.5, not a field patch-level observation."
+            }
+          ]
+        },
+        {
+          "id": "clearcount-countstation",
+          "name": "CountStation",
+          "category": "workstation",
+          "description": "A CountStation is a client computer used to administer ClearCount and review reports and ballot images.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Dell OptiPlex XE3 SFF",
+            "Dell OptiPlex XE4 SFF",
+            "Dell Latitude 5580",
+            "Dell Latitude 5590",
+            "Dell Latitude 5500",
+            "Dell Latitude 5511",
+            "Dell Latitude 5521",
+            "Dell Latitude 5540",
+            "Dell Latitude 5550",
+            "Lenovo ThinkPad E14 G-series"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "provv-clearvote-25-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "provv-clearvote-25-test-plan@2026-07-19"
+          ],
+          "sceneNodeName": "ClearCount_CountStation",
+          "caveat": "The schematic uses a generic monitor-and-stand form. It does not identify which certified desktop or laptop alternative is installed.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "clearcount-network-switch",
+          "name": "Closed-network Ethernet switch",
+          "category": "network",
+          "description": "Certified switch alternatives connect ScanStations and CountStations to the CountServer on a wired, closed, isolated Ethernet network.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Cisco SG250-08-K9-NA",
+            "Cisco SG250-26-K9-NA",
+            "Cisco 1300-8T-E-2G",
+            "Cisco CBS350-8T-E-2G-NA",
+            "Cisco CBS350-24T-4G-NA",
+            "NetGear FVS318G",
+            "TRENDnet TEG-S80G",
+            "TP-Link TL-SG108E",
+            "TP-Link TL-R600VPN"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-clearvote-25-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19"
+          ],
+          "sceneNodeName": "ClearCount_Network_Switch",
+          "caveat": "The certified scope describes a closed isolated network. Connector occupation, switch configuration, field cabling, and jurisdiction selection are not established.",
+          "technicalSpecifications": [
+            {
+              "id": "clearcount-closed-ethernet-network",
+              "category": "ethernet",
+              "label": "Certified network architecture",
+              "value": "Wired, closed Ethernet network isolated from other systems and the Internet",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "certified_configuration",
+              "modelContext": "ClearCount 2.5 client/server architecture",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ],
+              "caveat": "This describes the evaluated architecture, not proof of a particular field installation or a claim about every physical port."
+            }
+          ]
+        },
+        {
+          "id": "clearcount-ups",
+          "name": "External uninterruptible power supply",
+          "category": "power",
+          "description": "The certified ClearCount hardware table names an APC Smart-UPS alternative.",
+          "evidenceStatus": "certified_component",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "APC SMT-1500C"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-clearvote-25-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19"
+          ],
+          "sceneNodeName": "ClearCount_UPS",
+          "caveat": "The scope names the UPS model but does not publish a ClearCount workload runtime, battery condition, or jurisdiction selection.",
+          "technicalSpecifications": []
+        }
+      ],
+      "versionObservations": [
+        {
+          "id": "clearcount-certified-version-258",
+          "componentId": "clearcount-application",
+          "label": "Certified software",
+          "value": "ClearCount 2.5.8",
+          "assertionScope": "certified",
+          "fieldStatus": "not_established",
+          "observedOn": "2025-11-19",
+          "sourceIds": [
+            "eac-clearvote-25-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19"
+          ],
+          "caveat": "This is the version in the certified configuration, not the software observed on a jurisdiction workstation."
+        }
+      ],
+      "configurationChanges": [
+        {
+          "id": "clearcount-backside-card-change",
+          "changeId": "SW-11911 / SW-11928",
+          "componentIds": [
+            "clearcount-application"
+          ],
+          "submittedOn": "2024-08-02",
+          "eacApprovedOn": "2025-11-19",
+          "vstl": "Pro V&V, Inc.",
+          "relationshipToPilot": "included_in_certified_25_configuration",
+          "description": "The ClearVote 2.5 modification list records corrections so the ballot tabulator properly handles a card with contests only on its back side.",
+          "fieldDeploymentStatus": "unknown",
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "provv-clearvote-25-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "provv-clearvote-25-test-plan@2026-07-19"
+          ],
+          "caveat": "This is certification configuration history. It does not establish a field occurrence, election impact, or update date for any jurisdiction."
+        }
+      ],
+      "findings": [
+        {
+          "id": "clearcount-backside-card-tabulation-fix",
+          "findingType": "certification_change_note",
+          "title": "Back-side-only contest card tabulation correction",
+          "affectedSystemVersions": [
+            "ClearCount before certified 2.5.8"
+          ],
+          "componentIds": [
+            "clearcount-application"
+          ],
+          "publicStatus": "correction_included_in_certified_2_5",
+          "description": "The submitted modification list identifies a correction for cards with contests only on the back side.",
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "provv-clearvote-25-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "provv-clearvote-25-test-plan@2026-07-19"
+          ],
+          "caveat": "The record does not quantify occurrence, identify a fielded version, or establish an effect on a certified election result."
+        }
+      ],
+      "power": [
+        {
+          "id": "clearcount-certified-ups",
+          "componentId": "clearcount-ups",
+          "knowledgeStatus": "documented_partial",
+          "supplyType": "external uninterruptible power supply",
+          "manufacturer": "APC",
+          "model": "SMT-1500C",
+          "capacity": null,
+          "runtime": null,
+          "description": "The certified hardware table names the APC SMT-1500C for ClearCount but does not state a ClearCount load-specific runtime.",
+          "sourceIds": [
+            "eac-clearvote-25-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19"
+          ],
+          "caveat": "A certified option is not evidence that every installation uses it or that a field battery retains its original capacity."
+        }
+      ],
+      "deployments": [],
+      "scene": {
+        "assetUrl": "/equipment/clear-ballot-clearvote-25-clearcount/orthographic-pilot.glb",
+        "assetLicense": "Apache-2.0",
+        "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-tabulator-models.mjs",
+        "geometryFidelity": "illustrative_not_to_scale",
+        "description": "An original photo-informed schematic of a ClearCount central scanner with separate ScanStation, CountServer, CountStation, closed-network switch, and UPS categories.",
+        "referenceConfiguration": "ClearCount COTS scanner and laptop form, with certified server, workstation, switch, and UPS categories shown separately",
+        "referenceSourceIds": [
+          "clearballot-clearcount-product-page",
+          "clearballot-clearcount-reference-photo",
+          "eac-clearvote-25-scope",
+          "provv-clearvote-25-test-plan"
+        ],
+        "referenceSourceRevisionIds": [
+          "clearballot-clearcount-product-page@2026-07-20",
+          "clearballot-clearcount-reference-photo@2026-07-20",
+          "eac-clearvote-25-scope@2026-07-19",
+          "provv-clearvote-25-test-plan@2026-07-19"
+        ],
+        "referenceNote": "The scanner outline follows the manufacturer photo. Other components follow certified categories; exact alternatives, dimensions, cabling, connector occupation, and placement are illustrative.",
+        "referenceImages": [
+          {
+            "id": "clearcount-manufacturer-scanner-setup",
+            "assetUrl": "/equipment/clear-ballot-clearvote-25-clearcount/reference-clearcount-setup.png",
+            "assetSha256": "2e1bef8928cf11a8cfdc945ca6fbdec9f644f7c30b936fc72c81b45fddce4975",
+            "width": 1280,
+            "height": 853,
+            "alt": "ClearCount central scanner with an open paper path, output ballots, and a laptop mounted above it",
+            "caption": "Manufacturer photograph of a ClearCount scanner-and-laptop arrangement.",
+            "kind": "manufacturer_product_photo",
+            "sourceIds": [
+              "clearballot-clearcount-reference-photo"
+            ],
+            "sourceRevisionIds": [
+              "clearballot-clearcount-reference-photo@2026-07-20"
+            ],
+            "pageOrSection": "ClearCount hero product photograph",
+            "derivativeNote": "Local PNG conversion resized from the archived 2000 x 1333 manufacturer JPEG to 1280 x 853; no crop or content alteration.",
+            "caveat": "The photo does not identify the pictured COTS models or establish that they are the alternatives selected for a ClearVote 2.5 certified or fielded installation."
+          }
+        ],
+        "camera": {
+          "position": [
+            7,
+            5.5,
+            8
+          ],
+          "zoom": 64,
+          "near": 0.1,
+          "far": 100
+        },
+        "nodes": [
+          {
+            "componentId": "clearcount-central-scanner",
+            "nodeName": "ClearCount_Central_Scanner",
+            "color": "#d4d9d8",
+            "explodedOffset": [
+              0,
+              0.55,
+              0
+            ]
+          },
+          {
+            "componentId": "clearcount-scanstation",
+            "nodeName": "ClearCount_ScanStation",
+            "color": "#657478",
+            "explodedOffset": [
+              0,
+              1.25,
+              -0.6
+            ]
+          },
+          {
+            "componentId": "clearcount-application",
+            "nodeName": "ClearCount_Application",
+            "color": "#78a6ff",
+            "explodedOffset": [
+              0,
+              1.55,
+              0.2
+            ]
+          },
+          {
+            "componentId": "clearcount-countserver",
+            "nodeName": "ClearCount_CountServer",
+            "color": "#344247",
+            "explodedOffset": [
+              -1.35,
+              0.2,
+              0
+            ]
+          },
+          {
+            "componentId": "clearcount-countstation",
+            "nodeName": "ClearCount_CountStation",
+            "color": "#33c6b5",
+            "explodedOffset": [
+              1.45,
+              0.4,
+              0
+            ]
+          },
+          {
+            "componentId": "clearcount-network-switch",
+            "nodeName": "ClearCount_Network_Switch",
+            "color": "#33c6b5",
+            "explodedOffset": [
+              -1.2,
+              -0.7,
+              0.6
+            ]
+          },
+          {
+            "componentId": "clearcount-ups",
+            "nodeName": "ClearCount_UPS",
+            "color": "#e87fb3",
+            "explodedOffset": [
+              1.2,
+              -0.65,
+              -0.2
+            ]
+          }
+        ]
+      },
+      "caveats": [
+        "ClearCount is a system of COTS scanners, computers, server software, network equipment, and power equipment; it is not one proprietary enclosure.",
+        "Certified alternatives are listed separately and must not be read as an instruction to combine every option.",
+        "The 3D scene is a navigation aid, not a wiring diagram, teardown, exact installation, or claim about a jurisdiction's selected hardware.",
+        "A certification change or test finding is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
+      ],
+      "claimRevision": 1,
+      "editorialState": "approved",
+      "sourceIds": [
+        "clearballot-clearcount-product-page",
+        "clearballot-clearcount-reference-photo",
+        "eac-clearvote-25-record",
+        "eac-clearvote-25-scope",
+        "provv-clearvote-25-test-plan",
+        "provv-clearvote-25-test-report"
+      ],
+      "sourceRevisionIds": [
+        "clearballot-clearcount-product-page@2026-07-20",
+        "clearballot-clearcount-reference-photo@2026-07-20",
+        "eac-clearvote-25-record@2026-07-19",
+        "eac-clearvote-25-scope@2026-07-19",
+        "provv-clearvote-25-test-plan@2026-07-19",
+        "provv-clearvote-25-test-report@2026-07-19"
+      ],
+      "coverage": {
+        "componentCount": 7,
+        "sourcedComponentCount": 7,
+        "technicalSpecificationCount": 4,
+        "establishedTechnicalSpecificationCount": 4,
+        "unknownTechnicalSpecificationCount": 0,
+        "configurationChangeCount": 1,
+        "deploymentObservationCount": 0,
+        "findingCount": 1,
+        "powerRecordCount": 1,
+        "confirmedPowerRecordCount": 1,
+        "sourceCount": 6,
+        "sourceRevisionCount": 6
+      }
+    },
+    {
+      "id": "dominion-democracy-suite-517-imagecast-central",
+      "slug": "dominion-democracy-suite-517-imagecast-central",
+      "status": "pilot",
+      "manufacturer": "Dominion Voting Systems Corp.",
+      "systemName": "Democracy Suite",
+      "systemVersion": "5.17",
+      "deviceName": "ImageCast Central",
+      "displayName": "Dominion Democracy Suite 5.17 / ImageCast Central",
+      "deviceRole": "Central-count ballot scanning and tabulation system",
+      "summary": "A separate source-linked dossier for the ImageCast Central configuration: a certified COTS high-speed scanner, workstation, ICC application, removable-media accessories, optional isolated network infrastructure, and documented backup power.",
+      "certification": {
+        "certificationId": "DVS-DemSuite5.17",
+        "standard": "VVSG 1.0",
+        "certifiedOn": "2023-03-16",
+        "vstl": "Pro V&V, Inc.",
+        "scopeKind": "certified_configuration",
+        "sourceIds": [
+          "eac-dsuite-517-record",
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-record@2026-07-20",
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "EAC certification applies only to the evaluated Democracy Suite 5.17 certified configuration. It does not establish which scanner or workstation alternative a jurisdiction selected, the condition of a field unit, or an installation's network configuration."
+      },
+      "components": [
+        {
+          "id": "icc-central-scanner",
+          "name": "Central-count COTS scanner",
+          "category": "central_scanner",
+          "description": "ImageCast Central pairs one supported commercial high-speed scanner with the ICC workstation and ballot-processing application.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Canon DR-G2140",
+            "Canon DR-G1130",
+            "Canon DR-M160 II",
+            "Canon DR-M260",
+            "InoTec HiPro 821"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [
+            "icc-hipro-firmware-101074"
+          ],
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "provv-dsuite-517-test-report",
+            "co-dvs-517-icc-user-guide"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "provv-dsuite-517-test-report@2026-07-20",
+            "co-dvs-517-icc-user-guide@2026-07-20"
+          ],
+          "sceneNodeName": "ICC_Central_Scanner",
+          "caveat": "These are certified alternatives, not components used together. The scene and gallery show representative scanner forms and do not identify the selected model at a jurisdiction.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "icc-workstation",
+          "name": "ICC client workstation",
+          "category": "workstation",
+          "description": "The ICC application runs on a certified desktop or all-in-one workstation paired with the selected scanner.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Dell Precision 3460 XE",
+            "Dell Precision 3450 XE",
+            "Dell Precision 3440 XE",
+            "Dell OptiPlex 5270 AIO",
+            "Dell OptiPlex 3050 AIO",
+            "Dell OptiPlex 7440 AIO",
+            "Dell OptiPlex 9030 AIO",
+            "Dell OptiPlex 9020 AIO",
+            "Dell OptiPlex 9010 AIO",
+            "Dell OptiPlex XE4",
+            "Dell OptiPlex XE3",
+            "Dell OptiPlex 7070",
+            "Dell OptiPlex 7060",
+            "Dell OptiPlex 7050"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "sceneNodeName": "ICC_Workstation",
+          "caveat": "Workstation alternatives vary by scanner configuration. The certification documents do not establish which processor, memory, storage, display, or connector occupation exists in a particular installation.",
+          "technicalSpecifications": [
+            {
+              "id": "icc-workstation-operating-system",
+              "category": "operating_system",
+              "label": "Certified workstation operating system",
+              "value": "Windows 10 Professional, 64-bit",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "certified_configuration",
+              "modelContext": "Democracy Suite 5.17 ImageCast Central workstation",
+              "sourceIds": [
+                "eac-dsuite-517-scope",
+                "provv-dsuite-517-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-dsuite-517-scope@2026-07-20",
+                "provv-dsuite-517-test-report@2026-07-20"
+              ],
+              "caveat": "This is the evaluated operating-system platform, not a live patch-level reading or evidence for a particular field workstation."
+            }
+          ]
+        },
+        {
+          "id": "icc-application",
+          "name": "ImageCast Central application",
+          "category": "software",
+          "description": "The proprietary ICC application controls ballot image capture, interpretation, batch acceptance, and central-count tabulation.",
+          "evidenceStatus": "certified_component",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [
+            "icc-certified-application-517151"
+          ],
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "sceneNodeName": "ICC_Application",
+          "caveat": "The certified version is not a live field reading. The schematic screen is symbolic and does not reproduce a proprietary user interface.",
+          "technicalSpecifications": [
+            {
+              "id": "icc-certified-application-version",
+              "category": "software",
+              "label": "Certified ICC application",
+              "value": "5.17.15.1",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "certified_configuration",
+              "modelContext": "Democracy Suite 5.17 ImageCast Central",
+              "sourceIds": [
+                "eac-dsuite-517-scope",
+                "provv-dsuite-517-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-dsuite-517-scope@2026-07-20",
+                "provv-dsuite-517-test-report@2026-07-20"
+              ],
+              "caveat": "This is the application version in the final certified configuration, not a field-observed installation or a claim that it is the newest later release."
+            }
+          ]
+        },
+        {
+          "id": "icc-ibutton-reader",
+          "name": "iButton reader and adapter",
+          "category": "authentication_accessory",
+          "description": "Certified auxiliary hardware includes the Dallas Maxim iButton reader/writer and its 1-Wire USB adapter.",
+          "evidenceStatus": "certified_component_options",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Dallas Maxim DS9490R#",
+            "Dallas Maxim DS1402-RP8+"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "sceneNodeName": "ICC_iButton_Reader",
+          "caveat": "The models are named auxiliary equipment. The source does not establish that the schematic location or cable arrangement matches a particular installation.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "icc-media-reader",
+          "name": "CompactFlash media reader",
+          "category": "removable_media",
+          "description": "Certified auxiliary hardware includes USB CompactFlash reader alternatives used with election media.",
+          "evidenceStatus": "certified_alternatives",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "Lexar Professional USB 3.0 Dual-Slot Card Reader",
+            "Kingston USB 3.0 High-Speed Media Reader",
+            "Hoodman Steel USB3"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "sceneNodeName": "ICC_Media_Reader",
+          "caveat": "The listed readers are alternatives. Their presence, attached port, and media contents at a particular jurisdiction are not established.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "icc-optional-isolated-lan",
+          "name": "Optional isolated network infrastructure",
+          "category": "network",
+          "optionality": "optional",
+          "description": "Colorado's 5.17-CO guide calls for high-speed network infrastructure only when an additional central ballot scan repository or data center is used, and requires election computers to remain isolated from the Internet and other networks.",
+          "evidenceStatus": "documented_optional_model_component",
+          "scopeKind": "manufacturer_hardware_documentation",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "co-dvs-517-icc-user-guide"
+          ],
+          "sourceRevisionIds": [
+            "co-dvs-517-icc-user-guide@2026-07-20"
+          ],
+          "sceneNodeName": "ICC_Optional_Isolated_LAN",
+          "caveat": "This is a conditional 5.17-CO infrastructure requirement, not evidence that every ICC installation is networked or that any ICC is connected to the Internet.",
+          "technicalSpecifications": [
+            {
+              "id": "icc-optional-isolated-ethernet",
+              "category": "ethernet",
+              "label": "Conditional central-repository network",
+              "value": "100 Mbps infrastructure when an additional central repository/data center is used; isolated from the Internet and all other networks",
+              "knowledgeStatus": "documented_partial",
+              "assertionScope": "documented_model_family",
+              "modelContext": "Colorado Democracy Suite 5.17-CO ImageCast Central",
+              "sourceIds": [
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ],
+              "caveat": "The guide states a conditional capability and isolation rule. It does not establish cabling, port occupation, enabled services, or field use elsewhere."
+            }
+          ]
+        },
+        {
+          "id": "icc-ups",
+          "name": "External uninterruptible power supply",
+          "category": "power",
+          "description": "Colorado's 5.17-CO guide identifies an approved APC UPS and a minimum backup duration for the central scanner and workstation.",
+          "evidenceStatus": "documented_model_family",
+          "scopeKind": "manufacturer_hardware_documentation",
+          "modelNumbers": [
+            "APC SMC1500 Smart-UPS"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "co-dvs-517-icc-user-guide"
+          ],
+          "sourceRevisionIds": [
+            "co-dvs-517-icc-user-guide@2026-07-20"
+          ],
+          "sceneNodeName": "ICC_UPS",
+          "caveat": "The guide establishes a Colorado-approved model and minimum operating requirement, not the battery age, health, or actual runtime at a particular site.",
+          "technicalSpecifications": []
+        }
+      ],
+      "versionObservations": [
+        {
+          "id": "icc-certified-application-517151",
+          "componentId": "icc-application",
+          "label": "Certified ICC application",
+          "value": "5.17.15.1",
+          "assertionScope": "certified",
+          "fieldStatus": "not_established",
+          "observedOn": "2023-03-16",
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "caveat": "This is the final certified application version, not a field reading or evidence of a jurisdiction's current installed version."
+        },
+        {
+          "id": "icc-hipro-firmware-101074",
+          "componentId": "icc-central-scanner",
+          "label": "Certified HiPro firmware support",
+          "value": "1.0.1074",
+          "assertionScope": "certified",
+          "fieldStatus": "not_established",
+          "observedOn": "2023-03-16",
+          "sourceIds": [
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "caveat": "This version applies only to the InoTec HiPro scanner alternative and is not a firmware claim for the Canon alternatives or a field-observed scanner."
+        }
+      ],
+      "configurationChanges": [
+        {
+          "id": "icc-hipro-firmware-support-change",
+          "changeId": "D-Suite 5.17 ICC HiPro support",
+          "componentIds": [
+            "icc-central-scanner",
+            "icc-application"
+          ],
+          "submittedOn": "2022-12-02",
+          "eacApprovedOn": "2023-03-16",
+          "vstl": "Pro V&V, Inc.",
+          "relationshipToPilot": "included_in_certified_517_configuration",
+          "description": "The Pro V&V report records an ICC application update to support InoTec HiPro firmware version 1.0.1074.",
+          "fieldDeploymentStatus": "unknown",
+          "sourceIds": [
+            "provv-dsuite-517-test-plan",
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "provv-dsuite-517-test-plan@2026-07-20",
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "caveat": "This is certification configuration history. It does not establish that a jurisdiction selected the HiPro alternative or installed the firmware on a field scanner."
+        }
+      ],
+      "findings": [
+        {
+          "id": "icc-dsuite-517-test-campaign",
+          "findingType": "vstl_test_campaign_result",
+          "title": "No anomalies or deficiencies reported in the 5.17 certification campaign",
+          "affectedSystemVersions": [
+            "Democracy Suite 5.17 certified configuration"
+          ],
+          "componentIds": [
+            "icc-central-scanner",
+            "icc-workstation",
+            "icc-application"
+          ],
+          "publicStatus": "none_reported_in_test_campaign",
+          "description": "Pro V&V reported no anomalies and no deficiencies during the Democracy Suite 5.17 certification campaign; ICC accuracy and integration testing met the stated requirements.",
+          "sourceIds": [
+            "provv-dsuite-517-test-report"
+          ],
+          "sourceRevisionIds": [
+            "provv-dsuite-517-test-report@2026-07-20"
+          ],
+          "caveat": "A bounded certification-test result is not evidence that every fielded unit is defect-free, and it is not a claim about later versions, operations, misconduct, or election outcomes."
+        }
+      ],
+      "power": [
+        {
+          "id": "icc-colorado-approved-ups",
+          "componentId": "icc-ups",
+          "knowledgeStatus": "confirmed",
+          "supplyType": "external uninterruptible power supply",
+          "manufacturer": "APC",
+          "model": "SMC1500 Smart-UPS",
+          "capacity": "900 W / 1500 VA",
+          "runtime": "Minimum 15 minutes required by the 5.17-CO guide",
+          "description": "The Colorado guide names the APC SMC1500 and requires enough backup power to complete and save a ballot batch before graceful shutdown.",
+          "sourceIds": [
+            "co-dvs-517-icc-user-guide"
+          ],
+          "sourceRevisionIds": [
+            "co-dvs-517-icc-user-guide@2026-07-20"
+          ],
+          "caveat": "The minimum is a documented Colorado configuration requirement, not a measured runtime or battery-health observation at a field installation."
+        }
+      ],
+      "deployments": [],
+      "scene": {
+        "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-central/orthographic-pilot.glb",
+        "assetLicense": "Apache-2.0",
+        "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-tabulator-models.mjs",
+        "geometryFidelity": "illustrative_not_to_scale",
+        "description": "An original schematic separating the ICC scanner, workstation, application, authentication and media accessories, conditional isolated network, and UPS.",
+        "referenceConfiguration": "ImageCast Central scanner-and-workstation arrangement informed by the official 5.17-CO scanner reference page",
+        "referenceSourceIds": [
+          "co-dvs-517-icc-user-guide",
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "referenceSourceRevisionIds": [
+          "co-dvs-517-icc-user-guide@2026-07-20",
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "referenceNote": "The scanner outline is informed by the official guide's scanner photographs. Component shapes, scale, placement, cabling, ports, and the simultaneous arrangement of alternatives are illustrative.",
+        "referenceImages": [
+          {
+            "id": "icc-certified-scanner-reference-page",
+            "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-central/reference-icc-certified-scanners.png",
+            "assetSha256": "60691f00aa5a138b3f385a5edd7a49edde541f7cace7c0d02b8151b4291bbe3a",
+            "width": 1224,
+            "height": 1584,
+            "alt": "Official ImageCast Central guide page showing the Canon DR-G1130 and Canon DR-G2140 scanner alternatives",
+            "caption": "Colorado-hosted 5.17-CO guide page with photographs of two certified Canon scanner alternatives.",
+            "kind": "state_hosted_vendor_manual_page",
+            "sourceIds": [
+              "co-dvs-517-icc-user-guide"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-icc-user-guide@2026-07-20"
+            ],
+            "pageOrSection": "PDF page 69",
+            "derivativeNote": "Full-page 144 DPI PNG render of PDF page 69 using the local Poppler renderer; no crop or content alteration.",
+            "caveat": "The page shows certified alternatives and does not establish which scanner model a jurisdiction selected or the condition of a field unit."
+          }
+        ],
+        "camera": {
+          "position": [
+            7,
+            5.5,
+            8
+          ],
+          "zoom": 65,
+          "near": 0.1,
+          "far": 100
+        },
+        "nodes": [
+          {
+            "componentId": "icc-central-scanner",
+            "nodeName": "ICC_Central_Scanner",
+            "color": "#d4d9d8",
+            "explodedOffset": [
+              0,
+              0.7,
+              0
+            ]
+          },
+          {
+            "componentId": "icc-workstation",
+            "nodeName": "ICC_Workstation",
+            "color": "#657478",
+            "explodedOffset": [
+              0,
+              1.25,
+              -0.5
+            ]
+          },
+          {
+            "componentId": "icc-application",
+            "nodeName": "ICC_Application",
+            "color": "#78a6ff",
+            "explodedOffset": [
+              0,
+              1.55,
+              0.25
+            ]
+          },
+          {
+            "componentId": "icc-ibutton-reader",
+            "nodeName": "ICC_iButton_Reader",
+            "color": "#f0b95a",
+            "explodedOffset": [
+              -1.2,
+              0.25,
+              0.7
+            ]
+          },
+          {
+            "componentId": "icc-media-reader",
+            "nodeName": "ICC_Media_Reader",
+            "color": "#e87fb3",
+            "explodedOffset": [
+              1.2,
+              0.25,
+              0.7
+            ]
+          },
+          {
+            "componentId": "icc-optional-isolated-lan",
+            "nodeName": "ICC_Optional_Isolated_LAN",
+            "color": "#33c6b5",
+            "explodedOffset": [
+              -1.25,
+              -0.65,
+              0.2
+            ]
+          },
+          {
+            "componentId": "icc-ups",
+            "nodeName": "ICC_UPS",
+            "color": "#e87fb3",
+            "explodedOffset": [
+              1.25,
+              -0.65,
+              -0.2
+            ]
+          }
+        ]
+      },
+      "caveats": [
+        "ImageCast Central is a COTS scanner-and-workstation system, not one proprietary enclosure.",
+        "Certified scanner and workstation alternatives are listed separately and must not be read as an instruction to combine every option.",
+        "The optional network component is conditional and isolated; it is not evidence of Internet connectivity or field use.",
+        "The 3D scene is a navigation aid, not a teardown, wiring diagram, exact installation, or unit inventory.",
+        "A certification change or test result is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
+      ],
+      "claimRevision": 1,
+      "editorialState": "approved",
+      "sourceIds": [
+        "co-dvs-517-icc-user-guide",
+        "eac-dsuite-517-record",
+        "eac-dsuite-517-scope",
+        "provv-dsuite-517-test-plan",
+        "provv-dsuite-517-test-report"
+      ],
+      "sourceRevisionIds": [
+        "co-dvs-517-icc-user-guide@2026-07-20",
+        "eac-dsuite-517-record@2026-07-20",
+        "eac-dsuite-517-scope@2026-07-20",
+        "provv-dsuite-517-test-plan@2026-07-20",
+        "provv-dsuite-517-test-report@2026-07-20"
+      ],
+      "coverage": {
+        "componentCount": 7,
+        "sourcedComponentCount": 7,
+        "technicalSpecificationCount": 3,
+        "establishedTechnicalSpecificationCount": 3,
+        "unknownTechnicalSpecificationCount": 0,
+        "configurationChangeCount": 1,
+        "deploymentObservationCount": 0,
+        "findingCount": 1,
+        "powerRecordCount": 1,
+        "confirmedPowerRecordCount": 1,
+        "sourceCount": 5,
+        "sourceRevisionCount": 5
+      }
+    },
+    {
       "id": "dominion-democracy-suite-517-imagecast-x",
       "slug": "dominion-democracy-suite-517-imagecast-x",
       "status": "pilot",
@@ -3887,24 +5173,6 @@
           ],
           "technicalSpecifications": [
             {
-              "id": "ds200-cellular-jurisdiction-documented",
-              "category": "cellular",
-              "label": "Cellular modem option",
-              "value": "Separate modem board is optional where permitted; Rhode Island's 2021 procedure documents cellular transmission after polls close",
-              "knowledgeStatus": "confirmed",
-              "assertionScope": "jurisdiction_deployment_observation",
-              "modelContext": "DS200 model family; Rhode Island 2021 deployment procedure",
-              "sourceIds": [
-                "ess-election-security-faqs",
-                "ri-ds200-pollworker-manual-2021"
-              ],
-              "sourceRevisionIds": [
-                "ess-election-security-faqs@2026-07-20",
-                "ri-ds200-pollworker-manual-2021@2026-07-20"
-              ],
-              "caveat": "This establishes optional DS200 cellular capability and one jurisdiction's documented procedure. It does not mean every DS200 contains a modem, that EVS 6.4.0.0 permits WAN use, or that a modem was enabled or used in an unlisted jurisdiction."
-            },
-            {
               "id": "ds200-cellular-certified-scope",
               "category": "cellular",
               "label": "Cellular modem",
@@ -3971,6 +5239,48 @@
                 "provv-evs-6400-test-report@2026-07-19"
               ],
               "caveat": "No reviewed artifact publishes the installed RAM technology or capacity for the certified DS200 configurations."
+            }
+          ]
+        },
+        {
+          "id": "ds200-optional-cellular-modem",
+          "name": "Optional cellular modem board",
+          "category": "cellular",
+          "optionality": "optional",
+          "description": "ES&S states that modem components are not resident by default and that a separate board is installed only where cellular transmission is permitted; Rhode Island's 2021 procedure documents post-poll cellular transmission.",
+          "evidenceStatus": "documented_optional_model_component",
+          "scopeKind": "manufacturer_hardware_documentation",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "ess-election-security-faqs",
+            "ri-ds200-pollworker-manual-2021"
+          ],
+          "sourceRevisionIds": [
+            "ess-election-security-faqs@2026-07-20",
+            "ri-ds200-pollworker-manual-2021@2026-07-20"
+          ],
+          "sceneNodeName": "Optional_Cellular_Modem",
+          "caveat": "The sources establish an optional separate board and one jurisdiction's documented procedure, but not the board manufacturer, modem model, radio bands, firmware, antenna, exact placement, or presence in every DS200.",
+          "technicalSpecifications": [
+            {
+              "id": "ds200-optional-cellular-capability",
+              "category": "cellular",
+              "label": "Optional cellular transmission",
+              "value": "Separate modem board installed only where permitted; Rhode Island documents transmission after polls close",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "jurisdiction_deployment_observation",
+              "modelContext": "DS200 model family; Rhode Island 2021 deployment procedure",
+              "sourceIds": [
+                "ess-election-security-faqs",
+                "ri-ds200-pollworker-manual-2021"
+              ],
+              "sourceRevisionIds": [
+                "ess-election-security-faqs@2026-07-20",
+                "ri-ds200-pollworker-manual-2021@2026-07-20"
+              ],
+              "caveat": "This does not mean every DS200 contains a modem, that EVS 6.4.0.0 permits WAN use, or that cellular transmission was enabled or used in an unlisted jurisdiction."
             }
           ]
         },
@@ -4636,13 +5946,15 @@
         "referenceConfiguration": "DS200 open poll-place configuration with ballot cabinet, raised protective cover, scanner deck, and tilted display",
         "referenceSourceIds": [
           "ess-ds200-one-sheet",
-          "ess-ds200-reference-photo"
+          "ess-ds200-reference-photo",
+          "ess-election-security-faqs"
         ],
         "referenceSourceRevisionIds": [
           "ess-ds200-one-sheet@2026-07-20",
-          "ess-ds200-reference-photo@2026-07-20"
+          "ess-ds200-reference-photo@2026-07-20",
+          "ess-election-security-faqs@2026-07-20"
         ],
-        "referenceNote": "External proportions and features follow the official ES&S one-sheet. Internal board positions and all explosion paths remain illustrative because no reviewed public teardown or engineering drawing establishes them.",
+        "referenceNote": "External proportions and features follow the official ES&S one-sheet. The optional modem board is a symbolic board-shaped marker because the reviewed sources do not establish its model, dimensions, or placement. Other internal board positions and all explosion paths remain illustrative.",
         "referenceImages": [
           {
             "id": "ds200-official-front-product-photo",
@@ -4683,6 +5995,16 @@
               0,
               0.55,
               0
+            ]
+          },
+          {
+            "componentId": "ds200-optional-cellular-modem",
+            "nodeName": "Optional_Cellular_Modem",
+            "color": "#33c6b5",
+            "explodedOffset": [
+              1.45,
+              0.8,
+              -0.45
             ]
           },
           {
@@ -4763,7 +6085,7 @@
         "Public findings are presented with version and source scope. A missing advisory listing is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
         "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
       ],
-      "claimRevision": 3,
+      "claimRevision": 4,
       "editorialState": "approved",
       "sourceIds": [
         "eac-eco-ess-1035-approval",
@@ -4824,8 +6146,8 @@
         "wa-evs-6400-staff-report@2026-07-19"
       ],
       "coverage": {
-        "componentCount": 9,
-        "sourcedComponentCount": 9,
+        "componentCount": 10,
+        "sourcedComponentCount": 10,
         "technicalSpecificationCount": 8,
         "establishedTechnicalSpecificationCount": 5,
         "unknownTechnicalSpecificationCount": 3,
@@ -4836,6 +6158,622 @@
         "confirmedPowerRecordCount": 1,
         "sourceCount": 27,
         "sourceRevisionCount": 27
+      }
+    },
+    {
+      "id": "ess-evs-6400-ds950",
+      "slug": "ess-evs-6400-ds950",
+      "status": "pilot",
+      "manufacturer": "Election Systems & Software, LLC",
+      "systemName": "EVS",
+      "systemVersion": "6.4.0.0",
+      "deviceName": "DS950",
+      "displayName": "ES&S EVS 6.4.0.0 / DS950",
+      "deviceRole": "High-speed central-count scanner and tabulator",
+      "summary": "A separate source-linked dossier for the certified DS950 central-count scanner/tabulator, including firmware and hardware revisions, documented motherboard and storage changes, output-transport firmware, central-count cart, and certified UPS alternatives.",
+      "certification": {
+        "certificationId": "ESSEVS6400",
+        "standard": "VVSG 1.0",
+        "certifiedOn": "2023-08-18",
+        "vstl": "Pro V&V, Inc.",
+        "scopeKind": "certified_configuration",
+        "sourceIds": [
+          "eac-evs-6400-record",
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-evs-6400-record@2026-07-19",
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "caveat": "EAC certification applies only to the evaluated EVS 6.4.0.0 certified configuration. It does not establish the firmware, hardware, accessory selection, condition, or maintenance history of a particular field unit."
+      },
+      "components": [
+        {
+          "id": "ds950-shell",
+          "name": "DS950 scanner and tabulator assembly",
+          "category": "device",
+          "description": "The certified scope describes a central scanner/tabulator that scans both sides of ballots or vote-summary cards in any of four orientations.",
+          "evidenceStatus": "certified_component",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "DS950"
+          ],
+          "hardwareRevisions": [
+            "1.1"
+          ],
+          "versionObservationIds": [
+            "ds950-certified-firmware-4300"
+          ],
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report",
+            "ess-ds950-product-page"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19",
+            "ess-ds950-product-page@2026-07-20"
+          ],
+          "sceneNodeName": "DS950_Shell",
+          "caveat": "The certified revision and firmware are configuration records, not unit-level observations.",
+          "technicalSpecifications": [
+            {
+              "id": "ds950-certified-firmware-spec",
+              "category": "firmware",
+              "label": "Certified DS950 firmware",
+              "value": "4.3.0.0",
+              "knowledgeStatus": "confirmed",
+              "assertionScope": "certified_configuration",
+              "modelContext": "EVS 6.4.0.0 DS950 hardware 1.1",
+              "sourceIds": [
+                "eac-evs-6400-scope",
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-evs-6400-scope@2026-07-19",
+                "provv-evs-6400-test-report@2026-07-19"
+              ],
+              "caveat": "This is the certified configuration version, not a field reading or a claim about later releases."
+            },
+            {
+              "id": "ds950-protected-usb-access",
+              "category": "usb",
+              "label": "Protected USB access",
+              "value": "Manufacturer states USB ports are behind clear lockable, sealable doors",
+              "knowledgeStatus": "documented_partial",
+              "assertionScope": "manufacturer_product",
+              "modelContext": "DS950 manufacturer product family",
+              "sourceIds": [
+                "ess-ds950-product-page"
+              ],
+              "sourceRevisionIds": [
+                "ess-ds950-product-page@2026-07-20"
+              ],
+              "caveat": "This establishes an access-control feature, not a connector count or the sealed condition of a field unit."
+            }
+          ]
+        },
+        {
+          "id": "ds950-input-feeder",
+          "name": "Ballot input feeder",
+          "category": "paper_input",
+          "description": "The manufacturer photograph shows a purpose-built input feeder above the scanner body for central-count ballot batches.",
+          "evidenceStatus": "manufacturer_documented_partial",
+          "scopeKind": "manufacturer_product_documentation",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "ess-ds950-product-page",
+            "ess-ds950-reference-photo"
+          ],
+          "sourceRevisionIds": [
+            "ess-ds950-product-page@2026-07-20",
+            "ess-ds950-reference-photo@2026-07-20"
+          ],
+          "sceneNodeName": "DS950_Input_Feeder",
+          "caveat": "The source supports the external feeder category and form, not exact dimensions or internal transport parts.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-scanner-path",
+          "name": "Dual-sided scanner path",
+          "category": "scanner",
+          "description": "The certified scope establishes simultaneous front-and-back scanning and four-orientation ballot handling.",
+          "evidenceStatus": "certified_component",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "sceneNodeName": "DS950_Scanner_Path",
+          "caveat": "The optical function is certified, but the illustrative path is not a teardown or engineering drawing.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-sorting-trays",
+          "name": "Output transport and sorting trays",
+          "category": "paper_output",
+          "description": "The output section receives processed ballots; baseline ECO 1151 records transporter-board firmware affecting when the output tray begins to lower.",
+          "evidenceStatus": "historical_change_record",
+          "scopeKind": "historical_change",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [
+            "ds950-transporter-firmware-c60"
+          ],
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "ess-ds950-reference-photo"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "ess-ds950-reference-photo@2026-07-20"
+          ],
+          "sceneNodeName": "DS950_Sorting_Trays",
+          "caveat": "The change record is not evidence of a jam, field update, unit condition, or exact output geometry.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-display",
+          "name": "Operator display",
+          "category": "display",
+          "description": "The manufacturer photograph shows an integrated operator-facing display on the DS950 enclosure.",
+          "evidenceStatus": "manufacturer_documented_partial",
+          "scopeKind": "manufacturer_product_documentation",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "ess-ds950-product-page",
+            "ess-ds950-reference-photo"
+          ],
+          "sourceRevisionIds": [
+            "ess-ds950-product-page@2026-07-20",
+            "ess-ds950-reference-photo@2026-07-20"
+          ],
+          "sceneNodeName": "DS950_Display",
+          "caveat": "The sources do not establish the exact panel model, resolution, connector, or internal placement.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-motherboard",
+          "name": "Kontron motherboard with DRAM and TPM capabilities",
+          "category": "compute",
+          "description": "The EVS 6.4.0.0 scope records an updated Kontron motherboard with DRAM and TPM capabilities.",
+          "evidenceStatus": "approved_change_for_evs_6400",
+          "scopeKind": "certified_configuration_change",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-evs-6400-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19"
+          ],
+          "sceneNodeName": "DS950_Motherboard",
+          "caveat": "The scope does not publish the board model, processor, DRAM capacity, TPM version, layout, or field history.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-m2-storage",
+          "name": "M.2 storage device",
+          "category": "storage",
+          "description": "The EVS 6.4.0.0 scope records an M.2 hard drive added to the DS950 configuration.",
+          "evidenceStatus": "approved_change_for_evs_6400",
+          "scopeKind": "certified_configuration_change",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-evs-6400-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19"
+          ],
+          "sceneNodeName": "DS950_M2_Storage",
+          "caveat": "The scope does not publish manufacturer, model, interface subtype, capacity, firmware, data, or field history.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-smart-card-reader",
+          "name": "Smart-card reader",
+          "category": "authentication_accessory",
+          "description": "The EVS 6.4.0.0 scope records a second-source smart-card reader for the DS950.",
+          "evidenceStatus": "approved_change_for_evs_6400",
+          "scopeKind": "certified_configuration_change",
+          "modelNumbers": [],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-evs-6400-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19"
+          ],
+          "sceneNodeName": "DS950_Smart_Card_Reader",
+          "caveat": "The public scope does not identify the reader model, placement, selected source, or field installation.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-central-count-cart",
+          "name": "Central Count Cart",
+          "category": "support_cart",
+          "description": "The certified system includes metal Central Count Cart model 7898 for the DS450, DS850, and DS950.",
+          "evidenceStatus": "certified_component",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "7898"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "sceneNodeName": "DS950_Central_Count_Cart",
+          "caveat": "Certification identifies the cart option but does not prove its use or setup at a jurisdiction.",
+          "technicalSpecifications": []
+        },
+        {
+          "id": "ds950-ups",
+          "name": "External uninterruptible power supply",
+          "category": "power",
+          "description": "The certified COTS hardware table names two CyberPower UPS alternatives that include the DS950.",
+          "evidenceStatus": "certified_component_options",
+          "scopeKind": "certified_configuration",
+          "modelNumbers": [
+            "CyberPower OR1500PFCLCD",
+            "CyberPower CP1500PFCLCD"
+          ],
+          "hardwareRevisions": [],
+          "versionObservationIds": [],
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "sceneNodeName": "DS950_UPS",
+          "caveat": "The sources do not establish jurisdiction selection, workload runtime, battery health, or replacement history.",
+          "technicalSpecifications": []
+        }
+      ],
+      "versionObservations": [
+        {
+          "id": "ds950-certified-firmware-4300",
+          "componentId": "ds950-shell",
+          "label": "Certified DS950 firmware",
+          "value": "4.3.0.0",
+          "assertionScope": "certified",
+          "fieldStatus": "not_established",
+          "observedOn": "2023-08-18",
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "caveat": "This is the certified configuration version, not a field reading or unit update record."
+        },
+        {
+          "id": "ds950-transporter-firmware-c60",
+          "componentId": "ds950-sorting-trays",
+          "label": "Certified baseline DATAWIN transporter firmware",
+          "value": "C60_20221215_0300",
+          "assertionScope": "certified",
+          "fieldStatus": "not_established",
+          "observedOn": "2023-08-18",
+          "sourceIds": [
+            "eac-evs-6400-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19"
+          ],
+          "caveat": "This is the firmware named in certified baseline ECO 1151, not a live readout or service record."
+        }
+      ],
+      "configurationChanges": [
+        {
+          "id": "ds950-evs-6400-hardware-modification",
+          "changeId": "EVS 6.4.0.0 DS950 hardware modification set",
+          "componentIds": [
+            "ds950-motherboard",
+            "ds950-m2-storage",
+            "ds950-smart-card-reader"
+          ],
+          "submittedOn": "2023-01-24",
+          "eacApprovedOn": "2023-08-18",
+          "vstl": "Pro V&V, Inc.",
+          "relationshipToPilot": "included_in_certified_evs_6400_configuration",
+          "description": "The scope records an updated Kontron motherboard with DRAM/TPM capabilities, updated PC power supply, second-source smart-card reader, and M.2 hard drive.",
+          "fieldDeploymentStatus": "unknown",
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "caveat": "This groups certification modifications and is not a claim that one field service event installed them together."
+        },
+        {
+          "id": "ds950-eco-1151",
+          "changeId": "ECO 1151",
+          "componentIds": [
+            "ds950-sorting-trays"
+          ],
+          "submittedOn": "2023-02-21",
+          "eacApprovedOn": "2023-08-18",
+          "vstl": "Pro V&V, Inc.",
+          "relationshipToPilot": "baseline_eco_certified_with_evs_6400",
+          "description": "ECO 1151 updates DATAWIN transporter firmware so the output tray begins lowering sooner, providing more opportunity for incoming ballots to lay flat if a jam occurs.",
+          "fieldDeploymentStatus": "unknown",
+          "sourceIds": [
+            "eac-evs-6400-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19"
+          ],
+          "caveat": "The de minimis ECO is certification history, not evidence of a jam, field update, or election impact."
+        }
+      ],
+      "findings": [
+        {
+          "id": "ds950-evs-6400-test-campaign",
+          "findingType": "vstl_test_campaign_result",
+          "title": "No anomalies reported in the EVS 6.4.0.0 certification campaign",
+          "affectedSystemVersions": [
+            "EVS 6.4.0.0 certified configuration"
+          ],
+          "componentIds": [
+            "ds950-shell",
+            "ds950-scanner-path",
+            "ds950-sorting-trays"
+          ],
+          "publicStatus": "none_reported_in_test_campaign",
+          "description": "Pro V&V reported no anomalies during EVS 6.4.0.0 testing and recommended certification after the system met applicable VVSG 1.0 requirements.",
+          "sourceIds": [
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "caveat": "A bounded test result is not evidence that every fielded DS950 is defect-free or a claim about misconduct or outcomes."
+        }
+      ],
+      "power": [
+        {
+          "id": "ds950-certified-ups-options",
+          "componentId": "ds950-ups",
+          "knowledgeStatus": "confirmed",
+          "supplyType": "external uninterruptible power supply",
+          "manufacturer": "CyberPower",
+          "model": "OR1500PFCLCD; CP1500PFCLCD",
+          "capacity": null,
+          "runtime": null,
+          "description": "The certified COTS hardware table names two CyberPower UPS alternatives that apply to the DS950.",
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "caveat": "The sources do not state a DS950 workload runtime or establish option selection, battery age, capacity, or condition."
+        }
+      ],
+      "deployments": [],
+      "scene": {
+        "assetUrl": "/equipment/ess-evs-6400-ds950/orthographic-pilot.glb",
+        "assetLicense": "Apache-2.0",
+        "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-tabulator-models.mjs",
+        "geometryFidelity": "illustrative_not_to_scale",
+        "description": "An original photo-informed DS950 schematic separating the enclosure, feeder, scanner path, output trays, display, documented internal categories, cart, and UPS.",
+        "referenceConfiguration": "DS950 manufacturer product form on the certified Central Count Cart category",
+        "referenceSourceIds": [
+          "ess-ds950-product-page",
+          "ess-ds950-reference-photo",
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "referenceSourceRevisionIds": [
+          "ess-ds950-product-page@2026-07-20",
+          "ess-ds950-reference-photo@2026-07-20",
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "referenceNote": "External proportions follow the manufacturer photograph. Internal forms, placement, scale, ports, cabling, paper path, and explosion offsets remain illustrative because no public teardown establishes them.",
+        "referenceImages": [
+          {
+            "id": "ds950-official-product-photo",
+            "assetUrl": "/equipment/ess-evs-6400-ds950/reference-ds950.png",
+            "assetSha256": "c1660e87080f10910a69fbdb797db8e050d6ee32d5cfbd26215b9de6cacf4ba3",
+            "width": 1280,
+            "height": 854,
+            "alt": "Official product photograph of an ES&S DS950 high-speed scanner and tabulator on its wheeled support cart",
+            "caption": "Manufacturer catalog photograph of the DS950 central-count scanner and tabulator.",
+            "kind": "manufacturer_product_photo",
+            "sourceIds": [
+              "ess-ds950-reference-photo"
+            ],
+            "sourceRevisionIds": [
+              "ess-ds950-reference-photo@2026-07-20"
+            ],
+            "pageOrSection": "Original 1280 x 854 catalog photograph",
+            "derivativeNote": "Local PNG conversion of the archived manufacturer JPEG at its original dimensions; no crop or content alteration.",
+            "caveat": "External appearance only; the photograph does not establish dimensions, internal placement, firmware, accessories, or field configuration."
+          }
+        ],
+        "camera": {
+          "position": [
+            6.5,
+            5.5,
+            7.5
+          ],
+          "zoom": 60,
+          "near": 0.1,
+          "far": 100
+        },
+        "nodes": [
+          {
+            "componentId": "ds950-shell",
+            "nodeName": "DS950_Shell",
+            "color": "#8ca3a8",
+            "explodedOffset": [
+              0,
+              0.5,
+              0
+            ]
+          },
+          {
+            "componentId": "ds950-input-feeder",
+            "nodeName": "DS950_Input_Feeder",
+            "color": "#d4d9d8",
+            "explodedOffset": [
+              0,
+              1.25,
+              -0.2
+            ]
+          },
+          {
+            "componentId": "ds950-scanner-path",
+            "nodeName": "DS950_Scanner_Path",
+            "color": "#33c6b5",
+            "explodedOffset": [
+              0,
+              0.65,
+              -0.5
+            ]
+          },
+          {
+            "componentId": "ds950-sorting-trays",
+            "nodeName": "DS950_Sorting_Trays",
+            "color": "#53676d",
+            "explodedOffset": [
+              0,
+              -0.3,
+              1
+            ]
+          },
+          {
+            "componentId": "ds950-display",
+            "nodeName": "DS950_Display",
+            "color": "#78a6ff",
+            "explodedOffset": [
+              0,
+              1.2,
+              0.8
+            ]
+          },
+          {
+            "componentId": "ds950-motherboard",
+            "nodeName": "DS950_Motherboard",
+            "color": "#f0b95a",
+            "explodedOffset": [
+              1.35,
+              0.2,
+              0.2
+            ]
+          },
+          {
+            "componentId": "ds950-m2-storage",
+            "nodeName": "DS950_M2_Storage",
+            "color": "#e87fb3",
+            "explodedOffset": [
+              -1.35,
+              0.25,
+              0.25
+            ]
+          },
+          {
+            "componentId": "ds950-smart-card-reader",
+            "nodeName": "DS950_Smart_Card_Reader",
+            "color": "#ff8c69",
+            "explodedOffset": [
+              1.25,
+              0.65,
+              0.7
+            ]
+          },
+          {
+            "componentId": "ds950-central-count-cart",
+            "nodeName": "DS950_Central_Count_Cart",
+            "color": "#344247",
+            "explodedOffset": [
+              0,
+              -1,
+              0
+            ]
+          },
+          {
+            "componentId": "ds950-ups",
+            "nodeName": "DS950_UPS",
+            "color": "#e87fb3",
+            "explodedOffset": [
+              -1.25,
+              -0.75,
+              -0.2
+            ]
+          }
+        ]
+      },
+      "caveats": [
+        "The DS950 is a separate central-count machine and must not inherit DS200 component claims.",
+        "The 3D scene is a navigation aid, not a teardown, wiring diagram, engineering drawing, installation, or unit inventory.",
+        "Unpublished motherboard, processor, memory, TPM, storage, and port-count details are not guessed.",
+        "Certified UPS alternatives do not establish which model or battery condition applies at a jurisdiction.",
+        "A certification change, ECO, or test result is not evidence of field occurrence, misconduct, or an election outcome effect."
+      ],
+      "claimRevision": 1,
+      "editorialState": "approved",
+      "sourceIds": [
+        "eac-evs-6400-record",
+        "eac-evs-6400-scope",
+        "ess-ds950-product-page",
+        "ess-ds950-reference-photo",
+        "provv-evs-6400-test-report"
+      ],
+      "sourceRevisionIds": [
+        "eac-evs-6400-record@2026-07-19",
+        "eac-evs-6400-scope@2026-07-19",
+        "ess-ds950-product-page@2026-07-20",
+        "ess-ds950-reference-photo@2026-07-20",
+        "provv-evs-6400-test-report@2026-07-19"
+      ],
+      "coverage": {
+        "componentCount": 10,
+        "sourcedComponentCount": 10,
+        "technicalSpecificationCount": 2,
+        "establishedTechnicalSpecificationCount": 2,
+        "unknownTechnicalSpecificationCount": 0,
+        "configurationChangeCount": 2,
+        "deploymentObservationCount": 0,
+        "findingCount": 1,
+        "powerRecordCount": 1,
+        "confirmedPowerRecordCount": 1,
+        "sourceCount": 5,
+        "sourceRevisionCount": 5
       }
     }
   ]

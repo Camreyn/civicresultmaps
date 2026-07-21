@@ -235,9 +235,27 @@ addPart(seal, {
   roughness: 0.32,
 });
 
+const optionalModem = addComponent(assembly, "Optional_Cellular_Modem");
+addPart(optionalModem, {
+  name: "DS200_Optional_Modem_Board_Illustrative",
+  geometry: new BoxGeometry(0.72, 0.48, 0.06),
+  color: "#33c6b5",
+  position: [0.92, 0.08, -0.82],
+  roughness: 0.46,
+});
+addPart(optionalModem, {
+  name: "DS200_Optional_Modem_Shield_Illustrative",
+  geometry: new BoxGeometry(0.31, 0.24, 0.08),
+  color: "#d8e3e0",
+  position: [0.82, 0.11, -0.77],
+  metalness: 0.34,
+  roughness: 0.38,
+});
+
 await writeGlb(scene, outputPath, {
   generatedBy: "scripts/build-equipment-model.mjs",
   referenceConfiguration: "Official ES&S DS200 open poll-place product view",
   referenceFidelity: "photo_informed_external_form_internal_placement_illustrative",
   omittedSourceSupportedComponent: "Battery backup is documented, but no source-supported internal placement is available.",
+  optionalComponentBoundary: "The modem board shape and placement are illustrative; sources establish an optional separate board but do not publish its model, dimensions, or internal location.",
 });

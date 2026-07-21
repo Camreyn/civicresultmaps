@@ -332,6 +332,7 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
               const modeled = component.sceneNodeName !== null;
               const visible = !modeled || componentIsVisible(component.id);
               const networkSummary = networkCapabilitySummary(component);
+              const optional = "optionality" in component && component.optionality === "optional";
               const componentButtonClass = [
                 selected.id === component.id ? styles.componentButtonActive : styles.componentButton,
                 modeled && !visible ? styles.componentButtonHidden : "",
@@ -347,7 +348,10 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
                       onClick={() => selectComponent(component.id)}
                       type="button"
                     >
-                      <span>{component.name}</span>
+                      <span className={styles.componentNameLine}>
+                        <span>{component.name}</span>
+                        {optional && <em className={styles.optionalBadge}>Optional</em>}
+                      </span>
                       <small>{label(component.evidenceStatus)}</small>
                     </button>
                     <div className={styles.componentUtilities}>
@@ -476,7 +480,15 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
         </div>
 
         <article className={styles.componentDetail} aria-live="polite">
-          <div className={styles.cardTopline}><span className={styles.scopePill}>{label(selected.scopeKind)}</span><span>{label(selected.evidenceStatus)}</span></div>
+          <div className={styles.cardTopline}>
+            <div className={styles.componentScopeBadges}>
+              <span className={styles.scopePill}>{label(selected.scopeKind)}</span>
+              {"optionality" in selected && selected.optionality === "optional" && (
+                <span className={styles.optionalBadge}>Optional component</span>
+              )}
+            </div>
+            <span>{label(selected.evidenceStatus)}</span>
+          </div>
           <h3>{selected.name}</h3>
           <p>{selected.description}</p>
           {selected.modelNumbers.length > 0 && <p><strong>Models:</strong> {selected.modelNumbers.join(", ")}</p>}
