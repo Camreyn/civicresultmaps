@@ -47,3 +47,11 @@ test("publisher disables the candidate flag with the boolean off variant", () =>
   assert.match(publisher, /"--variant",\s*"false"/);
   assert.doesNotMatch(publisher, /"--variant",\s*"off"/);
 });
+
+test("publisher upserts Edge Config items without an existence race", () => {
+  const publisher = readFileSync("scripts/publish-ui-layout.ts", "utf8");
+
+  assert.match(publisher, /operation: "upsert"/);
+  assert.doesNotMatch(publisher, /edgeItemExists/);
+  assert.doesNotMatch(publisher, /await Promise\.all\(items\.map/);
+});
