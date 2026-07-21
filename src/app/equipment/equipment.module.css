@@ -253,6 +253,95 @@
   border-radius: 20px;
 }
 
+.systemPreview {
+  margin: -8px -8px 20px;
+  overflow: hidden;
+  border: 1px solid rgba(154, 211, 205, 0.14);
+  border-radius: 16px;
+  background: rgba(3, 17, 20, 0.72);
+}
+
+.systemPreviewFrame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background:
+    linear-gradient(45deg, rgba(103, 217, 204, 0.035) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(103, 217, 204, 0.035) 25%, transparent 25%),
+    linear-gradient(135deg, rgba(14, 45, 49, 0.92), rgba(5, 22, 25, 0.98));
+  background-position: 0 0, 10px 10px, 0 0;
+  background-size: 20px 20px, 20px 20px, auto;
+  display: grid;
+  place-items: center;
+}
+
+.systemPreviewImage {
+  width: 100%;
+  height: 100%;
+  padding: 11px;
+  object-fit: contain;
+  object-position: center;
+  filter: saturate(0.92) contrast(1.02);
+}
+
+.systemPreview figcaption {
+  min-height: 78px;
+  padding: 11px 13px 12px;
+  border-top: 1px solid rgba(154, 211, 205, 0.12);
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.systemPreview figcaption > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.systemPreview figcaption span {
+  color: #75aaa5;
+  font-size: 0.61rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.systemPreview figcaption strong {
+  color: #cfe1df;
+  font-size: 0.71rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.systemPreviewSources {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.systemPreviewSources a {
+  max-width: 190px;
+  padding: 5px 7px;
+  border: 1px solid rgba(103, 217, 204, 0.18);
+  border-radius: 999px;
+  color: #79d8ce;
+  font-size: 0.61rem;
+  line-height: 1.25;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.systemPreviewSources a:hover {
+  border-color: rgba(103, 217, 204, 0.4);
+  color: #a0f0e7;
+}
+
 .systemCard h3,
 .recordCard h3,
 .sourceCard h3,
@@ -1709,6 +1798,15 @@
 
   .page {
     width: min(92vw, 680px);
+  }
+
+  .systemPreview figcaption {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .systemPreviewSources {
+    justify-content: flex-start;
   }
 
   .viewerToolbar {

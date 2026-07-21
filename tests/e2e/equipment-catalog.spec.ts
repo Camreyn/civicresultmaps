@@ -20,6 +20,14 @@ test("lists six source-linked equipment dossiers", async ({ page }) => {
   await expect(page.getByText("ES&S EVS 6.4.0.0 / DS950")).toBeVisible();
   await expect(page.getByText("Dominion Democracy Suite 5.17 / ImageCast X")).toBeVisible();
   await expect(page.getByText("Dominion Democracy Suite 5.17 / ImageCast Central")).toBeVisible();
+  await expect(page.locator("[data-equipment-preview='true']")).toHaveCount(6);
+  await expect(page.locator("[data-equipment-preview='true'] img")).toHaveCount(6);
+  const previewSources = page.locator("[data-equipment-preview-source='true']");
+  await expect(previewSources).toHaveCount(6);
+  for (const previewSource of await previewSources.all()) {
+    await expect(previewSource).toHaveAttribute("href", /^https:\/\//);
+  }
+  await expect(page.getByAltText("Front view of an open ES&S DS200 scanner and ballot container on casters")).toBeVisible();
 });
 
 test("renders confirmed ClearAccess UPS options without inventing runtime", async ({ page, request }) => {

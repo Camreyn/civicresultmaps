@@ -92,6 +92,11 @@ export type EquipmentSystemSummary = Pick<
   | "systemVersion"
 >;
 
+export type EquipmentSystemTile = EquipmentSystemSummary & {
+  referenceImage: EquipmentReferenceImage | null;
+  referenceSources: EquipmentSource[];
+};
+
 export const equipmentCatalogMetadata = {
   editorialState: catalogData.editorialState,
   generatedOn: catalogData.generatedOn,
@@ -104,8 +109,8 @@ export const equipmentCatalogMetadata = {
   status: catalogData.status,
 };
 
-export function listEquipmentSystems(): EquipmentSystemSummary[] {
-  return catalogData.systems.map((system) => ({
+function summarizeEquipmentSystem(system: EquipmentSystem): EquipmentSystemSummary {
+  return {
     certification: system.certification,
     claimRevision: system.claimRevision,
     coverage: system.coverage,
@@ -119,7 +124,24 @@ export function listEquipmentSystems(): EquipmentSystemSummary[] {
     summary: system.summary,
     systemName: system.systemName,
     systemVersion: system.systemVersion,
-  }));
+  };
+}
+
+export function listEquipmentSystems(): EquipmentSystemSummary[] {
+  return catalogData.systems.map(summarizeEquipmentSystem);
+}
+
+export function listEquipmentSystemTiles(): EquipmentSystemTile[] {
+  return catalogData.systems.map((system) => {
+    const referenceImage = system.scene.referenceImages[0] ?? null;
+    const referenceSourceIds = new Set<string>(referenceImage?.sourceIds ?? []);
+
+    return {
+      ...summarizeEquipmentSystem(system),
+      referenceImage,
+      referenceSources: catalogData.sources.filter((source) => referenceSourceIds.has(source.id)),
+    };
+  });
 }
 
 export function listEquipmentSystemSlugs() {

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { ArrowLeft, Box, ChevronRight, Database, FileCheck2, GitCompareArrows } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft, Box, ChevronRight, Database, ExternalLink, FileCheck2, GitCompareArrows } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { BrandMark } from "../brand-mark";
-import { equipmentCatalogMetadata, listEquipmentSystems } from "@/lib/equipment-catalog";
+import { equipmentCatalogMetadata, listEquipmentSystemTiles } from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import styles from "./equipment.module.css";
 
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function EquipmentIndexPage() {
   if (!isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady })) notFound();
-  const systems = listEquipmentSystems();
+  const systems = listEquipmentSystemTiles();
 
   return (
     <main className={styles.shell}>
@@ -64,6 +65,41 @@ export default function EquipmentIndexPage() {
           <div className={styles.systemGrid}>
             {systems.map((system) => (
               <article className={styles.systemCard} key={system.slug}>
+                {system.referenceImage ? (
+                  <figure className={styles.systemPreview} data-equipment-preview="true">
+                    <div className={styles.systemPreviewFrame}>
+                      <Image
+                        alt={system.referenceImage.alt}
+                        className={styles.systemPreviewImage}
+                        height={system.referenceImage.height}
+                        sizes="(max-width: 560px) 86vw, (max-width: 780px) 43vw, 560px"
+                        src={system.referenceImage.assetUrl}
+                        width={system.referenceImage.width}
+                      />
+                    </div>
+                    <figcaption>
+                      <div>
+                        <span>Source reference image</span>
+                        <strong>{system.referenceImage.caption}</strong>
+                      </div>
+                      <div className={styles.systemPreviewSources}>
+                        {system.referenceSources.map((source) => (
+                          <a
+                            data-equipment-preview-source="true"
+                            href={source.url}
+                            key={source.id}
+                            rel="noreferrer"
+                            target="_blank"
+                            title={source.title}
+                          >
+                            {source.publisher}
+                            <ExternalLink aria-hidden size={12} />
+                          </a>
+                        ))}
+                      </div>
+                    </figcaption>
+                  </figure>
+                ) : null}
                 <div className={styles.cardTopline}>
                   <span className={styles.pilotBadge}>{system.editorialState.replaceAll("_", " ")}</span>
                   <span>{system.certification.certificationId}</span>
