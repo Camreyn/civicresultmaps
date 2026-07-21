@@ -40,3 +40,10 @@ test("protected workflow does not interpolate dispatch inputs into shell syntax"
   assert.doesNotMatch(editor, /useId/);
   assert.match(page, /requestKey=\{randomUUID\(\)\}/);
 });
+
+test("publisher disables the candidate flag with the boolean off variant", () => {
+  const publisher = readFileSync("scripts/publish-ui-layout.ts", "utf8");
+
+  assert.match(publisher, /"--variant",\s*"false"/);
+  assert.doesNotMatch(publisher, /"--variant",\s*"off"/);
+});

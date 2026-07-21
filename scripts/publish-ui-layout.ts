@@ -101,7 +101,7 @@ function disableCandidateFlag(target: Environment) {
       "--environment",
       target,
       "--variant",
-      "off",
+      "false",
       "--token",
       vercelToken,
       "--no-color",
