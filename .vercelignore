@@ -25,6 +25,7 @@ tsconfig.tsbuildinfo
 # Large raw election artifacts stay in GitHub/source storage and are not
 # needed in Vercel deployment bundles.
 data/**
+!data/equipment-catalog.json
 !data/admin-source-packages.json
 !data/election-security-incident-source-inventory-2024.json
 !data/election-security-incidents-2024.json

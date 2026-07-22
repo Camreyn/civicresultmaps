@@ -1,0 +1,1262 @@
+{
+  "schemaVersion": 2,
+  "reviewedOn": "2026-07-21",
+  "system": {
+    "id": "dominion-democracy-suite-517-imagecast-x",
+    "slug": "dominion-democracy-suite-517-imagecast-x",
+    "status": "pilot",
+    "manufacturer": "Dominion Voting Systems Corp.",
+    "systemName": "Democracy Suite",
+    "systemVersion": "5.17",
+    "deviceName": "ImageCast X",
+    "displayName": "Dominion Democracy Suite 5.17 / ImageCast X",
+    "deviceRole": "Accessible touchscreen ballot-marking configuration",
+    "summary": "A source-linked dossier for the ImageCast X ballot-marking device within EAC-certified Democracy Suite 5.17, including certified device alternatives, external UPS options, version observations, Pro V&V results, and EAC-hosted post-certification advisories.",
+    "certification": {
+      "certificationId": "DVS-DemSuite5.17",
+      "standard": "VVSG 1.0",
+      "certifiedOn": "2023-03-16",
+      "vstl": "Pro V&V, Inc.",
+      "scopeKind": "certified_configuration",
+      "sourceIds": [
+        "eac-dsuite-517-record",
+        "eac-dsuite-517-scope",
+        "provv-dsuite-517-test-report"
+      ],
+      "sourceRevisionIds": [
+        "eac-dsuite-517-record@2026-07-20",
+        "eac-dsuite-517-scope@2026-07-20",
+        "provv-dsuite-517-test-report@2026-07-20"
+      ],
+      "caveat": "EAC certification applies only to the evaluated Democracy Suite 5.17 certified configuration. It does not establish election readiness, a jurisdiction deployment, the option selected for a fielded unit, or the condition of any unit. The certification-era documents name Dominion Voting Systems; the current EAC record separately notes a later Liberty Vote USA acquisition."
+    },
+    "components": [
+      {
+        "id": "icx-application",
+        "name": "ImageCast X application and configuration",
+        "category": "software",
+        "description": "The final EAC scope lists the ICX application and Android environment, while the Pro V&V plan and report preserve submitted-test and final configuration identifiers.",
+        "evidenceStatus": "certified_component",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [
+          "icx-certified-application-517171",
+          "icx-certified-android-810224",
+          "icx-submitted-test-version-517131",
+          "icx-final-mcf-517151"
+        ],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Application",
+        "caveat": "These are source-scoped certification and test observations, not a live device reading and not a claim about the newest Democracy Suite or ImageCast X release."
+      },
+      {
+        "id": "icx-touchscreen-bmd",
+        "name": "ImageCast X touchscreen BMD computer",
+        "category": "interface_compute",
+        "description": "The certified configuration lists Avalue Classic 15-inch and 21-inch tablet options and an Avalue Prime 21-inch option. The reference scene uses the documented SID-21V-Z37-A1R Classic 21.5-inch profile.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Avalue SID-15V-Z37",
+          "Avalue SID-21V-Z37",
+          "Avalue HID-21V-BTX"
+        ],
+        "hardwareRevisions": [
+          "Classic 15.6-inch",
+          "Classic 21.5-inch",
+          "Prime 21.5-inch - steel or aluminum chassis"
+        ],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan",
+          "provv-dsuite-517-test-report",
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20",
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Touchscreen",
+        "caveat": "The models and chassis are permitted alternatives. The reference scene depicts the SID-21V-Z37-A1R hardware family and must not be read as the Prime variant or as evidence of a jurisdiction's selected hardware.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-display",
+            "category": "display",
+            "label": "Display and touch panel",
+            "value": "21.5-inch, 1920 × 1080, projected-capacitive touch",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R (ICX Classic reference)",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual",
+              "co-dvs-517-icx-maintenance-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20",
+              "co-dvs-517-icx-maintenance-manual@2026-07-20"
+            ],
+            "caveat": "The manufacturer specification is tied to the named SID-21V model family. It is not transferred to the 15-inch Classic or 21-inch Prime alternatives."
+          }
+        ]
+      },
+      {
+        "id": "icx-sid21-compute-board",
+        "name": "SID-21V compute board profile",
+        "category": "compute",
+        "description": "The Avalue SID-21V-Z37-A1R manual identifies the processor, memory, and eMMC storage used by the Classic 21.5-inch hardware profile.",
+        "evidenceStatus": "documented_model_family",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [
+          "SID-21V-Z37-A1R"
+        ],
+        "hardwareRevisions": [
+          "Manual revision 1.0"
+        ],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Compute_Board",
+        "caveat": "The scene makes this documented hardware profile selectable, but its board outline and placement are illustrative. The profile must not be transferred to ICX Prime or a particular fielded unit.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-cpu",
+            "category": "processor",
+            "label": "CPU",
+            "value": "Intel Atom Z3735F",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "This is the COTS manufacturer specification for the named SID-21V model family, not a live inventory of a jurisdiction unit."
+          },
+          {
+            "id": "icx-sid21-memory",
+            "category": "memory",
+            "label": "RAM",
+            "value": "2 GB DDR3L",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "This is the COTS manufacturer specification for the named SID-21V model family."
+          },
+          {
+            "id": "icx-sid21-storage",
+            "category": "storage",
+            "label": "Internal storage",
+            "value": "32 GB eMMC",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "This eMMC specification belongs to the SID-21V Classic profile and is not the source-supported ICX Prime SSD advisory component."
+          }
+        ]
+      },
+      {
+        "id": "icx-sid21-io-panel",
+        "name": "SID-21V connector panel",
+        "category": "ports_and_interfaces",
+        "description": "The SID-21V manufacturer manual identifies the model-family connector set. The certified scope separately describes allowed system communications use.",
+        "evidenceStatus": "documented_model_family",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [
+          "SID-21V-Z37-A1R"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "eac-dsuite-517-scope"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "eac-dsuite-517-scope@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_IO_Panel",
+        "caveat": "Connector presence is a model-family specification. It does not establish port occupation, enabled services, cabling, or jurisdiction use; the scene location is illustrative.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-usb",
+            "category": "usb",
+            "label": "USB ports",
+            "value": "4 × USB 2.0",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "The manual states the physical connector count; it does not establish which ports are occupied or enabled in a fielded election configuration."
+          },
+          {
+            "id": "icx-sid21-ethernet",
+            "category": "ethernet",
+            "label": "Ethernet",
+            "value": "1 × 10/100 RJ-45 Ethernet",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "Physical connector presence does not establish an enabled election network connection or field use."
+          },
+          {
+            "id": "icx-sid21-other-io",
+            "category": "other_io",
+            "label": "Other documented I/O",
+            "value": "1 × HDMI, 1 × headphone jack, 1 × smart-card reader, 1 × microSD slot",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Avalue SID-21V-Z37-A1R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "These are hardware-family connectors and peripherals, not proof of a connected accessory or inserted media."
+          },
+          {
+            "id": "icx-cellular-certified-scope",
+            "category": "cellular",
+            "label": "Cellular modem",
+            "value": "No WAN modem or WAN wireless use listed in the Democracy Suite 5.17 certified-system table",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "Democracy Suite 5.17 certified configuration",
+            "sourceIds": [
+              "eac-dsuite-517-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-dsuite-517-scope@2026-07-20"
+            ],
+            "caveat": "This is a system-scope communications statement, not a teardown-based assertion that every ICX chassis lacks every radio component."
+          }
+        ]
+      },
+      {
+        "id": "icx-sid21-internal-battery",
+        "name": "SID-21V optional internal battery",
+        "category": "power",
+        "description": "The Avalue manual documents an optional rechargeable battery and its hinged top-cover installation path for the SID-21V-Z37-A1R profile.",
+        "evidenceStatus": "documented_optional_model_component",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [
+          "ACC-BAT-3S1P-01R"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Internal_Battery",
+        "caveat": "The component is optional. Its source-supported cover area guides the scene, but the simplified cell-pack geometry is illustrative and no field installation or battery condition is established.",
+        "technicalSpecifications": [
+          {
+            "id": "icx-sid21-battery-pack",
+            "category": "power",
+            "label": "Battery pack",
+            "value": "ACC-BAT-3S1P-01R; rechargeable Li-ion; 10.8 V nominal",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "Optional SID-21V-Z37-A1R battery",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "A documented optional accessory is not presumed installed in every certified or fielded ICX."
+          },
+          {
+            "id": "icx-sid21-battery-capacity",
+            "category": "power",
+            "label": "Battery capacity",
+            "value": "2,400 mAh typical; 2,215 mAh minimum at the documented test conditions",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "ACC-BAT-3S1P-01R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20"
+            ],
+            "caveat": "Capacity is a manufacturer specification, not runtime under an election workload or a measure of any unit's current battery health."
+          },
+          {
+            "id": "icx-sid21-battery-runtime-gap",
+            "category": "power",
+            "label": "Election-workload runtime",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "ACC-BAT-3S1P-01R",
+            "sourceIds": [
+              "co-dvs-517-avalue-sid21-manual",
+              "co-dvs-517-icx-maintenance-manual"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-avalue-sid21-manual@2026-07-20",
+              "co-dvs-517-icx-maintenance-manual@2026-07-20"
+            ],
+            "caveat": "The reviewed manuals provide electrical capacity and storage guidance but not a source-supported election-workload runtime."
+          }
+        ]
+      },
+      {
+        "id": "icx-ballot-printer",
+        "name": "ImageCast X ballot printer",
+        "category": "printer",
+        "description": "The reviewed scope and test records list six laser-printer alternatives for an ICX ballot-marking configuration.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "HP M402dn",
+          "HP M402dne",
+          "HP M501dn",
+          "HP M404dn",
+          "HP 4001dn",
+          "Avision AP3061"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Ballot_Printer",
+        "caveat": "These are certified alternatives, not evidence that all printers appear together or that a particular jurisdiction uses a named model."
+      },
+      {
+        "id": "icx-external-ups",
+        "name": "External uninterruptible power supply",
+        "category": "power",
+        "description": "The Pro V&V ICX configuration lists APC and CyberPower external UPS alternatives, and the EAC scope includes the same model families in the certified COTS hardware list.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "APC SMT-1500",
+          "APC SMT-1500C",
+          "CyberPower PR1500LCD",
+          "CyberPower PR1500LCD-VTVM"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_External_UPS",
+        "caveat": "The sources confirm permitted UPS alternatives but do not provide ICX load-specific capacity or runtime, field topology, battery condition, maintenance status, or a jurisdiction selection."
+      },
+      {
+        "id": "icx-accessible-tactile-interface",
+        "name": "Accessible-tactile interface",
+        "category": "assistive_input",
+        "description": "The certified hardware list includes ATI-USB and ATI serial handset interfaces used with accessible voting configurations.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "ATI-USB",
+          "ATI serial handset"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_ATI",
+        "caveat": "The records identify certified or tested interface options; they do not establish which interface is connected to a fielded device."
+      },
+      {
+        "id": "icx-assistive-accessories",
+        "name": "Audio, sip-and-puff, and switch accessories",
+        "category": "assistive_accessory",
+        "description": "The certification records list named headphones, sip-and-puff devices, rocker or paddle switches, and a switch cable for accessible operation.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "Cyber Acoustics ACM-70",
+          "Cyber Acoustics ACM-70B",
+          "Enabling Devices #972",
+          "Enabling Devices #971",
+          "AbleNet 10033400",
+          "Hosa YMM-261"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Assistive_Accessories",
+        "caveat": "Listed alternatives do not establish that every accessory is supplied, connected, or used with every deployed ImageCast X setup."
+      },
+      {
+        "id": "icx-election-media",
+        "name": "Election media and activation cards",
+        "category": "removable_media",
+        "description": "The reviewed test configuration lists ACOS-6-64 smart cards and named USB media used in the Democracy Suite configuration.",
+        "evidenceStatus": "vstl_tested_component_options",
+        "scopeKind": "certification_test_configuration",
+        "modelNumbers": [
+          "ACOS-6-64",
+          "Centon S4-CM-U3P2-16.1",
+          "Apacer EH353-M APHA016GAG0CG-3TM",
+          "Centon S4-CM-U3P2-8.1"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Election_Media",
+        "caveat": "This groups source-listed removable media for navigation. It does not describe a jurisdiction's activation, programming, storage, or chain-of-custody procedure."
+      },
+      {
+        "id": "icx-physical-accessories",
+        "name": "Optional transport and privacy accessories",
+        "category": "case_and_privacy",
+        "description": "The test plan lists ICX Classic and Prime transport bags, a privacy screen, a voting booth, and a Prime dual-bay battery charger as optional physical accessories.",
+        "evidenceStatus": "vstl_tested_component_options",
+        "scopeKind": "certification_test_configuration",
+        "modelNumbers": [
+          "ICX Classic BMD Transport Bag",
+          "ICX Prime BMD Transport Bag",
+          "ICX Privacy Screen",
+          "ICX Voting Booth",
+          "ICX Prime Battery Charger - Dual Bay"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-dsuite-517-test-plan"
+        ],
+        "sourceRevisionIds": [
+          "provv-dsuite-517-test-plan@2026-07-20"
+        ],
+        "sceneNodeName": "ICX_Physical_Accessories",
+        "caveat": "Optional accessories are not evidence of a jurisdiction's storage or setup procedure. The dual-bay charger is not represented as proof of an internal or external backup-power topology."
+      },
+      {
+        "id": "icx-prime-ssd",
+        "name": "ICX Prime solid-state drive",
+        "category": "internal_storage",
+        "description": "An EAC-hosted advisory and Pro V&V ECO analysis identify an ICX Prime solid-state drive and an SSD-firmware update path for a bounded project-file installation or removal condition.",
+        "evidenceStatus": "official_advisory_component",
+        "scopeKind": "post_certification_advisory",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "dvs-icx-prime-ssd-advisory",
+          "provv-dsuite-eco-100936-analysis"
+        ],
+        "sourceRevisionIds": [
+          "dvs-icx-prime-ssd-advisory@2026-07-20",
+          "provv-dsuite-eco-100936-analysis@2026-07-20"
+        ],
+        "sceneNodeName": null,
+        "caveat": "The records establish the component category but do not disclose a source-supported SSD model, firmware number, physical placement, cabling, or board-level arrangement, so it is not placed in the 3D scene."
+      }
+    ],
+    "versionObservations": [
+      {
+        "id": "icx-certified-application-517171",
+        "componentId": "icx-application",
+        "versionType": "software",
+        "value": "5.17.17.1",
+        "label": "Final EAC-certified ICX application",
+        "scopeKind": "certified_configuration",
+        "assertionScope": "certified",
+        "approvalScope": null,
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "DVS-DemSuite5.17",
+          "jurisdiction": null,
+          "observedOn": "2023-03-16"
+        },
+        "observedOn": "2023-03-16",
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "This is the application version in the final certified configuration, not a live field reading and not a claim that it is the newest ICX release."
+      },
+      {
+        "id": "icx-certified-android-810224",
+        "componentId": "icx-application",
+        "versionType": "operating_system",
+        "value": "Android 8.1.0-2.2.4",
+        "label": "Certified ICX COTS operating environment",
+        "scopeKind": "certified_configuration",
+        "assertionScope": "certified",
+        "approvalScope": null,
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "DVS-DemSuite5.17",
+          "jurisdiction": null,
+          "observedOn": "2023-03-16"
+        },
+        "observedOn": "2023-03-16",
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "The scope establishes the evaluated environment, not a device's installed patch state or present field configuration."
+      },
+      {
+        "id": "icx-submitted-test-version-517131",
+        "componentId": "icx-application",
+        "versionType": "submitted_test_software",
+        "value": "5.17.13.1",
+        "label": "Version submitted in the Pro V&V test plan",
+        "scopeKind": "certification_test_configuration",
+        "assertionScope": "documented",
+        "approvalScope": null,
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "DVS-DemSuite5.17",
+          "jurisdiction": null,
+          "observedOn": "2022-12-02"
+        },
+        "observedOn": "2022-12-02",
+        "sourceIds": [
+          "provv-dsuite-517-test-plan"
+        ],
+        "sourceRevisionIds": [
+          "provv-dsuite-517-test-plan@2026-07-20"
+        ],
+        "caveat": "This is a submitted test-plan version, not the final certified application version and not evidence of field use."
+      },
+      {
+        "id": "icx-final-mcf-517151",
+        "componentId": "icx-application",
+        "versionType": "machine_configuration_file",
+        "value": "MCF_5.17.15.1_20220920",
+        "label": "Final report ICX machine-configuration-file identifier",
+        "scopeKind": "certified_configuration",
+        "assertionScope": "certified",
+        "approvalScope": null,
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "DVS-DemSuite5.17",
+          "jurisdiction": null,
+          "observedOn": "2023-03-15"
+        },
+        "observedOn": "2023-03-15",
+        "sourceIds": [
+          "provv-dsuite-517-test-report"
+        ],
+        "sourceRevisionIds": [
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "This is a named MCF identifier in the final test report, not an ICX application version, live readout, or field-installation record."
+      }
+    ],
+    "configurationChanges": [
+      {
+        "id": "dsuite-517-icx-smart-card-security",
+        "changeId": "DVS-5.17-ICX-AUTH",
+        "componentIds": [
+          "icx-application",
+          "icx-election-media"
+        ],
+        "submittedOn": "2022-10-04",
+        "eacApprovedOn": "2023-03-16",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "included_in_certified_517_configuration",
+        "description": "The 5.17 modification set added ICX smart-card mutual authentication and secure messaging.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20"
+        ],
+        "caveat": "This is certified configuration history relative to the 5.5-D baseline; it is not evidence that a jurisdiction installed or enabled the change."
+      },
+      {
+        "id": "dsuite-517-icx-database-encryption",
+        "changeId": "DVS-5.17-ICX-DB-ENC",
+        "componentIds": [
+          "icx-application"
+        ],
+        "submittedOn": "2022-10-04",
+        "eacApprovedOn": "2023-03-16",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "included_in_certified_517_configuration",
+        "description": "The 5.17 modification set added encryption of election databases on ICX and named companion devices.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20"
+        ],
+        "caveat": "The source describes a bounded certification change, not a general security guarantee, field audit, or claim about every form of stored data."
+      },
+      {
+        "id": "dsuite-517-icx-functional-changes",
+        "changeId": "DVS-5.17-ICX-FUNCTIONS",
+        "componentIds": [
+          "icx-application",
+          "icx-ballot-printer"
+        ],
+        "submittedOn": "2022-10-04",
+        "eacApprovedOn": "2023-03-16",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "included_in_certified_517_configuration",
+        "description": "The 5.17 modification set added ICX support for provisional and Uniform Ballots, additional ballot-barcode information, and configurable on-screen contest columns.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20"
+        ],
+        "caveat": "The record establishes the evaluated 5.17 modification set, not the election features configured or used by a jurisdiction."
+      },
+      {
+        "id": "dsuite-eco-100936",
+        "changeId": "DVS-ECO-100936",
+        "componentIds": [
+          "icx-prime-ssd",
+          "icx-application",
+          "icx-touchscreen-bmd"
+        ],
+        "submittedOn": "2024-08-16",
+        "eacApprovedOn": "2024-09-24",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "post_certification_change_for_517",
+        "description": "Pro V&V reviewed updated ICX Prime user-manual procedures for an SSD-firmware update path and classified the documentation change as de minimis with no additional 5.17 testing required.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "dvs-icx-prime-ssd-advisory",
+          "provv-dsuite-eco-100936-analysis"
+        ],
+        "sourceRevisionIds": [
+          "dvs-icx-prime-ssd-advisory@2026-07-20",
+          "provv-dsuite-eco-100936-analysis@2026-07-20"
+        ],
+        "caveat": "The records document a post-certification change path affecting federal 5.17, but do not name the SSD firmware version or establish adoption by any jurisdiction."
+      }
+    ],
+    "findings": [
+      {
+        "id": "dsuite-517-test-campaign-outcome",
+        "findingType": "test_campaign_result",
+        "title": "No anomalies or deficiencies were reported in the 5.17 certification campaign",
+        "affectedSystemVersions": [
+          "Democracy Suite 5.17 certification campaign"
+        ],
+        "componentIds": [],
+        "publicStatus": "none_reported_in_test_campaign",
+        "description": "The final Pro V&V report states that no anomalies and no deficiencies were encountered during the D-Suite 5.17 test campaign and recommends certification of the evaluated system.",
+        "sourceIds": [
+          "provv-dsuite-517-test-report",
+          "eac-dsuite-517-record"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-record@2026-07-20",
+          "provv-dsuite-517-test-report@2026-07-20"
+        ],
+        "caveat": "This statement is limited to that test campaign and evaluated configuration. It is not evidence that every field unit or later operating condition is defect-free."
+      },
+      {
+        "id": "icx-touchscreen-responsiveness-advisory",
+        "findingType": "product_advisory_notice",
+        "title": "Touchscreen responsiveness advisory for named ICX Classic versions",
+        "affectedSystemVersions": [
+          "ICX 5.17.17.1 / Android 8.1.0-2.2.4"
+        ],
+        "componentIds": [
+          "icx-touchscreen-bmd",
+          "icx-application"
+        ],
+        "jurisdictionsNamed": [
+          "Michigan",
+          "Colorado",
+          "Arizona"
+        ],
+        "publicStatus": "restart_procedure_documented",
+        "description": "A May 2024 EAC-hosted manufacturer notice describes rare startup occasions when a named ICX Classic screen may not respond to touch and provides a power-cycle procedure.",
+        "sourceIds": [
+          "dvs-icx-touchscreen-advisory"
+        ],
+        "sourceRevisionIds": [
+          "dvs-icx-touchscreen-advisory@2026-07-20"
+        ],
+        "caveat": "The notice names versions and jurisdictions but does not quantify occurrence or establish that every named jurisdiction or unit experienced the condition."
+      },
+      {
+        "id": "icx-prime-ssd-advisory",
+        "findingType": "customer_advisory_notice",
+        "title": "ICX Prime SSD advisory and firmware-update documentation path",
+        "affectedSystemVersions": [
+          "ICX 5.17.17.1 / Android 8.1.0-2.2.4",
+          "ICX 5.6.105.1 / Android 8.1.0-1.1.16"
+        ],
+        "componentIds": [
+          "icx-prime-ssd",
+          "icx-application",
+          "icx-touchscreen-bmd"
+        ],
+        "jurisdictionsNamed": [
+          "Alaska",
+          "Illinois",
+          "Nevada",
+          "Ohio",
+          "Utah"
+        ],
+        "publicStatus": "documentation_and_ssd_firmware_update_path_recorded",
+        "description": "An August 2024 advisory describes a bounded SSD error during election-project installation or removal, before logic-and-accuracy testing. The linked ECO records updated user-manual procedures for an SSD-firmware update path.",
+        "sourceIds": [
+          "dvs-icx-prime-ssd-advisory",
+          "provv-dsuite-eco-100936-analysis"
+        ],
+        "sourceRevisionIds": [
+          "dvs-icx-prime-ssd-advisory@2026-07-20",
+          "provv-dsuite-eco-100936-analysis@2026-07-20"
+        ],
+        "caveat": "The sources do not establish occurrence during an election, adoption of the update by a jurisdiction, or an SSD model or firmware number. Do not infer a field incident or effect on voted paper records."
+      },
+      {
+        "id": "icx-straight-party-selection-advisory",
+        "findingType": "customer_advisory_notice",
+        "title": "Straight-party and split-ticket selection review advisory",
+        "affectedSystemVersions": [
+          "ImageCast X accessible BMD - advisory dated 2024-09-26"
+        ],
+        "componentIds": [
+          "icx-application",
+          "icx-touchscreen-bmd",
+          "icx-ballot-printer"
+        ],
+        "publicStatus": "advisory_issued_review_guidance",
+        "description": "An EAC-hosted customer notice describes a sequence in which previously removed selections can be reapplied after a straight-party selection is manually changed to split-ticket, and recommends review of the summary screen and printed ballot.",
+        "sourceIds": [
+          "dvs-icx-straight-party-advisory"
+        ],
+        "sourceRevisionIds": [
+          "dvs-icx-straight-party-advisory@2026-07-20"
+        ],
+        "caveat": "The notice does not quantify field occurrence, identify an election outcome effect, or document a software resolution. It is not evidence of fraud, misconduct, or altered votes."
+      }
+    ],
+    "power": [
+      {
+        "id": "icx-sid21-optional-battery",
+        "componentId": "icx-sid21-internal-battery",
+        "knowledgeStatus": "documented_partial",
+        "supplyType": "optional internal rechargeable Li-ion battery",
+        "manufacturer": null,
+        "model": "ACC-BAT-3S1P-01R",
+        "capacity": "2,400 mAh typical; 2,215 mAh minimum",
+        "runtime": null,
+        "description": "The SID-21V manual documents the optional battery model, chemistry, voltage, capacity, connector locations, and installation path. It does not publish an election-workload runtime.",
+        "sourceIds": [
+          "co-dvs-517-avalue-sid21-manual",
+          "co-dvs-517-icx-maintenance-manual"
+        ],
+        "sourceRevisionIds": [
+          "co-dvs-517-avalue-sid21-manual@2026-07-20",
+          "co-dvs-517-icx-maintenance-manual@2026-07-20"
+        ],
+        "caveat": "This is an optional model-family component, not evidence that a particular certified or fielded ICX contains the battery or that its present capacity matches the specification."
+      },
+      {
+        "id": "icx-certified-ups-options",
+        "componentId": "icx-external-ups",
+        "knowledgeStatus": "confirmed",
+        "supplyType": "external uninterruptible power supply",
+        "manufacturer": "APC; CyberPower",
+        "model": "SMT-1500; SMT-1500C; PR1500LCD; PR1500LCD-VTVM",
+        "capacity": null,
+        "runtime": null,
+        "description": "The Pro V&V ICX configuration lists four external UPS alternatives. The reviewed sources do not state an ICX load-specific capacity or runtime.",
+        "sourceIds": [
+          "eac-dsuite-517-scope",
+          "provv-dsuite-517-test-plan"
+        ],
+        "sourceRevisionIds": [
+          "eac-dsuite-517-scope@2026-07-20",
+          "provv-dsuite-517-test-plan@2026-07-20"
+        ],
+        "caveat": "Confirmed means the UPS models appear in the reviewed certified or test configuration, not that all are used together, that a jurisdiction selected one, or that battery health and runtime are known."
+      }
+    ],
+    "networkEvidence": {
+      "reviewedOn": "2026-07-21",
+      "summary": "The certified ICX hardware profile includes a physical 10/100 RJ-45 interface on the SID-21V platform, but the Democracy Suite 5.17 test plan says the evaluated system does not use public networks, does not support transmission over public networks, and uses no wireless technology. No external network peer or field connection is established for this ICX dossier.",
+      "publicationBoundary": "The module distinguishes physical interface capability from an enabled or used connection. It excludes addresses, credentials, keys, activation-card contents, port settings, hostnames, and site-specific topology.",
+      "configurations": [
+        {
+          "id": "icx-517-physical-interface-boundary",
+          "title": "ICX physical Ethernet capability with certified communications boundary",
+          "evidenceLayer": "expected",
+          "assertionScope": "vstl_test_configuration",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "physical_network_capability_only",
+          "description": "The SID-21V hardware exposes an RJ-45 interface, while the exact 5.17 test-plan boundary excludes public-network transmission and wireless use. The reviewed record does not identify a certified external peer for the ICX port or show that it is connected in a jurisdiction.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            {
+              "id": "icx-station",
+              "label": "ImageCast X station",
+              "role": "Accessible ballot-marking platform",
+              "componentId": "icx-touchscreen-bmd",
+              "optional": false,
+              "details": "The station includes the certified ICX application and one of the permitted hardware configurations."
+            },
+            {
+              "id": "icx-rj45-interface",
+              "label": "SID-21V RJ-45 interface",
+              "role": "Physical 10/100 Ethernet capability",
+              "componentId": "icx-sid21-io-panel",
+              "optional": false,
+              "details": "Connector presence is documented; enabled state, peer, service, and field use are not established."
+            },
+            {
+              "id": "icx-election-media",
+              "label": "Election and activation media",
+              "role": "Physical configuration and session transfer",
+              "componentId": "icx-election-media",
+              "optional": false,
+              "details": "The certified system uses physical media and activation cards for election configuration and voter-session workflows."
+            }
+          ],
+          "links": [
+            {
+              "id": "icx-rj45-capability-link",
+              "from": "icx-rj45-interface",
+              "to": "icx-station",
+              "medium": "Internal connection to a 10/100 RJ-45 physical interface",
+              "direction": "bidirectional",
+              "purpose": "Expose hardware network capability without establishing an attached external network",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "icx-physical-media-link",
+              "from": "icx-election-media",
+              "to": "icx-station",
+              "medium": "Physical election media and activation cards",
+              "direction": "one_way",
+              "purpose": "Load election configuration and activate voting sessions without treating physical transfer as a network connection",
+              "knowledgeStatus": "documented_partial"
+            }
+          ],
+          "controls": [
+            {
+              "id": "icx-no-public-network",
+              "label": "No public-network use in evaluated system",
+              "status": "documented",
+              "description": "Pro V&V states that Democracy Suite 5.17 does not utilize public networks."
+            },
+            {
+              "id": "icx-no-public-transmission",
+              "label": "No public-network transmission",
+              "status": "documented",
+              "description": "The test plan states that the evaluated 5.17 system does not support transmission over public networks."
+            },
+            {
+              "id": "icx-no-wireless",
+              "label": "No wireless technology",
+              "status": "documented",
+              "description": "The 5.17 test plan states that no wireless technology is utilized in the system."
+            },
+            {
+              "id": "icx-external-peer",
+              "label": "External Ethernet peer",
+              "status": "not_publicly_established",
+              "description": "No external device, service, or network attached to the ICX RJ-45 port is established in the reviewed record."
+            }
+          ],
+          "sensitiveDetailsWithheld": "No addressing, credentials, keys, activation-card contents, port configuration, hostnames, or jurisdiction topology is collected or shown.",
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "provv-dsuite-517-test-plan",
+            "co-dvs-517-system-overview",
+            "co-dvs-517-avalue-sid21-manual"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "provv-dsuite-517-test-plan@2026-07-20",
+            "co-dvs-517-system-overview@2026-07-21",
+            "co-dvs-517-avalue-sid21-manual@2026-07-20"
+          ],
+          "caveat": "An RJ-45 connector is capability evidence only. It does not prove that Ethernet is enabled, cabled, assigned an address, attached to a network, or used during an election."
+        }
+      ],
+      "sourceImages": [
+        {
+          "id": "icx-dvs-517-high-level-block-diagram",
+          "assetUrl": "/equipment/network-evidence/dvs-517-system-block-diagram.png",
+          "assetSha256": "e556f3f0d2cb52c77be4bb6b54561ed76c08a13cb01af5035b6e52eddd480cd2",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_topology_diagram",
+          "alt": "Democracy Suite 5.17-CO high-level block diagram showing ImageCast X among EMS services, ImageCast devices, and physical or secure-electronic transfers.",
+          "caption": "Democracy Suite 5.17-CO high-level system block diagram",
+          "pageOrSection": "Colorado system-overview PDF page 21, Figure 2-3",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "The page says not every depicted component applies to every jurisdiction, and the document disclaimer excludes modem and transmission functionality from the 5.17-CO campaign.",
+          "sourceIds": [
+            "co-dvs-517-system-overview"
+          ],
+          "sourceRevisionIds": [
+            "co-dvs-517-system-overview@2026-07-21"
+          ]
+        },
+        {
+          "id": "icx-dvs-517-network-boundary-page",
+          "assetUrl": "/equipment/network-evidence/dvs-517-network-boundary.png",
+          "assetSha256": "c54b8ff1cf8c91117ce8885c03cd5fd1a6de54748ab31c04bbf495b825f3726c",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_document_page",
+          "alt": "Pro V and V Democracy Suite 5.17 test-plan page stating that public networks and public-network transmission are not used and that no wireless technology is utilized.",
+          "caption": "Pro V&V 5.17 public-network and wireless boundary statements",
+          "pageOrSection": "Pro V&V test-plan PDF page 43, report page 38",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "The statements define the evaluated system boundary. They do not constitute an inspection of a particular ICX unit or jurisdiction installation.",
+          "sourceIds": [
+            "provv-dsuite-517-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "provv-dsuite-517-test-plan@2026-07-20"
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "icx-rj45-use-gap",
+          "label": "RJ-45 enabled state and peer",
+          "description": "The reviewed public record does not identify an enabled service, external peer, cable, or field use for the physical ICX Ethernet interface.",
+          "sourceIds": [
+            "eac-dsuite-517-scope",
+            "co-dvs-517-avalue-sid21-manual",
+            "provv-dsuite-517-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "eac-dsuite-517-scope@2026-07-20",
+            "co-dvs-517-avalue-sid21-manual@2026-07-20",
+            "provv-dsuite-517-test-plan@2026-07-20"
+          ],
+          "caveat": "The gap must not be converted into an assumption that the port is either active or disabled."
+        },
+        {
+          "id": "icx-field-network-gap",
+          "label": "Field-observed configuration",
+          "description": "No dated unit-level interface inspection or polling-place network diagram was collected.",
+          "sourceIds": [
+            "provv-dsuite-517-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "provv-dsuite-517-test-plan@2026-07-20"
+          ],
+          "caveat": "Certified boundary evidence is not a live observation."
+        }
+      ]
+    },
+    "deployments": [],
+    "scene": {
+      "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-x/orthographic-pilot.glb",
+      "assetLicense": "Apache-2.0",
+      "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-imagecast-x-model.mjs",
+      "geometryFidelity": "illustrative_not_to_scale",
+      "description": "An original, drawing-informed navigational schematic of the Avalue SID-21V-Z37-A1R ICX Classic reference configuration and its supported peripherals. The Prime SSD remains omitted because public records do not establish its model or placement.",
+      "referenceConfiguration": "ICX Classic with Avalue SID-21V-Z37-A1R 21.5-inch terminal, rear arm, tabletop base, ballot printer, and external UPS",
+      "referenceSourceIds": [
+        "co-dvs-517-avalue-sid21-manual",
+        "co-dvs-517-icx-maintenance-manual",
+        "eac-dsuite-517-scope",
+        "provv-dsuite-517-test-plan",
+        "sf-icx-usability-test-report-510"
+      ],
+      "referenceSourceRevisionIds": [
+        "co-dvs-517-avalue-sid21-manual@2026-07-20",
+        "co-dvs-517-icx-maintenance-manual@2026-07-20",
+        "eac-dsuite-517-scope@2026-07-20",
+        "provv-dsuite-517-test-plan@2026-07-20",
+        "sf-icx-usability-test-report-510@2026-07-20"
+      ],
+      "referenceNote": "The terminal silhouette follows the Avalue mechanical drawing. The compute-board and connector-panel shapes and their separation paths are illustrative; the optional battery cover area follows the manual, but no unit-level installation is asserted.",
+      "referenceImages": [
+        {
+          "id": "icx-variants-usability-test-photo",
+          "assetUrl": "/equipment/dominion-democracy-suite-517-imagecast-x/reference-icx-variants.png",
+          "assetSha256": "a9b0898c52729f8a33e6ca9f8a91acc58c7c42a5fcf902ea647d6037d04de497",
+          "width": 392,
+          "height": 263,
+          "alt": "Three ImageCast X terminals in voting booths, including portrait displays and an external printer",
+          "caption": "Actual-device photograph from an official usability report: ICX 21, ICX 15, and ICX 12.2.",
+          "kind": "official_test_report_photo",
+          "sourceIds": [
+            "sf-icx-usability-test-report-510"
+          ],
+          "sourceRevisionIds": [
+            "sf-icx-usability-test-report-510@2026-07-20"
+          ],
+          "pageOrSection": "PDF page 7, report page 4, Figure 2-1",
+          "derivativeNote": "Exact embedded image extracted from Figure 2-1; no crop or content alteration.",
+          "caveat": "This photograph is from an older 5.0 usability-test context and shows multiple ICX sizes. It does not establish the exact 5.17 hardware alternative, accessories, software, or field installation represented by the schematic."
+        }
+      ],
+      "camera": {
+        "position": [
+          7,
+          5,
+          8
+        ],
+        "zoom": 72,
+        "near": 0.1,
+        "far": 100
+      },
+      "nodes": [
+        {
+          "componentId": "icx-application",
+          "nodeName": "ICX_Application",
+          "color": "#33c6b5",
+          "explodedOffset": [
+            0,
+            0.3,
+            0.65
+          ]
+        },
+        {
+          "componentId": "icx-touchscreen-bmd",
+          "nodeName": "ICX_Touchscreen",
+          "color": "#78a6ff",
+          "explodedOffset": [
+            0,
+            0.8,
+            0
+          ]
+        },
+        {
+          "componentId": "icx-sid21-compute-board",
+          "nodeName": "ICX_Compute_Board",
+          "color": "#f0b95a",
+          "explodedOffset": [
+            0,
+            0.1,
+            -1.15
+          ]
+        },
+        {
+          "componentId": "icx-sid21-io-panel",
+          "nodeName": "ICX_IO_Panel",
+          "color": "#ff8c69",
+          "explodedOffset": [
+            1.35,
+            0.1,
+            -0.35
+          ]
+        },
+        {
+          "componentId": "icx-sid21-internal-battery",
+          "nodeName": "ICX_Internal_Battery",
+          "color": "#e87fb3",
+          "explodedOffset": [
+            -1.2,
+            0.2,
+            -0.7
+          ]
+        },
+        {
+          "componentId": "icx-ballot-printer",
+          "nodeName": "ICX_Ballot_Printer",
+          "color": "#f0b95a",
+          "explodedOffset": [
+            1.15,
+            0.2,
+            0.25
+          ]
+        },
+        {
+          "componentId": "icx-external-ups",
+          "nodeName": "ICX_External_UPS",
+          "color": "#e87fb3",
+          "explodedOffset": [
+            -1.2,
+            -0.2,
+            0.2
+          ]
+        },
+        {
+          "componentId": "icx-accessible-tactile-interface",
+          "nodeName": "ICX_ATI",
+          "color": "#d1e8e5",
+          "explodedOffset": [
+            0.8,
+            -0.3,
+            0.7
+          ]
+        },
+        {
+          "componentId": "icx-assistive-accessories",
+          "nodeName": "ICX_Assistive_Accessories",
+          "color": "#a68cf2",
+          "explodedOffset": [
+            -1,
+            0.75,
+            0.5
+          ]
+        },
+        {
+          "componentId": "icx-election-media",
+          "nodeName": "ICX_Election_Media",
+          "color": "#ff8c69",
+          "explodedOffset": [
+            0.45,
+            0.25,
+            0.85
+          ]
+        },
+        {
+          "componentId": "icx-physical-accessories",
+          "nodeName": "ICX_Physical_Accessories",
+          "color": "#53676d",
+          "explodedOffset": [
+            0,
+            -0.85,
+            -0.6
+          ]
+        }
+      ]
+    },
+    "caveats": [
+      "Certified and tested component alternatives are not evidence that all listed options are installed together or that a jurisdiction selected a particular option.",
+      "The 3D reference follows the SID-21V mechanical outline but remains a selection aid, not vendor CAD, a teardown, a wiring diagram, or proof of exact internal placement.",
+      "The SSD component category is source-supported, but its model, firmware number, physical location, and internal geometry remain unknown and are not visualized.",
+      "The UPS alternatives are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
+      "Advisory notices are time-, version-, scenario-, and sometimes jurisdiction-scoped. They do not prove an election incident, altered votes, fraud, misconduct, or an incorrect outcome."
+    ]
+  },
+  "editorial": {
+    "state": "published",
+    "revision": 5,
+    "createdOn": "2026-07-20",
+    "updatedOn": "2026-07-22",
+    "reviewedOn": "2026-07-21",
+    "reviewedBy": "project_editorial_review",
+    "publishedOn": "2026-07-22",
+    "sourceRevisionIds": [
+      "dvs-icx-prime-ssd-advisory@2026-07-20",
+      "dvs-icx-straight-party-advisory@2026-07-20",
+      "dvs-icx-touchscreen-advisory@2026-07-20",
+      "eac-dsuite-517-record@2026-07-20",
+      "eac-dsuite-517-scope@2026-07-20",
+      "co-dvs-517-avalue-sid21-manual@2026-07-20",
+      "co-dvs-517-icx-maintenance-manual@2026-07-20",
+      "co-dvs-517-system-overview@2026-07-21",
+      "provv-dsuite-517-test-plan@2026-07-20",
+      "provv-dsuite-517-test-report@2026-07-20",
+      "provv-dsuite-eco-100936-analysis@2026-07-20",
+      "sf-icx-usability-test-report-510@2026-07-20"
+    ],
+    "reviewNotes": [
+      "Approved for feature-gated staging. Public production activation remains a separate review decision.",
+      "Certification-era manufacturer naming is preserved separately from the current EAC ownership note.",
+      "Added network-boundary evidence that distinguishes the ICX physical RJ-45 capability from an enabled or field-used connection.",
+      "project_owner: Production publication authorized after source, editorial, build, and browser validation."
+    ],
+    "publicationId": "equipment-explorer-2026-07-22-r1"
+  }
+}

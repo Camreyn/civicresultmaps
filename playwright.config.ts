@@ -17,7 +17,18 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          args: [
+            "--enable-unsafe-swiftshader",
+            "--enable-webgl",
+            "--ignore-gpu-blocklist",
+            "--use-angle=swiftshader",
+            "--use-gl=angle",
+          ],
+        },
+      },
     },
   ],
   webServer: process.env.PLAYWRIGHT_BASE_URL
@@ -28,7 +39,9 @@ export default defineConfig({
           CLERK_SECRET_KEY: "",
           DATABASE_URL: "",
           EDGE_CONFIG: "",
+          EQUIPMENT_EXPLORER_ENABLED: "1",
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "",
+          NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1",
           POSTGRES_URL: "",
           UI_LAYOUT_ADMIN_EMAILS: "",
           UI_LAYOUT_TEST_HARNESS: "true",

@@ -94,6 +94,7 @@ type WorkspaceTabsProps = {
   electionYear: 2016 | 2020 | 2024;
   electronicIntegrityRequests: ElectronicIntegrityRequestOperationSummary;
   sourceRecordsRequests: SourceRecordsRequestOperationSummary;
+  equipmentExplorerEnabled: boolean;
   equipmentRows: EquipmentRowSummary[];
   securityIncidents: SecurityIncidentSummary[];
   historicalRows: HistoricalResultRowSummary[];
@@ -2728,6 +2729,7 @@ export function WorkspaceTabs({
   electionYear,
   coverage,
   countyLabel,
+  equipmentExplorerEnabled,
   equipmentRows,
   securityIncidents,
   historicalRows,
@@ -6275,6 +6277,9 @@ export function WorkspaceTabs({
                   </span>
                 </div>
                 <div className="header-actions">
+                  {equipmentExplorerEnabled && (
+                    <a className="equipment-catalog-link" href="/equipment">Component catalog</a>
+                  )}
                   <Eli5>
                     These rows describe election administration context like vendor, system, paper record, tabulation,
                     and poll-book fields by source jurisdiction. They do not prove why a vote pattern happened or that

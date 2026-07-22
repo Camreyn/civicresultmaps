@@ -1,0 +1,2020 @@
+{
+  "schemaVersion": 2,
+  "reviewedOn": "2026-07-21",
+  "system": {
+    "id": "ess-evs-6400-ds200",
+    "slug": "ess-evs-6400-ds200",
+    "status": "pilot",
+    "manufacturer": "Election Systems & Software",
+    "systemName": "EVS",
+    "systemVersion": "6.4.0.0",
+    "deviceName": "DS200",
+    "displayName": "ES&S EVS 6.4.0.0 / DS200",
+    "deviceRole": "Polling-place digital scanner and tabulator",
+    "summary": "A source-linked pilot dossier for the DS200 within the EAC-certified EVS 6.4.0.0 configuration, with historical change records, separately scoped optional modem models and vulnerability reviews, and a labeled Washington deployment observation.",
+    "certification": {
+      "certificationId": "ESSEVS6400",
+      "standard": "VVSG 1.0",
+      "certifiedOn": "2023-08-18",
+      "vstl": "Pro V&V, Inc.",
+      "scopeKind": "certified_configuration",
+      "sourceIds": [
+        "eac-evs-6400-record",
+        "eac-evs-6400-scope",
+        "provv-evs-6400-test-report"
+      ],
+      "caveat": "EAC certification applies only to the evaluated EVS 6.4.0.0 certified configuration. It is not an endorsement, warranty, field inventory, or determination that a particular unit was operated in that configuration.",
+      "sourceRevisionIds": [
+        "eac-evs-6400-record@2026-07-19",
+        "eac-evs-6400-scope@2026-07-19",
+        "provv-evs-6400-test-report@2026-07-19"
+      ]
+    },
+    "components": [
+      {
+        "id": "ds200-scanner-tabulator",
+        "name": "DS200 scanner and tabulator assembly",
+        "category": "device",
+        "description": "The certified scope describes the DS200 as a poll-place scanner and tabulator that scans voter selections from both sides of a ballot simultaneously.",
+        "evidenceStatus": "certified_component",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "DS200"
+        ],
+        "hardwareRevisions": [
+          "1.2",
+          "1.3"
+        ],
+        "versionObservationIds": [
+          "ds200-eac-firmware-3100",
+          "ds200-wa-firmware-3100",
+          "ds200-wa-hardware-1313"
+        ],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report",
+          "ess-ds200-one-sheet"
+        ],
+        "sceneNodeName": "DS200_Shell",
+        "caveat": "Washington's state-approved configuration also lists hardware 1.3.13. No source in this pilot identifies the hardware revision of a particular county unit.",
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19",
+          "ess-ds200-one-sheet@2026-07-20"
+        ],
+        "technicalSpecifications": [
+          {
+            "id": "ds200-cellular-certified-scope",
+            "category": "cellular",
+            "label": "Cellular modem",
+            "value": "No WAN modem or WAN wireless use listed in the EVS 6.4.0.0 certified-system table",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "EVS 6.4.0.0 certified configuration",
+            "sourceIds": [
+              "eac-evs-6400-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19"
+            ],
+            "caveat": "This is a certified-system communications-use statement. It does not prove the physical absence of every connector or service component inside every DS200 unit."
+          },
+          {
+            "id": "ds200-ethernet-certified-scope",
+            "category": "ethernet",
+            "label": "Ethernet / LAN",
+            "value": "No LAN TCP/IP or LAN wireless use listed in the EVS 6.4.0.0 certified-system table",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "certified_configuration",
+            "modelContext": "EVS 6.4.0.0 certified configuration",
+            "sourceIds": [
+              "eac-evs-6400-scope"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19"
+            ],
+            "caveat": "This establishes permitted certified-system communications use, not a teardown-based count of physical RJ-45 connectors."
+          },
+          {
+            "id": "ds200-usb-port-count-gap",
+            "category": "usb",
+            "label": "Physical USB port count",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "DS200",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "Reviewed certification artifacts identify removable media and system components but do not publish a DS200 physical USB-connector count."
+          },
+          {
+            "id": "ds200-memory-capacity-gap",
+            "category": "memory",
+            "label": "Installed RAM",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "DS200",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ],
+            "caveat": "No reviewed artifact publishes the installed RAM technology or capacity for the certified DS200 configurations."
+          }
+        ]
+      },
+      {
+        "id": "ds200-optional-cellular-modem",
+        "name": "Optional modem carrier board",
+        "category": "cellular",
+        "optionality": "optional",
+        "description": "ES&S states that modem components are not resident by default and that a separate board is installed only where cellular transmission is permitted; Rhode Island's 2021 procedure documents post-poll cellular transmission. Exact historical modem modules are listed as separate evidence records below.",
+        "evidenceStatus": "documented_optional_model_component",
+        "scopeKind": "manufacturer_hardware_documentation",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "ess-election-security-faqs",
+          "ri-ds200-pollworker-manual-2021"
+        ],
+        "sourceRevisionIds": [
+          "ess-election-security-faqs@2026-07-20",
+          "ri-ds200-pollworker-manual-2021@2026-07-20"
+        ],
+        "sceneNodeName": "Optional_Cellular_Modem",
+        "caveat": "The sources establish an optional separate board and one jurisdiction's documented procedure, but not this carrier board's manufacturer, part number, radio module, firmware, antenna, exact placement, or presence in every DS200. The scene shape is symbolic.",
+        "technicalSpecifications": [
+          {
+            "id": "ds200-optional-cellular-capability",
+            "category": "cellular",
+            "label": "Optional cellular transmission",
+            "value": "Separate modem board installed only where permitted; Rhode Island documents transmission after polls close",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "jurisdiction_deployment_observation",
+            "modelContext": "DS200 model family; Rhode Island 2021 deployment procedure",
+            "sourceIds": [
+              "ess-election-security-faqs",
+              "ri-ds200-pollworker-manual-2021"
+            ],
+            "sourceRevisionIds": [
+              "ess-election-security-faqs@2026-07-20",
+              "ri-ds200-pollworker-manual-2021@2026-07-20"
+            ],
+            "caveat": "This does not mean every DS200 contains a modem, that EVS 6.4.0.0 permits WAN use, or that cellular transmission was enabled or used in an unlisted jurisdiction."
+          }
+        ],
+        "securityReview": {
+          "reviewedOn": "2026-07-20",
+          "productIdentityStatus": "component_identity_unresolved",
+          "firmwareStatus": "not_publicly_established",
+          "firmwareVersion": null,
+          "overallStatus": "exact_product_review_not_possible",
+          "coverageDefinition": "All publicly indexed, exact-product-applicable records found in the reviewed NVD, CISA KEV, and manufacturer security-advisory sources as of the review date.",
+          "rankingMethod": "Known exploitation in CISA KEV ranks first, then numeric CVSS score, then a source-assigned severity. No score or severity is invented when a source does not publish one.",
+          "sourcesReviewed": [],
+          "vulnerabilities": [],
+          "nonCveAdvisories": [],
+          "caveat": "An exact-product vulnerability review cannot be performed until the carrier board and installed modem module are identified. An empty list here is an evidence gap, not a claim of no vulnerabilities."
+        }
+      },
+      {
+        "id": "ds200-multitech-c2-modem",
+        "name": "MultiTech Verizon C2 cellular modem",
+        "category": "cellular",
+        "optionality": "optional",
+        "description": "Florida's June 2015 qualification addendum identifies a MultiTech Verizon C2 modem evaluated as an optional DS200 result-transmission component.",
+        "evidenceStatus": "historical_state_approved_model_component",
+        "scopeKind": "historical_state_approval",
+        "modelNumbers": [
+          "MTSMC-C2-N3-R.1"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "fl-evs-4500-v4-modem-report",
+          "eac-unity-3200-document-report",
+          "multitech-universal-socket-guide"
+        ],
+        "sourceRevisionIds": [
+          "fl-evs-4500-v4-modem-report@2026-07-20",
+          "eac-unity-3200-document-report@2026-07-20",
+          "multitech-universal-socket-guide@2026-07-20"
+        ],
+        "sceneNodeName": null,
+        "caveat": "This model is established only for Florida EVS 4.5.0.0 Version 4 and DS200 hardware 1.2 or 1.3. The public record does not establish EVS 6.4.0.0 certification, Rhode Island fielding, a current installed unit, radio firmware, antenna installation, or exact internal placement.",
+        "technicalSpecifications": [
+          {
+            "id": "ds200-c2-network-profile",
+            "category": "cellular",
+            "label": "Carrier and radio family",
+            "value": "Verizon CDMA2000 1xRTT / C2 wireless modem",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "approved_change",
+            "modelContext": "Florida EVS 4.5.0.0 Version 4; DS200 hardware 1.2 and 1.3",
+            "sourceIds": [
+              "fl-evs-4500-v4-modem-report",
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "fl-evs-4500-v4-modem-report@2026-07-20",
+              "multitech-universal-socket-guide@2026-07-20"
+            ],
+            "caveat": "This is a historical state-approved configuration, not proof that a modem was installed or enabled in another DS200 configuration or jurisdiction."
+          },
+          {
+            "id": "ds200-c2-firmware-update-path",
+            "category": "firmware",
+            "label": "Documented firmware update path",
+            "value": "Non-UIP C2 SocketModem firmware can be updated through the serial port with MultiTech assistance",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "manufacturer_product",
+            "modelContext": "MultiTech MTSMC-C2 product family",
+            "sourceIds": [
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "multitech-universal-socket-guide@2026-07-20"
+            ],
+            "caveat": "The guide describes an update method, not the firmware version installed in the Florida test modem or any fielded DS200."
+          }
+        ],
+        "securityReview": {
+          "reviewedOn": "2026-07-20",
+          "productIdentityStatus": "exact_model_historical_scope",
+          "firmwareStatus": "not_publicly_established",
+          "firmwareVersion": null,
+          "overallStatus": "no_exact_product_matches_found",
+          "coverageDefinition": "All publicly indexed, exact-product-applicable records found in the reviewed NVD, CISA KEV, and manufacturer security-advisory sources as of the review date.",
+          "rankingMethod": "Known exploitation in CISA KEV ranks first, then numeric CVSS score, then a source-assigned severity. No score or severity is invented when a source does not publish one.",
+          "sourcesReviewed": [
+            {
+              "id": "ds200-c2-nvd-review",
+              "catalog": "NIST National Vulnerability Database",
+              "queryTerms": [
+                "MTSMC-C2",
+                "MTSMC-C2-N3.R1",
+                "MultiTech SocketModem",
+                "CE910",
+                "Telit CE910"
+              ],
+              "resultStatus": "no_exact_product_matches",
+              "exactMatchCount": 0,
+              "sourceIds": [
+                "nvd-modem-query-review"
+              ],
+              "sourceRevisionIds": [
+                "nvd-modem-query-review@2026-07-20"
+              ],
+              "caveat": "Zero keyword matches does not rule out differently named, unindexed, undisclosed, or firmware-dependent vulnerabilities."
+            },
+            {
+              "id": "ds200-c2-cisa-kev-review",
+              "catalog": "CISA Known Exploited Vulnerabilities",
+              "queryTerms": [
+                "MultiTech",
+                "Telit",
+                "SocketModem",
+                "MTSMC",
+                "CE910"
+              ],
+              "resultStatus": "no_catalog_matches",
+              "exactMatchCount": 0,
+              "sourceIds": [
+                "cisa-kev-catalog"
+              ],
+              "sourceRevisionIds": [
+                "cisa-kev-catalog@2026-07-20"
+              ],
+              "caveat": "KEV is a list of vulnerabilities known to be exploited in the wild, not an inventory of every vulnerability."
+            },
+            {
+              "id": "ds200-c2-multitech-advisory-review",
+              "catalog": "MultiTech security advisories",
+              "queryTerms": [
+                "MTSMC-C2",
+                "MTSMC-C2-N3.R1",
+                "SocketModem"
+              ],
+              "resultStatus": "no_applicable_product_matches",
+              "exactMatchCount": 0,
+              "sourceIds": [
+                "multitech-security-advisories-index",
+                "multitech-security-advisory-bundle"
+              ],
+              "sourceRevisionIds": [
+                "multitech-security-advisories-index@2026-07-20",
+                "multitech-security-advisory-bundle@2026-07-20"
+              ],
+              "caveat": "The archived advisories name other product families or state that MultiTech products are not affected; the result is bounded to the reviewed advisory set."
+            }
+          ],
+          "vulnerabilities": [],
+          "nonCveAdvisories": [],
+          "caveat": "No exact-product-applicable public vulnerability record was found in the reviewed sources. This does not mean the modem has no vulnerability; the installed firmware is unknown and public catalogs may be incomplete."
+        }
+      },
+      {
+        "id": "ds200-multitech-lvw3-modem",
+        "name": "MultiTech Verizon 4G LTE modem",
+        "category": "cellular",
+        "optionality": "optional",
+        "description": "A court-filed copy of a Pro V&V EVS 5.3.4.1 test report identifies MTSMC-LVW3 Verizon 4G modem test units with DS200 hardware 1.2 and 1.3.",
+        "evidenceStatus": "historical_vstl_tested_model_component",
+        "scopeKind": "historical_test_configuration",
+        "modelNumbers": [
+          "MTSMC-LVW3"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-evs-5341-modem-hardware-table",
+          "multitech-verizon-fota",
+          "multitech-eol-products",
+          "multitech-lvw3-update-bulletin"
+        ],
+        "sourceRevisionIds": [
+          "provv-evs-5341-modem-hardware-table@2026-07-20",
+          "multitech-verizon-fota@2026-07-20",
+          "multitech-eol-products@2026-07-20",
+          "multitech-lvw3-update-bulletin@2026-07-20"
+        ],
+        "sceneNodeName": null,
+        "caveat": "The Pro V&V table establishes the base model string in an EVS 5.3.4.1 test configuration, not EVS 6.4.0.0 certification or field use. It does not identify the ordering revision, installed Telit radio variant, radio firmware, patch state, antenna, or exact placement.",
+        "technicalSpecifications": [
+          {
+            "id": "ds200-lvw3-network-profile",
+            "category": "cellular",
+            "label": "Carrier and radio family",
+            "value": "Verizon 4G LTE Category 1 SocketModem",
+            "knowledgeStatus": "confirmed",
+            "assertionScope": "documented_model_family",
+            "modelContext": "MTSMC-LVW3; EVS 5.3.4.1 Pro V&V test hardware",
+            "sourceIds": [
+              "provv-evs-5341-modem-hardware-table",
+              "multitech-lvw3-update-bulletin"
+            ],
+            "sourceRevisionIds": [
+              "provv-evs-5341-modem-hardware-table@2026-07-20",
+              "multitech-lvw3-update-bulletin@2026-07-20"
+            ],
+            "caveat": "The sources establish the test-hardware model and manufacturer product family, not a live connection, installed firmware, or a fielded DS200 modem."
+          },
+          {
+            "id": "ds200-lvw3-current-radio-mapping",
+            "category": "cellular",
+            "label": "Current product-family radio mapping",
+            "value": "Telit LE910-NA1 in MultiTech's current MTSMC-LVW3 family table",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "manufacturer_product",
+            "modelContext": "Current MultiTech MTSMC-LVW3 product-family FOTA table",
+            "sourceIds": [
+              "multitech-verizon-fota"
+            ],
+            "sourceRevisionIds": [
+              "multitech-verizon-fota@2026-07-20"
+            ],
+            "caveat": "The historical Pro V&V table omits the ordering revision. This current family mapping is not proof that either evaluated DS200 test modem contained an LE910-NA1 radio."
+          },
+          {
+            "id": "ds200-lvw3-ordering-revisions",
+            "category": "lifecycle",
+            "label": "Documented ordering variants",
+            "value": "MTSMC-LVW3 base, R1, R2, and R4 variants appear in the manufacturer lifecycle table",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "manufacturer_product",
+            "modelContext": "MTSMC-LVW3 product family",
+            "sourceIds": [
+              "multitech-eol-products"
+            ],
+            "sourceRevisionIds": [
+              "multitech-eol-products@2026-07-20"
+            ],
+            "caveat": "The exact ordering revision used in the Pro V&V test units is not stated, so no listed lifecycle date is assigned to those units."
+          }
+        ],
+        "securityReview": {
+          "reviewedOn": "2026-07-20",
+          "productIdentityStatus": "exact_model_family_historical_scope",
+          "firmwareStatus": "not_publicly_established",
+          "firmwareVersion": null,
+          "overallStatus": "no_exact_product_matches_found",
+          "coverageDefinition": "All publicly indexed, exact-product-applicable records found in the reviewed NVD, CISA KEV, and manufacturer security-advisory sources as of the review date.",
+          "rankingMethod": "Known exploitation in CISA KEV ranks first, then numeric CVSS score, then a source-assigned severity. No score or severity is invented when a source does not publish one.",
+          "sourcesReviewed": [
+            {
+              "id": "ds200-lvw3-nvd-review",
+              "catalog": "NIST National Vulnerability Database",
+              "queryTerms": [
+                "MTSMC-LVW3",
+                "Telit LE910",
+                "Telit LE910-SV1",
+                "Telit LE910-NA1",
+                "LE910-SV1",
+                "LE910-NA1"
+              ],
+              "resultStatus": "no_exact_product_matches",
+              "exactMatchCount": 0,
+              "sourceIds": [
+                "nvd-modem-query-review"
+              ],
+              "sourceRevisionIds": [
+                "nvd-modem-query-review@2026-07-20"
+              ],
+              "caveat": "Zero keyword matches does not rule out differently named, unindexed, undisclosed, or firmware-dependent vulnerabilities."
+            },
+            {
+              "id": "ds200-lvw3-cisa-kev-review",
+              "catalog": "CISA Known Exploited Vulnerabilities",
+              "queryTerms": [
+                "MultiTech",
+                "Telit",
+                "SocketModem",
+                "MTSMC",
+                "LE910"
+              ],
+              "resultStatus": "no_catalog_matches",
+              "exactMatchCount": 0,
+              "sourceIds": [
+                "cisa-kev-catalog"
+              ],
+              "sourceRevisionIds": [
+                "cisa-kev-catalog@2026-07-20"
+              ],
+              "caveat": "KEV is a list of vulnerabilities known to be exploited in the wild, not an inventory of every vulnerability."
+            },
+            {
+              "id": "ds200-lvw3-multitech-advisory-review",
+              "catalog": "MultiTech security advisories",
+              "queryTerms": [
+                "MTSMC-LVW3",
+                "LE910",
+                "SocketModem"
+              ],
+              "resultStatus": "no_applicable_product_matches",
+              "exactMatchCount": 0,
+              "sourceIds": [
+                "multitech-security-advisories-index",
+                "multitech-security-advisory-bundle"
+              ],
+              "sourceRevisionIds": [
+                "multitech-security-advisories-index@2026-07-20",
+                "multitech-security-advisory-bundle@2026-07-20"
+              ],
+              "caveat": "The archived advisories name other product families or state that MultiTech products are not affected; the result is bounded to the reviewed advisory set."
+            }
+          ],
+          "vulnerabilities": [],
+          "nonCveAdvisories": [
+            {
+              "id": "mtsmc-lvw3-verizon-2019-update",
+              "kind": "vendor_operational_service_continuity_bulletin",
+              "title": "Verizon LTE Cat 1 software patch bulletin",
+              "publishedOn": "2019-03-12",
+              "cvssScore": null,
+              "cisaKev": false,
+              "securitySeverity": null,
+              "operationalImpact": "urgent_update_recommended",
+              "affectedFirmware": null,
+              "fixedFirmware": null,
+              "description": "MultiTech reported an urgent software-patch need for listed Verizon LTE Cat 1 products, possibly including MTSMC-LVW3 variants, to support future network updates and uninterrupted operation.",
+              "sourceIds": [
+                "multitech-lvw3-update-bulletin"
+              ],
+              "sourceRevisionIds": [
+                "multitech-lvw3-update-bulletin@2026-07-20"
+              ],
+              "caveat": "The bulletin is not a CVE or security advisory, assigns no CVSS score, and does not establish the firmware or patch state of the Pro V&V DS200 test modems or any fielded unit."
+            }
+          ],
+          "caveat": "No exact-product-applicable public vulnerability record was found in the reviewed sources. This does not mean the modem has no vulnerability; the exact ordering revision and installed firmware are unknown and public catalogs may be incomplete."
+        }
+      },
+      {
+        "id": "ds200-scanner-path",
+        "name": "Ballot scanning path",
+        "category": "scanner",
+        "description": "The public certification scope establishes simultaneous front-and-back ballot scanning. The schematic path is illustrative and does not reproduce proprietary internal drawings.",
+        "evidenceStatus": "function_documented_geometry_illustrative",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sceneNodeName": "Scanner_Path",
+        "caveat": "Public sources document the function, not the exact internal shape or placement shown in the schematic.",
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "ds200-display-assembly",
+        "name": "Display and touchscreen assembly",
+        "category": "interface",
+        "description": "ECO 1042 identifies a touchscreen controller, LCD, mounting bracket, LVDS cables, and a field-service display subassembly in DS200 hardware configuration 1.3.11.",
+        "evidenceStatus": "historical_change_record",
+        "scopeKind": "historical_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [
+          "1.3.11"
+        ],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-eco-ess-1042-analysis",
+          "eac-eco-ess-1042-approval"
+        ],
+        "sceneNodeName": "Display_Assembly",
+        "caveat": "This historical ECO identifies a DS200-family configuration change. It does not prove that the illustrated assembly is present in an EVS 6.4.0.0 fielded unit.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1042-approval@2026-07-19",
+          "provv-eco-ess-1042-analysis@2026-07-19"
+        ],
+        "technicalSpecifications": [
+          {
+            "id": "ds200-processor-core-count",
+            "category": "processor",
+            "label": "Processor architecture",
+            "value": "Quad-core processor",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "approved_change",
+            "modelContext": "DS200 hardware configuration 1.3.11",
+            "sourceIds": [
+              "provv-eco-ess-1042-analysis",
+              "eac-eco-ess-1042-approval"
+            ],
+            "sourceRevisionIds": [
+              "provv-eco-ess-1042-analysis@2026-07-19",
+              "eac-eco-ess-1042-approval@2026-07-19"
+            ],
+            "caveat": "The approved change identifies the core count but not the processor manufacturer, model, clock speed, or the configuration of a particular fielded unit."
+          },
+          {
+            "id": "ds200-processor-model-gap",
+            "category": "processor",
+            "label": "Exact CPU model",
+            "value": null,
+            "knowledgeStatus": "not_publicly_established",
+            "assertionScope": "evidence_gap",
+            "modelContext": "DS200 hardware configuration 1.3.11",
+            "sourceIds": [
+              "provv-eco-ess-1042-analysis"
+            ],
+            "sourceRevisionIds": [
+              "provv-eco-ess-1042-analysis@2026-07-19"
+            ],
+            "caveat": "The reviewed ECO analysis does not name an exact processor part number."
+          }
+        ]
+      },
+      {
+        "id": "ds200-processor-module",
+        "name": "Processor module",
+        "category": "compute",
+        "description": "ECO 1042 records a move to a quad-core processor on the motherboard for DS200 hardware configuration 1.3.11.",
+        "evidenceStatus": "historical_change_record",
+        "scopeKind": "historical_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [
+          "1.3.11"
+        ],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-eco-ess-1042-analysis",
+          "eac-eco-ess-1042-approval"
+        ],
+        "sceneNodeName": "Processor_Module",
+        "caveat": "Processor make, model, location, and presence in a particular EVS 6.4.0.0 fielded unit are not publicly confirmed by this pilot.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1042-approval@2026-07-19",
+          "provv-eco-ess-1042-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ds200-scanner-board",
+        "name": "Scanner board and FPGA logic",
+        "category": "scanner_electronics",
+        "description": "ECO 1035 documents a DS200 scanner-board FPGA-code update intended to improve thermal stability and calibration resolution; ECO 1042 also references a board change for a new motor driver.",
+        "evidenceStatus": "historical_change_record",
+        "scopeKind": "historical_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-eco-ess-1035-analysis",
+          "eac-eco-ess-1035-approval",
+          "provv-eco-ess-1042-analysis"
+        ],
+        "sceneNodeName": "Scanner_Board",
+        "caveat": "The public records do not identify a board part number or establish the board/FPGA revision installed in a particular EVS 6.4.0.0 unit.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1035-approval@2026-07-19",
+          "provv-eco-ess-1035-analysis@2026-07-19",
+          "provv-eco-ess-1042-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ds200-ballot-container",
+        "name": "Ballot container options",
+        "category": "ballot_storage",
+        "description": "The EVS 6.4.0.0 scope lists multiple DS200/DS300-compatible ballot boxes, tote bins, a trolley, tote bag, and carrying cases as proprietary configuration components.",
+        "evidenceStatus": "certified_component_options",
+        "scopeKind": "certified_configuration",
+        "modelNumbers": [
+          "98-00009",
+          "98-00110",
+          "57521",
+          "00074",
+          "212516",
+          "76245",
+          "60"
+        ],
+        "hardwareRevisions": [
+          "1.0",
+          "1.1",
+          "1.2",
+          "1.3",
+          "1.4",
+          "1.5"
+        ],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "sceneNodeName": "Ballot_Container",
+        "caveat": "These are permitted configuration options, not a claim that every DS200 uses every listed container or accessory.",
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "ds200-tote-bin-security",
+        "name": "Tote-bin security gasketing",
+        "category": "physical_security",
+        "description": "ECO 1165 adds a security gasketing kit intended to prevent cards or ballots from entering through gaps along the tote-bin hinge area.",
+        "evidenceStatus": "approved_change_for_evs_6400",
+        "scopeKind": "certified_configuration_change",
+        "modelNumbers": [
+          "00074"
+        ],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-eco-ess-1165-analysis",
+          "eac-eco-ess-1165-approval"
+        ],
+        "sceneNodeName": "Tote_Bin_Gasket",
+        "caveat": "The change was approved for EVS 6.4.0.0, but the pilot has no evidence that a particular jurisdiction installed the kit.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1165-approval@2026-07-19",
+          "provv-eco-ess-1165-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ds200-seal-area",
+        "name": "Exterior seal area",
+        "category": "physical_security",
+        "description": "ECO 983 documents a historical DS200 hardware 1.3.10.0 exterior seal-area change.",
+        "evidenceStatus": "historical_change_record",
+        "scopeKind": "historical_change",
+        "modelNumbers": [],
+        "hardwareRevisions": [
+          "1.3.10.0"
+        ],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "provv-eco-ess-983-analysis",
+          "eac-eco-ess-983-record"
+        ],
+        "sceneNodeName": "Seal_Area",
+        "caveat": "This record does not establish inclusion in EVS 6.4.0.0 or installation on any fielded unit.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-983-record@2026-07-19",
+          "provv-eco-ess-983-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ds200-power-backup",
+        "name": "Battery backup and internal power",
+        "category": "power",
+        "description": "The ES&S one-sheet states that the DS200 has battery backup. The reviewed sources do not identify its battery chemistry, manufacturer, model, capacity, runtime, or internal placement.",
+        "evidenceStatus": "manufacturer_documented_partial",
+        "scopeKind": "manufacturer_product_documentation",
+        "modelNumbers": [],
+        "hardwareRevisions": [],
+        "versionObservationIds": [],
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report",
+          "wa-evs-6400-staff-report",
+          "ess-ds200-one-sheet"
+        ],
+        "sceneNodeName": null,
+        "caveat": "Battery-backup presence is manufacturer-documented, but no reviewed source supports a battery model, capacity, runtime, chemistry, or scene placement. Central-count UPS models must not be transferred to the DS200.",
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19",
+          "wa-evs-6400-staff-report@2026-07-19",
+          "ess-ds200-one-sheet@2026-07-20"
+        ],
+        "technicalSpecifications": [
+          {
+            "id": "ds200-battery-backup-presence",
+            "category": "power",
+            "label": "Backup supply",
+            "value": "Battery backup documented; model, chemistry, capacity, and runtime not stated",
+            "knowledgeStatus": "documented_partial",
+            "assertionScope": "manufacturer_product",
+            "modelContext": "DS200",
+            "sourceIds": [
+              "ess-ds200-one-sheet"
+            ],
+            "sourceRevisionIds": [
+              "ess-ds200-one-sheet@2026-07-20"
+            ],
+            "caveat": "The one-sheet confirms battery-backup presence only. It does not disclose a battery part number or unit-level condition."
+          }
+        ]
+      }
+    ],
+    "versionObservations": [
+      {
+        "id": "ds200-eac-firmware-3100",
+        "componentId": "ds200-scanner-tabulator",
+        "versionType": "firmware",
+        "value": "3.1.0.0",
+        "label": "EAC-certified firmware",
+        "scopeKind": "certified_configuration",
+        "observedOn": "2023-08-18",
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report"
+        ],
+        "caveat": "This is the firmware in the certified EVS 6.4.0.0 configuration, not a live reading from a deployed unit and not a claim about the newest EVS family firmware.",
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19"
+        ],
+        "assertionScope": "certified",
+        "approvalScope": null,
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "ESSEVS6400",
+          "jurisdiction": null,
+          "observedOn": "2023-08-18"
+        }
+      },
+      {
+        "id": "ds200-wa-firmware-3100",
+        "componentId": "ds200-scanner-tabulator",
+        "versionType": "firmware",
+        "value": "3.1.0.0",
+        "label": "Washington-approved firmware",
+        "scopeKind": "state_approved_configuration",
+        "observedOn": "2023-11-30",
+        "sourceIds": [
+          "wa-evs-6400-application",
+          "wa-evs-6400-staff-report"
+        ],
+        "caveat": "Washington's approved configuration is not a county device inspection.",
+        "sourceRevisionIds": [
+          "wa-evs-6400-application@2026-07-19",
+          "wa-evs-6400-staff-report@2026-07-19"
+        ],
+        "assertionScope": "documented",
+        "approvalScope": "state_approved_configuration",
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "ESSEVS6400",
+          "jurisdiction": null,
+          "observedOn": "2023-11-30"
+        }
+      },
+      {
+        "id": "ds200-wa-hardware-1313",
+        "componentId": "ds200-scanner-tabulator",
+        "versionType": "hardware",
+        "value": "1.2, 1.3, 1.3.13",
+        "label": "Washington-approved hardware revisions",
+        "scopeKind": "state_approved_configuration",
+        "observedOn": "2023-11-30",
+        "sourceIds": [
+          "wa-evs-6400-application",
+          "wa-evs-6400-staff-report"
+        ],
+        "caveat": "The state record lists approved revisions; it does not identify which revision a county deployed.",
+        "sourceRevisionIds": [
+          "wa-evs-6400-application@2026-07-19",
+          "wa-evs-6400-staff-report@2026-07-19"
+        ],
+        "assertionScope": "documented",
+        "approvalScope": "state_approved_configuration",
+        "fieldStatus": "not_established",
+        "assertedFor": {
+          "systemCertificationId": "ESSEVS6400",
+          "jurisdiction": null,
+          "observedOn": "2023-11-30"
+        }
+      }
+    ],
+    "configurationChanges": [
+      {
+        "id": "ess-983",
+        "changeId": "ESS-983",
+        "componentIds": [
+          "ds200-seal-area"
+        ],
+        "submittedOn": "2018-10-10",
+        "eacApprovedOn": "2018-12-14",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "historical_ds200_family_change",
+        "description": "Exterior seal-area change for DS200 hardware 1.3.10.0.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-eco-ess-983-record",
+          "provv-eco-ess-983-analysis"
+        ],
+        "caveat": "The record does not establish inclusion in the EVS 6.4.0.0 baseline or local installation.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-983-record@2026-07-19",
+          "provv-eco-ess-983-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ess-1042",
+        "changeId": "ESS-1042",
+        "componentIds": [
+          "ds200-display-assembly",
+          "ds200-processor-module",
+          "ds200-scanner-board"
+        ],
+        "submittedOn": "2019-08-30",
+        "eacApprovedOn": "2019-09-13",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "historical_ds200_family_change",
+        "description": "End-of-life replacements and related DS200 hardware 1.3.11 changes: touchscreen controller, LCD/bracket/LVDS cables, display service subassembly, quad-core processor, scanner-board motor-driver accommodation, and USB-hub power-cable wire gauge.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-eco-ess-1042-record",
+          "provv-eco-ess-1042-analysis",
+          "eac-eco-ess-1042-approval"
+        ],
+        "caveat": "The ECO documents an approved historical configuration change, not the internals of every DS200 or an EVS 6.4.0.0 deployment.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1042-approval@2026-07-19",
+          "eac-eco-ess-1042-record@2026-07-19",
+          "provv-eco-ess-1042-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ess-1035",
+        "changeId": "ESS-1035",
+        "componentIds": [
+          "ds200-scanner-board"
+        ],
+        "submittedOn": "2020-02-11",
+        "eacApprovedOn": "2020-02-14",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "historical_ds200_family_change",
+        "description": "Scanner-board FPGA-code update described as improving thermal stability and calibration resolution.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-eco-ess-1035-record",
+          "provv-eco-ess-1035-analysis",
+          "eac-eco-ess-1035-approval"
+        ],
+        "caveat": "The source does not identify the board or FPGA revision installed in a particular EVS 6.4.0.0 unit.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1035-approval@2026-07-19",
+          "eac-eco-ess-1035-record@2026-07-19",
+          "provv-eco-ess-1035-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ess-1044",
+        "changeId": "ESS-1044",
+        "componentIds": [
+          "ds200-ballot-container"
+        ],
+        "submittedOn": "2019-08-30",
+        "eacApprovedOn": "2019-09-13",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "historical_ds200_family_change",
+        "description": "Ballot-box change adding a ballot-bag option.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-eco-ess-1044-record",
+          "provv-eco-ess-1044-analysis",
+          "eac-eco-ess-1044-approval"
+        ],
+        "caveat": "An approved accessory option does not establish use by a particular jurisdiction.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1044-approval@2026-07-19",
+          "eac-eco-ess-1044-record@2026-07-19",
+          "provv-eco-ess-1044-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ess-1055",
+        "changeId": "ESS-1055",
+        "componentIds": [
+          "ds200-ballot-container"
+        ],
+        "submittedOn": "2019-11-22",
+        "eacApprovedOn": "2019-12-19",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "historical_ds200_family_change",
+        "description": "Collapsible ballot-box change adding a ballot-trolley/binning option.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-eco-ess-1055-record",
+          "provv-eco-ess-1055-analysis",
+          "eac-eco-ess-1055-approval"
+        ],
+        "caveat": "An approved accessory option does not establish use by a particular jurisdiction.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1055-approval@2026-07-19",
+          "eac-eco-ess-1055-record@2026-07-19",
+          "provv-eco-ess-1055-analysis@2026-07-19"
+        ]
+      },
+      {
+        "id": "ess-1165",
+        "changeId": "ESS-1165",
+        "componentIds": [
+          "ds200-tote-bin-security",
+          "ds200-ballot-container"
+        ],
+        "submittedOn": "2024-05-13",
+        "eacApprovedOn": "2024-05-15",
+        "vstl": "Pro V&V, Inc.",
+        "relationshipToPilot": "approved_for_evs_6400",
+        "description": "Tote-bin security gasketing intended to prevent cards or ballots from entering through hinge-area gaps; Pro V&V states the change was reviewed and functionally tested and requires no firmware/software change.",
+        "fieldDeploymentStatus": "unknown",
+        "sourceIds": [
+          "eac-eco-ess-1165-record",
+          "provv-eco-ess-1165-analysis",
+          "eac-eco-ess-1165-approval"
+        ],
+        "caveat": "EVS 6.4.0.0 is listed as affected, but local installation is not established.",
+        "sourceRevisionIds": [
+          "eac-eco-ess-1165-approval@2026-07-19",
+          "eac-eco-ess-1165-record@2026-07-19",
+          "provv-eco-ess-1165-analysis@2026-07-19"
+        ]
+      }
+    ],
+    "findings": [
+      {
+        "id": "evs-6400-test-anomaly-status",
+        "findingType": "test_campaign_result",
+        "title": "Pro V&V anomaly status",
+        "affectedSystemVersions": [
+          "6.4.0.0"
+        ],
+        "componentIds": [],
+        "publicStatus": "none_reported_in_test_campaign",
+        "description": "The certification test report states that no anomalies occurred during the EVS 6.4.0.0 test campaign.",
+        "sourceIds": [
+          "provv-evs-6400-test-report"
+        ],
+        "caveat": "This is scoped to the submitted test campaign. It is not a claim that the system has no bugs or that no field incident can occur.",
+        "sourceRevisionIds": [
+          "provv-evs-6400-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "evs-6400-test-deficiency-disclosure",
+        "findingType": "public_documentation_gap",
+        "title": "Deficiencies described but not itemized",
+        "affectedSystemVersions": [
+          "6.4.0.0"
+        ],
+        "componentIds": [],
+        "publicStatus": "resolved_details_not_enumerated",
+        "description": "The public report says encountered deficiencies were tracked and resolutions verified as needed, but section 3.3 does not itemize those deficiencies.",
+        "sourceIds": [
+          "provv-evs-6400-test-report"
+        ],
+        "caveat": "Do not infer the number, severity, affected component, or field impact of non-enumerated test deficiencies.",
+        "sourceRevisionIds": [
+          "provv-evs-6400-test-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "evs-6400-duplicate-scan-limitation",
+        "findingType": "documented_operational_limitation",
+        "title": "Previously scanned ballot is not automatically distinguished",
+        "affectedSystemVersions": [
+          "6.4.0.0"
+        ],
+        "componentIds": [
+          "ds200-scanner-tabulator"
+        ],
+        "publicStatus": "procedural_controls_recommended",
+        "description": "Washington's staff report states that EVS 6.4.0.0 cannot distinguish whether a ballot was previously scanned and describes ballot-handling and staffing controls recommended by ES&S.",
+        "sourceIds": [
+          "wa-evs-6400-staff-report"
+        ],
+        "caveat": "This is an operational limitation and mitigation note, not evidence that duplicate scanning occurred in an election.",
+        "sourceRevisionIds": [
+          "wa-evs-6400-staff-report@2026-07-19"
+        ]
+      },
+      {
+        "id": "evs-6400-public-advisory-status",
+        "findingType": "public_listing_status",
+        "title": "No advisory attachment listed on selected EAC record",
+        "affectedSystemVersions": [
+          "6.4.0.0"
+        ],
+        "componentIds": [],
+        "publicStatus": "none_listed_on_selected_record",
+        "description": "The archived EAC EVS 6.4.0.0 record did not list an advisory attachment when retrieved on 2026-07-19.",
+        "sourceIds": [
+          "eac-evs-6400-record"
+        ],
+        "caveat": "This is a page-listing observation, not a claim that no advisories, bugs, vulnerabilities, service bulletins, or field incidents exist.",
+        "sourceRevisionIds": [
+          "eac-evs-6400-record@2026-07-19"
+        ]
+      }
+    ],
+    "power": [
+      {
+        "id": "ds200-power-documentation",
+        "componentId": "ds200-power-backup",
+        "knowledgeStatus": "documented_partial",
+        "supplyType": "battery backup",
+        "manufacturer": null,
+        "model": null,
+        "capacity": null,
+        "runtime": null,
+        "description": "The ES&S one-sheet confirms DS200 battery backup. The certification and state records reviewed here do not publish the battery manufacturer, model, chemistry, capacity, runtime, condition, or jurisdiction power topology.",
+        "sourceIds": [
+          "eac-evs-6400-scope",
+          "provv-evs-6400-test-report",
+          "wa-evs-6400-staff-report",
+          "ess-ds200-one-sheet"
+        ],
+        "caveat": "Confirmed battery-backup presence must not be expanded into an inferred model, runtime, internal location, service condition, or claim about external site power.",
+        "sourceRevisionIds": [
+          "eac-evs-6400-scope@2026-07-19",
+          "provv-evs-6400-test-report@2026-07-19",
+          "wa-evs-6400-staff-report@2026-07-19",
+          "ess-ds200-one-sheet@2026-07-20"
+        ]
+      }
+    ],
+    "networkEvidence": {
+      "reviewedOn": "2026-07-21",
+      "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint. Older federal and state records separately document a Unity 3.4.0.0 wireline SFTP reference design, a Michigan EVS 5.3.2.0 wireless-carrier and SFTP path, and optional DS200 cellular hardware families without proving EVS 6.4 certification, firmware, activation, or field use.",
+      "publicationBoundary": "The module publishes roles, high-level paths, connection media when established, and evidence boundaries. It excludes IP addresses, credentials, VPN parameters, keys, APNs, SIM identifiers, carrier accounts, device identifiers, and jurisdiction routing details.",
+      "configurations": [
+        {
+          "id": "ds200-6400-regional-results-test-path",
+          "title": "EVS 6.4.0.0 Regional Results test path",
+          "evidenceLayer": "expected",
+          "assertionScope": "vstl_test_configuration",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "results_transmission_service",
+          "description": "Pro V&V tested DS200 results transmitted by the separate Regional Results application through a VPN to the EMS. The source establishes the end-to-end result workflow but not a direct DS200 network session or the local handoff medium from the tabulator to the Regional Results client.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            {
+              "id": "ds200-tabulator",
+              "label": "DS200",
+              "role": "Polling-place scanner and tabulator",
+              "componentId": "ds200-scanner-tabulator",
+              "optional": false,
+              "details": "The DS200 produces result data used in the tested Regional Results workflow."
+            },
+            {
+              "id": "ds200-regional-client",
+              "label": "Regional Results client",
+              "role": "Regional sending-site application",
+              "componentId": null,
+              "optional": true,
+              "details": "The EAC scope describes Regional Results as a standalone application deployed at regional sending sites."
+            },
+            {
+              "id": "ds200-customer-network",
+              "label": "Customer-dedicated VPN path",
+              "role": "Encrypted unofficial-results transport",
+              "componentId": null,
+              "optional": true,
+              "details": "Pro V&V reports a VPN test; the EAC scope describes a customer-dedicated network."
+            },
+            {
+              "id": "ds200-ems",
+              "label": "Electionware EMS",
+              "role": "Central results destination",
+              "componentId": null,
+              "optional": false,
+              "details": "The test transmitted correct result files to the EMS for compilation."
+            }
+          ],
+          "links": [
+            {
+              "id": "ds200-results-handoff",
+              "from": "ds200-tabulator",
+              "to": "ds200-regional-client",
+              "medium": "Result-data handoff; local medium not established in the reviewed passage",
+              "direction": "one_way",
+              "purpose": "Make DS200 result data available to Regional Results",
+              "knowledgeStatus": "not_publicly_established"
+            },
+            {
+              "id": "ds200-vpn-send",
+              "from": "ds200-regional-client",
+              "to": "ds200-customer-network",
+              "medium": "Virtual private network over a customer-dedicated network",
+              "direction": "one_way",
+              "purpose": "Transmit encrypted unofficial results collection files",
+              "knowledgeStatus": "confirmed"
+            },
+            {
+              "id": "ds200-vpn-receive",
+              "from": "ds200-customer-network",
+              "to": "ds200-ems",
+              "medium": "Virtual private network",
+              "direction": "one_way",
+              "purpose": "Deliver transmitted result files to the central EMS",
+              "knowledgeStatus": "confirmed"
+            }
+          ],
+          "controls": [
+            {
+              "id": "ds200-encrypted-results",
+              "label": "Encrypted unofficial result files",
+              "status": "documented",
+              "description": "The EAC scope states that Regional Results securely transmits encrypted unofficial results collection files."
+            },
+            {
+              "id": "ds200-dedicated-network",
+              "label": "Customer-dedicated network",
+              "status": "documented",
+              "description": "The certified Regional Results description specifies a customer-dedicated network."
+            },
+            {
+              "id": "ds200-direct-network-session",
+              "label": "Direct DS200 network session",
+              "status": "not_publicly_established",
+              "description": "The reviewed exact-version passages do not make the DS200 itself the VPN endpoint or identify a direct scanner-to-network connection."
+            }
+          ],
+          "sensitiveDetailsWithheld": "No addresses, credentials, VPN settings, keys, APNs, SIM data, carrier accounts, or site-specific routing information are collected or shown.",
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "caveat": "A successful VSTL system test is not evidence that a jurisdiction enabled Regional Results, used the same network design, or transmitted results in a particular election."
+        },
+        {
+          "id": "ds200-historical-optional-cellular-context",
+          "title": "Historical optional cellular hardware context",
+          "evidenceLayer": "documented",
+          "assertionScope": "documented_model_family",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "optional_cellular_hardware_context",
+          "description": "Separate historical certification and VSTL records identify optional DS200 modem carrier-board configurations using MultiTech C2 and MTSMC-LVW3 products. These alternatives are shown as historical component context, not as EVS 6.4.0.0 certification or proof of a fielded modem.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            {
+              "id": "ds200-historical-unit",
+              "label": "DS200 hardware family",
+              "role": "Historical scanner/tabulator context",
+              "componentId": "ds200-scanner-tabulator",
+              "optional": false,
+              "details": "The records apply to earlier EVS campaigns and named DS200 hardware revisions, not the field status of this 6.4 dossier."
+            },
+            {
+              "id": "ds200-modem-board",
+              "label": "Optional modem carrier board",
+              "role": "Internal optional modem interface",
+              "componentId": "ds200-optional-cellular-modem",
+              "optional": true,
+              "details": "The carrier-board component is separately identified and must not be treated as present in every DS200."
+            },
+            {
+              "id": "ds200-c2",
+              "label": "MultiTech C2 modem",
+              "role": "Historical optional cellular alternative",
+              "componentId": "ds200-multitech-c2-modem",
+              "optional": true,
+              "details": "A Florida EVS 4.5.0.0 addendum names the C2 profile; firmware and field status remain unresolved."
+            },
+            {
+              "id": "ds200-lvw3",
+              "label": "MultiTech MTSMC-LVW3",
+              "role": "Historical optional LTE alternative",
+              "componentId": "ds200-multitech-lvw3-modem",
+              "optional": true,
+              "details": "A Pro V&V EVS 5.3.4.1 hardware table names MTSMC-LVW3; ordering revision and firmware are not identified."
+            },
+            {
+              "id": "ds200-carrier-service",
+              "label": "Cellular carrier service",
+              "role": "Optional external transport context",
+              "componentId": null,
+              "optional": true,
+              "details": "Carrier, account, APN, activation state, and election use are not established by the reviewed records."
+            }
+          ],
+          "links": [
+            {
+              "id": "ds200-c2-board-link",
+              "from": "ds200-modem-board",
+              "to": "ds200-c2",
+              "medium": "Internal modem-board interface",
+              "direction": "bidirectional",
+              "purpose": "Host the historical C2 modem alternative",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "ds200-lvw3-board-link",
+              "from": "ds200-modem-board",
+              "to": "ds200-lvw3",
+              "medium": "Internal Universal Socket modem interface",
+              "direction": "bidirectional",
+              "purpose": "Host the historical MTSMC-LVW3 modem alternative",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "ds200-c2-cellular-link",
+              "from": "ds200-c2",
+              "to": "ds200-carrier-service",
+              "medium": "Cellular capability; activation profile not established",
+              "direction": "bidirectional",
+              "purpose": "Historical optional results-transmission capability",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "ds200-lvw3-cellular-link",
+              "from": "ds200-lvw3",
+              "to": "ds200-carrier-service",
+              "medium": "Verizon LTE capability; activation profile not established",
+              "direction": "bidirectional",
+              "purpose": "Historical optional results-transmission capability",
+              "knowledgeStatus": "documented_partial"
+            }
+          ],
+          "controls": [
+            {
+              "id": "ds200-alternate-not-simultaneous",
+              "label": "Alternative components",
+              "status": "documented",
+              "description": "The C2 and MTSMC-LVW3 records describe different historical alternatives and are not presented as simultaneously installed."
+            },
+            {
+              "id": "ds200-modem-firmware-gap",
+              "label": "Modem firmware",
+              "status": "not_publicly_established",
+              "description": "Neither historical DS200 record establishes installed modem firmware for a fielded unit."
+            },
+            {
+              "id": "ds200-modem-field-state",
+              "label": "Activation and field use",
+              "status": "not_publicly_established",
+              "description": "No carrier activation, SIM, APN, network session, or election use is established for a particular DS200."
+            }
+          ],
+          "sensitiveDetailsWithheld": "Carrier credentials, APNs, SIM and subscriber identifiers, device identifiers, keys, addresses, and account data are neither collected nor displayed.",
+          "sourceIds": [
+            "fl-evs-4500-v4-modem-report",
+            "provv-evs-5341-modem-hardware-table",
+            "multitech-universal-socket-guide"
+          ],
+          "sourceRevisionIds": [
+            "fl-evs-4500-v4-modem-report@2026-07-20",
+            "provv-evs-5341-modem-hardware-table@2026-07-20",
+            "multitech-universal-socket-guide@2026-07-20"
+          ],
+          "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem."
+        },
+        {
+          "id": "ds200-unity-3400-landline-sftp-reference",
+          "title": "Unity 3.4.0.0 wireline SFTP receiving topology",
+          "evidenceLayer": "documented",
+          "assertionScope": "vstl_test_configuration",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "results_transmission_service",
+          "description": "A Wyle certification test plan for Unity 3.4.0.0 depicts a DS200 connected by wireline modem to a RAS/SFTP receiving server in a DMZ, separated by a firewall from an inside ERM environment. The public topology records roles and boundaries without reproducing the source's sample addresses.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            {
+              "id": "unity-3400-ds200",
+              "label": "DS200",
+              "role": "Historical precinct scanner and tabulator",
+              "componentId": "ds200-scanner-tabulator",
+              "optional": false,
+              "details": "The figure labels a DS200 as the wireline sending endpoint in the Unity 3.4.0.0 target-of-evaluation description."
+            },
+            {
+              "id": "unity-3400-ras-sftp",
+              "label": "RAS / SFTP receiver",
+              "role": "Result-file receiving service in the DMZ",
+              "componentId": null,
+              "optional": false,
+              "details": "The source combines remote-access and SFTP server roles on the illustrated DMZ-side receiving system."
+            },
+            {
+              "id": "unity-3400-firewall",
+              "label": "Firewall boundary",
+              "role": "Boundary between DMZ and inside network",
+              "componentId": null,
+              "optional": false,
+              "details": "The figure places a firewall between the DMZ receiving environment and the inside ERM network."
+            },
+            {
+              "id": "unity-3400-erm",
+              "label": "ERM",
+              "role": "Inside election-results management environment",
+              "componentId": null,
+              "optional": false,
+              "details": "Election Reporting Manager is shown on the inside side of the historical reference topology."
+            }
+          ],
+          "links": [
+            {
+              "id": "unity-3400-modem-line",
+              "from": "unity-3400-ds200",
+              "to": "unity-3400-ras-sftp",
+              "medium": "Wireline modem connection",
+              "direction": "bidirectional",
+              "purpose": "Establish the historical result-file transfer session",
+              "knowledgeStatus": "confirmed"
+            },
+            {
+              "id": "unity-3400-dmz-boundary",
+              "from": "unity-3400-ras-sftp",
+              "to": "unity-3400-firewall",
+              "medium": "DMZ network boundary",
+              "direction": "not_specified",
+              "purpose": "Separate the receiving service from the inside environment",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "unity-3400-inside-erm",
+              "from": "unity-3400-firewall",
+              "to": "unity-3400-erm",
+              "medium": "Inside network path",
+              "direction": "not_specified",
+              "purpose": "Make received result data available to ERM",
+              "knowledgeStatus": "documented_partial"
+            }
+          ],
+          "controls": [
+            {
+              "id": "unity-3400-sftp-service",
+              "label": "SFTP receiving service",
+              "status": "documented",
+              "description": "The test-plan figure labels the DMZ-side receiving service SFTP."
+            },
+            {
+              "id": "unity-3400-dmz-separation",
+              "label": "DMZ and inside separation",
+              "status": "documented",
+              "description": "The figure distinguishes a DMZ receiving segment from the inside ERM segment through a firewall."
+            },
+            {
+              "id": "unity-3400-field-implementation",
+              "label": "Field implementation",
+              "status": "not_publicly_established",
+              "description": "The test plan does not establish that a jurisdiction deployed this exact topology or retained it after the Unity 3.4.0.0 campaign."
+            }
+          ],
+          "sensitiveDetailsWithheld": "Sample addresses printed in the historical source are not transcribed; credentials, server settings, keys, phone numbers, and jurisdiction routing details are neither collected nor displayed.",
+          "sourceIds": [
+            "eac-unity-3400-test-plan"
+          ],
+          "sourceRevisionIds": [
+            "eac-unity-3400-test-plan@2026-07-21"
+          ],
+          "caveat": "This is a historical wireline test-plan reference, not a cellular design, current EVS 6.4.0.0 certification record, field inspection, or evidence of election-night use."
+        },
+        {
+          "id": "ds200-michigan-evs-5320-wireless-sftp-path",
+          "title": "Michigan EVS 5.3.2.0 wireless SFTP result path",
+          "evidenceLayer": "documented",
+          "assertionScope": "state_certification_documentation",
+          "knowledgeStatus": "documented_partial",
+          "topologyKind": "results_transmission_service",
+          "description": "Michigan's official state-hosted ES&S contract response depicts DS200 units reaching a communications server through a wireless carrier, customer interface, firewall, and DMZ. The accompanying vendor response says a poll worker could initiate an SFTP transfer after polls closed, after which an encrypted result file was deposited and the connection terminated before ERM processed received files.",
+          "observedOn": null,
+          "assertedFor": null,
+          "nodes": [
+            {
+              "id": "mi-5320-ds200",
+              "label": "DS200",
+              "role": "Historical precinct scanner and tabulator",
+              "componentId": "ds200-scanner-tabulator",
+              "optional": false,
+              "details": "The vendor response describes EVS 5.3.2.0 DS200 result transmission after polls close."
+            },
+            {
+              "id": "mi-5320-internal-modem",
+              "label": "Optional internal wireless modem",
+              "role": "Cellular interface for a configured DS200",
+              "componentId": "ds200-optional-cellular-modem",
+              "optional": true,
+              "details": "The response states that a DS200 could be configured with an internal wireless modem; it does not identify the module model or firmware."
+            },
+            {
+              "id": "mi-5320-wireless-carrier",
+              "label": "Wireless carrier network",
+              "role": "External cellular transport",
+              "componentId": null,
+              "optional": true,
+              "details": "The diagram labels a wireless-carrier path; carrier, account, APN, SIM, and activation state are not published here."
+            },
+            {
+              "id": "mi-5320-customer-interface",
+              "label": "Customer interface",
+              "role": "Boundary interface before the firewall",
+              "componentId": null,
+              "optional": false,
+              "details": "The vendor diagram places a customer interface between the external path and the firewall."
+            },
+            {
+              "id": "mi-5320-firewall",
+              "label": "Firewall / DMZ boundary",
+              "role": "Separates external, DMZ, and inside environments",
+              "componentId": null,
+              "optional": false,
+              "details": "The diagram labels outside, DMZ, and inside sides of the firewall."
+            },
+            {
+              "id": "mi-5320-communications-server",
+              "label": "Communications / SFTP server",
+              "role": "Receives transferred DS200 result files",
+              "componentId": null,
+              "optional": false,
+              "details": "The vendor response describes a secure county server receiving encrypted result files through SFTP."
+            },
+            {
+              "id": "mi-5320-local-ems",
+              "label": "Local network EMS / ERM",
+              "role": "Processes received result files",
+              "componentId": null,
+              "optional": false,
+              "details": "The response states that ERM monitors the receiving-server folder and processes files as they arrive."
+            }
+          ],
+          "links": [
+            {
+              "id": "mi-5320-modem-interface",
+              "from": "mi-5320-ds200",
+              "to": "mi-5320-internal-modem",
+              "medium": "Internal optional modem interface",
+              "direction": "bidirectional",
+              "purpose": "Provide the configured DS200 cellular interface",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "mi-5320-cellular-path",
+              "from": "mi-5320-internal-modem",
+              "to": "mi-5320-wireless-carrier",
+              "medium": "CDMA or GSM cellular service described for EVS 5.3.2.0",
+              "direction": "bidirectional",
+              "purpose": "Establish the historical post-poll SFTP session",
+              "knowledgeStatus": "confirmed"
+            },
+            {
+              "id": "mi-5320-carrier-customer",
+              "from": "mi-5320-wireless-carrier",
+              "to": "mi-5320-customer-interface",
+              "medium": "External carrier and network path",
+              "direction": "bidirectional",
+              "purpose": "Reach the county-side customer interface",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "mi-5320-customer-firewall",
+              "from": "mi-5320-customer-interface",
+              "to": "mi-5320-firewall",
+              "medium": "Outside network boundary",
+              "direction": "bidirectional",
+              "purpose": "Pass the result-transfer session to the protected receiving environment",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "mi-5320-firewall-server",
+              "from": "mi-5320-firewall",
+              "to": "mi-5320-communications-server",
+              "medium": "DMZ service path",
+              "direction": "bidirectional",
+              "purpose": "Terminate the historical SFTP transfer at the communications server",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "mi-5320-server-erm",
+              "from": "mi-5320-communications-server",
+              "to": "mi-5320-local-ems",
+              "medium": "Protected result-file handoff",
+              "direction": "one_way",
+              "purpose": "Make received files available for ERM processing",
+              "knowledgeStatus": "confirmed"
+            }
+          ],
+          "controls": [
+            {
+              "id": "mi-5320-post-poll-initiation",
+              "label": "Post-poll initiation",
+              "status": "documented",
+              "description": "The vendor response describes operator initiation after the DS200 has closed polls and printed its results tape."
+            },
+            {
+              "id": "mi-5320-encrypted-signed-results",
+              "label": "Encrypted and digitally signed result data",
+              "status": "documented",
+              "description": "The response states that transmitted result data was encrypted and digitally signed with FIPS-certified security functions."
+            },
+            {
+              "id": "mi-5320-session-termination",
+              "label": "Connection termination after deposit",
+              "status": "documented",
+              "description": "The response states that the connection was terminated after the encrypted result file was deposited on the receiving server."
+            },
+            {
+              "id": "mi-5320-dmz-boundary",
+              "label": "Firewall and DMZ boundary",
+              "status": "documented",
+              "description": "The vendor diagram separates outside, DMZ, and inside network roles."
+            }
+          ],
+          "sensitiveDetailsWithheld": "No addresses, credentials, firewall rules, SFTP configuration, keys, APNs, SIM or subscriber identifiers, carrier accounts, device identifiers, or jurisdiction routing details are collected or shown.",
+          "sourceIds": [
+            "mi-ess-voting-system-contract"
+          ],
+          "sourceRevisionIds": [
+            "mi-ess-voting-system-contract@2026-07-21"
+          ],
+          "caveat": "This is a historical Michigan procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It is not evidence of EVS 6.4.0.0 certification, a current county design, an installed modem or firmware, a live connection, or a transmission during any election."
+        }
+      ],
+      "sourceImages": [
+        {
+          "id": "ds200-evs-6400-system-diagram",
+          "assetUrl": "/equipment/network-evidence/evs-6400-system-diagram.png",
+          "assetSha256": "d68f37906c6b91ec937c6f77952d44aded6c97bb17fb07e256e88aa82d51f412",
+          "width": 1055,
+          "height": 690,
+          "kind": "source_topology_diagram",
+          "alt": "EVS 6.4.0.0 certification system diagram showing election-data management, equipment configuration, voting and tabulation devices, and results consolidation infrastructure.",
+          "caption": "EVS 6.4.0.0 certified-system overview diagram",
+          "pageOrSection": "EAC scope PDF page 4, document page 3",
+          "derivativeNote": "Rendered at 135 DPI, rotated for readability, and cropped to the diagram boundary; diagram content was not edited.",
+          "caveat": "The system-level figure contains many EVS components and paths. It does not prove that every component or connection is present in a DS200 deployment.",
+          "sourceIds": [
+            "eac-evs-6400-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19"
+          ]
+        },
+        {
+          "id": "ds200-evs-6400-transmission-test-page",
+          "assetUrl": "/equipment/network-evidence/evs-6400-transmission-test.png",
+          "assetSha256": "71296be17326a584587a366a530559e8d9f9eb3280b93a757486912b583a9736",
+          "width": 1148,
+          "height": 1485,
+          "kind": "source_document_page",
+          "alt": "Pro V and V EVS 6.4.0.0 test-report page describing DS200 results transmitted through Regional Results over a VPN and central-tabulator results transmitted over a closed LAN.",
+          "caption": "Pro V&V EVS 6.4.0.0 result-transmission accuracy-test statement",
+          "pageOrSection": "Pro V&V test-report PDF page 30, report page 25",
+          "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
+          "caveat": "This is evidence of a laboratory test configuration and successful result transfer, not a field deployment or direct DS200 network-session record.",
+          "sourceIds": [
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "provv-evs-6400-test-report@2026-07-19"
+          ]
+        },
+        {
+          "id": "ds200-mi-wireless-results-network",
+          "assetUrl": "/equipment/network-evidence/mi-ess-wireless-results-network.png",
+          "assetSha256": "eb27edae388c1dc0f64ff37b0e9bbdf70a23da28f9fcb867f8909c71ff4af97b",
+          "width": 1600,
+          "height": 1236,
+          "kind": "source_topology_diagram",
+          "alt": "Historical Michigan vendor diagram showing DS200 units, a wireless carrier, customer interface, firewall and DMZ, communications server, and local election-management network.",
+          "caption": "Michigan contract exhibit: historical DS200 wireless results network",
+          "pageOrSection": "Michigan contract PDF page 101, contract page 62, Wireless Results Network",
+          "derivativeNote": "Rendered from the archived official state-hosted PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+          "caveat": "The diagram belongs to a historical Michigan procurement response and does not establish EVS 6.4.0.0 certification, a current county topology, an installed modem, or election use.",
+          "sourceIds": [
+            "mi-ess-voting-system-contract"
+          ],
+          "sourceRevisionIds": [
+            "mi-ess-voting-system-contract@2026-07-21"
+          ]
+        },
+        {
+          "id": "ds200-multitech-universal-socket-pinout",
+          "assetUrl": "/equipment/network-evidence/multitech-universal-socket-pinout.png",
+          "assetSha256": "f8f297acd968659d77e7e191c01933c6bed8422f11c499c068c2c23edda1b0da",
+          "width": 1600,
+          "height": 2070,
+          "kind": "manufacturer_reference_pinout",
+          "alt": "MultiTech Universal Socket reference pinout showing the generic 74-pin interface and a note that individual modem models may omit pins.",
+          "caption": "MultiTech Universal Socket reference pinout",
+          "pageOrSection": "Universal SocketModem Developer Guide PDF page 12",
+          "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+          "caveat": "This is a generic product-family interface reference. The guide says not all modems include every pin; it is not a DS200 carrier-board pin map or proof that any interface is wired or enabled in a DS200.",
+          "sourceIds": [
+            "multitech-universal-socket-guide"
+          ],
+          "sourceRevisionIds": [
+            "multitech-universal-socket-guide@2026-07-20"
+          ]
+        },
+        {
+          "id": "ds200-multitech-developer-board-layout",
+          "assetUrl": "/equipment/network-evidence/multitech-universal-socket-board-layout.png",
+          "assetSha256": "4705865fb62fa7a23656e6a20af1f2cae025469293dd17fce62e00729c6418aa",
+          "width": 1600,
+          "height": 2070,
+          "kind": "manufacturer_reference_board_drawing",
+          "alt": "MultiTech SocketModem developer-board drawing showing example connector, socket, antenna, switch, and board-component locations.",
+          "caption": "MultiTech generic SocketModem developer-board layout",
+          "pageOrSection": "Universal SocketModem Developer Guide PDF page 20",
+          "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+          "caveat": "The source labels third-party components as examples and describes a developer board for SocketModems generally. It is not a DS200 carrier-board drawing, teardown, port inventory, or placement record.",
+          "sourceIds": [
+            "multitech-universal-socket-guide"
+          ],
+          "sourceRevisionIds": [
+            "multitech-universal-socket-guide@2026-07-20"
+          ]
+        },
+        {
+          "id": "ds200-multitech-developer-board-block-diagram",
+          "assetUrl": "/equipment/network-evidence/multitech-universal-socket-block-diagram.png",
+          "assetSha256": "709749ed8d2196386a33a5d9d4830c0a5c536f15ee2907dd84e58ef11c9b6291",
+          "width": 1600,
+          "height": 1236,
+          "kind": "manufacturer_reference_block_diagram",
+          "alt": "MultiTech generic SocketModem developer-board block diagram showing the 74-pin socket, serial driver, USB, RJ11, RJ45, handset, and antenna-holder reference connections.",
+          "caption": "MultiTech generic SocketModem developer-board block diagram",
+          "pageOrSection": "Universal SocketModem Developer Guide PDF page 22",
+          "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+          "caveat": "This developer-board diagram shows possible reference connections across the broader SocketModem platform. It does not establish which ports exist, are connected, or are enabled on a DS200 modem carrier board.",
+          "sourceIds": [
+            "multitech-universal-socket-guide"
+          ],
+          "sourceRevisionIds": [
+            "multitech-universal-socket-guide@2026-07-20"
+          ]
+        },
+        {
+          "id": "ds200-multitech-sim-antenna-installation",
+          "assetUrl": "/equipment/network-evidence/multitech-universal-socket-sim-installation.png",
+          "assetSha256": "ebb7b9cd86df4e1cab7254c2381e2beea867a68ae1e3768f21a4db7af6a1b5ab",
+          "width": 1600,
+          "height": 2070,
+          "kind": "manufacturer_reference_installation_page",
+          "alt": "MultiTech manufacturer instructions for seating a Universal Socket communications device and using an optional antenna lead and a device SIM-card holder.",
+          "caption": "MultiTech generic modem, antenna-lead, and SIM installation guidance",
+          "pageOrSection": "Universal SocketModem Developer Guide PDF page 31",
+          "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+          "caveat": "This generic procedure establishes product-family installation concepts only. It is not evidence that a DS200 contains a SIM holder, antenna lead, active SIM, or any particular SocketModem model.",
+          "sourceIds": [
+            "multitech-universal-socket-guide"
+          ],
+          "sourceRevisionIds": [
+            "multitech-universal-socket-guide@2026-07-20"
+          ]
+        }
+      ],
+      "gaps": [
+        {
+          "id": "ds200-local-handoff-gap",
+          "label": "DS200-to-Regional Results handoff",
+          "description": "The reviewed exact-version passages do not identify whether the local result handoff used removable media or another mechanism, and they do not establish the DS200 as the VPN endpoint.",
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "provv-evs-6400-test-report"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "provv-evs-6400-test-report@2026-07-19"
+          ],
+          "caveat": "The module leaves the local medium unresolved instead of drawing a direct network link."
+        },
+        {
+          "id": "ds200-field-network-gap",
+          "label": "Field configuration and modem state",
+          "description": "No dated jurisdiction network diagram, interface inspection, modem inventory, firmware reading, carrier activation record, or transmission log was collected for a particular DS200.",
+          "sourceIds": [
+            "eac-evs-6400-scope",
+            "fl-evs-4500-v4-modem-report",
+            "provv-evs-5341-modem-hardware-table"
+          ],
+          "sourceRevisionIds": [
+            "eac-evs-6400-scope@2026-07-19",
+            "fl-evs-4500-v4-modem-report@2026-07-20",
+            "provv-evs-5341-modem-hardware-table@2026-07-20"
+          ],
+          "caveat": "Optional and historical records must not be presented as field evidence."
+        }
+      ]
+    },
+    "deployments": [
+      {
+        "id": "wa-jefferson-evs-6400-2025",
+        "jurisdiction": "Jefferson County, Washington",
+        "state": "WA",
+        "electionOrAsOf": "November 2025 general election",
+        "systemVersion": "6.4.0.0",
+        "scopeKind": "jurisdiction_deployment_observation",
+        "componentsConfirmed": [],
+        "sourceIds": [
+          "wa-2025-county-system-table"
+        ],
+        "caveat": "The state table confirms the EVS version at county grain, not DS200 use, unit count, firmware, hardware revision, ECO installation, or power configuration.",
+        "sourceRevisionIds": [
+          "wa-2025-county-system-table@2026-07-19"
+        ]
+      },
+      {
+        "id": "wa-thurston-evs-6400-2025",
+        "jurisdiction": "Thurston County, Washington",
+        "state": "WA",
+        "electionOrAsOf": "November 2025 general election",
+        "systemVersion": "6.4.0.0",
+        "scopeKind": "jurisdiction_deployment_observation",
+        "componentsConfirmed": [],
+        "sourceIds": [
+          "wa-2025-county-system-table"
+        ],
+        "caveat": "The state table confirms the EVS version at county grain, not DS200 use, unit count, firmware, hardware revision, ECO installation, or power configuration.",
+        "sourceRevisionIds": [
+          "wa-2025-county-system-table@2026-07-19"
+        ]
+      },
+      {
+        "id": "wa-walla-walla-evs-6400-2025",
+        "jurisdiction": "Walla Walla County, Washington",
+        "state": "WA",
+        "electionOrAsOf": "November 2025 general election",
+        "systemVersion": "6.4.0.0",
+        "scopeKind": "jurisdiction_deployment_observation",
+        "componentsConfirmed": [],
+        "sourceIds": [
+          "wa-2025-county-system-table"
+        ],
+        "caveat": "The state table confirms the EVS version at county grain, not DS200 use, unit count, firmware, hardware revision, ECO installation, or power configuration.",
+        "sourceRevisionIds": [
+          "wa-2025-county-system-table@2026-07-19"
+        ]
+      },
+      {
+        "id": "wa-whitman-evs-6400-2025",
+        "jurisdiction": "Whitman County, Washington",
+        "state": "WA",
+        "electionOrAsOf": "November 2025 general election",
+        "systemVersion": "6.4.0.0",
+        "scopeKind": "jurisdiction_deployment_observation",
+        "componentsConfirmed": [],
+        "sourceIds": [
+          "wa-2025-county-system-table"
+        ],
+        "caveat": "The state table confirms the EVS version at county grain, not DS200 use, unit count, firmware, hardware revision, ECO installation, or power configuration.",
+        "sourceRevisionIds": [
+          "wa-2025-county-system-table@2026-07-19"
+        ]
+      }
+    ],
+    "scene": {
+      "assetUrl": "/equipment/ess-evs-6400-ds200/orthographic-pilot.glb",
+      "assetLicense": "Apache-2.0",
+      "assetAttribution": "Original CivicResultMaps schematic generated from scripts/build-equipment-model.mjs",
+      "geometryFidelity": "illustrative_not_to_scale",
+      "description": "An original, photo-informed navigational schematic of the DS200 cabinet, scanner deck, raised protective lid, display, ballot compartments, and selected source-supported internal categories. It is not a teardown or dimensional reproduction.",
+      "referenceConfiguration": "DS200 open poll-place configuration with ballot cabinet, raised protective cover, scanner deck, and tilted display",
+      "referenceSourceIds": [
+        "ess-ds200-one-sheet",
+        "ess-ds200-reference-photo",
+        "ess-election-security-faqs"
+      ],
+      "referenceSourceRevisionIds": [
+        "ess-ds200-one-sheet@2026-07-20",
+        "ess-ds200-reference-photo@2026-07-20",
+        "ess-election-security-faqs@2026-07-20"
+      ],
+      "referenceNote": "External proportions and features follow the official ES&S one-sheet. The optional modem board is a symbolic board-shaped marker because the reviewed sources do not establish its model, dimensions, or placement. Other internal board positions and all explosion paths remain illustrative.",
+      "referenceImages": [
+        {
+          "id": "ds200-official-front-product-photo",
+          "assetUrl": "/equipment/ess-evs-6400-ds200/reference-ds200-front.png",
+          "assetSha256": "a68d0646ca2707ccdcf735f57d3b0b65e3021bec0a480bc8af8b0d517c412dda",
+          "width": 1280,
+          "height": 854,
+          "alt": "Front view of an open ES&S DS200 scanner and ballot container on casters",
+          "caption": "Manufacturer product photograph: DS200 open in its poll-place configuration.",
+          "kind": "manufacturer_product_photo",
+          "sourceIds": [
+            "ess-ds200-reference-photo"
+          ],
+          "sourceRevisionIds": [
+            "ess-ds200-reference-photo@2026-07-20"
+          ],
+          "pageOrSection": "Original 1280 x 854 product photograph",
+          "derivativeNote": "Exact local copy of the archived manufacturer image; no crop or content alteration.",
+          "caveat": "External appearance reference only; the photograph does not establish dimensions, internal components, certified software, modem installation, or a particular fielded unit."
+        }
+      ],
+      "camera": {
+        "position": [
+          6,
+          5,
+          7
+        ],
+        "zoom": 78,
+        "near": 0.1,
+        "far": 100
+      },
+      "nodes": [
+        {
+          "componentId": "ds200-scanner-tabulator",
+          "nodeName": "DS200_Shell",
+          "color": "#8ca3a8",
+          "explodedOffset": [
+            0,
+            0.55,
+            0
+          ]
+        },
+        {
+          "componentId": "ds200-optional-cellular-modem",
+          "nodeName": "Optional_Cellular_Modem",
+          "color": "#33c6b5",
+          "explodedOffset": [
+            1.45,
+            0.8,
+            -0.45
+          ]
+        },
+        {
+          "componentId": "ds200-scanner-path",
+          "nodeName": "Scanner_Path",
+          "color": "#33c6b5",
+          "explodedOffset": [
+            0,
+            0.4,
+            -0.5
+          ]
+        },
+        {
+          "componentId": "ds200-display-assembly",
+          "nodeName": "Display_Assembly",
+          "color": "#78a6ff",
+          "explodedOffset": [
+            0,
+            1.1,
+            0.7
+          ]
+        },
+        {
+          "componentId": "ds200-processor-module",
+          "nodeName": "Processor_Module",
+          "color": "#f0b95a",
+          "explodedOffset": [
+            1.2,
+            0.35,
+            0.25
+          ]
+        },
+        {
+          "componentId": "ds200-scanner-board",
+          "nodeName": "Scanner_Board",
+          "color": "#e87fb3",
+          "explodedOffset": [
+            -1.2,
+            0.35,
+            0.25
+          ]
+        },
+        {
+          "componentId": "ds200-ballot-container",
+          "nodeName": "Ballot_Container",
+          "color": "#53676d",
+          "explodedOffset": [
+            0,
+            -0.75,
+            0
+          ]
+        },
+        {
+          "componentId": "ds200-tote-bin-security",
+          "nodeName": "Tote_Bin_Gasket",
+          "color": "#d1e8e5",
+          "explodedOffset": [
+            0,
+            -0.2,
+            0.7
+          ]
+        },
+        {
+          "componentId": "ds200-seal-area",
+          "nodeName": "Seal_Area",
+          "color": "#ff8c69",
+          "explodedOffset": [
+            1.4,
+            0.2,
+            0.8
+          ]
+        }
+      ]
+    },
+    "caveats": [
+      "Certified configuration is not the same as field deployment. A county system-version record does not establish the components, firmware, hardware revision, or change orders installed on each unit.",
+      "The photo-informed 3D schematic is a selection aid, not vendor CAD, a teardown, an engineering drawing, or proof of exact dimensions or internal placement.",
+      "Public findings and modem vulnerability reviews are presented with exact product, firmware, date, and source scope. A zero-match catalog review is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
+      "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
+    ]
+  },
+  "editorial": {
+    "state": "published",
+    "revision": 8,
+    "createdOn": "2026-07-19",
+    "updatedOn": "2026-07-22",
+    "reviewedOn": "2026-07-21",
+    "reviewedBy": "project_editorial_review",
+    "publishedOn": "2026-07-22",
+    "sourceRevisionIds": [
+      "cisa-kev-catalog@2026-07-20",
+      "eac-eco-ess-1035-approval@2026-07-19",
+      "eac-eco-ess-1035-record@2026-07-19",
+      "eac-eco-ess-1042-approval@2026-07-19",
+      "eac-eco-ess-1042-record@2026-07-19",
+      "eac-eco-ess-1044-approval@2026-07-19",
+      "eac-eco-ess-1044-record@2026-07-19",
+      "eac-eco-ess-1055-approval@2026-07-19",
+      "eac-eco-ess-1055-record@2026-07-19",
+      "eac-eco-ess-1165-approval@2026-07-19",
+      "eac-eco-ess-1165-record@2026-07-19",
+      "eac-eco-ess-983-record@2026-07-19",
+      "eac-evs-6400-record@2026-07-19",
+      "eac-evs-6400-scope@2026-07-19",
+      "eac-unity-3200-document-report@2026-07-20",
+      "eac-unity-3400-test-plan@2026-07-21",
+      "ess-ds200-one-sheet@2026-07-20",
+      "ess-ds200-reference-photo@2026-07-20",
+      "ess-election-security-faqs@2026-07-20",
+      "fl-evs-4500-v4-modem-report@2026-07-20",
+      "multitech-eol-products@2026-07-20",
+      "multitech-lvw3-update-bulletin@2026-07-20",
+      "multitech-security-advisories-index@2026-07-20",
+      "multitech-security-advisory-bundle@2026-07-20",
+      "multitech-universal-socket-guide@2026-07-20",
+      "multitech-verizon-fota@2026-07-20",
+      "mi-ess-voting-system-contract@2026-07-21",
+      "nvd-modem-query-review@2026-07-20",
+      "provv-eco-ess-1035-analysis@2026-07-19",
+      "provv-eco-ess-1042-analysis@2026-07-19",
+      "provv-eco-ess-1044-analysis@2026-07-19",
+      "provv-eco-ess-1055-analysis@2026-07-19",
+      "provv-eco-ess-1165-analysis@2026-07-19",
+      "provv-eco-ess-983-analysis@2026-07-19",
+      "provv-evs-5341-modem-hardware-table@2026-07-20",
+      "provv-evs-6400-test-report@2026-07-19",
+      "ri-ds200-pollworker-manual-2021@2026-07-20",
+      "wa-2025-county-system-table@2026-07-19",
+      "wa-evs-6400-application@2026-07-19",
+      "wa-evs-6400-staff-report@2026-07-19"
+    ],
+    "reviewNotes": [
+      "Approved for feature-gated staging. Public production activation remains a separate review decision.",
+      "Historical DS200 modem identities and dated public-vulnerability coverage are separately scoped; no modem firmware or field deployment is inferred.",
+      "Added exact-version Regional Results/VPN test evidence and a separately labeled historical optional-cellular topology without publishing operational configuration values.",
+      "Added separately scoped historical Unity 3.4.0.0 wireline and Michigan EVS 5.3.2.0 wireless SFTP paths plus address-free vendor reference imagery; no field deployment, firmware, carrier, or current-version state is inferred.",
+      "project_owner: Production publication authorized after source, editorial, build, and browser validation."
+    ],
+    "publicationId": "equipment-explorer-2026-07-22-r1"
+  }
+}

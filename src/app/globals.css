@@ -6156,15 +6156,6 @@ td {
   border-color: var(--accent);
 }
 
-.workspace-context-notices {
-  display: grid;
-  gap: 8px;
-}
-
-.workspace-context-notices .historical-map-note {
-  margin: 0;
-}
-
 .historical-map-note {
   margin: 0 0 16px;
   padding: 12px 14px;
@@ -6619,7 +6610,6 @@ td {
 /* Primary navigation hierarchy and responsive state rail. */
 .workspace {
   grid-template-columns: auto minmax(0, 1fr);
-  padding-top: clamp(12px, 1.5vw, 20px);
 }
 
 .state-rail {
@@ -6825,6 +6815,25 @@ td {
     max-height: none;
   }
 }
+
+.equipment-catalog-link {
+  align-items: center;
+  background: rgba(103, 217, 204, 0.08);
+  border: 1px solid rgba(103, 217, 204, 0.22);
+  border-radius: 999px;
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 750;
+  min-height: 32px;
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+.equipment-catalog-link:hover {
+  background: rgba(103, 217, 204, 0.15);
+}
+
 .workspace-supporting-tools {
   display: grid;
   gap: 18px;

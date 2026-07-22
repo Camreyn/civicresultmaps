@@ -19,6 +19,8 @@ const endpoints = [
   ["GET", "/api/v1/confidence", "Shared confidence vocabulary"],
   ["GET", "/api/v1/releases", "Versioned national release catalog"],
   ["GET", "/api/v1/releases/{releaseId}/download", "Complete national ZIP"],
+  ["GET", "/api/v1/equipment-systems", "Feature-gated equipment catalog summaries"],
+  ["GET", "/api/v1/equipment-systems/{slug}", "One source-linked equipment dossier"],
 ] as const;
 
 export default function DevelopersPage() {
