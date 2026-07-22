@@ -16,6 +16,7 @@ const [
   lightbox,
   networkEvidence,
   workspace,
+  vercelIgnore,
 ] = await Promise.all([
   readFile("data/equipment-catalog.json", "utf8").then(JSON.parse),
   readFile("data/equipment-source-packages.json", "utf8").then(JSON.parse),
@@ -31,6 +32,7 @@ const [
   readFile("src/app/equipment/[slug]/equipment-reference-lightbox.client.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-network-evidence.client.tsx", "utf8"),
   readFile("src/app/workspace-tabs.tsx", "utf8"),
+  readFile(".vercelignore", "utf8"),
 ]);
 
 assert.equal(catalog.schemaVersion, 2);
@@ -419,5 +421,6 @@ assert.match(networkEvidence, /No field-observed topology collected/);
 assert.match(workspace, /equipmentExplorerEnabled &&/);
 assert.match(workspace, /equipment-catalog-link/);
 assert.match(workspace, /Component catalog/);
+assert.match(vercelIgnore, /!data\/equipment-catalog\.json/);
 
 console.log("Equipment catalog contracts passed.");
