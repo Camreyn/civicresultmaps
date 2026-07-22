@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import {
   Archive,
   Braces,
-  CheckCircle2,
-  CircleDashed,
   Database,
   GitCompareArrows,
   MapPin,
@@ -305,9 +303,6 @@ export default async function Home({ searchParams }: HomeProps) {
           map: historicalCoverageReady,
         },
       };
-  const coveragePassed = selectedYear === 2024
-    ? Boolean(displayCoverage?.validation.passed)
-    : historicalCoverageReady;
 
   return (
     <main className="app-shell">
@@ -374,78 +369,6 @@ export default async function Home({ searchParams }: HomeProps) {
         </StateRail>
 
         <section className="main-panel">
-          <NationalOverview report={completenessReport} year={2024} />
-
-          <section aria-labelledby="county-profile-jump-title" className="workspace-county-jump">
-            <div className="workspace-county-jump-copy">
-              <span aria-hidden className="workspace-county-jump-icon"><MapPin size={18} /></span>
-              <div>
-                <div className="workspace-county-jump-heading">
-                  <p className="section-label">County profiles</p>
-                  <span>Separate page</span>
-                </div>
-                <h2 id="county-profile-jump-title">Open a county profile</h2>
-                <p>Search nationwide by county name or five-digit FIPS. This opens a separate county history page and does not filter the state map.</p>
-              </div>
-            </div>
-            <GlobalCountySearch
-              className="workspace-county-search"
-              defaultState={selectedStateCode}
-              key={"county-profile-search-" + selectedStateCode}
-              label="County or FIPS"
-              placeholder="Enter county name, alias, or five-digit FIPS"
-            />
-          </section>
-
-          <div className="dashboard-head">
-            <div>
-              <p className="section-label">{selectedYear} President</p>
-              <h1>{selected?.name ?? selectedStateCode}</h1>
-            </div>
-            <div className="head-status">
-              {coveragePassed ? (
-                <CheckCircle2 aria-hidden size={18} />
-              ) : (
-                <CircleDashed aria-hidden size={18} />
-              )}
-              <span>{coveragePassed ? "Validated canonical coverage" : "Coverage gap"}</span>
-            </div>
-          </div>
-
-          {selectedYear !== 2024 && (
-            <p className="historical-map-note">
-              Historical mode shows canonical county presidential rows. {indicatorsEvaluated
-                ? "Same-year advisory indicators are overlaid from loaded President-versus-comparison-contest rows."
-                : "Advisory indicators are not evaluated for this state-year because same-grain comparison rows are not loaded."}{" "}
-              Vote methods, equipment, and administration records remain 2024 context and are not overlaid.
-            </p>
-          )}
-          {selectedYear !== 2024 && indicatorEvaluation.broadSignalWarning && (
-            <p className="historical-map-note historical-map-warning" role="status">
-              <strong>Broad-signal caution.</strong>{" "}
-              {indicatorEvaluation.broadSignalWarning}
-            </p>
-          )}
-
-          <section className="metrics-grid" aria-label="Platform metrics">
-            <div className="metric">
-              <span>Jurisdictions</span>
-              <strong>{displayCoverage?.loadedJurisdictions ?? results.length}</strong>
-            </div>
-            <div className="metric">
-              <span>Total votes</span>
-              <strong>{totalVotes.toLocaleString()}</strong>
-            </div>
-            <div className="metric">
-              <span>Sources</span>
-              <strong>{sources.length}</strong>
-            </div>
-            <div className="metric">
-              <span>Validation</span>
-              <strong>{coveragePassed ? "Pass" : "Gap"}</strong>
-            </div>
-          </section>
-
           <WorkspaceTabs
             adminSourceStatus={adminSourceStatuses.states[0]}
             coverage={displayCoverage}
@@ -456,6 +379,7 @@ export default async function Home({ searchParams }: HomeProps) {
             equipmentExplorerEnabled={isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady })}
             equipmentRows={equipmentRows}
             historicalRows={historicalRows}
+            historicalBroadSignalWarning={indicatorEvaluation.broadSignalWarning ?? undefined}
             importRuns={importRuns}
             indicators={indicators}
             indicatorsEvaluated={indicatorsEvaluated}
@@ -478,6 +402,31 @@ export default async function Home({ searchParams }: HomeProps) {
             voteMethodRows={voteMethodRows}
             securityIncidents={securityIncidents}
           />
+
+          <section aria-label="Additional workspace tools" className="workspace-supporting-tools">
+            <section aria-labelledby="county-profile-jump-title" className="workspace-county-jump">
+              <div className="workspace-county-jump-copy">
+                <span aria-hidden className="workspace-county-jump-icon"><MapPin size={18} /></span>
+                <div>
+                  <div className="workspace-county-jump-heading">
+                    <p className="section-label">County profiles</p>
+                    <span>Separate page</span>
+                  </div>
+                  <h2 id="county-profile-jump-title">Open a county profile</h2>
+                  <p>Search nationwide by county name or five-digit FIPS. This opens a separate county history page and does not filter the state map.</p>
+                </div>
+              </div>
+              <GlobalCountySearch
+                className="workspace-county-search"
+                defaultState={selectedStateCode}
+                key={"county-profile-search-" + selectedStateCode}
+                label="County or FIPS"
+                placeholder="Enter county name, alias, or five-digit FIPS"
+              />
+            </section>
+
+            <NationalOverview report={completenessReport} year={2024} />
+          </section>
         </section>
       </div>
     </main>

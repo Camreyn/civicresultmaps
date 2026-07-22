@@ -6833,3 +6833,18 @@ td {
 .equipment-catalog-link:hover {
   background: rgba(103, 217, 204, 0.15);
 }
+
+.workspace-supporting-tools {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.workspace-supporting-tools .workspace-county-jump {
+  margin: 0;
+  max-width: none;
+}
+
+.workspace-supporting-tools .national-overview {
+  margin-bottom: 0;
+}

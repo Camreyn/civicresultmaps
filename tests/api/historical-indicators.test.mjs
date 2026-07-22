@@ -7,6 +7,7 @@ const schema = readFileSync("src/db/schema.ts", "utf8");
 const dataAccess = readFileSync("src/lib/data-access.ts", "utf8");
 const page = readFileSync("src/app/page.tsx", "utf8");
 const explorer = readFileSync("src/app/results-explorer.tsx", "utf8");
+const workspaceTabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
 const pipeline = readFileSync("civic_etl/pipeline.py", "utf8");
 
 test("historical promotion replaces only explicitly loaded review years", () => {
@@ -57,7 +58,8 @@ test("historical maps load same-year indicators and distinguish not evaluated", 
   assert.match(page, /indicatorsEvaluated/);
   assert.match(page, /not been evaluated for advisory indicators/);
   assert.match(page, /indicatorEvaluation\.broadSignalWarning/);
-  assert.match(page, /Broad-signal caution/);
+  assert.match(workspaceTabs, /historicalBroadSignalWarning/);
+  assert.match(workspaceTabs, /Broad-signal caution/);
   assert.match(explorer, /mapIndicatorsByTag/);
   assert.match(explorer, /indicatorsByTag/);
   assert.match(explorer, /Advisory indicators are not evaluated for this state-year/);

@@ -101,7 +101,7 @@ function disableCandidateFlag(target: Environment) {
       "--environment",
       target,
       "--variant",
-      "off",
+      "false",
       "--token",
       vercelToken,
       "--no-color",
@@ -112,12 +112,12 @@ function disableCandidateFlag(target: Environment) {
 }
 
 async function updateEdgeConfig(items: Array<{ key: string; value: unknown }>) {
-  const operations = await Promise.all(items.map(async (item) => ({
-    operation: await edgeItemExists(item.key) ? "update" : "create",
+  const operations = items.map((item) => ({
+    operation: "upsert",
     key: item.key,
     value: item.value,
     description: "Versioned Civic Result Maps workspace layout envelope",
-  })));
+  }));
   const response = await fetch(edgeUrl(`/v1/edge-config/${edgeConfigId}/items`), {
     method: "PATCH",
     headers: {
@@ -129,14 +129,6 @@ async function updateEdgeConfig(items: Array<{ key: string; value: unknown }>) {
   if (!response.ok) throw new Error(`Edge Config write failed (${response.status}): ${(await response.text()).slice(0, 500)}`);
 }
 
-async function edgeItemExists(key: string) {
-  const response = await fetch(edgeUrl(`/v1/edge-config/${edgeConfigId}/item/${encodeURIComponent(key)}`), {
-    headers: { Authorization: `Bearer ${vercelToken}` },
-  });
-  if (response.status === 404) return false;
-  if (!response.ok) throw new Error(`Edge Config item lookup failed (${response.status}).`);
-  return true;
-}
 
 async function readEdgeDigest() {
   const response = await fetch(edgeUrl(`/v1/edge-config/${edgeConfigId}`), {
