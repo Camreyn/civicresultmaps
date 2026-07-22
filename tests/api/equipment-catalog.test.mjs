@@ -39,9 +39,11 @@ assert.equal(catalog.editorialState, "staging_review");
 assert.equal(catalog.productionRequirement, "published");
 assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
-assert.equal(claim.editorial.state, "approved");
+assert.equal(claim.editorial.state, "published");
+assert.equal(claim.editorial.publicationId, "equipment-explorer-2026-07-22-r1");
+assert.equal(claim.editorial.publishedOn, "2026-07-22");
 assert.equal(catalog.systems.length, 6);
-assert.equal(sourcePackage.sources.length, 66);
+assert.equal(sourcePackage.sources.length, 68);
 assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
 const sourceIds = new Set(sourcePackage.sources.map((source) => source.id));
@@ -69,9 +71,17 @@ assert.equal(system.coverage.unknownTechnicalSpecificationCount, 3);
 assert.equal(system.coverage.componentSecurityReviewCount, 3);
 assert.equal(system.coverage.exactApplicableVulnerabilityCount, 0);
 assert.equal(system.coverage.nonCveAdvisoryCount, 1);
-assert.equal(system.coverage.sourceCount, 38);
+assert.equal(system.coverage.sourceCount, 40);
+assert.ok(sourceIds.has("eac-unity-3400-test-plan"));
+assert.ok(sourceIds.has("mi-ess-voting-system-contract"));
+const ds200NetworkConfigurationIds = new Set(system.networkEvidence.configurations.map((record) => record.id));
+assert.ok(ds200NetworkConfigurationIds.has("ds200-unity-3400-landline-sftp-reference"));
+assert.ok(ds200NetworkConfigurationIds.has("ds200-michigan-evs-5320-wireless-sftp-path"));
+const ds200NetworkImageIds = new Set(system.networkEvidence.sourceImages.map((record) => record.id));
+assert.ok(ds200NetworkImageIds.has("ds200-mi-wireless-results-network"));
+assert.ok(ds200NetworkImageIds.has("ds200-multitech-developer-board-block-diagram"));
 assert.match(system.certification.caveat, /certified configuration/i);
-assert.equal(system.editorialState, "approved");
+assert.equal(system.editorialState, "published");
 assert.ok(system.sourceRevisionIds.length > 0);
 assert.equal(system.coverage.sourceRevisionCount, system.sourceRevisionIds.length);
 
@@ -297,6 +307,7 @@ for (const mapping of imageCastX.scene.nodes) assert.ok(imageCastNodeNames.has(m
 assert.ok(!imageCastNodeNames.has("ICX_Prime_SSD"), "unsupported SSD geometry must remain absent");
 
 for (const dossier of catalog.systems) {
+  assert.equal(dossier.editorialState, "published", `${dossier.slug} must clear the production publication gate`);
   const dossierGlb = await readFile(`public${dossier.scene.assetUrl}`);
   assert.equal(dossierGlb.readUInt32LE(0), 0x46546c67, `${dossier.slug} must use the glTF binary magic`);
   assert.equal(dossierGlb.readUInt32LE(4), 2, `${dossier.slug} must use glTF 2.0`);

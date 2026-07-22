@@ -2161,8 +2161,8 @@
       "documentType": "manufacturer_developer_guide_pdf",
       "publishedOn": null,
       "retrievedOn": "2026-07-20",
-      "pageOrSection": "PDF pages 2 and 63-64; supported SocketModem families and firmware-update procedure",
-      "caveat": "The guide describes the MTSMC-C2 product family and a serial-port update process requiring MultiTech assistance. It does not publish the firmware installed in a DS200 or transfer a product-family option to another modem revision.",
+      "pageOrSection": "PDF pages 2, 12, 20, 22, 31, 53-60, and 63-64; supported SocketModem families, Universal Socket interface and developer-board references, antenna and SIM guidance, and firmware-update procedure",
+      "caveat": "The guide documents MultiTech's generic Universal Socket and SocketModem development platform, the MTSMC-C2 family, and a serial-port update process requiring MultiTech assistance. Its pinout, example developer board, ports, antenna, and SIM instructions are not a DS200 carrier-board schematic, installed-component inventory, or proof of enabled interfaces. It does not publish firmware installed in a DS200 or transfer a product-family option to another modem revision.",
       "canonicalUrl": "https://multitech.com/wp-content/uploads/s000342.pdf",
       "currentReviewedRevisionId": "multitech-universal-socket-guide@2026-07-20",
       "latestRetrievedRevisionId": "multitech-universal-socket-guide@2026-07-20",
@@ -2180,7 +2180,7 @@
           "http": { "etag": null, "lastModified": null },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "PDF pages 2 and 63-64; supported SocketModem families and firmware-update procedure",
+          "pageOrSection": "PDF pages 2, 12, 20, 22, 31, 53-60, and 63-64; supported SocketModem families, Universal Socket interface and developer-board references, antenna and SIM guidance, and firmware-update procedure",
           "archiveStatus": "verified"
         }
       ],
@@ -2541,6 +2541,84 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "Closed Network section",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "eac-unity-3400-test-plan",
+      "publisher": "U.S. Election Assistance Commission; Wyle Laboratories, Inc.",
+      "authorityLevel": "federal_certification_record",
+      "title": "ES&S Unity 3.4.0.0 Certification Test Plan T58722.01",
+      "url": "https://www.eac.gov/sites/default/files/voting_system/files/ESS%20Unity%203.4.0.0%20Test%20Plan-8-31-2011.pdf",
+      "localArtifact": "data/equipment-sources/eac-unity-3400-test-plan.pdf",
+      "sha256": "76535438c308b7d1c761bf3d2fc48e2a994d9a1acec2aefc014bf91e14c8226f",
+      "documentType": "vstl_certification_test_plan_pdf",
+      "publishedOn": "2011-08-31",
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "PDF page 20, report page 17, Figure 1-2 Secure File Transfer Configuration Guide",
+      "caveat": "The Wyle test-plan figure documents a historical Unity 3.4.0.0 wireline modem, DMZ, SFTP, firewall, and ERM reference configuration. It is not a cellular topology, a current EVS 6.4.0.0 configuration, or evidence that a jurisdiction deployed the pictured design. Sample addresses visible in the source PDF are not transcribed into the public topology.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/voting_system/files/ESS%20Unity%203.4.0.0%20Test%20Plan-8-31-2011.pdf",
+      "currentReviewedRevisionId": "eac-unity-3400-test-plan@2026-07-21",
+      "latestRetrievedRevisionId": "eac-unity-3400-test-plan@2026-07-21",
+      "revisions": [
+        {
+          "id": "eac-unity-3400-test-plan@2026-07-21",
+          "localArtifact": "data/equipment-sources/eac-unity-3400-test-plan.pdf",
+          "sha256": "76535438c308b7d1c761bf3d2fc48e2a994d9a1acec2aefc014bf91e14c8226f",
+          "byteLength": 1631095,
+          "publishedOn": "2011-08-31",
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/voting_system/files/ESS%20Unity%203.4.0.0%20Test%20Plan-8-31-2011.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF page 20, report page 17, Figure 1-2 Secure File Transfer Configuration Guide",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
+      "id": "mi-ess-voting-system-contract",
+      "publisher": "State of Michigan Department of Technology, Management & Budget; Election Systems & Software",
+      "authorityLevel": "state_official_hosted_vendor_contract",
+      "title": "Contract 071B7700120: Voting System Hardware, Firmware, Software and Service",
+      "url": "https://www.michigan.gov/-/media/Project/Websites/dtmb/Procurement/Contracts/MiDEAL-Media/008/7700120.pdf",
+      "localArtifact": "data/equipment-sources/mi-ess-voting-system-contract.pdf",
+      "sha256": "b3fcc36739a95325cd9e1b6988efa3364bf78be71cb3ed4ebc49a39f3bb768f5",
+      "documentType": "state_contract_vendor_response_pdf",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "PDF pages 95-105, especially contract page 62 Wireless Results Network; PDF pages 199-200 and 254 for EVS 5.3.2.0 transmission scope and SFTP workflow",
+      "caveat": "This official state-hosted contract compilation contains a historical vendor response and diagrams for Michigan's 2017 procurement. The relevant response expressly notes that EVS 5.3.2.0 was not EAC certified but met Michigan state election code. It does not establish a current EVS 6.4.0.0 configuration, a particular county deployment, installed modem model or firmware, carrier account, or election transmission event.",
+      "canonicalUrl": "https://www.michigan.gov/-/media/Project/Websites/dtmb/Procurement/Contracts/MiDEAL-Media/008/7700120.pdf",
+      "currentReviewedRevisionId": "mi-ess-voting-system-contract@2026-07-21",
+      "latestRetrievedRevisionId": "mi-ess-voting-system-contract@2026-07-21",
+      "revisions": [
+        {
+          "id": "mi-ess-voting-system-contract@2026-07-21",
+          "localArtifact": "data/equipment-sources/mi-ess-voting-system-contract.pdf",
+          "sha256": "b3fcc36739a95325cd9e1b6988efa3364bf78be71cb3ed4ebc49a39f3bb768f5",
+          "byteLength": 8061620,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.michigan.gov/-/media/Project/Websites/dtmb/Procurement/Contracts/MiDEAL-Media/008/7700120.pdf?rev=05177c3d7f5c4ca9b1cb3d981b9103e2",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF pages 95-105, especially contract page 62 Wireless Results Network; PDF pages 199-200 and 254 for EVS 5.3.2.0 transmission scope and SFTP workflow",
           "archiveStatus": "verified"
         }
       ],

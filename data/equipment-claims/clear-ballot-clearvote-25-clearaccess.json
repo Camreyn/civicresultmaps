@@ -655,21 +655,74 @@
           "observedOn": null,
           "assertedFor": null,
           "nodes": [
-            { "id": "clearaccess-station", "label": "ClearAccess station", "role": "Ballot-marking workstation", "componentId": "clearaccess-touchscreen-computer", "optional": false, "details": "Certified alternatives include named all-in-one touchscreen computers running ClearAccess software." },
-            { "id": "clearaccess-printer", "label": "Ballot printer", "role": "Local paper-ballot output", "componentId": "clearaccess-ballot-printer", "optional": false, "details": "The printer is a local ClearAccess peripheral; the selected certified model and occupied connector are jurisdiction-specific." },
-            { "id": "clearaccess-accessibility", "label": "Accessibility inputs", "role": "Local voter input and audio accessories", "componentId": "clearaccess-accessible-keypad", "optional": false, "details": "The dossier separately identifies the accessible keypad and other assistive accessories." }
+            {
+              "id": "clearaccess-station",
+              "label": "ClearAccess station",
+              "role": "Ballot-marking workstation",
+              "componentId": "clearaccess-touchscreen-computer",
+              "optional": false,
+              "details": "Certified alternatives include named all-in-one touchscreen computers running ClearAccess software."
+            },
+            {
+              "id": "clearaccess-printer",
+              "label": "Ballot printer",
+              "role": "Local paper-ballot output",
+              "componentId": "clearaccess-ballot-printer",
+              "optional": false,
+              "details": "The printer is a local ClearAccess peripheral; the selected certified model and occupied connector are jurisdiction-specific."
+            },
+            {
+              "id": "clearaccess-accessibility",
+              "label": "Accessibility inputs",
+              "role": "Local voter input and audio accessories",
+              "componentId": "clearaccess-accessible-keypad",
+              "optional": false,
+              "details": "The dossier separately identifies the accessible keypad and other assistive accessories."
+            }
           ],
           "links": [
-            { "id": "clearaccess-print-link", "from": "clearaccess-station", "to": "clearaccess-printer", "medium": "Local wired peripheral connection", "direction": "one_way", "purpose": "Print the voter-reviewed paper ballot", "knowledgeStatus": "documented_partial" },
-            { "id": "clearaccess-input-link", "from": "clearaccess-accessibility", "to": "clearaccess-station", "medium": "Local assistive-device connection", "direction": "one_way", "purpose": "Provide accessible navigation and selection input", "knowledgeStatus": "documented_partial" }
+            {
+              "id": "clearaccess-print-link",
+              "from": "clearaccess-station",
+              "to": "clearaccess-printer",
+              "medium": "Local wired peripheral connection",
+              "direction": "one_way",
+              "purpose": "Print the voter-reviewed paper ballot",
+              "knowledgeStatus": "documented_partial"
+            },
+            {
+              "id": "clearaccess-input-link",
+              "from": "clearaccess-accessibility",
+              "to": "clearaccess-station",
+              "medium": "Local assistive-device connection",
+              "direction": "one_way",
+              "purpose": "Provide accessible navigation and selection input",
+              "knowledgeStatus": "documented_partial"
+            }
           ],
           "controls": [
-            { "id": "clearaccess-communications-boundary", "label": "Manufacturer communications boundary", "status": "documented", "description": "Clear Ballot states that certified products are never attached to modems, the Internet, Wi-Fi, or Bluetooth." },
-            { "id": "clearaccess-field-port-state", "label": "Field port state", "status": "not_publicly_established", "description": "The exact enabled interfaces, occupied connectors, and jurisdiction cabling were not established by the reviewed public record." }
+            {
+              "id": "clearaccess-communications-boundary",
+              "label": "Manufacturer communications boundary",
+              "status": "documented",
+              "description": "Clear Ballot states that certified products are never attached to modems, the Internet, Wi-Fi, or Bluetooth."
+            },
+            {
+              "id": "clearaccess-field-port-state",
+              "label": "Field port state",
+              "status": "not_publicly_established",
+              "description": "The exact enabled interfaces, occupied connectors, and jurisdiction cabling were not established by the reviewed public record."
+            }
           ],
           "sensitiveDetailsWithheld": "No addresses, credentials, cryptographic material, access codes, or site-specific configuration values are collected or displayed.",
-          "sourceIds": ["eac-clearvote-25-scope", "clearballot-security"],
-          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19", "clearballot-security@2026-07-21"],
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "clearballot-security"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "clearballot-security@2026-07-21"
+          ],
           "caveat": "A product-level communications policy and a certified component list do not prove the state of a particular port, cable, station, polling place, or election deployment."
         }
       ],
@@ -686,8 +739,12 @@
           "pageOrSection": "EAC scope PDF page 8, document page 6",
           "derivativeNote": "Rendered from the archived official PDF at 135 DPI; the source page content was not edited.",
           "caveat": "The suite-level diagram shows product and data relationships. It is not a cable map and does not establish that ClearAccess is attached to a network in a field deployment.",
-          "sourceIds": ["eac-clearvote-25-scope"],
-          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19"]
+          "sourceIds": [
+            "eac-clearvote-25-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19"
+          ]
         }
       ],
       "gaps": [
@@ -695,16 +752,26 @@
           "id": "clearaccess-port-map-gap",
           "label": "Exact port and cable map",
           "description": "The reviewed ClearVote 2.5 public certification attachments do not provide an installation-specific ClearAccess port-occupation or cable-routing record.",
-          "sourceIds": ["eac-clearvote-25-scope"],
-          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19"],
+          "sourceIds": [
+            "eac-clearvote-25-scope"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19"
+          ],
           "caveat": "This is a public-evidence gap, not evidence that an undocumented connection exists."
         },
         {
           "id": "clearaccess-field-network-gap",
           "label": "Field-observed configuration",
           "description": "No dated, unit-level or polling-place network inspection was collected for this dossier.",
-          "sourceIds": ["eac-clearvote-25-scope", "clearballot-security"],
-          "sourceRevisionIds": ["eac-clearvote-25-scope@2026-07-19", "clearballot-security@2026-07-21"],
+          "sourceIds": [
+            "eac-clearvote-25-scope",
+            "clearballot-security"
+          ],
+          "sourceRevisionIds": [
+            "eac-clearvote-25-scope@2026-07-19",
+            "clearballot-security@2026-07-21"
+          ],
           "caveat": "Certified and manufacturer evidence must not be presented as a live observation."
         }
       ]
@@ -862,13 +929,13 @@
     ]
   },
   "editorial": {
-    "state": "approved",
-    "revision": 4,
+    "state": "published",
+    "revision": 5,
     "createdOn": "2026-07-19",
-    "updatedOn": "2026-07-21",
+    "updatedOn": "2026-07-22",
     "reviewedOn": "2026-07-21",
     "reviewedBy": "project_editorial_review",
-    "publishedOn": null,
+    "publishedOn": "2026-07-22",
     "sourceRevisionIds": [
       "eac-clearvote-25-record@2026-07-19",
       "eac-clearvote-25-scope@2026-07-19",
@@ -881,7 +948,9 @@
     ],
     "reviewNotes": [
       "Approved for feature-gated staging. Public production activation remains a separate review decision.",
-      "Added source-scoped network configuration evidence without inferring a live station or publishing sensitive configuration values."
-    ]
+      "Added source-scoped network configuration evidence without inferring a live station or publishing sensitive configuration values.",
+      "project_owner: Production publication authorized after source, editorial, build, and browser validation."
+    ],
+    "publicationId": "equipment-explorer-2026-07-22-r1"
   }
 }

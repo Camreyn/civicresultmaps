@@ -45,9 +45,17 @@ export default function EquipmentIndexPage() {
             </p>
           </div>
           <aside className={styles.scopeCard}>
-            <span>Feature-gated {equipmentCatalogMetadata.editorialState.replaceAll("_", " ")}</span>
+            <span>
+              Feature-gated {equipmentCatalogMetadata.productionReady
+                ? "published catalog"
+                : equipmentCatalogMetadata.editorialState.replaceAll("_", " ")}
+            </span>
             <strong>{systems.length} reviewed {systems.length === 1 ? "dossier" : "dossiers"}</strong>
-            <p>Generated {equipmentCatalogMetadata.generatedOn}. Production discovery stays feature-gated while the evidence model is reviewed.</p>
+            <p>
+              Generated {equipmentCatalogMetadata.generatedOn}. {equipmentCatalogMetadata.productionReady
+                ? "Every visible dossier has cleared the publication workflow; access remains controlled by the deployment feature gate."
+                : "Production discovery stays feature-gated while the evidence model is reviewed."}
+            </p>
           </aside>
         </section>
 

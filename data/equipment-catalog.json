@@ -1380,6 +1380,45 @@
       "revisionComparisons": []
     },
     {
+      "id": "eac-unity-3400-test-plan",
+      "publisher": "U.S. Election Assistance Commission; Wyle Laboratories, Inc.",
+      "authorityLevel": "federal_certification_record",
+      "title": "ES&S Unity 3.4.0.0 Certification Test Plan T58722.01",
+      "url": "https://www.eac.gov/sites/default/files/voting_system/files/ESS%20Unity%203.4.0.0%20Test%20Plan-8-31-2011.pdf",
+      "localArtifact": "data/equipment-sources/eac-unity-3400-test-plan.pdf",
+      "sha256": "76535438c308b7d1c761bf3d2fc48e2a994d9a1acec2aefc014bf91e14c8226f",
+      "documentType": "vstl_certification_test_plan_pdf",
+      "publishedOn": "2011-08-31",
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "PDF page 20, report page 17, Figure 1-2 Secure File Transfer Configuration Guide",
+      "caveat": "The Wyle test-plan figure documents a historical Unity 3.4.0.0 wireline modem, DMZ, SFTP, firewall, and ERM reference configuration. It is not a cellular topology, a current EVS 6.4.0.0 configuration, or evidence that a jurisdiction deployed the pictured design. Sample addresses visible in the source PDF are not transcribed into the public topology.",
+      "canonicalUrl": "https://www.eac.gov/sites/default/files/voting_system/files/ESS%20Unity%203.4.0.0%20Test%20Plan-8-31-2011.pdf",
+      "currentReviewedRevisionId": "eac-unity-3400-test-plan@2026-07-21",
+      "latestRetrievedRevisionId": "eac-unity-3400-test-plan@2026-07-21",
+      "revisions": [
+        {
+          "id": "eac-unity-3400-test-plan@2026-07-21",
+          "localArtifact": "data/equipment-sources/eac-unity-3400-test-plan.pdf",
+          "sha256": "76535438c308b7d1c761bf3d2fc48e2a994d9a1acec2aefc014bf91e14c8226f",
+          "byteLength": 1631095,
+          "publishedOn": "2011-08-31",
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.eac.gov/sites/default/files/voting_system/files/ESS%20Unity%203.4.0.0%20Test%20Plan-8-31-2011.pdf",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF page 20, report page 17, Figure 1-2 Secure File Transfer Configuration Guide",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "ess-ds200-one-sheet",
       "publisher": "Election Systems & Software",
       "authorityLevel": "manufacturer_primary",
@@ -1614,6 +1653,45 @@
       "revisionComparisons": []
     },
     {
+      "id": "mi-ess-voting-system-contract",
+      "publisher": "State of Michigan Department of Technology, Management & Budget; Election Systems & Software",
+      "authorityLevel": "state_official_hosted_vendor_contract",
+      "title": "Contract 071B7700120: Voting System Hardware, Firmware, Software and Service",
+      "url": "https://www.michigan.gov/-/media/Project/Websites/dtmb/Procurement/Contracts/MiDEAL-Media/008/7700120.pdf",
+      "localArtifact": "data/equipment-sources/mi-ess-voting-system-contract.pdf",
+      "sha256": "b3fcc36739a95325cd9e1b6988efa3364bf78be71cb3ed4ebc49a39f3bb768f5",
+      "documentType": "state_contract_vendor_response_pdf",
+      "publishedOn": null,
+      "retrievedOn": "2026-07-21",
+      "pageOrSection": "PDF pages 95-105, especially contract page 62 Wireless Results Network; PDF pages 199-200 and 254 for EVS 5.3.2.0 transmission scope and SFTP workflow",
+      "caveat": "This official state-hosted contract compilation contains a historical vendor response and diagrams for Michigan's 2017 procurement. The relevant response expressly notes that EVS 5.3.2.0 was not EAC certified but met Michigan state election code. It does not establish a current EVS 6.4.0.0 configuration, a particular county deployment, installed modem model or firmware, carrier account, or election transmission event.",
+      "canonicalUrl": "https://www.michigan.gov/-/media/Project/Websites/dtmb/Procurement/Contracts/MiDEAL-Media/008/7700120.pdf",
+      "currentReviewedRevisionId": "mi-ess-voting-system-contract@2026-07-21",
+      "latestRetrievedRevisionId": "mi-ess-voting-system-contract@2026-07-21",
+      "revisions": [
+        {
+          "id": "mi-ess-voting-system-contract@2026-07-21",
+          "localArtifact": "data/equipment-sources/mi-ess-voting-system-contract.pdf",
+          "sha256": "b3fcc36739a95325cd9e1b6988efa3364bf78be71cb3ed4ebc49a39f3bb768f5",
+          "byteLength": 8061620,
+          "publishedOn": null,
+          "retrievedOn": "2026-07-21",
+          "retrievedAt": null,
+          "retrievalPrecision": "date",
+          "resolvedUrl": "https://www.michigan.gov/-/media/Project/Websites/dtmb/Procurement/Contracts/MiDEAL-Media/008/7700120.pdf?rev=05177c3d7f5c4ca9b1cb3d981b9103e2",
+          "http": {
+            "etag": null,
+            "lastModified": null
+          },
+          "supersedesRevisionId": null,
+          "contentStatus": "baseline",
+          "pageOrSection": "PDF pages 95-105, especially contract page 62 Wireless Results Network; PDF pages 199-200 and 254 for EVS 5.3.2.0 transmission scope and SFTP workflow",
+          "archiveStatus": "verified"
+        }
+      ],
+      "revisionComparisons": []
+    },
+    {
       "id": "multitech-eol-products",
       "publisher": "Multi-Tech Systems, Inc.",
       "authorityLevel": "manufacturer_primary",
@@ -1780,8 +1858,8 @@
       "documentType": "manufacturer_developer_guide_pdf",
       "publishedOn": null,
       "retrievedOn": "2026-07-20",
-      "pageOrSection": "PDF pages 2 and 63-64; supported SocketModem families and firmware-update procedure",
-      "caveat": "The guide describes the MTSMC-C2 product family and a serial-port update process requiring MultiTech assistance. It does not publish the firmware installed in a DS200 or transfer a product-family option to another modem revision.",
+      "pageOrSection": "PDF pages 2, 12, 20, 22, 31, 53-60, and 63-64; supported SocketModem families, Universal Socket interface and developer-board references, antenna and SIM guidance, and firmware-update procedure",
+      "caveat": "The guide documents MultiTech's generic Universal Socket and SocketModem development platform, the MTSMC-C2 family, and a serial-port update process requiring MultiTech assistance. Its pinout, example developer board, ports, antenna, and SIM instructions are not a DS200 carrier-board schematic, installed-component inventory, or proof of enabled interfaces. It does not publish firmware installed in a DS200 or transfer a product-family option to another modem revision.",
       "canonicalUrl": "https://multitech.com/wp-content/uploads/s000342.pdf",
       "currentReviewedRevisionId": "multitech-universal-socket-guide@2026-07-20",
       "latestRetrievedRevisionId": "multitech-universal-socket-guide@2026-07-20",
@@ -1802,7 +1880,7 @@
           },
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
-          "pageOrSection": "PDF pages 2 and 63-64; supported SocketModem families and firmware-update procedure",
+          "pageOrSection": "PDF pages 2, 12, 20, 22, 31, 53-60, and 63-64; supported SocketModem families, Universal Socket interface and developer-board references, antenna and SIM guidance, and firmware-update procedure",
           "archiveStatus": "verified"
         }
       ],
@@ -3533,8 +3611,8 @@
         "The UPS models are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Test findings are time- and version-scoped. They do not prove a field incident, exploitation, altered votes, fraud, misconduct, or an incorrect election outcome."
       ],
-      "claimRevision": 4,
-      "editorialState": "approved",
+      "claimRevision": 5,
+      "editorialState": "published",
       "sourceIds": [
         "clearballot-clearaccess-product-page",
         "clearballot-clearaccess-reference-photo",
@@ -4300,8 +4378,8 @@
         "The 3D scene is a navigation aid, not a wiring diagram, teardown, exact installation, or claim about a jurisdiction's selected hardware.",
         "A certification change or test finding is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
       ],
-      "claimRevision": 2,
-      "editorialState": "approved",
+      "claimRevision": 3,
+      "editorialState": "published",
       "sourceIds": [
         "clearballot-clearcount-product-page",
         "clearballot-clearcount-reference-photo",
@@ -5037,8 +5115,8 @@
         "The 3D scene is a navigation aid, not a teardown, wiring diagram, exact installation, or unit inventory.",
         "A certification change or test result is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
       ],
-      "claimRevision": 2,
-      "editorialState": "approved",
+      "claimRevision": 3,
+      "editorialState": "published",
       "sourceIds": [
         "co-dvs-517-icc-user-guide",
         "co-dvs-517-system-overview",
@@ -6323,8 +6401,8 @@
         "The UPS alternatives are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Advisory notices are time-, version-, scenario-, and sometimes jurisdiction-scoped. They do not prove an election incident, altered votes, fraud, misconduct, or an incorrect outcome."
       ],
-      "claimRevision": 4,
-      "editorialState": "approved",
+      "claimRevision": 5,
+      "editorialState": "published",
       "sourceIds": [
         "co-dvs-517-avalue-sid21-manual",
         "co-dvs-517-icx-maintenance-manual",
@@ -7471,7 +7549,7 @@
       ],
       "networkEvidence": {
         "reviewedOn": "2026-07-21",
-        "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint. Older records separately document optional DS200 cellular hardware families without proving EVS 6.4 certification, firmware, activation, or field use.",
+        "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint. Older federal and state records separately document a Unity 3.4.0.0 wireline SFTP reference design, a Michigan EVS 5.3.2.0 wireless-carrier and SFTP path, and optional DS200 cellular hardware families without proving EVS 6.4 certification, firmware, activation, or field use.",
         "publicationBoundary": "The module publishes roles, high-level paths, connection media when established, and evidence boundaries. It excludes IP addresses, credentials, VPN parameters, keys, APNs, SIM identifiers, carrier accounts, device identifiers, and jurisdiction routing details.",
         "configurations": [
           {
@@ -7700,6 +7778,267 @@
               "multitech-universal-socket-guide@2026-07-20"
             ],
             "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem."
+          },
+          {
+            "id": "ds200-unity-3400-landline-sftp-reference",
+            "title": "Unity 3.4.0.0 wireline SFTP receiving topology",
+            "evidenceLayer": "documented",
+            "assertionScope": "vstl_test_configuration",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "results_transmission_service",
+            "description": "A Wyle certification test plan for Unity 3.4.0.0 depicts a DS200 connected by wireline modem to a RAS/SFTP receiving server in a DMZ, separated by a firewall from an inside ERM environment. The public topology records roles and boundaries without reproducing the source's sample addresses.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "unity-3400-ds200",
+                "label": "DS200",
+                "role": "Historical precinct scanner and tabulator",
+                "componentId": "ds200-scanner-tabulator",
+                "optional": false,
+                "details": "The figure labels a DS200 as the wireline sending endpoint in the Unity 3.4.0.0 target-of-evaluation description."
+              },
+              {
+                "id": "unity-3400-ras-sftp",
+                "label": "RAS / SFTP receiver",
+                "role": "Result-file receiving service in the DMZ",
+                "componentId": null,
+                "optional": false,
+                "details": "The source combines remote-access and SFTP server roles on the illustrated DMZ-side receiving system."
+              },
+              {
+                "id": "unity-3400-firewall",
+                "label": "Firewall boundary",
+                "role": "Boundary between DMZ and inside network",
+                "componentId": null,
+                "optional": false,
+                "details": "The figure places a firewall between the DMZ receiving environment and the inside ERM network."
+              },
+              {
+                "id": "unity-3400-erm",
+                "label": "ERM",
+                "role": "Inside election-results management environment",
+                "componentId": null,
+                "optional": false,
+                "details": "Election Reporting Manager is shown on the inside side of the historical reference topology."
+              }
+            ],
+            "links": [
+              {
+                "id": "unity-3400-modem-line",
+                "from": "unity-3400-ds200",
+                "to": "unity-3400-ras-sftp",
+                "medium": "Wireline modem connection",
+                "direction": "bidirectional",
+                "purpose": "Establish the historical result-file transfer session",
+                "knowledgeStatus": "confirmed"
+              },
+              {
+                "id": "unity-3400-dmz-boundary",
+                "from": "unity-3400-ras-sftp",
+                "to": "unity-3400-firewall",
+                "medium": "DMZ network boundary",
+                "direction": "not_specified",
+                "purpose": "Separate the receiving service from the inside environment",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "unity-3400-inside-erm",
+                "from": "unity-3400-firewall",
+                "to": "unity-3400-erm",
+                "medium": "Inside network path",
+                "direction": "not_specified",
+                "purpose": "Make received result data available to ERM",
+                "knowledgeStatus": "documented_partial"
+              }
+            ],
+            "controls": [
+              {
+                "id": "unity-3400-sftp-service",
+                "label": "SFTP receiving service",
+                "status": "documented",
+                "description": "The test-plan figure labels the DMZ-side receiving service SFTP."
+              },
+              {
+                "id": "unity-3400-dmz-separation",
+                "label": "DMZ and inside separation",
+                "status": "documented",
+                "description": "The figure distinguishes a DMZ receiving segment from the inside ERM segment through a firewall."
+              },
+              {
+                "id": "unity-3400-field-implementation",
+                "label": "Field implementation",
+                "status": "not_publicly_established",
+                "description": "The test plan does not establish that a jurisdiction deployed this exact topology or retained it after the Unity 3.4.0.0 campaign."
+              }
+            ],
+            "sensitiveDetailsWithheld": "Sample addresses printed in the historical source are not transcribed; credentials, server settings, keys, phone numbers, and jurisdiction routing details are neither collected nor displayed.",
+            "sourceIds": [
+              "eac-unity-3400-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "eac-unity-3400-test-plan@2026-07-21"
+            ],
+            "caveat": "This is a historical wireline test-plan reference, not a cellular design, current EVS 6.4.0.0 certification record, field inspection, or evidence of election-night use."
+          },
+          {
+            "id": "ds200-michigan-evs-5320-wireless-sftp-path",
+            "title": "Michigan EVS 5.3.2.0 wireless SFTP result path",
+            "evidenceLayer": "documented",
+            "assertionScope": "state_certification_documentation",
+            "knowledgeStatus": "documented_partial",
+            "topologyKind": "results_transmission_service",
+            "description": "Michigan's official state-hosted ES&S contract response depicts DS200 units reaching a communications server through a wireless carrier, customer interface, firewall, and DMZ. The accompanying vendor response says a poll worker could initiate an SFTP transfer after polls closed, after which an encrypted result file was deposited and the connection terminated before ERM processed received files.",
+            "observedOn": null,
+            "assertedFor": null,
+            "nodes": [
+              {
+                "id": "mi-5320-ds200",
+                "label": "DS200",
+                "role": "Historical precinct scanner and tabulator",
+                "componentId": "ds200-scanner-tabulator",
+                "optional": false,
+                "details": "The vendor response describes EVS 5.3.2.0 DS200 result transmission after polls close."
+              },
+              {
+                "id": "mi-5320-internal-modem",
+                "label": "Optional internal wireless modem",
+                "role": "Cellular interface for a configured DS200",
+                "componentId": "ds200-optional-cellular-modem",
+                "optional": true,
+                "details": "The response states that a DS200 could be configured with an internal wireless modem; it does not identify the module model or firmware."
+              },
+              {
+                "id": "mi-5320-wireless-carrier",
+                "label": "Wireless carrier network",
+                "role": "External cellular transport",
+                "componentId": null,
+                "optional": true,
+                "details": "The diagram labels a wireless-carrier path; carrier, account, APN, SIM, and activation state are not published here."
+              },
+              {
+                "id": "mi-5320-customer-interface",
+                "label": "Customer interface",
+                "role": "Boundary interface before the firewall",
+                "componentId": null,
+                "optional": false,
+                "details": "The vendor diagram places a customer interface between the external path and the firewall."
+              },
+              {
+                "id": "mi-5320-firewall",
+                "label": "Firewall / DMZ boundary",
+                "role": "Separates external, DMZ, and inside environments",
+                "componentId": null,
+                "optional": false,
+                "details": "The diagram labels outside, DMZ, and inside sides of the firewall."
+              },
+              {
+                "id": "mi-5320-communications-server",
+                "label": "Communications / SFTP server",
+                "role": "Receives transferred DS200 result files",
+                "componentId": null,
+                "optional": false,
+                "details": "The vendor response describes a secure county server receiving encrypted result files through SFTP."
+              },
+              {
+                "id": "mi-5320-local-ems",
+                "label": "Local network EMS / ERM",
+                "role": "Processes received result files",
+                "componentId": null,
+                "optional": false,
+                "details": "The response states that ERM monitors the receiving-server folder and processes files as they arrive."
+              }
+            ],
+            "links": [
+              {
+                "id": "mi-5320-modem-interface",
+                "from": "mi-5320-ds200",
+                "to": "mi-5320-internal-modem",
+                "medium": "Internal optional modem interface",
+                "direction": "bidirectional",
+                "purpose": "Provide the configured DS200 cellular interface",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "mi-5320-cellular-path",
+                "from": "mi-5320-internal-modem",
+                "to": "mi-5320-wireless-carrier",
+                "medium": "CDMA or GSM cellular service described for EVS 5.3.2.0",
+                "direction": "bidirectional",
+                "purpose": "Establish the historical post-poll SFTP session",
+                "knowledgeStatus": "confirmed"
+              },
+              {
+                "id": "mi-5320-carrier-customer",
+                "from": "mi-5320-wireless-carrier",
+                "to": "mi-5320-customer-interface",
+                "medium": "External carrier and network path",
+                "direction": "bidirectional",
+                "purpose": "Reach the county-side customer interface",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "mi-5320-customer-firewall",
+                "from": "mi-5320-customer-interface",
+                "to": "mi-5320-firewall",
+                "medium": "Outside network boundary",
+                "direction": "bidirectional",
+                "purpose": "Pass the result-transfer session to the protected receiving environment",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "mi-5320-firewall-server",
+                "from": "mi-5320-firewall",
+                "to": "mi-5320-communications-server",
+                "medium": "DMZ service path",
+                "direction": "bidirectional",
+                "purpose": "Terminate the historical SFTP transfer at the communications server",
+                "knowledgeStatus": "documented_partial"
+              },
+              {
+                "id": "mi-5320-server-erm",
+                "from": "mi-5320-communications-server",
+                "to": "mi-5320-local-ems",
+                "medium": "Protected result-file handoff",
+                "direction": "one_way",
+                "purpose": "Make received files available for ERM processing",
+                "knowledgeStatus": "confirmed"
+              }
+            ],
+            "controls": [
+              {
+                "id": "mi-5320-post-poll-initiation",
+                "label": "Post-poll initiation",
+                "status": "documented",
+                "description": "The vendor response describes operator initiation after the DS200 has closed polls and printed its results tape."
+              },
+              {
+                "id": "mi-5320-encrypted-signed-results",
+                "label": "Encrypted and digitally signed result data",
+                "status": "documented",
+                "description": "The response states that transmitted result data was encrypted and digitally signed with FIPS-certified security functions."
+              },
+              {
+                "id": "mi-5320-session-termination",
+                "label": "Connection termination after deposit",
+                "status": "documented",
+                "description": "The response states that the connection was terminated after the encrypted result file was deposited on the receiving server."
+              },
+              {
+                "id": "mi-5320-dmz-boundary",
+                "label": "Firewall and DMZ boundary",
+                "status": "documented",
+                "description": "The vendor diagram separates outside, DMZ, and inside network roles."
+              }
+            ],
+            "sensitiveDetailsWithheld": "No addresses, credentials, firewall rules, SFTP configuration, keys, APNs, SIM or subscriber identifiers, carrier accounts, device identifiers, or jurisdiction routing details are collected or shown.",
+            "sourceIds": [
+              "mi-ess-voting-system-contract"
+            ],
+            "sourceRevisionIds": [
+              "mi-ess-voting-system-contract@2026-07-21"
+            ],
+            "caveat": "This is a historical Michigan procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It is not evidence of EVS 6.4.0.0 certification, a current county design, an installed modem or firmware, a live connection, or a transmission during any election."
           }
         ],
         "sourceImages": [
@@ -7739,6 +8078,101 @@
             ],
             "sourceRevisionIds": [
               "provv-evs-6400-test-report@2026-07-19"
+            ]
+          },
+          {
+            "id": "ds200-mi-wireless-results-network",
+            "assetUrl": "/equipment/network-evidence/mi-ess-wireless-results-network.png",
+            "assetSha256": "eb27edae388c1dc0f64ff37b0e9bbdf70a23da28f9fcb867f8909c71ff4af97b",
+            "width": 1600,
+            "height": 1236,
+            "kind": "source_topology_diagram",
+            "alt": "Historical Michigan vendor diagram showing DS200 units, a wireless carrier, customer interface, firewall and DMZ, communications server, and local election-management network.",
+            "caption": "Michigan contract exhibit: historical DS200 wireless results network",
+            "pageOrSection": "Michigan contract PDF page 101, contract page 62, Wireless Results Network",
+            "derivativeNote": "Rendered from the archived official state-hosted PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+            "caveat": "The diagram belongs to a historical Michigan procurement response and does not establish EVS 6.4.0.0 certification, a current county topology, an installed modem, or election use.",
+            "sourceIds": [
+              "mi-ess-voting-system-contract"
+            ],
+            "sourceRevisionIds": [
+              "mi-ess-voting-system-contract@2026-07-21"
+            ]
+          },
+          {
+            "id": "ds200-multitech-universal-socket-pinout",
+            "assetUrl": "/equipment/network-evidence/multitech-universal-socket-pinout.png",
+            "assetSha256": "f8f297acd968659d77e7e191c01933c6bed8422f11c499c068c2c23edda1b0da",
+            "width": 1600,
+            "height": 2070,
+            "kind": "manufacturer_reference_pinout",
+            "alt": "MultiTech Universal Socket reference pinout showing the generic 74-pin interface and a note that individual modem models may omit pins.",
+            "caption": "MultiTech Universal Socket reference pinout",
+            "pageOrSection": "Universal SocketModem Developer Guide PDF page 12",
+            "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+            "caveat": "This is a generic product-family interface reference. The guide says not all modems include every pin; it is not a DS200 carrier-board pin map or proof that any interface is wired or enabled in a DS200.",
+            "sourceIds": [
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "multitech-universal-socket-guide@2026-07-20"
+            ]
+          },
+          {
+            "id": "ds200-multitech-developer-board-layout",
+            "assetUrl": "/equipment/network-evidence/multitech-universal-socket-board-layout.png",
+            "assetSha256": "4705865fb62fa7a23656e6a20af1f2cae025469293dd17fce62e00729c6418aa",
+            "width": 1600,
+            "height": 2070,
+            "kind": "manufacturer_reference_board_drawing",
+            "alt": "MultiTech SocketModem developer-board drawing showing example connector, socket, antenna, switch, and board-component locations.",
+            "caption": "MultiTech generic SocketModem developer-board layout",
+            "pageOrSection": "Universal SocketModem Developer Guide PDF page 20",
+            "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+            "caveat": "The source labels third-party components as examples and describes a developer board for SocketModems generally. It is not a DS200 carrier-board drawing, teardown, port inventory, or placement record.",
+            "sourceIds": [
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "multitech-universal-socket-guide@2026-07-20"
+            ]
+          },
+          {
+            "id": "ds200-multitech-developer-board-block-diagram",
+            "assetUrl": "/equipment/network-evidence/multitech-universal-socket-block-diagram.png",
+            "assetSha256": "709749ed8d2196386a33a5d9d4830c0a5c536f15ee2907dd84e58ef11c9b6291",
+            "width": 1600,
+            "height": 1236,
+            "kind": "manufacturer_reference_block_diagram",
+            "alt": "MultiTech generic SocketModem developer-board block diagram showing the 74-pin socket, serial driver, USB, RJ11, RJ45, handset, and antenna-holder reference connections.",
+            "caption": "MultiTech generic SocketModem developer-board block diagram",
+            "pageOrSection": "Universal SocketModem Developer Guide PDF page 22",
+            "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+            "caveat": "This developer-board diagram shows possible reference connections across the broader SocketModem platform. It does not establish which ports exist, are connected, or are enabled on a DS200 modem carrier board.",
+            "sourceIds": [
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "multitech-universal-socket-guide@2026-07-20"
+            ]
+          },
+          {
+            "id": "ds200-multitech-sim-antenna-installation",
+            "assetUrl": "/equipment/network-evidence/multitech-universal-socket-sim-installation.png",
+            "assetSha256": "ebb7b9cd86df4e1cab7254c2381e2beea867a68ae1e3768f21a4db7af6a1b5ab",
+            "width": 1600,
+            "height": 2070,
+            "kind": "manufacturer_reference_installation_page",
+            "alt": "MultiTech manufacturer instructions for seating a Universal Socket communications device and using an optional antenna lead and a device SIM-card holder.",
+            "caption": "MultiTech generic modem, antenna-lead, and SIM installation guidance",
+            "pageOrSection": "Universal SocketModem Developer Guide PDF page 31",
+            "derivativeNote": "Rendered from the archived manufacturer PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
+            "caveat": "This generic procedure establishes product-family installation concepts only. It is not evidence that a DS200 contains a SIM holder, antenna lead, active SIM, or any particular SocketModem model.",
+            "sourceIds": [
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "multitech-universal-socket-guide@2026-07-20"
             ]
           }
         ],
@@ -7989,8 +8423,8 @@
         "Public findings and modem vulnerability reviews are presented with exact product, firmware, date, and source scope. A zero-match catalog review is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
         "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
       ],
-      "claimRevision": 6,
-      "editorialState": "approved",
+      "claimRevision": 8,
+      "editorialState": "published",
       "sourceIds": [
         "cisa-kev-catalog",
         "eac-eco-ess-1035-approval",
@@ -8007,10 +8441,12 @@
         "eac-evs-6400-record",
         "eac-evs-6400-scope",
         "eac-unity-3200-document-report",
+        "eac-unity-3400-test-plan",
         "ess-ds200-one-sheet",
         "ess-ds200-reference-photo",
         "ess-election-security-faqs",
         "fl-evs-4500-v4-modem-report",
+        "mi-ess-voting-system-contract",
         "multitech-eol-products",
         "multitech-lvw3-update-bulletin",
         "multitech-security-advisories-index",
@@ -8047,10 +8483,12 @@
         "eac-evs-6400-record@2026-07-19",
         "eac-evs-6400-scope@2026-07-19",
         "eac-unity-3200-document-report@2026-07-20",
+        "eac-unity-3400-test-plan@2026-07-21",
         "ess-ds200-one-sheet@2026-07-20",
         "ess-ds200-reference-photo@2026-07-20",
         "ess-election-security-faqs@2026-07-20",
         "fl-evs-4500-v4-modem-report@2026-07-20",
+        "mi-ess-voting-system-contract@2026-07-21",
         "multitech-eol-products@2026-07-20",
         "multitech-lvw3-update-bulletin@2026-07-20",
         "multitech-security-advisories-index@2026-07-20",
@@ -8082,13 +8520,13 @@
         "findingCount": 4,
         "powerRecordCount": 1,
         "confirmedPowerRecordCount": 1,
-        "sourceCount": 38,
-        "sourceRevisionCount": 38,
+        "sourceCount": 40,
+        "sourceRevisionCount": 40,
         "componentSecurityReviewCount": 3,
         "exactApplicableVulnerabilityCount": 0,
         "nonCveAdvisoryCount": 1,
-        "networkConfigurationCount": 2,
-        "networkSourceImageCount": 2,
+        "networkConfigurationCount": 4,
+        "networkSourceImageCount": 7,
         "fieldObservedNetworkConfigurationCount": 0
       }
     },
@@ -8849,8 +9287,8 @@
         "Certified UPS alternatives do not establish which model or battery condition applies at a jurisdiction.",
         "A certification change, ECO, or test result is not evidence of field occurrence, misconduct, or an election outcome effect."
       ],
-      "claimRevision": 2,
-      "editorialState": "approved",
+      "claimRevision": 3,
+      "editorialState": "published",
       "sourceIds": [
         "eac-evs-6400-record",
         "eac-evs-6400-scope",
