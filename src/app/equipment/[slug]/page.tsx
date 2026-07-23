@@ -22,6 +22,10 @@ import {
 } from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import {
+  buildEquipmentMachineSocialPreview,
+  equipmentSocialCardPath,
+} from "@/lib/equipment-social-preview";
+import {
   defaultEquipmentUsageEvidence,
   equipmentUsageMetadata,
   getEquipmentUsageSource,
@@ -45,12 +49,30 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const system = getEquipmentSystem(slug);
-  if (!system) return {};
+  const preview = buildEquipmentMachineSocialPreview(slug);
+  if (!system || !preview) return {};
+  const canonical = `/equipment/${system.slug}`;
+  const image = equipmentSocialCardPath({ slug: system.slug });
+  const imageAlt = `${system.displayName} quick facts and sourced networking status`;
   return {
-    title: `${system.displayName} Equipment Dossier`,
-    description: system.summary,
-    alternates: { canonical: `/equipment/${system.slug}` },
+    title: preview.title,
+    description: preview.description,
+    alternates: { canonical },
     robots: { index: true, follow: true },
+    openGraph: {
+      type: "website",
+      siteName: "Civic Result Maps",
+      url: canonical,
+      title: preview.title,
+      description: preview.description,
+      images: [{ url: image, width: 1200, height: 630, alt: imageAlt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: preview.title,
+      description: preview.description,
+      images: [{ url: image, alt: imageAlt }],
+    },
   };
 }
 

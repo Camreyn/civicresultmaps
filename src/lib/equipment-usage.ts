@@ -58,6 +58,17 @@ export type EquipmentUsageSummary = {
   unavailableMapLinks: number;
 };
 
+export type EquipmentUsageStateSystemSummary = {
+  slug: string;
+  state: string;
+  totalRecords: number;
+  deviceFamilyRecords: number;
+  manufacturerContextRecords: number;
+  sourceIds: string[];
+  reportedSystemNames: string[];
+  reportedVendors: string[];
+};
+
 type EquipmentUsageIndex = {
   schemaVersion: number;
   generatedOn: string;
@@ -114,6 +125,63 @@ export function listEquipmentUsageStates(slug: string, evidenceKind?: EquipmentU
     .filter((record) => !evidenceKind || record.evidenceKind === evidenceKind)
     .map((record) => record.state))]
     .sort();
+}
+
+export function listEquipmentUsageStateCodes() {
+  return [...new Set(index.records
+    .filter((record) => record.matches.length > 0)
+    .map((record) => record.state))]
+    .sort();
+}
+
+export function getEquipmentUsageStateSummary(state: string): EquipmentUsageStateSystemSummary[] {
+  const normalizedState = state.trim().toUpperCase();
+  if (!/^[A-Z]{2}$/.test(normalizedState)) return [];
+
+  type MutableSummary = Omit<
+    EquipmentUsageStateSystemSummary,
+    "sourceIds" | "reportedSystemNames" | "reportedVendors"
+  > & {
+    sourceIds: Set<string>;
+    reportedSystemNames: Set<string>;
+    reportedVendors: Set<string>;
+  };
+
+  const summaries = new Map<string, MutableSummary>();
+  for (const record of index.records) {
+    if (record.state !== normalizedState) continue;
+    for (const match of record.matches) {
+      const summary = summaries.get(match.slug) ?? {
+        slug: match.slug,
+        state: normalizedState,
+        totalRecords: 0,
+        deviceFamilyRecords: 0,
+        manufacturerContextRecords: 0,
+        sourceIds: new Set<string>(),
+        reportedSystemNames: new Set<string>(),
+        reportedVendors: new Set<string>(),
+      };
+      summary.totalRecords += 1;
+      if (match.evidenceKind === "device_family") summary.deviceFamilyRecords += 1;
+      else summary.manufacturerContextRecords += 1;
+      summary.sourceIds.add(record.sourceId);
+      if (record.systemName.trim()) summary.reportedSystemNames.add(record.systemName.trim());
+      if (record.vendor.trim()) summary.reportedVendors.add(record.vendor.trim());
+      summaries.set(match.slug, summary);
+    }
+  }
+
+  return [...summaries.values()]
+    .map((summary) => ({
+      ...summary,
+      sourceIds: [...summary.sourceIds].sort(),
+      reportedSystemNames: [...summary.reportedSystemNames].sort(),
+      reportedVendors: [...summary.reportedVendors].sort(),
+    }))
+    .sort((left, right) => {
+      const evidenceDifference = Number(right.deviceFamilyRecords > 0) - Number(left.deviceFamilyRecords > 0);
+      return evidenceDifference || left.slug.localeCompare(right.slug);
+    });
 }
 
 export function getEquipmentUsageSource(sourceId: string) {
