@@ -1493,6 +1493,39 @@ input {
   padding: 0 6px;
 }
 
+.site-tour-launch {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid rgba(103, 217, 204, 0.3);
+  border-radius: 999px;
+  background: rgba(103, 217, 204, 0.09);
+  color: #9cf0e6;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.73rem;
+  font-weight: 820;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.site-tour-launch:hover,
+.site-tour-launch:focus-visible {
+  border-color: rgba(103, 217, 204, 0.55);
+  background: rgba(103, 217, 204, 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-card,
+  .tour-spotlight,
+  .tour-arrow path,
+  .tour-arrow circle {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 .tour-launch {
   align-items: center;
   background: rgba(130, 184, 255, 0.09);

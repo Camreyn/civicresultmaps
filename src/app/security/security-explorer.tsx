@@ -523,7 +523,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
 
   return (
     <div className={baseStyles.explorer}>
-      <section className={baseStyles.controls + " " + styles.securityControls} aria-label="Security incident report filters" data-print-hide="true">
+      <section className={baseStyles.controls + " " + styles.securityControls} aria-label="Security incident report filters" data-print-hide="true" data-tour="security-controls">
         <label>
           <span>State</span>
           <select onChange={(event) => setStateFilter(event.target.value)} value={stateFilter}>
@@ -587,7 +587,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
         </div>
       </section>
 
-      <section className={baseStyles.metrics + " " + styles.securityMetrics} aria-label="Filtered security incident summary" data-print-hide="true">
+      <section className={baseStyles.metrics + " " + styles.securityMetrics} aria-label="Filtered security incident summary" data-print-hide="true" data-tour="security-metrics">
         <article>
           <span>States with matching records</span>
           <strong>{filteredTotals.stateCount.toLocaleString()}</strong>
@@ -654,7 +654,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
         </div>
       )}
 
-      <section className={baseStyles.mapPanel} data-print-hide="true">
+      <section className={baseStyles.mapPanel} data-print-hide="true" data-tour="security-map">
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>Nationwide election-period county view</span>
@@ -671,7 +671,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
             </p>
           </div>
           <div className={styles.mapHeaderTools}>
-            <div className={styles.layerToggle} role="group" aria-label="Map data layer">
+            <div className={styles.layerToggle} role="group" aria-label="Map data layer" data-tour="security-layer-toggle">
               <button aria-pressed={mapLayer === "security"} onClick={() => setMapLayer("security")} type="button">Incident sources</button>
               <button aria-pressed={mapLayer === "winner"} onClick={() => setMapLayer("winner")} type="button">2024 winner</button>
               <button aria-pressed={mapLayer === "margin"} onClick={() => setMapLayer("margin")} type="button">2024 margin</button>
@@ -967,7 +967,7 @@ export function SecurityExplorer({ electionOverlay, report }: SecurityExplorerPr
         </div>
       </section>
 
-      <section className={baseStyles.tablePanel + " " + styles.contextPanel} data-print-hide="true">
+      <section className={baseStyles.tablePanel + " " + styles.contextPanel} data-print-hide="true" data-tour="security-sources">
         <header>
           <div>
             <span className={baseStyles.sectionLabel}>National source context</span>

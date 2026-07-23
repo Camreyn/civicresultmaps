@@ -914,8 +914,25 @@ const tourFeatureRegistry: TourFeature[] = [
   },
 ];
 
+const tourChapterLabels: Record<string, string> = {
+  workspace: "Orientation",
+  map: "Map",
+  review: "Review",
+  history: "History",
+  electronic: "Records",
+  planner: "Sources",
+  data: "Data",
+  methodology: "Method",
+  exports: "Exports",
+  imports: "Imports",
+  support: "Support",
+};
+
 function buildWorkspaceTourSteps(context: WorkspaceTourContext) {
-  return tourFeatureRegistry.flatMap((feature) => feature.build(context));
+  return tourFeatureRegistry.flatMap((feature) => feature.build(context).map((step) => ({
+    ...step,
+    chapter: tourChapterLabels[feature.key] ?? "Workspace",
+  })));
 }
 
 const methodologyGuides: MethodologyGuide[] = [
@@ -4166,7 +4183,14 @@ export function WorkspaceTabs({
         data-layout-tab-style={layoutDesignSettings.tabStyle}
         data-tour="tab-bar"
       >
-        <GuidedTour activeTab={activeTab} onSelectTab={selectTab} onStepChange={syncReviewTourStep} steps={workspaceTourSteps} />
+        <GuidedTour
+          activeTab={activeTab}
+          launcher={false}
+          onSelectTab={selectTab}
+          onStepChange={syncReviewTourStep}
+          steps={workspaceTourSteps}
+          tourId="workspace"
+        />
         <nav aria-label="Workspace sections" className="workspace-tab-list">
           <div className="workspace-primary-tabs" role="tablist">
             {workspaceNavigation.primary.map((tab) => renderWorkspaceTabButton(tab))}
