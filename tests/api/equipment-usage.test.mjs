@@ -10,6 +10,7 @@ const [index, matchers, registry, apiRoute, usageLibrary, detailPage, indexPage]
   readFile("src/app/equipment/[slug]/page.tsx", "utf8"),
   readFile("src/app/equipment/page.tsx", "utf8"),
 ]);
+const vercelIgnore = await readFile(".vercelignore", "utf8");
 
 assert.equal(index.schemaVersion, 1);
 assert.equal(index.coverage.registryStateOrDistrictCount, 51);
@@ -63,5 +64,6 @@ assert.match(apiRoute, /queryEquipmentUsage/);
 assert.match(usageLibrary, /safeLimit/);
 assert.match(detailPage, /equipment-usage/);
 assert.match(indexPage, /usageSummary/);
+assert.match(vercelIgnore, /^!data\/equipment-usage-index\.json$/m);
 
 console.log("equipment usage index tests passed");
