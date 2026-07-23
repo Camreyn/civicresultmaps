@@ -2549,3 +2549,241 @@
     animation-duration: 0.01ms !important;
   }
 }
+
+.usageSummary {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid rgba(103, 217, 204, 0.17);
+  border-radius: 10px;
+  background: rgba(103, 217, 204, 0.055);
+  color: #aac8c4;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.usageSummary span {
+  display: block;
+}
+
+.usageSummary strong {
+  color: #8be6db;
+}
+
+.usageEvidenceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.usageEvidenceGrid article {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid var(--equipment-border);
+  border-radius: 12px;
+  background: rgba(10, 28, 31, 0.72);
+  display: grid;
+  gap: 6px;
+}
+
+.usageEvidenceGrid span,
+.usageEvidenceGrid small {
+  color: var(--equipment-muted);
+}
+
+.usageEvidenceGrid strong {
+  color: #edf8f6;
+  font-size: 1.2rem;
+}
+
+.usageEvidenceGrid small {
+  line-height: 1.45;
+}
+
+.usageFilters {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--equipment-border);
+  border-radius: 12px;
+  background: rgba(6, 21, 24, 0.84);
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(170px, 0.65fr) minmax(220px, 1.2fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.usageFilters label {
+  min-width: 0;
+  color: var(--equipment-muted);
+  font-size: 0.72rem;
+  font-weight: 760;
+  display: grid;
+  gap: 6px;
+}
+
+.usageFilters select,
+.usageFilters input,
+.usageFilters button {
+  min-height: 40px;
+  border: 1px solid var(--equipment-border);
+  border-radius: 9px;
+  color: #edf8f6;
+  background: #0b2023;
+  font: inherit;
+}
+
+.usageFilters select,
+.usageFilters input {
+  width: 100%;
+  padding: 0 10px;
+}
+
+.usageFilters button {
+  padding: 0 16px;
+  background: var(--equipment-accent);
+  color: #051615;
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.usageSearch {
+  padding-left: 10px;
+  border: 1px solid var(--equipment-border);
+  border-radius: 9px;
+  background: #0b2023;
+  display: flex;
+  align-items: center;
+}
+
+.usageSearch input {
+  border: 0;
+  background: transparent;
+}
+
+.usageResultHeader,
+.usagePagination,
+.usageLinks {
+  display: flex;
+  align-items: center;
+}
+
+.usageResultHeader {
+  margin: 22px 0 12px;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.usageResultHeader span,
+.usagePagination span {
+  color: var(--equipment-muted);
+  font-size: 0.78rem;
+}
+
+.usageRecordGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.usageRecord {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--equipment-border);
+  border-radius: 12px;
+  background: rgba(10, 29, 32, 0.76);
+  display: grid;
+  gap: 11px;
+}
+
+.usageRecord h3,
+.usageRecord p {
+  margin: 0;
+}
+
+.usageRecord > p,
+.usageRecord details p,
+.usageRecord > small {
+  color: var(--equipment-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.usageRecord dl {
+  margin: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.usageRecord dl div {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.usageRecord dt {
+  color: var(--equipment-muted);
+  font-size: 0.72rem;
+}
+
+.usageRecord dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.78rem;
+}
+
+.usageRecord details {
+  padding-top: 8px;
+  border-top: 1px solid var(--equipment-border);
+}
+
+.usageRecord summary {
+  color: #9bded6;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 760;
+}
+
+.usageLinks {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.usageLinks a,
+.usagePagination a {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid rgba(103, 217, 204, 0.24);
+  border-radius: 999px;
+  color: #8be6db;
+  font-size: 0.73rem;
+  font-weight: 760;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.usageEmpty {
+  padding: 18px;
+  border: 1px dashed var(--equipment-border);
+  border-radius: 12px;
+  color: var(--equipment-muted);
+  text-align: center;
+}
+
+.usagePagination {
+  margin-top: 16px;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 860px) {
+  .usageEvidenceGrid,
+  .usageRecordGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .usageFilters {
+    grid-template-columns: 1fr;
+  }
+}

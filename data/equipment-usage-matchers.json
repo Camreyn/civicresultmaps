@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-07-22",
+  "description": "Explicit, reviewable match rules connecting normalized 2024 jurisdiction equipment context to equipment dossiers. Product-family matches and manufacturer-only context are intentionally separate evidence scopes.",
+  "sourcePolicy": {
+    "authority": "Verified Voting Verifier",
+    "caveat": "These jurisdiction rows are third-party administration context. A product-family name supports only that named family at the reported jurisdiction grain. A manufacturer match does not establish that a particular dossier model, component, firmware version, or certified configuration was deployed."
+  },
+  "systems": [
+    {
+      "slug": "clear-ballot-clearvote-25-clearaccess",
+      "manufacturerAliases": ["Clear Ballot"],
+      "deviceFamilySystemNames": ["Clear Ballot ClearAccess"]
+    },
+    {
+      "slug": "clear-ballot-clearvote-25-clearcount",
+      "manufacturerAliases": ["Clear Ballot"],
+      "deviceFamilySystemNames": []
+    },
+    {
+      "slug": "dominion-democracy-suite-517-imagecast-central",
+      "manufacturerAliases": ["Dominion"],
+      "deviceFamilySystemNames": []
+    },
+    {
+      "slug": "dominion-democracy-suite-517-imagecast-x",
+      "manufacturerAliases": ["Dominion"],
+      "deviceFamilySystemNames": ["Dominion ImageCast X BMD"]
+    },
+    {
+      "slug": "ess-evs-6400-ds200",
+      "manufacturerAliases": ["ES&S"],
+      "deviceFamilySystemNames": []
+    },
+    {
+      "slug": "ess-evs-6400-ds950",
+      "manufacturerAliases": ["ES&S"],
+      "deviceFamilySystemNames": []
+    }
+  ]
+}

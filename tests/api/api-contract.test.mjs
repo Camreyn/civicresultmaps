@@ -185,6 +185,7 @@ test("public completeness report exists for national readiness", () => {
   const overview = readFileSync("src/app/national-overview.tsx", "utf8");
   const readiness = readFileSync("src/app/readiness/page.tsx", "utf8");
   const home = readFileSync("src/app/page.tsx", "utf8");
+  const siteHeader = readFileSync("src/app/site-header.tsx", "utf8");
   const packages = readFileSync("src/lib/native-source-packages.ts", "utf8");
 
   assert.match(types, /CompletenessSummary/);
@@ -209,7 +210,8 @@ test("public completeness report exists for national readiness", () => {
   assert.match(overview, /Completeness API/);
   assert.match(overview, /Native official states/);
   assert.match(overview, /lineage-pill/);
-  assert.match(home, /\/readiness/);
+  assert.match(home, /SiteHeader/);
+  assert.match(siteHeader, /\/readiness/);
   assert.match(readiness, /missing data dashboard/);
   assert.match(readiness, /Native Import Coverage/);
   assert.match(readiness, /Comparison \/ turnout ready/);

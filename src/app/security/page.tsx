@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { ArrowLeft, GitCompareArrows, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
+
+import { equipmentCatalogMetadata } from "@/lib/equipment-catalog";
+import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import { loadNationalYearDataset } from "@/lib/national-county-comparison-data";
 import { getNationalSecurityIncidentReport } from "@/lib/security-incidents";
 import { buildSecurityElectionOverlay } from "@/lib/security-result-overlay";
-import { BrandMark } from "../brand-mark";
+import { RouteTour } from "../route-tour";
+import { SiteHeader } from "../site-header";
+import { securityTourSteps } from "../tour-manifests";
 import baseStyles from "../compare/compare.module.css";
 import { SecurityExplorer } from "./security-explorer";
 import styles from "./security.module.css";
@@ -27,12 +32,7 @@ export const metadata: Metadata = {
     description: securityDescription,
     url: "/security",
     siteName: "Civic Result Maps",
-    images: [{
-      url: securitySocialImage,
-      width: 1200,
-      height: 630,
-      alt: securitySocialImageAlt,
-    }],
+    images: [{ url: securitySocialImage, width: 1200, height: 630, alt: securitySocialImageAlt }],
   },
   twitter: {
     card: "summary_large_image",
@@ -44,35 +44,20 @@ export const metadata: Metadata = {
 
 export default async function SecurityPage() {
   const report = getNationalSecurityIncidentReport(2024);
-  const electionOverlay = buildSecurityElectionOverlay(
-    report.incidents,
-    await loadNationalYearDataset(2024),
-  );
+  const electionOverlay = buildSecurityElectionOverlay(report.incidents, await loadNationalYearDataset(2024));
+  const equipmentEnabled = isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady });
 
   return (
     <main className={baseStyles.shell}>
-      <header className={baseStyles.topbar} data-print-hide="true">
-        <a className={baseStyles.brand} href="/">
-          <BrandMark />
-          <span>
-            <strong>Civic Result Maps</strong>
-            <small>Election security records</small>
-          </span>
-        </a>
-        <nav className={baseStyles.topnav} aria-label="Primary navigation">
-          <a href="/">
-            <ArrowLeft aria-hidden size={15} />
-            State workspace
-          </a>
-          <a href="/compare">
-            <GitCompareArrows aria-hidden size={15} />
-            Compare
-          </a>
-          <span className={baseStyles.domain}>civicresultmaps.org</span>
-        </nav>
-      </header>
+      <SiteHeader
+        activePage="security"
+        equipmentEnabled={equipmentEnabled}
+        subtitle="Election security records"
+        tourId="security"
+      />
+      <RouteTour steps={securityTourSteps} tourId="security" />
 
-      <section className={baseStyles.hero} data-print-hide="true">
+      <section className={baseStyles.hero} data-print-hide="true" data-tour="security-hero">
         <div className={baseStyles.eyebrow}>
           <ShieldAlert aria-hidden size={15} />
           Source-linked administration context

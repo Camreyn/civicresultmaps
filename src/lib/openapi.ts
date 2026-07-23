@@ -221,6 +221,30 @@ export function buildOpenApiDocument() {
           },
         },
       },
+      "/api/v1/equipment-systems/{slug}/jurisdictions": {
+        get: {
+          tags: ["Equipment"],
+          operationId: "listEquipmentSystemJurisdictions",
+          summary: "List sourced jurisdiction context for one equipment dossier",
+          description: "Product-family matches and manufacturer-only context are separate evidence bands. Manufacturer context does not establish deployment of the dossier's exact model, components, firmware, or certified configuration.",
+          parameters: [
+            { name: "slug", in: "path", required: true, schema: { type: "string" } },
+            { name: "evidence", in: "query", required: false, schema: { type: "string", enum: ["device_family", "manufacturer_context"] } },
+            { name: "state", in: "query", required: false, schema: { type: "string", pattern: "^[A-Z]{2}$" } },
+            { name: "q", in: "query", required: false, schema: { type: "string", maxLength: 120 } },
+            { name: "limit", in: "query", required: false, schema: { type: "integer", minimum: 1, maximum: 100, default: 20 } },
+            { name: "offset", in: "query", required: false, schema: { type: "integer", minimum: 0, default: 0 } },
+          ],
+          responses: {
+            "200": {
+              description: "Paginated source-linked jurisdiction observations and the source packages used by the returned rows.",
+              content: { "application/json": { schema: { $ref: "#/components/schemas/EquipmentUsageEnvelope" } } },
+            },
+            "400": { ...errorResponse, description: "Unsupported evidence band." },
+            "404": { ...errorResponse, description: "Catalog disabled or equipment system not found." },
+          },
+        },
+      },
       "/api/v1/openapi": {
         get: {
           tags: ["Platform"],
@@ -682,6 +706,59 @@ export function buildOpenApiDocument() {
               },
             },
             meta: { allOf: [{ $ref: "#/components/schemas/EnvelopeMeta" }, { type: "object", properties: { schemaVersion: { type: "string", example: equipmentCatalogApiSchemaVersion } } }] },
+          },
+        },
+        EquipmentUsageRecord: {
+          type: "object",
+          required: ["id", "slug", "evidenceKind", "matchReason", "state", "electionYear", "jurisdictionCode", "jurisdictionName", "jurisdictionLevel", "jurisdictionTag", "vendor", "systemName", "equipmentType", "sourceId", "map"],
+          properties: {
+            id: { type: "string" },
+            slug: { type: "string" },
+            evidenceKind: { type: "string", enum: ["device_family", "manufacturer_context"] },
+            matchReason: { type: "string" },
+            state: { type: "string", pattern: "^[A-Z]{2}$" },
+            electionYear: { type: "integer", enum: [2024] },
+            jurisdictionCode: { type: "string" },
+            jurisdictionName: { type: "string" },
+            jurisdictionLevel: { type: "string" },
+            jurisdictionTag: { type: ["string", "null"] },
+            vendor: { type: "string" },
+            systemName: { type: "string" },
+            equipmentType: { type: "string" },
+            sourceId: { type: "string" },
+            map: {
+              type: "object",
+              required: ["scope", "href", "label", "caveat"],
+              properties: {
+                scope: { type: "string", enum: ["jurisdiction", "state", "unavailable"] },
+                href: { type: ["string", "null"] },
+                label: { type: ["string", "null"] },
+                caveat: { type: ["string", "null"] },
+              },
+              additionalProperties: false,
+            },
+          },
+          additionalProperties: false,
+        },
+        EquipmentUsageEnvelope: {
+          type: "object",
+          required: ["data", "meta"],
+          properties: {
+            data: {
+              type: "object",
+              required: ["system", "summary", "evidenceKind", "records", "sources", "total", "limit", "offset"],
+              properties: {
+                system: { type: "object", additionalProperties: true },
+                summary: { type: "object", additionalProperties: { type: "integer" } },
+                evidenceKind: { type: "string", enum: ["device_family", "manufacturer_context"] },
+                records: { type: "array", items: { $ref: "#/components/schemas/EquipmentUsageRecord" } },
+                sources: { type: "array", items: { type: "object", additionalProperties: true } },
+                total: { type: "integer", minimum: 0 },
+                limit: { type: "integer", minimum: 1, maximum: 100 },
+                offset: { type: "integer", minimum: 0 },
+              },
+            },
+            meta: { $ref: "#/components/schemas/EnvelopeMeta" },
           },
         },
         NationalDataRelease: {

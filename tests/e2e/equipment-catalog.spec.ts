@@ -30,6 +30,62 @@ test("lists six source-linked equipment dossiers", async ({ page }) => {
   await expect(page.getByAltText("Front view of an open ES&S DS200 scanner and ballot container on casters")).toBeVisible();
 });
 
+test("exposes U.S. Equipment in the shared top navigation and route-specific tours", async ({ page }) => {
+  await page.goto("/");
+  const homeEquipmentLink = page.getByRole("link", { name: "U.S. Equipment" });
+  await expect(homeEquipmentLink).toBeVisible();
+  await expect(homeEquipmentLink).toHaveAttribute("href", "/equipment");
+
+  await page.goto("/equipment");
+  await expect(page.getByRole("link", { name: "U.S. Equipment" })).toHaveAttribute("aria-current", "page");
+  await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
+  const equipmentTour = page.getByRole("dialog", { name: "Start with the evidence scope" });
+  await expect(equipmentTour).toBeVisible();
+  await expect(equipmentTour.getByLabel("Jump to tour step")).toHaveValue("equipment-index-scope");
+  await page.keyboard.press("Escape");
+  await expect(equipmentTour).toHaveCount(0);
+
+  await page.goto(ds200Path);
+  await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
+  const detailTour = page.getByRole("dialog");
+  await expect(detailTour).toBeVisible();
+  await expect(detailTour).toHaveAccessibleName("Identify the reviewed configuration");
+  await detailTour.getByLabel("Jump to tour step").selectOption("equipment-detail-usage");
+  await expect(page.locator("[data-tour='equipment-usage']")).toBeInViewport();
+  await expect(detailTour).toHaveAccessibleName("Open jurisdiction and map records");
+  await detailTour.getByRole("button", { name: "Close tutorial" }).click();
+
+  await page.goto("/security");
+  await expect(page.getByRole("link", { name: "U.S. Equipment" })).toBeVisible();
+  await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
+  await expect(page.getByRole("dialog", { name: "Read the qualifier first" })).toBeVisible();
+});
+
+test("lists separately scoped jurisdiction evidence with source and map links", async ({ page, request }) => {
+  await page.goto(`${clearAccessPath}#equipment-usage`);
+  const usageSection = page.locator("[data-tour='equipment-usage']");
+  await expect(usageSection.getByText("49 matching sourced records", { exact: true })).toBeVisible();
+  await expect(usageSection.getByText("Named product family", { exact: true }).first()).toBeVisible();
+  await expect(usageSection.locator("article[class*='usageRecord']")).toHaveCount(20);
+  await expect(usageSection.getByRole("link", { name: /Open this jurisdiction on the equipment map/ }).first()).toHaveAttribute("href", /mode=equipment&fips=\d{5}$/);
+  await expect(usageSection.getByRole("link", { name: /Open Verified Voting Verifier source/ }).first()).toHaveAttribute("href", /^https:\/\//);
+
+  const familyResponse = await request.get(
+    "/api/v1/equipment-systems/clear-ballot-clearvote-25-clearaccess/jurisdictions?evidence=device_family&limit=5",
+  );
+  expect(familyResponse.status()).toBe(200);
+  const familyPayload = await familyResponse.json();
+  expect(familyPayload.data.evidenceKind).toBe("device_family");
+  expect(familyPayload.data.total).toBe(49);
+  expect(familyPayload.data.records).toHaveLength(5);
+  expect(familyPayload.data.records.every((record: { map: { href: string } }) => /mode=equipment&fips=\d{5}$/.test(record.map.href))).toBe(true);
+
+  await page.goto(`${ds200Path}#equipment-usage`);
+  await expect(page.locator("[data-tour='equipment-usage']").getByText("1,509 matching sourced records", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Evidence strength")).toHaveValue("manufacturer_context");
+  await expect(page.locator("[data-tour='equipment-usage']").getByText(/vendor only, not proof of this exact model/)).toBeVisible();
+});
+
 test("renders confirmed ClearAccess UPS options without inventing runtime", async ({ page, request }) => {
   await page.goto(clearAccessPath);
   await expect(page.getByRole("heading", { name: "Clear Ballot ClearVote 2.5 / ClearAccess" })).toBeVisible();

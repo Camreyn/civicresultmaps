@@ -244,6 +244,7 @@ test("security API, extractor, builder, and server loader are wired", () => {
   const loader = readFileSync("src/lib/security-incidents.ts", "utf8");
   const api = readFileSync("src/lib/api.ts", "utf8");
   const page = readFileSync("src/app/page.tsx", "utf8");
+  const siteHeader = readFileSync("src/app/site-header.tsx", "utf8");
   const tabs = readFileSync("src/app/workspace-tabs.tsx", "utf8");
   const vercelIgnore = readFileSync(".vercelignore", "utf8");
   const builder = readFileSync("scripts/build-security-incident-registry.mjs", "utf8");
@@ -278,7 +279,8 @@ test("security API, extractor, builder, and server loader are wired", () => {
   assert.match(extractor, /reportedThreatCount !== 227/);
   assert.match(api, /security-incidents-\$\{securityIncidentApiSchemaVersion\}/);
   assert.match(page, /securityIncidents={securityIncidents}/);
-  assert.match(page, /href="\/security"/);
+  assert.match(page, /SiteHeader/);
+  assert.match(siteHeader, /href: "\/security"/);
   assert.match(page, /securityIncidentStates={securityIncidentStateSummaries}/);
   assert.match(tabs, /\/api\/security-incidents\?state=/);
   assert.match(vercelIgnore, /!data\/election-security-incident-source-inventory-2024\.json/);

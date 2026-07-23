@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import {
-  Archive,
-  Braces,
-  Database,
-  GitCompareArrows,
-  MapPin,
-  Radar,
-  ShieldAlert,
-} from "lucide-react";
-import { BrandMark } from "./brand-mark";
+import { MapPin } from "lucide-react";
 import { GlobalCountySearch } from "./global-county-search";
 import { NationalOverview } from "./national-overview";
+import { SiteHeader } from "./site-header";
 import { StateRail } from "./state-rail";
 import { StateSwitcher } from "./state-switcher";
 import { WorkspaceTabs } from "./workspace-tabs";
@@ -303,6 +295,9 @@ export default async function Home({ searchParams }: HomeProps) {
           map: historicalCoverageReady,
         },
       };
+  const equipmentExplorerEnabled = isEquipmentExplorerEnabled({
+    productionReady: equipmentCatalogMetadata.productionReady,
+  });
 
   return (
     <main className="app-shell">
@@ -314,42 +309,13 @@ export default async function Home({ searchParams }: HomeProps) {
           </form>
         </aside>
       )}
-      <header className="topbar">
-        <div className="brand">
-          <BrandMark />
-          <div>
-            <strong>Civic Result Maps</strong>
-            <span>National election result data platform</span>
-          </div>
-        </div>
-        <div className="topbar-actions">
-          <a className="topbar-link" href="/compare">
-            <GitCompareArrows aria-hidden size={15} />
-            Compare
-          </a>
-          <a className="topbar-link" href="/security">
-            <ShieldAlert aria-hidden size={15} />
-            Security
-          </a>
-          <a className="topbar-link" href="/evidence">
-            <Radar aria-hidden size={15} />
-            Evidence
-          </a>
-          <a className="topbar-link" href="/releases">
-            <Archive aria-hidden size={15} />
-            Releases
-          </a>
-          <a className="topbar-link" href="/developers">
-            <Braces aria-hidden size={15} />
-            API
-          </a>
-          <a className="topbar-link" data-tour="readiness-link" href="/readiness">
-            <Database aria-hidden size={15} />
-            Readiness
-          </a>
-          <span className="live-dot">Database live</span>
-        </div>
-      </header>
+      <SiteHeader
+        activePage="workspace"
+        equipmentEnabled={equipmentExplorerEnabled}
+        live
+        subtitle="National election result data platform"
+        tourId="workspace"
+      />
 
       <div className="workspace">
         <StateRail loadedCount={states.length} selectedState={selectedStateCode}>
@@ -376,7 +342,7 @@ export default async function Home({ searchParams }: HomeProps) {
             electionYear={selectedYear}
             electronicIntegrityStatus={electronicIntegrityArtifacts.states[0]}
             electronicIntegrityRequests={electronicIntegrityRequests}
-            equipmentExplorerEnabled={isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady })}
+            equipmentExplorerEnabled={equipmentExplorerEnabled}
             equipmentRows={equipmentRows}
             historicalRows={historicalRows}
             historicalBroadSignalWarning={indicatorEvaluation.broadSignalWarning ?? undefined}
