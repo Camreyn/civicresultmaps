@@ -76,9 +76,11 @@ function statusColors(status: EquipmentNetworkPreviewStatus) {
 }
 
 function NetworkPill({
+  compact = false,
   label,
   status,
 }: {
+  compact?: boolean;
   label: string;
   status: EquipmentNetworkPreviewStatus;
 }) {
@@ -88,17 +90,17 @@ function NetworkPill({
       style={{
         display: "flex",
         alignItems: "center",
-        gap: 8,
-        padding: "8px 11px",
+        gap: compact ? 7 : 8,
+        padding: compact ? "6px 10px" : "8px 11px",
         border: `1px solid ${palette.border}`,
         borderRadius: 999,
         background: palette.background,
         color: palette.text,
-        fontSize: 14,
+        fontSize: compact ? 13 : 14,
         fontWeight: 800,
       }}
     >
-      <div style={{ display: "flex", width: 8, height: 8, borderRadius: 999, background: palette.text }} />
+      <div style={{ display: "flex", width: compact ? 7 : 8, height: compact ? 7 : 8, borderRadius: 999, background: palette.text }} />
       {label}
     </div>
   );
@@ -247,6 +249,7 @@ function machineCard(preview: EquipmentMachineSocialPreview, origin: string) {
 }
 
 function stateCard(preview: EquipmentStateSocialPreview) {
+  const dense = preview.systems.length >= 5;
   const response = new ImageResponse(
     (
       <div
@@ -275,18 +278,19 @@ function stateCard(preview: EquipmentStateSocialPreview) {
           <div style={{ display: "flex", fontSize: 38, fontWeight: 900, letterSpacing: "-0.035em" }}>{preview.stateName} equipment records</div>
         </div>
 
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 7 }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: dense ? 5 : 7 }}>
           {preview.systems.map((system) => {
             const exactFamily = system.usage.deviceFamilyRecords > 0;
             return (
               <div
                 key={system.slug}
                 style={{
-                  minHeight: 62,
+                  minHeight: dense ? 52 : 62,
+                  flexShrink: 0,
                   display: "flex",
                   alignItems: "center",
                   gap: 14,
-                  padding: "9px 13px",
+                  padding: dense ? "5px 13px" : "9px 13px",
                   border: `1px solid ${colors.border}`,
                   borderLeft: `4px solid ${exactFamily ? colors.accent : colors.context}`,
                   borderRadius: 10,
@@ -304,7 +308,7 @@ function stateCard(preview: EquipmentStateSocialPreview) {
                   <div style={{ display: "flex", color: colors.muted, fontSize: 11 }}>{system.evidenceLabel}</div>
                 </div>
                 <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
-                  <NetworkPill label={system.network.shortLabel} status={system.network.status} />
+                  <NetworkPill compact={dense} label={system.network.shortLabel} status={system.network.status} />
                 </div>
               </div>
             );
