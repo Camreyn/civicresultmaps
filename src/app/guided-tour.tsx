@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight, HelpCircle, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { tourStartEventName } from "./tour-launch-button";
+import { consumePendingTourStart, tourStartEventName } from "./tour-launch-button";
 
 export type TourTabKey =
   | "map"
@@ -192,9 +192,14 @@ export function GuidedTour({
   }, [sessionKey]);
 
   useEffect(() => {
-    const handleStart = () => startTour();
-    window.addEventListener(tourStartEventName(tourId), handleStart);
-    return () => window.removeEventListener(tourStartEventName(tourId), handleStart);
+    const eventName = tourStartEventName(tourId);
+    const handleStart = () => {
+      consumePendingTourStart(tourId);
+      startTour();
+    };
+    window.addEventListener(eventName, handleStart);
+    if (consumePendingTourStart(tourId)) startTour();
+    return () => window.removeEventListener(eventName, handleStart);
   }, [startTour, tourId]);
 
   useEffect(() => {

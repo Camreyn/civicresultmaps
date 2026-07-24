@@ -244,7 +244,8 @@ async function buildIndex() {
 const output = `${JSON.stringify(await buildIndex(), null, 2)}\n`;
 if (process.argv.includes("--check")) {
   const current = await readFile(outputPath, "utf8").catch(() => "");
-  if (current !== output) throw new Error(`${outputPath} is stale. Run npm run equipment:usage:build.`);
+  const normalizedCurrent = current.replace(/\r\n?/g, "\n");
+  if (normalizedCurrent !== output) throw new Error(`${outputPath} is stale. Run npm run equipment:usage:build.`);
   console.log(`${outputPath} is current.`);
 } else {
   await writeFile(outputPath, output);

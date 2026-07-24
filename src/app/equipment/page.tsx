@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Box, ChevronRight, Database, ExternalLink, FileCheck2 } from "lucide-react";
+import { Box, ChevronRight, Database, ExternalLink, FileCheck2, Network } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { RouteTour } from "../route-tour";
@@ -8,16 +8,47 @@ import { SiteHeader } from "../site-header";
 import { equipmentIndexTourSteps } from "../tour-manifests";
 import { equipmentCatalogMetadata, listEquipmentSystemTiles } from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
+import {
+  buildEquipmentIndexSocialPreview,
+  equipmentSocialCardPath,
+  getEquipmentNetworkQuickFact,
+  listTrackedEquipmentStates,
+} from "@/lib/equipment-social-preview";
 import { listEquipmentUsageSummaries } from "@/lib/equipment-usage";
 import styles from "./equipment.module.css";
 
 export const dynamic = "force-dynamic";
 
+const equipmentIndexPreview = buildEquipmentIndexSocialPreview();
+const equipmentIndexSocialImage = equipmentSocialCardPath();
+
 export const metadata: Metadata = {
-  title: "U.S. Election Equipment Explorer",
-  description: "Source-linked certified configurations, hardware change records, version observations, findings, jurisdiction context, and evidence gaps for reviewed election systems.",
+  title: equipmentIndexPreview.title,
+  description: equipmentIndexPreview.description,
   alternates: { canonical: "/equipment" },
   robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    siteName: "Civic Result Maps",
+    url: "/equipment",
+    title: equipmentIndexPreview.title,
+    description: equipmentIndexPreview.description,
+    images: [{
+      url: equipmentIndexSocialImage,
+      width: 1200,
+      height: 630,
+      alt: "Six reviewed U.S. election equipment dossiers and their sourced networking status",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: equipmentIndexPreview.title,
+    description: equipmentIndexPreview.description,
+    images: [{
+      url: equipmentIndexSocialImage,
+      alt: "Six reviewed U.S. election equipment dossiers and their sourced networking status",
+    }],
+  },
 };
 
 export default function EquipmentIndexPage() {
@@ -25,6 +56,7 @@ export default function EquipmentIndexPage() {
   if (!equipmentEnabled) notFound();
   const systems = listEquipmentSystemTiles();
   const usageBySlug = new Map(listEquipmentUsageSummaries().map((summary) => [summary.slug, summary]));
+  const stateOptions = listTrackedEquipmentStates();
 
   return (
     <main className={styles.shell}>
@@ -62,6 +94,27 @@ export default function EquipmentIndexPage() {
           <article><Box aria-hidden size={20} /><strong>Illustrative 3D</strong><span>An accessible selection aid, never a teardown, proprietary CAD drawing, or field inventory.</span></article>
         </section>
 
+        <section className={styles.statePickerPanel} aria-labelledby="equipment-state-picker-heading">
+          <div>
+            <p className={styles.eyebrow}>State equipment share pages</p>
+            <h2 id="equipment-state-picker-heading">Select a state to build a source-bounded preview</h2>
+            <p>
+              Each state URL lists every connected dossier, distinguishes named product-family evidence from
+              manufacturer-only context, and includes dossier-level networking status in its social link preview.
+            </p>
+          </div>
+          <form action="/equipment/state" className={styles.statePickerForm} method="get">
+            <label htmlFor="equipment-state">State</label>
+            <select defaultValue="" id="equipment-state" name="state" required>
+              <option disabled value="">Choose a tracked state</option>
+              {stateOptions.map((option) => (
+                <option key={option.stateCode} value={option.stateCode}>{option.stateName} ({option.stateCode})</option>
+              ))}
+            </select>
+            <button type="submit">View state equipment</button>
+          </form>
+        </section>
+
         <section className={styles.catalogSection} aria-labelledby="catalog-heading" data-tour="equipment-catalog">
           <div className={styles.sectionHead}>
             <div><p className={styles.eyebrow}>Reviewed systems</p><h2 id="catalog-heading">Available equipment dossiers</h2></div>
@@ -70,6 +123,7 @@ export default function EquipmentIndexPage() {
           <div className={styles.systemGrid}>
             {systems.map((system) => {
               const usageSummary = usageBySlug.get(system.slug);
+              const network = getEquipmentNetworkQuickFact(system.slug);
               return (
                 <article className={styles.systemCard} key={system.slug}>
                   {system.referenceImage ? (
@@ -118,6 +172,12 @@ export default function EquipmentIndexPage() {
                     <div><dt>Change records</dt><dd>{system.coverage.configurationChangeCount}</dd></div>
                     <div><dt>Sources</dt><dd>{system.coverage.sourceCount}</dd></div>
                   </dl>
+                  {network ? (
+                    <div className={styles.networkQuickFact} data-network-status={network.status}>
+                      <Network aria-hidden size={17} />
+                      <div><span>Networking</span><strong>{network.label}</strong><small>{network.caveat}</small></div>
+                    </div>
+                  ) : null}
                   {usageSummary ? (
                     <div className={styles.usageSummary} data-tour="equipment-usage-summary">
                       {usageSummary.deviceFamilyRecords > 0 ? (

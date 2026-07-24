@@ -2787,3 +2787,430 @@
     grid-template-columns: 1fr;
   }
 }
+
+.statePickerPanel {
+  margin-top: 40px;
+  padding: 22px;
+  border: 1px solid var(--equipment-border);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(14, 47, 50, 0.88), rgba(7, 27, 30, 0.92));
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: 28px;
+  align-items: end;
+}
+
+.statePickerPanel h2,
+.statePickerPanel p {
+  margin: 0;
+}
+
+.statePickerPanel h2 {
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+  letter-spacing: -0.025em;
+}
+
+.statePickerPanel > div > p:last-child {
+  max-width: 760px;
+  margin-top: 10px;
+  color: var(--equipment-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.statePickerForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.statePickerForm label {
+  grid-column: 1 / -1;
+  color: var(--equipment-muted);
+  font-size: 0.72rem;
+  font-weight: 780;
+}
+
+.statePickerForm select,
+.statePickerForm button {
+  min-height: 42px;
+  border: 1px solid var(--equipment-border);
+  border-radius: 9px;
+  font: inherit;
+}
+
+.statePickerForm select {
+  min-width: 0;
+  padding: 0 10px;
+  color: #edf8f6;
+  background: #0b2023;
+}
+
+.statePickerForm button {
+  padding: 0 15px;
+  color: #051615;
+  background: var(--equipment-accent);
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.networkQuickFact {
+  padding: 12px;
+  border: 1px solid rgba(103, 217, 204, 0.22);
+  border-radius: 11px;
+  background: rgba(103, 217, 204, 0.065);
+  color: var(--equipment-accent);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.networkQuickFact[data-network-status="optional"] {
+  border-color: rgba(240, 195, 106, 0.28);
+  background: rgba(240, 195, 106, 0.07);
+  color: #f0c36a;
+}
+
+.networkQuickFact[data-network-status="reviewed_without_attachment"] {
+  border-color: rgba(157, 185, 182, 0.2);
+  background: rgba(157, 185, 182, 0.05);
+  color: #bdd0ce;
+}
+
+.networkQuickFact div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.networkQuickFact span {
+  color: currentColor;
+  font-size: 0.68rem;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.networkQuickFact strong {
+  color: #edf8f6;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.networkQuickFact small {
+  color: var(--equipment-muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.equipmentBreadcrumb {
+  margin-bottom: 28px;
+  color: var(--equipment-muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+}
+
+.equipmentBreadcrumb a {
+  color: var(--equipment-accent);
+  text-decoration: none;
+}
+
+.stateHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.68fr);
+  gap: 36px;
+  align-items: end;
+}
+
+.stateHero h1 {
+  max-width: 920px;
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 4.8rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.shareActions {
+  margin-top: 17px;
+  display: grid;
+  gap: 8px;
+}
+
+.shareActions :global(.equipment-share-button),
+.shareActions a {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(103, 217, 204, 0.24);
+  border-radius: 9px;
+  color: #8be6db;
+  background: rgba(103, 217, 204, 0.07);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.stateBoundaryNote {
+  margin-top: 22px;
+  padding: 15px 17px;
+  border-left: 3px solid #f0c36a;
+  border-radius: 0 10px 10px 0;
+  background: rgba(240, 195, 106, 0.065);
+  display: grid;
+  gap: 5px;
+}
+
+.stateBoundaryNote strong {
+  color: #f0c36a;
+}
+
+.stateBoundaryNote p {
+  margin: 0;
+  color: var(--equipment-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.stateSystemGrid {
+  display: grid;
+  gap: 16px;
+}
+
+.stateSystemCard {
+  overflow: hidden;
+  border: 1px solid var(--equipment-border);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(16, 43, 46, 0.9), rgba(7, 26, 29, 0.94));
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+}
+
+.stateSystemCard[data-evidence="device-family"] {
+  border-left: 4px solid var(--equipment-accent);
+}
+
+.stateSystemCard[data-evidence="manufacturer-context"] {
+  border-left: 4px solid #819b98;
+}
+
+.stateSystemImage {
+  position: relative;
+  min-height: 100%;
+  padding: 16px;
+  background: rgba(4, 20, 23, 0.86);
+  display: grid;
+  align-content: center;
+  gap: 9px;
+}
+
+.stateSystemImage img {
+  width: 100%;
+  max-height: 235px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #e9eceb;
+}
+
+.stateSystemImage span {
+  color: var(--equipment-muted);
+  font-size: 0.68rem;
+  text-align: center;
+}
+
+.stateSystemBody {
+  min-width: 0;
+  padding: 21px;
+  display: grid;
+  gap: 14px;
+}
+
+.stateSystemBody h3,
+.stateSystemBody > p {
+  margin: 0;
+}
+
+.stateSystemBody h3 {
+  font-size: 1.35rem;
+}
+
+.stateSystemBody > p {
+  color: var(--equipment-muted);
+  font-size: 0.82rem;
+}
+
+.namedEvidenceBadge,
+.contextEvidenceBadge {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 820;
+}
+
+.namedEvidenceBadge {
+  color: #8be6db;
+  background: rgba(103, 217, 204, 0.11);
+}
+
+.contextEvidenceBadge {
+  color: #c0d0ce;
+  background: rgba(157, 185, 182, 0.09);
+}
+
+.stateQuickFacts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stateQuickFacts div {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(154, 211, 205, 0.13);
+  border-radius: 9px;
+  background: rgba(5, 21, 24, 0.65);
+}
+
+.stateQuickFacts dt {
+  color: var(--equipment-muted);
+  font-size: 0.65rem;
+}
+
+.stateQuickFacts dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.stateNetworkFact {
+  padding: 13px;
+  border: 1px solid rgba(103, 217, 204, 0.22);
+  border-radius: 11px;
+  color: var(--equipment-accent);
+  background: rgba(103, 217, 204, 0.055);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.stateNetworkFact[data-network-status="optional"] {
+  border-color: rgba(240, 195, 106, 0.27);
+  color: #f0c36a;
+  background: rgba(240, 195, 106, 0.055);
+}
+
+.stateNetworkFact[data-network-status="reviewed_without_attachment"] {
+  border-color: rgba(157, 185, 182, 0.2);
+  color: #bdd0ce;
+  background: rgba(157, 185, 182, 0.045);
+}
+
+.stateNetworkFact > div {
+  display: grid;
+  gap: 4px;
+}
+
+.stateNetworkFact span {
+  font-size: 0.66rem;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.stateNetworkFact strong {
+  color: #edf8f6;
+  font-size: 0.86rem;
+}
+
+.stateNetworkFact p,
+.stateNetworkFact small {
+  margin: 0;
+  color: var(--equipment-muted);
+  line-height: 1.45;
+}
+
+.stateNetworkFact p {
+  font-size: 0.75rem;
+}
+
+.stateNetworkFact small {
+  font-size: 0.68rem;
+}
+
+.reportedContext {
+  padding: 11px 13px;
+  border: 1px dashed rgba(157, 185, 182, 0.25);
+  border-radius: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.reportedContext strong {
+  color: #c7d7d5;
+  font-size: 0.74rem;
+}
+
+.reportedContext span,
+.reportedContext small {
+  color: var(--equipment-muted);
+  font-size: 0.71rem;
+  line-height: 1.45;
+}
+
+.stateSystemLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stateSystemLinks a {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 1px solid rgba(103, 217, 204, 0.23);
+  border-radius: 999px;
+  color: #8be6db;
+  font-size: 0.72rem;
+  font-weight: 780;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .statePickerPanel,
+  .stateHero {
+    grid-template-columns: 1fr;
+  }
+
+  .stateSystemCard {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .stateQuickFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .statePickerForm,
+  .stateSystemCard {
+    grid-template-columns: 1fr;
+  }
+
+  .statePickerForm button {
+    min-height: 44px;
+  }
+
+  .stateSystemImage {
+    min-height: 220px;
+  }
+}
