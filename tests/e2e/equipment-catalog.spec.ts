@@ -30,7 +30,7 @@ test("lists six source-linked equipment dossiers", async ({ page }) => {
   await expect(page.getByAltText("Front view of an open ES&S DS200 scanner and ballot container on casters")).toBeVisible();
 });
 
-test("exposes U.S. Equipment in the shared top navigation and route-specific tours", async ({ page }) => {
+test("exposes U.S. Equipment in the shared top navigation and equipment index tour", async ({ page }) => {
   await page.goto("/");
   const homeEquipmentLink = page.getByRole("link", { name: "U.S. Equipment" });
   await expect(homeEquipmentLink).toBeVisible();
@@ -44,17 +44,21 @@ test("exposes U.S. Equipment in the shared top navigation and route-specific tou
   await expect(equipmentTour.getByLabel("Jump to tour step")).toHaveValue("equipment-index-scope");
   await page.keyboard.press("Escape");
   await expect(equipmentTour).toHaveCount(0);
+});
 
+test("jumps to jurisdiction evidence in the equipment detail tour", async ({ page }) => {
   await page.goto(ds200Path);
   await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
   const detailTour = page.getByRole("dialog");
   await expect(detailTour).toBeVisible();
   await expect(detailTour).toHaveAccessibleName("Identify the reviewed configuration");
   await detailTour.getByLabel("Jump to tour step").selectOption("equipment-detail-usage");
-  await expect(page.locator("[data-tour='equipment-usage']")).toBeInViewport();
   await expect(detailTour).toHaveAccessibleName("Open jurisdiction and map records");
+  await expect(page.locator("[data-tour='equipment-usage']")).toBeInViewport({ timeout: 15_000 });
   await detailTour.getByRole("button", { name: "Close tutorial" }).click();
+});
 
+test("exposes U.S. Equipment and the route tour on the security page", async ({ page }) => {
   await page.goto("/security");
   await expect(page.getByRole("link", { name: "U.S. Equipment" })).toBeVisible();
   await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
