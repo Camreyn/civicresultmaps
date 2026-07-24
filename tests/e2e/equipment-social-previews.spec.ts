@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import sharp from "sharp";
 
 const ds200Path = "/equipment/ess-evs-6400-ds200";
 const equipmentSlugs = [
@@ -14,6 +15,29 @@ function expectPngDimensions(body: Buffer, width: number, height: number) {
   expect(body.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
   expect(body.readUInt32BE(16)).toBe(width);
   expect(body.readUInt32BE(20)).toBe(height);
+}
+
+async function expectDenseStateCardLayout(body: Buffer) {
+  const { data, info } = await sharp(body).raw().toBuffer({ resolveWithObject: true });
+  const rowBackground = [0x0d, 0x24, 0x27];
+  const scanX = 900;
+  const runs: Array<{ start: number; end: number }> = [];
+  let start = -1;
+
+  for (let y = 0; y < info.height; y += 1) {
+    const offset = (y * info.width + scanX) * info.channels;
+    const matches = rowBackground.every((value, channel) => data[offset + channel] === value);
+    if (matches && start < 0) start = y;
+    if (!matches && start >= 0) {
+      runs.push({ start, end: y - 1 });
+      start = -1;
+    }
+  }
+  if (start >= 0) runs.push({ start, end: info.height - 1 });
+
+  expect(runs).toHaveLength(6);
+  expect(runs.every((run) => run.end - run.start >= 45)).toBe(true);
+  expect(runs[runs.length - 1]?.end).toBeLessThan(540);
 }
 
 test.describe.configure({ mode: "serial", timeout: 90_000 });
@@ -42,20 +66,22 @@ test("builds a stable state share page with exact-family and manufacturer-contex
   await expect(clearCountContext.getByText("Closed wired Ethernet system documented", { exact: true })).toBeVisible();
 
   await expect(page.locator("meta[property='og:title']")).toHaveAttribute("content", /Colorado tracked election equipment/);
-  await expect(page.locator("meta[property='og:image']")).toHaveAttribute("content", /\/api\/equipment-social-card\?v=equipment-v1&state=CO$/);
+  await expect(page.locator("meta[property='og:image']")).toHaveAttribute("content", /\/api\/equipment-social-card\?v=equipment-v2&state=CO$/);
   await expect(page.locator("meta[name='twitter:card']")).toHaveAttribute("content", "summary_large_image");
   await expect(page.getByRole("link", { name: "Open preview image" })).toHaveAttribute("href", /state=CO$/);
 
-  const stateCard = await request.get("/api/equipment-social-card?v=equipment-v1&state=CO");
+  const stateCard = await request.get("/api/equipment-social-card?v=equipment-v2&state=CO");
   expect(stateCard.status()).toBe(200);
   expect(stateCard.headers()["content-type"]).toMatch(/^image\/png/);
   expect(stateCard.headers()["cache-control"]).toContain("s-maxage=900");
   expectPngDimensions(await stateCard.body(), 1200, 630);
 
-  const denseStateCard = await request.get("/api/equipment-social-card?v=equipment-v1&state=KS");
+  const denseStateCard = await request.get("/api/equipment-social-card?v=equipment-v2&state=WI");
   expect(denseStateCard.status()).toBe(200);
   expect(denseStateCard.headers()["content-type"]).toMatch(/^image\/png/);
-  expectPngDimensions(await denseStateCard.body(), 1200, 630);
+  const denseStateCardBody = await denseStateCard.body();
+  expectPngDimensions(denseStateCardBody, 1200, 630);
+  await expectDenseStateCardLayout(denseStateCardBody);
 });
 
 test("publishes machine quick facts and optional-networking metadata", async ({ page, request }) => {
@@ -66,7 +92,7 @@ test("publishes machine quick facts and optional-networking metadata", async ({ 
   await expect(page.locator("meta[name='twitter:card']")).toHaveAttribute("content", "summary_large_image");
 
   for (const slug of equipmentSlugs) {
-    const machineCard = await request.get(`/api/equipment-social-card?v=equipment-v1&slug=${slug}`);
+    const machineCard = await request.get(`/api/equipment-social-card?v=equipment-v2&slug=${slug}`);
     expect(machineCard.status()).toBe(200);
     expect(machineCard.headers()["content-type"]).toMatch(/^image\/png/);
     expectPngDimensions(await machineCard.body(), 1200, 630);

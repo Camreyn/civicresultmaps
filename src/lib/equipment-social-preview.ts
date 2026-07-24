@@ -10,7 +10,7 @@ import {
 } from "./equipment-usage";
 import { stateNameForCode } from "./us-states";
 
-export const equipmentSocialCardVersion = "equipment-v1";
+export const equipmentSocialCardVersion = "equipment-v2";
 
 export type EquipmentNetworkPreviewStatus = "documented" | "optional" | "reviewed_without_attachment";
 
