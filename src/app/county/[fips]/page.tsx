@@ -15,6 +15,11 @@ import { BrandMark } from "@/app/brand-mark";
 import { GlobalCountySearch } from "@/app/global-county-search";
 import { findCanonicalCountyByFips } from "@/lib/county-search";
 import { loadCountyProfile, type CountyProfile } from "@/lib/county-profile";
+import {
+  formatIndicatorScopeSummary,
+  presentIndicatorScope,
+  summarizeIndicatorScopes,
+} from "@/lib/indicator-presentation";
 import type { DataConfidence } from "@/lib/data-confidence";
 import styles from "./county-profile.module.css";
 
@@ -76,6 +81,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
   if (!profile) notFound();
 
   const availableYears = profile.history.filter((row) => row.available).length;
+  const advisorySummary = summarizeIndicatorScopes(profile.advisoryIndicators);
   const compareHref = `/compare?from=2020&to=2024&fips=${profile.fips}`;
   const stateHref = `/?state=${profile.state}&tab=map&fips=${profile.fips}`;
 
@@ -289,7 +295,7 @@ export default async function CountyPage({ params }: CountyPageProps) {
               <p className={styles.eyebrow}>Review context</p>
               <h2 id="advisory-context">Advisory indicators</h2>
             </div>
-            <span>{profile.advisoryIndicators.length} matched {profile.advisoryIndicators.length === 1 ? "indicator" : "indicators"}</span>
+            <span>{formatIndicatorScopeSummary(advisorySummary)}</span>
           </div>
           <p className={styles.advisoryCaveat}>
             These calculated indicators are prompts for checking source data, reporting grain, denominators, and local context.
@@ -299,6 +305,8 @@ export default async function CountyPage({ params }: CountyPageProps) {
             <div className={styles.advisoryGrid}>
               {profile.advisoryIndicators.map((indicator) => (
                 <article key={indicator.id}>
+                  <span className={styles.scopeKind}>{presentIndicatorScope(indicator).kind}</span>
+                  <strong className={styles.scopeName}>Scope: {presentIndicatorScope(indicator).name}</strong>
                   <span>{indicator.type.replaceAll("_", " ")} · severity {indicator.severity.toFixed(2)}</span>
                   <h3>{indicator.label}</h3>
                   <p>{indicator.summary}</p>

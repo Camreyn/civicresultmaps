@@ -17,6 +17,11 @@ import {
 import type { PointerEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Eli5 } from "./eli5";
+import {
+  formatIndicatorScopeSummary,
+  presentIndicatorScope,
+  summarizeIndicatorScopes,
+} from "@/lib/indicator-presentation";
 import { hasBaseResultGeometry } from "@/lib/map-geometry";
 import { activeMapSelection } from "@/lib/map-selection";
 import {
@@ -1097,6 +1102,7 @@ export function ResultsExplorer({
       ?? indicatorsByName.get(normalizeName(activeMapName))
       ?? []
     : [];
+  const selectedMapIndicatorSummary = summarizeIndicatorScopes(selectedMapIndicators);
   const selectedMapVoteMethod = activeMapName
     ? voteMethodByCounty.get(normalizeName(resultNameForFeature(selectedState, activeMapName)))
     : undefined;
@@ -1183,6 +1189,7 @@ export function ResultsExplorer({
       ?? indicatorsByName.get(normalizeName(pinnedMapName))
       ?? []
     : [];
+  const pinnedMapIndicatorSummary = summarizeIndicatorScopes(pinnedMapIndicators);
   const pinnedSource = pinnedMapResult ? sourceById.get(pinnedMapResult.sourceId) : undefined;
 
   const mapJoinStats = useMemo(() => {
@@ -1663,6 +1670,16 @@ export function ResultsExplorer({
                 const countyIndicators = (row?.jurisdictionTag ? mapIndicatorsByTag.get(row.jurisdictionTag) : undefined)
                   ?? mapIndicatorsByName.get(normalizeName(resultName))
                   ?? [];
+                const countyIndicatorSummary = summarizeIndicatorScopes(countyIndicators);
+                const countyIndicatorText = mapMode !== "security" && countyIndicators.length
+                  ? formatIndicatorScopeSummary(countyIndicatorSummary)
+                  : "";
+                const featureResultText = mapMode === "security"
+                  ? securitySummary(countySecurityIncidents)
+                  : row
+                    ? `${row.winner} by ${row.marginPct.toFixed(2)} percent`
+                    : "";
+                const featureAriaLabel = [name, featureResultText, countyIndicatorText].filter(Boolean).join(", ");
                 const rings = polygonRings(feature);
                 const point = centroid(selectedState, feature, bounds);
                 const isSelected = selectedMapName && normalizeName(selectedMapName) === normalizeName(resultName);
@@ -1671,7 +1688,7 @@ export function ResultsExplorer({
                   <g key={`${selectedState}-${mapMode}-${name}-${featureIndex}`}>
                     <path
                       aria-pressed={Boolean(isPinned)}
-                      aria-label={`${name}${mapMode === "security" ? `, ${securitySummary(countySecurityIncidents)}` : row ? `, ${row.winner} by ${row.marginPct.toFixed(2)} percent` : ""}`}
+                      aria-label={featureAriaLabel}
                       className={isPinned ? "map-shape pinned" : isSelected ? "map-shape selected" : "map-shape"}
                       d={makePath(selectedState, rings, bounds)}
                       fill={countyFill(
@@ -1728,7 +1745,7 @@ export function ResultsExplorer({
                                 ? `${row.winner} by ${row.marginPct.toFixed(2)}%`
                                 : "No result row"}
                         {mapMode !== "security" && countyIndicators.length
-                          ? `; ${countyIndicators.length} advisory review flag(s)`
+                          ? `; ${countyIndicatorText}`
                           : ""}
                       </title>
                     </path>
@@ -1792,7 +1809,7 @@ export function ResultsExplorer({
           )}
           {mapMode !== "security" && <span className="legend-item legend-volume">Vote volume</span>}
           {mapMode !== "security" && <span className="legend-item legend-missing">No joined result</span>}
-          {mapMode !== "security" && <span className="legend-item legend-flag">Advisory count</span>}
+          {mapMode !== "security" && <span className="legend-item legend-flag">Indicator count</span>}
           {mapMode === "volume" && <span className="legend-note">Gold intensity shows total vote volume.</span>}
           {mapMode === "method" && (
             <span className="legend-note">Method layer is participation method, not candidate vote by method.</span>
@@ -1815,13 +1832,13 @@ export function ResultsExplorer({
           {mapMode !== "security" && (
             <span className="legend-note">
               {indicatorsEvaluated
-                ? "Badge numbers count advisory indicators, not confirmed findings."
+                ? "Badge numbers count individual advisory indicators. One boundary can contain more than one calculation scope."
                 : "Advisory indicators are not evaluated for this state-year because same-grain comparison rows are not loaded."}
             </span>
           )}
           {mapMode !== "security" && selectedMapIndicators.length > 0 && (
             <span className="legend-note">
-              {selectedMapIndicators.length} advisory flag{selectedMapIndicators.length === 1 ? "" : "s"} selected
+              {formatIndicatorScopeSummary(selectedMapIndicatorSummary)} selected
             </span>
           )}
         </div>
@@ -1873,8 +1890,22 @@ export function ResultsExplorer({
                   <dd>{selectedMapResult.totalVotes.toLocaleString()}</dd>
                 </div>
                 <div>
-                  <dt>Flags</dt>
-                  <dd>{indicatorsEvaluated ? selectedMapIndicators.length : "N/E"}</dd>
+                  <dt>Indicators</dt>
+                  <dd
+                    aria-label={formatIndicatorScopeSummary(selectedMapIndicatorSummary)}
+                    className="indicator-count-summary"
+                    title={formatIndicatorScopeSummary(selectedMapIndicatorSummary)}
+                  >
+                    {indicatorsEvaluated ? (
+                      <>
+                        <strong>{selectedMapIndicatorSummary.indicatorCount}</strong>
+                        <small>
+                          &middot; {selectedMapIndicatorSummary.scopeCount}{" "}
+                          {selectedMapIndicatorSummary.scopeCount === 1 ? "scope" : "scopes"}
+                        </small>
+                      </>
+                    ) : "N/E"}
+                  </dd>
                 </div>
                 <div>
                   <dt>{selectedVoteMethodLabel}</dt>
@@ -1976,13 +2007,20 @@ export function ResultsExplorer({
               )}
               <div className="drawer-indicators">
                 {selectedMapIndicators.length ? (
-                  selectedMapIndicators.map((indicator) => (
-                    <article key={indicator.id}>
-                      <span className="indicator-pill">! {indicator.label}</span>
-                      <strong>{indicator.summary}</strong>
-                      <small>{indicator.detail}</small>
-                    </article>
-                  ))
+                  selectedMapIndicators.map((indicator) => {
+                    const scope = presentIndicatorScope(indicator);
+                    return (
+                      <article key={indicator.id}>
+                        <div className="indicator-card-heading">
+                          <span className="indicator-pill">! {indicator.label}</span>
+                          <span className="indicator-scope-kind">{scope.kind}</span>
+                        </div>
+                        <strong className="indicator-scope-name">Scope: {scope.name}</strong>
+                        <strong>{indicator.summary}</strong>
+                        <small>{indicator.detail}</small>
+                      </article>
+                    );
+                  })
                 ) : (
                                     <span className="no-indicator">
                     {indicatorsEvaluated
@@ -2146,7 +2184,7 @@ export function ResultsExplorer({
                   </span>
                 </div>
                 <div className="selected-result-actions">
-                  <span>{pinnedMapIndicators.length} advisory flags</span>
+                  <span>{formatIndicatorScopeSummary(pinnedMapIndicatorSummary)}</span>
                   {pinnedSource?.sourceUrl && (
                     <a href={pinnedSource.sourceUrl} rel="noreferrer" target="_blank">
                       <ExternalLink aria-hidden size={14} />
@@ -2164,7 +2202,7 @@ export function ResultsExplorer({
                 <thead>
                   <tr>
                     <th>Jurisdiction</th>
-                    <th>Flags</th>
+                    <th>Indicators / scope</th>
                     <th>Directional screen</th>
                     <th>Winner</th>
                     <th>{yearCandidates.dem}</th>
@@ -2232,11 +2270,19 @@ export function ResultsExplorer({
                       <td>
                         {rowIndicators.length > 0 ? (
                           <div className="indicator-stack">
-                            {rowIndicators.map((indicator) => (
-                              <span className="indicator-pill" key={indicator.id} title={indicator.detail}>
-                                ! {indicator.label}
-                              </span>
-                            ))}
+                            {rowIndicators.map((indicator) => {
+                              const scope = presentIndicatorScope(indicator);
+                              return (
+                                <span
+                                  className="indicator-table-entry"
+                                  key={indicator.id}
+                                  title={`${scope.label}. ${indicator.detail}`}
+                                >
+                                  <span className="indicator-pill">! {indicator.label}</span>
+                                  <small className="indicator-scope-inline">{scope.label}</small>
+                                </span>
+                              );
+                            })}
                           </div>
                         ) : (
                                                     <span
