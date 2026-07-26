@@ -2603,6 +2603,23 @@ input {
   margin: 0;
 }
 
+.indicator-count-summary {
+  align-items: baseline;
+  display: flex;
+  gap: 6px;
+}
+
+.indicator-count-summary strong {
+  font-size: 18px;
+}
+
+.indicator-count-summary small {
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+}
+
 .drawer-source span,
 .drawer-indicators small {
   color: var(--muted);
@@ -2635,6 +2652,31 @@ input {
 
 .drawer-indicators article strong {
   font-size: 13px;
+}
+
+.indicator-card-heading {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.indicator-scope-kind {
+  background: rgba(126, 162, 255, 0.1);
+  border: 1px solid rgba(126, 162, 255, 0.32);
+  border-radius: 999px;
+  color: #c8d5ff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 4px 7px;
+}
+
+.drawer-indicators .indicator-scope-name {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
 }
 
 .legend-item {
@@ -3902,6 +3944,21 @@ td {
   gap: 4px;
   line-height: 1.2;
   padding: 4px 7px;
+}
+
+.indicator-table-entry {
+  align-items: flex-start;
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+}
+
+.indicator-scope-inline {
+  color: var(--quiet);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.25;
+  max-width: 240px;
 }
 
 .benefit-cell {

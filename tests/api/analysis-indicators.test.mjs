@@ -8,6 +8,11 @@ import {
   isComparableDownBallotRow,
   summarizeIndicatorEvaluation,
 } from "../../src/lib/analysis-indicators.ts";
+import {
+  formatIndicatorScopeSummary,
+  presentIndicatorScope,
+  summarizeIndicatorScopes,
+} from "../../src/lib/indicator-presentation.ts";
 import { buildStagingIndicatorReport } from "../../scripts/report-staging-indicator-counts.mjs";
 
 function precinctRows({ year = 2020, count = 10, coverageMode = "presidentVsSenate" } = {}) {
@@ -174,5 +179,84 @@ test("year-aware staging report distinguishes evaluated historical rows from mis
     assert.equal(currentReport.states[0].evaluationCaveat, "Current comparison caveat.");
   } finally {
     rmSync(directory, { force: true, recursive: true });
+  }
+});
+
+function presentationIndicator(overrides = {}) {
+  return {
+    detail: "Advisory detail.",
+    electionYear: 2024,
+    id: "example-indicator",
+    jurisdictionCode: "WI-OUTAGAMIE",
+    jurisdictionName: "Outagamie",
+    level: "county",
+    label: "Vote-share pattern",
+    metrics: {},
+    severity: 1,
+    state: "WI",
+    summary: "Advisory summary.",
+    type: "vote_share_pattern",
+    ...overrides,
+  };
+}
+
+test("indicator presentation separates repeated flag types by calculation scope", () => {
+  const outsideAppleton = presentationIndicator({
+    id: "outside-appleton-vote-share",
+    jurisdictionCode: "WI-OUTAGAMIE-APPLETON-REST",
+    jurisdictionName: "Outagamie County outside Appleton",
+    level: "rest_of_county",
+    metrics: { city: "Appleton", county: "Outagamie" },
+  });
+  const indicators = [
+    outsideAppleton,
+    {
+      ...outsideAppleton,
+      id: "outside-appleton-dropoff",
+      label: "Average down-ballot difference",
+      type: "average_down_ballot_difference",
+    },
+    presentationIndicator({
+      id: "appleton-vote-share",
+      jurisdictionCode: "WI-OUTAGAMIE-APPLETON-CITY",
+      jurisdictionName: "Appleton, Outagamie County",
+      level: "city",
+      metrics: { city: "Appleton", county: "Outagamie" },
+    }),
+  ];
+
+  assert.deepEqual(summarizeIndicatorScopes(indicators), { indicatorCount: 3, scopeCount: 2 });
+  assert.equal(
+    formatIndicatorScopeSummary(summarizeIndicatorScopes(indicators)),
+    "3 advisory indicators across 2 scopes",
+  );
+  assert.deepEqual(presentIndicatorScope(outsideAppleton), {
+    key: "rest_of_county:WI-OUTAGAMIE-APPLETON-REST",
+    kind: "Rest of county",
+    label: "Rest of county \u00b7 Outagamie County outside Appleton",
+    name: "Outagamie County outside Appleton",
+  });
+});
+
+test("indicator presentation labels every supported reporting level", () => {
+  const expectedKinds = {
+    city: "City",
+    city_town: "City / town",
+    county: "Countywide",
+    district: "District",
+    precinct: "Precinct",
+    rest_of_county: "Rest of county",
+    state: "Statewide",
+    town: "Town",
+  };
+
+  for (const [level, expectedKind] of Object.entries(expectedKinds)) {
+    const scope = presentIndicatorScope(presentationIndicator({
+      jurisdictionCode: `scope-${level}`,
+      jurisdictionName: `Example ${level}`,
+      level,
+    }));
+    assert.equal(scope.kind, expectedKind);
+    assert.equal(scope.name, `Example ${level}`);
   }
 });
