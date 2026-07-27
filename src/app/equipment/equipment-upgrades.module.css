@@ -1,0 +1,793 @@
+.dossierNavWrap {
+  position: sticky;
+  z-index: 70;
+  top: 74px;
+  margin: 18px 0 4px;
+  padding: 7px;
+  border: 1px solid rgba(103, 217, 204, 0.2);
+  border-radius: 18px;
+  background: rgba(7, 22, 25, 0.94);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(16px);
+}
+
+.dossierNav {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.dossierNav a {
+  min-width: 0;
+  min-height: 62px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #8eaaa7;
+  text-decoration: none;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+}
+
+.dossierNav a:hover {
+  border-color: rgba(103, 217, 204, 0.2);
+  background: rgba(103, 217, 204, 0.06);
+  color: #dcf8f4;
+}
+
+.dossierNav a[aria-current="page"] {
+  border-color: rgba(103, 217, 204, 0.36);
+  background: rgba(103, 217, 204, 0.13);
+  color: #e8fffc;
+}
+
+.dossierNav strong {
+  font-size: 0.76rem;
+}
+
+.dossierNav span {
+  overflow: hidden;
+  font-size: 0.59rem;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dossierMobileMenu {
+  display: none;
+}
+
+.dossierContent {
+  min-width: 0;
+}
+
+.overviewPanel {
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid rgba(103, 217, 204, 0.17);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(103, 217, 204, 0.06), rgba(4, 18, 20, 0.8));
+}
+
+.sectionCardGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sectionCardGrid > a {
+  min-width: 0;
+  min-height: 154px;
+  padding: 16px;
+  border: 1px solid rgba(103, 217, 204, 0.16);
+  border-radius: 16px;
+  background: rgba(2, 14, 16, 0.58);
+  color: #d9eeeb;
+  text-decoration: none;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.sectionCardGrid > a:hover {
+  border-color: rgba(103, 217, 204, 0.4);
+  background: rgba(103, 217, 204, 0.1);
+}
+
+.sectionCardGrid svg,
+.sectionCardGrid small {
+  color: #6edacf;
+}
+
+.sectionCardGrid strong {
+  font-size: 0.86rem;
+}
+
+.sectionCardGrid span {
+  color: #8eaaa7;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.sectionCardGrid small {
+  margin-top: auto;
+  font-size: 0.63rem;
+  font-weight: 780;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.overviewFacts {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.overviewFacts article {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(154, 211, 205, 0.14);
+  border-radius: 16px;
+  background: rgba(2, 14, 16, 0.54);
+  display: grid;
+  gap: 7px;
+}
+
+.overviewFacts span {
+  color: #6edacf;
+  font-size: 0.59rem;
+  font-weight: 780;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.overviewFacts strong {
+  color: #e4f4f2;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.overviewFacts p {
+  margin: 0;
+  color: #89a6a3;
+  font-size: 0.66rem;
+  line-height: 1.48;
+}
+
+.relationNotice {
+  margin: 14px 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(240, 195, 106, 0.28);
+  border-radius: 15px;
+  background: rgba(240, 195, 106, 0.08);
+}
+
+.relationNotice strong {
+  color: #f0cf8b;
+  font-size: 0.78rem;
+}
+
+.relationNotice p {
+  margin: 5px 0 0;
+  color: #aeb8aa;
+  font-size: 0.69rem;
+  line-height: 1.5;
+}
+
+.sourceGroups {
+  display: grid;
+  gap: 12px;
+}
+
+.sourceGroups > details {
+  overflow: hidden;
+  border: 1px solid rgba(103, 217, 204, 0.17);
+  border-radius: 18px;
+  background: rgba(2, 14, 16, 0.5);
+}
+
+.sourceGroups > details > summary {
+  min-height: 58px;
+  padding: 13px 16px;
+  color: #dff4f1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.sourceGroups > details > summary span {
+  color: #6edacf;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.sourceGroups > details > summary strong {
+  color: #8eaaa7;
+  font-size: 0.68rem;
+}
+
+.sourceGroupGrid {
+  padding: 0 12px 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sourceGroupGrid > article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(154, 211, 205, 0.13);
+  border-radius: 14px;
+  background: rgba(7, 26, 29, 0.72);
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+.sourceGroupGrid > article > span {
+  color: #70d8cd;
+  font-size: 0.61rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.sourceGroupGrid h3 {
+  margin: 0;
+  color: #e3f1ef;
+  font-size: 0.79rem;
+  line-height: 1.35;
+}
+
+.sourceGroupGrid p {
+  margin: 0;
+  color: #879f9c;
+  font-size: 0.64rem;
+  line-height: 1.45;
+}
+
+.sourceGroupGrid > article > a {
+  color: #8be6db;
+  font-size: 0.67rem;
+  font-weight: 760;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sourceTechnical {
+  margin-top: 5px;
+  border-top: 1px solid rgba(154, 211, 205, 0.12);
+  padding-top: 8px;
+}
+
+.sourceTechnical > summary {
+  color: #91aaa7;
+  cursor: pointer;
+  font-size: 0.62rem;
+}
+
+.sourceTechnical dl {
+  margin: 9px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.sourceTechnical dl > div {
+  display: grid;
+  gap: 2px;
+}
+
+.sourceTechnical dt {
+  color: #6c8b88;
+  font-size: 0.56rem;
+  text-transform: uppercase;
+}
+
+.sourceTechnical dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #a8bfbc;
+  font-size: 0.59rem;
+}
+
+.sourceTechnical code {
+  font-size: 0.54rem;
+}
+
+.indexTools {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid rgba(103, 217, 204, 0.17);
+  border-radius: 18px;
+  background: rgba(3, 17, 19, 0.62);
+  display: grid;
+  grid-template-columns: minmax(240px, 1.5fr) repeat(2, minmax(150px, 0.7fr)) auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.indexTools label {
+  display: grid;
+  gap: 6px;
+}
+
+.indexTools label > span {
+  color: #88a9a5;
+  font-size: 0.62rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.indexTools input,
+.indexTools select,
+.indexTools button,
+.compareForm select,
+.compareForm button {
+  min-height: 42px;
+  border: 1px solid rgba(103, 217, 204, 0.22);
+  border-radius: 11px;
+  background: #07191c;
+  color: #dff4f1;
+  font: inherit;
+}
+
+.indexTools input,
+.indexTools select,
+.compareForm select {
+  width: 100%;
+  padding: 0 11px;
+}
+
+.indexTools button,
+.compareForm button {
+  padding: 0 16px;
+  background: rgba(103, 217, 204, 0.14);
+  color: #a5ece4;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.indexToolActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.indexToolActions > a {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid rgba(103, 217, 204, 0.18);
+  border-radius: 11px;
+  color: #8be6db;
+  font-size: 0.68rem;
+  font-weight: 760;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.catalogTopline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.catalogTopline > a,
+.emptyResults a {
+  color: #8be6db;
+  font-size: 0.72rem;
+  font-weight: 780;
+  text-decoration: none;
+}
+
+.compactSystemGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.compactSystemCard {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(103, 217, 204, 0.17);
+  border-radius: 18px;
+  background: rgba(3, 17, 19, 0.68);
+  display: grid;
+  grid-template-rows: 155px 1fr;
+}
+
+.compactSystemImage {
+  position: relative;
+  min-width: 0;
+  background: #e7edec;
+}
+
+.compactSystemImage img {
+  object-fit: contain;
+}
+
+.compactSystemBody {
+  min-width: 0;
+  padding: 14px;
+  display: grid;
+  align-content: start;
+  gap: 9px;
+}
+
+.compactSystemBody h3,
+.manufacturerCard h3 {
+  margin: 0;
+  color: #e8f5f3;
+  font-size: 0.94rem;
+  line-height: 1.3;
+}
+
+.compactSystemBody > p {
+  margin: 0;
+  color: #8ea9a6;
+  font-size: 0.67rem;
+  line-height: 1.45;
+}
+
+.compactFactsRow {
+  color: #7f9c99;
+  font-size: 0.61rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+}
+
+.compactUsage {
+  padding: 9px 10px;
+  border-radius: 11px;
+  background: rgba(103, 217, 204, 0.06);
+  color: #a8bfbc;
+  font-size: 0.62rem;
+  line-height: 1.4;
+  display: grid;
+  gap: 3px;
+}
+
+.compactUsage strong {
+  color: #d9efec;
+}
+
+.cardActions {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.cardActions a {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid rgba(103, 217, 204, 0.2);
+  border-radius: 999px;
+  color: #8be6db;
+  font-size: 0.64rem;
+  font-weight: 780;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.emptyResults {
+  padding: 28px;
+  border: 1px dashed rgba(103, 217, 204, 0.24);
+  border-radius: 18px;
+  text-align: center;
+}
+
+.emptyResults p {
+  color: #91aaa7;
+}
+
+.manufacturerGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.manufacturerCard {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(240, 195, 106, 0.22);
+  border-radius: 17px;
+  background: rgba(240, 195, 106, 0.055);
+  display: grid;
+  gap: 9px;
+}
+
+.manufacturerCard > span {
+  color: #e7c77f;
+  font-size: 0.61rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.manufacturerCard > p {
+  margin: 0;
+  color: #a7aaa0;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.reportedNames {
+  display: grid;
+  gap: 4px;
+}
+
+.reportedNames strong {
+  color: #ddd4bc;
+  font-size: 0.64rem;
+}
+
+.reportedNames span {
+  color: #a9aaa1;
+  font-size: 0.62rem;
+  line-height: 1.45;
+}
+
+.relatedDossiers {
+  padding-top: 8px;
+  border-top: 1px solid rgba(240, 195, 106, 0.16);
+  display: grid;
+  gap: 6px;
+}
+
+.relatedDossiers > strong {
+  color: #b8aa87;
+  font-size: 0.59rem;
+  text-transform: uppercase;
+}
+
+.relatedDossiers a {
+  color: #8be6db;
+  font-size: 0.64rem;
+  text-decoration: none;
+}
+
+.compareHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(250px, 0.6fr);
+  gap: 16px;
+  align-items: end;
+}
+
+.compareForm {
+  margin: 18px 0;
+  padding: 16px;
+  border: 1px solid rgba(103, 217, 204, 0.18);
+  border-radius: 18px;
+  background: rgba(3, 17, 19, 0.65);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.compareForm label {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.compareForm label > span {
+  color: #88a9a5;
+  font-size: 0.61rem;
+  font-weight: 760;
+}
+
+.comparison {
+  display: grid;
+  gap: 14px;
+}
+
+.comparisonSection {
+  overflow: hidden;
+  border: 1px solid rgba(103, 217, 204, 0.17);
+  border-radius: 18px;
+}
+
+.comparisonSection > h2 {
+  margin: 0;
+  padding: 13px 15px;
+  border-bottom: 1px solid rgba(103, 217, 204, 0.14);
+  background: rgba(103, 217, 204, 0.055);
+  color: #e3f4f1;
+  font-size: 0.85rem;
+}
+
+.comparisonColumns {
+  display: grid;
+  grid-template-columns: repeat(var(--comparison-count), minmax(0, 1fr));
+}
+
+.comparisonColumns > article {
+  min-width: 0;
+  padding: 15px;
+  border-right: 1px solid rgba(103, 217, 204, 0.12);
+}
+
+.comparisonColumns > article:last-child {
+  border-right: 0;
+}
+
+.comparisonColumns h3 {
+  margin: 0 0 8px;
+  color: #e4f2f0;
+  font-size: 0.82rem;
+}
+
+.comparisonColumns p,
+.comparisonColumns li,
+.comparisonColumns dd {
+  color: #91aaa7;
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+
+.comparisonColumns ul {
+  margin: 0;
+  padding-left: 17px;
+}
+
+.comparisonColumns dl {
+  margin: 0;
+  display: grid;
+  gap: 9px;
+}
+
+.comparisonColumns dt {
+  color: #6edacf;
+  font-size: 0.57rem;
+  text-transform: uppercase;
+}
+
+.comparisonColumns dd {
+  margin: 2px 0 0;
+}
+
+.compareError {
+  margin: 14px 0;
+  padding: 13px 15px;
+  border: 1px solid rgba(240, 195, 106, 0.24);
+  border-radius: 14px;
+  background: rgba(240, 195, 106, 0.07);
+  color: #dcc28c;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 1080px) {
+  .dossierNav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sectionCardGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .compactSystemGrid,
+  .manufacturerGrid,
+  .sourceGroupGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 780px) {
+  .dossierNavWrap {
+    position: static;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .dossierNav {
+    display: none;
+  }
+
+  .dossierMobileMenu {
+    display: grid;
+    gap: 6px;
+  }
+
+  .dossierMobileMenu > span {
+    color: #88a9a5;
+    font-size: 0.62rem;
+    font-weight: 760;
+    text-transform: uppercase;
+  }
+
+  .dossierMobileMenu select {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 12px;
+    border: 1px solid rgba(103, 217, 204, 0.24);
+    border-radius: 12px;
+    background: #07191c;
+    color: #e2f3f0;
+    font: inherit;
+  }
+
+  .overviewFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .indexTools,
+  .compareForm,
+  .compareHero {
+    grid-template-columns: 1fr;
+  }
+
+  .comparisonColumns {
+    overflow-x: auto;
+    grid-template-columns: repeat(var(--comparison-count), minmax(260px, 1fr));
+  }
+
+  .componentPageFlow :global(ul[aria-label="Equipment components"]) {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .componentPageFlow :global(article[aria-live="polite"]) {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 600px) {
+  .sectionCardGrid,
+  .overviewFacts,
+  .compactSystemGrid,
+  .manufacturerGrid,
+  .sourceGroupGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .overviewPanel {
+    padding: 16px;
+  }
+
+  .sectionCardGrid > a {
+    min-height: 126px;
+  }
+
+  .compactSystemCard {
+    grid-template-rows: 180px 1fr;
+  }
+
+  .componentPageFlow :global([data-equipment-viewer][data-viewer-state="open"]) {
+    position: fixed;
+    z-index: 11000;
+    inset: 8px;
+    overflow: auto;
+    border: 1px solid rgba(103, 217, 204, 0.35);
+    border-radius: 14px;
+    background: #071619;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dossierNavWrap {
+    backdrop-filter: none;
+  }
+}

@@ -6,6 +6,8 @@ const [
   home,
   equipmentIndex,
   equipmentDetail,
+  equipmentLayout,
+  equipmentDossierNav,
   securityPage,
   securityExplorer,
   guidedTour,
@@ -16,6 +18,8 @@ const [
   readFile("src/app/page.tsx", "utf8"),
   readFile("src/app/equipment/page.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/page.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/layout.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/dossier-section-nav.client.tsx", "utf8"),
   readFile("src/app/security/page.tsx", "utf8"),
   readFile("src/app/security/security-explorer.tsx", "utf8"),
   readFile("src/app/guided-tour.tsx", "utf8"),
@@ -34,7 +38,7 @@ assert.match(home, /tourId="workspace"/);
 assert.match(home, /equipmentEnabled={equipmentExplorerEnabled}/);
 assert.match(equipmentIndex, /activePage="equipment"/);
 assert.match(equipmentIndex, /tourId="equipment-index"/);
-assert.match(equipmentDetail, /tourId="equipment-detail"/);
+assert.match(equipmentLayout, /tourId="equipment-detail"/);
 assert.match(securityPage, /activePage="security"/);
 assert.match(securityPage, /tourId="security"/);
 
@@ -59,16 +63,14 @@ for (const target of [
   assert.match(manifests, new RegExp(`data-tour='${target}'`));
 }
 
+const equipmentDossierRoutes = [equipmentDetail, equipmentLayout, equipmentDossierNav].join("\n");
 for (const target of [
   "equipment-detail-hero",
   "equipment-coverage",
-  "equipment-explorer",
-  "equipment-network-evidence",
-  "equipment-version-evidence",
-  "equipment-usage",
-  "equipment-source-manifest",
+  "equipment-dossier-navigation",
+  "equipment-dossier-section",
 ]) {
-  assert.match(equipmentDetail, new RegExp(`data-tour="${target}"`));
+  assert.match(equipmentDossierRoutes, new RegExp(`data-tour="${target}"`));
   assert.match(manifests, new RegExp(`data-tour='${target}'`));
 }
 

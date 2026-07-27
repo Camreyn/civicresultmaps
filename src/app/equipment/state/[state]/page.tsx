@@ -5,7 +5,10 @@ import { notFound, redirect } from "next/navigation";
 
 import { SiteHeader } from "../../../site-header";
 import { EquipmentShareButton } from "../../equipment-share-button.client";
-import { equipmentCatalogMetadata } from "@/lib/equipment-catalog";
+import {
+  equipmentCatalogMetadata,
+  getEquipmentSystem,
+} from "@/lib/equipment-catalog";
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import {
   buildEquipmentStateSocialPreview,
@@ -13,8 +16,12 @@ import {
   listTrackedEquipmentStates,
   type EquipmentStateSocialPreviewSystem,
 } from "@/lib/equipment-social-preview";
-import { getEquipmentUsageSource } from "@/lib/equipment-usage";
+import {
+  getEquipmentUsageSource,
+  type EquipmentUsageManufacturerContextSummary,
+} from "@/lib/equipment-usage";
 import styles from "../../equipment.module.css";
+import upgradeStyles from "../../equipment-upgrades.module.css";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!preview) return {};
   const canonical = `/equipment/state/${preview.stateCode}`;
   const image = equipmentSocialCardPath({ state: preview.stateCode });
-  const imageAlt = `${preview.stateName} tracked election equipment and dossier-level networking status`;
+  const imageAlt = `${preview.stateName} exact product-family matches and manufacturer context`;
 
   return {
     title: preview.title,
@@ -52,20 +59,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function reportedNames(system: EquipmentStateSocialPreviewSystem) {
-  const names = system.usage.reportedSystemNames.slice(0, 3);
-  const remaining = system.usage.reportedSystemNames.length - names.length;
-  return `${names.join("; ")}${remaining > 0 ? `; +${remaining} more` : ""}`;
+function reportedNames(names: string[]) {
+  const visible = names.slice(0, 4);
+  const remaining = names.length - visible.length;
+  return `${visible.join("; ")}${remaining > 0 ? `; +${remaining} more` : ""}`;
 }
 
 function StateSystemCard({ system }: { system: EquipmentStateSocialPreviewSystem }) {
   const source = system.usage.sourceIds
     .map((sourceId) => getEquipmentUsageSource(sourceId))
     .find((entry) => Boolean(entry));
-  const namedFamily = system.usage.deviceFamilyRecords > 0;
 
   return (
-    <article className={styles.stateSystemCard} data-evidence={namedFamily ? "device-family" : "manufacturer-context"}>
+    <article className={styles.stateSystemCard} data-evidence="device-family">
       {system.referenceImage ? (
         <div className={styles.stateSystemImage}>
           <Image
@@ -80,9 +86,7 @@ function StateSystemCard({ system }: { system: EquipmentStateSocialPreviewSystem
       ) : null}
       <div className={styles.stateSystemBody}>
         <div className={styles.cardTopline}>
-          <span className={namedFamily ? styles.namedEvidenceBadge : styles.contextEvidenceBadge}>
-            {system.evidenceShortLabel}
-          </span>
+          <span className={styles.namedEvidenceBadge}>{system.evidenceShortLabel}</span>
           <span>{system.evidenceLabel}</span>
         </div>
         <h3>{system.displayName}</h3>
@@ -105,16 +109,8 @@ function StateSystemCard({ system }: { system: EquipmentStateSocialPreviewSystem
           </div>
         </div>
 
-        {!namedFamily && system.usage.reportedSystemNames.length > 0 ? (
-          <div className={styles.reportedContext}>
-            <strong>What the state records actually name</strong>
-            <span>{reportedNames(system)}</span>
-            <small>These names provide manufacturer context only and do not identify this dossier&apos;s exact model.</small>
-          </div>
-        ) : null}
-
         <div className={styles.stateSystemLinks}>
-          <a href={system.detailHref}>Open the state-filtered dossier <ChevronRight aria-hidden size={14} /></a>
+          <a href={system.detailHref}>Open exact-match records <ChevronRight aria-hidden size={14} /></a>
           {source ? (
             <a href={source.sourceUrl} rel="noreferrer" target="_blank">
               Open {source.authority} source <ExternalLink aria-hidden size={13} />
@@ -122,6 +118,51 @@ function StateSystemCard({ system }: { system: EquipmentStateSocialPreviewSystem
           ) : null}
         </div>
       </div>
+    </article>
+  );
+}
+
+function ManufacturerContextCard({
+  context,
+}: {
+  context: EquipmentUsageManufacturerContextSummary;
+}) {
+  const source = context.sourceIds
+    .map((sourceId) => getEquipmentUsageSource(sourceId))
+    .find((entry) => Boolean(entry));
+  const relatedSystems = context.relatedDossierSlugs
+    .map((slug) => getEquipmentSystem(slug))
+    .filter((system) => Boolean(system));
+
+  return (
+    <article className={upgradeStyles.manufacturerCard} data-evidence="manufacturer-context">
+      <span>Manufacturer context only</span>
+      <h3>{context.manufacturer.displayName}</h3>
+      <p><strong>{context.totalRecords.toLocaleString()}</strong> source rows name this vendor without identifying an exact reviewed dossier model.</p>
+      {context.reportedSystemNames.length > 0 ? (
+        <div className={upgradeStyles.reportedNames}>
+          <strong>Names in the source rows</strong>
+          <span>{reportedNames(context.reportedSystemNames)}</span>
+        </div>
+      ) : null}
+      <p>{context.caveat}</p>
+      {relatedSystems.length > 0 ? (
+        <div className={upgradeStyles.relatedDossiers}>
+          <strong>Browse same-vendor dossiers — not deployment evidence</strong>
+          {relatedSystems.map((system) => system ? (
+            <a href={`/equipment/${system.slug}/usage?usageEvidence=manufacturer_context&usageState=${context.state}`} key={system.slug}>
+              {system.deviceName} context <ChevronRight aria-hidden size={12} />
+            </a>
+          ) : null)}
+        </div>
+      ) : null}
+      {source ? (
+        <div className={styles.stateSystemLinks}>
+          <a href={source.sourceUrl} rel="noreferrer" target="_blank">
+            Open {source.authority} source <ExternalLink aria-hidden size={13} />
+          </a>
+        </div>
+      ) : null}
     </article>
   );
 }
@@ -135,8 +176,6 @@ export default async function EquipmentStatePage({ params }: PageProps) {
   if (state !== preview.stateCode) redirect(`/equipment/state/${preview.stateCode}`);
 
   const stateOptions = listTrackedEquipmentStates();
-  const namedSystems = preview.systems.filter((system) => system.usage.deviceFamilyRecords > 0);
-  const contextSystems = preview.systems.filter((system) => system.usage.deviceFamilyRecords === 0);
   const socialImage = equipmentSocialCardPath({ state: preview.stateCode });
 
   return (
@@ -157,15 +196,15 @@ export default async function EquipmentStatePage({ params }: PageProps) {
             <p className={styles.eyebrow}><MapPinned aria-hidden size={15} /> 2024 tracked equipment records</p>
             <h1>{preview.stateName} election equipment records</h1>
             <p className={styles.lede}>
-              See every reviewed dossier connected to a {preview.stateName}{" "}source row, with exact product-family
-              evidence kept separate from manufacturer-only context. Networking labels come from the dossier&apos;s
-              certification, test, or model-family sources—not from an assumed state configuration.
+              Exact product-family matches are linked to reviewed dossiers. Manufacturer-only rows are grouped once
+              by vendor and never fanned out into machine-level usage claims. Networking labels appear only on exact
+              dossier cards and remain certification or documentation context.
             </p>
           </div>
           <aside className={styles.scopeCard}>
-            <span>State share preview</span>
-            <strong>{preview.systems.length} tracked {preview.systems.length === 1 ? "dossier" : "dossiers"}</strong>
-            <p>{preview.namedFamilySystemCount} named product-family; {preview.manufacturerContextOnlySystemCount} manufacturer-context only.</p>
+            <span>State evidence summary</span>
+            <strong>{preview.observationCount.toLocaleString()} sourced observations</strong>
+            <p>{preview.namedFamilySystemCount} exact dossier {preview.namedFamilySystemCount === 1 ? "match" : "matches"}; {preview.manufacturerContextCount} vendor-context {preview.manufacturerContextCount === 1 ? "group" : "groups"}.</p>
             <div className={styles.shareActions}>
               <EquipmentShareButton title={preview.title} />
               <a href={socialImage} rel="noreferrer" target="_blank"><Share2 aria-hidden size={14} /> Open preview image</a>
@@ -177,7 +216,7 @@ export default async function EquipmentStatePage({ params }: PageProps) {
           <div>
             <p className={styles.eyebrow}>Choose another state</p>
             <h2 id="state-picker-heading">Create a state-specific share link</h2>
-            <p>The destination URL has its own Open Graph and X/Twitter preview listing tracked dossiers and their sourced networking status.</p>
+            <p>The destination URL has its own social preview summarizing exact family matches and vendor-level context without conflating them.</p>
           </div>
           <form action="/equipment/state" className={styles.statePickerForm} method="get">
             <label htmlFor="equipment-state">State</label>
@@ -195,26 +234,28 @@ export default async function EquipmentStatePage({ params }: PageProps) {
           <p>{preview.caveat}</p>
         </section>
 
-        {namedSystems.length > 0 ? (
+        {preview.systems.length > 0 ? (
           <section className={styles.dossierSection} aria-labelledby="named-equipment-heading">
             <div className={styles.sectionHead}>
               <div><p className={styles.eyebrow}>Stronger match</p><h2 id="named-equipment-heading">Named product-family records</h2></div>
               <p>The source row explicitly names this product family. It still does not prove internal parts, firmware, networking state, or configuration of a particular unit.</p>
             </div>
             <div className={styles.stateSystemGrid}>
-              {namedSystems.map((system) => <StateSystemCard key={system.slug} system={system} />)}
+              {preview.systems.map((system) => <StateSystemCard key={system.slug} system={system} />)}
             </div>
           </section>
         ) : null}
 
-        {contextSystems.length > 0 ? (
+        {preview.manufacturerContexts.length > 0 ? (
           <section className={styles.dossierSection} aria-labelledby="context-equipment-heading">
             <div className={styles.sectionHead}>
               <div><p className={styles.eyebrow}>Related context</p><h2 id="context-equipment-heading">Manufacturer context only</h2></div>
-              <p>The source row names the manufacturer but not this dossier&apos;s exact model or configuration. These cards are leads for review, not exact-machine deployment claims.</p>
+              <p>Each vendor appears once. Related dossier links are research navigation, not evidence that a listed machine was selected, installed, configured, or used in this state.</p>
             </div>
-            <div className={styles.stateSystemGrid}>
-              {contextSystems.map((system) => <StateSystemCard key={system.slug} system={system} />)}
+            <div className={upgradeStyles.manufacturerGrid}>
+              {preview.manufacturerContexts.map((context) => (
+                <ManufacturerContextCard context={context} key={context.manufacturer.id} />
+              ))}
             </div>
           </section>
         ) : null}

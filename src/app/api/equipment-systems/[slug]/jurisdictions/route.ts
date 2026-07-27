@@ -7,6 +7,7 @@ import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 import {
   defaultEquipmentUsageEvidence,
   equipmentUsageMetadata,
+  getEquipmentUsageManufacturer,
   getEquipmentUsageSummary,
   queryEquipmentUsage,
   type EquipmentUsageEvidenceKind,
@@ -55,10 +56,37 @@ export async function GET(request: Request, { params }: RouteContext) {
     limit: integerParameter(search.get("limit"), 20),
     offset: integerParameter(search.get("offset"), 0),
   });
+  const manufacturer = getEquipmentUsageManufacturer(summary.manufacturerId);
+  const relation = evidenceKind === "device_family"
+    ? {
+        evidenceKind,
+        target: { kind: "equipment_system" as const, slug: system.slug },
+      }
+    : {
+        evidenceKind,
+        target: {
+          kind: "manufacturer" as const,
+          id: summary.manufacturerId,
+          displayName: manufacturer?.displayName ?? system.manufacturer,
+        },
+      };
+  const requestedDossierContext = evidenceKind === "manufacturer_context"
+    ? {
+        slug: system.slug,
+        relationship: "same_manufacturer_not_exact_deployment" as const,
+      }
+    : null;
 
   return NextResponse.json(
     apiEnvelope(
-      { system: { slug: system.slug, displayName: system.displayName }, summary, evidenceKind, ...result },
+      {
+        system: { slug: system.slug, displayName: system.displayName },
+        summary,
+        evidenceKind,
+        relation,
+        requestedDossierContext,
+        ...result,
+      },
       {
         generatedOn: equipmentUsageMetadata.generatedOn,
         schemaVersion: equipmentCatalogApiSchemaVersion,

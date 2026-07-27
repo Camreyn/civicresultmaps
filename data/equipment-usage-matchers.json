@@ -1,40 +1,57 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "reviewedOn": "2026-07-22",
-  "description": "Explicit, reviewable match rules connecting normalized 2024 jurisdiction equipment context to equipment dossiers. Product-family matches and manufacturer-only context are intentionally separate evidence scopes.",
+  "description": "Explicit, reviewable match rules connecting normalized 2024 jurisdiction equipment context to either a named equipment dossier or a manufacturer. Product-family matches and manufacturer-only context are intentionally separate evidence scopes.",
   "sourcePolicy": {
     "authority": "Verified Voting Verifier",
     "caveat": "These jurisdiction rows are third-party administration context. A product-family name supports only that named family at the reported jurisdiction grain. A manufacturer match does not establish that a particular dossier model, component, firmware version, or certified configuration was deployed."
   },
+  "manufacturers": [
+    {
+      "id": "clear-ballot",
+      "displayName": "Clear Ballot",
+      "aliases": ["Clear Ballot"]
+    },
+    {
+      "id": "dominion",
+      "displayName": "Dominion Voting Systems",
+      "aliases": ["Dominion"]
+    },
+    {
+      "id": "ess",
+      "displayName": "Election Systems & Software (ES&S)",
+      "aliases": ["ES&S"]
+    }
+  ],
   "systems": [
     {
       "slug": "clear-ballot-clearvote-25-clearaccess",
-      "manufacturerAliases": ["Clear Ballot"],
+      "manufacturerId": "clear-ballot",
       "deviceFamilySystemNames": ["Clear Ballot ClearAccess"]
     },
     {
       "slug": "clear-ballot-clearvote-25-clearcount",
-      "manufacturerAliases": ["Clear Ballot"],
+      "manufacturerId": "clear-ballot",
       "deviceFamilySystemNames": []
     },
     {
       "slug": "dominion-democracy-suite-517-imagecast-central",
-      "manufacturerAliases": ["Dominion"],
+      "manufacturerId": "dominion",
       "deviceFamilySystemNames": []
     },
     {
       "slug": "dominion-democracy-suite-517-imagecast-x",
-      "manufacturerAliases": ["Dominion"],
+      "manufacturerId": "dominion",
       "deviceFamilySystemNames": ["Dominion ImageCast X BMD"]
     },
     {
       "slug": "ess-evs-6400-ds200",
-      "manufacturerAliases": ["ES&S"],
+      "manufacturerId": "ess",
       "deviceFamilySystemNames": []
     },
     {
       "slug": "ess-evs-6400-ds950",
-      "manufacturerAliases": ["ES&S"],
+      "manufacturerId": "ess",
       "deviceFamilySystemNames": []
     }
   ]

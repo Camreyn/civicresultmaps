@@ -424,7 +424,7 @@ export function EquipmentExplorer({ sources, system }: { sources: EquipmentSourc
           </ul>
         </div>
 
-        <div className={styles.viewerPanel}>
+        <div className={styles.viewerPanel} data-equipment-viewer="true" data-viewer-state={viewerState}>
           <div className={styles.viewerToolbar}>
             <div><Box aria-hidden size={15} /><span>{system.scene.geometryFidelity.replaceAll("_", " ")}</span></div>
             <div>

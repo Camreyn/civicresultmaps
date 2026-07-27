@@ -3,6 +3,7 @@ import {
   equipmentCatalogMetadata,
   listEquipmentSystemSlugs,
 } from "@/lib/equipment-catalog";
+import { equipmentDossierSections } from "@/app/equipment/[slug]/dossier-navigation";
 import { listTrackedEquipmentStates } from "@/lib/equipment-social-preview";
 import { getCanonicalJurisdictionRegistry } from "@/lib/jurisdiction-tags";
 
@@ -14,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "", changeFrequency: "daily", priority: 1 },
     { path: "/compare", changeFrequency: "daily", priority: 0.95 },
     { path: "/equipment", changeFrequency: "weekly", priority: 0.9 },
+    { path: "/equipment/compare", changeFrequency: "monthly", priority: 0.73 },
     { path: "/security", changeFrequency: "weekly", priority: 0.85 },
     { path: "/readiness", changeFrequency: "daily", priority: 0.8 },
     { path: "/evidence", changeFrequency: "weekly", priority: 0.7 },
@@ -39,12 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const equipmentRoutes: MetadataRoute.Sitemap = equipmentCatalogMetadata.productionReady
     ? [
-        ...listEquipmentSystemSlugs().map((slug) => ({
-          url: `${siteUrl}/equipment/${slug}`,
+        ...listEquipmentSystemSlugs().flatMap((slug) => equipmentDossierSections.map((section) => ({
+          url: `${siteUrl}/equipment/${slug}${section.path}`,
           lastModified: now,
           changeFrequency: "monthly" as const,
-          priority: 0.72,
-        })),
+          priority: section.key === "overview" ? 0.72 : 0.64,
+        }))),
         ...listTrackedEquipmentStates().map(({ stateCode }) => ({
           url: `${siteUrl}/equipment/state/${stateCode}`,
           lastModified: now,

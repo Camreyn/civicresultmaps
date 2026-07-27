@@ -4,13 +4,14 @@ import {
   type EquipmentSystem,
 } from "./equipment-catalog";
 import {
-  getEquipmentUsageStateSummary,
+  getEquipmentUsageStateOverview,
   listEquipmentUsageStateCodes,
+  type EquipmentUsageManufacturerContextSummary,
   type EquipmentUsageStateSystemSummary,
 } from "./equipment-usage";
 import { stateNameForCode } from "./us-states";
 
-export const equipmentSocialCardVersion = "equipment-v2";
+export const equipmentSocialCardVersion = "equipment-v3";
 
 export type EquipmentNetworkPreviewStatus = "documented" | "optional" | "reviewed_without_attachment";
 
@@ -105,9 +106,11 @@ export type EquipmentMachineSocialPreview = {
 export type EquipmentStateSocialPreviewSystem = EquipmentMachineSocialPreview & {
   usage: EquipmentUsageStateSystemSummary;
   evidenceLabel: string;
-  evidenceShortLabel: string;
+  evidenceShortLabel: "Named product family";
   detailHref: string;
 };
+
+export type EquipmentStateSocialPreviewManufacturerContext = EquipmentUsageManufacturerContextSummary;
 
 export type EquipmentStateSocialPreview = {
   kind: "state";
@@ -116,8 +119,10 @@ export type EquipmentStateSocialPreview = {
   title: string;
   description: string;
   systems: EquipmentStateSocialPreviewSystem[];
+  manufacturerContexts: EquipmentStateSocialPreviewManufacturerContext[];
   namedFamilySystemCount: number;
-  manufacturerContextOnlySystemCount: number;
+  manufacturerContextCount: number;
+  observationCount: number;
   sourceCount: number;
   caveat: string;
 };
@@ -173,52 +178,35 @@ export function buildEquipmentMachineSocialPreview(slug: string): EquipmentMachi
   return system ? buildMachinePreview(system) : null;
 }
 
-function evidenceLabels(usage: EquipmentUsageStateSystemSummary) {
-  if (usage.deviceFamilyRecords > 0) {
-    return {
-      label: `${usage.deviceFamilyRecords.toLocaleString("en-US")} named product-family ${usage.deviceFamilyRecords === 1 ? "record" : "records"}`,
-      shortLabel: "Named product family",
-    };
-  }
-  return {
-    label: `${usage.manufacturerContextRecords.toLocaleString("en-US")} manufacturer-context ${usage.manufacturerContextRecords === 1 ? "record" : "records"}`,
-    shortLabel: "Manufacturer context only",
-  };
-}
-
 export function buildEquipmentStateSocialPreview(state: string): EquipmentStateSocialPreview | null {
   const stateCode = state.trim().toUpperCase();
   if (!/^[A-Z]{2}$/.test(stateCode)) return null;
 
-  const usageBySlug = new Map(getEquipmentUsageStateSummary(stateCode).map((usage) => [usage.slug, usage]));
-  const systems = listEquipmentSystems().flatMap((summary) => {
-    const usage = usageBySlug.get(summary.slug);
-    const system = getEquipmentSystem(summary.slug);
-    if (!usage || !system) return [];
-    const labels = evidenceLabels(usage);
-    const evidenceKind = usage.deviceFamilyRecords > 0 ? "device_family" : "manufacturer_context";
+  const overview = getEquipmentUsageStateOverview(stateCode);
+  if (!overview) return null;
+
+  const systems = overview.exactProductFamilySystems.flatMap((usage) => {
+    const system = getEquipmentSystem(usage.slug);
+    if (!system) return [];
     return [{
       ...buildMachinePreview(system),
       usage,
-      evidenceLabel: labels.label,
-      evidenceShortLabel: labels.shortLabel,
-      detailHref: `/equipment/${system.slug}?usageEvidence=${evidenceKind}&usageState=${stateCode}#equipment-usage`,
+      evidenceLabel: `${usage.deviceFamilyRecords.toLocaleString("en-US")} named product-family ${usage.deviceFamilyRecords === 1 ? "record" : "records"}`,
+      evidenceShortLabel: "Named product family" as const,
+      detailHref: `/equipment/${system.slug}/usage?usageEvidence=device_family&usageState=${stateCode}#equipment-usage`,
     }];
   });
-  if (systems.length === 0) return null;
-
+  const manufacturerContexts = overview.manufacturerContexts;
   const stateName = stateNameForCode(stateCode);
-  const namedFamilySystemCount = systems.filter((system) => system.usage.deviceFamilyRecords > 0).length;
-  const manufacturerContextOnlySystemCount = systems.length - namedFamilySystemCount;
-  const sourceCount = new Set(systems.flatMap((system) => system.usage.sourceIds)).size;
+  const sourceCount = overview.sourceIds.length;
   const evidenceSummary = [
-    namedFamilySystemCount
-      ? `${namedFamilySystemCount} named product-family ${namedFamilySystemCount === 1 ? "match" : "matches"}`
-      : null,
-    manufacturerContextOnlySystemCount
-      ? `${manufacturerContextOnlySystemCount} manufacturer-context ${manufacturerContextOnlySystemCount === 1 ? "dossier" : "dossiers"}`
-      : null,
-  ].filter(Boolean).join(" and ");
+    systems.length
+      ? `${systems.length} named product-family ${systems.length === 1 ? "match" : "matches"}`
+      : "no exact dossier matches",
+    manufacturerContexts.length
+      ? `${manufacturerContexts.length} manufacturer-context ${manufacturerContexts.length === 1 ? "group" : "groups"}`
+      : "no manufacturer-only context",
+  ].join(" and ");
 
   return {
     kind: "state",
@@ -226,13 +214,15 @@ export function buildEquipmentStateSocialPreview(state: string): EquipmentStateS
     stateName,
     title: `${stateName} tracked election equipment`,
     description:
-      `2024 source records connect ${systems.length} reviewed equipment ${systems.length === 1 ? "dossier" : "dossiers"} to ${stateName}: ${evidenceSummary}. Each card identifies documented or optional networking separately.`,
+      `2024 source records for ${stateName} contain ${evidenceSummary}. Vendor-only rows are grouped by manufacturer and are not counted as dossier usage.`,
     systems,
-    namedFamilySystemCount,
-    manufacturerContextOnlySystemCount,
+    manufacturerContexts,
+    namedFamilySystemCount: systems.length,
+    manufacturerContextCount: manufacturerContexts.length,
+    observationCount: overview.totalObservations,
     sourceCount,
     caveat:
-      "State records identify a product family or manufacturer at the reported grain. Dossier network capability does not establish a state or local connection, configuration, activation, or use.",
+      "State records identify a product family or manufacturer at the reported grain. Vendor-only context does not establish a related dossier model, and dossier network capability does not establish a state or local connection, configuration, activation, or use.",
   };
 }
 
