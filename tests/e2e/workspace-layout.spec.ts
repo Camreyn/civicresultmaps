@@ -81,10 +81,10 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
   const dataNotes = page.getByRole("complementary", { name: "Washington data notes" });
   await workspace.getByRole("button", { name: /^Data Notes/ }).click();
   await expect(dataNotes.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
-  await dataNotes.getByRole("button", { name: "Collapse", exact: true }).click();
+  await dataNotes.getByRole("button", { name: "Collapse", exact: true }).press("Enter");
   await expect(dataNotes).toHaveClass(/is-collapsed/);
 
-  await workspace.getByRole("tab", { name: "History", exact: true }).click();
+  await workspace.getByRole("tab", { name: "History", exact: true }).press("Enter");
   await expect(page).toHaveURL(/tab=history/);
   await expect(page.getByRole("heading", { name: "Historical Baselines", exact: true })).toBeVisible();
 
