@@ -10,6 +10,7 @@ const [
   apiDetail,
   openApi,
   indexPage,
+  equipmentTours,
   detailPage,
   dossierLayout,
   componentsPage,
@@ -36,6 +37,7 @@ const [
   readFile("src/app/api/equipment-systems/[slug]/route.ts", "utf8"),
   readFile("src/lib/openapi.ts", "utf8"),
   readFile("src/app/equipment/page.tsx", "utf8"),
+  readFile("src/app/tour-manifests.ts", "utf8"),
   readFile("src/app/equipment/[slug]/page.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/layout.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/components/page.tsx", "utf8"),
@@ -407,7 +409,8 @@ assert.match(openApi, /EquipmentSourceRevision/);
 assert.match(openApi, /currentReviewedRevisionId/);
 assert.match(indexPage, /export const dynamic = "force-dynamic"/);
 assert.match(indexPage, /notFound\(\)/);
-assert.match(indexPage, /Certified configuration/);
+assert.doesNotMatch(indexPage, /data-tour="equipment-evidence-boundaries"/);
+assert.match(equipmentTours, /Certified configuration/);
 assert.match(indexPage, /listEquipmentSystemTiles/);
 assert.match(indexPage, /data-equipment-preview="true"/);
 assert.match(indexPage, /data-equipment-preview-source="true"/);

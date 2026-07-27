@@ -12,7 +12,11 @@ test.describe.configure({ mode: "serial" });
 
 test("lists six source-linked equipment dossiers", async ({ page }) => {
   await page.goto("/equipment");
+  await expect(page.getByRole("heading", { level: 1, name: "Explore reviewed U.S. election equipment." })).toBeVisible();
+  await expect(page.locator("[data-tour='equipment-evidence-boundaries']")).toHaveCount(0);
+  await expect(page.getByLabel("State").locator("option[value='']")).toHaveText("Choose a state");
   await expect(page.getByRole("link", { name: "Open dossier" })).toHaveCount(6);
+  await expect(page.getByRole("link", { exact: true, name: "Compare system" })).toHaveCount(6);
   await expect(page.getByText("6 reviewed dossiers")).toBeVisible();
   await expect(page.getByText("Clear Ballot ClearVote 2.5 / ClearAccess")).toBeVisible();
   await expect(page.getByText("Clear Ballot ClearVote 2.5 / ClearCount")).toBeVisible();
@@ -28,6 +32,24 @@ test("lists six source-linked equipment dossiers", async ({ page }) => {
     await expect(previewSource).toHaveAttribute("href", /^https:\/\//);
   }
   await expect(page.getByAltText("Front view of an open ES&S DS200 scanner and ballot container on casters")).toBeVisible();
+
+  const cardLayouts = await page.locator("[data-equipment-card='true']").evaluateAll((cards) => cards.map((card) => {
+    const actions = card.querySelector("[data-equipment-card-actions='true']");
+    if (!(actions instanceof HTMLElement)) {
+      return null;
+    }
+    const cardBounds = card.getBoundingClientRect();
+    const actionBounds = actions.getBoundingClientRect();
+    return {
+      actionDisplay: window.getComputedStyle(actions).display,
+      bottomGap: Math.round(cardBounds.bottom - actionBounds.bottom),
+    };
+  }));
+  expect(cardLayouts).toHaveLength(6);
+  expect(cardLayouts.every((layout) => layout?.actionDisplay === "grid")).toBe(true);
+  const bottomGaps = cardLayouts.flatMap((layout) => layout ? [layout.bottomGap] : []);
+  expect(bottomGaps).toHaveLength(6);
+  expect(Math.max(...bottomGaps) - Math.min(...bottomGaps)).toBeLessThanOrEqual(1);
 });
 
 test("filters the catalog with shareable search parameters", async ({ page }) => {
@@ -85,10 +107,21 @@ test("separates exact product-family matches from manufacturer context on state 
 test("exposes U.S. Equipment in shared navigation and the equipment index tour", async ({ page }) => {
   await page.goto("/equipment");
   await expect(page.getByRole("link", { name: "U.S. Equipment" })).toHaveAttribute("aria-current", "page");
-  await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
-  const equipmentTour = page.getByRole("dialog", { name: "Start with the evidence scope" });
+  const tourButton = page.getByRole("button", { name: "Start a guided tour of this page" });
+  await expect(tourButton).toContainText("Page tour");
+  await tourButton.click();
+  const equipmentTour = page.getByRole("dialog");
   await expect(equipmentTour).toBeVisible();
+  await expect(equipmentTour).toHaveAccessibleName("Browse reviewed equipment");
   await expect(equipmentTour.getByLabel("Jump to tour step")).toHaveValue("equipment-index-scope");
+  await equipmentTour.getByLabel("Jump to tour step").selectOption("equipment-index-boundaries");
+  await expect(equipmentTour).toHaveAccessibleName("Understand the evidence labels");
+  await expect(equipmentTour).toContainText("Certified configuration");
+  await expect(equipmentTour).toContainText("Jurisdiction observation");
+  await expect(equipmentTour).toContainText("Illustrative 3D");
+  await equipmentTour.getByLabel("Jump to tour step").selectOption("equipment-index-states");
+  await expect(equipmentTour).toHaveAccessibleName("Open state-level context");
+  await expect(page.locator("[data-tour='equipment-state-context']")).toBeInViewport({ timeout: 15_000 });
   await page.keyboard.press("Escape");
   await expect(equipmentTour).toHaveCount(0);
 });
