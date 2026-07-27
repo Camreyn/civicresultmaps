@@ -11,7 +11,7 @@ import {
 import { isEquipmentExplorerEnabled } from "@/lib/equipment-explorer-config";
 
 export function GET(request: Request) {
-  if (!isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady })) {
+  if (!isEquipmentExplorerEnabled({ catalogChannel: equipmentCatalogMetadata.channel, productionReady: equipmentCatalogMetadata.productionReady })) {
     return NextResponse.json(
       apiErrorEnvelope({ code: "equipment_catalog_disabled", message: "The equipment catalog is not enabled." }),
       { headers: publicApiErrorHeaders, status: 404 },
@@ -33,6 +33,7 @@ export function GET(request: Request) {
     apiEnvelope(
       { systems },
       {
+        catalogChannel: equipmentCatalogMetadata.channel,
         catalogStatus: equipmentCatalogMetadata.status,
         generatedOn: equipmentCatalogMetadata.generatedOn,
         schemaVersion: equipmentCatalogApiSchemaVersion,

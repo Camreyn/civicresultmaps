@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { BrandMark } from "./brand-mark";
+import { SiteMobileNavigation, type SiteMobileNavigationLink } from "./site-mobile-navigation.client";
 import { TourLaunchButton } from "./tour-launch-button";
 import styles from "./site-header.module.css";
 
@@ -38,6 +39,12 @@ export function SiteHeader({
     { id: "developers", href: "/developers", label: "API", icon: Braces },
     { id: "readiness", href: "/readiness", label: "Readiness", icon: Database },
   ] as const;
+  const mobileLinks = links.map(({ href, id, label }) => ({
+    active: activePage === id,
+    href,
+    id: id as SiteMobileNavigationLink["id"],
+    label,
+  }));
 
   return (
     <header className={styles.header} data-print-hide="true" data-tour="site-header">
@@ -45,6 +52,7 @@ export function SiteHeader({
         <BrandMark />
         <span><strong>Civic Result Maps</strong><small>{subtitle}</small></span>
       </a>
+      <SiteMobileNavigation links={mobileLinks} />
       <div className={styles.navigation}>
         <nav aria-label="Primary navigation" className={styles.links}>
           {links.map(({ href, icon: Icon, id, label }) => (

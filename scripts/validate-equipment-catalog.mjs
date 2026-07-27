@@ -2,7 +2,8 @@ import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 
 const sourcePackage = JSON.parse(await readFile("data/equipment-source-packages.json", "utf8"));
-const catalog = JSON.parse(await readFile("data/equipment-catalog.json", "utf8"));
+const publicCatalog = JSON.parse(await readFile("data/equipment-catalog.public.json", "utf8"));
+const stagingCatalog = JSON.parse(await readFile("data/equipment-catalog.staging.json", "utf8"));
 const claimFiles = (await readdir("data/equipment-claims"))
   .filter((name) => name.endsWith(".json"))
   .sort();
@@ -120,10 +121,9 @@ function readGlbNodeNames(buffer, label) {
   }
 }
 
-if (sourcePackage.schemaVersion !== 2 || catalog.schemaVersion !== 2) {
-  error("Equipment source package and catalog must use schema version 2.");
+if (sourcePackage.schemaVersion !== 2) {
+  error("Equipment source package must use schema version 2.");
 }
-if (catalog.status !== "reviewed_pilot") error("Catalog must retain reviewed_pilot status.");
 
 const sourceById = new Map();
 const revisionById = new Map();
@@ -144,8 +144,6 @@ for (const source of sourcePackage.sources ?? []) {
   await validateArtifact(source);
 }
 
-const eligibleClaims = claims.filter((claim) => ["approved", "published"].includes(claim.editorial?.state));
-const eligibleClaimBySlug = new Map(eligibleClaims.map((claim) => [claim.system?.slug, claim]));
 const slugSet = new Set();
 for (const claim of claims) {
   const system = claim.system;
@@ -636,39 +634,91 @@ for (const claim of claims) {
   }
 }
 
-if (catalog.systems?.length !== eligibleClaims.length) {
-  error("Generated catalog system count does not match approved and published claim inputs.");
-}
-for (const system of catalog.systems ?? []) {
-  const claim = eligibleClaimBySlug.get(system.slug);
-  if (!claim) error(`Generated catalog contains ineligible or unknown system ${system.slug}.`);
-  else {
-    if (system.editorialState !== claim.editorial.state) error(`${system.slug} catalog editorial state is stale.`);
-    if (system.claimRevision !== claim.editorial.revision) error(`${system.slug} catalog claim revision is stale.`);
+function validateGeneratedCatalog(catalog, {
+  channel,
+  eligibleStates,
+  expectedEditorialState,
+  expectedStatus,
+}) {
+  const label = `${channel} catalog`;
+  if (catalog.schemaVersion !== 2) error(`${label} must use schema version 2.`);
+  if (catalog.catalogChannel !== channel) error(`${label} has the wrong catalogChannel.`);
+  if (catalog.status !== expectedStatus) error(`${label} has the wrong status.`);
+  if (catalog.editorialState !== expectedEditorialState) error(`${label} has the wrong editorialState.`);
+  if (catalog.productionRequirement !== sourcePackage.editorialPolicy.publicProductionState) {
+    error(`${label} has a stale production requirement.`);
   }
-  if (system.coverage?.sourcedComponentCount !== system.coverage?.componentCount) {
-    error(`${system.slug} generated coverage reports an unsourced component.`);
+
+  const eligibleClaims = claims.filter((claim) => eligibleStates.includes(claim.editorial?.state));
+  const eligibleClaimBySlug = new Map(eligibleClaims.map((claim) => [claim.system?.slug, claim]));
+  if (catalog.systems?.length !== eligibleClaims.length) {
+    error(`${label} system count does not match its eligible claim inputs.`);
   }
-  const securityReviews = system.components.filter((component) => component.securityReview !== null);
-  const vulnerabilityCount = securityReviews.reduce(
-    (sum, component) => sum + component.securityReview.vulnerabilities.length,
-    0,
-  );
-  const nonCveAdvisoryCount = securityReviews.reduce(
-    (sum, component) => sum + component.securityReview.nonCveAdvisories.length,
-    0,
-  );
-  if (system.coverage?.componentSecurityReviewCount !== securityReviews.length) {
-    error(`${system.slug} generated security-review coverage is stale.`);
+
+  const expectedReleaseIds = [...new Set(eligibleClaims
+    .filter((claim) => claim.editorial?.state === "published")
+    .map((claim) => claim.editorial?.publicationId)
+    .filter(Boolean))]
+    .sort();
+  if (JSON.stringify(catalog.releaseIds ?? []) !== JSON.stringify(expectedReleaseIds)) {
+    error(`${label} release IDs are stale.`);
   }
-  if (system.coverage?.exactApplicableVulnerabilityCount !== vulnerabilityCount) {
-    error(`${system.slug} generated vulnerability coverage is stale.`);
+
+  const expectedSourceIds = new Set([
+    ...(sourcePackage.methodology?.changeControlSourceIds ?? []),
+    ...(catalog.systems ?? []).flatMap((system) => system.sourceIds ?? []),
+  ]);
+  const catalogSourceIds = (catalog.sources ?? []).map((source) => source.id).sort();
+  if (JSON.stringify(catalogSourceIds) !== JSON.stringify([...expectedSourceIds].sort())) {
+    error(`${label} must contain exactly the sources used by its systems and methodology.`);
   }
-  if (system.coverage?.nonCveAdvisoryCount !== nonCveAdvisoryCount) {
-    error(`${system.slug} generated non-CVE advisory coverage is stale.`);
+
+  for (const system of catalog.systems ?? []) {
+    const claim = eligibleClaimBySlug.get(system.slug);
+    if (!claim) error(`${label} contains ineligible or unknown system ${system.slug}.`);
+    else {
+      if (system.editorialState !== claim.editorial.state) error(`${system.slug} ${label} editorial state is stale.`);
+      if (system.claimRevision !== claim.editorial.revision) error(`${system.slug} ${label} claim revision is stale.`);
+    }
+    if (channel === "public" && system.editorialState !== "published") {
+      error(`${system.slug} is not published and must not appear in the public catalog.`);
+    }
+    if (system.coverage?.sourcedComponentCount !== system.coverage?.componentCount) {
+      error(`${system.slug} generated coverage reports an unsourced component.`);
+    }
+    const securityReviews = system.components.filter((component) => component.securityReview !== null);
+    const vulnerabilityCount = securityReviews.reduce(
+      (sum, component) => sum + component.securityReview.vulnerabilities.length,
+      0,
+    );
+    const nonCveAdvisoryCount = securityReviews.reduce(
+      (sum, component) => sum + component.securityReview.nonCveAdvisories.length,
+      0,
+    );
+    if (system.coverage?.componentSecurityReviewCount !== securityReviews.length) {
+      error(`${system.slug} generated security-review coverage is stale.`);
+    }
+    if (system.coverage?.exactApplicableVulnerabilityCount !== vulnerabilityCount) {
+      error(`${system.slug} generated vulnerability coverage is stale.`);
+    }
+    if (system.coverage?.nonCveAdvisoryCount !== nonCveAdvisoryCount) {
+      error(`${system.slug} generated non-CVE advisory coverage is stale.`);
+    }
   }
 }
 
+validateGeneratedCatalog(publicCatalog, {
+  channel: "public",
+  eligibleStates: ["published"],
+  expectedEditorialState: "public_release",
+  expectedStatus: "published_catalog",
+});
+validateGeneratedCatalog(stagingCatalog, {
+  channel: "staging",
+  eligibleStates: ["approved", "published"],
+  expectedEditorialState: "staging_review",
+  expectedStatus: "reviewed_pilot",
+});
 if (errors.length) {
   console.error(`Equipment catalog validation failed with ${errors.length} error(s):`);
   for (const message of errors) console.error(`- ${message}`);
@@ -676,8 +726,8 @@ if (errors.length) {
 }
 
 console.log(
-  `Validated ${catalog.systems.length} equipment system${catalog.systems.length === 1 ? "" : "s"}, ${sourcePackage.sources.length} archived sources, `
-    + `${catalog.systems.reduce((sum, system) => sum + system.components.length, 0)} components, and `
-    + `${catalog.systems.reduce((sum, system) => sum + system.coverage.technicalSpecificationCount, 0)} technical specifications, and `
-    + `${catalog.systems.reduce((sum, system) => sum + system.configurationChanges.length, 0)} configuration changes.`,
+  `Validated ${publicCatalog.systems.length} public and ${stagingCatalog.systems.length} staging equipment systems, ${sourcePackage.sources.length} archived sources, `
+    + `${stagingCatalog.systems.reduce((sum, system) => sum + system.components.length, 0)} staging components, and `
+    + `${stagingCatalog.systems.reduce((sum, system) => sum + system.coverage.technicalSpecificationCount, 0)} technical specifications, and `
+    + `${stagingCatalog.systems.reduce((sum, system) => sum + system.configurationChanges.length, 0)} configuration changes.`,
 );

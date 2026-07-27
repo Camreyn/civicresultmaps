@@ -1,8 +1,13 @@
 import { readdir, readFile, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const sourcePackagePath = "data/equipment-source-packages.json";
 const claimDirectory = "data/equipment-claims";
-const outputPath = "data/equipment-catalog.json";
+const outputPaths = {
+  public: "data/equipment-catalog.public.json",
+  staging: "data/equipment-catalog.staging.json",
+};
 
 function unique(values) {
   return [...new Set(values.filter(Boolean))].sort();
@@ -116,7 +121,48 @@ function withCoverage(system, editorial) {
   };
 }
 
-export async function buildEquipmentCatalog() {
+function catalogSourceIds(sourcePackage, systems) {
+  return new Set([
+    ...(sourcePackage.methodology?.changeControlSourceIds ?? []),
+    ...systems.flatMap((system) => system.sourceIds),
+  ]);
+}
+
+export function createEquipmentCatalog({ channel, claims, sourcePackage }) {
+  if (!Object.hasOwn(outputPaths, channel)) throw new Error(`Unsupported equipment catalog channel: ${channel}`);
+
+  const eligibleStates = channel === "public" ? ["published"] : ["approved", "published"];
+  const eligibleClaims = claims.filter((claim) => eligibleStates.includes(claim.editorial?.state));
+  const systems = eligibleClaims
+    .map((claim) => withCoverage(claim.system, claim.editorial))
+    .sort((left, right) => left.displayName.localeCompare(right.displayName));
+  const includedSourceIds = catalogSourceIds(sourcePackage, systems);
+  const releaseIds = unique(
+    eligibleClaims
+      .filter((claim) => claim.editorial?.state === "published")
+      .map((claim) => claim.editorial?.publicationId),
+  );
+
+  return {
+    schemaVersion: 2,
+    catalogChannel: channel,
+    generatedOn: [sourcePackage.reviewedOn, ...eligibleClaims.map((claim) => claim.reviewedOn)]
+      .filter(Boolean)
+      .sort()
+      .at(-1),
+    status: channel === "public" ? "published_catalog" : "reviewed_pilot",
+    editorialState: channel === "public" ? "public_release" : "staging_review",
+    productionRequirement: sourcePackage.editorialPolicy.publicProductionState,
+    releaseIds,
+    methodology: sourcePackage.methodology,
+    sources: sourcePackage.sources
+      .filter((source) => includedSourceIds.has(source.id))
+      .sort((left, right) => left.id.localeCompare(right.id)),
+    systems,
+  };
+}
+
+export async function createEquipmentCatalogs() {
   const sourcePackage = JSON.parse(await readFile(sourcePackagePath, "utf8"));
   const claimFiles = (await readdir(claimDirectory))
     .filter((name) => name.endsWith(".json"))
@@ -124,23 +170,39 @@ export async function buildEquipmentCatalog() {
   const claims = await Promise.all(
     claimFiles.map(async (name) => JSON.parse(await readFile(`${claimDirectory}/${name}`, "utf8"))),
   );
-  const eligibleClaims = claims.filter((claim) => ["approved", "published"].includes(claim.editorial?.state));
-  const systems = eligibleClaims
-    .map((claim) => withCoverage(claim.system, claim.editorial))
-    .sort((left, right) => left.displayName.localeCompare(right.displayName));
 
   return {
-    schemaVersion: 2,
-    generatedOn: [sourcePackage.reviewedOn, ...claims.map((claim) => claim.reviewedOn)].sort().at(-1),
-    status: "reviewed_pilot",
-    editorialState: "staging_review",
-    productionRequirement: sourcePackage.editorialPolicy.publicProductionState,
-    methodology: sourcePackage.methodology,
-    sources: [...sourcePackage.sources].sort((left, right) => left.id.localeCompare(right.id)),
-    systems,
+    public: createEquipmentCatalog({ channel: "public", claims, sourcePackage }),
+    staging: createEquipmentCatalog({ channel: "staging", claims, sourcePackage }),
   };
 }
 
-const catalog = await buildEquipmentCatalog();
-await writeFile(outputPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
-console.log(`Wrote ${catalog.systems.length} system ${catalog.systems.length === 1 ? "dossier" : "dossiers"} to ${outputPath}.`);
+async function writeOrCheckCatalogs() {
+  const catalogs = await createEquipmentCatalogs();
+  const checkOnly = process.argv.includes("--check");
+  const stalePaths = [];
+
+  for (const [channel, outputPath] of Object.entries(outputPaths)) {
+    const catalog = catalogs[channel];
+    const output = `${JSON.stringify(catalog, null, 2)}\n`;
+    if (checkOnly) {
+      const current = await readFile(outputPath, "utf8").catch(() => "");
+      if (current.replace(/\r\n?/g, "\n") !== output) stalePaths.push(outputPath);
+      continue;
+    }
+
+    await writeFile(outputPath, output, "utf8");
+    console.log(
+      `Wrote ${catalog.systems.length} ${channel} system ${catalog.systems.length === 1 ? "dossier" : "dossiers"} to ${outputPath}.`,
+    );
+  }
+
+  if (stalePaths.length > 0) {
+    throw new Error(`${stalePaths.join(", ")} ${stalePaths.length === 1 ? "is" : "are"} stale. Run npm run equipment:catalog:build.`);
+  }
+  if (checkOnly) console.log("Public and staging equipment catalogs are current.");
+}
+
+const isMain = process.argv[1]
+  && pathToFileURL(resolve(process.argv[1])).href === import.meta.url;
+if (isMain) await writeOrCheckCatalogs();

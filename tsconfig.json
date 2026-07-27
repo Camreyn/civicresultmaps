@@ -24,6 +24,9 @@
       }
     ],
     "paths": {
+      "@equipment-catalog-data": [
+        "./data/equipment-catalog.public.json"
+      ],
       "@/*": [
         "./src/*"
       ]

@@ -26,7 +26,7 @@ export default async function EquipmentDossierLayout({
   children,
   params,
 }: EquipmentDossierLayoutProps) {
-  const equipmentEnabled = isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady });
+  const equipmentEnabled = isEquipmentExplorerEnabled({ catalogChannel: equipmentCatalogMetadata.channel, productionReady: equipmentCatalogMetadata.productionReady });
   if (!equipmentEnabled) notFound();
 
   const { slug } = await params;

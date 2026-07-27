@@ -39,6 +39,7 @@ export default defineConfig({
           CLERK_SECRET_KEY: "",
           DATABASE_URL: "",
           EDGE_CONFIG: "",
+          EQUIPMENT_CATALOG_CHANNEL: "staging",
           EQUIPMENT_EXPLORER_ENABLED: "1",
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "",
           NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1",

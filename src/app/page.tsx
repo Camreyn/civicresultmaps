@@ -296,6 +296,7 @@ export default async function Home({ searchParams }: HomeProps) {
         },
       };
   const equipmentExplorerEnabled = isEquipmentExplorerEnabled({
+    catalogChannel: equipmentCatalogMetadata.channel,
     productionReady: equipmentCatalogMetadata.productionReady,
   });
 

@@ -20,20 +20,41 @@ function setEnvironment(values: Record<string, string | undefined>) {
 
 try {
   setEnvironment({ NODE_ENV: "production" });
-  assert.equal(isEquipmentExplorerEnabled({ productionReady: true }), false, "production defaults closed");
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "public", productionReady: true }),
+    false,
+    "production defaults closed",
+  );
 
   setEnvironment({
     NODE_ENV: "production",
     EQUIPMENT_EXPLORER_ENABLED: "1",
     NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1",
   });
-  assert.equal(isEquipmentExplorerEnabled({ productionReady: true }), true, "both flags enable local production preview");
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "public", productionReady: true }),
+    true,
+    "both flags enable a production-ready public catalog",
+  );
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "staging", productionReady: true }),
+    false,
+    "non-Vercel production also rejects the staging catalog",
+  );
 
   setEnvironment({ NODE_ENV: "production", EQUIPMENT_EXPLORER_ENABLED: "1" });
-  assert.equal(isEquipmentExplorerEnabled({ productionReady: true }), false, "server flag alone is insufficient");
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "public", productionReady: true }),
+    false,
+    "server flag alone is insufficient",
+  );
 
   setEnvironment({ NODE_ENV: "production", NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1" });
-  assert.equal(isEquipmentExplorerEnabled({ productionReady: true }), false, "public flag alone is insufficient");
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "public", productionReady: true }),
+    false,
+    "public flag alone is insufficient",
+  );
 
   setEnvironment({
     NODE_ENV: "production",
@@ -42,7 +63,11 @@ try {
     EQUIPMENT_EXPLORER_ENABLED: "1",
     NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1",
   });
-  assert.equal(isEquipmentExplorerEnabled({ productionReady: false }), true, "preview may show approved staging claims");
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "staging", productionReady: false }),
+    true,
+    "preview may show approved staging claims",
+  );
 
   setEnvironment({
     NODE_ENV: "production",
@@ -51,8 +76,21 @@ try {
     EQUIPMENT_EXPLORER_ENABLED: "1",
     NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1",
   });
-  assert.equal(isEquipmentExplorerEnabled({ productionReady: false }), false, "public production rejects unpublished claims");
-  assert.equal(isEquipmentExplorerEnabled({ productionReady: true }), true, "public production accepts published claims");
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "public", productionReady: false }),
+    false,
+    "public production rejects unpublished claims",
+  );
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "staging", productionReady: true }),
+    false,
+    "public production rejects the staging artifact even when its current claims are published",
+  );
+  assert.equal(
+    isEquipmentExplorerEnabled({ catalogChannel: "public", productionReady: true }),
+    true,
+    "public production accepts the published public artifact",
+  );
 
   setEnvironment({ NODE_ENV: "development" });
   assert.equal(isEquipmentExplorerEnabled(), true, "local development defaults open");

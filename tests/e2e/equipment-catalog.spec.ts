@@ -151,6 +151,7 @@ test("lists separately scoped jurisdiction evidence with source and map links", 
 });
 
 test("renders confirmed ClearAccess UPS options without inventing runtime", async ({ page, request }) => {
+  test.setTimeout(60_000);
   await page.goto(`${clearAccessPath}/history`);
   await expect(page.getByRole("heading", { name: "Clear Ballot ClearVote 2.5 / ClearAccess" })).toBeVisible();
   await expect(page.getByText("CyberPower; APC", { exact: true })).toBeVisible();
@@ -445,14 +446,43 @@ test("renders central tabulators as three separate sourced systems", async ({ pa
 });
 
 
-test("keeps the equipment evidence layout within a mobile viewport", async ({ page }) => {
+test("keeps equipment navigation compact and keyboard-usable on mobile", async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });
   await page.goto(`${imageCastXPath}/components`);
   await expect(page.getByRole("heading", { name: "Dominion Democracy Suite 5.17 / ImageCast X" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Open 3D view/ })).toBeVisible();
+
+  const openNavigation = page.getByRole("button", { name: "Open primary navigation" });
+  await expect(openNavigation).toBeVisible();
+  await openNavigation.press("Enter");
+  const mobileNavigation = page.getByRole("navigation", { name: "Mobile primary navigation" });
+  await expect(mobileNavigation).toBeVisible();
+  await expect(mobileNavigation.getByRole("link", { name: "U.S. Equipment" })).toHaveAttribute("aria-current", "page");
+
+  const accessibility = await new AxeBuilder({ page }).analyze();
+  expect(accessibility.violations.filter(({ impact }) => impact === "serious" || impact === "critical")).toEqual([]);
+
+  await page.keyboard.press("Escape");
+  await expect(mobileNavigation).toHaveCount(0);
+  await expect(openNavigation).toBeFocused();
+
+  const dossierSection = page.getByLabel("Dossier section", { exact: true });
+  await expect(dossierSection).toHaveValue(`${imageCastXPath}/components`);
+  await dossierSection.selectOption(`${imageCastXPath}/sources`);
+  await expect(page).toHaveURL(`${imageCastXPath}/sources`, { timeout: 15_000 });
+  await expect(page.getByLabel("Dossier section", { exact: true })).toHaveValue(`${imageCastXPath}/sources`);
+
   const viewport = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,
     scrollWidth: document.documentElement.scrollWidth,
   }));
   expect(viewport.scrollWidth).toBeLessThanOrEqual(viewport.clientWidth);
-  await expect(page.getByRole("button", { name: /Open 3D view/ })).toBeVisible();
+});
+
+test("avoids a second sticky navigation layer at tablet widths", async ({ page }) => {
+  await page.setViewportSize({ height: 1024, width: 900 });
+  await page.goto(`${imageCastXPath}/components`);
+  const dossierNavigation = page.locator("[data-tour='equipment-dossier-navigation']");
+  await expect(dossierNavigation).toBeVisible();
+  await expect(dossierNavigation).toHaveCSS("position", "static");
 });

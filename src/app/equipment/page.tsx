@@ -73,7 +73,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EquipmentIndexPage({ searchParams }: PageProps) {
-  const equipmentEnabled = isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady });
+  const equipmentEnabled = isEquipmentExplorerEnabled({ catalogChannel: equipmentCatalogMetadata.channel, productionReady: equipmentCatalogMetadata.productionReady });
   if (!equipmentEnabled) notFound();
   const requested = await searchParams;
   const systems = listEquipmentSystemTiles();

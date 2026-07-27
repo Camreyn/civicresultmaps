@@ -168,7 +168,7 @@ function ManufacturerContextCard({
 }
 
 export default async function EquipmentStatePage({ params }: PageProps) {
-  const equipmentEnabled = isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady });
+  const equipmentEnabled = isEquipmentExplorerEnabled({ catalogChannel: equipmentCatalogMetadata.channel, productionReady: equipmentCatalogMetadata.productionReady });
   if (!equipmentEnabled) notFound();
   const { state } = await params;
   const preview = buildEquipmentStateSocialPreview(state);

@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+import { resolveEquipmentCatalogChannel } from "./src/lib/equipment-catalog-channel";
+
+const equipmentCatalogChannel = resolveEquipmentCatalogChannel();
+
 const nextConfig: NextConfig = {
   ...(process.platform === "win32"
     ? {
@@ -24,6 +28,9 @@ const nextConfig: NextConfig = {
   },
   turbopack: {
     root: __dirname,
+    resolveAlias: {
+      "@equipment-catalog-data": `./data/equipment-catalog.${equipmentCatalogChannel}.json`,
+    },
   },
 };
 
