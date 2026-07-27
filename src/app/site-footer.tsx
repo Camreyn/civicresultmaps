@@ -4,7 +4,7 @@ import styles from "./site-footer.module.css";
 export function SiteFooter() {
   return (
     <footer className={styles.footer}>
-      <span>Civic Result Maps publishes source-linked public records and advisory review prompts.</span>
+      <span>Civic Result Maps publishes source-linked public records and highlights patterns that may warrant further review.</span>
       <nav aria-label="Site policies">
         <Link href="/privacy">Privacy</Link>
         <Link href="/developers">API</Link>
