@@ -1,5 +1,7 @@
 import usageData from "../../data/equipment-usage-index.json";
 
+import { listEquipmentSystemSlugs } from "./equipment-catalog";
+
 export type EquipmentUsageEvidenceKind = "device_family" | "manufacturer_context";
 
 export type EquipmentUsageMapReference = {
@@ -142,7 +144,48 @@ type EquipmentUsageIndex = {
   records: EquipmentUsageStoredRecord[];
 };
 
-const index = usageData as unknown as EquipmentUsageIndex;
+function filterIndexForSelectedCatalog(rawIndex: EquipmentUsageIndex): EquipmentUsageIndex {
+  const allowedSlugs = new Set(listEquipmentSystemSlugs());
+  const systems = rawIndex.systems.filter((system) => allowedSlugs.has(system.slug));
+  const allowedManufacturerIds = new Set(systems.map((system) => system.manufacturerId));
+  const records = rawIndex.records
+    .map((record) => ({
+      ...record,
+      relations: record.relations.filter((relation) => (
+        relation.target.kind === "equipment_system"
+          ? allowedSlugs.has(relation.target.slug)
+          : allowedManufacturerIds.has(relation.target.id)
+      )),
+    }))
+    .filter((record) => record.relations.length > 0);
+  const includedSourceIds = new Set(records.map((record) => record.sourceId));
+  const indexedRelationCount = records.reduce((total, record) => total + record.relations.length, 0);
+  const exactSystemRelationCount = records.reduce(
+    (total, record) => total + record.relations.filter((relation) => relation.target.kind === "equipment_system").length,
+    0,
+  );
+
+  return {
+    ...rawIndex,
+    coverage: {
+      ...rawIndex.coverage,
+      dossierCount: systems.length,
+      manufacturerCount: allowedManufacturerIds.size,
+      indexedObservationCount: records.length,
+      indexedRecordCount: indexedRelationCount,
+      indexedRelationCount,
+      exactSystemRelationCount,
+      manufacturerRelationCount: indexedRelationCount - exactSystemRelationCount,
+    },
+    manufacturers: rawIndex.manufacturers.filter((manufacturer) => allowedManufacturerIds.has(manufacturer.id)),
+    systems,
+    summaries: rawIndex.summaries.filter((summary) => allowedSlugs.has(summary.slug)),
+    sources: rawIndex.sources.filter((source) => includedSourceIds.has(source.id)),
+    records,
+  };
+}
+
+const index = filterIndexForSelectedCatalog(usageData as unknown as EquipmentUsageIndex);
 const sourceById = new Map(index.sources.map((source) => [source.id, source]));
 const manufacturerById = new Map(index.manufacturers.map((manufacturer) => [manufacturer.id, manufacturer]));
 const manufacturerIdBySlug = new Map(index.systems.map((system) => [system.slug, system.manufacturerId]));

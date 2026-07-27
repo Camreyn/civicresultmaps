@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 export default async function SecurityPage() {
   const report = getNationalSecurityIncidentReport(2024);
   const electionOverlay = buildSecurityElectionOverlay(report.incidents, await loadNationalYearDataset(2024));
-  const equipmentEnabled = isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady });
+  const equipmentEnabled = isEquipmentExplorerEnabled({ catalogChannel: equipmentCatalogMetadata.channel, productionReady: equipmentCatalogMetadata.productionReady });
 
   return (
     <main className={baseStyles.shell}>

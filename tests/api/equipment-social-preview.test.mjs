@@ -11,7 +11,7 @@ const [
   socialRoute,
   sitemap,
 ] = await Promise.all([
-  readFile("data/equipment-catalog.json", "utf8").then(JSON.parse),
+  readFile("data/equipment-catalog.public.json", "utf8").then(JSON.parse),
   readFile("data/equipment-usage-index.json", "utf8").then(JSON.parse),
   readFile("src/lib/equipment-social-preview.ts", "utf8"),
   readFile("src/app/equipment/page.tsx", "utf8"),

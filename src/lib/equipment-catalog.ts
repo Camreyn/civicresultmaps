@@ -1,4 +1,6 @@
-import catalogData from "../../data/equipment-catalog.json";
+import catalogData from "@equipment-catalog-data";
+
+import type { EquipmentCatalogChannel } from "./equipment-catalog-channel";
 
 export type EquipmentCatalog = typeof catalogData;
 export type EquipmentSystem = EquipmentCatalog["systems"][number];
@@ -118,12 +120,16 @@ export type EquipmentSystemTile = EquipmentSystemSummary & {
 };
 
 export const equipmentCatalogMetadata = {
+  channel: catalogData.catalogChannel as EquipmentCatalogChannel,
   editorialState: catalogData.editorialState,
   generatedOn: catalogData.generatedOn,
   productionRequirement: catalogData.productionRequirement,
   productionReady:
-    catalogData.systems.length > 0
-    && catalogData.systems.every((system) => system.editorialState === catalogData.productionRequirement),
+    catalogData.catalogChannel === "public"
+    && catalogData.systems.length > 0
+    && catalogData.systems.every((system) => system.editorialState === catalogData.productionRequirement)
+    && catalogData.releaseIds.length > 0,
+  releaseIds: catalogData.releaseIds,
   methodology: catalogData.methodology,
   schemaVersion: catalogData.schemaVersion,
   status: catalogData.status,

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 
 const [
   catalog,
+  stagingCatalog,
   sourcePackage,
   claim,
   apiList,
@@ -27,7 +28,8 @@ const [
   workspace,
   vercelIgnore,
 ] = await Promise.all([
-  readFile("data/equipment-catalog.json", "utf8").then(JSON.parse),
+  readFile("data/equipment-catalog.public.json", "utf8").then(JSON.parse),
+  readFile("data/equipment-catalog.staging.json", "utf8").then(JSON.parse),
   readFile("data/equipment-source-packages.json", "utf8").then(JSON.parse),
   readFile("data/equipment-claims/ess-evs-6400-ds200.json", "utf8").then(JSON.parse),
   readFile("src/app/api/equipment-systems/route.ts", "utf8"),
@@ -54,15 +56,23 @@ const [
 ]);
 
 assert.equal(catalog.schemaVersion, 2);
-assert.equal(catalog.status, "reviewed_pilot");
-assert.equal(catalog.editorialState, "staging_review");
+assert.equal(catalog.catalogChannel, "public");
+assert.equal(catalog.status, "published_catalog");
+assert.equal(catalog.editorialState, "public_release");
 assert.equal(catalog.productionRequirement, "published");
+assert.equal(stagingCatalog.schemaVersion, 2);
+assert.equal(stagingCatalog.catalogChannel, "staging");
+assert.equal(stagingCatalog.status, "reviewed_pilot");
+assert.equal(stagingCatalog.editorialState, "staging_review");
+assert.equal(stagingCatalog.productionRequirement, "published");
 assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
 assert.equal(claim.editorial.state, "published");
 assert.equal(claim.editorial.publicationId, "equipment-explorer-2026-07-22-r1");
 assert.equal(claim.editorial.publishedOn, "2026-07-22");
 assert.equal(catalog.systems.length, 6);
+assert.equal(stagingCatalog.systems.length, 6);
+assert.ok(catalog.systems.every((system) => system.editorialState === "published"));
 assert.equal(sourcePackage.sources.length, 68);
 assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
@@ -382,6 +392,7 @@ for (const dossier of catalog.systems) {
 }
 
 assert.match(apiList, /listEquipmentSystems/);
+assert.match(apiList, /catalogChannel/);
 assert.match(apiList, /equipment_catalog_disabled/);
 assert.match(apiDetail, /sourcesForEquipmentSystem/);
 assert.match(apiDetail, /equipment_system_not_found/);
@@ -456,6 +467,7 @@ assert.match(networkEvidence, /No field-observed topology collected/);
 assert.match(workspace, /equipmentExplorerEnabled &&/);
 assert.match(workspace, /equipment-catalog-link/);
 assert.match(workspace, /Component catalog/);
-assert.match(vercelIgnore, /!data\/equipment-catalog\.json/);
+assert.match(vercelIgnore, /!data\/equipment-catalog\.public\.json/);
 
+assert.match(vercelIgnore, /!data\/equipment-catalog\.staging\.json/);
 console.log("Equipment catalog contracts passed.");

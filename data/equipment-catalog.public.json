@@ -1,9 +1,13 @@
 {
   "schemaVersion": 2,
+  "catalogChannel": "public",
   "generatedOn": "2026-07-21",
-  "status": "reviewed_pilot",
-  "editorialState": "staging_review",
+  "status": "published_catalog",
+  "editorialState": "public_release",
   "productionRequirement": "published",
+  "releaseIds": [
+    "equipment-explorer-2026-07-22-r1"
+  ],
   "methodology": {
     "title": "Election equipment catalog evidence policy",
     "description": "The pilot records what an official source actually establishes and keeps certified configurations, state approvals, jurisdiction deployment observations, historical configuration changes, and unknown field details in separate scopes.",
@@ -1179,45 +1183,6 @@
           "supersedesRevisionId": null,
           "contentStatus": "baseline",
           "pageOrSection": "ECO metadata and attachment",
-          "archiveStatus": "verified"
-        }
-      ],
-      "revisionComparisons": []
-    },
-    {
-      "id": "eac-eco-index",
-      "publisher": "U.S. Election Assistance Commission",
-      "authorityLevel": "federal_official",
-      "title": "Engineering Change Orders",
-      "url": "https://www.eac.gov/voting-equipment/engineering-change-orders",
-      "localArtifact": "data/equipment-sources/eac-engineering-change-orders.html",
-      "sha256": "4fe152aa1eecdefa43c7cdc7240182ed54f4ed6dd26b1d70fc409e1ead8bb4b5",
-      "documentType": "official_registry_html",
-      "publishedOn": null,
-      "retrievedOn": "2026-07-19",
-      "pageOrSection": "Public ECO registry",
-      "caveat": "The archived first registry page is discovery context; individual ECO records and attachments support the catalog claims.",
-      "canonicalUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders",
-      "currentReviewedRevisionId": "eac-eco-index@2026-07-19",
-      "latestRetrievedRevisionId": "eac-eco-index@2026-07-19",
-      "revisions": [
-        {
-          "id": "eac-eco-index@2026-07-19",
-          "localArtifact": "data/equipment-sources/eac-engineering-change-orders.html",
-          "sha256": "4fe152aa1eecdefa43c7cdc7240182ed54f4ed6dd26b1d70fc409e1ead8bb4b5",
-          "byteLength": 117800,
-          "publishedOn": null,
-          "retrievedOn": "2026-07-19",
-          "retrievedAt": null,
-          "retrievalPrecision": "date",
-          "resolvedUrl": "https://www.eac.gov/voting-equipment/engineering-change-orders",
-          "http": {
-            "etag": null,
-            "lastModified": null
-          },
-          "supersedesRevisionId": null,
-          "contentStatus": "baseline",
-          "pageOrSection": "Public ECO registry",
           "archiveStatus": "verified"
         }
       ],

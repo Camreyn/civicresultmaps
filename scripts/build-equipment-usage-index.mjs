@@ -3,7 +3,7 @@ import { resolveJurisdictionTag } from "../src/lib/jurisdiction-tags.ts";
 
 const registryPath = "data/admin-source-packages.json";
 const matcherPath = "data/equipment-usage-matchers.json";
-const catalogPath = "data/equipment-catalog.json";
+const catalogPath = "data/equipment-catalog.staging.json";
 const outputPath = "data/equipment-usage-index.json";
 
 function parseCsv(text) {

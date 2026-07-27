@@ -6,16 +6,22 @@ It does not infer fraud, misconduct, altered votes, election outcomes, unit cond
 
 ## Current status
 
-The checked-in catalog is a staging pilot. Claims may be `approved` for feature-gated review while public production publication remains a separate editorial and deployment decision.
+Catalog generation produces two checked-in artifacts with different release contracts:
 
-Local and staging access requires both flags:
+- `data/equipment-catalog.public.json` contains only `published` claims and is the only catalog permitted in a production deployment.
+- `data/equipment-catalog.staging.json` contains `approved` and `published` claims for feature-gated editorial and preview review.
+
+The build selects one artifact through `EQUIPMENT_CATALOG_CHANNEL`. Local development and Vercel previews default to `staging`; other builds default to `public`. Production builds fail closed if `staging` is explicitly requested.
+
+Local and preview access requires both feature flags (the channel line is optional when using the default):
 
 ```text
+EQUIPMENT_CATALOG_CHANNEL=staging
 EQUIPMENT_EXPLORER_ENABLED=1
 NEXT_PUBLIC_EQUIPMENT_EXPLORER=1
 ```
 
-The server-side flag makes page and API responses fail closed when disabled. The public-prefixed flag exposes workspace navigation in an enabled build. The 3D scene remains dynamically loaded only after the viewer is opened. Production should leave both flags disabled until all publication gates below pass.
+The server-side flag makes page and API responses fail closed when disabled. The public-prefixed flag exposes workspace navigation in an enabled build. The 3D scene remains dynamically loaded only after the viewer is opened. In production, feature activation additionally requires the selected public catalog to satisfy its publication gate. Production should leave both flags disabled until all publication gates below pass.
 
 ## Evidence boundaries
 
@@ -155,6 +161,7 @@ A component `securityReview` is permitted only when product identity and applica
 
 ```powershell
 npm run equipment:catalog:build
+npm run equipment:catalog:check
 npm run equipment:catalog:coverage
 npm run test:equipment-catalog
 npm run typecheck
@@ -185,7 +192,7 @@ The GLB files are original CivicResultMaps navigation schematics. Their rough ex
 
 Before enabling the feature publicly:
 
-1. All public claims are in `published` state and pin verified source revisions.
+1. The generated public catalog contains only `published` claims, pins verified source revisions, and reports `productionReady: true`.
 2. No affected source comparison remains pending.
 3. The evidence and neutral-language editorial review is complete.
 4. `npm run test:equipment-catalog`, `npm run typecheck`, `npm run test:layout`, and a feature-enabled production build pass.

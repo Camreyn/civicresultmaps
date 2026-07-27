@@ -36,6 +36,9 @@ jobs:
       - name: Security incident tests
         run: npm run test:security-incidents
 
+      - name: Equipment catalog validation
+        run: npm run test:equipment-catalog
+
       - name: ETL tests
         run: npm run test:etl
 
@@ -63,14 +66,22 @@ jobs:
       - name: Production provenance validation
         run: npm run validate:provenance
 
-      - name: Build
+      - name: Feature-enabled public equipment build
         run: npm run build
+        env:
+          EQUIPMENT_CATALOG_CHANNEL: public
+          EQUIPMENT_EXPLORER_ENABLED: "1"
+          NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1"
+          VERCEL_ENV: production
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Equipment browser tests
+        run: npm run test:e2e:equipment
+
       - name: Workspace layout browser tests
-        run: npm run test:e2e
+        run: npm run test:e2e:workspace
 
   vercel-preview:
     if: github.event_name == 'pull_request'
@@ -113,6 +124,9 @@ jobs:
         if: steps.vercel-secrets.outputs.available == 'true'
         run: npx vercel build --token=${{ secrets.VERCEL_TOKEN }}
         env:
+          EQUIPMENT_CATALOG_CHANNEL: staging
+          EQUIPMENT_EXPLORER_ENABLED: "1"
+          NEXT_PUBLIC_EQUIPMENT_EXPLORER: "1"
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
@@ -130,3 +144,7 @@ jobs:
       - name: Smoke-test security incident preview
         if: steps.vercel-secrets.outputs.available == 'true'
         run: node scripts/verify-security-incidents-deployment.mjs --base-url=${{ steps.deploy-preview.outputs.url }}
+
+      - name: Smoke-test staging equipment preview
+        if: steps.vercel-secrets.outputs.available == 'true'
+        run: node scripts/verify-equipment-deployment.mjs --base-url=${{ steps.deploy-preview.outputs.url }} --expect-channel=staging

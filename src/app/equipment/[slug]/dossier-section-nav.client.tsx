@@ -1,6 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import type { Route } from "next";
+import { usePathname, useRouter } from "next/navigation";
 
 import { equipmentDossierSections } from "./dossier-navigation";
 import upgradeStyles from "../equipment-upgrades.module.css";
@@ -11,6 +12,7 @@ type DossierSectionNavProps = {
 
 export function DossierSectionNav({ slug }: DossierSectionNavProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const basePath = `/equipment/${slug}`;
   const active = equipmentDossierSections.find((section) => `${basePath}${section.path}` === pathname)
     ?? equipmentDossierSections[0];
@@ -21,7 +23,7 @@ export function DossierSectionNav({ slug }: DossierSectionNavProps) {
         <span>Dossier section</span>
         <select
           aria-label="Dossier section"
-          onChange={(event) => window.location.assign(event.currentTarget.value)}
+          onChange={(event) => router.push(event.currentTarget.value as Route)}
           value={`${basePath}${active.path}`}
         >
           {equipmentDossierSections.map((section) => (

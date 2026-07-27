@@ -102,7 +102,8 @@ test("workspace navigation and state selector adapt on small screens", async ({ 
   await expect(page.getByRole("region", { name: "Election workspace context" })).toBeVisible();
   await expect(page.getByLabel("Workspace state")).toHaveValue("WA");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await expect(page.locator("[data-tour='site-header']")).toHaveCSS("position", "relative");
+  await expect(page.locator("[data-tour='site-header']")).toHaveCSS("position", "sticky");
+  await expect(page.getByRole("button", { name: "Open primary navigation" })).toBeVisible();
 
   const stateTrigger = page.getByRole("button", { name: /Choose a state/i });
   await expect(stateTrigger).toBeVisible();
@@ -117,6 +118,7 @@ test("workspace navigation and state selector adapt on small screens", async ({ 
   await electionYear.selectOption("2020");
   await expect(page).toHaveURL(/state=WA&year=2020&tab=map&mode=margin/);
   await expect(page).not.toHaveURL(/fips=/);
+  await page.waitForLoadState("networkidle");
   await expect(electionYear).toHaveValue("2020");
   await expect(page.getByLabel("Workspace geography", { exact: true })).toHaveValue("");
   await expect(page.getByLabel("Workspace map layer", { exact: true })).toHaveValue("margin");
@@ -125,10 +127,12 @@ test("workspace navigation and state selector adapt on small screens", async ({ 
   await expect(workspaceSection).toBeVisible();
   await workspaceSection.selectOption("support");
   await expect(page).toHaveURL(/tab=support/);
+  await page.waitForLoadState("networkidle");
   await expect(workspaceSection).toHaveValue("support");
 
   await workspaceSection.selectOption("review");
   await expect(page).toHaveURL(/tab=review/);
+  await page.waitForLoadState("networkidle");
   const reviewView = page.getByLabel("Review Center view", { exact: true });
   await expect(reviewView).toBeVisible();
   await reviewView.selectOption("indicators");
