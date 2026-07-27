@@ -54,7 +54,8 @@ assert.match(workspace, /tourChapterLabels/);
 
 for (const target of [
   "equipment-index-hero",
-  "equipment-evidence-boundaries",
+  "equipment-catalog-summary",
+  "equipment-state-context",
   "equipment-catalog",
   "equipment-usage-summary",
   "equipment-methodology",

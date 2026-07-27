@@ -178,34 +178,6 @@
   line-height: 1.62;
 }
 
-.boundaryGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 40px;
-}
-
-.boundaryGrid article {
-  min-height: 128px;
-  padding: 20px;
-  border: 1px solid rgba(154, 211, 205, 0.13);
-  border-radius: 18px;
-  background: rgba(8, 29, 32, 0.72);
-  display: grid;
-  align-content: start;
-  gap: 8px;
-}
-
-.boundaryGrid svg {
-  color: var(--equipment-accent);
-}
-
-.boundaryGrid span {
-  color: var(--equipment-muted);
-  font-size: 0.82rem;
-  line-height: 1.52;
-}
-
 .catalogSection,
 .dossierSection,
 .explorerSection {
@@ -2403,7 +2375,6 @@
     text-align: left;
   }
 
-  .boundaryGrid,
   .metrics,
   .systemGrid,
   .recordGrid,
@@ -2445,7 +2416,6 @@
 }
 
 @media (max-width: 560px) {
-  .boundaryGrid,
   .metrics,
   .systemGrid,
   .recordGrid,

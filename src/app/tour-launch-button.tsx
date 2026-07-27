@@ -25,7 +25,7 @@ export function TourLaunchButton({ tourId }: { tourId: string }) {
       type="button"
     >
       <CircleHelp aria-hidden size={15} />
-      Tour
+      Page tour
     </button>
   );
 }
