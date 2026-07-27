@@ -107,6 +107,10 @@ test("introduces the shareable dossier sections in the equipment detail tour", a
 
 test("lists separately scoped jurisdiction evidence with source and map links", async ({ page, request }) => {
   await page.goto(`${clearAccessPath}#equipment-usage`);
+  await expect(page).toHaveURL(
+    /\/equipment\/clear-ballot-clearvote-25-clearaccess\/usage#equipment-usage$/,
+    { timeout: 15_000 },
+  );
   const usageSection = page.locator("[data-tour='equipment-usage']");
   await expect(usageSection.getByText("49 matching sourced records", { exact: true })).toBeVisible();
   await expect(usageSection.getByText("Named product family", { exact: true }).first()).toBeVisible();
@@ -129,6 +133,10 @@ test("lists separately scoped jurisdiction evidence with source and map links", 
   });
 
   await page.goto(`${ds200Path}#equipment-usage`);
+  await expect(page).toHaveURL(
+    /\/equipment\/ess-evs-6400-ds200\/usage#equipment-usage$/,
+    { timeout: 15_000 },
+  );
   await expect(page.locator("[data-tour='equipment-usage']").getByText("1,509 matching sourced records", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Evidence strength")).toHaveValue("manufacturer_context");
   await expect(page.locator("[data-tour='equipment-usage']").getByText("Manufacturer context, not DS200 deployment evidence")).toBeVisible();

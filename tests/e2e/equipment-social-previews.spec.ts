@@ -17,7 +17,7 @@ function expectPngDimensions(body: Buffer, width: number, height: number) {
   expect(body.readUInt32BE(20)).toBe(height);
 }
 
-async function expectDenseStateCardLayout(body: Buffer) {
+async function expectStateCardLayout(body: Buffer, expectedRowCount: number) {
   const { data, info } = await sharp(body).raw().toBuffer({ resolveWithObject: true });
   const rowBackground = [0x0d, 0x24, 0x27];
   const scanX = 900;
@@ -35,7 +35,7 @@ async function expectDenseStateCardLayout(body: Buffer) {
   }
   if (start >= 0) runs.push({ start, end: info.height - 1 });
 
-  expect(runs).toHaveLength(6);
+  expect(runs).toHaveLength(expectedRowCount);
   expect(runs.every((run) => run.end - run.start >= 45)).toBe(true);
   expect(runs[runs.length - 1]?.end).toBeLessThan(540);
 }
@@ -45,43 +45,40 @@ test.describe.configure({ mode: "serial", timeout: 90_000 });
 test("builds a stable state share page with exact-family and manufacturer-context boundaries", async ({ page, request }) => {
   await page.goto("/equipment");
   const picker = page.getByLabel("State", { exact: true });
-  await expect(picker).toContainText("Colorado (CO)");
-  await picker.selectOption("CO");
+  await expect(picker).toContainText("Wisconsin (WI)");
+  await picker.selectOption("WI");
   await Promise.all([
-    page.waitForURL(/\/equipment\/state\/CO$/, { waitUntil: "domcontentloaded" }),
+    page.waitForURL(/\/equipment\/state\/WI$/, { waitUntil: "domcontentloaded" }),
     page.getByRole("button", { name: "View state equipment" }).click(),
   ]);
 
-  await expect(page.getByRole("heading", { name: "Colorado election equipment records" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Wisconsin election equipment records" })).toBeVisible();
   await expect(page.locator("article[data-evidence='device-family']")).toHaveCount(2);
   await expect(page.locator("article[data-evidence='manufacturer-context']")).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "Named product-family records" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Manufacturer context only" })).toBeVisible();
-  await expect(page.getByText(/Dossier network capability does not establish a state or local connection/)).toBeVisible();
+  await expect(page.getByText(/dossier network capability does not establish a state or local connection/i)).toBeVisible();
 
-  const clearCountContext = page.locator("article[data-evidence='manufacturer-context']")
-    .filter({ hasText: "Clear Ballot ClearVote 2.5 / ClearCount" });
-  await expect(clearCountContext.getByText("Clear Ballot ClearAccess", { exact: true })).toBeVisible();
-  await expect(clearCountContext.getByText(/do not identify this dossier's exact model/i)).toBeVisible();
-  await expect(clearCountContext.getByText("Closed wired Ethernet system documented", { exact: true })).toBeVisible();
+  const essContext = page.locator("article[data-evidence='manufacturer-context']")
+    .filter({ hasText: "Election Systems & Software (ES&S)" });
+  await expect(essContext.getByText("DS200 context", { exact: true })).toBeVisible();
+  await expect(essContext.getByText("DS950 context", { exact: true })).toBeVisible();
+  await expect(essContext.getByText(/without identifying an exact reviewed dossier model/i)).toBeVisible();
+  await expect(essContext.getByText(/not deployment evidence/i)).toBeVisible();
+  await expect(essContext.locator("[data-network-status]")).toHaveCount(0);
 
-  await expect(page.locator("meta[property='og:title']")).toHaveAttribute("content", /Colorado tracked election equipment/);
-  await expect(page.locator("meta[property='og:image']")).toHaveAttribute("content", /\/api\/equipment-social-card\?v=equipment-v2&state=CO$/);
+  await expect(page.locator("meta[property='og:title']")).toHaveAttribute("content", /Wisconsin tracked election equipment/);
+  await expect(page.locator("meta[property='og:image']")).toHaveAttribute("content", /\/api\/equipment-social-card\?v=equipment-v3&state=WI$/);
   await expect(page.locator("meta[name='twitter:card']")).toHaveAttribute("content", "summary_large_image");
-  await expect(page.getByRole("link", { name: "Open preview image" })).toHaveAttribute("href", /state=CO$/);
+  await expect(page.getByRole("link", { name: "Open preview image" })).toHaveAttribute("href", /state=WI$/);
 
-  const stateCard = await request.get("/api/equipment-social-card?v=equipment-v2&state=CO");
+  const stateCard = await request.get("/api/equipment-social-card?v=equipment-v3&state=WI");
   expect(stateCard.status()).toBe(200);
   expect(stateCard.headers()["content-type"]).toMatch(/^image\/png/);
   expect(stateCard.headers()["cache-control"]).toContain("s-maxage=900");
-  expectPngDimensions(await stateCard.body(), 1200, 630);
-
-  const denseStateCard = await request.get("/api/equipment-social-card?v=equipment-v2&state=WI");
-  expect(denseStateCard.status()).toBe(200);
-  expect(denseStateCard.headers()["content-type"]).toMatch(/^image\/png/);
-  const denseStateCardBody = await denseStateCard.body();
-  expectPngDimensions(denseStateCardBody, 1200, 630);
-  await expectDenseStateCardLayout(denseStateCardBody);
+  const stateCardBody = await stateCard.body();
+  expectPngDimensions(stateCardBody, 1200, 630);
+  await expectStateCardLayout(stateCardBody, 4);
 });
 
 test("publishes machine quick facts and optional-networking metadata", async ({ page, request }) => {
@@ -92,7 +89,7 @@ test("publishes machine quick facts and optional-networking metadata", async ({ 
   await expect(page.locator("meta[name='twitter:card']")).toHaveAttribute("content", "summary_large_image");
 
   for (const slug of equipmentSlugs) {
-    const machineCard = await request.get(`/api/equipment-social-card?v=equipment-v2&slug=${slug}`);
+    const machineCard = await request.get(`/api/equipment-social-card?v=equipment-v3&slug=${slug}`);
     expect(machineCard.status()).toBe(200);
     expect(machineCard.headers()["content-type"]).toMatch(/^image\/png/);
     expectPngDimensions(await machineCard.body(), 1200, 630);
