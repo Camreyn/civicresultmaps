@@ -78,8 +78,11 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
     .allTextContents();
   expect(jurisdictionNames.length).toBeGreaterThan(0);
   expect(jurisdictionNames).toEqual([...jurisdictionNames].sort((left, right) => left.localeCompare(right)));
+  const dataNotes = page.getByRole("complementary", { name: "Washington data notes" });
   await workspace.getByRole("button", { name: /^Data Notes/ }).click();
-  await expect(page.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
+  await expect(dataNotes.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
+  await dataNotes.getByRole("button", { name: "Collapse", exact: true }).click();
+  await expect(dataNotes).toHaveClass(/is-collapsed/);
 
   await workspace.getByRole("tab", { name: "History", exact: true }).click();
   await expect(page).toHaveURL(/tab=history/);
