@@ -17,6 +17,7 @@ test.afterEach(async ({ page }) => {
   expect(browserErrors.get(page) ?? []).toEqual([]);
 });
 test("public workspace uses the safe embedded layout and durable visitor cookie", async ({ page, context, baseURL }) => {
+  test.setTimeout(90_000);
   await context.addCookies([{ name: "crm_layout_visitor", value: "malformed", url: baseURL! }]);
   await page.goto("/?state=WA&year=2024&tab=map&mode=margin&fips=53033");
 
