@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Box, ChevronRight, Database, ExternalLink, FileCheck2, Network } from "lucide-react";
+import {
+  Box,
+  ChevronRight,
+  Database,
+  FileCheck2,
+  Network,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { RouteTour } from "../route-tour";
@@ -14,10 +22,23 @@ import {
   getEquipmentNetworkQuickFact,
   listTrackedEquipmentStates,
 } from "@/lib/equipment-social-preview";
-import { listEquipmentUsageSummaries } from "@/lib/equipment-usage";
+import {
+  getEquipmentUsageManufacturer,
+  listEquipmentUsageSummaries,
+} from "@/lib/equipment-usage";
 import styles from "./equipment.module.css";
+import upgradeStyles from "./equipment-upgrades.module.css";
 
 export const dynamic = "force-dynamic";
+
+type SearchValue = string | string[] | undefined;
+type PageProps = {
+  searchParams: Promise<Record<string, SearchValue>>;
+};
+
+function firstValue(value: SearchValue) {
+  return Array.isArray(value) ? value[0] : value;
+}
 
 const equipmentIndexPreview = buildEquipmentIndexSocialPreview();
 const equipmentIndexSocialImage = equipmentSocialCardPath();
@@ -51,12 +72,47 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EquipmentIndexPage() {
+export default async function EquipmentIndexPage({ searchParams }: PageProps) {
   const equipmentEnabled = isEquipmentExplorerEnabled({ productionReady: equipmentCatalogMetadata.productionReady });
   if (!equipmentEnabled) notFound();
+  const requested = await searchParams;
   const systems = listEquipmentSystemTiles();
   const usageBySlug = new Map(listEquipmentUsageSummaries().map((summary) => [summary.slug, summary]));
   const stateOptions = listTrackedEquipmentStates();
+  const manufacturerOptions = [...new Map(systems.flatMap((system) => {
+    const summary = usageBySlug.get(system.slug);
+    const manufacturer = summary ? getEquipmentUsageManufacturer(summary.manufacturerId) : undefined;
+    return manufacturer ? [[manufacturer.id, manufacturer.displayName] as const] : [];
+  })).entries()]
+    .map(([id, displayName]) => ({ id, displayName }))
+    .sort((left, right) => left.displayName.localeCompare(right.displayName));
+  const manufacturerIds = new Set(manufacturerOptions.map((option) => option.id));
+  const query = firstValue(requested.q)?.trim().slice(0, 100) ?? "";
+  const manufacturer = manufacturerIds.has(firstValue(requested.manufacturer) ?? "")
+    ? firstValue(requested.manufacturer) ?? ""
+    : "";
+  const requestedNetwork = firstValue(requested.network) ?? "";
+  const networkStatus = ["documented", "optional", "reviewed_without_attachment"].includes(requestedNetwork)
+    ? requestedNetwork
+    : "";
+  const normalizedQuery = query.toLocaleLowerCase();
+  const filteredSystems = systems.filter((system) => {
+    const network = getEquipmentNetworkQuickFact(system.slug);
+    const usage = usageBySlug.get(system.slug);
+    const canonicalManufacturer = usage ? getEquipmentUsageManufacturer(usage.manufacturerId) : undefined;
+    if (manufacturer && usage?.manufacturerId !== manufacturer) return false;
+    if (networkStatus && network?.status !== networkStatus) return false;
+    if (!normalizedQuery) return true;
+    return [
+      system.displayName,
+      system.deviceName,
+      system.deviceRole,
+      system.manufacturer,
+      canonicalManufacturer?.displayName ?? "",
+      system.systemName,
+      system.systemVersion,
+    ].some((value) => value.toLocaleLowerCase().includes(normalizedQuery));
+  });
 
   return (
     <main className={styles.shell}>
@@ -74,34 +130,29 @@ export default function EquipmentIndexPage() {
             <p className={styles.eyebrow}><Box aria-hidden size={15} /> Reviewed equipment evidence</p>
             <h1>Election equipment, separated by what the source actually proves.</h1>
             <p className={styles.lede}>
-              Explore EAC-certified configurations, VSTL test and change records, state approvals, public findings,
-              and jurisdiction observations without treating those different evidence scopes as interchangeable.
+              Find a dossier quickly, compare up to three reviewed systems, or open a state record page. Certification,
+              jurisdiction observations, vendor context, and illustrative 3D remain distinct evidence scopes.
             </p>
           </div>
           <aside className={styles.scopeCard}>
-            <span>Feature-gated reviewed catalog</span>
+            <span>Public reviewed catalog</span>
             <strong>{systems.length} reviewed {systems.length === 1 ? "dossier" : "dossiers"}</strong>
-            <p>
-              Generated {equipmentCatalogMetadata.generatedOn}. Every visible dossier has cleared the publication
-              workflow; access remains controlled by the deployment feature gate.
-            </p>
+            <p>Generated {equipmentCatalogMetadata.generatedOn}. Every visible claim resolves to archived, revision-pinned sources.</p>
+            <a className={styles.primaryLink} href="/equipment/compare">Compare systems <ChevronRight aria-hidden size={15} /></a>
           </aside>
         </section>
 
         <section className={styles.boundaryGrid} aria-label="Evidence boundaries" data-tour="equipment-evidence-boundaries">
           <article><FileCheck2 aria-hidden size={20} /><strong>Certified configuration</strong><span>Components and versions in an evaluated federal or state configuration.</span></article>
-          <article><Database aria-hidden size={20} /><strong>Jurisdiction observation</strong><span>A dated product-family or manufacturer record at its reported grain; unit internals remain unconfirmed unless separately sourced.</span></article>
-          <article><Box aria-hidden size={20} /><strong>Illustrative 3D</strong><span>An accessible selection aid, never a teardown, proprietary CAD drawing, or field inventory.</span></article>
+          <article><Database aria-hidden size={20} /><strong>Jurisdiction observation</strong><span>A dated product-family or manufacturer record at its reported grain; vendor-only rows do not target a dossier.</span></article>
+          <article><Box aria-hidden size={20} /><strong>Illustrative 3D</strong><span>An optional accessible selection aid, never a teardown, proprietary CAD drawing, or field inventory.</span></article>
         </section>
 
         <section className={styles.statePickerPanel} aria-labelledby="equipment-state-picker-heading">
           <div>
-            <p className={styles.eyebrow}>State equipment share pages</p>
-            <h2 id="equipment-state-picker-heading">Select a state to build a source-bounded preview</h2>
-            <p>
-              Each state URL lists every connected dossier, distinguishes named product-family evidence from
-              manufacturer-only context, and includes dossier-level networking status in its social link preview.
-            </p>
+            <p className={styles.eyebrow}>State equipment pages</p>
+            <h2 id="equipment-state-picker-heading">Open source-bounded 2024 context by state</h2>
+            <p>Named product-family matches point to dossiers. Vendor-only rows are grouped once by manufacturer and are not counted as exact equipment usage.</p>
           </div>
           <form action="/equipment/state" className={styles.statePickerForm} method="get">
             <label htmlFor="equipment-state">State</label>
@@ -116,85 +167,113 @@ export default function EquipmentIndexPage() {
         </section>
 
         <section className={styles.catalogSection} aria-labelledby="catalog-heading" data-tour="equipment-catalog">
-          <div className={styles.sectionHead}>
+          <div className={`${styles.sectionHead} ${upgradeStyles.catalogTopline}`}>
             <div><p className={styles.eyebrow}>Reviewed systems</p><h2 id="catalog-heading">Available equipment dossiers</h2></div>
-            <p>Every visible claim resolves to one or more archived sources.</p>
+            <a href="/equipment/compare">Open comparison workspace <ChevronRight aria-hidden size={14} /></a>
           </div>
-          <div className={styles.systemGrid}>
-            {systems.map((system) => {
-              const usageSummary = usageBySlug.get(system.slug);
-              const network = getEquipmentNetworkQuickFact(system.slug);
-              return (
-                <article className={styles.systemCard} key={system.slug}>
-                  {system.referenceImage ? (
-                    <figure className={styles.systemPreview} data-equipment-preview="true">
-                      <div className={styles.systemPreviewFrame}>
+
+          <form action="/equipment" className={upgradeStyles.indexTools} method="get">
+            <label>
+              <span><Search aria-hidden size={12} /> Search</span>
+              <input defaultValue={query} maxLength={100} name="q" placeholder="Machine, vendor, role, or system" type="search" />
+            </label>
+            <label>
+              <span>Manufacturer</span>
+              <select defaultValue={manufacturer} name="manufacturer">
+                <option value="">All manufacturers</option>
+                {manufacturerOptions.map((option) => (
+                  <option key={option.id} value={option.id}>{option.displayName}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Network evidence</span>
+              <select defaultValue={networkStatus} name="network">
+                <option value="">All reviewed statuses</option>
+                <option value="documented">Documented path/interface</option>
+                <option value="optional">Optional configuration</option>
+                <option value="reviewed_without_attachment">Reviewed without attachment</option>
+              </select>
+            </label>
+            <div className={upgradeStyles.indexToolActions}>
+              <button type="submit"><SlidersHorizontal aria-hidden size={14} /> Apply</button>
+              {query || manufacturer || networkStatus ? (
+                <a href="/equipment">Clear filters</a>
+              ) : null}
+            </div>
+          </form>
+
+          {filteredSystems.length > 0 ? (
+            <div className={upgradeStyles.compactSystemGrid}>
+              {filteredSystems.map((system) => {
+                const usageSummary = usageBySlug.get(system.slug);
+                const network = getEquipmentNetworkQuickFact(system.slug);
+                return (
+                  <article className={upgradeStyles.compactSystemCard} key={system.slug}>
+                    {system.referenceImage ? (
+                      <figure className={upgradeStyles.compactSystemImage} data-equipment-preview="true">
                         <Image
                           alt={system.referenceImage.alt}
-                          className={styles.systemPreviewImage}
-                          height={system.referenceImage.height}
-                          sizes="(max-width: 560px) 86vw, (max-width: 780px) 43vw, 560px"
+                          fill
+                          sizes="(max-width: 600px) 92vw, (max-width: 1080px) 44vw, 30vw"
                           src={system.referenceImage.assetUrl}
-                          width={system.referenceImage.width}
                         />
+                      </figure>
+                    ) : null}
+                    <div className={upgradeStyles.compactSystemBody}>
+                      <div className={styles.cardTopline}>
+                        <span className={styles.pilotBadge}>{system.editorialState.replaceAll("_", " ")}</span>
+                        <span>{system.certification.certificationId}</span>
                       </div>
-                      <figcaption>
-                        <div>
-                          <span>Source reference image</span>
-                          <strong>{system.referenceImage.caption}</strong>
+                      <h3>{system.displayName}</h3>
+                      <p>{system.deviceRole}</p>
+                      <div className={upgradeStyles.compactFactsRow}>
+                        <span>{system.coverage.componentCount} components</span>
+                        <span>{system.coverage.configurationChangeCount} changes</span>
+                        <span>{system.coverage.sourceCount} sources</span>
+                      </div>
+                      {network ? (
+                        <div className={styles.networkQuickFact} data-network-status={network.status}>
+                          <Network aria-hidden size={16} />
+                          <div><span>Networking</span><strong>{network.shortLabel}</strong><small>{network.caveat}</small></div>
                         </div>
-                        <div className={styles.systemPreviewSources}>
-                          {system.referenceSources.map((source) => (
-                            <a
-                              data-equipment-preview-source="true"
-                              href={source.url}
-                              key={source.id}
-                              rel="noreferrer"
-                              target="_blank"
-                              title={source.title}
-                            >
-                              {source.publisher}<ExternalLink aria-hidden size={12} />
-                            </a>
-                          ))}
+                      ) : null}
+                      {usageSummary ? (
+                        <div className={upgradeStyles.compactUsage} data-tour="equipment-usage-summary">
+                          <span><strong>{usageSummary.deviceFamilyRecords.toLocaleString()}</strong> exact product-family rows</span>
+                          <span><strong>{usageSummary.manufacturerContextRecords.toLocaleString()}</strong> vendor-context rows, grouped at manufacturer scope</span>
                         </div>
-                      </figcaption>
-                    </figure>
-                  ) : null}
-                  <div className={styles.cardTopline}>
-                    <span className={styles.pilotBadge}>{system.editorialState.replaceAll("_", " ")}</span>
-                    <span>{system.certification.certificationId}</span>
-                  </div>
-                  <h3>{system.displayName}</h3>
-                  <p>{system.summary}</p>
-                  <dl className={styles.compactFacts}>
-                    <div><dt>Role</dt><dd>{system.deviceRole}</dd></div>
-                    <div><dt>Components</dt><dd>{system.coverage.componentCount}</dd></div>
-                    <div><dt>Change records</dt><dd>{system.coverage.configurationChangeCount}</dd></div>
-                    <div><dt>Sources</dt><dd>{system.coverage.sourceCount}</dd></div>
-                  </dl>
-                  {network ? (
-                    <div className={styles.networkQuickFact} data-network-status={network.status}>
-                      <Network aria-hidden size={17} />
-                      <div><span>Networking</span><strong>{network.label}</strong><small>{network.caveat}</small></div>
-                    </div>
-                  ) : null}
-                  {usageSummary ? (
-                    <div className={styles.usageSummary} data-tour="equipment-usage-summary">
-                      {usageSummary.deviceFamilyRecords > 0 ? (
-                        <span><strong>{usageSummary.deviceFamilyRecords.toLocaleString()}</strong> named product-family locale rows across {usageSummary.deviceFamilyStates} states</span>
                       ) : null}
-                      {usageSummary.manufacturerContextRecords > 0 ? (
-                        <span><strong>{usageSummary.manufacturerContextRecords.toLocaleString()}</strong> manufacturer-context locale rows across {usageSummary.manufacturerContextStates} states</span>
-                      ) : null}
+                      <div className={styles.systemPreviewSources}>
+                        {system.referenceSources.map((source) => (
+                          <a
+                            data-equipment-preview-source="true"
+                            href={source.url}
+                            key={source.id}
+                            rel="noreferrer"
+                            target="_blank"
+                            title={source.title}
+                          >
+                            Reference: {source.publisher}
+                          </a>
+                        ))}
+                      </div>
+                      <div className={upgradeStyles.cardActions}>
+                        <a href={`/equipment/${system.slug}`}>Open dossier <ChevronRight aria-hidden size={13} /></a>
+                        <a href={`/equipment/compare?slugs=${encodeURIComponent(system.slug)}`}>Start comparison</a>
+                      </div>
                     </div>
-                  ) : null}
-                  <a className={styles.primaryLink} href={`/equipment/${system.slug}`}>
-                    Open source-linked dossier <ChevronRight aria-hidden size={15} />
-                  </a>
-                </article>
-              );
-            })}
-          </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className={upgradeStyles.emptyResults}>
+              <strong>No reviewed dossier matches these filters.</strong>
+              <p>Clear the search or choose broader evidence filters.</p>
+              <a href="/equipment">Clear all filters</a>
+            </div>
+          )}
         </section>
 
         <section className={styles.methodNote} data-tour="equipment-methodology">

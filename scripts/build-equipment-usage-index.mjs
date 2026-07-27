@@ -92,21 +92,34 @@ function mapReference(row, resolution) {
   };
 }
 
-function evidenceFor(row, matcher) {
+function deviceFamilyRelation(row, matcher, relationId) {
   const tokens = new Set(systemNameTokens(row.systemName).map(normalize));
   const deviceFamily = matcher.deviceFamilySystemNames.find((name) => tokens.has(normalize(name)));
-  if (deviceFamily) {
-    return { kind: "device_family", reason: `The normalized source row explicitly names ${deviceFamily}.` };
-  }
+  if (!deviceFamily) return null;
 
-  if (matcher.manufacturerAliases.some((alias) => normalize(alias) === normalize(row.vendor))) {
-    return {
-      kind: "manufacturer_context",
-      reason: `The normalized source row names ${row.vendor}; it does not identify this dossier's exact model or configuration.`,
-    };
-  }
+  return {
+    id: `${relationId}:system:${matcher.slug}`,
+    evidenceKind: "device_family",
+    target: { kind: "equipment_system", slug: matcher.slug },
+    matchReason: `The normalized source row explicitly names ${deviceFamily}.`,
+  };
+}
 
-  return null;
+function manufacturerRelation(row, manufacturers, relationId) {
+  const manufacturer = manufacturers.find((candidate) => candidate.aliases
+    .some((alias) => normalize(alias) === normalize(row.vendor)));
+  if (!manufacturer) return null;
+
+  return {
+    id: `${relationId}:manufacturer:${manufacturer.id}`,
+    evidenceKind: "manufacturer_context",
+    target: {
+      kind: "manufacturer",
+      id: manufacturer.id,
+      displayName: manufacturer.displayName,
+    },
+    matchReason: `The normalized source row names ${row.vendor}; it does not identify an exact dossier model or configuration.`,
+  };
 }
 
 function recordSort(a, b) {
@@ -116,16 +129,21 @@ function recordSort(a, b) {
 }
 
 function buildSummary(records, matcher) {
-  const selected = records.flatMap((record) => record.matches
-    .filter((match) => match.slug === matcher.slug)
-    .map((match) => ({ match, record })));
-  const count = (kind) => selected.filter(({ match }) => match.evidenceKind === kind).length;
+  const selected = records.flatMap((record) => record.relations
+    .filter((relation) => (
+      relation.target.kind === "equipment_system"
+        ? relation.target.slug === matcher.slug
+        : relation.target.id === matcher.manufacturerId
+    ))
+    .map((relation) => ({ relation, record })));
+  const count = (kind) => selected.filter(({ relation }) => relation.evidenceKind === kind).length;
   const states = (kind) => new Set(selected
-    .filter(({ match }) => !kind || match.evidenceKind === kind)
+    .filter(({ relation }) => !kind || relation.evidenceKind === kind)
     .map(({ record }) => record.state)).size;
 
   return {
     slug: matcher.slug,
+    manufacturerId: matcher.manufacturerId,
     totalRecords: selected.length,
     totalStates: states(),
     deviceFamilyRecords: count("device_family"),
@@ -146,9 +164,13 @@ async function buildIndex() {
   ]);
   const catalogSlugs = new Set(catalog.systems.map((system) => system.slug));
   const matcherSlugs = new Set(matchers.systems.map((matcher) => matcher.slug));
+  const manufacturerIds = new Set(matchers.manufacturers.map((manufacturer) => manufacturer.id));
 
   for (const matcher of matchers.systems) {
     if (!catalogSlugs.has(matcher.slug)) throw new Error(`Equipment usage matcher references unknown dossier ${matcher.slug}.`);
+    if (!manufacturerIds.has(matcher.manufacturerId)) {
+      throw new Error(`Equipment usage matcher ${matcher.slug} references unknown manufacturer ${matcher.manufacturerId}.`);
+    }
   }
   for (const slug of catalogSlugs) {
     if (!matcherSlugs.has(slug)) throw new Error(`Equipment dossier ${slug} has no explicit usage matcher.`);
@@ -191,16 +213,21 @@ async function buildIndex() {
         level: row.level,
       });
       const map = mapReference(row, resolution);
-
-      const matches = matchers.systems.flatMap((matcher) => {
-        const evidence = evidenceFor(row, matcher);
-        return evidence ? [{ slug: matcher.slug, evidenceKind: evidence.kind, matchReason: evidence.reason }] : [];
-      });
-      if (!matches.length) continue;
+      const relationId = `${sourceId}:${rowIndex + 1}`;
+      const exactRelations = matchers.systems
+        .map((matcher) => deviceFamilyRelation(row, matcher, relationId))
+        .filter(Boolean);
+      const fallbackManufacturerRelation = exactRelations.length === 0
+        ? manufacturerRelation(row, matchers.manufacturers, relationId)
+        : null;
+      const relations = fallbackManufacturerRelation
+        ? [...exactRelations, fallbackManufacturerRelation]
+        : exactRelations;
+      if (!relations.length) continue;
 
       records.push({
-        id: `${sourceId}:${rowIndex + 1}`,
-        matches,
+        id: relationId,
+        relations,
         state: row.state,
         electionYear: Number(row.electionYear),
         jurisdictionCode: row.jurisdictionCode,
@@ -219,7 +246,12 @@ async function buildIndex() {
   records.sort(recordSort);
   sources.sort((a, b) => a.state.localeCompare(b.state) || a.id.localeCompare(b.id));
   const summaries = matchers.systems.map((matcher) => buildSummary(records, matcher));
-  const dossierMatchCount = records.reduce((total, record) => total + record.matches.length, 0);
+  const indexedRelationCount = records.reduce((total, record) => total + record.relations.length, 0);
+  const exactSystemRelationCount = records.reduce(
+    (total, record) => total + record.relations.filter((relation) => relation.target.kind === "equipment_system").length,
+    0,
+  );
+  const manufacturerRelationCount = indexedRelationCount - exactSystemRelationCount;
 
   return {
     schemaVersion: matchers.schemaVersion,
@@ -232,9 +264,15 @@ async function buildIndex() {
       missingPackageCount,
       normalizedRowCount,
       indexedObservationCount: records.length,
-      indexedRecordCount: dossierMatchCount,
+      indexedRecordCount: indexedRelationCount,
+      indexedRelationCount,
+      exactSystemRelationCount,
+      manufacturerRelationCount,
       dossierCount: matchers.systems.length,
+      manufacturerCount: matchers.manufacturers.length,
     },
+    manufacturers: matchers.manufacturers.map(({ id, displayName }) => ({ id, displayName })),
+    systems: matchers.systems.map(({ slug, manufacturerId }) => ({ slug, manufacturerId })),
     summaries,
     sources,
     records,
@@ -250,5 +288,5 @@ if (process.argv.includes("--check")) {
 } else {
   await writeFile(outputPath, output);
   const index = JSON.parse(output);
-  console.log(`Wrote ${index.coverage.indexedRecordCount} sourced usage records across ${index.coverage.dossierCount} dossiers to ${outputPath}.`);
+  console.log(`Wrote ${index.coverage.indexedRelationCount} sourced usage relations across ${index.coverage.dossierCount} dossiers and ${index.coverage.manufacturerCount} manufacturers to ${outputPath}.`);
 }

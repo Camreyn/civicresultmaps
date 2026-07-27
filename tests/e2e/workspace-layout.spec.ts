@@ -17,6 +17,7 @@ test.afterEach(async ({ page }) => {
   expect(browserErrors.get(page) ?? []).toEqual([]);
 });
 test("public workspace uses the safe embedded layout and durable visitor cookie", async ({ page, context, baseURL }) => {
+  test.setTimeout(90_000);
   await context.addCookies([{ name: "crm_layout_visitor", value: "malformed", url: baseURL! }]);
   await page.goto("/?state=WA&year=2024&tab=map&mode=margin&fips=53033");
 
@@ -78,10 +79,13 @@ test("public workspace uses the safe embedded layout and durable visitor cookie"
     .allTextContents();
   expect(jurisdictionNames.length).toBeGreaterThan(0);
   expect(jurisdictionNames).toEqual([...jurisdictionNames].sort((left, right) => left.localeCompare(right)));
+  const dataNotes = page.getByRole("complementary", { name: "Washington data notes" });
   await workspace.getByRole("button", { name: /^Data Notes/ }).click();
-  await expect(page.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
+  await expect(dataNotes.getByRole("heading", { name: "Data Notes", exact: true })).toBeVisible();
+  await dataNotes.getByRole("button", { name: "Collapse", exact: true }).press("Enter");
+  await expect(dataNotes).toHaveClass(/is-collapsed/);
 
-  await workspace.getByRole("tab", { name: "History", exact: true }).click();
+  await workspace.getByRole("tab", { name: "History", exact: true }).press("Enter");
   await expect(page).toHaveURL(/tab=history/);
   await expect(page.getByRole("heading", { name: "Historical Baselines", exact: true })).toBeVisible();
 

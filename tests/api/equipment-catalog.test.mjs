@@ -10,6 +10,15 @@ const [
   openApi,
   indexPage,
   detailPage,
+  dossierLayout,
+  componentsPage,
+  networkPage,
+  historyPage,
+  sourcesPage,
+  comparePage,
+  statePage,
+  stateApi,
+  compareApi,
   explorer,
   scene,
   gallery,
@@ -26,6 +35,15 @@ const [
   readFile("src/lib/openapi.ts", "utf8"),
   readFile("src/app/equipment/page.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/page.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/layout.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/components/page.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/network/page.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/history/page.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/sources/page.tsx", "utf8"),
+  readFile("src/app/equipment/compare/page.tsx", "utf8"),
+  readFile("src/app/equipment/state/[state]/page.tsx", "utf8"),
+  readFile("src/app/api/equipment-states/[state]/route.ts", "utf8"),
+  readFile("src/app/api/equipment-systems/compare/route.ts", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-explorer.client.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-orthographic-scene.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-reference-gallery.client.tsx", "utf8"),
@@ -368,6 +386,11 @@ assert.match(apiList, /equipment_catalog_disabled/);
 assert.match(apiDetail, /sourcesForEquipmentSystem/);
 assert.match(apiDetail, /equipment_system_not_found/);
 assert.match(openApi, /\/api\/v1\/equipment-systems/);
+assert.match(openApi, /\/api\/v1\/equipment-systems\/compare/);
+assert.match(openApi, /\/api\/v1\/equipment-states\/\{state\}/);
+assert.match(openApi, /EquipmentComparisonEnvelope/);
+assert.match(openApi, /EquipmentStateEnvelope/);
+assert.match(openApi, /EquipmentUsageRelation/);
 assert.match(openApi, /EquipmentSystemDetailEnvelope/);
 assert.match(openApi, /EquipmentSourceRevision/);
 assert.match(openApi, /currentReviewedRevisionId/);
@@ -377,14 +400,26 @@ assert.match(indexPage, /Certified configuration/);
 assert.match(indexPage, /listEquipmentSystemTiles/);
 assert.match(indexPage, /data-equipment-preview="true"/);
 assert.match(indexPage, /data-equipment-preview-source="true"/);
-assert.match(detailPage, /export const dynamic = "force-dynamic"/);
 assert.match(detailPage, /Do not collapse evidence scopes/);
-assert.match(detailPage, /Archived source manifest/);
-assert.match(detailPage, /system.deviceName/);
-assert.match(detailPage, /deploymentSourceIds/);
-assert.match(detailPage, /No reviewed deployment observation/);
-assert.match(detailPage, /EquipmentNetworkEvidencePanel/);
-assert.match(detailPage, /system\.networkEvidence/);
+assert.match(detailPage, /Dossier overview/);
+assert.match(dossierLayout, /export const dynamic = "force-dynamic"/);
+assert.match(dossierLayout, /system\.deviceName/);
+assert.match(dossierLayout, /DossierSectionNav/);
+assert.match(componentsPage, /EquipmentExplorer/);
+assert.match(networkPage, /EquipmentNetworkEvidencePanel/);
+assert.match(networkPage, /system\.networkEvidence/);
+assert.match(historyPage, /deploymentSourceIds/);
+assert.match(historyPage, /No reviewed deployment observation/);
+assert.match(sourcesPage, /Archived source manifest/);
+assert.match(sourcesPage, /details/);
+assert.match(comparePage, /Compare two or three reviewed equipment dossiers/);
+assert.match(comparePage, /name="slugs"/);
+assert.match(statePage, /Named product-family records/);
+assert.match(statePage, /Manufacturer context only/);
+assert.match(stateApi, /exactProductFamilySystems/);
+assert.match(stateApi, /manufacturerContexts/);
+assert.match(compareApi, /validateEquipmentComparisonSlugs/);
+assert.match(compareApi, /buildEquipmentComparison/);
 assert.doesNotMatch(detailPage, /DS200 power \/ backup supply/);
 assert.doesNotMatch(detailPage, /Washington system-level observations/);
 assert.match(explorer, /dynamic\(/);

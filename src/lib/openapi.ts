@@ -206,6 +206,48 @@ export function buildOpenApiDocument() {
           },
         },
       },
+      "/api/v1/equipment-systems/compare": {
+        get: {
+          tags: ["Equipment"],
+          operationId: "compareEquipmentSystems",
+          summary: "Compare two or three reviewed equipment dossiers",
+          description: "Returns ordered, comparison-safe certification, component, network, history, usage-relation, and source fields without ranking the systems.",
+          parameters: [
+            {
+              name: "slugs",
+              in: "query",
+              required: true,
+              style: "form",
+              explode: false,
+              schema: { type: "array", minItems: 2, maxItems: 3, uniqueItems: true, items: { type: "string" } },
+            },
+          ],
+          responses: {
+            "200": {
+              description: "Two or three reviewed dossier comparisons in requested order.",
+              content: { "application/json": { schema: { $ref: "#/components/schemas/EquipmentComparisonEnvelope" } } },
+            },
+            "400": { ...errorResponse, description: "Comparison requires two or three distinct known slugs." },
+            "404": { ...errorResponse, description: "The equipment catalog is not enabled." },
+          },
+        },
+      },
+      "/api/v1/equipment-states/{state}": {
+        get: {
+          tags: ["Equipment"],
+          operationId: "getEquipmentStateContext",
+          summary: "Get exact product-family and manufacturer context for one state",
+          description: "Exact product-family relations target reviewed dossiers. Vendor-only observations are grouped once by manufacturer and do not become dossier-usage claims.",
+          parameters: [{ name: "state", in: "path", required: true, schema: { type: "string", pattern: "^[A-Z]{2}$" } }],
+          responses: {
+            "200": {
+              description: "State observations split into exact dossier relations and manufacturer-level context.",
+              content: { "application/json": { schema: { $ref: "#/components/schemas/EquipmentStateEnvelope" } } },
+            },
+            "404": { ...errorResponse, description: "Catalog disabled or state equipment context not found." },
+          },
+        },
+      },
       "/api/v1/equipment-systems/{slug}": {
         get: {
           tags: ["Equipment"],
@@ -708,14 +750,128 @@ export function buildOpenApiDocument() {
             meta: { allOf: [{ $ref: "#/components/schemas/EnvelopeMeta" }, { type: "object", properties: { schemaVersion: { type: "string", example: equipmentCatalogApiSchemaVersion } } }] },
           },
         },
+        EquipmentUsageRelationTarget: {
+          oneOf: [
+            {
+              type: "object",
+              required: ["kind", "slug"],
+              properties: {
+                kind: { type: "string", const: "equipment_system" },
+                slug: { type: "string" },
+              },
+              additionalProperties: false,
+            },
+            {
+              type: "object",
+              required: ["kind", "id", "displayName"],
+              properties: {
+                kind: { type: "string", const: "manufacturer" },
+                id: { type: "string" },
+                displayName: { type: "string" },
+              },
+              additionalProperties: false,
+            },
+          ],
+        },
+        EquipmentUsageRelation: {
+          type: "object",
+          required: ["id", "evidenceKind", "target", "matchReason"],
+          properties: {
+            id: { type: "string" },
+            evidenceKind: { type: "string", enum: ["device_family", "manufacturer_context"] },
+            target: { $ref: "#/components/schemas/EquipmentUsageRelationTarget" },
+            matchReason: { type: "string" },
+          },
+          additionalProperties: false,
+        },
+        EquipmentManufacturerContext: {
+          type: "object",
+          required: ["manufacturer", "state", "totalRecords", "sourceIds", "reportedSystemNames", "reportedVendors", "relatedDossierSlugs", "caveat"],
+          properties: {
+            manufacturer: { $ref: "#/components/schemas/EquipmentUsageRelationTarget" },
+            state: { type: "string", pattern: "^[A-Z]{2}$" },
+            totalRecords: { type: "integer", minimum: 1 },
+            sourceIds: { type: "array", items: { type: "string" } },
+            reportedSystemNames: { type: "array", items: { type: "string" } },
+            reportedVendors: { type: "array", items: { type: "string" } },
+            relatedDossierSlugs: { type: "array", items: { type: "string" } },
+            caveat: { type: "string" },
+          },
+          additionalProperties: false,
+        },
+        EquipmentStateEnvelope: {
+          type: "object",
+          required: ["data", "meta"],
+          properties: {
+            data: {
+              type: "object",
+              required: ["state", "totalObservations", "exactProductFamilySystems", "manufacturerContexts", "sourceIds", "caveat"],
+              properties: {
+                state: {
+                  type: "object",
+                  required: ["code", "name"],
+                  properties: {
+                    code: { type: "string", pattern: "^[A-Z]{2}$" },
+                    name: { type: "string" },
+                  },
+                  additionalProperties: false,
+                },
+                totalObservations: { type: "integer", minimum: 1 },
+                exactProductFamilySystems: { type: "array", items: { type: "object", additionalProperties: true } },
+                manufacturerContexts: { type: "array", items: { $ref: "#/components/schemas/EquipmentManufacturerContext" } },
+                sourceIds: { type: "array", items: { type: "string" } },
+                caveat: { type: "string" },
+              },
+              additionalProperties: false,
+            },
+            meta: { $ref: "#/components/schemas/EnvelopeMeta" },
+          },
+        },
+        EquipmentComparisonEnvelope: {
+          type: "object",
+          required: ["data", "meta"],
+          properties: {
+            data: {
+              type: "object",
+              required: ["systems"],
+              properties: {
+                systems: {
+                  type: "array",
+                  minItems: 2,
+                  maxItems: 3,
+                  items: { type: "object", additionalProperties: true },
+                },
+              },
+              additionalProperties: false,
+            },
+            meta: { $ref: "#/components/schemas/EnvelopeMeta" },
+          },
+        },
         EquipmentUsageRecord: {
           type: "object",
-          required: ["id", "slug", "evidenceKind", "matchReason", "state", "electionYear", "jurisdictionCode", "jurisdictionName", "jurisdictionLevel", "jurisdictionTag", "vendor", "systemName", "equipmentType", "sourceId", "map"],
+          required: ["id", "slug", "evidenceKind", "matchReason", "relation", "relationScope", "relationTarget", "requestedDossierContext", "state", "electionYear", "jurisdictionCode", "jurisdictionName", "jurisdictionLevel", "jurisdictionTag", "vendor", "systemName", "equipmentType", "sourceId", "map"],
           properties: {
             id: { type: "string" },
             slug: { type: "string" },
             evidenceKind: { type: "string", enum: ["device_family", "manufacturer_context"] },
             matchReason: { type: "string" },
+            relation: { $ref: "#/components/schemas/EquipmentUsageRelation" },
+            relationScope: { type: "string", enum: ["exact_product_family", "manufacturer_context"] },
+            relationTarget: { $ref: "#/components/schemas/EquipmentUsageRelationTarget" },
+            requestedDossierContext: {
+              oneOf: [
+                { type: "null" },
+                {
+                  type: "object",
+                  required: ["slug", "relationship"],
+                  properties: {
+                    slug: { type: "string" },
+                    relationship: { type: "string", const: "same_manufacturer_not_exact_deployment" },
+                  },
+                  additionalProperties: false,
+                },
+              ],
+            },
             state: { type: "string", pattern: "^[A-Z]{2}$" },
             electionYear: { type: "integer", enum: [2024] },
             jurisdictionCode: { type: "string" },
@@ -746,11 +902,26 @@ export function buildOpenApiDocument() {
           properties: {
             data: {
               type: "object",
-              required: ["system", "summary", "evidenceKind", "records", "sources", "total", "limit", "offset"],
+              required: ["system", "summary", "evidenceKind", "relation", "requestedDossierContext", "records", "sources", "total", "limit", "offset"],
               properties: {
                 system: { type: "object", additionalProperties: true },
-                summary: { type: "object", additionalProperties: { type: "integer" } },
+                summary: { type: "object", additionalProperties: true },
                 evidenceKind: { type: "string", enum: ["device_family", "manufacturer_context"] },
+                relation: {
+                  type: "object",
+                  required: ["evidenceKind", "target"],
+                  properties: {
+                    evidenceKind: { type: "string", enum: ["device_family", "manufacturer_context"] },
+                    target: { $ref: "#/components/schemas/EquipmentUsageRelationTarget" },
+                  },
+                  additionalProperties: false,
+                },
+                requestedDossierContext: {
+                  oneOf: [
+                    { type: "null" },
+                    { type: "object", additionalProperties: true },
+                  ],
+                },
                 records: { type: "array", items: { $ref: "#/components/schemas/EquipmentUsageRecord" } },
                 sources: { type: "array", items: { type: "object", additionalProperties: true } },
                 total: { type: "integer", minimum: 0 },

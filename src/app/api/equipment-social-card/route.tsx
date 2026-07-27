@@ -249,7 +249,7 @@ function machineCard(preview: EquipmentMachineSocialPreview, origin: string) {
 }
 
 function stateCard(preview: EquipmentStateSocialPreview) {
-  const dense = preview.systems.length >= 5;
+  const dense = preview.systems.length + preview.manufacturerContexts.length >= 5;
   const response = new ImageResponse(
     (
       <div
@@ -267,9 +267,9 @@ function stateCard(preview: EquipmentStateSocialPreview) {
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 30 }}>
           <BrandHeader label="2024 source-linked equipment records" />
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-            <Fact label="Tracked dossiers" value={String(preview.systems.length)} />
-            <Fact label="Named families" value={String(preview.namedFamilySystemCount)} />
-            <Fact label="Source records" value={String(preview.sourceCount)} />
+            <Fact label="Exact dossiers" value={String(preview.namedFamilySystemCount)} />
+            <Fact label="Vendor groups" value={String(preview.manufacturerContextCount)} />
+            <Fact label="Sources" value={String(preview.sourceCount)} />
           </div>
         </div>
 
@@ -313,6 +313,39 @@ function stateCard(preview: EquipmentStateSocialPreview) {
               </div>
             );
           })}
+          {preview.manufacturerContexts.map((context) => (
+            <div
+              key={`manufacturer:${context.manufacturer.id}`}
+              style={{
+                minHeight: dense ? 52 : 62,
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                padding: dense ? "5px 13px" : "9px 13px",
+                border: `1px solid ${colors.border}`,
+                borderLeft: `4px solid ${colors.context}`,
+                borderRadius: 10,
+                background: colors.card,
+              }}
+            >
+              <div style={{ width: 356, display: "flex", flexDirection: "column", gap: 2 }}>
+                <div style={{ display: "flex", color: colors.text, fontSize: 18, fontWeight: 900 }}>
+                  {context.manufacturer.displayName}
+                </div>
+                <div style={{ display: "flex", color: colors.muted, fontSize: 12 }}>Vendor-only context</div>
+              </div>
+              <div style={{ width: 254, display: "flex", flexDirection: "column", gap: 3 }}>
+                <div style={{ display: "flex", color: "#c1d1cf", fontSize: 13, fontWeight: 850 }}>
+                  {context.totalRecords} source {context.totalRecords === 1 ? "row" : "rows"}
+                </div>
+                <div style={{ display: "flex", color: colors.muted, fontSize: 11 }}>Not an exact dossier match</div>
+              </div>
+              <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", color: colors.muted, fontSize: 12 }}>
+                Grouped by manufacturer
+              </div>
+            </div>
+          ))}
         </div>
 
         <div style={{ marginTop: 12, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20 }}>

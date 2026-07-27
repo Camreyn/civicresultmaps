@@ -9,15 +9,31 @@ export type EquipmentUsageMapReference = {
   caveat: string | null;
 };
 
-type EquipmentUsageStoredMatch = {
+export type EquipmentUsageSystemTarget = {
+  kind: "equipment_system";
   slug: string;
+};
+
+export type EquipmentUsageManufacturerTarget = {
+  kind: "manufacturer";
+  id: string;
+  displayName: string;
+};
+
+export type EquipmentUsageRelationTarget =
+  | EquipmentUsageSystemTarget
+  | EquipmentUsageManufacturerTarget;
+
+export type EquipmentUsageRelation = {
+  id: string;
   evidenceKind: EquipmentUsageEvidenceKind;
+  target: EquipmentUsageRelationTarget;
   matchReason: string;
 };
 
 type EquipmentUsageStoredRecord = {
   id: string;
-  matches: EquipmentUsageStoredMatch[];
+  relations: EquipmentUsageRelation[];
   state: string;
   electionYear: number;
   jurisdictionCode: string;
@@ -31,7 +47,18 @@ type EquipmentUsageStoredRecord = {
   map: EquipmentUsageMapReference;
 };
 
-export type EquipmentUsageRecord = Omit<EquipmentUsageStoredRecord, "matches"> & EquipmentUsageStoredMatch;
+export type EquipmentUsageRecord = Omit<EquipmentUsageStoredRecord, "relations"> & {
+  slug: string;
+  evidenceKind: EquipmentUsageEvidenceKind;
+  matchReason: string;
+  relation: EquipmentUsageRelation;
+  relationScope: "exact_product_family" | "manufacturer_context";
+  relationTarget: EquipmentUsageRelationTarget;
+  requestedDossierContext: {
+    slug: string;
+    relationship: "same_manufacturer_not_exact_deployment";
+  } | null;
+};
 
 export type EquipmentUsageSource = {
   id: string;
@@ -47,6 +74,7 @@ export type EquipmentUsageSource = {
 
 export type EquipmentUsageSummary = {
   slug: string;
+  manufacturerId: string;
   totalRecords: number;
   totalStates: number;
   deviceFamilyRecords: number;
@@ -63,10 +91,30 @@ export type EquipmentUsageStateSystemSummary = {
   state: string;
   totalRecords: number;
   deviceFamilyRecords: number;
-  manufacturerContextRecords: number;
+  manufacturerContextRecords: 0;
   sourceIds: string[];
   reportedSystemNames: string[];
   reportedVendors: string[];
+};
+
+export type EquipmentUsageManufacturerContextSummary = {
+  manufacturer: EquipmentUsageManufacturerTarget;
+  state: string;
+  totalRecords: number;
+  sourceIds: string[];
+  reportedSystemNames: string[];
+  reportedVendors: string[];
+  relatedDossierSlugs: string[];
+  caveat: string;
+};
+
+export type EquipmentUsageStateOverview = {
+  state: string;
+  exactProductFamilySystems: EquipmentUsageStateSystemSummary[];
+  manufacturerContexts: EquipmentUsageManufacturerContextSummary[];
+  totalObservations: number;
+  sourceIds: string[];
+  caveat: string;
 };
 
 type EquipmentUsageIndex = {
@@ -81,8 +129,14 @@ type EquipmentUsageIndex = {
     normalizedRowCount: number;
     indexedObservationCount: number;
     indexedRecordCount: number;
+    indexedRelationCount: number;
+    exactSystemRelationCount: number;
+    manufacturerRelationCount: number;
     dossierCount: number;
+    manufacturerCount: number;
   };
+  manufacturers: Array<{ id: string; displayName: string }>;
+  systems: Array<{ slug: string; manufacturerId: string }>;
   summaries: EquipmentUsageSummary[];
   sources: EquipmentUsageSource[];
   records: EquipmentUsageStoredRecord[];
@@ -90,14 +144,42 @@ type EquipmentUsageIndex = {
 
 const index = usageData as unknown as EquipmentUsageIndex;
 const sourceById = new Map(index.sources.map((source) => [source.id, source]));
+const manufacturerById = new Map(index.manufacturers.map((manufacturer) => [manufacturer.id, manufacturer]));
+const manufacturerIdBySlug = new Map(index.systems.map((system) => [system.slug, system.manufacturerId]));
+
+function publicRecord(
+  storedRecord: EquipmentUsageStoredRecord,
+  relation: EquipmentUsageRelation,
+  requestedSlug: string,
+): EquipmentUsageRecord {
+  const { relations: _relations, ...record } = storedRecord;
+  const manufacturerContext = relation.target.kind === "manufacturer";
+  return {
+    ...record,
+    id: `${storedRecord.id}:${relation.id}`,
+    slug: requestedSlug,
+    evidenceKind: relation.evidenceKind,
+    matchReason: relation.matchReason,
+    relation,
+    relationScope: manufacturerContext ? "manufacturer_context" : "exact_product_family",
+    relationTarget: relation.target,
+    requestedDossierContext: manufacturerContext
+      ? { slug: requestedSlug, relationship: "same_manufacturer_not_exact_deployment" }
+      : null,
+  };
+}
 
 function recordsForSlug(slug: string): EquipmentUsageRecord[] {
-  return index.records.flatMap((storedRecord) => {
-    const { matches, ...record } = storedRecord;
-    return matches
-      .filter((match) => match.slug === slug)
-      .map((match) => ({ ...record, ...match, id: `${storedRecord.id}:${slug}` }));
-  });
+  const manufacturerId = manufacturerIdBySlug.get(slug);
+  if (!manufacturerId) return [];
+
+  return index.records.flatMap((storedRecord) => storedRecord.relations
+    .filter((relation) => (
+      relation.target.kind === "equipment_system"
+        ? relation.target.slug === slug
+        : relation.target.id === manufacturerId
+    ))
+    .map((relation) => publicRecord(storedRecord, relation, slug)));
 }
 
 export const equipmentUsageMetadata = {
@@ -116,6 +198,14 @@ export function listEquipmentUsageSummaries() {
   return [...index.summaries];
 }
 
+export function getEquipmentUsageManufacturer(manufacturerId: string) {
+  return manufacturerById.get(manufacturerId) ?? null;
+}
+
+export function listEquipmentUsageManufacturers() {
+  return [...index.manufacturers];
+}
+
 export function defaultEquipmentUsageEvidence(summary: EquipmentUsageSummary): EquipmentUsageEvidenceKind {
   return summary.deviceFamilyRecords > 0 ? "device_family" : "manufacturer_context";
 }
@@ -129,16 +219,16 @@ export function listEquipmentUsageStates(slug: string, evidenceKind?: EquipmentU
 
 export function listEquipmentUsageStateCodes() {
   return [...new Set(index.records
-    .filter((record) => record.matches.length > 0)
+    .filter((record) => record.relations.length > 0)
     .map((record) => record.state))]
     .sort();
 }
 
-export function getEquipmentUsageStateSummary(state: string): EquipmentUsageStateSystemSummary[] {
+export function getEquipmentUsageStateOverview(state: string): EquipmentUsageStateOverview | null {
   const normalizedState = state.trim().toUpperCase();
-  if (!/^[A-Z]{2}$/.test(normalizedState)) return [];
+  if (!/^[A-Z]{2}$/.test(normalizedState)) return null;
 
-  type MutableSummary = Omit<
+  type MutableSystem = Omit<
     EquipmentUsageStateSystemSummary,
     "sourceIds" | "reportedSystemNames" | "reportedVendors"
   > & {
@@ -146,42 +236,103 @@ export function getEquipmentUsageStateSummary(state: string): EquipmentUsageStat
     reportedSystemNames: Set<string>;
     reportedVendors: Set<string>;
   };
+  type MutableManufacturer = Omit<
+    EquipmentUsageManufacturerContextSummary,
+    "sourceIds" | "reportedSystemNames" | "reportedVendors" | "relatedDossierSlugs"
+  > & {
+    sourceIds: Set<string>;
+    reportedSystemNames: Set<string>;
+    reportedVendors: Set<string>;
+    relatedDossierSlugs: Set<string>;
+  };
 
-  const summaries = new Map<string, MutableSummary>();
+  const systems = new Map<string, MutableSystem>();
+  const manufacturers = new Map<string, MutableManufacturer>();
+  const sourceIds = new Set<string>();
+  const observationIds = new Set<string>();
+
   for (const record of index.records) {
     if (record.state !== normalizedState) continue;
-    for (const match of record.matches) {
-      const summary = summaries.get(match.slug) ?? {
-        slug: match.slug,
+    observationIds.add(record.id);
+    sourceIds.add(record.sourceId);
+
+    for (const relation of record.relations) {
+      if (relation.target.kind === "equipment_system") {
+        const summary = systems.get(relation.target.slug) ?? {
+          slug: relation.target.slug,
+          state: normalizedState,
+          totalRecords: 0,
+          deviceFamilyRecords: 0,
+          manufacturerContextRecords: 0 as const,
+          sourceIds: new Set<string>(),
+          reportedSystemNames: new Set<string>(),
+          reportedVendors: new Set<string>(),
+        };
+        summary.totalRecords += 1;
+        summary.deviceFamilyRecords += 1;
+        summary.sourceIds.add(record.sourceId);
+        if (record.systemName.trim()) summary.reportedSystemNames.add(record.systemName.trim());
+        if (record.vendor.trim()) summary.reportedVendors.add(record.vendor.trim());
+        systems.set(relation.target.slug, summary);
+        continue;
+      }
+
+      const manufacturerTarget = relation.target;
+      const summary = manufacturers.get(manufacturerTarget.id) ?? {
+        manufacturer: manufacturerTarget,
         state: normalizedState,
         totalRecords: 0,
-        deviceFamilyRecords: 0,
-        manufacturerContextRecords: 0,
         sourceIds: new Set<string>(),
         reportedSystemNames: new Set<string>(),
         reportedVendors: new Set<string>(),
+        relatedDossierSlugs: new Set(
+          index.systems
+            .filter((system) => system.manufacturerId === manufacturerTarget.id)
+            .map((system) => system.slug),
+        ),
+        caveat:
+          "The source rows name this manufacturer but do not identify any related dossier model or configuration as deployed.",
       };
       summary.totalRecords += 1;
-      if (match.evidenceKind === "device_family") summary.deviceFamilyRecords += 1;
-      else summary.manufacturerContextRecords += 1;
       summary.sourceIds.add(record.sourceId);
       if (record.systemName.trim()) summary.reportedSystemNames.add(record.systemName.trim());
       if (record.vendor.trim()) summary.reportedVendors.add(record.vendor.trim());
-      summaries.set(match.slug, summary);
+      manufacturers.set(manufacturerTarget.id, summary);
     }
   }
 
-  return [...summaries.values()]
+  if (observationIds.size === 0) return null;
+
+  const exactProductFamilySystems = [...systems.values()]
     .map((summary) => ({
       ...summary,
       sourceIds: [...summary.sourceIds].sort(),
       reportedSystemNames: [...summary.reportedSystemNames].sort(),
       reportedVendors: [...summary.reportedVendors].sort(),
     }))
-    .sort((left, right) => {
-      const evidenceDifference = Number(right.deviceFamilyRecords > 0) - Number(left.deviceFamilyRecords > 0);
-      return evidenceDifference || left.slug.localeCompare(right.slug);
-    });
+    .sort((left, right) => left.slug.localeCompare(right.slug));
+  const manufacturerContexts = [...manufacturers.values()]
+    .map((summary) => ({
+      ...summary,
+      sourceIds: [...summary.sourceIds].sort(),
+      reportedSystemNames: [...summary.reportedSystemNames].sort(),
+      reportedVendors: [...summary.reportedVendors].sort(),
+      relatedDossierSlugs: [...summary.relatedDossierSlugs].sort(),
+    }))
+    .sort((left, right) => left.manufacturer.displayName.localeCompare(right.manufacturer.displayName));
+
+  return {
+    state: normalizedState,
+    exactProductFamilySystems,
+    manufacturerContexts,
+    totalObservations: observationIds.size,
+    sourceIds: [...sourceIds].sort(),
+    caveat: index.sourcePolicy.caveat,
+  };
+}
+
+export function getEquipmentUsageStateSummary(state: string): EquipmentUsageStateSystemSummary[] {
+  return getEquipmentUsageStateOverview(state)?.exactProductFamilySystems ?? [];
 }
 
 export function getEquipmentUsageSource(sourceId: string) {

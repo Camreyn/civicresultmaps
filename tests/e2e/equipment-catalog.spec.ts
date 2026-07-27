@@ -12,7 +12,7 @@ test.describe.configure({ mode: "serial" });
 
 test("lists six source-linked equipment dossiers", async ({ page }) => {
   await page.goto("/equipment");
-  await expect(page.getByRole("link", { name: /Open source-linked dossier/ })).toHaveCount(6);
+  await expect(page.getByRole("link", { name: "Open dossier" })).toHaveCount(6);
   await expect(page.getByText("6 reviewed dossiers")).toBeVisible();
   await expect(page.getByText("Clear Ballot ClearVote 2.5 / ClearAccess")).toBeVisible();
   await expect(page.getByText("Clear Ballot ClearVote 2.5 / ClearCount")).toBeVisible();
@@ -30,12 +30,59 @@ test("lists six source-linked equipment dossiers", async ({ page }) => {
   await expect(page.getByAltText("Front view of an open ES&S DS200 scanner and ballot container on casters")).toBeVisible();
 });
 
-test("exposes U.S. Equipment in the shared top navigation and equipment index tour", async ({ page }) => {
-  await page.goto("/");
-  const homeEquipmentLink = page.getByRole("link", { name: "U.S. Equipment" });
-  await expect(homeEquipmentLink).toBeVisible();
-  await expect(homeEquipmentLink).toHaveAttribute("href", "/equipment");
+test("filters the catalog with shareable search parameters", async ({ page }) => {
+  await page.goto("/equipment?q=DS200");
+  await expect(page).toHaveURL(/\/equipment\?q=DS200(?:&|$)/);
+  await expect(page.locator("[data-equipment-preview='true']")).toHaveCount(1);
+  await expect(page.getByText("ES&S EVS 6.4.0.0 / DS200", { exact: true })).toBeVisible();
+  await expect(page.getByText("Clear Ballot ClearVote 2.5 / ClearAccess", { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel("Manufacturer").locator("option")).toHaveCount(4);
+  await expect(page.getByLabel("Manufacturer").locator("option").allTextContents()).resolves.toEqual(
+    ["All manufacturers", "Clear Ballot", "Dominion Voting Systems", "Election Systems & Software (ES&S)"],
+  );
+  await expect(page.getByRole("link", { name: "Clear filters" })).toHaveAttribute("href", "/equipment");
+});
 
+test("compares two reviewed dossiers through a shareable URL and API", async ({ page, request }) => {
+  const query = "slugs=clear-ballot-clearvote-25-clearaccess&slugs=dominion-democracy-suite-517-imagecast-x";
+  await page.goto(`/equipment/compare?${query}`);
+  await expect(page.getByRole("heading", { name: "Clear Ballot ClearVote 2.5 / ClearAccess", level: 3 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Dominion Democracy Suite 5.17 / ImageCast X", level: 3 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Certification scope" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Network evidence" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Usage relations and sources" })).toBeVisible();
+
+  const response = await request.get(`/api/v1/equipment-systems/compare?${query}`);
+  expect(response.status()).toBe(200);
+  const payload = await response.json();
+  expect(payload.meta.schemaVersion).toBe("2.1.0");
+  expect(payload.data.systems).toHaveLength(2);
+  expect(payload.data.systems.map((system: { slug: string }) => system.slug)).toEqual([
+    "clear-ballot-clearvote-25-clearaccess",
+    "dominion-democracy-suite-517-imagecast-x",
+  ]);
+});
+
+test("separates exact product-family matches from manufacturer context on state pages", async ({ page, request }) => {
+  await page.goto("/equipment/state/WI");
+  await expect(page.getByRole("heading", { name: "Wisconsin election equipment records" })).toBeVisible();
+  await expect(page.locator("[data-evidence='device-family']")).toHaveCount(2);
+  await expect(page.locator("[data-evidence='manufacturer-context']")).toHaveCount(2);
+  await expect(page.getByText(/Each vendor appears once/)).toBeVisible();
+  await expect(page.getByText(/not evidence that a listed machine was selected, installed, configured, or used/)).toBeVisible();
+
+  const response = await request.get("/api/v1/equipment-states/WI");
+  expect(response.status()).toBe(200);
+  const payload = await response.json();
+  expect(payload.meta.schemaVersion).toBe("2.1.0");
+  expect(payload.data.exactProductFamilySystems).toHaveLength(2);
+  expect(payload.data.manufacturerContexts).toHaveLength(2);
+  expect(payload.data.manufacturerContexts.every(
+    (context: { relatedDossierSlugs: string[] }) => context.relatedDossierSlugs.length > 0,
+  )).toBe(true);
+});
+
+test("exposes U.S. Equipment in shared navigation and the equipment index tour", async ({ page }) => {
   await page.goto("/equipment");
   await expect(page.getByRole("link", { name: "U.S. Equipment" })).toHaveAttribute("aria-current", "page");
   await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
@@ -46,27 +93,24 @@ test("exposes U.S. Equipment in the shared top navigation and equipment index to
   await expect(equipmentTour).toHaveCount(0);
 });
 
-test("jumps to jurisdiction evidence in the equipment detail tour", async ({ page }) => {
+test("introduces the shareable dossier sections in the equipment detail tour", async ({ page }) => {
   await page.goto(ds200Path);
   await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
   const detailTour = page.getByRole("dialog");
   await expect(detailTour).toBeVisible();
   await expect(detailTour).toHaveAccessibleName("Identify the reviewed configuration");
-  await detailTour.getByLabel("Jump to tour step").selectOption("equipment-detail-usage");
-  await expect(detailTour).toHaveAccessibleName("Open jurisdiction and map records");
-  await expect(page.locator("[data-tour='equipment-usage']")).toBeInViewport({ timeout: 15_000 });
+  await detailTour.getByLabel("Jump to tour step").selectOption("equipment-detail-navigation");
+  await expect(detailTour).toHaveAccessibleName("Use the shareable dossier sections");
+  await expect(page.locator("[data-tour='equipment-dossier-navigation']")).toBeInViewport({ timeout: 15_000 });
   await detailTour.getByRole("button", { name: "Close tutorial" }).click();
-});
-
-test("exposes U.S. Equipment and the route tour on the security page", async ({ page }) => {
-  await page.goto("/security");
-  await expect(page.getByRole("link", { name: "U.S. Equipment" })).toBeVisible();
-  await page.getByRole("button", { name: "Start a guided tour of this page" }).click();
-  await expect(page.getByRole("dialog", { name: "Read the qualifier first" })).toBeVisible();
 });
 
 test("lists separately scoped jurisdiction evidence with source and map links", async ({ page, request }) => {
   await page.goto(`${clearAccessPath}#equipment-usage`);
+  await expect(page).toHaveURL(
+    /\/equipment\/clear-ballot-clearvote-25-clearaccess\/usage#equipment-usage$/,
+    { timeout: 15_000 },
+  );
   const usageSection = page.locator("[data-tour='equipment-usage']");
   await expect(usageSection.getByText("49 matching sourced records", { exact: true })).toBeVisible();
   await expect(usageSection.getByText("Named product family", { exact: true }).first()).toBeVisible();
@@ -83,20 +127,37 @@ test("lists separately scoped jurisdiction evidence with source and map links", 
   expect(familyPayload.data.total).toBe(49);
   expect(familyPayload.data.records).toHaveLength(5);
   expect(familyPayload.data.records.every((record: { map: { href: string } }) => /mode=equipment&fips=\d{5}$/.test(record.map.href))).toBe(true);
+  expect(familyPayload.data.relation.target).toEqual({
+    kind: "equipment_system",
+    slug: "clear-ballot-clearvote-25-clearaccess",
+  });
 
   await page.goto(`${ds200Path}#equipment-usage`);
+  await expect(page).toHaveURL(
+    /\/equipment\/ess-evs-6400-ds200\/usage#equipment-usage$/,
+    { timeout: 15_000 },
+  );
   await expect(page.locator("[data-tour='equipment-usage']").getByText("1,509 matching sourced records", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Evidence strength")).toHaveValue("manufacturer_context");
-  await expect(page.locator("[data-tour='equipment-usage']").getByText(/vendor only, not proof of this exact model/)).toBeVisible();
+  await expect(page.locator("[data-tour='equipment-usage']").getByText("Manufacturer context, not DS200 deployment evidence")).toBeVisible();
+
+  const manufacturerResponse = await request.get(
+    "/api/v1/equipment-systems/ess-evs-6400-ds200/jurisdictions?evidence=manufacturer_context&limit=2",
+  );
+  const manufacturerPayload = await manufacturerResponse.json();
+  expect(manufacturerPayload.data.relation.target.kind).toBe("manufacturer");
+  expect(manufacturerPayload.data.relation.target.id).toBe("ess");
+  expect(manufacturerPayload.data.requestedDossierContext.relationship).toBe("same_manufacturer_not_exact_deployment");
 });
 
 test("renders confirmed ClearAccess UPS options without inventing runtime", async ({ page, request }) => {
-  await page.goto(clearAccessPath);
+  await page.goto(`${clearAccessPath}/history`);
   await expect(page.getByRole("heading", { name: "Clear Ballot ClearVote 2.5 / ClearAccess" })).toBeVisible();
   await expect(page.getByText("CyberPower; APC", { exact: true })).toBeVisible();
   await expect(page.getByText("PR1500RT2U; SMT2200C; SRT1500RMXLA", { exact: true })).toBeVisible();
   await expect(page.getByText("Not specified in reviewed source", { exact: true })).toHaveCount(2);
   await expect(page.getByRole("heading", { name: "No reviewed deployment observation in this dossier" })).toBeVisible();
+  await page.goto(`${clearAccessPath}/components`);
   await expect(page.locator("[data-component-select='true']")).toHaveCount(9);
 
   const networkBadge = page.getByRole("img", { name: "Network connectivity capability" });
@@ -137,7 +198,7 @@ test("renders confirmed ClearAccess UPS options without inventing runtime", asyn
 });
 
 test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ page }) => {
-  await page.goto(clearAccessPath);
+  await page.goto(`${clearAccessPath}/components`);
   const initialResources = await page.evaluate(() =>
     performance.getEntriesByType("resource").map((entry) => entry.name),
   );
@@ -206,7 +267,7 @@ test("keeps the ClearAccess 3D view lazy, optional, and selectable", async ({ pa
 });
 
 test("opens a sourced reference-photo sidebar and expanded image dialog", async ({ page }) => {
-  await page.goto(clearAccessPath);
+  await page.goto(`${clearAccessPath}/components`);
   const photoButton = page.getByRole("button", { name: "Photos 1" });
   await expect(photoButton).toHaveAttribute("aria-expanded", "false");
   await photoButton.click();
@@ -239,7 +300,7 @@ test("preserves the source-linked fallback when WebGL 2 is unavailable", async (
       },
     });
   });
-  await page.goto(clearAccessPath);
+  await page.goto(`${clearAccessPath}/components`);
   await page.getByRole("button", { name: /Open 3D view/ }).click();
   await expect(page.getByText("3D view unavailable")).toBeVisible();
   await expect(page.locator("[data-component-select='true']")).toHaveCount(9);
@@ -247,7 +308,7 @@ test("preserves the source-linked fallback when WebGL 2 is unavailable", async (
 });
 
 test("renders ImageCast X advisory and internal-component evidence boundaries", async ({ page, request }) => {
-  await page.goto(imageCastXPath);
+  await page.goto(`${imageCastXPath}/components`);
   await expect(page.getByRole("heading", { name: "Dominion Democracy Suite 5.17 / ImageCast X" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "ICX Prime solid-state drive", level: 3 })).toHaveCount(0);
   const ssdButton = page.getByRole("button", { name: /ICX Prime solid-state drive/ });
@@ -255,6 +316,7 @@ test("renders ImageCast X advisory and internal-component evidence boundaries", 
   await expect(ssdButton).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("heading", { name: "ICX Prime solid-state drive", level: 3 })).toBeVisible();
   await expect(page.getByText(/not placed in the 3D scene/)).toBeVisible();
+  await page.goto(`${imageCastXPath}/history`);
   await expect(page.getByText("SMT-1500; SMT-1500C; PR1500LCD; PR1500LCD-VTVM", { exact: true })).toBeVisible();
   await expect(page.getByText("Not specified in reviewed source", { exact: true })).toHaveCount(3);
   await expect(page.getByRole("heading", { name: "Straight-party and split-ticket selection review advisory" })).toBeVisible();
@@ -264,6 +326,7 @@ test("renders ImageCast X advisory and internal-component evidence boundaries", 
   expect(payload.data.system.coverage.sourceCount).toBe(12);
   expect(payload.data.sources).toHaveLength(12);
 
+  await page.goto(`${imageCastXPath}/components`);
   await page.locator("[data-component-select='true']").filter({ hasText: "SID-21V compute board profile" }).click();
   await expect(page.getByRole("heading", { name: "SID-21V compute board profile", level: 3 })).toBeVisible();
   await expect(page.getByText("Intel Atom Z3735F", { exact: true })).toBeVisible();
@@ -278,11 +341,12 @@ test("renders ImageCast X advisory and internal-component evidence boundaries", 
 });
 
 test("retains DS200 partial-power and deployment evidence boundaries", async ({ page }) => {
-  await page.goto(ds200Path);
+  await page.goto(`${ds200Path}/history`);
   await expect(page.getByRole("heading", { name: "DS200 power / backup supply" })).toBeVisible();
   await expect(page.getByText(/confirms DS200 battery backup/)).toBeVisible();
   await expect(page.getByText("Jefferson County, Washington", { exact: true })).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
+  await page.goto(`${ds200Path}/components`);
   await expect(page.locator("[data-component-select='true']")).toHaveCount(12);
   await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(3);
   const carrierItem = page.locator("li[class*='componentItem']").filter({ hasText: "Optional modem carrier board" });
@@ -320,7 +384,7 @@ test("retains DS200 partial-power and deployment evidence boundaries", async ({ 
 });
 
 test("keeps network topology claims source-bounded and interactive", async ({ page }) => {
-  await page.goto(clearCountPath);
+  await page.goto(`${clearCountPath}/network`);
   const networkEvidence = page.locator("[data-network-evidence]");
   await expect(networkEvidence.getByRole("heading", { name: "Documented paths, controls, and unknowns" })).toBeVisible();
   await expect(networkEvidence.getByText("1 sourced configuration view", { exact: true })).toBeVisible();
@@ -339,7 +403,7 @@ test("keeps network topology claims source-bounded and interactive", async ({ pa
   await page.keyboard.press("Escape");
   await expect(sourceDialog).toHaveCount(0);
 
-  await page.goto(ds200Path);
+  await page.goto(`${ds200Path}/network`);
   const ds200NetworkEvidence = page.locator("[data-network-evidence]");
   const certifiedPath = ds200NetworkEvidence.getByRole("button", { name: /EVS 6.4.0.0 Regional Results test path/ });
   const optionalCellular = ds200NetworkEvidence.getByRole("button", { name: /Historical optional cellular hardware context/ });
@@ -351,22 +415,23 @@ test("keeps network topology claims source-bounded and interactive", async ({ pa
 });
 
 test("renders central tabulators as three separate sourced systems", async ({ page, request }) => {
-  await page.goto(clearCountPath);
+  await page.goto(`${clearCountPath}/components`);
   await expect(page.getByRole("heading", { name: "Clear Ballot ClearVote 2.5 / ClearCount" })).toBeVisible();
   await expect(page.locator("[data-component-select='true']")).toHaveCount(7);
   await expect(page.locator("[data-component-select='true']").filter({ hasText: "CountServer" })).toHaveCount(1);
   await expect(page.getByRole("img", { name: "Network connectivity capability" })).toHaveCount(1);
 
-  await page.goto(imageCastCentralPath);
+  await page.goto(`${imageCastCentralPath}/components`);
   await expect(page.getByRole("heading", { name: "Dominion Democracy Suite 5.17 / ImageCast Central" })).toBeVisible();
   await expect(page.locator("[data-component-select='true']")).toHaveCount(7);
   const optionalLan = page.locator("[data-component-select='true']").filter({ hasText: "Optional isolated network infrastructure" });
   await expect(optionalLan.getByText("Optional", { exact: true })).toBeVisible();
   await optionalLan.click();
   await expect(page.getByText("100 Mbps infrastructure when an additional central repository/data center is used; isolated from the Internet and all other networks", { exact: true })).toBeVisible();
+  await page.goto(`${imageCastCentralPath}/history`);
   await expect(page.getByText("900 W / 1500 VA", { exact: true })).toBeVisible();
 
-  await page.goto(ds950Path);
+  await page.goto(`${ds950Path}/components`);
   await expect(page.getByRole("heading", { name: "ES&S EVS 6.4.0.0 / DS950" })).toBeVisible();
   await expect(page.locator("[data-component-select='true']")).toHaveCount(10);
   await expect(page.getByText("Certified DS950 firmware:", { exact: true })).toBeVisible();
@@ -382,7 +447,7 @@ test("renders central tabulators as three separate sourced systems", async ({ pa
 
 test("keeps the equipment evidence layout within a mobile viewport", async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });
-  await page.goto(imageCastXPath);
+  await page.goto(`${imageCastXPath}/components`);
   await expect(page.getByRole("heading", { name: "Dominion Democracy Suite 5.17 / ImageCast X" })).toBeVisible();
   const viewport = await page.evaluate(() => ({
     clientWidth: document.documentElement.clientWidth,
