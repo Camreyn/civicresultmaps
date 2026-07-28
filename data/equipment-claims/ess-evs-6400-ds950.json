@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-21",
+  "reviewedOn": "2026-07-28",
   "system": {
     "id": "ess-evs-6400-ds950",
     "slug": "ess-evs-6400-ds950",
@@ -416,7 +416,7 @@
       }
     ],
     "networkEvidence": {
-      "reviewedOn": "2026-07-21",
+      "reviewedOn": "2026-07-28",
       "summary": "The EVS 6.4.0.0 Pro V&V report states that DS950, DS850, and DS450 results were transmitted to the EMS through a closed local area network during accuracy testing. The EAC scope includes the central tabulator, Electionware infrastructure, and a minimum-1-Gb network switch, but it does not establish a jurisdiction's live switch, port, or addressing configuration.",
       "publicationBoundary": "This view publishes only the laboratory-supported closed-LAN result path and its source limits. It excludes IP addresses, credentials, keys, database details, switch settings, VLANs, hostnames, device identifiers, and site-specific routing.",
       "configurations": [
@@ -542,7 +542,27 @@
             "provv-evs-6400-test-report@2026-07-19"
           ],
           "caveat": "A VSTL accuracy-test topology is not proof that a jurisdiction connected a DS950, used the listed switch, or transmitted results over a network in a particular election.",
-          "focusNodeId": "ds950-tabulator"
+          "focusNodeId": "ds950-tabulator",
+          "externalPathway": {
+            "status": "no_external_path_documented",
+            "internetReachability": "not_documented",
+            "focusConnectionStatus": "no_connection_documented",
+            "summary": "The exact-version DS950 test path is documented only across a closed LAN to Electionware EMS. The reviewed passage does not identify a public-network or Internet segment.",
+            "originNodeIds": [],
+            "externalTransportNodeIds": [],
+            "boundaryNodeIds": [],
+            "receivingNodeIds": [],
+            "linkIds": [],
+            "caveat": "This is a VSTL accuracy-test path, not proof of a jurisdiction's switch, cabling, enabled services, external connectivity, or election use.",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ]
+          }
         }
       ],
       "sourceImages": [
@@ -779,12 +799,12 @@
   },
   "editorial": {
     "state": "published",
-    "revision": 3,
+    "revision": 4,
     "createdOn": "2026-07-20",
-    "updatedOn": "2026-07-22",
-    "reviewedOn": "2026-07-21",
+    "updatedOn": "2026-07-28",
+    "reviewedOn": "2026-07-28",
     "reviewedBy": "project_editorial_review",
-    "publishedOn": "2026-07-22",
+    "publishedOn": "2026-07-28",
     "sourceRevisionIds": [
       "eac-evs-6400-record@2026-07-19",
       "eac-evs-6400-scope@2026-07-19",
@@ -795,8 +815,9 @@
     "reviewNotes": [
       "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision.",
       "Added the exact-version closed-LAN VSTL test path without inferring a field switch or operational network configuration.",
+      "Added source-bounded external-pathway classification so closed networks, physical interfaces, optional transport hardware, and documented routes beyond a local boundary remain visibly distinct.",
       "project_owner: Production publication authorized after source, editorial, build, and browser validation."
     ],
-    "publicationId": "equipment-explorer-2026-07-22-r1"
+    "publicationId": "equipment-explorer-2026-07-28-r1"
   }
 }

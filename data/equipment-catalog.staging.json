@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
   "catalogChannel": "staging",
-  "generatedOn": "2026-07-21",
+  "generatedOn": "2026-07-28",
   "status": "reviewed_pilot",
   "editorialState": "staging_review",
   "productionRequirement": "published",
   "releaseIds": [
-    "equipment-explorer-2026-07-22-r1"
+    "equipment-explorer-2026-07-28-r1"
   ],
   "methodology": {
     "title": "Election equipment catalog evidence policy",
@@ -3289,7 +3289,7 @@
         }
       ],
       "networkEvidence": {
-        "reviewedOn": "2026-07-21",
+        "reviewedOn": "2026-07-28",
         "summary": "The reviewed ClearVote 2.5 record identifies the ClearAccess station and its local peripherals, while Clear Ballot's current security policy says certified products are never attached to modems, the Internet, Wi-Fi, or Bluetooth. The exact port occupation and field wiring of a particular station are not established.",
         "publicationBoundary": "This public view records device roles, connection media, evidence scope, and isolation controls. It intentionally excludes IP addresses, credentials, keys, access codes, APNs, SIM identifiers, serial numbers, and site-specific routing details.",
         "configurations": [
@@ -3403,7 +3403,27 @@
               "clearballot-security@2026-07-21"
             ],
             "caveat": "A product-level communications policy and a certified component list do not prove the state of a particular port, cable, station, polling place, or election deployment.",
-            "focusNodeId": "clearaccess-station"
+            "focusNodeId": "clearaccess-station",
+            "externalPathway": {
+              "status": "no_external_path_documented",
+              "internetReachability": "explicitly_excluded",
+              "focusConnectionStatus": "no_connection_documented",
+              "summary": "No path beyond the ClearAccess station's local peripherals is documented. Clear Ballot's reviewed policy says certified products are not attached to modems, the Internet, Wi-Fi, or Bluetooth.",
+              "originNodeIds": [],
+              "externalTransportNodeIds": [],
+              "boundaryNodeIds": [],
+              "receivingNodeIds": [],
+              "linkIds": [],
+              "caveat": "This is a product-policy and certified-configuration boundary, not a field inspection of a particular station, port, cable, or polling place.",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "clearballot-security"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "clearballot-security@2026-07-21"
+              ]
+            }
           }
         ],
         "sourceImages": [
@@ -3607,7 +3627,7 @@
         "The UPS models are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Test findings are time- and version-scoped. They do not prove a field incident, exploitation, altered votes, fraud, misconduct, or an incorrect election outcome."
       ],
-      "claimRevision": 5,
+      "claimRevision": 6,
       "editorialState": "published",
       "sourceIds": [
         "clearballot-clearaccess-product-page",
@@ -4046,7 +4066,7 @@
         }
       ],
       "networkEvidence": {
-        "reviewedOn": "2026-07-21",
+        "reviewedOn": "2026-07-28",
         "summary": "The ClearVote 2.5 EAC scope documents ClearCount as a wired, closed, isolated Ethernet system linking the CountServer, ScanStations, and CountStations through a certified switch alternative. COTS scanners attach to ScanStations; field cabling and switch settings remain installation-specific.",
         "publicationBoundary": "The module publishes only source-supported roles, media, direction, and isolation controls. It excludes IP addressing, credentials, keys, switch-management values, VLAN details, hostnames, serial numbers, and site diagrams.",
         "configurations": [
@@ -4240,7 +4260,29 @@
               "clearballot-security@2026-07-21"
             ],
             "caveat": "This is the certified architecture, not proof that a jurisdiction selected every alternative, used the maximum number of stations, or installed a particular switch or cabling layout.",
-            "focusNodeId": "clearcount-server"
+            "focusNodeId": "clearcount-server",
+            "externalPathway": {
+              "status": "no_external_path_documented",
+              "internetReachability": "explicitly_excluded",
+              "focusConnectionStatus": "no_connection_documented",
+              "summary": "The documented ClearCount path remains inside its closed Ethernet system. The reviewed scope says that network is not connected to other systems or the Internet.",
+              "originNodeIds": [],
+              "externalTransportNodeIds": [],
+              "boundaryNodeIds": [],
+              "receivingNodeIds": [],
+              "linkIds": [],
+              "caveat": "The reviewed sources define the certified closed-network boundary; they do not establish the field state of a jurisdiction's switch, cabling, ports, or services.",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan",
+                "clearballot-security"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19",
+                "clearballot-security@2026-07-21"
+              ]
+            }
           }
         ],
         "sourceImages": [
@@ -4443,7 +4485,7 @@
         "The 3D scene is a navigation aid, not a wiring diagram, teardown, exact installation, or claim about a jurisdiction's selected hardware.",
         "A certification change or test finding is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
       ],
-      "claimRevision": 3,
+      "claimRevision": 4,
       "editorialState": "published",
       "sourceIds": [
         "clearballot-clearcount-product-page",
@@ -4870,7 +4912,7 @@
         }
       ],
       "networkEvidence": {
-        "reviewedOn": "2026-07-21",
+        "reviewedOn": "2026-07-28",
         "summary": "Colorado's exact 5.17-CO technical data connects the ImageCast Central scanner locally to an ICC workstation by USB and describes ICC workstations using a Gigabit Ethernet port on a closed LAN to the EMS data-center network. The ICC user guide makes additional central-repository infrastructure conditional and requires election computers to remain isolated from the Internet and other networks.",
         "publicationBoundary": "This view publishes only the documented system roles, connection media, conditionality, and isolation controls. It omits addressing, credentials, database identifiers, cryptographic keys, switch settings, hostnames, and jurisdiction cable routes.",
         "configurations": [
@@ -5031,7 +5073,29 @@
               "provv-dsuite-517-test-plan@2026-07-20"
             ],
             "caveat": "The documents describe permitted 5.17-CO architectures. They do not establish that a particular jurisdiction uses the optional repository, which COTS alternatives it selected, or the live state of a network.",
-            "focusNodeId": "icc-workstation"
+            "focusNodeId": "icc-workstation",
+            "externalPathway": {
+              "status": "no_external_path_documented",
+              "internetReachability": "explicitly_excluded",
+              "focusConnectionStatus": "no_connection_documented",
+              "summary": "The conditional ICC-to-EMS path is documented only as a closed election LAN. The reviewed Colorado guide requires election computers to remain isolated from the Internet and other networks.",
+              "originNodeIds": [],
+              "externalTransportNodeIds": [],
+              "boundaryNodeIds": [],
+              "receivingNodeIds": [],
+              "linkIds": [],
+              "caveat": "This classification applies to the reviewed 5.17-CO documentation and does not substitute for a dated inspection of a jurisdiction installation.",
+              "sourceIds": [
+                "co-dvs-517-system-overview",
+                "co-dvs-517-icc-user-guide",
+                "provv-dsuite-517-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-system-overview@2026-07-21",
+                "co-dvs-517-icc-user-guide@2026-07-20",
+                "provv-dsuite-517-test-plan@2026-07-20"
+              ]
+            }
           }
         ],
         "sourceImages": [
@@ -5233,7 +5297,7 @@
         "The 3D scene is a navigation aid, not a teardown, wiring diagram, exact installation, or unit inventory.",
         "A certification change or test result is not evidence of field occurrence, misconduct, exploitation, or an election outcome effect."
       ],
-      "claimRevision": 3,
+      "claimRevision": 4,
       "editorialState": "published",
       "sourceIds": [
         "co-dvs-517-icc-user-guide",
@@ -6172,7 +6236,7 @@
         }
       ],
       "networkEvidence": {
-        "reviewedOn": "2026-07-21",
+        "reviewedOn": "2026-07-28",
         "summary": "The certified ICX hardware profile includes a physical 10/100 RJ-45 interface on the SID-21V platform, but the Democracy Suite 5.17 test plan says the evaluated system does not use public networks, does not support transmission over public networks, and uses no wireless technology. No external network peer or field connection is established for this ICX dossier.",
         "publicationBoundary": "The module distinguishes physical interface capability from an enabled or used connection. It excludes addresses, credentials, keys, activation-card contents, port settings, hostnames, and site-specific topology.",
         "configurations": [
@@ -6310,7 +6374,33 @@
               "co-dvs-517-avalue-sid21-manual@2026-07-20"
             ],
             "caveat": "An RJ-45 connector is capability evidence only. It does not prove that Ethernet is enabled, cabled, assigned an address, attached to a network, or used during an election.",
-            "focusNodeId": "icx-station"
+            "focusNodeId": "icx-station",
+            "externalPathway": {
+              "status": "physical_interface_only",
+              "internetReachability": "explicitly_excluded",
+              "focusConnectionStatus": "no_connection_documented",
+              "summary": "A physical RJ-45 interface is documented, but no attached peer or external path is established. The evaluated 5.17 system is described as not using or supporting transmission over public networks.",
+              "originNodeIds": [
+                "icx-rj45-interface"
+              ],
+              "externalTransportNodeIds": [],
+              "boundaryNodeIds": [],
+              "receivingNodeIds": [],
+              "linkIds": [],
+              "caveat": "Connector presence is capability evidence only. It does not establish an enabled port, cable, address, network session, Internet route, or field use.",
+              "sourceIds": [
+                "eac-dsuite-517-scope",
+                "provv-dsuite-517-test-plan",
+                "co-dvs-517-system-overview",
+                "co-dvs-517-avalue-sid21-manual"
+              ],
+              "sourceRevisionIds": [
+                "eac-dsuite-517-scope@2026-07-20",
+                "provv-dsuite-517-test-plan@2026-07-20",
+                "co-dvs-517-system-overview@2026-07-21",
+                "co-dvs-517-avalue-sid21-manual@2026-07-20"
+              ]
+            }
           }
         ],
         "sourceImages": [
@@ -6558,7 +6648,7 @@
         "The UPS alternatives are confirmed configuration options, but capacity, load-specific runtime, maintenance condition, and field topology remain unknown.",
         "Advisory notices are time-, version-, scenario-, and sometimes jurisdiction-scoped. They do not prove an election incident, altered votes, fraud, misconduct, or an incorrect outcome."
       ],
-      "claimRevision": 5,
+      "claimRevision": 6,
       "editorialState": "published",
       "sourceIds": [
         "co-dvs-517-avalue-sid21-manual",
@@ -7705,8 +7795,8 @@
         }
       ],
       "networkEvidence": {
-        "reviewedOn": "2026-07-21",
-        "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint. Older federal and state records separately document a Unity 3.4.0.0 wireline SFTP reference design, a Michigan EVS 5.3.2.0 wireless-carrier and SFTP path, and optional DS200 cellular hardware families without proving EVS 6.4 certification, firmware, activation, or field use.",
+        "reviewedOn": "2026-07-28",
+        "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint or that the VPN used the public Internet. Older federal and state records separately document a Unity 3.4.0.0 wireline SFTP reference design, optional cellular hardware families, and a Michigan EVS 5.3.2.0 diagram that explicitly shows DS200 units and Regional Results connected through a wireless carrier and the Internet without proving current certification, activation, field use, or an election transmission.",
         "publicationBoundary": "The module publishes roles, high-level paths, connection media when established, and evidence boundaries. It excludes IP addresses, credentials, VPN parameters, keys, APNs, SIM identifiers, carrier accounts, device identifiers, and jurisdiction routing details.",
         "configurations": [
           {
@@ -7856,7 +7946,36 @@
               "provv-evs-6400-test-report@2026-07-19"
             ],
             "caveat": "A successful VSTL system test is not evidence that a jurisdiction enabled Regional Results, used the same network design, or transmitted results in a particular election.",
-            "focusNodeId": "ds200-tabulator"
+            "focusNodeId": "ds200-tabulator",
+            "externalPathway": {
+              "status": "documented_indirect_path",
+              "internetReachability": "not_documented",
+              "focusConnectionStatus": "indirect_result_handoff",
+              "summary": "The exact EVS 6.4 test record documents Regional Results sending result files through a customer-dedicated VPN to Electionware EMS. The reviewed passage does not make the DS200 the VPN endpoint or say that the VPN traverses the public Internet.",
+              "originNodeIds": [
+                "ds200-regional-client"
+              ],
+              "externalTransportNodeIds": [
+                "ds200-customer-network"
+              ],
+              "boundaryNodeIds": [],
+              "receivingNodeIds": [
+                "ds200-ems"
+              ],
+              "linkIds": [
+                "ds200-vpn-send",
+                "ds200-vpn-receive"
+              ],
+              "caveat": "This is an exact-version VSTL test path. The DS200-to-Regional Results handoff medium, public-network transit, jurisdiction deployment, and election use are not established.",
+              "sourceIds": [
+                "eac-evs-6400-scope",
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-evs-6400-scope@2026-07-19",
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
+            }
           },
           {
             "id": "ds200-historical-optional-cellular-context",
@@ -8054,7 +8173,37 @@
               "multitech-universal-socket-guide@2026-07-20"
             ],
             "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem.",
-            "focusNodeId": "ds200-historical-unit"
+            "focusNodeId": "ds200-historical-unit",
+            "externalPathway": {
+              "status": "optional_capability_only",
+              "internetReachability": "not_documented",
+              "focusConnectionStatus": "optional_hardware_not_established",
+              "summary": "Older reviewed records identify optional DS200 modem alternatives with cellular-carrier capability. They do not establish an installed modem, active carrier service, receiving system, complete DS200-to-network chain, or Internet route.",
+              "originNodeIds": [
+                "ds200-c2",
+                "ds200-lvw3"
+              ],
+              "externalTransportNodeIds": [
+                "ds200-carrier-service"
+              ],
+              "boundaryNodeIds": [],
+              "receivingNodeIds": [],
+              "linkIds": [
+                "ds200-c2-cellular-link",
+                "ds200-lvw3-cellular-link"
+              ],
+              "caveat": "These are historical hardware-family alternatives from earlier EVS campaigns, not proof that EVS 6.4.0.0 certified or a fielded DS200 contains or uses either modem.",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "provv-evs-5341-modem-hardware-table",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "provv-evs-5341-modem-hardware-table@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
+            }
           },
           {
             "id": "ds200-unity-3400-landline-sftp-reference",
@@ -8199,7 +8348,36 @@
               "eac-unity-3400-test-plan@2026-07-21"
             ],
             "caveat": "This is a historical wireline test-plan reference, not a cellular design, current EVS 6.4.0.0 certification record, field inspection, or evidence of election-night use.",
-            "focusNodeId": "unity-3400-ds200"
+            "focusNodeId": "unity-3400-ds200",
+            "externalPathway": {
+              "status": "documented_reference_path",
+              "internetReachability": "not_documented",
+              "focusConnectionStatus": "direct_in_reference_path",
+              "summary": "The historical Unity 3.4 test-plan figure shows a DS200 leaving the local device boundary over a wireline modem connection to a RAS/SFTP receiver in a DMZ, then crossing a firewall toward ERM. It does not label the public Internet.",
+              "originNodeIds": [
+                "unity-3400-ds200"
+              ],
+              "externalTransportNodeIds": [],
+              "boundaryNodeIds": [
+                "unity-3400-firewall"
+              ],
+              "receivingNodeIds": [
+                "unity-3400-ras-sftp",
+                "unity-3400-erm"
+              ],
+              "linkIds": [
+                "unity-3400-modem-line",
+                "unity-3400-dmz-boundary",
+                "unity-3400-inside-erm"
+              ],
+              "caveat": "This is a historical test-plan reference configuration, not a current EVS 6.4 topology, field inspection, or evidence of election-night use.",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
+            }
           },
           {
             "id": "ds200-michigan-evs-5320-wireless-sftp-path",
@@ -8208,7 +8386,7 @@
             "assertionScope": "state_certification_documentation",
             "knowledgeStatus": "documented_partial",
             "topologyKind": "results_transmission_service",
-            "description": "Michigan's official state-hosted ES&S contract response depicts DS200 units reaching a communications server through a wireless carrier, customer interface, firewall, and DMZ. The accompanying vendor response says a poll worker could initiate an SFTP transfer after polls closed, after which an encrypted result file was deposited and the connection terminated before ERM processed received files.",
+            "description": "Michigan's official state-hosted ES&S contract response depicts configured DS200 units reaching a communications server through an optional wireless modem, wireless carrier, explicitly labeled Internet segment, customer interface, firewall, and DMZ. The diagram also shows Regional Results connected to the Internet. The accompanying vendor response says a poll worker could initiate an SFTP transfer after polls closed, after which an encrypted result file was deposited and the connection terminated before ERM processed received files.",
             "observedOn": null,
             "assertedFor": null,
             "nodes": [
@@ -8247,6 +8425,34 @@
                 "componentId": null,
                 "optional": true,
                 "details": "The diagram labels a wireless-carrier path; carrier, account, APN, SIM, and activation state are not published here.",
+                "sourceIds": [
+                  "mi-ess-voting-system-contract"
+                ],
+                "sourceRevisionIds": [
+                  "mi-ess-voting-system-contract@2026-07-21"
+                ]
+              },
+              {
+                "id": "mi-5320-internet",
+                "label": "Internet",
+                "role": "Public-network transport shown in the historical vendor diagram",
+                "componentId": null,
+                "optional": false,
+                "details": "The source diagram explicitly labels an Internet segment between the wireless carrier / Regional Results and the customer interface. Provider, route, public address, field deployment, and election use are not established.",
+                "sourceIds": [
+                  "mi-ess-voting-system-contract"
+                ],
+                "sourceRevisionIds": [
+                  "mi-ess-voting-system-contract@2026-07-21"
+                ]
+              },
+              {
+                "id": "mi-5320-regional-results",
+                "label": "Regional Results",
+                "role": "Results application shown connected to the Internet",
+                "componentId": null,
+                "optional": false,
+                "details": "The historical vendor diagram shows a Regional Results system with a bidirectional Internet connection; its hosting, exact configuration, and deployment state are not established here.",
                 "sourceIds": [
                   "mi-ess-voting-system-contract"
                 ],
@@ -8343,13 +8549,43 @@
                 ]
               },
               {
-                "id": "mi-5320-carrier-customer",
+                "id": "mi-5320-carrier-internet",
                 "from": "mi-5320-wireless-carrier",
-                "to": "mi-5320-customer-interface",
-                "medium": "External carrier and network path",
+                "to": "mi-5320-internet",
+                "medium": "Carrier-to-Internet path shown in the vendor diagram",
                 "direction": "bidirectional",
-                "purpose": "Reach the county-side customer interface",
-                "knowledgeStatus": "documented_partial",
+                "purpose": "Reach the public-network segment shown in the historical wireless-results design",
+                "knowledgeStatus": "confirmed",
+                "sourceIds": [
+                  "mi-ess-voting-system-contract"
+                ],
+                "sourceRevisionIds": [
+                  "mi-ess-voting-system-contract@2026-07-21"
+                ]
+              },
+              {
+                "id": "mi-5320-regional-results-internet",
+                "from": "mi-5320-regional-results",
+                "to": "mi-5320-internet",
+                "medium": "Internet connection shown in the vendor diagram",
+                "direction": "bidirectional",
+                "purpose": "Connect Regional Results to the historical public-network segment",
+                "knowledgeStatus": "confirmed",
+                "sourceIds": [
+                  "mi-ess-voting-system-contract"
+                ],
+                "sourceRevisionIds": [
+                  "mi-ess-voting-system-contract@2026-07-21"
+                ]
+              },
+              {
+                "id": "mi-5320-internet-customer",
+                "from": "mi-5320-internet",
+                "to": "mi-5320-customer-interface",
+                "medium": "Public Internet path shown in the vendor diagram",
+                "direction": "bidirectional",
+                "purpose": "Reach the county-side customer interface from the public-network segment",
+                "knowledgeStatus": "confirmed",
                 "sourceIds": [
                   "mi-ess-voting-system-contract"
                 ],
@@ -8423,6 +8659,12 @@
                 "description": "The response states that the connection was terminated after the encrypted result file was deposited on the receiving server."
               },
               {
+                "id": "mi-5320-public-internet-segment",
+                "label": "Public Internet segment",
+                "status": "documented",
+                "description": "The historical vendor diagram explicitly labels the Internet between the wireless carrier / Regional Results and the county-side customer interface."
+              },
+              {
                 "id": "mi-5320-dmz-boundary",
                 "label": "Firewall and DMZ boundary",
                 "status": "documented",
@@ -8437,7 +8679,47 @@
               "mi-ess-voting-system-contract@2026-07-21"
             ],
             "caveat": "This is a historical Michigan procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It is not evidence of EVS 6.4.0.0 certification, a current county design, an installed modem or firmware, a live connection, or a transmission during any election.",
-            "focusNodeId": "mi-5320-ds200"
+            "focusNodeId": "mi-5320-ds200",
+            "externalPathway": {
+              "status": "documented_reference_path",
+              "internetReachability": "documented_in_reference_path",
+              "focusConnectionStatus": "direct_in_reference_path",
+              "summary": "The historical Michigan vendor diagram explicitly shows configured DS200 units reaching a wireless carrier and the Internet before a customer interface, firewall/DMZ, communications server, and local EMS. It also shows Regional Results connected to the Internet.",
+              "originNodeIds": [
+                "mi-5320-ds200",
+                "mi-5320-internal-modem"
+              ],
+              "externalTransportNodeIds": [
+                "mi-5320-wireless-carrier",
+                "mi-5320-internet",
+                "mi-5320-regional-results"
+              ],
+              "boundaryNodeIds": [
+                "mi-5320-customer-interface",
+                "mi-5320-firewall"
+              ],
+              "receivingNodeIds": [
+                "mi-5320-communications-server",
+                "mi-5320-local-ems"
+              ],
+              "linkIds": [
+                "mi-5320-modem-interface",
+                "mi-5320-cellular-path",
+                "mi-5320-carrier-internet",
+                "mi-5320-regional-results-internet",
+                "mi-5320-internet-customer",
+                "mi-5320-customer-firewall",
+                "mi-5320-firewall-server",
+                "mi-5320-server-erm"
+              ],
+              "caveat": "The diagram is a historical 2017 procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It does not establish a current design, installed modem, active connection, or transmission during an election.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
+            }
           }
         ],
         "sourceImages": [
@@ -8486,11 +8768,11 @@
             "width": 1600,
             "height": 1236,
             "kind": "source_topology_diagram",
-            "alt": "Historical Michigan vendor diagram showing DS200 units, a wireless carrier, customer interface, firewall and DMZ, communications server, and local election-management network.",
-            "caption": "Michigan contract exhibit: historical DS200 wireless results network",
+            "alt": "Historical Michigan vendor diagram showing configured DS200 units, wireless modems, a wireless carrier, the Internet, Regional Results, a customer interface, firewall and DMZ, communications server, and local election-management network.",
+            "caption": "Michigan contract exhibit: historical DS200 wireless results path through the Internet",
             "pageOrSection": "Michigan contract PDF page 101, contract page 62, Wireless Results Network",
             "derivativeNote": "Rendered from the archived official state-hosted PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
-            "caveat": "The diagram belongs to a historical Michigan procurement response and does not establish EVS 6.4.0.0 certification, a current county topology, an installed modem, or election use.",
+            "caveat": "The diagram explicitly shows an Internet segment, but it belongs to a historical Michigan procurement response and does not establish EVS 6.4.0.0 certification, a current county topology, an installed modem, an active connection, or election use.",
             "sourceIds": [
               "mi-ess-voting-system-contract"
             ],
@@ -8822,7 +9104,7 @@
         "Public findings and modem vulnerability reviews are presented with exact product, firmware, date, and source scope. A zero-match catalog review is not evidence that no bug, vulnerability, incident, or service bulletin exists.",
         "The manufacturer documents DS200 battery backup, but its model, chemistry, capacity, runtime, internal placement, condition, and county-level power topology remain unknown."
       ],
-      "claimRevision": 8,
+      "claimRevision": 9,
       "editorialState": "published",
       "sourceIds": [
         "cisa-kev-catalog",
@@ -9363,7 +9645,7 @@
         }
       ],
       "networkEvidence": {
-        "reviewedOn": "2026-07-21",
+        "reviewedOn": "2026-07-28",
         "summary": "The EVS 6.4.0.0 Pro V&V report states that DS950, DS850, and DS450 results were transmitted to the EMS through a closed local area network during accuracy testing. The EAC scope includes the central tabulator, Electionware infrastructure, and a minimum-1-Gb network switch, but it does not establish a jurisdiction's live switch, port, or addressing configuration.",
         "publicationBoundary": "This view publishes only the laboratory-supported closed-LAN result path and its source limits. It excludes IP addresses, credentials, keys, database details, switch settings, VLANs, hostnames, device identifiers, and site-specific routing.",
         "configurations": [
@@ -9489,7 +9771,27 @@
               "provv-evs-6400-test-report@2026-07-19"
             ],
             "caveat": "A VSTL accuracy-test topology is not proof that a jurisdiction connected a DS950, used the listed switch, or transmitted results over a network in a particular election.",
-            "focusNodeId": "ds950-tabulator"
+            "focusNodeId": "ds950-tabulator",
+            "externalPathway": {
+              "status": "no_external_path_documented",
+              "internetReachability": "not_documented",
+              "focusConnectionStatus": "no_connection_documented",
+              "summary": "The exact-version DS950 test path is documented only across a closed LAN to Electionware EMS. The reviewed passage does not identify a public-network or Internet segment.",
+              "originNodeIds": [],
+              "externalTransportNodeIds": [],
+              "boundaryNodeIds": [],
+              "receivingNodeIds": [],
+              "linkIds": [],
+              "caveat": "This is a VSTL accuracy-test path, not proof of a jurisdiction's switch, cabling, enabled services, external connectivity, or election use.",
+              "sourceIds": [
+                "eac-evs-6400-scope",
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-evs-6400-scope@2026-07-19",
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
+            }
           }
         ],
         "sourceImages": [
@@ -9723,7 +10025,7 @@
         "Certified UPS alternatives do not establish which model or battery condition applies at a jurisdiction.",
         "A certification change, ECO, or test result is not evidence of field occurrence, misconduct, or an election outcome effect."
       ],
-      "claimRevision": 3,
+      "claimRevision": 4,
       "editorialState": "published",
       "sourceIds": [
         "eac-evs-6400-record",

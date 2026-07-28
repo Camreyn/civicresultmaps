@@ -66,7 +66,7 @@ export const equipmentDetailTourSteps: TourStep[] = [
     id: "equipment-detail-navigation",
     target: "[data-tour='equipment-dossier-navigation']",
     title: "Use the shareable dossier sections",
-    body: "Components, interactive topology, history, jurisdiction context, and sources have stable URLs. The topology keeps documented configurations separate from live field observations. On smaller screens, use the dossier-section menu.",
+    body: "Components, interactive topology, history, jurisdiction context, and sources have stable URLs. The topology separates closed networks, physical interfaces, optional transport, and source-documented external routes from live field observations. Amber paths identify only the reviewed configuration in view. On smaller screens, use the dossier-section menu.",
   },
   {
     chapter: "Review",

@@ -1654,6 +1654,258 @@
   line-height: 1.35;
   text-transform: capitalize;
 }
+.externalPathwayCard {
+  margin-top: 16px;
+  padding: 15px;
+  border: 1px solid rgba(240, 185, 90, 0.28);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(240, 185, 90, 0.09), rgba(39, 30, 16, 0.1)),
+    rgba(5, 22, 25, 0.7);
+}
+
+.externalPathwayCard[data-pathway-status="no_external_path_documented"] {
+  border-color: rgba(103, 217, 204, 0.2);
+  background:
+    linear-gradient(135deg, rgba(103, 217, 204, 0.06), rgba(30, 56, 61, 0.05)),
+    rgba(5, 22, 25, 0.7);
+}
+
+.externalPathwayCard[data-pathway-status="physical_interface_only"] {
+  border-color: rgba(121, 158, 255, 0.28);
+}
+
+.externalPathwayCard[data-internet-reachability="documented_in_reference_path"] {
+  border-color: rgba(240, 185, 90, 0.52);
+  box-shadow: inset 3px 0 rgba(240, 185, 90, 0.76);
+}
+
+.externalPathwayHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.externalPathwayHead > div {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.externalPathwayHead svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: #f0b95a;
+}
+
+.externalPathwayCard[data-pathway-status="no_external_path_documented"] .externalPathwayHead svg {
+  color: #72d7cc;
+}
+
+.externalPathwayHead > div > span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.externalPathwayHead small,
+.externalPathwayHead > span,
+.externalPathwayFacts span,
+.externalPathwayNodeGroups > div > span,
+.externalPathwayLinks > span {
+  color: #9c8460;
+  font-size: 0.54rem;
+  font-weight: 820;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.externalPathwayHead strong {
+  color: #f6e7c8;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.externalPathwayHead > span {
+  flex: 0 0 auto;
+  padding: 5px 7px;
+  border: 1px solid rgba(240, 185, 90, 0.2);
+  border-radius: 999px;
+}
+
+.externalPathwaySummary {
+  margin: 10px 0 0;
+  color: #a9b8b4;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.externalPathwayFacts {
+  margin-top: 11px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 7px;
+}
+
+.externalPathwayFacts > div {
+  padding: 9px 10px;
+  border: 1px solid rgba(240, 185, 90, 0.14);
+  border-radius: 10px;
+  background: rgba(240, 185, 90, 0.035);
+  display: grid;
+  gap: 3px;
+}
+
+.externalPathwayFacts strong {
+  color: #e5d7bb;
+  font-size: 0.65rem;
+  line-height: 1.4;
+}
+
+.externalPathwayNodeGroups {
+  margin-top: 11px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 7px;
+}
+
+.externalPathwayNodeGroups > div {
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid rgba(240, 185, 90, 0.12);
+  border-radius: 10px;
+  background: rgba(3, 17, 20, 0.42);
+}
+
+.externalPathwayNodeGroups > div > div {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.externalPathwayNodeGroups button,
+.externalPathwayLinks button {
+  border: 1px solid rgba(240, 185, 90, 0.2);
+  border-radius: 8px;
+  background: rgba(240, 185, 90, 0.055);
+  color: #d9cab0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.externalPathwayNodeGroups button {
+  min-height: 29px;
+  padding: 5px 7px;
+  font-size: 0.57rem;
+  line-height: 1.3;
+}
+
+.externalPathwayNodeGroups button[aria-pressed="true"],
+.externalPathwayLinks button[aria-pressed="true"] {
+  border-color: #f0b95a;
+  background: rgba(240, 185, 90, 0.14);
+  color: #fff0d1;
+}
+
+.externalPathwayLinks {
+  margin-top: 11px;
+}
+
+.externalPathwayLinks > div {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 6px;
+}
+
+.externalPathwayLinks button {
+  min-width: 0;
+  padding: 8px;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.externalPathwayLinks button > svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #f0b95a;
+}
+
+.externalPathwayLinks button > span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.externalPathwayLinks strong {
+  overflow-wrap: anywhere;
+  font-size: 0.59rem;
+  line-height: 1.35;
+}
+
+.externalPathwayLinks small {
+  color: #9d8c70;
+  font-size: 0.52rem;
+  line-height: 1.35;
+}
+
+.externalPathwayBoundary {
+  margin-top: 11px;
+  padding: 8px 9px;
+  border: 1px solid rgba(121, 158, 255, 0.15);
+  border-radius: 9px;
+  background: rgba(37, 48, 82, 0.13);
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.externalPathwayBoundary svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: #aebfff;
+}
+
+.externalPathwayBoundary p,
+.externalPathwayCaveat {
+  margin: 0;
+  color: #8e9aac;
+  font-size: 0.59rem;
+  line-height: 1.48;
+}
+
+.externalPathwayCaveat {
+  margin-top: 8px;
+  color: #a89576;
+}
+
+.networkNodes button.networkNodePathway {
+  border-color: rgba(240, 185, 90, 0.5);
+  background: rgba(240, 185, 90, 0.07);
+}
+
+.networkLinks button.networkLinkPathway {
+  border-left-color: #f0b95a;
+  background: rgba(240, 185, 90, 0.065);
+  opacity: 1;
+}
+
+.networkLinks button > em {
+  margin-top: 5px;
+  color: #d9a94f;
+  font-size: 0.51rem;
+  font-style: normal;
+  font-weight: 820;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  display: block;
+}
+
 
 .networkInteractiveGrid {
   margin-top: 17px;
@@ -3299,6 +3551,10 @@
   stroke-width: 4;
 }
 
+.topologyGraphCanvas :global(.external-pathway-edge .react-flow__edge-path) {
+  filter: drop-shadow(0 0 4px rgba(240, 185, 90, 0.32));
+}
+
 .topologyGraphCanvas :global(.react-flow__controls) {
   overflow: hidden;
   border: 1px solid rgba(103, 217, 204, 0.2);
@@ -3384,6 +3640,36 @@
   background:
     linear-gradient(145deg, rgba(121, 158, 255, 0.1), rgba(11, 28, 48, 0.96)),
     #091a2d;
+}
+
+.topologyNodePathway {
+  border-color: rgba(240, 185, 90, 0.78);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 185, 90, 0.14),
+    0 0 26px rgba(240, 185, 90, 0.09),
+    0 13px 32px rgba(0, 0, 0, 0.24);
+}
+
+.topologyNodePathway[data-pathway-role="transport"] {
+  background:
+    linear-gradient(145deg, rgba(240, 185, 90, 0.17), rgba(47, 35, 17, 0.96)),
+    #291f12;
+}
+
+.topologyNodePathway[data-pathway-role="boundary"] {
+  background:
+    linear-gradient(145deg, rgba(121, 158, 255, 0.15), rgba(24, 31, 55, 0.96)),
+    #111b30;
+}
+
+.topologyNodePathway[data-pathway-role="receiving"] {
+  background:
+    linear-gradient(145deg, rgba(160, 208, 139, 0.13), rgba(20, 43, 34, 0.96)),
+    #102a21;
+}
+
+.topologyNodePathway .topologyNodeTopline {
+  color: #f0c572;
 }
 
 .topologyNodeSelected {
@@ -3484,6 +3770,11 @@
 .topologyLegend i[data-status="unknown"] {
   border-color: #8e9aa8;
   border-top-style: dotted;
+}
+
+.topologyLegend i[data-status="external"] {
+  border-color: #f0b95a;
+  box-shadow: 0 0 5px rgba(240, 185, 90, 0.28);
 }
 
 .topologyLegend b {

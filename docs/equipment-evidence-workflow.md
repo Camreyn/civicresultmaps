@@ -132,6 +132,20 @@ A physical Ethernet, USB, Wi-Fi, Bluetooth, or cellular interface is capability 
 
 Each configuration must include source-bounded nodes, paths, controls, immutable source revisions, a topology classification, and a caveat. Unknown peers, field switch state, enabled services, optional deployment choices, and exact endpoint roles remain explicit evidence gaps. Vendor diagrams that show multiple deployment alternatives must retain the vendor's applicability warning.
 
+Each configuration also requires an `externalPathway` classification. Its `status` distinguishes:
+
+- `no_external_path_documented`: the reviewed configuration does not document a path beyond its closed or local boundary;
+- `physical_interface_only`: a connector or interface exists, but an attached peer and external route are not established;
+- `documented_indirect_path`: an external transport is documented only after a separate handoff, so the dossier device is not itself the external endpoint;
+- `optional_capability_only`: optional transport hardware or service is documented without a complete installed route; and
+- `documented_reference_path`: a complete path appears in a separately scoped historical, vendor, state, or test reference.
+
+`internetReachability` must be `explicitly_excluded`, `not_documented`, or `documented_in_reference_path`. A VPN, cellular carrier, modem, firewall, DMZ, or external transport is not labeled as public-Internet reachability unless the reviewed source explicitly names or depicts the Internet. `focusConnectionStatus` separately records whether the dossier equipment has no documented connection, participates only through a result handoff, has optional hardware without an established path, or appears directly in the scoped reference path.
+
+`originNodeIds`, `externalTransportNodeIds`, `boundaryNodeIds`, `receivingNodeIds`, and `linkIds` must resolve inside the same configuration. They drive the amber route and role highlights in the interactive and accessible topology views; they do not add inferred nodes or connections. The classification carries its own source IDs, immutable source revisions, summary, and caveat.
+
+An external-path label is evidence about the reviewed document and version only. It is not a statement that a route is currently installed, active during an election, reachable from an arbitrary Internet host, exploitable, or associated with a security incident or incorrect result.
+
 Every topology node and connection must carry its own nonempty `sourceIds` and `sourceRevisionIds`, limited to the parent configuration's reviewed source corpus. `focusNodeId` identifies the dossier subject in that configuration; it is a presentation aid, not an assertion that the subject is physically central. The deterministic layered layout, dragging, zoom, and optional force view change presentation only. They never create, delete, persist, or infer an equipment connection.
 
 Rendered source pages and diagrams live under `public/equipment/network-evidence/`. Every image carries a local asset hash, dimensions, page or section, derivative note, source IDs, source-revision IDs, alt text, and scope caveat. Rendering a page for legibility does not convert it into an original topology claim.

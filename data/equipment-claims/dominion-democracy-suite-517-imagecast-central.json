@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-21",
+  "reviewedOn": "2026-07-28",
   "system": {
     "id": "dominion-democracy-suite-517-imagecast-central",
     "slug": "dominion-democracy-suite-517-imagecast-central",
@@ -376,7 +376,7 @@
       }
     ],
     "networkEvidence": {
-      "reviewedOn": "2026-07-21",
+      "reviewedOn": "2026-07-28",
       "summary": "Colorado's exact 5.17-CO technical data connects the ImageCast Central scanner locally to an ICC workstation by USB and describes ICC workstations using a Gigabit Ethernet port on a closed LAN to the EMS data-center network. The ICC user guide makes additional central-repository infrastructure conditional and requires election computers to remain isolated from the Internet and other networks.",
       "publicationBoundary": "This view publishes only the documented system roles, connection media, conditionality, and isolation controls. It omits addressing, credentials, database identifiers, cryptographic keys, switch settings, hostnames, and jurisdiction cable routes.",
       "configurations": [
@@ -537,7 +537,29 @@
             "provv-dsuite-517-test-plan@2026-07-20"
           ],
           "caveat": "The documents describe permitted 5.17-CO architectures. They do not establish that a particular jurisdiction uses the optional repository, which COTS alternatives it selected, or the live state of a network.",
-          "focusNodeId": "icc-workstation"
+          "focusNodeId": "icc-workstation",
+          "externalPathway": {
+            "status": "no_external_path_documented",
+            "internetReachability": "explicitly_excluded",
+            "focusConnectionStatus": "no_connection_documented",
+            "summary": "The conditional ICC-to-EMS path is documented only as a closed election LAN. The reviewed Colorado guide requires election computers to remain isolated from the Internet and other networks.",
+            "originNodeIds": [],
+            "externalTransportNodeIds": [],
+            "boundaryNodeIds": [],
+            "receivingNodeIds": [],
+            "linkIds": [],
+            "caveat": "This classification applies to the reviewed 5.17-CO documentation and does not substitute for a dated inspection of a jurisdiction installation.",
+            "sourceIds": [
+              "co-dvs-517-system-overview",
+              "co-dvs-517-icc-user-guide",
+              "provv-dsuite-517-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "co-dvs-517-system-overview@2026-07-21",
+              "co-dvs-517-icc-user-guide@2026-07-20",
+              "provv-dsuite-517-test-plan@2026-07-20"
+            ]
+          }
         }
       ],
       "sourceImages": [
@@ -742,12 +764,12 @@
   },
   "editorial": {
     "state": "published",
-    "revision": 3,
+    "revision": 4,
     "createdOn": "2026-07-20",
-    "updatedOn": "2026-07-22",
-    "reviewedOn": "2026-07-21",
+    "updatedOn": "2026-07-28",
+    "reviewedOn": "2026-07-28",
     "reviewedBy": "project_editorial_review",
-    "publishedOn": "2026-07-22",
+    "publishedOn": "2026-07-28",
     "sourceRevisionIds": [
       "co-dvs-517-icc-user-guide@2026-07-20",
       "co-dvs-517-system-overview@2026-07-21",
@@ -759,8 +781,9 @@
     "reviewNotes": [
       "Approved for feature-gated staging as a separate central-tabulation dossier. Public production activation remains a separate decision.",
       "Added exact 5.17-CO network documentation while retaining the conditional repository and no-field-observation boundaries.",
+      "Added source-bounded external-pathway classification so closed networks, physical interfaces, optional transport hardware, and documented routes beyond a local boundary remain visibly distinct.",
       "project_owner: Production publication authorized after source, editorial, build, and browser validation."
     ],
-    "publicationId": "equipment-explorer-2026-07-22-r1"
+    "publicationId": "equipment-explorer-2026-07-28-r1"
   }
 }

@@ -38,6 +38,8 @@ function collectSourceIds(system) {
     ...(system.deployments ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
+      record.externalPathway?.sourceIds ?? []),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
       (record.nodes ?? []).flatMap((node) => node.sourceIds ?? [])),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
       (record.links ?? []).flatMap((link) => link.sourceIds ?? [])),
@@ -62,6 +64,8 @@ function collectSourceRevisionIds(system) {
     ...(system.power ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
+      record.externalPathway?.sourceRevisionIds ?? []),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
       (record.nodes ?? []).flatMap((node) => node.sourceRevisionIds ?? [])),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>

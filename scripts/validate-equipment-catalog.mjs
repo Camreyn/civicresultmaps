@@ -512,6 +512,112 @@ for (const claim of claims) {
         error(`${configurationLabel} focusNodeId references unknown node ${configuration.focusNodeId}.`);
       }
 
+      const externalPathway = configuration.externalPathway;
+      if (!externalPathway) {
+        error(`${configurationLabel} needs an externalPathway classification.`);
+      } else {
+        const pathwayStatuses = [
+          "no_external_path_documented",
+          "physical_interface_only",
+          "documented_indirect_path",
+          "optional_capability_only",
+          "documented_reference_path",
+        ];
+        const internetReachabilityStatuses = [
+          "explicitly_excluded",
+          "not_documented",
+          "documented_in_reference_path",
+        ];
+        const focusConnectionStatuses = [
+          "no_connection_documented",
+          "indirect_result_handoff",
+          "optional_hardware_not_established",
+          "direct_in_reference_path",
+        ];
+        if (!pathwayStatuses.includes(externalPathway.status)) {
+          error(`${configurationLabel} externalPathway has an invalid status.`);
+        }
+        if (!internetReachabilityStatuses.includes(externalPathway.internetReachability)) {
+          error(`${configurationLabel} externalPathway has an invalid internetReachability.`);
+        }
+        if (!focusConnectionStatuses.includes(externalPathway.focusConnectionStatus)) {
+          error(`${configurationLabel} externalPathway has an invalid focusConnectionStatus.`);
+        }
+        requireNonEmpty(externalPathway.summary, `${configurationLabel} externalPathway summary`);
+        requireNonEmpty(externalPathway.caveat, `${configurationLabel} externalPathway caveat`);
+        requireSourceIds(
+          externalPathway,
+          `${configurationLabel} externalPathway`,
+          sourceById,
+          revisionById,
+        );
+        for (const sourceId of externalPathway.sourceIds ?? []) {
+          if (!configuration.sourceIds.includes(sourceId)) {
+            error(`${configurationLabel} externalPathway source ${sourceId} is outside its configuration evidence.`);
+          }
+        }
+        for (const revisionId of externalPathway.sourceRevisionIds ?? []) {
+          if (!configuration.sourceRevisionIds.includes(revisionId)) {
+            error(`${configurationLabel} externalPathway revision ${revisionId} is outside its configuration evidence.`);
+          }
+        }
+
+        const pathwayNodeGroups = [
+          ["originNodeIds", externalPathway.originNodeIds],
+          ["externalTransportNodeIds", externalPathway.externalTransportNodeIds],
+          ["boundaryNodeIds", externalPathway.boundaryNodeIds],
+          ["receivingNodeIds", externalPathway.receivingNodeIds],
+        ];
+        const pathwayNodeIds = new Set();
+        for (const [groupName, ids] of pathwayNodeGroups) {
+          if (!Array.isArray(ids)) {
+            error(`${configurationLabel} externalPathway ${groupName} must be an array.`);
+            continue;
+          }
+          for (const nodeId of ids) {
+            if (!nodeIds.has(nodeId)) {
+              error(`${configurationLabel} externalPathway ${groupName} references unknown node ${nodeId}.`);
+            }
+            if (pathwayNodeIds.has(nodeId)) {
+              error(`${configurationLabel} externalPathway assigns node ${nodeId} to more than one pathway role.`);
+            }
+            pathwayNodeIds.add(nodeId);
+          }
+        }
+        if (!Array.isArray(externalPathway.linkIds)) {
+          error(`${configurationLabel} externalPathway linkIds must be an array.`);
+        } else {
+          for (const linkId of externalPathway.linkIds) {
+            if (!linkIds.has(linkId)) {
+              error(`${configurationLabel} externalPathway references unknown link ${linkId}.`);
+            }
+          }
+        }
+
+        const pathwayNodeCount = pathwayNodeIds.size;
+        const pathwayLinkCount = externalPathway.linkIds?.length ?? 0;
+        if (externalPathway.status === "no_external_path_documented"
+            && (pathwayNodeCount !== 0 || pathwayLinkCount !== 0)) {
+          error(`${configurationLabel} no-external-path classification must not highlight pathway nodes or links.`);
+        }
+        if (externalPathway.status === "physical_interface_only"
+            && ((externalPathway.originNodeIds?.length ?? 0) === 0 || pathwayLinkCount !== 0)) {
+          error(`${configurationLabel} physical-interface-only classification needs origin nodes and no pathway links.`);
+        }
+        if ([
+          "documented_indirect_path",
+          "optional_capability_only",
+          "documented_reference_path",
+        ].includes(externalPathway.status)
+            && ((externalPathway.originNodeIds?.length ?? 0) === 0 || pathwayLinkCount === 0)) {
+          error(`${configurationLabel} external-path classification needs at least one origin node and pathway link.`);
+        }
+        if (externalPathway.internetReachability === "documented_in_reference_path"
+            && externalPathway.status !== "documented_reference_path") {
+          error(`${configurationLabel} may document Internet reachability only inside a scoped reference path.`);
+        }
+      }
+
       for (const control of configuration.controls ?? []) {
         const controlLabel = `${configurationLabel} control ${control.id ?? "unknown"}`;
         requireNonEmpty(control.id, `${controlLabel} id`);

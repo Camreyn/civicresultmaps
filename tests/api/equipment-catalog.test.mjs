@@ -74,8 +74,8 @@ assert.equal(stagingCatalog.productionRequirement, "published");
 assert.equal(sourcePackage.schemaVersion, 2);
 assert.equal(claim.schemaVersion, 2);
 assert.equal(claim.editorial.state, "published");
-assert.equal(claim.editorial.publicationId, "equipment-explorer-2026-07-22-r1");
-assert.equal(claim.editorial.publishedOn, "2026-07-22");
+assert.equal(claim.editorial.publicationId, "equipment-explorer-2026-07-28-r1");
+assert.equal(claim.editorial.publishedOn, "2026-07-28");
 assert.equal(catalog.systems.length, 6);
 assert.equal(stagingCatalog.systems.length, 6);
 assert.ok(catalog.systems.every((system) => system.editorialState === "published"));
@@ -116,6 +116,26 @@ assert.ok(sourceIds.has("mi-ess-voting-system-contract"));
 const ds200NetworkConfigurationIds = new Set(system.networkEvidence.configurations.map((record) => record.id));
 assert.ok(ds200NetworkConfigurationIds.has("ds200-unity-3400-landline-sftp-reference"));
 assert.ok(ds200NetworkConfigurationIds.has("ds200-michigan-evs-5320-wireless-sftp-path"));
+const ds200NetworkConfigurations = new Map(
+  system.networkEvidence.configurations.map((record) => [record.id, record]),
+);
+const exactRegionalResultsPath = ds200NetworkConfigurations.get("ds200-6400-regional-results-test-path");
+assert.equal(exactRegionalResultsPath.externalPathway.status, "documented_indirect_path");
+assert.equal(exactRegionalResultsPath.externalPathway.internetReachability, "not_documented");
+assert.equal(exactRegionalResultsPath.externalPathway.focusConnectionStatus, "indirect_result_handoff");
+assert.ok(exactRegionalResultsPath.externalPathway.linkIds.includes("ds200-vpn-send"));
+const michiganInternetPath = ds200NetworkConfigurations.get("ds200-michigan-evs-5320-wireless-sftp-path");
+assert.equal(michiganInternetPath.externalPathway.status, "documented_reference_path");
+assert.equal(
+  michiganInternetPath.externalPathway.internetReachability,
+  "documented_in_reference_path",
+);
+assert.ok(michiganInternetPath.nodes.some((node) => node.id === "mi-5320-internet"));
+assert.ok(michiganInternetPath.nodes.some((node) => node.id === "mi-5320-regional-results"));
+assert.ok(michiganInternetPath.links.some((link) => link.id === "mi-5320-carrier-internet"));
+assert.ok(michiganInternetPath.links.some((link) => link.id === "mi-5320-regional-results-internet"));
+assert.ok(michiganInternetPath.links.some((link) => link.id === "mi-5320-internet-customer"));
+assert.ok(!michiganInternetPath.links.some((link) => link.id === "mi-5320-carrier-customer"));
 const ds200NetworkImageIds = new Set(system.networkEvidence.sourceImages.map((record) => record.id));
 assert.ok(ds200NetworkImageIds.has("ds200-mi-wireless-results-network"));
 assert.ok(ds200NetworkImageIds.has("ds200-multitech-developer-board-block-diagram"));
@@ -376,6 +396,27 @@ for (const dossier of catalog.systems) {
     );
     const configurationSourceIds = new Set(configuration.sourceIds);
     const configurationSourceRevisionIds = new Set(configuration.sourceRevisionIds);
+    const pathway = configuration.externalPathway;
+    assert.ok(pathway.summary.length > 40, `${dossier.slug}/${configuration.id} needs a pathway summary`);
+    assert.ok(pathway.caveat.length > 40, `${dossier.slug}/${configuration.id} needs a pathway caveat`);
+    assert.ok(pathway.sourceIds.every((sourceId) => configurationSourceIds.has(sourceId)));
+    assert.ok(pathway.sourceRevisionIds.every((revisionId) =>
+      configurationSourceRevisionIds.has(revisionId)));
+    const configurationNodeIds = new Set(configuration.nodes.map((node) => node.id));
+    const configurationLinkIds = new Set(configuration.links.map((link) => link.id));
+    const pathwayNodeIds = [
+      ...pathway.originNodeIds,
+      ...pathway.externalTransportNodeIds,
+      ...pathway.boundaryNodeIds,
+      ...pathway.receivingNodeIds,
+    ];
+    assert.equal(
+      new Set(pathwayNodeIds).size,
+      pathwayNodeIds.length,
+      `${dossier.slug}/${configuration.id} must assign one role per pathway node`,
+    );
+    assert.ok(pathwayNodeIds.every((nodeId) => configurationNodeIds.has(nodeId)));
+    assert.ok(pathway.linkIds.every((linkId) => configurationLinkIds.has(linkId)));
     for (const node of configuration.nodes) {
       assert.ok(node.sourceIds.length > 0, `${dossier.slug}/${configuration.id}/${node.id} needs sources`);
       assert.ok(node.sourceRevisionIds.length > 0, `${dossier.slug}/${configuration.id}/${node.id} needs revisions`);
@@ -423,6 +464,31 @@ for (const dossier of catalog.systems) {
     }
   }
 }
+
+const explicitInternetPaths = catalog.systems.flatMap((dossier) =>
+  dossier.networkEvidence.configurations
+    .filter((configuration) =>
+      configuration.externalPathway.internetReachability === "documented_in_reference_path")
+    .map((configuration) => `${dossier.slug}/${configuration.id}`));
+assert.deepEqual(explicitInternetPaths, [
+  "ess-evs-6400-ds200/ds200-michigan-evs-5320-wireless-sftp-path",
+]);
+assert.equal(
+  clearCount.networkEvidence.configurations[0].externalPathway.status,
+  "no_external_path_documented",
+);
+assert.equal(
+  clearCount.networkEvidence.configurations[0].externalPathway.internetReachability,
+  "explicitly_excluded",
+);
+assert.equal(
+  imageCastX.networkEvidence.configurations[0].externalPathway.status,
+  "physical_interface_only",
+);
+assert.equal(
+  ds950.networkEvidence.configurations[0].externalPathway.internetReachability,
+  "not_documented",
+);
 
 assert.match(apiList, /listEquipmentSystems/);
 assert.match(apiList, /catalogChannel/);
@@ -501,12 +567,19 @@ assert.match(networkEvidence, /Operational details withheld/);
 assert.match(networkEvidence, /EquipmentReferenceLightbox/);
 assert.match(networkEvidence, /No field-observed topology collected/);
 assert.match(networkEvidence, /sourceRevisionIds=\{selectedLink\.sourceRevisionIds\}/);
+assert.match(networkEvidence, /External pathway evidence/);
+assert.match(networkEvidence, /public-Internet reachability is shown only when a reviewed source says so/);
+assert.match(networkEvidence, /It does not establish a live connection, current deployment, attack path, or security finding/);
+assert.match(networkEvidence, /data-internet-reachability/);
 assert.match(topologyGraph, /ReactFlow/);
 assert.match(topologyGraph, /elk\.layout/);
 assert.match(topologyGraph, /Explore with force/);
 assert.match(topologyGraph, /Reset layout/);
 assert.match(topologyGraph, /prefers-reduced-motion/);
 assert.match(topologyGraph, /Dragging changes this view only/);
+assert.match(topologyGraph, /external-pathway-edge/);
+assert.match(topologyGraph, /External-path evidence/);
+assert.match(topologyGraph, /data-pathway-role/);
 assert.match(workspace, /equipmentExplorerEnabled &&/);
 assert.match(workspace, /equipment-catalog-link/);
 assert.match(workspace, /Component catalog/);

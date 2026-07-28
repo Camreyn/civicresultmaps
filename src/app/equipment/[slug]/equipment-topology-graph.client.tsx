@@ -53,17 +53,23 @@ const NODE_WIDTH = 224;
 const NODE_HEIGHT = 104;
 const elk = new ELK();
 
+type PathwayNodeRole = "boundary" | "origin" | "receiving" | "transport";
+
 type TopologyNodeData = {
   componentMapped: boolean;
   evidenceCount: number;
   focus: boolean;
   label: string;
   optional: boolean;
+  pathwayRole: PathwayNodeRole | null;
   role: string;
 };
 
 type TopologyFlowNode = Node<TopologyNodeData, "evidence">;
-type TopologyFlowEdge = Edge<{ knowledgeStatus: string }, "smoothstep">;
+type TopologyFlowEdge = Edge<{
+  externalPathway: boolean;
+  knowledgeStatus: string;
+}, "smoothstep">;
 
 type ForceNode = SimulationNodeDatum & {
   anchorX: number;
@@ -104,26 +110,49 @@ function edgeLabel(link: EquipmentNetworkLink) {
   return `${medium.slice(0, 25).trimEnd()}…`;
 }
 
+function pathwayRoleForNode(
+  configuration: EquipmentNetworkConfiguration,
+  nodeId: string,
+): PathwayNodeRole | null {
+  const pathway = configuration.externalPathway;
+  if (pathway.originNodeIds.includes(nodeId)) return "origin";
+  if (pathway.externalTransportNodeIds.includes(nodeId)) return "transport";
+  if (pathway.boundaryNodeIds.includes(nodeId)) return "boundary";
+  if (pathway.receivingNodeIds.includes(nodeId)) return "receiving";
+  return null;
+}
+
+function pathwayRoleLabel(role: PathwayNodeRole) {
+  if (role === "origin") return "path origin";
+  if (role === "transport") return "external transport";
+  if (role === "boundary") return "boundary control";
+  return "receiving system";
+}
+
 function initialNodes(configuration: EquipmentNetworkConfiguration): TopologyFlowNode[] {
-  return configuration.nodes.map((node, index) => ({
-    id: node.id,
-    type: "evidence",
-    position: {
-      x: (index % 3) * (NODE_WIDTH + 70),
-      y: Math.floor(index / 3) * (NODE_HEIGHT + 70),
-    },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    ariaLabel: `${node.label}. ${node.role}.${node.optional ? " Optional." : ""}`,
-    data: {
-      componentMapped: node.componentId !== null,
-      evidenceCount: node.sourceRevisionIds.length,
-      focus: node.id === configuration.focusNodeId,
-      label: node.label,
-      optional: node.optional,
-      role: node.role,
-    },
-  }));
+  return configuration.nodes.map((node, index) => {
+    const pathwayRole = pathwayRoleForNode(configuration, node.id);
+    return {
+      id: node.id,
+      type: "evidence",
+      position: {
+        x: (index % 3) * (NODE_WIDTH + 70),
+        y: Math.floor(index / 3) * (NODE_HEIGHT + 70),
+      },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
+      ariaLabel: `${node.label}. ${node.role}.${node.optional ? " Optional." : ""}${pathwayRole ? ` External-path role: ${pathwayRoleLabel(pathwayRole)}.` : ""}`,
+      data: {
+        componentMapped: node.componentId !== null,
+        evidenceCount: node.sourceRevisionIds.length,
+        focus: node.id === configuration.focusNodeId,
+        label: node.label,
+        optional: node.optional,
+        pathwayRole,
+        role: node.role,
+      },
+    };
+  });
 }
 
 function evidenceNodeClass(data: TopologyNodeData, selected: boolean) {
@@ -132,6 +161,7 @@ function evidenceNodeClass(data: TopologyNodeData, selected: boolean) {
     data.focus ? styles.topologyNodeFocus : "",
     data.optional ? styles.topologyNodeOptional : "",
     !data.componentMapped ? styles.topologyNodeExternal : "",
+    data.pathwayRole ? styles.topologyNodePathway : "",
     selected ? styles.topologyNodeSelected : "",
   ].filter(Boolean).join(" ");
 }
@@ -140,8 +170,17 @@ const EvidenceTopologyNode = memo(function EvidenceTopologyNode({
   data,
   selected,
 }: NodeProps<TopologyFlowNode>) {
+  const nodeKind = data.focus
+    ? "This dossier"
+    : data.componentMapped
+      ? "Dossier component"
+      : "External role";
+  const pathwayLabel = data.pathwayRole ? pathwayRoleLabel(data.pathwayRole) : null;
   return (
-    <div className={evidenceNodeClass(data, selected)}>
+    <div
+      className={evidenceNodeClass(data, selected)}
+      data-pathway-role={data.pathwayRole ?? undefined}
+    >
       <Handle
         className={styles.topologyHandle}
         isConnectable={false}
@@ -152,7 +191,9 @@ const EvidenceTopologyNode = memo(function EvidenceTopologyNode({
         {data.focus ? <Focus aria-hidden size={15} /> : data.componentMapped
           ? <Box aria-hidden size={15} />
           : <Network aria-hidden size={15} />}
-        <span>{data.focus ? "This dossier" : data.componentMapped ? "Dossier component" : "External role"}</span>
+        <span title={pathwayLabel ? `${nodeKind} · ${pathwayLabel}` : nodeKind}>
+          {nodeKind}{pathwayLabel ? ` · ${pathwayLabel}` : ""}
+        </span>
         {data.optional && <em>Optional</em>}
       </div>
       <strong>{data.label}</strong>
@@ -172,19 +213,25 @@ const nodeTypes = {
   evidence: EvidenceTopologyNode,
 } as const;
 
-function edgeStyle(link: EquipmentNetworkLink, active: boolean) {
+function edgeStyle(
+  link: EquipmentNetworkLink,
+  active: boolean,
+  externalPathway: boolean,
+) {
   const status = link.knowledgeStatus;
-  const color = status === "confirmed"
-    ? "#67d9cc"
-    : status === "documented_partial"
-      ? "#e2bd73"
-      : "#8e9aa8";
+  const color = externalPathway
+    ? "#f0b95a"
+    : status === "confirmed"
+      ? "#67d9cc"
+      : status === "documented_partial"
+        ? "#e2bd73"
+        : "#8e9aa8";
   return {
-    opacity: active ? 1 : 0.72,
+    opacity: active || externalPathway ? 1 : 0.72,
     stroke: color,
     strokeDasharray: status === "confirmed" ? undefined : status === "documented_partial" ? "8 5" : "2 7",
     strokeLinecap: "round" as const,
-    strokeWidth: active ? 3 : 1.8,
+    strokeWidth: active ? 3.4 : externalPathway ? 2.7 : 1.8,
   };
 }
 
@@ -196,25 +243,28 @@ function graphEdges(
     const active = selection.kind === "link"
       ? selection.id === link.id
       : link.from === selection.id || link.to === selection.id;
-    const marker = { color: edgeStyle(link, active).stroke, type: MarkerType.ArrowClosed };
+    const externalPathway = configuration.externalPathway.linkIds.includes(link.id);
+    const style = edgeStyle(link, active, externalPathway);
+    const marker = { color: style.stroke, type: MarkerType.ArrowClosed };
     return {
       id: link.id,
       source: link.from,
       target: link.to,
       type: "smoothstep",
       label: edgeLabel(link),
-      ariaLabel: `${link.purpose}. ${link.medium}. ${evidenceStatusLabel(link.knowledgeStatus)}.`,
-      data: { knowledgeStatus: link.knowledgeStatus },
+      ariaLabel: `${link.purpose}. ${link.medium}. ${evidenceStatusLabel(link.knowledgeStatus)}.${externalPathway ? " Source-classified external-path segment." : ""}`,
+      className: externalPathway ? "external-pathway-edge" : undefined,
+      data: { externalPathway, knowledgeStatus: link.knowledgeStatus },
       markerEnd: link.direction === "one_way" || link.direction === "bidirectional" ? marker : undefined,
       markerStart: link.direction === "bidirectional" ? marker : undefined,
       pathOptions: { borderRadius: 3, offset: 24 },
       selected: selection.kind === "link" && selection.id === link.id,
-      style: edgeStyle(link, active),
+      style,
       labelBgBorderRadius: 5,
       labelBgPadding: [5, 3],
       labelBgStyle: { fill: "#07191c", fillOpacity: 0.94 },
       labelStyle: {
-        fill: active ? "#e9fffb" : "#94aaa7",
+        fill: active ? "#e9fffb" : externalPathway ? "#f0c77d" : "#94aaa7",
         fontSize: 10,
         fontWeight: 720,
       },
@@ -431,7 +481,7 @@ export function EquipmentTopologyGraph({
         <div>
           <span>Interactive topology</span>
           <strong>Documented shape, exploratory placement</strong>
-          <small>Dragging changes this view only. Reset restores the deterministic source layout.</small>
+          <small>Dragging changes this view only. Amber highlights mark source-classified external-path evidence; reset restores the deterministic layout.</small>
         </div>
         <div className={styles.topologyGraphActions}>
           <button
@@ -490,6 +540,7 @@ export function EquipmentTopologyGraph({
         <span><i data-status="confirmed" /> Confirmed path</span>
         <span><i data-status="partial" /> Documented partial</span>
         <span><i data-status="unknown" /> Medium or path not established</span>
+        <span><i data-status="external" /> External-path evidence</span>
         <span><b /> This dossier</span>
       </div>
     </section>

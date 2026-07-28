@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-21",
+  "reviewedOn": "2026-07-28",
   "system": {
     "id": "ess-evs-6400-ds200",
     "slug": "ess-evs-6400-ds200",
@@ -1082,8 +1082,8 @@
       }
     ],
     "networkEvidence": {
-      "reviewedOn": "2026-07-21",
-      "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint. Older federal and state records separately document a Unity 3.4.0.0 wireline SFTP reference design, a Michigan EVS 5.3.2.0 wireless-carrier and SFTP path, and optional DS200 cellular hardware families without proving EVS 6.4 certification, firmware, activation, or field use.",
+      "reviewedOn": "2026-07-28",
+      "summary": "For EVS 6.4.0.0, the EAC scope defines Regional Results as a separate application at a regional sending site, and Pro V&V tested transmission of DS200 result files through Regional Results over a VPN. The reviewed exact-version text does not establish that the DS200 itself was the VPN endpoint or that the VPN used the public Internet. Older federal and state records separately document a Unity 3.4.0.0 wireline SFTP reference design, optional cellular hardware families, and a Michigan EVS 5.3.2.0 diagram that explicitly shows DS200 units and Regional Results connected through a wireless carrier and the Internet without proving current certification, activation, field use, or an election transmission.",
       "publicationBoundary": "The module publishes roles, high-level paths, connection media when established, and evidence boundaries. It excludes IP addresses, credentials, VPN parameters, keys, APNs, SIM identifiers, carrier accounts, device identifiers, and jurisdiction routing details.",
       "configurations": [
         {
@@ -1233,7 +1233,36 @@
             "provv-evs-6400-test-report@2026-07-19"
           ],
           "caveat": "A successful VSTL system test is not evidence that a jurisdiction enabled Regional Results, used the same network design, or transmitted results in a particular election.",
-          "focusNodeId": "ds200-tabulator"
+          "focusNodeId": "ds200-tabulator",
+          "externalPathway": {
+            "status": "documented_indirect_path",
+            "internetReachability": "not_documented",
+            "focusConnectionStatus": "indirect_result_handoff",
+            "summary": "The exact EVS 6.4 test record documents Regional Results sending result files through a customer-dedicated VPN to Electionware EMS. The reviewed passage does not make the DS200 the VPN endpoint or say that the VPN traverses the public Internet.",
+            "originNodeIds": [
+              "ds200-regional-client"
+            ],
+            "externalTransportNodeIds": [
+              "ds200-customer-network"
+            ],
+            "boundaryNodeIds": [],
+            "receivingNodeIds": [
+              "ds200-ems"
+            ],
+            "linkIds": [
+              "ds200-vpn-send",
+              "ds200-vpn-receive"
+            ],
+            "caveat": "This is an exact-version VSTL test path. The DS200-to-Regional Results handoff medium, public-network transit, jurisdiction deployment, and election use are not established.",
+            "sourceIds": [
+              "eac-evs-6400-scope",
+              "provv-evs-6400-test-report"
+            ],
+            "sourceRevisionIds": [
+              "eac-evs-6400-scope@2026-07-19",
+              "provv-evs-6400-test-report@2026-07-19"
+            ]
+          }
         },
         {
           "id": "ds200-historical-optional-cellular-context",
@@ -1431,7 +1460,37 @@
             "multitech-universal-socket-guide@2026-07-20"
           ],
           "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem.",
-          "focusNodeId": "ds200-historical-unit"
+          "focusNodeId": "ds200-historical-unit",
+          "externalPathway": {
+            "status": "optional_capability_only",
+            "internetReachability": "not_documented",
+            "focusConnectionStatus": "optional_hardware_not_established",
+            "summary": "Older reviewed records identify optional DS200 modem alternatives with cellular-carrier capability. They do not establish an installed modem, active carrier service, receiving system, complete DS200-to-network chain, or Internet route.",
+            "originNodeIds": [
+              "ds200-c2",
+              "ds200-lvw3"
+            ],
+            "externalTransportNodeIds": [
+              "ds200-carrier-service"
+            ],
+            "boundaryNodeIds": [],
+            "receivingNodeIds": [],
+            "linkIds": [
+              "ds200-c2-cellular-link",
+              "ds200-lvw3-cellular-link"
+            ],
+            "caveat": "These are historical hardware-family alternatives from earlier EVS campaigns, not proof that EVS 6.4.0.0 certified or a fielded DS200 contains or uses either modem.",
+            "sourceIds": [
+              "fl-evs-4500-v4-modem-report",
+              "provv-evs-5341-modem-hardware-table",
+              "multitech-universal-socket-guide"
+            ],
+            "sourceRevisionIds": [
+              "fl-evs-4500-v4-modem-report@2026-07-20",
+              "provv-evs-5341-modem-hardware-table@2026-07-20",
+              "multitech-universal-socket-guide@2026-07-20"
+            ]
+          }
         },
         {
           "id": "ds200-unity-3400-landline-sftp-reference",
@@ -1576,7 +1635,36 @@
             "eac-unity-3400-test-plan@2026-07-21"
           ],
           "caveat": "This is a historical wireline test-plan reference, not a cellular design, current EVS 6.4.0.0 certification record, field inspection, or evidence of election-night use.",
-          "focusNodeId": "unity-3400-ds200"
+          "focusNodeId": "unity-3400-ds200",
+          "externalPathway": {
+            "status": "documented_reference_path",
+            "internetReachability": "not_documented",
+            "focusConnectionStatus": "direct_in_reference_path",
+            "summary": "The historical Unity 3.4 test-plan figure shows a DS200 leaving the local device boundary over a wireline modem connection to a RAS/SFTP receiver in a DMZ, then crossing a firewall toward ERM. It does not label the public Internet.",
+            "originNodeIds": [
+              "unity-3400-ds200"
+            ],
+            "externalTransportNodeIds": [],
+            "boundaryNodeIds": [
+              "unity-3400-firewall"
+            ],
+            "receivingNodeIds": [
+              "unity-3400-ras-sftp",
+              "unity-3400-erm"
+            ],
+            "linkIds": [
+              "unity-3400-modem-line",
+              "unity-3400-dmz-boundary",
+              "unity-3400-inside-erm"
+            ],
+            "caveat": "This is a historical test-plan reference configuration, not a current EVS 6.4 topology, field inspection, or evidence of election-night use.",
+            "sourceIds": [
+              "eac-unity-3400-test-plan"
+            ],
+            "sourceRevisionIds": [
+              "eac-unity-3400-test-plan@2026-07-21"
+            ]
+          }
         },
         {
           "id": "ds200-michigan-evs-5320-wireless-sftp-path",
@@ -1585,7 +1673,7 @@
           "assertionScope": "state_certification_documentation",
           "knowledgeStatus": "documented_partial",
           "topologyKind": "results_transmission_service",
-          "description": "Michigan's official state-hosted ES&S contract response depicts DS200 units reaching a communications server through a wireless carrier, customer interface, firewall, and DMZ. The accompanying vendor response says a poll worker could initiate an SFTP transfer after polls closed, after which an encrypted result file was deposited and the connection terminated before ERM processed received files.",
+          "description": "Michigan's official state-hosted ES&S contract response depicts configured DS200 units reaching a communications server through an optional wireless modem, wireless carrier, explicitly labeled Internet segment, customer interface, firewall, and DMZ. The diagram also shows Regional Results connected to the Internet. The accompanying vendor response says a poll worker could initiate an SFTP transfer after polls closed, after which an encrypted result file was deposited and the connection terminated before ERM processed received files.",
           "observedOn": null,
           "assertedFor": null,
           "nodes": [
@@ -1624,6 +1712,34 @@
               "componentId": null,
               "optional": true,
               "details": "The diagram labels a wireless-carrier path; carrier, account, APN, SIM, and activation state are not published here.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
+            },
+            {
+              "id": "mi-5320-internet",
+              "label": "Internet",
+              "role": "Public-network transport shown in the historical vendor diagram",
+              "componentId": null,
+              "optional": false,
+              "details": "The source diagram explicitly labels an Internet segment between the wireless carrier / Regional Results and the customer interface. Provider, route, public address, field deployment, and election use are not established.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
+            },
+            {
+              "id": "mi-5320-regional-results",
+              "label": "Regional Results",
+              "role": "Results application shown connected to the Internet",
+              "componentId": null,
+              "optional": false,
+              "details": "The historical vendor diagram shows a Regional Results system with a bidirectional Internet connection; its hosting, exact configuration, and deployment state are not established here.",
               "sourceIds": [
                 "mi-ess-voting-system-contract"
               ],
@@ -1720,13 +1836,43 @@
               ]
             },
             {
-              "id": "mi-5320-carrier-customer",
+              "id": "mi-5320-carrier-internet",
               "from": "mi-5320-wireless-carrier",
-              "to": "mi-5320-customer-interface",
-              "medium": "External carrier and network path",
+              "to": "mi-5320-internet",
+              "medium": "Carrier-to-Internet path shown in the vendor diagram",
               "direction": "bidirectional",
-              "purpose": "Reach the county-side customer interface",
-              "knowledgeStatus": "documented_partial",
+              "purpose": "Reach the public-network segment shown in the historical wireless-results design",
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
+            },
+            {
+              "id": "mi-5320-regional-results-internet",
+              "from": "mi-5320-regional-results",
+              "to": "mi-5320-internet",
+              "medium": "Internet connection shown in the vendor diagram",
+              "direction": "bidirectional",
+              "purpose": "Connect Regional Results to the historical public-network segment",
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
+            },
+            {
+              "id": "mi-5320-internet-customer",
+              "from": "mi-5320-internet",
+              "to": "mi-5320-customer-interface",
+              "medium": "Public Internet path shown in the vendor diagram",
+              "direction": "bidirectional",
+              "purpose": "Reach the county-side customer interface from the public-network segment",
+              "knowledgeStatus": "confirmed",
               "sourceIds": [
                 "mi-ess-voting-system-contract"
               ],
@@ -1800,6 +1946,12 @@
               "description": "The response states that the connection was terminated after the encrypted result file was deposited on the receiving server."
             },
             {
+              "id": "mi-5320-public-internet-segment",
+              "label": "Public Internet segment",
+              "status": "documented",
+              "description": "The historical vendor diagram explicitly labels the Internet between the wireless carrier / Regional Results and the county-side customer interface."
+            },
+            {
               "id": "mi-5320-dmz-boundary",
               "label": "Firewall and DMZ boundary",
               "status": "documented",
@@ -1814,7 +1966,47 @@
             "mi-ess-voting-system-contract@2026-07-21"
           ],
           "caveat": "This is a historical Michigan procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It is not evidence of EVS 6.4.0.0 certification, a current county design, an installed modem or firmware, a live connection, or a transmission during any election.",
-          "focusNodeId": "mi-5320-ds200"
+          "focusNodeId": "mi-5320-ds200",
+          "externalPathway": {
+            "status": "documented_reference_path",
+            "internetReachability": "documented_in_reference_path",
+            "focusConnectionStatus": "direct_in_reference_path",
+            "summary": "The historical Michigan vendor diagram explicitly shows configured DS200 units reaching a wireless carrier and the Internet before a customer interface, firewall/DMZ, communications server, and local EMS. It also shows Regional Results connected to the Internet.",
+            "originNodeIds": [
+              "mi-5320-ds200",
+              "mi-5320-internal-modem"
+            ],
+            "externalTransportNodeIds": [
+              "mi-5320-wireless-carrier",
+              "mi-5320-internet",
+              "mi-5320-regional-results"
+            ],
+            "boundaryNodeIds": [
+              "mi-5320-customer-interface",
+              "mi-5320-firewall"
+            ],
+            "receivingNodeIds": [
+              "mi-5320-communications-server",
+              "mi-5320-local-ems"
+            ],
+            "linkIds": [
+              "mi-5320-modem-interface",
+              "mi-5320-cellular-path",
+              "mi-5320-carrier-internet",
+              "mi-5320-regional-results-internet",
+              "mi-5320-internet-customer",
+              "mi-5320-customer-firewall",
+              "mi-5320-firewall-server",
+              "mi-5320-server-erm"
+            ],
+            "caveat": "The diagram is a historical 2017 procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It does not establish a current design, installed modem, active connection, or transmission during an election.",
+            "sourceIds": [
+              "mi-ess-voting-system-contract"
+            ],
+            "sourceRevisionIds": [
+              "mi-ess-voting-system-contract@2026-07-21"
+            ]
+          }
         }
       ],
       "sourceImages": [
@@ -1863,11 +2055,11 @@
           "width": 1600,
           "height": 1236,
           "kind": "source_topology_diagram",
-          "alt": "Historical Michigan vendor diagram showing DS200 units, a wireless carrier, customer interface, firewall and DMZ, communications server, and local election-management network.",
-          "caption": "Michigan contract exhibit: historical DS200 wireless results network",
+          "alt": "Historical Michigan vendor diagram showing configured DS200 units, wireless modems, a wireless carrier, the Internet, Regional Results, a customer interface, firewall and DMZ, communications server, and local election-management network.",
+          "caption": "Michigan contract exhibit: historical DS200 wireless results path through the Internet",
           "pageOrSection": "Michigan contract PDF page 101, contract page 62, Wireless Results Network",
           "derivativeNote": "Rendered from the archived official state-hosted PDF with PDF.js at 1600 pixels wide; the source page content was not edited.",
-          "caveat": "The diagram belongs to a historical Michigan procurement response and does not establish EVS 6.4.0.0 certification, a current county topology, an installed modem, or election use.",
+          "caveat": "The diagram explicitly shows an Internet segment, but it belongs to a historical Michigan procurement response and does not establish EVS 6.4.0.0 certification, a current county topology, an installed modem, an active connection, or election use.",
           "sourceIds": [
             "mi-ess-voting-system-contract"
           ],
@@ -2202,12 +2394,12 @@
   },
   "editorial": {
     "state": "published",
-    "revision": 8,
+    "revision": 9,
     "createdOn": "2026-07-19",
-    "updatedOn": "2026-07-22",
-    "reviewedOn": "2026-07-21",
+    "updatedOn": "2026-07-28",
+    "reviewedOn": "2026-07-28",
     "reviewedBy": "project_editorial_review",
-    "publishedOn": "2026-07-22",
+    "publishedOn": "2026-07-28",
     "sourceRevisionIds": [
       "cisa-kev-catalog@2026-07-20",
       "eac-eco-ess-1035-approval@2026-07-19",
@@ -2255,8 +2447,10 @@
       "Historical DS200 modem identities and dated public-vulnerability coverage are separately scoped; no modem firmware or field deployment is inferred.",
       "Added exact-version Regional Results/VPN test evidence and a separately labeled historical optional-cellular topology without publishing operational configuration values.",
       "Added separately scoped historical Unity 3.4.0.0 wireline and Michigan EVS 5.3.2.0 wireless SFTP paths plus address-free vendor reference imagery; no field deployment, firmware, carrier, or current-version state is inferred.",
+      "Added source-bounded external-pathway classification so closed networks, physical interfaces, optional transport hardware, and documented routes beyond a local boundary remain visibly distinct.",
+      "The historical Michigan topology now reproduces the source-labeled Internet segment and Regional Results connection while retaining version, deployment, and operational caveats.",
       "project_owner: Production publication authorized after source, editorial, build, and browser validation."
     ],
-    "publicationId": "equipment-explorer-2026-07-22-r1"
+    "publicationId": "equipment-explorer-2026-07-28-r1"
   }
 }

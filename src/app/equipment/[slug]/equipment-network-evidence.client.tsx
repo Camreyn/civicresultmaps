@@ -13,6 +13,7 @@ import {
   Link2,
   Maximize2,
   Network,
+  Route,
   ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
@@ -42,6 +43,66 @@ const EquipmentTopologyGraph = dynamic<EquipmentTopologyGraphProps>(
 
 function label(value: string) {
   return value.replaceAll("_", " ");
+}
+
+function externalPathwayStatusLabel(value: string) {
+  switch (value) {
+    case "no_external_path_documented":
+      return "No external path documented";
+    case "physical_interface_only":
+      return "Interface documented; no external peer";
+    case "documented_indirect_path":
+      return "External transport documented after a separate handoff";
+    case "optional_capability_only":
+      return "Optional external capability; complete path not established";
+    case "documented_reference_path":
+      return "External path documented in a scoped reference";
+    default:
+      return label(value);
+  }
+}
+
+function internetReachabilityLabel(value: string) {
+  switch (value) {
+    case "explicitly_excluded":
+      return "Explicitly excluded by reviewed sources";
+    case "not_documented":
+      return "Not documented in this configuration";
+    case "documented_in_reference_path":
+      return "Shown in this scoped source";
+    default:
+      return label(value);
+  }
+}
+
+function focusConnectionStatusLabel(value: string) {
+  switch (value) {
+    case "no_connection_documented":
+      return "No external connection documented";
+    case "indirect_result_handoff":
+      return "Separate result handoff; dossier device is not the endpoint";
+    case "optional_hardware_not_established":
+      return "Optional hardware; complete path not established";
+    case "direct_in_reference_path":
+      return "Direct path in this scoped reference";
+    default:
+      return label(value);
+  }
+}
+
+function pathwayRoleLabel(value: string) {
+  switch (value) {
+    case "origin":
+      return "Path origin";
+    case "transport":
+      return "External transport";
+    case "boundary":
+      return "Boundary control";
+    case "receiving":
+      return "Receiving system";
+    default:
+      return label(value);
+  }
 }
 
 function EvidenceSources({
@@ -108,6 +169,30 @@ export function EquipmentTopologyEvidencePanel({
   const expandedImage = evidence.sourceImages.find((image) => image.id === expandedImageId) ?? null;
   const observedCount = evidence.configurations.filter((record) => record.evidenceLayer === "observed").length;
   const nodeById = new Map(configuration.nodes.map((node) => [node.id, node]));
+  const pathway = configuration.externalPathway;
+  const pathwayNodeGroups: Array<{
+    ids: readonly string[];
+    label: string;
+    role: "boundary" | "origin" | "receiving" | "transport";
+  }> = [
+    { ids: pathway.originNodeIds, label: "Path origin", role: "origin" },
+    {
+      ids: pathway.externalTransportNodeIds,
+      label: "External transport / Internet-linked systems",
+      role: "transport",
+    },
+    { ids: pathway.boundaryNodeIds, label: "Boundary controls", role: "boundary" },
+    { ids: pathway.receivingNodeIds, label: "Receiving systems", role: "receiving" },
+  ];
+  const pathwayNodeRoleById = new Map<string, string>();
+  for (const group of pathwayNodeGroups) {
+    for (const nodeId of group.ids) pathwayNodeRoleById.set(nodeId, group.role);
+  }
+  const pathwayLinkIds = new Set(pathway.linkIds);
+  const pathwayNodeCount = pathwayNodeRoleById.size;
+  const explicitInternetConfigurationCount = evidence.configurations.filter(
+    (record) => record.externalPathway.internetReachability === "documented_in_reference_path",
+  ).length;
 
   function selectConfiguration(nextId: string) {
     const next = evidence.configurations.find((record) => record.id === nextId);
@@ -128,7 +213,7 @@ export function EquipmentTopologyEvidencePanel({
           <p className={styles.eyebrow}><Network aria-hidden size={14} /> Source-bounded topology</p>
           <h2 id="topology-evidence-heading">Documented topology, controls, and unknowns</h2>
         </div>
-        <p>Expected, documented, and observed configurations remain separate. Physical port capability is not treated as an active connection.</p>
+        <p>Expected, documented, and observed configurations remain separate. Physical port capability is not treated as an active connection, and public-Internet reachability is shown only when a reviewed source says so.</p>
       </div>
 
       <article className={styles.networkBoundary}>
@@ -147,6 +232,9 @@ export function EquipmentTopologyEvidencePanel({
         <span>{evidence.configurations.length} sourced configuration {evidence.configurations.length === 1 ? "view" : "views"}</span>
         <span>{evidence.sourceImages.length} source {evidence.sourceImages.length === 1 ? "image" : "images"}</span>
         <span>{observedCount === 0 ? "No field-observed topology collected" : `${observedCount} field-observed topology records`}</span>
+        <span>{explicitInternetConfigurationCount === 0
+          ? "No source explicitly shows an Internet path"
+          : `${explicitInternetConfigurationCount} scoped source ${explicitInternetConfigurationCount === 1 ? "shows" : "show"} an Internet path`}</span>
       </div>
 
       {evidence.configurations.length > 1 && (
@@ -183,6 +271,101 @@ export function EquipmentTopologyEvidencePanel({
           </div>
         </header>
 
+        <article
+          className={styles.externalPathwayCard}
+          data-external-pathway
+          data-internet-reachability={pathway.internetReachability}
+          data-pathway-status={pathway.status}
+        >
+          <header className={styles.externalPathwayHead}>
+            <div>
+              <Route aria-hidden size={19} />
+              <span>
+                <small>External pathway evidence</small>
+                <strong>{externalPathwayStatusLabel(pathway.status)}</strong>
+              </span>
+            </div>
+            <span>{pathwayLinkIds.size === 0
+              ? "No highlighted route"
+              : `${pathwayLinkIds.size} highlighted ${pathwayLinkIds.size === 1 ? "connection" : "connections"}`}</span>
+          </header>
+
+          <p className={styles.externalPathwaySummary}>{pathway.summary}</p>
+          <div className={styles.externalPathwayFacts}>
+            <div>
+              <span>Public Internet</span>
+              <strong>{internetReachabilityLabel(pathway.internetReachability)}</strong>
+            </div>
+            <div>
+              <span>Dossier connection</span>
+              <strong>{focusConnectionStatusLabel(pathway.focusConnectionStatus)}</strong>
+            </div>
+          </div>
+
+          {pathwayNodeCount > 0 && (
+            <div className={styles.externalPathwayNodeGroups}>
+              {pathwayNodeGroups.filter((group) => group.ids.length > 0).map((group) => (
+                <div key={group.role}>
+                  <span>{group.label}</span>
+                  <div>
+                    {group.ids.map((nodeId) => {
+                      const node = nodeById.get(nodeId);
+                      return (
+                        <button
+                          aria-pressed={activeSelection.kind === "node" && activeSelection.id === nodeId}
+                          data-pathway-role={group.role}
+                          key={nodeId}
+                          onClick={() => setSelection({ id: nodeId, kind: "node" })}
+                          type="button"
+                        >
+                          {node?.label ?? nodeId}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {pathwayLinkIds.size > 0 && (
+            <div className={styles.externalPathwayLinks}>
+              <span>Highlighted connections</span>
+              <div>
+                {pathway.linkIds.map((linkId) => {
+                  const link = configuration.links.find((record) => record.id === linkId);
+                  if (!link) return null;
+                  return (
+                    <button
+                      aria-pressed={activeSelection.kind === "link" && activeSelection.id === linkId}
+                      key={linkId}
+                      onClick={() => setSelection({ id: linkId, kind: "link" })}
+                      type="button"
+                    >
+                      <Link2 aria-hidden size={13} />
+                      <span>
+                        <strong>{nodeById.get(link.from)?.label ?? link.from} → {nodeById.get(link.to)?.label ?? link.to}</strong>
+                        <small>{link.medium}</small>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className={styles.externalPathwayBoundary}>
+            <AlertTriangle aria-hidden size={15} />
+            <p>Evidence classification only. It does not establish a live connection, current deployment, attack path, or security finding.</p>
+          </div>
+          <p className={styles.externalPathwayCaveat}>{pathway.caveat}</p>
+          <EvidenceSources
+            sourceIds={pathway.sourceIds}
+            sourceRevisionIds={pathway.sourceRevisionIds}
+            sources={sources}
+          />
+        </article>
+
         <div className={styles.networkInteractiveGrid}>
           <EquipmentTopologyGraph
             configuration={configuration}
@@ -201,6 +384,7 @@ export function EquipmentTopologyEvidencePanel({
                   <div><dt>Medium</dt><dd>{selectedLink.medium}</dd></div>
                   <div><dt>Direction</dt><dd>{label(selectedLink.direction)}</dd></div>
                   <div><dt>Evidence status</dt><dd>{label(selectedLink.knowledgeStatus)}</dd></div>
+                  <div><dt>External-path segment</dt><dd>{pathwayLinkIds.has(selectedLink.id) ? "Yes — source-highlighted" : "No"}</dd></div>
                 </dl>
                 <small>These citations support this connection within this configuration; they do not establish a live field network.</small>
                 <EvidenceSources
@@ -218,6 +402,12 @@ export function EquipmentTopologyEvidencePanel({
                   <div><dt>Role</dt><dd>{selectedNode.role}</dd></div>
                   {selectedNode.componentId && <div><dt>Dossier component</dt><dd>{selectedNode.componentId}</dd></div>}
                   <div><dt>Optional</dt><dd>{selectedNode.optional ? "Yes" : "No"}</dd></div>
+                  {pathwayNodeRoleById.has(selectedNode.id) && (
+                    <div>
+                      <dt>External-path role</dt>
+                      <dd>{pathwayRoleLabel(pathwayNodeRoleById.get(selectedNode.id) ?? "")}</dd>
+                    </div>
+                  )}
                 </dl>
                 <small>Select a node or connection in the topology to inspect the exact source revisions supporting it.</small>
                 <EvidenceSources
@@ -244,15 +434,24 @@ export function EquipmentTopologyEvidencePanel({
               {configuration.nodes.map((node) => (
                 <button
                   aria-pressed={activeSelection.kind === "node" && node.id === activeSelection.id}
-                  className={activeSelection.kind === "node" && node.id === activeSelection.id
-                    ? styles.networkNodeActive
-                    : undefined}
+                  className={[
+                    activeSelection.kind === "node" && node.id === activeSelection.id
+                      ? styles.networkNodeActive
+                      : "",
+                    pathwayNodeRoleById.has(node.id) ? styles.networkNodePathway : "",
+                  ].filter(Boolean).join(" ") || undefined}
+                  data-pathway-role={pathwayNodeRoleById.get(node.id)}
                   key={node.id}
                   onClick={() => setSelection({ id: node.id, kind: "node" })}
                   type="button"
                 >
                   <Network aria-hidden size={16} />
-                  <span><strong>{node.label}</strong><small>{node.role}</small></span>
+                  <span>
+                    <strong>{node.label}</strong>
+                    <small>{node.role}{pathwayNodeRoleById.has(node.id)
+                      ? ` · ${pathwayRoleLabel(pathwayNodeRoleById.get(node.id) ?? "")}`
+                      : ""}</small>
+                  </span>
                   {node.optional && <em>Optional</em>}
                 </button>
               ))}
@@ -266,7 +465,11 @@ export function EquipmentTopologyEvidencePanel({
                 return (
                   <button
                     aria-pressed={active}
-                    className={active ? styles.networkLinkActive : undefined}
+                    className={[
+                      active ? styles.networkLinkActive : "",
+                      pathwayLinkIds.has(link.id) ? styles.networkLinkPathway : "",
+                    ].filter(Boolean).join(" ") || undefined}
+                    data-external-path-segment={pathwayLinkIds.has(link.id) || undefined}
                     key={link.id}
                     onClick={() => setSelection({ id: link.id, kind: "link" })}
                     type="button"
@@ -281,6 +484,7 @@ export function EquipmentTopologyEvidencePanel({
                     </div>
                     <p>{link.medium}</p>
                     <small>{link.purpose} — {label(link.knowledgeStatus)}</small>
+                    {pathwayLinkIds.has(link.id) && <em>External-path evidence</em>}
                   </button>
                 );
               })}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "reviewedOn": "2026-07-21",
+  "reviewedOn": "2026-07-28",
   "system": {
     "id": "clear-ballot-clearvote-25-clearaccess",
     "slug": "clear-ballot-clearvote-25-clearaccess",
@@ -640,7 +640,7 @@
       }
     ],
     "networkEvidence": {
-      "reviewedOn": "2026-07-21",
+      "reviewedOn": "2026-07-28",
       "summary": "The reviewed ClearVote 2.5 record identifies the ClearAccess station and its local peripherals, while Clear Ballot's current security policy says certified products are never attached to modems, the Internet, Wi-Fi, or Bluetooth. The exact port occupation and field wiring of a particular station are not established.",
       "publicationBoundary": "This public view records device roles, connection media, evidence scope, and isolation controls. It intentionally excludes IP addresses, credentials, keys, access codes, APNs, SIM identifiers, serial numbers, and site-specific routing details.",
       "configurations": [
@@ -754,7 +754,27 @@
             "clearballot-security@2026-07-21"
           ],
           "caveat": "A product-level communications policy and a certified component list do not prove the state of a particular port, cable, station, polling place, or election deployment.",
-          "focusNodeId": "clearaccess-station"
+          "focusNodeId": "clearaccess-station",
+          "externalPathway": {
+            "status": "no_external_path_documented",
+            "internetReachability": "explicitly_excluded",
+            "focusConnectionStatus": "no_connection_documented",
+            "summary": "No path beyond the ClearAccess station's local peripherals is documented. Clear Ballot's reviewed policy says certified products are not attached to modems, the Internet, Wi-Fi, or Bluetooth.",
+            "originNodeIds": [],
+            "externalTransportNodeIds": [],
+            "boundaryNodeIds": [],
+            "receivingNodeIds": [],
+            "linkIds": [],
+            "caveat": "This is a product-policy and certified-configuration boundary, not a field inspection of a particular station, port, cable, or polling place.",
+            "sourceIds": [
+              "eac-clearvote-25-scope",
+              "clearballot-security"
+            ],
+            "sourceRevisionIds": [
+              "eac-clearvote-25-scope@2026-07-19",
+              "clearballot-security@2026-07-21"
+            ]
+          }
         }
       ],
       "sourceImages": [
@@ -961,12 +981,12 @@
   },
   "editorial": {
     "state": "published",
-    "revision": 5,
+    "revision": 6,
     "createdOn": "2026-07-19",
-    "updatedOn": "2026-07-22",
-    "reviewedOn": "2026-07-21",
+    "updatedOn": "2026-07-28",
+    "reviewedOn": "2026-07-28",
     "reviewedBy": "project_editorial_review",
-    "publishedOn": "2026-07-22",
+    "publishedOn": "2026-07-28",
     "sourceRevisionIds": [
       "eac-clearvote-25-record@2026-07-19",
       "eac-clearvote-25-scope@2026-07-19",
@@ -980,8 +1000,9 @@
     "reviewNotes": [
       "Approved for feature-gated staging. Public production activation remains a separate review decision.",
       "Added source-scoped network configuration evidence without inferring a live station or publishing sensitive configuration values.",
+      "Added source-bounded external-pathway classification so closed networks, physical interfaces, optional transport hardware, and documented routes beyond a local boundary remain visibly distinct.",
       "project_owner: Production publication authorized after source, editorial, build, and browser validation."
     ],
-    "publicationId": "equipment-explorer-2026-07-22-r1"
+    "publicationId": "equipment-explorer-2026-07-28-r1"
   }
 }
