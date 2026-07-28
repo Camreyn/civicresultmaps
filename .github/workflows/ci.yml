@@ -78,7 +78,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Equipment browser tests
-        run: npm run test:e2e:equipment
+        run: npm run test:e2e:equipment:ci
 
       - name: Workspace layout browser tests
         run: npm run test:e2e:workspace
