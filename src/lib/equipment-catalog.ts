@@ -3,14 +3,42 @@ import catalogData from "@equipment-catalog-data";
 import type { EquipmentCatalogChannel } from "./equipment-catalog-channel";
 
 export type EquipmentCatalog = typeof catalogData;
-export type EquipmentSystem = EquipmentCatalog["systems"][number];
+type EquipmentCatalogSystem = EquipmentCatalog["systems"][number];
+type EquipmentCatalogNetworkEvidence = EquipmentCatalogSystem["networkEvidence"];
+type EquipmentCatalogNetworkConfiguration =
+  EquipmentCatalogNetworkEvidence["configurations"][number];
+
+export type EquipmentNetworkExternalPathway = {
+  status: string;
+  internetReachability: string;
+  focusConnectionStatus: string;
+  summary: string;
+  originNodeIds: readonly string[];
+  externalTransportNodeIds: readonly string[];
+  boundaryNodeIds: readonly string[];
+  receivingNodeIds: readonly string[];
+  linkIds: readonly string[];
+  caveat: string;
+  sourceIds: readonly string[];
+  sourceRevisionIds: readonly string[];
+};
+
+export type EquipmentNetworkConfiguration =
+  Omit<EquipmentCatalogNetworkConfiguration, "externalPathway"> & {
+    externalPathway: EquipmentNetworkExternalPathway;
+  };
+export type EquipmentNetworkEvidence =
+  Omit<EquipmentCatalogNetworkEvidence, "configurations"> & {
+    configurations: EquipmentNetworkConfiguration[];
+  };
+export type EquipmentSystem = Omit<EquipmentCatalogSystem, "networkEvidence"> & {
+  networkEvidence: EquipmentNetworkEvidence;
+};
 export type EquipmentComponent = EquipmentSystem["components"][number];
 export type EquipmentSource = EquipmentCatalog["sources"][number];
 export type EquipmentScene = EquipmentSystem["scene"];
 export type EquipmentSceneNode = EquipmentScene["nodes"][number];
 export type EquipmentReferenceImage = EquipmentScene["referenceImages"][number];
-export type EquipmentNetworkEvidence = EquipmentSystem["networkEvidence"];
-export type EquipmentNetworkConfiguration = EquipmentNetworkEvidence["configurations"][number];
 export type EquipmentNetworkNode = EquipmentNetworkConfiguration["nodes"][number];
 export type EquipmentNetworkLink = EquipmentNetworkConfiguration["links"][number];
 export type EquipmentNetworkSourceImage = EquipmentNetworkEvidence["sourceImages"][number];

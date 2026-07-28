@@ -423,6 +423,19 @@ test("keeps network topology claims source-bounded and interactive", async ({ pa
   await expect(networkEvidence.getByRole("heading", { name: "Documented topology, controls, and unknowns" })).toBeVisible();
   await expect(networkEvidence.getByText("1 sourced configuration view", { exact: true })).toBeVisible();
   await expect(networkEvidence.getByText("No field-observed topology collected", { exact: true })).toBeVisible();
+  const externalPathway = networkEvidence.locator("[data-external-pathway]");
+  await expect(externalPathway).toHaveAttribute("data-pathway-status", "no_external_path_documented");
+  await expect(externalPathway).toHaveAttribute("data-internet-reachability", "explicitly_excluded");
+  await expect(externalPathway.getByText("External pathway evidence", { exact: true })).toBeVisible();
+  await expect(externalPathway.getByText("No external path documented", { exact: true })).toBeVisible();
+  await expect(externalPathway.getByText(
+    "Explicitly excluded by reviewed sources",
+    { exact: true },
+  )).toBeVisible();
+  await expect(externalPathway.getByText(
+    "Evidence classification only. It does not establish a live connection, current deployment, attack path, or security finding.",
+    { exact: true },
+  )).toBeVisible();
   await expect(networkEvidence.getByText("Operational details withheld", { exact: true })).toBeVisible();
   await expect(networkEvidence.getByLabel("Interactive documented topology")).toBeVisible();
   const forceButton = networkEvidence.getByRole("button", { name: "Explore with force" });
@@ -491,12 +504,56 @@ test("keeps network topology claims source-bounded and interactive", async ({ pa
   const certifiedPath = ds200NetworkEvidence.getByRole("button", { name: /EVS 6.4.0.0 Regional Results test path/ });
   const optionalCellular = ds200NetworkEvidence.getByRole("button", { name: /Historical optional cellular hardware context/ });
   await expect(certifiedPath).toHaveAttribute("aria-pressed", "true");
+  const ds200PathwayEvidence = ds200NetworkEvidence.locator("[data-external-pathway]");
+  await expect(ds200PathwayEvidence).toHaveAttribute(
+    "data-pathway-status",
+    "documented_indirect_path",
+  );
+  await expect(ds200PathwayEvidence.getByText(
+    "External transport documented after a separate handoff",
+    { exact: true },
+  )).toBeVisible();
+  await expect(ds200PathwayEvidence.getByText(
+    "Not documented in this configuration",
+    { exact: true },
+  )).toBeVisible();
+  await expect(ds200PathwayEvidence.getByText(
+    "Separate result handoff; dossier device is not the endpoint",
+    { exact: true },
+  )).toBeVisible();
   await optionalCellular.click();
   await expect(optionalCellular).toHaveAttribute("aria-pressed", "true");
   await expect(ds200NetworkEvidence.getByRole("button", {
-    name: "MultiTech MTSMC-LVW3 Historical optional LTE alternative Optional",
+    name: /MultiTech MTSMC-LVW3 Historical optional LTE alternative.*Optional/,
   })).toBeVisible();
   await expect(ds200NetworkEvidence.getByText(/not evidence that EVS 6.4.0.0 certified/)).toBeVisible();
+  const historicalInternetPath = ds200NetworkEvidence.getByRole("button", {
+    name: /Michigan EVS 5\.3\.2\.0 wireless SFTP result path/,
+  });
+  await historicalInternetPath.click();
+  await expect(historicalInternetPath).toHaveAttribute("aria-pressed", "true");
+  await expect(ds200PathwayEvidence).toHaveAttribute(
+    "data-internet-reachability",
+    "documented_in_reference_path",
+  );
+  await expect(ds200PathwayEvidence.getByText(
+    "External path documented in a scoped reference",
+    { exact: true },
+  )).toBeVisible();
+  await expect(ds200PathwayEvidence.getByText(
+    "Shown in this scoped source",
+    { exact: true },
+  )).toBeVisible();
+  await expect(ds200PathwayEvidence.getByRole("button", { name: "Internet", exact: true }))
+    .toBeVisible();
+  await expect(ds200PathwayEvidence.getByRole("button", { name: "Regional Results", exact: true }))
+    .toBeVisible();
+  const ds200TopologyGraph = ds200NetworkEvidence.getByLabel("Interactive documented topology");
+  await expect(ds200TopologyGraph.locator("[data-pathway-role='transport']")).toHaveCount(3);
+  await expect(ds200TopologyGraph.locator(".external-pathway-edge")).toHaveCount(8);
+  await expect(ds200NetworkEvidence.getByText(
+    /historical 2017 procurement response for EVS 5\.3\.2\.0/,
+  )).toBeVisible();
 });
 
 test("renders central tabulators as three separate sourced systems", async ({ page, request }) => {
