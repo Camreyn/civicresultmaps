@@ -411,6 +411,7 @@ for (const claim of claims) {
       requireNonEmpty(configuration.title, `${configurationLabel} title`);
       requireNonEmpty(configuration.description, `${configurationLabel} description`);
       requireNonEmpty(configuration.topologyKind, `${configurationLabel} topologyKind`);
+      requireNonEmpty(configuration.focusNodeId, `${configurationLabel} focusNodeId`);
       requireNonEmpty(configuration.sensitiveDetailsWithheld, `${configurationLabel} sensitiveDetailsWithheld`);
       requireNonEmpty(configuration.caveat, `${configurationLabel} caveat`);
       requireSourceIds(configuration, configurationLabel, sourceById, revisionById);
@@ -462,6 +463,17 @@ for (const claim of claims) {
         requireNonEmpty(node.label, `${nodeLabel} label`);
         requireNonEmpty(node.role, `${nodeLabel} role`);
         requireNonEmpty(node.details, `${nodeLabel} details`);
+        requireSourceIds(node, nodeLabel, sourceById, revisionById);
+        for (const sourceId of node.sourceIds ?? []) {
+          if (!configuration.sourceIds.includes(sourceId)) {
+            error(`${nodeLabel} source ${sourceId} is outside its configuration evidence.`);
+          }
+        }
+        for (const revisionId of node.sourceRevisionIds ?? []) {
+          if (!configuration.sourceRevisionIds.includes(revisionId)) {
+            error(`${nodeLabel} revision ${revisionId} is outside its configuration evidence.`);
+          }
+        }
         if (typeof node.optional !== "boolean") error(`${nodeLabel} needs a boolean optional value.`);
         if (node.componentId !== null && !componentById.has(node.componentId)) {
           error(`${nodeLabel} references unknown component ${node.componentId}.`);
@@ -484,6 +496,20 @@ for (const claim of claims) {
         if (!["confirmed", "documented_partial", "not_publicly_established"].includes(link.knowledgeStatus)) {
           error(`${linkLabel} has an invalid knowledgeStatus.`);
         }
+        requireSourceIds(link, linkLabel, sourceById, revisionById);
+        for (const sourceId of link.sourceIds ?? []) {
+          if (!configuration.sourceIds.includes(sourceId)) {
+            error(`${linkLabel} source ${sourceId} is outside its configuration evidence.`);
+          }
+        }
+        for (const revisionId of link.sourceRevisionIds ?? []) {
+          if (!configuration.sourceRevisionIds.includes(revisionId)) {
+            error(`${linkLabel} revision ${revisionId} is outside its configuration evidence.`);
+          }
+        }
+      }
+      if (!nodeIds.has(configuration.focusNodeId)) {
+        error(`${configurationLabel} focusNodeId references unknown node ${configuration.focusNodeId}.`);
       }
 
       for (const control of configuration.controls ?? []) {

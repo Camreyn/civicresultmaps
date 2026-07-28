@@ -27,7 +27,7 @@ export const equipmentIndexTourSteps: TourStep[] = [
     id: "equipment-index-dossiers",
     target: "[data-tour='equipment-catalog']",
     title: "Open a reviewed dossier",
-    body: "Each tile opens a source-linked equipment dossier with components, version observations, findings, network evidence, and known gaps.",
+    body: "Each tile opens a source-linked equipment dossier with components, version observations, findings, source-bounded topology evidence, and known gaps.",
   },
   {
     chapter: "Dossiers",
@@ -66,7 +66,7 @@ export const equipmentDetailTourSteps: TourStep[] = [
     id: "equipment-detail-navigation",
     target: "[data-tour='equipment-dossier-navigation']",
     title: "Use the shareable dossier sections",
-    body: "Components, network evidence, history, jurisdiction context, and sources now have stable URLs. On smaller screens, use the dossier-section menu.",
+    body: "Components, interactive topology, history, jurisdiction context, and sources have stable URLs. The topology keeps documented configurations separate from live field observations. On smaller screens, use the dossier-section menu.",
   },
   {
     chapter: "Review",

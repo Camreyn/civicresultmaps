@@ -229,7 +229,10 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.6.1",
     "@vercel/edge-config": "^1.4.3",
+    "@xyflow/react": "^12.11.2",
+    "d3-force": "^3.0.0",
     "drizzle-orm": "0.44.2",
+    "elkjs": "^0.12.0",
     "flags": "^4.2.0",
     "jszip": "^3.10.1",
     "lexical": "^0.48.0",
@@ -244,6 +247,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.61.1",
+    "@types/d3-force": "^3.0.10",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",

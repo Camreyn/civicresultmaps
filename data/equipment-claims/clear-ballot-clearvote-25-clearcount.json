@@ -408,7 +408,15 @@
               "role": "Ballot image capture",
               "componentId": "clearcount-central-scanner",
               "optional": false,
-              "details": "A certified COTS scanner alternative is paired with each ScanStation."
+              "details": "A certified COTS scanner alternative is paired with each ScanStation.",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             },
             {
               "id": "clearcount-scanstation",
@@ -416,7 +424,15 @@
               "role": "Ballot scanning and tabulation client",
               "componentId": "clearcount-scanstation",
               "optional": false,
-              "details": "One or more Windows ScanStations execute the Tabulator application from the CountServer."
+              "details": "One or more Windows ScanStations execute the Tabulator application from the CountServer.",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             },
             {
               "id": "clearcount-switch",
@@ -424,7 +440,13 @@
               "role": "Closed Ethernet interconnect",
               "componentId": "clearcount-network-switch",
               "optional": false,
-              "details": "The certified scope lists several permitted switch alternatives; jurisdiction selection is not established."
+              "details": "The certified scope lists several permitted switch alternatives; jurisdiction selection is not established.",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ]
             },
             {
               "id": "clearcount-server",
@@ -432,7 +454,15 @@
               "role": "Election database and application host",
               "componentId": "clearcount-countserver",
               "optional": false,
-              "details": "The Ubuntu CountServer hosts ClearCount software, its database, and election reports."
+              "details": "The Ubuntu CountServer hosts ClearCount software, its database, and election reports.",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             },
             {
               "id": "clearcount-countstation",
@@ -440,7 +470,15 @@
               "role": "Administration, adjudication, and reporting client",
               "componentId": "clearcount-countstation",
               "optional": false,
-              "details": "One or more browser-based CountStations connect to the CountServer through the switch."
+              "details": "One or more browser-based CountStations connect to the CountServer through the switch.",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             }
           ],
           "links": [
@@ -451,7 +489,13 @@
               "medium": "Local scanner interface / USB cabling",
               "direction": "one_way",
               "purpose": "Deliver captured ballot images to the paired ScanStation",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             },
             {
               "id": "clearcount-scanstation-ethernet",
@@ -460,7 +504,15 @@
               "medium": "Wired Ethernet",
               "direction": "bidirectional",
               "purpose": "Run the server-hosted tabulation workflow and send results and card images",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             },
             {
               "id": "clearcount-server-ethernet",
@@ -469,7 +521,15 @@
               "medium": "Wired Ethernet",
               "direction": "bidirectional",
               "purpose": "Provide application, database, and report services to ClearCount clients",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             },
             {
               "id": "clearcount-countstation-ethernet",
@@ -478,7 +538,15 @@
               "medium": "Wired Ethernet",
               "direction": "bidirectional",
               "purpose": "Provide administration, adjudication, consolidation, and reporting access",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "eac-clearvote-25-scope",
+                "provv-clearvote-25-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19",
+                "provv-clearvote-25-test-plan@2026-07-19"
+              ]
             }
           ],
           "controls": [
@@ -512,7 +580,8 @@
             "provv-clearvote-25-test-plan@2026-07-19",
             "clearballot-security@2026-07-21"
           ],
-          "caveat": "This is the certified architecture, not proof that a jurisdiction selected every alternative, used the maximum number of stations, or installed a particular switch or cabling layout."
+          "caveat": "This is the certified architecture, not proof that a jurisdiction selected every alternative, used the maximum number of stations, or installed a particular switch or cabling layout.",
+          "focusNodeId": "clearcount-server"
         }
       ],
       "sourceImages": [

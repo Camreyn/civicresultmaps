@@ -53,7 +53,7 @@ export default async function EquipmentSystemOverviewPage({ params, searchParams
 
   const icons = {
     components: Boxes,
-    network: Network,
+    topology: Network,
     history: Clock3,
     usage: MapPinned,
     sources: FileCheck2,

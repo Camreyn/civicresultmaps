@@ -132,6 +132,8 @@ A physical Ethernet, USB, Wi-Fi, Bluetooth, or cellular interface is capability 
 
 Each configuration must include source-bounded nodes, paths, controls, immutable source revisions, a topology classification, and a caveat. Unknown peers, field switch state, enabled services, optional deployment choices, and exact endpoint roles remain explicit evidence gaps. Vendor diagrams that show multiple deployment alternatives must retain the vendor's applicability warning.
 
+Every topology node and connection must carry its own nonempty `sourceIds` and `sourceRevisionIds`, limited to the parent configuration's reviewed source corpus. `focusNodeId` identifies the dossier subject in that configuration; it is a presentation aid, not an assertion that the subject is physically central. The deterministic layered layout, dragging, zoom, and optional force view change presentation only. They never create, delete, persist, or infer an equipment connection.
+
 Rendered source pages and diagrams live under `public/equipment/network-evidence/`. Every image carries a local asset hash, dimensions, page or section, derivative note, source IDs, source-revision IDs, alt text, and scope caveat. Rendering a page for legibility does not convert it into an original topology claim.
 
 Do not collect or publish site-specific IP addresses, hostnames, credentials, keys, certificates, APNs, SIM identifiers, database names, switch configurations, firewall rules, VPN secrets, or similarly actionable operational details. Public diagrams may describe roles and bounded paths while withholding those values.

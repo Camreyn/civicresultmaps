@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
   AlertTriangle,
@@ -9,6 +10,7 @@ import {
   CircleDot,
   ExternalLink,
   FileImage,
+  Link2,
   Maximize2,
   Network,
   ShieldCheck,
@@ -20,40 +22,89 @@ import type {
   EquipmentSource,
 } from "@/lib/equipment-catalog";
 import styles from "../equipment.module.css";
+import type {
+  EquipmentTopologyGraphProps,
+  EquipmentTopologySelection,
+} from "./equipment-topology-graph.client";
 import { EquipmentReferenceLightbox } from "./equipment-reference-lightbox.client";
+
+const EquipmentTopologyGraph = dynamic<EquipmentTopologyGraphProps>(
+  () => import("./equipment-topology-graph.client").then((module) => module.EquipmentTopologyGraph),
+  {
+    loading: () => (
+      <div className={styles.topologyGraphFallback} role="status">
+        Preparing the interactive topology…
+      </div>
+    ),
+    ssr: false,
+  },
+);
 
 function label(value: string) {
   return value.replaceAll("_", " ");
 }
 
-function EvidenceSources({ sourceIds, sources }: {
+function EvidenceSources({
+  sourceIds,
+  sourceRevisionIds = [],
+  sources,
+}: {
   sourceIds: readonly string[];
+  sourceRevisionIds?: readonly string[];
   sources: readonly EquipmentSource[];
 }) {
   const requested = new Set(sourceIds);
   return (
     <div className={styles.networkSourceLinks}>
-      {sources.filter((source) => requested.has(source.id)).map((source) => (
-        <a href={source.url} key={source.id} rel="noreferrer" target="_blank">
-          <ExternalLink aria-hidden size={12} />
-          {source.publisher}: {source.title}
-        </a>
-      ))}
+      {sources.filter((source) => requested.has(source.id)).map((source) => {
+        const revisionIds = sourceRevisionIds.filter((revisionId) =>
+          source.revisions.some((revision) => revision.id === revisionId));
+        return (
+          <div className={styles.networkSourceCitation} key={source.id}>
+            <a href={source.url} rel="noreferrer" target="_blank">
+              <ExternalLink aria-hidden size={12} />
+              {source.publisher}: {source.title}
+            </a>
+            {revisionIds.map((revisionId) => <code key={revisionId}>{revisionId}</code>)}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
+export function EquipmentTopologyEvidencePanel({
+  evidence,
+  sources,
+}: {
   evidence: EquipmentNetworkEvidence;
   sources: readonly EquipmentSource[];
 }) {
-  const [configurationId, setConfigurationId] = useState(evidence.configurations[0].id);
-  const [selectedNodeId, setSelectedNodeId] = useState(evidence.configurations[0].nodes[0].id);
+  const firstConfiguration = evidence.configurations[0];
+  const [configurationId, setConfigurationId] = useState(firstConfiguration.id);
+  const [selection, setSelection] = useState<EquipmentTopologySelection>({
+    id: firstConfiguration.focusNodeId,
+    kind: "node",
+  });
   const [expandedImageId, setExpandedImageId] = useState<string | null>(null);
   const configuration = evidence.configurations.find((record) => record.id === configurationId)
-    ?? evidence.configurations[0];
-  const selectedNode = configuration.nodes.find((node) => node.id === selectedNodeId)
-    ?? configuration.nodes[0];
+    ?? firstConfiguration;
+  const selectedLink = selection.kind === "link"
+    ? configuration.links.find((link) => link.id === selection.id) ?? null
+    : null;
+  const selectedNode = selection.kind === "node"
+    ? configuration.nodes.find((node) => node.id === selection.id)
+      ?? configuration.nodes.find((node) => node.id === configuration.focusNodeId)
+      ?? configuration.nodes[0]
+    : null;
+  const activeSelection: EquipmentTopologySelection = selectedLink
+    ? { id: selectedLink.id, kind: "link" }
+    : {
+        id: selectedNode?.id
+          ?? configuration.nodes.find((node) => node.id === configuration.focusNodeId)?.id
+          ?? configuration.nodes[0].id,
+        kind: "node",
+      };
   const expandedImage = evidence.sourceImages.find((image) => image.id === expandedImageId) ?? null;
   const observedCount = evidence.configurations.filter((record) => record.evidenceLayer === "observed").length;
   const nodeById = new Map(configuration.nodes.map((node) => [node.id, node]));
@@ -62,15 +113,20 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
     const next = evidence.configurations.find((record) => record.id === nextId);
     if (!next) return;
     setConfigurationId(next.id);
-    setSelectedNodeId(next.nodes[0].id);
+    setSelection({ id: next.focusNodeId, kind: "node" });
   }
 
   return (
-    <section className={styles.dossierSection} data-network-evidence aria-labelledby="network-evidence-heading">
+    <section
+      aria-labelledby="topology-evidence-heading"
+      className={styles.dossierSection}
+      data-network-evidence
+      data-topology-evidence
+    >
       <div className={styles.sectionHead}>
         <div>
-          <p className={styles.eyebrow}><Network aria-hidden size={14} /> Network configuration evidence</p>
-          <h2 id="network-evidence-heading">Documented paths, controls, and unknowns</h2>
+          <p className={styles.eyebrow}><Network aria-hidden size={14} /> Source-bounded topology</p>
+          <h2 id="topology-evidence-heading">Documented topology, controls, and unknowns</h2>
         </div>
         <p>Expected, documented, and observed configurations remain separate. Physical port capability is not treated as an active connection.</p>
       </div>
@@ -87,14 +143,14 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
         </div>
       </article>
 
-      <div className={styles.networkOverviewBadges} aria-label="Network evidence coverage">
+      <div className={styles.networkOverviewBadges} aria-label="Topology evidence coverage">
         <span>{evidence.configurations.length} sourced configuration {evidence.configurations.length === 1 ? "view" : "views"}</span>
         <span>{evidence.sourceImages.length} source {evidence.sourceImages.length === 1 ? "image" : "images"}</span>
         <span>{observedCount === 0 ? "No field-observed topology collected" : `${observedCount} field-observed topology records`}</span>
       </div>
 
       {evidence.configurations.length > 1 && (
-        <div className={styles.networkConfigurationTabs} aria-label="Network configuration views">
+        <div className={styles.networkConfigurationTabs} aria-label="Topology configuration views">
           {evidence.configurations.map((record) => (
             <button
               aria-pressed={record.id === configuration.id}
@@ -128,18 +184,71 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
         </header>
 
         <div className={styles.networkInteractiveGrid}>
+          <EquipmentTopologyGraph
+            configuration={configuration}
+            key={configuration.id}
+            onSelect={setSelection}
+            selection={activeSelection}
+          />
+
+          <aside className={styles.networkNodeDetail} aria-live="polite">
+            {selectedLink ? (
+              <>
+                <span>Selected connection</span>
+                <h3>{nodeById.get(selectedLink.from)?.label ?? selectedLink.from} → {nodeById.get(selectedLink.to)?.label ?? selectedLink.to}</h3>
+                <p>{selectedLink.purpose}</p>
+                <dl>
+                  <div><dt>Medium</dt><dd>{selectedLink.medium}</dd></div>
+                  <div><dt>Direction</dt><dd>{label(selectedLink.direction)}</dd></div>
+                  <div><dt>Evidence status</dt><dd>{label(selectedLink.knowledgeStatus)}</dd></div>
+                </dl>
+                <small>These citations support this connection within this configuration; they do not establish a live field network.</small>
+                <EvidenceSources
+                  sourceIds={selectedLink.sourceIds}
+                  sourceRevisionIds={selectedLink.sourceRevisionIds}
+                  sources={sources}
+                />
+              </>
+            ) : selectedNode ? (
+              <>
+                <span>{selectedNode.id === configuration.focusNodeId ? "Primary dossier node" : "Selected node"}</span>
+                <h3>{selectedNode.label}</h3>
+                <p>{selectedNode.details}</p>
+                <dl>
+                  <div><dt>Role</dt><dd>{selectedNode.role}</dd></div>
+                  {selectedNode.componentId && <div><dt>Dossier component</dt><dd>{selectedNode.componentId}</dd></div>}
+                  <div><dt>Optional</dt><dd>{selectedNode.optional ? "Yes" : "No"}</dd></div>
+                </dl>
+                <small>Select a node or connection in the topology to inspect the exact source revisions supporting it.</small>
+                <EvidenceSources
+                  sourceIds={selectedNode.sourceIds}
+                  sourceRevisionIds={selectedNode.sourceRevisionIds}
+                  sources={sources}
+                />
+              </>
+            ) : null}
+          </aside>
+        </div>
+
+        <details className={styles.networkAccessibleIndex} open>
+          <summary>
+            <CircleDot aria-hidden size={14} />
+            <span><strong>Accessible topology index</strong><small>Select a node or connection without using the canvas.</small></span>
+          </summary>
           <div className={styles.networkTopologyPanel}>
             <div className={styles.networkPanelTitle}>
-              <span><CircleDot aria-hidden size={14} /> Select a node</span>
-              <small>Highlights its documented paths</small>
+              <span><CircleDot aria-hidden size={14} /> Select a node or connection</span>
+              <small>Mirrors the interactive topology</small>
             </div>
             <div className={styles.networkNodes}>
               {configuration.nodes.map((node) => (
                 <button
-                  aria-pressed={node.id === selectedNode.id}
-                  className={node.id === selectedNode.id ? styles.networkNodeActive : undefined}
+                  aria-pressed={activeSelection.kind === "node" && node.id === activeSelection.id}
+                  className={activeSelection.kind === "node" && node.id === activeSelection.id
+                    ? styles.networkNodeActive
+                    : undefined}
                   key={node.id}
-                  onClick={() => setSelectedNodeId(node.id)}
+                  onClick={() => setSelection({ id: node.id, kind: "node" })}
                   type="button"
                 >
                   <Network aria-hidden size={16} />
@@ -153,10 +262,17 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
               {configuration.links.map((link) => {
                 const from = nodeById.get(link.from);
                 const to = nodeById.get(link.to);
-                const active = link.from === selectedNode.id || link.to === selectedNode.id;
+                const active = activeSelection.kind === "link" && activeSelection.id === link.id;
                 return (
-                  <article className={active ? styles.networkLinkActive : undefined} key={link.id}>
+                  <button
+                    aria-pressed={active}
+                    className={active ? styles.networkLinkActive : undefined}
+                    key={link.id}
+                    onClick={() => setSelection({ id: link.id, kind: "link" })}
+                    type="button"
+                  >
                     <div>
+                      <Link2 aria-hidden size={14} />
                       <strong>{from?.label ?? link.from}</strong>
                       {link.direction === "bidirectional"
                         ? <ArrowLeftRight aria-label="Bidirectional" size={15} />
@@ -164,25 +280,13 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
                       <strong>{to?.label ?? link.to}</strong>
                     </div>
                     <p>{link.medium}</p>
-                    <small>{link.purpose} - {label(link.knowledgeStatus)}</small>
-                  </article>
+                    <small>{link.purpose} — {label(link.knowledgeStatus)}</small>
+                  </button>
                 );
               })}
             </div>
           </div>
-
-          <aside className={styles.networkNodeDetail} aria-live="polite">
-            <span>Selected node</span>
-            <h3>{selectedNode.label}</h3>
-            <p>{selectedNode.details}</p>
-            <dl>
-              <div><dt>Role</dt><dd>{selectedNode.role}</dd></div>
-              {selectedNode.componentId && <div><dt>Dossier component</dt><dd>{selectedNode.componentId}</dd></div>}
-              <div><dt>Optional</dt><dd>{selectedNode.optional ? "Yes" : "No"}</dd></div>
-            </dl>
-            <small>Select another node to inspect its role and highlight every sourced path that touches it.</small>
-          </aside>
-        </div>
+        </details>
 
         <div className={styles.networkControls}>
           {configuration.controls.map((control) => (
@@ -200,7 +304,11 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
           <p>{configuration.sensitiveDetailsWithheld}</p>
         </div>
         <div className={styles.caveatBox}>{configuration.caveat}</div>
-        <EvidenceSources sourceIds={configuration.sourceIds} sources={sources} />
+        <EvidenceSources
+          sourceIds={configuration.sourceIds}
+          sourceRevisionIds={configuration.sourceRevisionIds}
+          sources={sources}
+        />
       </article>
 
       <div className={styles.networkSubsectionHead}>
@@ -222,7 +330,11 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
               <strong>{image.caption}</strong>
               <p>{image.caveat}</p>
               <small>{image.pageOrSection}</small>
-              <EvidenceSources sourceIds={image.sourceIds} sources={sources} />
+              <EvidenceSources
+                sourceIds={image.sourceIds}
+                sourceRevisionIds={image.sourceRevisionIds}
+                sources={sources}
+              />
             </div>
           </article>
         ))}
@@ -238,7 +350,11 @@ export function EquipmentNetworkEvidencePanel({ evidence, sources }: {
             <h3>{gap.label}</h3>
             <p>{gap.description}</p>
             <small>{gap.caveat}</small>
-            <EvidenceSources sourceIds={gap.sourceIds} sources={sources} />
+            <EvidenceSources
+              sourceIds={gap.sourceIds}
+              sourceRevisionIds={gap.sourceRevisionIds}
+              sources={sources}
+            />
           </article>
         ))}
       </div>

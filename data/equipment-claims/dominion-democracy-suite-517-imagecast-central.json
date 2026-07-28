@@ -397,7 +397,13 @@
               "role": "Ballot image capture",
               "componentId": "icc-central-scanner",
               "optional": false,
-              "details": "The certified configuration permits multiple named COTS scanner alternatives."
+              "details": "The certified configuration permits multiple named COTS scanner alternatives.",
+              "sourceIds": [
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ]
             },
             {
               "id": "icc-workstation",
@@ -405,7 +411,15 @@
               "role": "Image processing and central-count client",
               "componentId": "icc-workstation",
               "optional": false,
-              "details": "The workstation hosts the ICC application and provides the scanner's local computer interface."
+              "details": "The workstation hosts the ICC application and provides the scanner's local computer interface.",
+              "sourceIds": [
+                "co-dvs-517-system-overview",
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-system-overview@2026-07-21",
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ]
             },
             {
               "id": "icc-closed-lan",
@@ -413,7 +427,15 @@
               "role": "Conditional closed Ethernet transport",
               "componentId": "icc-optional-isolated-lan",
               "optional": true,
-              "details": "The ICC user guide calls for high-speed network infrastructure only when an additional central repository or data center is used."
+              "details": "The ICC user guide calls for high-speed network infrastructure only when an additional central repository or data center is used.",
+              "sourceIds": [
+                "co-dvs-517-system-overview",
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-system-overview@2026-07-21",
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ]
             },
             {
               "id": "icc-ems-data-center",
@@ -421,7 +443,15 @@
               "role": "Central result and ballot-image services",
               "componentId": null,
               "optional": true,
-              "details": "The system overview describes the closed LAN as connecting ICC workstations to the EMS data-center network."
+              "details": "The system overview describes the closed LAN as connecting ICC workstations to the EMS data-center network.",
+              "sourceIds": [
+                "co-dvs-517-system-overview",
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-system-overview@2026-07-21",
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ]
             }
           ],
           "links": [
@@ -432,7 +462,13 @@
               "medium": "USB interface",
               "direction": "one_way",
               "purpose": "Deliver scanner-captured ballot images to the ICC workstation",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ]
             },
             {
               "id": "icc-workstation-lan",
@@ -441,7 +477,15 @@
               "medium": "Gigabit Ethernet",
               "direction": "bidirectional",
               "purpose": "Connect an ICC workstation to the closed EMS data-center network when the additional repository configuration is used",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "co-dvs-517-system-overview",
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-system-overview@2026-07-21",
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ]
             },
             {
               "id": "icc-lan-data-center",
@@ -450,7 +494,15 @@
               "medium": "Closed local area network",
               "direction": "bidirectional",
               "purpose": "Store and exchange results and ballot-image data within the election system boundary",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "co-dvs-517-system-overview",
+                "co-dvs-517-icc-user-guide"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-system-overview@2026-07-21",
+                "co-dvs-517-icc-user-guide@2026-07-20"
+              ]
             }
           ],
           "controls": [
@@ -484,7 +536,8 @@
             "co-dvs-517-icc-user-guide@2026-07-20",
             "provv-dsuite-517-test-plan@2026-07-20"
           ],
-          "caveat": "The documents describe permitted 5.17-CO architectures. They do not establish that a particular jurisdiction uses the optional repository, which COTS alternatives it selected, or the live state of a network."
+          "caveat": "The documents describe permitted 5.17-CO architectures. They do not establish that a particular jurisdiction uses the optional repository, which COTS alternatives it selected, or the live state of a network.",
+          "focusNodeId": "icc-workstation"
         }
       ],
       "sourceImages": [

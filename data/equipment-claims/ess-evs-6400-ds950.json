@@ -437,7 +437,15 @@
               "role": "High-speed central scanner and tabulator",
               "componentId": "ds950-shell",
               "optional": false,
-              "details": "The DS950 generated central-count result data in the exact-version accuracy test."
+              "details": "The DS950 generated central-count result data in the exact-version accuracy test.",
+              "sourceIds": [
+                "eac-evs-6400-scope",
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-evs-6400-scope@2026-07-19",
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds950-closed-switch",
@@ -445,7 +453,15 @@
               "role": "Central-count Ethernet interconnect",
               "componentId": null,
               "optional": false,
-              "details": "The EAC scope lists a D-Link DSG-1005G network switch with a 1-GB minimum, but jurisdiction selection and use are not established."
+              "details": "The EAC scope lists a D-Link DSG-1005G network switch with a 1-GB minimum, but jurisdiction selection and use are not established.",
+              "sourceIds": [
+                "eac-evs-6400-scope",
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-evs-6400-scope@2026-07-19",
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds950-ems",
@@ -453,7 +469,15 @@
               "role": "Central result consolidation",
               "componentId": null,
               "optional": false,
-              "details": "The test report says the transmitted central-tabulator results were compiled in Electionware."
+              "details": "The test report says the transmitted central-tabulator results were compiled in Electionware.",
+              "sourceIds": [
+                "eac-evs-6400-scope",
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-evs-6400-scope@2026-07-19",
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             }
           ],
           "links": [
@@ -464,7 +488,13 @@
               "medium": "Closed local area network",
               "direction": "one_way",
               "purpose": "Transmit central-tabulator result data",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds950-lan-ems",
@@ -473,7 +503,13 @@
               "medium": "Closed local area network",
               "direction": "one_way",
               "purpose": "Deliver transmitted result data to the EMS for compilation",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             }
           ],
           "controls": [
@@ -505,7 +541,8 @@
             "eac-evs-6400-scope@2026-07-19",
             "provv-evs-6400-test-report@2026-07-19"
           ],
-          "caveat": "A VSTL accuracy-test topology is not proof that a jurisdiction connected a DS950, used the listed switch, or transmitted results over a network in a particular election."
+          "caveat": "A VSTL accuracy-test topology is not proof that a jurisdiction connected a DS950, used the listed switch, or transmitted results over a network in a particular election.",
+          "focusNodeId": "ds950-tabulator"
         }
       ],
       "sourceImages": [

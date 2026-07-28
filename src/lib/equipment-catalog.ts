@@ -12,6 +12,7 @@ export type EquipmentReferenceImage = EquipmentScene["referenceImages"][number];
 export type EquipmentNetworkEvidence = EquipmentSystem["networkEvidence"];
 export type EquipmentNetworkConfiguration = EquipmentNetworkEvidence["configurations"][number];
 export type EquipmentNetworkNode = EquipmentNetworkConfiguration["nodes"][number];
+export type EquipmentNetworkLink = EquipmentNetworkConfiguration["links"][number];
 export type EquipmentNetworkSourceImage = EquipmentNetworkEvidence["sourceImages"][number];
 
 export type EquipmentEvidenceImage = {
