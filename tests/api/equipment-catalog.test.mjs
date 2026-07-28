@@ -15,6 +15,7 @@ const [
   dossierLayout,
   componentsPage,
   networkPage,
+  topologyPage,
   historyPage,
   sourcesPage,
   comparePage,
@@ -26,6 +27,7 @@ const [
   gallery,
   lightbox,
   networkEvidence,
+  topologyGraph,
   workspace,
   vercelIgnore,
 ] = await Promise.all([
@@ -42,6 +44,7 @@ const [
   readFile("src/app/equipment/[slug]/layout.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/components/page.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/network/page.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/topology/page.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/history/page.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/sources/page.tsx", "utf8"),
   readFile("src/app/equipment/compare/page.tsx", "utf8"),
@@ -53,6 +56,7 @@ const [
   readFile("src/app/equipment/[slug]/equipment-reference-gallery.client.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-reference-lightbox.client.tsx", "utf8"),
   readFile("src/app/equipment/[slug]/equipment-network-evidence.client.tsx", "utf8"),
+  readFile("src/app/equipment/[slug]/equipment-topology-graph.client.tsx", "utf8"),
   readFile("src/app/workspace-tabs.tsx", "utf8"),
   readFile(".vercelignore", "utf8"),
 ]);
@@ -80,6 +84,9 @@ assert.equal(claim.system.slug, "ess-evs-6400-ds200");
 
 const sourceIds = new Set(sourcePackage.sources.map((source) => source.id));
 assert.equal(sourceIds.size, sourcePackage.sources.length, "source IDs must be unique");
+const sourceRevisionIds = new Set(sourcePackage.sources.flatMap((source) =>
+  source.revisions.map((revision) => revision.id),
+));
 for (const source of sourcePackage.sources) {
   assert.match(source.url, /^https:\/\//);
   assert.match(source.sha256, /^[a-f0-9]{64}$/);
@@ -358,12 +365,36 @@ for (const dossier of catalog.systems) {
   assert.match(dossier.networkEvidence.publicationBoundary, /excludes|omits/i);
   for (const configuration of dossier.networkEvidence.configurations) {
     assert.ok(["expected", "documented", "observed"].includes(configuration.evidenceLayer));
+    assert.ok(configuration.focusNodeId.length > 0);
     assert.ok(configuration.nodes.length > 0);
     assert.ok(configuration.sensitiveDetailsWithheld.length > 40);
     assert.ok(configuration.sourceIds.every((sourceId) => sourceIds.has(sourceId)));
+    assert.ok(configuration.sourceRevisionIds.every((revisionId) => sourceRevisionIds.has(revisionId)));
+    assert.ok(
+      configuration.nodes.some((node) => node.id === configuration.focusNodeId),
+      `${dossier.slug}/${configuration.id} must focus an existing node`,
+    );
+    const configurationSourceIds = new Set(configuration.sourceIds);
+    const configurationSourceRevisionIds = new Set(configuration.sourceRevisionIds);
+    for (const node of configuration.nodes) {
+      assert.ok(node.sourceIds.length > 0, `${dossier.slug}/${configuration.id}/${node.id} needs sources`);
+      assert.ok(node.sourceRevisionIds.length > 0, `${dossier.slug}/${configuration.id}/${node.id} needs revisions`);
+      assert.ok(node.sourceIds.every((sourceId) => configurationSourceIds.has(sourceId)));
+      assert.ok(node.sourceRevisionIds.every((revisionId) => configurationSourceRevisionIds.has(revisionId)));
+      assert.ok(node.sourceRevisionIds.every((revisionId) => sourceRevisionIds.has(revisionId)));
+    }
     for (const link of configuration.links) {
       assert.ok(configuration.nodes.some((node) => node.id === link.from));
       assert.ok(configuration.nodes.some((node) => node.id === link.to));
+      assert.ok(link.sourceIds.length > 0, `${dossier.slug}/${configuration.id}/${link.id} needs sources`);
+      assert.ok(
+        link.sourceRevisionIds.length > 0,
+        `${dossier.slug}/${configuration.id}/${link.id} needs revisions`,
+      );
+      assert.ok(link.sourceIds.every((sourceId) => configurationSourceIds.has(sourceId)));
+      assert.ok(link.sourceRevisionIds.every((revisionId) =>
+        configurationSourceRevisionIds.has(revisionId)));
+      assert.ok(link.sourceRevisionIds.every((revisionId) => sourceRevisionIds.has(revisionId)));
     }
   }
   for (const sourceImage of dossier.networkEvidence.sourceImages) {
@@ -420,8 +451,10 @@ assert.match(dossierLayout, /export const dynamic = "force-dynamic"/);
 assert.match(dossierLayout, /system\.deviceName/);
 assert.match(dossierLayout, /DossierSectionNav/);
 assert.match(componentsPage, /EquipmentExplorer/);
-assert.match(networkPage, /EquipmentNetworkEvidencePanel/);
-assert.match(networkPage, /system\.networkEvidence/);
+assert.match(networkPage, /permanentRedirect/);
+assert.match(networkPage, /\/topology/);
+assert.match(topologyPage, /EquipmentTopologyEvidencePanel/);
+assert.match(topologyPage, /system\.networkEvidence/);
 assert.match(historyPage, /deploymentSourceIds/);
 assert.match(historyPage, /No reviewed deployment observation/);
 assert.match(sourcesPage, /Archived source manifest/);
@@ -461,12 +494,19 @@ assert.match(gallery, /EquipmentReferenceLightbox/);
 assert.match(lightbox, /createPortal/);
 assert.match(lightbox, /aria-modal="true"/);
 assert.match(lightbox, /document\.body\.style\.overflow/);
-assert.match(networkEvidence, /Network configuration evidence/);
+assert.match(networkEvidence, /Source-bounded topology/);
 assert.match(networkEvidence, /Physical port capability is not treated as an active connection/);
-assert.match(networkEvidence, /Select a node/);
+assert.match(networkEvidence, /Select a node or connection/);
 assert.match(networkEvidence, /Operational details withheld/);
 assert.match(networkEvidence, /EquipmentReferenceLightbox/);
 assert.match(networkEvidence, /No field-observed topology collected/);
+assert.match(networkEvidence, /sourceRevisionIds=\{selectedLink\.sourceRevisionIds\}/);
+assert.match(topologyGraph, /ReactFlow/);
+assert.match(topologyGraph, /elk\.layout/);
+assert.match(topologyGraph, /Explore with force/);
+assert.match(topologyGraph, /Reset layout/);
+assert.match(topologyGraph, /prefers-reduced-motion/);
+assert.match(topologyGraph, /Dragging changes this view only/);
 assert.match(workspace, /equipmentExplorerEnabled &&/);
 assert.match(workspace, /equipment-catalog-link/);
 assert.match(workspace, /Component catalog/);

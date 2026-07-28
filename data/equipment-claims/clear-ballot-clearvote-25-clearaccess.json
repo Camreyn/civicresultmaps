@@ -661,7 +661,13 @@
               "role": "Ballot-marking workstation",
               "componentId": "clearaccess-touchscreen-computer",
               "optional": false,
-              "details": "Certified alternatives include named all-in-one touchscreen computers running ClearAccess software."
+              "details": "Certified alternatives include named all-in-one touchscreen computers running ClearAccess software.",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ]
             },
             {
               "id": "clearaccess-printer",
@@ -669,7 +675,13 @@
               "role": "Local paper-ballot output",
               "componentId": "clearaccess-ballot-printer",
               "optional": false,
-              "details": "The printer is a local ClearAccess peripheral; the selected certified model and occupied connector are jurisdiction-specific."
+              "details": "The printer is a local ClearAccess peripheral; the selected certified model and occupied connector are jurisdiction-specific.",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ]
             },
             {
               "id": "clearaccess-accessibility",
@@ -677,7 +689,13 @@
               "role": "Local voter input and audio accessories",
               "componentId": "clearaccess-accessible-keypad",
               "optional": false,
-              "details": "The dossier separately identifies the accessible keypad and other assistive accessories."
+              "details": "The dossier separately identifies the accessible keypad and other assistive accessories.",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ]
             }
           ],
           "links": [
@@ -688,7 +706,13 @@
               "medium": "Local wired peripheral connection",
               "direction": "one_way",
               "purpose": "Print the voter-reviewed paper ballot",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ]
             },
             {
               "id": "clearaccess-input-link",
@@ -697,7 +721,13 @@
               "medium": "Local assistive-device connection",
               "direction": "one_way",
               "purpose": "Provide accessible navigation and selection input",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "eac-clearvote-25-scope"
+              ],
+              "sourceRevisionIds": [
+                "eac-clearvote-25-scope@2026-07-19"
+              ]
             }
           ],
           "controls": [
@@ -723,7 +753,8 @@
             "eac-clearvote-25-scope@2026-07-19",
             "clearballot-security@2026-07-21"
           ],
-          "caveat": "A product-level communications policy and a certified component list do not prove the state of a particular port, cable, station, polling place, or election deployment."
+          "caveat": "A product-level communications policy and a certified component list do not prove the state of a particular port, cable, station, polling place, or election deployment.",
+          "focusNodeId": "clearaccess-station"
         }
       ],
       "sourceImages": [

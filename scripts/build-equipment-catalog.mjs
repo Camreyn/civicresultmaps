@@ -37,6 +37,10 @@ function collectSourceIds(system) {
     ...(system.power ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) => record.sourceIds ?? []),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
+      (record.nodes ?? []).flatMap((node) => node.sourceIds ?? [])),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
+      (record.links ?? []).flatMap((link) => link.sourceIds ?? [])),
     ...(system.networkEvidence?.sourceImages ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.networkEvidence?.gaps ?? []).flatMap((record) => record.sourceIds ?? []),
     ...(system.scene?.referenceSourceIds ?? []),
@@ -58,6 +62,10 @@ function collectSourceRevisionIds(system) {
     ...(system.power ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.deployments ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.networkEvidence?.configurations ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
+      (record.nodes ?? []).flatMap((node) => node.sourceRevisionIds ?? [])),
+    ...(system.networkEvidence?.configurations ?? []).flatMap((record) =>
+      (record.links ?? []).flatMap((link) => link.sourceRevisionIds ?? [])),
     ...(system.networkEvidence?.sourceImages ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.networkEvidence?.gaps ?? []).flatMap((record) => record.sourceRevisionIds ?? []),
     ...(system.scene?.referenceSourceRevisionIds ?? []),

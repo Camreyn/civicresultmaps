@@ -8,7 +8,7 @@ const clearCountPath = "/equipment/clear-ballot-clearvote-25-clearcount";
 const imageCastCentralPath = "/equipment/dominion-democracy-suite-517-imagecast-central";
 const ds950Path = "/equipment/ess-evs-6400-ds950";
 
-test.describe.configure({ mode: "serial" });
+test.describe.configure({ mode: "default" });
 
 test("lists six source-linked equipment dossiers", async ({ page }) => {
   await page.goto("/equipment");
@@ -418,17 +418,63 @@ test("retains DS200 partial-power and deployment evidence boundaries", async ({ 
 });
 
 test("keeps network topology claims source-bounded and interactive", async ({ page }) => {
-  await page.goto(`${clearCountPath}/network`);
+  await page.goto(`${clearCountPath}/topology`);
   const networkEvidence = page.locator("[data-network-evidence]");
-  await expect(networkEvidence.getByRole("heading", { name: "Documented paths, controls, and unknowns" })).toBeVisible();
+  await expect(networkEvidence.getByRole("heading", { name: "Documented topology, controls, and unknowns" })).toBeVisible();
   await expect(networkEvidence.getByText("1 sourced configuration view", { exact: true })).toBeVisible();
   await expect(networkEvidence.getByText("No field-observed topology collected", { exact: true })).toBeVisible();
   await expect(networkEvidence.getByText("Operational details withheld", { exact: true })).toBeVisible();
+  await expect(networkEvidence.getByLabel("Interactive documented topology")).toBeVisible();
+  const forceButton = networkEvidence.getByRole("button", { name: "Explore with force" });
+  await expect(forceButton).toBeEnabled();
+  await expect(networkEvidence.getByRole("button", { name: "Reset layout" })).toBeEnabled();
+  await expect.poll(() => networkEvidence.locator(".react-flow").evaluate((canvas) => {
+    const canvasRect = canvas.getBoundingClientRect();
+    const nodes = Array.from(canvas.querySelectorAll(".react-flow__node"));
+    return nodes.length > 0 && nodes.every((node) => {
+      const nodeRect = node.getBoundingClientRect();
+      return nodeRect.left >= canvasRect.left - 1
+        && nodeRect.right <= canvasRect.right + 1
+        && nodeRect.top >= canvasRect.top - 1
+        && nodeRect.bottom <= canvasRect.bottom + 1;
+    });
+  })).toBe(true);
 
-  const countServerNode = networkEvidence.getByRole("button", { name: /CountServer/ });
+  await forceButton.click();
+  await expect(networkEvidence.getByRole("button", { name: "Exit force view" }))
+    .toHaveAttribute("aria-pressed", "true");
+  await networkEvidence.getByRole("button", { name: "Reset layout" }).click();
+  await expect(networkEvidence.getByRole("button", { name: "Explore with force" }))
+    .toHaveAttribute("aria-pressed", "false");
+  await expect.poll(() => networkEvidence.locator(".react-flow").evaluate((canvas) => {
+    const canvasRect = canvas.getBoundingClientRect();
+    return Array.from(canvas.querySelectorAll(".react-flow__node")).every((node) => {
+      const nodeRect = node.getBoundingClientRect();
+      return nodeRect.left >= canvasRect.left - 1
+        && nodeRect.right <= canvasRect.right + 1
+        && nodeRect.top >= canvasRect.top - 1
+        && nodeRect.bottom <= canvasRect.bottom + 1;
+    });
+  })).toBe(true);
+
+  const accessibleTopology = networkEvidence.locator("details").filter({
+    hasText: "Accessible topology index",
+  });
+  const countServerNode = accessibleTopology.getByRole("button", { name: /^CountServer Election database/ });
   await countServerNode.click();
   await expect(countServerNode).toHaveAttribute("aria-pressed", "true");
   await expect(networkEvidence.getByText("The Ubuntu CountServer hosts ClearCount software, its database, and election reports.", { exact: true })).toBeVisible();
+
+  const countServerPath = accessibleTopology.getByRole("button").filter({
+    hasText: "Provide application, database, and report services to ClearCount clients",
+  });
+  await countServerPath.click();
+  await expect(countServerPath).toHaveAttribute("aria-pressed", "true");
+  await expect(networkEvidence.getByText("Selected connection", { exact: true })).toBeVisible();
+  await expect(networkEvidence.getByText(
+    "These citations support this connection within this configuration; they do not establish a live field network.",
+    { exact: true },
+  )).toBeVisible();
 
   await networkEvidence.getByRole("button", { name: /Expand: Exact ClearVote 2.5 scope text/ }).click();
   const sourceDialog = page.getByRole("dialog", { name: /Exact ClearVote 2.5 scope text/ });
@@ -437,14 +483,19 @@ test("keeps network topology claims source-bounded and interactive", async ({ pa
   await page.keyboard.press("Escape");
   await expect(sourceDialog).toHaveCount(0);
 
-  await page.goto(`${ds200Path}/network`);
+  await page.goto(`${clearCountPath}/network`);
+  await expect(page).toHaveURL(new RegExp(`${clearCountPath}/topology$`));
+
+  await page.goto(`${ds200Path}/topology`);
   const ds200NetworkEvidence = page.locator("[data-network-evidence]");
   const certifiedPath = ds200NetworkEvidence.getByRole("button", { name: /EVS 6.4.0.0 Regional Results test path/ });
   const optionalCellular = ds200NetworkEvidence.getByRole("button", { name: /Historical optional cellular hardware context/ });
   await expect(certifiedPath).toHaveAttribute("aria-pressed", "true");
   await optionalCellular.click();
   await expect(optionalCellular).toHaveAttribute("aria-pressed", "true");
-  await expect(ds200NetworkEvidence.getByRole("button", { name: /MultiTech MTSMC-LVW3/ })).toBeVisible();
+  await expect(ds200NetworkEvidence.getByRole("button", {
+    name: "MultiTech MTSMC-LVW3 Historical optional LTE alternative Optional",
+  })).toBeVisible();
   await expect(ds200NetworkEvidence.getByText(/not evidence that EVS 6.4.0.0 certified/)).toBeVisible();
 });
 

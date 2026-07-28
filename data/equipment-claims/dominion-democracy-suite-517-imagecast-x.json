@@ -902,7 +902,17 @@
               "role": "Accessible ballot-marking platform",
               "componentId": "icx-touchscreen-bmd",
               "optional": false,
-              "details": "The station includes the certified ICX application and one of the permitted hardware configurations."
+              "details": "The station includes the certified ICX application and one of the permitted hardware configurations.",
+              "sourceIds": [
+                "eac-dsuite-517-scope",
+                "provv-dsuite-517-test-plan",
+                "co-dvs-517-system-overview"
+              ],
+              "sourceRevisionIds": [
+                "eac-dsuite-517-scope@2026-07-20",
+                "provv-dsuite-517-test-plan@2026-07-20",
+                "co-dvs-517-system-overview@2026-07-21"
+              ]
             },
             {
               "id": "icx-rj45-interface",
@@ -910,7 +920,13 @@
               "role": "Physical 10/100 Ethernet capability",
               "componentId": "icx-sid21-io-panel",
               "optional": false,
-              "details": "Connector presence is documented; enabled state, peer, service, and field use are not established."
+              "details": "Connector presence is documented; enabled state, peer, service, and field use are not established.",
+              "sourceIds": [
+                "co-dvs-517-avalue-sid21-manual"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-avalue-sid21-manual@2026-07-20"
+              ]
             },
             {
               "id": "icx-election-media",
@@ -918,7 +934,15 @@
               "role": "Physical configuration and session transfer",
               "componentId": "icx-election-media",
               "optional": false,
-              "details": "The certified system uses physical media and activation cards for election configuration and voter-session workflows."
+              "details": "The certified system uses physical media and activation cards for election configuration and voter-session workflows.",
+              "sourceIds": [
+                "eac-dsuite-517-scope",
+                "provv-dsuite-517-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-dsuite-517-scope@2026-07-20",
+                "provv-dsuite-517-test-plan@2026-07-20"
+              ]
             }
           ],
           "links": [
@@ -929,7 +953,13 @@
               "medium": "Internal connection to a 10/100 RJ-45 physical interface",
               "direction": "bidirectional",
               "purpose": "Expose hardware network capability without establishing an attached external network",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "co-dvs-517-avalue-sid21-manual"
+              ],
+              "sourceRevisionIds": [
+                "co-dvs-517-avalue-sid21-manual@2026-07-20"
+              ]
             },
             {
               "id": "icx-physical-media-link",
@@ -938,7 +968,15 @@
               "medium": "Physical election media and activation cards",
               "direction": "one_way",
               "purpose": "Load election configuration and activate voting sessions without treating physical transfer as a network connection",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "eac-dsuite-517-scope",
+                "provv-dsuite-517-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-dsuite-517-scope@2026-07-20",
+                "provv-dsuite-517-test-plan@2026-07-20"
+              ]
             }
           ],
           "controls": [
@@ -980,7 +1018,8 @@
             "co-dvs-517-system-overview@2026-07-21",
             "co-dvs-517-avalue-sid21-manual@2026-07-20"
           ],
-          "caveat": "An RJ-45 connector is capability evidence only. It does not prove that Ethernet is enabled, cabled, assigned an address, attached to a network, or used during an election."
+          "caveat": "An RJ-45 connector is capability evidence only. It does not prove that Ethernet is enabled, cabled, assigned an address, attached to a network, or used during an election.",
+          "focusNodeId": "icx-station"
         }
       ],
       "sourceImages": [

@@ -1103,7 +1103,15 @@
               "role": "Polling-place scanner and tabulator",
               "componentId": "ds200-scanner-tabulator",
               "optional": false,
-              "details": "The DS200 produces result data used in the tested Regional Results workflow."
+              "details": "The DS200 produces result data used in the tested Regional Results workflow.",
+              "sourceIds": [
+                "eac-evs-6400-scope",
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "eac-evs-6400-scope@2026-07-19",
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds200-regional-client",
@@ -1111,7 +1119,13 @@
               "role": "Regional sending-site application",
               "componentId": null,
               "optional": true,
-              "details": "The EAC scope describes Regional Results as a standalone application deployed at regional sending sites."
+              "details": "The EAC scope describes Regional Results as a standalone application deployed at regional sending sites.",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds200-customer-network",
@@ -1119,7 +1133,13 @@
               "role": "Encrypted unofficial-results transport",
               "componentId": null,
               "optional": true,
-              "details": "Pro V&V reports a VPN test; the EAC scope describes a customer-dedicated network."
+              "details": "Pro V&V reports a VPN test; the EAC scope describes a customer-dedicated network.",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds200-ems",
@@ -1127,7 +1147,13 @@
               "role": "Central results destination",
               "componentId": null,
               "optional": false,
-              "details": "The test transmitted correct result files to the EMS for compilation."
+              "details": "The test transmitted correct result files to the EMS for compilation.",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             }
           ],
           "links": [
@@ -1138,7 +1164,13 @@
               "medium": "Result-data handoff; local medium not established in the reviewed passage",
               "direction": "one_way",
               "purpose": "Make DS200 result data available to Regional Results",
-              "knowledgeStatus": "not_publicly_established"
+              "knowledgeStatus": "not_publicly_established",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds200-vpn-send",
@@ -1147,7 +1179,13 @@
               "medium": "Virtual private network over a customer-dedicated network",
               "direction": "one_way",
               "purpose": "Transmit encrypted unofficial results collection files",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             },
             {
               "id": "ds200-vpn-receive",
@@ -1156,7 +1194,13 @@
               "medium": "Virtual private network",
               "direction": "one_way",
               "purpose": "Deliver transmitted result files to the central EMS",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "provv-evs-6400-test-report"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-6400-test-report@2026-07-19"
+              ]
             }
           ],
           "controls": [
@@ -1188,7 +1232,8 @@
             "eac-evs-6400-scope@2026-07-19",
             "provv-evs-6400-test-report@2026-07-19"
           ],
-          "caveat": "A successful VSTL system test is not evidence that a jurisdiction enabled Regional Results, used the same network design, or transmitted results in a particular election."
+          "caveat": "A successful VSTL system test is not evidence that a jurisdiction enabled Regional Results, used the same network design, or transmitted results in a particular election.",
+          "focusNodeId": "ds200-tabulator"
         },
         {
           "id": "ds200-historical-optional-cellular-context",
@@ -1207,7 +1252,15 @@
               "role": "Historical scanner/tabulator context",
               "componentId": "ds200-scanner-tabulator",
               "optional": false,
-              "details": "The records apply to earlier EVS campaigns and named DS200 hardware revisions, not the field status of this 6.4 dossier."
+              "details": "The records apply to earlier EVS campaigns and named DS200 hardware revisions, not the field status of this 6.4 dossier.",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "provv-evs-5341-modem-hardware-table"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "provv-evs-5341-modem-hardware-table@2026-07-20"
+              ]
             },
             {
               "id": "ds200-modem-board",
@@ -1215,7 +1268,15 @@
               "role": "Internal optional modem interface",
               "componentId": "ds200-optional-cellular-modem",
               "optional": true,
-              "details": "The carrier-board component is separately identified and must not be treated as present in every DS200."
+              "details": "The carrier-board component is separately identified and must not be treated as present in every DS200.",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "provv-evs-5341-modem-hardware-table"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "provv-evs-5341-modem-hardware-table@2026-07-20"
+              ]
             },
             {
               "id": "ds200-c2",
@@ -1223,7 +1284,15 @@
               "role": "Historical optional cellular alternative",
               "componentId": "ds200-multitech-c2-modem",
               "optional": true,
-              "details": "A Florida EVS 4.5.0.0 addendum names the C2 profile; firmware and field status remain unresolved."
+              "details": "A Florida EVS 4.5.0.0 addendum names the C2 profile; firmware and field status remain unresolved.",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
             },
             {
               "id": "ds200-lvw3",
@@ -1231,7 +1300,15 @@
               "role": "Historical optional LTE alternative",
               "componentId": "ds200-multitech-lvw3-modem",
               "optional": true,
-              "details": "A Pro V&V EVS 5.3.4.1 hardware table names MTSMC-LVW3; ordering revision and firmware are not identified."
+              "details": "A Pro V&V EVS 5.3.4.1 hardware table names MTSMC-LVW3; ordering revision and firmware are not identified.",
+              "sourceIds": [
+                "provv-evs-5341-modem-hardware-table",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-5341-modem-hardware-table@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
             },
             {
               "id": "ds200-carrier-service",
@@ -1239,7 +1316,17 @@
               "role": "Optional external transport context",
               "componentId": null,
               "optional": true,
-              "details": "Carrier, account, APN, activation state, and election use are not established by the reviewed records."
+              "details": "Carrier, account, APN, activation state, and election use are not established by the reviewed records.",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "provv-evs-5341-modem-hardware-table",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "provv-evs-5341-modem-hardware-table@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
             }
           ],
           "links": [
@@ -1250,7 +1337,15 @@
               "medium": "Internal modem-board interface",
               "direction": "bidirectional",
               "purpose": "Host the historical C2 modem alternative",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
             },
             {
               "id": "ds200-lvw3-board-link",
@@ -1259,7 +1354,15 @@
               "medium": "Internal Universal Socket modem interface",
               "direction": "bidirectional",
               "purpose": "Host the historical MTSMC-LVW3 modem alternative",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "provv-evs-5341-modem-hardware-table",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-5341-modem-hardware-table@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
             },
             {
               "id": "ds200-c2-cellular-link",
@@ -1268,7 +1371,15 @@
               "medium": "Cellular capability; activation profile not established",
               "direction": "bidirectional",
               "purpose": "Historical optional results-transmission capability",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "fl-evs-4500-v4-modem-report",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "fl-evs-4500-v4-modem-report@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
             },
             {
               "id": "ds200-lvw3-cellular-link",
@@ -1277,7 +1388,15 @@
               "medium": "Verizon LTE capability; activation profile not established",
               "direction": "bidirectional",
               "purpose": "Historical optional results-transmission capability",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "provv-evs-5341-modem-hardware-table",
+                "multitech-universal-socket-guide"
+              ],
+              "sourceRevisionIds": [
+                "provv-evs-5341-modem-hardware-table@2026-07-20",
+                "multitech-universal-socket-guide@2026-07-20"
+              ]
             }
           ],
           "controls": [
@@ -1311,7 +1430,8 @@
             "provv-evs-5341-modem-hardware-table@2026-07-20",
             "multitech-universal-socket-guide@2026-07-20"
           ],
-          "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem."
+          "caveat": "Historical optional hardware is not evidence that EVS 6.4.0.0 certified, a jurisdiction purchased, or a fielded DS200 contains or uses either modem.",
+          "focusNodeId": "ds200-historical-unit"
         },
         {
           "id": "ds200-unity-3400-landline-sftp-reference",
@@ -1330,7 +1450,13 @@
               "role": "Historical precinct scanner and tabulator",
               "componentId": "ds200-scanner-tabulator",
               "optional": false,
-              "details": "The figure labels a DS200 as the wireline sending endpoint in the Unity 3.4.0.0 target-of-evaluation description."
+              "details": "The figure labels a DS200 as the wireline sending endpoint in the Unity 3.4.0.0 target-of-evaluation description.",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
             },
             {
               "id": "unity-3400-ras-sftp",
@@ -1338,7 +1464,13 @@
               "role": "Result-file receiving service in the DMZ",
               "componentId": null,
               "optional": false,
-              "details": "The source combines remote-access and SFTP server roles on the illustrated DMZ-side receiving system."
+              "details": "The source combines remote-access and SFTP server roles on the illustrated DMZ-side receiving system.",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
             },
             {
               "id": "unity-3400-firewall",
@@ -1346,7 +1478,13 @@
               "role": "Boundary between DMZ and inside network",
               "componentId": null,
               "optional": false,
-              "details": "The figure places a firewall between the DMZ receiving environment and the inside ERM network."
+              "details": "The figure places a firewall between the DMZ receiving environment and the inside ERM network.",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
             },
             {
               "id": "unity-3400-erm",
@@ -1354,7 +1492,13 @@
               "role": "Inside election-results management environment",
               "componentId": null,
               "optional": false,
-              "details": "Election Reporting Manager is shown on the inside side of the historical reference topology."
+              "details": "Election Reporting Manager is shown on the inside side of the historical reference topology.",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
             }
           ],
           "links": [
@@ -1365,7 +1509,13 @@
               "medium": "Wireline modem connection",
               "direction": "bidirectional",
               "purpose": "Establish the historical result-file transfer session",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
             },
             {
               "id": "unity-3400-dmz-boundary",
@@ -1374,7 +1524,13 @@
               "medium": "DMZ network boundary",
               "direction": "not_specified",
               "purpose": "Separate the receiving service from the inside environment",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
             },
             {
               "id": "unity-3400-inside-erm",
@@ -1383,7 +1539,13 @@
               "medium": "Inside network path",
               "direction": "not_specified",
               "purpose": "Make received result data available to ERM",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "eac-unity-3400-test-plan"
+              ],
+              "sourceRevisionIds": [
+                "eac-unity-3400-test-plan@2026-07-21"
+              ]
             }
           ],
           "controls": [
@@ -1413,7 +1575,8 @@
           "sourceRevisionIds": [
             "eac-unity-3400-test-plan@2026-07-21"
           ],
-          "caveat": "This is a historical wireline test-plan reference, not a cellular design, current EVS 6.4.0.0 certification record, field inspection, or evidence of election-night use."
+          "caveat": "This is a historical wireline test-plan reference, not a cellular design, current EVS 6.4.0.0 certification record, field inspection, or evidence of election-night use.",
+          "focusNodeId": "unity-3400-ds200"
         },
         {
           "id": "ds200-michigan-evs-5320-wireless-sftp-path",
@@ -1432,7 +1595,13 @@
               "role": "Historical precinct scanner and tabulator",
               "componentId": "ds200-scanner-tabulator",
               "optional": false,
-              "details": "The vendor response describes EVS 5.3.2.0 DS200 result transmission after polls close."
+              "details": "The vendor response describes EVS 5.3.2.0 DS200 result transmission after polls close.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-internal-modem",
@@ -1440,7 +1609,13 @@
               "role": "Cellular interface for a configured DS200",
               "componentId": "ds200-optional-cellular-modem",
               "optional": true,
-              "details": "The response states that a DS200 could be configured with an internal wireless modem; it does not identify the module model or firmware."
+              "details": "The response states that a DS200 could be configured with an internal wireless modem; it does not identify the module model or firmware.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-wireless-carrier",
@@ -1448,7 +1623,13 @@
               "role": "External cellular transport",
               "componentId": null,
               "optional": true,
-              "details": "The diagram labels a wireless-carrier path; carrier, account, APN, SIM, and activation state are not published here."
+              "details": "The diagram labels a wireless-carrier path; carrier, account, APN, SIM, and activation state are not published here.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-customer-interface",
@@ -1456,7 +1637,13 @@
               "role": "Boundary interface before the firewall",
               "componentId": null,
               "optional": false,
-              "details": "The vendor diagram places a customer interface between the external path and the firewall."
+              "details": "The vendor diagram places a customer interface between the external path and the firewall.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-firewall",
@@ -1464,7 +1651,13 @@
               "role": "Separates external, DMZ, and inside environments",
               "componentId": null,
               "optional": false,
-              "details": "The diagram labels outside, DMZ, and inside sides of the firewall."
+              "details": "The diagram labels outside, DMZ, and inside sides of the firewall.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-communications-server",
@@ -1472,7 +1665,13 @@
               "role": "Receives transferred DS200 result files",
               "componentId": null,
               "optional": false,
-              "details": "The vendor response describes a secure county server receiving encrypted result files through SFTP."
+              "details": "The vendor response describes a secure county server receiving encrypted result files through SFTP.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-local-ems",
@@ -1480,7 +1679,13 @@
               "role": "Processes received result files",
               "componentId": null,
               "optional": false,
-              "details": "The response states that ERM monitors the receiving-server folder and processes files as they arrive."
+              "details": "The response states that ERM monitors the receiving-server folder and processes files as they arrive.",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             }
           ],
           "links": [
@@ -1491,7 +1696,13 @@
               "medium": "Internal optional modem interface",
               "direction": "bidirectional",
               "purpose": "Provide the configured DS200 cellular interface",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-cellular-path",
@@ -1500,7 +1711,13 @@
               "medium": "CDMA or GSM cellular service described for EVS 5.3.2.0",
               "direction": "bidirectional",
               "purpose": "Establish the historical post-poll SFTP session",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-carrier-customer",
@@ -1509,7 +1726,13 @@
               "medium": "External carrier and network path",
               "direction": "bidirectional",
               "purpose": "Reach the county-side customer interface",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-customer-firewall",
@@ -1518,7 +1741,13 @@
               "medium": "Outside network boundary",
               "direction": "bidirectional",
               "purpose": "Pass the result-transfer session to the protected receiving environment",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-firewall-server",
@@ -1527,7 +1756,13 @@
               "medium": "DMZ service path",
               "direction": "bidirectional",
               "purpose": "Terminate the historical SFTP transfer at the communications server",
-              "knowledgeStatus": "documented_partial"
+              "knowledgeStatus": "documented_partial",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             },
             {
               "id": "mi-5320-server-erm",
@@ -1536,7 +1771,13 @@
               "medium": "Protected result-file handoff",
               "direction": "one_way",
               "purpose": "Make received files available for ERM processing",
-              "knowledgeStatus": "confirmed"
+              "knowledgeStatus": "confirmed",
+              "sourceIds": [
+                "mi-ess-voting-system-contract"
+              ],
+              "sourceRevisionIds": [
+                "mi-ess-voting-system-contract@2026-07-21"
+              ]
             }
           ],
           "controls": [
@@ -1572,7 +1813,8 @@
           "sourceRevisionIds": [
             "mi-ess-voting-system-contract@2026-07-21"
           ],
-          "caveat": "This is a historical Michigan procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It is not evidence of EVS 6.4.0.0 certification, a current county design, an installed modem or firmware, a live connection, or a transmission during any election."
+          "caveat": "This is a historical Michigan procurement response for EVS 5.3.2.0, which the source says was not EAC certified. It is not evidence of EVS 6.4.0.0 certification, a current county design, an installed modem or firmware, a live connection, or a transmission during any election.",
+          "focusNodeId": "mi-5320-ds200"
         }
       ],
       "sourceImages": [
