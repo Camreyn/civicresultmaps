@@ -8,7 +8,7 @@ const clearCountPath = "/equipment/clear-ballot-clearvote-25-clearcount";
 const imageCastCentralPath = "/equipment/dominion-democracy-suite-517-imagecast-central";
 const ds950Path = "/equipment/ess-evs-6400-ds950";
 
-test.describe.configure({ mode: "serial" });
+test.describe.configure({ mode: "default" });
 
 test("lists six source-linked equipment dossiers", async ({ page }) => {
   await page.goto("/equipment");
