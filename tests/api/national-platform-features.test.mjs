@@ -34,6 +34,48 @@ test("national release catalog is versioned and coverage stays internally consis
   );
 });
 
+test("public release catalog includes historical, equipment, and security products", () => {
+  const catalog = JSON.parse(readFileSync("data/national-data-releases.json", "utf8"));
+  assert.equal(catalog.schemaVersion, "2.0.0");
+  const byProduct = Object.fromEntries(catalog.releases.map((release) => [release.product, release]));
+  assert.deepEqual(
+    Object.keys(byProduct).sort(),
+    ["election_equipment", "election_security_incidents", "historical_presidential_results", "national_county_results"],
+  );
+
+  const historical = byProduct.historical_presidential_results;
+  assert.deepEqual(historical.electionYears, [2012]);
+  assert.equal(historical.coverage.rowCount, 2173);
+  assert.equal(historical.coverage.statesRepresented, 28);
+  assert.equal(historical.coverage.canonicalCountyTaggedRows, 120);
+
+  const equipment = byProduct.election_equipment;
+  assert.equal(equipment.coverage.rowCount, 3119);
+  assert.equal(equipment.coverage.statesRepresented, 50);
+  assert.equal(equipment.coverage.detailedDossierCatalogIncluded, false);
+
+  const security = byProduct.election_security_incidents;
+  assert.equal(security.coverage.rowCount, 112);
+  assert.equal(security.coverage.statesRepresented, 10);
+  assert.equal(security.coverage.countyRows, 110);
+  assert.equal(security.coverage.statewideUnspecifiedRows, 2);
+  assert.equal(security.coverage.knownThreatCountMinimum, 227);
+
+  for (const release of catalog.releases) {
+    const archivePath = "public" + release.archivePath;
+    assert.equal(existsSync(archivePath), true, archivePath);
+    const archiveHash = createHash("sha256").update(readFileSync(archivePath)).digest("hex");
+    assert.equal(archiveHash, release.archiveSha256);
+    assert.ok(release.requiredEntries.includes("manifest.json"));
+  }
+
+  const page = readFileSync("src/app/releases/page.tsx", "utf8");
+  assert.match(page, /2012 coverage/);
+  assert.match(page, /Available data products/);
+  assert.match(page, /Election equipment/);
+  assert.match(page, /Security incidents/);
+});
+
 test("formal API exposes OpenAPI, v1 aliases, pagination, CORS, and bulk release paths", () => {
   const expected = [
     "src/app/api/openapi/route.ts",
@@ -56,6 +98,8 @@ test("formal API exposes OpenAPI, v1 aliases, pagination, CORS, and bulk release
   const registry = readFileSync("src/app/api/jurisdictions/route.ts", "utf8");
   const searchRoute = readFileSync("src/app/api/jurisdictions/search/route.ts", "utf8");
   assert.match(openapi, /openapi: "3\.1\.0"/);
+  assert.match(openapi, /historical_presidential_results/);
+  assert.match(openapi, /\[2012, 2016, 2020, 2024\]/);
   assert.match(openapi, /\/api\/v1\/flips/);
   assert.match(openapi, /limit/);
   assert.match(openapi, /offset/);

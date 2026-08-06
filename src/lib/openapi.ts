@@ -40,7 +40,7 @@ export function buildOpenApiDocument() {
     tags: [
       { name: "Comparisons", description: "Canonical county election comparisons" },
       { name: "Counties", description: "County registry, search, and profiles" },
-      { name: "Releases", description: "Immutable release metadata and bulk downloads" },
+      { name: "Releases", description: "Immutable result, equipment, and security release metadata and bulk downloads" },
       { name: "Equipment", description: "Source-linked certified configurations, change records, and evidence gaps" },
       { name: "Platform", description: "Existing state, source, and coverage endpoints" },
     ],
@@ -147,7 +147,7 @@ export function buildOpenApiDocument() {
         get: {
           tags: ["Releases"],
           operationId: "listReleases",
-          summary: "List national data releases",
+          summary: "List public data releases",
           responses: {
             "200": {
               description: "Release catalog.",
@@ -175,7 +175,7 @@ export function buildOpenApiDocument() {
         get: {
           tags: ["Releases"],
           operationId: "downloadRelease",
-          summary: "Download the complete national release ZIP",
+          summary: "Download an immutable public data release ZIP",
           parameters: [{ name: "releaseId", in: "path", required: true, schema: { type: "string" } }],
           responses: {
             "307": {
@@ -934,13 +934,15 @@ export function buildOpenApiDocument() {
         },
         NationalDataRelease: {
           type: "object",
-          required: ["id", "title", "publishedAt", "status", "electionYears", "geographyContract", "geographyVintage", "geographyVintageYear", "historicalGeographyPolicy", "dataSha256", "archivePath", "archiveSha256", "coverage", "changes", "knownLimitations"],
+          required: ["id", "title", "summary", "product", "publishedAt", "status", "electionYears", "dataSha256", "archivePath", "archiveSha256", "coverage", "coverageHighlights", "changes", "knownLimitations", "requiredEntries", "sourceArtifacts"],
           properties: {
             id: { type: "string" },
             title: { type: "string" },
+            summary: { type: "string" },
+            product: { type: "string", enum: ["national_county_results", "historical_presidential_results", "election_equipment", "election_security_incidents"] },
             publishedAt: { type: "string", format: "date-time" },
-            status: { type: "string", enum: ["current", "superseded"] },
-            electionYears: { type: "array", items: { type: "integer", enum: [2016, 2020, 2024] } },
+            status: { type: "string", enum: ["available", "current", "superseded"] },
+            electionYears: { type: "array", items: { type: "integer", enum: [2012, 2016, 2020, 2024] } },
             geographyContract: { type: "string" },
             geographyVintage: { type: "string" },
             geographyVintageYear: { type: "integer" },
@@ -949,9 +951,13 @@ export function buildOpenApiDocument() {
             archivePath: { type: "string" },
             archiveSha256: { type: "string", pattern: "^[a-f0-9]{64}$" },
             coverage: { type: "object", additionalProperties: true },
+            coverageHighlights: { type: "array", items: { type: "object", required: ["label", "value"], properties: { label: { type: "string" }, value: { type: "string" } } } },
             comparisonSummary: { type: "object", additionalProperties: true },
             changes: { type: "array", items: { type: "string" } },
             knownLimitations: { type: "array", items: { type: "string" } },
+            requiredEntries: { type: "array", items: { type: "string" } },
+            sourceArtifacts: { type: "array", items: { type: "string" } },
+            primaryDataEntry: { type: "string" },
           },
           additionalProperties: true,
         },
